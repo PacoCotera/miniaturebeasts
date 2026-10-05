@@ -31,7 +31,12 @@ interaction-driven.
   alive as small living patches when played: wild mibis, objects and conditions
   that react to what the player does. The fog lifts through progression: research,
   partners, items, Probe tiers and installed mods.
-- **The world persists.**
+- **The world persists and turns.** It advances one turn per expedition:
+  creatures roam and breed, weather leaves marks, and conditions bring new finds.
+  Nothing refills.
+- **Start anywhere you can see.** Any visible cell can be a starting point. Placing
+  the pawn reveals the cells around it, so a new game starts with nine cells to
+  explore.
 - **The field clock counts actions, not seconds.** The world moves when the player
   moves or acts. Standing still changes nothing, and there's no real-time pressure.
 - **Samples are seed-pods.** A pod shows its species if the player has met that

@@ -1,6 +1,11 @@
 # Exploration: combined design
 
-**Proposal.** This turns the exploration decisions into one design: models A and
+**Proposal, partly decided.** Since this was written, the project lead decided:
+world turns (§2); any visible cell can be a starting point, and placing the pawn
+reveals its neighbours, so a new game starts with nine cells (this replaces the
+single landing); and the rough playable is a browser mockup.
+
+This turns the exploration decisions into one design: models A and
 B combined, a permanent world, the action clock, optional partners, seed-pods and
 no capture. Lines marked **Decided** restate those decisions. Everything else is
 a proposal until approved.
