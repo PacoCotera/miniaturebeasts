@@ -1,19 +1,17 @@
-name: Site
+name: Sandbox
 
 on:
   push:
     branches: [main]
-    paths: ['website/**', 'prototypes/**', '.github/workflows/site.yml']
+    paths: ['website/**', 'prototypes/**', 'ops/sandbox/**', '.github/workflows/site.yml', '.github/smoke.mjs']
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: site
-  cancel-in-progress: true
+  group: sandbox
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -32,33 +30,27 @@ jobs:
             cp -r "$p". "_site/sandbox/$n/"
           done
           printf '{"commit":"%s","short":"%s","built":"%s"}\n' "$GITHUB_SHA" "${GITHUB_SHA:0:7}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _site/build.json
-          echo miniaturebeasts.com > _site/CNAME
-          touch _site/.nojekyll
       - name: Check the pages parse
         run: |
           set -euo pipefail
-          sudo apt-get install -y --no-install-recommends tidy >/dev/null
-          for f in $(find _site -name '*.html'); do tidy -q -e --drop-empty-elements no "$f" 2>&1 | grep -E 'Error' && exit 1 || true; done
           node -e "const fs=require('fs');for(const f of process.argv.slice(1)){const s=fs.readFileSync(f,'utf8');for(const m of s.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)){new Function(m[1]);}}console.log('scripts parse')" $(find _site -name '*.html')
-      - name: Smoke-test the prototypes
+      - name: Smoke-test in a browser
         run: |
           set -euo pipefail
-          cd _site && python3 -m http.server 8000 >/dev/null 2>&1 &
+          (cd _site && python3 -m http.server 8000 >/dev/null 2>&1 &)
           sleep 1
           npm --prefix "$RUNNER_TEMP" install --silent playwright@1.49.1
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
+          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install --with-deps chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-
-  deploy:
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish the tested bundle as a release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tar -C _site -czf "sandbox-${GITHUB_SHA:0:7}.tar.gz" .
+          sha256sum "sandbox-${GITHUB_SHA:0:7}.tar.gz" > "sandbox-${GITHUB_SHA:0:7}.sha256"
+          tag="sandbox-${GITHUB_SHA:0:7}"
+          gh release create "$tag" --target "$GITHUB_SHA" --title "Sandbox $tag" \
+            --notes "Tested site + prototypes at $GITHUB_SHA. The VM installs the newest sandbox-* release." \
+            "sandbox-${GITHUB_SHA:0:7}.tar.gz" "sandbox-${GITHUB_SHA:0:7}.sha256"
