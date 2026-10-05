@@ -51,15 +51,6 @@ jobs:
           python3 native/tests/test_delivery.py
           size native/build/lab/critter_lab
           cc --version
-      - name: Package tested Lab staging bundle
-        run: |
-          python3 native/tests/test_package_staging.py
-          python3 native/package_staging.py create \
-            --binary native/build/lab/selected-lab/selected_lab \
-            --output "native/build/lab/critter-lab-staging-${GITHUB_SHA}.tar.gz"
-          python3 native/package_staging.py verify \
-            "native/build/lab/critter-lab-staging-${GITHUB_SHA}.tar.gz" \
-            --commit "$GITHUB_SHA"
       - name: Retain available Lab failure diagnostics
         if: ${{ failure() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

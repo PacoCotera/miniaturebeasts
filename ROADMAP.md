@@ -158,9 +158,9 @@ The direction for the site:
   academic.
 - **Open source:** made visible.
 
-1. **Now:** replace the old site with a short, honest page. It explains what the
-   project is and that it's in development, shows Pip in Miniature Lives, and
-   links the repository.
+1. **Now:** a short, honest page with Pip, a link to the repository, and the
+   sandbox: every rough playable in `prototypes/` is published automatically at
+   miniaturebeasts.com/sandbox/ by CI on each push to main, with a build stamp.
 2. **After phase 2:** a real pitch built around the actual world and creatures,
    with the phase 1 or 3 playable as an embedded demo.
 3. **Later:** builder documentation, devlog and kit sign-up.

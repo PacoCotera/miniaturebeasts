@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Miniature Beasts</title>
+<meta name="description" content="A creature game, a genetics toy and a small family of handheld devices. In development.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600&display=swap">
+<style>
+  /* Layout: one column, creature first, then what it is, then the sandbox. */
+  :root{
+    --bg:#f3efe6; --fg:#2b2a26; --muted:#6b6760; --line:#d9d3c6;
+    --accent:#e26a2c; --card:#fbf9f4;
+    --display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+    --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){ :root{ --bg:#1d1c1a; --fg:#ece7dc; --muted:#a8a296; --line:#3a3833; --card:#262521; color-scheme:dark } }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.55;padding-block:32px;padding-inline:16px}
+  main{max-width:720px;margin:0 auto;display:grid;gap:36px}
+  h1,h2{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0}
+  h1{font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.05}
+  h2{font-size:1.35rem}
+  p{margin:0;max-width:62ch}
+  .lead{font-size:1.15rem}
+  .pip{display:grid;gap:14px;justify-items:center;text-align:center}
+  .pip img{width:min(100%,560px);height:auto;border-radius:14px}
+  .pip small{color:var(--muted)}
+  section{display:grid;gap:12px}
+  .status{border-left:4px solid var(--accent);padding-left:14px;color:var(--muted)}
+  .sandbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:10px}
+  .sandbox a.play{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-family:var(--display);font-weight:600;padding:10px 18px;border-radius:999px}
+  .sandbox a.play:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
+  a{color:var(--accent)}
+  footer{color:var(--muted);font-size:.9rem;display:flex;flex-wrap:wrap;gap:8px 20px;border-top:1px solid var(--line);padding-top:18px}
+  ul{margin:0;padding-left:1.2em}
+</style>
+</head>
+<body>
+<main>
+  <section class="pip">
+    <img src="pip.png" alt="Pip, a small rounded creature with a leaf crown, plain and with pale markings, as shown on the Companion and the Station screens." width="1225" height="1782">
+    <small>Pip, the first mibi, in the Miniature Lives look.</small>
+  </section>
+
+  <section>
+    <h1>Miniature Beasts</h1>
+    <p class="lead">A creature game, a genetics toy and a small family of handheld devices. You explore with a portable Companion, bring samples home to a Station, learn what their inherited traits can do, create a mibi and raise families within each species.</p>
+    <p class="status">In development. The open-map exploration, the creature roster and the physical kit are being designed in the open. Nothing here is finished.</p>
+  </section>
+
+  <section class="sandbox">
+    <h2>Sandbox</h2>
+    <p>Rough playables, straight from the repository. Tokens instead of art; rules first.</p>
+    <p><a class="play" href="sandbox/exploration/">Play the exploration field test</a></p>
+    <p><small id="build">build pending</small></p>
+  </section>
+
+  <section>
+    <h2>How it is made</h2>
+    <ul>
+      <li><a href="https://github.com/PacoCotera/miniaturebeasts">Source, design and plan on GitHub</a>. Software is AGPL-3.0, hardware CERN-OHL-S, documentation and art CC BY-SA.</li>
+      <li>The <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/game.md">game design</a> says what is decided and what is still open.</li>
+      <li>The <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/ROADMAP.md">roadmap</a> says what comes next.</li>
+    </ul>
+  </section>
+
+  <footer><span>A Dirty Pawz Press project</span><span>Mexico City</span></footer>
+</main>
+<script>
+  fetch('build.json').then(r=>r.json()).then(b=>{
+    const t=new Date(b.built).toLocaleString('en-GB',{timeZone:'America/Mexico_City',hour12:false,day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('build').textContent='build '+b.short+' · '+t;
+  }).catch(()=>{document.getElementById('build').textContent='local build'});
+</script>
+</body>
+</html>
