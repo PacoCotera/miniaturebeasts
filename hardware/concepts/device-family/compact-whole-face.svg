@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="270mm" height="313mm" viewBox="0 0 270 313"><rect width="100%" height="100%" fill="#f2ecdf"/>
+<text x="15" y="10" font-size="6" font-family="Segoe UI,sans-serif" fill="#30362f">Compact Station · whole-face scale study</text>
+<text x="15" y="18" font-size="3.8" font-family="Segoe UI,sans-serif" fill="#30362f">One revision · Inspect removed · case and internal fit remain open</text>
+<rect x="20" y="32" width="215" height="230" rx="7" fill="#d9cfb9" stroke="#444c40" stroke-width="0.5"/>
+<path d="M20 27 L235 27" stroke="#6d7567" stroke-width="0.4" fill="none"/>
+<path d="M20 25 L20 29" stroke="#6d7567" stroke-width="0.4" fill="none"/>
+<path d="M235 25 L235 29" stroke="#6d7567" stroke-width="0.4" fill="none"/>
+<text x="106" y="25" font-size="4" font-family="Segoe UI,sans-serif" fill="#30362f">215 mm</text>
+<path d="M241 32 L241 262" stroke="#6d7567" stroke-width="0.4" fill="none"/>
+<path d="M239 32 L243 32" stroke="#6d7567" stroke-width="0.4" fill="none"/>
+<path d="M239 262 L243 262" stroke="#6d7567" stroke-width="0.4" fill="none"/>
+<text x="245" y="140" font-size="4" font-family="Segoe UI,sans-serif" fill="#30362f">230</text>
+<text x="245" y="147" font-size="4" font-family="Segoe UI,sans-serif" fill="#30362f">mm</text>
+<rect x="45.05" y="42" width="164.9" height="124.27" rx="1" fill="#a9aea2" stroke="#6e786b" stroke-width="0.5" stroke-dasharray="2 2"/>
+<rect x="45.05" y="50.5" width="164.9" height="106.96" rx="1" fill="#282f2a" stroke="#4d5849" stroke-width="0.5"/>
+<text x="75" y="83" font-size="6" font-family="Segoe UI,sans-serif" fill="#eee9dc">H DISPLAY GLASS</text>
+<text x="74" y="97" font-size="5" font-family="Segoe UI,sans-serif" fill="#b8c8b9">164.90 × 106.96 mm</text>
+<text x="63" y="116" font-size="3.5" font-family="Segoe UI,sans-serif" fill="#b8c8b9">Active pixel aperture not established here</text>
+<text x="59" y="132" font-size="3.5" font-family="Segoe UI,sans-serif" fill="#b8c8b9">No game pixels stretched over the board</text>
+<text x="59" y="163" font-size="3.5" font-family="Segoe UI,sans-serif" fill="#30362f">Module maximum outline: 164.90 × 124.27 mm</text>
+<rect x="32" y="190" width="20" height="20" rx="3" fill="#ae593c" stroke="#686e61" stroke-width="0.5"/>
+<text x="37" y="203" font-size="5" font-family="Segoe UI,sans-serif" fill="#fff">R</text>
+<rect x="58" y="190" width="20" height="20" rx="3" fill="#55768e" stroke="#686e61" stroke-width="0.5"/>
+<text x="63" y="203" font-size="5" font-family="Segoe UI,sans-serif" fill="#fff">L</text>
+<rect x="32" y="216" width="20" height="20" rx="3" fill="#6f8758" stroke="#686e61" stroke-width="0.5"/>
+<text x="37" y="229" font-size="5" font-family="Segoe UI,sans-serif" fill="#fff">E*</text>
+<rect x="58" y="216" width="20" height="20" rx="3" fill="#866b91" stroke="#686e61" stroke-width="0.5"/>
+<text x="63" y="229" font-size="5" font-family="Segoe UI,sans-serif" fill="#fff">I*</text>
+<rect x="103.33333333333333" y="197.0" width="13.333333333333334" height="40" rx="2" fill="#323930" stroke="#323930" stroke-width="0.5"/>
+<rect x="90.0" y="210.33333333333334" width="40" height="13.333333333333334" rx="2" fill="#323930" stroke="#323930" stroke-width="0.5"/>
+<text x="108" y="206" font-size="5" font-family="Segoe UI,sans-serif" fill="#fff">↑</text>
+<text x="95" y="219" font-size="5" font-family="Segoe UI,sans-serif" fill="#fff">←</text>
+<text x="121" y="219" font-size="5" font-family="Segoe UI,sans-serif" fill="#fff">→</text>
+<text x="108" y="232" font-size="5" font-family="Segoe UI,sans-serif" fill="#fff">↓</text>
+<text x="95" y="243" font-size="3.6" font-family="Segoe UI,sans-serif" fill="#30362f">Navigate</text>
+<circle cx="148" cy="239" r="12" fill="#323930" stroke="#5a6254" stroke-width="0.7"/>
+<path d="M154 239 L142 239" stroke="#fff" stroke-width="0.4" fill="none"/>
+<path d="M142 239 L147 234" stroke="#fff" stroke-width="0.4" fill="none"/>
+<path d="M142 239 L147 244" stroke="#fff" stroke-width="0.4" fill="none"/>
+<text x="138" y="257" font-size="3.6" font-family="Segoe UI,sans-serif" fill="#30362f">Cancel</text>
+<circle cx="178" cy="239" r="12" fill="#323930" stroke="#5a6254" stroke-width="0.7"/>
+<path d="M172 239 L177 244" stroke="#fff" stroke-width="0.4" fill="none"/>
+<path d="M177 244 L185 233" stroke="#fff" stroke-width="0.4" fill="none"/>
+<text x="168" y="257" font-size="3.6" font-family="Segoe UI,sans-serif" fill="#30362f">Confirm</text>
+<circle cx="207" cy="206" r="18" fill="#323930" stroke="#d98235" stroke-width="0.7"/>
+<path d="M207 191 L207 198" stroke="#e9983e" stroke-width="0.4" fill="none"/>
+<text x="199" y="229" font-size="4" font-family="Segoe UI,sans-serif" fill="#30362f">Zoom</text>
+<text x="15" y="273" font-size="3.6" font-family="Segoe UI,sans-serif" fill="#30362f">R Research · L Library · E*/I* tentative Expedition / Inventory</text>
+<text x="15" y="281" font-size="3.6" font-family="Segoe UI,sans-serif" fill="#30362f">Mock targets: cross 40 mm · action caps Ø24 · keys 20 at 26 pitch · Zoom Ø36</text>
+<text x="15" y="289" font-size="3.6" font-family="Segoe UI,sans-serif" fill="#30362f">Same scale throughout. Flat face, not projected footprint or enclosure volume.</text>
+<path d="M15 299 L115 299" stroke="#6d7567" stroke-width="0.4" fill="none"/>
+<path d="M15 297 L15 301" stroke="#6d7567" stroke-width="0.4" fill="none"/>
+<path d="M115 297 L115 301" stroke="#6d7567" stroke-width="0.4" fill="none"/>
+<text x="122" y="301" font-size="3.5" font-family="Segoe UI,sans-serif" fill="#30362f">100 mm · SVG only at 100%; PNG preview</text>
+</svg>

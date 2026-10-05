@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300mm" height="201mm" viewBox="0 0 300 201">
+<rect width="100%" height="100%" fill="#f5efe2"/>
+<text x="10" y="9" font-family="Segoe UI, sans-serif" font-size="6" fill="#30352e">A · Central working cluster</text>
+<text x="10" y="17" font-family="Segoe UI, sans-serif" font-size="4" fill="#30352e">Flat control surface 280 × 125 mm · mock-up targets, not enclosure</text>
+<rect x="10" y="28" width="280" height="125" rx="2" fill="#d9cfb7" stroke="#575d51" stroke-width="0.5"/>
+<text x="13" y="34" font-family="Segoe UI, sans-serif" font-size="3.4" fill="#30352e">REAR / screen beyond this edge</text>
+<rect x="22" y="58" width="24" height="24" rx="2" fill="#ad573a" stroke="#575d51" stroke-width="0.5"/>
+<text x="28" y="72.0" font-family="Segoe UI, sans-serif" font-size="5" fill="#fff">R</text>
+<rect x="52" y="58" width="24" height="24" rx="2" fill="#55718a" stroke="#575d51" stroke-width="0.5"/>
+<text x="58" y="72.0" font-family="Segoe UI, sans-serif" font-size="5" fill="#fff">L</text>
+<rect x="22" y="88" width="24" height="24" rx="2" fill="#6d8458" stroke="#575d51" stroke-width="0.5"/>
+<text x="28" y="102.0" font-family="Segoe UI, sans-serif" font-size="5" fill="#fff">E*</text>
+<rect x="52" y="88" width="24" height="24" rx="2" fill="#866797" stroke="#575d51" stroke-width="0.5"/>
+<text x="58" y="102.0" font-family="Segoe UI, sans-serif" font-size="5" fill="#fff">I*</text>
+<rect x="106.66666666666667" y="67.0" width="16.666666666666668" height="50" rx="2" fill="#333830" stroke="#575d51" stroke-width="0.5"/>
+<rect x="90.0" y="83.66666666666667" width="50" height="16.666666666666668" rx="2" fill="#333830" stroke="#575d51" stroke-width="0.5"/>
+<text x="113" y="77.33333333333333" font-family="Segoe UI, sans-serif" font-size="6" fill="#fff">↑</text>
+<text x="96.33333333333333" y="94" font-family="Segoe UI, sans-serif" font-size="6" fill="#fff">←</text>
+<text x="129.66666666666666" y="94" font-family="Segoe UI, sans-serif" font-size="6" fill="#fff">→</text>
+<text x="113" y="110.66666666666667" font-family="Segoe UI, sans-serif" font-size="6" fill="#fff">↓</text>
+<circle cx="161" cy="116" r="14.0" fill="#343a32" stroke="#575d51" stroke-width="0.5"/>
+<text x="147.0" y="136.0" font-family="Segoe UI, sans-serif" font-size="3.7" fill="#30352e">Cancel</text>
+<circle cx="197" cy="116" r="14.0" fill="#343a32" stroke="#575d51" stroke-width="0.5"/>
+<text x="183.0" y="136.0" font-family="Segoe UI, sans-serif" font-size="3.7" fill="#30352e">Confirm</text>
+<circle cx="179" cy="77" r="10.0" fill="#343a32" stroke="#575d51" stroke-width="0.5"/>
+<text x="169.0" y="93.0" font-family="Segoe UI, sans-serif" font-size="3.7" fill="#30352e">Inspect</text>
+<circle cx="249" cy="93" r="32.0" fill="none" stroke="#a96734" stroke-width="0.5" stroke-dasharray="2 2"/>
+<circle cx="249" cy="93" r="22.5" fill="#343a32" stroke="#d87e2f" stroke-width="0.5"/>
+<path d="M249 72.5 L249 78.5" stroke="#ef9a39" stroke-width="0.5" fill="none"/>
+<text x="237" y="131.0" font-family="Segoe UI, sans-serif" font-size="4" fill="#30352e">Zoom</text>
+<path d="M115 92 L197 116" stroke="#467d97" stroke-width="0.5" fill="none" stroke-dasharray="2 2"/>
+<path d="M115 92 L249 93" stroke="#467d97" stroke-width="0.5" fill="none" stroke-dasharray="2 2"/>
+<text x="13" y="162" font-family="Segoe UI, sans-serif" font-size="3.7" fill="#30352e">Cross → Confirm 85.4 mm; Cross → Zoom 134.0 mm</text>
+<text x="13" y="148" font-family="Segoe UI, sans-serif" font-size="3.5" fill="#30352e">FRONT · output access / internal printer volume UNALLOCATED</text>
+<text x="10" y="170" font-family="Segoe UI, sans-serif" font-size="3.8" fill="#30352e">Cross span 50; primary Ø28; Inspect Ø20; Zoom Ø45 mm</text>
+<text x="10" y="177" font-family="Segoe UI, sans-serif" font-size="3.6" fill="#30352e">Workspace 24 mm at 30 mm pitch; dashed wheel sweep Ø64 = hypothesis</text>
+<path d="M10 186 L110 186" stroke="#5d6958" stroke-width="0.5" fill="none"/>
+<path d="M10 184 L10 188" stroke="#5d6958" stroke-width="0.5" fill="none"/>
+<path d="M110 184 L110 188" stroke="#5d6958" stroke-width="0.5" fill="none"/>
+<text x="117" y="187" font-family="Segoe UI, sans-serif" font-size="3.6" fill="#30352e">SVG only: 100 mm · print 100%; PNG not to print scale</text>
+</svg>

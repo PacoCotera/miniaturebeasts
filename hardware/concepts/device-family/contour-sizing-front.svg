@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="751.1811023622048" height="850.3937007874017" preserveAspectRatio="xMinYMin meet" viewBox="0 0 751 850" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="751.1811023622048" height="850.3937007874017"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-850)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0.0" y="0.0" width="751.1811023622048" height="850.3937007874017" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="42.51968503937008" y="810.7086614173229" style="font-family: Helvetica; font-size: 17.007874015748033px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,1621) scale(1,-1)">CONTOUR / Front sizing study</text>
+			<text x="42.51968503937008" y="785.1968503937009" style="font-family: Helvetica; font-size: 10.20472440944882px;fill: rgb(32%,38%,41%); stroke:none;" transform="translate(0,1570) scale(1,-1)">True-scale display outline; trial controls and shell. No game UI or viewing aperture implied.</text>
+			<text x="42.51968503937008" y="762.5196850393702" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(74%,40%,16%); stroke:none;" transform="translate(0,1525) scale(1,-1)">PAPER TRIAL 02 / All dimensions mm / Not a fabrication drawing</text>
+			<rect x="70.86614173228347" y="189.9212598425197" width="609.4488188976378" height="538.5826771653544" rx="34.01574803149607" ry="34.01574803149607" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(93%,90%,86%); fill-rule: evenodd;"/>
+			<path d="M 70.866142,742.677165 L 680.314961,742.677165 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<path d="M 70.866142,748.346457 L 70.866142,737.007874 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<path d="M 680.314961,748.346457 L 680.314961,737.007874 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<text x="297.6377952755906" y="748.3464566929134" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,1496) scale(1,-1)">215 trial body width</text>
+			<text x="76.53543307086615" y="170.07874015748033" style="font-family: Helvetica; font-size: 9.070866141732285px;fill: rgb(32%,38%,41%); stroke:none;" transform="translate(0,340) scale(1,-1)">190 trial body height / depth OPEN / guards, seams and fasteners not dimensioned</text>
+			<path d="M 42.519685,48.188976 L 325.984252,48.188976 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<path d="M 42.519685,56.692913 L 42.519685,39.685039 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<path d="M 325.984252,56.692913 L 325.984252,39.685039 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<text x="42.51968503937008" y="19.84251968503937" style="font-family: Helvetica; font-size: 9.921259842519685px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,39) scale(1,-1)">100 mm check bar - print Actual size / 100%, never Fit</text>
+			<rect x="141.8740157480315" y="325.2188976377953" width="467.43307086614175" height="352.26141732283475" style="stroke: rgb(14%,47%,58%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(84%,92%,93%); fill-rule: evenodd;"/>
+			<text x="184.25196850393704" y="589.6062992125985" style="font-family: Helvetica; font-size: 13.039370078740157px;fill: rgb(14%,47%,58%); stroke:none;" transform="translate(0,1179) scale(1,-1)">SELECTED DISPLAY MODULE</text>
+			<text x="238.11023622047247" y="561.2598425196851" style="font-family: Helvetica; font-size: 12.188976377952757px;fill: rgb(14%,47%,58%); stroke:none;" transform="translate(0,1122) scale(1,-1)">164.90 x 124.27</text>
+			<text x="181.4173228346457" y="527.244094488189" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(14%,47%,58%); stroke:none;" transform="translate(0,1054) scale(1,-1)">Plan envelope only - not active pixels</text>
+			<text x="181.4173228346457" y="501.732283464567" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(14%,47%,58%); stroke:none;" transform="translate(0,1003) scale(1,-1)">Rear height, connectors and mounting</text>
+			<text x="181.4173228346457" y="484.72440944881896" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(14%,47%,58%); stroke:none;" transform="translate(0,969) scale(1,-1)">still need revision-specific allocation.</text>
+			<text x="153.0708661417323" y="345.82677165354335" style="font-family: Helvetica; font-size: 7.653543307086616px;fill: rgb(32%,38%,41%); stroke:none;" transform="translate(0,691) scale(1,-1)">Source: Waveshare H Rev4.1 outline; see linked notes.</text>
+			<circle cx="141.73228346456693" cy="280.62992125984255" r="42.51968503937008" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(98%,97%,94%); fill-rule: evenodd;"/>
+			<text x="133.22834645669292" y="277.7952755905512" style="font-family: Helvetica; font-size: 8.503937007874017px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,555) scale(1,-1)">NAV</text>
+			<circle cx="252.28346456692915" cy="257.9527559055118" r="25.51181102362205" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(98%,97%,94%); fill-rule: evenodd;"/>
+			<text x="243.77952755905514" y="255.1181102362205" style="font-family: Helvetica; font-size: 8.503937007874017px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,510) scale(1,-1)">W1</text>
+			<circle cx="320.3149606299213" cy="257.9527559055118" r="25.51181102362205" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(98%,97%,94%); fill-rule: evenodd;"/>
+			<text x="311.8110236220473" y="255.1181102362205" style="font-family: Helvetica; font-size: 8.503937007874017px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,510) scale(1,-1)">W2</text>
+			<circle cx="388.3464566929134" cy="257.9527559055118" r="25.51181102362205" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(98%,97%,94%); fill-rule: evenodd;"/>
+			<text x="379.8425196850394" y="255.1181102362205" style="font-family: Helvetica; font-size: 8.503937007874017px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,510) scale(1,-1)">W3</text>
+			<circle cx="456.37795275590554" cy="257.9527559055118" r="25.51181102362205" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(98%,97%,94%); fill-rule: evenodd;"/>
+			<text x="447.8740157480315" y="255.1181102362205" style="font-family: Helvetica; font-size: 8.503937007874017px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,510) scale(1,-1)">W4</text>
+			<circle cx="552.7559055118111" cy="280.62992125984255" r="25.51181102362205" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(98%,97%,94%); fill-rule: evenodd;"/>
+			<text x="544.2519685039371" y="277.7952755905512" style="font-family: Helvetica; font-size: 8.503937007874017px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,555) scale(1,-1)">BACK</text>
+			<circle cx="623.6220472440946" cy="280.62992125984255" r="25.51181102362205" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(98%,97%,94%); fill-rule: evenodd;"/>
+			<text x="615.1181102362206" y="277.7952755905512" style="font-family: Helvetica; font-size: 8.503937007874017px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,555) scale(1,-1)">OK</text>
+			<path d="M 680.314961,473.385827 L 700.15748,473.385827 Z" style="stroke: rgb(74%,40%,16%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<path d="M 700.15748,473.385827 L 700.15748,320.314961 Z" style="stroke: rgb(74%,40%,16%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<text x="615.1181102362206" y="308.9763779527559" style="font-family: Helvetica; font-size: 7.086614173228347px;fill: rgb(74%,40%,16%); stroke:none;" transform="translate(0,617) scale(1,-1)">Side Zoom</text>
+			<text x="42.51968503937008" y="133.22834645669292" style="font-family: Helvetica; font-size: 9.921259842519685px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,266) scale(1,-1)">Filled blue = documented module outline. Other geometry = deliberate paper-test assumptions.</text>
+			<text x="42.51968503937008" y="110.55118110236222" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,221) scale(1,-1)">NAV 30 diameter footprint; other caps 18. Mechanisms, travel, grip and reach are unverified.</text>
+			<text x="42.51968503937008" y="87.87401574803151" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,175) scale(1,-1)">Four workspace keys are W1-W4 placeholders; no new destinations or control functions.</text>
+		</g>
+	</g>
+</svg>

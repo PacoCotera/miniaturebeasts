@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Matched Miniature Lives HiBit and richer concept assets; generated sources and explicitly extracted/resampled proofs, not authored native pixel masters.",
+  "tool": {
+    "name": "image_gen.imagegen",
+    "mode": "built-in",
+    "model": "Not exposed by tool"
+  },
+  "calls": [
+    {
+      "id": "hibit-pair",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept\nAsset type: matched transparent HiBit pixel-art character source pair for Critter Lab Miniature Lives, not an interface.\nCreate one 1536×1024 landscape RGBA PNG with genuinely transparent background. EXACTLY TWO isolated full-body creatures: plain saved Pip on the left and a separate hypothetical pale-marked comparison specimen on the right. No text.\n\nDESIGN AT LOW RESOLUTION FIRST: Each subject is intentionally designed on a logical 280×300 pixel grid, then uniformly displayed at exactly 2× logical scale within a 560×600 source region. Deliberate contemporary HiBit pixel art, NOT a detailed painting that is later pixelated. Crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek/belly/back volumes, restrained crisp highlights, three or four principal charcoal value masses. Shadow and contour clusters are intentional shape design. Smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur, smooth gradients or pixelated-poster filter. Cream eye rings and pale coat markings must remain stronger than lighting.\n\nSOURCE GEOMETRY: canvas split into two 768×1024 cells. Plain left cell, marked right cell. Center each full subject including leaf crown, feet and compact contact shadow in its own 560×600 footprint. Left target source box x104/y212/width560/height600; right target box x872/y212/width560/height600. Keep generous transparent margins and the central transparent gutter. Equal sizes, same baseline, no clipped crown/feet/shadow, no labels, scenery, frames, widgets, diagrams or ground plate.\n\nSHARED IDENTITY AND POSE: A friendly squat rounded quadruped critter with broad rounded dark charcoal body, short sturdy limbs, cream underside/belly, large orange eyes with warm cream rings, a tiny curved friendly mouth, and three softly modeled green leaflike crown lobes. Same three-quarter pose facing viewer-left, same gaze, exact matched anatomy, body proportions, head/body/crown shape, limb placement, cream belly and eye rings in BOTH subjects. A compact affectionate creature with gentle modeled volume. One soft upper-left light source; same value organization and small firm contact shadow beneath each. No scenery or decorative plants. Both crowns present, equal scale.\n\nONLY COAT DIFFERS: Left plain Pip has plain dark charcoal coat with absolutely no cream islands, bands, pale flecks or false marking-like highlights outside the cream belly and eye rings. Right hypothetical comparison is the exact same body/pose/face/crown/light, with a few unambiguous clean cream islands/bands across the dark visible side/flank; these pale markings are clearly separate from belly and eye rings. Right is a different hypothetical specimen, not a child and not a changed saved Pip. No growth difference, added horns/tails, changed pose or altered expression. No additional creatures.\n\nStyle identity reference: design/visual-directions/02-miniature-lives.png supplies rounded tactile personality; its rich landscape/photographic rendering is not requested here. Final art must have the strong clean pixel-cluster craft required for actual small Companion display. Transparent alpha is required; do not bake a checkerboard pattern, cream background, UI or identity words into the source.",
+      "transparent_background": true,
+      "imageInputs": [],
+      "result": {
+        "status": "success",
+        "artifact": "assets/hibit-pair-source.png",
+        "generatedSourceBasename": "exec-74cde221-699e-4964-b63e-520019688f08.png"
+      }
+    },
+    {
+      "id": "rich-pair-attempt",
+      "operation": "edit/style-transfer",
+      "prompt": "Use case: style-transfer\nAsset type: matched transparent richer Miniature Lives character source pair.\nImage 1 is the anatomy/pose/coat placement authority: the retained transparent HiBit pair. Image 2 is a tactile material reference only: the Miniature Lives concept board. Create the same two isolated full-body specimens as Image 1 in a richer smoothly modeled illustration treatment. Exactly 1536×1024 landscape RGBA canvas with genuinely transparent background. Keep two equal 768×1024 cells: plain Pip left, separate hypothetical marked comparison right.\n\nINVARIANTS FROM IMAGE 1: precisely preserve both silhouettes, broad squat quadruped body plan, three-quarter pose facing viewer-left, gaze, head/body proportions, limb positions, three-lobed green leaflike crown on BOTH specimens, orange eyes with cream rings, dark coat, cream belly/underside, matched scale and baseline, upper-left lighting direction. Preserve the exact right specimen cream islands/bands placement, separated from belly and eye rings. The left coat stays completely plain dark outside its cream belly and eye rings. Only coat differs between the two specimens. They are not a parent/child pair, and the marked creature is not a changed saved Pip. No extra individuals.\n\nCHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture. Preserve tactile warmth, expressive eyes and compact affectionate personality. Keep broad stable charcoal value masses; cream coat bands must remain unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter or added anatomy/detail suggesting new traits. Image 2 provides the soft modeled personality without its landscape, furniture, typography or UI.\n\nALPHA AND FRAMING: retain generous transparent margins, central gutter, full crown and feet; source subjects should occupy the same bounds as Image 1. Absolutely NO halo, ambient aura, colored glow, vignette, mist, or broad drop shadow around silhouettes/crown/leaves. Transparent pixels directly outside the silhouette except a small firm ground contact shadow under feet. No baked checkerboard, colored background, ground plate, scenery, frames, UI, text, labels, diagrams or controls. No zooming/reframing or changed pose. Keep source cell geometry and positioning aligned with Image 1.",
+      "transparent_background": true,
+      "imageInputs": [
+        {
+          "path": "design/miniature-lives-proof/assets/hibit-pair-source.png",
+          "role": "anatomy, pose, lighting, markings authority/edit target"
+        },
+        {
+          "path": "design/visual-directions/02-miniature-lives.png",
+          "role": "tactile material reference"
+        }
+      ],
+      "result": {
+        "status": "failed",
+        "httpStatus": 400,
+        "errorType": "image_generation_user_error",
+        "code": "moderation_blocked",
+        "stage": "output",
+        "categories": [
+          "other"
+        ],
+        "requestId": "bbbb1162-a156-4bae-a3d0-a8da53a2e6f8",
+        "imageReturned": false
+      }
+    },
+    {
+      "id": "rich-pair-recovery",
+      "operation": "edit/style-transfer",
+      "prompt": "Use case: style-transfer\nAsset type: matched transparent richer Miniature Lives character source pair.\nImage 1 is the anatomy/pose/coat placement authority: the retained transparent HiBit pair. Image 2 is a tactile material reference only: the Miniature Lives concept board. Create the same two isolated full-body specimens as Image 1 in a richer smoothly modeled illustration treatment. Exactly 1536×1024 landscape RGBA canvas with genuinely transparent background. Keep two equal 768×1024 cells: plain Pip left, separate hypothetical marked comparison right.\n\nINVARIANTS FROM IMAGE 1: precisely preserve both silhouettes, broad squat quadruped body plan, three-quarter pose facing viewer-left, gaze, head/body proportions, limb positions, three-lobed green leaflike crown on BOTH specimens, orange eyes with cream rings, dark coat, cream belly/underside, matched scale and baseline, upper-left lighting direction. Preserve the exact right specimen cream islands/bands placement, separated from belly and eye rings. The left coat stays completely plain dark outside its cream belly and eye rings. Only coat differs between the two specimens. They are not a parent/child pair, and the marked creature is not a changed saved Pip. No extra individuals.\n\nCHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture. Preserve tactile warmth, expressive eyes and compact affectionate personality. Keep broad stable charcoal value masses; cream coat bands must remain unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter or added anatomy/detail suggesting new traits. Image 2 provides the soft modeled personality without its landscape, furniture, typography or UI.\n\nALPHA AND FRAMING: retain generous transparent margins, central gutter, full crown and feet; source subjects should occupy the same bounds as Image 1. Absolutely NO halo, ambient aura, colored glow, vignette, mist, or broad drop shadow around silhouettes/crown/leaves. Transparent pixels directly outside the silhouette except a small firm ground contact shadow under feet. No baked checkerboard, colored background, ground plate, scenery, frames, UI, text, labels, diagrams or controls. No zooming/reframing or changed pose. Keep source cell geometry and positioning aligned with Image 1.",
+      "transparent_background": true,
+      "imageInputs": [
+        {
+          "path": "design/miniature-lives-proof/assets/hibit-pair-source.png",
+          "role": "anatomy, pose, lighting, markings authority/edit target"
+        },
+        {
+          "path": "design/visual-directions/02-miniature-lives.png",
+          "role": "tactile material reference"
+        }
+      ],
+      "result": {
+        "status": "success",
+        "artifact": "assets/rich-pair-source.png",
+        "generatedSourceBasename": "exec-29b939d7-2058-4eed-aa35-4283e2d2b062.png"
+      }
+    }
+  ],
+  "references": [
+    {
+      "path": "design/visual-directions/02-miniature-lives.png",
+      "sha256": "09563babe19eb0c39a427ca6bf466e51696a5e00afb0cd0b74db024722ecd070",
+      "role": "Retained tactile personality/material reference; not a device asset."
+    }
+  ]
+}

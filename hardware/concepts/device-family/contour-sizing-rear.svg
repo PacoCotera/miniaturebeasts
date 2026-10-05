@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="751.1811023622048" height="850.3937007874017" preserveAspectRatio="xMinYMin meet" viewBox="0 0 751 850" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="751.1811023622048" height="850.3937007874017"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-850)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0.0" y="0.0" width="751.1811023622048" height="850.3937007874017" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="42.51968503937008" y="810.7086614173229" style="font-family: Helvetica; font-size: 17.007874015748033px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,1621) scale(1,-1)">CONTOUR / Rear service reservations</text>
+			<text x="42.51968503937008" y="785.1968503937009" style="font-family: Helvetica; font-size: 10.20472440944882px;fill: rgb(32%,38%,41%); stroke:none;" transform="translate(0,1570) scale(1,-1)">Looking from the rear: X is mirrored. These are projections, not usable same-plane packing.</text>
+			<text x="42.51968503937008" y="762.5196850393702" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(74%,40%,16%); stroke:none;" transform="translate(0,1525) scale(1,-1)">PAPER TRIAL 02 / All dimensions mm / Not a fabrication drawing</text>
+			<rect x="70.86614173228347" y="189.9212598425197" width="609.4488188976378" height="538.5826771653544" rx="34.01574803149607" ry="34.01574803149607" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: rgb(93%,90%,86%); fill-rule: evenodd;"/>
+			<path d="M 70.866142,742.677165 L 680.314961,742.677165 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<path d="M 70.866142,748.346457 L 70.866142,737.007874 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<path d="M 680.314961,748.346457 L 680.314961,737.007874 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<text x="297.6377952755906" y="748.3464566929134" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,1496) scale(1,-1)">215 trial body width</text>
+			<text x="76.53543307086615" y="170.07874015748033" style="font-family: Helvetica; font-size: 9.070866141732285px;fill: rgb(32%,38%,41%); stroke:none;" transform="translate(0,340) scale(1,-1)">190 trial body height / depth OPEN / guards, seams and fasteners not dimensioned</text>
+			<path d="M 42.519685,48.188976 L 325.984252,48.188976 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<path d="M 42.519685,56.692913 L 42.519685,39.685039 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<path d="M 325.984252,56.692913 L 325.984252,39.685039 Z" style="stroke: rgb(14%,19%,22%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<text x="42.51968503937008" y="19.84251968503937" style="font-family: Helvetica; font-size: 9.921259842519685px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,39) scale(1,-1)">100 mm check bar - print Actual size / 100%, never Fit</text>
+			<rect x="113.38582677165356" y="232.44094488188978" width="524.4094488188977" height="453.54330708661416" rx="14.173228346456694" ry="14.173228346456694" style="stroke: rgb(74%,40%,16%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: none; fill-rule: evenodd; stroke-dasharray: 5.669291338582678, 4.251968503937008;"/>
+			<text x="124.7244094488189" y="694.4881889763781" style="font-family: Helvetica; font-size: 9.070866141732285px;fill: rgb(74%,40%,16%); stroke:none;" transform="translate(0,1388) scale(1,-1)">15 perimeter study allowance - provisional</text>
+			<rect x="141.87401574803147" y="325.2188976377953" width="467.4330708661418" height="352.26141732283475" style="stroke: rgb(14%,47%,58%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: none; fill-rule: evenodd; stroke-dasharray: 5.669291338582678, 4.251968503937008;"/>
+			<text x="187.08661417322836" y="598.1102362204725" style="font-family: Helvetica; font-size: 11.338582677165356px;fill: rgb(14%,47%,58%); stroke:none;" transform="translate(0,1196) scale(1,-1)">DISPLAY REAR PROJECTION</text>
+			<text x="192.75590551181105" y="572.5984251968505" style="font-family: Helvetica; font-size: 9.354330708661418px;fill: rgb(14%,47%,58%); stroke:none;" transform="translate(0,1145) scale(1,-1)">Do not count this as empty volume.</text>
+			<text x="189.9212598425197" y="521.5748031496064" style="font-family: Helvetica; font-size: 10.771653543307087px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,1043) scale(1,-1)">Electronics support / board allocation</text>
+			<text x="195.59055118110237" y="493.228346456693" style="font-family: Helvetica; font-size: 9.070866141732285px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,986) scale(1,-1)">OPEN until actual component heights,</text>
+			<text x="195.59055118110237" y="473.38582677165357" style="font-family: Helvetica; font-size: 9.070866141732285px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,946) scale(1,-1)">mounts and connector exits are known.</text>
+			<rect x="119.05511811023624" y="235.27559055118112" width="513.0708661417324" height="73.70078740157479" style="stroke: rgb(32%,38%,41%); stroke-linecap: butt; stroke-width: 1.1338582677165356; fill: none; fill-rule: evenodd; stroke-dasharray: 5.669291338582678, 4.251968503937008;"/>
+			<text x="161.5748031496063" y="277.7952755905512" style="font-family: Helvetica; font-size: 9.921259842519685px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,555) scale(1,-1)">CONTROL BACKS + HARNESS ROUTING</text>
+			<text x="170.07874015748033" y="255.1181102362205" style="font-family: Helvetica; font-size: 8.503937007874017px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,510) scale(1,-1)">Mechanism depth / wire bends / access OPEN</text>
+			<path d="M 70.866142,473.385827 L 51.023622,473.385827 Z" style="stroke: rgb(74%,40%,16%); stroke-linecap: butt; stroke-width: 1.1338582677165356;"/>
+			<text x="178.58267716535434" y="408.1889763779528" style="font-family: Helvetica; font-size: 8.503937007874017px;fill: rgb(74%,40%,16%); stroke:none;" transform="translate(0,816) scale(1,-1)">Side Zoom bracket OPEN</text>
+			<text x="42.51968503937008" y="138.8976377952756" style="font-family: Helvetica; font-size: 9.637795275590552px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,277) scale(1,-1)">185 x 160 dashed region is an allocation boundary, NOT a free PCB area or proven clearance.</text>
+			<text x="42.51968503937008" y="116.22047244094489" style="font-family: Helvetica; font-size: 9.637795275590552px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,232) scale(1,-1)">Open passive lid &gt; reach/disconnect harnesses &gt; remove support &gt; access front retainers.</text>
+			<text x="42.51968503937008" y="93.54330708661418" style="font-family: Helvetica; font-size: 9.637795275590552px;fill: rgb(14%,19%,22%); stroke:none;" transform="translate(0,187) scale(1,-1)">Board, energy, antenna, thermal, fastener and cable envelopes remain unallocated.</text>
+		</g>
+	</g>
+</svg>

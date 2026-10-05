@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-04",
+  "status": "Unselected visual concepts.",
+  "scope": "Three 2:3 portrait concept boards compare the same field/research/family story. Generated raster originals and targeted edits; not native-size UI, canonical creatures or physical display evidence.",
+  "reference": {
+    "path": "design/v1-pip/pip-carried.png",
+    "sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+    "use": "Identity traits only; original preserved."
+  },
+  "provenance": {
+    "tool": "image_gen.imagegen",
+    "mode": "built-in",
+    "model": "Not exposed by tool",
+    "calls": 5,
+    "prompts": "prompts.json",
+    "originalBytesRetained": true,
+    "imagePostprocessing": "None; generated and edited PNG bytes copied without raster editing."
+  },
+  "artifacts": [
+    {
+      "path": "01-living-field-folio.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2727593,
+      "sha256": "669fdae4c5b5aa6801a0e3961a01645e2b3dedc114e10b1eb6d447ff98203daf",
+      "promptId": "01-living-field-folio-correction",
+      "review": {
+        "inspection": "Actual full image inspected.",
+        "strength": "Expressive naturalist illustration and coat comparison.",
+        "limitations": [
+          "Lower heading substitutes a middle dot for the requested em dash.",
+          "48px safe-area instruction was not fully respected by bottom foliage."
+        ],
+        "disposition": "Unsupported research circles and floating family connector removed by targeted image edit."
+      }
+    },
+    {
+      "path": "02-miniature-lives.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2357720,
+      "sha256": "09563babe19eb0c39a427ca6bf466e51696a5e00afb0cd0b74db024722ecd070",
+      "promptId": "02-miniature-lives-correction",
+      "review": {
+        "inspection": "Actual full image inspected.",
+        "strength": "Tactile modeled forms, emotional presence and clear two-parent-to-child grouping.",
+        "limitations": [
+          "Dense environmental staging uses more background detail than the clean-space direction."
+        ],
+        "disposition": "Coat-to-movement bracket removed by targeted image edit."
+      }
+    },
+    {
+      "path": "03-graphic-ecology.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 3083096,
+      "sha256": "215c52b6e42a21770bcdcea01e4e77206a0ebb38274cdaea862a11bf31ecdc29",
+      "promptId": "03-graphic-ecology",
+      "review": {
+        "inspection": "Actual full image inspected.",
+        "strength": "Distinct flat linocut treatment, clear coat comparison and dashed possible-child connection.",
+        "limitations": [
+          "Generated additional Known heritage label; dashed connector describes movement knowledge as unknown.",
+          "Fine carved texture and type need deliberate adaptation for smaller displays.",
+          "Title begins within the requested 48px safe margin."
+        ],
+        "disposition": "Original generated board retained without correction."
+      }
+    }
+  ],
+  "verification": {
+    "dimensions": "Read from retained PNG files.",
+    "sha256": "Computed on retained files with Get-FileHash.",
+    "text": "Visual inspection only; minor separators noted, not a claim of perfect typography.",
+    "limits": "Concept inspection does not establish native UI legibility, comprehension, enjoyment, refresh behavior or physical hardware performance."
+  },
+  "originals": [
+    {
+      "path": "originals/01-living-field-folio.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2928299,
+      "sha256": "e05cd528b259a05f38f536191080be960cf2e086f863cfa79953eb4cf25dd6fe",
+      "promptId": "01-living-field-folio",
+      "disposition": "Preserved generated original before narrow semantic correction."
+    },
+    {
+      "path": "originals/02-miniature-lives.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2453311,
+      "sha256": "05d9d9b3810e0299abe3331289b6f4836ee54ff101e672c424fe2c53ec453230",
+      "promptId": "02-miniature-lives",
+      "disposition": "Preserved generated original before narrow semantic correction."
+    }
+  ]
+}

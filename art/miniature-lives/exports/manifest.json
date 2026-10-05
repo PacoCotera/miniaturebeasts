@@ -1,0 +1,55 @@
+{
+  "status": "Miniature Beasts static device proof; Miniature Lives appearance accepted, no runtime acceptance",
+  "devicePixels": "No stretching or resizing; screen images composed at 1x",
+  "typography": {
+    "requestedFamily": "DejaVu Sans",
+    "observedRendering": "Monospaced fallback appearance in the configured renderer",
+    "resolvedFamily": null,
+    "evidenceLimit": "Exact fallback family is unverified; no desired-family rendering claim"
+  },
+  "artInputs": [
+    {
+      "name": "companionPlain",
+      "file": "assets/hibit-plain-280x300.png",
+      "sha256": "e39a79b2ca0143ce830031e628a6b97ffff0432a51894cccd61ac6a1737fa324"
+    },
+    {
+      "name": "companionMarked",
+      "file": "assets/hibit-marked-280x300.png",
+      "sha256": "949ed8150d7232ca6491dfd89e338c18b760015789ed5bb3f2059e03814f391c"
+    },
+    {
+      "name": "labPlain",
+      "file": "assets/rich-plain-300x310.png",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "name": "labMarked",
+      "file": "assets/rich-marked-300x310.png",
+      "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+    }
+  ],
+  "exports": [
+    {
+      "name": "companion-resident",
+      "file": "companion-resident.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "fc7b893a09b5ede42fd0ac1a85d0d3ee3c5277a85ed3b261c66546dd401fee4d"
+    },
+    {
+      "name": "lab-known-comparison",
+      "file": "lab-known-comparison.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "d77667b8360b2bbc580fc6e49881af1eeeecdebe8a48f1b64557d7df854368f4"
+    },
+    {
+      "name": "device-comparison",
+      "file": "device-comparison.png",
+      "width": 1224,
+      "height": 1810,
+      "sha256": "d149b2f79f9bad2dd5fbf844fa457da7efc8805e494e19eecdbb0ac0a6a424fd"
+    }
+  ]
+}

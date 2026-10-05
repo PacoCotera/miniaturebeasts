@@ -1,0 +1,46 @@
+[
+  {
+    "file": "field-partner-concept.png",
+    "sha256": "88a7fbbb5b75b4645c716d4995e4fba28fa3a6da66e4303ce63c42ed621182f4",
+    "bytes": 2588451,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "provenance": "Owner-supplied concept/reference, 30 September 2026; original bytes retained",
+    "boundary": "Visual direction/reference only; not functional or canonical creature/hardware proof"
+  },
+  {
+    "file": "probe-study.png",
+    "sha256": "a17437d9199f4a2f796ec8d692a832f09a1901aab36a82990fd3828d7ba30b53",
+    "bytes": 498937,
+    "dimensions": [
+      450,
+      600
+    ],
+    "provenance": "Owner-supplied concept/reference, 30 September 2026; original bytes retained",
+    "boundary": "Visual direction/reference only; not functional or canonical creature/hardware proof"
+  },
+  {
+    "file": "cargo-study.png",
+    "sha256": "85fa42e509c92d8dd411d3e9824891a45cec0654098d205a190f39e88035fc79",
+    "bytes": 460829,
+    "dimensions": [
+      450,
+      600
+    ],
+    "provenance": "Owner-supplied concept/reference, 30 September 2026; original bytes retained",
+    "boundary": "Visual direction/reference only; not functional or canonical creature/hardware proof"
+  },
+  {
+    "file": "lab-arrival-study.png",
+    "sha256": "26a9fd2ad794c92f93a6af5afec48e48fc7434c0596404f9012297bd8571d2e1",
+    "bytes": 1003955,
+    "dimensions": [
+      1024,
+      600
+    ],
+    "provenance": "Owner-supplied concept/reference, 30 September 2026; original bytes retained",
+    "boundary": "Visual direction/reference only; not functional or canonical creature/hardware proof"
+  }
+]

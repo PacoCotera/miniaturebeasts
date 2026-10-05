@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "status": "Miniature Lives matched concept proof; final assets remain open.",
+  "sources": {
+    "tool": "image_gen.imagegen",
+    "mode": "built-in",
+    "model": "Not exposed by tool",
+    "successfulCalls": 2,
+    "failedCalls": 1,
+    "prompts": "prompts.json",
+    "originalBytes": "Both successful generated pair PNGs copied unchanged; individual crops and size derivatives are separate files.",
+    "sourceSize": [
+      1536,
+      1024
+    ],
+    "transparency": {
+      "format": "32-bit ARGB PNG",
+      "observations": "Both pair source corner pixel and central gutter pixel have alpha 0; silhouettes and soft contact shadows retain generated alpha.",
+      "processing": "No chroma removal, generated-mask replacement or guessed alpha."
+    }
+  },
+  "identity": {
+    "left": "Plain saved Pip PIP-001.",
+    "right": "Separate hypothetical marked comparison specimen; no saved identity, descendant or ownership implication.",
+    "shared": "Three-quarter quadruped body plan, pose, gaze, three-leaf crown, eye rings, orange eyes, cream underside and upper-left light.",
+    "difference": "Cream flank islands/bands on hypothetical specimen; saved Pip coat remains plain."
+  },
+  "derivation": {
+    "tool": "System.Drawing cropping and display-size resampling; no creative raster redraw.",
+    "plainCrop": {
+      "x": 16,
+      "y": 96,
+      "width": 736,
+      "height": 800
+    },
+    "markedCrop": {
+      "x": 784,
+      "y": 96,
+      "width": 736,
+      "height": 800
+    },
+    "cropMethod": "Explicit fixed rectangles from each retained pair; no auto-detection.",
+    "extractedSourceSize": [
+      736,
+      800
+    ],
+    "hibit": {
+      "targetCanvas": [
+        280,
+        300
+      ],
+      "drawRectangle": {
+        "x": 2,
+        "y": 0,
+        "width": 276,
+        "height": 300
+      },
+      "interpolation": "NearestNeighbor",
+      "pixelOffset": "Half",
+      "compositing": "SourceCopy",
+      "ground": "Transparent padding; cream ground supplied by composition.",
+      "intent": "Generated directly with low-resolution logical design and coherent pixel-cluster prompt; display derivative then resampled.",
+      "evidenceLimit": "Requested logical 280x300 at 2x geometry was not delivered exactly. Generated subjects were larger; the retained derivative is a generated/resampled pixel concept, not an authored native-grid master."
+    },
+    "rich": {
+      "targetCanvas": [
+        300,
+        310
+      ],
+      "drawRectangle": {
+        "x": 7,
+        "y": 0,
+        "width": 285,
+        "height": 310
+      },
+      "interpolation": "HighQualityBicubic",
+      "pixelOffset": "HighQuality",
+      "compositing": "SourceCopy",
+      "ground": "Transparent padding; cream ground supplied by composition.",
+      "evidenceLimit": "Source transformation closely matches pose and anatomy; it is a generated illustration, not exact geometric equality or a selected final asset."
+    },
+    "aspectRatio": "Containment preserves aspect ratio to integer output-pixel rounding.",
+    "internalCoatCrops": "Not included; partial-research portraits must use verified anatomy-free crops before use."
+  },
+  "artifacts": [
+    {
+      "path": "assets/hibit-marked-280x300.png",
+      "width": 280,
+      "height": 300,
+      "bytes": 115600,
+      "sha256": "949ed8150d7232ca6491dfd89e338c18b760015789ed5bb3f2059e03814f391c"
+    },
+    {
+      "path": "assets/hibit-marked-source.png",
+      "width": 736,
+      "height": 800,
+      "bytes": 928158,
+      "sha256": "543743669fd1227b904fb567517c07ccfc82dfff50311cd57051e50bfffe9aa3"
+    },
+    {
+      "path": "assets/hibit-pair-source.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1458223,
+      "sha256": "52f227af1e9f152243ba8489234069b6bf2715abb63a5783e1ea0cb13bd64f3a"
+    },
+    {
+      "path": "assets/hibit-plain-280x300.png",
+      "width": 280,
+      "height": 300,
+      "bytes": 112253,
+      "sha256": "e39a79b2ca0143ce830031e628a6b97ffff0432a51894cccd61ac6a1737fa324"
+    },
+    {
+      "path": "assets/hibit-plain-source.png",
+      "width": 736,
+      "height": 800,
+      "bytes": 907575,
+      "sha256": "998148d2fb412371e3554c5371af6d15827d939d1727a21b3cdd664190b47f1c"
+    },
+    {
+      "path": "assets/rich-marked-300x310.png",
+      "width": 300,
+      "height": 310,
+      "bytes": 141514,
+      "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+    },
+    {
+      "path": "assets/rich-marked-source.png",
+      "width": 736,
+      "height": 800,
+      "bytes": 1213844,
+      "sha256": "abb8c4ed7b2ea294d225c66dc47a1772f7733b183243c4fa74eb2a067e3362f1"
+    },
+    {
+      "path": "assets/rich-pair-source.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2005832,
+      "sha256": "70ab5a9883951420bf76c68725bae471fdd63a23e9bf5516fb9a58ad86a4dc5b"
+    },
+    {
+      "path": "assets/rich-plain-300x310.png",
+      "width": 300,
+      "height": 310,
+      "bytes": 139016,
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "path": "assets/rich-plain-source.png",
+      "width": 736,
+      "height": 800,
+      "bytes": 1197384,
+      "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+    }
+  ],
+  "inspection": {
+    "actualImages": "Both generated full pairs and all four display-footprint derivatives visually inspected.",
+    "observed": "Recognizable matched body/crown/eyes, rounded volume, plain dark coat and distinct pale flank marks. Crown and feet remain intact.",
+    "limitations": [
+      "Soft alpha aura remains in generated source perimeter; it is inconspicuous on the actual cream Companion preview.",
+      "HiBit edge/grid consistency remains a generated/resampled treatment; authored native pixel-master status is unproven.",
+      "High-detail material cannot establish physical display legibility, storage budget, rendering performance, refresh, power or enjoyment."
+    ],
+    "scope": "Static assets and device compositions only; no runtime features, renderer or hardware selection."
+  }
+}
