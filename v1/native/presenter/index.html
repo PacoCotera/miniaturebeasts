@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Miniature Beasts · Three-device simulator</title><link rel="stylesheet" href="/style.css"></head>
+<body><main>
+  <header>MINIATURE BEASTS / PLAYABLE V1 <span>Station + Companion + Dock · native device simulation</span></header>
+  <section class="sandbox-tools" aria-label="Sandbox administration">
+    <button id="reset-sandbox" type="button">Reset sandbox</button>
+    <span id="sandbox-status" role="status">Starts a fresh game across Station, Companion and Dock. Previous progress is backed up.</span>
+  </section>
+  <div class="device-family">
+  <section class="housing lab" aria-label="Simulated Raspberry Pi 4 Station console">
+    <div class="brand" aria-hidden="true">MINIATURE BEASTS</div>
+    <div class="screen"><img id="lab-frame" width="1024" height="600" alt="Native C Station frame"></div>
+    <div class="controls">
+      <div class="dpad" role="group" aria-label="Directional navigation">
+        <button id="lab-up" class="direction up" type="button" tabindex="-1" aria-label="Up">▲</button>
+        <button id="lab-left" class="direction left" type="button" tabindex="-1" aria-label="Left">◀</button>
+        <span class="dpad-center" aria-hidden="true"></span>
+        <button id="lab-right" class="direction right" type="button" tabindex="-1" aria-label="Right">▶</button>
+        <button id="lab-down" class="direction down" type="button" tabindex="-1" aria-label="Down">▼</button>
+      </div>
+      <div class="workspaces" role="group" aria-label="Station workspaces">
+        <div class="workspace"><button id="lab-critters" type="button" tabindex="-1" aria-label="Home" aria-pressed="false"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 15L16 4l13 11M7 13v15h7v-9h5v9h6V13"/></svg></button><span>Home</span></div>
+        <div class="workspace"><button id="lab-research" type="button" tabindex="-1" aria-label="Research" aria-pressed="false"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M18 4l10 8M21 6L7 23c-4 5 2 10 6 5L26 10M13 17l7 5"/></svg></button><span>Research</span></div>
+        <div class="workspace"><button id="lab-library" type="button" tabindex="-1" aria-label="Library" aria-pressed="false"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 8C12 4 6 5 3 6v21c4-2 9-2 13 1 4-3 9-3 13-1V6c-3-1-9-2-13 2v20"/></svg></button><span>Library</span></div>
+        <div class="workspace"><button id="lab-habitat" type="button" tabindex="-1" aria-label="Habitat" aria-pressed="false"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 24C2 11 16 11 26 4c1 13-3 26-17 21M5 29l16-17"/></svg></button><span>Habitat</span></div>
+      </div>
+      <div class="actions" role="group" aria-label="Station actions">
+        <div><button id="lab-back" type="button" tabindex="-1" aria-label="Back">←</button><span>Back</span></div>
+        <div><button id="lab-confirm" type="button" tabindex="-1" aria-label="Confirm">✓</button><span>Confirm</span></div>
+      </div>
+    </div>
+    <p id="lab-status" class="device-status" role="status">Connecting…</p>
+  </section>
+<section class="housing companion" aria-label="Simulated Companion"><div class="brand">MINIATURE BEASTS / COMPANION</div>
+<div class="screen"><img id="companion-frame" width="450" height="600" alt="Native C Companion screen"></div>
+<div class="controls"><div class="dpad" role="group" aria-label="Companion directions"><button id="companion-up" class="direction up" type="button" tabindex="-1" aria-label="Companion Up">▲</button><button id="companion-left" class="direction left" type="button" tabindex="-1" aria-label="Companion Left">◀</button><button id="companion-right" class="direction right" type="button" tabindex="-1" aria-label="Companion Right">▶</button><button id="companion-down" class="direction down" type="button" tabindex="-1" aria-label="Companion Down">▼</button><span class="dpad-center" aria-hidden="true"></span></div><div class="actions"><div><button id="companion-back" class="back-button" type="button" tabindex="-1" aria-label="Companion Back">←</button><span>Back</span></div><div><button id="companion-confirm" class="confirm-button" type="button" tabindex="-1" aria-label="Companion Confirm">✓</button><span>Confirm</span></div></div></div>
+<p id="companion-status" class="device-status" role="status">Connecting…</p></section><section class="housing dock" aria-label="Simulated Dock"><div class="dock-display"><div class="screen"><img id="dock-frame" width="792" height="272" alt="Native four-gray Dock screen"></div>
+<div class="dock-controls" role="group" aria-label="Dock navigation"><button id="dock-up" class="" type="button" tabindex="-1" aria-label="Dock Previous">◀</button><button id="dock-confirm" class="" type="button" tabindex="-1" aria-label="Dock OK">OK</button><button id="dock-down" class="" type="button" tabindex="-1" aria-label="Dock Next">▶</button></div><div class="brand">MINIATURE BEASTS / DOCK</div></div>
+<div class="printer" aria-label="Simulated printer module"><button id="dock-research" class="" type="button" tabindex="-1" aria-label="Dock Print">Print</button><button id="dock-critters" class="" type="button" tabindex="-1" aria-label="Dock Feed">Feed</button><div class="paper-slot" aria-hidden="true"></div><span>Dirty Pawz Press</span></div><p id="dock-status" class="device-status" role="status">Connecting…</p></section></div>
+<details class="simulation-tools" open><summary>Wireless simulation controls</summary><p>These switches simulate link availability, not device buttons. Gather on Companion; review and accept on Station.</p>
+<label><input id="companion-link" type="checkbox" checked> Companion ↔ Station</label><label><input id="dock-link" type="checkbox" checked> Dock ↔ shared world</label>
+<span id="link-status" role="status">Radio protocol not selected. No physical radios connected.</span></details>
+  <footer><span id="release">Development build: release metadata unavailable.</span> · <a href="https://github.com/PacoCotera/critter-lab/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" style="color:inherit">Deployment changelog</a><br>Station Pi 4 / 1024×600 · Companion ESP32-S3 reference / 450×600 · Dock ESP32-S3 reference / 792×272 four-gray.<br>Three logical devices in one native host process. Physical radio, charging and printer operation are unverified. Local save; provisional balance.</footer>
+</main><script type="module" src="/app.js"></script></body>
+</html>
+
+<!-- LVGL9.6.0 dependency notice for the accompanying native binary.
+MIT licence
+Copyright (c) 2025 LVGL Kft
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->

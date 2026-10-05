@@ -1,0 +1,42 @@
+[
+  {
+    "name": "explore",
+    "source": "../../design/reference-production/gemini-overview-family/exports/explore.png",
+    "width": 136,
+    "height": 144,
+    "channels": 4,
+    "sourceSha256": "e32a33dc7d0e4fc4c0524d0a12688fd54739ee2fd6af1859486f25a457089011",
+    "rgbaSha256": "a068599a51ea3e22be38f2f845a5c838d3306f8f7a23655d30dac7d4b0c5e274",
+    "transform": "decode only; native renderer uses 1:1 RGBA pixels"
+  },
+  {
+    "name": "research",
+    "source": "../../design/reference-production/gemini-overview-family/exports/research.png",
+    "width": 136,
+    "height": 144,
+    "channels": 4,
+    "sourceSha256": "5dad51882ebffdae4689fe18f015ba0b8f2fc1ea6b61feaa049cd238c08ee6e6",
+    "rgbaSha256": "c0c81826e28dc2dc1df9e4710fdfe293eb7f5c99a32579efa96ccdbd52433629",
+    "transform": "decode only; native renderer uses 1:1 RGBA pixels"
+  },
+  {
+    "name": "incubator",
+    "source": "../../design/reference-production/gemini-overview-family/exports/incubator.png",
+    "width": 136,
+    "height": 144,
+    "channels": 4,
+    "sourceSha256": "b3d979e5bbbbec97ab631c1b2619f079f653354b14efd7ee11c636be1110860a",
+    "rgbaSha256": "94a61902ea079b00a434086c196055ff37034365205b79a8a0fa33e2bb4e2fd0",
+    "transform": "decode only; native renderer uses 1:1 RGBA pixels"
+  },
+  {
+    "name": "habitat",
+    "source": "../../design/reference-production/gemini-overview-family/exports/habitat.png",
+    "width": 136,
+    "height": 144,
+    "channels": 4,
+    "sourceSha256": "93fcbb614eb6400f17a3ee101ea4034010a70dc423ce1374bc58f34f0f92bcd5",
+    "rgbaSha256": "b713a0cd93ea7eea2eedb7f689a122f2c08c49695ad493b9b733776b08869eef",
+    "transform": "decode only; native renderer uses 1:1 RGBA pixels"
+  }
+]

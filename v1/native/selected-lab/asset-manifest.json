@@ -1,0 +1,87 @@
+{
+  "status": "Exact decoded source-preview RGB, not production sprite masters",
+  "assets": [
+    {
+      "name": "data",
+      "source": "../../design/game-art-proposals/37-lab-extracted-kit/data.png",
+      "sourceSha256": "38404e2f318296bf236849697ac57ecd879683d90f070e315cd13ec87116ef92",
+      "rectangle": null,
+      "width": 37,
+      "height": 48,
+      "channels": 3,
+      "decodedRgbSha256": "003c1e4914ac9f800b66882b468a146297d1de4407c1f8f2d492da07f9d3972b",
+      "process": "Decode/extract only, no resampling or transparency removal; source is opaque"
+    },
+    {
+      "name": "energy",
+      "source": "../../design/game-art-proposals/37-lab-extracted-kit/energy.png",
+      "sourceSha256": "a5f256a9fc0b33631f3a0551f843acd53f41a1e7135eaa5ed41e8f65cdfd6039",
+      "rectangle": null,
+      "width": 43,
+      "height": 51,
+      "channels": 3,
+      "decodedRgbSha256": "353f65a918a86e51143e9221e4308708a10f056185d3b18f44b387e97c35988a",
+      "process": "Decode/extract only, no resampling or transparency removal; source is opaque"
+    },
+    {
+      "name": "essence",
+      "source": "../../design/game-art-proposals/37-lab-extracted-kit/essence.png",
+      "sourceSha256": "5e0fb4a2577e8b48302a7f5d76c029ef836bed794c6dd11863a0986c2243b80c",
+      "rectangle": null,
+      "width": 47,
+      "height": 49,
+      "channels": 3,
+      "decodedRgbSha256": "6ab2f49023ee328e8011d59a36afc1eaf587e8ce5c0880c9e49a8ae488eaa501",
+      "process": "Decode/extract only, no resampling or transparency removal; source is opaque"
+    },
+    {
+      "name": "sample-capsule",
+      "source": "../../design/game-art-proposals/37-lab-extracted-kit/sample-capsule.png",
+      "sourceSha256": "7136c85a5a3850828c68db8eb036a9560b14d847db45ebfbff436bacb18907fb",
+      "rectangle": null,
+      "width": 54,
+      "height": 54,
+      "channels": 3,
+      "decodedRgbSha256": "ee5e3504e8baaef1d87f656c1fef65d21e86ad1aced3b0a42835bcc72de8c368",
+      "process": "Decode/extract only, no resampling or transparency removal; source is opaque"
+    },
+    {
+      "name": "crown-reference",
+      "source": "../../design/game-art-proposals/37-lab-extracted-kit/crown-reference.png",
+      "sourceSha256": "a7ea1f649f46bde1eb00a637f73687ee60a8943549e995bcadb524773858691b",
+      "rectangle": null,
+      "width": 105,
+      "height": 89,
+      "channels": 3,
+      "decodedRgbSha256": "65f499ba134caa4e2fa6daca94937a8f559480470c26695326d920290764a3d6",
+      "process": "Decode/extract only, no resampling or transparency removal; source is opaque"
+    },
+    {
+      "name": "eye-ring-reference",
+      "source": "../../design/game-art-proposals/37-lab-extracted-kit/eye-ring-reference.png",
+      "sourceSha256": "5b87851d71d3ea4b10fdf9349a0533a0b46b6218d0a9c285e2380c7a25fa64dc",
+      "rectangle": null,
+      "width": 74,
+      "height": 67,
+      "channels": 3,
+      "decodedRgbSha256": "ba9712ccfefa60b96519908655784e6787338164fe164644d5f587933b60eaa7",
+      "process": "Decode/extract only, no resampling or transparency removal; source is opaque"
+    },
+    {
+      "name": "unknown-reference",
+      "source": "../../design/game-art-proposals/35-vault-composition/18-c-refined.png",
+      "sourceSha256": "889745d74ae7bcd7c80ef5737258b3fdf0357423c1d2362a3630925ca07a632b",
+      "rectangle": {
+        "left": 548,
+        "top": 249,
+        "width": 185,
+        "height": 119
+      },
+      "width": 185,
+      "height": 119,
+      "channels": 3,
+      "decodedRgbSha256": "b12ef1b1a0b5a49d56e8dba65c9396e7ab84a3def77a37876e0cbd67ddfe5824",
+      "process": "Decode/extract only, no resampling or transparency removal; source is opaque"
+    }
+  ]
+}

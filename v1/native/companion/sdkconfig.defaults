@@ -1,0 +1,3 @@
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y
+# PSRAM, panel, DMA and board-specific drivers are deliberately not configured.
