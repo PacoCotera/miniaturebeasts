@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "critter-art-template/1",
+  "id": "genome-first-hibit-calibration",
+  "version": 4,
+  "status": "reusable-prompt-contract-awaiting-calibration",
+  "outputKind": "concept-still-calibration",
+  "limits": {
+    "maxSubjectPacketBytes": 65536,
+    "maxBindingCharacters": 8192,
+    "maxPromptCharacters": 32768,
+    "overflowPolicy": "Reject the projection with the affected section; never silently truncate anatomy, exclusions, source IDs or retained realization."
+  },
+  "inputContract": {
+    "required": [
+      "schemaVersion",
+      "contentId",
+      "contentVersion",
+      "ruleVersion",
+      "recordId",
+      "inputDigest",
+      "resultDigest",
+      "result"
+    ],
+    "resultRequired": [
+      "status",
+      "graph",
+      "facts",
+      "motion",
+      "realization",
+      "limitations"
+    ],
+    "acceptedStatus": "resolved",
+    "projectionSources": [
+      "result.graph.nodes",
+      "result.graph.edges",
+      "result.graph.surfaces",
+      "result.facts",
+      "result.motion",
+      "result.realization",
+      "result.limitations"
+    ],
+    "taxonomyPolicy": "Derived classification may caption a result; it cannot supply anatomy, inherited copies, material, palette or motion.",
+    "missingValuePolicy": "Do not invent missing construction or capability values. Required projection sections report not modeled when unavailable; unresolved or rejected results cannot be sent for generation.",
+    "facialPolicy": "Eyes, mouths, noses, faces and expressions appear only when constructed nodes/surfaces explicitly provide them. Missing contributors do not establish absence of sensing, but cannot authorize facial artwork."
+  },
+  "styleReferences": [
+    "../../design/game-art-proposals/35-vault-composition/18-c-refined.png",
+    "../../design/references/genome-field/01-genome-field-v1.png"
+  ],
+  "referencePolicy": "C18 supplies crisp saturated pixel craft and optical density. Genome-field supplies clustered inspectable information lineage. Neither reference supplies subject anatomy, genotypes, resources, ability claims or a body preset.",
+  "bindings": [
+    "resultIdentity",
+    "contextFacts",
+    "anatomyFacts",
+    "proportionFacts",
+    "surfaceFacts",
+    "movementFacts",
+    "hardExclusions",
+    "factTrace"
+  ],
+  "promptSections": [
+    {
+      "id": "pixel-craft",
+      "text": "Draw one whole creature as a polished pixel-art game illustration. Use deliberate contiguous pixel clusters, controlled stair-step contours and a few coherent form-following shade and highlight groups. Selective crisp material edges and local optical relief make the described surfaces tactile. Keep the expressed pigments and their region boundaries recognizable. Frame the quiet whole-body pose comfortably on a simple background, with every appendage readable. Where modeled eyes exist, make them the character focus."
+    },
+    {
+      "id": "phenotype",
+      "text": "{{phenotypeDescription}}"
+    }
+  ],
+  "calibrationSheet": {
+    "subjectCount": 3,
+    "selectionPolicy": "Use three contrasting retained resolved simulation packets from the same engine. Select by actual generated topology, surface and eligible motion, not class buttons. Include ground, air and water outputs only when their packets support those modeled motions.",
+    "composition": "One compact landscape sheet with three equal columns. Each column shows the same subject in a clear neutral construction view and, only when supported, one declared action pose. Keep ample separation and coherent apparent scale/pixel density. No baked text; record subject IDs and panel order in the retained manifest.",
+    "evidenceLimit": "A sheet is concept calibration and semantic inspection. It does not supply individual sprite exports, coherent motion frames, a rig, exact native dimensions or production approval."
+  },
+  "review": {
+    "mustCheck": [
+      "actual part and attachment count",
+      "silhouette and proportion fidelity",
+      "no invented face or appendage",
+      "palette and surface-region fidelity",
+      "retained marking placement",
+      "carried/suppressed information not painted",
+      "supported movement only",
+      "shared pixel craft without shared anatomy",
+      "known conflicts explicitly rejected"
+    ],
+    "retain": [
+      "exact packets and digests",
+      "template version",
+      "exact submitted prompt",
+      "actually attached references",
+      "provider conversation and observed model",
+      "original generated file",
+      "generation outcome and defects"
+    ],
+    "repairPolicy": "One focused correction addresses concrete defects. A second failed round requires reassessing the framing before another generation or broader work."
+  },
+  "semanticPresentationVersion": "semantic-renderer/1"
+}

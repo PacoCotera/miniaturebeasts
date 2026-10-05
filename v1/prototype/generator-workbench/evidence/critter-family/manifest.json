@@ -1,0 +1,138 @@
+{
+  "contentId": "genomic-continuous-study",
+  "contentVersion": 1,
+  "ruleVersion": "continuous-static/1",
+  "limitation": "Static fictional analytic constructions; no physical motion, production art or game permission",
+  "cases": [
+    {
+      "name": "family-base",
+      "status": "resolved",
+      "recordId": "experiment-8f51c81b5dbbd3b75fb5",
+      "nodes": 18,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "8f51c81b5dbbd3b75fb56c5a718a95256b1697cd7eb2670f34bee2105954b079",
+      "resultDigest": "32ff3824be42f5434113b6cacf195848c804bb41765d9dd0e20362834c316ccf",
+      "promptStatus": "fact-derived calibration prompt; no provider called",
+      "relationship": {
+        "kind": "explicit-authoring-input",
+        "note": "Complete pinned copies; not a species preset or owned creature."
+      }
+    },
+    {
+      "name": "family-proportion-variant",
+      "status": "resolved",
+      "recordId": "experiment-5eb395c03213c70a6c8f",
+      "nodes": 18,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "5eb395c03213c70a6c8fbf70581b0d4215e38d11d600362edb06a8e1a64e1f53",
+      "resultDigest": "dac8206cb059cb033b330937286c334e4352fcfb943f16a064f61737ebf4a4f2",
+      "promptStatus": "fact-derived calibration prompt; no provider called",
+      "relationship": {
+        "kind": "controlled-copy-edit",
+        "base": "family-base",
+        "changedLoci": [
+          "structure.body-length",
+          "structure.body-taper",
+          "structure.join-neck-ratio"
+        ],
+        "baseGenomeDigest": "c77b1c9493948f707adb5f9b0bbf5840f670db807922d07c47b9e52425ab1162",
+        "changes": [
+          {
+            "locusId": "structure.body-length",
+            "before": [
+              "high",
+              "high"
+            ],
+            "after": [
+              "low",
+              "high"
+            ]
+          },
+          {
+            "locusId": "structure.body-taper",
+            "before": [
+              "high",
+              "high"
+            ],
+            "after": [
+              "low",
+              "low"
+            ]
+          },
+          {
+            "locusId": "structure.join-neck-ratio",
+            "before": [
+              "high",
+              "high"
+            ],
+            "after": [
+              "low",
+              "high"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "family-fin-variant",
+      "status": "resolved",
+      "recordId": "experiment-52e69c72419eff750366",
+      "nodes": 18,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "52e69c72419eff7503660d71d84e8b97e685a0ba47bb8cab3307f72c93bda176",
+      "resultDigest": "040807fa19b3cfecfa7bf04075b42c910f1fff9e28dea48bae73ad617c52587e",
+      "promptStatus": "fact-derived calibration prompt; no provider called",
+      "relationship": {
+        "kind": "controlled-copy-edit",
+        "base": "family-base",
+        "changedLoci": [
+          "structure.fin-span",
+          "structure.fin-tip-position",
+          "appearance.covering-kind"
+        ],
+        "baseGenomeDigest": "c77b1c9493948f707adb5f9b0bbf5840f670db807922d07c47b9e52425ab1162",
+        "changes": [
+          {
+            "locusId": "structure.fin-span",
+            "before": [
+              "low",
+              "low"
+            ],
+            "after": [
+              "low",
+              "high"
+            ]
+          },
+          {
+            "locusId": "structure.fin-tip-position",
+            "before": [
+              "low",
+              "high"
+            ],
+            "after": [
+              "high",
+              "high"
+            ]
+          },
+          {
+            "locusId": "appearance.covering-kind",
+            "before": [
+              "skin",
+              "skin"
+            ],
+            "after": [
+              "scales",
+              "scales"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

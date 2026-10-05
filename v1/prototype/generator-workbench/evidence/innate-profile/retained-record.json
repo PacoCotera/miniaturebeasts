@@ -1,0 +1,628 @@
+{
+  "schemaVersion": "compositional-authoring-record/6",
+  "sceneProjectionVersion": "compositional-source/7",
+  "materialProfileVersion": "compositional-surface-fields/5",
+  "sceneRecordId": "compositional-e86da27388cd88bd1119",
+  "input": {
+    "catalogue": {
+      "profile": "compositional-foundation-pin/1",
+      "id": "genomic-compositional-source-experiment",
+      "version": 6,
+      "digest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb"
+    },
+    "genome": {
+      "schemaVersion": "compositional-genome/1",
+      "contentId": "genomic-compositional-source-experiment",
+      "contentVersion": 6,
+      "loci": {
+        "development.axial-repeat": [
+          "chain",
+          "chain"
+        ],
+        "development.symmetry": [
+          "bilateral",
+          "bilateral"
+        ],
+        "development.attachment-repeat": [
+          "multiple",
+          "multiple"
+        ],
+        "development.articulated-chain": [
+          "unlinked",
+          "unlinked"
+        ],
+        "development.membrane-rooting": [
+          "off",
+          "off"
+        ],
+        "development.fin-rooting": [
+          "on",
+          "on"
+        ],
+        "development.axial-deformation": [
+          "off",
+          "off"
+        ],
+        "structure.body-length": [
+          "low",
+          "low"
+        ],
+        "structure.body-width": [
+          "low",
+          "low"
+        ],
+        "structure.body-height": [
+          "high",
+          "high"
+        ],
+        "structure.body-taper": [
+          "low",
+          "high"
+        ],
+        "structure.axial-spacing": [
+          "high",
+          "low"
+        ],
+        "structure.attachment-position": [
+          "low",
+          "low"
+        ],
+        "structure.proximal-length": [
+          "high",
+          "low"
+        ],
+        "structure.distal-length": [
+          "low",
+          "low"
+        ],
+        "structure.joint-range": [
+          "low",
+          "high"
+        ],
+        "structure.contact-width": [
+          "low",
+          "high"
+        ],
+        "structure.membrane-span": [
+          "high",
+          "low"
+        ],
+        "structure.membrane-flexibility": [
+          "high",
+          "low"
+        ],
+        "structure.fin-span": [
+          "low",
+          "high"
+        ],
+        "structure.material-density": [
+          "low",
+          "high"
+        ],
+        "appearance.body-palette": [
+          "russet",
+          "periwinkle"
+        ],
+        "appearance.underside-palette": [
+          "peach",
+          "butter"
+        ],
+        "appearance.marking-switch": [
+          "off",
+          "off"
+        ],
+        "appearance.marking-layout": [
+          "bands",
+          "bands"
+        ],
+        "appearance.marking-extent": [
+          "low",
+          "high"
+        ],
+        "appearance.marking-scale": [
+          "high",
+          "high"
+        ],
+        "appearance.marking-orientation": [
+          "low",
+          "low"
+        ],
+        "appearance.marking-contrast": [
+          "high",
+          "high"
+        ],
+        "appearance.surface-texture": [
+          "smooth",
+          "smooth"
+        ],
+        "movement.contact-phase": [
+          "high",
+          "high"
+        ],
+        "movement.cycle-rate": [
+          "low",
+          "low"
+        ],
+        "movement.stride-preference": [
+          "high",
+          "high"
+        ],
+        "movement.turn-control": [
+          "low",
+          "low"
+        ],
+        "movement.axial-amplitude": [
+          "low",
+          "high"
+        ],
+        "movement.axial-phase": [
+          "high",
+          "high"
+        ],
+        "movement.membrane-stroke": [
+          "high",
+          "low"
+        ],
+        "movement.membrane-coordination": [
+          "low",
+          "high"
+        ],
+        "movement.fin-steering": [
+          "low",
+          "low"
+        ],
+        "energy.actuator-capacity": [
+          "low",
+          "low"
+        ],
+        "energy.reserve-capacity": [
+          "low",
+          "high"
+        ],
+        "energy.action-efficiency": [
+          "high",
+          "high"
+        ],
+        "structure.ocular-pair": [
+          "paired",
+          "paired"
+        ],
+        "structure.ocular-placement": [
+          "low",
+          "low"
+        ],
+        "structure.ocular-size": [
+          "low",
+          "high"
+        ],
+        "appearance.covering-kind": [
+          "scales",
+          "scales"
+        ],
+        "appearance.covering-extent": [
+          "low",
+          "high"
+        ],
+        "appearance.covering-scale": [
+          "high",
+          "high"
+        ],
+        "development.regional-growth": [
+          "central",
+          "central"
+        ],
+        "structure.join-neck-ratio": [
+          "high",
+          "high"
+        ],
+        "anatomy.posterior-presence": [
+          "off",
+          "off"
+        ],
+        "anatomy.muzzle-presence": [
+          "on",
+          "on"
+        ],
+        "anatomy.crown-presence": [
+          "on",
+          "on"
+        ],
+        "anatomy.wing-presence": [
+          "off",
+          "off"
+        ],
+        "anatomy.exterior-eye-presence": [
+          "on",
+          "on"
+        ],
+        "anatomy.support-pair-count": [
+          "three",
+          "three"
+        ],
+        "anatomy.crown-form": [
+          "rounded",
+          "rounded"
+        ],
+        "growth.core-half-length": [
+          "small",
+          "medium"
+        ],
+        "growth.core-width-ratio": [
+          "low",
+          "high"
+        ],
+        "growth.core-depth-ratio": [
+          "high",
+          "low"
+        ],
+        "growth.head-length-ratio": [
+          "small",
+          "medium"
+        ],
+        "growth.head-width-ratio": [
+          "low",
+          "high"
+        ],
+        "growth.head-depth-ratio": [
+          "high",
+          "high"
+        ],
+        "growth.head-lift-ratio": [
+          "high",
+          "low"
+        ],
+        "growth.muzzle-projection-ratio": [
+          "short",
+          "long"
+        ],
+        "growth.muzzle-width-ratio": [
+          "high",
+          "high"
+        ],
+        "growth.support-drop-ratio": [
+          "long",
+          "short"
+        ],
+        "growth.support-splay-ratio": [
+          "high",
+          "high"
+        ],
+        "growth.support-radius-ratio": [
+          "fine",
+          "slender"
+        ],
+        "growth.terminal-length-ratio": [
+          "narrow",
+          "narrow"
+        ],
+        "growth.terminal-depth-ratio": [
+          "high",
+          "low"
+        ],
+        "growth.posterior-length-ratio": [
+          "long",
+          "short"
+        ],
+        "growth.posterior-width-ratio": [
+          "high",
+          "high"
+        ],
+        "growth.exterior-eye-size-ratio": [
+          "small",
+          "large"
+        ],
+        "growth.exterior-eye-spacing-ratio": [
+          "close",
+          "close"
+        ],
+        "growth.crown-height-ratio": [
+          "low",
+          "low"
+        ],
+        "growth.wing-span-ratio": [
+          "short",
+          "short"
+        ],
+        "growth.wing-chord-ratio": [
+          "narrow",
+          "narrow"
+        ],
+        "growth.wing-sweep-ratio": [
+          "high",
+          "high"
+        ],
+        "appearance.anatomical-covering": [
+          "scales",
+          "scales"
+        ],
+        "appearance.anatomical-covering-extent": [
+          "long",
+          "long"
+        ],
+        "appearance.anatomical-scale-size": [
+          "fine",
+          "coarse"
+        ],
+        "organization.region-depth": [
+          "three",
+          "three"
+        ],
+        "organization.region-layout": [
+          "serial",
+          "serial"
+        ],
+        "organization.body-symmetry": [
+          "bilateral",
+          "bilateral"
+        ],
+        "organization.region-join": [
+          "broad",
+          "broad"
+        ],
+        "organization.head-module": [
+          "plain",
+          "plain"
+        ],
+        "organization.appendage-role": [
+          "free",
+          "free"
+        ],
+        "organization.appendage-groups": [
+          "three",
+          "three"
+        ],
+        "organization.free-link-count": [
+          "one",
+          "one"
+        ],
+        "growth.region-bend": [
+          "down",
+          "down"
+        ],
+        "growth.region-taper": [
+          "gentle",
+          "strong"
+        ],
+        "growth.branch-angle": [
+          "wide",
+          "wide"
+        ],
+        "growth.join-throat-ratio": [
+          "broad",
+          "broad"
+        ],
+        "growth.free-proximal-ratio": [
+          "long",
+          "long"
+        ],
+        "growth.free-distal-ratio": [
+          "short",
+          "long"
+        ],
+        "growth.free-radius-ratio": [
+          "thick",
+          "fine"
+        ],
+        "growth.radial-cross-radius": [
+          "slender",
+          "slender"
+        ],
+        "anatomy.region-cross-exponent": [
+          "round",
+          "rounded-square"
+        ],
+        "anatomy.region-longitudinal-form": [
+          "tapered",
+          "tapered"
+        ],
+        "anatomy.contact-terminal-form": [
+          "wedge",
+          "wedge"
+        ],
+        "appearance.fur-presence": [
+          "off",
+          "off"
+        ],
+        "appearance.fur-length": [
+          "long",
+          "short"
+        ],
+        "appearance.fur-flow": [
+          "axial",
+          "axial"
+        ],
+        "anatomy.auricular-presence": [
+          "on",
+          "on"
+        ],
+        "anatomy.auricular-form": [
+          "rounded",
+          "rounded"
+        ],
+        "growth.auricular-length-ratio": [
+          "long",
+          "long"
+        ],
+        "anatomy.axial-tail-presence": [
+          "off",
+          "off"
+        ],
+        "growth.axial-tail-length-ratio": [
+          "short",
+          "short"
+        ],
+        "growth.axial-tail-width-ratio": [
+          "broad",
+          "fine"
+        ],
+        "growth.axial-tail-bend": [
+          "up",
+          "up"
+        ],
+        "cognition.innate-profile-presence": [
+          "off",
+          "off"
+        ],
+        "cognition.exploration-tendency": [
+          "seeking",
+          "seeking"
+        ],
+        "cognition.arousal-threshold": [
+          "low",
+          "high"
+        ]
+      },
+      "recordVersions": {
+        "development.axial-repeat": 1,
+        "development.symmetry": 1,
+        "development.attachment-repeat": 1,
+        "development.articulated-chain": 1,
+        "development.membrane-rooting": 1,
+        "development.fin-rooting": 1,
+        "development.axial-deformation": 1,
+        "structure.body-length": 1,
+        "structure.body-width": 1,
+        "structure.body-height": 1,
+        "structure.body-taper": 1,
+        "structure.axial-spacing": 1,
+        "structure.attachment-position": 1,
+        "structure.proximal-length": 1,
+        "structure.distal-length": 1,
+        "structure.joint-range": 1,
+        "structure.contact-width": 1,
+        "structure.membrane-span": 1,
+        "structure.membrane-flexibility": 1,
+        "structure.fin-span": 1,
+        "structure.material-density": 1,
+        "appearance.body-palette": 2,
+        "appearance.underside-palette": 2,
+        "appearance.marking-switch": 1,
+        "appearance.marking-layout": 1,
+        "appearance.marking-extent": 1,
+        "appearance.marking-scale": 1,
+        "appearance.marking-orientation": 1,
+        "appearance.marking-contrast": 1,
+        "appearance.surface-texture": 1,
+        "movement.contact-phase": 1,
+        "movement.cycle-rate": 1,
+        "movement.stride-preference": 1,
+        "movement.turn-control": 1,
+        "movement.axial-amplitude": 1,
+        "movement.axial-phase": 1,
+        "movement.membrane-stroke": 1,
+        "movement.membrane-coordination": 1,
+        "movement.fin-steering": 1,
+        "energy.actuator-capacity": 1,
+        "energy.reserve-capacity": 1,
+        "energy.action-efficiency": 1,
+        "structure.ocular-pair": 1,
+        "structure.ocular-placement": 1,
+        "structure.ocular-size": 1,
+        "appearance.covering-kind": 1,
+        "appearance.covering-extent": 1,
+        "appearance.covering-scale": 1,
+        "development.regional-growth": 1,
+        "structure.join-neck-ratio": 1,
+        "anatomy.posterior-presence": 1,
+        "anatomy.muzzle-presence": 1,
+        "anatomy.crown-presence": 1,
+        "anatomy.wing-presence": 1,
+        "anatomy.exterior-eye-presence": 1,
+        "anatomy.support-pair-count": 1,
+        "anatomy.crown-form": 1,
+        "growth.core-half-length": 1,
+        "growth.core-width-ratio": 1,
+        "growth.core-depth-ratio": 1,
+        "growth.head-length-ratio": 1,
+        "growth.head-width-ratio": 1,
+        "growth.head-depth-ratio": 1,
+        "growth.head-lift-ratio": 1,
+        "growth.muzzle-projection-ratio": 1,
+        "growth.muzzle-width-ratio": 1,
+        "growth.support-drop-ratio": 1,
+        "growth.support-splay-ratio": 1,
+        "growth.support-radius-ratio": 1,
+        "growth.terminal-length-ratio": 1,
+        "growth.terminal-depth-ratio": 1,
+        "growth.posterior-length-ratio": 1,
+        "growth.posterior-width-ratio": 1,
+        "growth.exterior-eye-size-ratio": 1,
+        "growth.exterior-eye-spacing-ratio": 1,
+        "growth.crown-height-ratio": 1,
+        "growth.wing-span-ratio": 1,
+        "growth.wing-chord-ratio": 1,
+        "growth.wing-sweep-ratio": 1,
+        "appearance.anatomical-covering": 1,
+        "appearance.anatomical-covering-extent": 1,
+        "appearance.anatomical-scale-size": 1,
+        "organization.region-depth": 1,
+        "organization.region-layout": 1,
+        "organization.body-symmetry": 1,
+        "organization.region-join": 1,
+        "organization.head-module": 1,
+        "organization.appendage-role": 1,
+        "organization.appendage-groups": 1,
+        "organization.free-link-count": 1,
+        "growth.region-bend": 1,
+        "growth.region-taper": 1,
+        "growth.branch-angle": 1,
+        "growth.join-throat-ratio": 1,
+        "growth.free-proximal-ratio": 1,
+        "growth.free-distal-ratio": 1,
+        "growth.free-radius-ratio": 1,
+        "growth.radial-cross-radius": 1,
+        "anatomy.region-cross-exponent": 1,
+        "anatomy.region-longitudinal-form": 1,
+        "anatomy.contact-terminal-form": 1,
+        "appearance.fur-presence": 1,
+        "appearance.fur-length": 1,
+        "appearance.fur-flow": 1,
+        "anatomy.auricular-presence": 1,
+        "anatomy.auricular-form": 1,
+        "growth.auricular-length-ratio": 1,
+        "anatomy.axial-tail-presence": 1,
+        "growth.axial-tail-length-ratio": 1,
+        "growth.axial-tail-width-ratio": 1,
+        "growth.axial-tail-bend": 1,
+        "cognition.innate-profile-presence": 1,
+        "cognition.exploration-tendency": 1,
+        "cognition.arousal-threshold": 1
+      },
+      "baselineReferences": [
+        "ellipsoid-volume/1",
+        "tapered-chain-volume/1",
+        "rooted-thin-surface/1",
+        "surface-root-intersection/1",
+        "local-pigment-partition/1",
+        "convex-ring-profile/1",
+        "facet-envelope-roots/2",
+        "contact-terminal-envelope/1",
+        "facet-rooted-fur-ribbon/1",
+        "continuous-axial-tail-sweep/1",
+        "concave-auricular-sheet/2",
+        "continuous-owner-facet-mantle/1",
+        "primary-local-marking-field/1",
+        "innate-response-profile/1"
+      ],
+      "origin": {
+        "kind": "experiment",
+        "seed": 1049059146,
+        "attempt": 1,
+        "algorithmVersion": "mulberry32/1",
+        "founderProfile": "compositional-founder-states/1",
+        "baseline": "compositional-solid-operators"
+      }
+    },
+    "context": {
+      "id": "static-compositional-reference",
+      "version": 1,
+      "stage": "reference adult",
+      "pose": "retained local module frames; no universal ground plane",
+      "performance": "unmodeled"
+    },
+    "expressionSeed": null
+  },
+  "inputDigest": "55e84dff27f5a557d05fc4d4ebb2d579f4836288b2e34804c999667370331eb6",
+  "resultDigest": "33c5ba6075a2fd27aaa44c92736ebcc442c538b0c260c45ae593f8d51316d4d2",
+  "sceneDigest": "9fbd2a8e9569d619f052742d17c4b9b8beeab18ce72b2426163805b4be632e7e"
+}

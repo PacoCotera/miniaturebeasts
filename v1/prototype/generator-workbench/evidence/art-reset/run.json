@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "art-first-calibration-run/1",
+  "status": "visual design review; brief fidelity HOLD",
+  "workflow": "Authenticated Gemini web Images mode, Pro shown",
+  "conversation": "https://gemini.google.com/app/8f95901d2886bd7f",
+  "requests": 2,
+  "requestRoles": [
+    "initial generation",
+    "one bounded correction"
+  ],
+  "reference": {
+    "file": "design/companion-promise/field-partner-concept.png",
+    "sha256": "88a7fbbb5b75b4645c716d4995e4fba28fa3a6da66e4303ce63c42ed621182f4",
+    "role": "character/HiBit craft, not anatomical preset"
+  },
+  "retainedAtUTC": "2026-10-02T04:37:40.713Z",
+  "extraction": "Ordinary Copy image clipboard PNG; saved without pixel edits. Browser screenshot is separate evidence.",
+  "fullSizeDownload": false,
+  "backendModel": "unverified",
+  "engineOutput": false,
+  "artifacts": [
+    {
+      "file": "prompt.txt",
+      "sha256": "6dac79df1937f9e8c9378d2696cddb6e5cca7bc560583f7b6a89cb8cc632cac6",
+      "bytes": 2727
+    },
+    {
+      "file": "correction-prompt.txt",
+      "sha256": "f3d9b7ec1363b3ed733dd4fe5e7ed959b7147b318e9894288cf1e64371616fa0",
+      "bytes": 1357
+    },
+    {
+      "file": "phenotype-proposal.json",
+      "sha256": "c86cea7f26900b13851e29fe3db183ca7d1335a2edec5c436328e121c656bde8",
+      "bytes": 1491
+    },
+    {
+      "file": "gemini-family-01.png",
+      "sha256": "440e32e2957f1ff746be00ac4c42337f3d543cd243339dd45ce69ac0bfeca29f",
+      "bytes": 637968,
+      "format": "png",
+      "width": 1024,
+      "height": 682
+    },
+    {
+      "file": "gemini-family-02.png",
+      "sha256": "73b92a0f6e9e87fe29efffc57336bd66ab08a71c27d6603c2311342e8089c48a",
+      "bytes": 546980,
+      "format": "png",
+      "width": 1024,
+      "height": 682
+    },
+    {
+      "file": "gemini-browser-01.jpg",
+      "sha256": "082732ca11f2eeb9a268c7941fee21d0fd28d9bad2db0f6e61d2a2d1ddd1fd4f",
+      "bytes": 66909,
+      "format": "jpeg",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "gemini-browser-02.jpg",
+      "sha256": "be2ab008cf4b781ea27bf19526f5134c95d659b2cd722ef3e51a33a3bb79c5a7",
+      "bytes": 59113,
+      "format": "jpeg",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "review": {
+    "improvements": [
+      "cohesive appealing pet morphology",
+      "visible related proportions and covering contrast",
+      "captions removed",
+      "richer fur clusters"
+    ],
+    "remaining": [
+      "feather subject omits specified cream chest",
+      "foot striations may imply unspecified digits",
+      "exact proportions and root geometry unverified",
+      "reference-level HiBit craft not yet established"
+    ]
+  },
+  "limits": [
+    "Not current engine output or genome replay",
+    "No canonical morphology or production art approval",
+    "No sprites, animation, physiology or child-playtesting proof",
+    "No game/native build, deployment or save reset"
+  ]
+}

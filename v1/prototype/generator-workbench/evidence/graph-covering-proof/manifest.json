@@ -1,0 +1,230 @@
+[
+  {
+    "name": "single-skin",
+    "relationship": {
+      "kind": "explicit-authoring-input",
+      "changedLoci": []
+    },
+    "inputDigest": "7f184eeef37c50de1b6c25cf682c38e38969cb93dbfb839a1120af2c6abb2db0",
+    "resultDigest": "e5c37c38536f782ea7650b47050546f1590e4cf9dce4aaf37fd36edfa93c25ab",
+    "constructionDigest": "eaa04f3b336cb2ba7d6db4456ebd9a4ccfb6ec30fa189273b6b2be8ec46035f2",
+    "ocularModuleDigest": "0ad0a9e052dd3d19c5b9f424214a1b5b582be4bf8ce596ae93d95339814b2823",
+    "coveringDigest": "8c9ff63d2b3ba136ed4ae3d2d4ecf10235624b858ed6f9e504c84d3b4baaf98c",
+    "svgDigest": "c2c24dbfee263fb2c0120c9c1e71cfcc3781a8b943d7fa232e0f24eaa20435ae",
+    "counts": {
+      "plannedCandidates": 0,
+      "candidates": 0,
+      "accepted": 0,
+      "excluded": 0,
+      "exclusionReasons": {}
+    },
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Static common-scale XY body-only covering proof; no physiology or game-art claim."
+  },
+  {
+    "name": "single-scales",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "single-skin",
+      "changedLoci": [
+        "appearance.covering-kind"
+      ]
+    },
+    "inputDigest": "c561218e821c73fed527ed010dc956645b2286b2260f1687bd62470532f38af0",
+    "resultDigest": "1ea4b109ed81d20de818b089268dd8e7a03746147ee27bcf83df3d2777c9be2a",
+    "constructionDigest": "8f31b110e992b98593067d46517b7be4bc94e3f3decccefc86945db5fdff6d73",
+    "ocularModuleDigest": "7fd219b6b884c0c5f16a305be461d0435749ac0088af39800bfc15cc7ae5e3b8",
+    "coveringDigest": "4c293780881fe6557f75b27820ff126febe984364295b0d472fcc9d4a7d9ac1f",
+    "svgDigest": "6c62d643afe3f2e4b7d1b17aa5b3e7868098ee4e7b2ca39e0b0256d537a9d668",
+    "counts": {
+      "plannedCandidates": 40,
+      "candidates": 40,
+      "accepted": 9,
+      "excluded": 31,
+      "exclusionReasons": {
+        "exterior-clearance": 6,
+        "ocular-clearance": 9,
+        "outside-field": 16
+      }
+    },
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Static common-scale XY body-only covering proof; no physiology or game-art claim."
+  },
+  {
+    "name": "axial-skin",
+    "relationship": {
+      "kind": "explicit-authoring-input",
+      "changedLoci": []
+    },
+    "inputDigest": "110344b34fd3669dcc932ebbea9df69d5e33f2c7c2b9df994fbeb959e9d3d6a8",
+    "resultDigest": "5727ccd35dc7aac6cb02cde437c059d33749d1d4880c89eaedad1173f027cd78",
+    "constructionDigest": "4596903541ab3f8008721264155a7144c172a803564fbe804dbe87c868ae64b4",
+    "ocularModuleDigest": "f86156149f149f3d137e0880d77684c7b003c31773d04fc70dae95e09517de0e",
+    "coveringDigest": "d3126c07047ec949044cd8c24c079d5a3829065dd1b80e503b92fbc7c8016fb7",
+    "svgDigest": "ea3d960e056a91a4d00fce1da132922b477bbb637baaa4119e9e46ebcc3e2144",
+    "counts": {
+      "plannedCandidates": 0,
+      "candidates": 0,
+      "accepted": 0,
+      "excluded": 0,
+      "exclusionReasons": {}
+    },
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Static common-scale XY body-only covering proof; no physiology or game-art claim."
+  },
+  {
+    "name": "axial-scales",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "axial-skin",
+      "changedLoci": [
+        "appearance.covering-kind"
+      ]
+    },
+    "inputDigest": "12643a988985fab89a83f3fab2247ab7d511a584b740d70955af516e6e8305c9",
+    "resultDigest": "16e9a439881c4af9aa851454d9e8b521870346e26d4527fdbf0711e340a3e7e2",
+    "constructionDigest": "b7b503fc91dad4fa8767d776197d1d8899c8871f0368627d7131286c46dd4705",
+    "ocularModuleDigest": "65a8bda2ee292b1b24297ef0a802cec556b2a46685c649c59eb3877a1cde3c2c",
+    "coveringDigest": "1dc59622041fa5f1c0d01e8155750b5acc66a5fadecd2e77521a40225f829b15",
+    "svgDigest": "bf9a73a9882cb05307567ae05ebb27759284efcc2e0deae0f42520080a5f3b71",
+    "counts": {
+      "plannedCandidates": 48,
+      "candidates": 48,
+      "accepted": 17,
+      "excluded": 31,
+      "exclusionReasons": {
+        "outside-field": 20,
+        "exterior-clearance": 11
+      }
+    },
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Static common-scale XY body-only covering proof; no physiology or game-art claim."
+  },
+  {
+    "name": "single-scales-extent",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "single-scales",
+      "changedLoci": [
+        "appearance.covering-extent"
+      ]
+    },
+    "inputDigest": "eb0079f80203fc17504dae57745342e53460ea4945118a4af25b8ff6261cdb3f",
+    "resultDigest": "34d0caba71b52aea26c54f3e83d28b04b7075f08e53524b9b37b967e98ce58ba",
+    "constructionDigest": "d8eb709b50a0f71dc88630c6474b235f9e4ab138581229ac3bbff923a2445558",
+    "ocularModuleDigest": "a7c2923abd1a9d86d9dfa0f80ca9a75cae0a70cf5d3f1f15f908185a4d5a43ab",
+    "coveringDigest": "8785ea28ccb8e20573647453d0fc9da77206a25fe9d5cfe66ef96b0f45de4309",
+    "svgDigest": "aec4b3753f4b9f5b3f84f2c4e1244900138d6ecd9a6dd74849e64c54f6b50fab",
+    "counts": {
+      "plannedCandidates": 80,
+      "candidates": 80,
+      "accepted": 23,
+      "excluded": 57,
+      "exclusionReasons": {
+        "exterior-clearance": 19,
+        "ocular-clearance": 21,
+        "outside-field": 16,
+        "root-clearance": 1
+      }
+    },
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Static common-scale XY body-only covering proof; no physiology or game-art claim."
+  },
+  {
+    "name": "single-scales-size",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "single-scales",
+      "changedLoci": [
+        "appearance.covering-scale"
+      ]
+    },
+    "inputDigest": "d47995759a1e5930827c0f37281aca100ee892ac340825d9550e8dcf9587f2d5",
+    "resultDigest": "d6d75d7d1bc93f69ea062fce27c6e0739e8ad1e0b6f29d8e1a5961c81fd528bd",
+    "constructionDigest": "d0b2dabfc3d8b75b1b0a28ad675a47d5d74b0db6d0d8f15709a526461d11e982",
+    "ocularModuleDigest": "d800c576fb3a453b2613757787eeda03f968a5cd4521d7a679e3e5547d5c524e",
+    "coveringDigest": "542dfc4d8b8cbd4f2f8220609dd9c00e18c85fc843e9b61460ab3c58b3d934cb",
+    "svgDigest": "e203181aa40ad85214533bfe2bc5824865cf1d35da89f4452658b63d1cb33d46",
+    "counts": {
+      "plannedCandidates": 66,
+      "candidates": 66,
+      "accepted": 20,
+      "excluded": 46,
+      "exclusionReasons": {
+        "exterior-clearance": 13,
+        "ocular-clearance": 17,
+        "outside-field": 16
+      }
+    },
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Static common-scale XY body-only covering proof; no physiology or game-art claim."
+  },
+  {
+    "name": "single-skin-latent",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "single-skin",
+      "changedLoci": [
+        "appearance.covering-extent",
+        "appearance.covering-scale"
+      ]
+    },
+    "inputDigest": "842c9b48cae6cc99cdb05a7e867f8b35385d97fa7ffbf9cae95d8cc99bde1087",
+    "resultDigest": "b0db7ff1755f668b5d0adb9dc19aa6391794fefaa610ffeff551c52eb181a1d0",
+    "constructionDigest": "eee0ea293511df27b4840b8aad8e3bfb26999033155a0f0b532ec2c99b1dbda9",
+    "ocularModuleDigest": "ff841e0188dcac64ecea58ef98c280ea32bf7ddff1d4adba1b525ce00f64bed4",
+    "coveringDigest": "01b0174e8af231824d8248fb632e0d7c33865e70b6db809c79cd62b415f49a56",
+    "svgDigest": "932a7f8cd3673301d9b9b785bcdc8f7f0dc73ec57d63cea0ffb649a41c58ee2d",
+    "counts": {
+      "plannedCandidates": 0,
+      "candidates": 0,
+      "accepted": 0,
+      "excluded": 0,
+      "exclusionReasons": {}
+    },
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Static common-scale XY body-only covering proof; no physiology or game-art claim."
+  }
+]

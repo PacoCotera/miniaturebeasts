@@ -1,0 +1,253 @@
+{
+  "schemaVersion": "compositional-vocabulary-content/1",
+  "catalogueIdentity": {
+    "id": "genomic-compositional-source-experiment",
+    "version": 2
+  },
+  "ruleVersion": "developmental-compositional-source/2",
+  "constructionProfile": "compositional-source/3",
+  "materialProfile": "compositional-surface-fields/2",
+  "referenceProfile": "compositional-reference/3",
+  "loci": [
+    {
+      "id": "anatomy.region-cross-exponent",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "operator": "copy-mean",
+      "alleles": [
+        {
+          "id": "round",
+          "value": 2
+        },
+        {
+          "id": "rounded-square",
+          "value": 4
+        }
+      ],
+      "target": "region.crossExponent",
+      "activeWhen": "primary symmetry is bilateral"
+    },
+    {
+      "id": "anatomy.region-longitudinal-form",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "operator": "pair-map",
+      "alleles": [
+        {
+          "id": "ovoid",
+          "value": "ovoid"
+        },
+        {
+          "id": "barrel",
+          "value": "barrel"
+        },
+        {
+          "id": "tapered",
+          "value": "tapered"
+        }
+      ],
+      "pairMap": {
+        "barrel|barrel": "barrel",
+        "barrel|ovoid": "barrel",
+        "barrel|tapered": "tapered",
+        "ovoid|ovoid": "ovoid",
+        "ovoid|tapered": "tapered",
+        "tapered|tapered": "tapered"
+      },
+      "target": "region.longitudinalForm",
+      "activeWhen": "primary region owner exists"
+    },
+    {
+      "id": "anatomy.contact-terminal-form",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "operator": "pair-map",
+      "alleles": [
+        {
+          "id": "rounded",
+          "value": "rounded"
+        },
+        {
+          "id": "pad",
+          "value": "pad"
+        },
+        {
+          "id": "wedge",
+          "value": "wedge"
+        }
+      ],
+      "pairMap": {
+        "pad|pad": "pad",
+        "pad|rounded": "pad",
+        "pad|wedge": "wedge",
+        "rounded|rounded": "rounded",
+        "rounded|wedge": "wedge",
+        "wedge|wedge": "wedge"
+      },
+      "target": "terminal.form",
+      "activeWhen": "contact-chain with actual terminal owner"
+    },
+    {
+      "id": "appearance.fur-presence",
+      "version": 1,
+      "copyCount": 2,
+      "family": "appearance",
+      "operator": "pair-map",
+      "alleles": [
+        {
+          "id": "off",
+          "value": false
+        },
+        {
+          "id": "on",
+          "value": true
+        }
+      ],
+      "pairMap": {
+        "off|off": false,
+        "off|on": true,
+        "on|on": true
+      },
+      "target": "covering.furEnabled",
+      "activeWhen": "primary region owner exists"
+    },
+    {
+      "id": "appearance.fur-length",
+      "version": 1,
+      "copyCount": 2,
+      "family": "appearance",
+      "operator": "copy-mean",
+      "alleles": [
+        {
+          "id": "short",
+          "value": 0.15
+        },
+        {
+          "id": "long",
+          "value": 0.3
+        }
+      ],
+      "target": "fur.lengthOverMinTransverseRadius",
+      "activeWhen": "covering.furEnabled",
+      "units": "ratio to each primary owner min(Ry,Rz)"
+    },
+    {
+      "id": "appearance.fur-flow",
+      "version": 1,
+      "copyCount": 2,
+      "family": "appearance",
+      "operator": "copy-mean",
+      "alleles": [
+        {
+          "id": "axial",
+          "value": 0
+        },
+        {
+          "id": "oblique",
+          "value": 0.45
+        }
+      ],
+      "target": "fur.tangentAngleRadians",
+      "activeWhen": "covering.furEnabled",
+      "units": "radians from local axial tangent toward circumferential tangent"
+    }
+  ],
+  "defaultCopies": {
+    "anatomy.region-cross-exponent": [
+      "round",
+      "round"
+    ],
+    "anatomy.region-longitudinal-form": [
+      "ovoid",
+      "ovoid"
+    ],
+    "anatomy.contact-terminal-form": [
+      "rounded",
+      "rounded"
+    ],
+    "appearance.fur-presence": [
+      "off",
+      "off"
+    ],
+    "appearance.fur-length": [
+      "short",
+      "short"
+    ],
+    "appearance.fur-flow": [
+      "axial",
+      "axial"
+    ]
+  },
+  "conventions": {
+    "primaryStations": [
+      -1,
+      -0.85,
+      -0.55,
+      0,
+      0.55,
+      0.85,
+      1
+    ],
+    "circumferentialFacets": 12,
+    "barrelPlateau": 0.55,
+    "taperLinear": [
+      0.78,
+      -0.22
+    ],
+    "terminal": {
+      "centerOffsetOverRx": -0.2,
+      "baseRyOverRx": 0.73,
+      "padRyMultiplier": 1.15,
+      "wedgeDistalRatios": [
+        0.6,
+        0.3
+      ]
+    },
+    "fur": {
+      "longitudinalCells": 4,
+      "circumferentialCells": 12,
+      "maximumRibbons": 336,
+      "maximumClippedVertices": 6,
+      "coverage": [
+        0,
+        1
+      ],
+      "baseHalfWidthOverLength": 0.035,
+      "tipHalfWidthOverLength": 0.007,
+      "normalRiseOverLength": 0.1,
+      "facetTie": {
+        "distanceTolerance": 1e-10,
+        "choice": "lowest retained facet index"
+      }
+    },
+    "headPlacement": "Inherited lift seeds direction; actual parent and head facet extents determine separation. The resulting center Z is derived, not lift times anchor Rx."
+  },
+  "limits": {
+    "candidateAttempts": 1024,
+    "primaryRegions": 7,
+    "graphNodes": 64,
+    "graphEdges": 128,
+    "meshVertices": 4096,
+    "materialCells": 128,
+    "absoluteCoordinate": 10000
+  },
+  "baseline": {
+    "id": "compositional-solid-operators",
+    "version": 2,
+    "references": [
+      "ellipsoid-volume/1",
+      "tapered-chain-volume/1",
+      "rooted-thin-surface/1",
+      "surface-root-intersection/1",
+      "local-pigment-partition/1",
+      "convex-ring-profile/1",
+      "facet-envelope-roots/2",
+      "contact-terminal-envelope/1",
+      "facet-rooted-fur-ribbon/1"
+    ],
+    "meaning": "Available inherited construction operators; no required head, neck, torso, supports, posterior, wings or face. At least one embodied volume belongs to this bounded source subset."
+  }
+}

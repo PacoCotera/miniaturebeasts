@@ -1,0 +1,225 @@
+{
+  "schemaVersion": "pigment-vocabulary-proposal/1",
+  "status": "provisional swatches; not executable content or a resolved genome",
+  "sourceRevision": "7b0ccabcb1853b95061da8d7edebff1d64605faa",
+  "canvas": {
+    "width": 1200,
+    "height": 1144,
+    "purpose": "chat comparison; not device UI"
+  },
+  "rows": [
+    {
+      "status": "legacy",
+      "body": {
+        "id": "charcoal",
+        "pigment": "#465459"
+      },
+      "secondary": {
+        "id": "cream",
+        "pigment": "#dfd2ae"
+      }
+    },
+    {
+      "status": "legacy",
+      "body": {
+        "id": "russet",
+        "pigment": "#ae674d"
+      },
+      "secondary": {
+        "id": "cream",
+        "pigment": "#dfd2ae"
+      }
+    },
+    {
+      "status": "candidate",
+      "body": {
+        "id": "jade",
+        "pigment": "#38a878"
+      },
+      "secondary": {
+        "id": "milk-mint",
+        "pigment": "#d8f1d4"
+      }
+    },
+    {
+      "status": "candidate",
+      "body": {
+        "id": "lagoon",
+        "pigment": "#269fa5"
+      },
+      "secondary": {
+        "id": "cream",
+        "pigment": "#dfd2ae"
+      }
+    },
+    {
+      "status": "candidate",
+      "body": {
+        "id": "cobalt",
+        "pigment": "#4d7ed4"
+      },
+      "secondary": {
+        "id": "ice",
+        "pigment": "#d9ecf5"
+      }
+    },
+    {
+      "status": "candidate",
+      "body": {
+        "id": "periwinkle",
+        "pigment": "#8b7dd8"
+      },
+      "secondary": {
+        "id": "butter",
+        "pigment": "#fff0b8"
+      }
+    },
+    {
+      "status": "candidate",
+      "body": {
+        "id": "plum",
+        "pigment": "#a967b8"
+      },
+      "secondary": {
+        "id": "peach",
+        "pigment": "#ffd7c5"
+      }
+    },
+    {
+      "status": "candidate",
+      "body": {
+        "id": "raspberry",
+        "pigment": "#d95688"
+      },
+      "secondary": {
+        "id": "cream",
+        "pigment": "#dfd2ae"
+      }
+    },
+    {
+      "status": "candidate",
+      "body": {
+        "id": "coral",
+        "pigment": "#e98268"
+      },
+      "secondary": {
+        "id": "milk-mint",
+        "pigment": "#d8f1d4"
+      }
+    },
+    {
+      "status": "candidate",
+      "body": {
+        "id": "marigold",
+        "pigment": "#e8b83f"
+      },
+      "secondary": {
+        "id": "ice",
+        "pigment": "#d9ecf5"
+      }
+    }
+  ],
+  "bodyCandidates": [
+    {
+      "id": "jade",
+      "pigment": "#38a878"
+    },
+    {
+      "id": "lagoon",
+      "pigment": "#269fa5"
+    },
+    {
+      "id": "cobalt",
+      "pigment": "#4d7ed4"
+    },
+    {
+      "id": "periwinkle",
+      "pigment": "#8b7dd8"
+    },
+    {
+      "id": "plum",
+      "pigment": "#a967b8"
+    },
+    {
+      "id": "raspberry",
+      "pigment": "#d95688"
+    },
+    {
+      "id": "coral",
+      "pigment": "#e98268"
+    },
+    {
+      "id": "marigold",
+      "pigment": "#e8b83f"
+    }
+  ],
+  "secondaryCandidates": [
+    {
+      "id": "milk-mint",
+      "pigment": "#d8f1d4"
+    },
+    {
+      "id": "ice",
+      "pigment": "#d9ecf5"
+    },
+    {
+      "id": "butter",
+      "pigment": "#fff0b8"
+    },
+    {
+      "id": "peach",
+      "pigment": "#ffd7c5"
+    }
+  ],
+  "retainedValues": {
+    "body": {
+      "charcoal": "#465459",
+      "russet": "#ae674d"
+    },
+    "secondary": {
+      "cream": "#dfd2ae",
+      "slate": "#718489"
+    }
+  },
+  "mixedExample": {
+    "body": [
+      "#38a878",
+      "#269fa5"
+    ],
+    "secondary": [
+      "#dfd2ae",
+      "#718489"
+    ],
+    "mask": "two equal ordered local-u fields on each applicable retained surface; not global whole-body halves"
+  },
+  "ownership": {
+    "bilateral": "body volume/join surfaces own body pigments; actual non-volume modules own secondary pigments",
+    "radial": "body pigments throughout; secondary copies inactive",
+    "ocular": {
+      "rim": "#f1eddc",
+      "pupil": "#273036"
+    },
+    "marking": {
+      "baseInk": "#e8dfc8",
+      "expression": "off; ink chip does not assert expression"
+    }
+  },
+  "source": {
+    "path": "../module-scene-workbench/axial-scales.packet.json",
+    "sha256": "163058de7e5a125f190f319cb19acf794af03447ad23c9c6aba2f3f1360f0670",
+    "geometry": "retained nodes and edges unchanged; constructors/renderers reused only for hypothetical pigment projection",
+    "identity": "no resulting G/E or genome record emitted"
+  },
+  "assumptions": [
+    "Rows are independent review pairings, not species/families or allowed-combination limits.",
+    "Uniform swatch at each proposed locus represents matching copies; mixed field uses existing operator meaning without a new executable allele record.",
+    "Copy slot reversal preserves provenance but does not reverse explicit output field array.",
+    "Source scale/material field and fixed ocular pigments retained; no material/anatomy changes."
+  ],
+  "outputs": {
+    "comparison.svg": "1bc61f1107029f1547f1dd8ad6363d780b36c9b723dffd6b2fda91a84b52eacb",
+    "comparison.png": "ea126b3fa4c67c9fd47e902de828401a64f90a163bcdd60d2b9dd4ce39d03d9f",
+    "comparison-grayscale.png": "56fb05797b276b82598479150710702d156c0fbc96cfb38495f5edbbfdc25d8c",
+    "mixed-domain.svg": "33e5a412b00d48098e16017a34704905445a0d2bc835656d093d477540dbf067"
+  }
+}

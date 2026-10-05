@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "critter-pet-validation/1",
+  "purpose": "Changed-profile replay and art-projection checks plus exact previous result/rejection compatibility; no repeated seeded-population sweep.",
+  "previousCases": [
+    {
+      "name": "contact-original",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "contact-related-topology",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "contact-actual-parent-cross",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "membrane-original",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "membrane-related-topology",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "membrane-actual-parent-cross",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "axial-original",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "axial-related-topology",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "carried-suppressed",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "expression-placement-a",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "expression-placement-b",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "static-radial-volume-not-distributed-network",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "invalid-unrooted-membrane",
+      "status": "rejected",
+      "exact": true
+    },
+    {
+      "name": "family-base",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "family-proportion-variant",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "family-fin-variant",
+      "status": "resolved",
+      "exact": true
+    }
+  ],
+  "examples": [
+    {
+      "name": "pet-skin",
+      "inputDigest": "861e965879245bbf2ddb49b26c9bf888c580034187f0619a601ad331dd48f3d8",
+      "resultDigest": "90fde1f3f85e9fa1518b5335015f2126b577005266ef430293c965b6577af296",
+      "covering": "skin",
+      "tufts": 0,
+      "filaments": 0,
+      "feathers": 0,
+      "artPromptCharacters": 23565,
+      "replayVerified": true
+    },
+    {
+      "name": "pet-scales",
+      "inputDigest": "2ab86bef56a424e21e05ac7a0a023913fdbe420ae747467556c10a0d6af751ea",
+      "resultDigest": "406260f3e5de86a4237d8d87c9acaa784ad314d4bfd605530f1caee20eff79d9",
+      "covering": "scales",
+      "tufts": 0,
+      "filaments": 0,
+      "feathers": 0,
+      "artPromptCharacters": 27084,
+      "replayVerified": true
+    },
+    {
+      "name": "pet-fur",
+      "inputDigest": "2a5bc502eff1dc32ef5219d9592b321f45e8636f7fccb4245e47e978fa9ad709",
+      "resultDigest": "3508e13c30117f65a93abdd8a2f076e5f9c10da924bc9385f2c60260e5015c05",
+      "covering": "fur",
+      "tufts": 11,
+      "filaments": 33,
+      "feathers": 0,
+      "artPromptCharacters": 32356,
+      "replayVerified": true
+    },
+    {
+      "name": "pet-feathers",
+      "inputDigest": "1a8bd0adb1921f761a292740320bb7892d4d7dd0592cda1766506b6ccedae894",
+      "resultDigest": "001cedc04d68ccc171118910e54da88f4636030ee5efa69d56b93985b399b7f2",
+      "covering": "feathers",
+      "tufts": 0,
+      "filaments": 0,
+      "feathers": 7,
+      "artPromptCharacters": 27970,
+      "replayVerified": true
+    },
+    {
+      "name": "pet-face-variant",
+      "inputDigest": "60bb80e3e9a5916eba39c94bf6788c64df414e8318d5fab4dc0ac7efa7a7335b",
+      "resultDigest": "3e9836a7f24711f95bbdf302bb7b1c909c3f0b70f0d9fdff4b235819c679d3a8",
+      "covering": "skin",
+      "tufts": 0,
+      "filaments": 0,
+      "feathers": 0,
+      "artPromptCharacters": 23569,
+      "replayVerified": true
+    }
+  ]
+}

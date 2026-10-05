@@ -1,0 +1,64 @@
+{
+  "status": "Observable macro source fidelity improved; exact profiles unverified; pet-master HOLD",
+  "experiment": "One fresh upright source plus same-source material guide; no prior full-body art or correction",
+  "provider": "Gemini web Images",
+  "displayedMode": "Pro",
+  "backendModel": null,
+  "generationCalls": 1,
+  "correctionCalls": 0,
+  "source": {
+    "packet": "../module-scene-workbench/axial-scales.packet.json",
+    "referenceManifest": "../faithful-pet/reference-manifest.json",
+    "inheritedReference": "#GAA74F886E586",
+    "expressionReference": "#E1495F780380B"
+  },
+  "references": [
+    {
+      "file": "../faithful-pet/upright-source.png",
+      "sha256": "edbdc40cffa3c93324c60db440d428556a04f695974e3713d14413bd3746ee8f",
+      "bytes": 45668,
+      "width": 768,
+      "height": 512
+    },
+    {
+      "file": "../faithful-pet/covering-guide.png",
+      "sha256": "87cda6528437bcb439ffbbb081b36eacd4d4522546610af232b78d11fff793d9",
+      "bytes": 53240,
+      "width": 768,
+      "height": 512
+    }
+  ],
+  "promptSha256": "cbb2266c6aa7e973b22147938b1bedaffa0f872a45c81e343527f75fc903201f",
+  "files": [
+    {
+      "file": "prompt.txt",
+      "sha256": "cbb2266c6aa7e973b22147938b1bedaffa0f872a45c81e343527f75fc903201f",
+      "bytes": 741
+    },
+    {
+      "file": "gemini-pet.png",
+      "sha256": "3751f845697dc4e038552590a1e4032c9162353d80645f5c2a110e749fc50044",
+      "bytes": 326510,
+      "width": 1024,
+      "height": 683
+    },
+    {
+      "file": "browser-result.png",
+      "sha256": "9999b4d94be911e7c7f09b21d404050bfca345f4e44a602cadf25668e840df90",
+      "bytes": 34435,
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "limitations": [
+    "Source lookup references do not certify returned raster fidelity",
+    "Input orientation, material guide and removal of prior art change together; individual causation unmeasured",
+    "No canonical art, animation or native/game activation"
+  ],
+  "review": {
+    "art": "Actual whole/256px inspection: clearer eye focus/material selectivity; stiff repeated three-bulb body remains pet-master HOLD",
+    "genomics": "Actual macro organization/fins/pigments/field improved; exact plates/ocular ratios/proportion registration unverified",
+    "agreement": "Independent actual reviews agree in broad findings; no live direct reply claimed under runtime limit"
+  },
+  "acquisition": "Ordinary Copy image PNG control; retained1024x683 raster, maximum original resolution unverified"
+}

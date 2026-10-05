@@ -1,0 +1,80 @@
+{
+  "source": "Actual permitted Companion field projection, initial outing capture",
+  "width": 20,
+  "height": 11,
+  "position": [
+    17,
+    9
+  ],
+  "paths": [
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    104,
+    117,
+    124,
+    137,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149,
+    150,
+    151,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    177,
+    197
+  ],
+  "sites": [
+    {
+      "id": 0,
+      "tile": [
+        17,
+        9
+      ],
+      "name": "Camp"
+    },
+    {
+      "id": 1,
+      "tile": [
+        4,
+        4
+      ],
+      "name": "Moss bend"
+    },
+    {
+      "id": 2,
+      "tile": [
+        15,
+        7
+      ],
+      "name": "Relay"
+    },
+    {
+      "id": 3,
+      "tile": [
+        7,
+        7
+      ],
+      "name": "Stone shelf"
+    }
+  ],
+  "meaning": "Only disclosed route/place data; cosmetic art proof, not an independently playable map"
+}

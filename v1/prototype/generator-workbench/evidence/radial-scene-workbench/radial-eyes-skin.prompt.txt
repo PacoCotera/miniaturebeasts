@@ -1,0 +1,5 @@
+Draw one whole creature as a polished pixel-art game illustration. Use deliberate contiguous pixel clusters, controlled stair-step contours and a few coherent form-following shade and highlight groups. Selective crisp material edges and local optical relief make the described surfaces tactile. Keep the expressed pigments and their region boundaries recognizable. Frame the quiet whole-body pose comfortably on a simple background, with every appendage readable. Where modeled eyes exist, make them the character focus.
+
+One radial ellipsoid has width 0.9, height 0.7 and longitudinal depth 1. Three actual contact chains retain source XYZ directions and exact segment lengths; the reference looks along negative X into YZ. Two cream circular eye modules of diameter 36% of body width occupy a YZ slice at retained X -0.15; this is not an exterior attachment. Every owning body/contact surface is uniformly #269fa5. Bare skin; extent/scale are carried and inactive.
+
+Creature reference: #G166150C8A1CA #ED30BB9329E49

@@ -1,0 +1,61 @@
+{
+  "status": "PASS as source/reference handoff; returned pet fidelity remains HOLD",
+  "sourceSvg": "../module-scene-workbench/axial-scales.svg",
+  "sourceSvgSha256": "01d4f5432a63a9b0d88f2b0f4db2010d73f01fbc31336e88cfb5e1a8797046a1",
+  "inheritedReference": "#GAA74F886E586",
+  "expressionReference": "#E1495F780380B",
+  "transform": "translate(128 0) rotate(90 256 256); pageX=640-sourcePageY, pageY=sourcePageX",
+  "worldBodySpan": {
+    "leading": -0.3,
+    "trailing": 1.8
+  },
+  "sourceCamera": {
+    "x": 85.427417,
+    "y": 256,
+    "scale": 218.091389
+  },
+  "coveringDomain": {
+    "start": 0.2,
+    "end": 0.55,
+    "pageStartY": 111.59838368000001,
+    "pageEndY": 271.895554595
+  },
+  "guide": "Dashed boundary and outside labels are inspection ink only, not inherited pigment; same source geometry/camera as clean reference",
+  "files": [
+    {
+      "file": "upright-source.svg",
+      "sha256": "b783a05399e37f2406382b30fc8ffd5337ae26acfcf7642ed30df71b2f4a72cb",
+      "bytes": 45022
+    },
+    {
+      "file": "upright-source.png",
+      "sha256": "edbdc40cffa3c93324c60db440d428556a04f695974e3713d14413bd3746ee8f",
+      "bytes": 45668,
+      "width": 768,
+      "height": 512
+    },
+    {
+      "file": "covering-guide.svg",
+      "sha256": "fa857c7579376fe71b5b39d1ff8716208d280c07068500d165448551f9b61305",
+      "bytes": 45774
+    },
+    {
+      "file": "covering-guide.png",
+      "sha256": "87cda6528437bcb439ffbbb081b36eacd4d4522546610af232b78d11fff793d9",
+      "bytes": 53240,
+      "width": 768,
+      "height": 512
+    }
+  ],
+  "checks": [
+    "Original SVG hash unchanged",
+    "Exact source inner SVG preserved under one common rigid transform",
+    "Each PNG regenerated once with identical SHA256"
+  ],
+  "limitations": [
+    "Construction/reference artifacts, not finished pet art",
+    "No third provider call or animation",
+    "No geometry, root, pigment or plate-record changes"
+  ],
+  "review": "Art director: actual whole/256px reference readability PASS; independent genomics: exact source closure/hashes/domain mapping PASS; direct agreement confirmed"
+}

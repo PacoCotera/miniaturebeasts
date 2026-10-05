@@ -1,0 +1,241 @@
+{
+  "schemaVersion": "critter-evidence-hashes/1",
+  "files": [
+    {
+      "file": "builtin-pet-01.json",
+      "sha256": "94e9ea1b092e98d2d56d15eeb98efa5164dda90a9acfbfc985c516d071c6b4e5"
+    },
+    {
+      "file": "builtin-pet-01.png",
+      "sha256": "9dd16bebbce3fe60d04446aecfe53a315d184e2e880c905757dac996d52de31e"
+    },
+    {
+      "file": "gemini-pet-01.json",
+      "sha256": "76fee07dbedb68533a14246ca58968cfe245dd3bd3b5c1fa4b5c7fe621da6c6b"
+    },
+    {
+      "file": "gemini-pet-01.svg",
+      "sha256": "e7f248615d50c92f58b94254680d363219acdb33bbe9b301b4d3f823874e91b1"
+    },
+    {
+      "file": "gemini-svg-preview.png",
+      "sha256": "511c96e59f7c3e89497d7e6d1b4b20b340e96423df10bf1b8ef2c962c4e96778"
+    },
+    {
+      "file": "gemini-web-response.jpg",
+      "sha256": "8ac49aa5dd060976b75bf34d717e3ba9c9967bf8b6dbf35bed4e5ed674cc6b25"
+    },
+    {
+      "file": "integration.json",
+      "sha256": "5c7d60e26dc309320677adc72d7f8f64f25d00e27db64dd865105aab59ec3991"
+    },
+    {
+      "file": "manifest.json",
+      "sha256": "b1f124296c6b1ae9cf246ef8ada961c05bd12b4bb4cc4f1e04d5c71f8d8c310b"
+    },
+    {
+      "file": "pet-face-comparison-vertical.png",
+      "sha256": "77a83d604f880c9e18fc1db284d37896cc86a67092a6e4b72e64bf1bd3942167"
+    },
+    {
+      "file": "pet-face-comparison-vertical.svg",
+      "sha256": "3ecd98adb0a8293eb319396cf477c4586286b23c9a1c0dc2b6ef8991035c755b"
+    },
+    {
+      "file": "pet-face-variant-256-vertical.png",
+      "sha256": "55b0420c856417de403e082686ee0dce5f8cba5ded6f1c0cbac772b021be812b"
+    },
+    {
+      "file": "pet-face-variant.description.txt",
+      "sha256": "a40d1e29ed1613be6c1938a85baf5fe00e9836f8c18f297c59b4f2af891391ee"
+    },
+    {
+      "file": "pet-face-variant.genome.svg",
+      "sha256": "ad12f8b8aef9c774872987e1ff0477fbdf662d69e6fb777a6a7bde2f62e4e34c"
+    },
+    {
+      "file": "pet-face-variant.geometry.json",
+      "sha256": "e2b0b2b9898c594510242a05cd3aa2c2b3335675cfb04760e180232c84f4ac97"
+    },
+    {
+      "file": "pet-face-variant.geometry.svg",
+      "sha256": "72eebab259746ea55752787bce8c91ef84fe245b9f48f008c23f243939259320"
+    },
+    {
+      "file": "pet-face-variant.json",
+      "sha256": "a719cb1fcb165bd29a9ba3f38e81582699dcda317112fb49059eb92e6536ce63"
+    },
+    {
+      "file": "pet-face-variant.prompt.txt",
+      "sha256": "8a0728c94c527399300c26214b0a32dfe1b7c563e35777b353b6b6be24afa1a3"
+    },
+    {
+      "file": "pet-face-variant.svg",
+      "sha256": "76a55b4f30f65af9a24fb8f15985450f6fdfecfa0a95f46e59a3ead3e29b1be9"
+    },
+    {
+      "file": "pet-feathers-256-vertical.png",
+      "sha256": "c038d7beb027242436e23d5828105a50a0798efd74b6bf10aa0465a39140223c"
+    },
+    {
+      "file": "pet-feathers.description.txt",
+      "sha256": "a977cfd9fdb5901d20c1776496ed181dac97c06c496977475de2349dcf398dec"
+    },
+    {
+      "file": "pet-feathers.genome.svg",
+      "sha256": "89535b0da36629f82c1a6299a5909a590c5924835b4b436f810bbf1a6ef6a39d"
+    },
+    {
+      "file": "pet-feathers.geometry.json",
+      "sha256": "b411586e11a669e4d5f2f2952fb67e538138aae7facb883b04d2b4f61a43c522"
+    },
+    {
+      "file": "pet-feathers.geometry.svg",
+      "sha256": "504d902b9f5ebcf7fe53c3f2a5aec6e4c4b2f728c723c80ab1d5c81b985218c8"
+    },
+    {
+      "file": "pet-feathers.json",
+      "sha256": "f4426d67b42b9a8eeb67a3b1315466d6bacd6d8430377c26c9d87bb397181e2a"
+    },
+    {
+      "file": "pet-feathers.prompt.txt",
+      "sha256": "d766c8fe88946c706a4d8101665ac1a42320328852e815e7bc849159b1cf74cc"
+    },
+    {
+      "file": "pet-feathers.svg",
+      "sha256": "a536127f08ff59d7dada25508087402333c6db9e48191f7bfd8a68de71eaa77d"
+    },
+    {
+      "file": "pet-fur-256-vertical.png",
+      "sha256": "05eff5377301ec5bb845ad1d5c42229d785accb7c8aeb058a337e9902226e3ad"
+    },
+    {
+      "file": "pet-fur.description.txt",
+      "sha256": "fd28ec1f5903abc1f983dbb3e7ad59b6a20d2cebe22ffad2300e586f7525696d"
+    },
+    {
+      "file": "pet-fur.genome.svg",
+      "sha256": "b7ce0bd22a9853932b0de6997e48d6c5db2728d9857707a8aee57c1de6a25855"
+    },
+    {
+      "file": "pet-fur.geometry.json",
+      "sha256": "5cfbd5a53a276f9ce20042efda0efc4828d4a1bf088299b4bd452000fed90312"
+    },
+    {
+      "file": "pet-fur.geometry.svg",
+      "sha256": "dd6a1e6e250b38df1fd6f844bafccc0b219ee1786f21e287bdb2788e877858a4"
+    },
+    {
+      "file": "pet-fur.json",
+      "sha256": "2adc9f350be977de919a060931d5a89c16f323041bb8403554ee79528917032f"
+    },
+    {
+      "file": "pet-fur.prompt.txt",
+      "sha256": "114d1cf14c8a2e950936a9cf98f4235daa221c369bfbfae9752d4bcf9e0cc13c"
+    },
+    {
+      "file": "pet-fur.svg",
+      "sha256": "b0ff3bd9e5582227e15c465133478ad66a6d4be42b6d2b2e3a557931fafa1d56"
+    },
+    {
+      "file": "pet-material-reference-vertical.png",
+      "sha256": "a9e2b04845c5397022f5a427c0477d8b826c926db8d1548188e058b6bd6a2c1a"
+    },
+    {
+      "file": "pet-material-reference-vertical.svg",
+      "sha256": "c0c67660a785b58836b5fdc51fdcd9a116737c97eae2d4321ffafe8d85b5f40b"
+    },
+    {
+      "file": "pet-material-small-vertical.png",
+      "sha256": "1f34423c83073180479532098372a3ba844a93efadfde946f8f8770498ea0a2a"
+    },
+    {
+      "file": "pet-scales-256-vertical.png",
+      "sha256": "ee7f82846b0d5d2b670c4678344c96e4bfef7f8d5ea12cc844f717eb6dd0f7b1"
+    },
+    {
+      "file": "pet-scales.description.txt",
+      "sha256": "7797cfa1d4ba6282cc907ffcf8ec27f6e2c80dbed421f8be6fefbf9fbebc38bb"
+    },
+    {
+      "file": "pet-scales.genome.svg",
+      "sha256": "5cae9c69cb694a0114ce1a3f264d172cae0ab84eca17967e055c7a5432f56af4"
+    },
+    {
+      "file": "pet-scales.geometry.json",
+      "sha256": "da13ed27787b013bf28a54af68940861685a7f155908c22afa95e45c5f5f18ad"
+    },
+    {
+      "file": "pet-scales.geometry.svg",
+      "sha256": "525c0641ec711543662fe133fbba329e7519cd01195dad9267bbb7f417c80ab1"
+    },
+    {
+      "file": "pet-scales.json",
+      "sha256": "980e227929c0c8144d0dab85a1c86eafc3810796a37d723532eb0dde86bfe951"
+    },
+    {
+      "file": "pet-scales.prompt.txt",
+      "sha256": "090a7cb31ad20bd9c17c664de33efae4eea6ac6c0af2cca290a19869bc150cdc"
+    },
+    {
+      "file": "pet-scales.svg",
+      "sha256": "bf59ebb539417d9f52b2af7c107b01489658ec21fdeaba6ed186b21038cea10c"
+    },
+    {
+      "file": "pet-sheet-vertical.json",
+      "sha256": "1d31088cd88967a5454f070ca26dc0d97ca85d17b4872b6c0af5d903681eed1f"
+    },
+    {
+      "file": "pet-skin-256-vertical.png",
+      "sha256": "f4a155c22bce88141a659da05dae859dbf7cc5033fda5dbbcf3183291943ac61"
+    },
+    {
+      "file": "pet-skin.description.txt",
+      "sha256": "03a2ebfd9281f26b1a6350c09c0693b91467704dc1a3e7ce2cd71fc7a00726c1"
+    },
+    {
+      "file": "pet-skin.genome.svg",
+      "sha256": "ca4d16abdb2d77dd17263635d56ca92116fe4d1c464f41a241f0b684f2eb8048"
+    },
+    {
+      "file": "pet-skin.geometry.json",
+      "sha256": "48e865bb775ffc4b81a75ecb1cc0ea72c84945b5913720f1ec8b18a4cdc7ecb5"
+    },
+    {
+      "file": "pet-skin.geometry.svg",
+      "sha256": "1a104deaa7cc45132663781af1527c8014c1c1dfbe05f88450bdc344ef0a72dc"
+    },
+    {
+      "file": "pet-skin.json",
+      "sha256": "e3e36647ebc9f8e6024cd5be3301835053a4221aff6f835b4be5e41582b2a6a0"
+    },
+    {
+      "file": "pet-skin.prompt.txt",
+      "sha256": "31df99878dbeb2a5ce53e521fe8896e58a82826c5999aadfaeab98d03022b920"
+    },
+    {
+      "file": "pet-skin.svg",
+      "sha256": "6e7967ba13652364b60df82a38ad90583927493bd6186bc9f4ce99e05eb13d1f"
+    },
+    {
+      "file": "prompt.txt",
+      "sha256": "b3a9b3e5bc4e9ab489ecf2dcc2ad87428c42649beff0a8b6f7358114f40181b0"
+    },
+    {
+      "file": "README.md",
+      "sha256": "27e7dd0f65815bc68c850defdeef6e9f8a730e1908afd85e353e30166d11d878"
+    },
+    {
+      "file": "validation.json",
+      "sha256": "fcd2d4f3e60ea1291dee0a15e3e9a69fb045890a39eb61d57380e2700d47c68f"
+    },
+    {
+      "file": "workbench-face-comparison.jpg",
+      "sha256": "4b667ed100d2edfef6bb129c12d2bf75e1663c3c403588dfc5e157cab89ab46c"
+    },
+    {
+      "file": "workbench-fur.jpg",
+      "sha256": "694c1463878d5b97cbe52d3a54fe79e93174ae3e246b9f45cb41e054d2ec4f84"
+    }
+  ]
+}

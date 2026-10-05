@@ -1,0 +1,2778 @@
+{
+  "schemaVersion": "critter-continuous-reference/1",
+  "identity": {
+    "recordId": "experiment-861e965879245bbf2ddb",
+    "inputDigest": "861e965879245bbf2ddb49b26c9bf888c580034187f0619a601ad331dd48f3d8",
+    "resultDigest": "90fde1f3f85e9fa1518b5335015f2126b577005266ef430293c965b6577af296",
+    "contentId": "genomic-pet-study",
+    "contentVersion": 1,
+    "ruleVersion": "continuous-pet/1"
+  },
+  "counts": {
+    "volumes": 3,
+    "fins": 6,
+    "edges": 13
+  },
+  "projection": {
+    "type": "orthographic XY",
+    "width": 1024,
+    "height": 600,
+    "referenceCamera": [
+      -0.5,
+      2.8,
+      -1.1,
+      1.1
+    ],
+    "sharedAcrossProfile": true
+  },
+  "profile": {
+    "id": "continuous-pet/1",
+    "caps": "Retained 16-segment half-ellipse at each terminal station; envelope queries linearly interpolate the same samples.",
+    "capSegments": 16,
+    "shoulderSegments": 8,
+    "shoulderInterpolation": "h(t)=3*t*t-2*t*t*t; eight intervals between each neighboring station/neck extremum; no overshoot",
+    "finChordFraction": 0.5,
+    "ocularRadiusFraction": 0.12,
+    "ocularLateralFraction": 0.45,
+    "oralRadiusFractions": [
+      0.09,
+      0.12
+    ],
+    "oralLongitudinalFraction": 0.16,
+    "featureRimClearance": 0.005,
+    "featurePigment": "#273036",
+    "ocularOuterPigment": "#f1eddc",
+    "ocularPupilRatio": 0.55,
+    "markingPigment": "#e8dfc8",
+    "featurePigmentAuthority": "fixed declared structural-module material; not a pigmentation allele or capability",
+    "staticView": "orthographic XY, X right/Y down; leading station is volume-0 on left",
+    "referenceCamera": [
+      -0.5,
+      2.8,
+      -1.1,
+      1.1
+    ],
+    "covering": {
+      "maximumPlates": 128,
+      "atlasStartU": 0.2,
+      "pitchX": 1.8,
+      "pitchY": 1.4,
+      "halfHeight": 0.7,
+      "orientation": "overlap along positiveX",
+      "exclusionClearance": 0.015
+    },
+    "finOutline": "Two sampled quadratic sides join the retained body chord to the actual tip; leaf profile without added anatomy.",
+    "finCurveSamples": 6,
+    "oralPosteriorFraction": 0.32,
+    "oralWithoutOcularBaseline": 0.5,
+    "ocularReflection": {
+      "radiusFraction": 0.18,
+      "offsetFraction": -0.25,
+      "pigment": "#ffffff",
+      "authority": "fixed optical depiction, not a gene or organ"
+    },
+    "fibers": {
+      "maximumTufts": 64,
+      "maximumFeathers": 48,
+      "pitchX": 2.8,
+      "pitchY": 2.2,
+      "lengthFraction": 2.4,
+      "furLengthFraction": 1.4,
+      "filamentLengths": [
+        1,
+        0.85,
+        0.7
+      ],
+      "filamentRootOffsets": [
+        -0.22,
+        0,
+        0.22
+      ],
+      "filamentTipOffsets": [
+        -0.28,
+        0.08,
+        0.32
+      ],
+      "filamentHalfWidthFraction": 0.12,
+      "filamentCurveSamples": 4,
+      "vaneWidthFractions": [
+        0,
+        0.6,
+        0.52,
+        0.26,
+        0
+      ],
+      "vaneHalfWidthFraction": 0.65,
+      "barbFractions": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "mapping": "Whole element inherits continuous body pigment at retained root local-u; body/scales keep continuous masks.",
+      "contour": "Fur roots at the solved boundary may extend outward; surface elements retain exact outlines. Feathers remain wholly inside body domain."
+    }
+  },
+  "exterior": {
+    "id": "continuous-body",
+    "profileId": "continuous-pet/1",
+    "points": [
+      [
+        -0.166667,
+        0
+      ],
+      [
+        -0.163464,
+        0.100959
+      ],
+      [
+        -0.15398,
+        0.198039
+      ],
+      [
+        -0.138578,
+        0.287508
+      ],
+      [
+        -0.117851,
+        0.365928
+      ],
+      [
+        -0.092595,
+        0.430286
+      ],
+      [
+        -0.063781,
+        0.478108
+      ],
+      [
+        -0.032515,
+        0.507556
+      ],
+      [
+        0,
+        0.5175
+      ],
+      [
+        0.039583,
+        0.507832
+      ],
+      [
+        0.079167,
+        0.482344
+      ],
+      [
+        0.11875,
+        0.446309
+      ],
+      [
+        0.158333,
+        0.405
+      ],
+      [
+        0.197917,
+        0.363691
+      ],
+      [
+        0.2375,
+        0.327656
+      ],
+      [
+        0.277084,
+        0.302168
+      ],
+      [
+        0.316667,
+        0.2925
+      ],
+      [
+        0.35625,
+        0.299268
+      ],
+      [
+        0.395834,
+        0.317109
+      ],
+      [
+        0.435417,
+        0.342334
+      ],
+      [
+        0.475,
+        0.37125
+      ],
+      [
+        0.514583,
+        0.400166
+      ],
+      [
+        0.554167,
+        0.425391
+      ],
+      [
+        0.59375,
+        0.443232
+      ],
+      [
+        0.633333,
+        0.45
+      ],
+      [
+        0.672916,
+        0.442813
+      ],
+      [
+        0.7125,
+        0.423867
+      ],
+      [
+        0.752083,
+        0.397081
+      ],
+      [
+        0.791667,
+        0.366375
+      ],
+      [
+        0.83125,
+        0.335669
+      ],
+      [
+        0.870833,
+        0.308883
+      ],
+      [
+        0.910417,
+        0.289937
+      ],
+      [
+        0.95,
+        0.28275
+      ],
+      [
+        0.989583,
+        0.289292
+      ],
+      [
+        1.029167,
+        0.306539
+      ],
+      [
+        1.06875,
+        0.330923
+      ],
+      [
+        1.108334,
+        0.358875
+      ],
+      [
+        1.147917,
+        0.386827
+      ],
+      [
+        1.1875,
+        0.411211
+      ],
+      [
+        1.227084,
+        0.428458
+      ],
+      [
+        1.266667,
+        0.435
+      ],
+      [
+        1.299182,
+        0.426642
+      ],
+      [
+        1.330448,
+        0.401888
+      ],
+      [
+        1.359262,
+        0.361689
+      ],
+      [
+        1.384518,
+        0.307591
+      ],
+      [
+        1.405245,
+        0.241673
+      ],
+      [
+        1.420647,
+        0.166467
+      ],
+      [
+        1.430131,
+        0.084864
+      ],
+      [
+        1.433334,
+        0
+      ],
+      [
+        1.430131,
+        -0.084864
+      ],
+      [
+        1.420647,
+        -0.166467
+      ],
+      [
+        1.405245,
+        -0.241673
+      ],
+      [
+        1.384518,
+        -0.307591
+      ],
+      [
+        1.359262,
+        -0.361689
+      ],
+      [
+        1.330448,
+        -0.401888
+      ],
+      [
+        1.299182,
+        -0.426642
+      ],
+      [
+        1.266667,
+        -0.435
+      ],
+      [
+        1.227084,
+        -0.428458
+      ],
+      [
+        1.1875,
+        -0.411211
+      ],
+      [
+        1.147917,
+        -0.386827
+      ],
+      [
+        1.108334,
+        -0.358875
+      ],
+      [
+        1.06875,
+        -0.330923
+      ],
+      [
+        1.029167,
+        -0.306539
+      ],
+      [
+        0.989583,
+        -0.289292
+      ],
+      [
+        0.95,
+        -0.28275
+      ],
+      [
+        0.910417,
+        -0.289937
+      ],
+      [
+        0.870833,
+        -0.308883
+      ],
+      [
+        0.83125,
+        -0.335669
+      ],
+      [
+        0.791667,
+        -0.366375
+      ],
+      [
+        0.752083,
+        -0.397081
+      ],
+      [
+        0.7125,
+        -0.423867
+      ],
+      [
+        0.672916,
+        -0.442813
+      ],
+      [
+        0.633333,
+        -0.45
+      ],
+      [
+        0.59375,
+        -0.443232
+      ],
+      [
+        0.554167,
+        -0.425391
+      ],
+      [
+        0.514583,
+        -0.400166
+      ],
+      [
+        0.475,
+        -0.37125
+      ],
+      [
+        0.435417,
+        -0.342334
+      ],
+      [
+        0.395834,
+        -0.317109
+      ],
+      [
+        0.35625,
+        -0.299268
+      ],
+      [
+        0.316667,
+        -0.2925
+      ],
+      [
+        0.277084,
+        -0.302168
+      ],
+      [
+        0.2375,
+        -0.327656
+      ],
+      [
+        0.197917,
+        -0.363691
+      ],
+      [
+        0.158333,
+        -0.405
+      ],
+      [
+        0.11875,
+        -0.446309
+      ],
+      [
+        0.079167,
+        -0.482344
+      ],
+      [
+        0.039583,
+        -0.507832
+      ],
+      [
+        0,
+        -0.5175
+      ],
+      [
+        -0.032515,
+        -0.507556
+      ],
+      [
+        -0.063781,
+        -0.478108
+      ],
+      [
+        -0.092595,
+        -0.430286
+      ],
+      [
+        -0.117851,
+        -0.365928
+      ],
+      [
+        -0.138578,
+        -0.287508
+      ],
+      [
+        -0.15398,
+        -0.198039
+      ],
+      [
+        -0.163464,
+        -0.100959
+      ]
+    ],
+    "upper": [
+      [
+        -0.166667,
+        0
+      ],
+      [
+        -0.163464,
+        0.100959
+      ],
+      [
+        -0.15398,
+        0.198039
+      ],
+      [
+        -0.138578,
+        0.287508
+      ],
+      [
+        -0.117851,
+        0.365928
+      ],
+      [
+        -0.092595,
+        0.430286
+      ],
+      [
+        -0.063781,
+        0.478108
+      ],
+      [
+        -0.032515,
+        0.507556
+      ],
+      [
+        0,
+        0.5175
+      ],
+      [
+        0.039583,
+        0.507832
+      ],
+      [
+        0.079167,
+        0.482344
+      ],
+      [
+        0.11875,
+        0.446309
+      ],
+      [
+        0.158333,
+        0.405
+      ],
+      [
+        0.197917,
+        0.363691
+      ],
+      [
+        0.2375,
+        0.327656
+      ],
+      [
+        0.277084,
+        0.302168
+      ],
+      [
+        0.316667,
+        0.2925
+      ],
+      [
+        0.35625,
+        0.299268
+      ],
+      [
+        0.395834,
+        0.317109
+      ],
+      [
+        0.435417,
+        0.342334
+      ],
+      [
+        0.475,
+        0.37125
+      ],
+      [
+        0.514583,
+        0.400166
+      ],
+      [
+        0.554167,
+        0.425391
+      ],
+      [
+        0.59375,
+        0.443232
+      ],
+      [
+        0.633333,
+        0.45
+      ],
+      [
+        0.672916,
+        0.442813
+      ],
+      [
+        0.7125,
+        0.423867
+      ],
+      [
+        0.752083,
+        0.397081
+      ],
+      [
+        0.791667,
+        0.366375
+      ],
+      [
+        0.83125,
+        0.335669
+      ],
+      [
+        0.870833,
+        0.308883
+      ],
+      [
+        0.910417,
+        0.289937
+      ],
+      [
+        0.95,
+        0.28275
+      ],
+      [
+        0.989583,
+        0.289292
+      ],
+      [
+        1.029167,
+        0.306539
+      ],
+      [
+        1.06875,
+        0.330923
+      ],
+      [
+        1.108334,
+        0.358875
+      ],
+      [
+        1.147917,
+        0.386827
+      ],
+      [
+        1.1875,
+        0.411211
+      ],
+      [
+        1.227084,
+        0.428458
+      ],
+      [
+        1.266667,
+        0.435
+      ],
+      [
+        1.299182,
+        0.426642
+      ],
+      [
+        1.330448,
+        0.401888
+      ],
+      [
+        1.359262,
+        0.361689
+      ],
+      [
+        1.384518,
+        0.307591
+      ],
+      [
+        1.405245,
+        0.241673
+      ],
+      [
+        1.420647,
+        0.166467
+      ],
+      [
+        1.430131,
+        0.084864
+      ],
+      [
+        1.433334,
+        0
+      ]
+    ],
+    "stations": [
+      {
+        "x": 0,
+        "halfWidth": 0.5175
+      },
+      {
+        "x": 0.633333,
+        "halfWidth": 0.45
+      },
+      {
+        "x": 1.266667,
+        "halfWidth": 0.435
+      }
+    ],
+    "extrema": [
+      [
+        0,
+        0.5175
+      ],
+      [
+        0.316667,
+        0.2925
+      ],
+      [
+        0.633333,
+        0.45
+      ],
+      [
+        0.95,
+        0.28275
+      ],
+      [
+        1.266667,
+        0.435
+      ]
+    ],
+    "sources": [
+      "development.axial-repeat",
+      "structure.body-length",
+      "structure.body-width",
+      "structure.body-height",
+      "structure.body-taper",
+      "structure.axial-spacing",
+      "structure.join-neck-ratio",
+      "structure.leading-width-ratio"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "volume-0",
+      "role": "volume",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "dimensions": [
+        0.333333,
+        1.035,
+        0.5
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "volume-1",
+      "role": "volume",
+      "position": [
+        0.633333,
+        0,
+        0
+      ],
+      "dimensions": [
+        0.333333,
+        0.9,
+        0.5
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "join-0",
+      "role": "tissue-join",
+      "position": [
+        0.316667,
+        0,
+        0
+      ],
+      "dimensions": [
+        0.633333,
+        0.585,
+        0.5
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "volume-2",
+      "role": "volume",
+      "position": [
+        1.266667,
+        0,
+        0
+      ],
+      "dimensions": [
+        0.333333,
+        0.87,
+        0.5
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "join-1",
+      "role": "tissue-join",
+      "position": [
+        0.95,
+        0,
+        0
+      ],
+      "dimensions": [
+        0.633334,
+        0.5655,
+        0.5
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "fin-0-0",
+      "role": "fin",
+      "position": [
+        -0.056667,
+        0.539619,
+        0
+      ],
+      "dimensions": [
+        0.117333,
+        0.290381,
+        0.08
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ],
+      "shape": {
+        "kind": "polygon",
+        "points": [
+          [
+            -0.106667,
+            0.394428
+          ],
+          [
+            -0.092595,
+            0.430286
+          ],
+          [
+            -0.063781,
+            0.478108
+          ],
+          [
+            -0.032515,
+            0.507556
+          ],
+          [
+            -0.006667,
+            0.515461
+          ],
+          [
+            0.000833,
+            0.547762
+          ],
+          [
+            0.002,
+            0.578432
+          ],
+          [
+            -0.003167,
+            0.607472
+          ],
+          [
+            -0.014667,
+            0.634881
+          ],
+          [
+            -0.0325,
+            0.66066
+          ],
+          [
+            -0.056667,
+            0.684809
+          ],
+          [
+            -0.080833,
+            0.657298
+          ],
+          [
+            -0.098667,
+            0.621433
+          ],
+          [
+            -0.110167,
+            0.577214
+          ],
+          [
+            -0.115333,
+            0.52464
+          ],
+          [
+            -0.114167,
+            0.463711
+          ],
+          [
+            -0.106667,
+            0.394428
+          ]
+        ]
+      }
+    },
+    {
+      "id": "fin-0-1",
+      "role": "fin",
+      "position": [
+        -0.056667,
+        -0.539619,
+        0
+      ],
+      "dimensions": [
+        0.117333,
+        0.290381,
+        0.08
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ],
+      "shape": {
+        "kind": "polygon",
+        "points": [
+          [
+            -0.106667,
+            -0.394428
+          ],
+          [
+            -0.092595,
+            -0.430286
+          ],
+          [
+            -0.063781,
+            -0.478108
+          ],
+          [
+            -0.032515,
+            -0.507556
+          ],
+          [
+            -0.006667,
+            -0.515461
+          ],
+          [
+            0.000833,
+            -0.547762
+          ],
+          [
+            0.002,
+            -0.578432
+          ],
+          [
+            -0.003167,
+            -0.607472
+          ],
+          [
+            -0.014667,
+            -0.634881
+          ],
+          [
+            -0.0325,
+            -0.66066
+          ],
+          [
+            -0.056667,
+            -0.684809
+          ],
+          [
+            -0.080833,
+            -0.657298
+          ],
+          [
+            -0.098667,
+            -0.621433
+          ],
+          [
+            -0.110167,
+            -0.577214
+          ],
+          [
+            -0.115333,
+            -0.52464
+          ],
+          [
+            -0.114167,
+            -0.463711
+          ],
+          [
+            -0.106667,
+            -0.394428
+          ]
+        ]
+      }
+    },
+    {
+      "id": "fin-1-0",
+      "role": "fin",
+      "position": [
+        0.626667,
+        0.542196,
+        0
+      ],
+      "dimensions": [
+        0.117333,
+        0.213328,
+        0.08
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ],
+      "shape": {
+        "kind": "polygon",
+        "points": [
+          [
+            0.576666,
+            0.435532
+          ],
+          [
+            0.59375,
+            0.443232
+          ],
+          [
+            0.633333,
+            0.45
+          ],
+          [
+            0.672916,
+            0.442813
+          ],
+          [
+            0.676666,
+            0.441018
+          ],
+          [
+            0.684166,
+            0.485081
+          ],
+          [
+            0.685333,
+            0.525375
+          ],
+          [
+            0.680166,
+            0.5619
+          ],
+          [
+            0.668666,
+            0.594655
+          ],
+          [
+            0.650833,
+            0.623642
+          ],
+          [
+            0.626666,
+            0.64886
+          ],
+          [
+            0.6025,
+            0.62349
+          ],
+          [
+            0.584666,
+            0.594046
+          ],
+          [
+            0.573166,
+            0.560528
+          ],
+          [
+            0.568,
+            0.522937
+          ],
+          [
+            0.569166,
+            0.481271
+          ],
+          [
+            0.576666,
+            0.435532
+          ]
+        ]
+      }
+    },
+    {
+      "id": "fin-1-1",
+      "role": "fin",
+      "position": [
+        0.626667,
+        -0.542196,
+        0
+      ],
+      "dimensions": [
+        0.117333,
+        0.213328,
+        0.08
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ],
+      "shape": {
+        "kind": "polygon",
+        "points": [
+          [
+            0.576666,
+            -0.435532
+          ],
+          [
+            0.59375,
+            -0.443232
+          ],
+          [
+            0.633333,
+            -0.45
+          ],
+          [
+            0.672916,
+            -0.442813
+          ],
+          [
+            0.676666,
+            -0.441018
+          ],
+          [
+            0.684166,
+            -0.485081
+          ],
+          [
+            0.685333,
+            -0.525375
+          ],
+          [
+            0.680166,
+            -0.5619
+          ],
+          [
+            0.668666,
+            -0.594655
+          ],
+          [
+            0.650833,
+            -0.623642
+          ],
+          [
+            0.626666,
+            -0.64886
+          ],
+          [
+            0.6025,
+            -0.62349
+          ],
+          [
+            0.584666,
+            -0.594046
+          ],
+          [
+            0.573166,
+            -0.560528
+          ],
+          [
+            0.568,
+            -0.522937
+          ],
+          [
+            0.569166,
+            -0.481271
+          ],
+          [
+            0.576666,
+            -0.435532
+          ]
+        ]
+      }
+    },
+    {
+      "id": "fin-2-0",
+      "role": "fin",
+      "position": [
+        1.310001,
+        0.489092,
+        0
+      ],
+      "dimensions": [
+        0.117333,
+        0.257969,
+        0.08
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ],
+      "shape": {
+        "kind": "polygon",
+        "points": [
+          [
+            1.26,
+            0.433898
+          ],
+          [
+            1.266667,
+            0.435
+          ],
+          [
+            1.299182,
+            0.426642
+          ],
+          [
+            1.330448,
+            0.401888
+          ],
+          [
+            1.359262,
+            0.361689
+          ],
+          [
+            1.36,
+            0.360108
+          ],
+          [
+            1.3675,
+            0.419487
+          ],
+          [
+            1.368667,
+            0.472313
+          ],
+          [
+            1.3635,
+            0.518585
+          ],
+          [
+            1.352,
+            0.558303
+          ],
+          [
+            1.334167,
+            0.591467
+          ],
+          [
+            1.31,
+            0.618077
+          ],
+          [
+            1.285834,
+            0.593516
+          ],
+          [
+            1.268,
+            0.566501
+          ],
+          [
+            1.2565,
+            0.537032
+          ],
+          [
+            1.251334,
+            0.505109
+          ],
+          [
+            1.2525,
+            0.470731
+          ],
+          [
+            1.26,
+            0.433898
+          ]
+        ]
+      }
+    },
+    {
+      "id": "fin-2-1",
+      "role": "fin",
+      "position": [
+        1.310001,
+        -0.489092,
+        0
+      ],
+      "dimensions": [
+        0.117333,
+        0.257969,
+        0.08
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ],
+      "shape": {
+        "kind": "polygon",
+        "points": [
+          [
+            1.26,
+            -0.433898
+          ],
+          [
+            1.266667,
+            -0.435
+          ],
+          [
+            1.299182,
+            -0.426642
+          ],
+          [
+            1.330448,
+            -0.401888
+          ],
+          [
+            1.359262,
+            -0.361689
+          ],
+          [
+            1.36,
+            -0.360108
+          ],
+          [
+            1.3675,
+            -0.419487
+          ],
+          [
+            1.368667,
+            -0.472313
+          ],
+          [
+            1.3635,
+            -0.518585
+          ],
+          [
+            1.352,
+            -0.558303
+          ],
+          [
+            1.334167,
+            -0.591467
+          ],
+          [
+            1.31,
+            -0.618077
+          ],
+          [
+            1.285834,
+            -0.593516
+          ],
+          [
+            1.268,
+            -0.566501
+          ],
+          [
+            1.2565,
+            -0.537032
+          ],
+          [
+            1.251334,
+            -0.505109
+          ],
+          [
+            1.2525,
+            -0.470731
+          ],
+          [
+            1.26,
+            -0.433898
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ocular-0",
+      "role": "ocular",
+      "position": [
+        0,
+        0.336375,
+        0
+      ],
+      "dimensions": [
+        0.12,
+        0.12,
+        0.02
+      ],
+      "sources": [
+        "structure.ocular-pair",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.ocular-placement",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "structure.ocular-size",
+        "structure.ocular-separation",
+        "structure.pupil-ratio"
+      ],
+      "shape": {
+        "kind": "ellipse",
+        "center": [
+          0,
+          0.336375
+        ],
+        "radii": [
+          0.06,
+          0.06
+        ],
+        "components": [
+          {
+            "kind": "outer-circle",
+            "radius": 0.06,
+            "pigment": "#f1eddc"
+          },
+          {
+            "kind": "pupil-circle",
+            "radius": 0.024,
+            "pigment": "#273036"
+          },
+          {
+            "kind": "reflection-circle",
+            "radius": 0.0108,
+            "offset": [
+              -0.015,
+              -0.015
+            ],
+            "pigment": "#ffffff",
+            "authority": "fixed optical depiction, not a gene or organ"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ocular-1",
+      "role": "ocular",
+      "position": [
+        0,
+        -0.336375,
+        0
+      ],
+      "dimensions": [
+        0.12,
+        0.12,
+        0.02
+      ],
+      "sources": [
+        "structure.ocular-pair",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.ocular-placement",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "structure.ocular-size",
+        "structure.ocular-separation",
+        "structure.pupil-ratio"
+      ],
+      "shape": {
+        "kind": "ellipse",
+        "center": [
+          0,
+          -0.336375
+        ],
+        "radii": [
+          0.06,
+          0.06
+        ],
+        "components": [
+          {
+            "kind": "outer-circle",
+            "radius": 0.06,
+            "pigment": "#f1eddc"
+          },
+          {
+            "kind": "pupil-circle",
+            "radius": 0.024,
+            "pigment": "#273036"
+          },
+          {
+            "kind": "reflection-circle",
+            "radius": 0.0108,
+            "offset": [
+              -0.015,
+              -0.015
+            ],
+            "pigment": "#ffffff",
+            "authority": "fixed optical depiction, not a gene or organ"
+          }
+        ]
+      }
+    },
+    {
+      "id": "oral-0",
+      "role": "oral-aperture",
+      "position": [
+        0.106667,
+        0,
+        0
+      ],
+      "dimensions": [
+        0.06,
+        0.1242,
+        0.02
+      ],
+      "sources": [
+        "structure.oral-opening",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "structure.ocular-pair",
+        "structure.ocular-placement"
+      ],
+      "shape": {
+        "kind": "ellipse",
+        "center": [
+          0.106667,
+          0
+        ],
+        "radii": [
+          0.03,
+          0.0621
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "body-in-1",
+      "from": "volume-0",
+      "to": "join-0",
+      "role": "joining-tissue",
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "body-out-1",
+      "from": "join-0",
+      "to": "volume-1",
+      "role": "joining-tissue",
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "body-in-2",
+      "from": "volume-1",
+      "to": "join-1",
+      "role": "joining-tissue",
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "body-out-2",
+      "from": "join-1",
+      "to": "volume-2",
+      "role": "joining-tissue",
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "root-fin-0-0",
+      "from": "volume-0",
+      "to": "fin-0-0",
+      "role": "exterior-rooted-fin",
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "root-fin-0-1",
+      "from": "volume-0",
+      "to": "fin-0-1",
+      "role": "exterior-rooted-fin",
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "root-fin-1-0",
+      "from": "volume-1",
+      "to": "fin-1-0",
+      "role": "exterior-rooted-fin",
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "root-fin-1-1",
+      "from": "volume-1",
+      "to": "fin-1-1",
+      "role": "exterior-rooted-fin",
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "root-fin-2-0",
+      "from": "volume-2",
+      "to": "fin-2-0",
+      "role": "exterior-rooted-fin",
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "root-fin-2-1",
+      "from": "volume-2",
+      "to": "fin-2-1",
+      "role": "exterior-rooted-fin",
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "root-ocular-0",
+      "from": "volume-0",
+      "to": "ocular-0",
+      "role": "surface-feature",
+      "sources": [
+        "structure.ocular-pair",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.ocular-placement",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "structure.ocular-size",
+        "structure.ocular-separation",
+        "structure.pupil-ratio"
+      ]
+    },
+    {
+      "id": "root-ocular-1",
+      "from": "volume-0",
+      "to": "ocular-1",
+      "role": "surface-feature",
+      "sources": [
+        "structure.ocular-pair",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.ocular-placement",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "structure.ocular-size",
+        "structure.ocular-separation",
+        "structure.pupil-ratio"
+      ]
+    },
+    {
+      "id": "root-oral-0",
+      "from": "volume-0",
+      "to": "oral-0",
+      "role": "surface-feature",
+      "sources": [
+        "structure.oral-opening",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "structure.ocular-pair",
+        "structure.ocular-placement"
+      ]
+    }
+  ],
+  "rootAnchors": [
+    {
+      "id": "anchor-fin-0-0",
+      "nodeId": "fin-0-0",
+      "volumeId": "volume-0",
+      "position": [
+        -0.056667,
+        0.484809,
+        0
+      ],
+      "chord": [
+        [
+          -0.106667,
+          0.394428
+        ],
+        [
+          -0.092595,
+          0.430286
+        ],
+        [
+          -0.063781,
+          0.478108
+        ],
+        [
+          -0.032515,
+          0.507556
+        ],
+        [
+          -0.006667,
+          0.515461
+        ]
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "anchor-fin-0-1",
+      "nodeId": "fin-0-1",
+      "volumeId": "volume-0",
+      "position": [
+        -0.056667,
+        -0.484809,
+        0
+      ],
+      "chord": [
+        [
+          -0.106667,
+          -0.394428
+        ],
+        [
+          -0.092595,
+          -0.430286
+        ],
+        [
+          -0.063781,
+          -0.478108
+        ],
+        [
+          -0.032515,
+          -0.507556
+        ],
+        [
+          -0.006667,
+          -0.515461
+        ]
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "anchor-fin-1-0",
+      "nodeId": "fin-1-0",
+      "volumeId": "volume-1",
+      "position": [
+        0.626666,
+        0.44886,
+        0
+      ],
+      "chord": [
+        [
+          0.576666,
+          0.435532
+        ],
+        [
+          0.59375,
+          0.443232
+        ],
+        [
+          0.633333,
+          0.45
+        ],
+        [
+          0.672916,
+          0.442813
+        ],
+        [
+          0.676666,
+          0.441018
+        ]
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "anchor-fin-1-1",
+      "nodeId": "fin-1-1",
+      "volumeId": "volume-1",
+      "position": [
+        0.626666,
+        -0.44886,
+        0
+      ],
+      "chord": [
+        [
+          0.576666,
+          -0.435532
+        ],
+        [
+          0.59375,
+          -0.443232
+        ],
+        [
+          0.633333,
+          -0.45
+        ],
+        [
+          0.672916,
+          -0.442813
+        ],
+        [
+          0.676666,
+          -0.441018
+        ]
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "anchor-fin-2-0",
+      "nodeId": "fin-2-0",
+      "volumeId": "volume-2",
+      "position": [
+        1.31,
+        0.418077,
+        0
+      ],
+      "chord": [
+        [
+          1.26,
+          0.433898
+        ],
+        [
+          1.266667,
+          0.435
+        ],
+        [
+          1.299182,
+          0.426642
+        ],
+        [
+          1.330448,
+          0.401888
+        ],
+        [
+          1.359262,
+          0.361689
+        ],
+        [
+          1.36,
+          0.360108
+        ]
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    },
+    {
+      "id": "anchor-fin-2-1",
+      "nodeId": "fin-2-1",
+      "volumeId": "volume-2",
+      "position": [
+        1.31,
+        -0.418077,
+        0
+      ],
+      "chord": [
+        [
+          1.26,
+          -0.433898
+        ],
+        [
+          1.266667,
+          -0.435
+        ],
+        [
+          1.299182,
+          -0.426642
+        ],
+        [
+          1.330448,
+          -0.401888
+        ],
+        [
+          1.359262,
+          -0.361689
+        ],
+        [
+          1.36,
+          -0.360108
+        ]
+      ],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "surface-volume-0",
+      "nodeId": "volume-0",
+      "region": "volume",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#ae674d"
+      ],
+      "partition": "uniform",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.body-palette",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "continuous-body",
+        "bounds": {
+          "minimumX": -0.166667,
+          "maximumX": 1.433334,
+          "minimumY": -0.5175,
+          "maximumY": 0.5175
+        },
+        "sharedWith": "continuous-body"
+      }
+    },
+    {
+      "id": "surface-volume-1",
+      "nodeId": "volume-1",
+      "region": "volume",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#ae674d"
+      ],
+      "partition": "uniform",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.body-palette",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "continuous-body",
+        "bounds": {
+          "minimumX": -0.166667,
+          "maximumX": 1.433334,
+          "minimumY": -0.5175,
+          "maximumY": 0.5175
+        },
+        "sharedWith": "continuous-body"
+      }
+    },
+    {
+      "id": "surface-join-0",
+      "nodeId": "join-0",
+      "region": "tissue-join",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#ae674d"
+      ],
+      "partition": "uniform",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.body-palette",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "continuous-body",
+        "bounds": {
+          "minimumX": -0.166667,
+          "maximumX": 1.433334,
+          "minimumY": -0.5175,
+          "maximumY": 0.5175
+        },
+        "sharedWith": "continuous-body"
+      }
+    },
+    {
+      "id": "surface-volume-2",
+      "nodeId": "volume-2",
+      "region": "volume",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#ae674d"
+      ],
+      "partition": "uniform",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.body-palette",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "continuous-body",
+        "bounds": {
+          "minimumX": -0.166667,
+          "maximumX": 1.433334,
+          "minimumY": -0.5175,
+          "maximumY": 0.5175
+        },
+        "sharedWith": "continuous-body"
+      }
+    },
+    {
+      "id": "surface-join-1",
+      "nodeId": "join-1",
+      "region": "tissue-join",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#ae674d"
+      ],
+      "partition": "uniform",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.body-palette",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "continuous-body",
+        "bounds": {
+          "minimumX": -0.166667,
+          "maximumX": 1.433334,
+          "minimumY": -0.5175,
+          "maximumY": 0.5175
+        },
+        "sharedWith": "continuous-body"
+      }
+    },
+    {
+      "id": "surface-fin-0-0",
+      "nodeId": "fin-0-0",
+      "region": "fin",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#dfd2ae",
+        "#718489"
+      ],
+      "partition": "two declared equal local masks",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "node-local",
+        "bounds": {
+          "minimumX": -0.115333,
+          "maximumX": 0.002,
+          "minimumY": 0.394428,
+          "maximumY": 0.684809
+        }
+      }
+    },
+    {
+      "id": "surface-fin-0-1",
+      "nodeId": "fin-0-1",
+      "region": "fin",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#dfd2ae",
+        "#718489"
+      ],
+      "partition": "two declared equal local masks",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "node-local",
+        "bounds": {
+          "minimumX": -0.115333,
+          "maximumX": 0.002,
+          "minimumY": -0.684809,
+          "maximumY": -0.394428
+        }
+      }
+    },
+    {
+      "id": "surface-fin-1-0",
+      "nodeId": "fin-1-0",
+      "region": "fin",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#dfd2ae",
+        "#718489"
+      ],
+      "partition": "two declared equal local masks",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "node-local",
+        "bounds": {
+          "minimumX": 0.568,
+          "maximumX": 0.685333,
+          "minimumY": 0.435532,
+          "maximumY": 0.64886
+        }
+      }
+    },
+    {
+      "id": "surface-fin-1-1",
+      "nodeId": "fin-1-1",
+      "region": "fin",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#dfd2ae",
+        "#718489"
+      ],
+      "partition": "two declared equal local masks",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "node-local",
+        "bounds": {
+          "minimumX": 0.568,
+          "maximumX": 0.685333,
+          "minimumY": -0.64886,
+          "maximumY": -0.435532
+        }
+      }
+    },
+    {
+      "id": "surface-fin-2-0",
+      "nodeId": "fin-2-0",
+      "region": "fin",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#dfd2ae",
+        "#718489"
+      ],
+      "partition": "two declared equal local masks",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "node-local",
+        "bounds": {
+          "minimumX": 1.251334,
+          "maximumX": 1.368667,
+          "minimumY": 0.360108,
+          "maximumY": 0.618077
+        }
+      }
+    },
+    {
+      "id": "surface-fin-2-1",
+      "nodeId": "fin-2-1",
+      "region": "fin",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#dfd2ae",
+        "#718489"
+      ],
+      "partition": "two declared equal local masks",
+      "texture": "fine-ridged",
+      "markings": [],
+      "sources": [
+        "development.attachment-repeat",
+        "structure.attachment-position",
+        "structure.fin-span",
+        "development.fin-rooting",
+        "structure.fin-tip-position",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.axial-spacing",
+        "structure.body-taper",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "atlas": {
+        "kind": "node-local",
+        "bounds": {
+          "minimumX": 1.251334,
+          "maximumX": 1.368667,
+          "minimumY": -0.618077,
+          "maximumY": -0.360108
+        }
+      }
+    },
+    {
+      "id": "surface-ocular-0",
+      "nodeId": "ocular-0",
+      "region": "ocular",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#f1eddc"
+      ],
+      "partition": "uniform",
+      "texture": "structural module",
+      "markings": [],
+      "sources": [
+        "structure.ocular-pair",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.ocular-placement",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "structure.ocular-size",
+        "structure.ocular-separation",
+        "structure.pupil-ratio"
+      ],
+      "atlas": {
+        "kind": "node-local",
+        "bounds": {
+          "minimumX": -0.06,
+          "maximumX": 0.06,
+          "minimumY": 0.276375,
+          "maximumY": 0.396375
+        }
+      }
+    },
+    {
+      "id": "surface-ocular-1",
+      "nodeId": "ocular-1",
+      "region": "ocular",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#f1eddc"
+      ],
+      "partition": "uniform",
+      "texture": "structural module",
+      "markings": [],
+      "sources": [
+        "structure.ocular-pair",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.ocular-placement",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "structure.ocular-size",
+        "structure.ocular-separation",
+        "structure.pupil-ratio"
+      ],
+      "atlas": {
+        "kind": "node-local",
+        "bounds": {
+          "minimumX": -0.06,
+          "maximumX": 0.06,
+          "minimumY": -0.396375,
+          "maximumY": -0.276375
+        }
+      }
+    },
+    {
+      "id": "surface-oral-0",
+      "nodeId": "oral-0",
+      "region": "oral-aperture",
+      "axes": [
+        "local-longitudinal",
+        "local-lateral"
+      ],
+      "coordinates": "normalized local u/v on solved outline; not chromosome mapping",
+      "palette": [
+        "#273036"
+      ],
+      "partition": "uniform",
+      "texture": "structural module",
+      "markings": [],
+      "sources": [
+        "structure.oral-opening",
+        "development.axial-repeat",
+        "structure.body-width",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.join-neck-ratio",
+        "structure.leading-width-ratio",
+        "structure.ocular-pair",
+        "structure.ocular-placement"
+      ],
+      "atlas": {
+        "kind": "node-local",
+        "bounds": {
+          "minimumX": 0.076667,
+          "maximumX": 0.13666699999999998,
+          "minimumY": -0.0621,
+          "maximumY": 0.0621
+        }
+      }
+    }
+  ],
+  "covering": {
+    "kind": "skin",
+    "sources": [
+      "appearance.covering-kind",
+      "structure.join-neck-ratio",
+      "development.axial-repeat",
+      "structure.body-width"
+    ],
+    "plates": [],
+    "exclusions": [],
+    "atlas": {
+      "bounds": {
+        "minimumX": -0.166667,
+        "maximumX": 1.433334,
+        "minimumY": -0.5175,
+        "maximumY": 0.5175
+      }
+    },
+    "elementProfile": null
+  },
+  "masks": "Body/scales use continuous local-u masks. Each fur/feather element retains the pigment of its root local-u; contour extent is not body-clipped.",
+  "limitations": [
+    "Provisional static 2D construction profile; no whole 3D body, physical motion or animation",
+    "Ocular and oral features have no modeled sensing, nutrition or behavior capability",
+    "Lifetime state, learning, configured incubation and epigenetics not modeled",
+    "No game individual, ownership or breeding permission",
+    "Unshaded flat pigment reference; highlight overlays are inspection only."
+  ]
+}

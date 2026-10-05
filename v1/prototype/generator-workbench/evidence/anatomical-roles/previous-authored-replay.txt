@@ -1,0 +1,75 @@
+- banner:
+  - heading "Critter Lab · Genome authoring" [level=3]
+  - paragraph: Adult developer tool · provisional shared engine · game/device UI unchanged
+  - combobox "Content package": Authored composition · eleven branches · v2
+  - generic: genomic-compositional-source-draft-96985f03084e4d18 v2
+  - link "Preserved Pip proof":
+    - /url: /legacy
+    - generic: Preserved Pip proof
+- navigation:
+  - paragraph: AUTHOR & INVESTIGATE
+  - generic: Genome
+  - generic: Compendium
+  - generic: Pinned comparison
+  - generic: Saved records
+  - generic: Generation batch
+  - separator
+  - paragraph: 110 proposed records · 104 defined copy contracts · 6 draft candidates
+  - link "Character art studies":
+    - /url: https://github.com/PacoCotera/critter-lab/blob/codex/genome-art-reset/prototype/generator-workbench/evidence/art-reset/README.md
+    - generic: Character art studies
+- main:
+  - status:
+    - generic: Digest replay verified from inputs. Embedded output/SVG/prompt was not trusted.
+  - heading "Genome" [level=2]
+  - paragraph: Generate a creature, then explore its inherited copies and their effects.
+  - button "Generate creature":
+    - generic: Generate creature
+  - heading "Source illustration" [level=4]
+  - generic: Provisional anatomical source
+  - paragraph: compositional-3d0b154a2ee771514d17 · genomic-compositional-source-draft-96985f03084e4d18@2
+  - img "Provisional compositional vocabulary source"
+  - paragraph: Inspect or edit genome shows module involvement; exact targets and source links remain in advanced scene inspection.
+  - paragraph: This structural diagram is not generated game art.
+  - paragraph: "Display: compositional-source/4. Connected regions and independent optional parts follow copied composition rules. All eleven genomic branches are retained; source consumers and missing physiology are explicit."
+  - button "Download source PNG":
+    - generic: Download source PNG
+  - button "Pin comparison":
+    - generic: Pin comparison
+  - button "Save record":
+    - generic: Save record
+  - button "Export record":
+    - generic: Export record
+  - heading "Gemini prompt" [level=4]
+  - button "Copy prompt":
+    - generic: Copy prompt
+  - textbox "Gemini prompt": Turn the attached critter into a cute pet, shown alone in rich high-bit pixel art. A headless creature with two linked softly squared, barrel-shaped body regions and four jointed legs with wedge-shaped ends. Each body region has russet-and-jade fur; its smooth appendages have slate-and-peach local colour fields.
+  - paragraph: Attach the shown source image in Gemini, then paste this brief. Returned feature changes are pet proposals; the genome audit stays in Advanced inspection.
+  - heading "Eleven genomic branches" [level=3]
+  - paragraph: 104 carried pairs · 6 draft definitions. Every declared record remains available. A retained contribution with no compatible consumer is unimplemented, rather than a working phenotype.
+  - button "structure · 72 indexed records · 21 active / 25 inactive / 26 unimplemented":
+    - generic: structure · 72 indexed records · 21 active / 25 inactive / 26 unimplemented
+  - button "appearance · 46 indexed records · 5 active / 4 inactive / 37 unimplemented":
+    - generic: appearance · 46 indexed records · 5 active / 4 inactive / 37 unimplemented
+  - button "mechanics movement · 34 indexed records · 0 active / 0 inactive / 34 unimplemented":
+    - generic: mechanics movement · 34 indexed records · 0 active / 0 inactive / 34 unimplemented
+  - button "sensing signaling · 1 indexed records · 0 active / 1 inactive / 0 unimplemented":
+    - generic: sensing signaling · 1 indexed records · 0 active / 1 inactive / 0 unimplemented
+  - button "cognition tendencies · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: cognition tendencies · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "energy nutrition · 21 indexed records · 0 active / 0 inactive / 21 unimplemented":
+    - generic: energy nutrition · 21 indexed records · 0 active / 0 inactive / 21 unimplemented
+  - button "maintenance protection · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: maintenance protection · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "affinities exposure · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: affinities exposure · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "development longevity · 9 indexed records · 0 active / 0 inactive / 9 unimplemented":
+    - generic: development longevity · 9 indexed records · 0 active / 0 inactive / 9 unimplemented
+  - button "reproduction · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: reproduction · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "fantastic physiology · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: fantastic physiology · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "Inspect or edit genome":
+    - generic: Inspect or edit genome
+  - button "Known examples · load and resolve":
+    - generic: Known examples · load and

@@ -1,0 +1,1132 @@
+{
+  "schemaVersion": "critter-family-test-battery/1",
+  "legacy": [
+    {
+      "name": "contact-original",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "contact-related-topology",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "contact-actual-parent-cross",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "membrane-original",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "membrane-related-topology",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "membrane-actual-parent-cross",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "axial-original",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "axial-related-topology",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "carried-suppressed",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "expression-placement-a",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "expression-placement-b",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "static-radial-volume-not-distributed-network",
+      "status": "resolved",
+      "exact": true
+    },
+    {
+      "name": "invalid-unrooted-membrane",
+      "status": "rejected",
+      "exact": true
+    }
+  ],
+  "seededGeneration": {
+    "purpose": "Measure bounded generation viability and deterministic replay under the declared continuous profile; not organism breadth or unbiased distribution.",
+    "seedRange": [
+      0,
+      99
+    ],
+    "maximumWholeDrawsPerSeed": 128,
+    "counts": {
+      "generated": 93,
+      "rejected": 7
+    },
+    "promptRejections": [
+      {
+        "seed": 0,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 4,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 5,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 11,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 15,
+        "error": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 16,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 17,
+        "error": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 20,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 24,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 27,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 30,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 33,
+        "error": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 34,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 35,
+        "error": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 43,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 44,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 45,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 46,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 47,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 48,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 51,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 52,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 56,
+        "error": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 58,
+        "error": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 62,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 68,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 69,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 77,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 78,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 79,
+        "error": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 81,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 83,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 84,
+        "error": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 87,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 90,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 92,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 94,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 99,
+        "error": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      }
+    ],
+    "cases": [
+      {
+        "seed": 0,
+        "status": "generated",
+        "attempts": 4,
+        "inputDigest": "279fb120d2059fd3f37b840880cf87e172b35afa3ed8d2357821e660b29a8844",
+        "resultDigest": "c12a1714ed9c655831103191fbe0347db7c8f5b258d4b4e355b7eccca02c049c",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 1,
+        "status": "generated",
+        "attempts": 34,
+        "inputDigest": "d8d04c47020d5bafdfa4b8f2f2ac65dc76d9011e16d4ad04fddd4186c8aa7434",
+        "resultDigest": "4a3192781020e129f244f807613567693a6ca561255ffe49cce9914b6f1899ff",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 2,
+        "status": "generated",
+        "attempts": 109,
+        "inputDigest": "c175dadf7057d0bb58c182929239e3b37a434596ee8967dbaeafb4f1327e5033",
+        "resultDigest": "cc5b39d00541a39a04e87aa4b90443337276ea67a7f3309faa969c4f68066a41",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 3,
+        "status": "generated",
+        "attempts": 67,
+        "inputDigest": "58e95279b119b2fed0063e523025487f64309fa0738f90155a74c7408ed1cb50",
+        "resultDigest": "6da26838999f349cda2ac3e02150f8bb614ca424a1bc9592844bb2be192fd1aa",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 4,
+        "status": "generated",
+        "attempts": 103,
+        "inputDigest": "89b84741414a3d56d8586c51371aef9a8faf378471a2d1a37e36254c24496318",
+        "resultDigest": "0e6f4d5658d77b17fbc3cf7b1de6f085a8f7e520cc82aa2448b193b5c3e19c15",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 5,
+        "status": "generated",
+        "attempts": 28,
+        "inputDigest": "a1259e848beddff0c59c106d6af139db28254830de8bf0ba9716a033314099ae",
+        "resultDigest": "4694fce992bffae4068f5a8b837973e464514d4ab128164960e9c0c8955dce45",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 6,
+        "status": "generated",
+        "attempts": 15,
+        "inputDigest": "86dd439401c993cd48ed9264d52d7cab99e93e7c78a11728df8acd6653e6f455",
+        "resultDigest": "c2ee90fc49660a6c2a6d26ad108f8a96ddb8cd55765313f228914ec621ab0084",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 7,
+        "status": "generated",
+        "attempts": 6,
+        "inputDigest": "f37140e6f83b9d7ea51f88fc940f5e34b9ec3fd72d2b7b32478978b8cbdc8018",
+        "resultDigest": "46347f7ee5de545bd2b6223f373b517e42768640e18b72c94e622f93c88bf14e",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 8,
+        "status": "generated",
+        "attempts": 105,
+        "inputDigest": "7bc6f1b395e91c3a7c2a7778bc5cb7d2d4880c6119d08a22d29fa0abd65ad69b",
+        "resultDigest": "ab0bc29fcb58c96725f6e26a76c3d8bd5e9287d2e075da10fd5ee8bb0fc1dd21",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 9,
+        "status": "generated",
+        "attempts": 63,
+        "inputDigest": "df36af4cc5ccaddbc92986ea66d10859afc5ec1ac02ae02e4d58447a967273bf",
+        "resultDigest": "2280e35d39de9d42e094466ee3fd70b60704d2ac5c5f89cb55c6668b4303c8e3",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 10,
+        "status": "generated",
+        "attempts": 35,
+        "inputDigest": "1366af71dddbadf1f6350c845b027e1f25325746661ec65724dfd6c880a5b873",
+        "resultDigest": "90e629b54846bb25fd162eb5cd4057a4559ddee42e4060bad131d5d30d1442b2",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 11,
+        "status": "generated",
+        "attempts": 13,
+        "inputDigest": "e9f081c9468c8fe963adb4792d228aaf9b676b21a8853efae82cec5c59931baa",
+        "resultDigest": "2a79c60d81d55206fa776a9ac69d5298aca56a80c58bd106ca18d0a13e49f41b",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 12,
+        "status": "generated",
+        "attempts": 45,
+        "inputDigest": "d2edc2b42fd3f73401304da7353eafcad6581280296dc951b7474463786bcb63",
+        "resultDigest": "7d5a9815ee868a4ae0ef777751d044adeb5782d6db1805a3b0ef7db6082b4dd8",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 13,
+        "status": "generated",
+        "attempts": 28,
+        "inputDigest": "a25b72cd2ebf6e0170e8617ee0e3f9ce81550f54b572d3640b257394c230e4a0",
+        "resultDigest": "881e172c51fab483a7014d38eed29bc01d317109c510f2c31a34ed74dc511f6b",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 14,
+        "status": "generated",
+        "attempts": 65,
+        "inputDigest": "8a7f244a7eea49f568f2ffd7404c953620eca40270f441b327003273bd66f7a1",
+        "resultDigest": "647bafa751ce406078fef46dd51d6069f613d70e8dbca5ec381fc0202186d372",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 15,
+        "status": "generated",
+        "attempts": 44,
+        "inputDigest": "1d9de0f3eebbf47fab7f90d14b4ee0d42df17e25fd466ebf3758580b19c6820a",
+        "resultDigest": "77ad45dc6be352f47ed7691cfc78fb3944d9a14480abe339bfaa9ccbcdd8e547",
+        "promptStatus": "rejected",
+        "promptError": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 16,
+        "status": "generated",
+        "attempts": 64,
+        "inputDigest": "4f4f3a253c964477191030cad82721198befbc2faa992362cf530295549092fe",
+        "resultDigest": "07bd1eb06b9ea08b5aad81f5033dd72079a1df6a8c10809783de3c2133206a73",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 17,
+        "status": "generated",
+        "attempts": 12,
+        "inputDigest": "12f56947ad4974cec68f82f6ebf38202a120e2f3d4eb1a6d911106ea20d7c65a",
+        "resultDigest": "d5473306a41b1bebcc62af01973b0a3603aca0d4d05014a391da257e4d60dc5a",
+        "promptStatus": "rejected",
+        "promptError": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 18,
+        "status": "generated",
+        "attempts": 10,
+        "inputDigest": "6d584a068bfd7bc86cec1479f1bb9763e80642f1d50005830cafaa8576d6acf6",
+        "resultDigest": "f63ea6c685cc1026a82c16f707fdf01f5911694827e5d14b60074acfcfc7455e",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 19,
+        "status": "generated",
+        "attempts": 35,
+        "inputDigest": "9daacaacdf6d19668c07d1c0ffa4cb1fdee2c626cf1ab24bc305a2f136f9d7b3",
+        "resultDigest": "78de17d7ddbe1c399b472132dcaf809f6ce3f89f73d2ebd7a9e06105861492d3",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 20,
+        "status": "generated",
+        "attempts": 78,
+        "inputDigest": "f7cc4d048509d4192a97c0ecd6e444f404675afb016d5d9737b43dcad1258858",
+        "resultDigest": "02e259510ce793bef224e1a66e07c7c7e186e7c5f4ef8db15201f1e4ecc2d1c3",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 21,
+        "status": "rejected",
+        "attempts": 128,
+        "reasons": [
+          "generation-exhausted"
+        ]
+      },
+      {
+        "seed": 22,
+        "status": "generated",
+        "attempts": 106,
+        "inputDigest": "eb67003e2e280bbeb0965f29e85e30240efdf62264918e5a62605de6a133d59e",
+        "resultDigest": "6d1fe2941947e29a906acbf40c6d58cc6b0f812d35721b0ff350c26eb7847510",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 23,
+        "status": "generated",
+        "attempts": 58,
+        "inputDigest": "8fd8da2d7ab0c4ef3a6524232264207e521d550d5c2318c39d6a95c0179ed632",
+        "resultDigest": "a755d307159ad1aded4357cd75f947d7a1ed182d6b7b13aae91a6e3b07fdec07",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 24,
+        "status": "generated",
+        "attempts": 56,
+        "inputDigest": "0ac7f29855fdfe75dee654f4ffce5955a1298d6a3f696d66ac1fd96c2aa478c2",
+        "resultDigest": "681223d40004b17d52041f9aa094bcf5b571686ba0c2b06b2b48691d9c6098d0",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 25,
+        "status": "generated",
+        "attempts": 19,
+        "inputDigest": "69e69b96b20256f03f6427522b20b0579ac10556bc3918d34f9f6a37b388b64c",
+        "resultDigest": "7ef9e3208ce044e9508be7dc2ff9b8cc268ac93deb5f7b0df015a3a27178d6c1",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 26,
+        "status": "generated",
+        "attempts": 68,
+        "inputDigest": "468760e1899df90f833bf726056e2d368d0fa26eb4f25fe5d3fa3280423e955a",
+        "resultDigest": "25a5dfa980078a1ef11d5b78fe8eb8ab2162278f1ff96cb615fbd3f277b47d82",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 27,
+        "status": "generated",
+        "attempts": 112,
+        "inputDigest": "7110ce76803249dbb939296743c5758395c309415c6053fd516947ac7e8d5b79",
+        "resultDigest": "a11ac7eab3e96a9813807449cfa3f07c1dcbee49439bbe636e1d3502de0757d5",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 28,
+        "status": "rejected",
+        "attempts": 128,
+        "reasons": [
+          "generation-exhausted"
+        ]
+      },
+      {
+        "seed": 29,
+        "status": "generated",
+        "attempts": 113,
+        "inputDigest": "e064bd6ce3d464a2866fc419b16b081f00f9476d7cb9586d0532541abd447cee",
+        "resultDigest": "6bcbaeae8b04dc670864222d15838d97c11901abace680703b0f3dc0dd2eddd4",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 30,
+        "status": "generated",
+        "attempts": 122,
+        "inputDigest": "d3315813a61d426314d7b306621de2f5b2e6b8e5033014985796fe758db173bc",
+        "resultDigest": "52f2968685ce0747c08b517ea3e6598c063b56e214e098b1c0bc248037f71b4a",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 31,
+        "status": "generated",
+        "attempts": 4,
+        "inputDigest": "604ce9b59eae892bcfebd48f371f0d349e8a71ee558531ab7a5b9c3f9728b1bb",
+        "resultDigest": "98caff4975be562938151584fef3062a002e7950383c6d83b97f7bc75a205ad3",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 32,
+        "status": "generated",
+        "attempts": 85,
+        "inputDigest": "273e3c9cb1b2adf1e80243d317caf50d364fd5fe1a9bc4fb8fe311066e242f8b",
+        "resultDigest": "c4e34e547b29c36d52f7f613cf5fcdcd597ec3eacee98adb99eade066182d386",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 33,
+        "status": "generated",
+        "attempts": 30,
+        "inputDigest": "e94608ea71dc0040886b9a7863f7721b3242fd7e65e506246c9decff07222f98",
+        "resultDigest": "55c0c230bf2797b2b40775be58bb52332be3b05a068d7f145b62837173a6b36a",
+        "promptStatus": "rejected",
+        "promptError": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 34,
+        "status": "generated",
+        "attempts": 52,
+        "inputDigest": "e5bb8f0c74838a055687356d9bdaf5f2e59a3d6eb1f0d628513c31416be1de87",
+        "resultDigest": "bc695134de9fde3c32003a60ce911e20bdadf5b0ee95d011d249d8fc0c8b8535",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 35,
+        "status": "generated",
+        "attempts": 27,
+        "inputDigest": "8bdf7e891fd53162db8c09fe73dfd5ab9067eb9b6c5e149a6413b26e8d702444",
+        "resultDigest": "7e40ad70ea24dc7f0169779e4a59222ce7e6cded94f72f4b5f0d8fe39a1c5da4",
+        "promptStatus": "rejected",
+        "promptError": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 36,
+        "status": "rejected",
+        "attempts": 128,
+        "reasons": [
+          "generation-exhausted"
+        ]
+      },
+      {
+        "seed": 37,
+        "status": "generated",
+        "attempts": 49,
+        "inputDigest": "fe3f491e8234b5b036a34164d7808cfd57e1cefd4d0c9a37f6a97744a8f86e19",
+        "resultDigest": "6c4a9730563f8bcf5e4533cd47b6ce921486292be430c7c00cf62e92a6d2af68",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 38,
+        "status": "rejected",
+        "attempts": 128,
+        "reasons": [
+          "generation-exhausted"
+        ]
+      },
+      {
+        "seed": 39,
+        "status": "generated",
+        "attempts": 30,
+        "inputDigest": "3db9293d04f5baa60875a20f09cc39b06a54e2048113a3661f72f15977208af0",
+        "resultDigest": "67014c4cff3fb60f63fce6ea91069fed03e56250de3dde3d1e2cec833124e2a2",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 40,
+        "status": "generated",
+        "attempts": 127,
+        "inputDigest": "e623a9314302bc96af2084b623d3a27e4990c6d63edc85acca0d58aa37179dea",
+        "resultDigest": "acb0c3eac0f68a8ca35939f9e31a15213a8b31f1c5dc460a69cf28fffe2ca980",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 41,
+        "status": "generated",
+        "attempts": 9,
+        "inputDigest": "04367046419a5862167535b0622f24bfa8749c844c536e716bac83cee0668478",
+        "resultDigest": "056b7a70fe87b8b854b7b401acf1610173033b1a2823d6c9c65a560b4864d8d7",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 42,
+        "status": "generated",
+        "attempts": 11,
+        "inputDigest": "6a12b64bc44d1115fe6182b4d77d436a2ead9abaae0cf1aae19e3e9706fe8940",
+        "resultDigest": "7621c093ec9ed4daefa755ce89186b226939f0f77917f65ab7bf6bce9904b3d6",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 43,
+        "status": "generated",
+        "attempts": 58,
+        "inputDigest": "ea34347ed6cd325158b0439b3efcc1dac95669c58c71db9a681d5d7f017efafc",
+        "resultDigest": "1562e3848b62be8c198a82ff334d8a55074dcf5c40647a2cb79ac6cfae0d9e32",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 44,
+        "status": "generated",
+        "attempts": 71,
+        "inputDigest": "0c1a1ee2accb5c4f6968729fb594b28a1d4d1374553d36968f9f3ccecc269529",
+        "resultDigest": "ee29c9a6d4e14df693ad20ee78169b6a10f3b0ae5027eaf62372b91ebb689c1b",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 45,
+        "status": "generated",
+        "attempts": 7,
+        "inputDigest": "ac6cc20e85c9918f6555c255428d926b5bc44a91943a96c4cc832c403e66f0ad",
+        "resultDigest": "b85cafcb09134cfa65e2db5c50aac468ef1da80f86334b367f9599337a3fc4d0",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 46,
+        "status": "generated",
+        "attempts": 69,
+        "inputDigest": "2855771cbd1ae8c4e119cccd61eb289da81cdb64f795b401169674f302cdfd4d",
+        "resultDigest": "35e621f6ff10775acd783a32ab4d2f39e092d7b0b8277801872e924f9f4fcaa9",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 47,
+        "status": "generated",
+        "attempts": 44,
+        "inputDigest": "96958c8dc99eb8ffb797f857bcd8e6c28bbbdea8a4bc5a70cde555a0d4f4af72",
+        "resultDigest": "5ecad6e6ffcc0e30af04505f42a68624f3a64343b96654406064312dfc884f58",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 48,
+        "status": "generated",
+        "attempts": 77,
+        "inputDigest": "eb4b19f4a8d4d9420ac4c02cb5ced972bc2c4a95266806486283ae82adf5394f",
+        "resultDigest": "b8b0fca3f049f75827f2142539f285c503a1cb0284b6e4fb1c42dbf0de4d10d4",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 49,
+        "status": "generated",
+        "attempts": 49,
+        "inputDigest": "2bcfc9626df883ecea61990db6555a9d49a86febb744003978b9c49c562a87ae",
+        "resultDigest": "3ae0ea2527a3cdcba2d21b074bb618eea30cdf2ad8c70b5e3a3374d5bbf08268",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 50,
+        "status": "generated",
+        "attempts": 32,
+        "inputDigest": "cb9616840a8258fa2ae3151e2e691252e39b6f9a95947152e57be508bdb67473",
+        "resultDigest": "d8d5d3bcd30f8502f07458f8ec3786d6e4ce1f813c0b499dd21680242a975687",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 51,
+        "status": "generated",
+        "attempts": 107,
+        "inputDigest": "7b8323e0b86a7e2a1f15e868a0f18dfb8838074cd0109233c317ad00755f4bb8",
+        "resultDigest": "fb8ba4f983e890de29186f45d3478a859d539b242aa0bbb90f4d39663069d7fa",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 52,
+        "status": "generated",
+        "attempts": 2,
+        "inputDigest": "79041c75b4a25bd592e24dc7ba1f714f7fb8977635105d3250d88152cc9f0160",
+        "resultDigest": "ab5767bc8f5c80ba5b3fa211ddb3f34e4e41055e0b371d4fa78a914d2d043661",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 53,
+        "status": "generated",
+        "attempts": 28,
+        "inputDigest": "b2f71864a882d2bb8d3ae971b6a7768abf30101a3a028e7ba4beac78294185ff",
+        "resultDigest": "6a503a9230558de24fe0242d52343771ccae71c61de3ab83559ac182427d4908",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 54,
+        "status": "generated",
+        "attempts": 13,
+        "inputDigest": "f42e3094a16308b29130422330b56d0f0f55ce03916adcf8d733146a4df36ce3",
+        "resultDigest": "f5b474bacbbed2e4f2b37d4f6218881c9942e45be2e6f7d726ff84ddd39e27f0",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 55,
+        "status": "generated",
+        "attempts": 28,
+        "inputDigest": "e312ea826dc142b3bf1bb79c2a4b1f679bc057abd0c306a55d8ea3fb7195fc80",
+        "resultDigest": "37b4df0919701e3012a067f800eec10c0664b911e1167aa3015a6ec23a1903ed",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 56,
+        "status": "generated",
+        "attempts": 3,
+        "inputDigest": "92938b27ad4064ab17dab6e6a155fdafc8f216ce2acd18b2fcb1566f03eaecad",
+        "resultDigest": "cac0b3f3d97add844585f42963e3bcabca253b5f5f30010ef75d4653823029e2",
+        "promptStatus": "rejected",
+        "promptError": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 57,
+        "status": "generated",
+        "attempts": 90,
+        "inputDigest": "658f27c61a8b39fd0dd27e705dc66f0707c75b081265dc65b11e1772da2a536a",
+        "resultDigest": "637b49b64f6f8758d54c43c78ef57803538f3f00d77feb7937286c349a4b6d99",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 58,
+        "status": "generated",
+        "attempts": 74,
+        "inputDigest": "60e635bf8516996e669607e6ba7da7b40e40775b4e21791389c5bb28b8dc4405",
+        "resultDigest": "9d14b0926bc042b1c35d070d6cd1d9a07ec873c067729b0eb7d1e3e06d2012e6",
+        "promptStatus": "rejected",
+        "promptError": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 59,
+        "status": "generated",
+        "attempts": 39,
+        "inputDigest": "5804a9869679d8ec185b7892e80f9bba37788d102d1da791c080aedd1ca42eed",
+        "resultDigest": "00bcba5b6d6b069077462d0433ce6c861dea5032f8fbb4ebcd66e5980bf3247a",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 60,
+        "status": "generated",
+        "attempts": 57,
+        "inputDigest": "f1fe867d30f350884cd92791650e61847c3d6fe0ecfc1213c72a9d1d6355aa66",
+        "resultDigest": "9779f0ac376bcfd84f5d67822890aaf5b858a61c3f1bce16737255537c2d496f",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 61,
+        "status": "rejected",
+        "attempts": 128,
+        "reasons": [
+          "generation-exhausted"
+        ]
+      },
+      {
+        "seed": 62,
+        "status": "generated",
+        "attempts": 105,
+        "inputDigest": "76fcfbd0708315cbd20e232382b1d7aa680a8fa9e9b9fc7bbefcd76aceab07ba",
+        "resultDigest": "a699f888015e7d9b19c69a98ab8092c34deea6accb2975103f48b29dea5a7040",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 63,
+        "status": "generated",
+        "attempts": 50,
+        "inputDigest": "da68b6de5b93abc96580cf7e04a8b16eb1ed2b9046779362dda70de5bdd74a2b",
+        "resultDigest": "e5eb0af337a93a0a9933755bde21f1f153ec2dbd76691ffb68bb0d231efd8d26",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 64,
+        "status": "generated",
+        "attempts": 127,
+        "inputDigest": "088346152de2889d3c97f0db379e910942599bf3b284e7bd20bb299e17b94638",
+        "resultDigest": "0d26e08f3c18487815c1fc108a5b0a88b5bc32026e2552f137aa1112a930e6e2",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 65,
+        "status": "generated",
+        "attempts": 61,
+        "inputDigest": "dc3c454ff6e0eb31f932ecec1fa738ede1452572a9a8b4760d710dea28667507",
+        "resultDigest": "e0d86b2d96ed42cebceb7fbc0458bfaf9df67ab1637ee5e8592339af64406a64",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 66,
+        "status": "generated",
+        "attempts": 117,
+        "inputDigest": "446f2e405aea593f07a0cba97b8775dbe18837c2707e44f3cb0b9b3e6bc5a04f",
+        "resultDigest": "9e032f5bea97f3d6998e42e8f6dc46600590adab55303a5785ff1b8194f8d15e",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 67,
+        "status": "rejected",
+        "attempts": 128,
+        "reasons": [
+          "generation-exhausted"
+        ]
+      },
+      {
+        "seed": 68,
+        "status": "generated",
+        "attempts": 71,
+        "inputDigest": "a8ef1f4d1868c8b79da25e9e8c193655f3c4e7500ebbf8f69825664e8e112a93",
+        "resultDigest": "0d5f5466a73e946a77c4194143a35d0f446bbd82dfc7d9122cea4d0830fcaa0c",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 69,
+        "status": "generated",
+        "attempts": 37,
+        "inputDigest": "204f2005476658f70d50138712196d7cdc0f495e2e27e8bcea99df369200bee1",
+        "resultDigest": "bf15d5408f5ff1d1f0aed756fc0492c257ebf3d21542664ac846b4d0d0923603",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 70,
+        "status": "generated",
+        "attempts": 92,
+        "inputDigest": "c9fd51f99b59ba28521e94cb8f672987e5016db336c700cdb35fcda6b107fbb9",
+        "resultDigest": "fe47f6322967c321a150485c4eec63886f797af51d55c2a8243b2f72b31c44cd",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 71,
+        "status": "generated",
+        "attempts": 71,
+        "inputDigest": "c21c3f3f4fe3c3eeca7f3443bf8e61c54054ffbc1d13da0d394a45249a98483d",
+        "resultDigest": "98ac35bb3159b6c3c7e176fba117588d4a2acbfe28bc3d54ead22e95cc761e77",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 72,
+        "status": "generated",
+        "attempts": 117,
+        "inputDigest": "5176133d6533780648ca2038c5221f5b8bf57b9cfe16ae2606b9844545ffac07",
+        "resultDigest": "cbab42cf4493a2b349e51fa462e7107d94bdaddca0525c6d54f7bec36fed417a",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 73,
+        "status": "generated",
+        "attempts": 7,
+        "inputDigest": "886f1b5f759fdc4e3c9e6221c081754b24812142eb4cccdd98eca5e23692a24b",
+        "resultDigest": "cc5753f33691bdf50c04583e35ee4a75429dd6eea83829c482230f5a9f4ec52c",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 74,
+        "status": "generated",
+        "attempts": 52,
+        "inputDigest": "49b09512ad90472cdf388846468bef982e3af2cd505848c7f9bd089db93cddca",
+        "resultDigest": "5f7c0dfbd94562169492d78c8388ce6e9ec74465f96f9645a3f7e98d08f6732c",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 75,
+        "status": "generated",
+        "attempts": 91,
+        "inputDigest": "bebeaec576e09c3fbf1f6bc86567b4b435557afc65919a6ae40fbfc022b08c81",
+        "resultDigest": "ac5439d069bd17bf79e78f529242c05b6edf2f20242299878059a40b9f2ef32e",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 76,
+        "status": "generated",
+        "attempts": 27,
+        "inputDigest": "d50ea40d8744704b3228774b4027baa3065b6200b567bfe6ef309ccb29554fea",
+        "resultDigest": "a10969d488e555047d5de7a594680f16705f8d49f927e580675ac8523b4b153d",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 77,
+        "status": "generated",
+        "attempts": 22,
+        "inputDigest": "31a236f765630279ff51c904b0d4dccd50cc4bdd64305afddf509a5597558d59",
+        "resultDigest": "6bcab202f13c0a40e9f030bd361739a36cde40cfbf6a29b259b873d046ecd877",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 78,
+        "status": "generated",
+        "attempts": 126,
+        "inputDigest": "d7c7031063a856610531ae0c0f7d47be6d9b95040cec6c59ffb991c90df65cac",
+        "resultDigest": "6f622318c4bff67c19b77e9b97cc5d7cfaa2757c89d10fc888f7ec7b388050b3",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 79,
+        "status": "generated",
+        "attempts": 10,
+        "inputDigest": "0c0f8310838c616da987b97eca623ae22a5a3b4c70638eab5fcd2ebe1102ee95",
+        "resultDigest": "9a878d26c78ea92e42d4a990ff1bf04fc4c71dcb93f4b17a9aac8ddd92a3c05e",
+        "promptStatus": "rejected",
+        "promptError": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 80,
+        "status": "rejected",
+        "attempts": 128,
+        "reasons": [
+          "generation-exhausted"
+        ]
+      },
+      {
+        "seed": 81,
+        "status": "generated",
+        "attempts": 30,
+        "inputDigest": "7971c189b6d7db111646279ccb515d441ece8e431cd8e9ea247e984a91c8b6b8",
+        "resultDigest": "3c54843a192eac3025ec0126d83e2938e1e52eb85c491297e86ffe716ef210c6",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 82,
+        "status": "generated",
+        "attempts": 92,
+        "inputDigest": "29751006d268cd1abd262556df327a561f88badd7f88fb4fa8868b02b853a8bc",
+        "resultDigest": "6c19c8b5de0ad7df6b2a58c9b6924edf81fc5a7c1e30b706cdbb42fac1f0c358",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 83,
+        "status": "generated",
+        "attempts": 61,
+        "inputDigest": "52cda73bc27308139667ff453a0921c62e57506f2a5bf9426bcd9adec23f8dc4",
+        "resultDigest": "12bb1171fb581357adb528f0403e853dcacb25793214618d003a9b699f41122d",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 84,
+        "status": "generated",
+        "attempts": 39,
+        "inputDigest": "3f8f8a6910bfc64b927d0ddafd3a438ab5ba45669f14857289eb31724ac80cab",
+        "resultDigest": "679a5f37dca11d4d4db04ae0be07ea74ad39be74dfbcae0f9b472d8d26ca7734",
+        "promptStatus": "rejected",
+        "promptError": "Art subject packet exceeds the template byte limit."
+      },
+      {
+        "seed": 85,
+        "status": "generated",
+        "attempts": 25,
+        "inputDigest": "0f93dc14321073fc26903e3f2fe9f2482de1b63f5aa06b9172f9beb27142ba43",
+        "resultDigest": "469ddb893fa56dc8c92d4c245ef0005daa65b7fbfae997d2f2da4bc1c6696e8f",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 86,
+        "status": "generated",
+        "attempts": 25,
+        "inputDigest": "f2735cb0291cb73a857c4c3d788e1f563fae7e1077db069602d81312177a0938",
+        "resultDigest": "32e4c788fc10d64294611c03a6475c75b6b343850c93bccac3b11f4680bb5fc2",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 87,
+        "status": "generated",
+        "attempts": 3,
+        "inputDigest": "b4d0a5637590d97b8fe37abba5843b3938c33378fa7eaefbd5f318a16f3efe17",
+        "resultDigest": "ede24fa108b3640a307501da046103e6252f827418746e3763afbccf2533ce94",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 88,
+        "status": "generated",
+        "attempts": 31,
+        "inputDigest": "b62d74e228d77a3c77037c6a96fc3ce07fa12cb6a7e475b92769a9d05a7ea9ce",
+        "resultDigest": "d4b2245ac6e609adfbb180a428ac00929876f56c418797cb13b8bb3e737099d3",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 89,
+        "status": "generated",
+        "attempts": 123,
+        "inputDigest": "480048d514d456e1e6bd1fbac81d37f26b50cf050e48062c6150a80daca621e9",
+        "resultDigest": "47713538402298b7799b21304797df1c1d3c29ff575831b606bbedb47b7649c5",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 90,
+        "status": "generated",
+        "attempts": 6,
+        "inputDigest": "3fc5f5b8df8d7ef6dd71f44ed8ddf017ca843dce46703e96ce7f599b1a564071",
+        "resultDigest": "3858748945be6b8d35f64fedc9beaa9cdf0b89cefe01a40908477882f2f3560c",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 91,
+        "status": "generated",
+        "attempts": 39,
+        "inputDigest": "1e019b060007c5f13b3a419d5c1c91da9597928c420269da748f8d797baede0f",
+        "resultDigest": "90de9c88ed02045141f8fe29ded018b6a4977b4c99f1f06b83a2f38795a4e3c5",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 92,
+        "status": "generated",
+        "attempts": 20,
+        "inputDigest": "1b14eebc565eda1497a735b149f02531e444daa91c6922c82206bf926842bed1",
+        "resultDigest": "3e1e1e1558d092e5c3b13e678673ba65fa13c6ebc9b8d4d39081b863efccad10",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 93,
+        "status": "generated",
+        "attempts": 9,
+        "inputDigest": "396d76c5b36fc5d1370237160c84e0281319f71d18d671b8aeb0655f8037b468",
+        "resultDigest": "39871c1d6cc245e26c70da9c51a2c5c7a6375e78f0b1534d70afc2d733e39469",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 94,
+        "status": "generated",
+        "attempts": 29,
+        "inputDigest": "717049ee66ec4d9ee0714724109c07b91c03f8147f1b50313874d5856723f76c",
+        "resultDigest": "ef56dde2948357bf87333d0c125fed7c12a94e252a12610829ef792b447652a4",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      },
+      {
+        "seed": 95,
+        "status": "generated",
+        "attempts": 6,
+        "inputDigest": "c05b56ace66922808eca3df4342d43ee01280651d7623b5970f817824d339f76",
+        "resultDigest": "470c22832b87f4a7ec7b1473a93a40a8aa8a751dc1122d017b7fe6d37fba695b",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 96,
+        "status": "generated",
+        "attempts": 9,
+        "inputDigest": "2f9c3fc70c64ce5e415de97b3764114053447e8522747fdb07bc3907cf8aad60",
+        "resultDigest": "40230faa96af817f0f4e2276635918a8a8665555f04ab143aa0142f1243ab343",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 97,
+        "status": "generated",
+        "attempts": 67,
+        "inputDigest": "1b6150d522995e44a1ed0cda88cc4c3fe3afd983e72f3ee29a1b4ef1fb68a3f2",
+        "resultDigest": "072172668cc9ce03d0ffbe09fc87805ca28f90497d305f5c33ec98dcdafe5661",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 98,
+        "status": "generated",
+        "attempts": 47,
+        "inputDigest": "3fde9c531251925fe02b44741e2d09e34d11af4cbb29c4f21fd7f7a4e776681c",
+        "resultDigest": "57b5987751cd53d8250b42cc181fe4de6e4c94aab646e8def78de810b2a1a982",
+        "promptStatus": "fact-derived calibration prompt; no provider called",
+        "promptError": null
+      },
+      {
+        "seed": 99,
+        "status": "generated",
+        "attempts": 46,
+        "inputDigest": "f00a9449c2f553ed2b29fff52f40c70a3b073e0c020453b78497b6d1cedc9195",
+        "resultDigest": "a42124763dcecb70bfc092813f81287d824b97fb2c0b66a33a98f4463b731047",
+        "promptStatus": "rejected",
+        "promptError": "Art binding surfaceFacts exceeds 8192 characters; no facts truncated."
+      }
+    ]
+  },
+  "localElapsedMilliseconds": 6795
+}

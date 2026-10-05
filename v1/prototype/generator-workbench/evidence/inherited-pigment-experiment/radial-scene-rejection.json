@@ -1,0 +1,16 @@
+{
+  "status": "rejected",
+  "stage": "body",
+  "errors": [
+    {
+      "code": "unsupported-symmetry",
+      "nodeIds": [],
+      "locusIds": [
+        "development.symmetry"
+      ],
+      "message": "The first construction profile supports bilateral sources only."
+    }
+  ],
+  "inputDigest": "f4a6cafbec97f0e4521cc0def160b013045bf24794cb61e90c8c8e9725e2b40a",
+  "resultDigest": "3862fd486aba2101e06941ac4dc72005522c8908cd72a6168225542e1abb6d81"
+}

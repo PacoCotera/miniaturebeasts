@@ -1,0 +1,1096 @@
+{
+  "schemaVersion": "critter-genome/1",
+  "contentId": "genomic-covering-study",
+  "contentVersion": 1,
+  "loci": {
+    "development.axial-repeat": [
+      "single",
+      "single"
+    ],
+    "development.symmetry": [
+      "bilateral",
+      "bilateral"
+    ],
+    "development.attachment-repeat": [
+      "multiple",
+      "multiple"
+    ],
+    "development.articulated-chain": [
+      "linked",
+      "linked"
+    ],
+    "development.membrane-rooting": [
+      "off",
+      "off"
+    ],
+    "development.fin-rooting": [
+      "off",
+      "off"
+    ],
+    "development.axial-deformation": [
+      "off",
+      "off"
+    ],
+    "structure.body-length": [
+      "high",
+      "high"
+    ],
+    "structure.body-width": [
+      "high",
+      "high"
+    ],
+    "structure.body-height": [
+      "low",
+      "low"
+    ],
+    "structure.body-taper": [
+      "low",
+      "low"
+    ],
+    "structure.axial-spacing": [
+      "low",
+      "low"
+    ],
+    "structure.attachment-position": [
+      "high",
+      "high"
+    ],
+    "structure.proximal-length": [
+      "low",
+      "low"
+    ],
+    "structure.distal-length": [
+      "low",
+      "low"
+    ],
+    "structure.joint-range": [
+      "low",
+      "low"
+    ],
+    "structure.contact-width": [
+      "low",
+      "low"
+    ],
+    "structure.membrane-span": [
+      "low",
+      "low"
+    ],
+    "structure.membrane-flexibility": [
+      "low",
+      "low"
+    ],
+    "structure.fin-span": [
+      "low",
+      "low"
+    ],
+    "structure.material-density": [
+      "low",
+      "low"
+    ],
+    "appearance.body-palette": [
+      "charcoal",
+      "charcoal"
+    ],
+    "appearance.underside-palette": [
+      "cream",
+      "cream"
+    ],
+    "appearance.marking-switch": [
+      "off",
+      "off"
+    ],
+    "appearance.marking-layout": [
+      "bands",
+      "bands"
+    ],
+    "appearance.marking-extent": [
+      "low",
+      "low"
+    ],
+    "appearance.marking-scale": [
+      "low",
+      "low"
+    ],
+    "appearance.marking-orientation": [
+      "low",
+      "low"
+    ],
+    "appearance.marking-contrast": [
+      "low",
+      "low"
+    ],
+    "appearance.surface-texture": [
+      "smooth",
+      "smooth"
+    ],
+    "movement.contact-phase": [
+      "low",
+      "low"
+    ],
+    "movement.cycle-rate": [
+      "low",
+      "low"
+    ],
+    "movement.stride-preference": [
+      "low",
+      "low"
+    ],
+    "movement.turn-control": [
+      "low",
+      "low"
+    ],
+    "movement.axial-amplitude": [
+      "low",
+      "low"
+    ],
+    "movement.axial-phase": [
+      "low",
+      "low"
+    ],
+    "movement.membrane-stroke": [
+      "low",
+      "low"
+    ],
+    "movement.membrane-coordination": [
+      "low",
+      "low"
+    ],
+    "movement.fin-steering": [
+      "low",
+      "low"
+    ],
+    "energy.actuator-capacity": [
+      "low",
+      "low"
+    ],
+    "energy.reserve-capacity": [
+      "low",
+      "low"
+    ],
+    "energy.action-efficiency": [
+      "low",
+      "low"
+    ],
+    "structure.ocular-pair": [
+      "absent",
+      "absent"
+    ],
+    "structure.ocular-placement": [
+      "high",
+      "low"
+    ],
+    "structure.ocular-size": [
+      "low",
+      "low"
+    ],
+    "appearance.covering-kind": [
+      "scales",
+      "scales"
+    ],
+    "appearance.covering-extent": [
+      "low",
+      "low"
+    ],
+    "appearance.covering-scale": [
+      "high",
+      "high"
+    ]
+  },
+  "origin": {
+    "kind": "cross",
+    "seed": 5,
+    "algorithmVersion": "mulberry32/1",
+    "parents": [
+      {
+        "schemaVersion": "critter-genome/1",
+        "contentId": "genomic-covering-study",
+        "contentVersion": 1,
+        "loci": {
+          "development.axial-repeat": [
+            "single",
+            "single"
+          ],
+          "development.symmetry": [
+            "bilateral",
+            "bilateral"
+          ],
+          "development.attachment-repeat": [
+            "multiple",
+            "multiple"
+          ],
+          "development.articulated-chain": [
+            "linked",
+            "linked"
+          ],
+          "development.membrane-rooting": [
+            "off",
+            "off"
+          ],
+          "development.fin-rooting": [
+            "off",
+            "off"
+          ],
+          "development.axial-deformation": [
+            "off",
+            "off"
+          ],
+          "structure.body-length": [
+            "high",
+            "high"
+          ],
+          "structure.body-width": [
+            "high",
+            "high"
+          ],
+          "structure.body-height": [
+            "low",
+            "low"
+          ],
+          "structure.body-taper": [
+            "low",
+            "low"
+          ],
+          "structure.axial-spacing": [
+            "low",
+            "low"
+          ],
+          "structure.attachment-position": [
+            "high",
+            "high"
+          ],
+          "structure.proximal-length": [
+            "low",
+            "low"
+          ],
+          "structure.distal-length": [
+            "low",
+            "low"
+          ],
+          "structure.joint-range": [
+            "low",
+            "low"
+          ],
+          "structure.contact-width": [
+            "low",
+            "low"
+          ],
+          "structure.membrane-span": [
+            "low",
+            "low"
+          ],
+          "structure.membrane-flexibility": [
+            "low",
+            "low"
+          ],
+          "structure.fin-span": [
+            "low",
+            "low"
+          ],
+          "structure.material-density": [
+            "low",
+            "low"
+          ],
+          "appearance.body-palette": [
+            "charcoal",
+            "charcoal"
+          ],
+          "appearance.underside-palette": [
+            "cream",
+            "cream"
+          ],
+          "appearance.marking-switch": [
+            "off",
+            "off"
+          ],
+          "appearance.marking-layout": [
+            "bands",
+            "bands"
+          ],
+          "appearance.marking-extent": [
+            "low",
+            "low"
+          ],
+          "appearance.marking-scale": [
+            "low",
+            "low"
+          ],
+          "appearance.marking-orientation": [
+            "low",
+            "low"
+          ],
+          "appearance.marking-contrast": [
+            "low",
+            "low"
+          ],
+          "appearance.surface-texture": [
+            "smooth",
+            "smooth"
+          ],
+          "movement.contact-phase": [
+            "low",
+            "low"
+          ],
+          "movement.cycle-rate": [
+            "low",
+            "low"
+          ],
+          "movement.stride-preference": [
+            "low",
+            "low"
+          ],
+          "movement.turn-control": [
+            "low",
+            "low"
+          ],
+          "movement.axial-amplitude": [
+            "low",
+            "low"
+          ],
+          "movement.axial-phase": [
+            "low",
+            "low"
+          ],
+          "movement.membrane-stroke": [
+            "low",
+            "low"
+          ],
+          "movement.membrane-coordination": [
+            "low",
+            "low"
+          ],
+          "movement.fin-steering": [
+            "low",
+            "low"
+          ],
+          "energy.actuator-capacity": [
+            "low",
+            "low"
+          ],
+          "energy.reserve-capacity": [
+            "low",
+            "low"
+          ],
+          "energy.action-efficiency": [
+            "low",
+            "low"
+          ],
+          "structure.ocular-pair": [
+            "absent",
+            "paired"
+          ],
+          "structure.ocular-placement": [
+            "low",
+            "high"
+          ],
+          "structure.ocular-size": [
+            "low",
+            "low"
+          ],
+          "appearance.covering-kind": [
+            "scales",
+            "scales"
+          ],
+          "appearance.covering-extent": [
+            "low",
+            "low"
+          ],
+          "appearance.covering-scale": [
+            "high",
+            "high"
+          ]
+        },
+        "origin": {
+          "kind": "experiment",
+          "seed": 0,
+          "algorithmVersion": "mulberry32/1"
+        }
+      },
+      {
+        "schemaVersion": "critter-genome/1",
+        "contentId": "genomic-covering-study",
+        "contentVersion": 1,
+        "loci": {
+          "development.axial-repeat": [
+            "single",
+            "single"
+          ],
+          "development.symmetry": [
+            "bilateral",
+            "bilateral"
+          ],
+          "development.attachment-repeat": [
+            "multiple",
+            "multiple"
+          ],
+          "development.articulated-chain": [
+            "linked",
+            "linked"
+          ],
+          "development.membrane-rooting": [
+            "off",
+            "off"
+          ],
+          "development.fin-rooting": [
+            "off",
+            "off"
+          ],
+          "development.axial-deformation": [
+            "off",
+            "off"
+          ],
+          "structure.body-length": [
+            "high",
+            "high"
+          ],
+          "structure.body-width": [
+            "high",
+            "high"
+          ],
+          "structure.body-height": [
+            "low",
+            "low"
+          ],
+          "structure.body-taper": [
+            "low",
+            "low"
+          ],
+          "structure.axial-spacing": [
+            "low",
+            "low"
+          ],
+          "structure.attachment-position": [
+            "high",
+            "high"
+          ],
+          "structure.proximal-length": [
+            "low",
+            "low"
+          ],
+          "structure.distal-length": [
+            "low",
+            "low"
+          ],
+          "structure.joint-range": [
+            "low",
+            "low"
+          ],
+          "structure.contact-width": [
+            "low",
+            "low"
+          ],
+          "structure.membrane-span": [
+            "low",
+            "low"
+          ],
+          "structure.membrane-flexibility": [
+            "low",
+            "low"
+          ],
+          "structure.fin-span": [
+            "low",
+            "low"
+          ],
+          "structure.material-density": [
+            "low",
+            "low"
+          ],
+          "appearance.body-palette": [
+            "charcoal",
+            "russet"
+          ],
+          "appearance.underside-palette": [
+            "cream",
+            "cream"
+          ],
+          "appearance.marking-switch": [
+            "off",
+            "off"
+          ],
+          "appearance.marking-layout": [
+            "bands",
+            "bands"
+          ],
+          "appearance.marking-extent": [
+            "low",
+            "low"
+          ],
+          "appearance.marking-scale": [
+            "low",
+            "low"
+          ],
+          "appearance.marking-orientation": [
+            "low",
+            "low"
+          ],
+          "appearance.marking-contrast": [
+            "low",
+            "low"
+          ],
+          "appearance.surface-texture": [
+            "smooth",
+            "smooth"
+          ],
+          "movement.contact-phase": [
+            "low",
+            "low"
+          ],
+          "movement.cycle-rate": [
+            "low",
+            "low"
+          ],
+          "movement.stride-preference": [
+            "low",
+            "low"
+          ],
+          "movement.turn-control": [
+            "low",
+            "low"
+          ],
+          "movement.axial-amplitude": [
+            "low",
+            "low"
+          ],
+          "movement.axial-phase": [
+            "low",
+            "low"
+          ],
+          "movement.membrane-stroke": [
+            "low",
+            "low"
+          ],
+          "movement.membrane-coordination": [
+            "low",
+            "low"
+          ],
+          "movement.fin-steering": [
+            "low",
+            "low"
+          ],
+          "energy.actuator-capacity": [
+            "low",
+            "low"
+          ],
+          "energy.reserve-capacity": [
+            "low",
+            "low"
+          ],
+          "energy.action-efficiency": [
+            "low",
+            "low"
+          ],
+          "structure.ocular-pair": [
+            "absent",
+            "paired"
+          ],
+          "structure.ocular-placement": [
+            "low",
+            "high"
+          ],
+          "structure.ocular-size": [
+            "low",
+            "low"
+          ],
+          "appearance.covering-kind": [
+            "scales",
+            "scales"
+          ],
+          "appearance.covering-extent": [
+            "low",
+            "low"
+          ],
+          "appearance.covering-scale": [
+            "high",
+            "high"
+          ]
+        },
+        "origin": {
+          "kind": "experiment",
+          "seed": 0,
+          "algorithmVersion": "mulberry32/1"
+        }
+      }
+    ],
+    "transmission": {
+      "development.axial-repeat": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "single",
+          "single"
+        ]
+      },
+      "development.symmetry": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "bilateral",
+          "bilateral"
+        ]
+      },
+      "development.attachment-repeat": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "multiple",
+          "multiple"
+        ]
+      },
+      "development.articulated-chain": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "linked",
+          "linked"
+        ]
+      },
+      "development.membrane-rooting": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "off",
+          "off"
+        ]
+      },
+      "development.fin-rooting": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "off",
+          "off"
+        ]
+      },
+      "development.axial-deformation": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "off",
+          "off"
+        ]
+      },
+      "structure.body-length": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "high",
+          "high"
+        ]
+      },
+      "structure.body-width": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "high",
+          "high"
+        ]
+      },
+      "structure.body-height": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.body-taper": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.axial-spacing": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.attachment-position": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "high",
+          "high"
+        ]
+      },
+      "structure.proximal-length": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.distal-length": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.joint-range": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.contact-width": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.membrane-span": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.membrane-flexibility": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.fin-span": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.material-density": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "appearance.body-palette": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "charcoal",
+          "charcoal"
+        ]
+      },
+      "appearance.underside-palette": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "cream",
+          "cream"
+        ]
+      },
+      "appearance.marking-switch": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "off",
+          "off"
+        ]
+      },
+      "appearance.marking-layout": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "bands",
+          "bands"
+        ]
+      },
+      "appearance.marking-extent": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "appearance.marking-scale": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "appearance.marking-orientation": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "appearance.marking-contrast": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "appearance.surface-texture": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "smooth",
+          "smooth"
+        ]
+      },
+      "movement.contact-phase": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "movement.cycle-rate": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "movement.stride-preference": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "movement.turn-control": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "movement.axial-amplitude": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "movement.axial-phase": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "movement.membrane-stroke": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "movement.membrane-coordination": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "movement.fin-steering": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "energy.actuator-capacity": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "energy.reserve-capacity": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "energy.action-efficiency": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "structure.ocular-pair": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "absent",
+          "absent"
+        ]
+      },
+      "structure.ocular-placement": {
+        "donorIndices": [
+          1,
+          0
+        ],
+        "copies": [
+          "high",
+          "low"
+        ]
+      },
+      "structure.ocular-size": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "appearance.covering-kind": {
+        "donorIndices": [
+          1,
+          1
+        ],
+        "copies": [
+          "scales",
+          "scales"
+        ]
+      },
+      "appearance.covering-extent": {
+        "donorIndices": [
+          0,
+          0
+        ],
+        "copies": [
+          "low",
+          "low"
+        ]
+      },
+      "appearance.covering-scale": {
+        "donorIndices": [
+          0,
+          1
+        ],
+        "copies": [
+          "high",
+          "high"
+        ]
+      }
+    }
+  }
+}

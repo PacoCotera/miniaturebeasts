@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="40" viewBox="0 0 256 40">
+  <defs>
+    <symbol id="data-mono" viewBox="0 0 32 40">
+      <path fill="#121212" d="M6 2H25V5H28V34H25V38H6V35H3V5H6Z"/>
+      <path fill="#ffffff" d="M7 5H23V7H25V32H22V35H7Z"/>
+      <path fill="#121212" d="M9 8H15V10H12V16H9Z M18 9H20V13H23V15H18Z M9 21H14V23H17V28H14V25H9Z M20 20H23V27H21V31H18V27H20Z M9 30H13V32H9Z"/>
+    </symbol>
+    <symbol id="energy-mono" viewBox="0 0 32 40">
+      <path fill="#121212" d="M15 1H18V4H21V7H24V11H27V15H29V24H26V28H23V32H20V35H18V39H14V36H11V33H8V29H5V25H3V15H6V11H9V8H12V4H15Z"/>
+      <path fill="#ffffff" d="M16 4H17V7H20V10H23V14H26V17H27V23H24V27H21V31H18V35H16V35H15V33H12V30H9V26H7V22H5V16H8V13H11V10H14V7H16Z"/>
+      <path fill="#121212" d="M16 6H18V19H16Z M8 15H11V17H16V19H22V17H26V19H22V21H18V34H16V21H11V19H8Z M9 21H11V27H9Z M21 23H23V29H21Z"/>
+    </symbol>
+    <symbol id="essence-mono" viewBox="0 0 32 40">
+      <path fill="#121212" d="M11 5H22V8H26V12H29V17H31V27H28V32H24V36H19V38H12V35H7V31H3V26H1V17H3V12H6V8H11Z"/>
+      <path fill="#ffffff" d="M11 8H21V10H24V14H27V18H28V26H25V31H22V33H18V35H13V32H9V29H6V25H4V18H6V14H9V10H11Z"/>
+      <path fill="#121212" d="M11 11H15V13H11Z M8 14H10V18H8Z M25 20H27V26H25Z M21 29H25V31H21Z M15 32H21V34H15Z"/>
+    </symbol>
+    <symbol id="residents-mono" viewBox="0 0 32 40">
+      <path fill="#121212" d="M10 21H21V24H26V30H24V35H19V33H13V35H7V31H5V26H8V23H10Z M3 14H7V17H9V21H5V19H3Z M9 6H13V9H14V16H10V13H9Z M18 5H22V12H21V16H17V9H18Z M26 12H30V18H28V21H24V16H26Z"/>
+    </symbol>
+    <symbol id="samples-mono" viewBox="0 0 32 40">
+      <path fill="#121212" d="M16 2H24V5H28V15H25L12 31H6V28H2V20L16 6Z"/>
+      <path fill="#ffffff" d="M18 5H23V7H25V12H23L10 28H7V26H5V21L18 9Z"/>
+      <path fill="#121212" d="M11 19H16V21H13V24H10V26H7V23Z"/>
+    </symbol>
+    <symbol id="incubating-mono" viewBox="0 0 32 40">
+      <path fill="#121212" d="M12 3H21V6H25V12H28V27H25V33H21V36H11V33H7V27H4V13H7V7H12Z"/>
+      <path fill="#ffffff" d="M13 6H20V9H23V14H25V26H22V31H19V33H13V30H10V26H7V14H10V9H13Z"/>
+      <path fill="#121212" d="M10 14H12V27H10Z M12 10H15V12H12Z"/>
+    </symbol>
+    <symbol id="habitat-mono" viewBox="0 0 32 40">
+      <path fill="#121212" d="M14 3H18V7H21V12H25V16H21V20H28V24H20V28H30V32H18V37H14V32H2V28H12V24H4V20H11V16H7V12H11V7H14Z"/>
+    </symbol>
+    <symbol id="link-mono" viewBox="0 0 32 40">
+      <path fill="#121212" d="M7 5H19V8H23V12H20V10H17V8H9V11H6V20H9V23H13V26H7V23H3V10H7Z M20 13H25V16H29V30H25V33H13V30H9V26H12V28H15V30H23V27H26V18H23V16H20Z M11 16H14V19H17V22H20V25H17V23H14V20H11Z"/>
+    </symbol>
+  </defs>
+  <use href="#data-mono" width="32" height="40"/>
+  <use href="#energy-mono" x="32" width="32" height="40"/>
+  <use href="#essence-mono" x="64" width="32" height="40"/>
+  <use href="#residents-mono" x="96" width="32" height="40"/>
+  <use href="#samples-mono" x="128" width="32" height="40"/>
+  <use href="#incubating-mono" x="160" width="32" height="40"/>
+  <use href="#habitat-mono" x="192" width="32" height="40"/>
+  <use href="#link-mono" x="224" width="32" height="40"/>
+</svg>

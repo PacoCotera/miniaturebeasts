@@ -1,0 +1,21 @@
+{
+  "provider": "Gemini browser",
+  "mode": "3.6 Flash",
+  "conversation": "https://gemini.google.com/app/513a9374c3ee8645",
+  "response": "cfdc0ac2fcee9c3b",
+  "retrieval": "Copy image, clipboard image/png; original byte preservation",
+  "reference": {
+    "path": "design/core-v1-art/source/gemini-research-reference.png",
+    "sha256": "b1aa7e63d1894219d83aabdb93596a9baeee2d2e3b74f046464b424adcb08869",
+    "scope": "Exact attached reference bytes, preserved in an immutable source copy before future contact-sheet generation.",
+    "sourceRevision": "623124a71dec10a435b958ee768bb4ba852da51b"
+  },
+  "scope": "Three contextual study-instrument vignettes; no actual result or device-hardware assertion",
+  "original": {
+    "path": "design/core-v1-art/source/gemini-research-vignettes-original.png",
+    "sha256": "9ce1bbf618cb8dd78b062564f0efc93d5fc7aff6859ff39048a6b438f6ef9ada",
+    "width": 1024,
+    "height": 572
+  },
+  "limitations": "Delivered1024x572 Gemini3.6 Flash raster. Baked header/footer typography is preserved in original and excluded by explicit crop derivatives. Contextual modern instrument/evidence art, not native generation, functional hardware, sample facts or independent editable drawing layers."
+}

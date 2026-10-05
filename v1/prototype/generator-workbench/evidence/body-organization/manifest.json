@@ -1,0 +1,130 @@
+{
+  "sourceRuleVersion": "developmental-regional-growth/1",
+  "profileVersion": "graph-source/2",
+  "caseAdjustments": [],
+  "cases": [
+    {
+      "name": "a-support-contacts",
+      "status": "constructed",
+      "errors": [],
+      "relationship": {
+        "kind": "explicit-authoring-input",
+        "comparedWith": null,
+        "changedLoci": [],
+        "note": "Provisional selected input, not an offspring or solver repair."
+      },
+      "inputDigest": "8ade1df3b0fd6bcdc7d4baf0100fbad06684cf466e1df18eedd8fa1eb0d48d06",
+      "resultDigest": "35bbd160cdcce7f97b98c8644361e8679e0d9ffa015451adaea7c79890590927",
+      "constructionDigest": "e75482008f7a0c98e0fa654d60b3337e95916a618876d213c2a88384737e5d1a",
+      "identity": {
+        "schemaVersion": "critter-reference-identity/1",
+        "digestAlgorithm": "sha256",
+        "inheritedEncodingVersion": "inherited-genome/1",
+        "expressionEncodingVersion": "expressed-creature/1",
+        "shortCodeFormat": "hex-prefix12/1",
+        "inheritedDigest": "1b32c2c0312ef6b1d4aa519fd359f946267f48ecca5c8660beeaac5c605ffe27",
+        "expressionDigest": "915b756e8a6d19cbd51a7fae112849db8201b31de8ceb1ac002e3e0cb08ccf31",
+        "genomeCode": "#G1B32C2C0312E",
+        "expressionCode": "#E915B756E8A6D",
+        "meaning": "Lookup reference fingerprints, not reversible genome encodings, ownership IDs or guaranteed unique codes. Full hashes disambiguate collisions."
+      },
+      "counts": {
+        "volume": 3,
+        "contact-link": 6
+      }
+    },
+    {
+      "name": "b-taper-fins",
+      "status": "constructed",
+      "errors": [],
+      "relationship": {
+        "kind": "explicit-authoring-input",
+        "comparedWith": null,
+        "changedLoci": [],
+        "note": "Provisional selected input, not an offspring or solver repair."
+      },
+      "inputDigest": "cda78cc2c216d3b4b3c896368b75934689ed11be0ee525fbf111c379f2d55ea0",
+      "resultDigest": "4804cc2650889b9a8ba5ff3b97e91cf9123986fcbe8c9d513701304d85829858",
+      "constructionDigest": "b9f04c93e8aac770920f7d5fcf18e0cfbe678f28c30442cd0689cdaa6257785f",
+      "identity": {
+        "schemaVersion": "critter-reference-identity/1",
+        "digestAlgorithm": "sha256",
+        "inheritedEncodingVersion": "inherited-genome/1",
+        "expressionEncodingVersion": "expressed-creature/1",
+        "shortCodeFormat": "hex-prefix12/1",
+        "inheritedDigest": "b9b0db8a3b65321375049632b89fc23096630d19e71d405d7282dfec3c6c7ffc",
+        "expressionDigest": "613d1e98b6f2fd7dd73a5293734c9463bcb9c0d64b457f0d1f63d89e11b5fd5d",
+        "genomeCode": "#GB9B0DB8A3B65",
+        "expressionCode": "#E613D1E98B6F2",
+        "meaning": "Lookup reference fingerprints, not reversible genome encodings, ownership IDs or guaranteed unique codes. Full hashes disambiguate collisions."
+      },
+      "counts": {
+        "volume": 3,
+        "fin": 6
+      }
+    },
+    {
+      "name": "a-growth-mixture",
+      "status": "constructed",
+      "errors": [],
+      "relationship": {
+        "kind": "explicit-authoring-input",
+        "comparedWith": "a-support-contacts",
+        "changedLoci": [
+          "development.regional-growth"
+        ],
+        "note": "Provisional selected input, not an offspring or solver repair."
+      },
+      "inputDigest": "982cde419e58102d59dc2218c09ae19e689fad143f3f55bf7deaee47b8b142cc",
+      "resultDigest": "5f53a81d227f36adec0f1957d804b0db012e0b5054c8da20f4eed35991af98dc",
+      "constructionDigest": "7ff06e17d8e71deeb2adcaeb1905606b812e458b5bbe9f9795e25b31165b574c",
+      "identity": {
+        "schemaVersion": "critter-reference-identity/1",
+        "digestAlgorithm": "sha256",
+        "inheritedEncodingVersion": "inherited-genome/1",
+        "expressionEncodingVersion": "expressed-creature/1",
+        "shortCodeFormat": "hex-prefix12/1",
+        "inheritedDigest": "6bcbbe2c4a9ad83e6ef0c43e3943441fc5ebc996933a63bab59b81ed7e210662",
+        "expressionDigest": "7e0c64a99f31bec6632f4edcf756d29faf2fa38dd42c6cb82fca38426cbf8ac6",
+        "genomeCode": "#G6BCBBE2C4A9A",
+        "expressionCode": "#E7E0C64A99F31",
+        "meaning": "Lookup reference fingerprints, not reversible genome encodings, ownership IDs or guaranteed unique codes. Full hashes disambiguate collisions."
+      },
+      "counts": {
+        "volume": 3,
+        "contact-link": 6
+      }
+    },
+    {
+      "name": "single-carried-control",
+      "status": "constructed",
+      "errors": [],
+      "relationship": {
+        "kind": "explicit-authoring-input",
+        "comparedWith": null,
+        "changedLoci": [],
+        "note": "Provisional selected input, not an offspring or solver repair."
+      },
+      "inputDigest": "44941fbc7a44e428695b07cea48d0cb140b9009e53292bb1c47ab2692bf707bc",
+      "resultDigest": "c9a4f448d9a0db724ac37f9177390a5711e15a45832485a7b5367da7015cc369",
+      "constructionDigest": "26eeb17cf428210c0034e6197b90551bcfdd1f4cbf37699868eb5a6591445f61",
+      "identity": {
+        "schemaVersion": "critter-reference-identity/1",
+        "digestAlgorithm": "sha256",
+        "inheritedEncodingVersion": "inherited-genome/1",
+        "expressionEncodingVersion": "expressed-creature/1",
+        "shortCodeFormat": "hex-prefix12/1",
+        "inheritedDigest": "6071c7e25f01f764b758d69eecae50665edb4958f37928c62e57a47041faf337",
+        "expressionDigest": "843baa6bd600c744555cbaab363277e9fd368c780db44897c96d6abc68f3f479",
+        "genomeCode": "#G6071C7E25F01",
+        "expressionCode": "#E843BAA6BD600",
+        "meaning": "Lookup reference fingerprints, not reversible genome encodings, ownership IDs or guaranteed unique codes. Full hashes disambiguate collisions."
+      },
+      "counts": {
+        "volume": 1,
+        "contact-link": 2
+      }
+    }
+  ],
+  "limits": "Static axial XY/body-only construction; not broad biology, game art, optics or physics."
+}

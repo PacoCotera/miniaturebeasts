@@ -1,0 +1,210 @@
+{
+  "sourceSha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb",
+  "manifestSha256": "c0ebbe30754f45d03072676f178b2487c75a0e6e9a8db05514700ca63cde7b9b",
+  "rgbaBytes": 118784,
+  "assets": [
+    {
+      "id": "FIELD_ART_GRASS_A",
+      "name": "grass-a",
+      "pngSha256": "a45b69f4d9977ee059c0f3939053030369d616c15979ca3663803224a7498a39",
+      "rgbaSha256": "1bf617e4c552648ea53827f828f6b3b1e445165e5d37cb0039e8ad9f847907e5",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_GRASS_B",
+      "name": "grass-b",
+      "pngSha256": "b09a47fb54f4534c78f0d6ba91f5925a3e266ea9105dcfeca8b65ff0a424c59e",
+      "rgbaSha256": "2de22a2bfec47fba0419dc7ee4603a1a2c76fd41194d0a625b7f02489b81614a",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_MOSS",
+      "name": "moss",
+      "pngSha256": "d293165e672e47d5a2e679ba2a319fb6cf58418645263107c3657bcc592d4dbd",
+      "rgbaSha256": "7dc30c82af21bcf42606cd81b73d12bf48ea6d7ce88e1bdcd8f4a272640848a7",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_WATER",
+      "name": "water",
+      "pngSha256": "717d06151b3bd925d0f3c2d5af1ab2408afa54d08c033453c56493526eb1a306",
+      "rgbaSha256": "08319431dd226450d1a381d247f5f92c50992beb3c184ce00091b14b4fe18b08",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_STONE",
+      "name": "stone",
+      "pngSha256": "4127c5e8b73a351e487ce33f4c1cbe7f636dbc0ae60ddc38bec22070e1b459eb",
+      "rgbaSha256": "7a1dcd4231d969e4a2df25ffe0381cc1eeff8801a54db202aa3d41395d1b705b",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_SHRUB",
+      "name": "shrub-ground",
+      "pngSha256": "88f1cc8780bbc5c74701426c00843d1c42ccf9dad5df77a6217f357824dc390c",
+      "rgbaSha256": "513ef257e659a78f80da7c9c3e0e0b44158a3be336df901447711d4e2d8df90d",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_TREE",
+      "name": "tree-ground",
+      "pngSha256": "3c8ea7af3190c01a7478319f99e154560feea1d7aade23f7635ab2bb6d54bf8d",
+      "rgbaSha256": "5e951c12b5ba43bbaa73998701bef185fbaa32e63a3ce33b1fa056f912fc1f21",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_BOULDER",
+      "name": "boulder-ground",
+      "pngSha256": "dfd450ee34242a19b9d53784fc275172a3dff1e6b3b3d9b913cd0b75aef49dcc",
+      "rgbaSha256": "0faf0e07f6a12e889f881cc958e67386cebe6b86a62b5cca11d3737ae61797b8",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_0",
+      "name": "path-0",
+      "pngSha256": "a45b69f4d9977ee059c0f3939053030369d616c15979ca3663803224a7498a39",
+      "rgbaSha256": "1bf617e4c552648ea53827f828f6b3b1e445165e5d37cb0039e8ad9f847907e5",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_1",
+      "name": "path-1",
+      "pngSha256": "8d6767280a2bdcd0024951b29242230655ade448ec64ff0c8c1bac45df524d68",
+      "rgbaSha256": "516d2c1b628170bb02da52ffcefaf849924c01f9e05859b1778ecc4113dc53cc",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_2",
+      "name": "path-2",
+      "pngSha256": "b865b177c22c4aa87dfea9239252d7d4860619497fa2103ea17656057cbdb81b",
+      "rgbaSha256": "d8ec6c21b7a7672a40c721f29f2c150c087493c27061cfa4064ec2fd46e98e60",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_3",
+      "name": "path-3",
+      "pngSha256": "8e3d9b4f7d047669c4f55cf1074a18cffd79560a0e6388cd65e548c2742dfab2",
+      "rgbaSha256": "dcb0a45e73d81e0617b6a04f11677d34f486493b571cca9272048e94aac3227a",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_4",
+      "name": "path-4",
+      "pngSha256": "aafd7a58a05ac7350d0e647473a567197433cb65b20d66ee0f058e66cf8d6871",
+      "rgbaSha256": "e0301137cf17c99a2ccf1c3d42eee49124cd80f2971c3a5381f14745bc55dd1a",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_5",
+      "name": "path-5",
+      "pngSha256": "8d30fac2a710ec360ac6013fae1a122d47e758812f2c85b643f64b726e2afe0d",
+      "rgbaSha256": "e76a5b21d3c4272bc4ad8108303d739e6b1337775bf566ec475650aade7c8fa4",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_6",
+      "name": "path-6",
+      "pngSha256": "4b56ce5f836e390ba04c6802125a84a5890eb4c5d32a9c9d740c0dfab60b98cc",
+      "rgbaSha256": "943f4bf37f464104f222026b87fc999b2eda7a61812ad1ffc82c542a63b875d2",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_7",
+      "name": "path-7",
+      "pngSha256": "30642db867567466488f90ddc3012448f510b52edbe099acce81624517beed85",
+      "rgbaSha256": "3cbd0c4b71b29aa7fa719b298e4e1c482a63ee82940bcf7d1a7be72adc1d96be",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_8",
+      "name": "path-8",
+      "pngSha256": "c008ae0a5b41bbfb9637821d88a3f0b004914be46082d493c1283b05dff85c4c",
+      "rgbaSha256": "40bfe5a3f9c2ce97337ea00467151df34b5fcc677f2d47e61836b745cea9e9e3",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_9",
+      "name": "path-9",
+      "pngSha256": "654139493f66a54f79f4cd52d73e82ad95c1c9f5cea66fb9a5a0269169e9d29c",
+      "rgbaSha256": "cfe40b952739236c5a91741e36a9b2de58262f23bba7f8071e23983a86cbcfa9",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_10",
+      "name": "path-10",
+      "pngSha256": "2d3ff877a04086e94a4bd1fd4ccfb87cb971ff3b233e369a21516589364f3435",
+      "rgbaSha256": "8f7e380629f29bc1f55b2d0f545e61f1c307dffe96e64e689607eba2901b2645",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_11",
+      "name": "path-11",
+      "pngSha256": "2a5213ffa9718a1d1de26ea5723180c1fc60b29d051db19a91bd881e46492292",
+      "rgbaSha256": "92ad1efe863883d245af43dfdf352d3c33ac75c72c260051075b5e643e121fef",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_12",
+      "name": "path-12",
+      "pngSha256": "0b421c32a2dcae971c77f9978d479f4501a79e1f0e636e11b1b1cb591b2c7e66",
+      "rgbaSha256": "ea0134737c4a9dfecacd1f1952aa55f5bf21b9dbef870303ccbbb67aae778262",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_13",
+      "name": "path-13",
+      "pngSha256": "c78390cf8b1926aa6232ead56e4be14d18a10b0bb84a68da650bc4fb411ce4a0",
+      "rgbaSha256": "380661b31dd6c8ceda2fae2beaaa6e86877d8bb246a08f6dd972e1dbb92f642c",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_14",
+      "name": "path-14",
+      "pngSha256": "38930dba5fa1d880310b9cfdf63f257f6c290347e0fefcdac398b1cddced1c74",
+      "rgbaSha256": "c3c47d3256652cf0dd9d5d749aa9116d301e055daa46b406c7cb437f87cdd247",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_PATH_15",
+      "name": "path-15",
+      "pngSha256": "fa50f6e15fde24ec1bada68b538de549dab360c5415d83a09eed63f4de2e1ded",
+      "rgbaSha256": "078c6116eacee64c2fc24b409569a16f11f17b15526418c2959a567979e63954",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_CAMP",
+      "name": "camp",
+      "pngSha256": "61627935cb0380ec7331aa4944be9ed77ca03db2197f4b23cb94b301c3a86a55",
+      "rgbaSha256": "332209c7680582220efd41740a5c4360c5f22ab228f3a1f7b0b4a5c7d77af8f8",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_RELAY",
+      "name": "relay",
+      "pngSha256": "937cbd66c15ac4ec458084a6cbc17cb25128a4c3cca759fdd4e2f4b672c6c721",
+      "rgbaSha256": "ac94c60e18007793b8a8f757380c7098d480545c4da32a433ab091ed6c605428",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_STONE_SHELF",
+      "name": "stone-shelf",
+      "pngSha256": "5453d7c8564ca5d4c8fc6cdc487b5c7e1980507322e9c2c45e14adeced61f06a",
+      "rgbaSha256": "8bbde882736528f44ca38b48e838962cdad9ed80cbab3d4ed2023aa981d455a2",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_MOSS_BEND",
+      "name": "moss-bend",
+      "pngSha256": "f06fa002b6f0046bf44a2ad7f66494365154743beb3b7b4f19beaf2de832d25a",
+      "rgbaSha256": "01188c5eb4929ad949054d2550ad6c9096d80d90e8050d27d65364cb0294d90e",
+      "nativeBytes": 4096
+    },
+    {
+      "id": "FIELD_ART_CACHE",
+      "name": "cache",
+      "pngSha256": "9a5387cec7c44cfa802de15c58273a394902bb4b43f7bd2870c97a8cc27d25f1",
+      "rgbaSha256": "fb56dad1508ac5e603994090524026ad32bb7f374ea719f2f048efbf2bbc30ff",
+      "nativeBytes": 4096
+    }
+  ]
+}

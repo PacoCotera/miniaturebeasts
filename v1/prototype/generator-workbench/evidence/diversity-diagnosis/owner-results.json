@@ -1,0 +1,34 @@
+{
+  "source": "Supplied screenshots of repeated Generate creature results",
+  "sourceRevision": "21852fbd69cd5b3ba781b90962b80b8cd6f8cc59",
+  "revisionEvidence": "Reported current workbench context, not independently encoded in screenshots",
+  "seeds": "Not supplied; screenshots cannot be replayed as exact genomes",
+  "overlay": "Amber selected-locus highlighting is inspection overlay, not evidence of inherited pigment",
+  "images": [
+    {
+      "file": "owner-result-1.png",
+      "sha256": "c059adb8489ab12edee1867535a96ffbf8207c209e58d461ae94b9d96535f0ca",
+      "bytes": 29037
+    },
+    {
+      "file": "owner-result-2.png",
+      "sha256": "0b706f1444dff3766aec10ce04f48260db17069adf8d5c55a2a6bda35def21d5",
+      "bytes": 29073
+    },
+    {
+      "file": "owner-result-3.png",
+      "sha256": "d19dfd681f367c677ca6d78b8f7a15bbf25a401ff6064b22dccf3b9abf0a4ef5",
+      "bytes": 39391
+    },
+    {
+      "file": "owner-result-4.png",
+      "sha256": "217494525337be239802a767ca919225cd49f163b6f9547952164f2630d58f0e",
+      "bytes": 34927
+    },
+    {
+      "file": "owner-result-5.png",
+      "sha256": "09afc2c6dd60d727bdeb0e8d4278d52240e6f9430253997f29d9562b6518afc4",
+      "bytes": 37135
+    }
+  ]
+}

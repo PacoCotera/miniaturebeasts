@@ -1,0 +1,44 @@
+{
+  "sources": [
+    {
+      "name": "nano-banana-2",
+      "acquisition": "Gemini Copy image PNG; not full-size-download proof",
+      "width": 1024,
+      "height": 559,
+      "alphaRange": [
+        255,
+        255
+      ],
+      "sha256": "5fedeb1e0ea4f374c2bddaade20661764aac5861ee7caa5ed39d85c0b43a2963",
+      "crop": {
+        "left": 354,
+        "top": 69,
+        "width": 316,
+        "height": 430
+      },
+      "previewSha256": "79bbabf04a13b467448de158b84ae05e8f98b2f441af768bca6a3428ff87f5d3",
+      "previewTransform": "rectangular crop then Lanczos3 contain into136x144; no matting or redrawing",
+      "status": "generated concept; preview is resampled, not authored native pixel master"
+    },
+    {
+      "name": "nano-banana-pro",
+      "acquisition": "Gemini Copy image PNG; not full-size-download proof",
+      "width": 1024,
+      "height": 559,
+      "alphaRange": [
+        255,
+        255
+      ],
+      "sha256": "30290876a84f9ed8cadb409b5eeba338c006e88beb49b99dc434ee0298841436",
+      "crop": {
+        "left": 289,
+        "top": 25,
+        "width": 446,
+        "height": 510
+      },
+      "previewSha256": "092cdfc08978343cfd761b5fd0f0e93984d2e8ca25b0f50505a6d1078dd57a57",
+      "previewTransform": "rectangular crop then Lanczos3 contain into136x144; no matting or redrawing",
+      "status": "generated concept; preview is resampled, not authored native pixel master"
+    }
+  ]
+}

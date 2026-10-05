@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "critter-image-benchmark/1",
+  "case": "axial-original",
+  "identity": {
+    "recordId": "experiment-91772e59baf3d1e490b5",
+    "inputDigest": "91772e59baf3d1e490b58b064b7c5bc0e20a9018d82a9e76e7e93be6def9c4e7",
+    "resultDigest": "745c402b682206ff871a66c48315416b9b02df493a9f4d8de6dd12ef9c2ebd53",
+    "contentId": "genomic-development-study",
+    "contentVersion": 1,
+    "ruleVersion": "developmental-analytic/1"
+  },
+  "callsPerWorkflow": 1,
+  "matchedInput": true,
+  "prompt": {
+    "file": "prompt.txt",
+    "characters": 2370,
+    "sha256": "746e082bff96406340cdc1e072130430d1a1b9729ea33dc169b91ca175a52c73"
+  },
+  "references": [
+    {
+      "file": "geometry-reference.png",
+      "sha256": "3e3f94b7edf95c187396c16f4064cfcd7bb4fb70aa3f8445ce9c2572ca13bd86",
+      "width": 1024,
+      "height": 600
+    },
+    {
+      "file": "../../../../design/game-art-proposals/35-vault-composition/18-c-refined.png",
+      "sha256": "889745d74ae7bcd7c80ef5737258b3fdf0357423c1d2362a3630925ca07a632b"
+    }
+  ],
+  "sourceExports": [
+    {
+      "file": "axial-original.geometry.svg",
+      "sha256": "411f70da1059b7939de400ba5ce8885ecd2ebf4500e73d87f643f656c6c4ac21"
+    },
+    {
+      "file": "axial-original.geometry.json",
+      "sha256": "aa99092a02297dc3cf18b8ad077607570e5d6d061624b776e4e7d85d8d466964"
+    }
+  ],
+  "gemini": {
+    "observedMode": "Gemini web Images/Pro; raster backend ID unverified",
+    "conversation": "https://gemini.google.com/app/21139fb7dfef8b22",
+    "output": "gemini-geometry-01.png",
+    "sha256": "f5f3615f2b3aac52c61085d5e7f5dbd7b8c420e41020f7b0b19f9717fe5712ec",
+    "width": 1024,
+    "height": 576,
+    "completionObservedUpperBoundMilliseconds": 76010,
+    "extraction": "Visible Copy image control supplied unedited PNG; Download full size image yielded no download artifact within 10 seconds",
+    "review": "art and integration assessments broad-fidelity pass; missing six fin-root stubs; exact geometry and finished creature art not accepted"
+  },
+  "builtin": {
+    "metadata": "builtin-geometry-01.json",
+    "output": "builtin-geometry-01.png",
+    "sha256": "90240d43c6febea26bb5a946ba6e56cca6e8abf20f11f107517f1efed590975c",
+    "width": 1639,
+    "height": 960,
+    "toolElapsedMilliseconds": 21289,
+    "review": "independent genomic and integration assessments broad-fidelity pass; exact geometry and finished creature art not accepted"
+  },
+  "comparison": {
+    "craft": "art and integration assessments favor built-in contour/light craft in this pair only",
+    "exactGeometry": "Not established: missing/simplified connectors, stylized contours, no registered position/extent/mask-ratio measurements",
+    "cost": "Not exposed; not measured",
+    "performance": "Different timing measures and one case; no model ranking",
+    "scope": "Static diagnostic; no cohesive solid creature, rig, animation, game deployment or hardware proof"
+  }
+}

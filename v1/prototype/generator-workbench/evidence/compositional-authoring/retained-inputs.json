@@ -1,0 +1,91 @@
+{
+  "sourceRevision": "fb78f44f659f1b400ef8b09f3000095ace30b250",
+  "ciRun": 37112599262,
+  "visibleClipboardMatch": true,
+  "beforeUIRatio": 0.65,
+  "afterUIRatio": 0.575,
+  "rows": [
+    {
+      "file": "before.record.json",
+      "id": "compositional-5b0e0b9f0166220432a9",
+      "foundation": {
+        "profile": "compositional-authored-foundation/1",
+        "id": "genomic-compositional-source-draft-96985f03084e4d18",
+        "version": 1,
+        "digest": "9cde9d801b45f36a4ce3f524d907b610882d5a8d67d3fb801a423918a3dc7be5"
+      },
+      "pairs": 104,
+      "orderedCopiesDigest": "63ae1188544ad02172675217d4fd1996cf5ee4379c54ddf7fb1be79b96ba7fc1",
+      "taperCopies": [
+        "strong",
+        "gentle"
+      ],
+      "taperVersion": 1,
+      "origin": {
+        "kind": "authored",
+        "baseline": "compositional-solid-operators",
+        "authoredFoundation": {
+          "profile": "compositional-authored-foundation/1",
+          "id": "genomic-compositional-source-draft-96985f03084e4d18",
+          "version": 1,
+          "digest": "9cde9d801b45f36a4ce3f524d907b610882d5a8d67d3fb801a423918a3dc7be5"
+        }
+      },
+      "exportBytes": 24525
+    },
+    {
+      "file": "after.record.json",
+      "id": "compositional-3d0b154a2ee771514d17",
+      "foundation": {
+        "profile": "compositional-authored-foundation/1",
+        "id": "genomic-compositional-source-draft-96985f03084e4d18",
+        "version": 2,
+        "digest": "aae8c3f1ae8b66df0751a68f534cc26e63693cc96a30f038c61e4eeac1211419"
+      },
+      "pairs": 104,
+      "orderedCopiesDigest": "63ae1188544ad02172675217d4fd1996cf5ee4379c54ddf7fb1be79b96ba7fc1",
+      "taperCopies": [
+        "strong",
+        "gentle"
+      ],
+      "taperVersion": 2,
+      "origin": {
+        "kind": "authored",
+        "baseline": "compositional-solid-operators",
+        "authoredFoundation": {
+          "profile": "compositional-authored-foundation/1",
+          "id": "genomic-compositional-source-draft-96985f03084e4d18",
+          "version": 1,
+          "digest": "9cde9d801b45f36a4ce3f524d907b610882d5a8d67d3fb801a423918a3dc7be5"
+        }
+      },
+      "exportBytes": 25454
+    },
+    {
+      "file": "generated.record.json",
+      "id": "compositional-817164ec8748afc0cc0c",
+      "foundation": {
+        "profile": "compositional-authored-foundation/1",
+        "id": "genomic-compositional-source-draft-96985f03084e4d18",
+        "version": 2,
+        "digest": "aae8c3f1ae8b66df0751a68f534cc26e63693cc96a30f038c61e4eeac1211419"
+      },
+      "pairs": 104,
+      "orderedCopiesDigest": "9619db62ff0d0d801a3ba9218800c8668445271208afbf01565d581be4a9a4cb",
+      "taperCopies": [
+        "gentle",
+        "strong"
+      ],
+      "taperVersion": 2,
+      "origin": {
+        "kind": "experiment",
+        "seed": 3753154903,
+        "attempt": 1,
+        "algorithmVersion": "mulberry32/1",
+        "founderProfile": "compositional-founder-states/1",
+        "baseline": "compositional-solid-operators"
+      },
+      "exportBytes": 25308
+    }
+  ]
+}

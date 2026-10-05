@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="105" height="100" viewBox="0 0 105 100">
+  <defs>
+    <!-- Hand-authored selection contours in the exact source crop coordinates.
+         White changes alpha only. Source RGB, highlights and veins are immutable. -->
+    <symbol id="data-compact-mask" viewBox="0 0 37 48">
+      <path fill="white" d="M6 0H29L34 3L37 8V42L33 47H5L1 43L0 36V9L2 4Z"/>
+    </symbol>
+    <symbol id="energy-compact-mask" viewBox="0 0 43 51">
+      <path fill="white" d="M20 0H25L30 5L34 13L38 23L42 33L42 38L36 42L26 49L20 51L12 46L3 40L0 34L3 24L7 13L13 6Z"/>
+    </symbol>
+    <symbol id="essence-compact-mask" viewBox="0 0 47 49">
+      <path fill="white" d="M19 1H28L35 4L41 10L45 17L47 25L45 34L40 41L34 46L25 49H19L11 46L5 40L1 33L0 23L2 15L7 8L12 4Z"/>
+    </symbol>
+    <symbol id="crown-reference-mask" viewBox="0 0 105 89">
+      <g fill="white" id="five-leaf-and-stem-selection">
+        <path d="M51 0L55 4L59 12L62 25L63 37L60 48L57 60L55 82L52 85L49 74L48 57L44 45L42 33L44 19L47 8Z"/>
+        <path d="M8 19L14 22L23 28L34 37L42 47L48 61L53 79L52 85L48 78L41 64L33 55L24 49L18 41L12 31Z"/>
+        <path d="M3 47L9 49L17 54L29 59L36 62L43 69L51 82L49 86L44 80L34 73L24 70L16 67L9 62L5 56Z"/>
+        <path d="M94 19L96 22L94 30L90 39L83 48L73 56L65 62L57 78L55 85L52 83L54 69L59 54L66 43L77 34L87 27Z"/>
+        <path d="M101 47L102 50L99 57L93 62L84 67L72 73L64 76L57 85L54 86L55 80L64 69L72 62L85 57L94 51Z"/>
+      </g>
+    </symbol>
+    <symbol id="eye-ring-reference-mask" viewBox="0 0 74 67">
+      <path fill="white" fill-rule="evenodd" d="M30 0H43L54 3L62 9L69 18L73 28V40L69 50L61 59L51 65L39 67H28L17 63L8 56L2 46L0 35L2 24L7 14L16 6L25 2Z M48 33C48 41 44 46 37 46C30 46 26 41 26 34C26 26 30 21 37 21C44 21 48 25 48 33Z"/>
+    </symbol>
+    <symbol id="sample-neutral-mask" viewBox="0 0 54 54">
+      <path fill="white" d="M37 0H43L49 3L53 9L54 16L52 22L48 27L28 47L22 51L14 54L6 51L1 45L0 38L3 31L8 25L29 5Z"/>
+    </symbol>
+    <symbol id="data-primary-mask" viewBox="0 0 90 100">
+      <path fill="white" d="M16 6H61L67 9L70 15V79L68 85L63 89H13L7 85L5 78V21L8 13Z"/>
+    </symbol>
+    <symbol id="energy-primary-mask" viewBox="0 0 90 100">
+      <path fill="white" d="M41 0H47L53 8L58 18L64 28L66 34L66 43L63 58L58 68L47 79L35 88L29 87L20 79L15 69L11 57L9 33L12 27L26 13Z"/>
+    </symbol>
+    <symbol id="essence-primary-mask" viewBox="0 0 90 90">
+      <path fill="white" d="M30 6H45L57 10L66 16L74 26L79 37V50L75 62L68 72L58 79L45 83H31L18 79L8 72L1 61L0 47V35L4 25L12 16L21 10Z"/>
+    </symbol>
+  </defs>
+</svg>

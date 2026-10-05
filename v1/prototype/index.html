@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>
+      Critter Lab — First Playable
+    </title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <header>
+      <a href="#" class="brand">
+        CRITTER LAB
+        <span>
+          DIRTY PAWZ PRESS
+        </span>
+      </a>
+      <span class="badge">
+        EXPERIMENT 001
+      </span>
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">
+            THE FIRST PLAYABLE / WORK IN PROGRESS
+          </p>
+          <h1>
+            A little curiosity.
+            <br>
+            A new generation.
+          </h1>
+          <p>
+            Meet your starters, investigate a sample, and discover the traits they pass on.
+          </p>
+        </div>
+        <aside>
+          PROVISIONAL LAB
+          <br>
+          <p>
+            Software experiment • authored placeholder art
+            <br>
+            No display, controls, or hardware selected.
+          </p>
+        </aside>
+      </section>
+      <p id="notice" class="notice" role="status" aria-live="polite">
+        Your collection stays in this browser. This prototype is not the completed milestone.
+      </p>
+      <section id="dossier" class="panel" aria-labelledby="dossier-title" hidden>
+        <p class="eyebrow">
+          SHARED DISCOVERY / READ ONLY
+        </p>
+        <h2 id="dossier-title">
+          Specimen dossier
+        </h2>
+        <p id="dossier-status" role="status" aria-live="polite"></p>
+        <div id="dossier-content" aria-busy="false"></div>
+        <a class="text-link" href="/">
+          Return to your own lab
+        </a>
+      </section>
+      <section id="share-card" class="panel" aria-labelledby="share-title" hidden>
+        <p class="eyebrow">
+          A CARD FOR ONE INDIVIDUAL
+        </p>
+        <h2 id="share-title" tabindex="-1">
+          Share a discovery
+        </h2>
+        <div id="share-content" aria-live="polite">
+        </div>
+        <div class="card-actions">
+          <button id="preview-card" class="secondary" type="button" disabled>
+            Preview print layout
+          </button>
+          <button id="print-shared" type="button" disabled>
+            Print card with QR
+          </button>
+          <button id="copy-link" class="secondary" type="button" disabled>
+            Copy specimen link
+          </button>
+          <button id="close-share" class="secondary" type="button">
+            Close card
+          </button>
+        </div>
+        <p id="share-status" role="status">
+        </p>
+        <p class="fine">
+          Prototype transport: a URL resolves this individual on the running server. A phone
+          needs a reachable server address; localhost only reaches the phone itself. Opening a
+          card grants no ownership or breeding permission.
+        </p>
+      </section>
+      <div id="local-lab">
+        <section aria-labelledby="parents-title">
+          <div class="section-title">
+            <h2 id="parents-title">
+              01 / Meet the parents
+            </h2>
+            <span>
+              One compatible family
+            </span>
+          </div>
+          <div id="parents" class="parent-grid">
+          </div>
+        </section>
+        <div class="workbench">
+          <section class="panel" aria-labelledby="research-title">
+            <p class="eyebrow">
+              02 / INVESTIGATE
+            </p>
+            <h2 id="research-title">
+              Mist Thread
+            </h2>
+            <p>
+              A small lab study of pale markings. This fixture changes the chance carried pale
+              markings appear; it never guarantees a trait.
+            </p>
+            <div id="research-status">
+            </div>
+            <section id="research-finding" class="research-finding" aria-label="Saved research finding" hidden></section>
+            <button id="research" type="button">
+              Complete research fixture
+            </button>
+            <p class="fine">
+              Developer shortcut: completes one sample immediately. Research questions and real
+              timing are still being designed.
+            </p>
+          </section>
+          <section class="panel" aria-labelledby="breed-title">
+            <p class="eyebrow">
+              03 / MAKE A PREDICTION
+            </p>
+            <h2 id="breed-title">
+              What might they inherit?
+            </h2>
+            <p class="fine">Next incubation forecast: follows the sample choice below. The saved research finding stays separate.</p>
+            <label class="sample-choice">
+              <input id="use-sample" type="checkbox">
+              Use the Mist Thread sample
+            </label>
+            <div id="forecast">
+            </div>
+            <p class="fine">
+              Traits can occur together. These probabilities do not add to 100%.
+            </p>
+            <button id="breed" type="button">
+              Begin incubation
+            </button>
+          </section>
+        </div>
+        <section aria-labelledby="eggs-title">
+          <div class="section-title">
+            <h2 id="eggs-title">
+              04 / Incubating
+            </h2>
+            <span>
+              Time is simulated
+            </span>
+          </div>
+          <div id="eggs">
+          </div>
+        </section>
+        <section aria-labelledby="collection-title">
+          <div class="section-title">
+            <h2 id="collection-title" tabindex="-1">
+              05 / Your discoveries
+            </h2>
+            <span id="collection-count">
+            </span>
+          </div>
+          <div id="collection" class="collection-grid">
+          </div>
+        </section>
+        <footer>
+          <p>
+            First Playable / Local prototype
+            <br>
+            Research choice, physical print/phone tests, and playtest validation remain pending.
+            <br>
+            <a href="/review.html">
+              Compare creature and display studies
+            </a>
+          </p>
+          <button id="reset" class="secondary" type="button">
+            Reset this experiment
+          </button>
+        </footer>
+      </div>
+      <section id="print-card" aria-label="Printable specimen card">
+      </section>
+    </main>
+    <script type="module" src="./app.mjs">
+    </script>
+  </body>
+</html>

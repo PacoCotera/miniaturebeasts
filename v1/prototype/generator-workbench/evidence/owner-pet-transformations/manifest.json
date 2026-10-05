@@ -1,0 +1,40 @@
+{
+  "references": [
+    {
+      "prompt": null,
+      "sha256": "ead803034c89e1d86acd35f348055ab6df41f707efffa6e9622b787d9d617a34",
+      "provenance": "Supplied original PNG; reported Gemini transformation",
+      "genomeBinding": "Unbound: no matching original genome/prompt packet supplied",
+      "file": "axial-source.png"
+    },
+    {
+      "prompt": "turn this into a cute digital pet",
+      "sha256": "0fb0d14043e9c13063edf861afeb2760edc84c8cc702098e45958e8487fe69e2",
+      "provenance": "Supplied original PNG; reported Gemini transformation",
+      "genomeBinding": "Unbound: no matching original genome/prompt packet supplied",
+      "file": "finny-pet.png"
+    },
+    {
+      "prompt": null,
+      "sha256": "374cded55ccb4963f37e692ee362edce453befe8683c77e6d918811a0dd1ed69",
+      "provenance": "Supplied original PNG; reported Gemini transformation",
+      "genomeBinding": "Unbound: no matching original genome/prompt packet supplied",
+      "file": "axial-pet-scene.png"
+    },
+    {
+      "prompt": "turn this creature into a cute digital pet.  just the pet, hibit art.    ",
+      "sha256": "bc2fe9910153b10767654501325c1aeb2bc864bb7e408b647379a1f84520d7ab",
+      "provenance": "Supplied original PNG; reported Gemini transformation",
+      "genomeBinding": "Unbound: no matching original genome/prompt packet supplied",
+      "file": "radial-pet.png"
+    },
+    {
+      "prompt": "turn this creature into a cute digital pet.  colorful, just the pet, no scenery. hibit art. ensure limbs are in place and dont clip each other, must be a correct shapeform without geometric abnormalities.    ",
+      "sha256": "4bf50b572ef94314fce9f26edcc02c6fc35ab772b1bcf806dc58eafd7dfb92f6",
+      "provenance": "Supplied original PNG; reported Gemini transformation",
+      "genomeBinding": "Unbound: no matching original genome/prompt packet supplied",
+      "file": "colourful-axial-pet.png"
+    }
+  ],
+  "status": "Retained owner references, not a new provider run or genotype-fidelity proof"
+}

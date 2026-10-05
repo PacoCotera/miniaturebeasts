@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "critter-radial-proof/1",
+  "baseRevision": "91faeb39c50fe9574680ac023d78f4dc6b8cbfff",
+  "profileVersion": "graph-radial/1",
+  "sourceRuleVersion": "developmental-regional-scene/1",
+  "camera": {
+    "minimumX": -0.4635726304897011,
+    "maximumX": 0.4635726304897011,
+    "minimumY": -0.5673934797148009,
+    "maximumY": 0.633230813221773
+  },
+  "displaySize": 256,
+  "projection": "Y right, Z down, looking along X; shared scale, X retained as depth",
+  "paintOrder": "Body then contacts and neutral inspection root rings; not physical occlusion",
+  "comparisonRows": [
+    "actual source pigments",
+    "diagnostic silhouette pigment override"
+  ],
+  "cases": [
+    {
+      "name": "radial-contact-base",
+      "relationship": "controlled authoring input, not offspring or random repair",
+      "changedLoci": [],
+      "recordId": "experiment-705d607be3ba4139dba6",
+      "inputDigest": "705d607be3ba4139dba6eea6d1f1890d263d828f5bbe82d40cb3178a6b5b851e",
+      "resultDigest": "5d4a56a65ac361b1760cd28fd4df80d305b434c997fd91497598257c62190378",
+      "constructionDigest": "b097a998c0b31a0b8b6e2cd81e2b7074be1054dddd43447cc2f031b397532844",
+      "identity": {
+        "schemaVersion": "critter-reference-identity/1",
+        "digestAlgorithm": "sha256",
+        "inheritedEncodingVersion": "inherited-genome/1",
+        "expressionEncodingVersion": "expressed-creature/1",
+        "shortCodeFormat": "hex-prefix12/1",
+        "inheritedDigest": "7f2af5db54d7ba737f5cfe76713f7a5e42ea9831f88bb6cdb5cda28458636393",
+        "expressionDigest": "cbf3494897bb19e075ab3cd3315565b0edc9c7d89656e89e8495f0bbb56a4f55",
+        "genomeCode": "#G7F2AF5DB54D7",
+        "expressionCode": "#ECBF3494897BB",
+        "meaning": "Lookup reference fingerprints, not reversible genome encodings, ownership IDs or guaranteed unique codes. Full hashes disambiguate collisions."
+      },
+      "bodyCount": 1,
+      "chainCount": 3,
+      "segmentCount": 3,
+      "contactCount": 3
+    },
+    {
+      "name": "radial-height-contrast",
+      "relationship": "controlled authoring input, not offspring or random repair",
+      "changedLoci": [
+        "structure.body-height"
+      ],
+      "recordId": "experiment-c1efef4fececd2557319",
+      "inputDigest": "c1efef4fececd2557319bb37f6fae28763387efd5a641b189e0347aa411e89af",
+      "resultDigest": "cbcd94b09d866e63d845d49b46a968a976d691742f1051d72a36d7f87c33968c",
+      "constructionDigest": "7784526b88463a90064fb13f7ff3e3f07985f9c56df7caf5f978b860b3958940",
+      "identity": {
+        "schemaVersion": "critter-reference-identity/1",
+        "digestAlgorithm": "sha256",
+        "inheritedEncodingVersion": "inherited-genome/1",
+        "expressionEncodingVersion": "expressed-creature/1",
+        "shortCodeFormat": "hex-prefix12/1",
+        "inheritedDigest": "12e11ece86b3b9c498620340ed5cb6e488e48f0f3c7f533a637ff7d59c76be9e",
+        "expressionDigest": "e25bfe3ae23dd54caf1c2647524e4f9296ae7787ce615c1f4dad01339558bf33",
+        "genomeCode": "#G12E11ECE86B3",
+        "expressionCode": "#EE25BFE3AE23D",
+        "meaning": "Lookup reference fingerprints, not reversible genome encodings, ownership IDs or guaranteed unique codes. Full hashes disambiguate collisions."
+      },
+      "bodyCount": 1,
+      "chainCount": 3,
+      "segmentCount": 3,
+      "contactCount": 3
+    },
+    {
+      "name": "radial-secondary-latent",
+      "relationship": "controlled authoring input, not offspring or random repair",
+      "changedLoci": [
+        "appearance.underside-palette"
+      ],
+      "recordId": "experiment-c305b4303caad4c584dc",
+      "inputDigest": "c305b4303caad4c584dc21b2db481b410dc887df9bc1872bb061226092c11a64",
+      "resultDigest": "4597fecbef457011ca751f784648364e54191f5949e232b3223766bb4e5da3fd",
+      "constructionDigest": "6e1800db60bc6612f843e9998c60cbc56c3c9361e9f30f7eeec725d912bb7efb",
+      "identity": {
+        "schemaVersion": "critter-reference-identity/1",
+        "digestAlgorithm": "sha256",
+        "inheritedEncodingVersion": "inherited-genome/1",
+        "expressionEncodingVersion": "expressed-creature/1",
+        "shortCodeFormat": "hex-prefix12/1",
+        "inheritedDigest": "9896a6a451a7015177b85614962689c6ef39779ac1efaef3becf0e22d30db4f5",
+        "expressionDigest": "2e83069e61841a2467c4309519c385d382b601c2755466ce5ebee6c22e01a307",
+        "genomeCode": "#G9896A6A451A7",
+        "expressionCode": "#E2E83069E6184",
+        "meaning": "Lookup reference fingerprints, not reversible genome encodings, ownership IDs or guaranteed unique codes. Full hashes disambiguate collisions."
+      },
+      "bodyCount": 1,
+      "chainCount": 3,
+      "segmentCount": 3,
+      "contactCount": 3
+    }
+  ],
+  "fileHashes": {
+    "radial-contact-base.packet.json": "2617aa6a1da987ae34d19025ff601a62e36b1647335075f6ca20881b08b99a56",
+    "radial-contact-base.construction.json": "019984c41aaab85a15f2b5440e3cf09c94544d3716f850d5e70dfda9ecea7e6e",
+    "radial-contact-base.svg": "4f3994ad96fc04dee446cd231bd0d632db60b93ecb5b6944b1666185ad190138",
+    "radial-height-contrast.packet.json": "c15651e71f5c45874b6d73768359616fc636a9052a1fa9dd6e74be5f397df78e",
+    "radial-height-contrast.construction.json": "1df46f3295743bfe559bdc7c17e39e9aba80aa30308decf78d97ffbd0282ac03",
+    "radial-height-contrast.svg": "8ea7a36dc1f1476501528e3854625d2a7190903571b896e4f692eae6d629d77b",
+    "radial-secondary-latent.packet.json": "cf22a3aad7a87cab579bb85e5875f67d830cdcb9c68552af6cfb2ba57e31e175",
+    "radial-secondary-latent.construction.json": "67c9fdc9ff53f5534421c3a3cd19f6223186e8db401d5261ce84f996208d422b",
+    "radial-secondary-latent.svg": "01832ec4dbc17762744b317a07726436b0b458964b2699af9bc0a56a631c01c1",
+    "comparison.svg": "f36efe1940e6cc3c0614f52ee84c0943e4601122bddb9c700adb62047466de4a"
+  },
+  "scriptHashes": {
+    "graph-radial-construction.mjs": "b835a98cdddfaa12284d3b2fc7062f478c41bac89d5a958b8857223c8bd7a0ad",
+    "graph-radial-presentation.mjs": "dc4a8aa64a77af5a59bef3cb9f849f4c9cd4d36ec122df3519f6f8dfef075d07",
+    "construct-radial-proof.mjs": "9f4f73e5109c4390b7103e279c0ebc8685c66c6c8b324bb6c13c0818324ed182",
+    "graph-radial.test.mjs": "6300e033f54ef816be6a663add333b8e67732e2b1e6691cead9f8d94948b0f70"
+  },
+  "limitations": [
+    "Contacts-only static source proof, not pet/game art or current Generate default.",
+    "Eyes and covering facts retained but not projected, even when ON/scales.",
+    "No comprehensive capsule collision, tissue, movement or physical claims."
+  ]
+}

@@ -1,0 +1,473 @@
+{
+  "schemaVersion": "compositional-authoring-delta/1",
+  "parent": {
+    "profile": "compositional-foundation-pin/1",
+    "id": "genomic-compositional-source-experiment",
+    "version": 2,
+    "digest": "b4a6faeff451929f77afa551ad15b8edff31d2e5e408dadb8c505ae5ed80fa6e"
+  },
+  "forkId": "96985f03084e4d18",
+  "revision": 2,
+  "records": [
+    {
+      "id": "growth.region-taper",
+      "operator": "copy-mean",
+      "alleles": [
+        {
+          "id": "strong",
+          "value": 0.45,
+          "label": "strong"
+        },
+        {
+          "id": "gentle",
+          "value": 0.7,
+          "label": "gentle"
+        }
+      ],
+      "target": "region.childScale",
+      "bounds": [
+        0.45,
+        0.85
+      ],
+      "meaning": "Region at depth d has anchor radii times childScale^d; no equal-length bulb requirement.",
+      "version": 2,
+      "copyCount": 2,
+      "status": "validated",
+      "family": "Structure",
+      "label": "region taper",
+      "purpose": "Provisional compositional contributor, not canonical biology.",
+      "requires": [],
+      "outputs": [
+        "region.childScale"
+      ]
+    }
+  ],
+  "startingCopies": {
+    "development.axial-repeat": [
+      "single",
+      "single"
+    ],
+    "development.symmetry": [
+      "bilateral",
+      "bilateral"
+    ],
+    "development.attachment-repeat": [
+      "none",
+      "none"
+    ],
+    "development.articulated-chain": [
+      "linked",
+      "linked"
+    ],
+    "development.membrane-rooting": [
+      "on",
+      "on"
+    ],
+    "development.fin-rooting": [
+      "off",
+      "off"
+    ],
+    "development.axial-deformation": [
+      "off",
+      "off"
+    ],
+    "structure.body-length": [
+      "low",
+      "high"
+    ],
+    "structure.body-width": [
+      "high",
+      "low"
+    ],
+    "structure.body-height": [
+      "low",
+      "low"
+    ],
+    "structure.body-taper": [
+      "high",
+      "high"
+    ],
+    "structure.axial-spacing": [
+      "low",
+      "high"
+    ],
+    "structure.attachment-position": [
+      "low",
+      "low"
+    ],
+    "structure.proximal-length": [
+      "low",
+      "low"
+    ],
+    "structure.distal-length": [
+      "high",
+      "high"
+    ],
+    "structure.joint-range": [
+      "low",
+      "low"
+    ],
+    "structure.contact-width": [
+      "low",
+      "low"
+    ],
+    "structure.membrane-span": [
+      "high",
+      "high"
+    ],
+    "structure.membrane-flexibility": [
+      "low",
+      "low"
+    ],
+    "structure.fin-span": [
+      "high",
+      "low"
+    ],
+    "structure.material-density": [
+      "high",
+      "high"
+    ],
+    "appearance.body-palette": [
+      "russet",
+      "jade"
+    ],
+    "appearance.underside-palette": [
+      "slate",
+      "peach"
+    ],
+    "appearance.marking-switch": [
+      "off",
+      "off"
+    ],
+    "appearance.marking-layout": [
+      "bands",
+      "bands"
+    ],
+    "appearance.marking-extent": [
+      "high",
+      "high"
+    ],
+    "appearance.marking-scale": [
+      "high",
+      "high"
+    ],
+    "appearance.marking-orientation": [
+      "low",
+      "low"
+    ],
+    "appearance.marking-contrast": [
+      "low",
+      "high"
+    ],
+    "appearance.surface-texture": [
+      "smooth",
+      "smooth"
+    ],
+    "movement.contact-phase": [
+      "low",
+      "low"
+    ],
+    "movement.cycle-rate": [
+      "low",
+      "low"
+    ],
+    "movement.stride-preference": [
+      "low",
+      "low"
+    ],
+    "movement.turn-control": [
+      "low",
+      "low"
+    ],
+    "movement.axial-amplitude": [
+      "low",
+      "high"
+    ],
+    "movement.axial-phase": [
+      "high",
+      "low"
+    ],
+    "movement.membrane-stroke": [
+      "low",
+      "high"
+    ],
+    "movement.membrane-coordination": [
+      "high",
+      "low"
+    ],
+    "movement.fin-steering": [
+      "low",
+      "high"
+    ],
+    "energy.actuator-capacity": [
+      "high",
+      "high"
+    ],
+    "energy.reserve-capacity": [
+      "low",
+      "low"
+    ],
+    "energy.action-efficiency": [
+      "low",
+      "low"
+    ],
+    "structure.ocular-pair": [
+      "absent",
+      "absent"
+    ],
+    "structure.ocular-placement": [
+      "high",
+      "high"
+    ],
+    "structure.ocular-size": [
+      "low",
+      "high"
+    ],
+    "appearance.covering-kind": [
+      "skin",
+      "skin"
+    ],
+    "appearance.covering-extent": [
+      "high",
+      "high"
+    ],
+    "appearance.covering-scale": [
+      "low",
+      "high"
+    ],
+    "development.regional-growth": [
+      "even",
+      "even"
+    ],
+    "structure.join-neck-ratio": [
+      "high",
+      "low"
+    ],
+    "anatomy.posterior-presence": [
+      "off",
+      "off"
+    ],
+    "anatomy.muzzle-presence": [
+      "on",
+      "on"
+    ],
+    "anatomy.crown-presence": [
+      "on",
+      "on"
+    ],
+    "anatomy.wing-presence": [
+      "off",
+      "off"
+    ],
+    "anatomy.exterior-eye-presence": [
+      "off",
+      "off"
+    ],
+    "anatomy.support-pair-count": [
+      "two",
+      "two"
+    ],
+    "anatomy.crown-form": [
+      "pointed",
+      "pointed"
+    ],
+    "growth.core-half-length": [
+      "small",
+      "large"
+    ],
+    "growth.core-width-ratio": [
+      "low",
+      "low"
+    ],
+    "growth.core-depth-ratio": [
+      "high",
+      "high"
+    ],
+    "growth.head-length-ratio": [
+      "large",
+      "large"
+    ],
+    "growth.head-width-ratio": [
+      "low",
+      "high"
+    ],
+    "growth.head-depth-ratio": [
+      "high",
+      "high"
+    ],
+    "growth.head-lift-ratio": [
+      "high",
+      "high"
+    ],
+    "growth.muzzle-projection-ratio": [
+      "long",
+      "short"
+    ],
+    "growth.muzzle-width-ratio": [
+      "high",
+      "low"
+    ],
+    "growth.support-drop-ratio": [
+      "long",
+      "medium"
+    ],
+    "growth.support-splay-ratio": [
+      "high",
+      "low"
+    ],
+    "growth.support-radius-ratio": [
+      "stout",
+      "slender"
+    ],
+    "growth.terminal-length-ratio": [
+      "small",
+      "broad"
+    ],
+    "growth.terminal-depth-ratio": [
+      "small",
+      "low"
+    ],
+    "growth.posterior-length-ratio": [
+      "long",
+      "short"
+    ],
+    "growth.posterior-width-ratio": [
+      "high",
+      "low"
+    ],
+    "growth.exterior-eye-size-ratio": [
+      "large",
+      "large"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+      "close",
+      "close"
+    ],
+    "growth.crown-height-ratio": [
+      "high",
+      "high"
+    ],
+    "growth.wing-span-ratio": [
+      "short",
+      "long"
+    ],
+    "growth.wing-chord-ratio": [
+      "narrow",
+      "narrow"
+    ],
+    "growth.wing-sweep-ratio": [
+      "high",
+      "low"
+    ],
+    "appearance.anatomical-covering": [
+      "scales",
+      "scales"
+    ],
+    "appearance.anatomical-covering-extent": [
+      "long",
+      "short"
+    ],
+    "appearance.anatomical-scale-size": [
+      "coarse",
+      "coarse"
+    ],
+    "organization.region-depth": [
+      "two",
+      "two"
+    ],
+    "organization.region-layout": [
+      "serial",
+      "serial"
+    ],
+    "organization.body-symmetry": [
+      "bilateral",
+      "bilateral"
+    ],
+    "organization.region-join": [
+      "broad",
+      "broad"
+    ],
+    "organization.head-module": [
+      "plain",
+      "plain"
+    ],
+    "organization.appendage-role": [
+      "contact",
+      "contact"
+    ],
+    "organization.appendage-groups": [
+      "one",
+      "one"
+    ],
+    "organization.free-link-count": [
+      "two",
+      "two"
+    ],
+    "growth.region-bend": [
+      "up",
+      "up"
+    ],
+    "growth.region-taper": [
+      "strong",
+      "gentle"
+    ],
+    "growth.branch-angle": [
+      "close",
+      "wide"
+    ],
+    "growth.join-throat-ratio": [
+      "broad",
+      "thin"
+    ],
+    "growth.free-proximal-ratio": [
+      "short",
+      "long"
+    ],
+    "growth.free-distal-ratio": [
+      "long",
+      "short"
+    ],
+    "growth.free-radius-ratio": [
+      "thick",
+      "thick"
+    ],
+    "growth.radial-cross-radius": [
+      "slender",
+      "broad"
+    ],
+    "anatomy.region-cross-exponent": [
+      "rounded-square",
+      "rounded-square"
+    ],
+    "anatomy.region-longitudinal-form": [
+      "barrel",
+      "barrel"
+    ],
+    "anatomy.contact-terminal-form": [
+      "wedge",
+      "wedge"
+    ],
+    "appearance.fur-presence": [
+      "on",
+      "on"
+    ],
+    "appearance.fur-length": [
+      "short",
+      "long"
+    ],
+    "appearance.fur-flow": [
+      "oblique",
+      "axial"
+    ]
+  },
+  "baselineMetadata": {
+    "label": "Two-region taper authoring",
+    "description": "Explicit retained-input edit: two serial body regions; mixed strong/gentle taper copies."
+  },
+  "definitionPin": {
+    "profile": "compositional-authored-foundation/1",
+    "id": "genomic-compositional-source-draft-96985f03084e4d18",
+    "version": 2,
+    "digest": "aae8c3f1ae8b66df0751a68f534cc26e63693cc96a30f038c61e4eeac1211419"
+  }
+}

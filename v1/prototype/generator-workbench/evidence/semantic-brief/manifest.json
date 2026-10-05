@@ -1,0 +1,38 @@
+{
+  "status": "Source-derived emitted prose; not generated artwork",
+  "templateVersion": 4,
+  "sceneProjectionVersion": "module-scene-art/2",
+  "semanticPresentationVersion": "semantic-renderer/1",
+  "sources": [
+    "../module-scene-workbench/axial-scales.packet.json",
+    "../module-scene-workbench/single-scales.packet.json",
+    "../pet-materials/pet-scales.json"
+  ],
+  "files": [
+    {
+      "file": "axial-scales.txt",
+      "bytes": 1631,
+      "sha256": "b0793e17c4a21264d2239315d791f3c104b00fd33830ba8ce3cbace5481a85a7"
+    },
+    {
+      "file": "single-scales.txt",
+      "bytes": 1433,
+      "sha256": "335f62899cbfdbfb4ad5bb4c4f27a1a00857ccd7eb050eed74c91f6fbdae0ef9"
+    },
+    {
+      "file": "pet-scales.txt",
+      "bytes": 2107,
+      "sha256": "d25e3e4b52875c3bb943c7048dbe1cfc282e4f1812c06080ee7bc5f5b7706e49"
+    },
+    {
+      "file": "measurements.json",
+      "bytes": 904,
+      "sha256": "882835f9933877f7958f025e88aa689adffa6ff6c7276c0bc9dd57aa751ed44b"
+    }
+  ],
+  "limitations": [
+    "No new image-model call or quality acceptance",
+    "Historical source/scene/result identities unchanged; presentation identity intentionally changes",
+    "PET example is current host expression, not a retained historical raster replay"
+  ]
+}

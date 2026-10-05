@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="160" viewBox="0 0 320 160">
+  <defs>
+    <symbol id="frame-corner" viewBox="0 0 20 20">
+      <path fill="#08151c" d="M0 9H3V5H6V1H20V7H11V11H7V20H0Z"/>
+      <path fill="#164873" d="M2 10H5V6H8V3H20V6H10V10H6V20H2Z"/>
+      <path fill="#2299de" d="M4 10H7V7H10V5H20V7H11V10H8V20H4Z"/>
+      <path fill="#67cef5" d="M7 7H10V5H20V6H10V8H8V11H7Z"/>
+    </symbol>
+    <symbol id="focus-corner" viewBox="0 0 14 14">
+      <path fill="#8c662d" d="M1 1H14V3H4V14H1Z"/>
+      <path fill="#f1cd79" d="M2 2H14V4H4V14H2Z"/>
+    </symbol>
+    <symbol id="saved" viewBox="0 0 24 24"><path fill="#a3cda8" d="M3 10H6V13H9V16H12V13H15V10H18V7H21V12H18V15H15V18H12V21H8V18H5V15H3Z"/></symbol>
+    <symbol id="unavailable" viewBox="0 0 24 24"><path fill="#a5b2b5" d="M5 9H19V14H5Z"/></symbol>
+    <symbol id="error" viewBox="0 0 24 24"><path fill="#d88373" d="M3 3H7V6H10V9H13V6H16V3H20V7H17V10H14V13H17V16H20V20H16V17H13V14H10V17H7V20H3V16H6V13H9V10H6V7H3Z"/></symbol>
+    <symbol id="waiting" viewBox="0 0 24 24"><path fill="#7db7cf" d="M7 2H17V5H21V9H18V7H15V5H9V7H6V17H9V19H15V17H18V15H21V19H17V22H7V19H3V5H7Z"/></symbol>
+    <linearGradient id="warm-halo"><stop stop-color="#df9b36" stop-opacity="0"/><stop offset=".5" stop-color="#df9b36" stop-opacity=".22"/><stop offset="1" stop-color="#df9b36" stop-opacity="0"/></linearGradient>
+  </defs>
+  <g id="quiet-frame-preview">
+    <path fill="#1e282f" d="M8 8H312V152H8Z"/>
+    <path fill="#0b1821" d="M12 3H308V6H12Z M3 12H6V148H3Z M12 154H308V157H12Z M314 12H317V148H314Z"/>
+    <path fill="#2389c6" d="M12 6H308V8H12Z M6 12H8V148H6Z M12 152H308V154H12Z M312 12H314V148H312Z"/>
+    <use href="#frame-corner" width="20" height="20"/>
+    <use href="#frame-corner" width="20" height="20" transform="translate(320 0) scale(-1 1)"/>
+    <use href="#frame-corner" width="20" height="20" transform="translate(0 160) scale(1 -1)"/>
+    <use href="#frame-corner" width="20" height="20" transform="translate(320 160) scale(-1 -1)"/>
+  </g>
+</svg>

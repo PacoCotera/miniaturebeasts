@@ -1,0 +1,179 @@
+{
+  "status": "constructed",
+  "schemaVersion": "critter-ocular-module/2",
+  "profile": {
+    "id": "ocular-module/2",
+    "sourceRuleVersion": "developmental-covering/1",
+    "baseGraphRuleVersion": "developmental-analytic/1",
+    "rimClearance": 0.005,
+    "pupilRatio": 0.55,
+    "outerPalette": "#f1eddc",
+    "pupilPalette": "#273036",
+    "maximumBoundaryVertices": 4096,
+    "rootExclusion": "Fin chord segments and first hinge root discs (half source width), with rim clearance.",
+    "construction": "X from leading source station longitudinal domain; radius from minimum full width/length; paired Y offsets at half the actual local exterior half-width."
+  },
+  "sourceResultDigest": "16e9a439881c4af9aa851454d9e8b521870346e26d4527fdbf0711e340a3e7e2",
+  "bodyConstructionDigest": "b7b503fc91dad4fa8767d776197d1d8899c8871f0368627d7131286c46dd4705",
+  "enabled": true,
+  "features": [
+    {
+      "id": "ocular-negative",
+      "role": "ocular",
+      "sourceNodeId": "volume-0",
+      "center": [
+        0,
+        -0.2175
+      ],
+      "radius": 0.108,
+      "pupilRadius": 0.0594,
+      "outerPalette": "#f1eddc",
+      "pupilPalette": "#273036",
+      "sources": [
+        "structure.ocular-pair",
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.ocular-placement",
+        "structure.ocular-size"
+      ]
+    },
+    {
+      "id": "ocular-positive",
+      "role": "ocular",
+      "sourceNodeId": "volume-0",
+      "center": [
+        0,
+        0.2175
+      ],
+      "radius": 0.108,
+      "pupilRadius": 0.0594,
+      "outerPalette": "#f1eddc",
+      "pupilPalette": "#273036",
+      "sources": [
+        "structure.ocular-pair",
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.ocular-placement",
+        "structure.ocular-size"
+      ]
+    }
+  ],
+  "geometryRule": {
+    "sourceNodeId": "volume-0",
+    "sourcePosition": [
+      0,
+      0,
+      0
+    ],
+    "sourceDimensions": [
+      0.6,
+      0.87,
+      0.3
+    ],
+    "longitudinalX": 0,
+    "localHalfWidth": 0.435,
+    "radius": 0.108,
+    "placementRatio": 0.5,
+    "sizeRatio": 0.18
+  },
+  "retainedFacts": [
+    {
+      "id": "ocularPair",
+      "locusId": "structure.ocular-pair",
+      "value": true,
+      "unit": "declared module presence",
+      "context": "ground",
+      "state": "expressed",
+      "sources": [
+        "structure.ocular-pair"
+      ],
+      "prerequisites": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing"
+      ],
+      "copies": [
+        "absent",
+        "paired"
+      ]
+    },
+    {
+      "id": "ocularPlacement",
+      "locusId": "structure.ocular-placement",
+      "value": 0.5,
+      "unit": "leading-domain ratio",
+      "context": "ground",
+      "state": "expressed",
+      "sources": [
+        "structure.ocular-placement"
+      ],
+      "prerequisites": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.ocular-pair"
+      ],
+      "copies": [
+        "low",
+        "high"
+      ]
+    },
+    {
+      "id": "ocularSize",
+      "locusId": "structure.ocular-size",
+      "value": 0.18,
+      "unit": "leading-domain ratio",
+      "context": "ground",
+      "state": "expressed",
+      "sources": [
+        "structure.ocular-size"
+      ],
+      "prerequisites": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.ocular-pair"
+      ],
+      "copies": [
+        "low",
+        "low"
+      ]
+    }
+  ],
+  "traces": [
+    {
+      "targetId": "ocular-module",
+      "sourceNodeIds": [
+        "volume-0"
+      ],
+      "locusIds": [
+        "structure.ocular-pair",
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.ocular-placement",
+        "structure.ocular-size"
+      ]
+    }
+  ],
+  "limitations": [
+    "Static circular module geometry only; no sensing, emotion, behavior, mouth or finished pet-art claim.",
+    "Fixed module material and pupil ratio are explicit provisional profile constants.",
+    "OFF retains inactive inherited placement/size without consuming them as visible geometry."
+  ],
+  "moduleDigest": "65a8bda2ee292b1b24297ef0a802cec556b2a46685c649c59eb3877a1cde3c2c"
+}

@@ -1,0 +1,1347 @@
+{
+  "status": "Provisional visual construction parameters; not genomic inputs, resolved expression, inheritance or canonical content.",
+  "grammar": "head + projecting muzzle + lower jaw + neck + trunk; exterior paired ocular anchors; fore/hind paired two-link supports with terminal masses; paired head surfaces",
+  "coordinates": "X longitudinal (head negative); Y paired transverse; Z upward. Orthographic shallow three-quarter with opaque depth-sorted faces.",
+  "camera": {
+    "right": [
+      0.8660254037844386,
+      -0.5,
+      0
+    ],
+    "up": [
+      0.25,
+      0.4330127018922193,
+      0.8660254037844386
+    ],
+    "towardViewer": [
+      -0.4330127018922193,
+      -0.7499999999999999,
+      0.49999999999999994
+    ],
+    "bounds": {
+      "left": -1.2687272165442025,
+      "right": 0.8833459118601273,
+      "top": -1.5601679490144342,
+      "bottom": 0.23887910883182087
+    },
+    "scale": 100.3683365351784,
+    "pixelCell": 256
+  },
+  "surfaceOwners": {
+    "headTrunkMuzzleJawNeckCrown": "#269fa5",
+    "supportJointTerminal": "#dfd2ae",
+    "ocularRim": "#f1eddc",
+    "ocularPupil": "#273036",
+    "material": "smooth skin; no fur, scales, markings or new pigment patches"
+  },
+  "causes": [
+    "All region centers/radii are explicit parameters. Muzzle derives from head front; jaw derives from muzzle.",
+    "Eye anchor X lies on head ellipsoid at declared local Y/Z; ocular rim/pupil are exterior mounts.",
+    "Four support roots use declared fore/hind X and height, with paired Y solved on the trunk ellipsoid. Joints and ends derive from declared offsets/heights. Connected tapered segments join exact endpoints.",
+    "Terminal masses center on distal endpoints with the same small forward offset; crown positions derive from head radii and paired spacing.",
+    "Compact/lean use identical composition operators; parameter contrasts alter growth/projection/width/end/crown form. No animal-name selector.",
+    "Light only shades the owner pigment; mesh facets carry no additional inherited traits."
+  ],
+  "examples": [
+    {
+      "parameters": {
+        "id": "compact",
+        "label": "Compact / stocky",
+        "trunk": {
+          "center": [
+            0.25,
+            0,
+            0.77
+          ],
+          "radii": [
+            0.62,
+            0.34,
+            0.38
+          ]
+        },
+        "neck": {
+          "center": [
+            -0.36,
+            0,
+            1.01
+          ],
+          "radii": [
+            0.29,
+            0.245,
+            0.29
+          ]
+        },
+        "head": {
+          "center": [
+            -0.66,
+            0,
+            1.22
+          ],
+          "radii": [
+            0.34,
+            0.33,
+            0.34
+          ]
+        },
+        "muzzle": {
+          "projection": 0.2,
+          "width": 0.225,
+          "depth": 0.15
+        },
+        "jaw": {
+          "depth": 0.095,
+          "width": 0.2
+        },
+        "face": {
+          "eyeSeparation": 0.32,
+          "eyeHeight": 0.07,
+          "eyeRadii": [
+            0.025,
+            0.085,
+            0.105
+          ]
+        },
+        "supports": {
+          "foreX": -0.17,
+          "hindX": 0.65,
+          "rootZ": 0.76,
+          "jointZ": 0.36,
+          "width": 0.125,
+          "distalWidth": 0.1,
+          "terminalRadii": [
+            0.205,
+            0.15,
+            0.095
+          ]
+        },
+        "crown": {
+          "form": "rounded",
+          "spacing": 0.44,
+          "height": 0.155,
+          "width": 0.12
+        }
+      },
+      "constructedParts": [
+        {
+          "owner": "trunk",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.25,
+            0,
+            0.77
+          ],
+          "radii": [
+            0.62,
+            0.34,
+            0.38
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "neck",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.36,
+            0,
+            1.01
+          ],
+          "radii": [
+            0.29,
+            0.245,
+            0.29
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "head",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.66,
+            0,
+            1.22
+          ],
+          "radii": [
+            0.34,
+            0.33,
+            0.34
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "muzzle",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -1.08,
+            0,
+            1.0899999999999999
+          ],
+          "radii": [
+            0.2,
+            0.225,
+            0.15
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "lower-jaw",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -1.0550000000000002,
+            0,
+            0.9799999999999999
+          ],
+          "radii": [
+            0.17600000000000002,
+            0.2,
+            0.095
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "exterior-eye--1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.9610068806155987,
+            -0.16,
+            1.29
+          ],
+          "radii": [
+            0.025,
+            0.085,
+            0.105
+          ],
+          "pigment": "#f1eddc"
+        },
+        {
+          "owner": "pupil--1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.9850068806155987,
+            -0.16,
+            1.29
+          ],
+          "radii": [
+            0.012,
+            0.04505000000000001,
+            0.059849999999999993
+          ],
+          "pigment": "#273036"
+        },
+        {
+          "owner": "crown--1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.64,
+            -0.22,
+            1.5654000000000001
+          ],
+          "radii": [
+            0.12,
+            0.12,
+            0.155
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "fore--1-proximal",
+          "primitive": "tapered connected segment",
+          "start": [
+            -0.17,
+            -0.2499429003658458,
+            0.76
+          ],
+          "end": [
+            -0.23,
+            -0.2749429003658458,
+            0.36
+          ],
+          "radiusStart": 0.125,
+          "radiusEnd": 0.1075,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore--1-joint",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.23,
+            -0.2749429003658458,
+            0.36
+          ],
+          "radii": [
+            0.1125,
+            0.1125,
+            0.1125
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore--1-distal",
+          "primitive": "tapered connected segment",
+          "start": [
+            -0.23,
+            -0.2749429003658458,
+            0.36
+          ],
+          "end": [
+            -0.27,
+            -0.2949429003658458,
+            0.095
+          ],
+          "radiusStart": 0.1,
+          "radiusEnd": 0.085,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore--1-terminal",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.325,
+            -0.2949429003658458,
+            0.095
+          ],
+          "radii": [
+            0.205,
+            0.15,
+            0.095
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind--1-proximal",
+          "primitive": "tapered connected segment",
+          "start": [
+            0.65,
+            -0.25962164650311687,
+            0.76
+          ],
+          "end": [
+            0.52,
+            -0.2846216465031169,
+            0.36
+          ],
+          "radiusStart": 0.125,
+          "radiusEnd": 0.1075,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind--1-joint",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.52,
+            -0.2846216465031169,
+            0.36
+          ],
+          "radii": [
+            0.1125,
+            0.1125,
+            0.1125
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind--1-distal",
+          "primitive": "tapered connected segment",
+          "start": [
+            0.52,
+            -0.2846216465031169,
+            0.36
+          ],
+          "end": [
+            0.615,
+            -0.30462164650311685,
+            0.095
+          ],
+          "radiusStart": 0.1,
+          "radiusEnd": 0.085,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind--1-terminal",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.5599999999999999,
+            -0.30462164650311685,
+            0.095
+          ],
+          "radii": [
+            0.205,
+            0.15,
+            0.095
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "exterior-eye-1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.9610068806155987,
+            0.16,
+            1.29
+          ],
+          "radii": [
+            0.025,
+            0.085,
+            0.105
+          ],
+          "pigment": "#f1eddc"
+        },
+        {
+          "owner": "pupil-1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.9850068806155987,
+            0.16,
+            1.29
+          ],
+          "radii": [
+            0.012,
+            0.04505000000000001,
+            0.059849999999999993
+          ],
+          "pigment": "#273036"
+        },
+        {
+          "owner": "crown-1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.64,
+            0.22,
+            1.5654000000000001
+          ],
+          "radii": [
+            0.12,
+            0.12,
+            0.155
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "fore-1-proximal",
+          "primitive": "tapered connected segment",
+          "start": [
+            -0.17,
+            0.2499429003658458,
+            0.76
+          ],
+          "end": [
+            -0.23,
+            0.2749429003658458,
+            0.36
+          ],
+          "radiusStart": 0.125,
+          "radiusEnd": 0.1075,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore-1-joint",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.23,
+            0.2749429003658458,
+            0.36
+          ],
+          "radii": [
+            0.1125,
+            0.1125,
+            0.1125
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore-1-distal",
+          "primitive": "tapered connected segment",
+          "start": [
+            -0.23,
+            0.2749429003658458,
+            0.36
+          ],
+          "end": [
+            -0.27,
+            0.2949429003658458,
+            0.095
+          ],
+          "radiusStart": 0.1,
+          "radiusEnd": 0.085,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore-1-terminal",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.325,
+            0.2949429003658458,
+            0.095
+          ],
+          "radii": [
+            0.205,
+            0.15,
+            0.095
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind-1-proximal",
+          "primitive": "tapered connected segment",
+          "start": [
+            0.65,
+            0.25962164650311687,
+            0.76
+          ],
+          "end": [
+            0.52,
+            0.2846216465031169,
+            0.36
+          ],
+          "radiusStart": 0.125,
+          "radiusEnd": 0.1075,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind-1-joint",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.52,
+            0.2846216465031169,
+            0.36
+          ],
+          "radii": [
+            0.1125,
+            0.1125,
+            0.1125
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind-1-distal",
+          "primitive": "tapered connected segment",
+          "start": [
+            0.52,
+            0.2846216465031169,
+            0.36
+          ],
+          "end": [
+            0.615,
+            0.30462164650311685,
+            0.095
+          ],
+          "radiusStart": 0.1,
+          "radiusEnd": 0.085,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind-1-terminal",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.5599999999999999,
+            0.30462164650311685,
+            0.095
+          ],
+          "radii": [
+            0.205,
+            0.15,
+            0.095
+          ],
+          "pigment": "#dfd2ae"
+        }
+      ],
+      "supportChains": [
+        {
+          "pair": "fore",
+          "side": -1,
+          "root": [
+            -0.17,
+            -0.2499429003658458,
+            0.76
+          ],
+          "joint": [
+            -0.23,
+            -0.2749429003658458,
+            0.36
+          ],
+          "end": [
+            -0.27,
+            -0.2949429003658458,
+            0.095
+          ],
+          "terminalCenter": [
+            -0.325,
+            -0.2949429003658458,
+            0.095
+          ],
+          "terminalRadii": [
+            0.205,
+            0.15,
+            0.095
+          ]
+        },
+        {
+          "pair": "hind",
+          "side": -1,
+          "root": [
+            0.65,
+            -0.25962164650311687,
+            0.76
+          ],
+          "joint": [
+            0.52,
+            -0.2846216465031169,
+            0.36
+          ],
+          "end": [
+            0.615,
+            -0.30462164650311685,
+            0.095
+          ],
+          "terminalCenter": [
+            0.5599999999999999,
+            -0.30462164650311685,
+            0.095
+          ],
+          "terminalRadii": [
+            0.205,
+            0.15,
+            0.095
+          ]
+        },
+        {
+          "pair": "fore",
+          "side": 1,
+          "root": [
+            -0.17,
+            0.2499429003658458,
+            0.76
+          ],
+          "joint": [
+            -0.23,
+            0.2749429003658458,
+            0.36
+          ],
+          "end": [
+            -0.27,
+            0.2949429003658458,
+            0.095
+          ],
+          "terminalCenter": [
+            -0.325,
+            0.2949429003658458,
+            0.095
+          ],
+          "terminalRadii": [
+            0.205,
+            0.15,
+            0.095
+          ]
+        },
+        {
+          "pair": "hind",
+          "side": 1,
+          "root": [
+            0.65,
+            0.25962164650311687,
+            0.76
+          ],
+          "joint": [
+            0.52,
+            0.2846216465031169,
+            0.36
+          ],
+          "end": [
+            0.615,
+            0.30462164650311685,
+            0.095
+          ],
+          "terminalCenter": [
+            0.5599999999999999,
+            0.30462164650311685,
+            0.095
+          ],
+          "terminalRadii": [
+            0.205,
+            0.15,
+            0.095
+          ]
+        }
+      ]
+    },
+    {
+      "parameters": {
+        "id": "lean",
+        "label": "Lean / projecting",
+        "trunk": {
+          "center": [
+            0.26,
+            0,
+            1.01
+          ],
+          "radii": [
+            0.76,
+            0.235,
+            0.275
+          ]
+        },
+        "neck": {
+          "center": [
+            -0.47,
+            0,
+            1.24
+          ],
+          "radii": [
+            0.255,
+            0.185,
+            0.245
+          ]
+        },
+        "head": {
+          "center": [
+            -0.77,
+            0,
+            1.4
+          ],
+          "radii": [
+            0.275,
+            0.235,
+            0.275
+          ]
+        },
+        "muzzle": {
+          "projection": 0.34,
+          "width": 0.145,
+          "depth": 0.12
+        },
+        "jaw": {
+          "depth": 0.075,
+          "width": 0.13
+        },
+        "face": {
+          "eyeSeparation": 0.245,
+          "eyeHeight": 0.05,
+          "eyeRadii": [
+            0.022,
+            0.07,
+            0.09
+          ]
+        },
+        "supports": {
+          "foreX": -0.22,
+          "hindX": 0.76,
+          "rootZ": 0.98,
+          "jointZ": 0.48,
+          "width": 0.085,
+          "distalWidth": 0.065,
+          "terminalRadii": [
+            0.14,
+            0.105,
+            0.08
+          ]
+        },
+        "crown": {
+          "form": "pointed",
+          "spacing": 0.34,
+          "height": 0.29,
+          "width": 0.09
+        }
+      },
+      "constructedParts": [
+        {
+          "owner": "trunk",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.26,
+            0,
+            1.01
+          ],
+          "radii": [
+            0.76,
+            0.235,
+            0.275
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "neck",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.47,
+            0,
+            1.24
+          ],
+          "radii": [
+            0.255,
+            0.185,
+            0.245
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "head",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.77,
+            0,
+            1.4
+          ],
+          "radii": [
+            0.275,
+            0.235,
+            0.275
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "muzzle",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -1.125,
+            0,
+            1.27
+          ],
+          "radii": [
+            0.34,
+            0.145,
+            0.12
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "lower-jaw",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -1.1,
+            0,
+            1.16
+          ],
+          "radii": [
+            0.2992,
+            0.13,
+            0.075
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "exterior-eye--1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -1.0112934200950134,
+            -0.1225,
+            1.45
+          ],
+          "radii": [
+            0.022,
+            0.07,
+            0.09
+          ],
+          "pigment": "#f1eddc"
+        },
+        {
+          "owner": "pupil--1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -1.0352934200950135,
+            -0.1225,
+            1.45
+          ],
+          "radii": [
+            0.012,
+            0.03710000000000001,
+            0.05129999999999999
+          ],
+          "pigment": "#273036"
+        },
+        {
+          "owner": "crown--1",
+          "primitive": "paired pointed head surface",
+          "base": [
+            [
+              -0.66,
+              -0.17,
+              1.62275
+            ],
+            [
+              -0.705,
+              -0.09205771365940055,
+              1.62275
+            ],
+            [
+              -0.7949999999999999,
+              -0.09205771365940053,
+              1.62275
+            ],
+            [
+              -0.84,
+              -0.17,
+              1.62275
+            ],
+            [
+              -0.795,
+              -0.24794228634059948,
+              1.62275
+            ],
+            [
+              -0.705,
+              -0.24794228634059948,
+              1.62275
+            ]
+          ],
+          "tip": [
+            -0.775,
+            -0.225,
+            1.91275
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "fore--1-proximal",
+          "primitive": "tapered connected segment",
+          "start": [
+            -0.22,
+            -0.1803856091689085,
+            0.98
+          ],
+          "end": [
+            -0.28,
+            -0.2053856091689085,
+            0.48
+          ],
+          "radiusStart": 0.085,
+          "radiusEnd": 0.0731,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore--1-joint",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.28,
+            -0.2053856091689085,
+            0.48
+          ],
+          "radii": [
+            0.07650000000000001,
+            0.07650000000000001,
+            0.07650000000000001
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore--1-distal",
+          "primitive": "tapered connected segment",
+          "start": [
+            -0.28,
+            -0.2053856091689085,
+            0.48
+          ],
+          "end": [
+            -0.32,
+            -0.22538560916890849,
+            0.08
+          ],
+          "radiusStart": 0.065,
+          "radiusEnd": 0.05525,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore--1-terminal",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.375,
+            -0.22538560916890849,
+            0.08
+          ],
+          "radii": [
+            0.14,
+            0.105,
+            0.08
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind--1-proximal",
+          "primitive": "tapered connected segment",
+          "start": [
+            0.76,
+            -0.17511421833586854,
+            0.98
+          ],
+          "end": [
+            0.63,
+            -0.20011421833586854,
+            0.48
+          ],
+          "radiusStart": 0.085,
+          "radiusEnd": 0.0731,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind--1-joint",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.63,
+            -0.20011421833586854,
+            0.48
+          ],
+          "radii": [
+            0.07650000000000001,
+            0.07650000000000001,
+            0.07650000000000001
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind--1-distal",
+          "primitive": "tapered connected segment",
+          "start": [
+            0.63,
+            -0.20011421833586854,
+            0.48
+          ],
+          "end": [
+            0.725,
+            -0.22011421833586853,
+            0.08
+          ],
+          "radiusStart": 0.065,
+          "radiusEnd": 0.05525,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind--1-terminal",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.6699999999999999,
+            -0.22011421833586853,
+            0.08
+          ],
+          "radii": [
+            0.14,
+            0.105,
+            0.08
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "exterior-eye-1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -1.0112934200950134,
+            0.1225,
+            1.45
+          ],
+          "radii": [
+            0.022,
+            0.07,
+            0.09
+          ],
+          "pigment": "#f1eddc"
+        },
+        {
+          "owner": "pupil-1",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -1.0352934200950135,
+            0.1225,
+            1.45
+          ],
+          "radii": [
+            0.012,
+            0.03710000000000001,
+            0.05129999999999999
+          ],
+          "pigment": "#273036"
+        },
+        {
+          "owner": "crown-1",
+          "primitive": "paired pointed head surface",
+          "base": [
+            [
+              -0.66,
+              0.17,
+              1.62275
+            ],
+            [
+              -0.705,
+              0.24794228634059948,
+              1.62275
+            ],
+            [
+              -0.7949999999999999,
+              0.2479422863405995,
+              1.62275
+            ],
+            [
+              -0.84,
+              0.17,
+              1.62275
+            ],
+            [
+              -0.795,
+              0.09205771365940055,
+              1.62275
+            ],
+            [
+              -0.705,
+              0.09205771365940055,
+              1.62275
+            ]
+          ],
+          "tip": [
+            -0.775,
+            0.225,
+            1.91275
+          ],
+          "pigment": "#269fa5"
+        },
+        {
+          "owner": "fore-1-proximal",
+          "primitive": "tapered connected segment",
+          "start": [
+            -0.22,
+            0.1803856091689085,
+            0.98
+          ],
+          "end": [
+            -0.28,
+            0.2053856091689085,
+            0.48
+          ],
+          "radiusStart": 0.085,
+          "radiusEnd": 0.0731,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore-1-joint",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.28,
+            0.2053856091689085,
+            0.48
+          ],
+          "radii": [
+            0.07650000000000001,
+            0.07650000000000001,
+            0.07650000000000001
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore-1-distal",
+          "primitive": "tapered connected segment",
+          "start": [
+            -0.28,
+            0.2053856091689085,
+            0.48
+          ],
+          "end": [
+            -0.32,
+            0.22538560916890849,
+            0.08
+          ],
+          "radiusStart": 0.065,
+          "radiusEnd": 0.05525,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "fore-1-terminal",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            -0.375,
+            0.22538560916890849,
+            0.08
+          ],
+          "radii": [
+            0.14,
+            0.105,
+            0.08
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind-1-proximal",
+          "primitive": "tapered connected segment",
+          "start": [
+            0.76,
+            0.17511421833586854,
+            0.98
+          ],
+          "end": [
+            0.63,
+            0.20011421833586854,
+            0.48
+          ],
+          "radiusStart": 0.085,
+          "radiusEnd": 0.0731,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind-1-joint",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.63,
+            0.20011421833586854,
+            0.48
+          ],
+          "radii": [
+            0.07650000000000001,
+            0.07650000000000001,
+            0.07650000000000001
+          ],
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind-1-distal",
+          "primitive": "tapered connected segment",
+          "start": [
+            0.63,
+            0.20011421833586854,
+            0.48
+          ],
+          "end": [
+            0.725,
+            0.22011421833586853,
+            0.08
+          ],
+          "radiusStart": 0.065,
+          "radiusEnd": 0.05525,
+          "pigment": "#dfd2ae"
+        },
+        {
+          "owner": "hind-1-terminal",
+          "primitive": "coarse ellipsoid",
+          "center": [
+            0.6699999999999999,
+            0.22011421833586853,
+            0.08
+          ],
+          "radii": [
+            0.14,
+            0.105,
+            0.08
+          ],
+          "pigment": "#dfd2ae"
+        }
+      ],
+      "supportChains": [
+        {
+          "pair": "fore",
+          "side": -1,
+          "root": [
+            -0.22,
+            -0.1803856091689085,
+            0.98
+          ],
+          "joint": [
+            -0.28,
+            -0.2053856091689085,
+            0.48
+          ],
+          "end": [
+            -0.32,
+            -0.22538560916890849,
+            0.08
+          ],
+          "terminalCenter": [
+            -0.375,
+            -0.22538560916890849,
+            0.08
+          ],
+          "terminalRadii": [
+            0.14,
+            0.105,
+            0.08
+          ]
+        },
+        {
+          "pair": "hind",
+          "side": -1,
+          "root": [
+            0.76,
+            -0.17511421833586854,
+            0.98
+          ],
+          "joint": [
+            0.63,
+            -0.20011421833586854,
+            0.48
+          ],
+          "end": [
+            0.725,
+            -0.22011421833586853,
+            0.08
+          ],
+          "terminalCenter": [
+            0.6699999999999999,
+            -0.22011421833586853,
+            0.08
+          ],
+          "terminalRadii": [
+            0.14,
+            0.105,
+            0.08
+          ]
+        },
+        {
+          "pair": "fore",
+          "side": 1,
+          "root": [
+            -0.22,
+            0.1803856091689085,
+            0.98
+          ],
+          "joint": [
+            -0.28,
+            0.2053856091689085,
+            0.48
+          ],
+          "end": [
+            -0.32,
+            0.22538560916890849,
+            0.08
+          ],
+          "terminalCenter": [
+            -0.375,
+            0.22538560916890849,
+            0.08
+          ],
+          "terminalRadii": [
+            0.14,
+            0.105,
+            0.08
+          ]
+        },
+        {
+          "pair": "hind",
+          "side": 1,
+          "root": [
+            0.76,
+            0.17511421833586854,
+            0.98
+          ],
+          "joint": [
+            0.63,
+            0.20011421833586854,
+            0.48
+          ],
+          "end": [
+            0.725,
+            0.22011421833586853,
+            0.08
+          ],
+          "terminalCenter": [
+            0.6699999999999999,
+            0.22011421833586853,
+            0.08
+          ],
+          "terminalRadii": [
+            0.14,
+            0.105,
+            0.08
+          ]
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No evaluated genome, old-locus mapping, valid G/E, rig, movement, tissue collision or biology claim.",
+    "Four supports are explicitly proposed fore/hind pairing, not remapped old 0/1/3 groups.",
+    "Faces use simple per-polygon painter depth; no full mesh union or general occlusion engine.",
+    "No tail, toe digits, hoof split, insect regions or wings; two relatives do not establish broad creature range."
+  ]
+}

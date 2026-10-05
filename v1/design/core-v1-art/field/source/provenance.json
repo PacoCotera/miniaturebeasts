@@ -1,0 +1,13 @@
+{
+  "conversation": "https://gemini.google.com/app/ebc52519d5f5f3fb",
+  "provider": "Existing Gemini image-generation conversation",
+  "original": "gemini-atlas-original.png",
+  "originalSha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb",
+  "deliveredDimensions": [1024,1024],
+  "retrieval": "Gemini Copy image, original clipboard PNG",
+  "prompt": "gemini-atlas-prompt.txt",
+  "actualDeviation": "Requested8x8 logical4x atlas was not delivered. Top terrain rows have irregular heights; objects have different footprints; unrelated brass lower illustrations are excluded from exports.",
+  "derivatives": "Measured source rectangles, authored polygon silhouette alpha, explicit nearest32px terrain derivatives, aspect-preserving object derivatives; rotations only of source path art.",
+  "scope": "Provisional fictional terrain/place artwork. Actual legal paths, place visibility, player position, whole cargo and preparation remain live domain facts.",
+  "review": "Native contact and path joins inspected as viable provisional derivatives. Causeway adjacency proof independently accepted for bounded route legibility. Actual composed Probe/gameplay and final visual approval remain separate."
+}

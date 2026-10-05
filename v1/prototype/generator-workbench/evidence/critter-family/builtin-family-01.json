@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "critter-art-comparison-run/1",
+  "workflow": "GPT-6.1 Sol High-directed built-in image tool",
+  "rasterBackend": "unverified; no model parameter exposed by tool",
+  "callCount": 1,
+  "promptFile": "prompt.txt",
+  "promptSha256": "c4e993a2599d8d195fda94bb0551dc643c4b8e7bbf982b0de64b2cf279be992d",
+  "promptChars": 3040,
+  "promptModifiedAfterFreeze": false,
+  "references": [
+    {
+      "file": "family-reference.png",
+      "role": "resolved construction and pigment authority",
+      "sha256": "a3144d47bf0e963d483dd397d762881bd7a1ae40ffc9547e59b2f4f8743ac5ca"
+    },
+    {
+      "file": "../../../../design/game-art-proposals/35-vault-composition/18-c-refined.png",
+      "role": "pixel craft authority only",
+      "sha256": "889745d74ae7bcd7c80ef5737258b3fdf0357423c1d2362a3630925ca07a632b"
+    }
+  ],
+  "startedAtUTC": "2026-10-02T02:57:31.970Z",
+  "toolElapsedMs": 20004,
+  "timingScope": "wall-clock tool call, not verified model latency or comparable to browser observation",
+  "output": {
+    "file": "builtin-family-01.png",
+    "width": 2172,
+    "height": 724,
+    "sha256": "5c0348c2f853db1a36495098cb4399f85200dd243e9e460e0fcc64dfb784fd60",
+    "unedited": true,
+    "transparentBackground": false
+  },
+  "independentReview": {
+    "scope": "actual broad anatomy/material fidelity",
+    "status": "pass within that scope",
+    "observed": "five stations/four joins, six fins, ocular pair/aperture in each; skin first two, thirty plates on right in 6/11/11/2 rows; relative variants preserved",
+    "unverified": "exact registered roots/outlines/plate coordinates, pet appeal and production craft"
+  },
+  "limits": [
+    "Single matched workflow run; no general model ranking",
+    "Source accepted only for bounded static style test",
+    "Independent broad semantics passed; exact geometry and pet appeal remain unverified; producer does not approve own output",
+    "Not production sprite, animation, native display or pet-affection validation"
+  ]
+}

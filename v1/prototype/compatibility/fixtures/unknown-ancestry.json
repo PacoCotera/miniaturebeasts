@@ -1,0 +1,75 @@
+{
+  "format": "saved-specimen-fixture-1",
+  "specimen": {
+    "id": "paper:imported:201",
+    "shortId": "201",
+    "classification": {
+      "familyId": "fixture-family-a",
+      "familyLabel": "Family A",
+      "bodyPlanId": "draft:frilled-quadruped:1"
+    },
+    "ancestry": {
+      "kind": "unknown",
+      "parents": []
+    },
+    "origin": {
+      "kind": "imported",
+      "sourceRef": null,
+      "studyRef": null,
+      "creationRef": null
+    },
+    "birthEvent": "paper:birth:201",
+    "history": [
+      "paper:history:201"
+    ],
+    "genome": {
+      "revision": "paper:genome:original:1",
+      "loci": {
+        "crown": [
+          "C",
+          "c"
+        ],
+        "eyes": [
+          "R",
+          "r"
+        ],
+        "pale": [
+          "P",
+          "p"
+        ]
+      }
+    },
+    "expression": {
+      "context": "authored-founder-no-sample-activation",
+      "expressed": [
+        "Crown frill",
+        "Ringed eyes"
+      ],
+      "carried": [
+        "Pale markings"
+      ],
+      "samplePaleActivation": false,
+      "unmodeled": [
+        "Other dimensions"
+      ]
+    },
+    "versions": {
+      "rules": "draft-genetics-1",
+      "content": "founder-demo-1",
+      "outcome": "authored-founder-1"
+    },
+    "art": {
+      "sourceAsset": "critter",
+      "version": "pixel-01",
+      "expressionRef": "authored-founder-no-sample-activation",
+      "color": {
+        "id": "critter-color-pixel-01",
+        "sha256": "d1e5307e8c0271ab83d50e1f74279b41b37d8183d58de86c5cc6d3901e85df42"
+      },
+      "mono": {
+        "id": "critter-mono-pixel-01",
+        "sha256": "c261d2bb09cc5cd514200de9956fc0a07ce18d11b66809aeb3bc7075efc73a81"
+      }
+    }
+  }
+}

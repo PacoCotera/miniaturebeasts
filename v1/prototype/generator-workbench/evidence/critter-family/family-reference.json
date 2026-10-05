@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "critter-family-sheet/1",
+  "view": "orthographic XY, X right/Y down; positive-X shared coordinates",
+  "width": 1536,
+  "height": 512,
+  "cellWidth": 512,
+  "worldScale": 146.66666666666666,
+  "sourceBounds": {
+    "minimumX": -0.18,
+    "maximumX": 2.82,
+    "minimumY": -0.845426,
+    "maximumY": 0.845426
+  },
+  "cells": [
+    {
+      "name": "family-base",
+      "recordId": "experiment-8f51c81b5dbbd3b75fb5",
+      "inputDigest": "8f51c81b5dbbd3b75fb56c5a718a95256b1697cd7eb2670f34bee2105954b079",
+      "resultDigest": "32ff3824be42f5434113b6cacf195848c804bb41765d9dd0e20362834c316ccf",
+      "sourceBounds": {
+        "minimumX": -0.18,
+        "maximumX": 2.82,
+        "minimumY": -0.648555,
+        "maximumY": 0.648555
+      },
+      "sourceScale": 203.57142857142856,
+      "transform": {
+        "scale": 0.7204678362573099,
+        "translate": [
+          -112.87953216374265,
+          39.859649122807014
+        ]
+      }
+    },
+    {
+      "name": "family-proportion-variant",
+      "recordId": "experiment-5eb395c03213c70a6c8f",
+      "inputDigest": "5eb395c03213c70a6c8fbf70581b0d4215e38d11d600362edb06a8e1a64e1f53",
+      "resultDigest": "dac8206cb059cb033b330937286c334e4352fcfb943f16a064f61737ebf4a4f2",
+      "sourceBounds": {
+        "minimumX": -0.14,
+        "maximumX": 2.46,
+        "minimumY": -0.648477,
+        "maximumY": 0.648477
+      },
+      "sourceScale": 203.57142857142856,
+      "transform": {
+        "scale": 0.7204678362573099,
+        "translate": [
+          399.1204678362574,
+          39.859649122807014
+        ]
+      }
+    },
+    {
+      "name": "family-fin-variant",
+      "recordId": "experiment-52e69c72419eff750366",
+      "inputDigest": "52e69c72419eff7503660d71d84e8b97e685a0ba47bb8cab3307f72c93bda176",
+      "resultDigest": "040807fa19b3cfecfa7bf04075b42c910f1fff9e28dea48bae73ad617c52587e",
+      "sourceBounds": {
+        "minimumX": -0.18,
+        "maximumX": 2.82,
+        "minimumY": -0.845426,
+        "maximumY": 0.845426
+      },
+      "sourceScale": 203.57142857142856,
+      "transform": {
+        "scale": 0.7204678362573099,
+        "translate": [
+          911.1204678362574,
+          39.859649122807014
+        ]
+      }
+    }
+  ],
+  "method": "Uniform affine placement of unmodified engine-rendered source shapes at one shared world scale. The white source background is replaced by one white sheet field; no anatomy or pigment is edited."
+}

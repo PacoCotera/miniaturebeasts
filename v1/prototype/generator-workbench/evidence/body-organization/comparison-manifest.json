@@ -1,0 +1,64 @@
+{
+  "status": "actual source-construction comparison; provisional inherited content, not approved pets",
+  "canvas": [
+    512,
+    636
+  ],
+  "sourceCellSize": 256,
+  "sharedCamera": {
+    "minimumX": -0.405,
+    "maximumX": 1.695,
+    "minimumY": -0.707278767,
+    "maximumY": 0.707278767
+  },
+  "controls": {
+    "cameraAndScale": "identical for both cases and rows",
+    "colours": "actual lagoon body and cream secondary module pigments from source surfaces",
+    "material": "smooth skin, no markings or covering glyphs",
+    "oculars": "off in the actual worked inputs",
+    "silhouette": "same emitter and source geometry; display fill/stroke black; no source mutation"
+  },
+  "cases": [
+    {
+      "id": "a-support-contacts",
+      "label": "A · Compact middle / six contacts",
+      "sourceFiles": [
+        "a-support-contacts.packet.json",
+        "a-support-contacts.construction.json"
+      ],
+      "sourceHashes": {
+        "construction": "72b524fe8f869cfc4cda934c2d8928155b68ae6add2c7b3f2dc5d60a494637a4",
+        "packet": "87d8ea810eb963a6c629d6673cf7196a8a8e65da95c4e780d1599a48f96352b0"
+      },
+      "emittedSvgHash": "68aae9c914ca18272c2e6e4a9f73c266073b66be1618050989d5a0e60334d0b3",
+      "constructionDigest": "e75482008f7a0c98e0fa654d60b3337e95916a618876d213c2a88384737e5d1a",
+      "regionCount": 3,
+      "appendageCount": 6
+    },
+    {
+      "id": "b-taper-fins",
+      "label": "B · Front taper / six fins",
+      "sourceFiles": [
+        "b-taper-fins.packet.json",
+        "b-taper-fins.construction.json"
+      ],
+      "sourceHashes": {
+        "construction": "4f9ccb0339e614cb52712cfe7956c616caff99b8ab07f6af736770c32974ee58",
+        "packet": "b42477162208cfee25a1da0d8acd83becb8f6f5a30a536f56d7a4abdeda13a1b"
+      },
+      "emittedSvgHash": "61ede5eae454c8eee1035a4c8d6e2172f303c1c264621dc9d2d072814929f3af",
+      "constructionDigest": "b9f04c93e8aac770920f7d5fcf18e0cfbe678f28c30442cd0689cdaa6257785f",
+      "regionCount": 3,
+      "appendageCount": 6
+    }
+  ],
+  "outputHashes": {
+    "comparison.svg": "f9e82e603552072da037c30e434c7fe0675b8e246d46da8f3c5363f8f46a6c13",
+    "comparison.png": "678aa87a7dad919eaef986c77ca0253293c7925746f544b18461b00d8709329f"
+  },
+  "limits": [
+    "No manual body redraw, independent per-case scaling or new trait selection.",
+    "Compact contact and taper/fin shapes must be assessed on these actual exports, not labels.",
+    "The source comparison does not establish radial/membrane breadth, biomechanics, animation, pixel-art mastery or pet appeal."
+  ]
+}

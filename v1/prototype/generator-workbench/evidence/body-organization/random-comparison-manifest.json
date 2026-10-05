@@ -1,0 +1,137 @@
+{
+  "status": "actual retained random winners; provisional source-construction evidence",
+  "input": {
+    "file": "random-run.json",
+    "sha256": "e67837fb73be90760005de99010f7eb2e36914007a5ff0d8fa2620f209a33d66",
+    "sourceRuleVersion": "developmental-regional-growth/1"
+  },
+  "canvas": [
+    1024,
+    690
+  ],
+  "sourceCellSize": 256,
+  "sharedCamera": {
+    "minimumX": -0.7,
+    "maximumX": 1.9575,
+    "minimumY": -1.159288562,
+    "maximumY": 1.159288562
+  },
+  "method": "All eight retained winners in stored order, rendered by drawGraphSource with one common camera. No draws, filtering, redraw, recolouring or source mutation.",
+  "depiction": "Body and supported appendage geometry with actual pigment fields. Oculars and covering/marking detail are not depicted by this source emitter; absence in the sheet is not a trait-absence claim.",
+  "countMeaning": "appendageCount is the number of constructor appendage polygons, including separate articulated segments; it is not a limb-count claim.",
+  "cases": [
+    {
+      "requestedSeed": 1,
+      "winningSeed": 79,
+      "draws": 79,
+      "rejections": {
+        "genetic": 32,
+        "construction": 46
+      },
+      "constructionDigest": "eae1b519955d542a0c35340214db3a4fd40ff7b199953b000fcf795a6ac9581e",
+      "emittedSvgHash": "77986c14161447be6f21b46cde5f09f4dcb47992a871d4afc3d079842ecabe44",
+      "regionCount": 3,
+      "appendageCount": 0
+    },
+    {
+      "requestedSeed": 1025,
+      "winningSeed": 1071,
+      "draws": 47,
+      "rejections": {
+        "genetic": 16,
+        "construction": 30
+      },
+      "constructionDigest": "24a06fb422a7136364ec5bcb1b1ecff87f5295848281c5f996b178322dd1d3ba",
+      "emittedSvgHash": "f7980c08957181943f18b94a61bacfd13450c98a488a877ce31b7ee6c6391969",
+      "regionCount": 3,
+      "appendageCount": 12
+    },
+    {
+      "requestedSeed": 2049,
+      "winningSeed": 2163,
+      "draws": 115,
+      "rejections": {
+        "genetic": 48,
+        "construction": 66
+      },
+      "constructionDigest": "fb3a7e940a34420acaada1506d4293464d220fe0b710198c6d66c9b0bcb329ba",
+      "emittedSvgHash": "2fc1db53ad6c32cd9ec609a45c7bb5ba8d324301ce8d470b67dcff45122ed7c1",
+      "regionCount": 3,
+      "appendageCount": 2
+    },
+    {
+      "requestedSeed": 3073,
+      "winningSeed": 3077,
+      "draws": 5,
+      "rejections": {
+        "genetic": 1,
+        "construction": 3
+      },
+      "constructionDigest": "b8c843fa8c4f43c6ce8d9b9ed266c51da99dd7f3f096d66919e7d5c84c6d892b",
+      "emittedSvgHash": "301b8f29e9ef10248034d98087e29c32e42481432b43fb2a720f650ae3f4a54d",
+      "regionCount": 3,
+      "appendageCount": 0
+    },
+    {
+      "requestedSeed": 4097,
+      "winningSeed": 4164,
+      "draws": 68,
+      "rejections": {
+        "genetic": 28,
+        "construction": 39
+      },
+      "constructionDigest": "fddd4d3d29c6443938c895db07f0dceb0fe1fb26615a0f1b7eff066672f487bd",
+      "emittedSvgHash": "dca45255aa005e9a9ea7df6ddea618d75c89e77ca9ddb185854002d646435858",
+      "regionCount": 3,
+      "appendageCount": 2
+    },
+    {
+      "requestedSeed": 5121,
+      "winningSeed": 5140,
+      "draws": 20,
+      "rejections": {
+        "genetic": 8,
+        "construction": 11
+      },
+      "constructionDigest": "06f9353125854ad4e7139d6a9fe38bd4fc60af30b7eab1c8e4214121f8f0a5e9",
+      "emittedSvgHash": "83e7efc5b5f07f762d883cc4a6031b22174195397ea2c6c0713af1d245c270ac",
+      "regionCount": 1,
+      "appendageCount": 2
+    },
+    {
+      "requestedSeed": 6145,
+      "winningSeed": 6466,
+      "draws": 322,
+      "rejections": {
+        "genetic": 116,
+        "construction": 205
+      },
+      "constructionDigest": "fc0ecf1a59bd865b41690b2afda7df407ff4e6333de0edffb39faf9310d714e2",
+      "emittedSvgHash": "557113bc50c919a5d219116714288b22e88eb4442a0347ad02d14977286b1d68",
+      "regionCount": 3,
+      "appendageCount": 4
+    },
+    {
+      "requestedSeed": 7169,
+      "winningSeed": 7260,
+      "draws": 92,
+      "rejections": {
+        "genetic": 42,
+        "construction": 49
+      },
+      "constructionDigest": "f3a3f207d3d0f27c1b5e7a41e8990b865593df6014f342e201d03dde6dbf070e",
+      "emittedSvgHash": "c1b83c1c1ed6fefd20d0e22a569c5c232f528ef0abf022d06b65301afca9bed5",
+      "regionCount": 3,
+      "appendageCount": 6
+    }
+  ],
+  "outputHashes": {
+    "random-comparison.svg": "f75ea1dd037fb4f246ddea62110e15523b38e4d5980b5fd53dcfff9bcfb8d35a",
+    "random-comparison.png": "b300c4e566ddb31378066ccdcbf930255c49b4c6d478806e2be9f0e224ffe80c"
+  },
+  "limits": [
+    "First valid constructions follow retained rejection search; these are not eight unfiltered first draws.",
+    "Common scale preserves relative world sizes; smaller sources and thin roots remain smaller.",
+    "Static XY diagnostic sources do not establish pet appeal, biomechanics, animation or unsupported body-plan coverage."
+  ]
+}

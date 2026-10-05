@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "critter-art-comparison-run/1",
+  "workflow": "Gemini authenticated web Images mode / Pro visible in UI",
+  "rasterBackend": "No raster returned; backend unverified",
+  "callCount": 1,
+  "promptFile": "prompt.txt",
+  "promptSha256": "b3a9b3e5bc4e9ab489ecf2dcc2ad87428c42649beff0a8b6f7358114f40181b0",
+  "promptChars": 3236,
+  "references": [
+    {
+      "file": "pet-material-reference-vertical.png",
+      "sha256": "a9e2b04845c5397022f5a427c0477d8b826c926db8d1548188e058b6bd6a2c1a"
+    },
+    {
+      "file": "../../../../design/game-art-proposals/35-vault-composition/18-c-refined.png",
+      "sha256": "889745d74ae7bcd7c80ef5737258b3fdf0357423c1d2362a3630925ca07a632b"
+    }
+  ],
+  "conversation": "https://gemini.google.com/app/b48b099cd272d628",
+  "retainedAtUTC": "2026-10-02T04:06:54.348Z",
+  "output": {
+    "file": "gemini-pet-01.svg",
+    "sha256": "e7f248615d50c92f58b94254680d363219acdb33bbe9b301b4d3f823874e91b1",
+    "unedited": true,
+    "retention": "Ordinary Copy SVG control; Download SVG did not yield a download event."
+  },
+  "preview": {
+    "file": "gemini-svg-preview.png",
+    "purpose": "Host rasterization of returned vector for inspection; not generated raster or a repaired output."
+  },
+  "limits": [
+    "One request only; no retry",
+    "Raster task failed by returning SVG code",
+    "No verified backend, cost or comparable model latency",
+    "Owner rejected source diagram as game art"
+  ],
+  "independentReview": {
+    "status": "failed-modality-and-source-fidelity",
+    "findings": "SVG instead of raster. Total counts match but fur, scales and feathers have rewritten layouts; fixed body/fin/eye coordinates are not source coordinates. Owner rejected diagram-derived morphology as game art."
+  }
+}

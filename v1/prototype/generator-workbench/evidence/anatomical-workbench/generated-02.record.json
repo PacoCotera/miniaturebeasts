@@ -1,0 +1,1788 @@
+{
+  "schemaVersion": "anatomical-authoring-record/1",
+  "sceneProjectionVersion": "anatomical-source/1",
+  "materialProfileVersion": "anatomical-surface-fields/1",
+  "sceneRecordId": "anatomical-272a7945cad61b841ae5",
+  "input": {
+    "catalogue": {
+      "schemaVersion": "anatomical-catalogue/1",
+      "id": "genomic-anatomical-source-experiment",
+      "version": 1,
+      "ruleVersion": "developmental-anatomical-source/1",
+      "label": "Provisional anatomical source experiment",
+      "baseline": {
+        "id": "anatomical-bilateral-source-baseline",
+        "version": 1,
+        "references": [
+          "head-volume/1",
+          "support-core-volume/1",
+          "head-core-neck/1",
+          "paired-two-link-support/1",
+          "terminal-contact-volume/1",
+          "smooth-body-surface/1",
+          "smooth-wing-surface/1"
+        ],
+        "inheritance": "These fixed module references are carried by every candidate in this package and inherited unchanged between compatible parents. They are new declared baseline content, not contributions inferred from the old fifty loci.",
+        "scope": "This is one bilateral, face-bearing anatomical subset. It neither replaces broader genomic structure families nor asserts that every critter needs a head or terrestrial supports."
+      },
+      "reproductionContract": {
+        "mechanism": "Same-package ordered-copy transmission; no player breeding permission is implied."
+      },
+      "loci": [
+        {
+          "id": "anatomy.posterior-presence",
+          "operator": "dominant-enable",
+          "alleles": [
+            {
+              "id": "off",
+              "value": false,
+              "label": "off"
+            },
+            {
+              "id": "on",
+              "value": true,
+              "label": "on"
+            }
+          ],
+          "target": "modules.posterior",
+          "requires": [],
+          "version": 1,
+          "copyCount": 2,
+          "label": "posterior presence",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "modules.posterior"
+          ],
+          "sourceRequires": [
+            "support-core-volume/1"
+          ]
+        },
+        {
+          "id": "anatomy.muzzle-presence",
+          "operator": "dominant-enable",
+          "alleles": [
+            {
+              "id": "off",
+              "value": false,
+              "label": "off"
+            },
+            {
+              "id": "on",
+              "value": true,
+              "label": "on"
+            }
+          ],
+          "target": "modules.muzzleAndJaw",
+          "requires": [],
+          "version": 1,
+          "copyCount": 2,
+          "label": "muzzle presence",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "modules.muzzleAndJaw"
+          ],
+          "sourceRequires": [
+            "head-volume/1"
+          ]
+        },
+        {
+          "id": "anatomy.crown-presence",
+          "operator": "dominant-enable",
+          "alleles": [
+            {
+              "id": "off",
+              "value": false,
+              "label": "off"
+            },
+            {
+              "id": "on",
+              "value": true,
+              "label": "on"
+            }
+          ],
+          "target": "modules.crownPair",
+          "requires": [],
+          "version": 1,
+          "copyCount": 2,
+          "label": "crown presence",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "modules.crownPair"
+          ],
+          "sourceRequires": [
+            "head-volume/1"
+          ]
+        },
+        {
+          "id": "anatomy.wing-presence",
+          "operator": "dominant-enable",
+          "alleles": [
+            {
+              "id": "off",
+              "value": false,
+              "label": "off"
+            },
+            {
+              "id": "on",
+              "value": true,
+              "label": "on"
+            }
+          ],
+          "target": "modules.wingPair",
+          "requires": [],
+          "version": 1,
+          "copyCount": 2,
+          "label": "wing presence",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "modules.wingPair"
+          ],
+          "sourceRequires": [
+            "support-core-volume/1",
+            "smooth-wing-surface/1"
+          ]
+        },
+        {
+          "id": "anatomy.exterior-eye-presence",
+          "operator": "dominant-enable",
+          "alleles": [
+            {
+              "id": "off",
+              "value": false,
+              "label": "off"
+            },
+            {
+              "id": "on",
+              "value": true,
+              "label": "on"
+            }
+          ],
+          "target": "modules.exteriorEyePair",
+          "requires": [],
+          "family": "Sensing and signaling",
+          "dimensionFamily": "Sensing and signaling",
+          "meaning": "Exterior ocular module presence only; visual performance is unmodeled.",
+          "version": 1,
+          "copyCount": 2,
+          "label": "exterior eye presence",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "modules.exteriorEyePair"
+          ],
+          "sourceRequires": [
+            "head-volume/1"
+          ]
+        },
+        {
+          "id": "anatomy.support-pair-count",
+          "operator": "pair-map",
+          "alleles": [
+            {
+              "id": "two",
+              "value": 2,
+              "label": "two"
+            },
+            {
+              "id": "three",
+              "value": 3,
+              "label": "three"
+            }
+          ],
+          "pairMap": {
+            "two|two": 2,
+            "three|two": 3,
+            "three|three": 3
+          },
+          "target": "support.pairCount",
+          "requires": [],
+          "version": 1,
+          "copyCount": 2,
+          "label": "support pair count",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "support.pairCount"
+          ],
+          "sourceRequires": [
+            "support-core-volume/1",
+            "paired-two-link-support/1"
+          ]
+        },
+        {
+          "id": "anatomy.crown-form",
+          "operator": "pair-map",
+          "alleles": [
+            {
+              "id": "rounded",
+              "value": "rounded",
+              "label": "rounded"
+            },
+            {
+              "id": "pointed",
+              "value": "pointed",
+              "label": "pointed"
+            }
+          ],
+          "pairMap": {
+            "rounded|rounded": "rounded",
+            "pointed|rounded": "pointed",
+            "pointed|pointed": "pointed"
+          },
+          "target": "crown.form",
+          "activeWhen": "modules.crownPair",
+          "version": 1,
+          "copyCount": 2,
+          "label": "crown form",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "crown.form"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.core-half-length",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "small",
+              "value": 0.45,
+              "label": "small"
+            },
+            {
+              "id": "medium",
+              "value": 0.62,
+              "label": "medium"
+            },
+            {
+              "id": "large",
+              "value": 0.76,
+              "label": "large"
+            }
+          ],
+          "target": "core.rx",
+          "bounds": [
+            0.45,
+            0.76
+          ],
+          "units": "source length",
+          "version": 1,
+          "copyCount": 2,
+          "label": "core half length",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "core.rx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.core-width-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0.31,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.55,
+              "label": "high"
+            }
+          ],
+          "target": "core.ryOverRx",
+          "bounds": [
+            0.31,
+            0.55
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "core width ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "core.ryOverRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.core-depth-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0.36,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.61,
+              "label": "high"
+            }
+          ],
+          "target": "core.rzOverRx",
+          "bounds": [
+            0.36,
+            0.61
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "core depth ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "core.rzOverRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.head-length-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "small",
+              "value": 0.3,
+              "label": "small"
+            },
+            {
+              "id": "medium",
+              "value": 0.36,
+              "label": "medium"
+            },
+            {
+              "id": "large",
+              "value": 0.55,
+              "label": "large"
+            }
+          ],
+          "target": "head.rxOverCoreRx",
+          "bounds": [
+            0.3,
+            0.55
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "head length ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "head.rxOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.head-width-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0.31,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.53,
+              "label": "high"
+            }
+          ],
+          "target": "head.ryOverCoreRx",
+          "bounds": [
+            0.31,
+            0.53
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "head width ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "head.ryOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.head-depth-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0.36,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.55,
+              "label": "high"
+            }
+          ],
+          "target": "head.rzOverCoreRx",
+          "bounds": [
+            0.36,
+            0.55
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "head depth ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "head.rzOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.head-lift-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0.5,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.72,
+              "label": "high"
+            }
+          ],
+          "target": "head.centerLiftOverCoreRx",
+          "bounds": [
+            0.5,
+            0.72
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "head lift ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "head.centerLiftOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.muzzle-projection-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "short",
+              "value": 0.58,
+              "label": "short"
+            },
+            {
+              "id": "long",
+              "value": 1.24,
+              "label": "long"
+            }
+          ],
+          "target": "muzzle.rxOverHeadRx",
+          "bounds": [
+            0.58,
+            1.24
+          ],
+          "activeWhen": "modules.muzzleAndJaw",
+          "version": 1,
+          "copyCount": 2,
+          "label": "muzzle projection ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "muzzle.rxOverHeadRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.muzzle-width-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0.62,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.69,
+              "label": "high"
+            }
+          ],
+          "target": "muzzle.ryOverHeadRy",
+          "bounds": [
+            0.62,
+            0.69
+          ],
+          "activeWhen": "modules.muzzleAndJaw",
+          "version": 1,
+          "copyCount": 2,
+          "label": "muzzle width ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "muzzle.ryOverHeadRy"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.support-drop-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "short",
+              "value": 0.35,
+              "label": "short"
+            },
+            {
+              "id": "medium",
+              "value": 1.05,
+              "label": "medium"
+            },
+            {
+              "id": "long",
+              "value": 1.25,
+              "label": "long"
+            }
+          ],
+          "target": "support.rootToEndDropOverCoreRx",
+          "bounds": [
+            0.35,
+            1.25
+          ],
+          "meaning": "Static vertical chain span; not stride, force or a physical bone-length claim.",
+          "version": 1,
+          "copyCount": 2,
+          "label": "support drop ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "support.rootToEndDropOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.support-splay-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0.07,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.7,
+              "label": "high"
+            }
+          ],
+          "target": "support.outwardEndOffsetOverCoreRx",
+          "bounds": [
+            0.07,
+            0.7
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "support splay ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "support.outwardEndOffsetOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.support-radius-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "fine",
+              "value": 0.05,
+              "label": "fine"
+            },
+            {
+              "id": "slender",
+              "value": 0.11,
+              "label": "slender"
+            },
+            {
+              "id": "stout",
+              "value": 0.2,
+              "label": "stout"
+            }
+          ],
+          "target": "support.proximalRadiusOverCoreRx",
+          "bounds": [
+            0.05,
+            0.2
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "support radius ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "support.proximalRadiusOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.terminal-length-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "small",
+              "value": 0.09,
+              "label": "small"
+            },
+            {
+              "id": "narrow",
+              "value": 0.18,
+              "label": "narrow"
+            },
+            {
+              "id": "broad",
+              "value": 0.33,
+              "label": "broad"
+            }
+          ],
+          "target": "terminal.rxOverCoreRx",
+          "bounds": [
+            0.09,
+            0.33
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "terminal length ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "terminal.rxOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.terminal-depth-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "small",
+              "value": 0.06,
+              "label": "small"
+            },
+            {
+              "id": "low",
+              "value": 0.105,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.155,
+              "label": "high"
+            }
+          ],
+          "target": "terminal.rzOverCoreRx",
+          "bounds": [
+            0.06,
+            0.155
+          ],
+          "version": 1,
+          "copyCount": 2,
+          "label": "terminal depth ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "terminal.rzOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.posterior-length-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "short",
+              "value": 0.45,
+              "label": "short"
+            },
+            {
+              "id": "long",
+              "value": 0.95,
+              "label": "long"
+            }
+          ],
+          "target": "posterior.rxOverCoreRx",
+          "bounds": [
+            0.45,
+            0.95
+          ],
+          "activeWhen": "modules.posterior",
+          "version": 1,
+          "copyCount": 2,
+          "label": "posterior length ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "posterior.rxOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.posterior-width-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0.45,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.9,
+              "label": "high"
+            }
+          ],
+          "target": "posterior.ryOverCoreRy",
+          "bounds": [
+            0.45,
+            0.9
+          ],
+          "activeWhen": "modules.posterior",
+          "version": 1,
+          "copyCount": 2,
+          "label": "posterior width ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "posterior.ryOverCoreRy"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.exterior-eye-size-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "small",
+              "value": 0.24,
+              "label": "small"
+            },
+            {
+              "id": "large",
+              "value": 0.32,
+              "label": "large"
+            }
+          ],
+          "target": "eye.radiusOverHeadMinYZ",
+          "bounds": [
+            0.24,
+            0.32
+          ],
+          "activeWhen": "modules.exteriorEyePair",
+          "family": "Appearance",
+          "dimensionFamily": "Appearance",
+          "version": 1,
+          "copyCount": 2,
+          "label": "exterior eye size ratio",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "eye.radiusOverHeadMinYZ"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.exterior-eye-spacing-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "close",
+              "value": 0.4,
+              "label": "close"
+            },
+            {
+              "id": "wide",
+              "value": 0.55,
+              "label": "wide"
+            }
+          ],
+          "target": "eye.anchorYOverHeadRy",
+          "bounds": [
+            0.4,
+            0.55
+          ],
+          "activeWhen": "modules.exteriorEyePair",
+          "version": 1,
+          "copyCount": 2,
+          "label": "exterior eye spacing ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "eye.anchorYOverHeadRy"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.crown-height-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0.45,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 1.05,
+              "label": "high"
+            }
+          ],
+          "target": "crown.heightOverHeadRz",
+          "bounds": [
+            0.45,
+            1.05
+          ],
+          "activeWhen": "modules.crownPair",
+          "version": 1,
+          "copyCount": 2,
+          "label": "crown height ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "crown.heightOverHeadRz"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.wing-span-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "short",
+              "value": 0.8,
+              "label": "short"
+            },
+            {
+              "id": "long",
+              "value": 1.5,
+              "label": "long"
+            }
+          ],
+          "target": "wing.outwardSpanOverCoreRx",
+          "bounds": [
+            0.8,
+            1.5
+          ],
+          "activeWhen": "modules.wingPair",
+          "version": 1,
+          "copyCount": 2,
+          "label": "wing span ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "wing.outwardSpanOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.wing-chord-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "narrow",
+              "value": 0.45,
+              "label": "narrow"
+            },
+            {
+              "id": "wide",
+              "value": 0.85,
+              "label": "wide"
+            }
+          ],
+          "target": "wing.longitudinalChordOverCoreRx",
+          "bounds": [
+            0.45,
+            0.85
+          ],
+          "activeWhen": "modules.wingPair",
+          "version": 1,
+          "copyCount": 2,
+          "label": "wing chord ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "wing.longitudinalChordOverCoreRx"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "growth.wing-sweep-ratio",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "low",
+              "value": 0,
+              "label": "low"
+            },
+            {
+              "id": "high",
+              "value": 0.35,
+              "label": "high"
+            }
+          ],
+          "target": "wing.posteriorSweepOverSpan",
+          "bounds": [
+            0,
+            0.35
+          ],
+          "activeWhen": "modules.wingPair",
+          "version": 1,
+          "copyCount": 2,
+          "label": "wing sweep ratio",
+          "family": "Structure",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "wing.posteriorSweepOverSpan"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "appearance.anatomical-covering",
+          "family": "Appearance",
+          "dimensionFamily": "Appearance",
+          "operator": "pair-map",
+          "alleles": [
+            {
+              "id": "skin",
+              "value": "smooth-skin",
+              "label": "skin"
+            },
+            {
+              "id": "scales",
+              "value": "scales",
+              "label": "scales"
+            }
+          ],
+          "pairMap": {
+            "skin|skin": "smooth-skin",
+            "scales|skin": "scales",
+            "scales|scales": "scales"
+          },
+          "target": "covering.kind",
+          "meaning": "Body material field on declared head/core/posterior owners; not a scale object added to the anatomy.",
+          "version": 1,
+          "copyCount": 2,
+          "label": "anatomical covering",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "covering.kind"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "appearance.anatomical-covering-extent",
+          "family": "Appearance",
+          "dimensionFamily": "Appearance",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "short",
+              "value": 0.35,
+              "label": "short"
+            },
+            {
+              "id": "long",
+              "value": 0.7,
+              "label": "long"
+            }
+          ],
+          "target": "covering.localExtent",
+          "bounds": [
+            0.35,
+            0.7
+          ],
+          "activeWhen": "covering.kind == scales",
+          "units": "fraction of each applicable owner local longitudinal u; begins at u=.20",
+          "version": 1,
+          "copyCount": 2,
+          "label": "anatomical covering extent",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "covering.localExtent"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "appearance.anatomical-scale-size",
+          "family": "Appearance",
+          "dimensionFamily": "Appearance",
+          "operator": "copy-mean",
+          "alleles": [
+            {
+              "id": "fine",
+              "value": 0.12,
+              "label": "fine"
+            },
+            {
+              "id": "coarse",
+              "value": 0.2,
+              "label": "coarse"
+            }
+          ],
+          "target": "covering.localScaleLength",
+          "bounds": [
+            0.12,
+            0.2
+          ],
+          "activeWhen": "covering.kind == scales",
+          "units": "fraction of applicable owner longitudinal length; no physical scale thickness",
+          "version": 1,
+          "copyCount": 2,
+          "label": "anatomical scale size",
+          "status": "validated",
+          "purpose": "Provisional source contributor; not canonical biology.",
+          "outputs": [
+            "covering.localScaleLength"
+          ],
+          "requires": [],
+          "sourceRequires": []
+        },
+        {
+          "id": "appearance.body-palette",
+          "label": "body palette",
+          "aliases": [],
+          "version": 2,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "charcoal",
+              "label": "charcoal",
+              "value": "#465459"
+            },
+            {
+              "id": "russet",
+              "label": "russet",
+              "value": "#ae674d"
+            },
+            {
+              "id": "jade",
+              "label": "jade",
+              "value": "#38a878"
+            },
+            {
+              "id": "lagoon",
+              "label": "lagoon",
+              "value": "#269fa5"
+            },
+            {
+              "id": "cobalt",
+              "label": "cobalt",
+              "value": "#4d7ed4"
+            },
+            {
+              "id": "periwinkle",
+              "label": "periwinkle",
+              "value": "#8b7dd8"
+            },
+            {
+              "id": "plum",
+              "label": "plum",
+              "value": "#a967b8"
+            },
+            {
+              "id": "raspberry",
+              "label": "raspberry",
+              "value": "#d95688"
+            },
+            {
+              "id": "coral",
+              "label": "coral",
+              "value": "#e98268"
+            },
+            {
+              "id": "marigold",
+              "label": "marigold",
+              "value": "#e8b83f"
+            }
+          ],
+          "operator": "partition-map",
+          "outputs": [
+            "bodyPalette"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "palette",
+            "unit": "categorical"
+          },
+          "purpose": "Contributes body palette to bodyPalette; resolved through declared partition-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "bodyPalette"
+          },
+          "pairMap": {
+            "charcoal|charcoal": [
+              "#465459"
+            ],
+            "charcoal|russet": [
+              "#465459",
+              "#ae674d"
+            ],
+            "russet|russet": [
+              "#ae674d"
+            ],
+            "charcoal|jade": [
+              "#465459",
+              "#38a878"
+            ],
+            "charcoal|lagoon": [
+              "#465459",
+              "#269fa5"
+            ],
+            "charcoal|cobalt": [
+              "#465459",
+              "#4d7ed4"
+            ],
+            "charcoal|periwinkle": [
+              "#465459",
+              "#8b7dd8"
+            ],
+            "charcoal|plum": [
+              "#465459",
+              "#a967b8"
+            ],
+            "charcoal|raspberry": [
+              "#465459",
+              "#d95688"
+            ],
+            "charcoal|coral": [
+              "#465459",
+              "#e98268"
+            ],
+            "charcoal|marigold": [
+              "#465459",
+              "#e8b83f"
+            ],
+            "jade|russet": [
+              "#ae674d",
+              "#38a878"
+            ],
+            "lagoon|russet": [
+              "#ae674d",
+              "#269fa5"
+            ],
+            "cobalt|russet": [
+              "#ae674d",
+              "#4d7ed4"
+            ],
+            "periwinkle|russet": [
+              "#ae674d",
+              "#8b7dd8"
+            ],
+            "plum|russet": [
+              "#ae674d",
+              "#a967b8"
+            ],
+            "raspberry|russet": [
+              "#ae674d",
+              "#d95688"
+            ],
+            "coral|russet": [
+              "#ae674d",
+              "#e98268"
+            ],
+            "marigold|russet": [
+              "#ae674d",
+              "#e8b83f"
+            ],
+            "jade|jade": [
+              "#38a878"
+            ],
+            "jade|lagoon": [
+              "#38a878",
+              "#269fa5"
+            ],
+            "cobalt|jade": [
+              "#38a878",
+              "#4d7ed4"
+            ],
+            "jade|periwinkle": [
+              "#38a878",
+              "#8b7dd8"
+            ],
+            "jade|plum": [
+              "#38a878",
+              "#a967b8"
+            ],
+            "jade|raspberry": [
+              "#38a878",
+              "#d95688"
+            ],
+            "coral|jade": [
+              "#38a878",
+              "#e98268"
+            ],
+            "jade|marigold": [
+              "#38a878",
+              "#e8b83f"
+            ],
+            "lagoon|lagoon": [
+              "#269fa5"
+            ],
+            "cobalt|lagoon": [
+              "#269fa5",
+              "#4d7ed4"
+            ],
+            "lagoon|periwinkle": [
+              "#269fa5",
+              "#8b7dd8"
+            ],
+            "lagoon|plum": [
+              "#269fa5",
+              "#a967b8"
+            ],
+            "lagoon|raspberry": [
+              "#269fa5",
+              "#d95688"
+            ],
+            "coral|lagoon": [
+              "#269fa5",
+              "#e98268"
+            ],
+            "lagoon|marigold": [
+              "#269fa5",
+              "#e8b83f"
+            ],
+            "cobalt|cobalt": [
+              "#4d7ed4"
+            ],
+            "cobalt|periwinkle": [
+              "#4d7ed4",
+              "#8b7dd8"
+            ],
+            "cobalt|plum": [
+              "#4d7ed4",
+              "#a967b8"
+            ],
+            "cobalt|raspberry": [
+              "#4d7ed4",
+              "#d95688"
+            ],
+            "cobalt|coral": [
+              "#4d7ed4",
+              "#e98268"
+            ],
+            "cobalt|marigold": [
+              "#4d7ed4",
+              "#e8b83f"
+            ],
+            "periwinkle|periwinkle": [
+              "#8b7dd8"
+            ],
+            "periwinkle|plum": [
+              "#8b7dd8",
+              "#a967b8"
+            ],
+            "periwinkle|raspberry": [
+              "#8b7dd8",
+              "#d95688"
+            ],
+            "coral|periwinkle": [
+              "#8b7dd8",
+              "#e98268"
+            ],
+            "marigold|periwinkle": [
+              "#8b7dd8",
+              "#e8b83f"
+            ],
+            "plum|plum": [
+              "#a967b8"
+            ],
+            "plum|raspberry": [
+              "#a967b8",
+              "#d95688"
+            ],
+            "coral|plum": [
+              "#a967b8",
+              "#e98268"
+            ],
+            "marigold|plum": [
+              "#a967b8",
+              "#e8b83f"
+            ],
+            "raspberry|raspberry": [
+              "#d95688"
+            ],
+            "coral|raspberry": [
+              "#d95688",
+              "#e98268"
+            ],
+            "marigold|raspberry": [
+              "#d95688",
+              "#e8b83f"
+            ],
+            "coral|coral": [
+              "#e98268"
+            ],
+            "coral|marigold": [
+              "#e98268",
+              "#e8b83f"
+            ],
+            "marigold|marigold": [
+              "#e8b83f"
+            ]
+          }
+        },
+        {
+          "id": "appearance.underside-palette",
+          "label": "underside palette",
+          "aliases": [],
+          "version": 2,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "cream",
+              "label": "cream",
+              "value": "#dfd2ae"
+            },
+            {
+              "id": "slate",
+              "label": "slate",
+              "value": "#718489"
+            },
+            {
+              "id": "milk-mint",
+              "label": "milk mint",
+              "value": "#d8f1d4"
+            },
+            {
+              "id": "ice",
+              "label": "ice",
+              "value": "#d9ecf5"
+            },
+            {
+              "id": "butter",
+              "label": "butter",
+              "value": "#fff0b8"
+            },
+            {
+              "id": "peach",
+              "label": "peach",
+              "value": "#ffd7c5"
+            }
+          ],
+          "operator": "partition-map",
+          "outputs": [
+            "undersidePalette"
+          ],
+          "requires": [
+            "development.symmetry"
+          ],
+          "applicability": "bilateral",
+          "bounds": {
+            "type": "palette",
+            "unit": "categorical"
+          },
+          "purpose": "Contributes underside palette to undersidePalette; resolved through declared partition-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "undersidePalette"
+          },
+          "pairMap": {
+            "cream|cream": [
+              "#dfd2ae"
+            ],
+            "cream|slate": [
+              "#dfd2ae",
+              "#718489"
+            ],
+            "slate|slate": [
+              "#718489"
+            ],
+            "cream|milk-mint": [
+              "#dfd2ae",
+              "#d8f1d4"
+            ],
+            "cream|ice": [
+              "#dfd2ae",
+              "#d9ecf5"
+            ],
+            "butter|cream": [
+              "#dfd2ae",
+              "#fff0b8"
+            ],
+            "cream|peach": [
+              "#dfd2ae",
+              "#ffd7c5"
+            ],
+            "milk-mint|slate": [
+              "#718489",
+              "#d8f1d4"
+            ],
+            "ice|slate": [
+              "#718489",
+              "#d9ecf5"
+            ],
+            "butter|slate": [
+              "#718489",
+              "#fff0b8"
+            ],
+            "peach|slate": [
+              "#718489",
+              "#ffd7c5"
+            ],
+            "milk-mint|milk-mint": [
+              "#d8f1d4"
+            ],
+            "ice|milk-mint": [
+              "#d8f1d4",
+              "#d9ecf5"
+            ],
+            "butter|milk-mint": [
+              "#d8f1d4",
+              "#fff0b8"
+            ],
+            "milk-mint|peach": [
+              "#d8f1d4",
+              "#ffd7c5"
+            ],
+            "ice|ice": [
+              "#d9ecf5"
+            ],
+            "butter|ice": [
+              "#d9ecf5",
+              "#fff0b8"
+            ],
+            "ice|peach": [
+              "#d9ecf5",
+              "#ffd7c5"
+            ],
+            "butter|butter": [
+              "#fff0b8"
+            ],
+            "butter|peach": [
+              "#fff0b8",
+              "#ffd7c5"
+            ],
+            "peach|peach": [
+              "#ffd7c5"
+            ]
+          }
+        }
+      ],
+      "families": [
+        {
+          "id": "Structure",
+          "label": "Structure"
+        },
+        {
+          "id": "Sensing and signaling",
+          "label": "Sensing and signaling"
+        },
+        {
+          "id": "Appearance",
+          "label": "Appearance"
+        },
+        {
+          "id": "appearance",
+          "label": "appearance"
+        }
+      ]
+    },
+    "genome": {
+      "schemaVersion": "anatomical-genome/1",
+      "contentId": "genomic-anatomical-source-experiment",
+      "contentVersion": 1,
+      "loci": {
+        "anatomy.posterior-presence": [
+          "on",
+          "on"
+        ],
+        "anatomy.muzzle-presence": [
+          "on",
+          "on"
+        ],
+        "anatomy.crown-presence": [
+          "off",
+          "on"
+        ],
+        "anatomy.wing-presence": [
+          "on",
+          "on"
+        ],
+        "anatomy.exterior-eye-presence": [
+          "on",
+          "on"
+        ],
+        "anatomy.support-pair-count": [
+          "three",
+          "two"
+        ],
+        "anatomy.crown-form": [
+          "rounded",
+          "rounded"
+        ],
+        "growth.core-half-length": [
+          "medium",
+          "medium"
+        ],
+        "growth.core-width-ratio": [
+          "low",
+          "high"
+        ],
+        "growth.core-depth-ratio": [
+          "high",
+          "high"
+        ],
+        "growth.head-length-ratio": [
+          "large",
+          "medium"
+        ],
+        "growth.head-width-ratio": [
+          "low",
+          "low"
+        ],
+        "growth.head-depth-ratio": [
+          "high",
+          "high"
+        ],
+        "growth.head-lift-ratio": [
+          "low",
+          "high"
+        ],
+        "growth.muzzle-projection-ratio": [
+          "short",
+          "long"
+        ],
+        "growth.muzzle-width-ratio": [
+          "low",
+          "low"
+        ],
+        "growth.support-drop-ratio": [
+          "short",
+          "short"
+        ],
+        "growth.support-splay-ratio": [
+          "low",
+          "high"
+        ],
+        "growth.support-radius-ratio": [
+          "slender",
+          "stout"
+        ],
+        "growth.terminal-length-ratio": [
+          "narrow",
+          "broad"
+        ],
+        "growth.terminal-depth-ratio": [
+          "high",
+          "small"
+        ],
+        "growth.posterior-length-ratio": [
+          "long",
+          "short"
+        ],
+        "growth.posterior-width-ratio": [
+          "low",
+          "low"
+        ],
+        "growth.exterior-eye-size-ratio": [
+          "small",
+          "large"
+        ],
+        "growth.exterior-eye-spacing-ratio": [
+          "wide",
+          "close"
+        ],
+        "growth.crown-height-ratio": [
+          "low",
+          "high"
+        ],
+        "growth.wing-span-ratio": [
+          "long",
+          "short"
+        ],
+        "growth.wing-chord-ratio": [
+          "narrow",
+          "narrow"
+        ],
+        "growth.wing-sweep-ratio": [
+          "high",
+          "low"
+        ],
+        "appearance.body-palette": [
+          "plum",
+          "raspberry"
+        ],
+        "appearance.underside-palette": [
+          "milk-mint",
+          "milk-mint"
+        ],
+        "appearance.anatomical-covering": [
+          "scales",
+          "scales"
+        ],
+        "appearance.anatomical-covering-extent": [
+          "long",
+          "short"
+        ],
+        "appearance.anatomical-scale-size": [
+          "fine",
+          "fine"
+        ]
+      },
+      "recordVersions": {
+        "anatomy.posterior-presence": 1,
+        "anatomy.muzzle-presence": 1,
+        "anatomy.crown-presence": 1,
+        "anatomy.wing-presence": 1,
+        "anatomy.exterior-eye-presence": 1,
+        "anatomy.support-pair-count": 1,
+        "anatomy.crown-form": 1,
+        "growth.core-half-length": 1,
+        "growth.core-width-ratio": 1,
+        "growth.core-depth-ratio": 1,
+        "growth.head-length-ratio": 1,
+        "growth.head-width-ratio": 1,
+        "growth.head-depth-ratio": 1,
+        "growth.head-lift-ratio": 1,
+        "growth.muzzle-projection-ratio": 1,
+        "growth.muzzle-width-ratio": 1,
+        "growth.support-drop-ratio": 1,
+        "growth.support-splay-ratio": 1,
+        "growth.support-radius-ratio": 1,
+        "growth.terminal-length-ratio": 1,
+        "growth.terminal-depth-ratio": 1,
+        "growth.posterior-length-ratio": 1,
+        "growth.posterior-width-ratio": 1,
+        "growth.exterior-eye-size-ratio": 1,
+        "growth.exterior-eye-spacing-ratio": 1,
+        "growth.crown-height-ratio": 1,
+        "growth.wing-span-ratio": 1,
+        "growth.wing-chord-ratio": 1,
+        "growth.wing-sweep-ratio": 1,
+        "appearance.anatomical-covering": 1,
+        "appearance.anatomical-covering-extent": 1,
+        "appearance.anatomical-scale-size": 1,
+        "appearance.body-palette": 2,
+        "appearance.underside-palette": 2
+      },
+      "baselineReferences": [
+        "head-volume/1",
+        "support-core-volume/1",
+        "head-core-neck/1",
+        "paired-two-link-support/1",
+        "terminal-contact-volume/1",
+        "smooth-body-surface/1",
+        "smooth-wing-surface/1"
+      ],
+      "origin": {
+        "kind": "experiment",
+        "seed": 1571417441,
+        "attempt": 1,
+        "algorithmVersion": "mulberry32/1",
+        "baseline": "anatomical-bilateral-source-baseline"
+      }
+    },
+    "context": {
+      "id": "static-anatomical-reference",
+      "version": 1,
+      "stage": "reference adult",
+      "pose": "neutral supported pose",
+      "performance": "unmodeled"
+    },
+    "expressionSeed": null
+  },
+  "inputDigest": "6d9afc2778f863fe1fd1e4f2afbdf7618242cbf5e3ad14a80bb8fc1eacd98c5a",
+  "resultDigest": "3434e176bc6c1f10a296c9ca03d9ab7ed963a0e48bceccecfa273ad260faf46d",
+  "sceneDigest": "f954c7b4255aadca858902784e3f54d2d772dd3ec9dd2f8c9059401dcb99878c"
+}

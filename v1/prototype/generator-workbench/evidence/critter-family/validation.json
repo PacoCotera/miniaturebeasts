@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "critter-family-validation/1",
+  "hostSuite": {
+    "command": "node --test authoring.test.mjs family.test.mjs ../tests/generator-workbench.test.mjs ../tests/pip-genetics.test.mjs",
+    "workingDirectory": "prototype/generator-workbench",
+    "runtime": "Node 24.19.0 local host",
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0
+  },
+  "frameworkBuild": {
+    "command": "pnpm run build",
+    "status": "pass",
+    "framework": "React / Mantine / Vite",
+    "scope": "adult authoring workbench, not device rendering"
+  },
+  "independentReview": {
+    "architectureGenetics": "pass for bounded construction, causal tracing and projection",
+    "artSource": "accepted for one static style test; pet appeal not accepted",
+    "builtinRaster": "broad source-semantic pass; exact geometry unmeasured",
+    "geminiRaster": "anatomy fail; ten fins instead of six in left and middle",
+    "authoringVisualUX": "mediated screenshot inspection; not independent interactive playtesting"
+  },
+  "actualBrowserChecks": [
+    "controlled inputs resolve with exact retained identities",
+    "editing and package changes clear current output while retaining pin",
+    "same-profile comparison preserves relative dimensions",
+    "ocular locus selection highlights actual two modeled ocular regions",
+    "baseline, inherited and expressed genome representations remain distinct",
+    "new family record verified replay recomputes from inputs",
+    "legacy replay selects retained earlier rule package",
+    "malformed copy and unsupported radial topology reject without repair"
+  ],
+  "seedBattery": "seed-battery.json",
+  "limits": [
+    "No native build, game deployment or save reset",
+    "No physical motion, hardware performance, human enjoyment or production art acceptance",
+    "Three examples are controlled copy edits, not offspring"
+  ]
+}

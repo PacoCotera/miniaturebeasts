@@ -1,0 +1,97 @@
+{
+  "status": "Two actual returned rasters; faithful-source and pet acceptance HOLD",
+  "experiment": "One combined illustration/pet pass and one controlled source-fidelity correction; generation stopped",
+  "provider": "Gemini web Images",
+  "displayedMode": "Pro",
+  "backendModel": null,
+  "generationCalls": 1,
+  "correctionCalls": 1,
+  "acquisition": "Ordinary Copy image control returned image/png; full-size download did not complete",
+  "source": {
+    "packet": "../module-scene-workbench/axial-scales.packet.json",
+    "svg": "../module-scene-workbench/axial-scales.svg",
+    "svgSha256": "01d4f5432a63a9b0d88f2b0f4db2010d73f01fbc31336e88cfb5e1a8797046a1",
+    "inputDigest": "12643a988985fab89a83f3fab2247ab7d511a584b740d70955af516e6e8305c9",
+    "resultDigest": "16e9a439881c4af9aa851454d9e8b521870346e26d4527fdbf0711e340a3e7e2",
+    "inheritedReference": "#GAA74F886E586",
+    "expressionReference": "#E1495F780380B",
+    "rasterization": "Unmodified retained SVG rendered to512px PNG with existing bundled sharp"
+  },
+  "promptSha256": "220fe8ae9d0c323c6c5db007f5a7a3127c622d4078f9e02f2bea234e924cec23",
+  "files": [
+    {
+      "file": "source.png",
+      "sha256": "6f8bdc14b669c1e188f759dec7d5879b4c9cd4b35807a342fe930a86cd91a15b",
+      "bytes": 41510,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "file": "gemini-pet.png",
+      "sha256": "a4fe64e8f747b27366ddb6e19e39fd7df17e2d1a0bd43523c4324bcefa9c204f",
+      "bytes": 662918,
+      "width": 1024,
+      "height": 1024
+    },
+    {
+      "file": "browser-result.png",
+      "sha256": "71cfcc0f66c3326ad7a2b8a6deb9bc9b98a2fcb5cae1544ad1bc71d41a46589d",
+      "bytes": 41006,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "prompt.txt",
+      "sha256": "220fe8ae9d0c323c6c5db007f5a7a3127c622d4078f9e02f2bea234e924cec23",
+      "bytes": 549
+    },
+    {
+      "file": "gemini-correction.png",
+      "sha256": "df514c41f4f9d7e7cd7793cd7b9a103fc1ea0cb223e1330e00e0c5dd39d2262e",
+      "bytes": 652922,
+      "width": 1024,
+      "height": 1024
+    },
+    {
+      "file": "browser-correction.png",
+      "sha256": "fefcc581cbd4d3cffc4690af97387ee41f70b1328b2f1e4529204b6ff011dc6b",
+      "bytes": 40757,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "correction-prompt.txt",
+      "sha256": "316a8b939d711fd8eb53d0948274fd756dece069945481d7de75f20ad55390fe",
+      "bytes": 610
+    }
+  ],
+  "limitations": [
+    "Copied1024px raster, not verified original maximum resolution",
+    "No canonical art, animation, rig, biological or hardware acceptance",
+    "Source record is unchanged; depiction fidelity requires actual image review"
+  ],
+  "correctionPromptSha256": "316a8b939d711fd8eb53d0948274fd756dece069945481d7de75f20ad55390fe",
+  "correctionReferences": [
+    "source.png",
+    "gemini-pet.png"
+  ],
+  "review": {
+    "first": {
+      "status": "HOLD",
+      "findings": [
+        "Pointed fin signatures became rounded paddles",
+        "Scale coverage extended beyond source20–55% field",
+        "Pixel volume/glints improved; character focus weak"
+      ]
+    },
+    "second": {
+      "status": "HOLD",
+      "findings": [
+        "Pointed fins restored",
+        "Requested whole-body rotation not performed",
+        "Scale field remains beyond55%; rear waist not smooth"
+      ]
+    },
+    "scope": "Actual returned-pixel art-direction and independent genomic review; source identifiers are input lookup references, not raster fidelity certificates"
+  }
+}

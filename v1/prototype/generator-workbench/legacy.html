@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Miniature Beasts · Generator workbench</title><link rel="stylesheet" href="style.css"></head>
+<body>
+  <header><p class="eyebrow">MINIATURE BEASTS / DEVELOPER EXPERIMENT</p><h1>Genome → expression → creature</h1><p>Inspect causes before building the game. Pip is a limited qualitative fixture, not the complete generator.</p></header>
+  <main>
+    <section class="inputs" aria-labelledby="input-heading">
+      <h2 id="input-heading">Inherited inputs</h2><p>Two copies per locus. Baseline and fixed loci stay pinned.</p>
+      <form id="genome-form"><div id="loci"></div><label class="context">Expression context<select id="context"><option value="reference">Rested adult · firm ground · mild</option><option value="unsupported">Juvenile · unsupported test</option></select></label><button type="submit">Resolve & generate schematic</button></form>
+      <div class="tools"><button id="reset" type="button">Reference genome</button><button id="pin" type="button" disabled>Pin comparison</button><button id="export" type="button" disabled>Export experiment</button></div>
+      <details id="experiment-json"><summary>Experiment JSON · export / import</summary><label for="import-json">Copy the exported artifact, or paste artifact / input JSON</label><textarea id="import-json" rows="7" spellcheck="false"></textarea><button id="import" type="button">Validate & load</button></details>
+      <p id="status" role="status" aria-live="polite">Loading catalogue…</p>
+    </section>
+    <section class="result" aria-labelledby="output-heading">
+      <div class="result-heading"><div><p class="eyebrow">PROCEDURAL DIAGNOSTIC / NOT FINAL GAME ART</p><h2 id="output-heading">Resolved creature</h2></div><span id="fingerprint"></span></div>
+      <div id="output"></div>
+      <div id="comparison" hidden></div>
+    </section>
+    <section class="coverage"><h2>Whole-model coverage</h2><p>Eleven named dimensions do not mean eleven fully simulated systems. Lifetime state and general regulatory/emergent rules are still missing.</p><div id="layers"></div><div id="families"></div></section>
+  </main>
+  <footer>Local research tool · no game saves, resource spending, incubation authorization, cloud or hardware claims.</footer>
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>

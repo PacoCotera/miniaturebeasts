@@ -1,0 +1,26 @@
+{
+  "name": "critter-genome-authoring-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4382 --strictPort",
+    "build": "vite build",
+    "start": "node server.mjs",
+    "test": "node --test radial-scene.test.mjs graph-radial.test.mjs regional-scene.test.mjs body-organization.test.mjs pigment-workbench-package.test.mjs pigment-proof.test.mjs genome-codec.test.mjs module-scene.test.mjs graph-covering.test.mjs graph-module.test.mjs graph-source.test.mjs art-brief.test.mjs authoring.test.mjs family.test.mjs pet.test.mjs authoring-ui.test.mjs display-projection.test.mjs ../tests/generator-workbench.test.mjs ../tests/pip-genetics.test.mjs",
+    "simulate": "node simulate.mjs"
+  },
+  "dependencies": {
+    "@mantine/core": "^9.6.3",
+    "@mantine/hooks": "^9.6.3",
+    "cbor2": "2.3.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "coherent-source-evidence/1",
+  "constructionSourceRevision": "8736d219c05c4dfea45a89d2333a3fca16f70bbb",
+  "constructionCiRun": 37123463516,
+  "authored": {
+    "recordId": "compositional-91f86f3171bd1bca11d5",
+    "foundation": {
+      "profile": "compositional-foundation-pin/1",
+      "id": "genomic-compositional-source-experiment",
+      "version": 4,
+      "digest": "565dd08ce3a9e98f29a172717f7999836dbc10c5f42c495ae03c11e3f84dbd94"
+    },
+    "forkId": "5bdd6136b60d4b2e",
+    "forkRevision": 1,
+    "copiedPairs": 111,
+    "recordFile": "authored.record.json",
+    "promptFile": "authored.prompt.txt",
+    "sourceFile": "authored.svg"
+  },
+  "ordinary": {
+    "recordId": "compositional-f1ed857973efd7310d71",
+    "seed": 2719714476,
+    "attempt": 1,
+    "recordFile": "ordinary.record.json",
+    "promptFile": "ordinary.prompt.txt",
+    "sourceFile": "ordinary.svg"
+  },
+  "providerReturn": {
+    "status": "proposal",
+    "provider": "Gemini Pro, manual image-and-prompt request",
+    "generationCalls": 1,
+    "correctionCalls": 0,
+    "sourceRecordId": "compositional-91f86f3171bd1bca11d5",
+    "sourceImage": "authored.png",
+    "promptText": "Turn the attached critter into a cute pet, shown alone in rich high-bit pixel art. A creature with one softly squared, barrel-shaped body region and one smooth head, one projecting muzzle, two eyes, two rounded smooth ears, one smooth tapered tail and four jointed legs with rounded ends. Its body has plum-and-marigold fur; its smooth jointed legs have milk mint-and-butter local colour fields.",
+    "promptSha256": "94d2ad8eadb9aee7ccc3ad556f0fedd393874d2dd703073aaa30fca33c5d9ee4",
+    "imageFile": "gemini-pet.png",
+    "imageSha256": "c60c92e9786a8b749f9c54900ef3b31add061d25c82e73f4d58ae2137120a475",
+    "retention": "Native copied PNG, unchanged bytes; not a confirmed full-size download.",
+    "actualDisposition": "Positive primary-body fur and rounded ear read; proposal only. Pigment placement, added nose/mouth/toe details, rug and fourth-leg occlusion remain unresolved."
+  },
+  "manualRetention": {
+    "sourceRevision": "370fd7cf6269d2e060341b9c23b634555596ff64",
+    "ciRun": 37134953239,
+    "proposalId": "pet-proposal-b7dac63cb31933d1a03f8ff2a02d249b8d1478b5e9984fad0e1f627fbbf89b79",
+    "metadataFile": "pet-proposal.metadata.json",
+    "actualJourney": "Explicit attach and retain; fresh page load; original-input replay recovers same proposal; visible Copy linked metadata supplies exact retained JSON."
+  },
+  "files": {
+    "authored-workbench.png": {
+      "bytes": 262318,
+      "sha256": "ad18b6577e75d8f76b7840e64d8e09877112060030ae0817dcf1b5871281d934"
+    },
+    "authored.png": {
+      "bytes": 40856,
+      "sha256": "36c392b94e027197d0dbc9651eaa82e8d539ba7f4cd25e3a7e111169a60a98f1"
+    },
+    "authored.prompt.txt": {
+      "bytes": 396,
+      "sha256": "fd85cee6d177d641820734b6dbc5a467b33ba8ed3671cb4a30e9f06bb63e6441"
+    },
+    "authored.record.json": {
+      "bytes": 26121,
+      "sha256": "9a9e0342e504cf5c004a439751f95a31d4e2a8c7914b74ab34cf249828d34671"
+    },
+    "authored.svg": {
+      "bytes": 203466,
+      "sha256": "47f0be33265d6c078808a78a59bb8a05e7d2229a0e99970018a9fa50a2a8e6a5"
+    },
+    "gemini-pet.png": {
+      "bytes": 829731,
+      "sha256": "c60c92e9786a8b749f9c54900ef3b31add061d25c82e73f4d58ae2137120a475"
+    },
+    "ordinary-workbench.png": {
+      "bytes": 260354,
+      "sha256": "e0426ebe58c81a7d1a07945a34ef273375bf2ec631052b49042530428a722507"
+    },
+    "ordinary.png": {
+      "bytes": 38261,
+      "sha256": "7c42ff8cbde51a5f7d92c8f1e2cdbe15918d16e5ab8fd9280ede81c41d66aaea"
+    },
+    "ordinary.prompt.txt": {
+      "bytes": 328,
+      "sha256": "c56b9844d9d6fd29056c0ac7e97be4624bfad84b22e425f74119d19c2e1f9f19"
+    },
+    "ordinary.record.json": {
+      "bytes": 25990,
+      "sha256": "cecbac47196f1e71d9f1be51fb79d4a632b25c67d163d045b74451ec4e03d995"
+    },
+    "ordinary.svg": {
+      "bytes": 296627,
+      "sha256": "437a6c3efa416ef98ab6b1ab4ccbac0d857d52e3e330d3731e61f85299c9992d"
+    },
+    "pet-copied-state.txt": {
+      "bytes": 400,
+      "sha256": "bf2c3bd8280896febf49d8f5cde7ff500502639b1dbdfb55b8d1385b912ad22d"
+    },
+    "pet-proposal.metadata.json": {
+      "bytes": 32220,
+      "sha256": "383dd6e1960d4227352e7f1031474b070611dee6410c244cb5a745e759b3526c"
+    },
+    "pet-reopened-state.txt": {
+      "bytes": 9512,
+      "sha256": "31a748b8d397bc3aed152abaed658ec13f24e493acd5def4c2d13c6e5956fd35"
+    },
+    "pet-reopened-workbench.png": {
+      "bytes": 157490,
+      "sha256": "0879db10709cf1a02b39684552e59dce4dc6f3c4fc788ee889e84d3f1426f066"
+    },
+    "pet-retained-workbench.png": {
+      "bytes": 156641,
+      "sha256": "3fb1fd486f068ef6155a62c0eb2caa9fce5eade33250df3cd064da4a16bf8102"
+    },
+    "source5-replay.txt": {
+      "bytes": 5867,
+      "sha256": "03842fde4d1e895cbb29b82dda21355ab367a54a695e138a78890280e098f10f"
+    }
+  }
+}

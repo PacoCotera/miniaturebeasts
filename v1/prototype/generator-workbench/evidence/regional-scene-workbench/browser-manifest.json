@@ -1,0 +1,70 @@
+{
+  "sourceRevision": "2d54ff523c42cc60119f5cd7c1471eaa4ef7a5ea",
+  "ciRun": 37092938213,
+  "observations": [
+    {
+      "name": "first",
+      "recordId": "experiment-5bb7ed3725a143b5d45a",
+      "sceneRecordId": "scene-1420c09e88128160751d",
+      "inputDigest": "5bb7ed3725a143b5d45a348d26d378aba5e7b88e2a227b9d55c5dcdef22334e6",
+      "sceneDigest": "932f11011047a159e0e4a70e4c51aedd0b9f77e9907ff15c6e969fd20db8ba53",
+      "promptDigest": "2bc451479d623eb639420cf589b41a5f22aae7fde4795a3c4d740f44eae6b83a",
+      "identity": {
+        "schemaVersion": "critter-reference-identity/1",
+        "digestAlgorithm": "sha256",
+        "inheritedEncodingVersion": "inherited-genome/1",
+        "expressionEncodingVersion": "expressed-creature/1",
+        "shortCodeFormat": "hex-prefix12/1",
+        "inheritedDigest": "de4d8d9002ec9ef373733a703836f3b4cf4d36a7663f164ef3d5490626199907",
+        "expressionDigest": "c220fef583c0ae926e333d9ca45835d802b8b275b6899861c89ff08ae39594ef",
+        "genomeCode": "#GDE4D8D9002EC",
+        "expressionCode": "#EC220FEF583C0",
+        "meaning": "Lookup reference fingerprints, not reversible genome encodings, ownership IDs or guaranteed unique codes. Full hashes disambiguate collisions."
+      },
+      "drawsObserved": 471,
+      "acceptedSeed": 1383562816,
+      "stations": 1,
+      "appendages": 2,
+      "eyes": 0,
+      "covering": "scales",
+      "wireBytes": 60991
+    },
+    {
+      "name": "second",
+      "recordId": "experiment-51dce9bc08a18af6d10a",
+      "sceneRecordId": "scene-08fc50e764a1e26dba3f",
+      "inputDigest": "51dce9bc08a18af6d10a641811c6902b805a045a6a222570cfac9cfbefb76e5b",
+      "sceneDigest": "baf82c6d73d1d5afb177ccff23eb9c93107ee415326f5f0fe58c4985a2a3413e",
+      "promptDigest": "15d0a13f3826b9b985dcb1e650c810b54a8c9da2da95d6ae178691598916630d",
+      "identity": {
+        "schemaVersion": "critter-reference-identity/1",
+        "digestAlgorithm": "sha256",
+        "inheritedEncodingVersion": "inherited-genome/1",
+        "expressionEncodingVersion": "expressed-creature/1",
+        "shortCodeFormat": "hex-prefix12/1",
+        "inheritedDigest": "437690cf2b91427cdda811395d3c6d2b32675fc35d6540d1aef2705381307a0e",
+        "expressionDigest": "f41e75a04fec289c6e564f9c173c2d2e6cb6c132580c78699da32807a316c5f8",
+        "genomeCode": "#G437690CF2B91",
+        "expressionCode": "#EF41E75A04FEC",
+        "meaning": "Lookup reference fingerprints, not reversible genome encodings, ownership IDs or guaranteed unique codes. Full hashes disambiguate collisions."
+      },
+      "drawsObserved": 75,
+      "acceptedSeed": 1708756719,
+      "stations": 3,
+      "appendages": 0,
+      "eyes": 0,
+      "covering": "scales",
+      "wireBytes": 60981
+    }
+  ],
+  "copyText": "Turn the attached critter into a cute digital pet, shown alone in rich high-bit pixel art.",
+  "editClearedImageAndText": true,
+  "editDisabledCopy": true,
+  "newCompactImportRestoredIdentity": true,
+  "oldCompactImportRestoredRecordId": "experiment-3f2bd4868e6c5b9aa255",
+  "originalSavedRecords": [
+    "experiment-5eb395c03213c70a6c8f",
+    "experiment-3f05a537aa93e1c1fa6f"
+  ],
+  "savedRecordsPreserved": true
+}

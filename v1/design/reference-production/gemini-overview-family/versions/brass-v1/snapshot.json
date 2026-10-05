@@ -1,0 +1,49 @@
+{
+  "disposition": "Superseded brass material direction; preserved source-to-export provenance",
+  "files": [
+    {
+      "file": "gemini-family-original.png",
+      "sha256": "9b6a400c1dd8542b521d742f9f09d5c179436480ba10f774bad817922a5a135e"
+    },
+    {
+      "file": "prompt.txt",
+      "sha256": "4230a2a4ad6e32b62437909484835e03a841134f0fb0f7b25080510cc66a44a4"
+    },
+    {
+      "file": "prepare.cjs",
+      "sha256": "67a68b070e1ac2b7f21d015ab11c946c6e76a98e5f619247f67385c05f88a1bf"
+    },
+    {
+      "file": "manifest.json",
+      "sha256": "3752662bc642b33225d8581f9e0d5153b5cfa20e1b6a72ace2a6a94352c764b7"
+    },
+    {
+      "file": "README.md",
+      "sha256": "39999800cf17a88f3c5008af0a98366a1e4a67c9eeb394acaa9f3856be90b411"
+    },
+    {
+      "file": "exports/explore.png",
+      "sha256": "a09b49c99566348ea11f76a162559775c0e50e18ef0939d0ab8d7ffdc7891dc6"
+    },
+    {
+      "file": "exports/habitat.png",
+      "sha256": "c4eb3464532693068df438c4c2953e53d0cb3240475f5c525ee84f9498bbba4b"
+    },
+    {
+      "file": "exports/incubator.png",
+      "sha256": "f3e78d8fb0f824b566052a77f17bda253fbc5d4cb8fa6fb40af4344f44e0d03b"
+    },
+    {
+      "file": "exports/research.png",
+      "sha256": "4531d96fa81695bf15a883c957d4818405e98e536c8964544f6f9171aa5e38f9"
+    },
+    {
+      "file": "exports/sheet-3x.png",
+      "sha256": "bdc8e08e1d22e92853277bdd46504d470cebad2cb8bec9afc1b2f6d34a1f1013"
+    },
+    {
+      "file": "exports/sheet-native.png",
+      "sha256": "0b4d7ae5748887a1fd9fabc0d273469cdb3dd450da4705d886021360efe28efa"
+    }
+  ]
+}

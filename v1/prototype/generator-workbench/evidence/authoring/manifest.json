@@ -1,0 +1,167 @@
+{
+  "contentId": "genomic-development-study",
+  "contentVersion": 1,
+  "ruleVersion": "developmental-analytic/1",
+  "limitation": "Static fictional analytic constructions; no physical motion, production art or game permission",
+  "cases": [
+    {
+      "name": "contact-original",
+      "status": "resolved",
+      "recordId": "experiment-3f05a537aa93e1c1fa6f",
+      "nodes": 12,
+      "modes": [
+        "ground"
+      ],
+      "inputDigest": "3f05a537aa93e1c1fa6fe621139c85220e8cca839020bae59fc9503e47fe30fe",
+      "resultDigest": "67c2750080b1109b23a28404d284ba2e545e23286a0a787f1ae46d6193355404",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "contact-related-topology",
+      "status": "resolved",
+      "recordId": "experiment-852e149454064c16f5c1",
+      "nodes": 30,
+      "modes": [
+        "ground"
+      ],
+      "inputDigest": "852e149454064c16f5c11c65ac6c7f08f9151a5b1fcd772392d783fa8bc5111d",
+      "resultDigest": "8a4087abf549522324bd739334847035765c1a241f473c558611580155a53f89",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "contact-actual-parent-cross",
+      "status": "resolved",
+      "recordId": "experiment-16243a32d2f58cffffc1",
+      "nodes": 32,
+      "modes": [
+        "ground"
+      ],
+      "inputDigest": "16243a32d2f58cffffc119ee8edfe93c42911be768101d0d80009d370d7b05ef",
+      "resultDigest": "83b671f87cdd1e81803f25e60f82c231cdc637f7b4593526bfe05d6957333cdc",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "membrane-original",
+      "status": "resolved",
+      "recordId": "experiment-e742ae2a8e0cecc84416",
+      "nodes": 7,
+      "modes": [
+        "air"
+      ],
+      "inputDigest": "e742ae2a8e0cecc84416d4b297dc9bd51b264aa1f94451ad9738d1f920863610",
+      "resultDigest": "8e32ac862bd70297af6921879fb2e4910fbf838aafab7a8300d1def7c99d4db5",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "membrane-related-topology",
+      "status": "resolved",
+      "recordId": "experiment-f0b951892459d6a03f08",
+      "nodes": 15,
+      "modes": [
+        "air"
+      ],
+      "inputDigest": "f0b951892459d6a03f0872ec8b012f7d6ebbd3306053eb397a339d27a7f41d68",
+      "resultDigest": "0c85af150a963794c1bedd09993f2858fef2bfa7b43804daf631548952a9611e",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "membrane-actual-parent-cross",
+      "status": "resolved",
+      "recordId": "experiment-4b5fee59cb842dcf93dc",
+      "nodes": 5,
+      "modes": [
+        "air"
+      ],
+      "inputDigest": "4b5fee59cb842dcf93dcc80168fd719c945a194b664c8fc28bbfbda9a973e2af",
+      "resultDigest": "9e9debb91294b88fd16ac28e8a68e2d811830db7ea4313527d63302c9c7c8ca4",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "axial-original",
+      "status": "resolved",
+      "recordId": "experiment-91772e59baf3d1e490b5",
+      "nodes": 11,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "91772e59baf3d1e490b58b064b7c5bc0e20a9018d82a9e76e7e93be6def9c4e7",
+      "resultDigest": "745c402b682206ff871a66c48315416b9b02df493a9f4d8de6dd12ef9c2ebd53",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "axial-related-topology",
+      "status": "resolved",
+      "recordId": "experiment-8c6d8496d803522abe62",
+      "nodes": 9,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "8c6d8496d803522abe621b713a8cd531e52c069153c9598cab7eed954679eb70",
+      "resultDigest": "ae968e15fee3801c3922ea16e5e89fc1894473a96bda655edbfa3a21263610b5",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "carried-suppressed",
+      "status": "resolved",
+      "recordId": "experiment-a7b1cfc7d09ffd2576a6",
+      "nodes": 11,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "a7b1cfc7d09ffd2576a617d91abfa9f364b95bd6631d19da4180f539768db6ce",
+      "resultDigest": "6e3cc0183b6a0f2bfbd76255e6d20b5717407ebe9c7486f7e949f1aa66efac95",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "expression-placement-a",
+      "status": "resolved",
+      "recordId": "experiment-c4a08917b87ac38f3e07",
+      "nodes": 11,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "c4a08917b87ac38f3e07e1c4a440bda3306e45873fb7a26bea5d51630f8f07db",
+      "resultDigest": "9295375a73d89b1464dcd47114802d013fe22f320d6ca3caa4894391ab6da7e5",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "expression-placement-b",
+      "status": "resolved",
+      "recordId": "experiment-314345521e393df524f5",
+      "nodes": 11,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "314345521e393df524f50649c8b0e55a2e52dc9e7a0914218ed21cdd12048a37",
+      "resultDigest": "88e7207c654559d52758c70876b224a44b2e75a3a33937f63ea82e0f20f21209",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "static-radial-volume-not-distributed-network",
+      "status": "resolved",
+      "recordId": "experiment-9f2e0cb680a53c8a4ad3",
+      "nodes": 1,
+      "modes": [],
+      "inputDigest": "9f2e0cb680a53c8a4ad3064a51f58768c15a29c09adf2633bcbdbce44a9b8a4e",
+      "resultDigest": "62308a0532b9fb99ddd14b584d928331423d07352738cd1c99251c59f365d1f6",
+      "promptStatus": "fact-derived calibration prompt; no provider called"
+    },
+    {
+      "name": "invalid-unrooted-membrane",
+      "status": "rejected",
+      "errors": [
+        {
+          "code": "unrooted-channel",
+          "path": "development.attachment-repeat",
+          "message": "Declared linked/membrane/fin channels require actual attachment roots.",
+          "contributors": [
+            "development.attachment-repeat",
+            "development.articulated-chain",
+            "development.membrane-rooting",
+            "development.fin-rooting"
+          ]
+        }
+      ]
+    }
+  ]
+}

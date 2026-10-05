@@ -1,0 +1,12 @@
+{
+  "purpose": "Editable alpha selections over retained immutable raster material; not a claim of editable internal native drawing.",
+  "selectionSource": "retained-material-masks.svg",
+  "layers": [
+    {"assets": ["data-primary", "data-compact"], "material": "Physical blue data card", "preserve": ["dark perimeter", "blue lit rim", "engraved circuitry", "card planes"], "reference": "07 primary and C18 compact are separately pinned source authorities; no paper-icon substitution"},
+    {"assets": ["energy-primary", "energy-compact"], "material": "Broad gold faceted crystal", "preserve": ["bottom point and shoulders", "near-black outline", "facet boundaries", "asymmetric specular planes"], "reference": "No narrowing into a flame or changing the material silhouette"},
+    {"assets": ["essence-primary", "essence-compact"], "material": "Rounded translucent lime Essence", "preserve": ["dark near rim", "upper-left specular patch", "transmitted lower-right band", "asymmetric internal light"], "reference": "No teardrop or opaque centered glow replacement"},
+    {"assets": ["crown-reference"], "material": "Five-leaf feature reference", "preserve": ["all five leaves", "stem/vein detail", "negative gaps", "warm edge lighting"], "reference": "Known reference glyph, not evidence a sample expresses the feature"},
+    {"assets": ["eye-ring-reference"], "material": "Layered ring reference", "preserve": ["nonuniform lit/shadow contour", "dark inner contour", "transparent central cutout"], "reference": "Reference glyph; full sample facts remain in live labels"},
+    {"assets": ["sample-neutral"], "material": "Neutral glass sample capsule", "preserve": ["closed glass rim/cap", "diagonal specular strip", "transmitted blue body"], "reference": "Contains no hidden creature preview or claimed genome topology"}
+  ]
+}

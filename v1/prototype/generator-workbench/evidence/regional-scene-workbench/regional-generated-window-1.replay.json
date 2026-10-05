@@ -1,0 +1,3773 @@
+{
+  "schemaVersion": "critter-authoring-record/1",
+  "sceneProjectionVersion": "module-scene/2",
+  "sceneRecordId": "scene-a984c14c23fe80c0718e",
+  "input": {
+    "catalogue": {
+      "schemaVersion": "critter-catalogue/1",
+      "id": "genomic-regional-scene-experiment",
+      "version": 1,
+      "ruleVersion": "developmental-regional-scene/1",
+      "operators": [
+        "pair-map",
+        "copy-mean",
+        "dominant-enable",
+        "recessive-enable",
+        "partition-map"
+      ],
+      "families": [
+        {
+          "id": "structure",
+          "status": "partial-model",
+          "modeledOutputs": [
+            "bodyLength",
+            "bodyWidth",
+            "bodyHeight",
+            "taper",
+            "spacing",
+            "rootPosition",
+            "proximal",
+            "distal",
+            "jointRange",
+            "contactWidth",
+            "membraneSpan",
+            "membraneFlexibility",
+            "finSpan",
+            "density"
+          ],
+          "gaps": "Only listed outputs modeled; physiology, development, lifetime/learned states and quantitative performance are not complete."
+        },
+        {
+          "id": "appearance",
+          "status": "partial-model",
+          "modeledOutputs": [
+            "bodyPalette",
+            "undersidePalette",
+            "markings",
+            "layout",
+            "extent",
+            "markScale",
+            "orientation",
+            "contrast",
+            "texture"
+          ],
+          "gaps": "Only listed outputs modeled; physiology, development, lifetime/learned states and quantitative performance are not complete."
+        },
+        {
+          "id": "mechanics-movement",
+          "status": "partial-model",
+          "modeledOutputs": [
+            "contactPhase",
+            "cycleRate",
+            "stride",
+            "turnControl",
+            "axialAmplitude",
+            "axialPhase",
+            "membraneStroke",
+            "membraneCoordination",
+            "finSteering"
+          ],
+          "gaps": "Only listed outputs modeled; physiology, development, lifetime/learned states and quantitative performance are not complete."
+        },
+        {
+          "id": "sensing-signaling",
+          "status": "not-modeled",
+          "modeledOutputs": [],
+          "gaps": "Only listed outputs modeled; physiology, development, lifetime/learned states and quantitative performance are not complete."
+        },
+        {
+          "id": "cognition-tendencies",
+          "status": "not-modeled",
+          "modeledOutputs": [],
+          "gaps": "Only listed outputs modeled; physiology, development, lifetime/learned states and quantitative performance are not complete."
+        },
+        {
+          "id": "energy-nutrition",
+          "status": "partial-model",
+          "modeledOutputs": [
+            "actuatorCapacity",
+            "reserveCapacity",
+            "efficiency"
+          ],
+          "gaps": "Only listed outputs modeled; physiology, development, lifetime/learned states and quantitative performance are not complete."
+        },
+        {
+          "id": "maintenance-protection",
+          "status": "not-modeled",
+          "modeledOutputs": [],
+          "gaps": "Only listed outputs modeled; physiology, development, lifetime/learned states and quantitative performance are not complete."
+        },
+        {
+          "id": "affinities-exposure",
+          "status": "not-modeled",
+          "modeledOutputs": [],
+          "gaps": "Only listed outputs modeled; physiology, development, lifetime/learned states and quantitative performance are not complete."
+        },
+        {
+          "id": "development-longevity",
+          "status": "partial-model",
+          "modeledOutputs": [
+            "axialCount",
+            "symmetry",
+            "attachmentGroups",
+            "links",
+            "membranes",
+            "fins",
+            "axialActuator"
+          ],
+          "gaps": "Only listed outputs modeled; physiology, development, lifetime/learned states and quantitative performance are not complete."
+        },
+        {
+          "id": "reproduction",
+          "status": "not-modeled",
+          "modeledOutputs": [],
+          "gaps": "Independent two-copy authoring cross only; living reproductive systems unmodeled."
+        },
+        {
+          "id": "fantastic-physiology",
+          "status": "not-modeled",
+          "modeledOutputs": [],
+          "gaps": "Not supplied by this content; no hidden power inferred."
+        }
+      ],
+      "loci": [
+        {
+          "id": "development.axial-repeat",
+          "label": "axial repeat",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "development-longevity",
+          "affectedFamilies": [
+            "development-longevity",
+            "structure",
+            "mechanics-movement",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "single",
+              "label": "single",
+              "value": 1
+            },
+            {
+              "id": "chain",
+              "label": "chain",
+              "value": 5
+            }
+          ],
+          "operator": "pair-map",
+          "outputs": [
+            "axialCount"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "integer",
+            "min": 1,
+            "max": 5,
+            "unit": "categorical"
+          },
+          "purpose": "Contributes axial repeat to axialCount; resolved through declared pair-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "development",
+            "output": "axialCount"
+          },
+          "pairMap": {
+            "single|single": 1,
+            "chain|single": 3,
+            "chain|chain": 5
+          }
+        },
+        {
+          "id": "development.symmetry",
+          "label": "symmetry",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "development-longevity",
+          "affectedFamilies": [
+            "development-longevity",
+            "structure",
+            "mechanics-movement",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "bilateral",
+              "label": "bilateral",
+              "value": "bilateral"
+            },
+            {
+              "id": "radial",
+              "label": "radial",
+              "value": "radial"
+            }
+          ],
+          "operator": "pair-map",
+          "outputs": [
+            "symmetry"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "enum",
+            "values": [
+              "bilateral",
+              "radial"
+            ],
+            "unit": "categorical"
+          },
+          "purpose": "Contributes symmetry to symmetry; resolved through declared pair-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "development",
+            "output": "symmetry"
+          },
+          "pairMap": {
+            "bilateral|bilateral": "bilateral",
+            "bilateral|radial": "bilateral",
+            "radial|radial": "radial"
+          }
+        },
+        {
+          "id": "development.attachment-repeat",
+          "label": "attachment repeat",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "development-longevity",
+          "affectedFamilies": [
+            "development-longevity",
+            "structure",
+            "mechanics-movement",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "none",
+              "label": "none",
+              "value": 0
+            },
+            {
+              "id": "multiple",
+              "label": "multiple",
+              "value": 3
+            }
+          ],
+          "operator": "pair-map",
+          "outputs": [
+            "attachmentGroups"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "integer",
+            "min": 0,
+            "max": 3,
+            "unit": "categorical"
+          },
+          "purpose": "Contributes attachment repeat to attachmentGroups; resolved through declared pair-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "development",
+            "output": "attachmentGroups"
+          },
+          "pairMap": {
+            "none|none": 0,
+            "multiple|none": 1,
+            "multiple|multiple": 3
+          }
+        },
+        {
+          "id": "development.articulated-chain",
+          "label": "articulated chain",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "development-longevity",
+          "affectedFamilies": [
+            "development-longevity",
+            "structure",
+            "mechanics-movement",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "unlinked",
+              "label": "unlinked",
+              "value": 0
+            },
+            {
+              "id": "linked",
+              "label": "linked",
+              "value": 2
+            }
+          ],
+          "operator": "pair-map",
+          "outputs": [
+            "links"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "integer",
+            "min": 0,
+            "max": 2,
+            "unit": "categorical"
+          },
+          "purpose": "Contributes articulated chain to links; resolved through declared pair-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "development",
+            "output": "links"
+          },
+          "pairMap": {
+            "unlinked|unlinked": 0,
+            "linked|unlinked": 1,
+            "linked|linked": 2
+          }
+        },
+        {
+          "id": "development.membrane-rooting",
+          "label": "membrane rooting",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "development-longevity",
+          "affectedFamilies": [
+            "development-longevity",
+            "structure",
+            "mechanics-movement",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "off",
+              "label": "off",
+              "value": false
+            },
+            {
+              "id": "on",
+              "label": "on",
+              "value": true
+            }
+          ],
+          "operator": "dominant-enable",
+          "outputs": [
+            "membranes"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "boolean",
+            "unit": "categorical"
+          },
+          "purpose": "Contributes membrane rooting to membranes; resolved through declared dominant-enable.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "development",
+            "output": "membranes"
+          }
+        },
+        {
+          "id": "development.fin-rooting",
+          "label": "fin rooting",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "development-longevity",
+          "affectedFamilies": [
+            "development-longevity",
+            "structure",
+            "mechanics-movement",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "off",
+              "label": "off",
+              "value": false
+            },
+            {
+              "id": "on",
+              "label": "on",
+              "value": true
+            }
+          ],
+          "operator": "dominant-enable",
+          "outputs": [
+            "fins"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "boolean",
+            "unit": "categorical"
+          },
+          "purpose": "Contributes fin rooting to fins; resolved through declared dominant-enable.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "development",
+            "output": "fins"
+          }
+        },
+        {
+          "id": "development.axial-deformation",
+          "label": "axial deformation",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "development-longevity",
+          "affectedFamilies": [
+            "development-longevity",
+            "structure",
+            "mechanics-movement",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "off",
+              "label": "off",
+              "value": false
+            },
+            {
+              "id": "on",
+              "label": "on",
+              "value": true
+            }
+          ],
+          "operator": "dominant-enable",
+          "outputs": [
+            "axialActuator"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "boolean",
+            "unit": "categorical"
+          },
+          "purpose": "Contributes axial deformation to axialActuator; resolved through declared dominant-enable.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "development",
+            "output": "axialActuator"
+          }
+        },
+        {
+          "id": "development.volume-network",
+          "label": "volume network",
+          "aliases": [],
+          "version": 1,
+          "status": "draft",
+          "approval": "not-reviewed",
+          "family": "development-longevity",
+          "affectedFamilies": [
+            "development-longevity"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "candidate",
+              "label": "Candidate only",
+              "value": null
+            }
+          ],
+          "operator": "not-implemented",
+          "outputs": [],
+          "requires": [],
+          "applicability": "distributed-graph",
+          "bounds": null,
+          "purpose": "Distributed connected volumes without a privileged axis; topology operator unimplemented.",
+          "examples": [
+            {
+              "kind": "missing",
+              "message": "Operator, bounds and causal worked cases require design."
+            }
+          ],
+          "visualBinding": {
+            "region": "development",
+            "output": null
+          },
+          "missing": "No executable operator/bounds; excluded from complete genotypes."
+        },
+        {
+          "id": "structure.body-length",
+          "label": "body length",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 1
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 1.8
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "bodyLength"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 1,
+            "max": 1.8,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes body length to bodyLength; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "bodyLength"
+          }
+        },
+        {
+          "id": "structure.body-width",
+          "label": "body width",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.4
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.9
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "bodyWidth"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 0.4,
+            "max": 0.9,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes body width to bodyWidth; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "bodyWidth"
+          }
+        },
+        {
+          "id": "structure.body-height",
+          "label": "body height",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.3
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.7
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "bodyHeight"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 0.3,
+            "max": 0.7,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes body height to bodyHeight; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "bodyHeight"
+          }
+        },
+        {
+          "id": "structure.body-taper",
+          "label": "body taper",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.1
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.6
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "taper"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 0.1,
+            "max": 0.6,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes body taper to taper; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "taper"
+          }
+        },
+        {
+          "id": "structure.axial-spacing",
+          "label": "axial spacing",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.15
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.3
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "spacing"
+          ],
+          "requires": [
+            "development.axial-repeat"
+          ],
+          "applicability": "axial",
+          "bounds": {
+            "type": "number",
+            "min": 0.15,
+            "max": 0.3,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes axial spacing to spacing; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "spacing"
+          }
+        },
+        {
+          "id": "structure.attachment-position",
+          "label": "attachment position",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.2
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.7
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "rootPosition"
+          ],
+          "requires": [
+            "development.attachment-repeat"
+          ],
+          "applicability": "rooted",
+          "bounds": {
+            "type": "number",
+            "min": 0.2,
+            "max": 0.7,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes attachment position to rootPosition; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "rootPosition"
+          }
+        },
+        {
+          "id": "structure.proximal-length",
+          "label": "proximal length",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.3
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.65
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "proximal"
+          ],
+          "requires": [
+            "development.articulated-chain"
+          ],
+          "applicability": "articulated",
+          "bounds": {
+            "type": "number",
+            "min": 0.3,
+            "max": 0.65,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes proximal length to proximal; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "proximal"
+          }
+        },
+        {
+          "id": "structure.distal-length",
+          "label": "distal length",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.2
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.5
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "distal"
+          ],
+          "requires": [
+            "development.articulated-chain"
+          ],
+          "applicability": "two-link",
+          "bounds": {
+            "type": "number",
+            "min": 0.2,
+            "max": 0.5,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes distal length to distal; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "distal"
+          }
+        },
+        {
+          "id": "structure.joint-range",
+          "label": "joint range",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.4
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 1.2
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "jointRange"
+          ],
+          "requires": [
+            "development.articulated-chain"
+          ],
+          "applicability": "articulated",
+          "bounds": {
+            "type": "number",
+            "min": 0.4,
+            "max": 1.2,
+            "unit": "radians"
+          },
+          "purpose": "Contributes joint range to jointRange; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "jointRange"
+          }
+        },
+        {
+          "id": "structure.contact-width",
+          "label": "contact width",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.1
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.25
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "contactWidth"
+          ],
+          "requires": [
+            "development.articulated-chain"
+          ],
+          "applicability": "articulated",
+          "bounds": {
+            "type": "number",
+            "min": 0.1,
+            "max": 0.25,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes contact width to contactWidth; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "contactWidth"
+          }
+        },
+        {
+          "id": "structure.membrane-span",
+          "label": "membrane span",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 1
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 2
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "membraneSpan"
+          ],
+          "requires": [
+            "development.membrane-rooting"
+          ],
+          "applicability": "membrane",
+          "bounds": {
+            "type": "number",
+            "min": 1,
+            "max": 2,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes membrane span to membraneSpan; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "membraneSpan"
+          }
+        },
+        {
+          "id": "structure.membrane-flexibility",
+          "label": "membrane flexibility",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.2
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.7
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "membraneFlexibility"
+          ],
+          "requires": [
+            "development.membrane-rooting"
+          ],
+          "applicability": "membrane",
+          "bounds": {
+            "type": "number",
+            "min": 0.2,
+            "max": 0.7,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes membrane flexibility to membraneFlexibility; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "membraneFlexibility"
+          }
+        },
+        {
+          "id": "structure.fin-span",
+          "label": "fin span",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.2
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.6
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "finSpan"
+          ],
+          "requires": [
+            "development.fin-rooting"
+          ],
+          "applicability": "fin",
+          "bounds": {
+            "type": "number",
+            "min": 0.2,
+            "max": 0.6,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes fin span to finSpan; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "finSpan"
+          }
+        },
+        {
+          "id": "structure.material-density",
+          "label": "material density",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance",
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.5
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 1.2
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "density"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 0.5,
+            "max": 1.2,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes material density to density; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "structure",
+            "output": "density"
+          }
+        },
+        {
+          "id": "appearance.body-palette",
+          "label": "body palette",
+          "aliases": [],
+          "version": 2,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "charcoal",
+              "label": "charcoal",
+              "value": "#465459"
+            },
+            {
+              "id": "russet",
+              "label": "russet",
+              "value": "#ae674d"
+            },
+            {
+              "id": "jade",
+              "label": "jade",
+              "value": "#38a878"
+            },
+            {
+              "id": "lagoon",
+              "label": "lagoon",
+              "value": "#269fa5"
+            },
+            {
+              "id": "cobalt",
+              "label": "cobalt",
+              "value": "#4d7ed4"
+            },
+            {
+              "id": "periwinkle",
+              "label": "periwinkle",
+              "value": "#8b7dd8"
+            },
+            {
+              "id": "plum",
+              "label": "plum",
+              "value": "#a967b8"
+            },
+            {
+              "id": "raspberry",
+              "label": "raspberry",
+              "value": "#d95688"
+            },
+            {
+              "id": "coral",
+              "label": "coral",
+              "value": "#e98268"
+            },
+            {
+              "id": "marigold",
+              "label": "marigold",
+              "value": "#e8b83f"
+            }
+          ],
+          "operator": "partition-map",
+          "outputs": [
+            "bodyPalette"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "palette",
+            "unit": "categorical"
+          },
+          "purpose": "Contributes body palette to bodyPalette; resolved through declared partition-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "bodyPalette"
+          },
+          "pairMap": {
+            "charcoal|charcoal": [
+              "#465459"
+            ],
+            "charcoal|russet": [
+              "#465459",
+              "#ae674d"
+            ],
+            "russet|russet": [
+              "#ae674d"
+            ],
+            "charcoal|jade": [
+              "#465459",
+              "#38a878"
+            ],
+            "charcoal|lagoon": [
+              "#465459",
+              "#269fa5"
+            ],
+            "charcoal|cobalt": [
+              "#465459",
+              "#4d7ed4"
+            ],
+            "charcoal|periwinkle": [
+              "#465459",
+              "#8b7dd8"
+            ],
+            "charcoal|plum": [
+              "#465459",
+              "#a967b8"
+            ],
+            "charcoal|raspberry": [
+              "#465459",
+              "#d95688"
+            ],
+            "charcoal|coral": [
+              "#465459",
+              "#e98268"
+            ],
+            "charcoal|marigold": [
+              "#465459",
+              "#e8b83f"
+            ],
+            "jade|russet": [
+              "#ae674d",
+              "#38a878"
+            ],
+            "lagoon|russet": [
+              "#ae674d",
+              "#269fa5"
+            ],
+            "cobalt|russet": [
+              "#ae674d",
+              "#4d7ed4"
+            ],
+            "periwinkle|russet": [
+              "#ae674d",
+              "#8b7dd8"
+            ],
+            "plum|russet": [
+              "#ae674d",
+              "#a967b8"
+            ],
+            "raspberry|russet": [
+              "#ae674d",
+              "#d95688"
+            ],
+            "coral|russet": [
+              "#ae674d",
+              "#e98268"
+            ],
+            "marigold|russet": [
+              "#ae674d",
+              "#e8b83f"
+            ],
+            "jade|jade": [
+              "#38a878"
+            ],
+            "jade|lagoon": [
+              "#38a878",
+              "#269fa5"
+            ],
+            "cobalt|jade": [
+              "#38a878",
+              "#4d7ed4"
+            ],
+            "jade|periwinkle": [
+              "#38a878",
+              "#8b7dd8"
+            ],
+            "jade|plum": [
+              "#38a878",
+              "#a967b8"
+            ],
+            "jade|raspberry": [
+              "#38a878",
+              "#d95688"
+            ],
+            "coral|jade": [
+              "#38a878",
+              "#e98268"
+            ],
+            "jade|marigold": [
+              "#38a878",
+              "#e8b83f"
+            ],
+            "lagoon|lagoon": [
+              "#269fa5"
+            ],
+            "cobalt|lagoon": [
+              "#269fa5",
+              "#4d7ed4"
+            ],
+            "lagoon|periwinkle": [
+              "#269fa5",
+              "#8b7dd8"
+            ],
+            "lagoon|plum": [
+              "#269fa5",
+              "#a967b8"
+            ],
+            "lagoon|raspberry": [
+              "#269fa5",
+              "#d95688"
+            ],
+            "coral|lagoon": [
+              "#269fa5",
+              "#e98268"
+            ],
+            "lagoon|marigold": [
+              "#269fa5",
+              "#e8b83f"
+            ],
+            "cobalt|cobalt": [
+              "#4d7ed4"
+            ],
+            "cobalt|periwinkle": [
+              "#4d7ed4",
+              "#8b7dd8"
+            ],
+            "cobalt|plum": [
+              "#4d7ed4",
+              "#a967b8"
+            ],
+            "cobalt|raspberry": [
+              "#4d7ed4",
+              "#d95688"
+            ],
+            "cobalt|coral": [
+              "#4d7ed4",
+              "#e98268"
+            ],
+            "cobalt|marigold": [
+              "#4d7ed4",
+              "#e8b83f"
+            ],
+            "periwinkle|periwinkle": [
+              "#8b7dd8"
+            ],
+            "periwinkle|plum": [
+              "#8b7dd8",
+              "#a967b8"
+            ],
+            "periwinkle|raspberry": [
+              "#8b7dd8",
+              "#d95688"
+            ],
+            "coral|periwinkle": [
+              "#8b7dd8",
+              "#e98268"
+            ],
+            "marigold|periwinkle": [
+              "#8b7dd8",
+              "#e8b83f"
+            ],
+            "plum|plum": [
+              "#a967b8"
+            ],
+            "plum|raspberry": [
+              "#a967b8",
+              "#d95688"
+            ],
+            "coral|plum": [
+              "#a967b8",
+              "#e98268"
+            ],
+            "marigold|plum": [
+              "#a967b8",
+              "#e8b83f"
+            ],
+            "raspberry|raspberry": [
+              "#d95688"
+            ],
+            "coral|raspberry": [
+              "#d95688",
+              "#e98268"
+            ],
+            "marigold|raspberry": [
+              "#d95688",
+              "#e8b83f"
+            ],
+            "coral|coral": [
+              "#e98268"
+            ],
+            "coral|marigold": [
+              "#e98268",
+              "#e8b83f"
+            ],
+            "marigold|marigold": [
+              "#e8b83f"
+            ]
+          }
+        },
+        {
+          "id": "appearance.underside-palette",
+          "label": "underside palette",
+          "aliases": [],
+          "version": 2,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "cream",
+              "label": "cream",
+              "value": "#dfd2ae"
+            },
+            {
+              "id": "slate",
+              "label": "slate",
+              "value": "#718489"
+            },
+            {
+              "id": "milk-mint",
+              "label": "milk mint",
+              "value": "#d8f1d4"
+            },
+            {
+              "id": "ice",
+              "label": "ice",
+              "value": "#d9ecf5"
+            },
+            {
+              "id": "butter",
+              "label": "butter",
+              "value": "#fff0b8"
+            },
+            {
+              "id": "peach",
+              "label": "peach",
+              "value": "#ffd7c5"
+            }
+          ],
+          "operator": "partition-map",
+          "outputs": [
+            "undersidePalette"
+          ],
+          "requires": [
+            "development.symmetry"
+          ],
+          "applicability": "bilateral",
+          "bounds": {
+            "type": "palette",
+            "unit": "categorical"
+          },
+          "purpose": "Contributes underside palette to undersidePalette; resolved through declared partition-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "undersidePalette"
+          },
+          "pairMap": {
+            "cream|cream": [
+              "#dfd2ae"
+            ],
+            "cream|slate": [
+              "#dfd2ae",
+              "#718489"
+            ],
+            "slate|slate": [
+              "#718489"
+            ],
+            "cream|milk-mint": [
+              "#dfd2ae",
+              "#d8f1d4"
+            ],
+            "cream|ice": [
+              "#dfd2ae",
+              "#d9ecf5"
+            ],
+            "butter|cream": [
+              "#dfd2ae",
+              "#fff0b8"
+            ],
+            "cream|peach": [
+              "#dfd2ae",
+              "#ffd7c5"
+            ],
+            "milk-mint|slate": [
+              "#718489",
+              "#d8f1d4"
+            ],
+            "ice|slate": [
+              "#718489",
+              "#d9ecf5"
+            ],
+            "butter|slate": [
+              "#718489",
+              "#fff0b8"
+            ],
+            "peach|slate": [
+              "#718489",
+              "#ffd7c5"
+            ],
+            "milk-mint|milk-mint": [
+              "#d8f1d4"
+            ],
+            "ice|milk-mint": [
+              "#d8f1d4",
+              "#d9ecf5"
+            ],
+            "butter|milk-mint": [
+              "#d8f1d4",
+              "#fff0b8"
+            ],
+            "milk-mint|peach": [
+              "#d8f1d4",
+              "#ffd7c5"
+            ],
+            "ice|ice": [
+              "#d9ecf5"
+            ],
+            "butter|ice": [
+              "#d9ecf5",
+              "#fff0b8"
+            ],
+            "ice|peach": [
+              "#d9ecf5",
+              "#ffd7c5"
+            ],
+            "butter|butter": [
+              "#fff0b8"
+            ],
+            "butter|peach": [
+              "#fff0b8",
+              "#ffd7c5"
+            ],
+            "peach|peach": [
+              "#ffd7c5"
+            ]
+          }
+        },
+        {
+          "id": "appearance.marking-switch",
+          "label": "marking switch",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "off",
+              "label": "off",
+              "value": false
+            },
+            {
+              "id": "on",
+              "label": "on",
+              "value": true
+            }
+          ],
+          "operator": "recessive-enable",
+          "outputs": [
+            "markings"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "boolean",
+            "unit": "categorical"
+          },
+          "purpose": "Contributes marking switch to markings; resolved through declared recessive-enable.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "markings"
+          }
+        },
+        {
+          "id": "appearance.marking-layout",
+          "label": "marking layout",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "bands",
+              "label": "bands",
+              "value": "bands"
+            },
+            {
+              "id": "patches",
+              "label": "patches",
+              "value": "patches"
+            }
+          ],
+          "operator": "pair-map",
+          "outputs": [
+            "layout"
+          ],
+          "requires": [
+            "appearance.marking-switch"
+          ],
+          "applicability": "marked",
+          "bounds": {
+            "type": "enum",
+            "values": [
+              "bands",
+              "patches",
+              "bands-and-patches"
+            ],
+            "unit": "categorical"
+          },
+          "purpose": "Contributes marking layout to layout; resolved through declared pair-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "layout"
+          },
+          "pairMap": {
+            "bands|bands": "bands",
+            "bands|patches": "bands-and-patches",
+            "patches|patches": "patches"
+          }
+        },
+        {
+          "id": "appearance.marking-extent",
+          "label": "marking extent",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.15
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.5
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "extent"
+          ],
+          "requires": [
+            "appearance.marking-switch"
+          ],
+          "applicability": "marked",
+          "bounds": {
+            "type": "number",
+            "min": 0.15,
+            "max": 0.5,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes marking extent to extent; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "extent"
+          }
+        },
+        {
+          "id": "appearance.marking-scale",
+          "label": "marking scale",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.06
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.14
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "markScale"
+          ],
+          "requires": [
+            "appearance.marking-switch"
+          ],
+          "applicability": "marked",
+          "bounds": {
+            "type": "number",
+            "min": 0.06,
+            "max": 0.14,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes marking scale to markScale; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "markScale"
+          }
+        },
+        {
+          "id": "appearance.marking-orientation",
+          "label": "marking orientation",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 1.57
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "orientation"
+          ],
+          "requires": [
+            "appearance.marking-switch"
+          ],
+          "applicability": "marked",
+          "bounds": {
+            "type": "number",
+            "min": 0,
+            "max": 1.57,
+            "unit": "radians"
+          },
+          "purpose": "Contributes marking orientation to orientation; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "orientation"
+          }
+        },
+        {
+          "id": "appearance.marking-contrast",
+          "label": "marking contrast",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.3
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.8
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "contrast"
+          ],
+          "requires": [
+            "appearance.marking-switch"
+          ],
+          "applicability": "marked",
+          "bounds": {
+            "type": "number",
+            "min": 0.3,
+            "max": 0.8,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes marking contrast to contrast; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "contrast"
+          }
+        },
+        {
+          "id": "appearance.surface-texture",
+          "label": "surface texture",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "smooth",
+              "label": "smooth",
+              "value": "smooth"
+            },
+            {
+              "id": "ridged",
+              "label": "ridged",
+              "value": "fine-ridged"
+            }
+          ],
+          "operator": "pair-map",
+          "outputs": [
+            "texture"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "enum",
+            "values": [
+              "smooth",
+              "fine-ridged"
+            ],
+            "unit": "categorical"
+          },
+          "purpose": "Contributes surface texture to texture; resolved through declared pair-map.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": "texture"
+          },
+          "pairMap": {
+            "smooth|smooth": "smooth",
+            "ridged|smooth": "fine-ridged",
+            "ridged|ridged": "fine-ridged"
+          }
+        },
+        {
+          "id": "appearance.transparency",
+          "label": "transparency",
+          "aliases": [],
+          "version": 1,
+          "status": "draft",
+          "approval": "not-reviewed",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "candidate",
+              "label": "Candidate only",
+              "value": null
+            }
+          ],
+          "operator": "not-implemented",
+          "outputs": [],
+          "requires": [],
+          "applicability": "surface",
+          "bounds": null,
+          "purpose": "Transmission and layer coverage; no optical/composition operator implemented.",
+          "examples": [
+            {
+              "kind": "missing",
+              "message": "Operator, bounds and causal worked cases require design."
+            }
+          ],
+          "visualBinding": {
+            "region": "appearance",
+            "output": null
+          },
+          "missing": "No executable operator/bounds; excluded from complete genotypes."
+        },
+        {
+          "id": "movement.contact-phase",
+          "label": "contact phase",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.25
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.75
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "contactPhase"
+          ],
+          "requires": [
+            "development.articulated-chain"
+          ],
+          "applicability": "articulated",
+          "bounds": {
+            "type": "number",
+            "min": 0.25,
+            "max": 0.75,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes contact phase to contactPhase; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": "contactPhase"
+          }
+        },
+        {
+          "id": "movement.cycle-rate",
+          "label": "cycle rate",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement",
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.6
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 1.4
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "cycleRate"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 0.6,
+            "max": 1.4,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes cycle rate to cycleRate; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": "cycleRate"
+          }
+        },
+        {
+          "id": "movement.stride-preference",
+          "label": "stride preference",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.2
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.5
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "stride"
+          ],
+          "requires": [
+            "structure.proximal-length",
+            "structure.joint-range"
+          ],
+          "applicability": "articulated",
+          "bounds": {
+            "type": "number",
+            "min": 0.2,
+            "max": 0.5,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes stride preference to stride; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": "stride"
+          }
+        },
+        {
+          "id": "movement.turn-control",
+          "label": "turn control",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.3
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.8
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "turnControl"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 0.3,
+            "max": 0.8,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes turn control to turnControl; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": "turnControl"
+          }
+        },
+        {
+          "id": "movement.axial-amplitude",
+          "label": "axial amplitude",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.08
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.22
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "axialAmplitude"
+          ],
+          "requires": [
+            "development.axial-deformation"
+          ],
+          "applicability": "axial-actuator",
+          "bounds": {
+            "type": "number",
+            "min": 0.08,
+            "max": 0.22,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes axial amplitude to axialAmplitude; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": "axialAmplitude"
+          }
+        },
+        {
+          "id": "movement.axial-phase",
+          "label": "axial phase",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.4
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 1.2
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "axialPhase"
+          ],
+          "requires": [
+            "development.axial-deformation"
+          ],
+          "applicability": "axial-actuator",
+          "bounds": {
+            "type": "number",
+            "min": 0.4,
+            "max": 1.2,
+            "unit": "radians"
+          },
+          "purpose": "Contributes axial phase to axialPhase; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": "axialPhase"
+          }
+        },
+        {
+          "id": "movement.membrane-stroke",
+          "label": "membrane stroke",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.3
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.8
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "membraneStroke"
+          ],
+          "requires": [
+            "development.membrane-rooting"
+          ],
+          "applicability": "membrane",
+          "bounds": {
+            "type": "number",
+            "min": 0.3,
+            "max": 0.8,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes membrane stroke to membraneStroke; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": "membraneStroke"
+          }
+        },
+        {
+          "id": "movement.membrane-coordination",
+          "label": "membrane coordination",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.5
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 1
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "membraneCoordination"
+          ],
+          "requires": [
+            "development.membrane-rooting"
+          ],
+          "applicability": "membrane",
+          "bounds": {
+            "type": "number",
+            "min": 0.5,
+            "max": 1,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes membrane coordination to membraneCoordination; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": "membraneCoordination"
+          }
+        },
+        {
+          "id": "movement.fin-steering",
+          "label": "fin steering",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.2
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 0.7
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "finSteering"
+          ],
+          "requires": [
+            "development.fin-rooting"
+          ],
+          "applicability": "fin",
+          "bounds": {
+            "type": "number",
+            "min": 0.2,
+            "max": 0.7,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes fin steering to finSteering; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": "finSteering"
+          }
+        },
+        {
+          "id": "movement.burst-recruitment",
+          "label": "burst recruitment",
+          "aliases": [],
+          "version": 1,
+          "status": "draft",
+          "approval": "not-reviewed",
+          "family": "mechanics-movement",
+          "affectedFamilies": [
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "candidate",
+              "label": "Candidate only",
+              "value": null
+            }
+          ],
+          "operator": "not-implemented",
+          "outputs": [],
+          "requires": [],
+          "applicability": "supported-actuator",
+          "bounds": null,
+          "purpose": "Burst eligibility requires a legal trajectory primitive beyond this static analytic proof.",
+          "examples": [
+            {
+              "kind": "missing",
+              "message": "Operator, bounds and causal worked cases require design."
+            }
+          ],
+          "visualBinding": {
+            "region": "movement",
+            "output": null
+          },
+          "missing": "No executable operator/bounds; excluded from complete genotypes."
+        },
+        {
+          "id": "energy.actuator-capacity",
+          "label": "actuator capacity",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "energy-nutrition",
+          "affectedFamilies": [
+            "energy-nutrition",
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.6
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 1.5
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "actuatorCapacity"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 0.6,
+            "max": 1.5,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes actuator capacity to actuatorCapacity; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "energy",
+            "output": "actuatorCapacity"
+          }
+        },
+        {
+          "id": "energy.reserve-capacity",
+          "label": "reserve capacity",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "energy-nutrition",
+          "affectedFamilies": [
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 1
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 2
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "reserveCapacity"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 1,
+            "max": 2,
+            "unit": "normalized reference parameter"
+          },
+          "purpose": "Contributes reserve capacity to reserveCapacity; resolved through declared copy-mean.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "energy",
+            "output": "reserveCapacity"
+          }
+        },
+        {
+          "id": "energy.action-efficiency",
+          "label": "Matched-action cost factor",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "energy-nutrition",
+          "affectedFamilies": [
+            "energy-nutrition",
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "low",
+              "value": 0.6
+            },
+            {
+              "id": "high",
+              "label": "high",
+              "value": 1
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "efficiency"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "number",
+            "min": 0.6,
+            "max": 1,
+            "unit": "cost multiplier; lower is cheaper"
+          },
+          "purpose": "Dimensionless matched-action cost multiplier: 0.6 is cheaper, 1.0 is ordinary cost. It grants no missing capability.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Both declared copies resolve under the named operator."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown copies or values outside the declared target bounds reject."
+            }
+          ],
+          "visualBinding": {
+            "region": "energy",
+            "output": "efficiency"
+          }
+        },
+        {
+          "id": "energy.recovery-profile",
+          "label": "recovery profile",
+          "aliases": [],
+          "version": 1,
+          "status": "draft",
+          "approval": "not-reviewed",
+          "family": "energy-nutrition",
+          "affectedFamilies": [
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "candidate",
+              "label": "Candidate only",
+              "value": null
+            }
+          ],
+          "operator": "not-implemented",
+          "outputs": [],
+          "requires": [],
+          "applicability": "metabolism",
+          "bounds": null,
+          "purpose": "Recovery kinetics and supported conditions are unmodeled; no elapsed-time award.",
+          "examples": [
+            {
+              "kind": "missing",
+              "message": "Operator, bounds and causal worked cases require design."
+            }
+          ],
+          "visualBinding": {
+            "region": "energy",
+            "output": null
+          },
+          "missing": "No executable operator/bounds; excluded from complete genotypes."
+        },
+        {
+          "id": "energy.uptake-profile",
+          "label": "uptake profile",
+          "aliases": [],
+          "version": 1,
+          "status": "draft",
+          "approval": "not-reviewed",
+          "family": "energy-nutrition",
+          "affectedFamilies": [
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "candidate",
+              "label": "Candidate only",
+              "value": null
+            }
+          ],
+          "operator": "not-implemented",
+          "outputs": [],
+          "requires": [],
+          "applicability": "metabolism",
+          "bounds": null,
+          "purpose": "Nutrition sources and assimilation need authored physiology.",
+          "examples": [
+            {
+              "kind": "missing",
+              "message": "Operator, bounds and causal worked cases require design."
+            }
+          ],
+          "visualBinding": {
+            "region": "energy",
+            "output": null
+          },
+          "missing": "No executable operator/bounds; excluded from complete genotypes."
+        },
+        {
+          "id": "energy.rest-response",
+          "label": "rest response",
+          "aliases": [],
+          "version": 1,
+          "status": "draft",
+          "approval": "not-reviewed",
+          "family": "energy-nutrition",
+          "affectedFamilies": [
+            "energy-nutrition"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "candidate",
+              "label": "Candidate only",
+              "value": null
+            }
+          ],
+          "operator": "not-implemented",
+          "outputs": [],
+          "requires": [],
+          "applicability": "lifetime-state",
+          "bounds": null,
+          "purpose": "Rest/current condition state is separate from inherited capability.",
+          "examples": [
+            {
+              "kind": "missing",
+              "message": "Operator, bounds and causal worked cases require design."
+            }
+          ],
+          "visualBinding": {
+            "region": "energy",
+            "output": null
+          },
+          "missing": "No executable operator/bounds; excluded from complete genotypes."
+        },
+        {
+          "id": "structure.ocular-pair",
+          "label": "ocular pair",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "absent",
+              "label": "Absent",
+              "value": false
+            },
+            {
+              "id": "paired",
+              "label": "Paired",
+              "value": true
+            }
+          ],
+          "operator": "dominant-enable",
+          "outputs": [
+            "ocularPair"
+          ],
+          "requires": [
+            "development.axial-repeat",
+            "structure.body-length",
+            "structure.body-width",
+            "structure.body-taper",
+            "structure.axial-spacing"
+          ],
+          "applicability": "all",
+          "bounds": {
+            "type": "boolean",
+            "unit": "declared module presence"
+          },
+          "purpose": "Declares two circular ocular features without sensing or behavioral capability.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "One paired copy enables two circular features; two absent copies retain no ocular geometry."
+            },
+            {
+              "kind": "invalid",
+              "message": "An enabled pair outside the constructed exterior, overlapping a root or lacking rim clearance rejects without repair."
+            }
+          ],
+          "visualBinding": {
+            "region": "leading-ocular-module",
+            "output": "ocularPair"
+          }
+        },
+        {
+          "id": "structure.ocular-placement",
+          "label": "ocular placement",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "Low",
+              "value": 0.35
+            },
+            {
+              "id": "high",
+              "label": "High",
+              "value": 0.65
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "ocularPlacement"
+          ],
+          "requires": [
+            "development.axial-repeat",
+            "structure.body-length",
+            "structure.body-width",
+            "structure.body-taper",
+            "structure.axial-spacing",
+            "structure.ocular-pair",
+            "development.regional-growth",
+            "structure.join-neck-ratio"
+          ],
+          "applicability": "ocular",
+          "bounds": {
+            "type": "number",
+            "min": 0.35,
+            "max": 0.65,
+            "unit": "leading-domain ratio"
+          },
+          "purpose": "Places the ocular pair in the actual leading volume longitudinal domain.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "The expressed ratio constructs placement or radius within the actual leading volume domain."
+            },
+            {
+              "kind": "invalid",
+              "message": "An enabled pair outside the constructed exterior, overlapping a root or lacking rim clearance rejects without repair."
+            }
+          ],
+          "visualBinding": {
+            "region": "leading-ocular-module",
+            "output": "ocularPlacement"
+          }
+        },
+        {
+          "id": "structure.ocular-size",
+          "label": "ocular size",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "Low",
+              "value": 0.18
+            },
+            {
+              "id": "high",
+              "label": "High",
+              "value": 0.24
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "ocularSize"
+          ],
+          "requires": [
+            "development.axial-repeat",
+            "structure.body-length",
+            "structure.body-width",
+            "structure.body-taper",
+            "structure.axial-spacing",
+            "structure.ocular-pair",
+            "development.regional-growth",
+            "structure.join-neck-ratio"
+          ],
+          "applicability": "ocular",
+          "bounds": {
+            "type": "number",
+            "min": 0.18,
+            "max": 0.24,
+            "unit": "leading-domain ratio"
+          },
+          "purpose": "Resolves ocular radius from actual leading full width and length.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "The expressed ratio constructs placement or radius within the actual leading volume domain."
+            },
+            {
+              "kind": "invalid",
+              "message": "An enabled pair outside the constructed exterior, overlapping a root or lacking rim clearance rejects without repair."
+            }
+          ],
+          "visualBinding": {
+            "region": "leading-ocular-module",
+            "output": "ocularSize"
+          }
+        },
+        {
+          "id": "appearance.covering-kind",
+          "label": "covering kind",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "skin",
+              "label": "Skin",
+              "value": "skin"
+            },
+            {
+              "id": "scales",
+              "label": "Scales",
+              "value": "scales"
+            }
+          ],
+          "operator": "pair-map",
+          "outputs": [
+            "coveringKind"
+          ],
+          "requires": [],
+          "applicability": "all",
+          "bounds": {
+            "type": "enum",
+            "values": [
+              "skin",
+              "scales"
+            ],
+            "unit": "declared body covering"
+          },
+          "purpose": "Declares skin or overlapping body-local plates, without protection or physiological powers.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Skin retains the original body material and emits no plates; scales constructs exact bounded overlapping footprints."
+            },
+            {
+              "kind": "invalid",
+              "message": "Empty eligible field, unsupported material or plate-budget overflow rejects without replacement, truncation or repair."
+            }
+          ],
+          "visualBinding": {
+            "region": "body-local-covering",
+            "output": "coveringKind"
+          },
+          "pairMap": {
+            "skin|skin": "skin",
+            "scales|skin": "scales",
+            "scales|scales": "scales"
+          }
+        },
+        {
+          "id": "appearance.covering-extent",
+          "label": "covering extent",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "Low",
+              "value": 0.35
+            },
+            {
+              "id": "high",
+              "label": "High",
+              "value": 0.75
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "coveringExtent"
+          ],
+          "requires": [
+            "appearance.covering-kind",
+            "development.axial-repeat",
+            "structure.body-length",
+            "structure.body-taper",
+            "structure.axial-spacing",
+            "development.regional-growth",
+            "structure.join-neck-ratio"
+          ],
+          "applicability": "scales",
+          "bounds": {
+            "type": "number",
+            "min": 0.35,
+            "max": 0.75,
+            "unit": "body-local longitudinal interval"
+          },
+          "purpose": "Defines a body-local longitudinal placement interval, not measured exact coverage percentage.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "The expressed value controls a retained field or plate half-size, only when scales is enabled."
+            },
+            {
+              "kind": "invalid",
+              "message": "Empty eligible field, unsupported material or plate-budget overflow rejects without replacement, truncation or repair."
+            }
+          ],
+          "visualBinding": {
+            "region": "body-local-covering",
+            "output": "coveringExtent"
+          }
+        },
+        {
+          "id": "appearance.covering-scale",
+          "label": "covering scale",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "appearance",
+          "affectedFamilies": [
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "Low",
+              "value": 0.06
+            },
+            {
+              "id": "high",
+              "label": "High",
+              "value": 0.12
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "coveringScale"
+          ],
+          "requires": [
+            "appearance.covering-kind",
+            "structure.body-width",
+            "development.regional-growth",
+            "structure.join-neck-ratio"
+          ],
+          "applicability": "scales",
+          "bounds": {
+            "type": "number",
+            "min": 0.06,
+            "max": 0.12,
+            "unit": "plate half-width / resolved bodyWidth"
+          },
+          "purpose": "Controls plate half-width and overlap pitch relative to the actual resolved bodyWidth.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "The expressed value controls a retained field or plate half-size, only when scales is enabled."
+            },
+            {
+              "kind": "invalid",
+              "message": "Empty eligible field, unsupported material or plate-budget overflow rejects without replacement, truncation or repair."
+            }
+          ],
+          "visualBinding": {
+            "region": "body-local-covering",
+            "output": "coveringScale"
+          }
+        },
+        {
+          "id": "development.regional-growth",
+          "label": "Regional growth",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "development-longevity",
+          "affectedFamilies": [
+            "development-longevity",
+            "structure",
+            "appearance",
+            "mechanics-movement"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "even",
+              "label": "even",
+              "value": "even"
+            },
+            {
+              "id": "central",
+              "label": "central",
+              "value": "central"
+            },
+            {
+              "id": "anterior",
+              "label": "anterior",
+              "value": "anterior"
+            }
+          ],
+          "operator": "pair-map",
+          "outputs": [
+            "regionalGrowth"
+          ],
+          "requires": [
+            "development.axial-repeat",
+            "structure.body-length",
+            "structure.body-width",
+            "structure.body-taper"
+          ],
+          "applicability": "axial",
+          "bounds": {
+            "type": "enum",
+            "values": [
+              "even",
+              "central",
+              "anterior",
+              "even-central",
+              "even-anterior",
+              "central-anterior"
+            ],
+            "unit": "positive sampled regional contributor field"
+          },
+          "purpose": "Inherited positive regional length and width fields allocate actual body stations before roots and materials; not a body preset.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": "Mixed copies average unnormalized knot fields before length normalization; a single station retains inactive copies."
+            },
+            {
+              "kind": "invalid",
+              "message": "Unknown, nonpositive or missing contributor fields reject; no post-render body repair."
+            }
+          ],
+          "visualBinding": {
+            "region": "body-stations",
+            "output": "regionalGrowth"
+          },
+          "pairMap": {
+            "even|even": "even",
+            "central|central": "central",
+            "anterior|anterior": "anterior",
+            "central|even": "even-central",
+            "anterior|even": "even-anterior",
+            "anterior|central": "central-anterior"
+          }
+        },
+        {
+          "id": "structure.join-neck-ratio",
+          "label": "Join neck ratio",
+          "aliases": [],
+          "version": 1,
+          "status": "validated",
+          "approval": "provisional-host-proof",
+          "family": "structure",
+          "affectedFamilies": [
+            "structure",
+            "appearance"
+          ],
+          "copyCount": 2,
+          "alleles": [
+            {
+              "id": "low",
+              "label": "Narrower join",
+              "value": 0.65
+            },
+            {
+              "id": "high",
+              "label": "Broader join",
+              "value": 0.95
+            }
+          ],
+          "operator": "copy-mean",
+          "outputs": [
+            "joinNeckRatio"
+          ],
+          "requires": [
+            "development.axial-repeat",
+            "development.regional-growth",
+            "structure.body-width",
+            "structure.body-taper",
+            "structure.axial-spacing"
+          ],
+          "applicability": "axial",
+          "bounds": {
+            "type": "number",
+            "min": 0.65,
+            "max": 0.95,
+            "unit": "fraction of adjacent smaller full width"
+          },
+          "purpose": "Inherited throat width relative to the smaller adjacent station; single bodies have no join.",
+          "examples": [
+            {
+              "kind": "valid",
+              "message": ".65/.95 inherited copies express .8; actual throat is retained in graph-source/2."
+            },
+            {
+              "kind": "invalid",
+              "message": "Out-of-range or inactive multi-station join facts reject; spacing is not shortened."
+            }
+          ],
+          "visualBinding": {
+            "region": "body-joins",
+            "output": "joinNeckRatio"
+          }
+        }
+      ],
+      "constructionRules": {
+        "version": "developmental-analytic/1",
+        "units": "normalized fictional body units; not physical performance",
+        "graphLimit": {
+          "nodes": 64,
+          "edges": 128,
+          "surfaces": 128
+        },
+        "supportEquations": {
+          "load": "bodyLength * bodyWidth * bodyHeight * density",
+          "ground": "contactCount >= 2 && actuatorCapacity >= load * 0.5",
+          "air": "bilateral membrane roots && spanArea * coordination * actuatorCapacity >= load * 2",
+          "water": "axialCount >= 3 && axialActuator && fins && amplitude <= bodyWidth / 2 && actuatorCapacity >= load",
+          "cost": "load * cycleRate * efficiency; normalized matched-action index, not metabolism"
+        },
+        "geometry": "Connected repeated ellipsoid volumes; bilateral 2 or radial 3 placements. Root u = 0.4 * placement + 0.6 * (group+1)/(groupCount+1). Rooted chains/membranes/fins stay distinct even on a single volume. Joint requests beyond their declared range reject. No mesh collision or fluid solver.",
+        "expressionVariation": "Marking placement in local surface coordinates only; inherited enable/layout/extent stay fixed."
+      },
+      "reproductionContract": {
+        "id": "independent-two-copy-diagnostic/1",
+        "copyCount": 2,
+        "mechanism": "One actual recorded copy from each parent per executable locus; no desired-child retries.",
+        "status": "authoring-only; no game breeding permission"
+      }
+    },
+    "genome": {
+      "schemaVersion": "critter-genome/1",
+      "contentId": "genomic-regional-scene-experiment",
+      "contentVersion": 1,
+      "loci": {
+        "development.axial-repeat": [
+          "single",
+          "chain"
+        ],
+        "development.symmetry": [
+          "radial",
+          "bilateral"
+        ],
+        "development.attachment-repeat": [
+          "multiple",
+          "none"
+        ],
+        "development.articulated-chain": [
+          "unlinked",
+          "unlinked"
+        ],
+        "development.membrane-rooting": [
+          "off",
+          "off"
+        ],
+        "development.fin-rooting": [
+          "off",
+          "off"
+        ],
+        "development.axial-deformation": [
+          "off",
+          "off"
+        ],
+        "structure.body-length": [
+          "high",
+          "high"
+        ],
+        "structure.body-width": [
+          "high",
+          "low"
+        ],
+        "structure.body-height": [
+          "high",
+          "low"
+        ],
+        "structure.body-taper": [
+          "low",
+          "high"
+        ],
+        "structure.axial-spacing": [
+          "low",
+          "high"
+        ],
+        "structure.attachment-position": [
+          "high",
+          "high"
+        ],
+        "structure.proximal-length": [
+          "low",
+          "high"
+        ],
+        "structure.distal-length": [
+          "low",
+          "low"
+        ],
+        "structure.joint-range": [
+          "high",
+          "high"
+        ],
+        "structure.contact-width": [
+          "low",
+          "high"
+        ],
+        "structure.membrane-span": [
+          "high",
+          "high"
+        ],
+        "structure.membrane-flexibility": [
+          "high",
+          "high"
+        ],
+        "structure.fin-span": [
+          "low",
+          "high"
+        ],
+        "structure.material-density": [
+          "high",
+          "low"
+        ],
+        "appearance.body-palette": [
+          "jade",
+          "jade"
+        ],
+        "appearance.underside-palette": [
+          "peach",
+          "slate"
+        ],
+        "appearance.marking-switch": [
+          "off",
+          "off"
+        ],
+        "appearance.marking-layout": [
+          "bands",
+          "bands"
+        ],
+        "appearance.marking-extent": [
+          "high",
+          "low"
+        ],
+        "appearance.marking-scale": [
+          "low",
+          "high"
+        ],
+        "appearance.marking-orientation": [
+          "low",
+          "high"
+        ],
+        "appearance.marking-contrast": [
+          "low",
+          "low"
+        ],
+        "appearance.surface-texture": [
+          "smooth",
+          "smooth"
+        ],
+        "movement.contact-phase": [
+          "low",
+          "high"
+        ],
+        "movement.cycle-rate": [
+          "high",
+          "high"
+        ],
+        "movement.stride-preference": [
+          "low",
+          "low"
+        ],
+        "movement.turn-control": [
+          "high",
+          "low"
+        ],
+        "movement.axial-amplitude": [
+          "high",
+          "low"
+        ],
+        "movement.axial-phase": [
+          "low",
+          "low"
+        ],
+        "movement.membrane-stroke": [
+          "low",
+          "low"
+        ],
+        "movement.membrane-coordination": [
+          "low",
+          "low"
+        ],
+        "movement.fin-steering": [
+          "high",
+          "low"
+        ],
+        "energy.actuator-capacity": [
+          "low",
+          "high"
+        ],
+        "energy.reserve-capacity": [
+          "high",
+          "low"
+        ],
+        "energy.action-efficiency": [
+          "low",
+          "high"
+        ],
+        "structure.ocular-pair": [
+          "absent",
+          "absent"
+        ],
+        "structure.ocular-placement": [
+          "high",
+          "low"
+        ],
+        "structure.ocular-size": [
+          "low",
+          "high"
+        ],
+        "appearance.covering-kind": [
+          "skin",
+          "skin"
+        ],
+        "appearance.covering-extent": [
+          "low",
+          "low"
+        ],
+        "appearance.covering-scale": [
+          "high",
+          "high"
+        ],
+        "development.regional-growth": [
+          "anterior",
+          "central"
+        ],
+        "structure.join-neck-ratio": [
+          "low",
+          "high"
+        ]
+      },
+      "origin": {
+        "kind": "experiment",
+        "seed": 79,
+        "algorithmVersion": "mulberry32/1"
+      }
+    },
+    "context": {
+      "stage": "adult",
+      "condition": "rested",
+      "medium": "ground",
+      "environment": "reference"
+    },
+    "expressionSeed": null
+  },
+  "inputDigest": "d07fa0e082d038230ecb62368c2c3aa6f8572c12ffe7e12e63592cd28d5ee111",
+  "resultDigest": "bcd4e97f762dc70fe5ee051827842625f2aaee481209540a725c71c6cf9a49a5",
+  "sceneDigest": "748a8a41e04070366be9c0ea6850bc174d24a7dcc8ab001fc07f23448c5f0a21",
+  "promptDigest": "e6822685f646d3424449aca0fd77db5f3f41f6c020a0aed56cf09763d0f54efa"
+}

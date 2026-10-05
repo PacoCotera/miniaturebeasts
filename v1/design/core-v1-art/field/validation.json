@@ -1,0 +1,34 @@
+{
+  "source": "gemini-atlas-original.png",
+  "sourceSha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb",
+  "nativeSprites": 29,
+  "spriteSize": [
+    32,
+    32
+  ],
+  "nativeRgbaBytes": 118784,
+  "regeneration": {
+    "checkedFiles": 55,
+    "changedFiles": 0,
+    "identical": true
+  },
+  "inspection": [
+    "Actual 1x and 3x source derivatives inspected",
+    "Source contact/path join reviewed as viable provisional art",
+    "Actual causeway adjacency accepted by game/UX",
+    "Actual 384x288 permitted-route art proof inspected"
+  ],
+  "limitations": [
+    "Provider grid/logical pixel request not obeyed; derivatives are explicit nearest resamples",
+    "Native UI composition and controls remain separate acceptance",
+    "No final art canon, embedded performance or hardware proof"
+  ],
+  "environmentReview": {
+    "proof": "native-viewport-grouped-comparison.png",
+    "sha256": "4B493F3B1BA7EC9A4F0FC26789752D7B9530E3078FC52B218C0433F7076A3B5F",
+    "unchangedRegeneration": true,
+    "verdict": "Full environment art quality not approved",
+    "finding": "Connected texture patches and grouped objects still show hard rectangular ground edges and a broad flat lime field",
+    "disposition": "Retain provisional objects/routes for functional composition; reference environmental depth remains open; stop additional variants"
+  }
+}

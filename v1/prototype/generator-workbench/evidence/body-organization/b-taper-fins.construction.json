@@ -1,0 +1,2460 @@
+{
+  "status": "constructed",
+  "schemaVersion": "critter-graph-source/1",
+  "profile": {
+    "id": "graph-source/2",
+    "sourceRuleVersion": "developmental-regional-growth/1",
+    "view": "orthographic XY; positive X follows the body chain, positive Y is down",
+    "neckRatio": 0.95,
+    "intervalSamples": 12,
+    "capSamples": 16,
+    "rootIterations": 48,
+    "maximumNodes": 64,
+    "maximumEdges": 128,
+    "maximumCoordinateMagnitude": 10000,
+    "maximumVertices": 4096,
+    "minimumPolygonArea": 1e-10,
+    "geometryTolerance": 1e-7,
+    "sourceRoundingTolerance": 0.000002,
+    "firstHingeForwardFraction": 0.3,
+    "materialOwnership": "Nearest station; longitudinal domains split at station midpoints. Each original surface maps once.",
+    "maskMapping": "Uniform or two equal local-u fields in retained palette order.",
+    "staticAssembly": "Recovered source longitudinal roots; source XY directions; exact segment lengths/widths and longitudinal fin chord/span. Solved endpoints are new construction.",
+    "referencePaintOrder": "Appendage fields first, body fields last; root overlap is a static attachment depiction, not physical Z order.",
+    "neckAuthority": "Inherited join-neck-ratio; inactive for a single station."
+  },
+  "sourceResultDigest": "4804cc2650889b9a8ba5ff3b97e91cf9123986fcbe8c9d513701304d85829858",
+  "bodyExteriors": [
+    {
+      "id": "body-exterior",
+      "kind": "joined-axial-outline",
+      "sourceNodeIds": [
+        "volume-0",
+        "volume-1",
+        "volume-2"
+      ],
+      "sourceEdgeIds": [
+        "axis-1",
+        "axis-2"
+      ],
+      "sources": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation"
+      ],
+      "centerY": 0,
+      "controls": [
+        [
+          0,
+          0.3141665
+        ],
+        [
+          0.435,
+          0.216125
+        ],
+        [
+          0.87,
+          0.2275
+        ],
+        [
+          1.1925,
+          0.074614425
+        ],
+        [
+          1.515,
+          0.0785415
+        ]
+      ],
+      "lowerEnvelope": [
+        [
+          -0.405,
+          0
+        ],
+        [
+          -0.403049814,
+          0.030793702
+        ],
+        [
+          -0.397218039,
+          0.061290844
+        ],
+        [
+          -0.387560836,
+          0.091197721
+        ],
+        [
+          -0.374171211,
+          0.120226315
+        ],
+        [
+          -0.357178112,
+          0.148097063
+        ],
+        [
+          -0.336745193,
+          0.174541556
+        ],
+        [
+          -0.313069234,
+          0.199305118
+        ],
+        [
+          -0.286378246,
+          0.222149263
+        ],
+        [
+          -0.25692928,
+          0.242853989
+        ],
+        [
+          -0.225005944,
+          0.261219898
+        ],
+        [
+          -0.190915678,
+          0.277070117
+        ],
+        [
+          -0.15498679,
+          0.290251999
+        ],
+        [
+          -0.117565294,
+          0.300638596
+        ],
+        [
+          -0.07901158,
+          0.308129879
+        ],
+        [
+          -0.039696942,
+          0.312653702
+        ],
+        [
+          0,
+          0.3141665
+        ],
+        [
+          0.03625,
+          0.312237443
+        ],
+        [
+          0.0725,
+          0.306904167
+        ],
+        [
+          0.10875,
+          0.298847516
+        ],
+        [
+          0.145,
+          0.288748333
+        ],
+        [
+          0.18125,
+          0.277287464
+        ],
+        [
+          0.2175,
+          0.26514575
+        ],
+        [
+          0.25375,
+          0.253004036
+        ],
+        [
+          0.29,
+          0.241543167
+        ],
+        [
+          0.32625,
+          0.231443984
+        ],
+        [
+          0.3625,
+          0.223387333
+        ],
+        [
+          0.39875,
+          0.218054057
+        ],
+        [
+          0.435,
+          0.216125
+        ],
+        [
+          0.47125,
+          0.216348814
+        ],
+        [
+          0.5075,
+          0.216967593
+        ],
+        [
+          0.54375,
+          0.217902344
+        ],
+        [
+          0.58,
+          0.219074074
+        ],
+        [
+          0.61625,
+          0.220403791
+        ],
+        [
+          0.6525,
+          0.2218125
+        ],
+        [
+          0.68875,
+          0.223221209
+        ],
+        [
+          0.725,
+          0.224550926
+        ],
+        [
+          0.76125,
+          0.225722656
+        ],
+        [
+          0.7975,
+          0.226657407
+        ],
+        [
+          0.83375,
+          0.227276186
+        ],
+        [
+          0.87,
+          0.2275
+        ],
+        [
+          0.896875,
+          0.224491835
+        ],
+        [
+          0.92375,
+          0.216175143
+        ],
+        [
+          0.950625,
+          0.203611629
+        ],
+        [
+          0.9775,
+          0.187862999
+        ],
+        [
+          1.004375,
+          0.169990958
+        ],
+        [
+          1.03125,
+          0.151057213
+        ],
+        [
+          1.058125,
+          0.132123467
+        ],
+        [
+          1.085,
+          0.114251426
+        ],
+        [
+          1.111875,
+          0.098502796
+        ],
+        [
+          1.13875,
+          0.085939282
+        ],
+        [
+          1.165625,
+          0.07762259
+        ],
+        [
+          1.1925,
+          0.074614425
+        ],
+        [
+          1.219375,
+          0.074691694
+        ],
+        [
+          1.24625,
+          0.074905319
+        ],
+        [
+          1.273125,
+          0.07522803
+        ],
+        [
+          1.3,
+          0.075632556
+        ],
+        [
+          1.326875,
+          0.076091623
+        ],
+        [
+          1.35375,
+          0.076577962
+        ],
+        [
+          1.380625,
+          0.077064302
+        ],
+        [
+          1.4075,
+          0.077523369
+        ],
+        [
+          1.434375,
+          0.077927895
+        ],
+        [
+          1.46125,
+          0.078250606
+        ],
+        [
+          1.488125,
+          0.078464231
+        ],
+        [
+          1.515,
+          0.0785415
+        ],
+        [
+          1.532643085,
+          0.078163301
+        ],
+        [
+          1.550116258,
+          0.077032347
+        ],
+        [
+          1.567251242,
+          0.075159529
+        ],
+        [
+          1.583883018,
+          0.072562884
+        ],
+        [
+          1.599851413,
+          0.069267419
+        ],
+        [
+          1.615002642,
+          0.065304871
+        ],
+        [
+          1.629190791,
+          0.060713401
+        ],
+        [
+          1.642279221,
+          0.055537227
+        ],
+        [
+          1.654141882,
+          0.0498262
+        ],
+        [
+          1.66466453,
+          0.043635319
+        ],
+        [
+          1.673745828,
+          0.037024207
+        ],
+        [
+          1.681298316,
+          0.030056531
+        ],
+        [
+          1.68724926,
+          0.022799394
+        ],
+        [
+          1.69154135,
+          0.015322687
+        ],
+        [
+          1.694133251,
+          0.007698413
+        ],
+        [
+          1.695,
+          0
+        ]
+      ],
+      "outline": [
+        [
+          -0.405,
+          0
+        ],
+        [
+          -0.403049814,
+          0.030793702
+        ],
+        [
+          -0.397218039,
+          0.061290844
+        ],
+        [
+          -0.387560836,
+          0.091197721
+        ],
+        [
+          -0.374171211,
+          0.120226315
+        ],
+        [
+          -0.357178112,
+          0.148097063
+        ],
+        [
+          -0.336745193,
+          0.174541556
+        ],
+        [
+          -0.313069234,
+          0.199305118
+        ],
+        [
+          -0.286378246,
+          0.222149263
+        ],
+        [
+          -0.25692928,
+          0.242853989
+        ],
+        [
+          -0.225005944,
+          0.261219898
+        ],
+        [
+          -0.190915678,
+          0.277070117
+        ],
+        [
+          -0.15498679,
+          0.290251999
+        ],
+        [
+          -0.117565294,
+          0.300638596
+        ],
+        [
+          -0.07901158,
+          0.308129879
+        ],
+        [
+          -0.039696942,
+          0.312653702
+        ],
+        [
+          0,
+          0.3141665
+        ],
+        [
+          0.03625,
+          0.312237443
+        ],
+        [
+          0.0725,
+          0.306904167
+        ],
+        [
+          0.10875,
+          0.298847516
+        ],
+        [
+          0.145,
+          0.288748333
+        ],
+        [
+          0.18125,
+          0.277287464
+        ],
+        [
+          0.2175,
+          0.26514575
+        ],
+        [
+          0.25375,
+          0.253004036
+        ],
+        [
+          0.29,
+          0.241543167
+        ],
+        [
+          0.32625,
+          0.231443984
+        ],
+        [
+          0.3625,
+          0.223387333
+        ],
+        [
+          0.39875,
+          0.218054057
+        ],
+        [
+          0.435,
+          0.216125
+        ],
+        [
+          0.47125,
+          0.216348814
+        ],
+        [
+          0.5075,
+          0.216967593
+        ],
+        [
+          0.54375,
+          0.217902344
+        ],
+        [
+          0.58,
+          0.219074074
+        ],
+        [
+          0.61625,
+          0.220403791
+        ],
+        [
+          0.6525,
+          0.2218125
+        ],
+        [
+          0.68875,
+          0.223221209
+        ],
+        [
+          0.725,
+          0.224550926
+        ],
+        [
+          0.76125,
+          0.225722656
+        ],
+        [
+          0.7975,
+          0.226657407
+        ],
+        [
+          0.83375,
+          0.227276186
+        ],
+        [
+          0.87,
+          0.2275
+        ],
+        [
+          0.896875,
+          0.224491835
+        ],
+        [
+          0.92375,
+          0.216175143
+        ],
+        [
+          0.950625,
+          0.203611629
+        ],
+        [
+          0.9775,
+          0.187862999
+        ],
+        [
+          1.004375,
+          0.169990958
+        ],
+        [
+          1.03125,
+          0.151057213
+        ],
+        [
+          1.058125,
+          0.132123467
+        ],
+        [
+          1.085,
+          0.114251426
+        ],
+        [
+          1.111875,
+          0.098502796
+        ],
+        [
+          1.13875,
+          0.085939282
+        ],
+        [
+          1.165625,
+          0.07762259
+        ],
+        [
+          1.1925,
+          0.074614425
+        ],
+        [
+          1.219375,
+          0.074691694
+        ],
+        [
+          1.24625,
+          0.074905319
+        ],
+        [
+          1.273125,
+          0.07522803
+        ],
+        [
+          1.3,
+          0.075632556
+        ],
+        [
+          1.326875,
+          0.076091623
+        ],
+        [
+          1.35375,
+          0.076577962
+        ],
+        [
+          1.380625,
+          0.077064302
+        ],
+        [
+          1.4075,
+          0.077523369
+        ],
+        [
+          1.434375,
+          0.077927895
+        ],
+        [
+          1.46125,
+          0.078250606
+        ],
+        [
+          1.488125,
+          0.078464231
+        ],
+        [
+          1.515,
+          0.0785415
+        ],
+        [
+          1.532643085,
+          0.078163301
+        ],
+        [
+          1.550116258,
+          0.077032347
+        ],
+        [
+          1.567251242,
+          0.075159529
+        ],
+        [
+          1.583883018,
+          0.072562884
+        ],
+        [
+          1.599851413,
+          0.069267419
+        ],
+        [
+          1.615002642,
+          0.065304871
+        ],
+        [
+          1.629190791,
+          0.060713401
+        ],
+        [
+          1.642279221,
+          0.055537227
+        ],
+        [
+          1.654141882,
+          0.0498262
+        ],
+        [
+          1.66466453,
+          0.043635319
+        ],
+        [
+          1.673745828,
+          0.037024207
+        ],
+        [
+          1.681298316,
+          0.030056531
+        ],
+        [
+          1.68724926,
+          0.022799394
+        ],
+        [
+          1.69154135,
+          0.015322687
+        ],
+        [
+          1.694133251,
+          0.007698413
+        ],
+        [
+          1.695,
+          0
+        ],
+        [
+          1.694133251,
+          -0.007698413
+        ],
+        [
+          1.69154135,
+          -0.015322687
+        ],
+        [
+          1.68724926,
+          -0.022799394
+        ],
+        [
+          1.681298316,
+          -0.030056531
+        ],
+        [
+          1.673745828,
+          -0.037024207
+        ],
+        [
+          1.66466453,
+          -0.043635319
+        ],
+        [
+          1.654141882,
+          -0.0498262
+        ],
+        [
+          1.642279221,
+          -0.055537227
+        ],
+        [
+          1.629190791,
+          -0.060713401
+        ],
+        [
+          1.615002642,
+          -0.065304871
+        ],
+        [
+          1.599851413,
+          -0.069267419
+        ],
+        [
+          1.583883018,
+          -0.072562884
+        ],
+        [
+          1.567251242,
+          -0.075159529
+        ],
+        [
+          1.550116258,
+          -0.077032347
+        ],
+        [
+          1.532643085,
+          -0.078163301
+        ],
+        [
+          1.515,
+          -0.0785415
+        ],
+        [
+          1.488125,
+          -0.078464231
+        ],
+        [
+          1.46125,
+          -0.078250606
+        ],
+        [
+          1.434375,
+          -0.077927895
+        ],
+        [
+          1.4075,
+          -0.077523369
+        ],
+        [
+          1.380625,
+          -0.077064302
+        ],
+        [
+          1.35375,
+          -0.076577962
+        ],
+        [
+          1.326875,
+          -0.076091623
+        ],
+        [
+          1.3,
+          -0.075632556
+        ],
+        [
+          1.273125,
+          -0.07522803
+        ],
+        [
+          1.24625,
+          -0.074905319
+        ],
+        [
+          1.219375,
+          -0.074691694
+        ],
+        [
+          1.1925,
+          -0.074614425
+        ],
+        [
+          1.165625,
+          -0.07762259
+        ],
+        [
+          1.13875,
+          -0.085939282
+        ],
+        [
+          1.111875,
+          -0.098502796
+        ],
+        [
+          1.085,
+          -0.114251426
+        ],
+        [
+          1.058125,
+          -0.132123467
+        ],
+        [
+          1.03125,
+          -0.151057213
+        ],
+        [
+          1.004375,
+          -0.169990958
+        ],
+        [
+          0.9775,
+          -0.187862999
+        ],
+        [
+          0.950625,
+          -0.203611629
+        ],
+        [
+          0.92375,
+          -0.216175143
+        ],
+        [
+          0.896875,
+          -0.224491835
+        ],
+        [
+          0.87,
+          -0.2275
+        ],
+        [
+          0.83375,
+          -0.227276186
+        ],
+        [
+          0.7975,
+          -0.226657407
+        ],
+        [
+          0.76125,
+          -0.225722656
+        ],
+        [
+          0.725,
+          -0.224550926
+        ],
+        [
+          0.68875,
+          -0.223221209
+        ],
+        [
+          0.6525,
+          -0.2218125
+        ],
+        [
+          0.61625,
+          -0.220403791
+        ],
+        [
+          0.58,
+          -0.219074074
+        ],
+        [
+          0.54375,
+          -0.217902344
+        ],
+        [
+          0.5075,
+          -0.216967593
+        ],
+        [
+          0.47125,
+          -0.216348814
+        ],
+        [
+          0.435,
+          -0.216125
+        ],
+        [
+          0.39875,
+          -0.218054057
+        ],
+        [
+          0.3625,
+          -0.223387333
+        ],
+        [
+          0.32625,
+          -0.231443984
+        ],
+        [
+          0.29,
+          -0.241543167
+        ],
+        [
+          0.25375,
+          -0.253004036
+        ],
+        [
+          0.2175,
+          -0.26514575
+        ],
+        [
+          0.18125,
+          -0.277287464
+        ],
+        [
+          0.145,
+          -0.288748333
+        ],
+        [
+          0.10875,
+          -0.298847516
+        ],
+        [
+          0.0725,
+          -0.306904167
+        ],
+        [
+          0.03625,
+          -0.312237443
+        ],
+        [
+          0,
+          -0.3141665
+        ],
+        [
+          -0.039696942,
+          -0.312653702
+        ],
+        [
+          -0.07901158,
+          -0.308129879
+        ],
+        [
+          -0.117565294,
+          -0.300638596
+        ],
+        [
+          -0.15498679,
+          -0.290251999
+        ],
+        [
+          -0.190915678,
+          -0.277070117
+        ],
+        [
+          -0.225005944,
+          -0.261219898
+        ],
+        [
+          -0.25692928,
+          -0.242853989
+        ],
+        [
+          -0.286378246,
+          -0.222149263
+        ],
+        [
+          -0.313069234,
+          -0.199305118
+        ],
+        [
+          -0.336745193,
+          -0.174541556
+        ],
+        [
+          -0.357178112,
+          -0.148097063
+        ],
+        [
+          -0.374171211,
+          -0.120226315
+        ],
+        [
+          -0.387560836,
+          -0.091197721
+        ],
+        [
+          -0.397218039,
+          -0.061290844
+        ],
+        [
+          -0.403049814,
+          -0.030793702
+        ]
+      ],
+      "stations": [
+        {
+          "nodeId": "volume-0",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "dimensions": [
+            0.81,
+            0.628333,
+            0.3
+          ]
+        },
+        {
+          "nodeId": "volume-1",
+          "position": [
+            0.87,
+            0,
+            0
+          ],
+          "dimensions": [
+            0.63,
+            0.455,
+            0.3
+          ]
+        },
+        {
+          "nodeId": "volume-2",
+          "position": [
+            1.515,
+            0,
+            0
+          ],
+          "dimensions": [
+            0.36,
+            0.157083,
+            0.3
+          ]
+        }
+      ],
+      "inheritedBodyField": {
+        "state": "expressed",
+        "field": "anterior",
+        "lengthKnots": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "widthKnots": [
+          1,
+          0.7,
+          0.25
+        ],
+        "rawLengths": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "rawWidths": [
+          1,
+          0.7,
+          0.25
+        ],
+        "lengthWeights": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "widthFactors": [
+          1,
+          0.7,
+          0.25
+        ],
+        "lengths": [
+          0.81,
+          0.63,
+          0.36000000000000004
+        ],
+        "centers": [
+          0,
+          0.8700000000000001,
+          1.515
+        ],
+        "sources": [
+          "development.regional-growth",
+          "development.axial-repeat",
+          "structure.body-length",
+          "structure.body-width",
+          "structure.body-taper",
+          "structure.axial-spacing"
+        ]
+      }
+    }
+  ],
+  "localFrames": [
+    {
+      "nodeId": "fin-0-0",
+      "origin": [
+        -0.2187,
+        0.264151837
+      ],
+      "longitudinal": [
+        -0.421605687,
+        0.90677927
+      ],
+      "lateral": [
+        0.90677927,
+        0.421605687
+      ],
+      "exteriorNormal": [
+        -0.421605687,
+        0.90677927
+      ]
+    },
+    {
+      "nodeId": "fin-0-1",
+      "origin": [
+        -0.2187,
+        -0.264151837
+      ],
+      "longitudinal": [
+        -0.421605687,
+        -0.90677927
+      ],
+      "lateral": [
+        0.90677927,
+        -0.421605687
+      ],
+      "exteriorNormal": [
+        -0.421605687,
+        -0.90677927
+      ]
+    },
+    {
+      "nodeId": "fin-1-0",
+      "origin": [
+        0.7944,
+        0.22657747
+      ],
+      "longitudinal": [
+        -0.025777666,
+        0.999667701
+      ],
+      "lateral": [
+        0.999667701,
+        0.025777666
+      ],
+      "exteriorNormal": [
+        -0.025777666,
+        0.999667701
+      ]
+    },
+    {
+      "nodeId": "fin-1-1",
+      "origin": [
+        0.7944,
+        -0.22657747
+      ],
+      "longitudinal": [
+        -0.025777666,
+        -0.999667701
+      ],
+      "lateral": [
+        0.999667701,
+        -0.025777666
+      ],
+      "exteriorNormal": [
+        -0.025777666,
+        -0.999667701
+      ]
+    },
+    {
+      "nodeId": "fin-2-0",
+      "origin": [
+        1.5258,
+        0.07830999
+      ],
+      "longitudinal": [
+        0.02143118,
+        0.999770326
+      ],
+      "lateral": [
+        0.999770326,
+        -0.02143118
+      ],
+      "exteriorNormal": [
+        0.02143118,
+        0.999770326
+      ]
+    },
+    {
+      "nodeId": "fin-2-1",
+      "origin": [
+        1.5258,
+        -0.07830999
+      ],
+      "longitudinal": [
+        0.02143118,
+        -0.999770326
+      ],
+      "lateral": [
+        0.999770326,
+        0.02143118
+      ],
+      "exteriorNormal": [
+        0.02143118,
+        -0.999770326
+      ]
+    }
+  ],
+  "appendages": [
+    {
+      "status": "constructed",
+      "id": "constructed-fin-0-0",
+      "nodeId": "fin-0-0",
+      "role": "fin",
+      "parentNodeId": "volume-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "fin-0-0"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-0-0"
+      ],
+      "sources": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "sourcePosition": [
+        -0.2187,
+        0.14,
+        0
+      ],
+      "sourceDimensions": [
+        0.12,
+        0.2,
+        0.08
+      ],
+      "sourceReference": [
+        0,
+        0,
+        0
+      ],
+      "root": [
+        -0.2187,
+        0.264151837
+      ],
+      "localFrame": {
+        "origin": [
+          -0.2187,
+          0.264151837
+        ],
+        "longitudinal": [
+          -0.421605687,
+          0.90677927
+        ],
+        "lateral": [
+          0.90677927,
+          0.421605687
+        ],
+        "exteriorNormal": [
+          -0.421605687,
+          0.90677927
+        ]
+      },
+      "kind": "tapered-fin",
+      "rootChord": [
+        [
+          -0.2787,
+          0.227547618
+        ],
+        [
+          -0.1587,
+          0.288889666
+        ]
+      ],
+      "end": [
+        -0.303021137,
+        0.445507691
+      ],
+      "outline": [
+        [
+          -0.2787,
+          0.227547618
+        ],
+        [
+          -0.303021137,
+          0.445507691
+        ],
+        [
+          -0.1587,
+          0.288889666
+        ]
+      ],
+      "span": 0.2,
+      "chordWidth": 0.12
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-fin-0-1",
+      "nodeId": "fin-0-1",
+      "role": "fin",
+      "parentNodeId": "volume-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "fin-0-1"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-0-1"
+      ],
+      "sources": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "sourcePosition": [
+        -0.2187,
+        -0.14,
+        0
+      ],
+      "sourceDimensions": [
+        0.12,
+        0.2,
+        0.08
+      ],
+      "sourceReference": [
+        0,
+        0,
+        0
+      ],
+      "root": [
+        -0.2187,
+        -0.264151837
+      ],
+      "localFrame": {
+        "origin": [
+          -0.2187,
+          -0.264151837
+        ],
+        "longitudinal": [
+          -0.421605687,
+          -0.90677927
+        ],
+        "lateral": [
+          0.90677927,
+          -0.421605687
+        ],
+        "exteriorNormal": [
+          -0.421605687,
+          -0.90677927
+        ]
+      },
+      "kind": "tapered-fin",
+      "rootChord": [
+        [
+          -0.2787,
+          -0.227547618
+        ],
+        [
+          -0.1587,
+          -0.288889666
+        ]
+      ],
+      "end": [
+        -0.303021137,
+        -0.445507691
+      ],
+      "outline": [
+        [
+          -0.2787,
+          -0.227547618
+        ],
+        [
+          -0.303021137,
+          -0.445507691
+        ],
+        [
+          -0.1587,
+          -0.288889666
+        ]
+      ],
+      "span": 0.2,
+      "chordWidth": 0.12
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-fin-1-0",
+      "nodeId": "fin-1-0",
+      "role": "fin",
+      "parentNodeId": "volume-1",
+      "sourceNodeIds": [
+        "volume-1",
+        "fin-1-0"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-1-0"
+      ],
+      "sources": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "sourcePosition": [
+        0.7944,
+        0.14,
+        0
+      ],
+      "sourceDimensions": [
+        0.12,
+        0.2,
+        0.08
+      ],
+      "sourceReference": [
+        0.87,
+        0,
+        0
+      ],
+      "root": [
+        0.7944,
+        0.22657747
+      ],
+      "localFrame": {
+        "origin": [
+          0.7944,
+          0.22657747
+        ],
+        "longitudinal": [
+          -0.025777666,
+          0.999667701
+        ],
+        "lateral": [
+          0.999667701,
+          0.025777666
+        ],
+        "exteriorNormal": [
+          -0.025777666,
+          0.999667701
+        ]
+      },
+      "kind": "tapered-fin",
+      "rootChord": [
+        [
+          0.7344,
+          0.224854768
+        ],
+        [
+          0.8544,
+          0.227403683
+        ]
+      ],
+      "end": [
+        0.789244467,
+        0.42651101
+      ],
+      "outline": [
+        [
+          0.7344,
+          0.224854768
+        ],
+        [
+          0.789244467,
+          0.42651101
+        ],
+        [
+          0.8544,
+          0.227403683
+        ]
+      ],
+      "span": 0.2,
+      "chordWidth": 0.12
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-fin-1-1",
+      "nodeId": "fin-1-1",
+      "role": "fin",
+      "parentNodeId": "volume-1",
+      "sourceNodeIds": [
+        "volume-1",
+        "fin-1-1"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-1-1"
+      ],
+      "sources": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "sourcePosition": [
+        0.7944,
+        -0.14,
+        0
+      ],
+      "sourceDimensions": [
+        0.12,
+        0.2,
+        0.08
+      ],
+      "sourceReference": [
+        0.87,
+        0,
+        0
+      ],
+      "root": [
+        0.7944,
+        -0.22657747
+      ],
+      "localFrame": {
+        "origin": [
+          0.7944,
+          -0.22657747
+        ],
+        "longitudinal": [
+          -0.025777666,
+          -0.999667701
+        ],
+        "lateral": [
+          0.999667701,
+          -0.025777666
+        ],
+        "exteriorNormal": [
+          -0.025777666,
+          -0.999667701
+        ]
+      },
+      "kind": "tapered-fin",
+      "rootChord": [
+        [
+          0.7344,
+          -0.224854768
+        ],
+        [
+          0.8544,
+          -0.227403683
+        ]
+      ],
+      "end": [
+        0.789244467,
+        -0.42651101
+      ],
+      "outline": [
+        [
+          0.7344,
+          -0.224854768
+        ],
+        [
+          0.789244467,
+          -0.42651101
+        ],
+        [
+          0.8544,
+          -0.227403683
+        ]
+      ],
+      "span": 0.2,
+      "chordWidth": 0.12
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-fin-2-0",
+      "nodeId": "fin-2-0",
+      "role": "fin",
+      "parentNodeId": "volume-2",
+      "sourceNodeIds": [
+        "volume-2",
+        "fin-2-0"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-2-0"
+      ],
+      "sources": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "sourcePosition": [
+        1.5258,
+        0.14,
+        0
+      ],
+      "sourceDimensions": [
+        0.12,
+        0.2,
+        0.08
+      ],
+      "sourceReference": [
+        1.515,
+        0,
+        0
+      ],
+      "root": [
+        1.5258,
+        0.07830999
+      ],
+      "localFrame": {
+        "origin": [
+          1.5258,
+          0.07830999
+        ],
+        "longitudinal": [
+          0.02143118,
+          0.999770326
+        ],
+        "lateral": [
+          0.999770326,
+          -0.02143118
+        ],
+        "exteriorNormal": [
+          0.02143118,
+          0.999770326
+        ]
+      },
+      "kind": "tapered-fin",
+      "rootChord": [
+        [
+          1.4658,
+          0.078286773
+        ],
+        [
+          1.5858,
+          0.072167268
+        ]
+      ],
+      "end": [
+        1.530086236,
+        0.278264055
+      ],
+      "outline": [
+        [
+          1.4658,
+          0.078286773
+        ],
+        [
+          1.530086236,
+          0.278264055
+        ],
+        [
+          1.5858,
+          0.072167268
+        ]
+      ],
+      "span": 0.2,
+      "chordWidth": 0.12
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-fin-2-1",
+      "nodeId": "fin-2-1",
+      "role": "fin",
+      "parentNodeId": "volume-2",
+      "sourceNodeIds": [
+        "volume-2",
+        "fin-2-1"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-2-1"
+      ],
+      "sources": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "sourcePosition": [
+        1.5258,
+        -0.14,
+        0
+      ],
+      "sourceDimensions": [
+        0.12,
+        0.2,
+        0.08
+      ],
+      "sourceReference": [
+        1.515,
+        0,
+        0
+      ],
+      "root": [
+        1.5258,
+        -0.07830999
+      ],
+      "localFrame": {
+        "origin": [
+          1.5258,
+          -0.07830999
+        ],
+        "longitudinal": [
+          0.02143118,
+          -0.999770326
+        ],
+        "lateral": [
+          0.999770326,
+          0.02143118
+        ],
+        "exteriorNormal": [
+          0.02143118,
+          -0.999770326
+        ]
+      },
+      "kind": "tapered-fin",
+      "rootChord": [
+        [
+          1.4658,
+          -0.078286773
+        ],
+        [
+          1.5858,
+          -0.072167268
+        ]
+      ],
+      "end": [
+        1.530086236,
+        -0.278264055
+      ],
+      "outline": [
+        [
+          1.4658,
+          -0.078286773
+        ],
+        [
+          1.530086236,
+          -0.278264055
+        ],
+        [
+          1.5858,
+          -0.072167268
+        ]
+      ],
+      "span": 0.2,
+      "chordWidth": 0.12
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "surface-volume-0",
+      "nodeId": "volume-0",
+      "region": "volume",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#269fa5"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.body-palette",
+        "appearance.surface-texture",
+        "development.symmetry",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "body-exterior",
+      "atlas": {
+        "kind": "longitudinal-body-ownership",
+        "minimumX": -0.405,
+        "maximumX": 0.435,
+        "minimumY": -0.3141665,
+        "maximumY": 0.3141665,
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-volume-1",
+      "nodeId": "volume-1",
+      "region": "volume",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#269fa5"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.body-palette",
+        "appearance.surface-texture",
+        "development.symmetry",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "body-exterior",
+      "atlas": {
+        "kind": "longitudinal-body-ownership",
+        "minimumX": 0.435,
+        "maximumX": 1.1925,
+        "minimumY": -0.3141665,
+        "maximumY": 0.3141665,
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-volume-2",
+      "nodeId": "volume-2",
+      "region": "volume",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#269fa5"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.body-palette",
+        "appearance.surface-texture",
+        "development.symmetry",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "body-exterior",
+      "atlas": {
+        "kind": "longitudinal-body-ownership",
+        "minimumX": 1.1925,
+        "maximumX": 1.695,
+        "minimumY": -0.3141665,
+        "maximumY": 0.3141665,
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-fin-0-0",
+      "nodeId": "fin-0-0",
+      "region": "fin",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-fin-0-0",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            -0.2187,
+            0.264151837
+          ],
+          "longitudinal": [
+            -0.421605687,
+            0.90677927
+          ],
+          "lateral": [
+            0.90677927,
+            0.421605687
+          ],
+          "exteriorNormal": [
+            -0.421605687,
+            0.90677927
+          ]
+        },
+        "bounds": {
+          "minimumX": -0.303021137,
+          "maximumX": -0.1587,
+          "minimumY": 0.227547618,
+          "maximumY": 0.445507691
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-fin-0-1",
+      "nodeId": "fin-0-1",
+      "region": "fin",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-fin-0-1",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            -0.2187,
+            -0.264151837
+          ],
+          "longitudinal": [
+            -0.421605687,
+            -0.90677927
+          ],
+          "lateral": [
+            0.90677927,
+            -0.421605687
+          ],
+          "exteriorNormal": [
+            -0.421605687,
+            -0.90677927
+          ]
+        },
+        "bounds": {
+          "minimumX": -0.303021137,
+          "maximumX": -0.1587,
+          "minimumY": -0.445507691,
+          "maximumY": -0.227547618
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-fin-1-0",
+      "nodeId": "fin-1-0",
+      "region": "fin",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-fin-1-0",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.7944,
+            0.22657747
+          ],
+          "longitudinal": [
+            -0.025777666,
+            0.999667701
+          ],
+          "lateral": [
+            0.999667701,
+            0.025777666
+          ],
+          "exteriorNormal": [
+            -0.025777666,
+            0.999667701
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.7344,
+          "maximumX": 0.8544,
+          "minimumY": 0.224854768,
+          "maximumY": 0.42651101
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-fin-1-1",
+      "nodeId": "fin-1-1",
+      "region": "fin",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-fin-1-1",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.7944,
+            -0.22657747
+          ],
+          "longitudinal": [
+            -0.025777666,
+            -0.999667701
+          ],
+          "lateral": [
+            0.999667701,
+            -0.025777666
+          ],
+          "exteriorNormal": [
+            -0.025777666,
+            -0.999667701
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.7344,
+          "maximumX": 0.8544,
+          "minimumY": -0.42651101,
+          "maximumY": -0.224854768
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-fin-2-0",
+      "nodeId": "fin-2-0",
+      "region": "fin",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-fin-2-0",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            1.5258,
+            0.07830999
+          ],
+          "longitudinal": [
+            0.02143118,
+            0.999770326
+          ],
+          "lateral": [
+            0.999770326,
+            -0.02143118
+          ],
+          "exteriorNormal": [
+            0.02143118,
+            0.999770326
+          ]
+        },
+        "bounds": {
+          "minimumX": 1.4658,
+          "maximumX": 1.5858,
+          "minimumY": 0.072167268,
+          "maximumY": 0.278264055
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-fin-2-1",
+      "nodeId": "fin-2-1",
+      "region": "fin",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-fin-2-1",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            1.5258,
+            -0.07830999
+          ],
+          "longitudinal": [
+            0.02143118,
+            -0.999770326
+          ],
+          "lateral": [
+            0.999770326,
+            0.02143118
+          ],
+          "exteriorNormal": [
+            0.02143118,
+            -0.999770326
+          ]
+        },
+        "bounds": {
+          "minimumX": 1.4658,
+          "maximumX": 1.5858,
+          "minimumY": -0.278264055,
+          "maximumY": -0.072167268
+        },
+        "maskAxis": "local-u"
+      }
+    }
+  ],
+  "traces": [
+    {
+      "targetId": "body-exterior",
+      "sourceNodeIds": [
+        "volume-0",
+        "volume-1",
+        "volume-2"
+      ],
+      "sourceEdgeIds": [
+        "axis-1",
+        "axis-2"
+      ],
+      "locusIds": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation"
+      ],
+      "constructionProfile": "graph-source/2"
+    },
+    {
+      "targetId": "constructed-fin-0-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "fin-0-0"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-0-0"
+      ],
+      "locusIds": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "constructionProfile": "graph-source/2"
+    },
+    {
+      "targetId": "constructed-fin-0-1",
+      "sourceNodeIds": [
+        "volume-0",
+        "fin-0-1"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-0-1"
+      ],
+      "locusIds": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "constructionProfile": "graph-source/2"
+    },
+    {
+      "targetId": "constructed-fin-1-0",
+      "sourceNodeIds": [
+        "volume-1",
+        "fin-1-0"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-1-0"
+      ],
+      "locusIds": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "constructionProfile": "graph-source/2"
+    },
+    {
+      "targetId": "constructed-fin-1-1",
+      "sourceNodeIds": [
+        "volume-1",
+        "fin-1-1"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-1-1"
+      ],
+      "locusIds": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "constructionProfile": "graph-source/2"
+    },
+    {
+      "targetId": "constructed-fin-2-0",
+      "sourceNodeIds": [
+        "volume-2",
+        "fin-2-0"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-2-0"
+      ],
+      "locusIds": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "constructionProfile": "graph-source/2"
+    },
+    {
+      "targetId": "constructed-fin-2-1",
+      "sourceNodeIds": [
+        "volume-2",
+        "fin-2-1"
+      ],
+      "sourceEdgeIds": [
+        "root-fin-2-1"
+      ],
+      "locusIds": [
+        "structure.join-neck-ratio",
+        "development.axial-repeat",
+        "development.regional-growth",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.body-height",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "constructionProfile": "graph-source/2"
+    }
+  ],
+  "bounds": {
+    "minimumX": -0.405,
+    "maximumX": 1.695,
+    "minimumY": -0.445507691,
+    "maximumY": 0.445507691
+  },
+  "limitations": [
+    "Static planar construction proof; no physical tissue, motion, rig, pose validity or finished art is established.",
+    "Rounded joins and nearest-station material domains are provisional graph-source/2 construction rules.",
+    "Original node centers remain source evidence; downstream endpoints are new solved positions.",
+    "Height and source Z coordinates remain retained facts; the exported view is an XY projection.",
+    "Membranes, radial symmetry, branches, deformation and marked-surface projection are unsupported in this slice."
+  ],
+  "constructionDigest": "b9f04c93e8aac770920f7d5fcf18e0cfbe678f28c30442cd0689cdaa6257785f"
+}

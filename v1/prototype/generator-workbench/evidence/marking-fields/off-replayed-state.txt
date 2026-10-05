@@ -1,0 +1,93 @@
+- banner:
+  - heading "Critter Lab · Genome authoring" [level=3]
+  - paragraph: Adult developer tool · provisional shared engine · game/device UI unchanged
+  - combobox "Content package": Authored composition · eleven branches · v1
+  - generic: genomic-compositional-source-draft-c6ebaf6cb8bb477b v1
+  - link "Preserved Pip proof":
+    - /url: /legacy
+    - generic: Preserved Pip proof
+- navigation:
+  - paragraph: AUTHOR & INVESTIGATE
+  - generic: Genome
+  - generic: Compendium
+  - generic: Pinned comparison
+  - generic: Saved records
+  - generic: Generation batch
+  - separator
+  - paragraph: 117 proposed records · 111 defined copy contracts · 6 draft candidates
+  - link "Character art studies":
+    - /url: https://github.com/PacoCotera/critter-lab/blob/codex/genome-art-reset/prototype/generator-workbench/evidence/art-reset/README.md
+    - generic: Character art studies
+- main:
+  - status:
+    - generic: Digest replay verified from inputs. Embedded output/SVG/prompt was not trusted.
+  - heading "Genome" [level=2]
+  - paragraph: Generate a creature, then explore its inherited copies and their effects.
+  - button "Generate creature":
+    - generic: Generate creature
+  - heading "Source illustration" [level=4]
+  - generic: Provisional anatomical source
+  - paragraph: compositional-8af7e436844dc47f5d6f · genomic-compositional-source-draft-c6ebaf6cb8bb477b@1
+  - img "Provisional anatomical role source"
+  - paragraph: Inspect or edit genome shows module involvement; exact targets and source links remain in advanced scene inspection.
+  - paragraph: This structural diagram is not generated game art.
+  - paragraph: "Display: compositional-source/7. Connected regions and independent optional parts follow copied composition rules. All eleven genomic branches are retained; source consumers and missing physiology are explicit."
+  - button "Download source PNG":
+    - generic: Download source PNG
+  - button "Pin comparison":
+    - generic: Pin comparison
+  - button "Save record":
+    - generic: Save record
+  - button "Export record":
+    - generic: Export record
+  - heading "Gemini prompt" [level=4]
+  - button "Copy prompt":
+    - generic: Copy prompt
+  - textbox "Gemini prompt": Turn the attached critter into a cute pet, shown alone in rich high-bit pixel art. A creature with one softly squared, barrel-shaped body region and one smooth head, one projecting muzzle, two eyes, two rounded smooth ears, one smooth tapered tail and four jointed legs with rounded ends. Its body has plum-and-marigold fur; its smooth jointed legs have milk mint-and-butter local colour fields.
+  - paragraph: Attach the shown source image in Gemini, then paste this brief. Returned feature changes are pet proposals; the genome audit stays in Advanced inspection.
+  - heading "Returned pet art" [level=4]
+  - generic: Proposal only
+  - paragraph: Attach the returned bitmap and retain it explicitly. It stays linked to the shown source and prompt; model changes are unaccepted proposals and never change inherited traits.
+  - paragraph: "Source: compositional-8af7e436844dc47f5d6f"
+  - generic: Returned bitmap
+  - button "Returned bitmap": Choose PNG, JPEG or WebP (at most4MiB)
+  - generic: Provider label
+  - textbox "Provider label": Gemini (manual return)
+  - button "Retain pet proposal" [disabled]:
+    - generic: Retain pet proposal
+  - paragraph: This separate browser store holds up to eight proposals. It never evicts older art or genome saves.
+  - heading "Eleven genomic branches" [level=3]
+  - paragraph: 111 carried pairs · 6 draft definitions. Every declared record remains available. A retained contribution with no compatible consumer is unimplemented, rather than a working phenotype.
+  - button "structure · 79 indexed records · 34 active / 19 inactive / 26 unimplemented":
+    - generic: structure · 79 indexed records · 34 active / 19 inactive / 26 unimplemented
+  - button "appearance · 53 indexed records · 14 active / 8 inactive / 31 unimplemented":
+    - generic: appearance · 53 indexed records · 14 active / 8 inactive / 31 unimplemented
+  - button "mechanics movement · 34 indexed records · 0 active / 0 inactive / 34 unimplemented":
+    - generic: mechanics movement · 34 indexed records · 0 active / 0 inactive / 34 unimplemented
+  - button "sensing signaling · 1 indexed records · 1 active / 0 inactive / 0 unimplemented":
+    - generic: sensing signaling · 1 indexed records · 1 active / 0 inactive / 0 unimplemented
+  - button "cognition tendencies · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: cognition tendencies · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "energy nutrition · 21 indexed records · 0 active / 0 inactive / 21 unimplemented":
+    - generic: energy nutrition · 21 indexed records · 0 active / 0 inactive / 21 unimplemented
+  - button "maintenance protection · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: maintenance protection · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "affinities exposure · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: affinities exposure · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "development longevity · 9 indexed records · 0 active / 0 inactive / 9 unimplemented":
+    - generic: development longevity · 9 indexed records · 0 active / 0 inactive / 9 unimplemented
+  - button "reproduction · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: reproduction · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "fantastic physiology · 0 indexed records · 0 active / 0 inactive / 0 unimplemented":
+    - generic: fantastic physiology · 0 indexed records · 0 active / 0 inactive / 0 unimplemented
+  - button "Inspect or edit genome":
+    - generic: Inspect or edit genome
+  - button "Known examples · load and resolve":
+    - generic: Known examples · load and resolve
+  - button "Context and sampling":
+    - generic: Context and sampling
+  - button "Whole genome · baseline, inherited copies and expression":
+    - generic: Whole genome · baseline, inherited copies and expression
+  - button "Advanced inspection · traces, coverage, geometry and art projection":
+    - generic: Advanced inspection · traces, coverage, geometry and art projection
+  - paragraph: Provisional authoring content; no production sprite/rig/animation, sample permission, cloud, game-save or hardware claim.

@@ -1,0 +1,122 @@
+{
+  "status": "constructed",
+  "schemaVersion": "critter-body-covering/1",
+  "profile": {
+    "id": "body-covering/1",
+    "sourceRuleVersion": "developmental-covering/1",
+    "baseGraphRuleVersion": "developmental-analytic/1",
+    "ocularModuleRuleVersion": "ocular-module/2",
+    "intervalStart": 0.2,
+    "plateHalfHeightRatio": 0.65,
+    "pitchXRatio": 1.35,
+    "pitchYRatio": 1.1,
+    "staggerRatio": 0.5,
+    "contourSamples": 24,
+    "contourTaperBase": 0.82,
+    "contourTaperAmplitude": 0.18,
+    "rimClearance": 0.005,
+    "tolerance": 1e-9,
+    "maximumCandidates": 1024,
+    "maximumPlates": 128,
+    "contour": "x=h*cos(t), y=.65*h*sin(t)*(.82+.18*cos(t)); 24 retained samples, forward +X",
+    "field": "Body-local global longitudinal u .2 through .2+extent; not measured exact body-area percentage.",
+    "paintOrder": "Ascending row/column plate order is a provisional static overlap depiction, not physical tissue depth.",
+    "pigment": "Clip each full plate into original nearest-station surface domains and ordered local-u masks; no blending or center-color sampling.",
+    "outline": "Neutral diagnostic plate boundary; not an inherited pigment stripe."
+  },
+  "sourceResultDigest": "b0db7ff1755f668b5d0adb9dc19aa6391794fefaa610ffeff551c52eb181a1d0",
+  "bodyConstructionDigest": "eee0ea293511df27b4840b8aad8e3bfb26999033155a0f0b532ec2c99b1dbda9",
+  "ocularModuleDigest": "ff841e0188dcac64ecea58ef98c280ea32bf7ddff1d4adba1b525ce00f64bed4",
+  "kind": "skin",
+  "field": null,
+  "plateProfile": null,
+  "plates": [],
+  "excludedCandidates": [],
+  "counts": {
+    "plannedCandidates": 0,
+    "candidates": 0,
+    "accepted": 0,
+    "excluded": 0,
+    "exclusionReasons": {}
+  },
+  "retainedFacts": [
+    {
+      "id": "coveringKind",
+      "locusId": "appearance.covering-kind",
+      "value": "skin",
+      "unit": "declared body covering",
+      "context": "ground",
+      "state": "expressed",
+      "sources": [
+        "appearance.covering-kind"
+      ],
+      "prerequisites": [],
+      "copies": [
+        "skin",
+        "skin"
+      ]
+    },
+    {
+      "id": "coveringExtent",
+      "locusId": "appearance.covering-extent",
+      "value": 0.75,
+      "unit": "body-local longitudinal interval",
+      "context": "ground",
+      "state": "inactive",
+      "sources": [
+        "appearance.covering-extent"
+      ],
+      "prerequisites": [
+        "appearance.covering-kind",
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-taper",
+        "structure.axial-spacing"
+      ],
+      "copies": [
+        "high",
+        "high"
+      ]
+    },
+    {
+      "id": "coveringScale",
+      "locusId": "appearance.covering-scale",
+      "value": 0.06,
+      "unit": "plate half-width / resolved bodyWidth",
+      "context": "ground",
+      "state": "inactive",
+      "sources": [
+        "appearance.covering-scale"
+      ],
+      "prerequisites": [
+        "appearance.covering-kind",
+        "structure.body-width"
+      ],
+      "copies": [
+        "low",
+        "low"
+      ]
+    }
+  ],
+  "exclusions": {
+    "oculars": [],
+    "roots": []
+  },
+  "traces": [
+    {
+      "targetId": "body-covering",
+      "directLocusIds": [
+        "appearance.covering-kind"
+      ],
+      "dependencyLocusIds": [],
+      "sourceSurfaceIds": []
+    }
+  ],
+  "limitations": [
+    "Static body-only covering construction; no protection, physiology, motion or finished pet art.",
+    "Interval extent is a placement domain, not exact measured percentage of covered body area.",
+    "Skin retains inactive extent/scale copies; no plates or hidden surface operation is produced.",
+    "Fur and feathers are unsupported and are not represented by symbolic plates."
+  ],
+  "coveringDigest": "01b0174e8af231824d8248fb632e0d7c33865e70b6db809c79cd62b415f49a56"
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "radial-contact-base",
+    "sourceSha256": "4f3994ad96fc04dee446cd231bd0d632db60b93ecb5b6944b1666185ad190138",
+    "pngSha256": "6f40a4baaf9db4caab85354b610b9ad3b9d0816c6c63cbe2461766abe6576202"
+  },
+  {
+    "name": "radial-height-contrast",
+    "sourceSha256": "8ea7a36dc1f1476501528e3854625d2a7190903571b896e4f692eae6d629d77b",
+    "pngSha256": "683bb2f3fd2621795bbe1270593048e95740127bac56110ad359449495ce1752"
+  },
+  {
+    "name": "radial-secondary-latent",
+    "sourceSha256": "01832ec4dbc17762744b317a07726436b0b458964b2699af9bc0a56a631c01c1",
+    "pngSha256": "6f40a4baaf9db4caab85354b610b9ad3b9d0816c6c63cbe2461766abe6576202"
+  },
+  {
+    "name": "comparison",
+    "sourceSha256": "f36efe1940e6cc3c0614f52ee84c0943e4601122bddb9c700adb62047466de4a",
+    "pngSha256": "6f673faf04d39dee6a5bc801afe34e0999b8f57b2d61338929421588f13b2889"
+  }
+]

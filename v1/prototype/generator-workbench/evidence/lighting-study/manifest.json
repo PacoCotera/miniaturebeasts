@@ -1,0 +1,41 @@
+{
+  "status": "source-native controlled depiction study; not provider paintover or pet-master approval",
+  "source": {
+    "path": "../semantic-candidate-pet/upright-source.svg",
+    "sha256": "95f4c7111cb15d46db2577d7ea76990494fb62e11fa5bcfa8b9730d9ffd4ef3f",
+    "packetPath": "../candidate-workbench-flow/first.replay.json",
+    "packetSha256": "951afba62b68e68d10454fa12253fb3312d7d0ef4eb64d2cc240b3beab4ad7fb"
+  },
+  "controls": {
+    "viewportPixels": [
+      204.8,
+      256
+    ],
+    "geometry": "same retained paths, body/fin roots, oculars, camera, proportions and tessellation",
+    "pigments": "same five repeated russet/golden-yellow local body fields and cream/slate fin fields; base fills retained",
+    "material": "bare smooth skin, no texture or glints added",
+    "contour": "same source contour technique and paths",
+    "background": "#f7f5ee",
+    "opticalToneSet": {
+      "light": "#ffffff",
+      "shadow": "#000000",
+      "opacityLevels": [
+        0.08,
+        0.16,
+        0.24
+      ]
+    },
+    "maximumOpacity": 0.24,
+    "panelA": "five source-centred local optical fields",
+    "panelB": "one continuous lateral optical field, strongest near source face and quieter toward rear"
+  },
+  "limitations": [
+    "The treatment bundle redistributes light and resulting optical edge emphasis; it does not isolate one physical lighting parameter.",
+    "Source-native SVG finish differs from the retained provider raster, which is unchanged.",
+    "No new anatomy, palette, expression, animation or game-art acceptance."
+  ],
+  "outputs": {
+    "comparison.svg": "2906bf2168ed810914fb0c530d12a341dfcd811852630110a096699a84f9ee36",
+    "comparison.png": "f292d8c36b1d4869a51448aba8c594b2e72ac43f6d5adf8a2837b74a0ae5dd0c"
+  }
+}

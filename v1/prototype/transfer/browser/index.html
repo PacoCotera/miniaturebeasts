@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Critter Lab — transfer screen study</title>
+<link rel="stylesheet" href="/transfer/browser/style.css">
+<main>
+  <h1>Transfer screen study</h1>
+  <p>Provisional 640 × 480 pixel layout. Authored lab-only fixtures; no transfer, sample opening or saving occurs. Display hardware and artwork remain undecided.</p>
+  <fieldset><legend>Development fixtures — outside the device</legend>
+    <label>Scenario <select id="scenario"><option>pending</option><option>confirmed</option><option>unknown</option><option>requested</option><option>unavailable</option><option>unreadable</option><option>preview</option><option>preview-unavailable</option></select></label>
+    <label>Palette <select id="palette"><option value="color">Color-8</option><option value="mono">Mono-1</option></select></label>
+    <label>Render delay (ms) <input id="render-delay" type="number" min="0" max="2000" value="0"></label>
+    <label>Read delay (ms) <input id="read-delay" type="number" min="0" max="2000" value="0"></label>
+    <label>Next read <select id="response"><option>pending</option><option>confirmed</option><option>unavailable</option><option>unreadable</option><option>unknown</option><option>requested</option><option>preview</option><option>preview-unavailable</option><option value="drop">Drop response</option></select></label>
+    <button id="refresh">Supply background read</button>
+  </fieldset>
+  <p>Focus the device. Arrows change focus; Enter selects; Escape returns. Keys 1 / 2 / 3 use fixed action slots. Buttons below emulate physical controls.</p>
+  <section id="device" tabindex="0" aria-label="Pixel device keyboard focus">
+    <canvas id="screen" width="640" height="480" aria-label="Pixel transfer study"></canvas>
+    <div class="buttons"><button data-slot="0" tabindex="-1">1</button><button data-slot="1" tabindex="-1">2</button><button data-slot="2" tabindex="-1">3</button></div>
+  </section>
+  <details><summary>Host diagnostics — not player UI</summary><pre id="diagnostics"></pre></details>
+</main>
+<script type="module" src="/transfer/browser/host.mjs"></script>
+</html>

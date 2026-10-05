@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Critter Lab — founder fixture</title><link rel="stylesheet" href="/lab/style.css"></head>
+<body>
+<main>
+  <h1>Founder lab — interactive fixture</h1>
+  <p>Provisional pixel UI and placeholder art. Research choices change focus, not genes. Simulated probe or console investigation; no real resources are spent.</p>
+  <canvas width="320" height="240" aria-label="Pixel lab display; saved state transcript below"></canvas>
+  <div class="controls" aria-label="Three contextual device buttons"><button data-key="action0">1 · Left</button><button data-key="action1">2 · Middle</button><button data-key="action2">3 · Right</button></div>
+  <div class="controls"><button data-key="previous">Previous</button><button data-key="select">Select</button><button data-key="next">Next</button><button data-key="back">Back</button></div>
+  <p>Keyboard: arrows rotate, Enter selects, Escape goes back, 1–3 invoke screen labels. First input during idle only wakes. Inputs held during refresh cannot activate later.</p>
+  <p id="status" role="status"></p>
+  <fieldset><legend>Host development controls — outside the game</legend>
+    <label>Display <select id="profile"><option value="color">Color</option><option value="mono">Monochrome</option></select></label>
+    <label>Simulated refresh <select id="delay"><option value="0">Immediate</option><option value="800">800 ms</option><option value="2000">2 seconds</option></select></label>
+    <label>One-shot fault <select id="fault"><option value="none">None</option><option value="before">Before storage</option><option value="intent">After saved intent</option><option value="after">After commit, before response</option></select></label>
+    <button id="advance">Supply authored finding</button><button id="idle">Simulate idle</button><button id="art">Toggle missing portrait</button><button id="reload">Reload same run</button><button id="fresh">New isolated fixture run</button>
+  </fieldset>
+  <details><summary>Accessible view and exact saved fixture records</summary><pre id="transcript"></pre></details>
+</main>
+<script type="module" src="/lab/host.mjs"></script>
+</body></html>

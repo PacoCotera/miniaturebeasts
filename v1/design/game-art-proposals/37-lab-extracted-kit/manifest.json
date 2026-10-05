@@ -1,0 +1,150 @@
+{
+  "status": "Source-preview crops; not native production sprite masters",
+  "source": {
+    "path": "../35-vault-composition/18-c-refined.png",
+    "sha256": "889745d74ae7bcd7c80ef5737258b3fdf0357423c1d2362a3630925ca07a632b",
+    "width": 1280,
+    "height": 720,
+    "actualEncoding": "jpeg"
+  },
+  "screenRectangle": {
+    "left": 264,
+    "top": 78,
+    "width": 752,
+    "height": 421
+  },
+  "process": "Decode source JPEG, extract integer rectangles without resizing, encode lossless PNG. Preserve all source background pixels. No transparency, filtering, palette changes or redraw.",
+  "contactSheets": {
+    "native": "contact-sheet-1x.png",
+    "enlarged": "contact-sheet-2x.png",
+    "enlargement": "Exact 2x nearest-neighbor duplication of 1x contact sheet"
+  },
+  "assets": [
+    {
+      "file": "data.png",
+      "role": "Data inventory art",
+      "rectangle": {
+        "left": 609,
+        "top": 111,
+        "width": 37,
+        "height": 48
+      },
+      "sha256": "38404e2f318296bf236849697ac57ecd879683d90f070e315cd13ec87116ef92",
+      "decodedPixelSha256": "003c1e4914ac9f800b66882b468a146297d1de4407c1f8f2d492da07f9d3972b",
+      "pixelIdentity": "Passed: decoded output equals decoded source rectangle",
+      "opaqueBackground": true
+    },
+    {
+      "file": "energy.png",
+      "role": "Energy inventory art",
+      "rectangle": {
+        "left": 726,
+        "top": 110,
+        "width": 43,
+        "height": 51
+      },
+      "sha256": "a5f256a9fc0b33631f3a0551f843acd53f41a1e7135eaa5ed41e8f65cdfd6039",
+      "decodedPixelSha256": "353f65a918a86e51143e9221e4308708a10f056185d3b18f44b387e97c35988a",
+      "pixelIdentity": "Passed: decoded output equals decoded source rectangle",
+      "opaqueBackground": true
+    },
+    {
+      "file": "essence.png",
+      "role": "Essence inventory art",
+      "rectangle": {
+        "left": 856,
+        "top": 111,
+        "width": 47,
+        "height": 49
+      },
+      "sha256": "5e0fb4a2577e8b48302a7f5d76c029ef836bed794c6dd11863a0986c2243b80c",
+      "decodedPixelSha256": "6ab2f49023ee328e8011d59a36afc1eaf587e8ce5c0880c9e49a8ae488eaa501",
+      "pixelIdentity": "Passed: decoded output equals decoded source rectangle",
+      "opaqueBackground": true
+    },
+    {
+      "file": "sample-capsule.png",
+      "role": "Sample reference capsule",
+      "rectangle": {
+        "left": 308,
+        "top": 108,
+        "width": 54,
+        "height": 54
+      },
+      "sha256": "7136c85a5a3850828c68db8eb036a9560b14d847db45ebfbff436bacb18907fb",
+      "decodedPixelSha256": "ee5e3504e8baaef1d87f656c1fef65d21e86ad1aced3b0a42835bcc72de8c368",
+      "pixelIdentity": "Passed: decoded output equals decoded source rectangle",
+      "opaqueBackground": true
+    },
+    {
+      "file": "crown-reference.png",
+      "role": "Known Crown reference illustration; not a specimen portrait",
+      "rectangle": {
+        "left": 346,
+        "top": 218,
+        "width": 105,
+        "height": 89
+      },
+      "sha256": "a7ea1f649f46bde1eb00a637f73687ee60a8943549e995bcadb524773858691b",
+      "decodedPixelSha256": "65f499ba134caa4e2fa6daca94937a8f559480470c26695326d920290764a3d6",
+      "pixelIdentity": "Passed: decoded output equals decoded source rectangle",
+      "opaqueBackground": true
+    },
+    {
+      "file": "eye-ring-reference.png",
+      "role": "Known Eye-ring reference illustration; not a specimen portrait",
+      "rectangle": {
+        "left": 362,
+        "top": 380,
+        "width": 74,
+        "height": 67
+      },
+      "sha256": "5b87851d71d3ea4b10fdf9349a0533a0b46b6218d0a9c285e2380c7a25fa64dc",
+      "decodedPixelSha256": "ba9712ccfefa60b96519908655784e6787338164fe164644d5f587933b60eaa7",
+      "pixelIdentity": "Passed: decoded output equals decoded source rectangle",
+      "opaqueBackground": true
+    },
+    {
+      "file": "header-top-left.png",
+      "role": "Exact blue stepped frame corner fragment",
+      "rectangle": {
+        "left": 286,
+        "top": 94,
+        "width": 31,
+        "height": 31
+      },
+      "sha256": "35c976a2eacf9034c85a6534df8a0d1381e42f3d965fbc8d54f073b1d39a8a3f",
+      "decodedPixelSha256": "4aadbb5ebef5a09a9821bc2bd6fcd4d52b68b5cc90b753d5f6ed7eedca0c6797",
+      "pixelIdentity": "Passed: decoded output equals decoded source rectangle",
+      "opaqueBackground": true
+    },
+    {
+      "file": "finding-top-left.png",
+      "role": "Exact blue finding frame corner fragment",
+      "rectangle": {
+        "left": 291,
+        "top": 179,
+        "width": 31,
+        "height": 34
+      },
+      "sha256": "c6dbd524797e0024bbb3dd0f14c623925806b8884c53e794e839916f1eef5cd9",
+      "decodedPixelSha256": "cab471d647ca08bd07d90d9fa27a06802749c071ff20da3ae1ad813c5891a9c8",
+      "pixelIdentity": "Passed: decoded output equals decoded source rectangle",
+      "opaqueBackground": true
+    },
+    {
+      "file": "start-action.png",
+      "role": "Focused action reference; START text baked into source pixels",
+      "rectangle": {
+        "left": 834,
+        "top": 409,
+        "width": 136,
+        "height": 63
+      },
+      "sha256": "894f0189bea6ab5090765c58459dba5478691d1af1da1352931256c43d405c97",
+      "decodedPixelSha256": "007ab1de86642936b8a0fe3cc7423dac716af5f0bf0229d852986ac58dea1608",
+      "pixelIdentity": "Passed: decoded output equals decoded source rectangle",
+      "opaqueBackground": true
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+body {
+  margin: 0;
+}
+.status {
+  white-space: pre-wrap;
+}
+.catalogue-layout {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 20px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.genome-summaries {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.dimension-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.dimension-count {
+  margin-left: 6px;
+  opacity: 0.7;
+}
+.genome-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.selected-preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.result-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.result-pair > * {
+  min-width: 0;
+}
+.locus-choice {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #394540;
+  border-radius: 6px;
+  color: inherit;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.locus-choice:hover {
+  background: #293730;
+}
+.locus-choice.selected {
+  border-color: #d78932;
+  background: #31392f;
+}
+.locus-choice:focus-visible {
+  outline: 2px solid #d78932;
+  outline-offset: 2px;
+}
+.locus-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.locus-copy-labels,
+.locus-state {
+  font-size: 12px;
+  opacity: 0.75;
+}
+.allele-editor {
+  margin-top: 16px;
+}
+.allele-choice-row {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+}
+.allele-choice-row button {
+  min-height: 30px;
+}
+.genome-summaries > *,
+.selected-preview > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.svg-view {
+  width: 100%;
+}
+.svg-view svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.svg-view [data-locus] {
+  cursor: pointer;
+}
+.empty-result {
+  min-height: 250px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 12px;
+}
+.sequence {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.motion {
+  margin-top: 14px;
+}
+.saved-record {
+  padding: 18px 0;
+  border-bottom: 1px solid #394540;
+}
+.batch-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+code {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 74.999em) {
+  .workbench-header {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+  }
+  .workbench-header-controls {
+    width: 100%;
+    gap: 12px;
+  }
+  .workbench-header-controls .mantine-Select-root {
+    width: 250px;
+  }
+}
+@media (max-width: 1120px) {
+  .genome-layout {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+  .selected-preview {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 850px) {
+  .catalogue-layout,
+  .genome-layout,
+  .selected-preview,
+  .genome-summaries,
+  .batch-grid {
+    grid-template-columns: 1fr;
+  }
+  .result-pair {
+    grid-template-columns: 1fr;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.creature-view svg {
+  max-height: 400px;
+}
+.guided-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  gap: 20px;
+  align-items: start;
+}
+.guided-journey { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+.guided-structure .mantine-Accordion-panel { overflow-wrap: anywhere; }
+.guided-workspace > *, .guided-traits > * { min-width: 0; }
+.guided-structure { position: static; }
+.guided-source { width: 100%; min-height: 350px; display: grid; align-items: center; }
+.guided-source svg { display: block; width: 100%; max-height: 440px; height: auto; }
+.guided-comparison .guided-source { min-height: 0; }
+.guided-comparison .guided-source svg { max-height: 230px; }
+.guided-traits { display: grid; grid-template-columns: minmax(140px, 38fr) minmax(0, 62fr); gap: 14px; }
+.guided-trait-detail { padding-top: 16px; overflow-wrap: anywhere; position: sticky; top: 130px; align-self: start; }
+.guided-layer-tree { margin-top: 16px; min-width: 0; }
+.guided-layer-gap { padding: 0 12px 10px; overflow-wrap: anywhere; }
+.guided-layer-tree .mantine-Accordion-panel { padding-left: 12px; border-left: 2px solid #59766a; margin-left: 12px; }
+.guided-layer-tree .locus-choice .mantine-Badge-root { margin-top: 5px; max-width: 100%; }
+.render-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.render-gallery img { max-height: 200px !important; margin: auto; }
+.render-detail { overflow-wrap: anywhere; }
+.render-detail.expanded { grid-column: 1 / -1; }
+.render-gallery .render-detail.expanded img { max-height: 480px !important; }
+@media (max-width: 960px) {
+  .guided-journey { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .guided-workspace { grid-template-columns: 1fr; }
+  .guided-structure { position: static; }
+}
+@media (max-width: 560px) {
+  .guided-traits { grid-template-columns: 1fr; }
+  .guided-trait-detail { position: static; grid-row: 1; }
+  .guided-source { min-height: 260px; }
+}

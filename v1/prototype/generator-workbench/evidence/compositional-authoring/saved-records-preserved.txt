@@ -1,0 +1,79 @@
+- banner:
+  - heading "Critter Lab · Genome authoring" [level=3]
+  - paragraph: Adult developer tool · provisional shared engine · game/device UI unchanged
+  - combobox "Content package": Region forms / terminals / coverings · eleven branches · v2
+  - generic: genomic-compositional-source-experiment v2
+  - link "Preserved Pip proof":
+    - /url: /legacy
+    - generic: Preserved Pip proof
+- navigation:
+  - paragraph: AUTHOR & INVESTIGATE
+  - generic: Genome
+  - generic: Compendium
+  - generic: Pinned comparison
+  - generic: Saved records
+  - generic: Generation batch
+  - separator
+  - paragraph: 110 proposed records · 104 defined copy contracts · 6 draft candidates
+  - link "Character art studies":
+    - /url: https://github.com/PacoCotera/critter-lab/blob/codex/genome-art-reset/prototype/generator-workbench/evidence/art-reset/README.md
+    - generic: Character art studies
+- main:
+  - status:
+    - generic: Ready to generate inherited region forms, terminals and coverings. All eleven genomic branches retain their actual consumer status.
+  - heading "Saved experiments" [level=2]
+  - button "Import JSON / verified replay":
+    - generic: Import JSON / verified replay
+  - paragraph: Local browser retention plus copyable exports. Imported result fields never establish genetic truth.
+  - paragraph: compositional-2a19e52ff43c72664cf2
+  - paragraph: provisional compositional source · bilateral
+  - button "Export":
+    - generic: Export
+  - button "Replay":
+    - generic: Replay
+  - paragraph: compositional-eb67cfdbbcbfce990671
+  - paragraph: provisional compositional source · radial
+  - button "Export":
+    - generic: Export
+  - button "Replay":
+    - generic: Replay
+  - paragraph: compositional-36867d0448b75dbb3433
+  - paragraph: provisional compositional source · bilateral
+  - button "Export":
+    - generic: Export
+  - button "Replay":
+    - generic: Replay
+  - paragraph: compositional-fce009ad889d06700809
+  - paragraph: provisional compositional source · radial
+  - button "Export":
+    - generic: Export
+  - button "Replay":
+    - generic: Replay
+  - paragraph: compositional-f62096d544c7dfd4246d
+  - paragraph: provisional compositional source · bilateral
+  - button "Export":
+    - generic: Export
+  - button "Replay":
+    - generic: Replay
+  - paragraph: compositional-69a310893c9f79530582
+  - paragraph: provisional compositional source · bilateral
+  - button "Export":
+    - generic: Export
+  - button "Replay":
+    - generic: Replay
+  - paragraph: experiment-5eb395c03213c70a6c8f
+  - paragraph: continuous bilateral axial organization · water-capable fictional analytic output
+  - button "Export":
+    - generic: Export
+  - button "Replay":
+    - generic: Replay
+  - paragraph: experiment-3f05a537aa93e1c1fa6f
+  - paragraph: radial connected 3-volume organization · ground-capable analytic output
+  - button "Export":
+    - generic: Export
+  - button "Replay":
+    - generic: Replay
+  - separator
+  - button "Restore saved compositional draft":
+    - generic: Restore saved compositional draft
+  - paragraph: Provisional authoring content; no production sprite/rig/animation, sample permission, cloud, game-save or hardware claim.

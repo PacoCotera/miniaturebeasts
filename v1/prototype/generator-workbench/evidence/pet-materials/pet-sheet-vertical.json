@@ -1,0 +1,185 @@
+{
+  "schemaVersion": "critter-pet-source-sheet/1",
+  "worldScale": 274.9998281251074,
+  "cellSize": 512,
+  "sourceBounds": {
+    "minimumX": -0.166667,
+    "maximumX": 1.433334,
+    "minimumY": -0.684809,
+    "maximumY": 0.684809
+  },
+  "order": [
+    "pet-skin",
+    "pet-scales",
+    "pet-fur",
+    "pet-feathers"
+  ],
+  "transforms": [
+    {
+      "name": "pet-skin",
+      "recordId": "experiment-861e965879245bbf2ddb",
+      "inputDigest": "861e965879245bbf2ddb49b26c9bf888c580034187f0619a601ad331dd48f3d8",
+      "resultDigest": "90fde1f3f85e9fa1518b5335015f2126b577005266ef430293c965b6577af296",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          654.0260670231818,
+          -281.21462235489616
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-scales",
+      "recordId": "experiment-2ab86bef56a424e21e05",
+      "inputDigest": "2ab86bef56a424e21e05ac7a0a023913fdbe420ae747467556c10a0d6af751ea",
+      "resultDigest": "406260f3e5de86a4237d8d87c9acaa784ad314d4bfd605530f1caee20eff79d9",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          1166.026067023182,
+          -281.21462235489616
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-fur",
+      "recordId": "experiment-2a5bc502eff1dc32ef52",
+      "inputDigest": "2a5bc502eff1dc32ef5219d9592b321f45e8636f7fccb4245e47e978fa9ad709",
+      "resultDigest": "3508e13c30117f65a93abdd8a2f076e5f9c10da924bc9385f2c60260e5015c05",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          654.0260670231818,
+          230.7853776451039
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-feathers",
+      "recordId": "experiment-1a8bd0adb1921f761a29",
+      "inputDigest": "1a8bd0adb1921f761a292740320bb7892d4d7dd0592cda1766506b6ccedae894",
+      "resultDigest": "001cedc04d68ccc171118910e54da88f4636030ee5efa69d56b93985b399b7f2",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          1166.026067023182,
+          230.7853776451039
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-skin",
+      "recordId": "experiment-861e965879245bbf2ddb",
+      "inputDigest": "861e965879245bbf2ddb49b26c9bf888c580034187f0619a601ad331dd48f3d8",
+      "resultDigest": "90fde1f3f85e9fa1518b5335015f2126b577005266ef430293c965b6577af296",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          654.0260670231818,
+          -281.21462235489616
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-face-variant",
+      "recordId": "experiment-60bb80e3e9a5916eba39",
+      "inputDigest": "60bb80e3e9a5916eba39c94bf6788c64df414e8318d5fab4dc0ac7efa7a7335b",
+      "resultDigest": "3e9836a7f24711f95bbdf302bb7b1c909c3f0b70f0d9fdff4b235819c679d3a8",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          1166.026067023182,
+          -281.21462235489616
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-skin",
+      "recordId": "experiment-861e965879245bbf2ddb",
+      "inputDigest": "861e965879245bbf2ddb49b26c9bf888c580034187f0619a601ad331dd48f3d8",
+      "resultDigest": "90fde1f3f85e9fa1518b5335015f2126b577005266ef430293c965b6577af296",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          654.0260670231818,
+          -281.21462235489616
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-scales",
+      "recordId": "experiment-2ab86bef56a424e21e05",
+      "inputDigest": "2ab86bef56a424e21e05ac7a0a023913fdbe420ae747467556c10a0d6af751ea",
+      "resultDigest": "406260f3e5de86a4237d8d87c9acaa784ad314d4bfd605530f1caee20eff79d9",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          654.0260670231818,
+          -281.21462235489616
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-fur",
+      "recordId": "experiment-2a5bc502eff1dc32ef52",
+      "inputDigest": "2a5bc502eff1dc32ef5219d9592b321f45e8636f7fccb4245e47e978fa9ad709",
+      "resultDigest": "3508e13c30117f65a93abdd8a2f076e5f9c10da924bc9385f2c60260e5015c05",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          654.0260670231818,
+          -281.21462235489616
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-feathers",
+      "recordId": "experiment-1a8bd0adb1921f761a29",
+      "inputDigest": "1a8bd0adb1921f761a292740320bb7892d4d7dd0592cda1766506b6ccedae894",
+      "resultDigest": "001cedc04d68ccc171118910e54da88f4636030ee5efa69d56b93985b399b7f2",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          654.0260670231818,
+          -281.21462235489616
+        ],
+        "rotationDegrees": 90
+      }
+    },
+    {
+      "name": "pet-face-variant",
+      "recordId": "experiment-60bb80e3e9a5916eba39",
+      "inputDigest": "60bb80e3e9a5916eba39c94bf6788c64df414e8318d5fab4dc0ac7efa7a7335b",
+      "resultDigest": "3e9836a7f24711f95bbdf302bb7b1c909c3f0b70f0d9fdff4b235819c679d3a8",
+      "sourceScale": 207.27272727272725,
+      "transform": {
+        "scale": 1.3267535567439392,
+        "translate": [
+          654.0260670231818,
+          -281.21462235489616
+        ],
+        "rotationDegrees": 90
+      }
+    }
+  ],
+  "method": "One shared uniform affine placement of engine-rendered source geometry. Optional whole-subject 90 degree in-plane rotation preserves anatomy. No pigments, individual size normalization or material editing."
+}

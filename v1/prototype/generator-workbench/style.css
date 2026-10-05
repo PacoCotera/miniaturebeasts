@@ -1,0 +1,239 @@
+:root {
+  font-family:system-ui,sans-serif;
+  color:#dce7e2;
+  background:#172329;
+  line-height:1.5;
+  color-scheme:dark}
+* {
+  box-sizing:border-box}
+body {
+  margin:0;
+  padding:32px;
+  max-width:1520px;
+  margin-inline:auto}
+header {
+  margin-bottom:30px}
+h1 {
+  font-size:clamp(26px,3vw,42px);
+  margin:0}
+h2 {
+  margin:0 0 14px;
+  font-size:23px}
+h3 {
+  font-size:17px;
+  margin:0 0 8px}
+p {
+  color:#aebfb9;
+  margin:8px 0 18px}
+.eyebrow {
+  color:#bed79d;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.12em}
+main {
+  display:grid;
+  grid-template-columns:330px 1fr;
+  gap:24px}
+section {
+  background:#202e34;
+  border:1px solid #415650;
+  border-radius:12px;
+  padding:24px}
+.inputs {
+  align-self:start}
+.locus {
+  padding:13px 0;
+  border-bottom:1px solid #3b4d4f}
+.locus>label {
+  display:block;
+  font-weight:600}
+.copies {
+  display:flex;
+  gap:12px;
+  margin-top:8px}
+.copy {
+  flex:1}
+.copy span {
+  display:block;
+  font-size:12px;
+  color:#aebfb9}
+select,textarea {
+  font:inherit;
+  background:#142229;
+  border:1px solid #72887b;
+  border-radius:5px;
+  padding:8px;
+  color:#edf3ec;
+  width:100%}
+button {
+  font:inherit;
+  font-weight:650;
+  padding:10px 14px;
+  border:1px solid #aab895;
+  border-radius:6px;
+  color:#13252a;
+  background:#cbdba9;
+  cursor:pointer}
+button:disabled {
+  opacity:.4;
+  cursor:default}
+button:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible {
+  outline:3px solid #e6b264;
+  outline-offset:3px}
+.context {
+  display:block;
+  margin:22px 0 18px}
+form>button {
+  width:100%}
+.tools {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:20px}
+.tools button,details button {
+  background:#293e42;
+  color:#dce7e2;
+  padding:7px 10px;
+  font-size:13px}
+details {
+  margin-top:22px}
+summary {
+  cursor:pointer;
+  margin-bottom:12px}
+textarea {
+  margin:8px 0;
+  font-size:12px}
+#status {
+  font-size:14px;
+  margin-top:22px;
+  margin-bottom:0}
+.error {
+  color:#ffbfaa!important}
+.result-heading {
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:center}
+.result-heading .eyebrow {
+  margin-top:0}
+#fingerprint {
+  font:12px ui-monospace,monospace;
+  color:#9ec9c4}
+.creature {
+  display:grid;
+  grid-template-columns:minmax(250px,1fr) minmax(220px,1fr);
+  gap:22px}
+.drawing {
+  background:radial-gradient(ellipse at center,#365449,#1a292e);
+  border-radius:10px;
+  padding:12px;
+  min-height:310px}
+.drawing svg {
+  width:100%;
+  display:block;
+  max-height:410px}
+.trait {
+  padding:10px 0;
+  border-bottom:1px solid #435553}
+.trait p {
+  margin:0;
+  color:#edf1e4}
+.trait small {
+  color:#9eb7b2}
+.relationship {
+  margin-top:20px;
+  padding:16px;
+  background:#18272d;
+  border-left:3px solid #aeca95}
+.relationship p {
+  margin:5px 0}
+code {
+  font-size:12px;
+  overflow-wrap:anywhere}
+.facts {
+  margin-top:24px}
+.facts li {
+  margin:12px 0}
+.facts code {
+  display:block;
+  color:#9fc5bc}
+.coverage {
+  grid-column:1/-1}
+#layers {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+  margin-bottom:26px}
+.layer {
+  border-top:3px solid #93af8c;
+  padding-top:10px}
+.layer strong {
+  display:block}
+.layer p {
+  font-size:13px;
+  margin-bottom:0}
+#families {
+  overflow-x:auto}
+table {
+  border-collapse:collapse;
+  width:100%;
+  font-size:13px}
+th,td {
+  text-align:left;
+  vertical-align:top;
+  border-bottom:1px solid #526a63;
+  padding:14px 12px;
+  white-space:pre-line}
+thead th {
+  color:#cbdba9}
+tbody th {
+  width:16%;
+  text-transform:capitalize}
+td:nth-child(2) {
+  width:40%}
+.family {
+  border-top:1px solid #567068;
+  padding-top:12px}
+.family h3 {
+  text-transform:capitalize}
+.family p {
+  font-size:13px;
+  margin:5px 0}
+.family ul {
+  padding-left:19px;
+  font-size:13px}
+#comparison {
+  margin-top:24px;
+  border-top:2px solid #a8c596;
+  padding-top:20px}
+.compare-drawing {
+  width:170px;
+  float:left;
+  margin-right:20px}
+footer {
+  font-size:13px;
+  color:#94aaa4;
+  margin-top:26px}
+@media(max-width:1050px) {
+  main {
+  grid-template-columns:300px 1fr}
+.creature {
+  grid-template-columns:1fr}
+#layers {
+  grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:720px) {
+  body {
+  padding:16px}
+main {
+  display:block}
+section {
+  margin-bottom:16px;
+  padding:18px}
+#layers {
+  grid-template-columns:1fr 1fr}
+table {
+  min-width:680px}
+.result-heading {
+  display:block}
+}

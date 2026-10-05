@@ -1,0 +1,27 @@
+{
+  "source": "https://gemini.google.com/app/e6be3fc8ab8d7ee5",
+  "method": "Visible generated-image screenshot capture, rectangular extraction only. Full-size export unavailable. No redrawing. Provisional playtest artwork.",
+  "sourceSha256": "3eaf15277ab516785ef5960b35ddd4fd35a3f9d9cd76b1846038f3d2539c5f3e",
+  "assets": [
+    {
+      "name": "pip-carried",
+      "crop": [
+        318,
+        144,
+        579,
+        433
+      ],
+      "sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534"
+    },
+    {
+      "name": "pip-marked",
+      "crop": [
+        695,
+        144,
+        956,
+        433
+      ],
+      "sha256": "39336d1bf4f9cf540d1d5a1ed47a42ccc72fff02376eb98e7b88cf51d3859190"
+    }
+  ]
+}

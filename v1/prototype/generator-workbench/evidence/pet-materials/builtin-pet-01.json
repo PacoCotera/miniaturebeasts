@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "critter-art-comparison-run/1",
+  "workflow": "GPT-6.1 Sol High-directed built-in image tool",
+  "rasterBackend": "unverified; no model parameter exposed by tool",
+  "callCount": 1,
+  "promptFile": "prompt.txt",
+  "promptChars": 3236,
+  "promptSha256": "b3a9b3e5bc4e9ab489ecf2dcc2ad87428c42649beff0a8b6f7358114f40181b0",
+  "promptModifiedAfterFreeze": false,
+  "references": [
+    {
+      "file": "pet-material-reference-vertical.png",
+      "role": "resolved construction, portrait transform, rooted layout and pigment authority",
+      "sha256": "a9e2b04845c5397022f5a427c0477d8b826c926db8d1548188e058b6bd6a2c1a"
+    },
+    {
+      "file": "../../../../design/game-art-proposals/35-vault-composition/18-c-refined.png",
+      "role": "pixel craft authority only",
+      "sha256": "889745d74ae7bcd7c80ef5737258b3fdf0357423c1d2362a3630925ca07a632b"
+    }
+  ],
+  "startedAtUTC": "2026-10-02T03:59:42.908Z",
+  "toolElapsedMs": 25078,
+  "timingScope": "wall-clock tool call; not verified model latency or comparable to browser observation",
+  "output": {
+    "file": "builtin-pet-01.png",
+    "width": 1199,
+    "height": 1312,
+    "sha256": "9dd16bebbce3fe60d04446aecfe53a315d184e2e880c905757dac996d52de31e",
+    "unedited": true,
+    "transparentBackground": false
+  },
+  "independentReview": {
+    "status": "strict-fidelity-not-accepted",
+    "scope": "independent architecture actual-image review; producer does not approve own output",
+    "findings": "Broad body, appendage, ocular, oral, plate and tuft counts retained; feather rib strokes appear expanded beyond source three pairs. Exact registration remains unverified.",
+    "ownerArtOutcome": "retained face comparison rejected as a diagram rather than game art; no finished-pet approval"
+  },
+  "limits": [
+    "Single matched request; no general model ranking",
+    "Source accepted for bounded calibration only, not canonical pet morphology",
+    "Production sprites, native display, animation and pet affection unverified"
+  ]
+}

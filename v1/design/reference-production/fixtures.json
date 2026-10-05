@@ -1,0 +1,40 @@
+{
+  "scope": "Offline art fixtures from existing game facts; no running job or species is invented.",
+  "stockDisplay": {
+    "rawUnitsPerWholeUnit": 100,
+    "source": "../../native/selected-lab/render.c:stock_amount",
+    "rule": "Whole units are floor(raw / 100); next-unit percent is raw % 100."
+  },
+  "states": [
+    {
+      "id": "empty",
+      "export": "overview-offline.png",
+      "provenance": {
+        "description": "Existing empty-Lab fixture retained by the reference-production exercise."
+      },
+      "rawStock": { "data": 0, "energy": 0, "essence": 0 },
+      "samples": 0,
+      "findings": 0,
+      "expeditionActive": false,
+      "incubationActive": false,
+      "revealedResidents": 0,
+      "resident": null
+    },
+    {
+      "id": "populated",
+      "export": "overview-populated.png",
+      "provenance": {
+        "sourceCapture": "../home-landings/home.png",
+        "sourceCaptureSha256": "40e2380d70884518369a99e65cb1d58389f3bf379ff878d134e5ca015976b85e",
+        "description": "Existing native Home capture: two retained samples, five findings, one revealed resident and one visit. Its historical pack notation 1.240 / 0.840 / 1.240 corresponds to raw stock 1240 / 840 / 1240, displayed using the current stock_amount rule."
+      },
+      "rawStock": { "data": 1240, "energy": 840, "essence": 1240 },
+      "samples": 2,
+      "findings": 5,
+      "expeditionActive": false,
+      "incubationActive": false,
+      "revealedResidents": 1,
+      "resident": { "id": "BEE-P-00005", "visits": 1 }
+    }
+  ]
+}

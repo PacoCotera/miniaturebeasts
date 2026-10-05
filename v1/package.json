@@ -1,0 +1,19 @@
+{
+  "name": "critter-lab-experiment",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node prototype/server.mjs",
+    "test": "node --test prototype/tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "qrcode": "1.5.4"
+  },
+  "devDependencies": {
+    "jsqr": "1.4.0"
+  },
+  "license": "AGPL-3.0-only"
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "single-volume-contacts",
+    "relationship": {
+      "kind": "explicit-authoring-input",
+      "changedLoci": []
+    },
+    "inputDigest": "b45a1624a87a3688a349030b3e3a4a90ac6f41271096288fc5f639f82a452ffb",
+    "resultDigest": "66e04ea7f7ac1e6eef2f38e125553870485b7cb415f7374a71c6ed6b7f1893e9",
+    "constructionDigest": "e5445d21a747ec1dbfd9bdf8dbf3cd1bd4fd75299b6c49b2a69bb9218619c116",
+    "svgDigest": "475867ff117776d0e05dfab6eaddcc7366e7e4b428c349f3ad1d994969e458db",
+    "profileVersion": "graph-source/1",
+    "sourceRuleVersion": "developmental-analytic/1",
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "renderedView": "XY static footprint/pigment-field proof; source height/texture retained in manifest, no 3D or finished-art claim"
+  },
+  {
+    "name": "axial-volume-fins",
+    "relationship": {
+      "kind": "explicit-authoring-contrast",
+      "comparedWith": "single-volume-contacts",
+      "changedLoci": [
+        "development.axial-repeat",
+        "development.articulated-chain",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ]
+    },
+    "inputDigest": "49a5933bb81107d277049cdf8512bb4cf99b0648832010fb3ab9e37e00ba36bb",
+    "resultDigest": "e1319bdc5e827a9f00a4ff45a8c47a7d333565241b37e4f11df8e6174e760215",
+    "constructionDigest": "7c7eba9a1f9b73c01a3bcbfb7d835260a2f93c94c965c4788a20e26806ffe2cc",
+    "svgDigest": "85aff8e862dc823460f1339dec00894a3c6f1b59c45613d5dd297c24c8e2c017",
+    "profileVersion": "graph-source/1",
+    "sourceRuleVersion": "developmental-analytic/1",
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "renderedView": "XY static footprint/pigment-field proof; source height/texture retained in manifest, no 3D or finished-art claim"
+  },
+  {
+    "name": "single-volume-proportion",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "single-volume-contacts",
+      "changedLoci": [
+        "structure.body-width"
+      ]
+    },
+    "inputDigest": "2301fcee644bdce1e70e32086169d3fa2e47e56962822b2dc05e8744cc217ae6",
+    "resultDigest": "faf10ac3727e71cc64b7de094cd1a062f1261fb96e011513610b2f4d96c2afb7",
+    "constructionDigest": "581bde80bf9463e57aeeb27872062dcaf4966c9d577bfeda31c87876b949ce6b",
+    "svgDigest": "8513d4413fcea482ff49c73b003c5ae2e0cac97a22c6388a0cfa4c83ff835ae9",
+    "profileVersion": "graph-source/1",
+    "sourceRuleVersion": "developmental-analytic/1",
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "renderedView": "XY static footprint/pigment-field proof; source height/texture retained in manifest, no 3D or finished-art claim"
+  }
+]

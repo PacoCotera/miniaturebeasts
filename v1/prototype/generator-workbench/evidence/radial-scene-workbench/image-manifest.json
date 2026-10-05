@@ -1,0 +1,27 @@
+[
+  {
+    "name": "radial-eyes-skin",
+    "sourceSha256": "d96476072bf1d4b408d50a65a28be97a66e8239d87ed6b02272df19016aae29d",
+    "pngSha256": "851875aad63aad9c1d103e712d8a9e5424c20522776ca420662390d1e52393c4"
+  },
+  {
+    "name": "radial-eyes-scales",
+    "sourceSha256": "b8feca32385b4132206928e47f8ae7ec01fa248a4dd1c78fdd2565018c50589d",
+    "pngSha256": "4ea7606a254df44df7f4e0a411721bdb00ba996fd40681da1e97a834663db6d0"
+  },
+  {
+    "name": "radial-eyes-skin.depth",
+    "sourceSha256": "88cde4731e3cf27fe4ae526c260e357c848d08e710a74b614806fa80f2c4ef3c",
+    "pngSha256": "92536dd08b1c5391fcb5e38c69afbee7bafb19d390b3c4177b192837db156ea0"
+  },
+  {
+    "name": "radial-eyes-scales.depth",
+    "sourceSha256": "c14580da1913d823e1c97316d9daf4deb729c315487b1965daf8a3071a9fc8b7",
+    "pngSha256": "dc81e13d443157b841aec641bc24944b2d04a4e3c2bdba4a477a93d0f67ee13d"
+  },
+  {
+    "name": "comparison",
+    "sourceSha256": "c67b319538888f03a6fcddf7e84e9696be22f1a0048c230e97e74adfe4232052",
+    "pngSha256": "70a8d87d2c6652d8a9d3db9785a514605c9bd8a9323cdc6d633d066b92e33b92"
+  }
+]

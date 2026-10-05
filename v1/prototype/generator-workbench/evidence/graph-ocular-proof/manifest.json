@@ -1,0 +1,137 @@
+[
+  {
+    "name": "single-volume-contacts-ocular",
+    "relationship": {
+      "kind": "explicit-authoring-input",
+      "changedLoci": []
+    },
+    "inputDigest": "cd9bee72b4f1a799b0d2bd8c8dd4ae15ab9a936a89ddf20b02f718b4d7da1e38",
+    "resultDigest": "ac491a6dad24256ffce117c82c1232086a4dead55dfecc69e41de646360d429c",
+    "constructionDigest": "950a32cff34665f29b80142710d9e5df12805459ae6618e36490382b9690343b",
+    "moduleDigest": "8ba3b28ff6352473d6322fdbb1fb6808bb041ad727f007e8e389cb7ec9502979",
+    "svgDigest": "22ba7f712e4d15ca80ff0dcaf0f321c3c8018a80f7a88872c734812cfa814160",
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Common-scale XY structural module proof; no finished art or sensing claim."
+  },
+  {
+    "name": "axial-volume-fins-ocular",
+    "relationship": {
+      "kind": "explicit-authoring-input",
+      "changedLoci": []
+    },
+    "inputDigest": "27fbd0b3db614db7ba947b2bb038adbccd1e1b9f730733f4b2228ba758b91498",
+    "resultDigest": "b7e57c553a89c0760167cff49c51c21b231f61301a3d75aa31a0ec7c2361ef5c",
+    "constructionDigest": "93865bc6d8e6b9b184e73122f9649a14063136f0bd7cb196f4b865ba55f9b9cb",
+    "moduleDigest": "ae5fc83b5f4181317a4dbf7b57c0c3adbad4d888d8819fbb007937a0d82a4642",
+    "svgDigest": "5f317c3cfcb4fdcaea61e72719e1c212b8367d6cf5fa3a419cc20391737b8258",
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Common-scale XY structural module proof; no finished art or sensing claim."
+  },
+  {
+    "name": "single-ocular-size",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "single-volume-contacts-ocular",
+      "changedLoci": [
+        "structure.ocular-size"
+      ]
+    },
+    "inputDigest": "3c74fb9be0f1419859711833de519acf3602f5b8f6b77cfd78ce89134292ab2b",
+    "resultDigest": "3db7d4cfc2facd0ca26f4d3ca99f60f74159116d6fee53420431cc8d5fe98b38",
+    "constructionDigest": "b7834b16c5b1319b1af6d4ac9516473a3596ae1976dec8305740f31f623e047b",
+    "moduleDigest": "97e33e747d35b6deabc2aee92f2919008690ec3b2cc101ebc4f5311fca7eeef7",
+    "svgDigest": "a4269f2842aa35e2d4d6b155385dbb12f40fa4eeb397424b7baa2770b0ba0374",
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Common-scale XY structural module proof; no finished art or sensing claim."
+  },
+  {
+    "name": "single-ocular-placement",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "single-volume-contacts-ocular",
+      "changedLoci": [
+        "structure.ocular-placement"
+      ]
+    },
+    "inputDigest": "a44e958b9ca1034dcacb03449ad82f1645b0de7817f74fe9d91d3adf3e07a3a7",
+    "resultDigest": "f3d3c88e3055f0d3d3333fccfbe9f90c7d084252223b7b5591bfc1df6b8cbf7b",
+    "constructionDigest": "c95f576a2a9bb8371ce0312dab5a4c0479949af564431983e4a25c481c5da82c",
+    "moduleDigest": "7769950ae864b385ceb90423bdfe3678b5d10ba8ccc4bb24cf9e8abf0f49e288",
+    "svgDigest": "578a49b62048bd0b554fdedf73920d075bca8863bcd4da95357ed22b6bc0a6d2",
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Common-scale XY structural module proof; no finished art or sensing claim."
+  },
+  {
+    "name": "single-ocular-off-low",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "single-volume-contacts-ocular",
+      "changedLoci": [
+        "structure.ocular-pair",
+        "structure.ocular-placement"
+      ]
+    },
+    "inputDigest": "16c2e2d2cff24b81705527b0270bb5301e31395c6a79498b671d93535206b329",
+    "resultDigest": "3fcef0afc0eb2a54410fbf8390eff39a0201fdbe53d020e685d99ebbed4f4a09",
+    "constructionDigest": "f668c4cde4507b0167c4d98118609b2b142465224b4cd8f50fa9471caf3488fa",
+    "moduleDigest": "839451d7881be98e6febd25bdcd4fa47a2623231a9b3870eadb11007030dc67c",
+    "svgDigest": "95123c4e906e70a0b173ca7e0ba06bb3d0acd5d45452f99dbed620ee1c3833c1",
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Common-scale XY structural module proof; no finished art or sensing claim."
+  },
+  {
+    "name": "single-ocular-off-high",
+    "relationship": {
+      "kind": "controlled-authoring-variant",
+      "comparedWith": "single-volume-contacts-ocular",
+      "changedLoci": [
+        "structure.ocular-pair",
+        "structure.ocular-placement",
+        "structure.ocular-size"
+      ]
+    },
+    "inputDigest": "2b82591325db2901795047420b2a6790d97410f23ec1f567cb5352a16768df27",
+    "resultDigest": "0531cb55a9d1803e6ec103ad9f86a40c0975cf4b8b91a1b8b94110ea4f4e42ba",
+    "constructionDigest": "d0ab6c42621fd9f4185e693de738672710ae717f452f8dbbbbc80fbd0953fe38",
+    "moduleDigest": "f371bd2a4f2500d2b8bde7ab332c8f378f9f28912cbdec6ddc61242d3ba0aa9f",
+    "svgDigest": "dcf0826783e1a27659808ceead41fcf1e961376266d319ba2e5872f39ce3f02b",
+    "camera": {
+      "minimumX": -0.9,
+      "maximumX": 1.864230338,
+      "minimumY": -0.938311258,
+      "maximumY": 0.938311258
+    },
+    "size": 256,
+    "view": "Common-scale XY structural module proof; no finished art or sensing claim."
+  }
+]

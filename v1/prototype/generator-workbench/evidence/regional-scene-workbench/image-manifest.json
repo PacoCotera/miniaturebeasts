@@ -1,0 +1,17 @@
+[
+  {
+    "name": "regional-eyes-skin",
+    "sourceSha256": "df0907a3085922bcda391e5f7b2f72384fee875120df5507cb58d51d07490df0",
+    "pngSha256": "e1d0e61c6b20e62ca8242e9a17ae7109f102fc146f09efb329a4e3c26f80134a"
+  },
+  {
+    "name": "regional-eyes-scales",
+    "sourceSha256": "d9df73ac3a52ed2254071b3110b653d9e424eb2a993157528e5148816ee78d0f",
+    "pngSha256": "37803585a8b1d83ab77acde0220eed8adbc129c2927fea37794aaabb4c226a1e"
+  },
+  {
+    "name": "regional-generated-window-1",
+    "sourceSha256": "7e6148da9bb27eb99501d3e88c0e19f4385833434e17ca5dbe5101dc4b0d84b1",
+    "pngSha256": "bd44206a3a9675ee04035bde340051caa9f7a8a806b0c090bfc4032061c9e86f"
+  }
+]

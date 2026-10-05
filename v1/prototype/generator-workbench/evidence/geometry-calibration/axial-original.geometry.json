@@ -1,0 +1,1094 @@
+{
+  "schemaVersion": "critter-geometry-reference/1",
+  "identity": {
+    "recordId": "experiment-91772e59baf3d1e490b5",
+    "inputDigest": "91772e59baf3d1e490b58b064b7c5bc0e20a9018d82a9e76e7e93be6def9c4e7",
+    "resultDigest": "745c402b682206ff871a66c48315416b9b02df493a9f4d8de6dd12ef9c2ebd53",
+    "contentId": "genomic-development-study",
+    "contentVersion": 1,
+    "ruleVersion": "developmental-analytic/1"
+  },
+  "projection": {
+    "type": "orthographic XY",
+    "positiveX": "right",
+    "positiveY": "down",
+    "z": "retained in trace; not projected",
+    "width": 1024,
+    "height": 600,
+    "margin": 72,
+    "scale": 293.21604691456747,
+    "offsetX": 125.13074770091964,
+    "offsetY": 300,
+    "sourceBounds": {
+      "minimumX": -0.1812,
+      "maximumX": 2.8200000000000003,
+      "minimumY": -0.48000000000000004,
+      "maximumY": 0.48000000000000004
+    }
+  },
+  "constructionProfile": {
+    "id": "elliptic-xy-local-masks/1",
+    "footprint": "ellipse within exact XY node bounds",
+    "equalMasks": "local u=0.5; palette order retained",
+    "order": "body footprints, fin footprints, neutral graph edges",
+    "texture": "retained in trace but not rendered"
+  },
+  "counts": {
+    "volumes": 5,
+    "fins": 6,
+    "edges": 10
+  },
+  "nodes": [
+    {
+      "id": "volume-0",
+      "role": "volume",
+      "sourcePosition": [
+        0,
+        0,
+        0
+      ],
+      "sourceDimensions": [
+        0.36,
+        0.684,
+        0.5
+      ],
+      "projectedCenter": [
+        125.130748,
+        300
+      ],
+      "projectedDimensions": [
+        105.557777,
+        200.559776
+      ],
+      "drawIndex": 0,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": null,
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation"
+      ],
+      "surface": {
+        "id": "surface-volume-0",
+        "nodeId": "volume-0",
+        "region": "volume",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#ae674d"
+        ],
+        "partition": "uniform",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.body-palette",
+          "appearance.surface-texture",
+          "development.symmetry",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#ae674d",
+          "localU": [
+            0,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volume-1",
+      "role": "volume",
+      "sourcePosition": [
+        0.66,
+        0,
+        0
+      ],
+      "sourceDimensions": [
+        0.36,
+        0.792,
+        0.5
+      ],
+      "projectedCenter": [
+        318.653339,
+        300
+      ],
+      "projectedDimensions": [
+        105.557777,
+        232.227109
+      ],
+      "drawIndex": 1,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": null,
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation"
+      ],
+      "surface": {
+        "id": "surface-volume-1",
+        "nodeId": "volume-1",
+        "region": "volume",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#ae674d"
+        ],
+        "partition": "uniform",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.body-palette",
+          "appearance.surface-texture",
+          "development.symmetry",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#ae674d",
+          "localU": [
+            0,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volume-2",
+      "role": "volume",
+      "sourcePosition": [
+        1.32,
+        0,
+        0
+      ],
+      "sourceDimensions": [
+        0.36,
+        0.9,
+        0.5
+      ],
+      "projectedCenter": [
+        512.17593,
+        300
+      ],
+      "projectedDimensions": [
+        105.557777,
+        263.894442
+      ],
+      "drawIndex": 2,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": null,
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation"
+      ],
+      "surface": {
+        "id": "surface-volume-2",
+        "nodeId": "volume-2",
+        "region": "volume",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#ae674d"
+        ],
+        "partition": "uniform",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.body-palette",
+          "appearance.surface-texture",
+          "development.symmetry",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#ae674d",
+          "localU": [
+            0,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volume-3",
+      "role": "volume",
+      "sourcePosition": [
+        1.98,
+        0,
+        0
+      ],
+      "sourceDimensions": [
+        0.36,
+        0.792,
+        0.5
+      ],
+      "projectedCenter": [
+        705.698521,
+        300
+      ],
+      "projectedDimensions": [
+        105.557777,
+        232.227109
+      ],
+      "drawIndex": 3,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": null,
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation"
+      ],
+      "surface": {
+        "id": "surface-volume-3",
+        "nodeId": "volume-3",
+        "region": "volume",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#ae674d"
+        ],
+        "partition": "uniform",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.body-palette",
+          "appearance.surface-texture",
+          "development.symmetry",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#ae674d",
+          "localU": [
+            0,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volume-4",
+      "role": "volume",
+      "sourcePosition": [
+        2.64,
+        0,
+        0
+      ],
+      "sourceDimensions": [
+        0.36,
+        0.684,
+        0.5
+      ],
+      "projectedCenter": [
+        899.221112,
+        300
+      ],
+      "projectedDimensions": [
+        105.557777,
+        200.559776
+      ],
+      "drawIndex": 4,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": null,
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation"
+      ],
+      "surface": {
+        "id": "surface-volume-4",
+        "nodeId": "volume-4",
+        "region": "volume",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#ae674d"
+        ],
+        "partition": "uniform",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.body-palette",
+          "appearance.surface-texture",
+          "development.symmetry",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#ae674d",
+          "localU": [
+            0,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fin-0-0",
+      "role": "fin",
+      "sourcePosition": [
+        -0.0612,
+        0.28,
+        0
+      ],
+      "sourceDimensions": [
+        0.24,
+        0.4,
+        0.08
+      ],
+      "projectedCenter": [
+        107.185926,
+        382.100493
+      ],
+      "projectedDimensions": [
+        70.371851,
+        117.286419
+      ],
+      "drawIndex": 5,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": {
+        "edgeId": "root-fin-0-0",
+        "volumeId": "volume-0"
+      },
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "surface": {
+        "id": "surface-fin-0-0",
+        "nodeId": "fin-0-0",
+        "region": "fin",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#dfd2ae",
+          "#718489"
+        ],
+        "partition": "two declared equal local masks",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.underside-palette",
+          "development.symmetry",
+          "appearance.surface-texture",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#dfd2ae",
+          "localU": [
+            0,
+            0.5
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        },
+        {
+          "color": "#718489",
+          "localU": [
+            0.5,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fin-0-1",
+      "role": "fin",
+      "sourcePosition": [
+        -0.0612,
+        -0.28,
+        0
+      ],
+      "sourceDimensions": [
+        0.24,
+        0.4,
+        0.08
+      ],
+      "projectedCenter": [
+        107.185926,
+        217.899507
+      ],
+      "projectedDimensions": [
+        70.371851,
+        117.286419
+      ],
+      "drawIndex": 6,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": {
+        "edgeId": "root-fin-0-1",
+        "volumeId": "volume-0"
+      },
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "surface": {
+        "id": "surface-fin-0-1",
+        "nodeId": "fin-0-1",
+        "region": "fin",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#dfd2ae",
+          "#718489"
+        ],
+        "partition": "two declared equal local masks",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.underside-palette",
+          "development.symmetry",
+          "appearance.surface-texture",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#dfd2ae",
+          "localU": [
+            0,
+            0.5
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        },
+        {
+          "color": "#718489",
+          "localU": [
+            0.5,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fin-1-0",
+      "role": "fin",
+      "sourcePosition": [
+        1.3128,
+        0.28,
+        0
+      ],
+      "sourceDimensions": [
+        0.24,
+        0.4,
+        0.08
+      ],
+      "projectedCenter": [
+        510.064774,
+        382.100493
+      ],
+      "projectedDimensions": [
+        70.371851,
+        117.286419
+      ],
+      "drawIndex": 7,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": {
+        "edgeId": "root-fin-1-0",
+        "volumeId": "volume-2"
+      },
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "surface": {
+        "id": "surface-fin-1-0",
+        "nodeId": "fin-1-0",
+        "region": "fin",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#dfd2ae",
+          "#718489"
+        ],
+        "partition": "two declared equal local masks",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.underside-palette",
+          "development.symmetry",
+          "appearance.surface-texture",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#dfd2ae",
+          "localU": [
+            0,
+            0.5
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        },
+        {
+          "color": "#718489",
+          "localU": [
+            0.5,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fin-1-1",
+      "role": "fin",
+      "sourcePosition": [
+        1.3128,
+        -0.28,
+        0
+      ],
+      "sourceDimensions": [
+        0.24,
+        0.4,
+        0.08
+      ],
+      "projectedCenter": [
+        510.064774,
+        217.899507
+      ],
+      "projectedDimensions": [
+        70.371851,
+        117.286419
+      ],
+      "drawIndex": 8,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": {
+        "edgeId": "root-fin-1-1",
+        "volumeId": "volume-2"
+      },
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "surface": {
+        "id": "surface-fin-1-1",
+        "nodeId": "fin-1-1",
+        "region": "fin",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#dfd2ae",
+          "#718489"
+        ],
+        "partition": "two declared equal local masks",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.underside-palette",
+          "development.symmetry",
+          "appearance.surface-texture",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#dfd2ae",
+          "localU": [
+            0,
+            0.5
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        },
+        {
+          "color": "#718489",
+          "localU": [
+            0.5,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fin-2-0",
+      "role": "fin",
+      "sourcePosition": [
+        2.6868,
+        0.28,
+        0
+      ],
+      "sourceDimensions": [
+        0.24,
+        0.4,
+        0.08
+      ],
+      "projectedCenter": [
+        912.943623,
+        382.100493
+      ],
+      "projectedDimensions": [
+        70.371851,
+        117.286419
+      ],
+      "drawIndex": 9,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": {
+        "edgeId": "root-fin-2-0",
+        "volumeId": "volume-4"
+      },
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "surface": {
+        "id": "surface-fin-2-0",
+        "nodeId": "fin-2-0",
+        "region": "fin",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#dfd2ae",
+          "#718489"
+        ],
+        "partition": "two declared equal local masks",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.underside-palette",
+          "development.symmetry",
+          "appearance.surface-texture",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#dfd2ae",
+          "localU": [
+            0,
+            0.5
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        },
+        {
+          "color": "#718489",
+          "localU": [
+            0.5,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fin-2-1",
+      "role": "fin",
+      "sourcePosition": [
+        2.6868,
+        -0.28,
+        0
+      ],
+      "sourceDimensions": [
+        0.24,
+        0.4,
+        0.08
+      ],
+      "projectedCenter": [
+        912.943623,
+        217.899507
+      ],
+      "projectedDimensions": [
+        70.371851,
+        117.286419
+      ],
+      "drawIndex": 10,
+      "footprint": "axis-aligned ellipse within exact XY node bounds; diagnostic construction profile",
+      "root": {
+        "edgeId": "root-fin-2-1",
+        "volumeId": "volume-4"
+      },
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "surface": {
+        "id": "surface-fin-2-1",
+        "nodeId": "fin-2-1",
+        "region": "fin",
+        "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+        "axes": [
+          "longitudinal",
+          "lateral"
+        ],
+        "palette": [
+          "#dfd2ae",
+          "#718489"
+        ],
+        "partition": "two declared equal local masks",
+        "texture": "fine-ridged",
+        "markings": [],
+        "sources": [
+          "appearance.underside-palette",
+          "development.symmetry",
+          "appearance.surface-texture",
+          "appearance.marking-switch"
+        ]
+      },
+      "masks": [
+        {
+          "color": "#dfd2ae",
+          "localU": [
+            0,
+            0.5
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        },
+        {
+          "color": "#718489",
+          "localU": [
+            0.5,
+            1
+          ],
+          "localV": [
+            0,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "axis-1",
+      "from": "volume-0",
+      "to": "volume-1",
+      "role": "connected-volume",
+      "sources": [
+        "development.axial-repeat",
+        "structure.axial-spacing",
+        "development.axial-deformation"
+      ],
+      "projectedFrom": [
+        125.130748,
+        300
+      ],
+      "projectedTo": [
+        318.653339,
+        300
+      ]
+    },
+    {
+      "id": "axis-2",
+      "from": "volume-1",
+      "to": "volume-2",
+      "role": "connected-volume",
+      "sources": [
+        "development.axial-repeat",
+        "structure.axial-spacing",
+        "development.axial-deformation"
+      ],
+      "projectedFrom": [
+        318.653339,
+        300
+      ],
+      "projectedTo": [
+        512.17593,
+        300
+      ]
+    },
+    {
+      "id": "axis-3",
+      "from": "volume-2",
+      "to": "volume-3",
+      "role": "connected-volume",
+      "sources": [
+        "development.axial-repeat",
+        "structure.axial-spacing",
+        "development.axial-deformation"
+      ],
+      "projectedFrom": [
+        512.17593,
+        300
+      ],
+      "projectedTo": [
+        705.698521,
+        300
+      ]
+    },
+    {
+      "id": "axis-4",
+      "from": "volume-3",
+      "to": "volume-4",
+      "role": "connected-volume",
+      "sources": [
+        "development.axial-repeat",
+        "structure.axial-spacing",
+        "development.axial-deformation"
+      ],
+      "projectedFrom": [
+        705.698521,
+        300
+      ],
+      "projectedTo": [
+        899.221112,
+        300
+      ]
+    },
+    {
+      "id": "root-fin-0-0",
+      "from": "volume-0",
+      "to": "fin-0-0",
+      "role": "rooted-surface",
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "projectedFrom": [
+        125.130748,
+        300
+      ],
+      "projectedTo": [
+        107.185926,
+        382.100493
+      ]
+    },
+    {
+      "id": "root-fin-0-1",
+      "from": "volume-0",
+      "to": "fin-0-1",
+      "role": "rooted-surface",
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "projectedFrom": [
+        125.130748,
+        300
+      ],
+      "projectedTo": [
+        107.185926,
+        217.899507
+      ]
+    },
+    {
+      "id": "root-fin-1-0",
+      "from": "volume-2",
+      "to": "fin-1-0",
+      "role": "rooted-surface",
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "projectedFrom": [
+        512.17593,
+        300
+      ],
+      "projectedTo": [
+        510.064774,
+        382.100493
+      ]
+    },
+    {
+      "id": "root-fin-1-1",
+      "from": "volume-2",
+      "to": "fin-1-1",
+      "role": "rooted-surface",
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "projectedFrom": [
+        512.17593,
+        300
+      ],
+      "projectedTo": [
+        510.064774,
+        217.899507
+      ]
+    },
+    {
+      "id": "root-fin-2-0",
+      "from": "volume-4",
+      "to": "fin-2-0",
+      "role": "rooted-surface",
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "projectedFrom": [
+        899.221112,
+        300
+      ],
+      "projectedTo": [
+        912.943623,
+        382.100493
+      ]
+    },
+    {
+      "id": "root-fin-2-1",
+      "from": "volume-4",
+      "to": "fin-2-1",
+      "role": "rooted-surface",
+      "sources": [
+        "development.attachment-repeat",
+        "development.symmetry",
+        "structure.attachment-position",
+        "development.fin-rooting",
+        "structure.fin-span"
+      ],
+      "projectedFrom": [
+        899.221112,
+        300
+      ],
+      "projectedTo": [
+        912.943623,
+        217.899507
+      ]
+    }
+  ],
+  "limitations": [
+    "All nodes are visible for inspection: overlay paint order is not opacity, transparency anatomy or physical z-order.",
+    "Neutral graph edges are annotations, not tissue bridges; source gaps remain unchanged.",
+    "This is a static footprint and pigment-mask reference, not a whole 3D body, physical motion or finished creature art."
+  ]
+}

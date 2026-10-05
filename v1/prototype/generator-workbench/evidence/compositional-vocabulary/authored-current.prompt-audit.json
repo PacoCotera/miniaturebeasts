@@ -1,0 +1,257 @@
+{
+  "version": "art-prompt-summary/1",
+  "sourceRecordId": "compositional-4247afaaa32148297977",
+  "sceneDigest": "bf49784773efd1605af5025e205f23f7bc5fa6936f5e8b3f6c56b6a3f7f8eb3e",
+  "sourceProfile": "compositional-source/4",
+  "clauseWitnesses": [
+    {
+      "text": "A headless creature with one softly squared, barrel-shaped body region",
+      "nodeIds": [
+        "region-root"
+      ],
+      "locusIds": [
+        "appearance.body-palette",
+        "growth.core-half-length",
+        "growth.core-width-ratio",
+        "growth.core-depth-ratio",
+        "organization.region-depth",
+        "organization.body-symmetry",
+        "organization.head-module",
+        "anatomy.region-cross-exponent",
+        "anatomy.region-longitudinal-form"
+      ],
+      "factIds": [
+        "appearance.bodyPalette",
+        "core.rx",
+        "core.ryOverRx",
+        "core.rzOverRx",
+        "organization.depth",
+        "organization.symmetry",
+        "modules.typedHead",
+        "region.crossExponent",
+        "region.longitudinalForm"
+      ]
+    },
+    {
+      "text": "four jointed legs with wedge-shaped ends",
+      "nodeIds": [
+        "chain-0-0-proximal",
+        "chain-0-0-joint",
+        "chain-0-0-distal",
+        "chain-0-0-terminal",
+        "chain-0-1-proximal",
+        "chain-0-1-joint",
+        "chain-0-1-distal",
+        "chain-0-1-terminal",
+        "chain-1-0-proximal",
+        "chain-1-0-joint",
+        "chain-1-0-distal",
+        "chain-1-0-terminal",
+        "chain-1-1-proximal",
+        "chain-1-1-joint",
+        "chain-1-1-distal",
+        "chain-1-1-terminal"
+      ],
+      "locusIds": [
+        "appearance.body-palette",
+        "appearance.underside-palette",
+        "anatomy.support-pair-count",
+        "growth.core-half-length",
+        "growth.core-width-ratio",
+        "growth.core-depth-ratio",
+        "growth.support-drop-ratio",
+        "growth.support-splay-ratio",
+        "growth.support-radius-ratio",
+        "growth.terminal-length-ratio",
+        "growth.terminal-depth-ratio",
+        "organization.region-depth",
+        "organization.body-symmetry",
+        "organization.appendage-role",
+        "anatomy.region-cross-exponent",
+        "anatomy.region-longitudinal-form",
+        "anatomy.contact-terminal-form"
+      ],
+      "factIds": [
+        "appearance.bodyPalette",
+        "appearance.modulePalette",
+        "support.pairCount",
+        "core.rx",
+        "core.ryOverRx",
+        "core.rzOverRx",
+        "support.rootToEndDropOverCoreRx",
+        "support.outwardEndOffsetOverCoreRx",
+        "support.proximalRadiusOverCoreRx",
+        "terminal.rxOverCoreRx",
+        "terminal.rzOverCoreRx",
+        "organization.depth",
+        "organization.symmetry",
+        "appendage.role",
+        "region.crossExponent",
+        "region.longitudinalForm",
+        "terminal.form"
+      ],
+      "chainRootIds": [
+        "chain-0-0-proximal",
+        "chain-0-1-proximal",
+        "chain-1-0-proximal",
+        "chain-1-1-proximal"
+      ],
+      "terminalIds": [
+        "chain-0-0-terminal",
+        "chain-0-1-terminal",
+        "chain-1-0-terminal",
+        "chain-1-1-terminal"
+      ],
+      "downwardInOwnerFrame": true,
+      "legAlias": true
+    },
+    {
+      "text": "Its body has russet-and-jade fur",
+      "nodeIds": [
+        "region-root"
+      ],
+      "locusIds": [
+        "appearance.body-palette",
+        "growth.core-half-length",
+        "growth.core-width-ratio",
+        "growth.core-depth-ratio",
+        "organization.region-depth",
+        "organization.body-symmetry",
+        "anatomy.region-cross-exponent",
+        "anatomy.region-longitudinal-form",
+        "appearance.fur-presence"
+      ],
+      "factIds": [
+        "appearance.bodyPalette",
+        "core.rx",
+        "core.ryOverRx",
+        "core.rzOverRx",
+        "organization.depth",
+        "organization.symmetry",
+        "region.crossExponent",
+        "region.longitudinalForm",
+        "covering.furEnabled"
+      ],
+      "words": "russet-and-jade",
+      "fields": [
+        {
+          "locusId": "appearance.body-palette",
+          "alleleId": "russet",
+          "label": "russet",
+          "value": "#ae674d"
+        },
+        {
+          "locusId": "appearance.body-palette",
+          "alleleId": "jade",
+          "label": "jade",
+          "value": "#38a878"
+        }
+      ],
+      "localFields": "two ordered local fields per owner",
+      "ownerMaterials": [
+        {
+          "nodeId": "region-root",
+          "kind": "fur",
+          "localInterval": [
+            0,
+            1
+          ],
+          "profileVersion": "compositional-surface-fields/2"
+        }
+      ]
+    },
+    {
+      "text": "its smooth appendages have slate-and-peach local colour fields",
+      "nodeIds": [
+        "chain-0-0-proximal",
+        "chain-0-0-joint",
+        "chain-0-0-distal",
+        "chain-0-0-terminal",
+        "chain-0-1-proximal",
+        "chain-0-1-joint",
+        "chain-0-1-distal",
+        "chain-0-1-terminal",
+        "chain-1-0-proximal",
+        "chain-1-0-joint",
+        "chain-1-0-distal",
+        "chain-1-0-terminal",
+        "chain-1-1-proximal",
+        "chain-1-1-joint",
+        "chain-1-1-distal",
+        "chain-1-1-terminal"
+      ],
+      "locusIds": [
+        "appearance.body-palette",
+        "appearance.underside-palette",
+        "anatomy.support-pair-count",
+        "growth.core-half-length",
+        "growth.core-width-ratio",
+        "growth.core-depth-ratio",
+        "growth.support-drop-ratio",
+        "growth.support-splay-ratio",
+        "growth.support-radius-ratio",
+        "growth.terminal-length-ratio",
+        "growth.terminal-depth-ratio",
+        "organization.region-depth",
+        "organization.body-symmetry",
+        "organization.appendage-role",
+        "anatomy.region-cross-exponent",
+        "anatomy.region-longitudinal-form",
+        "anatomy.contact-terminal-form"
+      ],
+      "factIds": [
+        "appearance.bodyPalette",
+        "appearance.modulePalette",
+        "support.pairCount",
+        "core.rx",
+        "core.ryOverRx",
+        "core.rzOverRx",
+        "support.rootToEndDropOverCoreRx",
+        "support.outwardEndOffsetOverCoreRx",
+        "support.proximalRadiusOverCoreRx",
+        "terminal.rxOverCoreRx",
+        "terminal.rzOverCoreRx",
+        "organization.depth",
+        "organization.symmetry",
+        "appendage.role",
+        "region.crossExponent",
+        "region.longitudinalForm",
+        "terminal.form"
+      ],
+      "words": "slate-and-peach",
+      "fields": [
+        {
+          "locusId": "appearance.underside-palette",
+          "alleleId": "slate",
+          "label": "slate",
+          "value": "#718489"
+        },
+        {
+          "locusId": "appearance.underside-palette",
+          "alleleId": "peach",
+          "label": "peach",
+          "value": "#ffd7c5"
+        }
+      ],
+      "localFields": "two ordered local fields per owner"
+    }
+  ],
+  "unsupportedLabels": [
+    {
+      "label": "ears / hearing",
+      "reason": "Head projections have no ear-organ or hearing consumer."
+    },
+    {
+      "label": "tail",
+      "reason": "Generic primary child regions do not establish a tail."
+    },
+    {
+      "label": "rings / stripes",
+      "reason": "Ordered pigment fields are not implemented marking geometry."
+    },
+    {
+      "label": "species / walking / flight",
+      "reason": "Static roles do not establish classification or physical capabilities."
+    }
+  ]
+}

@@ -1,0 +1,286 @@
+{
+  "schemaVersion": "anatomical-roles-content/1",
+  "catalogueIdentity": {
+    "id": "genomic-compositional-source-experiment",
+    "version": 3
+  },
+  "ruleVersion": "developmental-compositional-source/3",
+  "constructionProfile": "compositional-source/5",
+  "materialProfile": "compositional-surface-fields/3",
+  "referenceProfile": "compositional-reference/5",
+  "loci": [
+    {
+      "id": "anatomy.auricular-presence",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "affectedFamilies": [
+        "appearance"
+      ],
+      "operator": "dominant-enable",
+      "target": "ears.enabled",
+      "activeWhen": "actual typed head exists",
+      "alleles": [
+        {
+          "id": "off",
+          "value": false
+        },
+        {
+          "id": "on",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "anatomy.auricular-form",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "affectedFamilies": [
+        "appearance"
+      ],
+      "operator": "pair-map",
+      "target": "ears.form",
+      "activeWhen": "head-owned ears are enabled",
+      "alleles": [
+        {
+          "id": "rounded",
+          "value": "rounded"
+        },
+        {
+          "id": "pointed",
+          "value": "pointed"
+        }
+      ],
+      "pairMap": {
+        "rounded|rounded": "rounded",
+        "pointed|rounded": "pointed",
+        "pointed|pointed": "pointed"
+      }
+    },
+    {
+      "id": "growth.auricular-length-ratio",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "affectedFamilies": [
+        "appearance"
+      ],
+      "operator": "copy-mean",
+      "target": "ears.lengthOverHeadRz",
+      "activeWhen": "head-owned ears are enabled",
+      "units": "ratio to head local Rz",
+      "bounds": [
+        0.6,
+        1.0
+      ],
+      "alleles": [
+        {
+          "id": "short",
+          "value": 0.6
+        },
+        {
+          "id": "long",
+          "value": 1.0
+        }
+      ]
+    },
+    {
+      "id": "anatomy.axial-tail-presence",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "affectedFamilies": [
+        "appearance"
+      ],
+      "operator": "dominant-enable",
+      "target": "tail.enabled",
+      "activeWhen": "primary graph exists",
+      "alleles": [
+        {
+          "id": "off",
+          "value": false
+        },
+        {
+          "id": "on",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "growth.axial-tail-length-ratio",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "affectedFamilies": [
+        "appearance"
+      ],
+      "operator": "copy-mean",
+      "target": "tail.lengthOverOwnerRx",
+      "activeWhen": "axial tail enabled",
+      "units": "arc length / selected owner local Rx",
+      "bounds": [
+        0.75,
+        1.75
+      ],
+      "alleles": [
+        {
+          "id": "short",
+          "value": 0.75
+        },
+        {
+          "id": "long",
+          "value": 1.75
+        }
+      ]
+    },
+    {
+      "id": "growth.axial-tail-width-ratio",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "affectedFamilies": [
+        "appearance"
+      ],
+      "operator": "copy-mean",
+      "target": "tail.baseRadiusOverOwnerCross",
+      "activeWhen": "axial tail enabled",
+      "units": "radius / selected owner min(Ry,Rz)",
+      "bounds": [
+        0.08,
+        0.16
+      ],
+      "alleles": [
+        {
+          "id": "fine",
+          "value": 0.08
+        },
+        {
+          "id": "broad",
+          "value": 0.16
+        }
+      ]
+    },
+    {
+      "id": "growth.axial-tail-bend",
+      "version": 1,
+      "copyCount": 2,
+      "family": "structure",
+      "affectedFamilies": [
+        "appearance"
+      ],
+      "operator": "copy-mean",
+      "target": "tail.bendRadians",
+      "activeWhen": "axial tail enabled",
+      "units": "signed total bend in owner local XZ",
+      "bounds": [
+        -0.6,
+        0.6
+      ],
+      "alleles": [
+        {
+          "id": "down",
+          "value": -0.6
+        },
+        {
+          "id": "up",
+          "value": 0.6
+        }
+      ]
+    }
+  ],
+  "defaultCopies": {
+    "anatomy.auricular-presence": [
+      "off",
+      "off"
+    ],
+    "anatomy.auricular-form": [
+      "rounded",
+      "rounded"
+    ],
+    "growth.auricular-length-ratio": [
+      "short",
+      "short"
+    ],
+    "anatomy.axial-tail-presence": [
+      "off",
+      "off"
+    ],
+    "growth.axial-tail-length-ratio": [
+      "short",
+      "short"
+    ],
+    "growth.axial-tail-width-ratio": [
+      "fine",
+      "fine"
+    ],
+    "growth.axial-tail-bend": [
+      "down",
+      "up"
+    ]
+  },
+  "conventions": {
+    "ear": {
+      "portDirection": [
+        0,
+        0.62,
+        0.78
+      ],
+      "widthOverLength": 0.45,
+      "bowlDepthOverLength": 0.1,
+      "thicknessOverLength": 0.025,
+      "rootPenetrationOverLength": 0.04,
+      "boundaryVertices": 8
+    },
+    "tail": {
+      "stations": 6,
+      "ringVertices": 8,
+      "tipRadiusOverBase": 0.16,
+      "rootPenetrationOverBase": 0.25,
+      "ownerRule": "serial-terminal-or-fan-root/1",
+      "curve": "constant-curvature owner-local XZ; exact inherited arc length"
+    },
+    "coat": {
+      "rootsPerOwner": 48,
+      "fragmentsPerRoot": 3,
+      "maximumFragments": 1008,
+      "maximumClippedVertices": 6,
+      "coverage": [
+        0,
+        1
+      ],
+      "clusterProfile": "overlapping-tapered-fringe/1",
+      "baseHalfWidthOverLength": 0.25,
+      "tipHalfWidthOverLength": 0.025,
+      "normalRiseOverLength": 0.1
+    }
+  },
+  "limits": {
+    "candidateAttempts": 1024,
+    "primaryRegions": 7,
+    "graphNodes": 67,
+    "graphEdges": 131,
+    "meshVertices": 4352,
+    "materialCells": 128,
+    "absoluteCoordinate": 10000
+  },
+  "baseline": {
+    "id": "compositional-solid-operators",
+    "version": 3,
+    "references": [
+      "ellipsoid-volume/1",
+      "tapered-chain-volume/1",
+      "rooted-thin-surface/1",
+      "surface-root-intersection/1",
+      "local-pigment-partition/1",
+      "convex-ring-profile/1",
+      "facet-envelope-roots/2",
+      "contact-terminal-envelope/1",
+      "facet-rooted-fur-ribbon/1",
+      "concave-auricular-sheet/1",
+      "continuous-axial-tail-sweep/1",
+      "facet-rooted-coat-cluster/1"
+    ],
+    "meaning": "Optional inherited operators; at least one primary volume. Ears require a typed head; tail selects a declared graph owner; coat is primary-only. Static construction supplies no hearing, movement or complete physiology."
+  }
+}

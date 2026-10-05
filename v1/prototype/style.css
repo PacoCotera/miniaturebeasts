@@ -1,0 +1,581 @@
+:root {
+  color-scheme: light;
+  --paper: #f5f1e7;
+  --ink: #303a36;
+  --line: #d4d0c2;
+  --orange: #b85129;
+  --muted: #676f63
+}
+
+* {
+  box-sizing: border-box
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, sans-serif
+}
+
+header, main {
+  max-width: 1120px;
+  margin: auto
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 28px;
+  border-bottom: 1px solid var(--line)
+}
+
+.brand {
+  color: var(--ink);
+  font: bold 23px/1.15 monospace;
+  letter-spacing: 2px;
+  text-decoration: none
+}
+
+.brand span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 3px;
+  margin-top: 7px
+}
+
+.badge, .eyebrow {
+  font: 11px/1.4 monospace;
+  letter-spacing: 1.5px
+}
+
+.badge {
+  border: 1px solid var(--line);
+  padding: 9px 12px
+}
+
+main {
+  padding: 0 28px
+}
+
+.intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 56px 0 24px
+}
+
+.eyebrow {
+  color: var(--orange);
+  font-weight: bold
+}
+
+h1 {
+  font: 500 clamp(32px, 5vw, 54px)/1.06 Georgia, serif;
+  letter-spacing: -1.5px;
+  margin: 18px 0
+}
+
+h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  margin: 10px 0 18px
+}
+
+.intro p {
+  max-width: 530px
+}
+
+.intro aside {
+  max-width: 260px;
+  align-self: center;
+  border-left: 3px solid var(--orange);
+  padding: 8px 0 8px 20px;
+  font: 11px/1.6 monospace;
+  letter-spacing: 1px
+}
+
+.intro aside p {
+  font: 13px/1.6 system-ui;
+  letter-spacing: 0;
+  margin-bottom: 0
+}
+
+.notice {
+  background: #ebe9dc;
+  border: 1px solid #d6d9c8;
+  padding: 13px 17px;
+  font-size: 13px
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 15px;
+  margin-top: 35px
+}
+
+.section-title h2 {
+  font: 13px monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase
+}
+
+.section-title span, .fine {
+  font-size: 12px;
+  color: var(--muted)
+}
+
+.parent-grid, .workbench {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px
+}
+
+.parent {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: #eeece1;
+  padding: 14px 20px
+}
+
+.parent svg {
+  width: 45%;
+  min-width: 115px
+}
+
+.parent h3 {
+  font: 24px Georgia, serif;
+  margin: 0 0 8px
+}
+
+.parent p {
+  font-size: 12px;
+  margin: 6px 0
+}
+
+.parent .gene {
+  font: 11px monospace
+}
+
+.workbench {
+  margin-top: 30px
+}
+
+.panel {
+  border: 1px solid var(--line);
+  padding: 25px;
+  background: #fbf8f0
+}
+
+.panel p {
+  font-size: 14px
+}
+
+.panel .fine {
+  font-size: 12px
+}
+
+button {
+  background: var(--orange);
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 12px 18px;
+  font: 600 13px system-ui;
+  cursor: pointer
+}
+
+button:hover {
+  filter: brightness(.94)
+}
+
+button:disabled {
+  opacity: .48;
+  cursor: default
+}
+
+button:focus-visible, input:focus-visible {
+  outline: 3px solid #456f79;
+  outline-offset: 3px
+}
+
+.secondary {
+  color: var(--ink);
+  background: transparent;
+  border-color: var(--line)
+}
+
+.sample-choice {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  margin: 16px 0
+}
+
+input {
+  accent-color: var(--orange);
+  width: 18px;
+  height: 18px
+}
+
+.forecast-row {
+  display: grid;
+  grid-template-columns: 105px 1fr 38px;
+  gap: 10px;
+  align-items: center;
+  margin: 12px 0;
+  font-size: 12px
+}
+
+meter {
+  width: 100%;
+  height: 14px
+}
+
+#research-status {
+  padding: 14px 0;
+  font: 13px monospace;
+  color: var(--muted)
+}
+
+.egg, .empty {
+  border: 1px dashed var(--line);
+  padding: 22px;
+  font-size: 14px
+}
+
+.egg {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin: 10px 0
+}
+
+.egg p {
+  margin: 0
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px
+}
+
+.specimen {
+  border: 1px solid var(--line);
+  padding: 20px;
+  background: #fbf8f0
+}
+
+.specimen svg {
+  display: block;
+  width: 100%;
+  max-width: 230px;
+  margin: auto
+}
+
+.specimen h3 {
+  font: 18px Georgia, serif
+}
+
+.specimen p {
+  font-size: 12px;
+  overflow-wrap: anywhere
+}
+
+.specimen button {
+  width: 100%
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-top: 50px;
+  border-top: 1px solid var(--line);
+  padding: 25px 0;
+  font-size: 11px;
+  color: var(--muted)
+}
+
+#print-card {
+  display: none
+}
+
+.print-id {
+  overflow-wrap: anywhere
+}
+
+.research-finding {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  margin-bottom: 20px;
+  overflow-wrap: anywhere;
+}
+
+.research-finding h3 {
+  font-size: 17px;
+  margin: 0 0 12px;
+}
+
+.ancestry-panel {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width:720px) {
+  .intro {
+    display: block;
+    padding-top: 30px
+  }
+
+  .intro aside {
+    max-width: none;
+    margin: 25px 0
+  }
+
+  .parent-grid, .workbench {
+    grid-template-columns: 1fr
+  }
+
+  .collection-grid {
+    grid-template-columns: repeat(2, 1fr)
+  }
+
+  .egg, footer {
+    align-items: flex-start;
+    flex-direction: column
+  }
+
+  .badge {
+    font-size: 9px
+  }
+
+  main, header {
+    padding-left: 18px;
+    padding-right: 18px
+  }
+
+}
+
+@media (max-width:420px) {
+  .collection-grid {
+    grid-template-columns: 1fr
+  }
+
+  .section-title {
+    display: block
+  }
+
+  .parent {
+    padding: 10px
+  }
+
+  .brand {
+    font-size: 19px
+  }
+
+}
+
+@media print {
+  body {
+    background: white;
+    color: black
+  }
+
+  body>header, main>* {
+    display: none!important
+  }
+
+  main {
+    padding: 0
+  }
+
+  main>#print-card {
+    display: block!important;
+    width: 72mm;
+    margin: auto;
+    text-align: center;
+    font: 12px monospace
+  }
+
+  #print-card svg {
+    width: 60mm;
+    height: auto
+  }
+
+  #print-card h2 {
+    font: 20px monospace
+  }
+
+  #print-card p {
+    font-size: 10px
+  }
+
+  .print-id {
+    font-size: 9px!important
+  }
+
+}
+
+.specimen img.portrait {
+  display: block;
+  width: 100%;
+  max-width: 230px;
+  margin: auto
+}
+
+@media print {
+  #print-card img.portrait {
+    width: 60mm;
+    height: auto
+  }
+
+}
+
+[hidden] {
+  display: none!important
+}
+
+.share-layout, .dossier-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px
+}
+
+.share-layout svg, .share-layout .portrait, .dossier-layout svg {
+  width: 100%;
+  max-width: 260px;
+  display: block;
+  margin: auto
+}
+
+.qr {
+  width: 200px;
+  height: 200px;
+  max-width: 100%;
+  object-fit: contain;
+  background: white
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px
+}
+
+#share-card, #dossier {
+  margin: 28px 0
+}
+
+.text-link, a {
+  color: var(--orange)
+}
+
+dt {
+  font-weight: 600;
+  font-size: 12px;
+  margin-top: 12px
+}
+
+dd {
+  margin: 2px 0;
+  overflow-wrap: anywhere;
+  font-size: 14px
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px
+}
+
+caption {
+  text-align: left;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 12px 0
+}
+
+td, th {
+  padding: 6px;
+  border-bottom: 1px solid var(--line)
+}
+
+@media (max-width:600px) {
+  .share-layout, .dossier-layout {
+    grid-template-columns: 1fr
+  }
+
+}
+
+@media print {
+  #print-card .qr {
+    width: 38mm;
+    height: 38mm;
+    display: block;
+    margin: 3mm auto
+  }
+
+}
+
+#print-card {
+  width: 72mm;
+  margin: 24px auto;
+  text-align: center;
+  font: 12px monospace;
+  background: #fff;
+  color: #000;
+  break-inside: avoid
+}
+
+#print-card.preview {
+  display: block;
+  outline: 1px dashed #777
+}
+
+#print-card svg, #print-card img.portrait {
+  width: 60mm;
+  height: auto
+}
+
+#print-card h2 {
+  font: 20px monospace
+}
+
+#print-card p {
+  font-size: 10px
+}
+
+#print-card .print-id {
+  font-size: 9px
+}
+
+#print-card .qr {
+  width: 38mm;
+  height: 38mm;
+  display: block;
+  margin: 3mm auto
+}
+
+@media print {
+  #print-card.preview {
+    outline: none
+  }
+
+  #print-card {
+    margin: 0 auto
+  }
+
+}

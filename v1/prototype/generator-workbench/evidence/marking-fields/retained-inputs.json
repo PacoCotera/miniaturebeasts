@@ -1,0 +1,222 @@
+{
+  "constructionRevision": "52033784ef87ffacdd6a22b8d83ca848560d5b60",
+  "initialRejectedRevision": "0cd05e0c6cd1dbd5869c4efbda9d260e15c3ab7f",
+  "locusPanelRevision": "edbf843bdbb3c8b208348aa4c8da2078fd1befcb",
+  "authoringPairCount": 111,
+  "changedOrderedPairs": [
+    {
+      "id": "appearance.marking-switch",
+      "off": [
+        "off",
+        "off"
+      ],
+      "on": [
+        "on",
+        "on"
+      ]
+    }
+  ],
+  "sameAuthoredFoundation": true,
+  "records": [
+    {
+      "sceneRecordId": "compositional-8af7e436844dc47f5d6f",
+      "schemaVersion": "compositional-authored-record/4",
+      "sceneProjectionVersion": "compositional-source/7",
+      "materialProfileVersion": "compositional-surface-fields/5",
+      "inputDigest": "afa24beedec65738ea8d52a034fedeb2a94b0673a72b0be84736b3acacb91366",
+      "resultDigest": "b2161221171bcc3717375466a70bc82afd2bed7f467921e1ba41fd8e728d656f",
+      "sceneDigest": "bde18e53f6e8f4dc3a88bd81f015958e1ca2b1cf7bd3f6f18e295287c8db3b9a"
+    },
+    {
+      "sceneRecordId": "compositional-88b90209391bebd9325d",
+      "schemaVersion": "compositional-authored-record/4",
+      "sceneProjectionVersion": "compositional-source/7",
+      "materialProfileVersion": "compositional-surface-fields/5",
+      "inputDigest": "3e8e65e2c39f3a564d133fb58f0e2a5eddbff228a8f964cc7d5b0bff551f697c",
+      "resultDigest": "bd41c366165364532ab3d08bfb23ebe6937a0c85a36d0eadff35a51ebfd1845f",
+      "sceneDigest": "8a9abaa8730906d56967c78ddf22864fccd4d5de07929acaea4e55a9b8f5d279"
+    }
+  ],
+  "actualField": {
+    "profile": "primary-local-marking-field/1",
+    "ownerIds": [
+      "region-root"
+    ],
+    "logicalCount": 5,
+    "emittedPolygons": 526,
+    "ink": "#e8dfc8",
+    "opacity": 0.8,
+    "contributors": [
+      {
+        "copies": [
+          "on",
+          "on"
+        ],
+        "locusId": "appearance.marking-switch",
+        "state": "expressed",
+        "target": "markings.enabled",
+        "value": true
+      },
+      {
+        "copies": [
+          "bands",
+          "patches"
+        ],
+        "locusId": "appearance.marking-layout",
+        "state": "expressed",
+        "target": "markings.layout",
+        "value": "bands-and-patches"
+      },
+      {
+        "copies": [
+          "high",
+          "high"
+        ],
+        "locusId": "appearance.marking-extent",
+        "state": "expressed",
+        "target": "markings.extent",
+        "value": 0.5
+      },
+      {
+        "copies": [
+          "high",
+          "high"
+        ],
+        "locusId": "appearance.marking-scale",
+        "state": "expressed",
+        "target": "markings.scale",
+        "value": 0.14
+      },
+      {
+        "copies": [
+          "low",
+          "low"
+        ],
+        "locusId": "appearance.marking-orientation",
+        "state": "expressed",
+        "target": "markings.orientation",
+        "value": 0
+      },
+      {
+        "copies": [
+          "high",
+          "high"
+        ],
+        "locusId": "appearance.marking-contrast",
+        "state": "expressed",
+        "target": "markings.contrast",
+        "value": 0.8
+      }
+    ]
+  },
+  "recovery": "Actual fresh-page digest replay of retained OFF and ON recipes succeeded; embedded output/SVG/prompt was not trusted.",
+  "copiedPromptMatchesVisiblePrompt": true,
+  "disposition": "Narrow OFF/ON consumer proof supported; coherent paint, fur and ear craft HOLD. Patch count is constructed logical data, not two independently visible patch shapes.",
+  "assets": [
+    {
+      "name": "off-locus-panel.png",
+      "bytes": 140193,
+      "sha256": "582dc81658cf0cd8e32cbe99f249eb67ea9f78791f1d6b45d66e4bd00b3ba483"
+    },
+    {
+      "name": "off-locus-panel.txt",
+      "bytes": 1128,
+      "sha256": "9b40b55fa8f32117d956f8f49d237a4079c40ac01f50c348381c3c55e3b17977"
+    },
+    {
+      "name": "off-replayed-state.txt",
+      "bytes": 6551,
+      "sha256": "aa50ae0aaa02390c118d4c0acaf42af3d52f8d485a1e67047752cf83b58417c4"
+    },
+    {
+      "name": "off-workbench.png",
+      "bytes": 146498,
+      "sha256": "638da4f541d4a207c7e16506fbcc19f48a161d587312d66ebd0a2b97ca05ad6f"
+    },
+    {
+      "name": "off.png",
+      "bytes": 40856,
+      "sha256": "36c392b94e027197d0dbc9651eaa82e8d539ba7f4cd25e3a7e111169a60a98f1"
+    },
+    {
+      "name": "off.prompt.txt",
+      "bytes": 396,
+      "sha256": "fd85cee6d177d641820734b6dbc5a467b33ba8ed3671cb4a30e9f06bb63e6441"
+    },
+    {
+      "name": "off.record.json",
+      "bytes": 26183,
+      "sha256": "0deb95d581d177244883593e38194905872c97c114baa84ca0d187bd5dcd7676"
+    },
+    {
+      "name": "off.svg",
+      "bytes": 266635,
+      "sha256": "8e2c3f84f536b8a395e1611856dad94b0cbbba4a8d3229acc7606364053d9ad4"
+    },
+    {
+      "name": "on-first-resolve-error.png",
+      "bytes": 150990,
+      "sha256": "641a743bec7cc0d88dfae6976899328bdd321a978fe9495a342b29aa5292daa8"
+    },
+    {
+      "name": "on-first-resolve-error.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "name": "on-locus-panel.png",
+      "bytes": 143270,
+      "sha256": "b67f845db5f01f2a4343f90bd08891abef02f651d8ea3b596353c1cbe0c37dd1"
+    },
+    {
+      "name": "on-locus-panel.txt",
+      "bytes": 1214,
+      "sha256": "1b1d588f0d9f10f0f0187b3611946203337d15db9be139d7e6bf78bf9e0fabe1"
+    },
+    {
+      "name": "on-reopened-state.txt",
+      "bytes": 6597,
+      "sha256": "fce661d0fc1f6a817dc2c88bf05090a8cfdee9c3fd5c5142722f5742b64aeccd"
+    },
+    {
+      "name": "on-reopened-workbench.png",
+      "bytes": 153302,
+      "sha256": "6f9e11ff16c090e690ede2446cd8cbf500601fc724bdb2a872bf48985024160c"
+    },
+    {
+      "name": "on-workbench.png",
+      "bytes": 149094,
+      "sha256": "550cdaa2ee76555559317a5b50d0ca3f7481a19cd851544381403c544bfb69d4"
+    },
+    {
+      "name": "on.copied-prompt.txt",
+      "bytes": 442,
+      "sha256": "500cd92ba0ce47986180dfb3114d8e5a1e090d3155e4cec614a593072e8303c6"
+    },
+    {
+      "name": "on.field-audit.json",
+      "bytes": 10565,
+      "sha256": "2129071e8c0d35ea59eade194d9f41553b67b2e7c69d9402d03d45c06f1cadf8"
+    },
+    {
+      "name": "on.png",
+      "bytes": 46418,
+      "sha256": "b98c8dd378e2a7069586ea21dcc6fa69b16592536b1c873650b3ace7abe47a7b"
+    },
+    {
+      "name": "on.prompt.txt",
+      "bytes": 442,
+      "sha256": "500cd92ba0ce47986180dfb3114d8e5a1e090d3155e4cec614a593072e8303c6"
+    },
+    {
+      "name": "on.record.json",
+      "bytes": 26181,
+      "sha256": "c332ad1359dc28e9efcbb583e817eff19af0685a136f9189989c3fe8f116356f"
+    },
+    {
+      "name": "on.svg",
+      "bytes": 314970,
+      "sha256": "bb183ae161f48ba6dfdd0a31fba475e66f9a019a7deadbe849c542b2f0fa43cc"
+    }
+  ]
+}

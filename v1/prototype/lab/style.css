@@ -1,0 +1,10 @@
+body { margin: 0; background: #ddd7c9; color: #252c32; font: 16px system-ui, sans-serif; }
+main { max-width: 1000px; margin: 24px auto; padding: 16px; }
+canvas { display: block; width: 960px; height: 720px; image-rendering: pixelated; border: 8px solid #252c32; }
+button, select { font: inherit; padding: 10px; margin: 4px; }
+.controls { display: flex; gap: 8px; margin-top: 8px; }
+.controls button { flex: 1; }
+fieldset { display: flex; flex-wrap: wrap; gap: 8px; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 1000px) { canvas { width: 640px; height: 480px; } }
+@media (max-width: 700px) { canvas { width: 320px; height: 240px; } }

@@ -1,0 +1,66 @@
+[
+  {
+    "name": "axial-walker",
+    "provenance": "Owner-supplied image paired with pasted workbench prompt; provider/model/session and renderer fidelity independently unverified.",
+    "files": [
+      {
+        "file": "axial-walker.png",
+        "bytes": 733273,
+        "sha256": "cf54ea210f13d5bf12dc64a842c45b3e7aec5f2cf049894f0a78ddb0cc753763"
+      },
+      {
+        "file": "axial-walker.original-prompt.txt",
+        "bytes": 24032,
+        "sha256": "d9db820294be89618c252b794fa249f4fffc9118c4cf367e0dac6237061902f2"
+      }
+    ]
+  },
+  {
+    "name": "radial-appendages",
+    "provenance": "Owner-supplied image paired with pasted workbench prompt; provider/model/session and renderer fidelity independently unverified.",
+    "files": [
+      {
+        "file": "radial-appendages.png",
+        "bytes": 695180,
+        "sha256": "ba9de290fc3aecc0bf7bb11d933b5e77a39562982d25981364b20f4850ed205e"
+      },
+      {
+        "file": "radial-appendages.original-prompt.txt",
+        "bytes": 13433,
+        "sha256": "336b3979621ccabbc48ca0444e417336caff29c6b8150f5de5d73edc01d3807d"
+      }
+    ]
+  },
+  {
+    "name": "axial-body",
+    "provenance": "Owner-supplied image paired with pasted workbench prompt; provider/model/session and renderer fidelity independently unverified.",
+    "files": [
+      {
+        "file": "axial-body.png",
+        "bytes": 567428,
+        "sha256": "3d9750f0d46d676265643a8069c31c759a8bf904f2e0533c6005d4d1e7220889"
+      },
+      {
+        "file": "axial-body.original-prompt.txt",
+        "bytes": 11976,
+        "sha256": "57156a8ea364ba25abbee8c206b62d78db3389d6e9f04ef0b01f370916948025"
+      }
+    ]
+  },
+  {
+    "name": "single-body-membranes",
+    "provenance": "Owner-supplied image paired with pasted workbench prompt; provider/model/session and renderer fidelity independently unverified.",
+    "files": [
+      {
+        "file": "single-body-membranes.png",
+        "bytes": 822333,
+        "sha256": "08652c3f1f1d65d80ad768a9d3b93e191c7a0dc6acd5c821fa66f902cced9c0a"
+      },
+      {
+        "file": "single-body-membranes.original-prompt.txt",
+        "bytes": 12222,
+        "sha256": "069c08e56893024e74d31970592f82195cd6458dfb7dd386fc61b1898a288a1b"
+      }
+    ]
+  }
+]

@@ -1,0 +1,188 @@
+{
+  "status": "Prepared Gemini destination artwork for native integration; not a native screen capture",
+  "source": {
+    "file": "gemini-family-original.png",
+    "sha256": "9b6a400c1dd8542b521d742f9f09d5c179436480ba10f774bad817922a5a135e",
+    "width": 1024,
+    "height": 1024,
+    "acquisition": "Gemini Copy image control in the existing conversation; not a screenshot",
+    "alphaMin": 255,
+    "alphaMax": 255
+  },
+  "process": "Explicit crop, aspect-preserving Lanczos3 reduction, and centered opaque padding; no redraw, color key, flood matte or recoloring",
+  "resampling": "lanczos3",
+  "backing": {
+    "rgb": [
+      40,
+      51,
+      57
+    ],
+    "hex": "#283339",
+    "kind": "Opaque original artwork backing, with slight source color variation retained",
+    "transparencyClaim": false,
+    "nativeRequirement": "Draw 1:1 on matching #283339 region; copy opaque pixels directly and bypass legacy corner-color sprite_matte"
+  },
+  "boundsMeasurement": "Bounding box of output pixels differing by more than 14 in any RGB channel from the measured backing; measurement only, not an alpha mask",
+  "assets": [
+    {
+      "name": "explore",
+      "file": "exports/explore.png",
+      "sourceCrop": {
+        "left": 95,
+        "top": 75,
+        "width": 352,
+        "height": 360
+      },
+      "reducedSize": [
+        118,
+        121
+      ],
+      "paddingOffset": [
+        9,
+        11
+      ],
+      "drawSize": [
+        136,
+        144
+      ],
+      "drawScale": 1,
+      "opticalSlotCenter": [
+        68,
+        72
+      ],
+      "sha256": "a09b49c99566348ea11f76a162559775c0e50e18ef0939d0ab8d7ffdc7891dc6",
+      "width": 136,
+      "height": 144,
+      "channels": 4,
+      "alphaMin": 255,
+      "alphaMax": 255,
+      "contrastBounds": {
+        "x": 13,
+        "y": 15,
+        "width": 110,
+        "height": 112
+      },
+      "decodedRgbaSha256": "52038ab02e645a67aff09f59cbf88fc811e2866045825fd279f0e189770225a7"
+    },
+    {
+      "name": "research",
+      "file": "exports/research.png",
+      "sourceCrop": {
+        "left": 618,
+        "top": 49,
+        "width": 324,
+        "height": 424
+      },
+      "reducedSize": [
+        104,
+        136
+      ],
+      "paddingOffset": [
+        16,
+        4
+      ],
+      "drawSize": [
+        136,
+        144
+      ],
+      "drawScale": 1,
+      "opticalSlotCenter": [
+        68,
+        72
+      ],
+      "sha256": "4531d96fa81695bf15a883c957d4818405e98e536c8964544f6f9171aa5e38f9",
+      "width": 136,
+      "height": 144,
+      "channels": 4,
+      "alphaMin": 255,
+      "alphaMax": 255,
+      "contrastBounds": {
+        "x": 19,
+        "y": 8,
+        "width": 97,
+        "height": 129
+      },
+      "decodedRgbaSha256": "7aa9d76ee9fc7a7e330a2d4561f656489f2d36a33d2fe146140d98ca6c2642ed"
+    },
+    {
+      "name": "incubator",
+      "file": "exports/incubator.png",
+      "sourceCrop": {
+        "left": 112,
+        "top": 576,
+        "width": 288,
+        "height": 384
+      },
+      "reducedSize": [
+        102,
+        136
+      ],
+      "paddingOffset": [
+        17,
+        4
+      ],
+      "drawSize": [
+        136,
+        144
+      ],
+      "drawScale": 1,
+      "opticalSlotCenter": [
+        68,
+        72
+      ],
+      "sha256": "f3e78d8fb0f824b566052a77f17bda253fbc5d4cb8fa6fb40af4344f44e0d03b",
+      "width": 136,
+      "height": 144,
+      "channels": 4,
+      "alphaMin": 255,
+      "alphaMax": 255,
+      "contrastBounds": {
+        "x": 24,
+        "y": 8,
+        "width": 88,
+        "height": 128
+      },
+      "decodedRgbaSha256": "77fc1254cf732b79d006391969399e624f594fc35672b735eda6a8b6e282851e"
+    },
+    {
+      "name": "habitat",
+      "file": "exports/habitat.png",
+      "sourceCrop": {
+        "left": 628,
+        "top": 592,
+        "width": 280,
+        "height": 368
+      },
+      "reducedSize": [
+        104,
+        137
+      ],
+      "paddingOffset": [
+        16,
+        3
+      ],
+      "drawSize": [
+        136,
+        144
+      ],
+      "drawScale": 1,
+      "opticalSlotCenter": [
+        68,
+        72
+      ],
+      "sha256": "c4eb3464532693068df438c4c2953e53d0cb3240475f5c525ee84f9498bbba4b",
+      "width": 136,
+      "height": 144,
+      "channels": 4,
+      "alphaMin": 255,
+      "alphaMax": 255,
+      "contrastBounds": {
+        "x": 20,
+        "y": 7,
+        "width": 96,
+        "height": 125
+      },
+      "decodedRgbaSha256": "d7d857807c0db79715c81946f5921e5be20680bfb73c1b0e102bc467b6894f57"
+    }
+  ]
+}

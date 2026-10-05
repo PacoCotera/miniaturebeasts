@@ -1,0 +1,82 @@
+Resolve genome
+
+BASELINE FOUNDATION
+
+genomic-compositional-source-draft-c6ebaf6cb8bb477b · v1
+
+111 defined copy contracts; construction consumers are separate
+
+INHERITED COPIES
+
+111 recorded loci
+
+222 retained copies, including inactive ones
+
+RESOLVED EXPRESSION
+
+42 expressed outputs
+
+27 inactive · 48 unimplemented consumers/definitions
+
+All
+117
+structure
+71
+appearance
+20
+mechanics movement
+10
+sensing signaling
+1
+cognition tendencies
+0
+energy nutrition
+6
+maintenance protection
+0
+affinities exposure
+0
+development longevity
+9
+reproduction
+0
+fantastic physiology
+0
+
+Whole genome
+
+1 records
+
+marking switch
+off / off
+expressed
+
+SELECTED LOCUS · appearance
+
+marking switch
+
+Contributes marking switch to markings; resolved through declared recessive-enable.
+
+Copy 1
+
+off
+on
+
+Copy 2
+
+off
+on
+
+DIRECT OUTPUT
+
+absent · categorical
+
+EXPRESSED
+
+DOWNSTREAM INVOLVEMENT
+
+Primary marking field disabled: no painted owners or masks.
+
+Copies retained; this contributor is expressed. Surface paint adds no anatomical nodes.
+
+Other dependent outputs: marking layout, marking extent, marking scale, marking orientation, marking contrast

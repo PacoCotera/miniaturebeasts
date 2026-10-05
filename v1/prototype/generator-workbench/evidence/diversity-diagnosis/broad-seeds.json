@@ -1,0 +1,66 @@
+[
+  {
+    "seed": 1,
+    "attempts": 1,
+    "recordId": "experiment-3f05a537aa93e1c1fa6f",
+    "inputDigest": "3f05a537aa93e1c1fa6fe621139c85220e8cca839020bae59fc9503e47fe30fe",
+    "resultDigest": "67c2750080b1109b23a28404d284ba2e545e23286a0a787f1ae46d6193355404",
+    "roles": {
+      "volume": 3,
+      "link": 3,
+      "contact-link": 3,
+      "membrane": 3,
+      "fin": 0
+    },
+    "displayProjectionVersion": "surface-detail/1",
+    "motion": [
+      {
+        "medium": "ground",
+        "status": "supported",
+        "activeInContext": true
+      },
+      {
+        "medium": "air",
+        "status": "unavailable",
+        "activeInContext": false
+      },
+      {
+        "medium": "water",
+        "status": "unavailable",
+        "activeInContext": false
+      }
+    ]
+  },
+  {
+    "seed": 21,
+    "attempts": 2,
+    "recordId": "experiment-6ddf85daeef78aa2184e",
+    "inputDigest": "6ddf85daeef78aa2184eacd1a7bc462b0f299b73322819c9dc463d7d21a6cdb1",
+    "resultDigest": "448e149daf0710e27d397f40707cbd5114ee6a067ac661ee48c2b5639ce75e0f",
+    "roles": {
+      "volume": 3,
+      "link": 0,
+      "contact-link": 0,
+      "membrane": 2,
+      "fin": 2
+    },
+    "displayProjectionVersion": "surface-detail/1",
+    "motion": [
+      {
+        "medium": "ground",
+        "status": "unavailable",
+        "activeInContext": false
+      },
+      {
+        "medium": "air",
+        "status": "supported",
+        "activeInContext": false
+      },
+      {
+        "medium": "water",
+        "status": "unavailable",
+        "activeInContext": false
+      }
+    ]
+  }
+]

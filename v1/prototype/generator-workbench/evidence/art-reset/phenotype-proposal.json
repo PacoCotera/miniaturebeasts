@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "art-first-phenotype-proposal/1",
+  "status": "visual proposal, not current engine output",
+  "shared": {
+    "organization": "one continuous rounded torso and distinct forward/upward face-bearing region",
+    "limbs": {"count": 4, "terminal": "broad soft feet"},
+    "crownFronds": {"count": 2, "roots": "low crown", "shape": "short rounded flattened", "function": "unassigned"},
+    "oculars": 2,
+    "oral": "one small static curved slit",
+    "absent": ["tail", "nose", "ears", "wings"],
+    "pigments": {"body": "deep teal", "face": "warm cream", "chest": "small cream region", "frondTips": "coral"},
+    "coveringExclusions": ["face", "feet"],
+    "depiction": "same stylized 2D three-quarter resting view and world scale; not physical 3D proof"
+  },
+  "cases": [
+    {"id": "base", "leadingRegionBodyRatio": "approximately 2/5", "limbBodyReachRatio": "approximately 1/5", "bodyCovering": "dense short fur"},
+    {"id": "proportion", "relativeTo": "base", "changes": {"leadingRegionBodyRatio": "approximately 1/2", "limbBodyReachRatio": "approximately 1/3"}},
+    {"id": "covering", "relativeTo": "base", "changes": {"bodyCovering": "dense short overlapping feathers"}}
+  ],
+  "limits": ["No implementation/replay/inheritance proof", "No physiological capability inferred from feather or frond appearance", "No class or species preset selected", "Ratios are visual proposal targets, not measured image geometry", "All other shared morphology remains invariant"]
+}

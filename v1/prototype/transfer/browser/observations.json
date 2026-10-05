@@ -1,0 +1,190 @@
+{
+  "label": "Authored read-only lab observations; no live probe or inventory operation.",
+  "key": {
+    "labId": "Lab_aB09",
+    "source": "Probe_aB09",
+    "destination": "Lab_aB09",
+    "transferId": "Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul",
+    "digest": "dc2eaf776c45f8a4b72fdda8a832d6719c5f54902f71d41d97bd1b61969bb8c2"
+  },
+  "observations": {
+    "unknown": {
+      "schema": 1,
+      "key": {
+        "labId": "Lab_aB09",
+        "source": "Probe_aB09",
+        "destination": "Lab_aB09",
+        "transferId": "Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul",
+        "digest": "dc2eaf776c45f8a4b72fdda8a832d6719c5f54902f71d41d97bd1b61969bb8c2"
+      },
+      "kind": "valid",
+      "facts": {
+        "labRevision": 0,
+        "status": "absent",
+        "cargo": null
+      },
+      "canReconcile": true,
+      "reason": null
+    },
+    "requested": {
+      "schema": 1,
+      "key": {
+        "labId": "Lab_aB09",
+        "source": "Probe_aB09",
+        "destination": "Lab_aB09",
+        "transferId": "Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul",
+        "digest": "dc2eaf776c45f8a4b72fdda8a832d6719c5f54902f71d41d97bd1b61969bb8c2"
+      },
+      "kind": "valid",
+      "facts": {
+        "labRevision": 0,
+        "status": "absent",
+        "cargo": null
+      },
+      "canReconcile": true,
+      "reason": null
+    },
+    "pending": {
+      "schema": 1,
+      "key": {
+        "labId": "Lab_aB09",
+        "source": "Probe_aB09",
+        "destination": "Lab_aB09",
+        "transferId": "Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul",
+        "digest": "dc2eaf776c45f8a4b72fdda8a832d6719c5f54902f71d41d97bd1b61969bb8c2"
+      },
+      "kind": "valid",
+      "facts": {
+        "labRevision": 1,
+        "status": "pending",
+        "cargo": {
+          "samples": [
+            {
+              "id": "Sample_aB09_Sample_aB09_Sample_aB09_Sample_aB09_Sample_aB09_Samp",
+              "historyRef": "Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip"
+            }
+          ],
+          "resources": [
+            {
+              "id": "Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_L",
+              "historyRef": "Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip",
+              "quantity": 3
+            }
+          ]
+        }
+      },
+      "canReconcile": true,
+      "reason": null
+    },
+    "confirmed": {
+      "schema": 1,
+      "key": {
+        "labId": "Lab_aB09",
+        "source": "Probe_aB09",
+        "destination": "Lab_aB09",
+        "transferId": "Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul",
+        "digest": "dc2eaf776c45f8a4b72fdda8a832d6719c5f54902f71d41d97bd1b61969bb8c2"
+      },
+      "kind": "valid",
+      "facts": {
+        "labRevision": 2,
+        "status": "confirmed",
+        "cargo": {
+          "samples": [
+            {
+              "id": "Sample_aB09_Sample_aB09_Sample_aB09_Sample_aB09_Sample_aB09_Samp",
+              "historyRef": "Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip"
+            }
+          ],
+          "resources": [
+            {
+              "id": "Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_L",
+              "historyRef": "Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip",
+              "quantity": 3
+            }
+          ]
+        }
+      },
+      "canReconcile": false,
+      "reason": null
+    },
+    "unavailable": {
+      "schema": 1,
+      "key": {
+        "labId": "Lab_aB09",
+        "source": "Probe_aB09",
+        "destination": "Lab_aB09",
+        "transferId": "Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul",
+        "digest": "dc2eaf776c45f8a4b72fdda8a832d6719c5f54902f71d41d97bd1b61969bb8c2"
+      },
+      "kind": "unavailable",
+      "facts": null,
+      "canReconcile": true,
+      "reason": "read-unavailable"
+    },
+    "unreadable": {
+      "schema": 1,
+      "key": {
+        "labId": "Lab_aB09",
+        "source": "Probe_aB09",
+        "destination": "Lab_aB09",
+        "transferId": "Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul",
+        "digest": "dc2eaf776c45f8a4b72fdda8a832d6719c5f54902f71d41d97bd1b61969bb8c2"
+      },
+      "kind": "unreadable",
+      "facts": null,
+      "canReconcile": false,
+      "reason": "record-unreadable"
+    },
+    "preview": {
+      "schema": 1,
+      "key": {
+        "labId": "Lab_aB09",
+        "source": "Probe_aB09",
+        "destination": "Lab_aB09",
+        "transferId": "Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul",
+        "digest": "dc2eaf776c45f8a4b72fdda8a832d6719c5f54902f71d41d97bd1b61969bb8c2"
+      },
+      "kind": "valid",
+      "facts": {
+        "labRevision": 0,
+        "status": "preview",
+        "cargo": {
+          "samples": [
+            {
+              "id": "Sample_aB09_Sample_aB09_Sample_aB09_Sample_aB09_Sample_aB09_Samp",
+              "historyRef": "Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip"
+            }
+          ],
+          "resources": [
+            {
+              "id": "Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_Lot_aB09_L",
+              "historyRef": "Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip_aB09_Trip",
+              "quantity": 3
+            }
+          ]
+        }
+      },
+      "canReconcile": false,
+      "reason": null
+    },
+    "preview-unavailable": {
+      "schema": 1,
+      "key": {
+        "labId": "Lab_aB09",
+        "source": "Probe_aB09",
+        "destination": "Lab_aB09",
+        "transferId": "Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul_aB09_Haul",
+        "digest": "dc2eaf776c45f8a4b72fdda8a832d6719c5f54902f71d41d97bd1b61969bb8c2"
+      },
+      "kind": "valid",
+      "facts": {
+        "labRevision": 0,
+        "status": "preview-unavailable",
+        "cargo": null
+      },
+      "canReconcile": false,
+      "reason": null
+    }
+  }
+}

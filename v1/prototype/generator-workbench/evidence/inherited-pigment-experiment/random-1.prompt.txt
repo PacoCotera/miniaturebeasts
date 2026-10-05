@@ -1,0 +1,5 @@
+Draw one whole creature as a polished pixel-art game illustration. Use deliberate contiguous pixel clusters, controlled stair-step contours and a few coherent form-following shade and highlight groups. Selective crisp material edges and local optical relief make the described surfaces tactile. Keep the expressed pigments and their region boundaries recognizable. Frame the quiet whole-body pose comfortably on a simple background, with every appendage readable. Where modeled eyes exist, make them the character focus.
+
+One continuous body flows through 3 equal-length proportion regions and 2 narrower waist transitions. The middle is 13.2% wider than the two ends. The whole body is about 3.9 times the front region's width. No appendages. Faceless. body regions: #38a878, smooth. Unmarked. The body has bare skin. View from above.
+
+Creature reference: #GD0C8AB3128E1 #E990B13CAF7B6

@@ -1,0 +1,168 @@
+{
+  "contentId": "genomic-pet-study",
+  "contentVersion": 1,
+  "ruleVersion": "continuous-pet/1",
+  "limitation": "Static fictional analytic constructions; no physical motion, production art or game permission",
+  "cases": [
+    {
+      "name": "pet-skin",
+      "status": "resolved",
+      "recordId": "experiment-861e965879245bbf2ddb",
+      "nodes": 14,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "861e965879245bbf2ddb49b26c9bf888c580034187f0619a601ad331dd48f3d8",
+      "resultDigest": "90fde1f3f85e9fa1518b5335015f2126b577005266ef430293c965b6577af296",
+      "promptStatus": "fact-derived calibration prompt; no provider called",
+      "relationship": {
+        "kind": "explicit-authoring-input",
+        "note": "Compact inherited contributor configuration, not a species preset."
+      }
+    },
+    {
+      "name": "pet-scales",
+      "status": "resolved",
+      "recordId": "experiment-2ab86bef56a424e21e05",
+      "nodes": 14,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "2ab86bef56a424e21e05ac7a0a023913fdbe420ae747467556c10a0d6af751ea",
+      "resultDigest": "406260f3e5de86a4237d8d87c9acaa784ad314d4bfd605530f1caee20eff79d9",
+      "promptStatus": "fact-derived calibration prompt; no provider called",
+      "relationship": {
+        "kind": "controlled-copy-edit",
+        "base": "pet-skin",
+        "changedLoci": [
+          "appearance.covering-kind"
+        ],
+        "baseGenomeDigest": "6791f35ffd4669090fd79ce8dfc4e773f9ff95a0c9d552ee90111f4d391de4d5",
+        "changes": [
+          {
+            "locusId": "appearance.covering-kind",
+            "before": [
+              "skin",
+              "skin"
+            ],
+            "after": [
+              "scales",
+              "scales"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "pet-fur",
+      "status": "resolved",
+      "recordId": "experiment-2a5bc502eff1dc32ef52",
+      "nodes": 14,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "2a5bc502eff1dc32ef5219d9592b321f45e8636f7fccb4245e47e978fa9ad709",
+      "resultDigest": "3508e13c30117f65a93abdd8a2f076e5f9c10da924bc9385f2c60260e5015c05",
+      "promptStatus": "fact-derived calibration prompt; no provider called",
+      "relationship": {
+        "kind": "controlled-copy-edit",
+        "base": "pet-skin",
+        "changedLoci": [
+          "appearance.covering-kind"
+        ],
+        "baseGenomeDigest": "6791f35ffd4669090fd79ce8dfc4e773f9ff95a0c9d552ee90111f4d391de4d5",
+        "changes": [
+          {
+            "locusId": "appearance.covering-kind",
+            "before": [
+              "skin",
+              "skin"
+            ],
+            "after": [
+              "fur",
+              "fur"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "pet-feathers",
+      "status": "resolved",
+      "recordId": "experiment-1a8bd0adb1921f761a29",
+      "nodes": 14,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "1a8bd0adb1921f761a292740320bb7892d4d7dd0592cda1766506b6ccedae894",
+      "resultDigest": "001cedc04d68ccc171118910e54da88f4636030ee5efa69d56b93985b399b7f2",
+      "promptStatus": "fact-derived calibration prompt; no provider called",
+      "relationship": {
+        "kind": "controlled-copy-edit",
+        "base": "pet-skin",
+        "changedLoci": [
+          "appearance.covering-kind"
+        ],
+        "baseGenomeDigest": "6791f35ffd4669090fd79ce8dfc4e773f9ff95a0c9d552ee90111f4d391de4d5",
+        "changes": [
+          {
+            "locusId": "appearance.covering-kind",
+            "before": [
+              "skin",
+              "skin"
+            ],
+            "after": [
+              "feathers",
+              "feathers"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "pet-face-variant",
+      "status": "resolved",
+      "recordId": "experiment-60bb80e3e9a5916eba39",
+      "nodes": 14,
+      "modes": [
+        "water"
+      ],
+      "inputDigest": "60bb80e3e9a5916eba39c94bf6788c64df414e8318d5fab4dc0ac7efa7a7335b",
+      "resultDigest": "3e9836a7f24711f95bbdf302bb7b1c909c3f0b70f0d9fdff4b235819c679d3a8",
+      "promptStatus": "fact-derived calibration prompt; no provider called",
+      "relationship": {
+        "kind": "controlled-copy-edit",
+        "base": "pet-skin",
+        "changedLoci": [
+          "structure.ocular-size",
+          "structure.pupil-ratio"
+        ],
+        "baseGenomeDigest": "6791f35ffd4669090fd79ce8dfc4e773f9ff95a0c9d552ee90111f4d391de4d5",
+        "changes": [
+          {
+            "locusId": "structure.ocular-size",
+            "before": [
+              "low",
+              "low"
+            ],
+            "after": [
+              "low",
+              "high"
+            ]
+          },
+          {
+            "locusId": "structure.pupil-ratio",
+            "before": [
+              "low",
+              "low"
+            ],
+            "after": [
+              "high",
+              "high"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

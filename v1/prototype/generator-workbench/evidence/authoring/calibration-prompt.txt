@@ -1,0 +1,12 @@
+Generate the image now. Use the three attached fact-derived .prompt.txt files as the complete subject definitions. The two image references supply only pixel-art craft, not anatomy. All subject facts and exclusions in those files must be preserved.
+
+One compact landscape sheet with three equal columns. Each column shows the same subject in a clear neutral construction view and, only when supported, one declared action pose. Keep ample separation and coherent apparent scale/pixel density. No baked text; record subject IDs and panel order in the retained manifest.
+Neutral construction views are the top row; one supported action pose for the SAME organism is below it. Clear silhouettes, ample dark-neutral separation, no typography or UI.
+Panel order left-to-right:
+1. contact-original.prompt.txt
+2. membrane-original.prompt.txt
+3. axial-original.prompt.txt
+
+The per-subject templates are data contracts. Preserve exact part counts, roots, proportions, palettes, surfaces and retained markings. No eyes or mouths are modeled: do not invent faces. Do not substitute familiar species. This is a semantic construction/calibration proof, not final pet artwork or sprites. If incompatible facts prevent a coherent depiction, report the specific contradiction instead of redesigning anatomy.
+
+Use the selected Critter Lab HiBit direction: crisp intentional pixel clusters, saturated but controlled pigments, well-delineated silhouette and nested contours, coherent apparent pixel density, selective highlights and readable material depth. Use one consistent light direction and clean dark-neutral presentation. Avoid blur, bloom, noisy dithering, flat generic outline doodles, steampunk, cosmic backgrounds and glossy plastic applied to every material. Style changes depiction only; it cannot add facial features or alter anatomy.

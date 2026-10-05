@@ -1,0 +1,35 @@
+{
+  "result": "pass",
+  "scope": "One local regeneration and actual export inspection; not visual or runtime acceptance",
+  "assets": 15,
+  "reproducibleFiles": 36,
+  "rgbaSilhouettes": true,
+  "proofs": [
+    {
+      "state": "empty",
+      "file": "exports/overview-offline.png",
+      "pixels": [
+        1024,
+        600
+      ],
+      "sha256": "64eaa3faecd72c8bd9ab8e12248e89a47e732a846e0e9c3fe8c285b23b9f28d4"
+    },
+    {
+      "state": "populated",
+      "file": "exports/overview-populated.png",
+      "pixels": [
+        1024,
+        600
+      ],
+      "sha256": "017f0d9e8f64032f1e59e4b0fba0592d25442afd6a834668501027154805804f"
+    }
+  ],
+  "exactNearestNeighborEnlargement": 3,
+  "fixturesSha256": "b187e92dccce427a7900a382168a87fc1af346327551dadca4f412a519f244a7",
+  "manifestSha256": "2a3889def9437738a6c0864b3ae41c2900344170881e44eb339ce7383c997439",
+  "versions": {
+    "node": "24.19.0",
+    "sharp": "0.35.4",
+    "vips": "8.18.6"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "rejected",
+  "errors": [
+    {
+      "code": "unrooted-channel",
+      "path": "development.attachment-repeat",
+      "message": "Declared linked/membrane/fin channels require actual attachment roots.",
+      "contributors": [
+        "development.attachment-repeat",
+        "development.articulated-chain",
+        "development.membrane-rooting",
+        "development.fin-rooting"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "radial-scene-proof/1",
+  "baseRevision": "554f0fd9586679164a56338d729fb9e239644a77",
+  "sceneVersion": "module-scene/3",
+  "camera": {
+    "minimumX": -0.4635726304897011,
+    "maximumX": 0.4635726304897011,
+    "minimumY": -0.5673934797148009,
+    "maximumY": 0.633230813221773
+  },
+  "view": "Negative-X YZ with diagnostic ocular slice; not exterior-eye tissue or pet art",
+  "cases": [
+    {
+      "name": "radial-eyes-skin",
+      "status": "resolved",
+      "changedLoci": [],
+      "recordId": "experiment-8aea8a42ee360122385c",
+      "inputDigest": "8aea8a42ee360122385ceaf2339aa873d99420aac38678b7839dd5c071cfbdab",
+      "resultDigest": "92ba867608acd483d74f220f9645863b1bf94b17e4f50c1dca8f0de0bf1ccfeb",
+      "sceneDigest": "005da2842c1801f8eb26635358b7d7d0c67abf19629dc68d740467960238b106",
+      "eyeCount": 2,
+      "plateCount": 0,
+      "visibleCount": 0,
+      "hiddenCount": 0,
+      "candidateCount": 0,
+      "replayBytes": 60943
+    },
+    {
+      "name": "radial-eyes-scales",
+      "status": "resolved",
+      "changedLoci": [
+        "appearance.covering-kind"
+      ],
+      "recordId": "experiment-82e0d98a3343ee8ee072",
+      "inputDigest": "82e0d98a3343ee8ee072dae84ceb94dd027c652288c507db29ae484c4906adf7",
+      "resultDigest": "2fa60826665945fd7004027f0ed6688680c917668c6d0867506f168fa092735a",
+      "sceneDigest": "c007c387fe8e0ddca1ae99a59bf887db181ddc69819155af9aa495aac99d491d",
+      "eyeCount": 2,
+      "plateCount": 7,
+      "visibleCount": 7,
+      "hiddenCount": 0,
+      "candidateCount": 72,
+      "replayBytes": 60947
+    },
+    {
+      "name": "radial-low-height-rejected",
+      "status": "rejected",
+      "stage": "ocular",
+      "errors": [
+        {
+          "code": "ocular-clearance",
+          "message": "Full circles and pair rim do not fit the retained ellipsoid slice; no shrinking or relocation.",
+          "nodeIds": [],
+          "locusIds": []
+        }
+      ],
+      "changedLoci": [
+        "structure.body-height"
+      ],
+      "inputDigest": "d2f18bf47150fec931bbf95d8d8b5fba81671517768c07b06a546a904796ef38",
+      "resultDigest": "d4be9971dc924ffd757488174d1be44804242f981f3845a86da320aa5e35a241",
+      "replayBytes": null
+    }
+  ],
+  "fileHashes": {
+    "radial-eyes-skin.packet.json": "ac57ed4a390656aee0ab64b0f478637eadb12ec8ed4b395236da688a8fb5337d",
+    "radial-eyes-skin.replay.json": "c3926400f5f5dba7e49a8597ecce08949b04a1b05392e1b538c3c35071775889",
+    "radial-eyes-skin.svg": "d96476072bf1d4b408d50a65a28be97a66e8239d87ed6b02272df19016aae29d",
+    "radial-eyes-skin.depth.svg": "88cde4731e3cf27fe4ae526c260e357c848d08e710a74b614806fa80f2c4ef3c",
+    "radial-eyes-skin.prompt.txt": "1a553062f4396673967618493f8520a41c2ff55c9f1baa84e6d9c46e2d2ba246",
+    "radial-eyes-scales.packet.json": "b63c564f364b596a9511a648e739c4ff1bd70c5a875ad5aa73a8d8d4a75f3fc7",
+    "radial-eyes-scales.replay.json": "49bd86bd4ff7b7c42ca8007c17a97699c66ff5f15491b3af8c05ab77e3e3d3e4",
+    "radial-eyes-scales.svg": "b8feca32385b4132206928e47f8ae7ec01fa248a4dd1c78fdd2565018c50589d",
+    "radial-eyes-scales.depth.svg": "c14580da1913d823e1c97316d9daf4deb729c315487b1965daf8a3071a9fc8b7",
+    "radial-eyes-scales.prompt.txt": "2d3f227f8680deb6b0880eafe0a978c24f5c9dcf28e128a21d536b0fa9e0a145",
+    "radial-low-height-rejected.packet.json": "c62dbdb523c212d208f92a0b11f526910afaf2a5cb644dbba89e762626f14e96",
+    "comparison.svg": "c67b319538888f03a6fcddf7e84e9696be22f1a0048c230e97e74adfe4232052"
+  },
+  "sourceHashes": {
+    "radial-scene.mjs": "c509c82e25ab7eaa5d4bc0b74403591d08dc2f4f5a009a91817c7152089077a9",
+    "radial-scene-presentation.mjs": "779df37181df26f2b516e765dc8c4ae7d0c6e7dd2da121d880765769e67be295",
+    "radial-scene.test.mjs": "1f90d2d9eb5350a72cfa43b6d19ceb8d340de6246c54ed7296747ad792ea173a",
+    "construct-radial-scene-proof.mjs": "563b8fe7abf239a77dfaa5b3bdeeea54c58d2431e2a2f4566368c315f6af6e05",
+    "module-scene.mjs": "b62358230b1b895f9a3955f8eb48021a2ae87d847f081b6d2da5fd41be36a1f3",
+    "module-scene-authoring.mjs": "74483b0b60ec9fff79999b0da2a048a3ac890f2f09009c98e564d98cf6a1b1bd",
+    "authoring-ui.mjs": "4c6a97c0fd6715b173ba00eba8bd4986d3761c31204db10a106ea50fa9d08349",
+    "src/main.jsx": "bdde0c155307acf5793d2b5ce4a696d5d4e09a4d1cc6f40346593865089a5ed3"
+  },
+  "limitations": [
+    "Conservative full surface-patch XYZ bounding boxes can exclude safe candidates; no general collision claim.",
+    "The continuous atlas polygon maps to the ellipsoid; retained24-vertex boundary is a static sampling approximation, not a tissue mesh.",
+    "Only front fragments are drawn; hidden rear geometry remains in the scene artifact.",
+    "Existing Generate budgets/catalogue and source result remain unchanged."
+  ]
+}

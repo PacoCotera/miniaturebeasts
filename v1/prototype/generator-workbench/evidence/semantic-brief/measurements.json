@@ -1,0 +1,39 @@
+[
+  {
+    "name": "axial-scales",
+    "version": 4,
+    "projection": "module-scene-art/2",
+    "characters": 1629,
+    "words": 242,
+    "historicalVersion": 3,
+    "historicalCharacters": 1521,
+    "historicalWords": 223,
+    "sourceResultUnchanged": true,
+    "sceneUnchanged": true,
+    "identityUnchanged": true
+  },
+  {
+    "name": "single-scales",
+    "version": 4,
+    "projection": "module-scene-art/2",
+    "characters": 1431,
+    "words": 211,
+    "historicalVersion": 3,
+    "historicalCharacters": 1435,
+    "historicalWords": 211,
+    "sourceResultUnchanged": true,
+    "sceneUnchanged": true,
+    "identityUnchanged": true
+  },
+  {
+    "name": "pet-scales",
+    "version": 4,
+    "characters": 2105,
+    "words": 321,
+    "priorVersion": 3,
+    "priorDescriptionCharacters": 1273,
+    "priorDescriptionWords": 207,
+    "newDescriptionCharacters": 1532,
+    "newDescriptionWords": 245
+  }
+]

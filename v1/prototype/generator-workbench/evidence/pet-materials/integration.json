@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "critter-pet-integration/1",
+  "hostTests": {
+    "passed": 43,
+    "failed": 0
+  },
+  "build": {
+    "status": "passed",
+    "warnings": [
+      "Existing Mantine use-client directives ignored by Vite",
+      "506.01 kB main JavaScript chunk warning"
+    ]
+  },
+  "browser": {
+    "url": "http://127.0.0.1:4381/",
+    "actual": true,
+    "checked": [
+      "New package initial unresolved state survives without summary crash",
+      "Skin resolve, pin, face-only change, two actual comparison images with ocular/pupil deltas",
+      "Ocular source selection and baseline/inherited/expression tabs",
+      "Fur actual resolution",
+      "Inherited covering edit clears current output/export and preserves pin"
+    ],
+    "notRepeated": [
+      "Unchanged old UI replay/import and rejection journeys from prior proof; exact old engine replay checked in validation.json"
+    ],
+    "captures": [
+      "workbench-face-comparison.jpg",
+      "workbench-fur.jpg"
+    ],
+    "gaps": [
+      "Creature occupies too little of comparison white field",
+      "Adult authoring inspection only, not game UI or physical-device validation"
+    ]
+  },
+  "acceptance": {
+    "source": "Independent architecture/genetics/projection passed",
+    "gameArt": "Owner rejected diagram; both provider outputs remain failed/rejected calibration evidence",
+    "next": "Art-led semantic morphology and realization proposal review before another correction round"
+  }
+}

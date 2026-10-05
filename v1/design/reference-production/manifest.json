@@ -1,0 +1,308 @@
+{
+  "status": "Offline art proof; not runtime integration or owner approval",
+  "reference": "../game-art-proposals/37-lab-extracted-kit/screen-reference.png",
+  "referenceSize": [
+    752,
+    421
+  ],
+  "font": "Explicit bundled Bitstream Vera Sans/Vera Bold font files; C18 type identity unresolved",
+  "paletteRoles": {
+    "surface": "#222d35",
+    "frame": "#2385c8",
+    "focus": "#f5d77f",
+    "data": "#2568a6",
+    "energy": "#f7bc42",
+    "essence": "#a4e566"
+  },
+  "composition": {
+    "outerInset": 24,
+    "gutter": 16,
+    "header": [
+      976,
+      100
+    ],
+    "navigation": [
+      208,
+      416
+    ],
+    "workField": [
+      752,
+      416
+    ],
+    "workFieldTextInset": 24,
+    "topicFootprint": [
+      136,
+      144
+    ],
+    "resourceFootprint": [
+      56,
+      68
+    ],
+    "statusAreasReadOnly": true
+  },
+  "fixtures": {
+    "source": "fixtures.json",
+    "sha256": "b187e92dccce427a7900a382168a87fc1af346327551dadca4f412a519f244a7",
+    "exports": [
+      "overview-offline.png",
+      "overview-populated.png"
+    ]
+  },
+  "assets": [
+    {
+      "name": "data",
+      "source": "src/data.svg",
+      "export": "exports/data.png",
+      "width": 56,
+      "height": 68,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 4,
+        "y": 3,
+        "width": 45,
+        "height": 62
+      },
+      "sha256": "591725ae9edb1d758ba8cc61c9dba75f8b2fd4f34512bc53a95cb6ed3bf2582e",
+      "exportSha256": "3eed6d60da5b8713b50662de70ef41ae8da1e429c0ed2065d53ffe5aaa8a8f9d"
+    },
+    {
+      "name": "energy",
+      "source": "src/energy.svg",
+      "export": "exports/energy.png",
+      "width": 56,
+      "height": 68,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 4,
+        "y": 2,
+        "width": 48,
+        "height": 63
+      },
+      "sha256": "0fca859ab240b2e17b9d97fafb0ebe081b41c6b5b60d9ca53cf72007a1c1c106",
+      "exportSha256": "acccce779ead92001a570e5934a02063291c771b00f0b327ac10fa1d2832525f"
+    },
+    {
+      "name": "essence",
+      "source": "src/essence.svg",
+      "export": "exports/essence.png",
+      "width": 56,
+      "height": 68,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 2,
+        "y": 7,
+        "width": 49,
+        "height": 54
+      },
+      "sha256": "9e560a9c8d6f5925f86df3ad34d68a9679e76cf99709faf0777fccac320d6592",
+      "exportSha256": "986e2498be477ccfaff8ecfdc9963b538f122720daac4e3146728799dd48effe"
+    },
+    {
+      "name": "explore-topic",
+      "source": "src/explore-topic.svg",
+      "export": "exports/explore-topic.png",
+      "width": 136,
+      "height": 144,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 14,
+        "y": 12,
+        "width": 108,
+        "height": 114
+      },
+      "sha256": "abb260750fe156ba603b12688ff11f915d0d47ec4c28650dd0d2739411319811",
+      "exportSha256": "e3364e7f6f66159ee77dc3a07b05f3b7bf447defb613ea73b4066b199258cad4"
+    },
+    {
+      "name": "habitat-topic",
+      "source": "src/habitat-topic.svg",
+      "export": "exports/habitat-topic.png",
+      "width": 136,
+      "height": 144,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 16,
+        "y": 20,
+        "width": 108,
+        "height": 110
+      },
+      "sha256": "1bff61f5fd684fa7b43d463a31cf58c9d317806b59b6cca266156521537557df",
+      "exportSha256": "277dd82b6a396d4b2829c2d92e54f6f7d15f759b92fe9d3ed2f6bc77b06d2a02"
+    },
+    {
+      "name": "header",
+      "source": "src/header.svg",
+      "export": "exports/header.png",
+      "width": 976,
+      "height": 100,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 0,
+        "y": 0,
+        "width": 976,
+        "height": 100
+      },
+      "sha256": "f56ce77b40c903d1bf54fa897201dc71bbf377401dfeeb3e79583fd428998a13",
+      "exportSha256": "d22e73f737c4dc63f292b1f87db4216682ca73531d057d685cd023261dad165b"
+    },
+    {
+      "name": "incubator-topic",
+      "source": "src/incubator-topic.svg",
+      "export": "exports/incubator-topic.png",
+      "width": 136,
+      "height": 144,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 20,
+        "y": 16,
+        "width": 98,
+        "height": 112
+      },
+      "sha256": "02736a0e5c9ca7d2119d500e1e0e2baea911402b1acc5ab87c9af4b750dbb50c",
+      "exportSha256": "0d5aa885e7d6ff302d8e967988d0f6b4c536c99d73e9ed76e74e592a8a942f5b"
+    },
+    {
+      "name": "information-narrow",
+      "source": "src/information-narrow.svg",
+      "export": "exports/information-narrow.png",
+      "width": 272,
+      "height": 147,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 0,
+        "y": 0,
+        "width": 272,
+        "height": 147
+      },
+      "sha256": "469ace7005f41baba37523586a03d6d5a5984adc5afae7d770f3fb40ac513ec4",
+      "exportSha256": "437e394a0b0f6374c528d77d334f27aaab135f3cd304126afaa744f43e666aa0"
+    },
+    {
+      "name": "information-wide",
+      "source": "src/information-wide.svg",
+      "export": "exports/information-wide.png",
+      "width": 390,
+      "height": 147,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 147
+      },
+      "sha256": "ae06d383f44e8f1b8218e0b0a9babfe6a18964e9ceb04f4569fd99dc75591cc6",
+      "exportSha256": "3a678cdbe484c781aa792db144c2b3b3ea1346784ee007963bb89f45bdfcc80b"
+    },
+    {
+      "name": "nav-focus",
+      "source": "src/nav-focus.svg",
+      "export": "exports/nav-focus.png",
+      "width": 184,
+      "height": 60,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 1,
+        "y": 1,
+        "width": 182,
+        "height": 58
+      },
+      "sha256": "e09044b0348d14363ed652fbb1f89724837f96eb901aa26d456d51510f69b74b",
+      "exportSha256": "fe36a074fab6c2a186daecf22eef3bc1afe7f4d09ec62cb7aaf1611ab5765412"
+    },
+    {
+      "name": "nav-quiet",
+      "source": "src/nav-quiet.svg",
+      "export": "exports/nav-quiet.png",
+      "width": 184,
+      "height": 60,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 6,
+        "y": 6,
+        "width": 172,
+        "height": 48
+      },
+      "sha256": "1810839a9d9ac26fe99387a6e29cd2510534c542828249f43265a99181ee9e8c",
+      "exportSha256": "80b72298b2e05b6826da093772c8e4ca2c0ee9ce39d78b3d2684cb5cd06ed678"
+    },
+    {
+      "name": "navigation-frame",
+      "source": "src/navigation-frame.svg",
+      "export": "exports/navigation-frame.png",
+      "width": 208,
+      "height": 416,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 0,
+        "y": 0,
+        "width": 208,
+        "height": 416
+      },
+      "sha256": "0ed858eae065aa6b605a0a25382030e3ee72f0bca1e0e1adf6fc614188df4b31",
+      "exportSha256": "1a22524895cff506ed6e751f8bea9482f177d8248e8288e2990f525834d7d324"
+    },
+    {
+      "name": "overview-frame",
+      "source": "src/overview-frame.svg",
+      "export": "exports/overview-frame.png",
+      "width": 752,
+      "height": 416,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 0,
+        "y": 0,
+        "width": 752,
+        "height": 416
+      },
+      "sha256": "2a512ce010e2c4cc416763cc32085f9cc235d7287f75c319b1ba10db46854b78",
+      "exportSha256": "3b1b0431d204843b8de1f2a979c308a5c6614bd58fb4decb9743c26c98ffc302"
+    },
+    {
+      "name": "research-topic",
+      "source": "src/research-topic.svg",
+      "export": "exports/research-topic.png",
+      "width": 136,
+      "height": 144,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 10,
+        "y": 20,
+        "width": 114,
+        "height": 110
+      },
+      "sha256": "50a5e69ed53e70ca3dcc3fa65f8bfc8400440a4e00eac40939ea79b96ad56744",
+      "exportSha256": "a53f1d698be854accc0e80e8296084bf2865614bc7bf2ccf60a50e3edf4ac3c4"
+    },
+    {
+      "name": "sample-capsule",
+      "source": "src/sample-capsule.svg",
+      "export": "exports/sample-capsule.png",
+      "width": 80,
+      "height": 80,
+      "drawScale": 1,
+      "alpha": true,
+      "occupiedBoundsAtHalfAlpha": {
+        "x": 5,
+        "y": 4,
+        "width": 71,
+        "height": 72
+      },
+      "sha256": "4fd47b9973795e47993198405649f29058cd929ca01543023060b7c5d381ded0",
+      "exportSha256": "6c70eca5fafbc62777d73aa9454c290649aacc3c011fa0b037202a303a134164"
+    }
+  ]
+}

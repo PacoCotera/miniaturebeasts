@@ -1,0 +1,46 @@
+{
+  "source": "design/core-v1-art/source/gemini-research-vignettes-original.png",
+  "sourceSha256": "9ce1bbf618cb8dd78b062564f0efc93d5fc7aff6859ff39048a6b438f6ef9ada",
+  "kernel": "nearest",
+  "scaleNumerator": 1,
+  "scaleDenominator": 2,
+  "alpha": "Original opaque rectangle retained; no color-key, flood matte or background removal.",
+  "assets": [
+    {
+      "name": "research-inheritance",
+      "rectangle": {
+        "left": 44,
+        "top": 78,
+        "width": 218,
+        "height": 390
+      },
+      "width": 109,
+      "height": 195,
+      "meaning": "Contextual sample/reference comparison; tubes are tool staging, not inventory or specimen results."
+    },
+    {
+      "name": "research-movement",
+      "rectangle": {
+        "left": 330,
+        "top": 154,
+        "width": 302,
+        "height": 266
+      },
+      "width": 151,
+      "height": 133,
+      "meaning": "Contextual movement observation instrument and generic blank evidence board; no specimen trace or measurements."
+    },
+    {
+      "name": "research-effort",
+      "rectangle": {
+        "left": 670,
+        "top": 150,
+        "width": 332,
+        "height": 272
+      },
+      "width": 166,
+      "height": 136,
+      "meaning": "Contextual effort comparison; same observation setup, equal blank evidence boards, no winner, bar, factor or resource quantity."
+    }
+  ]
+}

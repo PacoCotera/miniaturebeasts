@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700" width="100%" height="100%" shape-rendering="crispEdges">
+    <style>
+        .bg { fill: #2C2C30; }
+        .body-outline { fill: #2E150F; }
+        .body-base { fill: #7B3D2B; }
+        .body-mid { fill: #9C4F3B; }
+        .body-light { fill: #B8654D; }
+        .body-high { fill: #CB7A61; }
+        .fin-cream { fill: #E5D5B8; }
+        .fin-slate { fill: #5C6E76; }
+        .eye-white { fill: #F4EFEB; }
+        .eye-dark { fill: #17181A; }
+        .eye-high { fill: #FFFFFF; }
+        .detail-dark { fill: #2E150F; stroke: #2E150F; }
+        .scale-outline { stroke: #3A4C58; stroke-width: 2.5; fill: none; opacity: 0.85; stroke-linejoin: bevel; }
+        .filament { fill: #2E150F; }
+        .shaft-stroke { stroke: #2E150F; stroke-width: 2; stroke-linecap: square; fill: none; }
+    </style>
+
+    <defs>
+        <!-- Core Retained Body Morphology -->
+        <path id="body-shape" d="M 150 50 C 190 50, 210 60, 210 80 C 210 100, 180 110, 180 120 C 180 130, 215 140, 215 170 C 215 200, 185 210, 185 220 C 185 230, 220 240, 220 270 C 220 290, 180 290, 150 290 C 120 290, 80 290, 80 270 C 80 240, 115 230, 115 220 C 115 210, 85 200, 85 170 C 85 140, 120 130, 120 120 C 120 110, 90 100, 90 80 C 90 60, 110 50, 150 50 Z" />
+        
+        <!-- Opposed Leaf-like Fin Partitions -->
+        <g id="finL">
+            <path d="M 0 0 C -20 -15, -40 -10, -50 0 Z" class="fin-cream" stroke="#1A1816" stroke-width="2.5" stroke-linejoin="bevel"/>
+            <path d="M 0 0 C -20 15, -40 10, -50 0 Z" class="fin-slate" stroke="#1A1816" stroke-width="2.5" stroke-linejoin="bevel"/>
+            <line x1="-8" y1="0" x2="-35" y2="0" stroke="#1A1816" stroke-width="2" opacity="0.6"/>
+        </g>
+        <g id="finR">
+            <path d="M 0 0 C 20 -15, 40 -10, 50 0 Z" class="fin-cream" stroke="#1A1816" stroke-width="2.5" stroke-linejoin="bevel"/>
+            <path d="M 0 0 C 20 15, 40 10, 50 0 Z" class="fin-slate" stroke="#1A1816" stroke-width="2.5" stroke-linejoin="bevel"/>
+            <line x1="8" y1="0" x2="35" y2="0" stroke="#1A1816" stroke-width="2" opacity="0.6"/>
+        </g>
+
+        <!-- Modeled Ocular Module -->
+        <g id="eye">
+            <circle cx="0" cy="0" r="10" class="eye-white" stroke="#1A1816" stroke-width="2.5"/>
+            <circle cx="0" cy="0" r="4.5" class="eye-dark" />
+            <circle cx="-1.5" cy="-2" r="1.5" class="eye-high" />
+        </g>
+
+        <!-- Shared Base Specimen -->
+        <g id="specimen-base">
+            <!-- 3 Pairs of Fins (Behind Body) -->
+            <use href="#finL" x="110" y="70" />
+            <use href="#finR" x="190" y="70" />
+            <use href="#finL" x="87" y="170" />
+            <use href="#finR" x="213" y="170" />
+            <use href="#finL" x="110" y="270" />
+            <use href="#finR" x="190" y="270" />
+
+            <!-- Nested Clusters for Soft Diffuse Modeling -->
+            <use href="#body-shape" class="body-outline" />
+            <use href="#body-shape" class="body-base" transform="scale(0.95)" transform-origin="150 170" />
+            <use href="#body-shape" class="body-mid" transform="scale(0.85)" transform-origin="150 170" />
+            <use href="#body-shape" class="body-light" transform="scale(0.72)" transform-origin="150 170" />
+            <use href="#body-shape" class="body-high" transform="scale(0.55)" transform-origin="150 170" />
+
+            <!-- Face Array -->
+            <use href="#eye" x="122" y="72" />
+            <use href="#eye" x="178" y="72" />
+            <ellipse cx="150" cy="98" rx="8" ry="4" class="detail-dark" />
+        </g>
+
+        <!-- Material: Scale Hexagon (Exactly 17 required layout) -->
+        <polygon id="hex" points="0,-15 13,-7.5 13,7.5 0,15 -13,7.5 -13,-7.5" />
+
+        <!-- Material: Rooted Fur Tufts (3 tapered filaments each) -->
+        <g id="tuft-internal">
+            <polygon points="0,0 -4,12 -1,12 0,4" class="filament" />
+            <polygon points="0,0 1,14 3,14 2,4" class="filament" />
+            <polygon points="0,0 5,11 7,11 3,4" class="filament" />
+        </g>
+        <g id="tuft-left">
+            <polygon points="0,0 -14,-6 -12,-4 -4,0" class="filament" />
+            <polygon points="0,0 -16,1 -14,3 -4,3" class="filament" />
+            <polygon points="0,0 -12,9 -9,10 -2,5" class="filament" />
+        </g>
+        <g id="tuft-right">
+            <polygon points="0,0 14,-6 12,-4 4,0" class="filament" />
+            <polygon points="0,0 16,1 14,3 4,3" class="filament" />
+            <polygon points="0,0 12,9 9,10 2,5" class="filament" />
+        </g>
+
+        <!-- Material: Rooted Feather (1 shaft, 2 vanes, 6 barbs) -->
+        <g id="feather">
+            <line x1="0" y1="0" x2="0" y2="26" class="shaft-stroke" />
+            <path d="M 0 0 C -12 6, -10 18, 0 26" class="shaft-stroke" />
+            <path d="M 0 0 C 12 6, 10 18, 0 26" class="shaft-stroke" />
+            <line x1="0" y1="5" x2="-6" y2="2" class="shaft-stroke" />
+            <line x1="0" y1="12" x2="-7" y2="9" class="shaft-stroke" />
+            <line x1="0" y1="19" x2="-6" y2="16" class="shaft-stroke" />
+            <line x1="0" y1="5" x2="6" y2="2" class="shaft-stroke" />
+            <line x1="0" y1="12" x2="7" y2="9" class="shaft-stroke" />
+            <line x1="0" y1="19" x2="6" y2="16" class="shaft-stroke" />
+        </g>
+    </defs>
+
+    <!-- Quiet Graphite Field Background -->
+    <rect width="100%" height="100%" class="bg" />
+
+    <!-- UPPER LEFT: Skin (Continuous Diffuse Contour Modeling) -->
+    <use href="#specimen-base" x="0" y="0" />
+
+    <!-- UPPER RIGHT: Scales (Exactly 17 plates, actual retained layout) -->
+    <g transform="translate(350, 0)">
+        <use href="#specimen-base" />
+        <g class="scale-outline">
+            <!-- Center Column (5) -->
+            <use href="#hex" x="150" y="115" />
+            <use href="#hex" x="150" y="145" />
+            <use href="#hex" x="150" y="175" />
+            <use href="#hex" x="150" y="205" />
+            <use href="#hex" x="150" y="235" />
+            <!-- Left Column (4) -->
+            <use href="#hex" x="126" y="130" />
+            <use href="#hex" x="126" y="160" />
+            <use href="#hex" x="126" y="190" />
+            <use href="#hex" x="126" y="220" />
+            <!-- Right Column (4) -->
+            <use href="#hex" x="174" y="130" />
+            <use href="#hex" x="174" y="160" />
+            <use href="#hex" x="174" y="190" />
+            <use href="#hex" x="174" y="220" />
+            <!-- Flank Belly Extensions (2x2) -->
+            <use href="#hex" x="102" y="175" />
+            <use href="#hex" x="102" y="205" />
+            <use href="#hex" x="198" y="175" />
+            <use href="#hex" x="198" y="205" />
+        </g>
+    </g>
+
+    <!-- LOWER LEFT: Sparse Fur (Exactly 11 rooted tufts, 33 filaments total) -->
+    <g transform="translate(0, 350)">
+        <use href="#specimen-base" />
+        <!-- Silhouette Extensions (3 left, 3 right) -->
+        <use href="#tuft-left" x="117" y="115" />
+        <use href="#tuft-left" x="87" y="175" />
+        <use href="#tuft-left" x="115" y="235" />
+        
+        <use href="#tuft-right" x="183" y="115" />
+        <use href="#tuft-right" x="213" y="175" />
+        <use href="#tuft-right" x="185" y="235" />
+        
+        <!-- Internal Placements (5 core tufts) -->
+        <use href="#tuft-internal" x="150" y="140" />
+        <use href="#tuft-internal" x="125" y="165" />
+        <use href="#tuft-internal" x="175" y="165" />
+        <use href="#tuft-internal" x="135" y="210" />
+        <use href="#tuft-internal" x="165" y="210" />
+    </g>
+
+    <!-- LOWER RIGHT: Feather Covering (Exactly 7 shafts, 14 vanes, 42 barbs) -->
+    <g transform="translate(350, 350)">
+        <use href="#specimen-base" />
+        
+        <!-- Center Column Arrays -->
+        <use href="#feather" x="150" y="115" />
+        <use href="#feather" x="150" y="185" />
+        <use href="#feather" x="150" y="255" />
+        
+        <!-- Flanking Opposed Arrays -->
+        <use href="#feather" x="120" y="150" />
+        <use href="#feather" x="180" y="150" />
+        <use href="#feather" x="120" y="220" />
+        <use href="#feather" x="180" y="220" />
+    </g>
+</svg>

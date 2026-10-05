@@ -1,0 +1,2883 @@
+{
+  "status": "constructed",
+  "schemaVersion": "critter-graph-source/1",
+  "profile": {
+    "id": "graph-source/1",
+    "sourceRuleVersion": "developmental-analytic/1",
+    "view": "orthographic XY; positive X follows the body chain, positive Y is down",
+    "neckRatio": 0.65,
+    "intervalSamples": 12,
+    "capSamples": 16,
+    "rootIterations": 48,
+    "maximumNodes": 64,
+    "maximumEdges": 128,
+    "maximumCoordinateMagnitude": 10000,
+    "maximumVertices": 4096,
+    "minimumPolygonArea": 1e-10,
+    "geometryTolerance": 1e-7,
+    "sourceRoundingTolerance": 0.000002,
+    "firstHingeForwardFraction": 0.3,
+    "materialOwnership": "Nearest station; longitudinal domains split at station midpoints. Each original surface maps once.",
+    "maskMapping": "Uniform or two equal local-u fields in retained palette order.",
+    "staticAssembly": "Recovered source longitudinal roots; source XY directions; exact segment lengths/widths and longitudinal fin chord/span. Solved endpoints are new construction.",
+    "referencePaintOrder": "Appendage fields first, body fields last; root overlap is a static attachment depiction, not physical Z order."
+  },
+  "sourceResultDigest": "34d0caba71b52aea26c54f3e83d28b04b7075f08e53524b9b37b967e98ce58ba",
+  "bodyExteriors": [
+    {
+      "id": "body-exterior",
+      "kind": "single-ellipse",
+      "sourceNodeIds": [
+        "volume-0"
+      ],
+      "sourceEdgeIds": [],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation"
+      ],
+      "centerY": 0,
+      "controls": [
+        [
+          0,
+          0.45
+        ]
+      ],
+      "lowerEnvelope": [
+        [
+          -0.9,
+          0
+        ],
+        [
+          -0.895666254,
+          0.044107713
+        ],
+        [
+          -0.882706752,
+          0.087790645
+        ],
+        [
+          -0.861246302,
+          0.130628105
+        ],
+        [
+          -0.831491579,
+          0.172207545
+        ],
+        [
+          -0.793729138,
+          0.212128532
+        ],
+        [
+          -0.748322651,
+          0.250006605
+        ],
+        [
+          -0.695709408,
+          0.285476978
+        ],
+        [
+          -0.636396103,
+          0.318198052
+        ],
+        [
+          -0.570953956,
+          0.347854704
+        ],
+        [
+          -0.50001321,
+          0.374161326
+        ],
+        [
+          -0.424257063,
+          0.396864569
+        ],
+        [
+          -0.344415089,
+          0.41574579
+        ],
+        [
+          -0.26125621,
+          0.430623151
+        ],
+        [
+          -0.17558129,
+          0.441353376
+        ],
+        [
+          -0.088215426,
+          0.447833127
+        ],
+        [
+          0,
+          0.45
+        ],
+        [
+          0.088215426,
+          0.447833127
+        ],
+        [
+          0.17558129,
+          0.441353376
+        ],
+        [
+          0.26125621,
+          0.430623151
+        ],
+        [
+          0.344415089,
+          0.41574579
+        ],
+        [
+          0.424257063,
+          0.396864569
+        ],
+        [
+          0.50001321,
+          0.374161326
+        ],
+        [
+          0.570953956,
+          0.347854704
+        ],
+        [
+          0.636396103,
+          0.318198052
+        ],
+        [
+          0.695709408,
+          0.285476978
+        ],
+        [
+          0.748322651,
+          0.250006605
+        ],
+        [
+          0.793729138,
+          0.212128532
+        ],
+        [
+          0.831491579,
+          0.172207545
+        ],
+        [
+          0.861246302,
+          0.130628105
+        ],
+        [
+          0.882706752,
+          0.087790645
+        ],
+        [
+          0.895666254,
+          0.044107713
+        ],
+        [
+          0.9,
+          0
+        ]
+      ],
+      "outline": [
+        [
+          -0.9,
+          0
+        ],
+        [
+          -0.895666254,
+          0.044107713
+        ],
+        [
+          -0.882706752,
+          0.087790645
+        ],
+        [
+          -0.861246302,
+          0.130628105
+        ],
+        [
+          -0.831491579,
+          0.172207545
+        ],
+        [
+          -0.793729138,
+          0.212128532
+        ],
+        [
+          -0.748322651,
+          0.250006605
+        ],
+        [
+          -0.695709408,
+          0.285476978
+        ],
+        [
+          -0.636396103,
+          0.318198052
+        ],
+        [
+          -0.570953956,
+          0.347854704
+        ],
+        [
+          -0.50001321,
+          0.374161326
+        ],
+        [
+          -0.424257063,
+          0.396864569
+        ],
+        [
+          -0.344415089,
+          0.41574579
+        ],
+        [
+          -0.26125621,
+          0.430623151
+        ],
+        [
+          -0.17558129,
+          0.441353376
+        ],
+        [
+          -0.088215426,
+          0.447833127
+        ],
+        [
+          0,
+          0.45
+        ],
+        [
+          0.088215426,
+          0.447833127
+        ],
+        [
+          0.17558129,
+          0.441353376
+        ],
+        [
+          0.26125621,
+          0.430623151
+        ],
+        [
+          0.344415089,
+          0.41574579
+        ],
+        [
+          0.424257063,
+          0.396864569
+        ],
+        [
+          0.50001321,
+          0.374161326
+        ],
+        [
+          0.570953956,
+          0.347854704
+        ],
+        [
+          0.636396103,
+          0.318198052
+        ],
+        [
+          0.695709408,
+          0.285476978
+        ],
+        [
+          0.748322651,
+          0.250006605
+        ],
+        [
+          0.793729138,
+          0.212128532
+        ],
+        [
+          0.831491579,
+          0.172207545
+        ],
+        [
+          0.861246302,
+          0.130628105
+        ],
+        [
+          0.882706752,
+          0.087790645
+        ],
+        [
+          0.895666254,
+          0.044107713
+        ],
+        [
+          0.9,
+          0
+        ],
+        [
+          0.895666254,
+          -0.044107713
+        ],
+        [
+          0.882706752,
+          -0.087790645
+        ],
+        [
+          0.861246302,
+          -0.130628105
+        ],
+        [
+          0.831491579,
+          -0.172207545
+        ],
+        [
+          0.793729138,
+          -0.212128532
+        ],
+        [
+          0.748322651,
+          -0.250006605
+        ],
+        [
+          0.695709408,
+          -0.285476978
+        ],
+        [
+          0.636396103,
+          -0.318198052
+        ],
+        [
+          0.570953956,
+          -0.347854704
+        ],
+        [
+          0.50001321,
+          -0.374161326
+        ],
+        [
+          0.424257063,
+          -0.396864569
+        ],
+        [
+          0.344415089,
+          -0.41574579
+        ],
+        [
+          0.26125621,
+          -0.430623151
+        ],
+        [
+          0.17558129,
+          -0.441353376
+        ],
+        [
+          0.088215426,
+          -0.447833127
+        ],
+        [
+          0,
+          -0.45
+        ],
+        [
+          -0.088215426,
+          -0.447833127
+        ],
+        [
+          -0.17558129,
+          -0.441353376
+        ],
+        [
+          -0.26125621,
+          -0.430623151
+        ],
+        [
+          -0.344415089,
+          -0.41574579
+        ],
+        [
+          -0.424257063,
+          -0.396864569
+        ],
+        [
+          -0.50001321,
+          -0.374161326
+        ],
+        [
+          -0.570953956,
+          -0.347854704
+        ],
+        [
+          -0.636396103,
+          -0.318198052
+        ],
+        [
+          -0.695709408,
+          -0.285476978
+        ],
+        [
+          -0.748322651,
+          -0.250006605
+        ],
+        [
+          -0.793729138,
+          -0.212128532
+        ],
+        [
+          -0.831491579,
+          -0.172207545
+        ],
+        [
+          -0.861246302,
+          -0.130628105
+        ],
+        [
+          -0.882706752,
+          -0.087790645
+        ],
+        [
+          -0.895666254,
+          -0.044107713
+        ]
+      ],
+      "stations": [
+        {
+          "nodeId": "volume-0",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "dimensions": [
+            1.8,
+            0.9,
+            0.3
+          ]
+        }
+      ]
+    }
+  ],
+  "localFrames": [
+    {
+      "nodeId": "attachment-0-0-0",
+      "origin": [
+        -0.126,
+        0.445030721
+      ],
+      "longitudinal": [
+        0.287347886,
+        0.957826285
+      ],
+      "lateral": [
+        -0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        -0.073964838,
+        0.99726085
+      ]
+    },
+    {
+      "nodeId": "attachment-0-0-1",
+      "origin": [
+        -0.039795634,
+        0.732378607
+      ],
+      "longitudinal": [
+        0.287347886,
+        0.957826285
+      ],
+      "lateral": [
+        -0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        -0.9578262852211513,
+        0.2873478855663454
+      ]
+    },
+    {
+      "nodeId": "attachment-0-1-0",
+      "origin": [
+        -0.126,
+        -0.445030721
+      ],
+      "longitudinal": [
+        0.287347886,
+        -0.957826285
+      ],
+      "lateral": [
+        0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        -0.073964838,
+        -0.99726085
+      ]
+    },
+    {
+      "nodeId": "attachment-0-1-1",
+      "origin": [
+        -0.039795634,
+        -0.732378607
+      ],
+      "longitudinal": [
+        0.287347886,
+        -0.957826285
+      ],
+      "lateral": [
+        0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        0.9578262852211513,
+        0.2873478855663454
+      ]
+    },
+    {
+      "nodeId": "attachment-1-0-0",
+      "origin": [
+        0.144,
+        0.443695697
+      ],
+      "longitudinal": [
+        0.287347886,
+        0.957826285
+      ],
+      "lateral": [
+        -0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        0.073964838,
+        0.99726085
+      ]
+    },
+    {
+      "nodeId": "attachment-1-0-1",
+      "origin": [
+        0.230204366,
+        0.731043583
+      ],
+      "longitudinal": [
+        0.287347886,
+        0.957826285
+      ],
+      "lateral": [
+        -0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        -0.9578262852211515,
+        0.28734788556634533
+      ]
+    },
+    {
+      "nodeId": "attachment-1-1-0",
+      "origin": [
+        0.144,
+        -0.443695697
+      ],
+      "longitudinal": [
+        0.287347886,
+        -0.957826285
+      ],
+      "lateral": [
+        0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        0.073964838,
+        -0.99726085
+      ]
+    },
+    {
+      "nodeId": "attachment-1-1-1",
+      "origin": [
+        0.230204366,
+        -0.731043583
+      ],
+      "longitudinal": [
+        0.287347886,
+        -0.957826285
+      ],
+      "lateral": [
+        0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        0.9578262852211515,
+        0.28734788556634533
+      ]
+    },
+    {
+      "nodeId": "attachment-2-0-0",
+      "origin": [
+        0.414,
+        0.399290184
+      ],
+      "longitudinal": [
+        0.287347886,
+        0.957826285
+      ],
+      "lateral": [
+        -0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        0.230134906,
+        0.973158736
+      ]
+    },
+    {
+      "nodeId": "attachment-2-0-1",
+      "origin": [
+        0.500204366,
+        0.68663807
+      ],
+      "longitudinal": [
+        0.287347886,
+        0.957826285
+      ],
+      "lateral": [
+        -0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        -0.9578262852211515,
+        0.28734788556634516
+      ]
+    },
+    {
+      "nodeId": "attachment-2-1-0",
+      "origin": [
+        0.414,
+        -0.399290184
+      ],
+      "longitudinal": [
+        0.287347886,
+        -0.957826285
+      ],
+      "lateral": [
+        0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        0.230134906,
+        -0.973158736
+      ]
+    },
+    {
+      "nodeId": "attachment-2-1-1",
+      "origin": [
+        0.500204366,
+        -0.68663807
+      ],
+      "longitudinal": [
+        0.287347886,
+        -0.957826285
+      ],
+      "lateral": [
+        0.957826285,
+        0.287347886
+      ],
+      "exteriorNormal": [
+        0.9578262852211515,
+        0.28734788556634516
+      ]
+    }
+  ],
+  "appendages": [
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-0-0-0",
+      "nodeId": "attachment-0-0-0",
+      "role": "link",
+      "parentNodeId": "volume-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-0-0-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-0-0-0"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        -0.036,
+        0.3,
+        -0.075
+      ],
+      "sourceDimensions": [
+        0.3,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        -0.126,
+        0,
+        0
+      ],
+      "root": [
+        -0.126,
+        0.445030721
+      ],
+      "localFrame": {
+        "origin": [
+          -0.126,
+          0.445030721
+        ],
+        "longitudinal": [
+          0.287347886,
+          0.957826285
+        ],
+        "lateral": [
+          -0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          -0.073964838,
+          0.99726085
+        ]
+      },
+      "kind": "jointed-segment",
+      "end": [
+        -0.039795634,
+        0.732378607
+      ],
+      "outline": [
+        [
+          -0.173891314,
+          0.459398115
+        ],
+        [
+          -0.078108686,
+          0.430663327
+        ],
+        [
+          0.00809568,
+          0.718011213
+        ],
+        [
+          -0.087686948,
+          0.746746001
+        ]
+      ],
+      "length": 0.3,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-0-0-1",
+      "nodeId": "attachment-0-0-1",
+      "role": "contact-link",
+      "parentNodeId": "attachment-0-0-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-0-0-0",
+        "attachment-0-0-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-0-0-0",
+        "root-attachment-0-0-1"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.024,
+        0.5,
+        -0.15
+      ],
+      "sourceDimensions": [
+        0.2,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        -0.036,
+        0.3,
+        -0.075
+      ],
+      "root": [
+        -0.039795634,
+        0.732378607
+      ],
+      "localFrame": {
+        "origin": [
+          -0.039795634,
+          0.732378607
+        ],
+        "longitudinal": [
+          0.287347886,
+          0.957826285
+        ],
+        "lateral": [
+          -0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          -0.9578262852211513,
+          0.2873478855663454
+        ]
+      },
+      "kind": "terminal-contact-segment",
+      "end": [
+        0.017673943,
+        0.923943864
+      ],
+      "outline": [
+        [
+          -0.087686948,
+          0.746746001
+        ],
+        [
+          0.00809568,
+          0.718011213
+        ],
+        [
+          0.065565257,
+          0.90957647
+        ],
+        [
+          -0.030217371,
+          0.938311258
+        ]
+      ],
+      "length": 0.2,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-0-1-0",
+      "nodeId": "attachment-0-1-0",
+      "role": "link",
+      "parentNodeId": "volume-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-0-1-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-0-1-0"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        -0.036,
+        -0.3,
+        -0.075
+      ],
+      "sourceDimensions": [
+        0.3,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        -0.126,
+        0,
+        0
+      ],
+      "root": [
+        -0.126,
+        -0.445030721
+      ],
+      "localFrame": {
+        "origin": [
+          -0.126,
+          -0.445030721
+        ],
+        "longitudinal": [
+          0.287347886,
+          -0.957826285
+        ],
+        "lateral": [
+          0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          -0.073964838,
+          -0.99726085
+        ]
+      },
+      "kind": "jointed-segment",
+      "end": [
+        -0.039795634,
+        -0.732378607
+      ],
+      "outline": [
+        [
+          -0.078108686,
+          -0.430663327
+        ],
+        [
+          -0.173891314,
+          -0.459398115
+        ],
+        [
+          -0.087686948,
+          -0.746746001
+        ],
+        [
+          0.00809568,
+          -0.718011213
+        ]
+      ],
+      "length": 0.3,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-0-1-1",
+      "nodeId": "attachment-0-1-1",
+      "role": "contact-link",
+      "parentNodeId": "attachment-0-1-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-0-1-0",
+        "attachment-0-1-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-0-1-0",
+        "root-attachment-0-1-1"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.024,
+        -0.5,
+        -0.15
+      ],
+      "sourceDimensions": [
+        0.2,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        -0.036,
+        -0.3,
+        -0.075
+      ],
+      "root": [
+        -0.039795634,
+        -0.732378607
+      ],
+      "localFrame": {
+        "origin": [
+          -0.039795634,
+          -0.732378607
+        ],
+        "longitudinal": [
+          0.287347886,
+          -0.957826285
+        ],
+        "lateral": [
+          0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          0.9578262852211513,
+          0.2873478855663454
+        ]
+      },
+      "kind": "terminal-contact-segment",
+      "end": [
+        0.017673943,
+        -0.923943864
+      ],
+      "outline": [
+        [
+          0.00809568,
+          -0.718011213
+        ],
+        [
+          -0.087686948,
+          -0.746746001
+        ],
+        [
+          -0.030217371,
+          -0.938311258
+        ],
+        [
+          0.065565257,
+          -0.90957647
+        ]
+      ],
+      "length": 0.2,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-1-0-0",
+      "nodeId": "attachment-1-0-0",
+      "role": "link",
+      "parentNodeId": "volume-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-1-0-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-1-0-0"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.234,
+        0.3,
+        -0.075
+      ],
+      "sourceDimensions": [
+        0.3,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        0.144,
+        0,
+        0
+      ],
+      "root": [
+        0.144,
+        0.443695697
+      ],
+      "localFrame": {
+        "origin": [
+          0.144,
+          0.443695697
+        ],
+        "longitudinal": [
+          0.287347886,
+          0.957826285
+        ],
+        "lateral": [
+          -0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          0.073964838,
+          0.99726085
+        ]
+      },
+      "kind": "jointed-segment",
+      "end": [
+        0.230204366,
+        0.731043583
+      ],
+      "outline": [
+        [
+          0.096108686,
+          0.458063091
+        ],
+        [
+          0.191891314,
+          0.429328303
+        ],
+        [
+          0.27809568,
+          0.716676189
+        ],
+        [
+          0.182313052,
+          0.745410977
+        ]
+      ],
+      "length": 0.3,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-1-0-1",
+      "nodeId": "attachment-1-0-1",
+      "role": "contact-link",
+      "parentNodeId": "attachment-1-0-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-1-0-0",
+        "attachment-1-0-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-1-0-0",
+        "root-attachment-1-0-1"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.294,
+        0.5,
+        -0.15
+      ],
+      "sourceDimensions": [
+        0.2,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        0.234,
+        0.3,
+        -0.075
+      ],
+      "root": [
+        0.230204366,
+        0.731043583
+      ],
+      "localFrame": {
+        "origin": [
+          0.230204366,
+          0.731043583
+        ],
+        "longitudinal": [
+          0.287347886,
+          0.957826285
+        ],
+        "lateral": [
+          -0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          -0.9578262852211515,
+          0.28734788556634533
+        ]
+      },
+      "kind": "terminal-contact-segment",
+      "end": [
+        0.287673943,
+        0.92260884
+      ],
+      "outline": [
+        [
+          0.182313052,
+          0.745410977
+        ],
+        [
+          0.27809568,
+          0.716676189
+        ],
+        [
+          0.335565257,
+          0.908241446
+        ],
+        [
+          0.239782629,
+          0.936976234
+        ]
+      ],
+      "length": 0.2,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-1-1-0",
+      "nodeId": "attachment-1-1-0",
+      "role": "link",
+      "parentNodeId": "volume-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-1-1-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-1-1-0"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.234,
+        -0.3,
+        -0.075
+      ],
+      "sourceDimensions": [
+        0.3,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        0.144,
+        0,
+        0
+      ],
+      "root": [
+        0.144,
+        -0.443695697
+      ],
+      "localFrame": {
+        "origin": [
+          0.144,
+          -0.443695697
+        ],
+        "longitudinal": [
+          0.287347886,
+          -0.957826285
+        ],
+        "lateral": [
+          0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          0.073964838,
+          -0.99726085
+        ]
+      },
+      "kind": "jointed-segment",
+      "end": [
+        0.230204366,
+        -0.731043583
+      ],
+      "outline": [
+        [
+          0.191891314,
+          -0.429328303
+        ],
+        [
+          0.096108686,
+          -0.458063091
+        ],
+        [
+          0.182313052,
+          -0.745410977
+        ],
+        [
+          0.27809568,
+          -0.716676189
+        ]
+      ],
+      "length": 0.3,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-1-1-1",
+      "nodeId": "attachment-1-1-1",
+      "role": "contact-link",
+      "parentNodeId": "attachment-1-1-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-1-1-0",
+        "attachment-1-1-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-1-1-0",
+        "root-attachment-1-1-1"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.294,
+        -0.5,
+        -0.15
+      ],
+      "sourceDimensions": [
+        0.2,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        0.234,
+        -0.3,
+        -0.075
+      ],
+      "root": [
+        0.230204366,
+        -0.731043583
+      ],
+      "localFrame": {
+        "origin": [
+          0.230204366,
+          -0.731043583
+        ],
+        "longitudinal": [
+          0.287347886,
+          -0.957826285
+        ],
+        "lateral": [
+          0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          0.9578262852211515,
+          0.28734788556634533
+        ]
+      },
+      "kind": "terminal-contact-segment",
+      "end": [
+        0.287673943,
+        -0.92260884
+      ],
+      "outline": [
+        [
+          0.27809568,
+          -0.716676189
+        ],
+        [
+          0.182313052,
+          -0.745410977
+        ],
+        [
+          0.239782629,
+          -0.936976234
+        ],
+        [
+          0.335565257,
+          -0.908241446
+        ]
+      ],
+      "length": 0.2,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-2-0-0",
+      "nodeId": "attachment-2-0-0",
+      "role": "link",
+      "parentNodeId": "volume-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-2-0-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-2-0-0"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.504,
+        0.3,
+        -0.075
+      ],
+      "sourceDimensions": [
+        0.3,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        0.414,
+        0,
+        0
+      ],
+      "root": [
+        0.414,
+        0.399290184
+      ],
+      "localFrame": {
+        "origin": [
+          0.414,
+          0.399290184
+        ],
+        "longitudinal": [
+          0.287347886,
+          0.957826285
+        ],
+        "lateral": [
+          -0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          0.230134906,
+          0.973158736
+        ]
+      },
+      "kind": "jointed-segment",
+      "end": [
+        0.500204366,
+        0.68663807
+      ],
+      "outline": [
+        [
+          0.366108686,
+          0.413657578
+        ],
+        [
+          0.461891314,
+          0.38492279
+        ],
+        [
+          0.54809568,
+          0.672270676
+        ],
+        [
+          0.452313052,
+          0.701005464
+        ]
+      ],
+      "length": 0.3,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-2-0-1",
+      "nodeId": "attachment-2-0-1",
+      "role": "contact-link",
+      "parentNodeId": "attachment-2-0-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-2-0-0",
+        "attachment-2-0-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-2-0-0",
+        "root-attachment-2-0-1"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.564,
+        0.5,
+        -0.15
+      ],
+      "sourceDimensions": [
+        0.2,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        0.504,
+        0.3,
+        -0.075
+      ],
+      "root": [
+        0.500204366,
+        0.68663807
+      ],
+      "localFrame": {
+        "origin": [
+          0.500204366,
+          0.68663807
+        ],
+        "longitudinal": [
+          0.287347886,
+          0.957826285
+        ],
+        "lateral": [
+          -0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          -0.9578262852211515,
+          0.28734788556634516
+        ]
+      },
+      "kind": "terminal-contact-segment",
+      "end": [
+        0.557673943,
+        0.878203327
+      ],
+      "outline": [
+        [
+          0.452313052,
+          0.701005464
+        ],
+        [
+          0.54809568,
+          0.672270676
+        ],
+        [
+          0.605565257,
+          0.863835933
+        ],
+        [
+          0.509782629,
+          0.892570721
+        ]
+      ],
+      "length": 0.2,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-2-1-0",
+      "nodeId": "attachment-2-1-0",
+      "role": "link",
+      "parentNodeId": "volume-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-2-1-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-2-1-0"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.504,
+        -0.3,
+        -0.075
+      ],
+      "sourceDimensions": [
+        0.3,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        0.414,
+        0,
+        0
+      ],
+      "root": [
+        0.414,
+        -0.399290184
+      ],
+      "localFrame": {
+        "origin": [
+          0.414,
+          -0.399290184
+        ],
+        "longitudinal": [
+          0.287347886,
+          -0.957826285
+        ],
+        "lateral": [
+          0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          0.230134906,
+          -0.973158736
+        ]
+      },
+      "kind": "jointed-segment",
+      "end": [
+        0.500204366,
+        -0.68663807
+      ],
+      "outline": [
+        [
+          0.461891314,
+          -0.38492279
+        ],
+        [
+          0.366108686,
+          -0.413657578
+        ],
+        [
+          0.452313052,
+          -0.701005464
+        ],
+        [
+          0.54809568,
+          -0.672270676
+        ]
+      ],
+      "length": 0.3,
+      "width": 0.1,
+      "jointRange": 0.4
+    },
+    {
+      "status": "constructed",
+      "id": "constructed-attachment-2-1-1",
+      "nodeId": "attachment-2-1-1",
+      "role": "contact-link",
+      "parentNodeId": "attachment-2-1-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-2-1-0",
+        "attachment-2-1-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-2-1-0",
+        "root-attachment-2-1-1"
+      ],
+      "sources": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "sourcePosition": [
+        0.564,
+        -0.5,
+        -0.15
+      ],
+      "sourceDimensions": [
+        0.2,
+        0.1,
+        0.1
+      ],
+      "sourceReference": [
+        0.504,
+        -0.3,
+        -0.075
+      ],
+      "root": [
+        0.500204366,
+        -0.68663807
+      ],
+      "localFrame": {
+        "origin": [
+          0.500204366,
+          -0.68663807
+        ],
+        "longitudinal": [
+          0.287347886,
+          -0.957826285
+        ],
+        "lateral": [
+          0.957826285,
+          0.287347886
+        ],
+        "exteriorNormal": [
+          0.9578262852211515,
+          0.28734788556634516
+        ]
+      },
+      "kind": "terminal-contact-segment",
+      "end": [
+        0.557673943,
+        -0.878203327
+      ],
+      "outline": [
+        [
+          0.54809568,
+          -0.672270676
+        ],
+        [
+          0.452313052,
+          -0.701005464
+        ],
+        [
+          0.509782629,
+          -0.892570721
+        ],
+        [
+          0.605565257,
+          -0.863835933
+        ]
+      ],
+      "length": 0.2,
+      "width": 0.1,
+      "jointRange": 0.4
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "surface-volume-0",
+      "nodeId": "volume-0",
+      "region": "volume",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#465459"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.body-palette",
+        "appearance.surface-texture",
+        "development.symmetry",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "body-exterior",
+      "atlas": {
+        "kind": "longitudinal-body-ownership",
+        "minimumX": -0.9,
+        "maximumX": 0.9,
+        "minimumY": -0.45,
+        "maximumY": 0.45,
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-0-0-0",
+      "nodeId": "attachment-0-0-0",
+      "region": "link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-0-0-0",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            -0.126,
+            0.445030721
+          ],
+          "longitudinal": [
+            0.287347886,
+            0.957826285
+          ],
+          "lateral": [
+            -0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            -0.073964838,
+            0.99726085
+          ]
+        },
+        "bounds": {
+          "minimumX": -0.173891314,
+          "maximumX": 0.00809568,
+          "minimumY": 0.430663327,
+          "maximumY": 0.746746001
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-0-0-1",
+      "nodeId": "attachment-0-0-1",
+      "region": "contact-link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-0-0-1",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            -0.039795634,
+            0.732378607
+          ],
+          "longitudinal": [
+            0.287347886,
+            0.957826285
+          ],
+          "lateral": [
+            -0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            -0.9578262852211513,
+            0.2873478855663454
+          ]
+        },
+        "bounds": {
+          "minimumX": -0.087686948,
+          "maximumX": 0.065565257,
+          "minimumY": 0.718011213,
+          "maximumY": 0.938311258
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-0-1-0",
+      "nodeId": "attachment-0-1-0",
+      "region": "link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-0-1-0",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            -0.126,
+            -0.445030721
+          ],
+          "longitudinal": [
+            0.287347886,
+            -0.957826285
+          ],
+          "lateral": [
+            0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            -0.073964838,
+            -0.99726085
+          ]
+        },
+        "bounds": {
+          "minimumX": -0.173891314,
+          "maximumX": 0.00809568,
+          "minimumY": -0.746746001,
+          "maximumY": -0.430663327
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-0-1-1",
+      "nodeId": "attachment-0-1-1",
+      "region": "contact-link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-0-1-1",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            -0.039795634,
+            -0.732378607
+          ],
+          "longitudinal": [
+            0.287347886,
+            -0.957826285
+          ],
+          "lateral": [
+            0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            0.9578262852211513,
+            0.2873478855663454
+          ]
+        },
+        "bounds": {
+          "minimumX": -0.087686948,
+          "maximumX": 0.065565257,
+          "minimumY": -0.938311258,
+          "maximumY": -0.718011213
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-1-0-0",
+      "nodeId": "attachment-1-0-0",
+      "region": "link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-1-0-0",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.144,
+            0.443695697
+          ],
+          "longitudinal": [
+            0.287347886,
+            0.957826285
+          ],
+          "lateral": [
+            -0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            0.073964838,
+            0.99726085
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.096108686,
+          "maximumX": 0.27809568,
+          "minimumY": 0.429328303,
+          "maximumY": 0.745410977
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-1-0-1",
+      "nodeId": "attachment-1-0-1",
+      "region": "contact-link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-1-0-1",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.230204366,
+            0.731043583
+          ],
+          "longitudinal": [
+            0.287347886,
+            0.957826285
+          ],
+          "lateral": [
+            -0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            -0.9578262852211515,
+            0.28734788556634533
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.182313052,
+          "maximumX": 0.335565257,
+          "minimumY": 0.716676189,
+          "maximumY": 0.936976234
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-1-1-0",
+      "nodeId": "attachment-1-1-0",
+      "region": "link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-1-1-0",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.144,
+            -0.443695697
+          ],
+          "longitudinal": [
+            0.287347886,
+            -0.957826285
+          ],
+          "lateral": [
+            0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            0.073964838,
+            -0.99726085
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.096108686,
+          "maximumX": 0.27809568,
+          "minimumY": -0.745410977,
+          "maximumY": -0.429328303
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-1-1-1",
+      "nodeId": "attachment-1-1-1",
+      "region": "contact-link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-1-1-1",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.230204366,
+            -0.731043583
+          ],
+          "longitudinal": [
+            0.287347886,
+            -0.957826285
+          ],
+          "lateral": [
+            0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            0.9578262852211515,
+            0.28734788556634533
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.182313052,
+          "maximumX": 0.335565257,
+          "minimumY": -0.936976234,
+          "maximumY": -0.716676189
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-2-0-0",
+      "nodeId": "attachment-2-0-0",
+      "region": "link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-2-0-0",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.414,
+            0.399290184
+          ],
+          "longitudinal": [
+            0.287347886,
+            0.957826285
+          ],
+          "lateral": [
+            -0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            0.230134906,
+            0.973158736
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.366108686,
+          "maximumX": 0.54809568,
+          "minimumY": 0.38492279,
+          "maximumY": 0.701005464
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-2-0-1",
+      "nodeId": "attachment-2-0-1",
+      "region": "contact-link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-2-0-1",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.500204366,
+            0.68663807
+          ],
+          "longitudinal": [
+            0.287347886,
+            0.957826285
+          ],
+          "lateral": [
+            -0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            -0.9578262852211515,
+            0.28734788556634516
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.452313052,
+          "maximumX": 0.605565257,
+          "minimumY": 0.672270676,
+          "maximumY": 0.892570721
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-2-1-0",
+      "nodeId": "attachment-2-1-0",
+      "region": "link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-2-1-0",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.414,
+            -0.399290184
+          ],
+          "longitudinal": [
+            0.287347886,
+            -0.957826285
+          ],
+          "lateral": [
+            0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            0.230134906,
+            -0.973158736
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.366108686,
+          "maximumX": 0.54809568,
+          "minimumY": -0.701005464,
+          "maximumY": -0.38492279
+        },
+        "maskAxis": "local-u"
+      }
+    },
+    {
+      "id": "surface-attachment-2-1-1",
+      "nodeId": "attachment-2-1-1",
+      "region": "contact-link",
+      "coordinates": "local normalized u/v on actual node; no chromosome mapping",
+      "axes": [
+        "longitudinal",
+        "lateral"
+      ],
+      "palette": [
+        "#dfd2ae"
+      ],
+      "partition": "uniform",
+      "texture": "smooth",
+      "markings": [],
+      "sources": [
+        "appearance.underside-palette",
+        "development.symmetry",
+        "appearance.surface-texture",
+        "appearance.marking-switch"
+      ],
+      "shapeId": "constructed-attachment-2-1-1",
+      "atlas": {
+        "kind": "rooted-appendage-local",
+        "frame": {
+          "origin": [
+            0.500204366,
+            -0.68663807
+          ],
+          "longitudinal": [
+            0.287347886,
+            -0.957826285
+          ],
+          "lateral": [
+            0.957826285,
+            0.287347886
+          ],
+          "exteriorNormal": [
+            0.9578262852211515,
+            0.28734788556634516
+          ]
+        },
+        "bounds": {
+          "minimumX": 0.452313052,
+          "maximumX": 0.605565257,
+          "minimumY": -0.892570721,
+          "maximumY": -0.672270676
+        },
+        "maskAxis": "local-u"
+      }
+    }
+  ],
+  "traces": [
+    {
+      "targetId": "body-exterior",
+      "sourceNodeIds": [
+        "volume-0"
+      ],
+      "sourceEdgeIds": [],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-0-0-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-0-0-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-0-0-0"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-0-0-1",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-0-0-0",
+        "attachment-0-0-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-0-0-0",
+        "root-attachment-0-0-1"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-0-1-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-0-1-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-0-1-0"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-0-1-1",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-0-1-0",
+        "attachment-0-1-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-0-1-0",
+        "root-attachment-0-1-1"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-1-0-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-1-0-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-1-0-0"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-1-0-1",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-1-0-0",
+        "attachment-1-0-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-1-0-0",
+        "root-attachment-1-0-1"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-1-1-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-1-1-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-1-1-0"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-1-1-1",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-1-1-0",
+        "attachment-1-1-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-1-1-0",
+        "root-attachment-1-1-1"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-2-0-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-2-0-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-2-0-0"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-2-0-1",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-2-0-0",
+        "attachment-2-0-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-2-0-0",
+        "root-attachment-2-0-1"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-2-1-0",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-2-1-0"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-2-1-0"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    },
+    {
+      "targetId": "constructed-attachment-2-1-1",
+      "sourceNodeIds": [
+        "volume-0",
+        "attachment-2-1-0",
+        "attachment-2-1-1"
+      ],
+      "sourceEdgeIds": [
+        "root-attachment-2-1-0",
+        "root-attachment-2-1-1"
+      ],
+      "locusIds": [
+        "development.axial-repeat",
+        "structure.body-length",
+        "structure.body-width",
+        "structure.body-height",
+        "structure.body-taper",
+        "structure.axial-spacing",
+        "structure.material-density",
+        "development.axial-deformation",
+        "development.attachment-repeat",
+        "development.symmetry",
+        "development.articulated-chain",
+        "structure.proximal-length",
+        "structure.distal-length",
+        "structure.joint-range",
+        "structure.contact-width",
+        "structure.attachment-position"
+      ],
+      "constructionProfile": "graph-source/1"
+    }
+  ],
+  "bounds": {
+    "minimumX": -0.9,
+    "maximumX": 0.9,
+    "minimumY": -0.938311258,
+    "maximumY": 0.938311258
+  },
+  "limitations": [
+    "Static planar construction proof; no physical tissue, motion, rig, pose validity or finished art is established.",
+    "Rounded joins and nearest-station material domains are provisional graph-source/1 construction rules.",
+    "Original node centers remain source evidence; downstream endpoints are new solved positions.",
+    "Height and source Z coordinates remain retained facts; the exported view is an XY projection.",
+    "Membranes, radial symmetry, branches, deformation and marked-surface projection are unsupported in this slice."
+  ],
+  "constructionDigest": "d8eb709b50a0f71dc88630c6474b235f9e4ab138581229ac3bbff923a2445558"
+}

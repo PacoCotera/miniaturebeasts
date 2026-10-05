@@ -1,0 +1,399 @@
+{
+  "markings": {
+    "bounds": {
+      "ink": "#e8dfc8",
+      "inkSource": "prototype/generator-workbench/presentation.mjs: diagnostic marking ink",
+      "maximumLogical": 35,
+      "maximumLogicalPerOwner": 5,
+      "maximumPeriodicComponents": 105,
+      "maximumPolygonVertices": 20,
+      "maximumPolygons": 141120,
+      "maximumPolygonsPerOwner": 20160,
+      "patchAspect": 0.6,
+      "patchVertices": 16,
+      "periodicShifts": [
+        -1,
+        0,
+        1
+      ],
+      "profile": "primary-local-marking-field/1"
+    },
+    "contributors": [
+      {
+        "copies": [
+          "on",
+          "on"
+        ],
+        "locusId": "appearance.marking-switch",
+        "state": "expressed",
+        "target": "markings.enabled",
+        "value": true
+      },
+      {
+        "copies": [
+          "bands",
+          "patches"
+        ],
+        "locusId": "appearance.marking-layout",
+        "state": "expressed",
+        "target": "markings.layout",
+        "value": "bands-and-patches"
+      },
+      {
+        "copies": [
+          "high",
+          "high"
+        ],
+        "locusId": "appearance.marking-extent",
+        "state": "expressed",
+        "target": "markings.extent",
+        "value": 0.5
+      },
+      {
+        "copies": [
+          "high",
+          "high"
+        ],
+        "locusId": "appearance.marking-scale",
+        "state": "expressed",
+        "target": "markings.scale",
+        "value": 0.14
+      },
+      {
+        "copies": [
+          "low",
+          "low"
+        ],
+        "locusId": "appearance.marking-orientation",
+        "state": "expressed",
+        "target": "markings.orientation",
+        "value": 0
+      },
+      {
+        "copies": [
+          "high",
+          "high"
+        ],
+        "locusId": "appearance.marking-contrast",
+        "state": "expressed",
+        "target": "markings.contrast",
+        "value": 0.8
+      }
+    ],
+    "emittedPolygons": 526,
+    "enabled": true,
+    "ink": "#e8dfc8",
+    "inkSource": "prototype/generator-workbench/presentation.mjs: diagnostic marking ink",
+    "logicalCount": 5,
+    "masksAreSurfaceFields": true,
+    "opacity": 0.8,
+    "owners": [
+      {
+        "atlas": "original normalized longitudinal u and periodic normalized azimuth v; nearest-period unwrap, mean non-pole cap azimuth",
+        "culledBounds": 8056,
+        "discardReason": "Only empty or zero-area atlas intersections are discarded; logical masks remain retained.",
+        "emittedPolygons": 526,
+        "logical": [
+          {
+            "boundary": [
+              [
+                0.09666666666666664,
+                -0.4
+              ],
+              [
+                0.23666666666666664,
+                -0.4
+              ],
+              [
+                0.23666666666666664,
+                0.6
+              ],
+              [
+                0.09666666666666664,
+                0.6
+              ]
+            ],
+            "causes": [
+              "appearance.marking-switch",
+              "appearance.marking-layout",
+              "appearance.marking-extent",
+              "appearance.marking-scale",
+              "appearance.marking-orientation",
+              "appearance.marking-contrast"
+            ],
+            "center": [
+              0.16666666666666666,
+              0.1
+            ],
+            "emittedPolygons": 175,
+            "id": "mark-0",
+            "index": 0,
+            "kind": "band",
+            "orientation": 0,
+            "owner": "region-root",
+            "scale": 0.14
+          },
+          {
+            "boundary": [
+              [
+                0.4733333333333334,
+                0.3
+              ],
+              [
+                0.46267646788491346,
+                0.3321454083186675
+              ],
+              [
+                0.43232828269945,
+                0.35939696961967
+              ],
+              [
+                0.3869090138644458,
+                0.3776058807309481
+              ],
+              [
+                0.3333333333333333,
+                0.384
+              ],
+              [
+                0.27975765280222076,
+                0.3776058807309481
+              ],
+              [
+                0.23433838396721668,
+                0.35939696961967
+              ],
+              [
+                0.20399019878175317,
+                0.33214540831866757
+              ],
+              [
+                0.1933333333333333,
+                0.3
+              ],
+              [
+                0.20399019878175317,
+                0.26785459168133247
+              ],
+              [
+                0.23433838396721665,
+                0.24060303038033
+              ],
+              [
+                0.27975765280222065,
+                0.22239411926905192
+              ],
+              [
+                0.3333333333333333,
+                0.21599999999999997
+              ],
+              [
+                0.3869090138644459,
+                0.2223941192690519
+              ],
+              [
+                0.4323282826994499,
+                0.24060303038033
+              ],
+              [
+                0.46267646788491346,
+                0.2678545916813324
+              ]
+            ],
+            "causes": [
+              "appearance.marking-switch",
+              "appearance.marking-layout",
+              "appearance.marking-extent",
+              "appearance.marking-scale",
+              "appearance.marking-orientation",
+              "appearance.marking-contrast"
+            ],
+            "center": [
+              0.3333333333333333,
+              0.3
+            ],
+            "emittedPolygons": 28,
+            "id": "mark-1",
+            "index": 1,
+            "kind": "patch",
+            "orientation": 0,
+            "owner": "region-root",
+            "scale": 0.14
+          },
+          {
+            "boundary": [
+              [
+                0.43,
+                0
+              ],
+              [
+                0.5700000000000001,
+                0
+              ],
+              [
+                0.5700000000000001,
+                1
+              ],
+              [
+                0.43,
+                1
+              ]
+            ],
+            "causes": [
+              "appearance.marking-switch",
+              "appearance.marking-layout",
+              "appearance.marking-extent",
+              "appearance.marking-scale",
+              "appearance.marking-orientation",
+              "appearance.marking-contrast"
+            ],
+            "center": [
+              0.5,
+              0.5
+            ],
+            "emittedPolygons": 120,
+            "id": "mark-2",
+            "index": 2,
+            "kind": "band",
+            "orientation": 0,
+            "owner": "region-root",
+            "scale": 0.14
+          },
+          {
+            "boundary": [
+              [
+                0.8066666666666666,
+                0.7
+              ],
+              [
+                0.7960098012182468,
+                0.7321454083186675
+              ],
+              [
+                0.7656616160327833,
+                0.75939696961967
+              ],
+              [
+                0.7202423471977792,
+                0.777605880730948
+              ],
+              [
+                0.6666666666666666,
+                0.7839999999999999
+              ],
+              [
+                0.613090986135554,
+                0.777605880730948
+              ],
+              [
+                0.56767171730055,
+                0.75939696961967
+              ],
+              [
+                0.5373235321150864,
+                0.7321454083186675
+              ],
+              [
+                0.5266666666666666,
+                0.7
+              ],
+              [
+                0.5373235321150864,
+                0.6678545916813324
+              ],
+              [
+                0.5676717173005499,
+                0.64060303038033
+              ],
+              [
+                0.613090986135554,
+                0.6223941192690519
+              ],
+              [
+                0.6666666666666666,
+                0.616
+              ],
+              [
+                0.7202423471977792,
+                0.6223941192690519
+              ],
+              [
+                0.7656616160327833,
+                0.64060303038033
+              ],
+              [
+                0.7960098012182467,
+                0.6678545916813323
+              ]
+            ],
+            "causes": [
+              "appearance.marking-switch",
+              "appearance.marking-layout",
+              "appearance.marking-extent",
+              "appearance.marking-scale",
+              "appearance.marking-orientation",
+              "appearance.marking-contrast"
+            ],
+            "center": [
+              0.6666666666666666,
+              0.7
+            ],
+            "emittedPolygons": 28,
+            "id": "mark-3",
+            "index": 3,
+            "kind": "patch",
+            "orientation": 0,
+            "owner": "region-root",
+            "scale": 0.14
+          },
+          {
+            "boundary": [
+              [
+                0.7633333333333334,
+                0.4
+              ],
+              [
+                0.9033333333333332,
+                0.4
+              ],
+              [
+                0.9033333333333332,
+                1.4
+              ],
+              [
+                0.7633333333333334,
+                1.4
+              ]
+            ],
+            "causes": [
+              "appearance.marking-switch",
+              "appearance.marking-layout",
+              "appearance.marking-extent",
+              "appearance.marking-scale",
+              "appearance.marking-orientation",
+              "appearance.marking-contrast"
+            ],
+            "center": [
+              0.8333333333333334,
+              0.9
+            ],
+            "emittedPolygons": 175,
+            "id": "mark-4",
+            "index": 4,
+            "kind": "band",
+            "orientation": 0,
+            "owner": "region-root",
+            "scale": 0.14
+          }
+        ],
+        "numericalTolerance": 1e-10,
+        "owner": "region-root",
+        "retainedIntersectionCount": 526,
+        "zeroAreaIntersections": 58
+      }
+    ],
+    "profile": "primary-local-marking-field/1"
+  },
+  "omission": "Actual clipped vertices remain in the geometry manifest and exact reconstruction; this evidence extract retains contributor and logical field audit without the large vertex array.",
+  "profileVersion": "compositional-source/7"
+}

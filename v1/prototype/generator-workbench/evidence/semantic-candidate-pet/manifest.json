@@ -1,0 +1,175 @@
+{
+  "status": "One actual returned image retained; observable macro fidelity supported, pet-master and polished game-art HOLD",
+  "source": {
+    "path": "../candidate-workbench-flow/first.replay.json",
+    "sha256": "951afba62b68e68d10454fa12253fb3312d7d0ef4eb64d2cc240b3beab4ad7fb",
+    "field": "reference.svg",
+    "storedSvgDigest": "7caa584cd95d4c73767dce7c1428978c133cd3eb8920a6313dd59b18f8015ae1",
+    "exactExtractedSvgSha256": "7caa584cd95d4c73767dce7c1428978c133cd3eb8920a6313dd59b18f8015ae1",
+    "recordId": "experiment-9e4730866d4cdb11b1e5",
+    "displayReferences": [
+      "#GC0D1A46357E2",
+      "#E8A030577944F"
+    ],
+    "revision": "6d053995fc6d0623b6ecd2268bc73297993337f6"
+  },
+  "preparation": {
+    "originalFrame": [
+      512,
+      512
+    ],
+    "preparedFrame": [
+      512,
+      640
+    ],
+    "uniformScale": 1,
+    "transform": "translate(512 64) rotate(90)",
+    "mapping": {
+      "pageX": "512-originalY",
+      "pageY": "64+originalX"
+    },
+    "exactInnerSvgPreserved": true,
+    "featureMoves": "none; all inner content carried together",
+    "modifications": "outer frame/background/padding and one common rigid image-plane rotation only"
+  },
+  "outputSha256": {
+    "source.svg": "7caa584cd95d4c73767dce7c1428978c133cd3eb8920a6313dd59b18f8015ae1",
+    "source.png": "a139e7df73272b807acd337ac3d41dd832d365f8fb1b14f998bb9a9594b159a8",
+    "upright-source.svg": "95f4c7111cb15d46db2577d7ea76990494fb62e11fa5bcfa8b9730d9ffd4ef3f",
+    "upright-source.png": "271ba88daa75409fc5981be11976f58ffa5d1ad9e9b9c9b84a67c89dee9cf439",
+    "upright-source-256.png": "f0648dcaa54ef5651c4cab78808fb0937c6098366d632508984fecf6dd67ffa8",
+    "emitted-prompt.txt": "1db2fb06ca02440164d2599dad40fcc73135127cc48e0becca154dab6d0b10ad"
+  },
+  "submittedPrompt": {
+    "path": "submitted-prompt.txt",
+    "sha256": "a6e0e0040c1856d1ad9790cdf5ac60e840b617aee44ed6738e3dda3990b96cfe",
+    "wordCount": 136,
+    "relationship": "concise supplementary production brief; exact emitted prompt remains separately retained"
+  },
+  "pigmentClarification": {
+    "body": "Each of five body surfaces repeats two equal local front/rear fields: #ae674d then #e8b83f; not a global whole-body split.",
+    "fins": "Each of two front fins has equal local root/tip fields: #dfd2ae then #718489.",
+    "oculars": "pale cream #f1eddc rim and charcoal #273036 pupil unchanged."
+  },
+  "inspectionLimits": [
+    "Exact input and its source identities do not certify returned-image pixel fidelity.",
+    "The provider image is not a selected pet master, rig, animation or canonical morphology/palette.",
+    "Reference orientation and supplemental concise brief changed together; individual causation is not measured.",
+    "G/E are lookup fingerprints, not whole-genome packed payloads.",
+    "No source mutation, further provider correction, game/native activation or hardware claim."
+  ],
+  "provider": {
+    "service": "Gemini web Images",
+    "displayedMode": "Pro",
+    "modeMenu": "3.1 Pro Advanced reasoning",
+    "backendImageModel": null,
+    "generationCalls": 1,
+    "correctionCalls": 0,
+    "retention": "Ordinary Copy image from actual lightbox; full-size download event not captured. Native generation resolution unknown.",
+    "responseClaim": "Four bulbous regions; direct pixel inspection instead finds five regions/four waist transitions."
+  },
+  "references": [
+    {
+      "file": "upright-source.png",
+      "sha256": "271ba88daa75409fc5981be11976f58ffa5d1ad9e9b9c9b84a67c89dee9cf439",
+      "width": 512,
+      "height": 640
+    }
+  ],
+  "acceptance": {
+    "genomics": "Observable macro semantic fidelity supported; exact contour, dimensions, masks, ocular ratios and shade-to-hex correspondence unmeasured.",
+    "pixelArtist": "Pet-master HOLD: repetitive oval lighting/dither cushions, weak face priority and wedge-like fins.",
+    "artDirector": "Pet-master and polished craft HOLD; semantic handoff improvement does not establish inviting whole-form character."
+  },
+  "nextQuestion": "Controlled light/edge comparison at fixed silhouette, scale, position, roots, eye geometry, pigment masks and material before any morphology proposal.",
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "755f44e140c04f00fc2754f7ce6003f36a51c0d7b7df6b7af45ec32984c1aa4c",
+      "bytes": 3821
+    },
+    {
+      "file": "browser-conversation.png",
+      "sha256": "5ad9c22a4350224a196b6f6a461440e6af97ed342b90788df0a7b0671415ad04",
+      "bytes": 38215,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "browser-lightbox.png",
+      "sha256": "ed84aae9589c298635e18e9d3898c3f74113813de3b000995369590268504710",
+      "bytes": 24814,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "browser-result.png",
+      "sha256": "b713b4ddad7675a890e38832e21356452cebd2b39ba1226ae6ee32bbe0d0106f",
+      "bytes": 65802,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "emitted-prompt.txt",
+      "sha256": "1db2fb06ca02440164d2599dad40fcc73135127cc48e0becca154dab6d0b10ad",
+      "bytes": 1508
+    },
+    {
+      "file": "gemini-pet-256.png",
+      "sha256": "db6ee90e22ab7217cb137d079dbbda3100f6b99cf8adc897bd4086d6a9bac100",
+      "bytes": 40245,
+      "width": 205,
+      "height": 256
+    },
+    {
+      "file": "gemini-pet.png",
+      "sha256": "996d7f8a8a5cb0a19d774663253d1ccf4d6c9dc9a9aefdf68fc8432556914071",
+      "bytes": 367314,
+      "width": 820,
+      "height": 1024
+    },
+    {
+      "file": "source-and-result.png",
+      "sha256": "b8c23184beee5837d5043be5e44ce8a62eb7c88089d9367527ed6a4fbee633c6",
+      "bytes": 170144,
+      "width": 900,
+      "height": 600
+    },
+    {
+      "file": "source.png",
+      "sha256": "a139e7df73272b807acd337ac3d41dd832d365f8fb1b14f998bb9a9594b159a8",
+      "bytes": 20653,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "file": "source.svg",
+      "sha256": "7caa584cd95d4c73767dce7c1428978c133cd3eb8920a6313dd59b18f8015ae1",
+      "bytes": 13586
+    },
+    {
+      "file": "submitted-prompt.txt",
+      "sha256": "a6e0e0040c1856d1ad9790cdf5ac60e840b617aee44ed6738e3dda3990b96cfe",
+      "bytes": 927
+    },
+    {
+      "file": "upright-source-256.png",
+      "sha256": "f0648dcaa54ef5651c4cab78808fb0937c6098366d632508984fecf6dd67ffa8",
+      "bytes": 9581,
+      "width": 205,
+      "height": 256
+    },
+    {
+      "file": "upright-source.png",
+      "sha256": "271ba88daa75409fc5981be11976f58ffa5d1ad9e9b9c9b84a67c89dee9cf439",
+      "bytes": 23018,
+      "width": 512,
+      "height": 640
+    },
+    {
+      "file": "upright-source.svg",
+      "sha256": "95f4c7111cb15d46db2577d7ea76990494fb62e11fa5bcfa8b9730d9ffd4ef3f",
+      "bytes": 13749
+    }
+  ]
+}

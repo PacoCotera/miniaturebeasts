@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "critter-art-comparison-run/1",
+  "workflow": "Gemini web Images / Pro",
+  "rasterBackend": "unverified; web mode Pro observed, raster model identity not exposed",
+  "callCount": 1,
+  "promptFile": "prompt.txt",
+  "promptSha256": "c4e993a2599d8d195fda94bb0551dc643c4b8e7bbf982b0de64b2cf279be992d",
+  "promptChars": 3040,
+  "promptModifiedAfterFreeze": false,
+  "references": [
+    {
+      "file": "family-reference.png",
+      "role": "resolved construction and pigment authority",
+      "sha256": "a3144d47bf0e963d483dd397d762881bd7a1ae40ffc9547e59b2f4f8743ac5ca"
+    },
+    {
+      "file": "../../../../design/game-art-proposals/35-vault-composition/18-c-refined.png",
+      "role": "pixel craft authority only",
+      "sha256": "889745d74ae7bcd7c80ef5737258b3fdf0357423c1d2362a3630925ca07a632b"
+    }
+  ],
+  "startedAtUTC": "2026-10-02T02:58:16.802Z",
+  "firstObservedCompleteUTC": "2026-10-02T03:00:05.954Z",
+  "observedUpperBoundMilliseconds": 109152,
+  "timingScope": "time to first observed completion; not provider latency or comparable to tool wall time",
+  "output": {
+    "file": "gemini-family-01.png",
+    "width": 1024,
+    "height": 341,
+    "sha256": "d5126d1337bfed366de7cc2f26a0e8f283ef6483c5903083a15b1e8ff1c87024",
+    "unedited": true,
+    "extraction": "ordinary Copy image browser clipboard PNG; full-size provider download not measured"
+  },
+  "independentReview": {
+    "scope": "actual broad anatomy/material fidelity",
+    "status": "fail",
+    "observed": "Left and middle have ten fins rather than six; invented intermediate roots and swept fin outlines; middle contour angular. Broad body/face/material roles persist.",
+    "unverified": "exact plate count/positions and registered geometry"
+  },
+  "limits": [
+    "Single matched run, no general model ranking",
+    "Neither raster establishes approved pet character or production sprites/animation"
+  ]
+}

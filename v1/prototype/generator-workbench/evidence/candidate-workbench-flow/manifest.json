@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "candidate-workbench-flow/1",
+  "sourceRevision": "7b55e1262d3f589ee7f3c1fead71b81a3f8293b7",
+  "functionalRevision": "e1e2b68db87ce275fe0e7d2d60b7a96441985ef4",
+  "ci": {
+    "run": 37077911809,
+    "status": "success"
+  },
+  "sources": {
+    "authoring-ui.mjs": "eb65379e4df14a4291f47cf6e3200f24f8011268f2da29800f6604c34dd0eb23",
+    "server.mjs": "f0c0f67cb2a386a52b55cbd08ace37d77601890bfd3bef214eabc0d8b44838f3",
+    "pigment-workbench-package.mjs": "1b1591f664b91307fe46efc50e00f26e39d3d69f81793e1a1e8d2612a3383401",
+    "pigment-workbench-package.test.mjs": "d6c776629684aaa1ea791960d8c2e2da4329c0b125b964e1bed732ef3f9dda1b",
+    "src/main.jsx": "5b07e4e091fac9bd9f396f46ed19260577d641d7031e5f7d26a1029ad2791bc7",
+    "src/workbench.css": "152a399d5439df72c87cb84b7b43c1a4d6a21663b70f5e931145ccfd1b71caad"
+  },
+  "records": [
+    {
+      "name": "first",
+      "recordId": "experiment-9e4730866d4cdb11b1e5",
+      "contentId": "genomic-covering-pigment-candidate",
+      "contentVersion": 2,
+      "acceptedSeed": 1062691442,
+      "drawsObserved": 75,
+      "sceneDigest": "02fd3c883cb88d35b9247428c09d4674956e9f91fdbeef7f8082fdc7d055a02b",
+      "promptDigest": "1db2fb06ca02440164d2599dad40fcc73135127cc48e0becca154dab6d0b10ad",
+      "compactPostBytes": 58120,
+      "displayedPromptExact": true
+    },
+    {
+      "name": "second",
+      "recordId": "experiment-4ad028459386c164eb66",
+      "contentId": "genomic-covering-pigment-candidate",
+      "contentVersion": 2,
+      "acceptedSeed": 2839426486,
+      "drawsObserved": 94,
+      "sceneDigest": "f450a75e266025ae6e0eed67dda52fb67a4297ee0a634128ff029e61ad475c23",
+      "promptDigest": "4d955e238bc681af9a06a3880b1f0dbeac7af409c5ca3a4852b5beae7f05f3c0",
+      "compactPostBytes": 58113,
+      "displayedPromptExact": true
+    },
+    {
+      "name": "retry",
+      "recordId": "experiment-3f2bd4868e6c5b9aa255",
+      "contentId": "genomic-covering-pigment-candidate",
+      "contentVersion": 2,
+      "acceptedSeed": 238067917,
+      "drawsObserved": 46,
+      "sceneDigest": "c19938c56884a1199b793556edf93e7121dfd6abfd948653c19d02ffefb1e8ca",
+      "promptDigest": "4b4e2a8674bda307159f118aa474af339205ad0fa854089dd2a266dd88ce4944",
+      "compactPostBytes": 58128,
+      "displayedPromptExact": true
+    }
+  ],
+  "files": {
+    "desktop-browser.png": "05198bb000b6500f3ef849568265dcd087a7629051fc669119aae81c8b5c0416",
+    "first-browser.png": "189a06eb70f674d75f2f08e5716f0a2e92008c813d27f3ceaf63bc7a61ae1dec",
+    "first.compact.json": "0c20aae50f8241771edcd14d590b77627a2679e9ad89e8d1db14d8d261e6e0de",
+    "first.replay.json": "951afba62b68e68d10454fa12253fb3312d7d0ef4eb64d2cc240b3beab4ad7fb",
+    "narrow-browser.png": "48fa2e1b42e0a839eac079f75ecc5583d953944fa34d37784b1a10026f3bade3",
+    "narrow-prompt-browser.png": "9aca9be69e4d41ae539ce385d57908d36c65f4a66f7c4e71e005560be812512e",
+    "offline-browser.png": "2c1001ff0c414221dce38d166b302d0e9ac44971be7b388a2a16ea33ecf3db1d",
+    "old-import-browser.png": "7470e57eb917bfa2a6a0570227289b8d56aa1bfe0da14c74fcdc28ab35bb5d6c",
+    "old.compact.json": "598eec5300a1c10237501b88a3eae67a8bd3d6280621ca2c396ff49c03fd6ea6",
+    "retry.compact.json": "fcd8d2a55428ffdc71de663e5b0eed21a1df95cbe0167ec46a417a30cdb6b921",
+    "retry.replay.json": "73bd2d71dc36d19e2c742db14e683712b179facb8d8b44975440c3d15a8b0635",
+    "second-browser.png": "303220f7ebe4405b4d0c35c622190390d01e83b5ca6af35f64c4542f34a41ba6",
+    "second.compact.json": "5289c1f6ade9c11edabc0c1123ce86ceacda7ea564f22ec392276ed8277863ae",
+    "second.replay.json": "c5812ada8d1ce3cab374cbe07a1e1a28bf22f250c07f1d3915b36bb9804e173f"
+  },
+  "observations": {
+    "copyVerification": "Actual Copy followed by Control+V into the visible authoring JSON field matched each current prompt exactly. The separate browser clipboard reader returned stale text and was not used as a passing signal.",
+    "failure": "Unavailable backend retained the second verified record, source preview, prompt and accepted seed; message explicitly reported no new creature. Retry succeeded.",
+    "oldImport": "Original covering catalogue@1 compact record replay retained record, scene and prompt identities; it was not promoted to candidate@2.",
+    "edit": "Changing an axial-repeat copy cleared preview, prompt and Copy availability while keeping the pinned comparison.",
+    "advanced": "Optional genome editor and original Compendium remained reachable; existing saved records were not modified.",
+    "narrow": {
+      "width": 800,
+      "height": 900,
+      "headerBottom": 112,
+      "pickerTop": 68.45833587646484,
+      "pickerBottom": 98.45833587646484,
+      "navbarTop": 112,
+      "documentWidth": 785
+    },
+    "desktop": {
+      "width": 1280,
+      "headerBottom": 74,
+      "genomeEditorInitiallyExpanded": false
+    }
+  },
+  "boundaries": [
+    "Replayed records reconstruct the UI compact exports; their sampling-attempt counts are separate observed UI status, not invented generation metadata.",
+    "No provider image, accepted pet master, canonical palette, game activation, native or physical validation."
+  ]
+}

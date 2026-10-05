@@ -1,0 +1,34 @@
+{
+  "status": "Supplied source/result and exact quoted prompt; semantic depiction direction evidence",
+  "provenance": "Reported provenance describes Gemini experiment; supplied files; generation not performed in this recorded experiment",
+  "sourceReference": "../faithful-pet/upright-source.png",
+  "sourceMeaning": "Diagnostic source; matching genome lookup does not certify output trait fidelity",
+  "files": [
+    {
+      "file": "source.png",
+      "originalFilename": "codex-clipboard-4eababdb-3ed8-40de-8d44-16aceacd86be.png",
+      "sha256": "0b90f4c63d6636e731c0387b6392a0b34cbb3ae2aaa3931bc846bc77102728a2",
+      "bytes": 52287,
+      "width": 768,
+      "height": 512
+    },
+    {
+      "file": "owner-result.png",
+      "originalFilename": "codex-clipboard-b4acc5a5-555f-459a-a885-00b7b87c15ca.png",
+      "sha256": "8717d58b84dd07d308991dc65056cae6fb974c034b18420e91d41d39866a80c7",
+      "bytes": 434349,
+      "width": 1024,
+      "height": 683
+    },
+    {
+      "file": "owner-prompt.txt",
+      "sha256": "7b34944501a97fcfeff04855f1b2184c5d3fd8d123ff78fe686d987b55318150",
+      "bytes": 396
+    }
+  ],
+  "limitations": [
+    "No independent provider session/model metadata",
+    "Result introduces appendage-role and pigment changes; no resolved resulting expression",
+    "No canonical anatomy/style/palette, production sprite or animation acceptance"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "templateId": "genome-first-hibit-calibration",
+  "templateVersion": 1,
+  "submission": "composition request plus three exact fact-derived prompt files and two style images",
+  "promptCharacters": 1830,
+  "promptSha256": "a3fa0da778322cb4ed4368d982f069e3e69347a7eca80f9a6eec93ae07f3e1f5",
+  "panels": [
+    {
+      "position": 1,
+      "experiment": "contact-original",
+      "recordId": "experiment-3f05a537aa93e1c1fa6f",
+      "inputDigest": "3f05a537aa93e1c1fa6fe621139c85220e8cca839020bae59fc9503e47fe30fe",
+      "resultDigest": "67c2750080b1109b23a28404d284ba2e545e23286a0a787f1ae46d6193355404",
+      "attachedPrompt": "contact-original.prompt.txt",
+      "attachedPromptSha256": "2fb895f70f1ea14017d93a8a941a445766bcad91c9bb2402282c591c86c53051"
+    },
+    {
+      "position": 2,
+      "experiment": "membrane-original",
+      "recordId": "experiment-e742ae2a8e0cecc84416",
+      "inputDigest": "e742ae2a8e0cecc84416d4b297dc9bd51b264aa1f94451ad9738d1f920863610",
+      "resultDigest": "8e32ac862bd70297af6921879fb2e4910fbf838aafab7a8300d1def7c99d4db5",
+      "attachedPrompt": "membrane-original.prompt.txt",
+      "attachedPromptSha256": "8ede4414fa4ae93225a1c60a9114152c1539cae800380e32720122c020bf76d9"
+    },
+    {
+      "position": 3,
+      "experiment": "axial-original",
+      "recordId": "experiment-91772e59baf3d1e490b5",
+      "inputDigest": "91772e59baf3d1e490b58b064b7c5bc0e20a9018d82a9e76e7e93be6def9c4e7",
+      "resultDigest": "745c402b682206ff871a66c48315416b9b02df493a9f4d8de6dd12ef9c2ebd53",
+      "attachedPrompt": "axial-original.prompt.txt",
+      "attachedPromptSha256": "9cfaf81da7f1ecde7ae37181f2238c2a422ea1c0d2c6ea461aff4e18e28c2584"
+    }
+  ],
+  "actualAttachedReferences": [
+    "design/game-art-proposals/35-vault-composition/18-c-refined.png",
+    "design/references/genome-field/01-genome-field-v1.png"
+  ],
+  "generationStatus": "Two actual images retained; both fail anatomy/pigment fidelity. No third attempt.",
+  "providerConversation": "https://gemini.google.com/app/98cfaa75ce6245b1",
+  "observedProviderMode": "Gemini web Images; Pro selected. Backend model identifier not verified.",
+  "extraction": "Visible Copy image control; unedited PNG bytes. Full-size download not established.",
+  "sourceReferences": [
+    {
+      "path": "design/game-art-proposals/35-vault-composition/18-c-refined.png",
+      "sha256": "889745d74ae7bcd7c80ef5737258b3fdf0357423c1d2362a3630925ca07a632b"
+    },
+    {
+      "path": "design/references/genome-field/01-genome-field-v1.png",
+      "sha256": "964fbf58c460c6eab037dbdfcf340f90290780bea95be4f6ea564b786d1816a5"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "gemini-calibration-01.png",
+      "sha256": "d5fdf4e248284b506b430732e7c429a229c2f46fea83dbd7dbc6a4b484320336",
+      "status": "rejected calibration"
+    },
+    {
+      "file": "gemini-calibration-02.png",
+      "sha256": "52bf30367af920adfd3f426d43fe6baf62430fdb0c14290bcc1b510bc2a46702",
+      "status": "rejected calibration"
+    }
+  ],
+  "correction": {
+    "file": "calibration-correction.txt",
+    "sha256": "fcaf0e760b267c39513bbd51355f4b9f15470a50c24b325dd99285638c3a5c5b"
+  }
+}

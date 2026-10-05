@@ -1,0 +1,157 @@
+Browser tab: 28, Title: "Critter Lab · Genome authoring", URL: "http://127.0.0.1:4381/".
+1 AXWebArea Critter Lab · Genome authoring, URL: 127.0.0.1:4381/
+	2 container mantine-54sx1k93o
+		3 container
+			4 heading Critter Lab · Genome authoring, Value: 3
+				5 text Critter Lab · Genome authoring
+			6 text Adult developer tool · provisional shared engine · game/device UI unchanged
+			7 combo box (collapsed, settable) Description: Content package, Value: Authored composition · eleven branches · v1, ID: mantine-lt10vqxgk, Secondary Actions: Expand
+			8 text GENOMIC-COMPOSITIONAL-SOURCE-DRAFT-5BDD6136B60D4B2E  V 1
+			9 link Description: Preserved Pip proof, Value: 127.0.0.1:4381/legacy
+		10 container
+			11 text AUTHOR & INVESTIGATE
+			12 link Genome
+				13 text Genome
+			14 link Compendium
+				15 text Compendium
+			16 link Pinned comparison
+				17 text Pinned comparison
+			18 link Saved records
+				19 text Saved records
+			20 link Generation batch
+				21 text Generation batch
+			22 text 117  proposed records · 111 defined copy contracts  · 6 draft candidates
+			23 link Description: Character art studies, Value: github.com/PacoCotera/critter-lab/blob/codex/genome-art-reset/prototype/generator-workbench/evidence/art-reset/README.md
+		24 container
+			25 text Digest replay verified from inputs. Embedded output/SVG/prompt was not trusted.
+			26 heading Genome, Value: 2
+				27 text Genome
+			28 text Generate a creature, then explore its inherited copies and their effects.
+			29 button Generate creature
+			30 heading Source illustration, Value: 4
+				31 text Source illustration
+			32 text PROVISIONAL ANATOMICAL SOURCE compositional-91f86f3171bd1bca11d5  ·  genomic-compositional-source-draft-5bdd6136b60d4b2e @ 1
+			33 image Provisional anatomical role source
+			34 text Inspect or edit genome shows module involvement; exact targets and source links remain in advanced scene inspection. This structural diagram is not generated game art. Display: compositional-source/6 . Connected regions and independent optional parts follow copied composition rules. All eleven genomic branches are retained; source consumers and missing physiology are explicit.
+			35 button Download source PNG
+			36 button Pin comparison
+			37 button Save record
+			38 button Export record
+			39 heading Gemini prompt, Value: 4
+				40 text Gemini prompt
+			41 button Copy prompt
+			42 text entry area Description: Gemini prompt, ID: mantine-tfrcl1790, Value: Turn the attached critter into a cute pet, shown alone in rich high-bit pixel art. A creature with one softly squared, barrel-shaped body region and one smooth head, one projecting muzzle, two eyes, two rounded smooth ears, one smooth tapered tail and four jointed legs with rounded ends. Its body has plum-and-marigold fur; its smooth jointed legs have milk mint-and-butter local colour fields.
+			43 text Attach the shown source image in Gemini, then paste this brief. Returned feature changes are pet proposals; the genome audit stays in Advanced inspection.
+			44 heading Returned pet art, Value: 4
+				45 text Returned pet art
+			46 text PROPOSAL ONLY Attach the returned bitmap and retain it explicitly. It stays linked to the shown source and prompt; model changes are unaccepted proposals and never change inherited traits. Source:  compositional-91f86f3171bd1bca11d5
+			47 text Returned bitmap
+			48 button Returned bitmap, ID: mantine-9zrcva9yc
+			49 text Provider label
+			50 text field (settable) Provider label, Value: Gemini (manual return), ID: mantine-xxyyowqx5
+			51 button (disabled) Retain pet proposal
+			52 text This separate browser store holds up to eight proposals. It never evicts older art or genome saves.
+			53 image Returned pet proposal; inherited fidelity is unaccepted
+			54 text Gemini (manual return)  · proposal ·  1024 × 1024 compositional-91f86f3171bd1bca11d5  ·  pet-proposal-b7dac63cb31933d1a03f8ff2a02d249b8d1478b5e9984fad0e1f627fbbf89b79
+			55 button Download returned bitmap
+			56 button Download linked metadata
+			57 heading Eleven genomic branches, Value: 3
+				58 text Eleven genomic branches
+			59 text 111  carried pairs ·  6  draft definitions. Every declared record remains available. A retained contribution with no compatible consumer is unimplemented, rather than a working phenotype.
+			60 container mantine-jw5gwvipr
+				61 button (collapsed) structure · 79 indexed records · 34 active / 19 inactive / 26 unimplemented, ID: mantine-jw5gwvipr-control-structure, Secondary Actions: Expand
+					62 image
+					63 text structure
+					64 text  · 
+					65 text 79
+					66 text  indexed records
+					67 text  · 34 active / 19 inactive / 26 unimplemented
+				68 button (collapsed) appearance · 53 indexed records · 13 active / 3 inactive / 37 unimplemented, ID: mantine-jw5gwvipr-control-appearance, Secondary Actions: Expand
+					69 image
+					70 text appearance
+					71 text  · 
+					72 text 53
+					73 text  indexed records
+					74 text  · 13 active / 3 inactive / 37 unimplemented
+				75 button (collapsed) mechanics movement · 34 indexed records · 0 active / 0 inactive / 34 unimplemented, ID: mantine-jw5gwvipr-control-mechanics-movement, Secondary Actions: Expand
+					76 image
+					77 text mechanics movement
+					78 text  · 
+					79 text 34
+					80 text  indexed records
+					81 text  · 0 active / 0 inactive / 34 unimplemented
+				82 button (collapsed) sensing signaling · 1 indexed records · 1 active / 0 inactive / 0 unimplemented, ID: mantine-jw5gwvipr-control-sensing-signaling, Secondary Actions: Expand
+					83 image
+					84 text sensing signaling
+					85 text  · 
+					86 text 1
+					87 text  indexed records
+					88 text  · 1 active / 0 inactive / 0 unimplemented
+				89 button (collapsed) cognition tendencies · 0 indexed records · 0 active / 0 inactive / 0 unimplemented, ID: mantine-jw5gwvipr-control-cognition-tendencies, Secondary Actions: Expand
+					90 image
+					91 text cognition tendencies
+					92 text  · 
+					93 text 0
+					94 text  indexed records
+					95 text  · 0 active / 0 inactive / 0 unimplemented
+				96 button (collapsed) energy nutrition · 21 indexed records · 0 active / 0 inactive / 21 unimplemented, ID: mantine-jw5gwvipr-control-energy-nutrition, Secondary Actions: Expand
+					97 image
+					98 text energy nutrition
+					99 text  · 
+					100 text 21
+					101 text  indexed records
+					102 text  · 0 active / 0 inactive / 21 unimplemented
+				103 button (collapsed) maintenance protection · 0 indexed records · 0 active / 0 inactive / 0 unimplemented, ID: mantine-jw5gwvipr-control-maintenance-protection, Secondary Actions: Expand
+					104 image
+					105 text maintenance protection
+					106 text  · 
+					107 text 0
+					108 text  indexed records
+					109 text  · 0 active / 0 inactive / 0 unimplemented
+				110 button (collapsed) affinities exposure · 0 indexed records · 0 active / 0 inactive / 0 unimplemented, ID: mantine-jw5gwvipr-control-affinities-exposure, Secondary Actions: Expand
+					111 image
+					112 text affinities exposure
+					113 text  · 
+					114 text 0
+					115 text  indexed records
+					116 text  · 0 active / 0 inactive / 0 unimplemented
+				117 button (collapsed) development longevity · 9 indexed records · 0 active / 0 inactive / 9 unimplemented, ID: mantine-jw5gwvipr-control-development-longevity, Secondary Actions: Expand
+					118 image
+					119 text development longevity
+					120 text  · 
+					121 text 9
+					122 text  indexed records
+					123 text  · 0 active / 0 inactive / 9 unimplemented
+				124 button (collapsed) reproduction · 0 indexed records · 0 active / 0 inactive / 0 unimplemented, ID: mantine-jw5gwvipr-control-reproduction, Secondary Actions: Expand
+					125 image
+					126 text reproduction
+					127 text  · 
+					128 text 0
+					129 text  indexed records
+					130 text  · 0 active / 0 inactive / 0 unimplemented
+				131 button (collapsed) fantastic physiology · 0 indexed records · 0 active / 0 inactive / 0 unimplemented, ID: mantine-jw5gwvipr-control-fantastic-physiology, Secondary Actions: Expand
+					132 image
+					133 text fantastic physiology
+					134 text  · 
+					135 text 0
+					136 text  indexed records
+					137 text  · 0 active / 0 inactive / 0 unimplemented
+			138 button (collapsed) Inspect or edit genome, ID: mantine-46n3dz45w-control-genome-editor, Secondary Actions: Expand
+				139 image
+				140 text Inspect or edit genome
+			141 container mantine-3izg59kfa
+				142 button (collapsed) Known examples · load and resolve, ID: mantine-3izg59kfa-control-examples, Secondary Actions: Expand
+					143 image
+					144 text Known examples · load and resolve
+				145 button (collapsed) Context and sampling, ID: mantine-3izg59kfa-control-context, Secondary Actions: Expand
+					146 image
+					147 text Context and sampling
+				148 button (collapsed) Whole genome · baseline, inherited copies and expression, ID: mantine-3izg59kfa-control-whole, Secondary Actions: Expand
+					149 image
+					150 text Whole genome · baseline, inherited copies and expression
+				151 button (collapsed) Advanced inspection · traces, coverage, geometry and art projection, ID: mantine-3izg59kfa-control-advanced, Secondary Actions: Expand
+					152 image
+					153 text Advanced inspection · traces, coverage, geometry and art projection
+			154 text Provisional authoring content; no production sprite/rig/animation, sample permission, cloud, game-save or hardware claim.
+
+The focused UI element is 1 AXWebArea Critter Lab · Genome authoring, URL: 127.0.0.1:4381/

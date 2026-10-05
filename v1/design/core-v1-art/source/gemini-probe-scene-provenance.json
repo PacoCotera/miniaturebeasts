@@ -1,0 +1,13 @@
+{
+  "conversation": "https://gemini.google.com/app/ebc52519d5f5f3fb",
+  "providerPath": "Existing Gemini Pro browser conversation; no API migration",
+  "original": "gemini-probe-scene-original.png",
+  "originalSha256": "7da64f0113f90858abc3037d01e557b6ad845a3c3aaab1cdbf01f07941f33457",
+  "deliveredDimensions": [1024,572],
+  "retrieval": "Gemini Copy image then clipboard PNG; full-size download event did not resolve",
+  "prompt": "gemini-probe-scene-prompt.txt",
+  "derivative": {"dimensions":[400,224],"kernel":"nearest","fit":"fill"},
+  "scope": "Fictional illustrated gathering setting, no sensed place/weather or encounter target",
+  "editability": "Preserved raster original plus repeatable derivative recipe; no independently editable hidden scene layers",
+  "review": "Art director inspected nearest/Lanczos at400x224 and accepted nearest as bounded native scene candidate; actual composed screen still requires inspection"
+}
