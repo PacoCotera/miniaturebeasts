@@ -12,12 +12,17 @@ It is also a genetics toy. Appearance and abilities follow inherited traits, and
 the player learns how through pictures, comparison and consequences rather than
 lessons or notation.
 
+**Decided:** it should work for two audiences at once. Children explore, uncover
+and pursue possibilities visually, without needing genetics vocabulary; loci stay
+under the hood. Curious parents and STEM enthusiasts can dig into a real genetics
+framework underneath. It is a sandbox: players choose their own goals.
+
 ## The loop
 
 ```mermaid
 flowchart TD
   Explore[Explore the world on the Companion] --> Gather[Deliberately collect samples and supplies]
-  Gather --> Return[Send the haul home; the Station accepts it once]
+  Gather --> Return[Send the cargo home; the Station accepts it once]
   Return --> Identify[Identify the sample's species]
   Identify --> Create[Create a founder: unedited, or with researched changes]
   Identify --> Research[Optionally research what the sample carries]
@@ -75,7 +80,9 @@ fit every decision so far.
   collection and a beloved lineage are equally valid. Performance is not the only
   measure.
 - **Any wait has a purpose.** A minigame must add a decision or a discovery, not
-  an input ritual.
+  an input ritual. Waiting never happens in exploration, the most interactive part;
+  if the game has waits, they belong to research or incubation running in the
+  background (**Decided**).
 
 ## Mechanics and their status
 
@@ -83,7 +90,7 @@ fit every decision so far.
 | --- | --- | --- |
 | **Exploration** | Open map, interaction-driven, on the Companion in Probe mode (**Decided**). Arriving, looking and waiting award nothing; finite finds do not refill or reroll (**Working rule**) | What the world is, what lives in it, what the player can do there, and why they return. See [world and exploration](world-and-exploration.md) |
 | **Gathering** | Collection is deliberate; whole items; a full hold rejects without loss (**Working rule**, **Built in v1**) | Capacity, sample handling, what kinds of finds exist |
-| **Return** | Send seals the haul; the Station accepts it exactly once; a lost confirmation never duplicates or loses it (**Working rule**, **Built in v1**) | Cross-outing persistence of unfinished leads |
+| **Return** | Send seals the cargo; the Station accepts it exactly once; a lost confirmation never duplicates or loses it (**Working rule**, **Built in v1**) | Whether unfinished leads persist between expeditions |
 | **Identification** | Establishes species and enough material, not hidden traits; then an unedited founder is allowed (**Decided**) | Method and cost |
 | **Research** | Optional. Reveals a sample's evidence and reusable understanding; never changes the sample; no locus checklist; no drowning in near-identical samples (**Decided**) | Study variety, costs, value of repeat samples |
 | **Creation** | One sample makes one fixed individual; changes only at researched, permitted traits, using variants that sample carries (**Decided**) | Which traits are configurable per species |
@@ -91,12 +98,12 @@ fit every decision so far.
 | **Bonding and care** | Optional; only bonded mibis need care to mature; wild and unbonded need nothing; not required for breeding (**Decided**). Learning changes behavior, never genes (**Working rule**). Forgiving care (**Proposal**) | How bonding happens, what care looks like, what missing it means, lifespan |
 | **Cooperative gathering** | Bonded partners use their real abilities to help the player discover and progress (**Decided**) | Which abilities, which obstacles, how progress is gated |
 | **Breeding** | Same species only; shared species is necessary, not sufficient; every offspring is a viable new individual with real parents (**Decided**) | Eligibility, fertility, cost, forecasts, failure presentation |
-| **Supplies** | Data (understanding), Energy (running operations), Essence (making a hard relationship readable); whole items, not genes, not battery (**Working rule**) | Recipes, quantities, whether three is the right set |
-| **Crafting** | Recipes are learned through useful clues, not blind mixing; knowledge survives a failed attempt (**Working rule**) | Scope; failure costs; feed and habitat items |
+| **Supplies** | Three supplies, Data, Energy and Essence, as broad building blocks for very different creatures; whole units, interchangeable only within a type; they must make sense for experiments and genomics, not be decorative tokens (**Decided**) | Recipes, quantities, what each one does in an experiment |
+| **Crafting** | Discovery with clues; learned recipes are personal and reliable; a failure wastes the ingredients or returns a fraction; deep in the long run, simple in V1 (**Decided**) | Scope, recipes, feed and habitat items |
 | **Habitats** | Places with populations, resources and conditions that can make an ability useful (**Working rule**) | Space, cohabitation, competition, freezing while away |
 | **Wild capture** | Direction only: a temporary capture may escape before reaching home; established companions never run away (**Proposal**) | Whether it is in the game at all |
-| **Station upgrades** | Limited removable research-chip slots for capacity, speed and methods (**Working rule**) | Tiers, effects, how they are earned |
-| **Sharing and paper** | One household kit can hold several players' profiles. Scanning or printing never grants ownership or breeding rights. Shared research clues carry no genes (**Working rule**) | Rewards for scanning, trades, loans, printer gameplay |
+| **Upgrades** | Limited, removable, reusable virtual research chips for the Station, found, crafted, traded or dropped by rare mibis; tiered upgrades for Station, Probe and Companion (**Decided** as direction) | Tiers, effects, slot counts |
+| **Sharing and paper** | One household kit serves several players, each with their own progress. Sampling someone else's mibi needs its owner's consent. No global first-discoverer rankings (**Decided**). Scanning or printing never grants ownership or breeding rights; shared research clues carry no genes (**Working rule**) | Rewards for scanning, trades, loans, printer gameplay |
 | **Online play** | Optional; core play never needs a phone, account or internet (**Working rule**) | Whether to build any of it before the core game proves itself |
 
 ## What the first prototype proves

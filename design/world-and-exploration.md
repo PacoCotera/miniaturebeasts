@@ -26,6 +26,31 @@ interaction-driven.
 - **Bonded partners help.** A raised mibi's real abilities open further
   discoveries and progress through the world.
 
+## Direction already given
+
+These come from the project lead's earlier direction. They shape the options;
+the exact rules are **Open**.
+
+- **No roads-only movement.** The player shouldn't be confined to paths.
+- **Variety.** Generated maps, movement toward findings, and responsive encounters
+  generated from rules rather than scripted scenes.
+- **Expedition types.** Three to five types in V1, about ten kinds of event.
+  - The type shapes which events and items turn up; basic supplies appear at
+    fairly steady rates.
+  - Example event: a storm during a weather expedition. Stay for extra Energy and
+    risk damage that forces you home, or leave.
+- **Open-ended gathering.** Stay out until you have a reason to return. No loot
+  filters: the player manages what they carry and can discard.
+- **Progress-shaped findings.** What you find is proportional to how far you've
+  come. Probe tiers widen range, capacity and detection. Rare finds open more
+  complex genomes.
+- **Fiction is free.** Field events don't need real sensors: a radiation storm,
+  rising water with a choice to escape or stay.
+- **No waiting in the field.** Exploration is the most interactive part of the
+  game.
+- **Wild capture.** If it's in the game, it has a difficulty and a chance the
+  capture escapes before reaching home.
+
 ## What was rejected, and why it matters
 
 Three exploration presentations were rejected:
@@ -71,7 +96,7 @@ the world, and nothing reacts to the player.
 All **Open**. Phase 1 of the roadmap compares alternatives that answer them.
 
 1. **What is the world?** One persistent hand-built world, areas generated for
-   each outing, or a mix. How big an area is, how it scrolls or is revealed on
+   each expedition, or a mix. How big an area is, how it scrolls or is revealed on
    a 450×600 screen.
 2. **What lives in it?** Whether wild mibis are visible and react to the player,
    and what other creatures, objects and conditions exist.
@@ -83,8 +108,8 @@ All **Open**. Phase 1 of the roadmap compares alternatives that answer them.
    partner's ability or a new tool changes what a known place offers.
 6. **How do partners change the world?** Which inherited abilities open which
    obstacles, and how the player sees that before trying.
-7. **How does an outing start and end?** Choosing where to go, leaving, sending
-   the haul home, interruptions.
+7. **How does an expedition start and end?** Choosing where to go, leaving, sending
+   the cargo home, interruptions.
 8. **What does the world remember?** Which changes persist and for how long.
 
 ## Ideas on the table
@@ -117,5 +142,5 @@ Games the earlier work cited as inspiration, for hypotheses only:
 ## How this gets decided
 
 Phase 1 of the [roadmap](../ROADMAP.md): two or three exploration models, each
-shown as the same outing at device size, then a playable rough version of the
+shown as the same expedition at device size, then a playable rough version of the
 chosen one.

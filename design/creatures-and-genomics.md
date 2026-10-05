@@ -5,6 +5,17 @@ inherited information, so players can learn how heredity works by watching
 creatures, comparing them and breeding them. The genetics has to stay invisible
 enough to play with, and real enough that its results surprise and make sense.
 
+## For players, not textbooks
+
+Players never need the words locus or allele. Children should be able to uncover
+and pursue possibilities by looking and comparing; the full framework is there
+for players who want to dig in (**Decided**). The vocabulary below is for the
+people building the game.
+
+Genomes grow with the player (**Decided** as direction). Early samples have small,
+readable genomes; more complex ones turn up as the player progresses, and rare
+finds open them up.
+
 ## A worked example
 
 Pip is the one creature built so far. One of its traits is pale markings, which
@@ -168,6 +179,24 @@ All **Built in v1**, none of it accepted as design:
   (maintenance, affinities, fantastic physiology) have no loci yet. Its random
   founder sampler is an authoring tool, not the game's sample model. Its generated
   art is on hold.
+
+## From genome to creature
+
+**Decided:** the genome is the seed for everything about a mibi: body, sprites,
+animation, behavior and its encyclopedia entry, all produced by rules, with no
+hand-made art or text for individuals.
+
+Direction already given, with the exact rules **Open**:
+- **Range.** Creatures range from bear-like to cat-, cow- or firefly-like and
+  beyond, with fur, scales, feathers or skin and real facial features, while
+  always reading as pets.
+- **Combined traits.** Traits can combine into emergent ones; for example,
+  movement, energy and environment together shape a kind of locomotion, vision
+  or metabolism.
+- **Behavior.** Each species' behavior works like a state machine, and an
+  individual's traits weight the transitions.
+- **Short code.** A genome packs into a short code that can drive fingerprint
+  art, sharing and QR codes.
 
 ## Open questions, in order of impact
 

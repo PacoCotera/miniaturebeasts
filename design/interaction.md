@@ -51,7 +51,7 @@ something to slip in.
 - **Back goes back.** It restores the previous view, object and focus. It never
   cancels work already submitted.
 - **Scopes stay distinct.** The whole device, a collection overview and a single
-  sample, outing or mibi are different views and never stand in for each other.
+  sample, expedition or mibi are different views and never stand in for each other.
 - **Every state has a way out**, including empty ones.
 - **Presses are honest.** Act only on a screen that is visibly ready. A press made
   during a refresh or wake is consumed, not queued. "Pressed", "working", "saved"

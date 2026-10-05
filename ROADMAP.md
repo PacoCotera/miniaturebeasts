@@ -39,11 +39,11 @@ alongside only when they have something independent to do.
 
 ## Phase 1: Exploration
 
-**Outcome:** the project lead plays an open-map outing and judges whether it makes them
+**Outcome:** the project lead plays an open-map expedition and judges whether it makes them
 curious.
 
 1. **Exploration options.** Two or three models of the world and what the player
-   does in it. Each one is shown as the same outing on a Companion-size screen:
+   does in it. Each one is shown as the same expedition on a Companion-size screen:
    - what's there and what the player can do;
    - what changes and what comes home;
    - why they'd go back;
@@ -54,8 +54,8 @@ curious.
    - Lead: game design.
    - With: UX (controls and screen), genomics (what finds contain).
    - Review: the project lead picks one, or rejects all with reasons.
-2. **Rough playable version.** One outing of the chosen model, using only the
-   Companion's controls, with placeholder art, ending in a sent haul. It is built
+2. **Rough playable version.** One expedition of the chosen model, using only the
+   Companion's controls, with placeholder art, ending with cargo sent home. It is built
    either as a throwaway browser prototype (fast to tune) or in the v1 simulator
    (lasting, slower); the project lead chooses.
    - Lead: engineering.
@@ -138,17 +138,25 @@ Work in this phase:
 Starts once phase 1 settles what the Companion's controls and screen must do.
 
 1. **Bench console.** The real Companion reference board running the phase 1
-   outing with physical buttons. This is also the KiCad learning project.
+   expedition with physical buttons. This is also the KiCad learning project.
 2. **Display and controls comparison** at real size, against the exploration and
    creature art.
 3. **Power, charging, radio and printing** experiments, each measured.
 4. **Enclosure and boards** only after measurements.
-5. **Assembly, support and a small pilot**, still to be confirmed: ten kits,
-   US$750 retail ceiling.
+5. **Assembly, support and a small pilot**: ten kits, under a US$750 retail
+   ceiling.
 
 No purchases beyond bench parts without the project lead's approval.
 
 ## Website track
+
+The direction for the site:
+- **Format:** a Playdate-style consumer pitch in indie early-access language.
+- **Lead with:** the distinctive hardware and screens.
+- **Show:** the map and research mechanics.
+- **Genetics:** presented as real genetics powering the game, without going
+  academic.
+- **Open source:** made visible.
 
 1. **Now:** replace the old site with a short, honest page. It explains what the
    project is and that it's in development, shows Pip in Miniature Lives, and
@@ -161,8 +169,6 @@ No purchases beyond bench parts without the project lead's approval.
 
 1. Exploration model (phase 1, step 1).
 2. Browser prototype or v1 simulator for the rough playable (phase 1, step 2).
-3. Confirm or drop the inherited targets: ten-kit pilot, US$750 ceiling, mobile
-   fallback.
 
 Task tracking lives in GitHub issues, grouped by milestone per phase and labelled
 by area.

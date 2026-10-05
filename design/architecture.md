@@ -14,8 +14,8 @@ waiting for a server.
 
 **Owners of state** (**Working rule**, partly **Built in v1**):
 
-- **Companion** owns the current outing: what was observed, which finds were
-  taken, the cargo, and the outing's identity.
+- **Companion** owns the current expedition: what was observed, which finds were
+  taken, the cargo, and the expedition's identity.
 - **Station** owns everything accepted: supplies, research knowledge,
   creations, incubation, residents, habitats and expedition records. Devices do
   not keep separate inventories.
@@ -25,17 +25,17 @@ waiting for a server.
 A live view, a dated copy and an accepted result are three different things, and
 the screens must say which one they show.
 
-## Sending a haul home
+## Sending cargo home
 
 **Working rule**, **Built in v1**:
 
-1. **Send** seals the exact haul and stops collection. Sealed cargo can't be spent.
-2. **The Station accepts it once.** That ends the outing.
+1. **Send** seals the exact cargo and stops collection. Sealed cargo can't be spent.
+2. **The Station accepts it once.** That ends the expedition.
 3. **The Companion clears it** only after a matching confirmation.
 
 If the confirmation is lost, the Station still has it exactly once, and the
 Companion shows "delivery unknown" and asks again with the same request. Waiting
-never unlocks the cargo. A full Station turns the haul away without breaking its
+never unlocks the cargo. A full Station turns the cargo away without breaking its
 seal.
 
 v1 runs all three devices in one process, so this has not been proven over a real
@@ -73,7 +73,7 @@ blocks the design of care and bonding.
 **Working rules:**
 
 - One household kit can hold several profiles, each with its own collection,
-  supplies and discoveries. An outing belongs to whoever started it.
+  supplies and discoveries. An expedition belongs to whoever started it.
 - Scanning a code or printout shows permitted facts about a mibi. It never grants
   ownership, custody or breeding rights, and a copy proves nothing about where
   the mibi has been.

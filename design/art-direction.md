@@ -48,6 +48,15 @@ C18, an early pixel reference, inspired this direction but is not a style to cop
   bytes and hashes. Generated images are labelled as generated.
 - **Text is separate.** Never bake numbers or labels into artwork.
 
+## Direction for creatures
+
+- **Color:** saturated, playful color and clear highlights. Dull brown and grey
+  creatures were rejected.
+- **Variety:** broad body plans and coverings (fur, scales, feathers, skin) that
+  still read as pets.
+- **Passes:** generation works in stages: outline, illustration, "pet-ification",
+  then animation.
+
 ## Art still to make
 
 All **Open**:

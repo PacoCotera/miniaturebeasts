@@ -15,10 +15,22 @@ been built or measured yet.
 | Software profile | 450×600 portrait, color | 1024×600 landscape, color | 792×272, four-gray e-paper |
 | Reference hardware (**Proposal**) | Waveshare ESP32-S3 AMOLED 2.41" (8 MB PSRAM, 16 MB flash, Wi-Fi/BLE, motion sensor) | Raspberry Pi 4 with a 7" HDMI panel | ESP32-S3 module with a 5.79" e-paper panel and a 58 mm thermal printer |
 
-**Working rules:**
-- Docking, charging or tapping never accepts cargo, transfers a mibi or awards
-  anything.
-- Devices connect wirelessly, with no custom data connector.
+**Decided:**
+- **Software stack.** Station runs Linux on a Raspberry Pi; Companion and Caddy are
+  ESP32. Firmware is native, with no MicroPython or Arduino. Everything draws
+  through the graphics library (LVGL).
+- **Station.** A two-thumb handheld (held a bit like a Nintendo Switch) that also
+  plays on the table without picking it up. It stays at home on Wi-Fi, and its
+  screen is always on, showing the collection and a vivarium.
+- **Charging and connection.** Handhelds are charged and ready when lifted from
+  the Caddy, typically for about 30 minutes away. Everything is wireless, with no
+  connectors.
+- **Building.** Cases are 3D printed in small batches on a Prusa CORE One, which
+  means the Caddy is printed in parts. Assembly uses common tools; larger
+  hand-designed boards are fine.
+
+**Working rule:** docking, charging or tapping never accepts cargo, transfers a
+mibi or awards anything.
 
 **Open:** display technology, final controls, sensors, battery and charging, the
 printer, the reader (NFC, QR or none), dimensions and enclosures.
@@ -58,8 +70,7 @@ They are appearance references, not decisions.
 ## Order of work
 
 **Working rule:** prove the game in software, then playtest with people, before
-spending on circuit boards or enclosures. If dedicated hardware turns out not to
-be worthwhile, the same game must be able to run on a phone.
+spending on circuit boards or enclosures.
 
 Hardware gates, in order (**Proposal**):
 
@@ -75,12 +86,15 @@ Hardware gates, in order (**Proposal**):
 Throughout, learning KiCad and getting a working physical console stay central to
 the hardware track.
 
-## Targets to confirm
+## Targets
 
-**Working rules** from earlier specs, not recently confirmed:
-- A small batch of ten complete kits.
-- A maximum retail price of US$750 for a full kit, aiming lower. This is not a
-  parts budget.
+**Decided:**
+- A first batch of ten complete kits.
+- Affordable: a maximum retail price of US$750 for a full kit, aiming lower. This
+  is not a parts budget.
+- If dedicated hardware doesn't work out, the game becomes a mobile app.
+
+The first markets are Mexico, the US and Canada.
 
 ## Open questions
 
