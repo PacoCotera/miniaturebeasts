@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: sandbox
@@ -54,3 +56,20 @@ jobs:
           gh release create "$tag" --target "$GITHUB_SHA" --title "Sandbox $tag" \
             --notes "Tested site + prototypes at $GITHUB_SHA. The VM installs the newest sandbox-* release." \
             "sandbox-${GITHUB_SHA:0:7}.tar.gz" "sandbox-${GITHUB_SHA:0:7}.sha256"
+      - name: Stage the same bundle for GitHub Pages (temporary mirror)
+        run: |
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  pages:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
