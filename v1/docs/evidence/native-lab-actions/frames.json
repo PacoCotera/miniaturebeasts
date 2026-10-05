@@ -1,0 +1,116 @@
+[
+  {
+    "file": "fixture-action-A0.png",
+    "sha256": "fbaa27d0ec07bd5dac656542bb6c3d1c1a9b96ab786d02f2286657b151575111",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-A1.png",
+    "sha256": "871a3ec43e4dc13312811cdc97451679d7b4b5e6ad13ba709abd0e9074d48c7f",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-B0.png",
+    "sha256": "253acc01333b7a7724d9b484c091a2172ee6d3e62a57606e30b30651769a76fe",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-B1.png",
+    "sha256": "06ffa51d2070955c36855af6b45a713b1219a0e5470d57a607942976e6001aa0",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-habitat-empty.png",
+    "sha256": "74b0c649d230cd86cf12b8219286ca3b005ef6c7233784b4266a783c4a91a74e",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-habitat.png",
+    "sha256": "11c0527f0b91b40dc077636ae354050b9dbf5b9716f7a354ed3c8223edb03d45",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-incubator-active.png",
+    "sha256": "c9c10f13c149856453ff62947313921a8cf25165d527d09c42749be89c452923",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-incubator-empty.png",
+    "sha256": "98eff8315e478cea74465a37f5ac819202105882357c62d2dc625439ce65d850",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-incubator-ready.png",
+    "sha256": "4d2b1e1fab5e125ba2f3ba1061fa679df53e643aa46ed908b3ec58313195df4f",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-locked.png",
+    "sha256": "615b6fede370343cf74d54938ef728361bd59e2e815e1ca66d0591ffd89b5917",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-partial-p.png",
+    "sha256": "f711468e6a1b542927f10450fc0170a326df03aeec086f3b1ef7741689a28d71",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-pending.png",
+    "sha256": "2ec42368b3d3089061b68044cd3108916b303c830f6c5e61e0fdd43907384d28",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-residents-empty.png",
+    "sha256": "352535ea96715395f7a2edbbdcec8a817637f6bbbc4804d801219037127f4d5e",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-residents-max.png",
+    "sha256": "77ec2ad9206be4f22afaf26414e619d4c3c6c7cca00051b4304e69997015460f",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-reveal.png",
+    "sha256": "85b98eb79bdb6e4b4683307cf63f946b197a904779ba7728ad96ba857c95d50d",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-review.png",
+    "sha256": "39c924b6aef221449f112ec2d4721f32c1f91ee5070a5fac91250c441125a22b",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-shortage.png",
+    "sha256": "9dabb5ae03c4a183ee4dbdabb0f2ca79d35093bb7ad495c9228ba8ec3d051a19",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-stale-review.png",
+    "sha256": "8b481b524c1823dd2001b22d21e83a6708dae8550ea027fe9b05449256accc92",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  },
+  {
+    "file": "fixture-action-storage-error.png",
+    "sha256": "ef6f77841fda2c718be8e79b426e8d7c4caf0f29aeef9ea5fca505ba51f0c579",
+    "sourceRevision": "dbfed3bc7f5528b0869ec60f9131407394b94ba5",
+    "kind": "synthetic presentation fixture; real authority journey checked separately"
+  }
+]

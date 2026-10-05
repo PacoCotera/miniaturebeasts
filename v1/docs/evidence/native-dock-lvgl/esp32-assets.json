@@ -1,0 +1,101 @@
+{
+  "art_source_sha256": "9a957b3ba07f5f46796e5ed648d96f93bd1c762fe667fe4a0858e11ae4c7e952",
+  "icons": [
+    {
+      "id": "RESIDENTS",
+      "width": 32,
+      "height": 40,
+      "source_id": "materials",
+      "source_sha256": "a7d1bf0853d4dbd57eb8f6ffffbfff313485c1070ed03072a6928b1a5ea274e1",
+      "rgba_bytes": 5120,
+      "rgba_sha256": "ef604ca1fdb4e21f1bc468d0ccfc287ba1cd73e09577dc40117d480938180963"
+    },
+    {
+      "id": "SAMPLES",
+      "width": 32,
+      "height": 40,
+      "source_id": "materials",
+      "source_sha256": "a7d1bf0853d4dbd57eb8f6ffffbfff313485c1070ed03072a6928b1a5ea274e1",
+      "rgba_bytes": 5120,
+      "rgba_sha256": "1438efb4404685797ca299048819d50b6d906b7dcf8bc8e57f4b54f346c61188"
+    },
+    {
+      "id": "INCUBATING",
+      "width": 32,
+      "height": 40,
+      "source_id": "materials",
+      "source_sha256": "a7d1bf0853d4dbd57eb8f6ffffbfff313485c1070ed03072a6928b1a5ea274e1",
+      "rgba_bytes": 5120,
+      "rgba_sha256": "5a2b80ff265696094ed26253ed7e301819232c19ba5beba51b66cf64422e186d"
+    },
+    {
+      "id": "DATA",
+      "width": 32,
+      "height": 40,
+      "source_id": "materials",
+      "source_sha256": "a7d1bf0853d4dbd57eb8f6ffffbfff313485c1070ed03072a6928b1a5ea274e1",
+      "rgba_bytes": 5120,
+      "rgba_sha256": "a0613af51310334dd584024eaf415fdb446456011026d29733e23ad1905a0268"
+    },
+    {
+      "id": "ENERGY",
+      "width": 32,
+      "height": 40,
+      "source_id": "materials",
+      "source_sha256": "a7d1bf0853d4dbd57eb8f6ffffbfff313485c1070ed03072a6928b1a5ea274e1",
+      "rgba_bytes": 5120,
+      "rgba_sha256": "8ef684f06038d0876aa28d47bb937925c5e813b560cfbe36c6a8475121e7ff7e"
+    },
+    {
+      "id": "ESSENCE",
+      "width": 32,
+      "height": 40,
+      "source_id": "materials",
+      "source_sha256": "a7d1bf0853d4dbd57eb8f6ffffbfff313485c1070ed03072a6928b1a5ea274e1",
+      "rgba_bytes": 5120,
+      "rgba_sha256": "eb8d5256e515db3d02c55950a3529ad8ad81a51db5c78e3fcd1ba0a151f1e0f1"
+    }
+  ],
+  "fonts": [
+    {
+      "source": "lab_heading_font_data.c",
+      "source_sha256": "fe44551f0683ebab38d05c375a856be218c6a0f1d6ea0d3940947ba65e6f4c48",
+      "size": 26,
+      "baseline": 25,
+      "glyphs": 95,
+      "coverage_bytes": 29911,
+      "coverage_sha256": "7db1a0047b84a8921c79adfcbb665067469d6735df2c2750b5b559a4be8dc586",
+      "metrics_sha256": "486d7335990ad8300aa896976337007146c987825cccfb566270fe15ff878f4d"
+    },
+    {
+      "source": "lab_font_data.c",
+      "source_sha256": "10ff2be02b8077497456f304a17cec2eb9c0b69d103bf9782dc2eb37aa54e27a",
+      "size": 22,
+      "baseline": 21,
+      "glyphs": 95,
+      "coverage_bytes": 19194,
+      "coverage_sha256": "52a5dadca5249479d2e17fd00de10086281235964605e6eee94ebc9b0b19bc4f",
+      "metrics_sha256": "db40c6fb4159aa9f001e88bc854e635906212b8da68de57060e6b882c05d775a"
+    },
+    {
+      "source": "lab_font_data.c",
+      "source_sha256": "10ff2be02b8077497456f304a17cec2eb9c0b69d103bf9782dc2eb37aa54e27a",
+      "size": 18,
+      "baseline": 17,
+      "glyphs": 95,
+      "coverage_bytes": 12832,
+      "coverage_sha256": "01833d554196f9b572312228602048088e4ce14cfbfe8f6280a6a31e9e0d6626",
+      "metrics_sha256": "9a31666c4b675a2438b5027c66e39b169a1012e39a9bf98cc21bbf691a7d7e5e"
+    },
+    {
+      "source": "lab_font_data.c",
+      "source_sha256": "10ff2be02b8077497456f304a17cec2eb9c0b69d103bf9782dc2eb37aa54e27a",
+      "size": 32,
+      "baseline": 30,
+      "glyphs": 95,
+      "coverage_bytes": 40359,
+      "coverage_sha256": "887b046ead726188f1af693292995185a99334983cdfd1740f5a3d11a3876f63",
+      "metrics_sha256": "7e653881d250765a41a85ea0d24a5e39d2a22c8e997706ca3f0a22801fd3c578"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+Source: a81e3cc94cbef3be4e4983572663f0569e331c8f
+Existing installed Linux/GCC/CMake/Ninja toolchain; clean checkout fetched through Git at the exact pushed revision before build.
+Changed selected_lab, resident_ui_checks and kit_checks built; Cargo/Probe checks relinked.
+companion_resident_ui_checks: PASS 0.71s
+companion_probe_ui_checks: PASS 0.35s
+companion_cargo_ui_checks: PASS 1.43s
+three_device_kit_checks: PASS 0.23s
+100%: four affected suites passed, total2.73s.
+Resident fixture export: PASS;24 native synthetic state fixtures.
+Two host contexts with ONE lazy resident tree:202888/230464 LVGL pool bytes.
+100 warm updates flat; bounded eight-full-row partial byte capacity passed.
+These measured host results do not prove current Companion ESP compilation, panel output or hardware fit.

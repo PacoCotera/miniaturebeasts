@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "kind": "Actual native simulator frames; isolated fresh saves, depicted controls and real timers.",
+  "journeySource": "2553ecff3febb4cb620acea11c978b06dcab86d2",
+  "selectorCorrectionSource": "6ab062601b13e30f6dd945080207b0d6c719fd63",
+  "result": "Complete map/sample/return/research/creation/shared-resident journey and second supply-only return passed.",
+  "captures": [
+    {
+      "file": "first-map.png",
+      "sha256": "7e88a0a6dbb168dc386d03bf1095b245dd3e7fca05244a6839d725f0576d12e4",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "camp-actions.png",
+      "sha256": "d6e7f29e77b2922e1507460f5e5ae3b7edcb6b488df761f132a6bcc751be032a",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "data-preparation.png",
+      "sha256": "a3dbc7febfbee5b89c76aafb5031e8c20ae4490486b6bf529e09c6bfba5c4d7c",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "moss-investigation.png",
+      "sha256": "d74f26a95e57ea8d3d35b3762dce82aebfa782ab1e968aba2ac5841c8dc15528",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "trace-revealed.png",
+      "sha256": "b351da94c75df2cadca92e120c2d98ecdaacb74a1258ec6ef3a9b34399592ac1",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "source-switched.png",
+      "sha256": "64b40bd8db6f9a1ca61841ac7d0d4d8ac696166250b8fe15fecb2edb4f5ea18f",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "revealed-cache-route.png",
+      "sha256": "2025f4dc2b8adc7c5bdb200278d67598aee5023a0414b545428a00d5d863fda2",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "cache-inspection.png",
+      "sha256": "6b2153dad642582e755b76fe2c283bad9788e5c15388d74a327a98462c3b65b9",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "sample-collected.png",
+      "sha256": "8e7e18ec83d0209512fdc1c9e6937615b1df646b75dfa59e964737aefcca5763",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "cancel-return-review.png",
+      "sha256": "ff70becb67e4ff83f7115d50acb576c3ccdf87a0954f21b1cfb7a299ce8a9b70",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "A-review.png",
+      "sha256": "2bdff7c43cf1507326ae0f0107c7fc0eebab0d95bac2b2fbbfc7dbdcd93c50a0",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "A-incoming.png",
+      "sha256": "2ba57eb49789b484794eeb3e883997760f7db5f63aead6e6d54f8ce29ab95da6",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "A-accepted.png",
+      "sha256": "eb6fe192f6d577d78eeae433e0cc8fcfb068f122cbe02d61fd2048eeae081c0a",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "received-log.png",
+      "sha256": "b5b2468c5b51adec65b9a3db0e0c8671c010e29e80fcdea73ad3a596f06add3b",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "received-detail.png",
+      "sha256": "7b48d125f13b66f6c49caecdd0abd9a7fa2c87201ab4014c338c76bb5ab4ff4b",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "A-pattern-finding.png",
+      "sha256": "55819a8ca1a0220d2f5cc1fbad3d8528b2e10fbda0c9b0eedacd6583a18308db",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "A-coat-finding.png",
+      "sha256": "a3340d75060b148066e50aca0ff5c29a1bdea1921ba68bcfd0dd401530e802d9",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "A-creation-review.png",
+      "sha256": "c6d74b5e62cd2f01118d09956a60ae5a8f3a6d21e1b917c11fbb75c6a61462d8",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "A-habitat.png",
+      "sha256": "c388888da5ef38c5020a7632d4135bb1d1ae28c952c5fc653b5e7e3badf4f1ca",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "companion-resident-visit.png",
+      "sha256": "a2edf9712917eccb845d6757e9f0dd55b715892675ab74d97e2a81fce20c58e7",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "dock-accepted-world.png",
+      "sha256": "cc4e681aee1c21078e62720932b49a355389ea88d950d04de1e8180de53bcfe2",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "second-map.png",
+      "sha256": "9cd2caceb402a90528007a2a7bdafd96bf8cd303bdb3986421ad483285837a11",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "supply-only-receipt.png",
+      "sha256": "b3efd176832d18b03fc233c6031569d18556d974ad7301f2d29a50d42d8d10b6",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "ready-after-supply-return.png",
+      "sha256": "63f4032413e0d88a6628249a6d2d9de5933339a9c8799c0b94c436da37eecede",
+      "sourceRevision": "2553ecff3febb4cb620acea11c978b06dcab86d2"
+    },
+    {
+      "file": "probe-mode-focus.png",
+      "sha256": "eb607d2a2890279da39f962a1e59164343985684412821434892421d9c23744d",
+      "sourceRevision": "6ab062601b13e30f6dd945080207b0d6c719fd63"
+    },
+    {
+      "file": "cargo-mode-focus.png",
+      "sha256": "b95db552ddec69b57ddc3127ef9750de067e4f0b76c74fc18c3cae387bae6cf2",
+      "sourceRevision": "6ab062601b13e30f6dd945080207b0d6c719fd63"
+    },
+    {
+      "file": "probe-mode-return.png",
+      "sha256": "eb607d2a2890279da39f962a1e59164343985684412821434892421d9c23744d",
+      "sourceRevision": "6ab062601b13e30f6dd945080207b0d6c719fd63"
+    }
+  ]
+}

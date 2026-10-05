@@ -1,0 +1,57 @@
+{
+  "kind": "Actual host-native LVGL output, semantic physical controls, isolated saved world",
+  "width": 450,
+  "height": 600,
+  "frames": [
+    {
+      "file": "probe-entry.png",
+      "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+      "sha256": "cbe8365db8049b0393154502e3fe09e9aed14b5d2fc6c37cccac15367e23dd4e"
+    },
+    {
+      "file": "probe-map.png",
+      "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+      "sha256": "bfcfe60b92ffeefc3290397f135adeff950954e0c86ae926f98c99a114e7e1e1"
+    },
+    {
+      "file": "camp-chooser.png",
+      "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+      "sha256": "be8b6153d286e1f5e8164f4f55c2daf96fc3021c274f0169db497e4c95f62888"
+    },
+    {
+      "file": "direct-data-pickup.png",
+      "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+      "sha256": "d6c851005c8335dcf726f369478526108c327037e466216eeaa012c06224315f"
+    },
+    {
+      "file": "moss-chooser.png",
+      "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+      "sha256": "1c146d50c6e534dc70bb8a56a001f455be27f06e9b49f1c1b6f2b9d548c1fdf1"
+    },
+    {
+      "file": "nearfull-chooser.png",
+      "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+      "sha256": "b7daab644502dc93f807b4ed52949e7e2c7494bd43b2c6267d598bbbbdc83ce4"
+    },
+    {
+      "file": "full-pickup.png",
+      "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+      "sha256": "9286af3c72e6ff67f13b9503d3b8ff9954de84cbb6a3d8a2d5e72e87e3886d27"
+    },
+    {
+      "file": "capacity-rejection.png",
+      "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+      "sha256": "323f4b16f6d66a37ad777ab9c49675fcaf03d9b20e2111d272d95b71095271dd"
+    },
+    {
+      "file": "send-review.png",
+      "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+      "sha256": "a9702680fa7187a4dfc637ddc5e0426655244f4abffc2c0187145edd43efa28c"
+    },
+    {
+      "file": "moss-pickup-corrected.png",
+      "sourceRevision": "567b6bd59e0c3c478696bc52d45e15c81fc4feb1",
+      "sha256": "f1d48f034f2a9552fd43199bac9639d0c551129373096ac5bbc52dfb80d117fc"
+    }
+  ]
+}

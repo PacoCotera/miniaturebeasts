@@ -1,0 +1,57 @@
+{
+  "format_version": 1,
+  "purpose": "retained-individual-portrait",
+  "template_version": "pip-portrait-text-v1",
+  "input": {
+    "request_id": "core-v1-connected-BEE-P-00006-original-v1",
+    "resident_snapshot": {
+      "selected": {
+        "id": "BEE-P-00006",
+        "source_sample_id": "BEE-S-00005",
+        "art_id": "design/v1-pip/pip-carried.png",
+        "art_version": "pip-playtest-art-v1",
+        "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+        "appearance_descriptor": "pip-reference-carried",
+        "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+        "mapping_version": "pip-discovery-map-v1",
+        "original_art_version": "pip-playtest-art-v1"
+      }
+    },
+    "claim_ids": [
+      "appearance:pip-reference-carried",
+      "reference:pip-adult-rested-firm-ground-mild-v1"
+    ]
+  },
+  "input_sha256": "02a4df7228db1dfcebcb554749fc6760644af66ea6a02fe1de5f682db5ddd293",
+  "description": "Plain coat. Pale variation is carried without visible pale markings.\nReference: a healthy/rested adult on firm ground in mild conditions.",
+  "provenance": {
+    "provider": "Gemini",
+    "source_url": "https://gemini.google.com/app/e6be3fc8ab8d7ee5",
+    "source_capture_sha256": "3eaf15277ab516785ef5960b35ddd4fd35a3f9d9cd76b1846038f3d2539c5f3e",
+    "extraction_method": "Visible generated-image screenshot capture, rectangular extraction only. Full-size export unavailable. No redrawing. Provisional playtest artwork.",
+    "crop": [
+      318,
+      144,
+      579,
+      433
+    ],
+    "original_path": "design/v1-pip/pip-carried.png",
+    "original_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+    "resolver": "approved-original-copy-v1",
+    "description_mode": "controlled-claims-v1",
+    "model_call": false
+  },
+  "artifacts": {
+    "portrait": {
+      "file": "portrait.png",
+      "bytes": 56603,
+      "sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534"
+    },
+    "description": {
+      "file": "description.txt",
+      "bytes": 138,
+      "sha256": "3cb724c9570f4b5210a1dfd37dfdcefbdba62f5d741095b4c5922fd42fb9f655"
+    }
+  },
+  "integrity_sha256": "02e6b442f49a82915ba224511998790d9e8f52ab1d1844b13daaac817d7a5aa2"
+}

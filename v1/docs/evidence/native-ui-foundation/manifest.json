@@ -1,0 +1,155 @@
+{
+  "sourceRevision": "ae93a07c73d643cc296cb802f425b881e139566f",
+  "exports": [
+    {
+      "file": "cargo-empty.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "e7026941c626fe43df7fc79fa36962731da57892b98a7339d29aa993d74aed01",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "cargo-whole-items-sample.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "119d163d1569e623d879c56fea9ef1ff3c115c364b8c90191bb7ede8d07f3dce",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "cargo-discard-focus.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "1a6f49265ad41e0d7493aab09f3ec8534844fd65bf7745e8043041d65862c321",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "cargo-send-review.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "5bbfcf101d60820b276fad933e7cb7e227f360d06de15e9aac5acc4d4b34058e",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "cargo-return-from-review.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "ddb6f47dc3a72aecb380e4a5044a7dcc0b01272d6aa19bfaf542f1cc31e4874b",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "cargo-pending.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "2edafe7d949b0154c5d56cfb8ac6aeabcbcf14fc90c7c87d5a29502f55a04010",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "lab-arrived.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "5ef28d71259f220573a228247cdbc33b215f5ebc03f599c8ee0375ff12a0f269",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "lab-accepted.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "b4593b2c66784b2559c6596f3dbd20e8edad03a3e69a715c8bafe56f15584890",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "cargo-accepted-zero.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "055928671b53f594b3a67c5226088c35db653450753c73cd615bc9fd76173b1d",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "cargo-receipt-complete.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "c5a140a5390ed6c16da234c2cfe677b18e6b0de4be11708716a5f565bd292ce4",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "cargo-exit-modes.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "0bb1852afc9385f8bd6d107f49832228a582c95149ec47494ffe8ec651c2fb2e",
+      "kind": "actual native control journey"
+    },
+    {
+      "file": "fixture-full40.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "2edef8360d6943de5c996deb74c9748890d23bf8b319670c094f68f20e53b7e3",
+      "kind": "representative fixture"
+    },
+    {
+      "file": "fixture-storage-error.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "d946f3ec6a02ff97370c35fbedf23704a9a2e642c0854dd5a01ec5a1469e0072",
+      "kind": "representative fixture"
+    },
+    {
+      "file": "cargo-focus-0.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "97620ce188161b7a4ac623022a62acd88b3a4560dfbeb53fee1226dc61646fa0",
+      "kind": "controlled actual-save presentation clock"
+    },
+    {
+      "file": "cargo-focus-60.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "766e93ba71382efe3515ddad161fe511c4445b57fb5d2ac3b68c9379686e30dc",
+      "kind": "controlled actual-save presentation clock"
+    },
+    {
+      "file": "cargo-focus-120.png",
+      "width": 450,
+      "height": 600,
+      "sha256": "6c5d7d25c199165474977e8298711d8abab183fe40a80776496869971d16b8c0",
+      "kind": "controlled actual-save presentation clock"
+    }
+  ],
+  "sourcePixelChecks": [
+    {
+      "asset": "CORE_ART_DATA_PRIMARY",
+      "origin": [
+        55,
+        178
+      ],
+      "opaquePixelsChecked": 5255,
+      "opaqueRgbMismatches": 0
+    },
+    {
+      "asset": "CORE_ART_ENERGY_PRIMARY",
+      "origin": [
+        188,
+        181
+      ],
+      "opaquePixelsChecked": 3501,
+      "opaqueRgbMismatches": 0
+    },
+    {
+      "asset": "CORE_ART_ESSENCE_PRIMARY",
+      "origin": [
+        319,
+        181
+      ],
+      "opaquePixelsChecked": 4885,
+      "opaqueRgbMismatches": 0
+    },
+    {
+      "asset": "CORE_ART_SAMPLE_NEUTRAL",
+      "origin": [
+        43,
+        358
+      ],
+      "opaquePixelsChecked": 1677,
+      "opaqueRgbMismatches": 0
+    }
+  ]
+}

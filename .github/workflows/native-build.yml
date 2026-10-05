@@ -1,0 +1,207 @@
+name: Native target builds
+
+on:
+  push:
+    branches: [main]
+    paths: ['v1/native/**', 'v1/prototype/generation/**', '.github/workflows/native-build.yml', '!**/*.md']
+  pull_request:
+    paths: ['v1/native/**', 'v1/prototype/generation/**', '.github/workflows/native-build.yml', '!**/*.md']
+  workflow_dispatch:
+    inputs:
+      retain_firmware:
+        description: Retain compiled MCU firmware for download
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+    working-directory: v1
+
+jobs:
+  lab:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Build and check native loop
+        run: |
+          cmake -S native/lab -B native/build/lab -G Ninja -DCMAKE_BUILD_TYPE=Release -DCRITTER_BUILD_SELECTED_LAB=ON
+          cmake --build native/build/lab
+          node --test native/selected-lab/bridge.test.mjs
+          node --test native/presenter/reset.test.mjs
+          node --test prototype/generation/retained-job.test.mjs
+          node prototype/generation/retained-job.mjs replay docs/evidence/polished-core-v1/retained/545f7eb8f52583b1cfdea303aa029993f8ddd80242677f038bea2e8642580ca8
+          ctest --test-dir native/build/lab -R "selected_lab_native_checks|game_domain_checks|three_device_kit_checks|lab_research_ui_checks|companion_cargo_ui_checks|companion_probe_ui_checks|dock_four_gray_checks" --output-on-failure
+          native/build/lab/selected-lab/selected_lab frame native/build/lab/selected-lab.bmp
+          native/build/lab/critter_lab --save "$RUNNER_TEMP/critter-demo-state" status
+          cc -std=c17 -Wall -Wextra -Wpedantic -Werror -I native/shared native/tests/test_pixels.c native/shared/demo_domain.c native/shared/demo_pixels.c native/shared/native_font.c native/shared/portable_font_data.c -o native/build/lab/test_pixels
+          native/build/lab/test_pixels
+          python3 native/tests/test_native.py "$PWD/native/build/lab/critter_lab"
+          python3 native/tests/test_selected_presenter.py "$PWD/native/build/lab/selected-lab/selected_lab"
+          python3 native/tests/test_kit_presenter.py "$PWD/native/build/lab/selected-lab/selected_lab"
+          python3 native/tests/test_sandbox_reset.py "$PWD/native/build/lab/selected-lab/selected_lab"
+          python3 native/tests/test_v1_journey.py "$PWD/native/build/lab/selected-lab/selected_lab" native/build/lab/journey
+          python3 native/tests/test_updater.py
+          python3 native/tests/test_delivery.py
+          size native/build/lab/critter_lab
+          cc --version
+      - name: Package tested Lab staging bundle
+        run: |
+          python3 native/tests/test_package_staging.py
+          python3 native/package_staging.py create \
+            --binary native/build/lab/selected-lab/selected_lab \
+            --output "native/build/lab/critter-lab-staging-${GITHUB_SHA}.tar.gz"
+          python3 native/package_staging.py verify \
+            "native/build/lab/critter-lab-staging-${GITHUB_SHA}.tar.gz" \
+            --commit "$GITHUB_SHA"
+      - name: Retain available Lab failure diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: native-lab-failure-${{ github.sha }}
+          path: |
+            v1/native/build/lab/CMakeFiles/CMakeConfigureLog.yaml
+            v1/native/build/lab/Testing/Temporary/LastTest.log
+            v1/native/build/lab/Testing/Temporary/LastTestsFailed.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install Probe toolchain
+        run: |
+          source native/toolchains.env
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3.12-venv python3.12-dev gperf device-tree-compiler ninja-build cmake xz-utils
+          python3.12 -m venv "$RUNNER_TEMP/zephyr-venv"
+          source "$RUNNER_TEMP/zephyr-venv/bin/activate"
+          pip install "west==$WEST_VERSION"
+          west init -m https://github.com/zephyrproject-rtos/zephyr --mr "$ZEPHYR_TAG" "$RUNNER_TEMP/zephyr-workspace"
+          cd "$RUNNER_TEMP/zephyr-workspace"
+          test "$(git -C zephyr rev-parse HEAD)" = "$ZEPHYR_REVISION"
+          west update hal_nordic cmsis cmsis_6
+          west zephyr-export
+          pip install -r zephyr/scripts/requirements-base.txt
+          west sdk install --version "$ZEPHYR_SDK_VERSION" --gnu-toolchains arm-zephyr-eabi --no-hosttools
+      - name: Compile nRF52840 firmware
+        run: |
+          source native/toolchains.env
+          source "$RUNNER_TEMP/zephyr-venv/bin/activate"
+          export ZEPHYR_BASE="$RUNNER_TEMP/zephyr-workspace/zephyr"
+          export ZEPHYR_SDK_INSTALL_DIR="$HOME/zephyr-sdk-$ZEPHYR_SDK_VERSION"
+          export ZEPHYR_TOOLCHAIN_VARIANT=zephyr
+          west build -b "$PROBE_BOARD" native/probe -d native/build/probe
+          "$ZEPHYR_SDK_INSTALL_DIR/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-size" native/build/probe/zephyr/zephyr.elf
+          for file in zephyr.elf zephyr.bin zephyr.map zephyr.dts .config; do
+            test -s "native/build/probe/zephyr/$file"
+          done
+      - name: Retain requested Probe firmware
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.retain_firmware }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: native-probe-${{ github.sha }}
+          path: |
+            v1/native/build/probe/zephyr/zephyr.elf
+            v1/native/build/probe/zephyr/zephyr.bin
+          if-no-files-found: error
+          retention-days: 7
+      - name: Retain available Probe failure diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: native-probe-failure-${{ github.sha }}
+          path: |
+            v1/native/build/probe/CMakeFiles/CMakeConfigureLog.yaml
+            v1/native/build/probe/CMakeFiles/CMakeError.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+  companion:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install Companion toolchain
+        run: |
+          source native/toolchains.env
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3.12-venv python3.12-dev cmake ninja-build libffi-dev libssl-dev dfu-util
+          git clone --branch "$IDF_TAG" --depth 1 --recursive --shallow-submodules https://github.com/espressif/esp-idf.git "$RUNNER_TEMP/esp-idf"
+          test "$(git -C "$RUNNER_TEMP/esp-idf" rev-parse HEAD)" = "$IDF_REVISION"
+          python3.12 "$RUNNER_TEMP/esp-idf/tools/idf_tools.py" install --targets="$COMPANION_TARGET"
+          python3.12 "$RUNNER_TEMP/esp-idf/tools/idf_tools.py" install-python-env
+      - name: Compile current shared Companion LVGL UI for ESP32-S3
+        run: |
+          source native/toolchains.env
+          source "$RUNNER_TEMP/esp-idf/export.sh"
+          idf.py -C native/companion -B "$GITHUB_WORKSPACE/v1/native/build/companion" set-target "$COMPANION_TARGET"
+          idf.py -C native/companion -B "$GITHUB_WORKSPACE/v1/native/build/companion" build
+          idf.py -C native/companion -B "$GITHUB_WORKSPACE/v1/native/build/companion" size
+          for file in critter_companion_ui.elf critter_companion_ui.bin critter_companion_ui.map bootloader/bootloader.bin partition_table/partition-table.bin flasher_args.json; do
+            test -s "native/build/companion/$file"
+          done
+      - name: Compile current shared Dock LVGL UI for ESP32-S3
+        run: |
+          source native/toolchains.env
+          source "$RUNNER_TEMP/esp-idf/export.sh"
+          idf.py -C native/caddy -B "$GITHUB_WORKSPACE/v1/native/build/caddy" set-target "$COMPANION_TARGET"
+          idf.py -C native/caddy -B "$GITHUB_WORKSPACE/v1/native/build/caddy" build
+          idf.py -C native/caddy -B "$GITHUB_WORKSPACE/v1/native/build/caddy" size
+          for file in critter_caddy_ui.elf critter_caddy_ui.bin critter_caddy_ui.map; do
+            test -s "native/build/caddy/$file"
+          done
+      - name: Retain requested Caddy firmware
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.retain_firmware }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: native-caddy-ui-${{ github.sha }}
+          path: |
+            v1/native/build/caddy/critter_caddy_ui.elf
+            v1/native/build/caddy/critter_caddy_ui.bin
+            v1/native/build/caddy/bootloader/bootloader.bin
+            v1/native/build/caddy/partition_table/partition-table.bin
+            v1/native/build/caddy/flasher_args.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Retain requested Companion firmware
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.retain_firmware }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: native-companion-${{ github.sha }}
+          path: |
+            v1/native/build/companion/critter_companion_ui.elf
+            v1/native/build/companion/critter_companion_ui.bin
+            v1/native/build/companion/bootloader/bootloader.bin
+            v1/native/build/companion/partition_table/partition-table.bin
+            v1/native/build/companion/flasher_args.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Retain available ESP-IDF failure diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: native-esp-failure-${{ github.sha }}
+          path: |
+            v1/native/build/companion/CMakeFiles/CMakeConfigureLog.yaml
+            v1/native/build/companion/CMakeFiles/CMakeError.log
+            v1/native/build/companion/log/idf_py_stderr_output_*
+            v1/native/build/companion/log/idf_py_stdout_output_*
+            v1/native/build/caddy/CMakeFiles/CMakeConfigureLog.yaml
+            v1/native/build/caddy/CMakeFiles/CMakeError.log
+            v1/native/build/caddy/log/idf_py_stderr_output_*
+            v1/native/build/caddy/log/idf_py_stdout_output_*
+          if-no-files-found: ignore
+          retention-days: 7

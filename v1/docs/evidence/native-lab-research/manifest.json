@@ -1,0 +1,214 @@
+{
+  "frames": [
+    {
+      "file": "fixture-research-collection.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "eb7f9483728e056e7a62cf8b5987105d490eb1ca6a2a184adbae813673ac6890",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-complete-B.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "2d1ff8ba7bc155fb16c181dc7a27cfd59ec6d8db4afb9e5a337e76313a057740",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-complete-coat.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "30d2090d129014d51f67e1f1df327c6f09e6d701e7a2ddfd6cbd9e0917c7a2ca",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-empty-library.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "6a1d174ee1dab58c3362da315bde5b24d3e19de1a0c1ef3d8f7b20929523fa14",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-incomplete-coat.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "eaf87da4adbed08a549751b431b7b1887cc63d24d851a7044642e9d00a29e2a9",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-legacy.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "504e6edb2d0d2c7c11776670d16ef5d2c900d0510f1af8c066944f2b5c27f7e5",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-library-finding.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "c7fd9ce94165dfc7232c3e90cfb63ae7333b10c1561753dde6d4f63f91838df2",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-library.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "e73412c97a00a31c75678e68c89d5fd182f3479e8b298e4e05c62e677674c434",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-maximum-library.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "e6c717b43f800fe357977aaa590c38c37a8c7dba1f0d603a9b5c67d0859ecb75",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-partial-p.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "4f4878a62e7fbe542269731815b45851e5e732535fe90eec2dcfe974a834db3b",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-review.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "0f74241502f3a1b48d946723d312d2b27e4b2ff6a0503ba31713f09f20db92f0",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-storage-error.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "01936ef55a13810c15ba3c42b25e648837985f4025edf387e23da629f2c39d8e",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-topic.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "4ab74f535bccb6ff6092d6a4fe89e350134c8b779ca63d620f4edbce5fa85f83",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-unknown-sample.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "00e7a9b8e27371458e2defe7e76bfa9caa2f01810a3da2673fbcc24a23e46cdc",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-research-used-record.png",
+      "source": "5a529f92c8ce88c29e83d1b3a8d355d45bb4d971",
+      "provenance": "synthetic retained sample knowledge",
+      "sha256": "e52972a0b4c50d1fd8666f0ff559a567b34dd16460372d48e6c2734d852da6f9",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "played-empty-library-device.png",
+      "source": "4ec6fedf79c67ff31e3e806fa99ad82453578055",
+      "provenance": "fresh native physical-control navigation",
+      "sha256": "97629f8e26a306d4e5e5154c399257d0089675e8a92f6fb9bb5399e6fbdb4206",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "played-empty-library-generic.png",
+      "source": "4ec6fedf79c67ff31e3e806fa99ad82453578055",
+      "provenance": "fresh native physical-control navigation",
+      "sha256": "97629f8e26a306d4e5e5154c399257d0089675e8a92f6fb9bb5399e6fbdb4206",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "played-empty-samples-device.png",
+      "source": "4ec6fedf79c67ff31e3e806fa99ad82453578055",
+      "provenance": "fresh native physical-control navigation",
+      "sha256": "18145b5d0e51a2a7894ca05e9628aa0d6ec9f511a43543d90659cdbbe9976d08",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "played-empty-samples-generic.png",
+      "source": "4ec6fedf79c67ff31e3e806fa99ad82453578055",
+      "provenance": "fresh native physical-control navigation",
+      "sha256": "18145b5d0e51a2a7894ca05e9628aa0d6ec9f511a43543d90659cdbbe9976d08",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "played-home-from-library.png",
+      "source": "4ec6fedf79c67ff31e3e806fa99ad82453578055",
+      "provenance": "fresh native physical-control navigation",
+      "sha256": "fe7d04cd3b66436bc9cbd33e1a79910adc6e558cc1e7c0eeb123cdc9474baf21",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "played-home-from-research.png",
+      "source": "4ec6fedf79c67ff31e3e806fa99ad82453578055",
+      "provenance": "fresh native physical-control navigation",
+      "sha256": "fe7d04cd3b66436bc9cbd33e1a79910adc6e558cc1e7c0eeb123cdc9474baf21",
+      "dimensions": [
+        1024,
+        600
+      ]
+    }
+  ]
+}

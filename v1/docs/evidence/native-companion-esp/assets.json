@@ -1,0 +1,353 @@
+{
+  "art_source_sha256": "9a957b3ba07f5f46796e5ed648d96f93bd1c762fe667fe4a0858e11ae4c7e952",
+  "images": [
+    {
+      "id": "DATA_COMPACT",
+      "width": 37,
+      "height": 48,
+      "source_id": "c18",
+      "source_sha256": "38404e2f318296bf236849697ac57ecd879683d90f070e315cd13ec87116ef92",
+      "rgba_bytes": 7104,
+      "rgba_sha256": "dd09c15dab3f57d86a47914391b414f3a29c1ad076b3f9e194ab684ad8310151"
+    },
+    {
+      "id": "ENERGY_COMPACT",
+      "width": 43,
+      "height": 51,
+      "source_id": "c18",
+      "source_sha256": "a5f256a9fc0b33631f3a0551f843acd53f41a1e7135eaa5ed41e8f65cdfd6039",
+      "rgba_bytes": 8772,
+      "rgba_sha256": "71da3f66b716086aae6ca5e28fa01250eb78f4760911497cba18dbb21065029e"
+    },
+    {
+      "id": "ESSENCE_COMPACT",
+      "width": 47,
+      "height": 49,
+      "source_id": "c18",
+      "source_sha256": "5e0fb4a2577e8b48302a7f5d76c029ef836bed794c6dd11863a0986c2243b80c",
+      "rgba_bytes": 9212,
+      "rgba_sha256": "83a516eb1fe13a6c23e8a9b54bff5e608a287292c72d3afc404aad761a580e67"
+    },
+    {
+      "id": "DATA_PRIMARY",
+      "width": 90,
+      "height": 100,
+      "source_id": "arrival07",
+      "source_sha256": "ad46c0bbc063d3be60d07ffdd56e50f8e82fcd9ffb4308191ccff75c4b590ffb",
+      "rgba_bytes": 36000,
+      "rgba_sha256": "fe1931f83cd6070ad01c21499bd100deddb91551f2e95831ab99d606adffea41"
+    },
+    {
+      "id": "ENERGY_PRIMARY",
+      "width": 90,
+      "height": 100,
+      "source_id": "arrival07",
+      "source_sha256": "ad46c0bbc063d3be60d07ffdd56e50f8e82fcd9ffb4308191ccff75c4b590ffb",
+      "rgba_bytes": 36000,
+      "rgba_sha256": "6f45ddb314de43a064323038efaf505ffcf936cf167db88259d42246dbe29a87"
+    },
+    {
+      "id": "ESSENCE_PRIMARY",
+      "width": 90,
+      "height": 90,
+      "source_id": "arrival07",
+      "source_sha256": "ad46c0bbc063d3be60d07ffdd56e50f8e82fcd9ffb4308191ccff75c4b590ffb",
+      "rgba_bytes": 32400,
+      "rgba_sha256": "62a8e1963565e9e9907390bd651164d97e37d5f34831683220dfba2b2244cccb"
+    },
+    {
+      "id": "SAMPLE_NEUTRAL",
+      "width": 54,
+      "height": 54,
+      "source_id": "c18",
+      "source_sha256": "7136c85a5a3850828c68db8eb036a9560b14d847db45ebfbff436bacb18907fb",
+      "rgba_bytes": 11664,
+      "rgba_sha256": "bca2906dd1665430eb239e6e390dc88dd7b64f1f9d6ca847291fdefaeaa3d5df"
+    },
+    {
+      "id": "PIP_PLAIN",
+      "width": 261,
+      "height": 289,
+      "source_id": "pipSource",
+      "source_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+      "rgba_bytes": 301716,
+      "rgba_sha256": "5644fc9514e385edb519d7d521ba407de50fbb75bed8a709312a1da805515374"
+    },
+    {
+      "id": "PIP_MARKED",
+      "width": 261,
+      "height": 289,
+      "source_id": "pipSource",
+      "source_sha256": "39336d1bf4f9cf540d1d5a1ed47a42ccc72fff02376eb98e7b88cf51d3859190",
+      "rgba_bytes": 301716,
+      "rgba_sha256": "2ef1de7f0b5ccef3cafd13bda8e7f396fe5738216dc1f0661ba9c4aedc2287b9"
+    }
+  ],
+  "fonts": [
+    {
+      "source": "lab_heading_font_data.c",
+      "source_sha256": "fe44551f0683ebab38d05c375a856be218c6a0f1d6ea0d3940947ba65e6f4c48",
+      "size": 26,
+      "baseline": 25,
+      "glyphs": 95,
+      "coverage_bytes": 29911,
+      "coverage_sha256": "7db1a0047b84a8921c79adfcbb665067469d6735df2c2750b5b559a4be8dc586",
+      "metrics_sha256": "486d7335990ad8300aa896976337007146c987825cccfb566270fe15ff878f4d"
+    },
+    {
+      "source": "lab_font_data.c",
+      "source_sha256": "10ff2be02b8077497456f304a17cec2eb9c0b69d103bf9782dc2eb37aa54e27a",
+      "size": 18,
+      "baseline": 17,
+      "glyphs": 95,
+      "coverage_bytes": 12832,
+      "coverage_sha256": "01833d554196f9b572312228602048088e4ce14cfbfe8f6280a6a31e9e0d6626",
+      "metrics_sha256": "9a31666c4b675a2438b5027c66e39b169a1012e39a9bf98cc21bbf691a7d7e5e"
+    },
+    {
+      "source": "lab_font_data.c",
+      "source_sha256": "10ff2be02b8077497456f304a17cec2eb9c0b69d103bf9782dc2eb37aa54e27a",
+      "size": 16,
+      "baseline": 15,
+      "glyphs": 95,
+      "coverage_bytes": 10176,
+      "coverage_sha256": "b0df3d91af62448a39e44a38d870b88c82187b915f1f57f36f6511cf53028958",
+      "metrics_sha256": "87bb98b54a3aef0479373c95df68673228714df8e95d5b9c73aacd9a695e0e22"
+    },
+    {
+      "source": "lab_font_data.c",
+      "source_sha256": "10ff2be02b8077497456f304a17cec2eb9c0b69d103bf9782dc2eb37aa54e27a",
+      "size": 28,
+      "baseline": 26,
+      "glyphs": 95,
+      "coverage_bytes": 30740,
+      "coverage_sha256": "4a8f52e4e259ec06c195b010f3cff54c4c3ad9d7f222010cbabe9a7e40e9a7a3",
+      "metrics_sha256": "fe845d1ef66473795ec4403cd873ca1b02ebba9fe3e941f9c2a7de8f984065ad"
+    },
+    {
+      "source": "lab_heading_font_data.c",
+      "source_sha256": "fe44551f0683ebab38d05c375a856be218c6a0f1d6ea0d3940947ba65e6f4c48",
+      "size": 20,
+      "baseline": 19,
+      "glyphs": 95,
+      "coverage_bytes": 17897,
+      "coverage_sha256": "0f5f9817e83e3670a16eaa629a910c79c825907aad59228689b541a66b1db58d",
+      "metrics_sha256": "d5391fced26ff911ad19e57d183cb81c640b1eb90a9b29a04a98e9845a06b31c"
+    }
+  ],
+  "empty_habitat": {
+    "width": 136,
+    "height": 144,
+    "rgba_bytes": 78336,
+    "rgba_sha256": "b713a0cd93ea7eea2eedb7f689a122f2c08c49695ad493b9b733776b08869eef",
+    "source_sha256": "464e32762c1bb9e90c8fb0687b8d06bc34ed9355346e789aef68d0641899d504"
+  },
+  "field_source_sha256": "28b594735e94bb1bf08b2b75bd699a0a6c4cf6f4ca6159b62e1dc6dd122cbb45",
+  "field_images": [
+    {
+      "name": "grass-a",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "1bf617e4c552648ea53827f828f6b3b1e445165e5d37cb0039e8ad9f847907e5",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "grass-b",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "2de22a2bfec47fba0419dc7ee4603a1a2c76fd41194d0a625b7f02489b81614a",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "moss",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "7dc30c82af21bcf42606cd81b73d12bf48ea6d7ce88e1bdcd8f4a272640848a7",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "water",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "08319431dd226450d1a381d247f5f92c50992beb3c184ce00091b14b4fe18b08",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "stone",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "7a1dcd4231d969e4a2df25ffe0381cc1eeff8801a54db202aa3d41395d1b705b",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "shrub-ground",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "513ef257e659a78f80da7c9c3e0e0b44158a3be336df901447711d4e2d8df90d",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "tree-ground",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "5e951c12b5ba43bbaa73998701bef185fbaa32e63a3ce33b1fa056f912fc1f21",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "boulder-ground",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "0faf0e07f6a12e889f881cc958e67386cebe6b86a62b5cca11d3737ae61797b8",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-0",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "1bf617e4c552648ea53827f828f6b3b1e445165e5d37cb0039e8ad9f847907e5",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-1",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "516d2c1b628170bb02da52ffcefaf849924c01f9e05859b1778ecc4113dc53cc",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-2",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "d8ec6c21b7a7672a40c721f29f2c150c087493c27061cfa4064ec2fd46e98e60",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-3",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "dcb0a45e73d81e0617b6a04f11677d34f486493b571cca9272048e94aac3227a",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-4",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "e0301137cf17c99a2ccf1c3d42eee49124cd80f2971c3a5381f14745bc55dd1a",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-5",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "e76a5b21d3c4272bc4ad8108303d739e6b1337775bf566ec475650aade7c8fa4",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-6",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "943f4bf37f464104f222026b87fc999b2eda7a61812ad1ffc82c542a63b875d2",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-7",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "3cbd0c4b71b29aa7fa719b298e4e1c482a63ee82940bcf7d1a7be72adc1d96be",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-8",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "40bfe5a3f9c2ce97337ea00467151df34b5fcc677f2d47e61836b745cea9e9e3",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-9",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "cfe40b952739236c5a91741e36a9b2de58262f23bba7f8071e23983a86cbcfa9",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-10",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "8f7e380629f29bc1f55b2d0f545e61f1c307dffe96e64e689607eba2901b2645",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-11",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "92ad1efe863883d245af43dfdf352d3c33ac75c72c260051075b5e643e121fef",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-12",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "ea0134737c4a9dfecacd1f1952aa55f5bf21b9dbef870303ccbbb67aae778262",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-13",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "380661b31dd6c8ceda2fae2beaaa6e86877d8bb246a08f6dd972e1dbb92f642c",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-14",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "c3c47d3256652cf0dd9d5d749aa9116d301e055daa46b406c7cb437f87cdd247",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "path-15",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "078c6116eacee64c2fc24b409569a16f11f17b15526418c2959a567979e63954",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "camp",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "332209c7680582220efd41740a5c4360c5f22ab228f3a1f7b0b4a5c7d77af8f8",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "relay",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "ac94c60e18007793b8a8f757380c7098d480545c4da32a433ab091ed6c605428",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "stone-shelf",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "8bbde882736528f44ca38b48e838962cdad9ed80cbab3d4ed2023aa981d455a2",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "moss-bend",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "01188c5eb4929ad949054d2550ad6c9096d80d90e8050d27d65364cb0294d90e",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    },
+    {
+      "name": "cache",
+      "rgba_bytes": 4096,
+      "rgba_sha256": "fb56dad1508ac5e603994090524026ad32bb7f374ea719f2f048efbf2bbc30ff",
+      "source_id": "gemini-field-atlas",
+      "source_sha256": "23ff0cd0168d612ac9312a1e5921ea0fdbb431c29e824183420504e64bf6aabb"
+    }
+  ],
+  "source_rgba_bytes": 941704,
+  "font_coverage_bytes": 101556
+}

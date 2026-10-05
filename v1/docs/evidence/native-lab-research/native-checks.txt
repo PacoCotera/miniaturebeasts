@@ -1,0 +1,2 @@
+Research/reception/Home plus Companion resident/Dock: used=195096 peak=197072 total=233120 first_free=38024 final_free=38024
+Lab research disclosure, native routes, physical authority and retained lifetime checks passed

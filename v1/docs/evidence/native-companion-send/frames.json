@@ -1,0 +1,76 @@
+{
+  "frames": [
+    {
+      "file": "supplies-only-review.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "bfd536cc37460391f05082ecf189564234a5658358e463e2ffde79bc89616606"
+    },
+    {
+      "file": "unknown-sample-review.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "c0c35050d8b3617f55e8e0148c9ff11ddfea29fc8e84707c907ebdeebbcf53a2"
+    },
+    {
+      "file": "send-focus.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "31740fa9f1fd4907289e4bceb8ec6d8cc2f8c9866147323a4100b1ffa9926a18"
+    },
+    {
+      "file": "offline-review.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "f5772072f1e69d2a4d1e8783f0ef32480638d64ee669138c9173f58d250d7482"
+    },
+    {
+      "file": "kept-cargo.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "119d163d1569e623d879c56fea9ef1ff3c115c364b8c90191bb7ede8d07f3dce"
+    },
+    {
+      "file": "sealed-offline.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "604712dc5fd0005d9f793c22edba470f404d00350b9c9705145b0b7fc284d863"
+    },
+    {
+      "file": "accepted-empty.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "0d9c2d96bdbee98427cc9472f44f6d041643290adc4618397261051c77f0b2cf"
+    },
+    {
+      "file": "receipt-complete.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "61c6c160143a9d84067a30d07b2f3b4779e6e153b8e5a0fff1e1756382ca750b"
+    },
+    {
+      "file": "lab-reception.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "7b2c99fb0b4eac4bd60397d4f009bed08b0bb3c6b06af518757159896505a0d4"
+    },
+    {
+      "file": "lab-accepted.png",
+      "kind": "actual semantic physical-control native journey",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "1cbc334ac8d7d33762eee106a9d8565e4f474c9d045461d7a4aa03e817df0dfa"
+    },
+    {
+      "file": "fixture-legacy-expected.png",
+      "kind": "synthetic native presentation fixture",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "fcf7f60fcef28b1b8efb42d92103ebdd5380ccae710aafb626c1dcc99e0a8b64"
+    },
+    {
+      "file": "fixture-storage-recovery.png",
+      "kind": "synthetic native presentation fixture",
+      "sourceRevision": "e24fd35416aa8d2a2e6d726145dba044ae2efaa7",
+      "sha256": "0a3fc6a1cacd235d43fbe498f7b8d6a4b0e8eae6fd6d2b93657f0852cc4c1191"
+    }
+  ]
+}

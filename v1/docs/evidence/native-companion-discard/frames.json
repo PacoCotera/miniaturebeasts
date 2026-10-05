@@ -1,0 +1,111 @@
+{
+  "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3",
+  "nativeSize": [
+    450,
+    600
+  ],
+  "frames": [
+    {
+      "file": "discard-class.png",
+      "kind": "actual isolated native physical-control journey",
+      "sha256": "794e2b7b76c7b767c08be0d2d5c9219c991be61a301deb16e4bdac3d57f76584",
+      "sourceRevision": "a77fb7390269174da48fff7dea72ec1af7bbecc8"
+    },
+    {
+      "file": "quantity-two.png",
+      "kind": "actual isolated native physical-control journey",
+      "sha256": "08eb8e7c3a2313d9fd48fb5bcfba1fddb37f9099dfbd6f99cb38dd1a3449e6cd",
+      "sourceRevision": "a77fb7390269174da48fff7dea72ec1af7bbecc8"
+    },
+    {
+      "file": "quantity-keep.png",
+      "kind": "actual isolated native physical-control journey",
+      "sha256": "5b0f8cb5f08ce150320a4339c0ff51fff0edea11c5a294451b854eae48172bb6",
+      "sourceRevision": "a77fb7390269174da48fff7dea72ec1af7bbecc8"
+    },
+    {
+      "file": "review-one-default-keep.png",
+      "kind": "actual isolated native physical-control journey",
+      "sha256": "112e6239434931584079c69c0a082650f565058c14aa676537affd7f9ce976a8",
+      "sourceRevision": "a77fb7390269174da48fff7dea72ec1af7bbecc8"
+    },
+    {
+      "file": "partial-discard-result.png",
+      "kind": "actual isolated native physical-control journey",
+      "sha256": "3a3ad7e0a541c6e538e8f4cf7170c204a828d3c71a49eda8ed14cf64e0f57e29",
+      "sourceRevision": "a77fb7390269174da48fff7dea72ec1af7bbecc8"
+    },
+    {
+      "file": "all-discard-result.png",
+      "kind": "actual isolated native physical-control journey",
+      "sha256": "253b5417154361b518d94e86e63e00836622004607b8979399fd4e72f7d07865",
+      "sourceRevision": "a77fb7390269174da48fff7dea72ec1af7bbecc8"
+    },
+    {
+      "file": "finish-default-keep.png",
+      "kind": "actual isolated native physical-control journey",
+      "sha256": "7f5224e1e1115a400a3fe7c34db3059dc594bfa084372c94ec84fa618879dfa7",
+      "sourceRevision": "a77fb7390269174da48fff7dea72ec1af7bbecc8"
+    },
+    {
+      "file": "finish-result.png",
+      "kind": "actual isolated native physical-control journey",
+      "sha256": "37cca54dd33cab9efcf97b89f5bc62a6f839c2d3bb9bba732df1e999d452de79",
+      "sourceRevision": "a77fb7390269174da48fff7dea72ec1af7bbecc8"
+    },
+    {
+      "file": "fixture-class-keep.png",
+      "kind": "synthetic presentation fixture through actual Kit projection and retained LVGL",
+      "sha256": "35ce7254d29981ffcdc0565c426fe63b93833364e0c29ae906379a98a9bff9d5",
+      "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3"
+    },
+    {
+      "file": "fixture-quantity-40.png",
+      "kind": "synthetic presentation fixture through actual Kit projection and retained LVGL",
+      "sha256": "122cbdd231737947df184f1dc65ea23fdb83d2d3d8cd8eafd7b6fa544cdc9011",
+      "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3"
+    },
+    {
+      "file": "fixture-quantity-keep.png",
+      "kind": "synthetic presentation fixture through actual Kit projection and retained LVGL",
+      "sha256": "ddfb0b8e7051f6ec4214cb5f9cb00eac67a927aa2011971ff1b845785673069c",
+      "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3"
+    },
+    {
+      "file": "fixture-discard-all-keep.png",
+      "kind": "synthetic presentation fixture through actual Kit projection and retained LVGL",
+      "sha256": "b56381275475a07a7a74005ed605ab16112c0457ae61ec758f95b2ec9c8e66c9",
+      "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3"
+    },
+    {
+      "file": "fixture-discard-storage-error.png",
+      "kind": "synthetic presentation fixture through actual Kit projection and retained LVGL",
+      "sha256": "d916759ee43e5f0b1b7f6e4908849d79ec36025bb9c5d20d4611ffef4bd522f4",
+      "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3"
+    },
+    {
+      "file": "fixture-discard-pending.png",
+      "kind": "synthetic presentation fixture through actual Kit projection and retained LVGL",
+      "sha256": "bb69356180e7e0acc656290eba6e1926bcdf346524791501fa723bfbba56f184",
+      "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3"
+    },
+    {
+      "file": "fixture-finish-keep.png",
+      "kind": "synthetic presentation fixture through actual Kit projection and retained LVGL",
+      "sha256": "7f5224e1e1115a400a3fe7c34db3059dc594bfa084372c94ec84fa618879dfa7",
+      "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3"
+    },
+    {
+      "file": "fixture-finish-probe-keep.png",
+      "kind": "synthetic presentation fixture through actual Kit projection and retained LVGL",
+      "sha256": "8d15c64e89e9e1383e4a99db906cd60a88752496fb8d213095c90847db3580e6",
+      "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3"
+    },
+    {
+      "file": "fixture-stored-no-outing.png",
+      "sourceRevision": "4f6ceef5def86a6e9dc84809c57f7edaf92f18b3",
+      "kind": "synthetic legacy stored-cargo presentation fixture",
+      "sha256": "aed5e555ab1d838105864fe8d1a34a675ae4c9aca39b97bffe778556cba4566d"
+    }
+  ]
+}

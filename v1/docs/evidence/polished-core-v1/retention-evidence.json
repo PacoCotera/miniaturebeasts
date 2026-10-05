@@ -1,0 +1,10 @@
+{
+  "native_source_revision": "26eda6478af3b88a61f105775e6a5bbdbc3ca30d",
+  "input": "Actual isolated connected native Companion projection after B1 reveal",
+  "accepted_resident": "BEE-P-00006",
+  "duplicate_reused_exact_result": true,
+  "replay_read_only_and_exact": true,
+  "portrait_original_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+  "description": "Plain coat. Pale variation is carried without visible pale markings.\nReference: a healthy/rested adult on firm ground in mild conditions.",
+  "limitation": "Fixed retained original and controlled phrases; no novel image, LLM call or deployed service."
+}

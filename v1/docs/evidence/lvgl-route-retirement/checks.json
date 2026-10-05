@@ -1,0 +1,30 @@
+{
+  "sourceRevision": "db00bf57f146e2a3460e00e898676a280d9899bd",
+  "cleanPushedGitBuild": true,
+  "nativeChecks": [
+    {
+      "name": "lab_action_ui_checks",
+      "result": "pass",
+      "seconds": 21.93
+    },
+    {
+      "name": "three_device_kit_checks",
+      "result": "pass",
+      "seconds": 0.51
+    },
+    {
+      "name": "selected_lab_native_checks",
+      "result": "pass",
+      "seconds": 0.47
+    }
+  ],
+  "journey": "Complete native journey, real timers, repeat expedition and restart passed",
+  "ci": {
+    "run": 220,
+    "id": 36899173593,
+    "conclusion": "success"
+  },
+  "artTables": 22,
+  "unchangedRgbaBytes": 1451692,
+  "limits": "Host software only; no physical display/radio or final art approval"
+}

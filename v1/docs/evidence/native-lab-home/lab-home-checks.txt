@@ -1,0 +1,3 @@
+Before lazy Home: used=120360 peak=122088 total=242216
+Three-context pool: before=147744 first100=147744 second100=147744; first_delta=16 second_delta=0 peak=149280 total=239048
+Lab Home projection, physical navigation and shared lifetime checks passed

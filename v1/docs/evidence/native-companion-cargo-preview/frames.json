@@ -1,0 +1,117 @@
+{
+  "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+  "nativeSize": [
+    450,
+    600
+  ],
+  "frames": [
+    {
+      "file": "preview-empty.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "adcd8bb98e3aaa8b30336fe88eac148fa17c998c0d66a592afa7d2d052a2a513"
+    },
+    {
+      "file": "preview-active.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "8b83b8097240d25a4d3d8dadd53c736ad52ea30b25cd87f93227f4792adc9545"
+    },
+    {
+      "file": "enter-remembers-discard.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "6b9a870ba126c154a544429d7941d89113148556567656daf2c6e4b83d2a8a40"
+    },
+    {
+      "file": "preview-offline.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "cfc40b7cef4ce813f8037d6a5787412bfdb984987362c9cb3ec242fe0d6d5d87"
+    },
+    {
+      "file": "probe-preview-offline.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "e8b86cf4f8b0cee11d40f3dad38681bf7bf60e9168331f88e85772419f37212e"
+    },
+    {
+      "file": "preview-sealed-offline.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "d454b1d86612d8c4475962cfe2099c07dad4382047c905bd46df9fc1202c30d3"
+    },
+    {
+      "file": "preview-awaiting-lab.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "c3377f0d97b41c18f7181beb4f998c269314a0f49ede412c01cc0e9fb0a9c600"
+    },
+    {
+      "file": "preview-accepted.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "afbc13441d96ee0f3f77cb17def728759e736dea780df82bffef12b6599c4f9f"
+    },
+    {
+      "file": "preview-accepted-again.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "afbc13441d96ee0f3f77cb17def728759e736dea780df82bffef12b6599c4f9f"
+    },
+    {
+      "file": "preview-receipt-complete.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "actual native physical-control capture",
+      "sha256": "94da43a5ef47e76146a2b68aa39bf9149e48ced6630fdfdbe7b3c0056fa95edd"
+    },
+    {
+      "file": "fixture-empty.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "synthetic Kit projection through actual LVGL",
+      "sha256": "adcd8bb98e3aaa8b30336fe88eac148fa17c998c0d66a592afa7d2d052a2a513"
+    },
+    {
+      "file": "fixture-active.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "synthetic Kit projection through actual LVGL",
+      "sha256": "8b83b8097240d25a4d3d8dadd53c736ad52ea30b25cd87f93227f4792adc9545"
+    },
+    {
+      "file": "fixture-offline.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "synthetic Kit projection through actual LVGL",
+      "sha256": "cfc40b7cef4ce813f8037d6a5787412bfdb984987362c9cb3ec242fe0d6d5d87"
+    },
+    {
+      "file": "fixture-sealed.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "synthetic Kit projection through actual LVGL",
+      "sha256": "ebc128e07dd59f66a2fcff9a0d1407aeaebc1f6c7412f9f0ba9253e73af64415"
+    },
+    {
+      "file": "fixture-accepted.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "synthetic Kit projection through actual LVGL",
+      "sha256": "ce56d5f8c238096d68354732591987b15ed96b46415063b5a529e243e5636e09"
+    },
+    {
+      "file": "fixture-kit-error.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "synthetic Kit projection through actual LVGL",
+      "sha256": "412b982183965e3bdfc6ece5a89d6d9aa6f899a594b57cf1e39a05f57995a901"
+    },
+    {
+      "file": "fixture-lab-error.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "synthetic Kit projection through actual LVGL",
+      "sha256": "412b982183965e3bdfc6ece5a89d6d9aa6f899a594b57cf1e39a05f57995a901"
+    },
+    {
+      "file": "fixture-stored.png",
+      "sourceRevision": "725f433476d388782c1dc013d825d359e650e5b1",
+      "kind": "synthetic Kit projection through actual LVGL",
+      "sha256": "f128eb1f433502c0149615429476948fe73baa423e7a7e234649886349aff320"
+    }
+  ]
+}

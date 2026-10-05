@@ -1,0 +1,38 @@
+{
+  "home-population-eight.png": {
+    "sha256": "0921d48176d177faf2c3eb63c8b9c3d830911a2e5d39ba1b9c7331cf98b2041a",
+    "native_export_revision": "009ede8f99307dd850e4293f6232c8fc1bec7a55"
+  },
+  "home-population-five.png": {
+    "sha256": "a7a264267bddaaf95cc444a3a1465f07b62fb33da6568e0c9173df48a491b7aa",
+    "native_export_revision": "009ede8f99307dd850e4293f6232c8fc1bec7a55"
+  },
+  "home-empty.png": {
+    "sha256": "4bde92cc9cda754a12a0e30d613e132086acae4ea1766ba09b08d8601d846843",
+    "native_export_revision": "009ede8f99307dd850e4293f6232c8fc1bec7a55"
+  },
+  "population-eight.png": {
+    "sha256": "65e78ee976b7d4df60208821109bd5d257e94d6304d6276ef92ea26e125991e6",
+    "native_export_revision": "773582d2f3cc61713bc37dff881e4ee8841c822a"
+  },
+  "population-five.png": {
+    "sha256": "82a0caba229598eb87660553d86f6e57d05d527da84b4580853004572e9ec6cc",
+    "native_export_revision": "773582d2f3cc61713bc37dff881e4ee8841c822a"
+  },
+  "population-pending.png": {
+    "sha256": "b22b5830bef5a70c6f20d7760c3d4a140cb47aff2e19a7c7e5903f7c8c8f3619",
+    "native_export_revision": "773582d2f3cc61713bc37dff881e4ee8841c822a"
+  },
+  "population-max-identity.png": {
+    "sha256": "837218ce4e60c20b7c3a03031fa203f370a9b8a42ed76deb6ff6362a471e61b6",
+    "native_export_revision": "773582d2f3cc61713bc37dff881e4ee8841c822a"
+  },
+  "population-storage-feedback.png": {
+    "sha256": "72014af736e878b3d559ea3c88d271828db85a0ecb83f22cf38c3ff6c8509430",
+    "native_export_revision": "590a2607a8ec262dcb54c2fafaa8b85e3474a8d8"
+  },
+  "resident-activity.png": {
+    "sha256": "e367912647667566f145c670a9dd81b2d6f42022656f8f07a5c8382059c35a0d",
+    "native_export_revision": "773582d2f3cc61713bc37dff881e4ee8841c822a"
+  }
+}

@@ -1,0 +1,785 @@
+{
+  "boundary": "Fresh connected native CLI: physical Explore selection, empty received log and Back; peers render. No acquisition/birth.",
+  "trace": [
+    {
+      "command": "device 0 status",
+      "result": {
+        "device": 0,
+        "revision": 1,
+        "width": 1024,
+        "height": 600,
+        "page": "home",
+        "focus": "Overview",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 ready 1",
+      "result": {
+        "device": 0,
+        "revision": 1,
+        "width": 1024,
+        "height": 600,
+        "page": "home",
+        "focus": "Overview",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 down-down 1",
+      "result": {
+        "device": 0,
+        "revision": 1,
+        "width": 1024,
+        "height": 600,
+        "page": "home",
+        "focus": "Overview",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 down-up 1",
+      "result": {
+        "device": 0,
+        "revision": 2,
+        "width": 1024,
+        "height": 600,
+        "page": "home",
+        "focus": "Explore",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 ready 2",
+      "result": {
+        "device": 0,
+        "revision": 2,
+        "width": 1024,
+        "height": 600,
+        "page": "home",
+        "focus": "Explore",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 confirm-down 2",
+      "result": {
+        "device": 0,
+        "revision": 2,
+        "width": 1024,
+        "height": 600,
+        "page": "home",
+        "focus": "Explore",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 confirm-up 2",
+      "result": {
+        "device": 0,
+        "revision": 3,
+        "width": 1024,
+        "height": 600,
+        "page": "expedition",
+        "focus": "Companion expeditions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 frame 3",
+      "result": {
+        "revision": 3,
+        "bytes": 1843254
+      }
+    },
+    {
+      "command": "frame 3",
+      "result": {
+        "revision": 3,
+        "bytes": 1843254
+      }
+    },
+    {
+      "command": "device 0 ready 3",
+      "result": {
+        "device": 0,
+        "revision": 3,
+        "width": 1024,
+        "height": 600,
+        "page": "expedition",
+        "focus": "Companion expeditions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 back-down 3",
+      "result": {
+        "device": 0,
+        "revision": 3,
+        "width": 1024,
+        "height": 600,
+        "page": "expedition",
+        "focus": "Companion expeditions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 back-up 3",
+      "result": {
+        "device": 0,
+        "revision": 4,
+        "width": 1024,
+        "height": 600,
+        "page": "home",
+        "focus": "Explore",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 0 frame 4",
+      "result": {
+        "revision": 4,
+        "bytes": 1843254
+      }
+    },
+    {
+      "command": "device 1 status",
+      "result": {
+        "device": 1,
+        "revision": 2,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "cargo_capsules": 0,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 1 frame 2",
+      "result": {
+        "revision": 2,
+        "bytes": 811254
+      }
+    },
+    {
+      "command": "device 2 status",
+      "result": {
+        "device": 2,
+        "revision": 2,
+        "width": 792,
+        "height": 272,
+        "page": "dock",
+        "focus": "World",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "",
+        "stock": [
+          0,
+          0,
+          0
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 0,
+        "residents": 0,
+        "dock_stock": [
+          0,
+          0,
+          0
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 0,
+        "gather_attempted": 0,
+        "gather_awarded": 0,
+        "boundary": "Simulated wireless; radio not selected",
+        "received_count": 0,
+        "received_selected": 0,
+        "received_detail": false,
+        "dock_visits": 0,
+        "dock_updated_at": 1790865799,
+        "dock_world_revision": 0,
+        "message": "",
+        "resident_snapshot": {
+          "count": 0,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 0,
+          "updated_at": 1790865799,
+          "selected": null
+        }
+      }
+    },
+    {
+      "command": "device 2 frame 2",
+      "result": {
+        "revision": 2,
+        "bytes": 646326
+      }
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+[
+  {
+    "file": "collection.png",
+    "sha256": "5ddb71e941cbb8d46ff77eaf791711a089564e4837c18d0606051bee197eb6d5",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "complete-B.png",
+    "sha256": "91b475fede269320322ce1b057dd7b315238b853885d5a7f10eaf2efc3817d20",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "complete-coat.png",
+    "sha256": "754896f501659b717855194235ebdab81f1e4d360e49254837d8e61acf723cb9",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "empty-library.png",
+    "sha256": "fa0c545ad414043a4590096b6323795b08801f4f2d648f75e6a9a190f934af5c",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "incomplete-coat.png",
+    "sha256": "c7886acd6065a19fef95f3d2d1263b3201f31da1b8be92361860e6c2128591a4",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "legacy.png",
+    "sha256": "d88b9f73bcc7db253fecc8ca3258ff6d505692a2bb7b0a90a1f2ea6b0b7cdf81",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "library-finding.png",
+    "sha256": "7eff17100dde73d1707145b86b695c650d665b2a0cd37b20685c9c3812683c3e",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "library.png",
+    "sha256": "582da602b2b4ec154edbd569997d0bdbf71d56516d87a2c7bfc8acac800a7e04",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "maximum-library.png",
+    "sha256": "26cd1db7d3a03cb5f2fc9d4415faefeae48ada215d881e20759b9e7ef82cf986",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "partial-coat-1x.png",
+    "sha256": "414fcdc87665f7fe64b4f7023d43d3acd09d20ee0b4cb9a3b00edec7ea7fd8cb",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "partial-coat-2x.png",
+    "sha256": "f6d0ddacf6382aee2f7716ccf66c761c64130c6170fea2e22c8083be2e11d8b8",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "partial-coat-default.png",
+    "sha256": "f6d0ddacf6382aee2f7716ccf66c761c64130c6170fea2e22c8083be2e11d8b8",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "partial-p.png",
+    "sha256": "aa6cf5c6a96b75018679176f5e64f6866c7d9dae9008406a5ab86d6682211bdb",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "review.png",
+    "sha256": "71b43691230295e5c5853cad9cb1a8f2f5d72b4557d28afd94033ece9569bbcc",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "storage-error.png",
+    "sha256": "5cdcda48d71ff358b93c5827117f935106bb803df1ab670483492e82b870b64d",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "topic.png",
+    "sha256": "b0d3decf61c18bcd4d388c8c755fd5cc2713c86ace939ef19d846611df518923",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "unknown-sample.png",
+    "sha256": "d4140325505d79856e43e95bb6e708db1de0384417744f5c4c0eef074c789512",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "file": "used-record.png",
+    "sha256": "2e904a950206fd6dc68f4bd7a9a41629c6a8e7fbd90cac1cdd972d5f258e0586",
+    "source_revision": "ff5616bd3bbadc2ac167cc6a20a5acec75a2dd60",
+    "width": 1024,
+    "height": 600
+  }
+]

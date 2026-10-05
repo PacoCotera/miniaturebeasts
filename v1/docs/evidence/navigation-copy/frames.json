@@ -1,0 +1,44 @@
+[
+  {
+    "file": "lab-home.png",
+    "sha256": "d7a0fad257fc797b0696e7cb408f3abfb634303348c002f54fcaa444569eaae6",
+    "sourceRevision": "79369f0658d8024ef65c9e317016fdd33629ddb3",
+    "kind": "actual connected depicted-control navigation; fresh empty save"
+  },
+  {
+    "file": "lab-samples.png",
+    "sha256": "1cb78c21839f0d85c4a336c71d78584a9ccf928dfdc1a4a1850f4402500ba120",
+    "sourceRevision": "79369f0658d8024ef65c9e317016fdd33629ddb3",
+    "kind": "actual connected depicted-control navigation; fresh empty save"
+  },
+  {
+    "file": "lab-explore-preview.png",
+    "sha256": "416588fd08ec0d3ab3d2554d731d53c51d3c658579273f0e220177e99dd766ae",
+    "sourceRevision": "79369f0658d8024ef65c9e317016fdd33629ddb3",
+    "kind": "actual connected depicted-control navigation; fresh empty save"
+  },
+  {
+    "file": "companion-probe.png",
+    "sha256": "1c6f8e1422f0b2ae3748fa2027d5a06e3879b665eaa244588de961764630b4b2",
+    "sourceRevision": "79369f0658d8024ef65c9e317016fdd33629ddb3",
+    "kind": "actual connected depicted-control navigation; fresh empty save"
+  },
+  {
+    "file": "companion-cargo.png",
+    "sha256": "20051149b6df5f90e132d4076458b3188beeeeb431718bdffcb8e438aa99616a",
+    "sourceRevision": "79369f0658d8024ef65c9e317016fdd33629ddb3",
+    "kind": "actual connected depicted-control navigation; fresh empty save"
+  },
+  {
+    "file": "companion-residents.png",
+    "sha256": "e30c2cd0a3b8ab5b2de1045f42730b376961cc37d53d497deb2672d30ee350dc",
+    "sourceRevision": "79369f0658d8024ef65c9e317016fdd33629ddb3",
+    "kind": "actual connected depicted-control navigation; fresh empty save"
+  },
+  {
+    "file": "dock-world.png",
+    "sha256": "057379e00fcd09a79abc0a0dea1e32d130d56c05bdd1372bd5dfbd8ea61de077",
+    "sourceRevision": "79369f0658d8024ef65c9e317016fdd33629ddb3",
+    "kind": "actual connected depicted-control navigation; fresh empty save"
+  }
+]

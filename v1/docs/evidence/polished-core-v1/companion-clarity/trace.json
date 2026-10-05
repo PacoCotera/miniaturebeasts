@@ -1,0 +1,5624 @@
+{
+  "sourceRevision": "5a9e07fe05917a981e6147c11ec296091113ab9f",
+  "save": "Isolated clone of prior accepted test world; live and original proof unchanged.",
+  "events": [
+    {
+      "command": "device 1 ready 2",
+      "result": {
+        "device": 1,
+        "revision": 2,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 right-down 2",
+      "result": {
+        "device": 1,
+        "revision": 3,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 right-up 2",
+      "result": {
+        "device": 1,
+        "revision": 5,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 5",
+      "result": {
+        "device": 1,
+        "revision": 5,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 right-down 5",
+      "result": {
+        "device": 1,
+        "revision": 6,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 right-up 5",
+      "result": {
+        "device": 1,
+        "revision": 8,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Companions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 8",
+      "result": {
+        "device": 1,
+        "revision": 8,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Companions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 8",
+      "result": {
+        "device": 1,
+        "revision": 9,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Companions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 8",
+      "result": {
+        "device": 1,
+        "revision": 11,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00003",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 11",
+      "result": {
+        "device": 1,
+        "revision": 11,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00003",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 down-down 11",
+      "result": {
+        "device": 1,
+        "revision": 12,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00003",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00003",
+            "source_sample_id": "BEE-S-00002",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 2
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 down-up 11",
+      "result": {
+        "device": 1,
+        "revision": 14,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00006",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 0
+          }
+        }
+      }
+    },
+    {
+      "capture": "B-resident-known-property.png",
+      "device": 1,
+      "state": {
+        "device": 1,
+        "revision": 14,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00006",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 0
+          }
+        }
+      },
+      "sha256": "7c50ef081700274e0a8cbba4f7124bcf3428c1eaf832f02fcf23930df861ca4b"
+    },
+    {
+      "command": "device 1 ready 14",
+      "result": {
+        "device": 1,
+        "revision": 14,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00006",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 0
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 14",
+      "result": {
+        "device": 1,
+        "revision": 15,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00006",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 0
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 14",
+      "result": {
+        "device": 1,
+        "revision": 17,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 0
+          }
+        }
+      }
+    },
+    {
+      "capture": "B-view-before-visit.png",
+      "device": 1,
+      "state": {
+        "device": 1,
+        "revision": 17,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 0
+          }
+        }
+      },
+      "sha256": "694bfb2a894e2fdfef96827d0e7bb30bc07feaa3d313f0d3ba76f4e43035c6a8"
+    },
+    {
+      "command": "device 1 ready 17",
+      "result": {
+        "device": 1,
+        "revision": 17,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 0
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 17",
+      "result": {
+        "device": 1,
+        "revision": 18,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 2,
+        "dock_updated_at": 1790791003,
+        "dock_world_revision": 177,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 177,
+          "updated_at": 1790791003,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 0
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 17",
+      "result": {
+        "device": 1,
+        "revision": 22,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Visit saved (1). Pip settles beside you.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "capture": "B-visit-saved.png",
+      "device": 1,
+      "state": {
+        "device": 1,
+        "revision": 22,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Visit saved (1). Pip settles beside you.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      },
+      "sha256": "bb4afbc5daf829e6ed4dccca24962f90a16034f8dd5e237da948bb7210cf7289"
+    },
+    {
+      "command": "device 1 link 0",
+      "result": {
+        "device": 1,
+        "revision": 23,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": false,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Visit saved (1). Pip settles beside you.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": false,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "capture": "B-offline-before-activation.png",
+      "device": 1,
+      "state": {
+        "device": 1,
+        "revision": 23,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": false,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Visit saved (1). Pip settles beside you.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": false,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      },
+      "sha256": "9e6f93d705345a4143f59ae08cbbd699cd85992a7d5703c85765e880ae5c2e83"
+    },
+    {
+      "command": "device 1 ready 23",
+      "result": {
+        "device": 1,
+        "revision": 23,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": false,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Visit saved (1). Pip settles beside you.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": false,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 23",
+      "result": {
+        "device": 1,
+        "revision": 24,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": false,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Visit saved (1). Pip settles beside you.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": false,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 23",
+      "result": {
+        "device": 1,
+        "revision": 26,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": false,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Offline snapshot. Reconnect before visiting.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": false,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "capture": "B-offline-unavailable.png",
+      "device": 1,
+      "state": {
+        "device": 1,
+        "revision": 26,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": false,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Offline snapshot. Reconnect before visiting.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": false,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      },
+      "sha256": "ad5921263f542f06b79aa5af152669dc19c8d678cf4838c2c9fb5744425e1384"
+    },
+    {
+      "command": "device 1 link 1",
+      "result": {
+        "device": 1,
+        "revision": 28,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Offline snapshot. Reconnect before visiting.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 28",
+      "result": {
+        "device": 1,
+        "revision": 28,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Offline snapshot. Reconnect before visiting.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 back-down 28",
+      "result": {
+        "device": 1,
+        "revision": 29,
+        "width": 450,
+        "height": 600,
+        "page": "resident-visit",
+        "focus": "Spend time together",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Offline snapshot. Reconnect before visiting.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 back-up 28",
+      "result": {
+        "device": 1,
+        "revision": 31,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00006",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 31",
+      "result": {
+        "device": 1,
+        "revision": 31,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00006",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 back-down 31",
+      "result": {
+        "device": 1,
+        "revision": 32,
+        "width": 450,
+        "height": 600,
+        "page": "companions",
+        "focus": "BEE-P-00006",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 back-up 31",
+      "result": {
+        "device": 1,
+        "revision": 34,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Companions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 34",
+      "result": {
+        "device": 1,
+        "revision": 34,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Companions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 left-down 34",
+      "result": {
+        "device": 1,
+        "revision": 35,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Companions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 2,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 left-up 34",
+      "result": {
+        "device": 1,
+        "revision": 37,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 37",
+      "result": {
+        "device": 1,
+        "revision": 37,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 left-down 37",
+      "result": {
+        "device": 1,
+        "revision": 38,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 left-up 37",
+      "result": {
+        "device": 1,
+        "revision": 40,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 40",
+      "result": {
+        "device": 1,
+        "revision": 40,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 40",
+      "result": {
+        "device": 1,
+        "revision": 41,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 40",
+      "result": {
+        "device": 1,
+        "revision": 43,
+        "width": 450,
+        "height": 600,
+        "page": "probe",
+        "focus": "Field survey",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 43",
+      "result": {
+        "device": 1,
+        "revision": 43,
+        "width": 450,
+        "height": 600,
+        "page": "probe",
+        "focus": "Field survey",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 43",
+      "result": {
+        "device": 1,
+        "revision": 44,
+        "width": 450,
+        "height": 600,
+        "page": "probe",
+        "focus": "Field survey",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 43",
+      "result": {
+        "device": 1,
+        "revision": 46,
+        "width": 450,
+        "height": 600,
+        "page": "probe",
+        "focus": "View cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 4,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "capture": "probe-next-try.png",
+      "device": 1,
+      "state": {
+        "device": 1,
+        "revision": 50,
+        "width": 450,
+        "height": 600,
+        "page": "probe",
+        "focus": "View cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      },
+      "sha256": "29bea02b1790e0839aa3f62e6c08cfd12ce73d3415c511289fc3f6529fbbec13"
+    },
+    {
+      "command": "device 1 ready 50",
+      "result": {
+        "device": 1,
+        "revision": 50,
+        "width": 450,
+        "height": 600,
+        "page": "probe",
+        "focus": "View cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 back-down 50",
+      "result": {
+        "device": 1,
+        "revision": 51,
+        "width": 450,
+        "height": 600,
+        "page": "probe",
+        "focus": "View cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 back-up 50",
+      "result": {
+        "device": 1,
+        "revision": 53,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 53",
+      "result": {
+        "device": 1,
+        "revision": 53,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 right-down 53",
+      "result": {
+        "device": 1,
+        "revision": 54,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 0,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 right-up 53",
+      "result": {
+        "device": 1,
+        "revision": 56,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 56",
+      "result": {
+        "device": 1,
+        "revision": 56,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 56",
+      "result": {
+        "device": 1,
+        "revision": 57,
+        "width": 450,
+        "height": 600,
+        "page": "modes",
+        "focus": "Cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 56",
+      "result": {
+        "device": 1,
+        "revision": 59,
+        "width": 450,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 59",
+      "result": {
+        "device": 1,
+        "revision": 59,
+        "width": 450,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 59",
+      "result": {
+        "device": 1,
+        "revision": 60,
+        "width": 450,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 59",
+      "result": {
+        "device": 1,
+        "revision": 62,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Keep cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "capture": "send-consequence-keep-default.png",
+      "device": 1,
+      "state": {
+        "device": 1,
+        "revision": 62,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Keep cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      },
+      "sha256": "358678e01128a9d2abd76c50ba5ca750b85270dbaa95e1b5f1eab727c8f22e32"
+    },
+    {
+      "command": "device 1 ready 62",
+      "result": {
+        "device": 1,
+        "revision": 62,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Keep cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 62",
+      "result": {
+        "device": 1,
+        "revision": 63,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Keep cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 62",
+      "result": {
+        "device": 1,
+        "revision": 65,
+        "width": 450,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "capture": "cargo-kept.png",
+      "device": 1,
+      "state": {
+        "device": 1,
+        "revision": 65,
+        "width": 450,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      },
+      "sha256": "bc723c227afa21cb2002b9689380164049cd12fc3981d74f392d2421e8acd104"
+    },
+    {
+      "command": "device 1 ready 65",
+      "result": {
+        "device": 1,
+        "revision": 65,
+        "width": 450,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 65",
+      "result": {
+        "device": 1,
+        "revision": 66,
+        "width": 450,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 65",
+      "result": {
+        "device": 1,
+        "revision": 68,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Keep cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 68",
+      "result": {
+        "device": 1,
+        "revision": 68,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Keep cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 up-down 68",
+      "result": {
+        "device": 1,
+        "revision": 69,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Keep cargo",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 up-up 68",
+      "result": {
+        "device": 1,
+        "revision": 71,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 ready 71",
+      "result": {
+        "device": 1,
+        "revision": 71,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-down 71",
+      "result": {
+        "device": 1,
+        "revision": 72,
+        "width": 450,
+        "height": 600,
+        "page": "send-review",
+        "focus": "Send to Lab",
+        "workspace": 4,
+        "online": true,
+        "transfer": "",
+        "phase": 0,
+        "haul": "haul-152/BEE-E-00004",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 1 confirm-up 71",
+      "result": {
+        "device": 1,
+        "revision": 75,
+        "width": 450,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Return to Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Sending to Lab",
+        "phase": 1,
+        "haul": "haul-184/BEE-E-00007",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "capture": "send-chosen.png",
+      "device": 1,
+      "state": {
+        "device": 1,
+        "revision": 75,
+        "width": 450,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Return to Probe",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Sending to Lab",
+        "phase": 1,
+        "haul": "haul-184/BEE-E-00007",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      },
+      "sha256": "88a4c2f383a266a88b4e0027ecd3822ddc983a4e49c7d243e407cb61d9d25ea5"
+    },
+    {
+      "command": "device 0 ready 12",
+      "result": {
+        "device": 0,
+        "revision": 12,
+        "width": 1024,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Accept haul",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Received at Lab - accept there",
+        "phase": 2,
+        "haul": "haul-184/BEE-E-00007",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 0 confirm-down 12",
+      "result": {
+        "device": 0,
+        "revision": 12,
+        "width": 1024,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Accept haul",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Received at Lab - accept there",
+        "phase": 2,
+        "haul": "haul-184/BEE-E-00007",
+        "stock": [
+          400,
+          600,
+          400
+        ],
+        "cargo": [
+          100,
+          100,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 4,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 0 confirm-up 12",
+      "result": {
+        "device": 0,
+        "revision": 14,
+        "width": 1024,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Companion expeditions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Haul accepted; Companion receipt pending",
+        "phase": 4,
+        "haul": "haul-184/BEE-E-00007",
+        "stock": [
+          500,
+          700,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          400,
+          600,
+          400
+        ],
+        "dock_cached": true,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791004,
+        "dock_world_revision": 178,
+        "message": "Haul accepted. Receipt waiting for Companion.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": false,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 0 ready 15",
+      "result": {
+        "device": 0,
+        "revision": 15,
+        "width": 1024,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Companion expeditions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-184/BEE-E-00007",
+        "stock": [
+          500,
+          700,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          500,
+          700,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791010,
+        "dock_world_revision": 184,
+        "message": "Haul accepted; Companion receipt confirmed.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 0 back-down 15",
+      "result": {
+        "device": 0,
+        "revision": 15,
+        "width": 1024,
+        "height": 600,
+        "page": "cargo",
+        "focus": "Companion expeditions",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-184/BEE-E-00007",
+        "stock": [
+          500,
+          700,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          500,
+          700,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791010,
+        "dock_world_revision": 184,
+        "message": "Haul accepted; Companion receipt confirmed.",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "device 0 back-up 15",
+      "result": {
+        "device": 0,
+        "revision": 16,
+        "width": 1024,
+        "height": 600,
+        "page": "home",
+        "focus": "Overview",
+        "workspace": 4,
+        "online": true,
+        "transfer": "Receipt confirmed",
+        "phase": 5,
+        "haul": "haul-184/BEE-E-00007",
+        "stock": [
+          500,
+          700,
+          400
+        ],
+        "cargo": [
+          0,
+          0,
+          0
+        ],
+        "samples": 2,
+        "residents": 2,
+        "dock_stock": [
+          500,
+          700,
+          400
+        ],
+        "dock_cached": false,
+        "failed": false,
+        "stock_conversion_pending": false,
+        "mode": 1,
+        "expedition_seconds": 0,
+        "gather_progress_ms": [
+          0,
+          0,
+          0
+        ],
+        "gather_remaining_ms": 4000,
+        "gather_attempted": 7,
+        "gather_awarded": 3,
+        "boundary": "Simulated wireless; radio not selected",
+        "dock_visits": 3,
+        "dock_updated_at": 1790791010,
+        "dock_world_revision": 184,
+        "message": "Visit saved for BEE-P-00006 (1).",
+        "resident_snapshot": {
+          "count": 2,
+          "current": true,
+          "visit_available": true,
+          "world_revision": 178,
+          "updated_at": 1790791004,
+          "selected": {
+            "id": "BEE-P-00006",
+            "source_sample_id": "BEE-S-00005",
+            "art_id": "design/v1-pip/pip-carried.png",
+            "art_version": "pip-playtest-art-v1",
+            "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+            "appearance_descriptor": "pip-reference-carried",
+            "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+            "mapping_version": "pip-discovery-map-v1",
+            "original_art_version": "pip-playtest-art-v1",
+            "visits": 1
+          }
+        }
+      }
+    }
+  ]
+}

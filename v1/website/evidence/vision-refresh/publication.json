@@ -1,0 +1,11 @@
+{
+  "website": "https://critterlab.basicberry.com/",
+  "sourceRevision": "1a9cde04295d14b5d5e0b20b711f67272f35ae87",
+  "activatedAt": "2026-10-03T19:30:54.016094+00:00",
+  "nativeRevision": "720c1e6c3f0a3f935e5b7b00591b2f83a0f3b65d",
+  "nativeReleaseRetained": true,
+  "resetInvoked": false,
+  "benchCatalogueAvailable": true,
+  "websitePullRequest": "https://github.com/PacoCotera/critter-lab/pull/98",
+  "build": "Existing installed VM runtime; frozen lockfile install and normal /genome/ build. No tests or native build."
+}

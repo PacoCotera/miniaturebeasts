@@ -1,0 +1,53 @@
+{
+  "assets": [
+    {
+      "boundary": "Hardware concept; physical implementation not established",
+      "asset": "dist/assets/family-concept-v2.png",
+      "height": 1024,
+      "sha256": "c238f61f9b572058219a44f388668af08c4f1e3e2c74d939aaff578ac7a46b34",
+      "width": 1536,
+      "source": "design/grounded-screen-concepts/branding-derivatives/family-miniature-beasts.png"
+    },
+    {
+      "boundary": "Accepted HiBit appearance study; not gameplay screenshot",
+      "asset": "dist/assets/companion-hibit.png",
+      "height": 600,
+      "sha256": "fc7b893a09b5ede42fd0ac1a85d0d3ee3c5277a85ed3b261c66546dd401fee4d",
+      "width": 450,
+      "source": "design/miniature-lives-proof/exports/companion-resident.png"
+    },
+    {
+      "boundary": "Accepted richer appearance study; separate reference specimens",
+      "asset": "dist/assets/station-rich.png",
+      "height": 600,
+      "sha256": "d77667b8360b2bbc580fc6e49881af1eeeecdebe8a48f1b64557d7df854368f4",
+      "width": 1024,
+      "source": "design/miniature-lives-proof/exports/lab-known-comparison.png"
+    },
+    {
+      "boundary": "Map interaction layout; not finished screen art",
+      "asset": "dist/assets/map-study.png",
+      "height": 600,
+      "sha256": "2462e1558b9027023a366ce202864e81923296d03619b35c974aaa6169953250",
+      "width": 450,
+      "source": "design/connected-game-study/map-interaction/02-map-opened.png"
+    },
+    {
+      "boundary": "Research interaction layout; illustrative trial values",
+      "asset": "dist/assets/research-study.png",
+      "height": 600,
+      "sha256": "4daba5abd3c263c8db81c6baa4d792798e1684eed43bc0afd81b6d1ab881cdd4",
+      "width": 1024,
+      "source": "design/connected-game-study/map-interaction/06-pale-finding.png"
+    },
+    {
+      "boundary": "Caddy summary concept; not gameplay screenshot",
+      "asset": "dist/assets/caddy-summary.png",
+      "height": 736,
+      "sha256": "10e788e37b91ad7bbdd9bf8bd348d582617eb53203c702e4b96747de659d3d32",
+      "width": 2138,
+      "source": "design/grounded-screen-concepts/branding-derivatives/caddy-miniature-beasts.png"
+    }
+  ],
+  "boundary": "Device concepts, accepted appearance studies and interaction layouts are shown separately. Original images remain in their design homes. No generated artwork is introduced in this revision."
+}

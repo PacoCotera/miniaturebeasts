@@ -1,0 +1,71 @@
+{
+  "productionSource": "e89c2dbc139899aa3a561081916cbdaa6a9a00ec",
+  "captures": [
+    {
+      "path": "outing-one-start.png",
+      "sourceRevision": "a94a0c7a38c144624d93d49a4ec5a3b136a1e6c5",
+      "sha256": "705a0f78ac5565fda610456d87a8452bc52288b96363c657a86bc8471d246fc7",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "outing-one-relay.png",
+      "sourceRevision": "a94a0c7a38c144624d93d49a4ec5a3b136a1e6c5",
+      "sha256": "5fb6a46a10735ed25444bb3cb6674120cb1dc5d6cd36c61d5533b083bfc12fc6",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "outing-one-map-revealed.png",
+      "sourceRevision": "a94a0c7a38c144624d93d49a4ec5a3b136a1e6c5",
+      "sha256": "b21265ea9b6a09ee1cd6abc865f219251080d765427c81e0b29b272bc2e1fde7",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "outing-one-sample.png",
+      "sourceRevision": "a94a0c7a38c144624d93d49a4ec5a3b136a1e6c5",
+      "sha256": "dcf9afbd9c3ba420c99304c7c37f7828a972d8391af2a76b2443f3a4b53a9283",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "lab-sample-accepted.png",
+      "sourceRevision": "a94a0c7a38c144624d93d49a4ec5a3b136a1e6c5",
+      "sha256": "26be048ec99e3c63ddc02b6a25309cf0758d574edf13b9ee65aaddb299118e78",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "companion-empty-receipt.png",
+      "sourceRevision": "a94a0c7a38c144624d93d49a4ec5a3b136a1e6c5",
+      "sha256": "d1a4bfbf8da3568a3db018ed6151f5953a70dd50f5df02899a487987dba77f4e",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "dock-accepted.png",
+      "sourceRevision": "a94a0c7a38c144624d93d49a4ec5a3b136a1e6c5",
+      "sha256": "21d0b90524755c75856ebda2e3ec2e0e8fac5663721e22249f94dd7dbe16aad5",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "outing-two-final-map.png",
+      "sourceRevision": "e89c2dbc139899aa3a561081916cbdaa6a9a00ec",
+      "sha256": "737e5293bbc110265b5fbc78b7297a5b9ad5d04a6349c3af1a93f33712c09348",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "outing-two-trace-neutral.png",
+      "sourceRevision": "e89c2dbc139899aa3a561081916cbdaa6a9a00ec",
+      "sha256": "68942e067072c100ca7040d1d8f384f23c7a2a1b356b9600d9d60348f584e89c",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "outing-two-west-route.png",
+      "sourceRevision": "e89c2dbc139899aa3a561081916cbdaa6a9a00ec",
+      "sha256": "bc9951c6a9cd9935403f73f3a3dc5cb2b1c34d4445d8cd9ef5748d03464004d5",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    },
+    {
+      "path": "outing-two-cache.png",
+      "sourceRevision": "e89c2dbc139899aa3a561081916cbdaa6a9a00ec",
+      "sha256": "1c4fe7a33a621d3eb15187f0918871622f3b38783d58f526b21007df3d8cbae6",
+      "kind": "actual native frame; unedited bitmap format conversion"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "sourceRevision": "c3c8a6da4dbf0a5bdf350d6067b13033309203af",
+  "target": "esp32s3",
+  "idfRevision": "b774170ff46c393eeb5e495ea37936038d3f4f4f",
+  "evidence": "compile/link only; no device execution",
+  "requiredLinkedSymbols": [
+    "dock_ui_create",
+    "dock_ui_update",
+    "ui_display_create",
+    "native_ui_font_init",
+    "native_ui_image_from_sprite",
+    "lv_label_create",
+    "lv_refr_now"
+  ],
+  "excludedSourceAndSymbolChecks": "passed",
+  "artifacts": [
+    {
+      "path": "critter_caddy_ui.elf",
+      "bytes": 5723332,
+      "sha256": "35f1e2be2ff7646bb433aba6d383ff866fea7a6c3f8c70512278bb1f1247f54c"
+    },
+    {
+      "path": "critter_caddy_ui.bin",
+      "bytes": 469584,
+      "sha256": "5c6012510dcc8a85f744f5e4bc3734b29b504c44bfc1dd4ea6f1fc35ca2f6844"
+    },
+    {
+      "path": "critter_caddy_ui.map",
+      "bytes": 3393579,
+      "sha256": "659fb120d61c79407c07bbec3f41778dedc62a64a49a86780c113806c5e8e976"
+    },
+    {
+      "path": "esp-idf/main/dock_assets.json",
+      "bytes": 3665,
+      "sha256": "7c1e12f754253dd16817d8e05567e1130da7744c737f83bfc4b9ca8a8022e8fd"
+    }
+  ]
+}

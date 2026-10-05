@@ -1,0 +1,216 @@
+{
+  "nativeRevision": "59870e53450156d94e590bbce7f276f40f623eec",
+  "frames": [
+    {
+      "file": "probe-entry.png",
+      "sha256": "a4da3c8d1b3789dd8c11ef693ca29efec7aa06409c8d7e9f64ccd3b5a092b4af",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "map-camp.png",
+      "sha256": "98f95643669dd465b6a6a74efd6e9edb06c354f67d3ab90f143dbba9726e05e6",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "camp-inspection.png",
+      "sha256": "5c159fe97383e1895e79f10c687767bd1ce2244d47ec721e8b91726d74fc33a3",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "map-whole-cargo.png",
+      "sha256": "2ebb11cc9291598cb1860ba296e68b23de1c399c556e3a1a3f04e6b3810f2c5a",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "map-moss.png",
+      "sha256": "44e2f8b7d1eede769229540329a09b03cb71d7c2dde39f52d9f42034d5c16c0d",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "trace-discovered.png",
+      "sha256": "b8c8fd4b4507030ac56f9550ba0e8d035134a3172061c8c37ddaacfb2929584d",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "map-revealed-trail.png",
+      "sha256": "52c3416c2885bdea6e10a3e6fb27002fc1f0cb3251d7c0c01580fdd054e8ec5e",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "cache-inspection.png",
+      "sha256": "fd04c41066148a888b79f6e4ab8d6cdccdf1545e0d0010abb98baa5c0ef65462",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "cache-collected.png",
+      "sha256": "65f7ac88066ee91826584a697697d7478c3142ab31922f5dad16f023a636fa21",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "map-current-sample.png",
+      "sha256": "2942f01d82137544a702f60b713c9fc55e41143daef8eaf3c1ed868c0c1ad162",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "cargo-current.png",
+      "sha256": "eda44c7011c0044c849747ee51f6ff86484f225d076285fc7e739bbefa394ab2",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "send-review.png",
+      "sha256": "5b973cd5feeda06cafa7d94cfbb30464c9e27aca594e6d962397b6b3c1323a83",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "send-cancel.png",
+      "sha256": "eda44c7011c0044c849747ee51f6ff86484f225d076285fc7e739bbefa394ab2",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "send-pending.png",
+      "sha256": "a7d8a830446c1c109c8813380914f460fe908ab916a49824c877802484f884e9",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "lab-arrived.png",
+      "sha256": "0b0404d951ac17a79da0c30eff7a84f4d18e4e70f8d03982cb3595c0e12fa164",
+      "width": 1024,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "lab-accepted.png",
+      "sha256": "fa4efe6075f514b1408b0d9266b82bfb30d924c514810a19f02e1f1ab569d8c1",
+      "width": 1024,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "cargo-current-zero.png",
+      "sha256": "87174ee81887f9b8b6dd4e5ed007ca6377afcc49fe7c4ad3b45aa562dd92cc4c",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "dock-received.png",
+      "sha256": "569750d3c9f3a20370ec0552b91db2e2d4d65fbe3fec51ce632104884f41204b",
+      "width": 792,
+      "height": 272,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "cargo-exit-modes.png",
+      "sha256": "fed652a18e9647e69b0d1a9f4e52120183aecbfb842da634ecff1f45d9309eb7",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "probe-ended-entry.png",
+      "sha256": "740dd994faeb7c2f33cb44d7920eebcfc50782f824c189511ff7411ee31035a7",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "map-second-outing.png",
+      "sha256": "d7f2a744a80c8c4a7ba3029dac34eb06859088592547ec1f3932b50d7b3fd6a5",
+      "width": 450,
+      "height": 600,
+      "evidence": "actual isolated native physical-control journey"
+    },
+    {
+      "file": "prior-map-same-world.png",
+      "sha256": "705a0f78ac5565fda610456d87a8452bc52288b96363c657a86bc8471d246fc7",
+      "width": 450,
+      "height": 600,
+      "evidence": "prior renderer on copied identical no-gathering field",
+      "nativeRevision": "ae93a07c73d643cc296cb802f425b881e139566f"
+    },
+    {
+      "file": "fixture-camera-ne.png",
+      "sha256": "c88d47f8b8422dafe1a6050f8548941f9596b62ce7576f0780e0e3b7eff9b1d8",
+      "nativeRevision": "d2f62e80dedd33c5f2778719a5448ea251dd2086",
+      "width": 450,
+      "height": 600,
+      "evidence": "synthetic native presentation fixture, not legal play or saved-world claim"
+    },
+    {
+      "file": "fixture-camera-nw.png",
+      "sha256": "2a6718816b945006b384716e363310e2a7de464bee45748103a1ce8b9a2a3f5a",
+      "nativeRevision": "d2f62e80dedd33c5f2778719a5448ea251dd2086",
+      "width": 450,
+      "height": 600,
+      "evidence": "synthetic native presentation fixture, not legal play or saved-world claim"
+    },
+    {
+      "file": "fixture-camera-se.png",
+      "sha256": "c373c4cca5a96931df269ab0ce51cb9300ea1b89ecdb523e4a95679e9e5ae462",
+      "nativeRevision": "d2f62e80dedd33c5f2778719a5448ea251dd2086",
+      "width": 450,
+      "height": 600,
+      "evidence": "synthetic native presentation fixture, not legal play or saved-world claim"
+    },
+    {
+      "file": "fixture-camera-sw.png",
+      "sha256": "c704367c2d3e6b3c51a96cd7fd6209b0c1d70ecb08f84c17d1e22a713a1e115b",
+      "nativeRevision": "d2f62e80dedd33c5f2778719a5448ea251dd2086",
+      "width": 450,
+      "height": 600,
+      "evidence": "synthetic native presentation fixture, not legal play or saved-world claim"
+    },
+    {
+      "file": "fixture-camp-three-actions.png",
+      "sha256": "165798c858e2f528cf776fff9157f017fa481d24889e793ee70cab056db857f6",
+      "nativeRevision": "d2f62e80dedd33c5f2778719a5448ea251dd2086",
+      "width": 450,
+      "height": 600,
+      "evidence": "synthetic native presentation fixture, not legal play or saved-world claim"
+    },
+    {
+      "file": "fixture-hold-full40.png",
+      "sha256": "62e74d584979cf88b05eae008cbd5ad06f267fcac49b4dc5ed677e2e7ba37e30",
+      "nativeRevision": "d2f62e80dedd33c5f2778719a5448ea251dd2086",
+      "width": 450,
+      "height": 600,
+      "evidence": "synthetic native presentation fixture, not legal play or saved-world claim"
+    },
+    {
+      "file": "fixture-unavailable-saved-preparation.png",
+      "sha256": "7afeb7010deedd351f596ff85694801bea1f891079128865cce1bc717bf5769d",
+      "nativeRevision": "d2f62e80dedd33c5f2778719a5448ea251dd2086",
+      "width": 450,
+      "height": 600,
+      "evidence": "synthetic native presentation fixture, not legal play or saved-world claim"
+    }
+  ]
+}

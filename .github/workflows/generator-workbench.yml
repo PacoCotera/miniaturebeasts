@@ -1,0 +1,46 @@
+name: Generator workbench checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v1/prototype/generator-workbench/**'
+      - 'v1/prototype/genetics/**'
+      - 'v1/prototype/tests/generator-workbench.test.mjs'
+      - 'v1/prototype/tests/pip-genetics.test.mjs'
+      - '.github/workflows/generator-workbench.yml'
+      - '!**/*.md'
+  pull_request:
+    paths:
+      - 'v1/prototype/generator-workbench/**'
+      - 'v1/prototype/genetics/**'
+      - 'v1/prototype/tests/generator-workbench.test.mjs'
+      - 'v1/prototype/tests/pip-genetics.test.mjs'
+      - '.github/workflows/generator-workbench.yml'
+      - '!**/*.md'
+
+permissions:
+  contents: read
+
+jobs:
+  host-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out tested revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Use Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install pinned authoring dependencies
+        working-directory: v1/prototype/generator-workbench
+        run: npm exec --yes --package=pnpm@11.19.0 -- pnpm install --frozen-lockfile --ignore-scripts
+      - name: Check host genetic and generator boundaries
+        working-directory: v1/prototype/generator-workbench
+        run: node --test radial-scene.test.mjs graph-radial.test.mjs regional-scene.test.mjs body-organization.test.mjs pigment-workbench-package.test.mjs pigment-proof.test.mjs genome-codec.test.mjs module-scene.test.mjs graph-covering.test.mjs graph-module.test.mjs graph-source.test.mjs art-brief.test.mjs authoring.test.mjs authoring-ui.test.mjs display-projection.test.mjs family.test.mjs pet.test.mjs ../tests/generator-workbench.test.mjs ../tests/pip-genetics.test.mjs
+      - name: Build the framework workbench
+        working-directory: v1/prototype/generator-workbench
+        run: npm exec --yes --package=pnpm@11.19.0 -- pnpm run build

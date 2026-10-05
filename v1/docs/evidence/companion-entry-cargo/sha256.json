@@ -1,0 +1,11 @@
+{
+  "initial-companion.png": "35d598068c7d84c0d50ac29eff747a34c4afb373e70e3b36a588c2b353550b29",
+  "mode-cargo-companion.png": "ed8c42db57a609edd8db2c3e7a2487cd50232c60a4abafbd898d8fbd56bcd582",
+  "expedition-chooser-companion.png": "13fc48f077f5a413550e84c16b03f9d6ccb3b90f5edc8ffca4dfb9993a1dcb4c",
+  "cargo-companion.png": "b9408c30aed74f1ae9ae1ff1e435309a0edd6c948cba8dbbb2d41ff7f6c4cc68",
+  "sending-offline-companion.png": "a9f0d40107ed6b084a4fd62b37081d57ddb01217a3be5a6c6e4b3c7082ff01fd",
+  "accepted-offline-companion.png": "af9d219ae0a5eeb6cb76677c0f2ace3e2de7cf2c7e65ff217adfeb6ff653e57f",
+  "accepted-home-lab.png": "86e12d015b6b61c338a43b0f8ec1f6c2642ae0e12ca9e3b3ab633c39829f73e8",
+  "receipt-companion.png": "3483b3d97ebbada3f71a04ce641354b50dab0d312c005c0de5928c23284bc7e8",
+  "fixture-reception-receipt-recovery.png": "e171734a17fbcaf499dd235ec85ee9bed9fe8135b1081ead93d119d72dfb293b"
+}

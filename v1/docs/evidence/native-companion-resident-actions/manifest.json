@@ -1,0 +1,309 @@
+{
+  "source_revision": "a81e3cc94cbef3be4e4983572663f0569e331c8f",
+  "commands": 178,
+  "actual_captures": 19,
+  "fixtures": 24,
+  "images": [
+    {
+      "path": "controls-empty/empty-return-probe.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "cbe8365db8049b0393154502e3fe09e9aed14b5d2fc6c37cccac15367e23dd4e"
+    },
+    {
+      "path": "controls-empty/list-initial.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "444f5d01bcc577ec988bdd0fd2d37321b9c7eb5380fc1071c4fdcdc68e18f7dd"
+    },
+    {
+      "path": "controls-saved/back-restores-list.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "b662ff90f062fc55c4a2c8ef0c79b83343564e1124f13f65758e6850f968953f"
+    },
+    {
+      "path": "controls-saved/choose-restores-list.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "b662ff90f062fc55c4a2c8ef0c79b83343564e1124f13f65758e6850f968953f"
+    },
+    {
+      "path": "controls-saved/dock-shared-visits.png",
+      "kind": "actual native physical-control capture",
+      "width": 792,
+      "height": 272,
+      "sha256": "24a1e6a30737cbc5e66cea75566a64a864da96f362a3ad63021a01deea728aa6"
+    },
+    {
+      "path": "controls-saved/lab-habitat-before-selection.png",
+      "kind": "actual native physical-control capture",
+      "width": 1024,
+      "height": 600,
+      "sha256": "97cf6d1928f37a961459c59307a3146b7eb06fdbd676b50cd2669a5d71c58194"
+    },
+    {
+      "path": "controls-saved/lab-same-resident.png",
+      "kind": "actual native physical-control capture",
+      "width": 1024,
+      "height": 600,
+      "sha256": "2bf7b9c5acf5f430e0f291d70ed8439e816e4cb2e640e602bf18732ea90381a2"
+    },
+    {
+      "path": "controls-saved/list-initial.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "60795340fa4a8b46396103af753c20eaa5d277f306b7308c515da03f8bcc19bd"
+    },
+    {
+      "path": "controls-saved/list-second.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "b662ff90f062fc55c4a2c8ef0c79b83343564e1124f13f65758e6850f968953f"
+    },
+    {
+      "path": "controls-saved/offline-choose-resident.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "57314e959071e4943c92fcdece882c0f8c6b175abd21e181a3f44493c0809155"
+    },
+    {
+      "path": "controls-saved/offline-modes.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "b08a47f170b95fa7511649c5d7257baae0e00a35c56e1c7b066910e8763527ca"
+    },
+    {
+      "path": "controls-saved/offline-restart-saved-resident.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "57314e959071e4943c92fcdece882c0f8c6b175abd21e181a3f44493c0809155"
+    },
+    {
+      "path": "controls-saved/offline-visit-blocked.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "51946352d75f5d4b68d1ee8705e3477b8d192b4bf1e7c52883c8b50a189835e9"
+    },
+    {
+      "path": "controls-saved/other-resident-unchanged.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "60795340fa4a8b46396103af753c20eaa5d277f306b7308c515da03f8bcc19bd"
+    },
+    {
+      "path": "controls-saved/reconnected-saved-resident.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "f19db25a3cd5327da8aff60093608a664e589a277630300e2993f967fb0d3f80"
+    },
+    {
+      "path": "controls-saved/visit-offline.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "c8fcbdb29f54d2f2e0d2e85c149eb0f38108dd372a8d181652ec8eb521790fa0"
+    },
+    {
+      "path": "controls-saved/visit-pressed-before-save.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "96b0d48e62c92ea79b2ad01466435715a106b878f9d2e1e5d446918a14ef1441"
+    },
+    {
+      "path": "controls-saved/visit-saved-once.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "240ca76d68f89b231ed6d75c50f9d8d255d23b29ace8c73bb21bc5887872181e"
+    },
+    {
+      "path": "controls-saved/visit-second-ready.png",
+      "kind": "actual native physical-control capture",
+      "width": 450,
+      "height": 600,
+      "sha256": "e8e92dea34ff4f46ca76e4e411c311358fe442791a436e352ef0c4cd14a18722"
+    },
+    {
+      "path": "fixtures/fixture-resident-cache-error.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "bb34066780a2477f82121e2374bc5e7ac256769b140a2a8b510b39552ab5b635"
+    },
+    {
+      "path": "fixtures/fixture-resident-empty.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "558d1f4a1c0ed524d99ec4b10b13ba0f8fe860d16993bd3afcd8930dadf40fee"
+    },
+    {
+      "path": "fixtures/fixture-resident-kit-error.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "83f2fcdbefb49db5e6f31454ff79885bc1b04234c8c23c04a30a8e27b85deb69"
+    },
+    {
+      "path": "fixtures/fixture-resident-lab-error.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "83f2fcdbefb49db5e6f31454ff79885bc1b04234c8c23c04a30a8e27b85deb69"
+    },
+    {
+      "path": "fixtures/fixture-resident-list-empty.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "45923b2d89fd7895dde9e45d7c0853c79cdd610ec1d1e66acc82ebfb0d6c9c75"
+    },
+    {
+      "path": "fixtures/fixture-resident-list-last.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "ee06577f522f23e46e3dac15115f255aa5cb16311213f84fd6af8e6baf68b032"
+    },
+    {
+      "path": "fixtures/fixture-resident-list-maximum.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "f46f667f598d591b46464f35c9b92c1769ecb5bc27bca9f60e513a57041ad677"
+    },
+    {
+      "path": "fixtures/fixture-resident-list-one.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "d796ace1fc074e46a54db6ca86c58d2c29fa8e3cb7e31012f0ca98c2821df977"
+    },
+    {
+      "path": "fixtures/fixture-resident-marked.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "0677266c1c814eb59cdefc05d4013870888870ceb20dba6c2aa71125a943c3c2"
+    },
+    {
+      "path": "fixtures/fixture-resident-offline.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "4743eddd049fa19853ba1f6f85f333b793a4bcd3ea4ed23d30f2965486f8c022"
+    },
+    {
+      "path": "fixtures/fixture-resident-pending-portrait.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "5ac0ab36a4314cfa4f0f2579c45e285d3580d307dcf352c13adb612ea5c3ac3b"
+    },
+    {
+      "path": "fixtures/fixture-resident-pending-transfer.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "ce0e1e285a38ae560ad307639779f5ec524880a3794e0eaf19dbf02e05a81c37"
+    },
+    {
+      "path": "fixtures/fixture-resident-plain.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "03e565e5229a0baf066785e00ed0aeac333eba39f01e2b27ac765bc0d9d2ef58"
+    },
+    {
+      "path": "fixtures/fixture-resident-saved-b1.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "da6b963984e74cc6ed976d3034c42480bbb64d423f26d7eea509135b3ad72571"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-cache-saved.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "d9c99c7dae281a62b5d89932dc5e8b18f0e1276a294fd919c17d9fdf607230a7"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-choose.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "ba76bf5e1b2394ef8229a0471f690360cea4bf5b61ce410fe9044a9a1509b87e"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-kit-error.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "83f2fcdbefb49db5e6f31454ff79885bc1b04234c8c23c04a30a8e27b85deb69"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-lab-error.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "83f2fcdbefb49db5e6f31454ff79885bc1b04234c8c23c04a30a8e27b85deb69"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-limit.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "0899fcda237b7e9d4fbe49d7bd0a7518b61c73c28f65d5882b8ced7f2cdb4b94"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-offline.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "e96c609f41bd78796406065b938ec5da1bcdbe2c26e61093f4463cebaa92db32"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-pending.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "0d6291dae96cf64ccbd3acea50e6c25c7675155e133be3e06c28596bd9b8c5aa"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-pressed.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "3dcc232f72ae08d22c8a7238fd70d2ef2d252da8cdd28d76335eedf488d7444f"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-ready.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "da3f9342f8e7677783181737434068a51c4d2e705d4001b751df7ab0cb0e2923"
+    },
+    {
+      "path": "fixtures/fixture-resident-visit-saved.png",
+      "kind": "synthetic native state fixture",
+      "width": 450,
+      "height": 600,
+      "sha256": "b5ff83564551e3055831cfe8080b4d3d22de2b5f357e5c6a48b99d3a38052631"
+    }
+  ]
+}

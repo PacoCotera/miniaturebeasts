@@ -1,0 +1,44 @@
+- banner:
+  - heading "Critter Lab · Genome authoring" [level=3]
+  - paragraph: Adult developer tool · provisional shared engine · game/device UI unchanged
+  - combobox "Content package": Primary bands / patches · eleven branches · v5
+  - generic: genomic-compositional-source-experiment v5
+  - link "Preserved Pip proof":
+    - /url: /genome/legacy
+    - generic: Preserved Pip proof
+- navigation:
+  - generic "Platform destinations":
+    - link "Website":
+      - /url: /
+      - generic: Website
+    - link "Simulator":
+      - /url: /sandbox/
+      - generic: Simulator
+  - paragraph: AUTHOR & INVESTIGATE
+  - generic: Genome
+  - generic: Compendium
+  - generic: Pinned comparison
+  - generic: Saved records
+  - generic: Generation batch
+  - separator
+  - paragraph: 117 proposed records · 111 defined copy contracts · 6 draft candidates
+  - link "Character art studies":
+    - /url: https://github.com/PacoCotera/critter-lab/blob/codex/genome-art-reset/prototype/generator-workbench/evidence/art-reset/README.md
+    - generic: Character art studies
+- main:
+  - status:
+    - generic: Ready to generate inherited regions, optional ears and tail, and owned coverings. All eleven genomic branches retain their actual consumer status.
+  - heading "Saved experiments" [level=2]
+  - button "Import JSON / verified replay":
+    - generic: Import JSON / verified replay
+  - paragraph: Local browser retention plus copyable exports. Imported result fields never establish genetic truth.
+  - paragraph: compositional-0a5db4f730d7674dea32
+  - paragraph: provisional compositional source · bilateral
+  - button "Export":
+    - generic: Export
+  - button "Replay":
+    - generic: Replay
+  - separator
+  - button "Restore saved compositional draft":
+    - generic: Restore saved compositional draft
+  - paragraph: Provisional authoring content; no production sprite/rig/animation, sample permission, cloud, game-save or hardware claim.

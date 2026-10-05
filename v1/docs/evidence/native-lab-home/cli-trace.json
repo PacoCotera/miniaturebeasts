@@ -1,0 +1,65 @@
+{
+  "boundary": "Actual fresh native CLI sessions; navigation only, no content acquisition or births",
+  "frames": [
+    {
+      "route": "serve",
+      "focus": "Overview",
+      "revision": 1,
+      "bytes": 1843254
+    },
+    {
+      "route": "serve",
+      "focus": "Explore",
+      "revision": 2,
+      "bytes": 1843254
+    },
+    {
+      "route": "serve",
+      "focus": "Research",
+      "revision": 3,
+      "bytes": 1843254
+    },
+    {
+      "route": "serve",
+      "focus": "Incubator",
+      "revision": 4,
+      "bytes": 1843254
+    },
+    {
+      "route": "serve",
+      "focus": "Habitat",
+      "revision": 5,
+      "bytes": 1843254
+    },
+    {
+      "route": "kit-serve",
+      "focus": "Overview",
+      "revision": 1,
+      "bytes": 1843254
+    },
+    {
+      "route": "kit-serve",
+      "focus": "Explore",
+      "revision": 2,
+      "bytes": 1843254
+    },
+    {
+      "route": "kit-serve",
+      "focus": "Research",
+      "revision": 3,
+      "bytes": 1843254
+    },
+    {
+      "route": "kit-serve",
+      "focus": "Incubator",
+      "revision": 4,
+      "bytes": 1843254
+    },
+    {
+      "route": "kit-serve",
+      "focus": "Habitat",
+      "revision": 5,
+      "bytes": 1843254
+    }
+  ]
+}

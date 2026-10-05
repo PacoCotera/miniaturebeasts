@@ -1,0 +1,154 @@
+{
+  "frames": [
+    {
+      "file": "fixture-reception-all-visited-paths.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "7025c4397b4188cd346d47b6276bb30ee03a1f67f47631b0ad587368ad766e9b",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-reception-arrival-error.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "c504aba31066a5dec153d8308bd945c2d38a66e90ec63416eb865bcf9c56d01b",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-reception-arrival.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "053a9d9bf0a20a405229a17211578105a2bdded30d70de9e8e39d4cc93a332e1",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-reception-complete.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "84070907f4c00d03de076cf627ec1d32c9b4236130e03aceea26b1d6911cea43",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-reception-detail.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "bb38092958e2446b3632018e4eb3ec47e6ecc6f239f0ea88a5415864773ce868",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-reception-empty.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "bf80deea474090f47ebb5e7fd23917b7a6a189662181a9c1dc80a4feab997fb7",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-reception-list.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "9316282ea8a57279cf295425b2d62d3dafa839b132f7adc0995a587770eb4678",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-reception-maximum-ids.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "26a15798f4dc35c5855ac17f07c9f0c1310e5ce1695e5e4abb3765c2e804bcb5",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-reception-receipt-recovery.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "fa5e513bb9791ea8eb948cc28544303c6669b2e150ab2a859017ecee7d9d4c04",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "fixture-reception-receipt.png",
+      "source": "3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831",
+      "provenance": "synthetic retained facts",
+      "sha256": "11234f917a46a07065e476d14cc163e3fe6cbe6f3714a431b0e9fe1f1b48d202",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "played-empty-log-device.png",
+      "source": "b5887e9ff472ce1fd15ba5ff0ad6d6f7a2a5a9f3",
+      "provenance": "fresh native CLI navigation",
+      "sha256": "bf80deea474090f47ebb5e7fd23917b7a6a189662181a9c1dc80a4feab997fb7",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "played-empty-log-generic.png",
+      "source": "b5887e9ff472ce1fd15ba5ff0ad6d6f7a2a5a9f3",
+      "provenance": "fresh native CLI navigation",
+      "sha256": "bf80deea474090f47ebb5e7fd23917b7a6a189662181a9c1dc80a4feab997fb7",
+      "dimensions": [
+        1024,
+        600
+      ]
+    },
+    {
+      "file": "played-peer-1.png",
+      "source": "b5887e9ff472ce1fd15ba5ff0ad6d6f7a2a5a9f3",
+      "provenance": "fresh native CLI navigation",
+      "sha256": "78f8624cb96dfc376d52fbe07db2aca46a3d853bb79f12f09cf52735bf51f7be",
+      "dimensions": [
+        450,
+        600
+      ]
+    },
+    {
+      "file": "played-peer-2.png",
+      "source": "b5887e9ff472ce1fd15ba5ff0ad6d6f7a2a5a9f3",
+      "provenance": "fresh native CLI navigation",
+      "sha256": "b15a813dcd8504ec8ab8e13fa74b07bc3bc002842e29c8d7a3ac7f7f4815286f",
+      "dimensions": [
+        792,
+        272
+      ]
+    },
+    {
+      "file": "played-return-home.png",
+      "source": "b5887e9ff472ce1fd15ba5ff0ad6d6f7a2a5a9f3",
+      "provenance": "fresh native CLI navigation",
+      "sha256": "72d6698569c9ec8935731f362be52209615f37a5a1f9a034d32a559849c98e8d",
+      "dimensions": [
+        1024,
+        600
+      ]
+    }
+  ]
+}

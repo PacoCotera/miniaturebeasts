@@ -1,0 +1,26 @@
+{
+  "request_id": "core-v1-connected-BEE-P-00006-original-v1",
+  "resident_snapshot": {
+    "count": 2,
+    "current": true,
+    "visit_available": true,
+    "world_revision": 177,
+    "updated_at": 1790787876,
+    "selected": {
+      "id": "BEE-P-00006",
+      "source_sample_id": "BEE-S-00005",
+      "art_id": "design/v1-pip/pip-carried.png",
+      "art_version": "pip-playtest-art-v1",
+      "original_art_sha256": "38b0fa7fc24ffea47cb128fdcaf46f701a2396bd3bfcbb81e3d86f962f262534",
+      "appearance_descriptor": "pip-reference-carried",
+      "reference_context": "pip:adult-rested-firm-ground-mild-v1",
+      "mapping_version": "pip-discovery-map-v1",
+      "original_art_version": "pip-playtest-art-v1",
+      "visits": 0
+    }
+  },
+  "claim_ids": [
+    "appearance:pip-reference-carried",
+    "reference:pip-adult-rested-firm-ground-mild-v1"
+  ]
+}

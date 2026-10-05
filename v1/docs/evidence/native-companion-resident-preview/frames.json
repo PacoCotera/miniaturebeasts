@@ -1,0 +1,202 @@
+[
+  {
+    "file": "controls-empty-resident-preview.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "3771c8218acd7dae0c4013a5f06a1f80b2a8bdc1b67d4d056e36c7d66b3f1379",
+    "page": "modes",
+    "focus": "Companions"
+  },
+  {
+    "file": "controls-empty-enter-down.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "06df49badf72f6bdf9a4e74296aa2afdaba34760bd524021ca8406d935a93c3e",
+    "page": "companions",
+    "focus": "Return to Probe"
+  },
+  {
+    "file": "controls-empty-offline-preview.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "8120a7d550d2f03f86eebc124b9aa3814981ffd7265f7ef0d6f334cc8a8f1a73",
+    "page": "modes",
+    "focus": "Companions"
+  },
+  {
+    "file": "controls-saved-resident-preview.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "42c289d2ae1e54cef8b3677b394d5dc30c86b7385e8b801d555d82fbd517a58a",
+    "page": "modes",
+    "focus": "Companions"
+  },
+  {
+    "file": "controls-saved-enter-confirm.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "280b9b00ca545b42722ea84254a8e462b7577a7eee3891678f23d7f1a93506dc",
+    "page": "companions",
+    "focus": "BEE-P-00003"
+  },
+  {
+    "file": "controls-saved-offline-preview.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "3f9d77bc127d7a4579f5a99553ef5a19a0666bbe05b4f82aa7a505a9eaaed6e3",
+    "page": "modes",
+    "focus": "Companions"
+  },
+  {
+    "file": "controls-saved-offline-cargo-preview.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "7657622ebc406c89a37e5533823caf68f3a97cb49129c015d72ddbc77deebae9",
+    "page": "modes",
+    "focus": "Cargo"
+  },
+  {
+    "file": "controls-saved-offline-probe-preview.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "ca8ffdc535185f1b330d95bd89635fd3f1bb35cfff6d7275489b2f23bb13a1ad",
+    "page": "modes",
+    "focus": "Probe"
+  },
+  {
+    "file": "controls-saved-reconnected-preview.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "42c289d2ae1e54cef8b3677b394d5dc30c86b7385e8b801d555d82fbd517a58a",
+    "page": "modes",
+    "focus": "Companions"
+  },
+  {
+    "file": "b1-controls-saved-actual-b1-preview.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "c7ce6fd1c6032fe802bfa8719a36ba549b1ba9ab37d22b9e2753308b0674f6fc",
+    "page": "modes",
+    "focus": "Companions"
+  },
+  {
+    "file": "b1-controls-saved-actual-b1-offline.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "c1e784f0fab08e474dede719d1e589d99d9ca25bb7b312c19065cb8bfefa6288",
+    "page": "modes",
+    "focus": "Companions"
+  },
+  {
+    "file": "b1-controls-saved-actual-b1-reconnected.png",
+    "kind": "actual native controls",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "c7ce6fd1c6032fe802bfa8719a36ba549b1ba9ab37d22b9e2753308b0674f6fc",
+    "page": "modes",
+    "focus": "Companions"
+  },
+  {
+    "file": "fixture-resident-cache-error.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "bb34066780a2477f82121e2374bc5e7ac256769b140a2a8b510b39552ab5b635"
+  },
+  {
+    "file": "fixture-resident-empty.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "558d1f4a1c0ed524d99ec4b10b13ba0f8fe860d16993bd3afcd8930dadf40fee"
+  },
+  {
+    "file": "fixture-resident-kit-error.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "83f2fcdbefb49db5e6f31454ff79885bc1b04234c8c23c04a30a8e27b85deb69"
+  },
+  {
+    "file": "fixture-resident-lab-error.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "83f2fcdbefb49db5e6f31454ff79885bc1b04234c8c23c04a30a8e27b85deb69"
+  },
+  {
+    "file": "fixture-resident-marked.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "0677266c1c814eb59cdefc05d4013870888870ceb20dba6c2aa71125a943c3c2"
+  },
+  {
+    "file": "fixture-resident-offline.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "4743eddd049fa19853ba1f6f85f333b793a4bcd3ea4ed23d30f2965486f8c022"
+  },
+  {
+    "file": "fixture-resident-pending-portrait.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "5ac0ab36a4314cfa4f0f2579c45e285d3580d307dcf352c13adb612ea5c3ac3b"
+  },
+  {
+    "file": "fixture-resident-pending-transfer.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "ce0e1e285a38ae560ad307639779f5ec524880a3794e0eaf19dbf02e05a81c37"
+  },
+  {
+    "file": "fixture-resident-plain.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "03e565e5229a0baf066785e00ed0aeac333eba39f01e2b27ac765bc0d9d2ef58"
+  },
+  {
+    "file": "fixture-resident-saved-b1.png",
+    "kind": "synthetic native presentation fixture",
+    "source_revision": "0b5d277c5a77020eaa502e19d805d39431aa5892",
+    "width": 450,
+    "height": 600,
+    "sha256": "da6b963984e74cc6ed976d3034c42480bbb64d423f26d7eea509135b3ad72571"
+  }
+]

@@ -1,0 +1,100 @@
+{
+  "sourceRevision": "5431f44d5f9e7f75ce91289d1cac4b57867bd6c1",
+  "frames": [
+    {
+      "path": "fixtures/cache-error.png",
+      "sha256": "70fc30bb0f39c1b766fe6c957d07c1f65c98fa0b14c02078fc594206f12f9f01",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "fixtures/connections.png",
+      "sha256": "20f18517b73f4c12cf744feb2e6deeff71d9aa5eaabdab54b9d1d84bac30bb85",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "fixtures/offline-world.png",
+      "sha256": "9389c0911999d7de3b496981a522343472c42c859bdf007cff7dfa83efa96b3b",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "fixtures/print-cancel.png",
+      "sha256": "f51a2b051815114ef9f4012e9da24d439d86d7018eadd87b44970dbfe17706d9",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "fixtures/print-review.png",
+      "sha256": "97148221ece106031fa8f3c1aed3d1e994cbdfb5d31571a96b29bb00c17a642e",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "fixtures/storage-error.png",
+      "sha256": "70fc30bb0f39c1b766fe6c957d07c1f65c98fa0b14c02078fc594206f12f9f01",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "fixtures/supplies.png",
+      "sha256": "02736e0afeda3c7db42e582d4443ed0ce433928da73f7a30b03403e18d07a349",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "fixtures/suspended.png",
+      "sha256": "9389c0911999d7de3b496981a522343472c42c859bdf007cff7dfa83efa96b3b",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "fixtures/world-open.png",
+      "sha256": "508f0ea30e9bacb756e60199ba208a7668f96c4c9b27e9a38b51af829843cc73",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "fixtures/world.png",
+      "sha256": "0a99236d7b070face606b9791f7414a6e204638d4788b6d943c145058deb2aaa",
+      "kind": "synthetic native fixture"
+    },
+    {
+      "path": "controls/dock-cancelled.png",
+      "sha256": "380d6048400f64d9a2b626c056a234dd6c1d1f9f43b3ed09c9ee1e0ecaf4b1e2",
+      "kind": "actual semantic console capture"
+    },
+    {
+      "path": "controls/dock-connections-open.png",
+      "sha256": "d86e343c3bd0a00609677d5d00e5c5fd70e2e2c460fea6051e516bf5610ae1f3",
+      "kind": "actual semantic console capture"
+    },
+    {
+      "path": "controls/dock-connections.png",
+      "sha256": "b6fe7275ae8b39aa32e03ab903cd002b1586d6e896fab6083f0fdace07f84156",
+      "kind": "actual semantic console capture"
+    },
+    {
+      "path": "controls/dock-feed.png",
+      "sha256": "43abca0b178bd601f471b4ebfb565f73c5957f0c45f6b100238726b7878aa748",
+      "kind": "actual semantic console capture"
+    },
+    {
+      "path": "controls/dock-offline.png",
+      "sha256": "943651678a031d43fa979bb096748af8a65c798dd065155480447023fd9b5503",
+      "kind": "actual semantic console capture"
+    },
+    {
+      "path": "controls/dock-print-cancel.png",
+      "sha256": "a9928741018b8f98d60e6f47a298b0fca78cad9e2bc60dbcb5db2b37e2f871b5",
+      "kind": "actual semantic console capture"
+    },
+    {
+      "path": "controls/dock-print-review.png",
+      "sha256": "b26a97b01b2fdf3ebcf83c01cf9058cd34bf7928aa154d241e8f2cf7596b3c15",
+      "kind": "actual semantic console capture"
+    },
+    {
+      "path": "controls/dock-supplies.png",
+      "sha256": "922e4813730724f7be378a12dd45460293854a07caadd96f0701ebedd1418328",
+      "kind": "actual semantic console capture"
+    },
+    {
+      "path": "controls/dock-world.png",
+      "sha256": "f143f79d4b59b0451ab7b2aa4fd5849ad8600e60e23a04981f9ae81304b1ceaf",
+      "kind": "actual semantic console capture"
+    }
+  ]
+}

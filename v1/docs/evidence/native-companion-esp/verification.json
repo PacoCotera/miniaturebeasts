@@ -1,0 +1,56 @@
+{
+  "source_revision": "fadee5da15d2574f8c7385fc7cb6fb1a73950883",
+  "source_clean": true,
+  "source_remote": "https://github.com/PacoCotera/critter-lab.git",
+  "idf_revision": "b774170ff46c393eeb5e495ea37936038d3f4f4f",
+  "target": "esp32s3",
+  "files": {
+    "critter_companion_ui.elf": {
+      "bytes": 6745900,
+      "sha256": "ea4f786236760415a7fa9c4bcf9fdcd027f95024556ad1d510d9c72be264760b"
+    },
+    "critter_companion_ui.bin": {
+      "bytes": 1396112,
+      "sha256": "cd7a7ab9098038d4d1c2ada0e24a7ee63e132e7ff5c9c97e37b15e9e8bd336cd"
+    },
+    "critter_companion_ui.map": {
+      "bytes": 3445149,
+      "sha256": "852c62050d6b6aba76ac2102dd18ebbfc96ea8fa2fbdd3afeed7c044e6029c5c"
+    },
+    "companion_assets.json": {
+      "bytes": 13743,
+      "sha256": "a726c15a6b199d2d931a488bed832fd3105ec63a3a1e13239111cf6d6b95aca9"
+    },
+    "sdkconfig": {
+      "bytes": 45495,
+      "sha256": "f6460cad3e9467a6177f204c81785df6f16160b3dd89e91a48e2d12b0dbf4fbb"
+    }
+  },
+  "required_symbols": {
+    "companion_cargo_ui_create": true,
+    "companion_cargo_ui_update": true,
+    "companion_resident_ui_create": true,
+    "companion_resident_ui_update": true,
+    "native_probe_ui_create": true,
+    "native_probe_ui_update": true,
+    "ui_display_create": true,
+    "lv_label_create": true,
+    "native_ui_font_init": true,
+    "native_ui_image_init": true,
+    "core_art_sprite": true,
+    "field_art_sprite": true
+  },
+  "forbidden_symbols": [],
+  "selected_config": [
+    "CONFIG_IDF_TARGET=\"esp32s3\"",
+    "CONFIG_ESPTOOLPY_FLASHSIZE=\"2MB\"",
+    "CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y",
+    "CONFIG_PARTITION_TABLE_CUSTOM_FILENAME=\"partitions.csv\"",
+    "CONFIG_PARTITION_TABLE_FILENAME=\"partitions_singleapp_large.csv\"",
+    "CONFIG_PARTITION_TABLE_OFFSET=0x8000",
+    "CONFIG_PARTITION_TABLE_MD5=y",
+    "CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192"
+  ],
+  "runtime_executed": false,
+  "physical_panel_executed": false
+}

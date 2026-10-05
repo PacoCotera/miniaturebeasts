@@ -1,0 +1,34 @@
+Executing action: size
+Running ninja in directory [build-path]
+Executing "ninja all"...
+[1/4] cd [build-path] && [build-path] [build-path] --offset 0x8000 partition --type app [build-path] [build-path]
+critter_companion_ui.bin binary size 0x154d90 bytes. Smallest app partition is 0x177000 bytes. 0x22270 bytes (9%) free.
+[2/4] Performing build step for 'bootloader'
+[1/1] cd [build-path] && [build-path] [build-path] --offset 0x8000 bootloader 0x0 [build-path]
+Bootloader binary size 0x5160 bytes. 0x2ea0 bytes (36%) free.
+[3/4] No install step for 'bootloader'
+[4/4] Completed 'bootloader'
+Running ninja in directory [build-path]
+Executing "ninja size"...
+[0/1] cd [build-path] && /usr/bin/cmake -D "IDF_SIZE_TOOL=[build-path] -D MAP_FILE=[build-path] -D OUTPUT_JSON= -P [build-path]
+                            Memory Type Usage Summary                             
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Memory Type/Section ┃ Used [bytes] ┃ Used [%] ┃ Remain [bytes] ┃ Total [bytes] ┃
+┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ Flash Data          │      1105028 │          │                │               │
+│    .rodata          │      1104772 │          │                │               │
+│    .appdesc         │          256 │          │                │               │
+│ DIRAM               │       316787 │    92.69 │          24973 │        341760 │
+│    .bss             │       264784 │    77.48 │                │               │
+│    .text            │        40547 │    11.86 │                │               │
+│    .data            │        11456 │     3.35 │                │               │
+│ Flash Code          │       222554 │          │                │               │
+│    .text            │       222554 │          │                │               │
+│ IRAM                │        16384 │    100.0 │              0 │         16384 │
+│    .text            │        15356 │    93.73 │                │               │
+│    .vectors         │         1028 │     6.27 │                │               │
+│ RTC SLOW            │           32 │     0.39 │           8160 │          8192 │
+│    .force_slow      │           32 │     0.39 │                │               │
+│ RTC FAST            │           24 │     0.29 │           8168 │          8192 │
+│    .rtc_reserved    │           24 │     0.29 │                │               │
+└─────────────────────┴──────────────┴──────────┴────────────────┴───────────────┘

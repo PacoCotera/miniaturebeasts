@@ -1,0 +1,67 @@
+{
+  "files": [
+    {
+      "bytes": 441,
+      "name": "copied-prompt.txt",
+      "sha256": "bcf677ac96df470419fe236c2ea71acb1bb233dea2505a5459c3e6a5888a74f2"
+    },
+    {
+      "bytes": 6690,
+      "name": "genome-saved-state.txt",
+      "sha256": "8630f901290dd5d8925fb3aa404ce37a6f5d16bcf25cb70b3443244899519566"
+    },
+    {
+      "bytes": 81580,
+      "name": "genome.png",
+      "sha256": "4708dacc95df28ac38fbb1cca19dcb88d883fbdd3ac334154309d5f79c95b4c8"
+    },
+    {
+      "bytes": 4577,
+      "name": "README.md",
+      "sha256": "c77d72ce7e30b75b4db5dcfc5e0bc119f0029694e22fcfb6fe36393a625bbd55"
+    },
+    {
+      "bytes": 65050,
+      "name": "reopened-records.png",
+      "sha256": "6854546b548fe93e490bc29cfcf26a6522108ee9977acdec0bb989fad9b38278"
+    },
+    {
+      "bytes": 1934,
+      "name": "reopened-records.txt",
+      "sha256": "706ab5a4a2681c8f8794874170197ae9d634489678d7fcd9ecc2c84360675c50"
+    },
+    {
+      "bytes": 83423,
+      "name": "replayed-genome.png",
+      "sha256": "6426bc4cf6e1e0ba809d65f4fd9e79c7bde6bd0b31e98405c7579330f6f55649"
+    },
+    {
+      "bytes": 18632,
+      "name": "replayed-state.txt",
+      "sha256": "ee223809f367fe4e629e8a9363c86bb3c4f243f0a049aaeb4733e74ca1dc263d"
+    },
+    {
+      "bytes": 15893,
+      "name": "retained-record.json",
+      "sha256": "deb32fbf172250488a1ee2dd07e293d752987a07d823ae2127b266bff99c6830"
+    },
+    {
+      "bytes": 85455,
+      "name": "simulator.png",
+      "sha256": "56512ed43c2370b8c7b44a813c20822fa94f39f19c96b85342290421d81c96f3"
+    },
+    {
+      "bytes": 91297,
+      "name": "source.svg",
+      "sha256": "62ab9cb7db04d9536e3a05b5a91a5549fcac87b18912f5610ce6d89bf38301e2"
+    },
+    {
+      "bytes": 78708,
+      "name": "website.png",
+      "sha256": "767fa490c598cd053629d5cdd6e56c211fc4914eb7553ca2da5da5a60dd7d6bd"
+    }
+  ],
+  "sourceRevision": "ad192efb0e852488ece8f9651221afb870450f1a",
+  "activatedAt": "2026-10-03T18:47:04.616696+00:00",
+  "nativeRevision": "720c1e6c3f0a3f935e5b7b00591b2f83a0f3b65d"
+}

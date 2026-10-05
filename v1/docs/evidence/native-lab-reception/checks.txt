@@ -1,0 +1,7 @@
+Final source: 3690de760fc35bf3dbd7fe6ea4345f6d8bcaf831
+Clean pushed Git revision, established native toolchain.
+Reception copied facts, safe history and retained route checks passed.
+Three contexts: used=168456 peak=169976 effective=236528 first_free=68072 final_free=68072.
+Raw configured LVGL pool=262144, unchanged.
+Interaction/Kit suites passed 2/2 at 4746fec.
+Fresh native CLI empty-log, device/generic frames, Back/Home and peers passed at b5887e9ff472ce1fd15ba5ff0ad6d6f7a2a5a9f3.
