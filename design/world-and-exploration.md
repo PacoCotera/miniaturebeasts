@@ -23,8 +23,21 @@ first one to design.
 
 In practice, walking to a marked spot and picking from a menu does not count as
 interaction-driven.
-- **Bonded partners help.** A raised mibi's real abilities open further
-  discoveries and progress through the world.
+- **Partners are optional gates.** A bonded mibi brought along opens events, map
+  areas and expedition types that are otherwise unavailable, using its real
+  abilities. Without one the player can still explore; partners unlock higher
+  tiers, never exploration itself.
+- **One map, two scales.** A large world map under fog holds places that come
+  alive as small living patches when played: wild mibis, objects and conditions
+  that react to what the player does. The fog lifts through progression: research,
+  partners, items, Probe tiers and installed mods.
+- **The world persists.**
+- **The field clock counts actions, not seconds.** The world moves when the player
+  moves or acts. Standing still changes nothing, and there's no real-time pressure.
+- **Samples are seed-pods.** A pod shows its species if the player has met that
+  species before, otherwise "unknown species". What's inside is only discovered at
+  the Station.
+- **No wild capture** for now.
 
 ## Direction already given
 
@@ -48,8 +61,6 @@ the exact rules are **Open**.
   rising water with a choice to escape or stay.
 - **No waiting in the field.** Exploration is the most interactive part of the
   game.
-- **Wild capture.** If it's in the game, it has a difficulty and a chance the
-  capture escapes before reaching home.
 
 ## What was rejected, and why it matters
 
@@ -123,7 +134,6 @@ material, not a design:
 - Responsive encounters whose outcome depends on understandable causes: reach,
   access, a compatible ability, a changing subject, a finite opportunity.
 - Optional risk: trade an opportunity against a consequence shown in advance.
-- Wild capture, where a temporary capture may escape before reaching home.
 - A bonded partner retrieving something out of the player's reach.
 - Leads and observations: a recorded clue that takes no cargo space; a physical
   reference that does, until studied.
