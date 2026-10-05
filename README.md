@@ -6,13 +6,16 @@ You explore with a portable Companion, bring samples home to a Station, learn
 what their inherited traits can do, create a mibi from them and raise families
 within each species.
 
-This repository is a fresh start. The design is being rewritten from the first
-prototype; expect [`design/`](design/) and [`ROADMAP.md`](ROADMAP.md) to fill in
-over the coming days.
+The project is in early development. A first prototype plays a narrow version of
+the loop on simulated devices; the open-map exploration, the creature roster and
+the physical kit are still being designed. [The game](design/game.md) explains
+what Miniature Beasts is meant to be, and the [roadmap](ROADMAP.md) explains the
+order it is being built in. You can build and run the [v1 simulator](v1/README.md)
+today; it is a working reference, not the intended game.
 
 | Folder | Contents |
 | --- | --- |
-| [`design/`](design/) | The game design: loop, world, creatures and genomics, interaction, art direction, devices |
+| [`design/`](design/README.md) | The game design: loop, world, creatures and genomics, interaction, art direction, devices |
 | [`art/`](art/README.md) | Accepted art direction (Miniature Lives) and original references |
 | [`hardware/`](hardware/README.md) | Device concepts; later firmware, electronics and enclosures |
 | [`v1/`](v1/README.md) | The first playable prototype, imported intact as a working reference |

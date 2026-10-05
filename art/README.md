@@ -3,19 +3,9 @@
 The creatures and the world have to carry the game. Players should understand a
 mibi's inherited differences by looking at it, at the size of the device screen.
 
-## Accepted direction: Miniature Lives
-
-Mibis have sculpted, rounded bodies, soft materials, expressive eyes and clear
-markings. The portable Companion shows a crisp HiBit (high-resolution pixel)
-treatment; the Station and larger displays show a matched richer treatment of
-the same creature. [`miniature-lives/`](miniature-lives/README.md) is the
-accepted reference: Pip at 280×300 on the Companion and 300×310 on the Station,
-plain and with expressed pale markings.
-
-What that acceptance covers: the look and the relationship between the two
-treatments. What it does not cover yet: other species, animation, the world and
-map art, the UI kit, typography, or hand-authored production pixel masters. The
-current images are generated concepts with retained prompts.
+The accepted direction is **Miniature Lives**; its rules and the art still to
+make are in [design/art-direction.md](../design/art-direction.md). This folder
+holds the assets.
 
 ## What is here
 

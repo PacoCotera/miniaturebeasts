@@ -24,7 +24,7 @@ individual; saves survive restarts.
 
 Not the target: the map is a grid of named stops with menus, the field yields
 only supplies and sealed capsules, the screens predate the accepted Miniature
-Lives art, and there is one creature (Pip) with one varying trait.
+Lives art, and there is one creature (Pip) with five varying traits.
 
 ## Build and check
 

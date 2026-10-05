@@ -1,0 +1,121 @@
+# World and exploration
+
+Exploration is where curiosity starts. It supplies the samples every mibi comes
+from, the materials research and care need, and the places a bonded partner can
+help the player reach. If exploring isn't interesting, the rest of the game has
+nothing to feed on. This is the least designed part of Miniature Beasts, and the
+first one to design.
+
+## Requirements
+
+**Decided:**
+
+- **Open map.** The player moves freely through a world seen from above, on the
+  Companion's screen, and chooses where to go. The game does not lead them along a
+  path.
+- **Interaction-driven.** Discoveries come from doing things to the world: acting
+  on objects, creatures and conditions and seeing what changes.
+- **Played with the Companion's physical controls.** No touch shortcuts. The
+  current control set is four directions, Confirm and Back (**Working rule**; see
+  [interaction](interaction.md)).
+- **In the Miniature Lives look**, readable at the Companion's screen size
+  (currently 450×600, a **Working rule**; see [art direction](art-direction.md)).
+
+In practice, walking to a marked spot and picking from a menu does not count as
+interaction-driven.
+- **Bonded partners help.** A raised mibi's real abilities open further
+  discoveries and progress through the world.
+
+## What was rejected, and why it matters
+
+Three exploration presentations were rejected:
+
+- a first-person, scenic view;
+- screens built around header images;
+- a top-down map drawn as one corridor (trailhead, marker, overlook, alcove),
+  covered in labels.
+
+The last one failed because the design it illustrated also specified a route. The
+first prototype's walkthrough said "follow one proposed route", and the screens
+drew exactly that. Better screens cannot fix this; the world and what the player
+does in it have to be designed first.
+
+## Constraints that still hold
+
+**Working rules**, carried over and consistent with the decisions:
+
+- Arriving, looking and waiting award nothing. Finds are finite: they don't refill
+  when the game restarts or reroll when revisited.
+- Collection is deliberate, and a full hold turns an item away without losing it.
+- A sample shows nothing of its genome in the field. Its species is found out at
+  the Station.
+- Detours need a payoff: something to experience or discover.
+- The first samples must be reachable with the tools a new player has. No
+  rare-drop luck gating essential progress, and no species placed out of reach.
+- No checklist of places to visit, no timed or passive gathering.
+- No real-world travel, hazard or phone required. Optional real sensors may flavor
+  the fiction but never turn directly into items or genes.
+- The Station cannot watch the Companion's map while it is away. It only sees
+  what was sent home.
+
+## What the first prototype has
+
+The [v1 simulator](../v1/README.md) has a small top-down grid. The player moves one
+square per press, and at named places Confirm opens a menu of finite supplies or a
+sealed sample. The plumbing is solid, and free movement on a grid is closer to the
+goal than the rejected corridor. But places are menus, there are no creatures in
+the world, and nothing reacts to the player.
+
+## Questions this design must answer
+
+All **Open**. Phase 1 of the roadmap compares alternatives that answer them.
+
+1. **What is the world?** One persistent hand-built world, areas generated for
+   each outing, or a mix. How big an area is, how it scrolls or is revealed on
+   a 450×600 screen.
+2. **What lives in it?** Whether wild mibis are visible and react to the player,
+   and what other creatures, objects and conditions exist.
+3. **What can the player do?** The verbs. What directions, Confirm and Back do in
+   the world beyond moving.
+4. **Where do samples come from?** Picked up, earned from an encounter, left
+   behind by a creature, captured. What a sample is in the fiction.
+5. **Why go back?** What changes between visits. How a new research interest, a
+   partner's ability or a new tool changes what a known place offers.
+6. **How do partners change the world?** Which inherited abilities open which
+   obstacles, and how the player sees that before trying.
+7. **How does an outing start and end?** Choosing where to go, leaving, sending
+   the haul home, interruptions.
+8. **What does the world remember?** Which changes persist and for how long.
+
+## Ideas on the table
+
+All **Proposals** from the first prototype's design work. They are starting
+material, not a design:
+
+- Leave with an intention: restock a supply, follow a lead, or see what turns up.
+- Move an obstruction to expose something; approach a creature from another side
+  to change what's reachable.
+- Responsive encounters whose outcome depends on understandable causes: reach,
+  access, a compatible ability, a changing subject, a finite opportunity.
+- Optional risk: trade an opportunity against a consequence shown in advance.
+- Wild capture, where a temporary capture may escape before reaching home.
+- A bonded partner retrieving something out of the player's reach.
+- Leads and observations: a recorded clue that takes no cargo space; a physical
+  reference that does, until studied.
+- A familiar place offering a new approach once the player knows more.
+- A finding that unlocks a new research method, never through rare-drop luck.
+- Generated places and relationships that produce genuinely different actions,
+  not reskinned reward menus. Not every place needs every kind of encounter.
+
+Games the earlier work cited as inspiration, for hypotheses only:
+- Outer Wilds (curiosity guiding where you wander);
+- A Short Hike (detours worth taking);
+- DREDGE (cargo with consequences);
+- No Man's Sky (surveying);
+- New Pokémon Snap (intervening to change what a creature does).
+
+## How this gets decided
+
+Phase 1 of the [roadmap](../ROADMAP.md): two or three exploration models, each
+shown as the same outing at device size, then a playable rough version of the
+chosen one.
