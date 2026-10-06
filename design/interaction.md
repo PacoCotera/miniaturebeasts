@@ -33,9 +33,13 @@ controls. No touch or click shortcut replaces them, even on touch-capable screen
 - **Caddy:** Previous, OK and Next beside the summary; Print beside the paper slot;
   a recessed Feed below Print. Print opens a preview first.
 
-**Open:** final physical controls. The exploration design may need more than
-directions and Confirm. If it does, that is a decision to make deliberately, not
-something to slip in.
+**Decided:** the Companion gets a fourth button, Call: a pulse in a place, a pin
+on the map (which costs Energy) and calling the riding mibi in Companion mode. A
+button never makes an action free. The full scheme for the four buttons, the
+bottom line and the shell layout is a **Proposal**:
+[Companion controls](proposals/companion-controls.md).
+
+**Open:** final physical controls for all three devices.
 
 ## Rules
 
