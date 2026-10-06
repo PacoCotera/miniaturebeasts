@@ -93,11 +93,17 @@ body{
 .dpad .right{left:88px; top:44px; border-radius:0 8px 8px 0}
 .dpad .key.is-down{transform:translateY(2px); box-shadow: 0 1px 0 #17181a, inset 0 2px 3px rgba(0,0,0,.5)}
 .btn-round{border-radius:50%; display:grid; place-items:center}
-.back{left:338px; top:62px; width:58px; height:58px; background: radial-gradient(circle at 40% 30%, #5d6167, #3a3d42); box-shadow: 0 4px 0 #1d1f22, inset 0 1px 0 rgba(255,255,255,.15)}
-.confirm{left:410px; top:22px; width:76px; height:76px; background: radial-gradient(circle at 40% 30%, #ff8a45, var(--orange) 55%, var(--orange-2)); box-shadow: 0 5px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35)}
-.back svg{width:24px; height:24px; stroke:#e9e6df; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
-.confirm svg{width:34px; height:34px; stroke:#fff8ef; fill:none; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round}
-.back.is-down{transform:translateY(3px); box-shadow: 0 1px 0 #1d1f22, inset 0 2px 4px rgba(0,0,0,.5)}
+.back{left:322px; top:84px; width:54px; height:54px; background: radial-gradient(circle at 40% 30%, #5d6167, #3a3d42); box-shadow: 0 4px 0 #1d1f22, inset 0 1px 0 rgba(255,255,255,.15)}
+/* Call: same size as Back, directly above it; teal with a raised ring texture so the two are told apart by feel. */
+.call{left:322px; top:6px; width:54px; height:54px;
+  background: radial-gradient(circle at 40% 30%, rgba(255,255,255,.28), rgba(255,255,255,0) 45%),
+    repeating-radial-gradient(circle at 50% 50%, #26b5a4 0 3px, #178a7d 3px 4px, #1fa293 4px 6px);
+  box-shadow: 0 4px 0 #0c4f48, inset 0 1px 0 rgba(255,255,255,.25), inset 0 0 0 2px #14786d}
+.confirm{left:398px; top:30px; width:84px; height:84px; background: radial-gradient(circle at 40% 30%, #ff8a45, var(--orange) 55%, var(--orange-2)); box-shadow: 0 5px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35)}
+.back svg{width:22px; height:22px; stroke:#e9e6df; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.call svg{width:26px; height:26px; stroke:#eafff9; fill:none; stroke-width:2.6; stroke-linecap:round}
+.confirm svg{width:36px; height:36px; stroke:#fff8ef; fill:none; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round}
+.back.is-down, .call.is-down{transform:translateY(3px); box-shadow: 0 1px 0 #1d1f22, inset 0 2px 4px rgba(0,0,0,.5)}
 .confirm.is-down{transform:translateY(4px); box-shadow: 0 1px 0 #8c3608, inset 0 2px 5px rgba(0,0,0,.35)}
 .engrave{position:absolute; font: 600 11px/1 var(--font-ui); letter-spacing:.18em; color:#7b705c; text-shadow:0 1px 0 rgba(255,255,255,.45); pointer-events:none}
 
@@ -168,10 +174,12 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
             <button class="key down" data-key="down" aria-label="Down"><svg viewBox="0 0 16 16"><path d="M8 13L3 6h10z"/></svg></button>
           </div>
           <div class="grille" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <button class="key btn-round call" data-key="call" aria-label="Call"><svg viewBox="0 0 26 26"><path d="M7 8a7 7 0 0 1 0 10M11.5 5a11 11 0 0 1 0 16M16 2.5a14.5 14.5 0 0 1 0 21"/><circle cx="4" cy="13" r="1.6" fill="#eafff9" stroke="none"/></svg></button>
           <button class="key btn-round back" data-key="back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
           <button class="key btn-round confirm" data-key="confirm" aria-label="Confirm"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
-          <span class="engrave" style="left:345px;top:128px">BACK</span>
-          <span class="engrave" style="left:412px;top:110px">CONFIRM</span>
+          <span class="engrave" style="left:332px;top:66px">CALL</span>
+          <span class="engrave" style="left:330px;top:144px">BACK</span>
+          <span class="engrave" style="left:406px;top:124px">CONFIRM</span>
         </div>
       </div>
     </div>
@@ -184,22 +192,23 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
     <details open>
       <summary>How to play</summary>
       <ul>
-        <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or <kbd>WASD</kbd>, or the pad: move. Tap to creep one step; hold to walk.</li>
-        <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange button: Confirm. It does what the bottom line says.</li>
-        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey button: Back opens the mode list. During an expedition its first entry is <b>Wait</b> (one quiet action); in a place, the second is Leave.</li>
-        <li>Every step, act or Wait is one tick of the field clock. Doing nothing changes nothing.</li>
+        <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or <kbd>WASD</kbd>, or the pad: move. Tap to creep one step; hold to walk. Creeping never startles a creature unless you step right next to it.</li>
+        <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange button: <b>Confirm</b>. It does exactly what the bottom line says after ✓.</li>
+        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey button: <b>Back</b>. The right end of the bottom line says where it goes. In the field it opens the menu: Wait, Leave, Send home, Probe, Cargo, Companions.</li>
+        <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. On the Companions screen it calls the mibi riding with you. The top right of the screen says what it will do.</li>
+        <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing.</li>
       </ul>
     </details>
     <details open>
       <summary>What to try</summary>
       <ol>
-        <li>Pick one of the glints to start. Walk toward a sign that interests you.</li>
-        <li>Go down into a place. Shake a bush, carry fruit to a creature, back off and watch.</li>
-        <li>When the storm is overhead, watch where creatures shelter. Step off a glowing tile.</li>
-        <li>Keep your distance from a glowtail by its hole and Wait. Watch it settle.</li>
-        <li>Bring a pod home. It hatches at the Station and can come along next time.</li>
-        <li>Find the narrow burrow under the cliff, and the fast water by the island.</li>
-        <li>Come back and look for what changed.</li>
+        <li>Pick a glint to start. The dotted square is how far the Probe reaches.</li>
+        <li>Go down into a place and press Call. Dig up what glints.</li>
+        <li>Shake a bush. Press a fruit for Essence, or put it down, back off three tiles and let a creature eat it for Data.</li>
+        <li>When the storm is over you, charge up from struck stones. Count the bolts top right: each action in the open can hit your Shield. Trees, overhangs and woods are shelter.</li>
+        <li>Call in every place you visit. The map ticks a place once nothing is hidden or left there.</li>
+        <li>Send home from the menu before the Probe breaks. The Station spends what you bring: identifying, hatching, the tier 2 Probe.</li>
+        <li>In a fog bank, creep close to wary creatures and fill up on dew.</li>
       </ol>
     </details>
     <div class="observer">
@@ -211,6 +220,10 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
           <dt>Actions</dt><dd id="oAct">–</dd>
           <dt>Where</dt><dd id="oWhere">–</dd>
           <dt>Partner</dt><dd id="oPartner">–</dd>
+          <dt>Probe</dt><dd id="oProbe">–</dd>
+          <dt>Carried</dt><dd id="oCarry">–</dd>
+          <dt>Station</dt><dd id="oHome">–</dd>
+          <dt>Map</dt><dd id="oMap">–</dd>
           <dt>Seed</dt><dd id="oSeed">–</dd>
         </dl>
         <h2>Events</h2>
@@ -273,10 +286,17 @@ const SCR_W = 450, SCR_H = 600, HUD_H = 26, LINE_H = 34, VIEW_Y = HUD_H, VIEW_H 
 const CELL = 26, MAP_X = 17, MAP_Y = HUD_H + 10;   // map 416×520 px
 const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const L = { MEADOW: 0, POND: 1, ROCK: 2, WOOD: 3, WATER: 4, CLIFF: 5 };
-const LAND_NAME = ['Meadow', 'Pond edge', 'Rock field', 'Wood', 'Shallows', 'Cliff'];
+const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'shallows', 'cliff'];
 const T = { GRASS: 0, TALL: 1, FLOWERS: 2, DARK: 3, SAND: 4, WATER: 5, REEDS: 6, ROCK: 7, TRUNK: 8, CLIFF: 9, CFLOOR: 10, CWALL: 11, STEP: 12, DEEP: 13, ISLE: 14 };
 const T_BLOCK = [0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1];
-const SAVE_KEY = 'mb-exploration-v4', SAVE_V = 4, OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3'];
+const SAVE_KEY = 'mb-exploration-v5', SAVE_V = 5, OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4'];
+// Probe tiers: range in cells from the expedition's start, pods carried, shield bars. Sweep is one ring at both.
+const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shield: 4 } };
+const CAP = 20;                                   // each material caps at 20 carried
+// Station stand-in prices.
+const PRICE = { identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 8, patch: 3, pin: 1 };
+const STRAY = { strong: 1 / 12, peak: 1 / 6 };   // stray strike odds per action in the open
+const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; elder after 6 more as an adult
 
 // Three wild species. notice = [creep, walk] distance in tiles at which they notice you.
 // how = the shed trigger; ab = what a partner of this species can do.
@@ -293,7 +313,11 @@ const SPECIES = [
 ];
 const MIBI_NAMES = ['Pip', 'Dot', 'Moss'];
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
-const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2' };
+const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
+// The five map signs, each explained once the first time the line names it.
+const SIGN_NAME = { t: 'tracks', b: 'slow beat', k: 'charge', pin: 'pin', burrow: 'narrow hole', water: 'fast water', deep: 'deep ?' };
+const SIGN_HELP = { t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge',
+  pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow hole · a digging partner can open it', water: 'Fast water · needs a swimmer', deep: 'Deep ? · a tier 2 Probe can read it' };
 
 // ===================== 2. Seeded RNG and noise =====================
 function hash() {
@@ -461,9 +485,9 @@ function genLife(seed) {
   const homes = R.shuffle([...new Set(cr.filter(w => !w.cv && !G.spawns.includes(w.c) && G.comp[w.c]).map(w => w.c))]);
   for (let i = 0; i < Math.min(7, homes.length); i++) {
     const c = homes[i], here = cr.filter(w => w.c === c);
-    pods.push({ id: 'w' + i, k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, g: groundName(G.land[c], false), how: 'ground' });
+    pods.push({ id: 'w' + i, k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' });
   }
-  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, g: 'cave', how: 'ground' }); // a hopper sheltered here once
+  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' }); // a hopper sheltered here once
   return { cr, pods };
 }
 function groundName(land, cave) { return cave ? 'cave' : ['meadow', 'pond', 'rock', 'wood', 'pond', 'rock'][land]; }
@@ -621,11 +645,13 @@ function genPatch(cell) {
   const n = ([a, b]) => a + R.int(b - a + 1);
   const addF = (kind, count, init) => { for (let k = 0; k < count; k++) { const p = spot(3); if (p) feats.push(Object.assign({ id: kind + k, kind, x: p.x, y: p.y }, init ? init() : {})); } };
   addF('b', n(mix.b));
-  addF('h', R.chance(mix.h) ? 1 : 0);
+  R.chance(mix.h);   // humming stones were cut this round (they gave Data); the roll stays so layouts don't shift
   addF('u', n(mix.u), () => ({ full: R.chance(.75) }));
   addF('k', n(mix.k), () => ({ ch: R.chance(.1) ? 2 : 0 }));
   addF('s', n(mix.s), () => ({ under: R.chance(.22) ? 'pod' : null }));
   addF('n', n(mix.n) + (cell === G.gate ? 1 : 0));
+  // A survey cairn: climbing it shows land 3 cells around, beyond the Probe's range.
+  if (land === L.ROCK || land === L.MEADOW) { const cr = makeRng(hash(seed, 'cairn', cell)); if (cr.chance(land === L.ROCK ? .35 : .08)) addF('j', 1); }
   if (cell === G.deep) { const p = { x: 14 + R.int(5) - 2, y: 12 + R.int(4) };
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = p.x + dx, Y = p.y + dy; if (T_BLOCK[tiles[I(X, Y)]]) setT(X, Y, T.SAND); }
     carve(p.x, p.y + 1, spawnPt.x, spawnPt.y);
@@ -690,17 +716,22 @@ function logEv(text) {
 }
 function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
 function alongMibi() { return S.along == null ? null : mibiById(S.along); }
-function mibiWith(ab) { return S.mibis.find(m => SPECIES[m.sp].ab === ab) || null; }
+function mibiStage(m) { const age = S.turn - (m.born || 0); return age < JUVENILE_TURNS ? 'juvenile' : age >= JUVENILE_TURNS + ELDER_TURNS ? 'elder' : 'adult'; }
+function isAdult(m) { return !!m && mibiStage(m) !== 'juvenile'; }
+function mibiWith(ab) { return S.mibis.find(m => SPECIES[m.sp].ab === ab && isAdult(m)) || null; }
+function riderMibi() { return S.rider == null ? null : mibiById(S.rider); }
+const tierOf = () => TIER[S.tier] || TIER[1];
 
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
 function newWorld(seed) {
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear();
   genWorld(seed);
-  S = { v: SAVE_V, seed, turn: 0, expN: 1, revealed: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
-    known: [], found: [], mibis: [], along: null, opened: {}, home: { e: 0, d: 0, s: 0, pods: [] },
+  S = { v: SAVE_V, seed, turn: 0, expN: 1, revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
+    clean: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], along: null, rider: null, opened: {}, tier: 1, deepRead: 0,
+    home: { e: 0, d: 0, s: 0, pods: [], studies: [] },
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, cSel: 0 },
-    exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null };
+    exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
   const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
@@ -725,100 +756,188 @@ function featPos(key, f) { if (f.kind === 's') { const st = fs(key, f.id); if (s
 function cupFull(key, f) { const s = fs(key, f.id); return s.full != null ? s.full : !!f.full; }
 function stoneCharge(key, f) { const s = fs(key, f.id); return s.ch != null ? s.ch : (f.ch || 0); }
 function bushFull(key, f) { return !fs(key, f.id).bare; }
-function humRung(key, f) { return !!fs(key, f.id).rung; }
 function podTag(sp) { return S.known.includes(sp) ? SPECIES[sp].name : 'unknown species'; }
 function addPin(c, k) { if (!S.pins.some(p => p.c === c && p.k === k)) { S.pins.push({ c, k }); logEv('Pin · ' + PIN_TEXT[k]); return true; } return false; }
+function ownPin(c) { return S.pins.find(p => p.c === c && p.k === 'own') || null; }
 
-// ===================== 6. Signs, fog and map rules =====================
+// ===================== 6. Signs, fog, map states and map rules =====================
+// What the Probe's sweep reads in a cell: tracks (3+ creatures), a slow beat (a pod, buried or not),
+// storm charge (a charged stone) and the deep "?".
 function cellSigns(c) {
   const here = S.cr.filter(w => w.c === c && !w.cv), tr = [];
   if (here.length >= 3) for (const w of here) if (!tr.includes(w.sp)) tr.push(w.sp);
-  let b = 0, r = 0; const key = String(c);
+  let b = 0, k = 0; const key = String(c);
   if (S.pods.some(p => p.k === key)) b = 1;
-  if (passable(c)) { const lay = layout(key);
-    for (const f of lay.feats) {
-      if ((f.kind === 'k' && stoneCharge(key, f) > 0) || (f.kind === 'h' && !humRung(key, f))) r = 1;
-    } }
-  return { tr, b, r, d: c === G.deep ? 1 : 0 };
+  if (passable(c)) { const lay = layout(key); for (const f of lay.feats) if (f.kind === 'k' && stoneCharge(key, f) > 0) k = 1; }
+  return { tr, b, k, d: c === G.deep && !S.deepRead ? 1 : 0 };
 }
 function recordSigns(c) {
   const s = cellSigns(c);
-  if (s.tr.length || s.b || s.r || s.d) S.signs[c] = Object.assign({ t: S.turn }, s); else delete S.signs[c];
+  if (s.tr.length || s.b || s.k || s.d) S.signs[c] = Object.assign({ t: S.turn }, s); else delete S.signs[c];
 }
+function revealCell(c) { if (!S.revealed[c]) { S.revealed[c] = 1; if (S.exp) S.exp.stats.rev++; } recordSigns(c); }
+// Map states: fog, seen (muted), visited (with a pip per thing left, up to 3), cleared (a tick; needs a clean Call).
+function stoneSeen(key, f) { return !!fs(key, f.id).sn; }
+function hiddenIn(c) {
+  const key = String(c); let n = S.pods.filter(p => p.k === key && p.h).length;
+  if (passable(c)) for (const f of layout(key).feats) if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) n++;
+  return n;
+}
+function pipsOf(c) {
+  const key = String(c); let n = S.pods.filter(p => p.k === key && !p.h && p.x >= 0).length;
+  if (passable(c)) for (const f of layout(key).feats) if (f.kind === 'k' && stoneCharge(key, f) > 0 && stoneSeen(key, f)) n++;
+  const live = S.exp && S.exp.live[key]; if (live) n += live.fr.length + live.tf.length;
+  return Math.min(3, n);
+}
+function isCleared(c) { return !!S.clean[c] && !!S.visited[c] && hiddenIn(c) === 0 && pipsOf(c) === 0; }
+function inRange(c) { const ex = S.exp; return !!ex && cheb(cxy(c), cxy(ex.start)) <= ex.range; }
+// The cells an expedition can reach on foot without leaving the range square.
+function reachCells(start, range) {
+  const s0 = cxy(start), seen = new Set([start]), q = [start];
+  while (q.length) { const c = q.shift(), p = cxy(c);
+    for (const [dx, dy] of Object.values(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
+      const d = y * MW + x; if (seen.has(d) || !passable(d) || G.island[d] || Math.max(Math.abs(x - s0.x), Math.abs(y - s0.y)) > range) continue; seen.add(d); q.push(d); } }
+  return [...seen];
+}
+function explored(c) { return !!S.visited[c] && (isCleared(c) || S.called[c] === S.turn); }
+function reachCounts() {
+  const ex = S.exp, o = { visited: 0, cleared: 0, seen: 0, total: 0, explored: 0 }; if (!ex) return o;
+  for (const c of ex.reach) { o.total++; if (explored(c)) o.explored++;
+    if (S.visited[c]) { if (isCleared(c)) o.cleared++; else o.visited++; } else if (S.revealed[c]) o.seen++; }
+  return o;
+}
+// The going-home lines: said once each, at their moments.
+function checkExplored() {
+  const ex = S.exp; if (!ex || ex.saidDone) return;
+  const rc = reachCounts(); if (rc.explored < rc.total) return;
+  ex.saidDone = ex.actions; logEv('Everything in reach explored');
+  fxMsg('Everything in reach is explored · ← Send home', 3);
+}
+function nothingNew() { const ex = S.exp; if (!ex || !ex.saidDone || ex.saidNothing || ex.storm) return; ex.saidNothing = 1; fxMsg('Nothing new until the world turns', 2); }
+
+// ---------- The storm ----------
 function stormCovers(col) { const st = S.exp && S.exp.storm; return !!st && col + 1 > st.x && col < st.x + st.w; }
 // Under the band it rains in spells: three quiet actions out of every twelve.
 function stormLull() { const st = S.exp && S.exp.storm; return !!st && (st.t || 0) % 12 >= 9; }
-function stormRain(col) { return stormCovers(col) && !stormLull(); }
+// Rain falls under the band's core (its edges are overcast only); the peak is its centre, about 8 actions
+// while the band crawls over a place, with about 10 strong actions around it.
+function stormOff(col) { const st = S.exp && S.exp.storm; return st ? Math.abs(col + .5 - (st.x + st.w / 2)) : 99; }
+function stormRain(col) { return stormOff(col) < 1.5 && !stormLull(); }
+function stormPeak(col) { return stormOff(col) < .65; }
+// Bolts on the HUD: 1 approaching (or a lull), 2 strong rain over you, 3 the peak.
+function stormLevel() {
+  const ex = S.exp, st = ex && ex.storm; if (!st) return 0; const col = cxy(ex.pos).x;
+  if (stormRain(col)) return stormPeak(col) ? 3 : 2;
+  if (stormCovers(col)) return 1;   // overcast edge or a lull
+  const gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
+  return gap < 4 ? 1 : 0;
+}
 // The band starts three columns upwind of the start, so it arrives within a dozen actions.
 function stormFor(cell) { const col = cxy(cell).x, w = 3, fromWest = col >= MW / 2;
   return fromWest ? { x: col - 3 - w, dir: 1, w, v: .25, t: 0 } : { x: col + 4, dir: -1, w, v: .25, t: 0 }; }
 function fogActive() { const f = S.exp && S.exp.fog; return !!f && S.exp.actions >= f.at; }
 function inFog(c) { if (!fogActive()) return false; const f = S.exp.fog, p = cxy(c); return Math.hypot(p.x + .5 - f.x, p.y + .5 - f.y) < f.r; }
+// Shelter: canopy, overhang or cave in a place; wood cells on the map.
+function sheltered() {
+  const ex = S.exp; if (!ex.patch || S.phase === 'map') return G.land[ex.pos] === L.WOOD;
+  const lay = layout(ex.patch.key); return lay.cave || !!lay.shelter[ex.patch.y * PW + ex.patch.x];
+}
 function sweep() {
-  const ex = S.exp, p = cxy(ex.pos), r = inFog(ex.pos) ? 0 : 1;
-  for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+  const ex = S.exp, p = cxy(ex.pos);
+  revealCell(ex.pos);
+  if (inFog(ex.pos)) return;   // inside a fog bank the sweep stops
+  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
     const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-    const c = y * MW + x; S.revealed[c] = 1; recordSigns(c);
+    revealCell(y * MW + x);
   }
 }
-function revealAround(c) { const p = cxy(c); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) { S.revealed[y * MW + x] = 1; recordSigns(y * MW + x); } } }
+function revealAround(c, r) { const p = cxy(c); r = r || 1; for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) revealCell(y * MW + x); } }
 
 function startExpedition(type, cell) {
-  const R = makeRng(hash(S.seed, 'exp', S.expN));
+  const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
   const stormOn = type === 'weather' || R.chance(.3);
   const fogOn = type === 'deep' || R.chance(.45);
   if (type === 'deep') { const b = mibiWith('dig'); if (b) S.along = b.id; }
-  const m = alongMibi();
+  const m = alongMibi(), pm = isAdult(m) ? m : null;
   const storm = stormOn ? stormFor(cell) : null;
-  S.exp = { type, n: S.expN, actions: 0, hull: 3, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
-    cargo: { e: 0, d: 0, s: 0, pod: null }, carry: null, storm,
+  S.exp = { type, n: S.expN, actions: 0, shield: tier.shield, smax: tier.shield, range: tier.range, hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
+    cargo: { e: 0, d: 0, s: 0, pods: [] }, carry: null, storm,
     fog: fogOn ? { x: 2.5 + R.int(11), y: 3.5 + R.int(13), r: 2.4, dx: (R.f() - .5) * .16, dy: (R.f() - .5) * .16, at: type === 'deep' ? 0 : 14 + R.int(16) } : null,
-    stormCells: {}, mstrike: null, live: {}, patch: null, pt: m ? { id: m.id, name: m.name, sp: m.sp } : null, stats: { flee: 0, sheds: 0 }, supAt: {}, hitAt: -99 };
-  revealAround(cell);
+    stormCells: {}, mstrike: null, stray: null, live: {}, patch: null,
+    pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder' } : null,
+    stats: { flee: 0, sheds: 0, rev: 0, lit: 0, hits: 0, putFeeds: 0, handFeeds: 0, feedTries: 0, maxLvl: 0, stormActs: 0, openStormActs: 0 },
+    supAt: {}, hitAt: -99, met: [], newMet: [], moments: [], momented: {}, reach: [] };
+  const ex = S.exp;
+  revealAround(cell, 1); S.visited[cell] = 1;
+  ex.reach = reachCells(cell, ex.range);
   const p = cxy(cell);
-  logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (m ? ' with ' + m.name : ''));
+  logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : '') + ' · tier ' + S.tier);
+  if (firstTime('mapintro')) fxMsg('Walk with the pad · ✓ goes down · ← Wait and Send home', 3);
   S.phase = 'map'; transition(); save();
 }
 
 // One tick of the field clock. Everything in the world moves only here.
 function advance(scope, info) {
   const ex = S.exp; ex.actions++; S.totalActions++;
+  const col = cxy(ex.pos).x;
+  // A stray strike rolled last action lands now, if you are still in the open under rain.
+  if (ex.stray && ex.stray.at <= ex.actions) { ex.stray = null; if (stormRain(col) && !sheltered() && !inFog(ex.pos)) strayHit(scope); }
   if (ex.storm) {
     // The band crawls while it is over the place you are in (about 30 actions overhead); elsewhere it moves at map speed.
     const over = scope === 'patch' && ex.patch && !layout(ex.patch.key).cave && stormCovers(layout(ex.patch.key).cell % MW);
-    ex.storm.x += (over ? .12 : ex.storm.v) * ex.storm.dir; ex.storm.t = (ex.storm.t || 0) + 1;
-    if (ex.storm.x > MW + 1 || ex.storm.x + ex.storm.w < -1) ex.storm = null;
-    else { // the storm leaves a strike mark somewhere inside its band each tick
+    ex.storm.x += (over ? .16 : ex.storm.v) * ex.storm.dir; ex.storm.t = (ex.storm.t || 0) + 1;
+    if (ex.storm.x > MW + 1 || ex.storm.x + ex.storm.w < -1) { ex.storm = null; if (ex.saidDone) nothingNew(); }
+    else { // a flash somewhere inside the band each tick; some of them light the land for good
       const cols = []; for (let x = 0; x < MW; x++) if (stormCovers(x)) cols.push(x);
-      if (cols.length) { const x = cols[hash(S.seed, 'sm', ex.n, ex.actions) % cols.length], y = hash(S.seed, 'smy', ex.n, ex.actions) % MH;
-        ex.stormCells[y * MW + x] = 1; FX.bolts.push({ c: y * MW + x, at: NOW }); }
+      if (cols.length && !stormLull()) { const x = cols[hash(S.seed, 'sm', ex.n, ex.actions) % cols.length], y = hash(S.seed, 'smy', ex.n, ex.actions) % MH, c = y * MW + x;
+        FX.bolts.push({ c, at: NOW });   // only real strikes (warned, stray, or on a stone you saw) leave charge for the world turn
+        if (hash(S.seed, 'lit', ex.n, ex.actions) % 7 === 0 && !S.revealed[c]) { revealCell(c); ex.stats.lit++; } }
     }
   }
   if (fogActive()) { ex.fog.x = clamp(ex.fog.x + ex.fog.dx, 1, MW - 1); ex.fog.y = clamp(ex.fog.y + ex.fog.dy, 1, MH - 1); }
   if (scope === 'map') { mapStrikeTick(); sweep(); }
   else patchTick(info || {});
-  if (ex.hull <= 0 && !ex.ending) { ex.ending = 1; fxMsg('Probe damaged · the cargo heads home'); lockInput(900); setTimeout(() => endExpedition('hull'), 900); }
+  // The bolts: odds in words once, the first time each level is reached.
+  const lvl = stormLevel(); ex.stats.maxLvl = Math.max(ex.stats.maxLvl, lvl);
+  if (lvl >= 2) { ex.stats.stormActs++; if (!sheltered()) ex.stats.openStormActs++; }
+  if (lvl === 2 && firstTime('odds')) fxMsg('Strong storm · 1 in 12 each action in the open', 3);
+  if (lvl === 3 && firstTime('oddsPeak')) fxMsg('Storm peak · 1 in 6 each action in the open', 3);
+  // Roll the next action's stray strike now, so a keen partner can feel it coming.
+  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
+    ex.stray = { at: ex.actions + 1 };
+    const pt = ex.pt, keen = pt && (pt.elder || SPECIES[pt.sp].ab === 'nose');
+    if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
+  }
+  if (ex.shield <= 0 && !ex.ending) { ex.ending = 1; fxMsg('The Probe breaks · your pods are safe', 4); lockInput(1100); setTimeout(() => endExpedition('break'), 1100); }
+  checkExplored();
   save();
 }
-function hullHit() {
-  const ex = S.exp; ex.hull--; FX.hitAt = NOW; ex.hitAt = ex.actions;
-  const first = firstTime('hull');
-  fxMsg(first ? 'Probe hit! The bars top left are its hull: ' + ex.hull + ' of 3 left' : ex.hull > 0 ? 'Probe hit! Hull ' + ex.hull + ' of 3' : 'Probe hit!', 3); logEv('Probe hit · hull ' + ex.hull);
+function shieldHit() {
+  const ex = S.exp; ex.shield--; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++;
+  const first = firstTime('shield');
+  if (ex.shield <= 0) { logEv('Probe broke'); return; }
+  fxMsg(first ? 'Probe hit! The bars top left are its Shield: ' + ex.shield + ' of ' + ex.smax + ' left' : 'Probe hit! Shield ' + ex.shield + ' of ' + ex.smax, 3); logEv('Probe hit · shield ' + ex.shield);
+  if (ex.shield === 1 && firstTime('bank')) fxMsg('A break loses what you carry · ← Send home banks it', 3);
+}
+// A stray strike: no warning (unless a keen partner felt it), lands where you stand.
+function strayHit(scope) {
+  const ex = S.exp;
+  if (scope === 'patch' && ex.patch) FX.strikes.push({ space: 'patch', x: ex.patch.x, y: ex.patch.y, at: NOW });
+  else FX.strikes.push({ space: 'map', c: ex.pos, at: NOW });
+  ex.stormCells[ex.pos] = 1; shieldHit();
 }
 function mapStrikeTick() {
   const ex = S.exp;
   if (ex.mstrike && ex.mstrike.at <= ex.actions) {
-    const c = ex.mstrike.c; ex.mstrike = null; ex.stormCells[c] = 1;
+    const c = ex.mstrike.c; ex.mstrike = null; ex.stormCells[c] = 1; revealCell(c);
     FX.strikes.push({ space: 'map', c, at: NOW });
-    if (c === ex.pos) hullHit();
   }
   const p = cxy(ex.pos);
+  // Warned strikes land on a neighbouring cell, never on you: they are the storm's offer, not its risk.
   if (!ex.mstrike && stormRain(p.x) && rnd(S.seed, 'ms', ex.n, ex.actions) < .3) {
     const opts = []; for (const [dx, dy] of Object.values(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) opts.push(y * MW + x); }
-    const r = rnd(S.seed, 'mt', ex.n, ex.actions);
-    const c = r < .15 ? ex.pos : opts[Math.floor(rnd(S.seed, 'mo', ex.n, ex.actions) * opts.length)];
-    ex.mstrike = { c, at: ex.actions + 1 };
-    if (c === ex.pos) fxMsg('Lightning is about to strike here!', 3); else if (firstTime('warn')) fxMsg('A bright cell means lightning strikes there next.', 2);
+    ex.mstrike = { c: opts[Math.floor(rnd(S.seed, 'mo', ex.n, ex.actions) * opts.length)], at: ex.actions + 1 };
+    if (firstTime('warn')) fxMsg('A bright cell means lightning strikes there next', 2);
   }
 }
 function nextToIsland(c) { const p = cxy(c); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && G.island[y * MW + x]) return true; } return false; }
@@ -827,10 +946,19 @@ function mapStep(dir) {
   ex.face = dir;
   if (x < 0 || y < 0 || x >= MW || y >= MH) { FX.bumpAt = NOW; return; }
   const c = y * MW + x;
-  if (!passable(c)) { S.revealed[c] = 1; FX.bumpAt = NOW;
+  if (!inRange(c)) { FX.bumpAt = NOW; fxMsg(S.tier < 2 ? 'Edge of the Probe’s range · tier 2 reaches further' : 'Edge of the Probe’s range'); return; }
+  if (!passable(c)) { revealCell(c); FX.bumpAt = NOW;
     fxMsg(G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross'); save(); return; }
-  ex.pos = c; ex.lastDir = dir; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
+  ex.pos = c; ex.lastDir = dir; S.visited[c] = 1; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
   advance('map');
+}
+// Call on the map: pin your cell for 1 Energy, or remove your own pin for free. Gate pins stay free and automatic.
+function callMap() {
+  const ex = S.exp, c = ex.pos, own = ownPin(c);
+  if (own) { S.pins = S.pins.filter(p => p !== own); fxMsg('Pin removed'); logEv('Pin removed'); save(); return; }
+  if (ex.cargo.e < PRICE.pin) { fxMsg('Pins cost 1 Energy · you have ' + ex.cargo.e); FX.bumpAt = NOW; return; }
+  ex.cargo.e -= PRICE.pin; S.pins.push({ c, k: 'own' }); logEv('Pinned a cell (1 Energy)');
+  fxMsg(firstTime('sign:pin') ? 'Pinned · 1 Energy · ))) here again removes it' : 'Pinned · 1 Energy'); save();
 }
 
 // ===================== 7. Patch rules =====================
@@ -851,6 +979,7 @@ function occupant(key, x, y, ignore) {
   const f = featAt(lay, key, x, y); if (f) return { type: 'feat', f };
   const p = podAt(key, x, y); if (p) return { type: 'pod', p };
   const fr = live.fr.find(q => q.x === x && q.y === y); if (fr) return { type: 'fruit', fr };
+  const tf = live.tf.find(q => q.x === x && q.y === y); if (tf) return { type: 'tuft', tf };
   if (P && P.key === key && P.x === x && P.y === y && ignore !== 'player') return { type: 'player' };
   return null;
 }
@@ -868,9 +997,11 @@ function freeSpot(key, R, avoid, pred) {
 function ensureLive(key) {
   const ex = S.exp; if (ex.live[key]) return ex.live[key];
   const lay = layout(key), R = makeRng(hash(S.seed, 'live', key, ex.n));
-  const live = { key, cr: [], fr: [], strike: null, seen: {}, fid: 1, pt: null, rainOn: 0, stormShed: {}, calmShed: 0, noted: {} };
+  const live = { key, cr: [], fr: [], tf: [], strike: null, seen: {}, fid: 1, pt: null, rainOn: 0, stormShed: {}, calmShed: 0, noted: {} };
   ex.live[key] = live;
-  for (const p of S.pods) if (p.k === key && p.x < 0) { const s = freeSpot(key, R, 5); if (s) { p.x = s.x; p.y = s.y; } }
+  // Buried pods lie 3–6 tiles from where you first come in, so the first Call can find them.
+  const ent = lay.cave ? { x: 14, y: 27 } : entryPoint(lay, key, ex.lastDir);
+  for (const p of S.pods) if (p.k === key && p.x < 0) { const s = freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5); if (s) { p.x = s.x; p.y = s.y; } }
   const nests = lay.feats.filter(f => f.kind === 'e');
   for (const w of S.cr) {
     if (w.c !== lay.cell || !!w.cv !== lay.cave) continue;
@@ -904,7 +1035,10 @@ function enterPatch() {
   const e = entryPoint(lay, key, ex.lastDir);
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' };
   placePartnerNear(key, ex.patch);
-  S.phase = 'patch'; recordSigns(ex.pos); transition(); save();
+  S.phase = 'patch'; recordSigns(ex.pos); transition();
+  if (firstTime('callintro')) fxMsg('))) Call sends a signal · things answer', 3);
+  else if (isCleared(ex.pos)) nothingNew();
+  save();
 }
 function enterCave() {
   const ex = S.exp, key = 'c' + G.gate; ensureLive(key);
@@ -951,55 +1085,70 @@ function swimBump() {
   FX.bumpAt = NOW; save();
 }
 
-// What Confirm will do right now in the patch: { label, run }.
+// What Confirm will do right now in the place: { label, run }. "Nothing here" spends nothing.
+const NOTHING = { label: 'Nothing here', run: null };
 function patchAction() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive(), f = frontOf(P);
   const o = occupant(key, f.x, f.y, 'player');
   const nm = sp => S.known.includes(sp) ? ' to the ' + SPECIES[sp].name.toLowerCase() : '';
-  if (o && o.type === 'cr') {
-    if (ex.carry === 'fruit') return { label: 'Offer the fruit' + nm(o.c.sp), run: () => offer(o.c) };
-    return { label: 'Pulse', run: pulse };
-  }
-  if (o && o.type === 'fruit') return ex.carry ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
-  if (o && o.type === 'pod') return { label: ex.cargo.pod ? 'Swap the pod' : 'Take the pod', run: () => takePod(o.p) };
-  if (o && o.type === 'pt') return { label: 'Pulse', run: pulse };
+  const fruit = ex.carry === 'fruit';
+  if (o && o.type === 'cr') return fruit ? { label: 'Offer the fruit' + nm(o.c.sp), run: () => offer(o.c) } : NOTHING;
+  if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
+  if (o && o.type === 'tuft') return { label: 'Pick up the tuft', run: () => takeTuft(o.tf) };
+  if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? 'Swap the pod' : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
+  if (o && o.type === 'pt') return NOTHING;
   if (o && o.type === 'tile' && o.t === T.DEEP) return { label: 'Needs a swimmer', run: swimBump };
   if (o && o.type === 'feat') {
     const ft = o.f;
     switch (ft.kind) {
-      case 'b': if (bushFull(key, ft)) return { label: 'Shake the bush', run: () => shakeBush(ft) }; return NOTHING;
+      case 'b': if (bushFull(key, ft)) return { label: 'Shake the bush', run: () => shakeBush(ft) }; break;
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
-      case 'h': if (!humRung(key, ft)) return { label: 'Tap the humming stone', run: () => tapHum(ft) }; return NOTHING;
-      case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : 'Collect dew', run: () => takeDew(ft) }; return NOTHING;
-      case 'k': if (stoneCharge(key, ft) > 0 && live.seen[ft.id]) return { label: 'Take the charge', run: () => takeCharge(ft) };
-        if (stoneCharge(key, ft) > 0) break; return NOTHING;
+      case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : 'Collect dew', run: () => takeDew(ft) }; break;
+      case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
+      case 'j': if (!fs(key, ft.id).up) return { label: 'Climb the cairn', run: () => climbCairn(ft) }; break;
       case 'g':
         if (S.opened[G.gate]) return { label: 'Go down the burrow', run: () => { advance('patch', { noise: 'act' }); enterCave(); } };
-        if (canDig()) return { label: 'Ask ' + ex.pt.name + ' to dig', run: dig };
+        if (canDig()) return { label: (ex.digProg ? 'Keep digging' : 'Ask ' + ex.pt.name + ' to dig'), run: dig };
         return { label: 'Too narrow', run: gateBump };
-      case 'd': if (live.seen.d) return { label: 'Probe deeper', run: probeDeep }; break;
+      case 'd': if (live.seen.d) return { label: S.tier >= 2 ? 'Read the deep ?' : 'Probe deeper', run: probeDeep }; break;
       case 'x': return { label: 'Climb out', run: leavePatch };
     }
   }
-  if (!o && ex.carry === 'fruit') return { label: 'Put down the fruit', run: () => putDown(f) };
-  if (o && (o.type === 'tile' || o.type === 'feat' || o.type === 'out')) return NOTHING;
-  return { label: 'Pulse', run: pulse };
+  if (fruit) return o ? { label: 'Press the fruit', run: pressFruit } : { label: 'Put down the fruit', run: () => putDown(f) };
+  return NOTHING;
 }
-// Confirm never turns silently into a pulse: a spent or blocked target says so and costs nothing.
-const NOTHING = { label: 'Nothing here', run: null };
 function freeAround(key, x, y, prefer) {
   const ds = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
   if (prefer) ds.sort((a, b) => man({ x: x + a[0], y: y + a[1] }, prefer) - man({ x: x + b[0], y: y + b[1] }, prefer));
   for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && layout(key).tiles[Y * PW + X] !== T.STEP) return { x: X, y: Y }; }
   return null;
 }
+// Materials carried cap at 20 each. Returns how much was taken.
+const MAT = { e: 'Energy', d: 'Data', s: 'Essence' };
+function addMat(k, n, x, y) {
+  const ex = S.exp, got = Math.max(0, Math.min(n, CAP - ex.cargo[k]));
+  ex.cargo[k] += got; ex.supAt[k] = ex.actions + 1;
+  if (x != null) fxFloat(x, y, '+' + got, { e: 'energy', d: 'data', s: 'essence' }[k]);
+  if (got < n) fxMsg(MAT[k] + ' full · the Probe carries 20', 2);
+  return got;
+}
 function shakeBush(f) {
   const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, { bare: 1 });
-  for (let i = 0; i < 2; i++) { const p = freeAround(key, f.x, f.y, S.exp.patch); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y }); }
+  const p = freeAround(key, f.x, f.y, S.exp.patch); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
   advance('patch', { noise: 'act', ring: { x: f.x, y: f.y, r: 2 } });
 }
-function pickUp(fr) { const live = curLive(); live.fr = live.fr.filter(q => q !== fr); S.exp.carry = 'fruit'; advance('patch', { noise: 'act' }); }
-function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y }); S.exp.carry = null; advance('patch', { noise: 'act' }); }
+function pickUp(fr) {
+  const live = curLive(); live.fr = live.fr.filter(q => q !== fr); S.exp.carry = 'fruit';
+  if (firstTime('fruithelp')) fxMsg('Put it down near a creature and back off · or ✓ against a rock or bush to press it', 2);
+  advance('patch', { noise: 'act' });
+}
+function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; advance('patch', { noise: 'act' }); }
+function pressFruit() {
+  const ex = S.exp, P = ex.patch; ex.carry = null;
+  const got = addMat('s', 2, P.x, P.y); if (firstTime('press')) fxMsg('+' + got + ' Essence · you pressed the fruit', 1);
+  advance('patch', { noise: 'act' });
+}
+function takeTuft(tf) { const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); if (firstTime('tuft')) fxMsg('+1 Essence · a tuft of shed fur', 1); advance('patch', { noise: 'act' }); }
 function pushSlab(f) {
   const ex = S.exp, key = ex.patch.key, pos = featPos(key, f), [dx, dy] = DIRS[ex.patch.dir], tx = pos.x + dx, ty = pos.y + dy;
   if (tx < 1 || ty < 1 || tx >= PW - 1 || ty >= PH - 1 || occupant(key, tx, ty) || podAt(key, tx, ty, true) || layout(key).tiles[ty * PW + tx] === T.STEP) { fxMsg('The slab won’t budge that way'); FX.bumpAt = NOW; return; }
@@ -1013,51 +1162,94 @@ function pushSlab(f) {
   }
   advance('patch', { noise: 'act', ring: { x: tx, y: ty, r: 2 } });
 }
-function tapHum(f) {
-  const ex = S.exp; setFS(ex.patch.key, f.id, { rung: 1 }); ex.cargo.d += 1; ex.supAt.d = ex.actions + 1;
-  fxFloat(f.x, f.y, '+1', 'data');
-  advance('patch', { noise: 'act', ring: { x: f.x, y: f.y, r: 4 } });
-}
-function takeDew(f) { const ex = S.exp; setFS(ex.patch.key, f.id, { full: false }); ex.cargo.s += 1; ex.supAt.s = ex.actions + 1; fxFloat(f.x, f.y, '+1', 'essence'); advance('patch', { noise: 'act' }); }
+function takeDew(f) { const ex = S.exp; setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); advance('patch', { noise: 'act' }); }
 function takeCharge(f) {
-  const ex = S.exp, ch = stoneCharge(ex.patch.key, f); setFS(ex.patch.key, f.id, { ch: 0 }); ex.cargo.e += ch; ex.supAt.e = ex.actions + 1;
-  fxFloat(f.x, f.y, '+' + ch, 'energy'); advance('patch', { noise: 'act' });
+  const ex = S.exp, ch = stoneCharge(ex.patch.key, f), got = addMat('e', ch, f.x, f.y); setFS(ex.patch.key, f.id, { ch: ch - got });
+  advance('patch', { noise: 'act' });
+}
+function climbCairn(f) {
+  const ex = S.exp, key = ex.patch.key, cell = layout(key).cell, before = ex.stats.rev; setFS(key, f.id, { up: 1 });
+  revealAround(cell, 3); const n = ex.stats.rev - before;
+  fxMsg(n ? 'From the cairn you see ' + numWord(n) + ' new cells' : 'From the cairn · nothing new in sight', 2); logEv('Climbed a cairn · ' + n + ' cells');
+  advance('patch', { noise: 'act' });
 }
 function takePod(p) {
-  const ex = S.exp, key = ex.patch.key, carried = ex.cargo.pod;
+  const ex = S.exp, key = ex.patch.key, full = ex.cargo.pods.length >= ex.hold, out = full ? ex.cargo.pods.pop() : null;
   S.pods = S.pods.filter(q => q !== p);
-  ex.cargo.pod = { id: p.id, sp: p.sp, g: p.g, how: p.how || 'ground' };
-  if (carried) S.pods.push({ id: carried.id, k: key, x: p.x, y: p.y, sp: carried.sp, h: 0, g: carried.g, how: carried.how });
-  fxFloat(p.x, p.y, carried ? 'swap' : '', 'pod');
-  logEv((carried ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
+  ex.cargo.pods.push({ id: p.id, sp: p.sp, g: p.g, how: p.how || 'ground' });
+  if (out) S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, h: 0, g: out.g, how: out.how });
+  fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
+  logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
+  if (firstTime('firstpod')) fxMsg('Pods open at the Station · ← Send home when you’re ready', 3);
+  else if (!out && ex.cargo.pods.length >= ex.hold && !ex.saidFull) { ex.saidFull = 1; fxMsg('Hold full · swap, or ← Send home', 3); }
   advance('patch', { noise: 'act' });
 }
-function calmedBy(c, X) { return !!X.pt && cheb(c, X.pt) <= 4 && (X.ptAb === 'calm' || X.ptSp === c.sp); }
+function calmRadius(X) { return X.ptElder ? 8 : 4; }
+function calmedBy(c, X) { return !!X.pt && cheb(c, X.pt) <= calmRadius(X) && (X.ptAb === 'calm' || X.ptSp === c.sp); }
+function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? SPECIES[ex.pt.sp].ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder) }; }
+// Data comes only from moments you cause: +1, +2 the first time ever for that species and moment; once per creature per expedition.
+function awardMoment(c, kind, X) {
+  const ex = S.exp; if (ex.momented[c.id]) return; ex.momented[c.id] = 1;
+  const fk = c.sp + ':' + kind, first = !S.firsts[fk]; S.firsts[fk] = 1;
+  const got = addMat('d', first ? 2 : 1, c.x, c.y);
+  ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data');
+  const who = S.known.includes(c.sp) ? 'a ' + spName(c.sp) : 'this creature', verb = { eat: 'eat', settle: 'settle' }[kind];
+  fxMsg(first ? '+' + got + ' Data · first time you saw ' + who + ' ' + verb : '+' + got + ' Data · ' + (kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled'), 2);
+}
 function offer(c) {
-  const ex = S.exp, live = curLive();
-  const X = { pt: live.pt, ptAb: ex.pt ? SPECIES[ex.pt.sp].ab : null, ptSp: ex.pt ? ex.pt.sp : -1 };
-  if (!SPECIES[c.sp].eats) { c.st = 'alert'; c.t = 2; c.snub = 2; advance('patch', { noise: 'act' }); return; }
-  if (c.b > .45 || calmedBy(c, X) || c.st === 'approach' || c.st === 'seek') { ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; fxMsg('The ' + spName(c.sp) + ' takes the fruit', 1); }
-  else { c.st = 'flee'; c.t = 2; }
+  const ex = S.exp, live = curLive(), X = ptCtx(), lay = curLay();
+  ex.stats.feedTries++;
+  if (!SPECIES[c.sp].eats) { c.st = 'alert'; c.t = 1; c.snub = 2; advance('patch', { noise: 'act' }); return; }
+  const fog = !lay.cave && inFog(lay.cell);
+  if (c.b > .55 || calmedBy(c, X) || fog || c.st === 'approach' || c.st === 'seek') {
+    ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; ex.stats.handFeeds++;
+    awardMoment(c, 'eat', X);
+  } else { c.st = 'alert'; c.t = 1; c.go = 1; if (firstTime('wary')) fxMsg('The ' + spName(c.sp) + ' is wary · put the fruit down and back off', 2); }
   advance('patch', { noise: 'act' });
 }
-function pulse() {
+// Call in a place: the pulse. Hidden finds glint and stay outlined; curious creatures come, wary ones hide;
+// your partner comes and digs a burrow it can handle. In a fog bank it reaches 3 tiles and can't clear a place.
+function callPlace() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive();
-  for (const p of S.pods) if (p.k === key && p.h && cheb(p, P) <= 7 && p.x >= 0) { p.h = 0; fxGlint(p.x, p.y, 350); }
+  const fogged = !lay.cave && inFog(lay.cell), glow = ex.pt && ex.pt.sp === 1, muffled = fogged && !glow, reach = muffled ? 3 : 7;
+  let found = 0;
+  for (const p of S.pods) if (p.k === key && p.h && p.x >= 0 && cheb(p, P) <= reach) { p.h = 0; p.out = 1; fxGlint(p.x, p.y, 350); found++; }
   for (const f of lay.feats) {
-    if (cheb(featPos(key, f), P) > 7) continue;
-    if (f.kind === 'k' && stoneCharge(key, f) > 0 && !live.seen[f.id]) { live.seen[f.id] = 1; fxGlint(f.x, f.y, 350); }
-    if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); }
+    const fp = featPos(key, f); if (cheb(fp, P) > reach) continue;
+    if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) { setFS(key, f.id, { sn: 1 }); fxGlint(f.x, f.y, 350); found++; }
+    if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); found++; }
     if (f.kind === 'g' && !S.opened[G.gate]) fxGlint(f.x, f.y, 350);
   }
-  FX.pulse = { x: P.x, y: P.y, at: NOW };
-  advance('patch', { noise: 'act', pulse: true });
+  FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach };
+  logEv('Call' + (found ? ' · found ' + found : ''));
+  // the partner answers: a digger near the burrow digs it
+  const g = lay.feats.find(f => f.kind === 'g'), digNow = g && !S.opened[G.gate] && canDig() && cheb(P, g) <= 3;
+  advance('patch', { noise: 'act', pulse: true, reach, call: true });
+  if (!lay.cave) {
+    if (muffled) { if (!ex.saidMuffled) { ex.saidMuffled = 1; fxMsg('The fog muffles your call · it reaches 3 tiles', 2); } }
+    else {
+      S.called[lay.cell] = S.turn;
+      const hid = hiddenIn(lay.cell);
+      if (!found && !hid) { S.clean[lay.cell] = 1; fxMsg(pipsOf(lay.cell) ? 'Nothing hidden here' : 'Nothing hidden · nothing left here', 0); }
+      else if (!found) fxMsg('Nothing close · something may be further off', 0);
+      checkExplored();
+    }
+  }
+  if (digNow && !ex.ending) dig();
 }
 // A deliberate quiet action: the clock moves, you don't.
 function waitTick(scope) {
   if (scope === 'patch') advance('patch', { noise: 'wait' }); else { advance('map'); }
 }
 function probeDeep() {
+  if (S.tier >= 2) {
+    const lay = curLay(), f = lay.feats.find(q => q.kind === 'd');
+    if (!S.deepRead) { S.deepRead = 1; S.pins = S.pins.filter(p => p.k !== 'deep');
+      const sp = hash(S.seed, 'deep') % 3; S.pods.push({ id: 'deep', k: lay.key, x: f.x, y: f.y + 1, sp, h: 0, g: 'cave', how: 'deep' });
+      fxGlint(f.x, f.y + 1); fxMsg('The Probe reads deep down · a sealed pod rises', 3); logEv('Read the deep ?'); }
+    else fxMsg('Nothing more down there');
+    recordSigns(lay.cell); advance('patch', { noise: 'act' }); return;
+  }
   const fresh = addPin(G.deep, 'deep');
   fxMsg('Too deep · needs Probe tier 2' + (fresh ? ' · pinned' : ''));
   advance('patch', { noise: 'act' });
@@ -1065,6 +1257,9 @@ function probeDeep() {
 function dig() {
   const ex = S.exp, live = curLive(), g = layout(ex.patch.key).feats.find(f => f.kind === 'g');
   if (live.pt) { live.pt.st = 'dig'; }
+  // an elder digs in two actions
+  if (ex.pt.elder && !ex.digProg) { ex.digProg = 1; fxMsg(ex.pt.name + ' is digging · slow but sure', 1); advance('patch', { noise: 'act' }); return; }
+  ex.digProg = 0;
   FX.dig = { at: NOW, x: g.x, y: g.y };
   lockInput(950);
   S.opened[G.gate] = 1; S.pins = S.pins.filter(p => !(p.c === G.gate && p.k === 'burrow'));
@@ -1077,39 +1272,41 @@ function patchTick(info) {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = ex.live[key];
   const raining = !lay.cave && stormRain(lay.cell % MW);
   const fog = !lay.cave && inFog(lay.cell);
-  if (!lay.cave && stormCovers(lay.cell % MW) && !raining && live.rainOn) fxMsg('The rain eases for a moment', 0);
-  if (raining) live.rainOn = 1;
-  if (!raining) live.rainOn = 0;
+  const peak = !lay.cave && stormPeak(lay.cell % MW);
+  if (!lay.cave && stormLull() && stormOff(lay.cell % MW) < 1.5 && live.rainOn) fxMsg('The rain eases for a moment', 0);
+  live.rainOn = raining ? 1 : 0;
+  // wet air: dew cups fill again under the fog bank
+  if (fog) for (const f of lay.feats) if (f.kind === 'u' && !cupFull(key, f) && ex.actions - (fs(key, f.id).at || -99) >= 3) { setFS(key, f.id, { full: true }); if (firstTime('fogdew')) fxMsg('Dew gathers in the fog · the cups fill again', 1); }
   let strike = null;
   if (live.strike && live.strike.at <= ex.actions) {
     strike = live.strike; live.strike = null;
     FX.strikes.push({ space: 'patch', x: strike.x, y: strike.y, at: NOW });
     const st = lay.feats.find(f => f.kind === 'k' && f.x === strike.x && f.y === strike.y);
-    if (st) { setFS(key, st.id, { ch: stoneCharge(key, st) + 2 }); live.seen[st.id] = 1; }
-    if (P.x === strike.x && P.y === strike.y) hullHit();
+    if (st) setFS(key, st.id, { ch: Math.max(stoneCharge(key, st), strike.peak ? 3 : 2), sn: 1 });
     ex.stormCells[lay.cell] = 1;
   }
-  const X = { lay, live, key, P, raining, fog, strike, ring: info.ring || null, pulse: !!info.pulse, moved: !!info.moved,
-    noise: info.noise || 'act', carry: ex.carry, pt: live.pt, ptAb: ex.pt ? SPECIES[ex.pt.sp].ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptName: ex.pt && ex.pt.name,
-    away: o => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7 };
-  for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++; }
+  const pc = ptCtx();
+  const X = Object.assign({ lay, live, key, P, raining, fog, strike, ring: info.ring || null, pulse: !!info.pulse, reach: info.reach || 7, call: !!info.call, moved: !!info.moved,
+    noise: info.noise || 'act', carry: ex.carry, ptName: ex.pt && ex.pt.name,
+    away: o => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7 }, pc);
+  for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
+    if (!c.hide && !X.away(c) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);
+  // Warned strikes aim at stones (the storm's offer); the risk is the stray strike, rolled in advance().
   if (raining && !live.strike && rnd(S.seed, 'sk', ex.n, ex.actions) < .5) {
     live.strike = pickStrike(X);
-    if (live.strike && live.strike.x === P.x && live.strike.y === P.y) fxMsg('Lightning! Step off the bright tile', 3);
-    else if (live.strike && firstTime('warn')) fxMsg('A bright tile means lightning strikes there next', 2);
+    if (live.strike) { live.strike.peak = peak; if (firstTime('warn')) fxMsg('A bright tile means lightning strikes there next', 2); }
   }
   if (!raining) live.strike = null;
 }
-// Lightning prefers stones; it rarely picks the tile you stand on.
+// Lightning prefers stones; otherwise a random open tile near you, never the one you stand on.
 function pickStrike(X) {
   const { lay, P } = X, ex = S.exp, r = rnd(S.seed, 'st', ex.n, ex.actions), r2 = rnd(S.seed, 'st2', ex.n, ex.actions);
   const open = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !lay.shelter[y * PW + x] && !T_BLOCK[lay.tiles[y * PW + x]];
   const stones = lay.feats.filter(f => f.kind === 'k' && cheb(f, P) <= 8);
-  if (stones.length && r < .6) { const s = stones[Math.floor(r2 * stones.length)]; return { x: s.x, y: s.y, at: ex.actions + 1 }; }
-  if (r >= (stones.length ? .6 : 0) && r < (stones.length ? .68 : .12) && open(P.x, P.y)) return { x: P.x, y: P.y, at: ex.actions + 1 };
+  if (stones.length && r < .65) { const s = stones[Math.floor(r2 * stones.length)]; return { x: s.x, y: s.y, at: ex.actions + 1 }; }
   for (let k = 0; k < 10; k++) { const x = P.x + Math.floor(rnd(S.seed, 'zx', ex.actions, k) * 11) - 5, y = P.y + Math.floor(rnd(S.seed, 'zy', ex.actions, k) * 11) - 5;
-    if (open(x, y) && cheb({ x, y }, P) >= 1) return { x, y, at: ex.actions + 1 }; }
+    if (open(x, y) && cheb({ x, y }, P) >= 2) return { x, y, at: ex.actions + 1 }; }
   return null;
 }
 
@@ -1128,10 +1325,12 @@ function stepToward(X, who, tgt, n) {
     who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
   }
 }
+// Flight is short and never leaves the screen: it stays within the view around you.
 function stepAway(X, c, from, n) {
   for (let k = 0; k < n; k++) {
     let best = null, bd = cheb(c, from) * 10 + man(c, from);
     for (const [dx, dy] of Object.values(DIRS)) { const x = c.x + dx, y = c.y + dy, d = cheb({ x, y }, from) * 10 + man({ x, y }, from);
+      if (Math.abs(x - X.P.x) > 6 || Math.abs(y - X.P.y) > 7) continue;
       if (d > bd && canStand(X, x, y, c)) { bd = d; best = { x, y, dx }; } }
     if (!best) return; c.x = best.x; c.y = best.y; if (best.dx) c.face = best.dx;
   }
@@ -1152,9 +1351,10 @@ function nearestHole(X, c, maxD) {
   for (const f of X.lay.feats) if (f.kind === 'n' && !X.live.cr.some(o => o.hide && o.x === f.x && o.y === f.y)) { const d = man(c, f); if (d < bd) { bd = d; best = f; } }
   return best;
 }
-function hideOrFlee(X, c, t) {
+// Flight: a glowtail dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
+function hideOrFlee(X, c) {
   if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = { x: h.x, y: h.y }; return; } }
-  c.st = 'flee'; c.t = t;
+  c.st = 'flee'; c.t = 2;
 }
 // Shed limits: one hopper and one glowtail rain-curl per place per storm (lulls do not reset it), one glowtail per place per expedition, each creature once.
 function shedAllowed(c, X) {
@@ -1188,6 +1388,13 @@ function shedPod(c, X) {
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
   else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose', 1);
 }
+// A hopper shaking dry leaves a tuft of fur on the ground (Essence), once per hopper per expedition.
+function dropTuft(c, X) {
+  if (c.tufted) return; c.tufted = 1;
+  const p = freeAround(X.key, c.x, c.y, null); if (p) X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });
+}
+// An eater closes in on fruit quickly from across the view, then slows near it: about 4 quiet actions.
+function seekPace(c, f) { const d = man(c, f); return d > 6 ? 3 : d > 3 ? 2 : 1; }
 function creatureTick(c, X) {
   const sp = SPECIES[c.sp], P = X.P;
   if (c.snub) c.snub--;
@@ -1196,26 +1403,32 @@ function creatureTick(c, X) {
     if (c.hide === 0) { const p = freeAround(X.key, c.x, c.y, null); if (p) { c.x = p.x; c.y = p.y; c.st = 'idle'; c.wet = 0; } else c.hide = 1; }
     return;
   }
-  const d = cheb(c, P), calm = calmedBy(c, X);
-  let notice = sp.notice[X.noise === 'walk' ? 1 : 0];
-  if (c.b > .6) notice--; if (X.fog) notice -= 2;
-  if (calm && X.moved && d <= notice && d > notice - 2 && ['idle', 'seek'].includes(c.st) && !X.live.noted['c' + c.id]) {
+  const d = cheb(c, P), calm = calmedBy(c, X), curious = c.b > .55;
+  // Walking is noticed within the species' range; creeping only right beside it, and never inside a fog bank.
+  let notice = sp.notice[1]; if (c.b > .6) notice--; if (X.fog) notice -= 2;
+  const walking = X.moved && X.noise === 'walk';
+  if (calm && walking && d <= notice && d > notice - 2 && ['idle', 'seek'].includes(c.st) && !X.live.noted['c' + c.id]) {
     X.live.noted['c' + c.id] = 1;
     const short = X.ptName + ' keeps the ' + spName(c.sp) + ' calm', long = 'The ' + spName(c.sp) + ' would have noticed you. ' + X.ptName + ' keeps it calm';
     // the explanation is spent only once it is actually on the line; priority 2 only for that first line
     if (!S.found.includes('calmkeep')) { fxMsg(long, 2); if (FX.msg.includes(long)) S.found.push('calmkeep'); else { FX.notes.pop(); fxMsg(short, 0); } }
     else fxMsg(short, 0); }
-  c.cue = calm && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
+  c.cue = calm && walking && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
   if (calm) notice -= 2;
+  const threat = X.moved && c.st !== 'eat' && (walking ? d <= notice : (!X.fog && d <= 1 && !calm && !curious));
   const sheltered = !!X.lay.shelter[c.y * PW + c.x];
-  if (c.st === 'shake' || c.st === 'full' || c.st === 'glow') { if (shedAllowed(c, X)) shedPod(c, X); c.st = 'idle'; c.wet = 0; c.calm = 0; return; }
+  if (c.st === 'shake' || c.st === 'full' || c.st === 'glow') {
+    if (c.st === 'shake') dropTuft(c, X);
+    if (c.st === 'glow') awardMoment(c, 'settle', X);
+    if (shedAllowed(c, X)) shedPod(c, X); c.st = 'idle'; c.wet = 0; c.calm = 0; return; }
   if (c.st === 'curl' && !X.raining && !X.lay.shelter[c.y * PW + c.x]) { c.st = 'idle'; c.curl = 0; }
-  // Sudden things: a strike, a ringing stone, a pulse.
-  const startled = (X.strike && cheb(c, X.strike) <= 3) || (X.ring && cheb(c, X.ring) <= X.ring.r && c.b < .75 && !calm);
-  if (startled && c.st !== 'eat') hideOrFlee(X, c, 3);
-  else if (X.pulse && d <= 7 && c.st !== 'eat') {
-    if (c.sp === 1 && c.calm >= 2) { c.calm = 0; c.st = 'alert'; c.t = 2; fxMsg('Your pulse startled the ' + spName(1) + ' · it stopped settling', 2); }
-    else if (c.b > .55 || calm) { c.st = 'approach'; c.t = 3; } else hideOrFlee(X, c, 2); }
+  // Sudden things: a strike, a loud act nearby, your Call.
+  const startled = (X.strike && cheb(c, X.strike) <= 3) || (X.ring && cheb(c, X.ring) <= X.ring.r && c.b < .75 && !calm && !X.fog);
+  if (startled && c.st !== 'eat') hideOrFlee(X, c);
+  else if (X.pulse && d <= X.reach && c.st !== 'eat') {
+    if (c.sp === 1 && c.calm >= 2) { c.calm = 0; c.st = 'alert'; c.t = 2; fxMsg('Your call startled the ' + spName(1) + ' · it stopped settling', 2); }
+    else if (curious || calm) { c.st = 'approach'; c.t = 3; }
+    else { c.st = 'alert'; c.t = 2; c.go = 1; } }   // wary: "!" for one action, then it hides
   // Weather.
   if (X.raining) {
     if (!sheltered) { c.wet = 1; if (!['flee', 'dive', 'eat'].includes(c.st)) c.st = 'shelter'; }
@@ -1229,15 +1442,15 @@ function creatureTick(c, X) {
   }
   if (!X.raining && c.st === 'curl') { c.st = 'idle'; c.curl = 0; }
   if (!X.raining && (c.st === 'shelter' || c.st === 'huddle')) c.st = 'idle';
-  // The player.
-  if (X.moved && d <= notice && ['idle', 'alert', 'seek'].includes(c.st)) {
-    if (c.st === 'alert') { if (c.b < .5 && !calm) { c.st = 'flee'; c.t = 2; } else if (X.carry && sp.eats) { c.st = 'approach'; c.t = 2; } }
-    else { c.st = 'alert'; c.t = 2; }
+  // The player: a creature shows "!" for one action before it flees, so you can stop.
+  if (threat && ['idle', 'seek', 'watch', 'alert', 'approach'].includes(c.st)) {
+    if (c.st === 'alert') { if (curious && X.carry && sp.eats) { c.st = 'approach'; c.t = 2; } else { c.go = 0; hideOrFlee(X, c); } }
+    else if (!(c.st === 'approach' && curious)) { c.st = 'alert'; c.t = 2; }
   }
-  if (X.moved && X.noise === 'walk' && d <= 1 && c.b < .6 && !calm && c.st !== 'eat') { c.st = 'flee'; c.t = 2; }
   // Act on the current state.
   switch (c.st) {
-    case 'flee': stepAway(X, c, P, sp.flee); if (--c.t <= 0) { c.st = 'alert'; c.t = 2; } break;
+    case 'flee': stepAway(X, c, P, c.t >= 2 ? 2 : 1); if (--c.t <= 0) { c.st = 'watch'; c.t = 3; } break;
+    case 'watch': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (!threat && --c.t <= 0) c.st = 'idle'; break;   // back to routine after 3 quiet actions
     case 'dive': {
       const h = c.tgt; if (!h) { c.st = 'flee'; c.t = 2; break; }
       if (man(c, h) <= 1) { c.x = h.x; c.y = h.y; c.hide = X.raining ? 6 : 4; c.st = 'hidden'; }
@@ -1246,14 +1459,16 @@ function creatureTick(c, X) {
     case 'shelter': stepShelter(X, c); if (X.lay.shelter[c.y * PW + c.x]) c.st = 'huddle'; break;
     case 'huddle': break;
     case 'approach': if (d > 2) stepToward(X, c, P, 1); if (--c.t <= 0) c.st = 'idle'; break;
-    case 'alert': if (--c.t <= 0 && d > notice) c.st = 'idle'; break;
+    case 'alert': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (--c.t <= 0) { if (c.go) { c.go = 0; hideOrFlee(X, c); } else c.st = 'idle'; } break;
     case 'eat': if (--c.eat <= 0) c.st = (c.sp === 2 && shedAllowed(c, X)) ? 'full' : 'idle'; break;
     case 'seek': {
-      const f = X.live.fr.find(q => q.id === c.fid);
-      if (!f) { c.st = 'idle'; break; }
+      const f = X.live.fr.find(q => q.id === c.fid), keep = (curious || calm || X.fog) ? 1 : 3;
+      if (!f || cheb(P, f) < keep - 1) { c.st = 'idle'; break; }   // you came too close: it gives up for now
       if (cheb(c, f) <= 1) { X.live.fr = X.live.fr.filter(q => q !== f); c.st = 'eat'; c.eat = 2; if (f.x !== c.x) c.face = Math.sign(f.x - c.x);
-        fxMsg(X.away(c) ? 'Something ate the fruit ' + whereWord(X, c.x, c.y) : 'The ' + spName(c.sp) + ' is eating the fruit', 1); }
-      else stepToward(X, c, f, 1);
+        S.exp.stats.putFeeds++;
+        fxMsg(X.away(c) ? 'Something ate the fruit ' + whereWord(X, c.x, c.y) : 'The ' + spName(c.sp) + ' is eating the fruit', 1);
+        awardMoment(c, 'eat', X); }
+      else stepToward(X, c, f, seekPace(c, f));
       break; }
     default: {
       c.st = 'idle';
@@ -1261,17 +1476,19 @@ function creatureTick(c, X) {
       // A glowtail sheds only after a long quiet spell in its cave or by its burrow. A kin or calming
       // partner lets you wait one tile closer; it never makes the wait shorter.
       if (c.sp === 1 && (X.lay.cave || nearestHole(X, c, 2))) {
-        const loud = X.noise === 'walk', near = !(d >= 3 || (calm && d >= 2)), pulsed = X.pulse && d <= 7;
+        const loud = walking, near = !(d >= 3 || (calm && d >= 2)), pulsed = X.pulse && d <= X.reach;
         if (!loud && !near && !pulsed) c.calm++;
-        else { if (c.calm >= 2) fxMsg(pulsed ? 'Your pulse startled the ' + spName(1) + ' · it stopped settling' : 'The ' + spName(1) + ' looks up · ' + (loud ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
-        if (c.calm === 2) { if (firstTime('settle')) fxMsg('The ' + spName(1) + ' is settling. Keep still', 2); else if (X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(1) + ' is settling ' + whereWord(X, c.x, c.y), 0); }
+        else { if (c.calm >= 2) fxMsg(pulsed ? 'Your call startled the ' + spName(1) + ' · it stopped settling' : 'The ' + spName(1) + ' looks up · ' + (loud ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
+        if (c.calm === 2) { if (firstTime('settle')) fxMsg('The ' + spName(1) + ' is settling · Keep still · ← Wait', 2); else if (X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(1) + ' is settling ' + whereWord(X, c.x, c.y), 0); }
         if (c.calm >= 8 && !X.live.calmShed) { c.st = 'glow'; break; }
       }
+      // Put it down and back off: an eater comes for fruit on the ground once you are 3 tiles from it.
       if (sp.eats && X.live.fr.length) {
-        const keep = (c.b > .55 || calm) ? 1 : 3;
-        let best = null, bd = 7;
-        for (const f of X.live.fr) { const dd = man(c, f); if (dd < bd && cheb(P, f) >= keep) { bd = dd; best = f; } }
-        if (best) { c.st = 'seek'; c.fid = best.id; if (cheb(c, best) > 1) stepToward(X, c, best, 1); break; }
+        const keep = (curious || calm || X.fog) ? 1 : 3;
+        let best = null, bd = 1e9, wanted = null;
+        for (const f of X.live.fr) { if (cheb(c, f) > 10) continue; const dd = man(c, f); if (dd >= bd) continue; if (cheb(P, f) >= keep) { bd = dd; best = f; } else wanted = f; }
+        if (best) { c.st = 'seek'; c.fid = best.id; if (cheb(c, best) > 1) stepToward(X, c, best, seekPace(c, best)); break; }
+        if (wanted && man(c, wanted) <= 8 && !X.away(c) && firstTime('coach')) fxMsg('The ' + spName(c.sp) + ' eyes the fruit · back off', 2);
       }
       if (c.sp === 1 && c.calm >= 2) break;   // settling: stays put
       if (rnd(S.seed, c.id, S.exp.actions, 'w') < (c.sp === 2 ? .25 : .4)) stepRandom(X, c);
@@ -1280,55 +1497,119 @@ function creatureTick(c, X) {
 }
 function partnerTick(X) {
   const pt = X.live.pt; if (!pt || pt.st === 'dig') return;
-  const P = X.P, ab = X.ptAb;
+  const P = X.P, ab = X.ptAb, elder = X.ptElder, speed = elder ? 1 : 2;
+  // Call: the partner comes to you.
+  if (X.call) { pt.st = 'follow'; stepToward(X, pt, P, speed); return; }
   // A digger goes to look at the burrow before you ask. Partners ignore gates they can't handle.
   const g = X.lay.feats.find(f => f.kind === 'g');
   if (ab === 'dig' && g && !S.opened[G.gate] && (cheb(pt, g) <= 8 || cheb(P, g) <= 7)) {
     const near = () => cheb(pt, g) <= 2 && pt.y > g.y;
     if (!near()) { const spots = [{ x: g.x - 1, y: g.y + 1 }, { x: g.x + 1, y: g.y + 1 }, { x: g.x, y: g.y + 1 }, { x: g.x - 1, y: g.y + 2 }, { x: g.x + 1, y: g.y + 2 }];
-      const tgt = spots.find(s => canStand(X, s.x, s.y, pt)) || { x: g.x, y: g.y + 2 }; stepToward(X, pt, tgt, 2); }
+      const tgt = spots.find(s => canStand(X, s.x, s.y, pt)) || { x: g.x, y: g.y + 2 }; stepToward(X, pt, tgt, speed); }
     if (near()) { pt.st = 'sniff'; pt.face = Math.sign(g.x - pt.x) || pt.face; } else pt.st = 'follow';
     return;
   }
-  // A keen nose finds a buried pod close by: it goes over, sniffs twice, and the pod shows.
+  // A keen nose finds a buried pod close by (an elder's reaches twice as far): it goes over, sniffs twice, and the pod shows.
   if (ab === 'nose') {
-    const pod = S.pods.find(p => p.k === X.key && p.h && p.x >= 0 && cheb(p, pt) <= 5 && cheb(p, P) <= 6);
+    const r = elder ? 10 : 5, pod = S.pods.find(p => p.k === X.key && p.h && p.x >= 0 && cheb(p, pt) <= r && cheb(p, P) <= r + 1);
     if (pod) {
       if (cheb(pt, pod) <= 1) { pt.st = 'sniff'; pt.face = Math.sign(pod.x - pt.x) || pt.face; pt.sn = (pt.sn || 0) + 1;
-        if (pt.sn >= 2) { pod.h = 0; pt.sn = 0; fxGlint(pod.x, pod.y); fxMsg(X.ptName + ' found a buried pod'); logEv(X.ptName + ' sniffed out a pod'); } }
-      else { pt.st = 'follow'; stepToward(X, pt, pod, 2); }
+        if (pt.sn >= 2) { pod.h = 0; pod.out = 1; pt.sn = 0; fxGlint(pod.x, pod.y); fxMsg(X.ptName + ' found a buried pod'); logEv(X.ptName + ' sniffed out a pod'); } }
+      else { pt.st = 'follow'; stepToward(X, pt, pod, speed); }
       return;
     }
   }
   pt.st = 'follow';
-  if (cheb(pt, P) > 1) { const [dx, dy] = DIRS[P.dir], behind = { x: P.x - dx, y: P.y - dy };
-    stepToward(X, pt, canStand(X, behind.x, behind.y, pt) ? behind : P, cheb(pt, P) > 3 ? 2 : 1); }
+  // an elder trails two tiles behind
+  const gap = elder ? 2 : 1;
+  if (cheb(pt, P) > gap) { const [dx, dy] = DIRS[P.dir], behind = { x: P.x - dx * gap, y: P.y - dy * gap };
+    stepToward(X, pt, canStand(X, behind.x, behind.y, pt) ? behind : P, !elder && cheb(pt, P) > 3 ? 2 : 1); }
 }
 
 // ===================== 9. Expedition end, Station, world turn =====================
+// The Station stand-in. Prices: identify 1 Energy, hatch a founder 2 Energy + 4 Essence, a study 2 Data,
+// Probe tier 2 12 Energy + 8 Data. What can't be paid waits and says what it needs.
+function needText(e, s, d) {
+  const parts = []; if (e > 0) parts.push(e + ' more Energy'); if (s > 0) parts.push(s + ' more Essence'); if (d > 0) parts.push(d + ' more Data');
+  return 'needs ' + parts.join(' and ');
+}
+// Pure: what the Station would do with this store (h is a copy and is changed).
+function stationPlan(h) {
+  const ops = [];
+  for (const p of h.pods) if (!p.idd) {
+    if (h.e >= PRICE.identify) { h.e -= PRICE.identify; p.idd = 1; ops.push({ k: 'id', p }); } else ops.push({ k: 'wait', p, need: 'needs 1 Energy to identify' }); }
+  while (h.studies.length && h.d >= PRICE.study) { h.d -= PRICE.study; ops.push({ k: 'study', text: h.studies.shift() }); }
+  if (h.studies.length) ops.push({ k: 'waitStudy', n: h.studies.length, need: needText(0, 0, PRICE.study - h.d) });
+  const raised = new Set(S.mibis.map(m => m.sp)); let hatched = 0;
+  for (const p of h.pods.slice()) {
+    if (!p.idd || raised.has(p.sp)) continue; raised.add(p.sp);
+    if (!hatched && h.e >= PRICE.hatchE && h.s >= PRICE.hatchS) { h.e -= PRICE.hatchE; h.s -= PRICE.hatchS; h.pods.splice(h.pods.indexOf(p), 1); hatched = 1; ops.push({ k: 'hatch', p }); }
+    else ops.push({ k: 'wait', p, need: hatched ? 'hatches next time' : needText(PRICE.hatchE - h.e, PRICE.hatchS - h.s, 0) });
+  }
+  return ops;
+}
+function homeCopy(extraPods, mats) {
+  const H = S.home, h = { e: H.e + (mats ? mats.e : 0), d: H.d + (mats ? mats.d : 0), s: H.s + (mats ? mats.s : 0), studies: H.studies.slice(), pods: H.pods.map(p => Object.assign({}, p)) };
+  for (const p of extraPods || []) h.pods.push(Object.assign({ idd: 0 }, p));
+  return h;
+}
+// The Cargo screen's preview of what sending home will do.
+function sendPreview() {
+  const ex = S.exp, newPods = ex.cargo.pods.map(p => ({ sp: p.sp, g: p.g, how: p.how, fresh: 1 })), ops = stationPlan(homeCopy(newPods, ex.cargo));
+  const out = []; const ids = ops.filter(o => o.k === 'id' && o.p.fresh).length, idWait = ops.filter(o => o.k === 'wait' && o.p.fresh && !o.p.idd).length;
+  if (ids) out.push(numWord(ids) + ' pod' + (ids > 1 ? 's' : '') + ' to identify');
+  if (idWait) out.push(numWord(idWait) + ' pod' + (idWait > 1 ? 's wait' : ' waits') + ' · needs Energy');
+  for (const o of ops) { const nm = o.p && (o.p.fresh && !S.known.includes(o.p.sp) ? 'a new pod' : (S.known.includes(o.p.sp) ? SPECIES[o.p.sp].name.toLowerCase() + ' pod' : 'a pod'));
+    if (o.k === 'hatch') out.push(nm + ' can hatch');
+    else if (o.k === 'wait' && o.p.idd) out.push(o.need === 'hatches next time' ? 'one more waits its turn' : nm + ' ' + o.need); }
+  if (ops.some(o => o.k === 'study')) out.push('a study can be read');
+  const h = homeCopy([], ex.cargo); if (S.tier < 2 && h.e >= PRICE.tier2E && h.d >= PRICE.tier2D) out.push('Probe tier 2 is ready');
+  if (!out.length) out.push(ex.cargo.e || ex.cargo.d || ex.cargo.s ? 'supplies go into the Station' : 'nothing to bring home yet');
+  return out;
+}
 function endExpedition(reason) {
   const ex = S.exp; if (!ex) return;
-  const pod = ex.cargo.pod;
-  const rep = { reason, n: ex.n, items: [], pod: null, discovery: null, hatch: null, lines: [] };
-  for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) rep.items.push({ k, text: '+' + ex.cargo[k] + ' ' + name });
-  S.home.e += ex.cargo.e; S.home.d += ex.cargo.d; S.home.s += ex.cargo.s;
-  logEv(reason === 'hull' ? 'Probe damaged · cargo sent home' : 'Sent home · ' + ex.actions + ' actions');
-  if (pod) {
-    const newSp = !S.known.includes(pod.sp); if (newSp) S.known.push(pod.sp);
-    rep.pod = { sp: pod.sp, g: pod.g, how: pod.how, newSp };
+  const broke = reason === 'break', H = S.home;
+  const rep = { reason, n: ex.n, items: [], lost: [], pods: [], ops: [], hatch: null, lines: [], upgrade: false, upgraded: false };
+  for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
+  if (!broke) { H.e += ex.cargo.e; H.d += ex.cargo.d; H.s += ex.cargo.s; }
+  logEv(broke ? 'Probe broke · pods sent home, carried supplies lost' : 'Sent home · ' + ex.actions + ' actions');
+  for (const pod of ex.cargo.pods) {
+    H.pods.push({ sp: pod.sp, g: pod.g, how: pod.how, idd: 0, n: ex.n, fresh: 1 });
     const disc = ['shake', 'calm', 'meal', 'slab', 'curl'].includes(pod.how) ? pod.how : null;
-    if (disc && !S.found.includes(disc)) { S.found.push(disc); rep.discovery = disc === 'slab' ? 'Pods sometimes hide under slabs.' : disc === 'curl' ? SPECIES[1].learnCurl : SPECIES[pod.sp].learn; }
-    // A pod of a species you don't raise yet incubates into a mibi; others wait at the Station.
-    if (!S.mibis.some(m => m.sp === pod.sp)) {
-      const m = { id: S.mibis.length + 1, name: MIBI_NAMES[S.mibis.length] || 'Mibi ' + (S.mibis.length + 1), sp: pod.sp, from: ex.n };
-      S.mibis.push(m); rep.hatch = m; logEv('Incubated ' + m.name + ' · ' + SPECIES[m.sp].name);
-    } else S.home.pods.push({ sp: pod.sp, g: pod.g, n: ex.n });
+    if (disc && !S.found.includes(disc)) { S.found.push(disc); H.studies.push(disc === 'slab' ? 'Pods sometimes hide under slabs.' : disc === 'curl' ? SPECIES[1].learnCurl : SPECIES[pod.sp].learn); }
   }
+  // The Station works through its store: identify, study, hatch one founder.
+  const plan = stationPlan(homeCopy());
+  for (const o of plan) {
+    const p = o.p && H.pods.find(q => q.sp === o.p.sp && q.g === o.p.g && q.n === o.p.n && q.how === o.p.how && !q.done);
+    if (o.k === 'id' && p) { H.e -= PRICE.identify; p.idd = 1; p.done = 1; const newSp = !S.known.includes(p.sp); if (newSp) S.known.push(p.sp); rep.ops.push({ k: 'id', p: Object.assign({}, p), newSp }); }
+    else if (o.k === 'study') { H.d -= PRICE.study; H.studies.shift(); rep.ops.push(o); }
+    else if (o.k === 'hatch') { const q = H.pods.find(x => x.idd && x.sp === o.p.sp);
+      H.e -= PRICE.hatchE; H.s -= PRICE.hatchS; H.pods.splice(H.pods.indexOf(q), 1);
+      const m = { id: S.mibis.length + 1, name: MIBI_NAMES[S.mibis.length] || 'Mibi ' + (S.mibis.length + 1), sp: q.sp, from: ex.n, born: S.turn };
+      S.mibis.push(m); rep.hatch = Object.assign({ g: q.g }, m); logEv('Hatched ' + m.name + ' · ' + SPECIES[m.sp].name);
+      if (S.rider == null || isAdult(mibiById(S.rider))) S.rider = m.id; }   // the newest juvenile rides in the Companion
+    else rep.ops.push(o);
+  }
+  for (const p of H.pods) { delete p.done; delete p.fresh; }
+  rep.home = { e: H.e, d: H.d, s: H.s };
+  rep.upgrade = S.tier < 2 && H.e >= PRICE.tier2E && H.d >= PRICE.tier2D;
   if (ex.carry === 'fruit') ex.carry = null;
   const pending = { trail: [...new Set(ex.trail)], storm: Object.keys(ex.stormCells).map(Number) };
+  const rc = reachCounts();
+  S.hist.push({ n: ex.n, reason, actions: ex.actions, e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, pods: ex.cargo.pods.length, rev: ex.stats.rev, lit: ex.stats.lit,
+    hits: ex.stats.hits, done: ex.saidDone || 0, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length });
+  if (S.hist.length > 40) S.hist.shift();
   S.exp = null; S.report = rep;
   rep.lines = worldTurn(pending);
   S.phase = 'station'; S.ui.stPage = 0; transition(); save();
+}
+function stationPages() { const r = S.report; if (!r) return ['cargo']; const p = ['cargo']; if (r.hatch) p.push('hatch'); if (r.upgrade || r.upgraded) p.push('upgrade'); return p; }
+function upgradeProbe() {
+  const H = S.home; if (S.tier >= 2 || H.e < PRICE.tier2E || H.d < PRICE.tier2D) return;
+  H.e -= PRICE.tier2E; H.d -= PRICE.tier2D; S.tier = 2; S.report.upgraded = true; S.report.home = { e: H.e, d: H.d, s: H.s };
+  logEv('Probe upgraded to tier 2'); FX.transAt = NOW;
 }
 function dirWord(dx, dy, n) {
   const ax = dx / n, ay = dy / n, ns = ay < -.15 ? 'north' : ay > .15 ? 'south' : '', ew = ax > .15 ? 'east' : ax < -.15 ? 'west' : '';
@@ -1374,10 +1655,10 @@ function worldTurn(pending) {
     if (!passable(c) || G.land[c] === L.WATER) continue;
     const key = String(c), lay = layout(key); let hit = false;
     for (const f of lay.feats) {
-      if (f.kind === 'k' && R.chance(.6)) { setFS(key, f.id, { ch: stoneCharge(key, f) + 2 }); hit = true; }
+      if (f.kind === 'k' && R.chance(.6)) { setFS(key, f.id, { ch: Math.max(2, stoneCharge(key, f)), sn: 0 }); hit = true; }
       if (f.kind === 'u') setFS(key, f.id, { full: true });
     }
-    if (hit) charged.push(c);
+    if (hit) { charged.push(c); delete S.clean[c]; }
   }
   // A bloom passes through somewhere the player wasn't; bare bushes bear fruit again.
   const far = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && farFromPlayer(c)) far.push(c);
@@ -1388,7 +1669,7 @@ function worldTurn(pending) {
   const occupied = [...new Set(S.cr.filter(w => !w.cv && G.comp[w.c] && farFromPlayer(w.c)).map(w => w.c))];
   const nPods = 2 + R.int(2);
   for (let i = 0; i < nPods && occupied.length; i++) { const c = R.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
-    S.pods.push({ id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, g: groundName(G.land[c], false), how: 'ground' }); newPods.push(c); }
+    S.pods.push({ id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); newPods.push(c); delete S.clean[c]; }
   const families = occupied.filter(c => [0, 1, 2].some(sp => S.cr.filter(w => w.c === c && w.sp === sp && !w.cv).length >= 2));
   const nYoung = 1 + R.int(2);
   let nextCr = S.cr.reduce((m, w) => Math.max(m, w.id), 0) + 1;
@@ -1397,9 +1678,12 @@ function worldTurn(pending) {
     S.cr.push({ id: nextCr, sp, c, cv: 0, b: Math.round(rnd(S.seed, 'bold', nextCr) * 100) / 100, s: 0, young: 1 }); nextCr++; young.push({ sp, c }); }
   S.turn++; S.expN++;
   indexCreatures();
+  const grown = S.mibis.filter(m => S.turn - (m.born || 0) === JUVENILE_TURNS), aged = S.mibis.filter(m => S.turn - (m.born || 0) === JUVENILE_TURNS + ELDER_TURNS);
   for (const c of newPods) if (S.revealed[c]) recordSigns(c);
   // Two or three plain lines a player would care about.
   const lines = [];
+  for (const m of grown) lines.push(m.name + ' is grown · can come along on expeditions.');
+  for (const m of aged) lines.push(m.name + ' is an elder now · slower, with keener senses.');
   // Movement: a species you know first; a direction only when the herd really drifted one way.
   const moves = [0, 1, 2].filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
     .filter(o => o.dw || o.known).sort((a, b) => (b.known - a.known) || (!!b.dw - !!a.dw) || (mv[b.sp].n - mv[a.sp].n));
@@ -1529,7 +1813,7 @@ const GLYPHS = {
   ':': '.|.|.|#|.|.|#', ';': '.|.|.|#|.|.|#|#', '·': '.|.|.|.|#|.|.', '-': '...|...|...|...|###|...|...', '+': '...|...|.#.|.#.|###|.#.|.#.',
   "'": '#|#|.|.|.|.|.', '"': '#.#|#.#|...|...|...|...|...', '(': '.#|#.|#.|#.|#.|#.|.#', ')': '#.|.#|.#|.#|.#|.#|#.', '/': '..#|..#|.#.|.#.|.#.|#..|#..',
   '…': '.....|.....|.....|.....|.....|.....|#.#.#', '→': '......|......|...#..|....#.|######|....#.|...#..', '←': '......|......|..#...|.#....|######|.#....|..#...',
-  '×': '.....|.....|#...#|.#.#.|..#..|.#.#.|#...#', '%': '##..#|##.#.|...#.|..#..|.#...|.#.##|#..##', '#': '.#.#.|#####|.#.#.|.#.#.|.#.#.|#####|.#.#.',
+  '×': '.....|.....|#...#|.#.#.|..#..|.#.#.|#...#', '✓': '......#|.....##|....##.|##.##..|.###...|..#....|.......', '%': '##..#|##.#.|...#.|..#..|.#...|.#.##|#..##', '#': '.#.#.|#####|.#.#.|.#.#.|.#.#.|#####|.#.#.',
 };
 const GLYPH_ALIAS = { '’': "'", '‘': "'", '“': '"', '”': '"', '–': '-', '—': '-' };
 const FONT = {};
@@ -1668,10 +1952,12 @@ const SLAB = () => art('slab', () => { const pb = new PB(32, 32);
   pb.poly([[4, 10], [28, 10], [29, 26], [3, 26]], C.rock); pb.poly([[4, 10], [28, 10], [28, 16], [4, 16]], C.rockL);
   pb.rect(3, 24, 27, 2, C.stone); pb.line(12, 11, 15, 17, C.stone); pb.line(15, 17, 13, 22, C.stone); pb.set(5, 11, C.white);
   pb.outline(); return pb; });
-function humArt(rung, fr) {
-  return art('hum' + rung + fr, () => { const pb = new PB(32, 32);
-    pb.ell(16, 18, 7.5, 11, C.lilac, { sh: [C.lavender, C.plum] }); pb.rect(9, 18, 15, 10, C.lilac); pb.rect(21, 18, 3, 10, C.plum); pb.rect(9, 18, 2, 10, C.lavender);
-    const g = rung ? C.plum : fr ? C.white : C.cream; pb.rect(12, 12, 8, 2, g); pb.rect(12, 17, 5, 2, g); pb.rect(12, 22, 8, 2, g);
+// Survey cairn: a stack of flat stones with a little flag once climbed.
+function cairnArt(up) {
+  return art('cairn' + up, () => { const pb = new PB(32, 32);
+    pb.ell(16, 27, 11, 3.5, C.stone); pb.ell(16, 25, 10, 3.6, C.rock, { sh: [C.rockL, C.stone] }); pb.ell(15, 19.5, 8, 3.2, C.rock, { sh: [C.rockL, C.stone] });
+    pb.ell(17, 14.5, 6, 2.8, C.rock, { sh: [C.rockL, C.stone] }); pb.ell(16, 10, 3.8, 2.4, C.rockL, { sh: [C.white, C.rock] });
+    if (up) { pb.rect(16, 1, 1, 8, C.bone); pb.poly([[17, 1], [24, 3], [17, 5]], C.orange); }
     pb.outline(); return pb; });
 }
 function cupArt(full, cave) {
@@ -1756,7 +2042,6 @@ const ICON = {
   beat: (fr) => art('i-beat' + fr, () => { const pb = new PB(23, 17); pb.ell(11.5, 8.5, 3, 3, C.pink, { sh: [C.blush, C.magenta] });
     for (const r of fr ? [6, 9.5] : [6.5, 10.5]) for (let a = -.9; a <= .9; a += .06) { pb.set(11.5 + Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); pb.set(11.5 - Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); }
     pb.outline(() => C.wine); return pb; }),
-  rings: () => art('i-rings', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 5.4, 5.4, C.yellow, { clip: (x, y) => Math.hypot(x + .5 - 5.5, y + .5 - 5.5) > 3.6 }); pb.rect(4, 4, 3, 3, C.yellow); return pb; }),
   pin: () => art('i-pin', () => { const pb = new PB(16, 22); pb.rect(2, 1, 2, 20, C.bone); pb.poly([[4, 1], [15, 5.5], [4, 10]], C.orange); pb.poly([[4, 6], [15, 5.5], [4, 10]], C.rust); pb.ell(3, 20, 3, 1.5, C.slate); pb.outline(() => C.void); return pb; }),
   start: () => art('i-start', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 5.4, 5.4, C.bone, { clip: (x, y) => Math.hypot(x + .5 - 5.5, y + .5 - 5.5) > 3.8 }); return pb; }),
   arrow: (dir) => art('i-arr' + dir, () => { const pb = new PB(9, 13); pb.poly([[0, 0], [9, 6.5], [0, 13]], C.yellow); pb.outline(() => C.rust); return dir < 0 ? flipPB(pb) : pb; }),
@@ -1764,6 +2049,11 @@ const ICON = {
   wave: () => art('i-wave', () => { const pb = new PB(16, 12); for (const y0 of [3, 8]) for (let x = 0; x < 16; x++) pb.set(x, y0 + Math.round(Math.sin(x * .8) * 1.4), C.sky); return pb; }),
   burrow: (lit) => art('i-burrow' + lit, () => { const pb = new PB(16, 14); pb.ell(8, 12, 7.5, 9, lit ? C.clay : C.stone, { clip: (x, y) => y < 13 }); pb.ell(8, 13, 4, 7, lit ? C.void : C.night, { clip: (x, y) => y < 13 }); pb.rect(0, 13, 16, 1, lit ? C.bark : C.slate); if (lit) pb.rect(7, 10, 2, 2, C.yellow); return pb; }),
   mini: (sp) => art('i-mini' + sp, () => { const k = SPECIES[sp].col, pb = new PB(12, 12); pb.ell(6, 6.5, 4.6, 4.4, C[k.body], { sh: [C[k.light], C[k.shade]] }); pb.rect(7, 5, 1, 2, C.void); pb.outline(() => C.orange); return pb; }),
+  tick: (col) => art('i-tick' + col, () => { const pb = new PB(11, 9); for (const [x, y] of [[0, 4], [1, 5], [2, 6], [3, 7], [4, 6], [5, 5], [6, 4], [7, 3], [8, 2], [9, 1], [10, 0]]) pb.rect(x, y, 1, 2, C[col]); pb.outline(() => C.ink); return pb; }),
+  pip: () => art('i-pip', () => { const pb = new PB(5, 5); pb.rect(1, 1, 3, 3, C.white); pb.outline(() => C.ink); return pb; }),
+  call: (col) => art('i-call' + col, () => { const pb = new PB(14, 14), c = C[col]; pb.rect(0, 6, 2, 2, c);
+    for (const r of [4, 8, 12]) for (let a = -.85; a <= .85; a += .05) pb.set(Math.round(1 + Math.cos(a) * r), Math.round(7 + Math.sin(a) * r * .9), c); return pb; }),
+  tuft: () => art('i-tuft', () => { const pb = new PB(14, 10); pb.ell(7, 6, 6, 3.6, C.lavender, { sh: [C.white, C.lilac] }); for (const x of [3, 6, 9, 11]) pb.line(x, 4, x - 1, 1, C.lavender); pb.outline(() => C.plum); return pb; }),
   pawn: (dir) => art('i-pawn' + dir, () => { const pb = new PB(16, 17), [dx, dy] = DIRS[dir];
     pb.ell(8, 8, 6, 6, C.orange, { sh: [C.amber, C.rust] }); pb.ell(8 + dx * 2.5, 7.5 + dy * 2.5, 2.6, 2.6, C.blush); pb.rect(11, 0, 1, 3, C.slate); pb.set(12, 0, C.yellow);
     pb.outline(() => C.void); return pb; }),
@@ -1932,11 +2222,14 @@ const RM = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : 
 const motion = () => !RM.matches;
 const R = (x, y, w, h, c) => { g.fillStyle = HEX[c]; g.fillRect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); };
 const blit = (pb, x, y, rm, flip, chk) => g.drawImage(pb.canvas(rm, flip, chk), Math.round(x), Math.round(y));
-function text(str, x, y, col, s, align) {
+function text(str, x, y, col, s, align, tight) {
   s = s || 2; x = Math.round(x); y = Math.round(y);
-  if (align === 'center') x -= Math.round(textW(str, s) / 2); else if (align === 'right') x -= textW(str, s);
-  for (const ch of str) { const gl = glyphOf(ch); if (ch !== ' ') g.drawImage(glyphCanvas(ch, col, s), x, y); x += (gl.w + 1) * s; }
+  const w = tight ? textWT(str, s) : textW(str, s);
+  if (align === 'center') x -= Math.round(w / 2); else if (align === 'right') x -= w;
+  for (const ch of str) { const gl = glyphOf(ch); if (ch !== ' ') g.drawImage(glyphCanvas(ch, col, s), x, y); x += tight ? gl.w * s + 1 : (gl.w + 1) * s; }
 }
+// Tight setting: glyphs keep their 2× pixels but sit 1 px apart, so the bottom line holds its three parts.
+function textWT(str, s) { s = s || 2; let w = 0; for (const ch of str) w += glyphOf(ch).w * s + 1; return Math.max(0, w - 1); }
 // A pixel panel with cut corners.
 function panel(x, y, w, h, fill, border) {
   if (border != null) { R(x + 2, y, w - 4, h, border); R(x + 1, y + 1, w - 2, h - 2, border); R(x, y + 2, w, h - 4, border); x++; y++; w -= 2; h -= 2; }
@@ -1970,7 +2263,7 @@ function shakeOff() {
   const a = NOW - FX.hitAt; if (a < 0 || a > 260 || !motion()) return [0, 0];
   return [[3, 0], [-3, 1], [2, -1], [-2, 0], [1, 1], [-1, 0]][Math.floor(a / 45) % 6];
 }
-function hitFrame() { // a short bright frame on a hull hit; a steady border instead when motion is reduced
+function hitFrame() { // a short bright frame on a shield hit; a steady border instead when motion is reduced
   const a = NOW - FX.hitAt; if (a < 0 || a > 420) return;
   if (motion() && a < 90) { for (const [x, y, w, h] of [[0, VIEW_Y, SCR_W, 6], [0, VIEW_Y + VIEW_H - 6, SCR_W, 6], [0, VIEW_Y, 6, VIEW_H], [SCR_W - 6, VIEW_Y, 6, VIEW_H]]) R(x, y, w, h, C.cream); }
   else for (const [x, y, w, h] of [[0, VIEW_Y, SCR_W, 3], [0, VIEW_Y + VIEW_H - 3, SCR_W, 3], [0, VIEW_Y, 3, VIEW_H], [SCR_W - 3, VIEW_Y, 3, VIEW_H]]) R(x, y, w, h, C.coral);
@@ -1990,21 +2283,21 @@ function viewBg(col) {
 }
 
 // ===================== 12. World map =====================
-let mapCv = null, mapCvDark = null, fogCv = null, fogCvDark = null, mapSeed = null;
-function ensureMap() { if (!mapCv || mapSeed !== G.seed) { const pb = buildMapPB(), fp = buildFogPB(G.seed); mapCv = pb.canvas(0); mapCvDark = pb.canvas(1); fogCv = fp.canvas(0); fogCvDark = fp.canvas(1); mapSeed = G.seed; } }
+let mapCv = null, mapCvDark = null, mapCvFade = null, fogCv = null, fogCvDark = null, mapSeed = null;
+function ensureMap() { if (!mapCv || mapSeed !== G.seed) { const pb = buildMapPB(), fp = buildFogPB(G.seed); mapCv = pb.canvas(0); mapCvDark = pb.canvas(1); mapCvFade = pb.canvas(4); fogCv = fp.canvas(0); fogCvDark = fp.canvas(1); mapSeed = G.seed; } }
 // What one start glint promises: a sign genuinely in its 3x3 (slow beat, tracks, rings). Where a glint has
 // more than one, it shows the one the other glints show least, so the starts read differently.
 const spawnSignCache = new Map();
 function spawnSignsFor(c) {
   const p = cxy(c); let b = 0, n = 0, r = 0;
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const q = y * MW + x;
-    const s = cellSigns(q); b += s.b; r += s.r; n += S.cr.filter(w => w.c === q && !w.cv).length; }
-  return [b && 'b', n >= 3 && 't', r && 'r'].filter(Boolean);   // strongest first
+    const s = cellSigns(q); b += s.b; n += S.cr.filter(w => w.c === q && !w.cv).length; }
+  return [b && 'b', n >= 3 && 't'].filter(Boolean);   // strongest first
 }
 function spawnSign(c) {
   const k = S.seed + ':' + c;
   if (!spawnSignCache.has(k)) {
-    const opts = new Map(G.spawns.map(q => [q, spawnSignsFor(q)])), used = { b: 0, t: 0, r: 0 };
+    const opts = new Map(G.spawns.map(q => [q, spawnSignsFor(q)])), used = { b: 0, t: 0 };
     // glints with the fewest options choose first; each takes the least-shown sign it really has
     for (const q of [...G.spawns].sort((x, y) => opts.get(x).length - opts.get(y).length || x - y)) {
       const o = opts.get(q); let v = null;
@@ -2014,20 +2307,32 @@ function spawnSign(c) {
   }
   return spawnSignCache.get(k);
 }
-const SIGN_WORD = { b: 'slow beat nearby', t: 'tracks nearby', r: 'rings nearby' };
-// Signs worth drawing this turn: pins and the deep ? always; then beats, the strongest known-species tracks,
-// unknown tracks and rings, until about 40% of the revealed cells carry a sign.
+const SIGN_WORD = { b: 'slow beat', t: 'tracks' };
+// Exactly five signs: paw (tracks), beat (often a pod), bolt (storm charge), pin, and a gate's own shape
+// (narrow hole, fast water, deep ?). Signs on cleared cells and inside a fog bank are not drawn.
+// Pins and gates always show; then beats, charge and the strongest tracks, up to about 40% of revealed cells.
 function mapSigns() {
-  const out = new Map(), add = (c, kind, pri, extra) => { let e = out.get(c); if (!e) { e = { c, pri: 0, list: [] }; out.set(c, e); } e.list.push(Object.assign({ kind }, extra || {})); e.pri = Math.max(e.pri, pri); };
-  for (const k in S.signs) { const c = +k, s = S.signs[k], age = S.turn - s.t; if (age > 1) continue; const rm = age ? 4 : 0;
-    if (s.d) add(c, 'd', 9, { rm }); if (s.b) add(c, 'b', 5, { rm });
-    if (s.tr.some(sp => !S.known.includes(sp))) add(c, 'u', 3, { rm }); if (s.r) add(c, 'r', 1, { rm }); }
-  for (const sp of S.known) { const n = {}; for (const w of S.cr) if (w.sp === sp && !w.cv && S.revealed[w.c]) n[w.c] = (n[w.c] || 0) + 1;
-    Object.keys(n).filter(c => n[c] >= 2).sort((a, b) => n[b] - n[a] || a - b).slice(0, 3).forEach(c => add(+c, 'k', 4, { sp })); }
-  for (const p of S.pins) add(p.c, 'pin', 10);
+  const out = new Map(), add = (c, kind, pri, extra) => { let e = out.get(c); if (!e) { e = { c, pri: 0, list: [] }; out.set(c, e); } if (e.list.some(q => q.kind === kind)) return; e.list.push(Object.assign({ kind }, extra || {})); e.pri = Math.max(e.pri, pri); };
+  const hide = c => isCleared(c) || (S.exp && inFog(c));
+  for (const p of S.pins) add(p.c, p.k === 'own' ? 'pin' : p.k, 10);
+  for (const k in S.signs) { const c = +k, s = S.signs[k], age = S.turn - s.t; if (age > 1 || hide(c)) continue; const rm = age ? 4 : 0;
+    if (s.d && !S.deepRead) add(c, 'deep', 9, { rm }); if (s.b) add(c, 'b', 5, { rm }); if (s.k) add(c, 'k', 4, { rm });
+    if (s.tr.some(sp => !S.known.includes(sp))) add(c, 't', 3, { rm }); }
+  for (const sp of S.known) { const n = {}; for (const w of S.cr) if (w.sp === sp && !w.cv && S.revealed[w.c] && !hide(w.c)) n[w.c] = (n[w.c] || 0) + 1;
+    Object.keys(n).filter(c => n[c] >= 2).sort((a, b) => n[b] - n[a] || a - b).slice(0, 3).forEach(c => add(+c, 't', 4, { sp })); }
   const revealed = S.revealed.reduce((a, v) => a + v, 0), cap = Math.max(3, Math.floor(revealed * .4));
   const all = [...out.values()].sort((a, b) => b.pri - a.pri || a.c - b.c);
   return all.filter((e, i) => e.pri >= 9 || i < cap);
+}
+function signsAt(c) { const e = mapSigns().find(q => q.c === c); return e ? e.list.map(q => q.kind) : []; }
+function drawSign(kind, s, px, py, fr) {
+  if (kind === 't') { const col = s.sp != null ? SPECIES[s.sp].col.body : 'bone'; blit(ICON.paw(col), px + 2, py + 15, s.rm); blit(ICON.paw(col), px + 8, py + 9, s.rm); }
+  else if (kind === 'b') blit(ICON.beat(s.rm ? 0 : fr), px + 2, py, s.rm);
+  else if (kind === 'k') blit(ICON.bolt(), px + 13, py + 2, s.rm);
+  else if (kind === 'deep') blit(BADGE(), px + 4, py + 4, s.rm);
+  else if (kind === 'burrow') blit(ICON.burrow(0), px + 5, py + 6);
+  else if (kind === 'water') blit(ICON.wave(), px + 5, py + 7);
+  else if (kind === 'pin') blit(ICON.pin(), px + 5, py - 2);
 }
 function drawMap(mode, t) {
   ensureMap(); const ex = S.exp, fr = motion() ? Math.floor(t * 2) % 2 : 0;
@@ -2045,21 +2350,20 @@ function drawMap(mode, t) {
   // fog: land you haven't seen
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = ox + x * CELL, py = oy + y * CELL;
-    if (!S.revealed[c]) { const inBand = x * CELL >= bx0 && x * CELL < bx1; g.drawImage(inBand ? fogCvDark : fogCv, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL); continue; }
+    const inBand = x * CELL >= bx0 && x * CELL < bx1;
+    if (!S.revealed[c]) { g.drawImage(inBand ? fogCvDark : fogCv, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL); continue; }
+    if (!S.visited[c] && !inBand) g.drawImage(mapCvFade, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL);   // seen, never visited: muted
     let m = 0; [[0, -1], [1, 0], [0, 1], [-1, 0]].forEach(([dx, dy], i) => { const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < MW && Y < MH && !S.revealed[Y * MW + X]) m |= 1 << i; });
     if (m) blit(fogEdgeArt(m), px, py);
   }
   // signs: last seen this turn (bright) or last turn (faded); older ones are gone
   const signs = mapSigns();
-  for (const e of signs) { const { x, y } = cxy(e.c), px = ox + x * CELL, py = oy + y * CELL; let kOff = 0;
-    for (const s of e.list) {
-      if (s.kind === 'u') { blit(ICON.paw('bone'), px + 2, py + 15, s.rm); blit(ICON.paw('bone'), px + 8, py + 9, s.rm); }
-      else if (s.kind === 'k') { blit(ICON.paw(SPECIES[s.sp].col.body), px + 2 + kOff, py + 16); blit(ICON.paw(SPECIES[s.sp].col.body), px + 7 + kOff, py + 11); kOff += 9; }
-      else if (s.kind === 'b') blit(ICON.beat(s.rm ? 0 : fr), px + 2, py, s.rm);
-      else if (s.kind === 'r') blit(ICON.rings(), px + 14, py + 14, s.rm);
-      else if (s.kind === 'd') blit(BADGE(), px + 4, py + 4, s.rm);
-    } }
-  if (S.opened[G.gate] && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 9, oy + p.y * CELL + 1); }
+  // visited cells: a white pip per thing left (up to 3), or a tick once cleared
+  for (let c = 0; c < MW * MH; c++) { if (!S.visited[c] || !passable(c)) continue; const { x, y } = cxy(c), px = ox + x * CELL, py = oy + y * CELL;
+    if (isCleared(c)) blit(ICON.tick('mint'), px + 14, py + 16); else { const n = pipsOf(c); for (let i = 0; i < n; i++) blit(ICON.pip(), px + 20 - i * 6, py + 20); } }
+  for (const e of signs) { const { x, y } = cxy(e.c), px = ox + x * CELL, py = oy + y * CELL;
+    for (const s of e.list) if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
+  if (S.opened[G.gate] && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
   // storm band: rain, edges, a lightning mark and the direction it travels
   if (bx1 > bx0) {
     for (let i = 0; i < 46; i++) { const h = hash(5, i), rx = bx0 + h % (bx1 - bx0), ry = ((h >>> 9) % (MH * CELL) + (motion() ? Math.floor(t * 140) : 0)) % (MH * CELL);
@@ -2088,12 +2392,17 @@ function drawMap(mode, t) {
       const n = Math.max(Math.abs(bx - ax), Math.abs(by - ay)); for (let k = 0; k < n; k += 5) g.fillRect(Math.round(ax + (bx - ax) * k / n), Math.round(ay + (by - ay) * k / n), 2, 2); }
     const s0 = cxy(ex.start); blit(ICON.start(), ox + s0.x * CELL + 7, oy + s0.y * CELL + 7);
   }
-  for (const pin of S.pins) { const p = cxy(pin.c); blit(ICON.pin(), ox + p.x * CELL + 5, oy + p.y * CELL - 2); }
+  for (const pin of S.pins) if (pin.k === 'own') { const p = cxy(pin.c); blit(ICON.pin(), ox + p.x * CELL + 5, oy + p.y * CELL - 2); }
+  // the Probe's range: a dotted square around the start
+  if (ex) { const s0 = cxy(ex.start), r = ex.range, x0 = ox + Math.max(0, s0.x - r) * CELL, y0 = oy + Math.max(0, s0.y - r) * CELL,
+      x1 = ox + Math.min(MW, s0.x + r + 1) * CELL - 2, y1 = oy + Math.min(MH, s0.y + r + 1) * CELL - 2;
+    for (let xx = x0; xx <= x1; xx += 6) { R(xx, y0, 3, 2, C.amber); R(xx, y1, 3, 2, C.amber); }
+    for (let yy = y0; yy <= y1; yy += 6) { R(x0, yy, 2, 3, C.amber); R(x1, yy, 2, 3, C.amber); } }
   if (mode === 'place') {
     if (firstPlacement()) for (const c of G.spawns) { const p = cxy(c), big = motion() ? (Math.floor(t * 3 + c) % 2) : 1, a = sparkArt(big), px = ox + p.x * CELL, py = oy + p.y * CELL;
       blit(a, px + 13 - Math.floor(a.w / 2), py + 13 - Math.floor(a.h / 2));
       const sg = spawnSign(c); if (sg) { panel(px + 14, py - 12, 26, 20, C.ink, C.stone);
-        if (sg === 'b') blit(ICON.beat(fr), px + 16, py - 10); else if (sg === 't') { blit(ICON.paw('bone'), px + 17, py - 6); blit(ICON.paw('bone'), px + 25, py - 10); } else blit(ICON.rings(), px + 22, py - 7); } }
+        if (sg === 'b') blit(ICON.beat(fr), px + 16, py - 10); else { blit(ICON.paw('bone'), px + 17, py - 6); blit(ICON.paw('bone'), px + 25, py - 10); } } }
     const cur = S.ui.cur, p = cxy(cur), pu = motion() && Math.floor(t * 4) % 2 ? 1 : 0;
     brackets(ox + p.x * CELL - 3 - pu, oy + p.y * CELL - 3 - pu, CELL + 6 + pu * 2, CELL + 6 + pu * 2, placeValid(cur) ? C.amber : C.mist);
   } else if (ex) {
@@ -2102,7 +2411,7 @@ function drawMap(mode, t) {
     RT.mp = tween(RT.mp, p.x * CELL, p.y * CELL, 120);
     let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
     const face = ex.face || 'down', [fdx, fdy] = DIRS[face], cx = ox + RT.mp.x + 13 + bx, cy = oy + RT.mp.y + 13;
-    if (ex.pt) blit(ICON.mini(ex.pt.sp), cx - fdx * 9 - (fdx ? 6 : 12), cy - fdy * 9 - 2);
+    if (ex.pt) { const mx = cx - fdx * 9 - (fdx ? 6 : 12), my = cy - fdy * 9 - 2; blit(ICON.mini(ex.pt.sp), mx, my); if (ex.flinch === ex.actions + 1) blit(bubbleArt('!'), mx, my - 13); }
     blit(ICON.pawn(face), cx - 8, cy - 10);
   }
   g.restore();
@@ -2186,14 +2495,15 @@ function drawPatch(t) {
   }
   // y-sorted sprites
   const items = [];
-  for (const f of lay.feats) { if (!'bshuk'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * TS, y = p.y * TS; if (!vis2(x, y)) continue;
+  for (const f of lay.feats) { if (!'bsukj'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * TS, y = p.y * TS; if (!vis2(x, y)) continue;
     const rm = spriteRm(p.x, p.y); let a;
-    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'h') a = humArt(humRung(P.key, f), fr);
-    else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave); else a = stoneArt(stoneCharge(P.key, f) > 0 && !!live.seen[f.id], lay.cave, fr);
+    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = cairnArt(fs(P.key, f.id).up ? 1 : 0);
+    else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave); else a = stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), lay.cave, fr);
     const rr = f.kind === 'k' && lay.cave && stoneCharge(P.key, f) > 0 ? 0 : rm;
     items.push({ y: y + 1, d: () => blit(a, W(x), H(y), rr) }); }
 
   for (const f of live.fr) { const x = f.x * TS, y = f.y * TS; if (vis2(x, y)) items.push({ y: y + 3, d: () => blit(FRUIT(), W(x + 10), H(y + 14), spriteRm(f.x, f.y)) }); }
+  for (const f of live.tf) { const x = f.x * TS, y = f.y * TS; if (vis2(x, y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), W(x + 9), H(y + 16), spriteRm(f.x, f.y)) }); }
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * TS, c.y * TS, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y)) continue;
@@ -2203,8 +2513,8 @@ function drawPatch(t) {
     const cue = !!c.cue && ['idle', 'seek'].includes(c.st) && !(c.sp === 1 && c.calm >= 1);
     items.push({ y: nr.y + 4, d: () => drawCreature(c, W(nr.x), H(nr.y), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
   }
-  if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * TS, live.pt.y * TS, 150); const rp = RT.pt;
-    items.push({ y: rp.y + 4, d: () => drawPartner(ex.pt.sp, live.pt, W(rp.x), H(rp.y), t) }); }
+  if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * TS, live.pt.y * TS, ex.pt.elder ? 220 : 150); const rp = RT.pt;
+    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, W(rp.x), H(rp.y), t); if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), W(rp.x) + 11, H(rp.y) - 9); } }); }
   let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
   items.push({ y: RT.pl.y + 5, d: () => {
@@ -2224,10 +2534,12 @@ function drawPatch(t) {
     blit(roofArt(under ? 1 : 0), W(x - 4), H(y + TS * 2 - 10), overcast ? 1 : fogged ? 3 : 0); }
   // pods sit above the canopy layer so they can't hide under a tree
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * TS, y = p.y * TS; if (!vis2(x, y)) continue;
+    // a find your Call or partner turned up stays outlined until you take it
+    if (p.out) { const o = fr ? 0 : 1; for (let k = 2; k < TS - 2; k += 4) { R(W(x + k), H(y + 1 + o), 2, 2, C.cream); R(W(x + k), H(y + TS - 3 - o), 2, 2, C.cream); R(W(x + 1 + o), H(y + k), 2, 2, C.cream); R(W(x + TS - 3 - o), H(y + k), 2, 2, C.cream); } }
     blit(podArt(POD_SHELL[p.g] || 'bone', 1, p.sp), W(x + 8), H(y + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0)), spriteRm(p.x, p.y)); }
   // what Confirm will act on
   const act = patchAction();
-  if (act.label !== 'Pulse' && !act.label.startsWith('Hands')) { const f = frontOf(P); brackets(W(f.x * TS + 1), H(f.y * TS + 1), TS - 2, TS - 2, C.amber); }
+  if (act.run) { const f = frontOf(P); brackets(W(f.x * TS + 1), H(f.y * TS + 1), TS - 2, TS - 2, C.amber); }
   // the strike warning: a tile glows one action before lightning hits it
   if (live.strike) { const x = W(live.strike.x * TS), y = H(live.strike.y * TS), col = fr ? C.cream : C.yellow;
     ditherFill(x, y, TS, TS, 'yellow', 6); R(x, y, TS, 2, col); R(x, y + TS - 2, TS, 2, col); R(x, y, 2, TS, col); R(x + TS - 2, y, 2, TS, col);
@@ -2238,7 +2550,7 @@ function drawPatch(t) {
     circ(x, y, motion() ? 10 + Math.floor(age / 30) : 18, C.yellow); }
   for (const r of FX.rings) { const age = NOW - r.at; if (age < 0 || age > 900) continue;
     const a = sparkArt(!motion() || Math.floor(age / 120) % 2 === 0); blit(a, W(r.x * TS + 16) - Math.floor(a.w / 2), H(r.y * TS + 12) - Math.floor(a.h / 2)); }
-  if (FX.pulse) { const age = NOW - FX.pulse.at, cx = W(FX.pulse.x * TS + 16), cy = H(FX.pulse.y * TS + 16), maxR = 7 * TS;
+  if (FX.pulse) { const age = NOW - FX.pulse.at, cx = W(FX.pulse.x * TS + 16), cy = H(FX.pulse.y * TS + 16), maxR = (FX.pulse.r || 7) * TS;
     if (motion() && age < 520) { circ(cx, cy, 8 + (maxR - 8) * age / 520, C.ice); if (age > 110) circ(cx, cy, 8 + (maxR - 8) * (age - 110) / 520, C.sky, true); }
     else if (!motion() && age < 650) circ(cx, cy, maxR, C.ice, true); }
   if (FX.dig) { const age = NOW - FX.dig.at, x = W(FX.dig.x * TS + 16), y = H(FX.dig.y * TS + 26);
@@ -2283,34 +2595,60 @@ function drawPartner(sp, pt, x, y, t) {
   if (pt.st === 'dig') for (let i = 0; i < 5; i++) { const a = ((t * 6) + i / 5) % 1; R(f > 0 ? x + 4 - a * 12 : x + 26 + a * 12, y + 20 - Math.round(Math.sin(a * Math.PI) * 10), 2, 2, C.clay); }
 }
 
-// ===================== 14. HUD, action line, mode screens =====================
+// ===================== 14. HUD, bottom line, mode screens =====================
+// Call's meaning right now, for the top-right slot. Empty where Call does nothing.
+function callSlot() {
+  const ex = S.exp;
+  if (S.phase === 'patch' && ex && ex.patch) return { label: 'call' };
+  if (S.phase === 'map' && ex) return ownPin(ex.pos) ? { label: 'unpin' } : { label: 'pin 1', energy: true, dim: ex.cargo.e < PRICE.pin };
+  if (S.phase === 'companions') { const m = callTarget(); return m ? { label: 'call ' + m.name } : null; }
+  return null;
+}
+function drawCallSlot(cs, right) {
+  if (!cs) return right;
+  let rx = right; const col = cs.dim ? C.stone : C.mint;
+  if (cs.energy) { blit(ICON.energy(), rx - 14, 6, cs.dim ? 4 : 0); rx -= 16; }
+  text(cs.label, rx, 6, col, 2, 'right'); rx -= textW(cs.label, 2) + 5;
+  blit(ICON.call(cs.dim ? 'stone' : 'aqua'), rx - 14, 6); return rx - 24;
+}
+function shieldBars(x, y, n, max, w, h) {
+  for (let i = 0; i < max; i++) { const bx = x + i * (w + 3); if (i < n) { R(bx, y, w, h, C.bone); R(bx, y + h - 2, w, 2, C.fog); } else { R(bx, y, w, h, C.stone); R(bx + 1, y + 1, w - 2, h - 2, C.ink); } }
+}
+function podSlot(x, y, pod) {
+  if (pod) blit(podArt(POD_SHELL[pod.g] || 'bone', 1, pod.sp), x, y);
+  else for (let a = 0; a < 6.28; a += .3) R(x + 8 + Math.round(Math.cos(a) * 5), y + 10 + Math.round(Math.sin(a) * 7), 1, 1, C.stone);
+}
 function drawHUD() {
   const ex = S.exp; R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
-  const hull = ex ? ex.hull : 3;
-  for (let i = 0; i < 3; i++) { const x = 8 + i * 9; if (i < hull) { R(x, 7, 6, 12, C.bone); R(x, 17, 6, 2, C.fog); } else { R(x, 7, 6, 12, C.stone); R(x + 1, 8, 4, 10, C.ink); } }
-  const pod = ex && ex.cargo.pod;
-  if (pod) blit(podArt(POD_SHELL[pod.g] || 'bone', 1, pod.sp), 39, 3);
-  else for (let a = 0; a < 6.28; a += .32) R(47 + Math.round(Math.cos(a) * 5), 13 + Math.round(Math.sin(a) * 7), 1, 1, C.stone);
-  text(clipText(pod ? podTag(pod.sp) : 'no pod', 150, 2), 60, 6, pod ? C.bone : C.mist);
-  if (ex && ex.pt) { blit(ICON.mini(ex.pt.sp), 222, 7); text(ex.pt.name, 238, 6, C.amber); }
-  // supplies show only for a few actions after they change
-  const c = ex ? ex.cargo : { e: 0, d: 0, s: 0 };
-  [['energy', 'e'], ['data', 'd'], ['essence', 's']].forEach(([ic, k], i) => { const at = ex && ex.supAt[k];
-    if (at == null || ex.actions - at > 3) return; const x = 306 + i * 48; blit(ICON[ic](), x, 6); text('+' + c[k], x + 16, 6, C.bone); });
-  if (ex && ex.actions - ex.hitAt <= 5) { panel(4, HUD_H + 3, 92, 22, C.ink, C.coral); text('hull ' + ex.hull + '/3', 12, HUD_H + 7, C.bone); }
+  if (!ex) return;
+  shieldBars(8, 7, ex.shield, ex.smax, 6, 12);
+  let x = 8 + ex.smax * 9 + 6;
+  for (let i = 0; i < ex.hold; i++) { podSlot(x, 3, ex.cargo.pods[i]); x += 18; }
+  x += 6;
+  if (ex.pt) { blit(ICON.mini(ex.pt.sp), x, 7); text(ex.pt.name, x + 15, 6, C.amber); }
+  let rx = drawCallSlot(callSlot(), SCR_W - 8);
+  text(String(ex.cargo.e), rx, 6, C.bone, 2, 'right'); rx -= textW(String(ex.cargo.e), 2) + 3; blit(ICON.energy(), rx - 14, 6); rx -= 24;
+  const lvl = stormLevel(), fr = motion() ? Math.floor(NOW / 400) % 2 : 0;
+  for (let i = 0; i < lvl; i++) blit(ICON.bolt(lvl === 3 && fr ? 'cream' : 'yellow'), rx - 12 - i * 13, 5);
+  if (ex.actions - ex.hitAt <= 5) { panel(4, HUD_H + 3, 112, 22, C.ink, C.coral); text('Shield ' + ex.shield + '/' + ex.smax, 12, HUD_H + 7, C.bone); }
 }
-function drawTop(title, right) {
+function drawTop(title, right, cs) {
   R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
-  text(title, 10, 6, C.bone); if (right) text(clipText(right, SCR_W - 30 - textW(title), 2), SCR_W - 10, 6, C.mist, 2, 'right');
+  text(title, 10, 6, C.bone); const rx = drawCallSlot(cs, SCR_W - 10);
+  if (right) text(clipText(right, rx - 30 - textW(title), 2), rx, 6, C.mist, 2, 'right');
 }
-function drawLine(label, right) {
+// The bottom line, always three parts: ✓ what Confirm does · where you are · ← where Back goes.
+// Confirm and Back are never dropped; the middle shrinks, trying shorter forms, then dropping tail words.
+function drawLine(o) {
   const y = SCR_H - LINE_H; R(0, y, SCR_W, LINE_H, C.ink); R(0, y, SCR_W, 1, C.night);
-  blit(ICON.tri(), 10, y + 11);
-  const lab = clipText(label, 410, 2); text(lab, 24, y + 10, C.bone);
-  // the right side never truncates: it drops its tail words, then itself
-  if (right) { const avail = SCR_W - 10 - (24 + textW(lab) + 22); let r = right;
-    while (textW(r, 2) > avail && r.includes(' · ')) r = r.slice(0, r.lastIndexOf(r.includes(', ') ? ', ' : ' · '));
-    if (textW(r, 2) <= avail) text(r, SCR_W - 10, y + 10, C.mist, 2, 'right'); }
+  let x = 8; text('✓', x, y + 10, C.orange); x += textW('✓', 2) + 5;
+  text(o.ok, x, y + 10, o.dim ? C.stone : C.bone, 2, null, true); x += textWT(o.ok, 2) + 14;
+  let bx = SCR_W - 8;
+  if (o.back) { text(o.back, bx, y + 10, C.fog, 2, 'right', true); bx -= textWT(o.back, 2) + 4; text('←', bx, y + 10, C.fog, 2, 'right'); bx -= textW('←', 2); }
+  const avail = bx - 14 - x, cands = Array.isArray(o.ctx) ? o.ctx : [o.ctx || ''];
+  let r = cands.find(c => textWT(c, 2) <= avail);
+  if (r == null) { r = cands[cands.length - 1]; while (textWT(r, 2) > avail && r.includes(' · ')) r = r.slice(0, r.lastIndexOf(' · ')); if (textWT(r, 2) > avail) r = ''; }
+  if (r) text(r, x, y + 10, C.mist, 2, null, true);
 }
 // Short messages stay until the next action.
 function drawMessage() {
@@ -2327,9 +2665,11 @@ function card(x, y, w, h, sel, enabled) {
   if (sel) { panel(x + 1, y + 1, w - 2, h - 2, enabled ? C.paper : C.slate, C.orange); brackets(x - 6, y - 6, w + 12, h + 12, C.amber); }
 }
 function weatherIcon(x, y, lit) { blit(ICON.cloud(lit ? 1 : 0), x - 15, y - 14); blit(ICON.bolt(lit ? 'yellow' : 'mist'), x - 2, y); }
+const silhouette = sp => art('sil' + sp, () => { const a = creatureArt(sp, 'idle', 0), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C.slate; return pb; });
+function adults() { return S.mibis.filter(isAdult); }
 function drawSetup(t) {
   viewBg();
-  drawTop('Expedition ' + S.expN, S.turn ? 'world turn ' + S.turn : 'a new world');
+  drawTop('Expedition ' + S.expN, (S.turn ? 'world turn ' + S.turn : 'a new world') + ' · Probe tier ' + S.tier);
   text('Choose your expedition', SCR_W / 2, 42, C.fog, 2, 'center');
   const sel = S.ui.sel, dig = mibiWith('dig');
   card(20, 70, 410, 96, sel === 0, true);
@@ -2339,26 +2679,29 @@ function drawSetup(t) {
   disc(34, 200, 32, dig ? 'sand' : 'stone', dig ? 'clay' : 'slate'); blit(ICON.burrow(dig ? 1 : 0), 58, 224);
   text('Deep ground', 116, 204, dig ? C.ink : C.mist, 3); text(dig ? 'Burrows and caves · ' + dig.name + ' digs' : 'Needs a digging partner', 116, 242, dig ? C.stone : C.fog);
   text('Partner', 24, 306, C.mist);
-  const m = alongMibi();
+  const m = alongMibi(), pm = isAdult(m) ? m : null, rd = riderMibi();
   if (sel === 2) brackets(14, 324, 422, 116, C.amber);
-  if (m) { panel(20, 330, 410, 104, C.ink, C.slate);
-    blit(creatureArt(m.sp, 'idle', 0, 2), 30, 344); blit(RING(), 49, 398);
-    text(m.name, 112, 348, C.bone, 3); chip(112 + textW(m.name, 3) + 14, 348, 'along', 'orange', 'bone');
-    text(SPECIES[m.sp].name + ' · ' + SPECIES[m.sp].abText, 112, 392, C.fog); }
-  else if (S.mibis.length) { text('No partner along', 24, 340, C.bone); text('Back → Companions to bring ' + S.mibis[0].name, 24, 366, C.mist); }
-  else { text('No partner yet', 24, 340, C.bone); text('Your first pod home will hatch one.', 24, 366, C.mist); }
+  if (pm) { panel(20, 330, 410, 104, C.ink, C.slate);
+    blit(creatureArt(pm.sp, 'idle', 0, 2), 30, 344); blit(RING(), 49, 398);
+    text(pm.name, 112, 348, C.bone, 3); chip(112 + textW(pm.name, 3) + 14, 348, mibiStage(pm) === 'elder' ? 'elder' : 'along', 'orange', 'bone');
+    text(SPECIES[pm.sp].name + ' · ' + SPECIES[pm.sp].abText, 112, 392, C.fog); }
+  else if (adults().length) { text('No partner along', 24, 340, C.bone); text('Choose this row to bring ' + adults()[0].name, 24, 366, C.mist); }
+  else if (S.mibis.length) { text('No grown partner yet', 24, 340, C.bone); text('Young mibis grow up in two world turns.', 24, 366, C.mist); }
+  else { text('No partner yet', 24, 340, C.bone); text('Bring a pod home to hatch one.', 24, 366, C.mist); }
+  if (rd && rd !== pm) { blit(ICON.mini(rd.sp), 24, 455); text(rd.name + ' rides in the Companion', 42, 452, C.fog); }
 }
-// The mode list. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
+// The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
-  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'companions', label: 'Companions' }];
-  if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'wait', label: 'Wait' }, { id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }].concat(base);
-  if (from === 'map' && S.exp) return [{ id: 'wait', label: 'Wait' }].concat(base, [{ id: 'newworld', label: 'New world' }]);
+  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'companions', label: 'Companions' }], send = { id: 'send', label: 'Send home' };
+  if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'wait', label: 'Wait' }, { id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, send].concat(base);
+  if (from === 'map' && S.exp) return [{ id: 'wait', label: 'Wait' }, send].concat(base);
   return base.concat([{ id: 'newworld', label: 'New world' }]);
 }
 function menuIcon(id, x, y) {
   if (id === 'probe') blit(art('m-probe', () => { const pb = new PB(28, 28); pb.ell(14, 14, 13, 13, C.sky); pb.ell(14, 14, 11, 11, C.paper); pb.ell(14, 14, 7, 7, C.sky); pb.ell(14, 14, 5, 5, C.paper); pb.line(14, 14, 23, 6, C.sea, 2); pb.rect(18, 17, 3, 3, C.orange); return pb; }), x, y);
   else if (id === 'cargo') blit(art('m-cargo', () => { const pb = new PB(28, 28); pb.rect(2, 7, 24, 18, C.clay); pb.rect(2, 7, 24, 5, C.bark); pb.rect(12, 7, 4, 18, C.paper); pb.outline(); return pb; }), x, y);
+  else if (id === 'send') blit(art('m-send', () => { const pb = new PB(28, 28); pb.rect(2, 11, 20, 14, C.clay); pb.rect(2, 11, 20, 4, C.bark); pb.poly([[14, 9], [22, 1], [22, 6], [27, 6], [27, 12], [22, 12], [22, 17]], C.orange); pb.outline(); return pb; }), x, y);
   else if (id === 'companions') blit(art('m-comp', () => { const pb = new PB(28, 28); pb.ell(14, 18, 8, 6.5, C.slate); for (const [a, b] of [[5, 9], [11, 5], [17, 5], [23, 9]]) pb.ell(a, b, 3, 3.2, C.slate); return pb; }), x, y);
   else if (id === 'wait') blit(art('m-wait', () => { const pb = new PB(28, 28); pb.ell(14, 14, 12.5, 12.5, C.bone, { sh: [C.white, C.fog] }); pb.line(14, 14, 14, 6, C.ink, 2); pb.line(14, 14, 19, 17, C.ink, 2); pb.outline(() => C.stone); return pb; }), x, y);
   else if (id === 'leave') blit(art('m-leave', () => { const pb = new PB(28, 28); pb.poly([[4, 14], [14, 4], [14, 10], [24, 10], [24, 18], [14, 18], [14, 24]], C.sky); pb.outline(() => C.sea); return pb; }), x, y);
@@ -2366,8 +2709,8 @@ function menuIcon(id, x, y) {
 }
 function drawMenu(t) {
   const items = menuItems(), overPatch = S.ui.from === 'patch' && S.exp && S.exp.patch;
-  if (overPatch) drawPatch(t); else if (S.ui.from === 'map') drawMap('map', t); else drawSetup(t);
-  const rowH = overPatch ? 44 : 62, w = overPatch ? 250 : 330, x = overPatch ? SCR_W - w - 8 : 60, top = overPatch ? VIEW_Y + 8 : 120, sc = overPatch ? 2 : 3;
+  if (overPatch) drawPatch(t); else if (S.ui.from === 'map') drawMap('map', t); else if (S.ui.from === 'station') drawStation(t); else drawSetup(t);
+  const rowH = overPatch ? 44 : 62, w = overPatch ? 250 : 330, x = overPatch ? SCR_W - w - 8 : 60, top = overPatch ? VIEW_Y + 8 : 110, sc = overPatch ? 2 : 3;
   if (!overPatch) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 10);
   panel(x, top + 4, w, items.length * rowH + 20, C.void);
   panel(x, top, w, items.length * rowH + 20, C.paper, C.ink);
@@ -2376,57 +2719,79 @@ function drawMenu(t) {
     menuIcon(it.id, x + 24, y + rowH / 2 - 14);
     text(it.label, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8), it.id === 'newworld' ? C.rust : C.ink, sc); });
 }
+function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex.cargo.e >= PRICE.patch; }
 function drawProbe(t) {
-  viewBg(); drawTop('Probe', 'tier 1');
-  const hull = S.exp ? S.exp.hull : 3;
-  text('Hull', 24, 44, C.mist);
-  for (let i = 0; i < 3; i++) { const x = 24 + i * 18; if (i < hull) { R(x, 70, 12, 22, C.bone); R(x, 88, 12, 4, C.fog); } else { R(x, 70, 12, 22, C.stone); R(x + 2, 72, 8, 18, C.night); } }
-  text('Sweep 1 cell · detects', 100, 66, C.fog); text('as you walk', 100, 86, C.fog);
-  text('Signs on the map', 24, 124, C.mist);
+  const ex = S.exp, tier = tierOf(); viewBg(); drawTop('Probe', 'tier ' + S.tier);
+  text('Shield', 24, 40, C.mist);
+  shieldBars(24, 64, ex ? ex.shield : tier.shield, ex ? ex.smax : tier.shield, 12, 22);
+  text('Reaches ' + tier.range + ' cells from the start', 120, 40, C.fog); text('Carries ' + tier.hold + ' pods · sweeps 1 ring', 120, 62, C.fog);
+  text(ex ? (canPatch() ? '3 Energy mends one bar · ✓ to patch' : ex.shield >= ex.smax ? 'Shield is whole' : 'Patching needs 3 Energy · you have ' + ex.cargo.e) : 'Mended free at the Station', 120, 84, ex && canPatch() ? C.amber : C.stone);
+  text('Signs on the map', 24, 116, C.mist);
   const rows = [
-    [(x, y) => { blit(ICON.paw('bone'), x - 8, y); blit(ICON.paw('bone'), x - 1, y - 6); }, 'Tracks', 'creatures were here'],
-    [(x, y) => blit(ICON.beat(1), x - 8, y - 6), 'Slow beat', 'likely a pod'],
-    [(x, y) => blit(ICON.rings(), x - 5, y - 5), 'Rings', 'supplies to gather'],
-    [(x, y) => blit(BADGE(), x - 9, y - 9), 'Deep ?', 'beyond this Probe'],
-    [(x, y) => blit(ICON.pin(), x - 5, y - 8), 'Pin', 'a gate for later'],
-    [(x, y) => blit(ICON.bolt(), x - 6, y - 8), 'Storm', 'moves as you act'],
+    [(x, y) => { blit(ICON.paw('bone'), x - 8, y); blit(ICON.paw('bone'), x - 1, y - 6); }, 'Tracks', 'creatures live here'],
+    [(x, y) => blit(ICON.beat(1), x - 11, y - 8), 'Slow beat', 'often a pod'],
+    [(x, y) => blit(ICON.bolt(), x - 6, y - 8), 'Bolt', 'a stone holds charge'],
+    [(x, y) => blit(ICON.pin(), x - 5, y - 10), 'Pin', 'your mark · 1 Energy'],
+    [(x, y) => { blit(ICON.burrow(0), x - 14, y - 7); blit(BADGE(), x + 2, y - 9); }, 'Gate', 'a partner or tier 2'],
   ];
-  rows.forEach(([ic, a, b], i) => { const y = 150 + i * 34; panel(22, y, 32, 30, C.slate); ic(38, y + 15); text(a, 66, y + 8, C.bone); text(b, 192, y + 8, C.mist); });
-  text('Field guide', 24, 366, C.mist);
-  if (!S.known.length) text('No species identified yet', 24, 392, C.stone);
-  S.known.forEach((sp, i) => { const x = 24 + i * 140; blit(creatureArt(sp, 'idle', 0), x, 386); text(SPECIES[sp].name, x + 36, 398, C.bone); });
+  rows.forEach(([ic, a, b], i) => { const y = 140 + i * 34; panel(22, y, 36, 30, C.slate); ic(40, y + 15); text(a, 70, y + 8, C.bone); text(b, 196, y + 8, C.mist); });
+  text('Cells', 24, 316, C.mist);
+  const cs = [[() => { panel(22, 338, 36, 26, C.night); blit(ICON.pip(), 30, 349); blit(ICON.pip(), 38, 349); }, 'something left'], [() => { panel(22, 372, 36, 26, C.night); blit(ICON.tick('mint'), 35, 381); }, 'cleared after a Call']];
+  cs.forEach(([d, l], i) => { d(); text(l, 70, 342 + i * 34, C.fog); });
+  if (S.tier < 2) text('Tier 2 at the Station: 12 Energy + 8 Data', 24, 420, C.amber);
+  text('Field guide', 24, 450, C.mist);
+  if (!S.known.length) text('No species identified yet', 24, 476, C.stone);
+  S.known.forEach((sp, i) => { const x = 24 + i * 140; blit(creatureArt(sp, 'idle', 0), x, 470); text(SPECIES[sp].name, x + 36, 482, C.bone); });
+}
+function drawMats(c, y, cap) {
+  [['energy', 'Energy', c.e], ['data', 'Data', c.d], ['essence', 'Essence', c.s]].forEach(([ic, name, v], i) => { const x = 22 + i * 138;
+    panel(x, y, 130, 40, C.ink, C.slate); blit(ICON[ic](), x + 10, y + 13); text(name, x + 30, y + 6, C.mist); text(String(v) + (cap ? '/' + CAP : ''), x + 30, y + 22, C.bone); });
 }
 function drawCargo(t) {
   const ex = S.exp; viewBg(); drawTop('Cargo', ex ? 'expedition ' + ex.n : 'at the Station');
-  const c = ex ? ex.cargo : S.home;
-  [['energy', 'Energy', c.e], ['data', 'Data', c.d], ['essence', 'Essence', c.s]].forEach(([ic, name, v], i) => { const y = 44 + i * 46;
-    panel(22, y, 406, 38, C.ink, C.slate); blit(ICON[ic](), 36, y + 12); text(name, 62, y + 12, C.bone); text(String(v), 414, y + 9, C.bone, 3, 'right'); });
   if (ex) {
-    panel(22, 192, 406, 92, C.ink, C.slate); text('Sample', 36, 202, C.mist);
-    if (ex.cargo.pod) { blit(podArt(POD_SHELL[ex.cargo.pod.g], 2, ex.cargo.pod.sp), 38, 224); text(podTag(ex.cargo.pod.sp), 84, 232, C.bone); text('found on ' + ex.cargo.pod.g, 84, 254, C.mist); }
-    else text('Slot empty', 84, 240, C.mist);
-    card(95, 316, 260, 54, true, true); R(98, 319, 254, 48, C.orange); text('Send home', SCR_W / 2, 332, C.bone, 3, 'center');
-    text('Seals the cargo and ends', SCR_W / 2, 394, C.mist, 2, 'center'); text('the expedition', SCR_W / 2, 414, C.mist, 2, 'center');
+    drawMats(ex.cargo, 36, true);
+    text('Pods', 24, 88, C.mist);
+    for (let i = 0; i < ex.hold; i++) { const p = ex.cargo.pods[i], x = 24 + i * 130; panel(x, 108, 122, 36, C.ink, C.slate); podSlot(x + 6, 116, p); text(p ? (S.known.includes(p.sp) ? SPECIES[p.sp].name : 'unknown') : 'empty', x + 28, 118, p ? C.bone : C.stone); }
+    text('This expedition', 24, 156, C.mist);
+    if (!ex.met.length) text('No creatures met yet', 24, 180, C.stone);
+    ex.met.forEach((sp, i) => { const x = 24 + i * 46; panel(x, 176, 42, 42, C.ink, C.slate);
+      if (S.known.includes(sp)) blit(creatureArt(sp, 'idle', 0), x + 5, 180); else { blit(silhouette(sp), x + 5, 180); text('?', x + 16, 190, C.bone); }
+      if (ex.newMet.includes(sp)) R(x + 33, 180, 5, 5, C.amber); });
+    text(numWord(ex.moments.length) + ' moment' + (ex.moments.length === 1 ? '' : 's') + ' recorded', 180, 190, C.fog);
+    const rc = reachCounts(); text('In reach: ' + rc.visited + ' visited · ' + rc.cleared + ' cleared · ' + rc.seen + ' seen', 24, 232, C.fog);
+    card(95, 266, 260, 54, true, true); R(98, 269, 254, 48, C.orange); text('Send home', SCR_W / 2, 282, C.bone, 3, 'center');
+    let y = 340; for (const l of sendPreview().slice(0, 5)) { R(40, y + 6, 4, 4, C.orange); text(l, 54, y, C.bone); y += 24; }
+    text('Ends the expedition · the world turns', SCR_W / 2, y + 12, C.mist, 2, 'center');
   } else {
-    text('Pods waiting at the Station: ' + S.home.pods.length, 24, 200, C.fog);
-    S.home.pods.slice(-10).forEach((p, i) => blit(podArt(POD_SHELL[p.g] || 'bone'), 26 + i * 22, 228));
-    text('Nothing is out on an expedition.', 24, 270, C.mist);
+    drawMats(S.home, 36, false);
+    text('Probe tier ' + S.tier + (S.tier < 2 ? ' · tier 2 costs 12 Energy + 8 Data' : ''), 24, 96, C.fog);
+    text('Waiting at the Station', 24, 132, C.mist);
+    const waits = stationPlan(homeCopy()).filter(o => o.k === 'wait' || o.k === 'waitStudy');
+    if (!waits.length) text('Nothing waiting', 24, 158, C.stone);
+    waits.slice(0, 6).forEach((o, i) => { const y = 156 + i * 34; if (o.p) { podSlot(24, y - 4, o.p); text(clipText((o.p.idd ? SPECIES[o.p.sp].name + ' pod' : 'unknown pod') + ' · ' + o.need, 390, 2), 48, y, C.bone); } else { blit(sparkArt(false), 28, y + 2); text('A study · ' + o.need, 48, y, C.bone); } });
+    const stored = S.home.pods.filter(p => p.idd && S.mibis.some(m => m.sp === p.sp)).length;
+    if (stored) text(numWord(stored) + ' more pod' + (stored > 1 ? 's' : '') + ' stored for later', 24, 380, C.mist);
+    text('Nothing is out on an expedition.', 24, 420, C.stone);
   }
 }
+function callTarget() { return riderMibi() || alongMibi(); }
 function drawCompanions(t) {
-  viewBg(); drawTop('Companions', S.mibis.length ? S.mibis.length + ' raised' : '');
+  viewBg(); drawTop('Companions', S.mibis.length ? S.mibis.length + ' raised' : '', callSlot());
   if (!S.mibis.length) { for (let a = 0; a < 6.28; a += .12) R(225 + Math.round(Math.cos(a) * 40), 170 + Math.round(Math.sin(a) * 40), 2, 2, C.stone);
-    text('No partner yet', SCR_W / 2, 240, C.bone, 3, 'center'); text('Bring a pod home. It hatches', SCR_W / 2, 280, C.mist, 2, 'center'); text('at the Station.', SCR_W / 2, 300, C.mist, 2, 'center'); return; }
-  const fr = motion() ? Math.floor(t * 2.4) % 2 : 0;
-  S.mibis.forEach((m, i) => { const y = 44 + i * 128, sel = S.ui.cSel === i, along = S.exp ? (S.exp.pt && S.exp.pt.id === m.id) : S.along === m.id;
-    card(20, y, 410, 112, sel, true);
-    blit(creatureArt(m.sp, 'idle', 0, 2), 30, y + 18 + fr);
-    text(m.name, 112, y + 14, C.ink, 3);
-    chip(112 + textW(m.name, 3) + 12, y + 14, along ? (S.exp ? 'with you' : 'along') : 'at home', along ? 'orange' : 'stone', 'bone');
-    text(SPECIES[m.sp].name, 112, y + 50, C.stone);
-    text(SPECIES[m.sp].abText[0].toUpperCase() + SPECIES[m.sp].abText.slice(1), 112, y + 74, C.bark);
-    if (SPECIES[m.sp].ab === 'dig') { blit(ICON.burrow(1), 400, y + 52); } });
-  if (S.exp) text('Partners are chosen before you set out.', SCR_W / 2, 540, C.mist, 2, 'center');
+    text('No mibis yet', SCR_W / 2, 240, C.bone, 3, 'center'); text('Bring a pod home. It hatches', SCR_W / 2, 280, C.mist, 2, 'center'); text('at the Station.', SCR_W / 2, 300, C.mist, 2, 'center'); return; }
+  const fr = motion() ? Math.floor(t * 2.4) % 2 : 0, hop = FX.callMibi && NOW - FX.callMibi.at < 1100 ? FX.callMibi : null;
+  S.mibis.forEach((m, i) => { const y = 40 + i * 120, sel = S.ui.cSel === i, st = mibiStage(m), along = S.exp ? (S.exp.pt && S.exp.pt.id === m.id) : S.along === m.id, rides = S.rider === m.id;
+    card(20, y, 410, 106, sel, true);
+    if (!(hop && hop.id === m.id)) blit(creatureArt(m.sp, 'idle', 0, 2), 30, y + 14 + fr);
+    text(m.name, 112, y + 12, C.ink, 3);
+    let cx = 112 + textW(m.name, 3) + 12; cx += chip(cx, y + 12, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone') + 6;
+    if (along) chip(cx, y + 12, S.exp ? 'with you' : 'along', 'orange', 'bone'); else if (rides) chip(cx, y + 12, 'riding', 'orange', 'bone');
+    text(SPECIES[m.sp].name, 112, y + 48, C.stone);
+    text(st === 'juvenile' ? 'Too young for the Probe' : SPECIES[m.sp].abText[0].toUpperCase() + SPECIES[m.sp].abText.slice(1) + (st === 'elder' ? ' · slow, keen' : ''), 112, y + 72, C.bark); });
+  if (hop) { const m = mibiById(hop.id), a = NOW - hop.at, k = Math.min(1, a / 500), hy = Math.round(Math.abs(Math.sin(a / 160)) * (motion() ? 14 : 0) * (1 - Math.max(0, (a - 700) / 400)));
+    if (m) { panel(150, 380 - Math.round(k * 10), 150, 92, C.ink, C.teal); blit(creatureArt(m.sp, a > 600 ? 'alert' : 'idle', 0, 2), 193, 392 - hy); } }
+  else if (S.exp) text('Partners are chosen before you set out.', SCR_W / 2, 520, C.mist, 2, 'center');
 }
 function drawNewWorld() {
   viewBg(); drawTop('New world');
@@ -2436,45 +2801,54 @@ function drawNewWorld() {
     panel(75, y, 300, 54, sel ? (i ? C.red : C.paper) : C.slate, sel ? C.ink : null); if (sel) brackets(68, y - 7, 314, 68, C.amber);
     text(s, SCR_W / 2, y + 20, sel ? (i ? C.bone : C.ink) : C.fog, 2, 'center'); });
 }
-// The Station stand-in: cargo arrives, the pod is identified, a discovery; then incubation if the pod is new.
+// The Station stand-in: cargo arrives, pods are identified and studies read (each priced); a founder hatches
+// if it can be paid for, the tier 2 Probe is offered when affordable; then the world-turn lines.
 function drawStation(t) {
   const r = S.report; viewBg(C.paper); drawTop('Station', r ? 'expedition ' + r.n + ' home' : '');
   if (!r) return;
-  const age = NOW - FX.transAt;
-  let y = 40;
-  if (S.ui.stPage === 0) {
-    text('Cargo arrives', 22, y, C.ink, 3); y += 34;
-    if (r.reason === 'hull') { text('The Probe took a beating. The cargo is safe.', 22, y, C.rust); y += 24; }
-    for (const it of r.items) { blit(ICON[{ e: 'energy', d: 'data', s: 'essence' }[it.k]](), 24, y + 1); text(it.text, 46, y, C.ink); y += 24; }
-    if (!r.items.length && !r.pod) { text('Nothing in the cargo this time.', 22, y, C.stone); y += 24; }
-    if (r.pod) {
-      y += 6; panel(18, y, 414, 70, C.sand); blit(podArt(POD_SHELL[r.pod.g] || 'bone', 2, r.pod.sp), 26, y + 15);
-      if (r.pod.newSp) {
-        const show = !motion() || age > 700;
-        text('unknown species', 74, y + 14, C.bark);
-        if (!motion() || age > 350) { const w = textW('unknown species', 2); R(74, y + 21, Math.min(w, motion() ? Math.floor((age - 350) / 300 * w) : w), 2, C.bark); }
-        if (show) { text('→ ' + SPECIES[r.pod.sp].name, 74 + textW('unknown species', 2) + 10, y + 14, C.ink); text('Its tracks now show on your map.', 74, y + 40, C.stone); }
-      } else { text(SPECIES[r.pod.sp].name + ' pod', 74, y + 14, C.ink); text(r.hatch ? 'Ready to incubate.' : 'Stored at the Station for later.', 74, y + 40, C.stone); }
-      y += 84;
+  const age = NOW - FX.transAt, pages = stationPages(), page = pages[S.ui.stPage] || 'cargo', last = S.ui.stPage >= pages.length - 1;
+  let y = 38;
+  if (page === 'cargo') {
+    if (r.reason === 'break') { text('The Probe broke', 22, y, C.rust, 3); y += 32; text('Your pods are safe. Carried supplies are lost:', 22, y, C.ink); y += 22;
+      text(r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing', 22, y, C.rust); y += 26; }
+    else { text('Cargo arrives', 22, y, C.ink, 3); y += 32;
+      if (r.items.length) { let x = 24; for (const it of r.items) { blit(ICON[{ e: 'energy', d: 'data', s: 'essence' }[it.k]](), x, y + 1); text(it.text, x + 20, y, C.ink); x += textW(it.text, 2) + 44; } y += 26; } }
+    if (!r.items.length && !r.ops.length && r.reason !== 'break' && !r.hatch) { text('Nothing in the cargo this time.', 22, y, C.stone); y += 24; }
+    for (const o of r.ops) {
+      if (y > 400) break;
+      if (o.k === 'id') { panel(18, y, 414, 30, C.sand); podSlot(24, y + 4, o.p);
+        const nm = SPECIES[o.p.sp].name; if (o.newSp && motion() && age < 700) text('unknown species', 48, y + 8, C.bark); else text((o.newSp ? 'New: ' : '') + nm + ' pod', 48, y + 8, C.ink);
+        text('-1 Energy', 424, y + 8, C.bark, 2, 'right'); y += 34; }
+      else if (o.k === 'study') { blit(sparkArt(true), 22, y + 2); const ls = wrapText(o.text, 300, 2); ls.forEach((l, i) => text(l, 44, y + i * 20, C.rust)); text('-2 Data', 424, y, C.bark, 2, 'right'); y += 20 * ls.length + 8; }
+      else if (o.k === 'wait') { panel(18, y, 414, 30, C.bone); podSlot(24, y + 4, o.p); text(clipText((o.p.idd ? SPECIES[o.p.sp].name + ' pod' : 'Pod') + ' waits · ' + o.need, 370, 2), 48, y + 8, C.wine); y += 34; }
+      else if (o.k === 'waitStudy') { text('A study waits · ' + o.need, 22, y, C.wine); y += 24; }
     }
-    if (r.discovery) { blit(sparkArt(true), 24, y + 1); wrapText(r.discovery, 380, 2).forEach((l, i) => text(l, 46, y + i * 20, C.rust)); y += 20 * wrapText(r.discovery, 380, 2).length + 12; }
-    if (!r.hatch) drawTurnLines(r, y + 6);
-  } else {
-    const m = r.hatch; if (!m) return;
-    const done = !motion() || age > 1100;
+    if (r.hatch) { panel(18, y, 414, 30, C.sand); podSlot(24, y + 4, { g: r.hatch.g, sp: r.hatch.sp }); text(SPECIES[r.hatch.sp].name + ' pod hatches', 48, y + 8, C.ink);
+      text('-4', 424, y + 8, C.bark, 2, 'right'); blit(ICON.essence(), 386, y + 8); text('-2', 378, y + 8, C.bark, 2, 'right'); blit(ICON.energy(), 340, y + 8); y += 34; }
+    y += 4; text('Station store: ' + r.home.e + ' Energy · ' + r.home.d + ' Data · ' + r.home.s + ' Essence', 22, y, C.stone); y += 30;
+    if (last) drawTurnLines(r, y);
+  } else if (page === 'hatch') {
+    const m = r.hatch, done = !motion() || age > 1100;
     text(done ? 'A new mibi' : 'Incubating…', 22, y, C.ink, 3); y += 40;
     panel(18, y, 414, 150, C.sand);
-    if (!done) { const wob = Math.floor(age / 90) % 4, ox = [0, 2, 0, -2][wob]; blit(podArt(POD_SHELL[r.pod.g] || 'bone', 3, r.pod.sp), 201 + ox, y + 44); }
+    if (!done) { const wob = Math.floor(age / 90) % 4, ox = [0, 2, 0, -2][wob]; blit(podArt(POD_SHELL[m.g] || 'bone', 3, m.sp), 201 + ox, y + 44); }
     else { blit(creatureArt(m.sp, 'idle', motion() ? Math.floor(t * 2.4) % 2 : 0, 2), 28, y + 44);
       text('Opened: ' + SPECIES[m.sp].born + '.', 112, y + 30, C.ink); text('Name: ' + m.name + '.', 112, y + 56, C.ink, 3);
-      wrapText(m.name + ' ' + SPECIES[m.sp].abText + '.', 300, 2).forEach((l, i) => text(l, 112, y + 96 + i * 20, C.bark)); }
+      wrapText(m.name + ' is young: it rides in the Companion and joins expeditions in two world turns.', 300, 2).slice(0, 3).forEach((l, i) => text(l, 112, y + 88 + i * 20, C.bark)); }
     y += 164;
-    if (done) { text('Bring ' + m.name + ' along from Companions.', 22, y, C.stone); drawTurnLines(r, y + 34); }
+    if (done && last) drawTurnLines(r, y + 6);
+  } else if (page === 'upgrade') {
+    text(r.upgraded ? 'Probe tier 2' : 'Upgrade the Probe?', 22, y, C.ink, 3); y += 40;
+    panel(18, y, 414, 132, C.sand);
+    ['Reaches 4 cells from the start', 'Carries 3 pods · Shield 4', 'Reads the deep ?'].forEach((l, i) => text(l, 34, y + 14 + i * 24, C.ink));
+    text(r.upgraded ? 'Done' : 'Costs 12 Energy + 8 Data', 34, y + 96, r.upgraded ? C.leaf : C.bark);
+    y += 146; text('Station store: ' + r.home.e + ' Energy · ' + r.home.d + ' Data · ' + r.home.s + ' Essence', 22, y, C.stone); y += 30;
+    drawTurnLines(r, y);
   }
 }
 function drawTurnLines(r, y) {
-  text('Meanwhile, the world turned', 22, y, C.stone); y += 28;
-  for (const l of r.lines) { R(26, y + 6, 4, 4, C.orange); wrapText(l, 390, 2).forEach((s, i) => text(s, 40, y + i * 20, C.ink)); y += 20 * wrapText(l, 390, 2).length + 8; }
+  text('Meanwhile, the world turned', 22, y, C.stone); y += 26;
+  for (const l of r.lines) { R(26, y + 6, 4, 4, C.orange); wrapText(l, 390, 2).forEach((s, i) => text(s, 40, y + i * 20, C.ink)); y += 20 * wrapText(l, 390, 2).length + 6; }
 }
 
 // ===================== 15. Screen dispatch =====================
@@ -2484,34 +2858,54 @@ function placeReason(c) {
   if (firstPlacement()) return 'Pick a glint';
   if (!S.revealed[c]) return 'Not seen yet';
   if (G.island[c]) return 'Out of reach';
-  return G.land[c] === L.CLIFF ? 'Cliff · can’t start here' : 'Wide water · can’t start here';
+  return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
 }
-function cellWords(c) {
-  const w = [], s = S.signs[c];
-  if (s && S.turn - s.t <= 2) { if (s.tr.length) w.push('tracks'); if (s.b) w.push('slow beat'); if (s.r) w.push('rings'); if (s.d) w.push('deep ?'); }
-  for (const p of S.pins) if (p.c === c) w.push(PIN_TEXT[p.k]);
-  return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : '') + (w.length ? ' · ' + w.join(', ') : '');
+const SIGN_ORDER = ['b', 't', 'k', 'pin', 'burrow', 'water', 'deep'];
+function signWords(c) { const k = signsAt(c); return SIGN_ORDER.filter(s => k.includes(s)).map(s => SIGN_NAME[s]); }
+function landWord(c) { return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : ''); }
+function cellWords(c) { const w = signWords(c); return landWord(c) + (w.length ? ' · ' + w.join(', ') : ''); }
+function aheadCell() { const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[ex.face || 'down'], x = p.x + dx, y = p.y + dy; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; }
+// The map's middle part: the cell you're on and the one you face, shortest forms last.
+function mapContext() {
+  const ex = S.exp, here = landWord(ex.pos), hs = signWords(ex.pos), a = aheadCell();
+  const there = a < 0 ? 'edge of the map' : !inRange(a) ? 'edge of range' : !S.revealed[a] ? 'fog' : landWord(a), as = a >= 0 && inRange(a) && S.revealed[a] ? signWords(a) : [];
+  const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = 'Ahead: ' + there + (as.length ? ' · ' + as.join(', ') : '');
+  // where you stand comes first when it has a sign; otherwise what you face
+  return hs.length ? [H + ' · ' + A, H + ' · Ahead: ' + there, H, here + ' · ' + A, A, here] : [here + ' · ' + A, A, here + ' · Ahead: ' + there, 'Ahead: ' + there, here];
+}
+// The first time the line names a sign, its one-line explanation shows once (only if it actually fits the message box).
+function fxOnce(key, textMsg, pri) { if (S.found.includes(key)) return; fxMsg(textMsg, pri); if (FX.msg.includes(textMsg)) S.found.push(key); else { FX.notes.pop(); composeMsg(); } }
+function noteSigns() {
+  if (S.phase !== 'map' || !S.exp) return; const a = aheadCell();
+  const kinds = new Set(signsAt(S.exp.pos).concat(a >= 0 && S.revealed[a] && inRange(a) ? signsAt(a) : []));
+  for (const k of SIGN_ORDER) if (kinds.has(k)) fxOnce('sign:' + k, SIGN_HELP[k], 1);
 }
 function lineFor() {
+  const L1 = (ok, ctx, back, dim) => ({ ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2) { const n = nextPartner(); return [n ? (S.along != null ? 'Bring ' + n.name + ' instead' : 'Bring ' + n.name + ' along') : 'Go without a partner', '']; }
-      return S.ui.sel === 1 && !mibiWith('dig') ? ['Needs a digging partner', ''] : ['Choose ' + (S.ui.sel ? 'Deep ground' : 'Weather'), ''];
+    case 'setup': if (S.ui.sel === 2) { const n = nextPartner(); return L1(n ? 'Bring ' + n.name + ' along' : adults().length ? 'Go without a partner' : 'No grown partner yet', '', 'menu', !adults().length); }
+      return S.ui.sel === 1 && !mibiWith('dig') ? L1('Needs a digger', 'Deep ground', 'menu', true) : L1('Choose ' + (S.ui.sel ? 'Deep ground' : 'Weather'), '', 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
-      if (first) { const sg = G.spawns.includes(c) && spawnSign(c); return [placeValid(c) ? 'Start here' : placeReason(c), LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : '')]; }
-      return [placeValid(c) ? 'Start here' : placeReason(c), S.revealed[c] ? cellWords(c) : '']; }
-    case 'map': return ['Go down', cellWords(S.exp.pos)];
-    case 'patch': { const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW);
-      return [patchAction().label, lay.cave ? 'Cave' : LAND_NAME[lay.land] + (cov ? (stormLull() ? ' · lull' : ' · storm') : inFog(lay.cell) ? ' · fog' : '')]; }
+      if (first) { const sg = G.spawns.includes(c) && spawnSign(c); return L1(placeValid(c) ? 'Start here' : placeReason(c), LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''), 'back', !placeValid(c)); }
+      return L1(placeValid(c) ? 'Start here' : placeReason(c), S.revealed[c] ? cellWords(c) : '', 'back', !placeValid(c)); }
+    case 'map': return L1('Go down', mapContext(), 'Wait · Send home');
+    case 'patch': { const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
+      const col = lay.cell % MW, wx = stormRain(col) ? ' · storm' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : inFog(lay.cell) ? ' · fog' : '';
+      return L1(a.label, lay.cave ? 'cave' : LAND_NAME[lay.land] + wx, lay.cave ? 'Wait · Climb out' : 'Wait · Leave', !a.run); }
     case 'menu': { const it = menuItems()[S.ui.menuSel] || menuItems()[0];
-      return [it.id === 'wait' ? 'Wait one action' : it.id === 'leave' ? it.label : 'Open ' + it.label, it.id === 'wait' && S.exp ? 'action ' + S.exp.actions : '']; }
-    case 'probe': return ['Close', ''];
-    case 'cargo': return S.exp ? ['Send home', 'ends the expedition'] : ['Close', ''];
-    case 'companions': { const m = S.mibis[S.ui.cSel]; if (S.exp || !m) return ['Close', ''];
-      return [S.along === m.id ? 'Leave ' + m.name + ' at home' : 'Bring ' + m.name + ' along', '']; }
-    case 'newworld': return [S.ui.nw ? 'Start a new world' : 'Keep this world', ''];
-    case 'station': return S.ui.stPage === 0 && S.report && S.report.hatch ? ['Incubate the pod', ''] : ['Next expedition', ''];
+      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' ? it.label : 'Open ' + it.label, it.id === 'wait' && S.exp ? 'action ' + S.exp.actions : it.id === 'send' ? 'shows what goes home' : '', 'close'); }
+    case 'probe': return canPatch() ? L1('Patch the shield', '3 Energy for one bar', 'close') : L1('Close', '', 'close');
+    case 'cargo': return S.exp ? L1('Send home', 'ends the expedition', 'close') : L1('Close', '', 'close');
+    case 'companions': { const m = S.mibis[S.ui.cSel]; if (S.exp || !m) return L1('Close', '', 'close');
+      if (!isAdult(m)) return L1(S.rider === m.id ? 'Leave ' + m.name + ' at home' : 'Let ' + m.name + ' ride along', 'juvenile', 'close');
+      return L1(S.along === m.id ? 'Leave ' + m.name + ' at home' : 'Bring ' + m.name + ' along', mibiStage(m), 'close'); }
+    case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
+    case 'station': { const pages = stationPages(), page = pages[S.ui.stPage], last = S.ui.stPage >= pages.length - 1;
+      if (page === 'upgrade' && !S.report.upgraded) return L1('Upgrade the Probe', '12 Energy + 8 Data', 'not now');
+      if (!last) return L1(pages[S.ui.stPage + 1] === 'hatch' ? 'Hatch the pod' : 'Continue', '', 'menu');
+      return L1('Next expedition', '', 'menu'); }
   }
-  return ['', ''];
+  return L1('', '', '');
 }
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
@@ -2520,7 +2914,7 @@ function render(t) {
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), firstPlacement() ? 'pick a start' : 'any seen cell'); break;
     case 'map': drawMap('map', t); drawHUD(); break;
     case 'patch': drawPatch(t); drawHUD(); break;
-    case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Modes'); break;
+    case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
     case 'cargo': drawCargo(t); break;
     case 'companions': drawCompanions(t); break;
@@ -2528,7 +2922,7 @@ function render(t) {
     case 'station': drawStation(t); break;
   }
   hitFrame();
-  const [label, right] = lineFor(); drawLine(label, right);
+  drawLine(lineFor());
   drawMessage();
   const ta = NOW - FX.transAt; if (ta < 200 && ta >= 0 && motion()) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 16 - Math.floor(ta / 200 * 16));
   vctx.drawImage(scr, 0, 0);
@@ -2544,7 +2938,8 @@ function frame(t) {
 
 // ===================== 16. Input: Companion controls =====================
 function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.phase = 'menu'; }
-function nextPartner() { if (!S.mibis.length) return null; const i = S.mibis.findIndex(m => m.id === S.along); return i + 1 < S.mibis.length ? S.mibis[i + 1] : null; }
+// The next grown partner to bring along (cycles through adults, then none).
+function nextPartner() { const a = adults(); if (!a.length) return null; const i = a.findIndex(m => m.id === S.along); return i + 1 < a.length ? a[i + 1] : null; }
 function chooseType() {
   if (S.ui.sel === 1 && !mibiWith('dig')) { fxMsg('Deep ground needs a digging partner'); FX.bumpAt = NOW; return; }
   S.ui.type = S.ui.sel === 1 ? 'deep' : 'weather';
@@ -2564,8 +2959,15 @@ function moveCursor(dir) {
   }
   const x = clamp(p.x + dx, 0, MW - 1), y = clamp(p.y + dy, 0, MH - 1); S.ui.cur = y * MW + x;
 }
+// Call on the Companions screen: the riding mibi hops to the front. Free.
+function callRider() {
+  const m = callTarget(); if (!m) { fxMsg('No mibi is riding with you'); return; }
+  FX.callMibi = { id: m.id, at: NOW }; S.ui.cSel = Math.max(0, S.mibis.indexOf(m)); lockInput(300);
+  fxMsg(isAdult(m) ? m.name + ' comes to the front' : m.name + ' hops to the front · learning to answer the call');
+}
 function act(k, mode) {
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
+  if (k === 'call' && !['map', 'patch', 'companions'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
   if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.notes = []; }   // a message lasts until the next action (Back and browsing the list keep it)
   const isDir = k in DIRS;
   switch (S.phase) {
@@ -2580,12 +2982,13 @@ function act(k, mode) {
       else if (k === 'back') { S.phase = 'setup'; }
       break;
     case 'map':
-      if (isDir) mapStep(k); else if (k === 'confirm') enterPatch(); else if (k === 'back') openMenu();
+      if (isDir) mapStep(k); else if (k === 'confirm') enterPatch(); else if (k === 'back') openMenu(); else if (k === 'call') callMap();
       break;
     case 'patch':
       if (isDir) patchStep(k, mode || 'creep');
       else if (k === 'confirm') { const a = patchAction(); if (a.run) a.run(); else { FX.bumpAt = NOW; return; } }   // "Nothing here": no action spent
       else if (k === 'back') openMenu();
+      else if (k === 'call') callPlace();
       break;
     case 'menu': { const items = menuItems(), n = items.length;
       if (k === 'up') S.ui.menuSel = (S.ui.menuSel + n - 1) % n;
@@ -2593,11 +2996,13 @@ function act(k, mode) {
       else if (k === 'confirm') { const id = (items[S.ui.menuSel] || items[0]).id;
         if (id === 'wait') { waitTick(S.ui.from); if (S.phase === 'menu' && !S.exp) S.phase = 'station'; }   // stays open: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
-        else { S.phase = id; S.ui.nw = 0; S.ui.cSel = Math.max(0, S.mibis.findIndex(m => m.id === S.along)); } }
+        else if (id === 'send') S.phase = 'cargo';
+        else { S.phase = id; S.ui.nw = 0; S.ui.cSel = Math.max(0, S.mibis.findIndex(m => m.id === (S.rider != null ? S.rider : S.along))); } }
       else if (k === 'back') S.phase = S.ui.from || 'setup';
       break; }
     case 'probe':
-      if (k === 'back' || k === 'confirm') S.phase = 'menu'; break;
+      if (k === 'confirm' && canPatch()) { const ex = S.exp; ex.cargo.e -= PRICE.patch; ex.shield++; logEv('Patched the shield (3 Energy)'); fxMsg('Shield patched · ' + ex.shield + ' of ' + ex.smax); }
+      else if (k === 'back' || k === 'confirm') S.phase = 'menu'; break;
     case 'cargo':
       if (k === 'back') S.phase = 'menu';
       else if (k === 'confirm') { if (S.exp) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); } else S.phase = 'menu'; }
@@ -2605,8 +3010,11 @@ function act(k, mode) {
     case 'companions':
       if ((k === 'up' || k === 'down') && S.mibis.length) S.ui.cSel = clamp(S.ui.cSel + (k === 'down' ? 1 : -1), 0, S.mibis.length - 1);
       else if (k === 'back') S.phase = 'menu';
+      else if (k === 'call') callRider();
       else if (k === 'confirm') { const m = S.mibis[S.ui.cSel];
-        if (!S.exp && m) { S.along = S.along === m.id ? null : m.id; logEv(S.along ? m.name + ' will come along' : m.name + ' stays home'); }
+        if (!S.exp && m) {
+          if (isAdult(m)) { S.along = S.along === m.id ? null : m.id; if (S.rider === m.id && S.along !== m.id) S.rider = null; logEv(S.along ? m.name + ' will come along' : m.name + ' stays home'); }
+          else { S.rider = S.rider === m.id ? null : m.id; logEv(S.rider ? m.name + ' rides along' : m.name + ' stays home'); } }
         else S.phase = 'menu'; }
       break;
     case 'newworld':
@@ -2614,14 +3022,17 @@ function act(k, mode) {
       else if (k === 'back') S.phase = 'menu';
       else if (k === 'confirm') { if (S.ui.nw === 1) { newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); } else S.phase = 'menu'; }
       break;
-    case 'station':
+    case 'station': {
+      const pages = stationPages(), page = pages[S.ui.stPage], last = S.ui.stPage >= pages.length - 1;
       if (k === 'confirm') {
-        if (S.ui.stPage === 0 && S.report && S.report.hatch) { S.ui.stPage = 1; transition(); lockInput(motion() ? 1150 : 160); }
+        if (page === 'upgrade' && !S.report.upgraded) { upgradeProbe(); lockInput(300); }
+        else if (!last) { S.ui.stPage++; transition(); if (pages[S.ui.stPage] === 'hatch') lockInput(motion() ? 1150 : 160); }
         else { S.phase = 'setup'; S.ui.sel = 0; transition(); }
-      }
-      break;
+      } else if (k === 'back') { if (page === 'upgrade' && !S.report.upgraded) { S.phase = 'setup'; S.ui.sel = 0; transition(); } else openMenu(); }
+      break; }
   }
   if (S.exp && S.exp.patch == null && S.phase === 'patch') S.phase = 'map';
+  noteSigns();
   save();
 }
 
@@ -2653,8 +3064,8 @@ deviceEl.addEventListener('contextmenu', e => e.preventDefault());
 ['touchstart', 'touchmove', 'gesturestart', 'gesturechange', 'dblclick'].forEach(type => deviceEl.addEventListener(type, e => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
 
 const KEYMAP = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', KeyW: 'up', KeyS: 'down', KeyA: 'left', KeyD: 'right',
-  Enter: 'confirm', NumpadEnter: 'confirm', Space: 'confirm', Escape: 'back', Backspace: 'back' };
-const KEYMAP2 = { w: 'up', s: 'down', a: 'left', d: 'right', W: 'up', S: 'down', A: 'left', D: 'right', ' ': 'confirm', Enter: 'confirm', Escape: 'back', Backspace: 'back' };
+  Enter: 'confirm', NumpadEnter: 'confirm', Space: 'confirm', Escape: 'back', Backspace: 'back', KeyC: 'call' };
+const KEYMAP2 = { w: 'up', s: 'down', a: 'left', d: 'right', W: 'up', S: 'down', A: 'left', D: 'right', ' ': 'confirm', Enter: 'confirm', Escape: 'back', Backspace: 'back', c: 'call', C: 'call' };
 function keyOf(e) { return KEYMAP[e.code] || KEYMAP2[e.key] || KEYMAP[e.key] || null; }
 window.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -2709,6 +3120,11 @@ function whereText() {
   if (ex && ex.patch) { const lay = layout(ex.patch.key), p = cxy(lay.cell); where = (lay.cave ? 'cave under ' : 'patch ') + p.x + ',' + p.y + ' · tile ' + ex.patch.x + ',' + ex.patch.y; }
   return where;
 }
+function mapCounts() {
+  let seen = 0, visited = 0, cleared = 0; for (let c = 0; c < MW * MH; c++) { if (!S.revealed[c]) continue; if (S.visited[c]) { if (isCleared(c)) cleared++; else visited++; } else seen++; }
+  const rc = S.exp ? reachCounts() : null;
+  return seen + ' seen · ' + visited + ' visited · ' + cleared + ' cleared · ' + (MW * MH - seen - visited - cleared) + ' fog' + (rc ? ' · in reach ' + rc.explored + '/' + rc.total + ' explored' : '');
+}
 function onStateChanged() {
   if (!obsEl || obsEl.hidden || !S) return;
   const ex = S.exp;
@@ -2716,9 +3132,14 @@ function onStateChanged() {
   document.getElementById('oTurn').textContent = S.turn;
   document.getElementById('oAct').textContent = ex ? ex.actions + ' (total ' + S.totalActions + ')' : 'total ' + S.totalActions;
   document.getElementById('oWhere').textContent = whereText();
-  const pm = ex ? ex.pt : alongMibi();
-  document.getElementById('oPartner').textContent = pm ? pm.name + ' · ' + SPECIES[pm.sp].name + (ex ? ' (with you)' : ' (along)') : S.mibis.length ? 'none along · ' + S.mibis.map(m => m.name).join(', ') : 'none yet';
+  const pm = ex ? ex.pt : alongMibi(), rd = riderMibi();
+  document.getElementById('oPartner').textContent = (pm ? pm.name + ' · ' + SPECIES[pm.sp].name + (ex ? ' (with you)' : ' (along)') : S.mibis.length ? 'none along · ' + S.mibis.map(m => m.name + ' ' + mibiStage(m)).join(', ') : 'none yet') + (rd ? ' · riding: ' + rd.name : '');
   document.getElementById('oSeed').textContent = S.seed;
+  const t = tierOf();
+  document.getElementById('oProbe').textContent = 'tier ' + S.tier + ' · range ' + t.range + ' · hold ' + t.hold + ' · shield ' + (ex ? ex.shield + '/' + ex.smax : t.shield) + (ex ? ' · storm ' + stormLevel() + ' bolt' + (stormLevel() === 1 ? '' : 's') : '');
+  document.getElementById('oCarry').textContent = ex ? ex.cargo.e + ' Energy, ' + ex.cargo.d + ' Data, ' + ex.cargo.s + ' Essence, ' + ex.cargo.pods.length + ' pod' + (ex.cargo.pods.length === 1 ? '' : 's') : '–';
+  document.getElementById('oHome').textContent = S.home.e + ' Energy, ' + S.home.d + ' Data, ' + S.home.s + ' Essence, ' + S.home.pods.length + ' pod' + (S.home.pods.length === 1 ? '' : 's') + ' waiting';
+  document.getElementById('oMap').textContent = mapCounts();
   const ol = document.getElementById('oLog'); ol.textContent = '';
   for (const s of S.log.slice(-8)) { const li = document.createElement('li'); li.textContent = s; ol.appendChild(li); }
 }
@@ -2726,12 +3147,14 @@ function notesText() {
   const ex = S.exp, L2 = [];
   L2.push('Miniature Beasts · Companion Field Test · playtest notes');
   L2.push(stampEl.textContent + ' · seed ' + S.seed + ' · world turn ' + S.turn + ' · ' + new Date().toISOString().slice(0, 16).replace('T', ' '));
-  L2.push('Expedition: ' + (ex ? ex.n + ' (' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') + '), ' + ex.actions + ' actions, hull ' + ex.hull : S.expN + ' not started') + ' · total actions ' + S.totalActions);
+  L2.push('Expedition: ' + (ex ? ex.n + ' (' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') + '), ' + ex.actions + ' actions, shield ' + ex.shield + '/' + ex.smax : S.expN + ' not started') + ' · total actions ' + S.totalActions);
+  L2.push('Probe: tier ' + S.tier + ' · Carried: ' + (ex ? ex.cargo.e + ' energy, ' + ex.cargo.d + ' data, ' + ex.cargo.s + ' essence, ' + ex.cargo.pods.length + ' pods' : 'nothing'));
+  L2.push('Map: ' + mapCounts());
   L2.push('Where: ' + whereText());
-  L2.push('Mibis: ' + (S.mibis.length ? S.mibis.map(m => m.name + ' (' + SPECIES[m.sp].name + ', ' + SPECIES[m.sp].abText + ')').join('; ') : 'none'));
+  L2.push('Mibis: ' + (S.mibis.length ? S.mibis.map(m => m.name + ' (' + SPECIES[m.sp].name + ', ' + mibiStage(m) + ', ' + SPECIES[m.sp].abText + ')').join('; ') : 'none'));
   L2.push('Known species: ' + (S.known.length ? S.known.map(s => SPECIES[s].name).join(', ') : 'none'));
   L2.push('Pins: ' + (S.pins.length ? S.pins.map(p => { const q = cxy(p.c); return q.x + ',' + q.y + ' ' + PIN_TEXT[p.k]; }).join('; ') : 'none'));
-  L2.push('Burrow: ' + (S.opened[G.gate] ? 'open' : 'closed') + ' · Station: ' + S.home.e + ' energy, ' + S.home.d + ' data, ' + S.home.s + ' essence, ' + S.home.pods.length + ' stored pods');
+  L2.push('Burrow: ' + (S.opened[G.gate] ? 'open' : 'closed') + ' · Station: ' + S.home.e + ' energy, ' + S.home.d + ' data, ' + S.home.s + ' essence, ' + S.home.pods.length + ' pods waiting or stored');
   L2.push(''); L2.push('Recent events:'); for (const s of S.log.slice(-12)) L2.push('- ' + s);
   L2.push(''); L2.push('Observations:'); L2.push('- ');
   return L2.join('\n');
@@ -2748,13 +3171,14 @@ copyBtn.addEventListener('click', () => {
 
 // ===================== 18. Boot =====================
 if (!load()) newWorld(urlSeed());
-if (S.exp && S.exp.hull <= 0) endExpedition('hull');
+if (S.exp && S.exp.shield <= 0) endExpedition('break');
 if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup';
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { get S() { return S; }, get G() { return G; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+  act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, reachCounts, isCleared, pipsOf, hiddenIn, signsAt, stormLevel, inFog, sendPreview, passable, mapCounts,
   capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; },
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();
