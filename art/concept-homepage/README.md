@@ -1,6 +1,6 @@
 # Homepage concept art: generated candidates
 
-Everything in this folder is a **generated candidate** for the ten shots in
+Everything in this folder is a **generated candidate** for the shots in
 [`../concept-brief-homepage.md`](../concept-brief-homepage.md). Nothing is accepted
 yet, nothing is placed on the page, and every image is concept art: caption it so
 ("Concept art"; "Concept screen, not from the build"), never as a capture.
@@ -32,6 +32,16 @@ templates drawn with PIL (the Companion screen block with its HUD and bottom-lin
 strips; the Station band with its header strip) and two crops (the K1 card Pip and
 the pass B e-paper panel). They are inputs, not candidates.
 
+**Third batch.** After the homepage spec added S2, C3 and the V1–V7 Pip-species
+variants to the brief, a third run with a hard budget of 11 calls (9 shots and at
+most 2 retries) used all 11: 8 on Flash, 3 on Pro. Order: V1–V7 one attempt each
+on Flash, with the accepted rich Pip attached to every call (and the pale-marked
+Pip for V2 and V7); one variant retry went to V4, the worst failure; then S2 on
+Pro (one retry) and C3 on Flash. The variants come back on a flat cream
+background, keyed afterwards to the `-512.png` RGBA portraits the genealogy tree
+uses; `tree-preview.png` tiles them beside the accepted Pip at the tree's two sizes
+(160 px and 76 px) as a species-consistency check.
+
 ![Contact sheet](contact-sheet.png)
 
 ## The candidates
@@ -48,6 +58,15 @@ the pass B e-paper panel). They are inputs, not candidates.
 | D1 `companion-resident-home` | `companion-resident-home.png` 900×1200, `-450x600.png` (crops of `-canvas.png`) | attempt 2 | flash |
 | D2 `station-known-forms` | `station-known-forms.png` 1024×600 (crop of `-canvas.png`) | attempt 1 | pro |
 | E1 `caddy-summary-epaper` | `caddy-summary-epaper.png` 1600×479 (scaled and padded from `-canvas.png`) | attempt 2 | pro |
+| S2 `station-research-hands` | `station-research-hands.png` 1536×1024 | attempt 2 | pro |
+| C3 `companion-partner-hands` | `companion-partner-hands.png` 1536×1024 | attempt 1 | flash |
+| V1 Rust | `v1-rust.png` 1024×1024, `v1-rust-512.png` RGBA | attempt 1 | flash |
+| V2 Sable | `v2-sable.png` 1024×1024, `v2-sable-512.png` RGBA | attempt 1 (only one; fails) | flash |
+| V3 Bramble | `v3-bramble.png` 1024×1024, `v3-bramble-512.png` RGBA | attempt 1 | flash |
+| V4 Ember | `v4-ember.png` 1024×1024, `v4-ember-512.png` RGBA | attempt 2 | flash |
+| V5 Thistle | `v5-thistle.png` 1024×1024, `v5-thistle-512.png` RGBA | attempt 1 | flash |
+| V6 Moss | `v6-moss.png` 1024×1024, `v6-moss-512.png` RGBA | attempt 1 | flash |
+| V7 Dapple | `v7-dapple.png` 1024×1024, `v7-dapple-512.png` RGBA | attempt 1 | flash |
 
 `hero-kit-passA.png` is the pass A result (four-button Companion, new screen) that
 pass B edited, and `hero-kit-passB.png` is the pass B result that pass C edited;
@@ -220,6 +239,67 @@ Judged at the size the page shows each image and, for screens, at 1×.
 - Rejected: attempt 1 (flash, with the K1 photograph and the hero render as inputs)
   returned a blurred photograph of the dock with a card, not a flat screen.
 
+### S2 `station-research-hands`
+- Pass: the Station is the H1 Station: sage shell, screws, the cross at left, the
+  four square HOME / RESEARCH / LIBRARY / HABITAT buttons with their small lights,
+  one round dark Back with `←`, one larger orange Confirm with `✓`, MINIATURE
+  BEASTS on the top bezel; held in two hands at a wooden table in warm lamp light,
+  no other device.
+- Pass: the S1 screen fills the display edge to edge and reads at page size: the
+  sealed pod in its cradle under the pool of light, "Hopper pod", amber "Needs 2
+  more Essence", small Pip with "Hopper · known", header chip 4, crystal 5,
+  droplet 2, every string spelled exactly.
+- **Partial:** the corner bumpers are orange, where H1's Station has charcoal
+  bumpers with a small orange accent. The owner may prefer to accept the drift or
+  ask for a shell-only edit pass.
+- Rejected: attempt 1 (pro) had the right charcoal bumpers and the same exact
+  strings but drew two round Back buttons; a wrong physical control cannot be fixed
+  in the page, so the retry went here.
+
+### C3 `companion-partner-hands`
+- Pass: the HUD (three shield bars, two pod outlines, tiny Pip face, "⚡3", teal
+  "))) call") and the bottom line ("✓ Dig here", "meadow", "← Wait · Leave") are
+  inside the screen block, top and bottom, nothing on the bezel; the P1 problem is
+  fixed in the device render.
+- Pass: buttons follow rule 3: pad at left, speaker holes, teal ringed Call directly
+  above dark Back, both left of the larger orange Confirm; thumbs on the pad and on
+  Confirm; shell, bumpers, strap and bezel wordmark as in C1; a brighter morning
+  garden behind.
+- Pass: the scene is the P1 meadow: Pip beside the pawn inside the teal ring, the
+  glinting dig patch, pond edges, the flowering bush, dew cups; Pip reads as the
+  HiBit Pip.
+- Minor: a stray "·" before "meadow" on the bottom line; C1's finger ring is kept
+  from the source render.
+- One attempt (flash); it passed, so no retry.
+
+### V1–V7 Pip-species variants
+Judged on `tree-preview.png` at 160 px and 76 px and on the `-512.png` portraits.
+Common to all seven: same three-quarter pose facing viewer-left, same upper-left
+light, same sculpted ceramic treatment, cream belly, orange eyes with cream rings,
+tiny smile; the flat cream background keyed with no halo and the contact shadow
+kept as partial alpha; the species reads as one at both sizes.
+- V1 Rust: pass. Russet coat, short rounded ears, three leaves, nothing else changed.
+- V2 Sable: **fail.** Cream pale islands on back and flanks (as the pale-marked
+  reference) and long upright ears are right, but the model dropped the three leaf
+  crown lobes entirely. The one variant retry went to V4, whose first attempt was
+  worse; Sable needs a second attempt in a later batch (ask to keep the leaves, as
+  the V4 retry did).
+- V3 Bramble: pass. Five leaf lobes; visibly heavier and broader body; charcoal,
+  plain coat.
+- V4 Ember: pass on attempt 2. Russet coat, short ears, three leaves, ceramic
+  surface. Rejected attempt 1 lost the leaves and came back felted rather than
+  sculpted. Ember and Rust are near-identical by design (the spec gives them the
+  same visible traits).
+- V5 Thistle: pass. Five leaves drawn as a wreath, long upright ears, a smaller
+  lighter body; charcoal, plain coat.
+- V6 Moss: pass. Russet coat, three leaves curled at the tips, heavier body.
+- V7 Dapple: pass. Russet coat with cream islands, long upright ears, five leaves.
+- Limit for the whole set: each portrait is a separate generation, so the size
+  traits (+20 %, −15 %, +15 %) are not measurable between files and
+  `tree-preview.png` fits every figure to the same cell; the page must scale those
+  three portraits if size is to read. The returned background is a flat warm cream
+  near (244, 237, 224) rather than #f5f2e9; the keying uses the measured colour.
+
 ## Limits
 
 - Generated pixel-style screens are resampled 2K outputs, not authored native
@@ -230,5 +310,8 @@ Judged at the size the page shows each image and, for screens, at 1×.
 - The brief-size E1 file is scaled and padded, not generated at 1600×479; the D1
   and D2 screens are crops of a larger canvas, as recorded in `manifest.json`.
 - Spend: first batch 17 calls (one refused by the cap); second batch 7 calls of the
-  8 allowed, 4 on `gemini-3.1-flash-image` and 3 on `gemini-3-pro-image`.
+  8 allowed, 4 on `gemini-3.1-flash-image` and 3 on `gemini-3-pro-image`; third
+  batch 11 calls of the 11 allowed, 8 Flash and 3 Pro.
+- The variant portraits' alpha is keyed from a flat background, not generated;
+  `v2-sable` fails its checklist (no leaf crown) and has only one attempt.
 - Nothing here establishes a runtime, a renderer or hardware behaviour.
