@@ -194,7 +194,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
       <ul>
         <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or <kbd>WASD</kbd>, or the pad: move. Tap to creep one step; hold to walk. Creeping never startles a creature unless you step right next to it.</li>
         <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange button: <b>Confirm</b>. It does exactly what the bottom line says after ✓.</li>
-        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Wait · Leave" in a place, "← Wait · Send home" on the map, "← Mibis", "← close"). In the field it opens the menu: Wait, Leave, Send home, Probe, Cargo, Mibis.</li>
+        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Leave" in a place, "← Send home" on the map, "← Mibis", "← close"). In the field it opens the menu: Leave (in a place) or Send home on top, then Wait, Probe, Cargo, Mibis.</li>
         <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. At home it calls the mibi with you, which answers. The top right of the screen says what it will do.</li>
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
         <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
@@ -309,7 +309,7 @@ const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; e
 // 3 to 5 in the Probe's reach, chosen when the expedition sets out. Kept scarce on purpose (decision 2026-10-06).
 const WARM_MIN = 3, WARM_MAX = 5, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
 // Survey: Call lifts the veil CALL_R tiles around you (CALL_R_FOG in a fog bank); a quarter of 14×16 tiles counts at SURVEY_AT.
-const CALL_R = 7, CALL_R_FOG = 4,   // the Call's range: a round 7 tiles (4 in a fog bank); its ring IS the unveil
+const CALL_R = 11, CALL_R_FOG = 6,   // the Call's range: a round 11 tiles (6 in a fog bank); its ring IS the unveil
       QW = PW / 2, QH = PH / 2, SURVEY_AT = 0.75;
 // Sight inside a fog bank, in tiles (a glowing partner widens it).
 const SIGHT_FOG = 4, SIGHT_GLOW = 6;
@@ -1019,11 +1019,14 @@ function checkExplored() {
 // A place only counts as finished when a Call was made there (walking never hears what is buried) and no pod lies buried.
 const buriedIn = c => S.pods.filter(p => p.k === String(c) && p.h).length;
 const placeDone = c => surveyed(c) && explored(c) && !buriedIn(c);
+const TAKE_WORD = { pod: 'pod', charge: 'charge', warm: 'warm stone', dew: 'dew', fruit: 'fruit', tuft: 'tuft', beacon: 'beacon' };
+function takeKinds(c) { const n = leftCounts(c); return Object.keys(TAKE_WORD).filter(k => n[k]).map(k => TAKE_WORD[k]); }
 function placeState(c, short) {
   const q = qCount(svyFull(c)), n = leftTotal(c), sv = q === 4 ? 'surveyed' : q ? 'surveyed ' + q + '/4' : 'not surveyed';
   if (short) return sv;
-  if (q === 4 && !explored(c)) return sv + (n ? ' · ' + n + ' to take' : '') + ' · Call to hear below';
-  return sv + (n ? ' · ' + n + ' to take' : placeDone(c) ? ' · nothing to take' : '');
+  const what = n ? ' · ' + n + ' to take: ' + takeKinds(c).join(' · ') : '';   // the list may be cut on the line, never the count
+  if (q === 4 && !explored(c)) return sv + what + ' · Call to hear below';
+  return sv + (n ? what : placeDone(c) ? ' · nothing to take' : '');
 }
 // A fully surveyed place with nothing to take: ← leaves in one press (unless a glowtail is settling and Wait matters).
 function doneEmpty() {
@@ -1105,7 +1108,7 @@ function startExpedition(type, cell) {
   chooseWarm(ex); ensureCharge(ex);
   const p = cxy(cell);
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : '') + ' · tier ' + S.tier);
-  fxOnce('mapintro', 'Walk with the pad · ✓ goes down · ← Wait and Send home', 3);
+  fxOnce('mapintro', 'Walk with the pad · ✓ goes down · ← Send home', 3);
   if (S.exp.shield < S.exp.smax) fxMsg('Shield ' + S.exp.shield + '/' + S.exp.smax + ' · stray strikes break it fast · shelter in a storm', 4);
   S.phase = 'map'; transition(); save();
 }
@@ -1281,6 +1284,7 @@ function enterPatch() {
   S.phase = 'patch'; recordSigns(ex.pos); transition();
   if (!S.found.includes('callintro')) fxOnce('callintro', 'The veil lifts as you walk · Call sweeps further', 3);
   else if (surveyed(ex.pos)) nothingNew();
+  fxOnce('backplace', '← opens the menu · Leave is first', 2);
   save();
 }
 function enterCave() {
@@ -1797,7 +1801,7 @@ function dropTuft(c, X) {
 function seekPace(c, f) { const d = man(c, f); return d > 6 ? 3 : d > 3 ? 2 : 1; }
 // The four bubbles: ! startled · ? curious · fruit (it eats what you carry) · … settling. One at a time, in that order.
 const BUBBLE_HELP = { '!': '! · it noticed you · stop, or it runs', '?': '? · curious · it will come closer',
-  f: 'Fruit bubble · it eats what you carry · offer it, or put it down and back off', '…': '… · settling · keep still with ← Wait' };
+  f: 'Fruit bubble · it eats what you carry · offer it, or put it down and back off', '…': '… · settling · keep still with ✓ Wait' };
 function bubbleOf(c, carry) {
   if (c.st === 'alert') return '!';
   if (c.st === 'approach' || c.st === 'seek') return '?';
@@ -3148,9 +3152,9 @@ function drawPartner(sp, pt, x, y, t) {
 // Call's meaning right now, for the top-right slot. Empty where Call does nothing.
 function callSlot() {
   const ex = S.exp;
-  if (S.phase === 'patch' && ex && ex.patch) return S.ui.swap ? null : { label: 'pulse' };
-  if (S.phase === 'map' && ex) return ownPin(ex.pos) ? { label: 'unpin' } : { label: 'pin 1', energy: true, dim: ex.cargo.e < PRICE.pin };
-  if (S.phase === 'mibis' || S.phase === 'active') { const m = withMibi(); return m ? { label: 'call ' + m.name } : null; }
+  if (S.phase === 'patch' && ex && ex.patch) return S.ui.swap ? null : { label: 'Pulse' };
+  if (S.phase === 'map' && ex) return ownPin(ex.pos) ? { label: 'Unpin' } : { label: 'Pin 1', energy: true, dim: ex.cargo.e < PRICE.pin };
+  if (S.phase === 'mibis' || S.phase === 'active') { const m = withMibi(); return m ? { label: 'Call ' + m.name } : null; }
   return null;
 }
 function drawCallSlot(cs, right) {
@@ -3332,8 +3336,9 @@ function nextHomeAdult() { const w = withMibi(), a = adults().filter(m => m !== 
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'Send home' };
-  if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'wait', label: 'Wait' }, { id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, send].concat(base);
-  if (from === 'map' && S.exp) return [{ id: 'wait', label: 'Wait' }, { id: 'leave', label: 'Leave · in a place', dis: 1 }, send].concat(base);   // same rows as in a place
+  // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
+  if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, send, { id: 'wait', label: 'Wait' }].concat(base);
+  if (from === 'map' && S.exp) return [send, { id: 'wait', label: 'Wait' }].concat(base);
   if ((from === 'station' || from === 'active') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
 }
@@ -3622,7 +3627,8 @@ function mapContext() {
 // First sightings in the top bar: what the Call slot means, and the weather group's arrows.
 function noteHud() {
   const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return;
-  fxOnce('callslot', '))) shows what the Call button does here', 1);
+  if (S.phase === 'patch') fxOnce('callplace', 'The teal CALL button pulses: it lifts the veil and finds things', 2);
+  else fxOnce('callmap', 'CALL here drops a pin for 1 Energy', 1);
   const lvl = stormLevel(); if (lvl) fxOnce('hudstorm', 'Bottom line: bolts are the storm · it moves ' + (ex.storm.dir > 0 ? '▶ east' : '◀ west'), 1);
   if (fogNear()) fxOnce('hudfog', 'Bottom line: the fog bank drifts ' + (ex.fog.dx > 0 ? '▶ east' : '◀ west'), 1);
 }
@@ -3657,7 +3663,7 @@ function lineFor() {
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), [base + wx, base + ' · storm preview', base], 'back', !placeValid(c)); }
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? [base + wx, base + ' · storm preview', base] : wx.slice(3), 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
-      return L1('Go down', mapContext(), S.exp.saidDone ? 'Send home · Wait' : 'Wait · Send home');   // the reach is done: Send home comes first
+      return L1('Go down', mapContext(), 'Send home');   // ← opens the menu, Send home on top
     case 'patch': { const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
       const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
@@ -3668,7 +3674,7 @@ function lineFor() {
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
       if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep'); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
-      return L1(a.label, ctx, lay.cave ? 'Wait · Climb out' : doneEmpty() ? 'Leave' : 'Wait · Leave', !a.run || a.dim); }
+      return L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim); }
     case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close');
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what goes home'] : '', 'close'); }

@@ -18,16 +18,16 @@ Your **mibis** are the creatures you hatch. One of them is always **with you** i
 | --- | --- |
 | **Pad** | Moves. On the map, one tap is one step; hold to keep walking. In a place, a tap is a careful step (creeping); holding walks. In menus, it moves the choice. |
 | **✓ Confirm** (the big one) | Does the thing in front of you: go down into a place, take a pod, shake a bush. Facing nothing in a place, it waits. |
-| **← key** | Opens the menu, or closes the screen you are on. The bottom line always says what it opens. |
-| **))) Call** (teal, above ←) | Sends a signal and things answer. In a place it surveys around you; on the map it places a pin; at home your mibi answers. |
+| **← key** | Opens the menu, or closes the screen you are on. The bottom line names what it opens by the menu's top entry: "← Leave" in a place, "← Send home" on the map. |
+| **))) Call** (teal, above ←) | Sends a signal and things answer. In a place it pulses: it lifts the veil and finds things; on the map it drops a pin for 1 Energy; at home your mibi answers. |
 
 ### The bottom line
 
 The bottom line always has three parts:
 
 - **Left: ✓ what Confirm does now**, for example "✓ Take the pod" or "✓ Wait". If a screen has nothing to do, this part is empty.
-- **Middle: where you are**, the place and how much of it is surveyed ("rock field · surveyed 2/4 · 3 to take"), then the **conditions**: one to three bolts for a storm, with ◀ or ▶ for the way it moves, and a small fog patch with its own ◀ or ▶ when a fog bank is within two cells.
-- **Right: ← what the ← key opens**: "← Wait · Leave" in a place, "← Leave" when a place is finished, "← Wait · Send home" on the map ("← Send home · Wait" once everything in reach is explored), and "← close" on screens.
+- **Middle: where you are**, the place and how much of it is surveyed ("rock field · surveyed 2/4 · 3 to take: fruit · dew · tuft"; on a narrow line the list is cut, never the count), then the **conditions**: one to three bolts for a storm, with ◀ or ▶ for the way it moves, and a small fog patch with its own ◀ or ▶ when a fog bank is within two cells.
+- **Right: ← what the ← key opens**, named by the menu's top entry: "← Leave" in a place ("← Climb out" in the cave), "← Send home" on the map, and "← close" on screens. Wait is not here: ✓ waits when you face nothing, and Wait is lower in the menu.
 
 ### The header (left to right)
 
@@ -36,7 +36,7 @@ The bottom line always has three parts:
 - **Pods**: one outline per pod you can carry, filled with the pod's shell when you take one.
 - **Partner**: the mibi with you on a teal ring, with its name if there is room.
 - **The three counters**: Energy, Data and Essence. They count up with a flash when you gain something, even when it happens out of sight.
-- **The Call verb**: what Call does right now, such as "))) pulse", "))) pin 1⚡" or "))) call Dot".
+- **The Call action**: what the teal Call button does right now, after its glyph: "))) Pulse" in a place, "))) Pin 1⚡" on the map, "))) Call Dot" at home.
 - **Battery and radio**: the Companion's own power and connection.
 
 ## 3. The map
@@ -79,14 +79,14 @@ A pod you saw and left behind shows the pod sign, and a lit **beacon** keeps its
 
 Every place starts under a **veil**: the ground shows through, darker and dotted, so you can see where to walk, and creatures always show. But pods, fruit, stones and other things on a veiled tile stay hidden.
 
-- **Walking lifts it** a little: about 3 tiles around you, as far as open ground lets you see.
-- **Call lifts more**: a ring spreads 7 tiles around you (4 in a fog bank) and everything it passes is uncovered. Hidden pods and stones glint and stay outlined until you take them. Call costs one action. Whatever is lifted stays lifted. Facing something still veiled, ✓ reads "Veiled · Call to see" and costs nothing.
+- **Walking lifts it** a little: about 4 tiles around you, as far as open ground lets you see.
+- **Call lifts more**: a ring spreads 11 tiles around you (6 in a fog bank) and everything it passes is uncovered. Hidden pods and stones glint and stay outlined until you take them. Call costs one action. Whatever is lifted stays lifted. Facing something still veiled, ✓ reads "Veiled · Call to see" and costs nothing.
 
 ### Surveying
 
 A place has four quarters. A quarter is **surveyed** when every tile in it is uncovered. Each Call tells you how far you are and what is left, and in which direction: "Half surveyed · a pod east, a warm stone north-west". If a Call finds Energy, it says "Energy nearby" first. Walking alone never hears what is buried. A place you walked all over reads "surveyed · Call to hear below" until you Call there once.
 
-**"Surveyed · nothing to take"** means the place is finished: every tile is uncovered, you have Called there, and nothing is left. The right part of the bottom line becomes "← Leave", so one press takes you out.
+**"Surveyed · nothing to take"** means the place is finished: every tile is uncovered, you have Called there, and nothing is left. "← Leave" on the bottom line takes you out.
 
 ### Things to do with ✓ Confirm
 
@@ -108,7 +108,7 @@ A place has four quarters. A quarter is **surveyed** when every tile in it is un
 
 ### Wait
 
-Wait lets one action pass. You find it on ✓ when you face nothing in a place, and as the first entry in the menu (the menu stays open, so ✓ waits again). A pale band sweeps down the screen and the line tells you what changed: "The storm edges east · two hoppers wander", "Dew gathers in a cup", or "Nothing is moving here". Waiting is how you keep still for a settling creature, let a storm pass, or let an eater find your fruit. The menu (← key) holds Wait, Leave this place, Send home, Probe (your Shield and patching), Cargo (what you carry and how much is explored), and Mibis. Between expeditions the last entry is New world.
+Wait lets one action pass. You find it on ✓ when you face nothing in a place, and in the menu after Leave and Send home (the menu stays open, so ✓ waits again). A pale band sweeps down the screen and the line tells you what changed: "The storm edges east · two hoppers wander", "Dew gathers in a cup", or "Nothing is moving here". Waiting is how you keep still for a settling creature, let a storm pass, or let an eater find your fruit. The menu (← key) holds Leave this place, Send home, Wait, Probe (your Shield and patching), Cargo (what you carry and how much is explored), and Mibis. Between expeditions the last entry is New world.
 
 ### Pods and the hold
 
@@ -175,7 +175,7 @@ A fog bank is a soft, pale cloud that drifts over the map. Inside it:
 - creatures notice you later and creeping never startles them, so wary ones can be fed by hand;
 - you see only 4 tiles around you (6 with a glowtail partner);
 - dew cups fill again every few actions: a good time for Essence;
-- no stray strikes; signs and the map sweep stop; Call reaches only 4 tiles.
+- no stray strikes; signs and the map sweep stop; Call reaches only 6 tiles.
 
 ### Warm stones and the world turn
 
@@ -248,8 +248,8 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 | --- | --- | --- | --- | --- |
 | Pad | Step / hold to walk | Tap: creep · hold: walk | Move choice | Other mibis |
 | ✓ | Go down | Act on what you face, or Wait | Choose | Spend time / Take |
-| ← | Wait · Send home | Wait · Leave | Close | Mibis |
-| ))) | Pin (1 Energy) | Survey, 7 tiles (1 action) | — | Your mibi answers |
+| ← | Send home (menu) | Leave (menu) | Close | Mibis |
+| ))) | Pin 1⚡ | Pulse, 11 tiles (1 action) | — | Call Dot: your mibi answers |
 
 **Costs**: pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Energy · hatch 2 Energy + 4 Essence · study 2 Data · mend at home 1 Energy a bar · tier 2 Probe 12 Energy + 4 Data.
 
