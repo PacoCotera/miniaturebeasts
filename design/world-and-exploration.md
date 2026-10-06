@@ -161,5 +161,8 @@ The model is chosen: a fogged world map with living patches, as written up in
 (**Proposal**, partly **Decided**; see the Requirements above for what is
 decided). A rough playable of it runs at
 [miniaturebeasts.com/sandbox/exploration/](https://miniaturebeasts.com/sandbox/exploration/)
-(`prototypes/exploration/`). Once it has been played and the open questions in
-the combined design are answered, this document absorbs the decided design.
+(`prototypes/exploration/`). It has been played; the next round of the design is proposed in
+[exploration, round 2](proposals/exploration-round-2.md): purpose for what you
+gather, the storm gamble, Probe range and fog, map states, what ends an
+expedition, a fourth button and creature approach. Once that round is decided and
+played, this document absorbs the decided design.
