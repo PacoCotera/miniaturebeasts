@@ -303,12 +303,11 @@ const CAP = 20;                                   // each material caps at 20 ca
 const PRICE = { identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
 const STRAY = { strong: 1 / 12, peak: 1 / 6 };   // stray strike odds per action in the open
 const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; elder after 6 more as an adult
-// Warm stones: at each world turn the sun warms only some of the stones lightning didn't strike (+1, never more).
-// Kept scarce on purpose (decision 2026-10-06): a calm expedition should bring home about 2–3 Energy.
-const WARM_P = 0.45;
+// Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
+// 3 to 5 in the Probe's reach, chosen when the expedition sets out. Kept scarce on purpose (decision 2026-10-06).
+const WARM_MIN = 3, WARM_MAX = 5, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
 // Survey: Call lifts the veil CALL_R tiles around you (CALL_R_FOG in a fog bank); a quarter of 14×16 tiles counts at SURVEY_AT.
-// A cell counts as explored (its reach dot fills) once it is visited and a Call was made inside it; the quarters show how fully.
-const CALL_R = 11, CALL_R_FOG = 5, QW = PW / 2, QH = PH / 2, SURVEY_AT = 0.75, EXPLORE_Q = 3;
+const CALL_R = 11, CALL_R_FOG = 5, QW = PW / 2, QH = PH / 2, SURVEY_AT = 0.75;
 // Sight inside a fog bank, in tiles (a glowing partner widens it).
 const SIGHT_FOG = 4, SIGHT_GLOW = 6;
 
@@ -752,7 +751,7 @@ const tierOf = () => TIER[S.tier] || TIER[1];
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
 function newWorld(seed) {
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
-  layoutCache.clear();
+  layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   genWorld(seed);
   S = { v: SAVE_V, seed, turn: 0, expN: 1, revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], along: null, rider: null, opened: {}, tier: 1, deepRead: 0,
@@ -783,12 +782,23 @@ function featPos(key, f) { if (f.kind === 's') { const st = fs(key, f.id); if (s
 function cupFull(key, f) { const s = fs(key, f.id); return s.full != null ? s.full : !!f.full; }
 // A stone's storm charge (+2 or +3, from lightning), kept until drawn.
 function stormCharge(key, f) { const s = fs(key, f.id); return s.ch != null ? s.ch : (f.ch || 0); }
-// Warm: re-rolled every world turn on stones without storm charge, so it never piles up. Drawing it (or a storm
-// charge) spends the stone's warmth for this turn. No warm stones in the cave.
+// Warm: chosen afresh each world turn among the stones in reach without storm charge, so it never piles up.
+// Drawing it (or a storm charge) spends the stone's warmth for this turn. No warm stones in the cave.
 function stoneWarm(key, f) {
   if (key[0] === 'c' || stormCharge(key, f) > 0) return 0;
   const s = fs(key, f.id); if (s.wt === S.turn) return 0;
-  return s.ws === S.turn || rnd(S.seed, 'warm', S.turn, key, f.id) < (TEST.warmP != null ? TEST.warmP : WARM_P) ? 1 : 0;
+  return s.ws === S.turn || !!(S.exp && S.exp.warm && S.exp.warm.includes(key + ':' + f.id)) ? 1 : 0;
+}
+// Pick this turn's warm stones in reach (3–5, seeded), and veil the 3×3 around each again so a surveyed place
+// doesn't show them on arrival: a Call finds them.
+function chooseWarm(ex) {
+  const cand = [];
+  for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER) continue; const key = String(c);
+    for (const f of layout(key).feats) if (f.kind === 'k' && stormCharge(key, f) <= 0 && fs(key, f.id).wt !== S.turn) cand.push({ c, key, f, r: rnd(S.seed, 'warm', S.turn, key, f.id) + WARM_NEAR * cdist(c, ex.start) }); }
+  cand.sort((a, b) => a.r - b.r);
+  const n = WARM_MIN + hash(S.seed, 'warmN', S.turn) % (WARM_MAX - WARM_MIN + 1);
+  ex.warm = cand.slice(0, n).map(o => o.key + ':' + o.f.id);
+  for (const o of cand.slice(0, n)) if (S.veil[o.key]) { veilAround(o.key, o.f.x, o.f.y, 1); updateSurvey(o.c); }
 }
 function stoneCharge(key, f) { const ch = stormCharge(key, f); return ch > 0 ? ch : stoneWarm(key, f); }
 function bushFull(key, f) { return !fs(key, f.id).bare; }
@@ -847,10 +857,15 @@ function unveil(key, cx, cy, r) {
   const bits = (x1 >= 30 ? -1 : (1 << (x1 + 1)) - 1) & ~((1 << x0) - 1);
   for (let y = Math.max(0, cy - r); y <= Math.min(PH - 1, cy + r); y++) v[y] = (v[y] | bits) >>> 0;
 }
-// A change the world turn brought (fresh charge, a new pod) veils that part of the place again.
+function veilAround(key, cx, cy, r) {
+  const v = S.veil[key]; if (!v) return; const x0 = Math.max(0, cx - r), x1 = Math.min(PW - 1, cx + r), bits = ((1 << (x1 + 1)) - 1) & ~((1 << x0) - 1);
+  for (let y = Math.max(0, cy - r); y <= Math.min(PH - 1, cy + r); y++) v[y] = (v[y] & ~bits) >>> 0;
+}
+// A change the world turn brought (fresh charge, a new pod) veils that part of the place again; a new pod also
+// empties that cell's reach dot (it needs a Call again).
 function reveil(c, q) {
   const key = String(c), v = S.veil[key]; if (!v) return;
-  if (q == null) delete S.veil[key];
+  if (q == null) { delete S.veil[key]; if (S.called) delete S.called[c]; }
   else { const x0 = q & 1 ? QW : 0, y0 = q & 2 ? QH : 0, bits = (((1 << QW) - 1) << x0) >>> 0; for (let y = y0; y < y0 + QH; y++) v[y] = (v[y] & ~bits) >>> 0; }
   updateSurvey(c);
 }
@@ -984,7 +999,7 @@ function startExpedition(type, cell) {
   const ex = S.exp; ex.hadStorm = !!storm;
   revealAround(cell, 1); S.visited[cell] = 1;
   ex.reach = reachCells(cell, ex.range);
-  ensureCharge(ex);
+  chooseWarm(ex); ensureCharge(ex);
   const p = cxy(cell);
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : '') + ' · tier ' + S.tier);
   fxOnce('mapintro', 'Walk with the pad · ✓ goes down · ← Wait and Send home', 3);
@@ -1243,10 +1258,12 @@ function patchAction() {
   if (o && o.type !== 'tile' && o.type !== 'pt' && o.type !== 'cr' && !(o.type === 'fruit' && o.fr.put) && !unveiled(key, f.x, f.y))
     return { label: 'Veiled · Call to see', run: null };
   if (o && o.type === 'cr') {
+    // before identification one neutral label, whatever it eats: no diet leaks, and nothing is offered
+    if (!S.known.includes(o.c.sp)) return { label: 'Unknown creature', run: null };
     // never offered to a non-eater: the label says so and pressing spends nothing
-    if (!SPECIES[o.c.sp].eats && fruit && !S.known.includes(o.c.sp)) return { label: 'Unknown creature', run: null };   // no offer, and no diet before it is identified
     if (!SPECIES[o.c.sp].eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
-      fxMsg(fruit ? (S.known.includes(o.c.sp) ? cap(SPECIES[o.c.sp].plural) + ' don’t' : 'This creature doesn’t') + ' eat fruit · hoppers and puffcaps do' : 'The ' + spName(o.c.sp) + ' watches you · keep still and it settles, or Call', 2); } };
+      const eaters = [0, 1, 2].filter(sp => SPECIES[sp].eats && S.known.includes(sp)).map(sp => SPECIES[sp].plural);
+      fxMsg(fruit ? cap(SPECIES[o.c.sp].plural) + ' don’t eat fruit' + (eaters.length ? ' · ' + eaters.join(' and ') + ' do' : '') : 'The ' + spName(o.c.sp) + ' watches you · keep still and it settles, or Call', 2); } };
     return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) }
       : { label: 'Bring fruit, or Call', run: () => { fxMsg('The ' + spName(o.c.sp) + ' watches you · bring fruit, or Call', 2); FX.bumpAt = NOW; } }; }
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
@@ -1290,11 +1307,13 @@ function addMat(k, n, x, y) {
   return got;
 }
 // Who eats fruit here, said when one drops: "A fruit drops · puffcaps eat these".
+// Only creatures you can see count, and only identified species are named.
 function eatersHere(live) {
-  const sps = [...new Set(live.cr.filter(c => SPECIES[c.sp].eats).map(c => c.sp))];
-  if (!sps.length) return 'no one here eats fruit';
-  const names = sps.map(sp => S.known.includes(sp) ? SPECIES[sp].plural : null);
-  return names.every(Boolean) ? names.join(' and ') + ' eat these' : 'creatures here eat these';
+  const seen = live.cr.filter(c => !c.hide && inSight(c.x, c.y)), sps = [...new Set(seen.map(c => c.sp))];
+  const known = sps.filter(sp => SPECIES[sp].eats && S.known.includes(sp));
+  if (known.length) return known.map(sp => SPECIES[sp].plural).join(' and ') + ' eat these';
+  if (sps.every(sp => S.known.includes(sp))) return 'no one here eats fruit';
+  return 'watch who comes for it';
 }
 function shakeBush(f) {
   const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, { bare: 1 });
@@ -1846,7 +1865,7 @@ function endExpedition(reason) {
   const rc = reachCounts();
   S.hist.push({ n: ex.n, reason, actions: ex.actions, e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, pods: ex.cargo.pods.length, rev: ex.stats.rev, lit: ex.stats.lit,
     hits: ex.stats.hits, done: ex.saidDone || 0, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length,
-    warm: ex.stats.warm || 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
+    warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
   S.exp = null; S.report = rep;
   rep.lines = worldTurn(pending);
@@ -2776,7 +2795,7 @@ function drawPatch(t) {
     else if (f.kind === 'd') { blit(CRACK(), W(x), H(y), rm); if (live.seen.d) { const ph = motion() ? Math.floor((t * 1.2 % 1) * 4) : 2; circ(W(x + 16), H(y + 16), 10 + ph * 4, C.lavender, ph > 2); blit(BADGE(), W(x + 7), H(y - 6)); } }
     else if (f.kind === 'x') blit(exitArt(fr), W(x), H(y));
     else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), W(x), H(y), rm);
-    else if (f.kind === 'i') blit(podArt('lime'), W(x + 9), H(y + 8 + fr), tileLight(f.x, f.y));
+    else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), W(x + 9), H(y + 8 + fr), tileLight(f.x, f.y)); }
   }
   // y-sorted sprites
   const items = [];
@@ -2910,9 +2929,9 @@ function drawStatus(right) {
   return right - STATUS_W - 6;
 }
 // The reach grid, top-left corner: one dot per reachable cell in the Probe's range (5×5 at tier 1, 9×9 at tier 2).
-// Hollow: not surveyed; filled: surveyed; your cell is framed; cells you can't reach get no dot.
+// Hollow: not explored; filled: explored (visited and Called in); your cell is framed; cells you can't reach get no dot.
 function drawReachGrid(x0) {
-  const ex = S.exp, r = ex.range, n = r * 2 + 1, big = n <= 5, d = big ? 3 : 2, pitch = d + 1, s0 = cxy(ex.start), reach = RT.reachSet && RT.reachKey === ex.n ? RT.reachSet : (RT.reachSet = new Set(ex.reach), RT.reachKey = ex.n, RT.reachSet);
+  const ex = S.exp, r = ex.range, n = r * 2 + 1, big = n <= 5, d = big ? 3 : 2, pitch = d + 1, s0 = cxy(ex.start), rk = S.seed + ':' + ex.n, reach = RT.reachSet && RT.reachKey === rk ? RT.reachSet : (RT.reachSet = new Set(ex.reach), RT.reachKey = rk, RT.reachSet);
   const y0 = Math.max(0, Math.floor((HUD_H - 1 - (n * pitch - 1)) / 2));
   for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
     const X = s0.x - r + i, Y = s0.y - r + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; const c = Y * MW + X; if (!reach.has(c)) continue;
@@ -3553,7 +3572,7 @@ requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { get S() { return S; }, get G() { return G; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
-  sendPreview, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, get EXPLORE_Q() { return EXPLORE_Q; }, crossReason, TEST,
+  sendPreview, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, TEST,
   capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; },
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();

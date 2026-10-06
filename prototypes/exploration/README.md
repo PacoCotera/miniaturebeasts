@@ -36,7 +36,7 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 - **Quarters.** A place has four quarters of 14×16 tiles. A quarter is surveyed when 75% of its surveyable tiles are unveiled. A cell counts as **explored** (its reach dot fills) once it is visited and at least one Call was made inside it; the overview still draws all four quarters, so a partial and a full survey stay visible. The line names it: "rock field · half surveyed", "· surveyed" at four.
 - **Call reports** how much is surveyed and what is still there to take: "Surveyed · 1 pod, 2 dew left", "Half surveyed · 2 fruit left", "Survey begun · Call further on · nothing to take yet". It never says "Nothing here". A pod still lying in the place glints again.
 - **The overview** draws each visited cell in quarters of 13 px: dotted (night dither) while unsurveyed, whole once surveyed. Pips (up to 3) count what is left to take in the unveiled part: pods, charge, warm stones, full dew cups, bushes with fruit, fruit on the ground, tufts, unclimbed cairns. The tick and the word "cleared" are gone. A located pod is a pip; its beat sign goes.
-- **The world turn** veils again what changed: the quarter of a stone that took fresh storm charge, the whole place where a new pod arrived. A surveyed place that was not changed stays surveyed across expeditions.
+- **The world turn** veils again what changed: the quarter of a stone that took fresh storm charge, the whole place where a new pod arrived (its reach dot empties: it needs a Call again). A surveyed place that was not changed stays surveyed across expeditions.
 
 ## Completion
 
@@ -57,7 +57,7 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 Every source is an act you choose. Each caps at 20 carried.
 
 - **Energy**: draw a stone's charge. A storm charge gives +2 (+3 if struck at the storm's peak) and is drawn as a yellow zigzag with a cream ring. A **warm stone** gives +1 and is drawn with a dim dotted ring of rust and amber on the ground around its foot and a small amber glint, no zigzag, so it is never confused with a storm charge or with the strike warning (a whole yellow tile with a bolt). Spent in the field on pins (1) and shield patches (3 for one bar, on the Probe screen). Spent at the Station on identifying or logging a pod (1), hatching (2) and the tier 2 Probe (12). Prices are unchanged; Essence never converts to Energy.
-- **Warm stones.** At each world turn, every stone without storm charge is warm with a 45% chance, re-rolled every turn (warmth never piles up and never exceeds 1). Drawing it spends that stone's warmth until the next world turn. Warm stones give no map sign; the survey finds them. No warm stones in the cave.
+- **Warm stones.** At each world turn the sun warms 3 to 5 stones in the Probe's reach (seeded, chosen among stones without storm charge when the expedition sets out, leaning toward cells near the start), never more than +1 each and never piling up from turn to turn. The 3×3 around each warm stone is veiled again, so a surveyed place doesn't show it on arrival: a Call finds it. Drawing it spends that stone's warmth until the next world turn. Warm stones give no map sign. No warm stones in the cave.
 - **Data**: only from creature moments you cause: a creature eats your fruit, or a glowtail settles because you kept still. +1, or +2 the first time ever for that species and moment and for the first moment with each species on an expedition; once per creature per expedition.
 - **Essence**: dew from a full cup (+1), pressing a fruit instead of feeding it (+2), the tuft a hopper leaves when it shakes dry (+1).
 
@@ -90,8 +90,8 @@ Every source is an act you choose. Each caps at 20 carried.
 ## Creatures and feeding
 
 - **Four bubbles**, one at a time, each explained once the first time it shows in view: **!** startled ("stop, or it runs"), **?** curious ("it will come closer"), **fruit** (a red fruit on blush: "it eats what you carry · offer it, or put it down and back off"), **…** settling, with four pips under the creature that fill as it settles ("keep still with ← Wait"). The fruit bubble shows on every eater of an identified species in view while you carry fruit. The partner-calm tilde from round 2 is kept.
-- **Diet before you offer.** Facing a creature of a species you have identified, the line names it and its diet: "Hopper · eats fruit", "Glowtail · doesn't eat fruit · settles when you keep still". An unidentified one reads "Unknown creature · watch what it does", and with fruit in hand Confirm on an unidentified non-eater reads only "Unknown creature" (no offer, no diet). The fruit bubble shows only on eaters of identified species. With fruit in hand, Confirm reads "Offer fruit" only for eaters; for a non-eater it reads "Doesn't eat fruit" (dimmed) and a press says so and spends nothing.
-- A shaken bush says who eats its fruit: "A fruit drops · hoppers eat these", or "no one here eats fruit". Putting fruit down explains itself once ("Fruit down · eaters come when you back off").
+- **Diet before you offer.** Facing a creature of a species you have identified, the line names it and its diet: "Hopper · eats fruit", "Glowtail · doesn't eat fruit · settles when you keep still". An unidentified creature reads "Unknown creature · watch what it does", and Confirm reads only "Unknown creature" (dimmed, nothing offered), whatever it eats. The fruit bubble shows only on eaters of identified species. For an identified eater with fruit in hand, Confirm reads "Offer fruit"; for an identified non-eater "Doesn't eat fruit" (dimmed), and a press names only identified eaters ("Glowtails don't eat fruit · hoppers do") and spends nothing.
+- A shaken bush names only identified eaters you can see: "A fruit drops · hoppers eat these"; "no one here eats fruit" when every creature in sight is identified and none eats it; otherwise "watch who comes for it". Hidden creatures and those beyond fog sight don't count. Putting fruit down explains itself once ("Fruit down · eaters come when you back off").
 - Creeping never startles a creature unless you step right next to it. A startled creature flees 3 tiles, never off-screen, then watches; after 3 quiet actions it goes back to its routine.
 
 ## Fog bank
@@ -125,11 +125,11 @@ New pods hatch as juveniles (ride in the Companion), grow up after 2 world turns
 - The HUD keeps Energy as its only material number (whether it should show all three materials is open for the owner).
 - The Station is a stand-in: instant identification, hatching and studies, one page each. Names are automatic.
 - The cave under the cliff has no veil (it has its own darkness and lighting).
-- Warm stones are computed, not stored: a stone is warm when a seeded roll for that turn and stone says so, unless it holds storm charge or was drawn this turn.
+- Warm stones are chosen, not grown: the expedition stores which 3–5 stones in its reach are warm this turn; stones outside the reach are never warm while you can't reach them.
 - Wait's report looks at the creatures in view, the storm, the fog bank and dew cups; it says at most two creature changes.
 - Abilities come from species, not traits. Creatures are procedural tokens. The island across the fast water can't be reached.
 - Buried pods lie 3–6 tiles from where you first enter a place.
-- `__mb.TEST.calm` (test hook only) starts expeditions without a storm, to measure calm expeditions; `__mb.TEST.warmP` overrides the warm odds.
+- `__mb.TEST.calm` (test hook only) starts expeditions without a storm, to measure calm expeditions.
 
 ## Measured with scripted play (seeds 7, 13, 42)
 
@@ -143,20 +143,22 @@ Survey pace, tuned in steps (radius 11, then 75%, then explored at 3 of 4 quarte
 | Radius 11 | 4 | 1,174–2,280 | 1,580–3,117 |
 | + 75% | 3 | 858–1,714 | 1,305–2,803 |
 | + explored at 3/4 | 2 | 743–1,540 | 1,295–2,796 |
-| Explored = visited + one Call (current; thorough still surveys all four quarters) | scout 1, thorough 3 | 548–837 | 1,288–2,783 |
+| Explored = visited + one Call (thorough still surveys all four quarters) | scout 1, thorough 3 | 548–837 | 1,288–2,783 |
+| + warm stones 3–5 in reach (current) | scout 1, thorough 3 | 538–845 | 1,274–2,675 |
 
 The reach holds 15, 18 and 25 cells on the three seeds; a scout spends about 33–37 actions per cell (walking in, one Call, picking up what it shows, walking out), so the target of 200 (scout) and 450 (thorough) actions is not met.
 
-- **Energy home per calm expedition** (no storm; 30 expeditions, five in a row per world, median 220 actions): mean 2.6, median 2, range 0–7; 4 of 30 brought none. Warm odds stay at 45%.
+- **Warm supply**: 3–5 warm stones in reach every expedition (30 of 30: twelve with 3, ten with 4, eight with 5), none visible on arrival without a Call.
+- **Energy home per calm expedition** (no storm; 30 expeditions, five in a row per world, median 226 actions): mean 2.4, median 2, range 0–6; 2 of 30 brought none. The bot drew a median of 1 warm stone; the rest is charge left by earlier storms. Before the pick leaned toward the start, the same supply gave a median of 1.
 - **With a storm stay** (measured before the survey tuning; Calls while sheltering, draws struck stones, banks at shield 1; 15 Weather expeditions): median 4.5 Energy home when sent (0–11); 3 of 15 broke.
 - **Edge-walk presses per crossing**: 2 (step off, Confirm).
 - **Wait**: on the map with no storm or fog near, "Nothing is moving here"; in a place with creatures it almost always names one moving.
 
 ## Known issues
 
-- **Completing a reach is still long** (548–837 actions for a scout; see above): with places at 28×32 tiles the walk through each place sets the floor, whatever the Call does.
+- **Completing a reach is still long** (538–845 actions for a scout; see above): with places at 28×32 tiles the walk through each place sets the floor, whatever the Call does.
 - Calm Energy scales with places visited (about 1 per place); faster surveys would raise it unless the warm odds drop.
-- A place stays surveyed across expeditions, so its warm stones show on arrival without a Call; revisiting surveyed places nearby is a cheap source of +1s.
+- A place stays surveyed across expeditions; only its warm stones (3×3 each) and changes from the world turn are veiled again.
 - The veil has hard tile edges, as the ground types do. At 1× the map's dotted quarters on dark ground (wood) are subtle.
 - Seen meadow cells fade only from grass to a darker green. The map line rarely fits the cell you're on and the one ahead in full.
 - Tablet scale factors that don't snap give slightly uneven pixel widths. Some browsers block clipboard access; "Copy playtest notes" then shows the notes selected in a text box.
