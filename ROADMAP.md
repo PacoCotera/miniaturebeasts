@@ -171,8 +171,9 @@ The direction for the site:
 
 ## Decisions needed next
 
-1. Exploration model (phase 1, step 1).
-2. Browser prototype or v1 simulator for the rough playable (phase 1, step 2).
+1. The project lead's verdict on the exploration prototype (phase 1, step 2).
+2. The open questions in the [combined design](design/proposals/exploration-options/combined-design.md#9-open-questions),
+   before it is written into [world and exploration](design/world-and-exploration.md) (phase 1, step 3).
 
 Task tracking lives in GitHub issues, grouped by milestone per phase and labelled
 by area.

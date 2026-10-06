@@ -307,10 +307,8 @@ bank. Faded tracks are an old sign. The dotted circle is the Tier 1 range edge.*
 
 ## 9. Open questions
 
-1. Should the world advance one turn per expedition, or should only the frontier
-   renew?
-2. Are automatic pins enough, or do players need to place their own marks, which
+1. Are automatic pins enough, or do players need to place their own marks, which
    would cost a control?
-3. Should Probe range limit how far an expedition goes from the landing, or only
+2. Should Probe range limit how far an expedition goes from the landing, or only
    fog and gates?
-4. How far must a bonded mibi be raised before it can come along as a partner?
+3. How far must a bonded mibi be raised before it can come along as a partner?
