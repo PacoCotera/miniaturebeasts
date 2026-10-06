@@ -3043,6 +3043,7 @@ function menuIcon(id, x, y) {
 function drawMenu(t) {
   const items = menuItems(), overField = S.exp && (S.ui.from === 'patch' && S.exp.patch || S.ui.from === 'map');
   if (S.ui.from === 'patch' && S.exp && S.exp.patch) drawPatch(t); else if (S.ui.from === 'map') drawMap('map', t); else if (S.ui.from === 'station') drawStation(t); else drawSetup(t);
+  if (S.ui.waiting && overField) return;   // waiting: the whole place stays in view; the bottom line is the strip
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
   const pl = RT.plScr, left = overField && pl && pl.x > SCR_W / 2;
   const rowH = overField ? 44 : 62, w = overField ? 250 : 330, x = overField ? (left ? 8 : SCR_W - w - 8) : 60, top = overField ? VIEW_Y + 8 : 110, sc = overField ? 2 : 3;
@@ -3125,16 +3126,23 @@ function drawCompanions(t) {
   if (!S.mibis.length) { for (let a = 0; a < 6.28; a += .12) R(225 + Math.round(Math.cos(a) * 40), 170 + Math.round(Math.sin(a) * 40), 2, 2, C.stone);
     text('No mibis yet', SCR_W / 2, 240, C.bone, 3, 'center'); text('Bring a pod home. It hatches', SCR_W / 2, 280, C.mist, 2, 'center'); text('at the Station.', SCR_W / 2, 300, C.mist, 2, 'center'); return; }
   const fr = motion() ? Math.floor(t * 2.4) % 2 : 0, hop = FX.callMibi && NOW - FX.callMibi.at < 1100 ? FX.callMibi : null;
-  S.mibis.forEach((m, i) => { const y = 40 + i * 120, sel = S.ui.cSel === i, st = mibiStage(m), along = S.exp ? (S.exp.pt && S.exp.pt.id === m.id) : S.along === m.id, rides = S.rider === m.id;
-    card(20, y, 410, 106, sel, true);
+  // Each card in rows that never overlap: the name (clipped), a row of tags, the species, its ability.
+  const along = m => S.exp ? !!(S.exp.pt && S.exp.pt.id === m.id) : S.along === m.id, TX = 112, TW = 410 + 20 - TX - 8;
+  const tag = (x, y, label, fill) => { const w = textW(label, 2) + 10; panel(x, y, w, 20, C[fill]); text(label, x + 5, y + 3, C.bone); return w + 4; };
+  S.mibis.forEach((m, i) => { const y = 40 + i * 108, sel = S.ui.cSel === i, st = mibiStage(m);
+    card(20, y, 410, 100, sel, true);
     if (!(hop && hop.id === m.id)) blit(creatureArt(m.sp, 'idle', 0, 2), 30, y + 14 + fr);
-    text(m.name, 112, y + 12, C.ink, 3);
-    let cx = 112 + textW(m.name, 3) + 12; cx += chip(cx, y + 12, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone') + 6;
-    if (along) chip(cx, y + 12, S.exp ? 'with you' : 'along', 'orange', 'bone'); else if (rides) chip(cx, y + 12, 'riding', 'orange', 'bone');
-    text(SPECIES[m.sp].name, 112, y + 48, C.stone);
-    text(st === 'juvenile' ? 'Too young for the Probe' : SPECIES[m.sp].abText[0].toUpperCase() + SPECIES[m.sp].abText.slice(1) + (st === 'elder' ? ' · slow, keen' : ''), 112, y + 72, C.bark); });
+    text(clipText(m.name, TW, 3), TX, y + 8, C.ink, 3);
+    let cx = TX; cx += tag(cx, y + 36, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone');
+    if (along(m)) cx += tag(cx, y + 36, S.exp ? 'with you' : 'along', 'orange');
+    if (S.rider === m.id) cx += tag(cx, y + 36, 'riding', 'rust');
+    text(clipText(SPECIES[m.sp].name, TW, 2), TX, y + 62, C.stone);
+    text(clipText(st === 'juvenile' ? 'Too young for the Probe' : SPECIES[m.sp].abText[0].toUpperCase() + SPECIES[m.sp].abText.slice(1) + (st === 'elder' ? ' · slow, keen' : ''), TW, 2), TX, y + 80, C.bark); });
+  // who does what, in words: "Pip comes along · Dot rides · Moss stays home"
+  const sy = 40 + S.mibis.length * 108 + 6, state = S.mibis.map(m => m.name + (along(m) ? (S.exp ? ' is with you' : ' comes along') : S.rider === m.id ? ' rides' : ' stays home')).join(' · ');
+  wrapText(state, 410, 2).slice(0, 3).forEach((l, i) => text(l, 22, sy + i * 20, C.fog));
   if (hop) { const m = mibiById(hop.id), a = NOW - hop.at, k = Math.min(1, a / 500), hy = Math.round(Math.abs(Math.sin(a / 160)) * (motion() ? 14 : 0) * (1 - Math.max(0, (a - 700) / 400)));
-    if (m) { panel(150, 380 - Math.round(k * 10), 150, 92, C.ink, C.teal); blit(creatureArt(m.sp, a > 600 ? 'alert' : 'idle', 0, 2), 193, 392 - hy); } }
+    if (m) { panel(150, 418 - Math.round(k * 10), 150, 92, C.ink, C.teal); blit(creatureArt(m.sp, a > 600 ? 'alert' : 'idle', 0, 2), 193, 430 - hy); } }
   else if (S.exp) text('Partners are chosen before you set out.', SCR_W / 2, 520, C.mist, 2, 'center');
 }
 function drawNewWorld() {
@@ -3260,7 +3268,8 @@ function lineFor() {
       let ctx = lay.cave ? 'cave' : [LAND_NAME[lay.land] + ' · ' + surveyWord(lay.cell) + wx, LAND_NAME[lay.land] + wx];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
       return L1(a.label, ctx, lay.cave ? 'Wait · Climb out' : 'Wait · Leave', !a.run || a.dim); }
-    case 'menu': { const it = menuItems()[S.ui.menuSel] || menuItems()[0];
+    case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close');
+      const it = menuItems()[S.ui.menuSel] || menuItems()[0];
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what goes home'] : '', 'close'); }
     case 'probe': return canPatch() ? L1('Patch the shield', '3 Energy for one bar', 'close') : L1('Close', '', 'close');
     case 'cargo': return S.exp ? L1('Send home', 'ends the expedition', 'close') : L1('Close', '', 'close');
@@ -3306,7 +3315,7 @@ function frame(t) {
 }
 
 // ===================== 16. Input: Companion controls =====================
-function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.ui.nwArm = 0; S.phase = 'menu'; }
+function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.ui.nwArm = 0; S.ui.waiting = 0; S.phase = 'menu'; }
 // The next grown partner to bring along (cycles through adults, then none).
 function nextPartner() { const a = adults(); if (!a.length) return null; const i = a.findIndex(m => m.id === S.along); return i + 1 < a.length ? a[i + 1] : null; }
 function chooseType() {
@@ -3361,10 +3370,12 @@ function act(k, mode) {
       else if (k === 'call') callPlace();
       break;
     case 'menu': { const items = menuItems(), n = items.length; if (k !== 'confirm') S.ui.nwArm = 0;
+      // while waiting the menu is folded to the bottom strip: Confirm waits again, Back or the pad bring the full menu back
+      if (S.ui.waiting) { if (k === 'confirm') { waitTick(S.ui.from); if (S.phase === 'menu' && !S.exp) S.phase = 'station'; } else S.ui.waiting = 0; break; }
       if (k === 'up') S.ui.menuSel = (S.ui.menuSel + n - 1) % n;
       else if (k === 'down') S.ui.menuSel = (S.ui.menuSel + 1) % n;
       else if (k === 'confirm') { const id = (items[S.ui.menuSel] || items[0]).id;
-        if (id === 'wait') { waitTick(S.ui.from); if (S.phase === 'menu' && !S.exp) S.phase = 'station'; }   // stays open: Confirm again waits again
+        if (id === 'wait') { waitTick(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'station'; }   // folds to a strip: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
         else if (id === 'send') S.phase = 'cargo';
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
