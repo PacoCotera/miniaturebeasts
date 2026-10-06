@@ -10,17 +10,17 @@
       "gemini-3-pro-image": "Gemini 3 Pro Image (listed as newest pro image model)",
       "gemini-3.1-flash-image": "Gemini 3.1 Flash Image (listed as newest image model)"
     },
-    "modelChoice": "Both image models listed for the key were used. Flash was tried first; after two Flash attempts failed the H1 button layout, the Pro model was used for the third and then each later shot ran one attempt on each model so the better one could be kept. Second batch (H1 pass C, D1, D2, E1): Flash first where the checklist is layout and identity (H1 pass C, D1, E1); Pro for D2, whose checklist needs two figures that match the rich Pip exactly, and for the retries whose first attempt failed on text fidelity (H1 pass C) or on following the flat-screen instruction (E1).",
+    "modelChoice": "Both image models listed for the key were used. Flash was tried first; after two Flash attempts failed the H1 button layout, the Pro model was used for the third and then each later shot ran one attempt on each model so the better one could be kept. Second batch (H1 pass C, D1, D2, E1): Flash first where the checklist is layout and identity (H1 pass C, D1, E1); Pro for D2, whose checklist needs two figures that match the rich Pip exactly, and for the retries whose first attempt failed on text fidelity (H1 pass C) or on following the flat-screen instruction (E1). Third batch (V1-V7, S2, C3): Flash for the seven variants (identity against an attached reference, no text) and for C3 (an edit of C1 whose checklist is layout); Pro for S2, whose checklist needs the S1 strings reproduced exactly inside a device render, and for its retry.",
     "generationConfig": {
       "responseModalities": [
         "IMAGE"
       ],
       "imageConfig": {
-        "aspectRatio": "3:2, 2:3 or 21:9",
+        "aspectRatio": "3:2, 2:3, 21:9 or 1:1",
         "imageSize": "2K"
       }
     },
-    "output": "image/jpeg at 2528x1696, 1696x2528 or 3168x1344 (21:9); no transparency option; resampled with LANCZOS to the brief sizes and stored as PNG",
+    "output": "image/jpeg at 2528x1696, 1696x2528 or 3168x1344 (21:9); no transparency option; resampled with LANCZOS to the brief sizes and stored as PNG; 1:1 requests return 2048x2048",
     "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the brief prompt followed verbatim as the last text part."
   },
   "stopped": {
@@ -1773,6 +1773,846 @@
           "serviceTier": "standard"
         }
       }
+    },
+    {
+      "id": "v1-rust",
+      "shot": "V1",
+      "pass": null,
+      "attempt": 1,
+      "tag": "V1-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: warm russet coat instead of charcoal; short rounded ears visible. No text, no props, no scenery, no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, the V1-V7 template verbatim with {TRAITS} replaced by the row for V1",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the accepted Pip, the supplied individual: species body plan, pose, light and treatment to match exactly apart from the listed differences. Technical note: this API returns opaque images, so render the whole background as one flat, uniform cream #f5f2e9 with no gradient, vignette, checkerboard or texture; it will be keyed to alpha afterwards. Keep the figure the same size and position in the frame as the supplied individual so the portraits tile side by side.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "accepted rich Pip, the supplied individual: species body plan, pose, light and treatment",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "time": "2026-10-06T19:31:31Z",
+      "variant": {
+        "name": "Rust",
+        "traits": "warm russet coat instead of charcoal; short rounded ears visible"
+      },
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/V1-attempt1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "3968cf87f8f580b4772eaed144e1765b4c76f915a21187871b7bf21f0f67cc73"
+        },
+        "png": {
+          "file": "v1-rust.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "75f75defb7ec36c8b66937ab0428a5a878cb6ba4ec6a4fc4cd658591ee672662"
+        },
+        "finishReason": "STOP",
+        "seconds": 12.6,
+        "usage": {
+          "promptTokenCount": 520,
+          "candidatesTokenCount": 1990,
+          "totalTokenCount": 2510,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 262
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        },
+        "keyed": {
+          "file": "v1-rust-512.png",
+          "width": 512,
+          "height": 512,
+          "sha256": "87cad5b8ea26b83a76e67ee451755a5cc87bd4ede30ee470490d581b1981a532"
+        }
+      }
+    },
+    {
+      "id": "v2-sable",
+      "shot": "V2",
+      "pass": null,
+      "attempt": 1,
+      "tag": "V2-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: cream pale islands on back and flanks as in the pale-marked reference; long upright ears. No text, no props, no scenery, no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, the V1-V7 template verbatim with {TRAITS} replaced by the row for V2",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted Pip, the supplied individual: species body plan, pose, light and treatment to match exactly apart from the listed differences. Image 2 is the pale-marked reference: it shows only what the cream pale islands look like on this species; take the islands from it and nothing else. Technical note: this API returns opaque images, so render the whole background as one flat, uniform cream #f5f2e9 with no gradient, vignette, checkerboard or texture; it will be keyed to alpha afterwards. Keep the figure the same size and position in the frame as the supplied individual so the portraits tile side by side.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "accepted rich Pip, the supplied individual: species body plan, pose, light and treatment",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-marked-source.png",
+          "role": "pale-marked reference: what the cream pale islands look like on this species, nothing else",
+          "sha256": "abb8c4ed7b2ea294d225c66dc47a1772f7733b183243c4fa74eb2a067e3362f1"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "time": "2026-10-06T19:32:02Z",
+      "variant": {
+        "name": "Sable",
+        "traits": "cream pale islands on back and flanks as in the pale-marked reference; long upright ears"
+      },
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/V2-attempt1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "8821f5fc3f514a346467b11c747f4da820e624a30d397f27fb5d0872478af00f"
+        },
+        "png": {
+          "file": "v2-sable.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "bdb61891ce5be07ce9d1d14ffcacbe5308e7ccee567b74f0c7e5d74092ed1065"
+        },
+        "finishReason": "STOP",
+        "seconds": 13.3,
+        "usage": {
+          "promptTokenCount": 840,
+          "candidatesTokenCount": 1920,
+          "totalTokenCount": 2760,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 324
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        },
+        "keyed": {
+          "file": "v2-sable-512.png",
+          "width": 512,
+          "height": 512,
+          "sha256": "69630318e16da39dd4cb92625bcd5a0e1741b13d45d9f4a80114b12b691fd124"
+        }
+      }
+    },
+    {
+      "id": "v3-bramble",
+      "shot": "V3",
+      "pass": null,
+      "attempt": 1,
+      "tag": "V3-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: five leaf lobes on the crown; body 20 % larger and heavier. No text, no props, no scenery, no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, the V1-V7 template verbatim with {TRAITS} replaced by the row for V3",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the accepted Pip, the supplied individual: species body plan, pose, light and treatment to match exactly apart from the listed differences. Technical note: this API returns opaque images, so render the whole background as one flat, uniform cream #f5f2e9 with no gradient, vignette, checkerboard or texture; it will be keyed to alpha afterwards. Keep the figure the same size and position in the frame as the supplied individual so the portraits tile side by side.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "accepted rich Pip, the supplied individual: species body plan, pose, light and treatment",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "time": "2026-10-06T19:32:15Z",
+      "variant": {
+        "name": "Bramble",
+        "traits": "five leaf lobes on the crown; body 20 % larger and heavier"
+      },
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/V3-attempt1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "2f8cd896f33b68c04a2bdc19c4e09db2d15176c395758d5b9fb1aa7dd393c663"
+        },
+        "png": {
+          "file": "v3-bramble.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "5c688cc182669a8d9bc8d779a1692605683af40c3fd1e2293b98494f48a59460"
+        },
+        "finishReason": "STOP",
+        "seconds": 13.6,
+        "usage": {
+          "promptTokenCount": 523,
+          "candidatesTokenCount": 1962,
+          "totalTokenCount": 2485,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 265
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        },
+        "keyed": {
+          "file": "v3-bramble-512.png",
+          "width": 512,
+          "height": 512,
+          "sha256": "88b4e6e98741655e9b3bdf4185b3070cf023ef94acb5c49e12c0b2726bc124b5"
+        }
+      }
+    },
+    {
+      "id": "v4-ember",
+      "shot": "V4",
+      "pass": null,
+      "attempt": 1,
+      "tag": "V4-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: warm russet coat; short ears. No text, no props, no scenery, no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, the V1-V7 template verbatim with {TRAITS} replaced by the row for V4",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the accepted Pip, the supplied individual: species body plan, pose, light and treatment to match exactly apart from the listed differences. Technical note: this API returns opaque images, so render the whole background as one flat, uniform cream #f5f2e9 with no gradient, vignette, checkerboard or texture; it will be keyed to alpha afterwards. Keep the figure the same size and position in the frame as the supplied individual so the portraits tile side by side.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "accepted rich Pip, the supplied individual: species body plan, pose, light and treatment",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "time": "2026-10-06T19:32:29Z",
+      "variant": {
+        "name": "Ember",
+        "traits": "warm russet coat; short ears"
+      },
+      "result": {
+        "status": "success",
+        "disposition": "rejected",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "d54b23622da2fca1463d9319b670a53b53d6bb461f56bc49ba478a008c1c2323",
+          "note": "Original JPEG not stored to limit repository size; the PNG is a LANCZOS resample of it."
+        },
+        "png": {
+          "file": "rejected/v4-ember-attempt1.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "b50dd45354363184a1e2a8e8f63071f1b657c7914bc0ef80c98f8d5ffec5f835"
+        },
+        "finishReason": "STOP",
+        "seconds": 12.0,
+        "usage": {
+          "promptTokenCount": 515,
+          "candidatesTokenCount": 2007,
+          "totalTokenCount": 2522,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 257
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "id": "v5-thistle",
+      "shot": "V5",
+      "pass": null,
+      "attempt": 1,
+      "tag": "V5-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: five leaf lobes; long upright ears; body 15 % smaller. No text, no props, no scenery, no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, the V1-V7 template verbatim with {TRAITS} replaced by the row for V5",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the accepted Pip, the supplied individual: species body plan, pose, light and treatment to match exactly apart from the listed differences. Technical note: this API returns opaque images, so render the whole background as one flat, uniform cream #f5f2e9 with no gradient, vignette, checkerboard or texture; it will be keyed to alpha afterwards. Keep the figure the same size and position in the frame as the supplied individual so the portraits tile side by side.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "accepted rich Pip, the supplied individual: species body plan, pose, light and treatment",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "time": "2026-10-06T19:32:42Z",
+      "variant": {
+        "name": "Thistle",
+        "traits": "five leaf lobes; long upright ears; body 15 % smaller"
+      },
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/V5-attempt1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "9b95be05197e7ed7ef856af7b9d94656171169ced1c38d844df4bac8ded0d4fa"
+        },
+        "png": {
+          "file": "v5-thistle.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "c890a0e63b570286ad9f2efe2f64e3bf29f41b50ad655be14cee28b2b73dc2c9"
+        },
+        "finishReason": "STOP",
+        "seconds": 11.9,
+        "usage": {
+          "promptTokenCount": 522,
+          "candidatesTokenCount": 1921,
+          "totalTokenCount": 2443,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 264
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        },
+        "keyed": {
+          "file": "v5-thistle-512.png",
+          "width": 512,
+          "height": 512,
+          "sha256": "5a27b6a15d992e94c1bcc206a6588e025c84791f14e889ac4b82a63dbcf9eb85"
+        }
+      }
+    },
+    {
+      "id": "v6-moss",
+      "shot": "V6",
+      "pass": null,
+      "attempt": 1,
+      "tag": "V6-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: warm russet coat; three leaves curled at the tips; body 15 % larger. No text, no props, no scenery, no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, the V1-V7 template verbatim with {TRAITS} replaced by the row for V6",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the accepted Pip, the supplied individual: species body plan, pose, light and treatment to match exactly apart from the listed differences. Technical note: this API returns opaque images, so render the whole background as one flat, uniform cream #f5f2e9 with no gradient, vignette, checkerboard or texture; it will be keyed to alpha afterwards. Keep the figure the same size and position in the frame as the supplied individual so the portraits tile side by side.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "accepted rich Pip, the supplied individual: species body plan, pose, light and treatment",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "time": "2026-10-06T19:32:54Z",
+      "variant": {
+        "name": "Moss",
+        "traits": "warm russet coat; three leaves curled at the tips; body 15 % larger"
+      },
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/V6-attempt1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "56038951f4cb7cab18527260315824d8c1124eff2a8d6900dfbc713f1c41ebe1"
+        },
+        "png": {
+          "file": "v6-moss.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "a3c38e4d3aba168e842c60eb846a1abcc02ef9ea3879a05825f5569b4df32180"
+        },
+        "finishReason": "STOP",
+        "seconds": 14.2,
+        "usage": {
+          "promptTokenCount": 526,
+          "candidatesTokenCount": 2008,
+          "totalTokenCount": 2534,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 268
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        },
+        "keyed": {
+          "file": "v6-moss-512.png",
+          "width": 512,
+          "height": 512,
+          "sha256": "00f74f43edc9e06047af0df95397961b1c1b1d7ef0cc1fad987de051e8f35bc8"
+        }
+      }
+    },
+    {
+      "id": "v7-dapple",
+      "shot": "V7",
+      "pass": null,
+      "attempt": 1,
+      "tag": "V7-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: warm russet coat with cream pale islands on back and flanks; long upright ears; five leaf lobes. No text, no props, no scenery, no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, the V1-V7 template verbatim with {TRAITS} replaced by the row for V7",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted Pip, the supplied individual: species body plan, pose, light and treatment to match exactly apart from the listed differences. Image 2 is the pale-marked reference: it shows only what the cream pale islands look like on this species; take the islands from it and nothing else. Technical note: this API returns opaque images, so render the whole background as one flat, uniform cream #f5f2e9 with no gradient, vignette, checkerboard or texture; it will be keyed to alpha afterwards. Keep the figure the same size and position in the frame as the supplied individual so the portraits tile side by side.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "accepted rich Pip, the supplied individual: species body plan, pose, light and treatment",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-marked-source.png",
+          "role": "pale-marked reference: what the cream pale islands look like on this species, nothing else",
+          "sha256": "abb8c4ed7b2ea294d225c66dc47a1772f7733b183243c4fa74eb2a067e3362f1"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "time": "2026-10-06T19:33:08Z",
+      "variant": {
+        "name": "Dapple",
+        "traits": "warm russet coat with cream pale islands on back and flanks; long upright ears; five leaf lobes"
+      },
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/V7-attempt1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "482bc6fd2882595441f2d61f2e782ea18b0a74f73053f2f52038639c3c30ed47"
+        },
+        "png": {
+          "file": "v7-dapple.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "05cc7dd84224630cf9b72a50d0a47237f30118362c06a0234013650048581212"
+        },
+        "finishReason": "STOP",
+        "seconds": 13.2,
+        "usage": {
+          "promptTokenCount": 842,
+          "candidatesTokenCount": 2069,
+          "totalTokenCount": 2911,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 326
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        },
+        "keyed": {
+          "file": "v7-dapple-512.png",
+          "width": 512,
+          "height": 512,
+          "sha256": "b7984b81b2e87bbae48da052db13d698831fd0871897ac1c5f5e1159fb58265c"
+        }
+      }
+    },
+    {
+      "id": "v4-ember",
+      "shot": "V4",
+      "pass": null,
+      "attempt": 2,
+      "tag": "V4-attempt2",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: warm russet coat; short ears. No text, no props, no scenery, no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, the V1-V7 template verbatim with {TRAITS} replaced by the row for V4",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the accepted Pip, the supplied individual: species body plan, pose, light and treatment to match exactly apart from the listed differences. KEEP the three green leaf crown lobes exactly as on the supplied individual: the ears are added beside the leaves, never instead of them. Keep the smooth sculpted ceramic/resin surface of the supplied individual, not fur or felt. Technical note: this API returns opaque images, so render the whole background as one flat, uniform cream #f5f2e9 with no gradient, vignette, checkerboard or texture; it will be keyed to alpha afterwards. Keep the figure the same size and position in the frame as the supplied individual so the portraits tile side by side.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "accepted rich Pip, the supplied individual: species body plan, pose, light and treatment",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "time": "2026-10-06T19:33:46Z",
+      "variant": {
+        "name": "Ember",
+        "traits": "warm russet coat; short ears"
+      },
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/V4-attempt2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "424555cec1e162d78a774aa21b991e6838813a62b48c5f55abe68a4779962558"
+        },
+        "png": {
+          "file": "v4-ember.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "93d90f4fa9dd4997757efa98131ba70f8c6db5a7f77ada46590b77f131fe7783"
+        },
+        "finishReason": "STOP",
+        "seconds": 12.3,
+        "usage": {
+          "promptTokenCount": 560,
+          "candidatesTokenCount": 2014,
+          "totalTokenCount": 2574,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 302
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        },
+        "keyed": {
+          "file": "v4-ember-512.png",
+          "width": 512,
+          "height": 512,
+          "sha256": "2b08d743eb9907a58da6f545d204988d77f628f683cd32e063b3168e3bc6e4f3"
+        }
+      }
+    },
+    {
+      "id": "station-research-hands",
+      "shot": "S2",
+      "pass": null,
+      "attempt": 1,
+      "tag": "S2-attempt1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept product render, 1536x1024. The sage Station from the supplied kit render, a landscape two-thumb handheld, held in two hands at a wooden table at home in warm lamp light, tilted slightly toward the viewer; physical controls exactly as in the kit render. Its 1024x600 screen shows the supplied research screen unchanged: sealed hopper pod in a padded cradle under a pool of light, \"Hopper pod\", amber \"Needs 2 more Essence\", small Pip at right with \"Hopper · known\", header with chip 4, crystal 5, droplet 2. No other text, no other devices, no logos but MINIATURE BEASTS on the shell.",
+      "promptSource": "art/concept-brief-homepage.md, verbatim",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the kit render: take the sage Station from it (shell, corner bumpers, screws, the directional cross, the four small square buttons, the round Back and the orange Confirm, the MINIATURE BEASTS mark on the top bezel, materials); show no other device from it and no Caddy. Image 2 is the research screen to display on the Station: reproduce it unchanged as the screen content, filling the display edge to edge with its header bar along the top, every string spelled exactly as in the image.",
+      "imageInputs": [
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "kit render (H1): the sage Station's shell, controls, materials and MINIATURE BEASTS mark",
+          "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+        },
+        {
+          "path": "art/concept-homepage/station-research-pod.png",
+          "role": "research screen (S1): shown on the Station's display unchanged",
+          "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "3:2",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x1024",
+      "time": "2026-10-06T19:34:31Z",
+      "result": {
+        "status": "success",
+        "disposition": "rejected",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2528,
+          "height": 1696,
+          "sha256": "fbae0f44e895730401d40a05ea25602324f64c86283d7451d67118145a04ba8a",
+          "note": "Original JPEG not stored to limit repository size; the PNG is a LANCZOS resample of it."
+        },
+        "png": {
+          "file": "rejected/station-research-hands-attempt1.png",
+          "width": 1536,
+          "height": 1024,
+          "sha256": "231a40916a50a1806105a1cc30474802659ace004263ca96d9a0898bbda30c14"
+        },
+        "finishReason": "STOP",
+        "seconds": 29.7,
+        "usage": {
+          "promptTokenCount": 837,
+          "candidatesTokenCount": 1397,
+          "totalTokenCount": 2441,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 321
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 207,
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "id": "companion-partner-hands",
+      "shot": "C3",
+      "pass": null,
+      "attempt": 1,
+      "tag": "C3-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "edit",
+      "prompt": "Use case: stylized-concept product render, 1536x1024, an edit of the supplied hands render. Same Companion, same hands and button rules, outdoors in soft morning light. The screen shows the supplied partner scene in HiBit pixel art: Pip beside the player's pawn inside the teal Call ring, glinting soil at a dig patch. HUD and bottom line inside the screen block: \"⚡3\", \"))) call\", \"✓ Dig here · meadow · ← Wait · Leave\". Nothing else changes.",
+      "promptSource": "art/concept-brief-homepage.md, verbatim",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the retained hands render to edit: keep the hands, the Companion shell, bezel wordmark, strap, the cross, speaker holes, teal Call above dark Back and the larger orange Confirm exactly as they are; change only the screen content and the light. Image 2 is the partner scene canvas: the meadow scene is its 3:4 block, and its HUD strip and bottom line were drawn on the dark margin around it. On the Companion draw all three INSIDE the colour screen: the dark HUD strip across the top of the screen (three shield bars, two pod outlines, tiny Pip face, \"⚡3\", teal \"))) call\"), the meadow scene with Pip, the pawn and the teal ring below it, and the dark bottom line along the bottom of the screen (\"✓ Dig here\" orange at left, \"meadow\" grey in the middle, \"← Wait · Leave\" grey at right). Nothing drawn on the bezel.",
+      "imageInputs": [
+        {
+          "path": "art/concept-homepage/companion-map-hands.png",
+          "role": "retained hands render (C1) to edit: hands, Companion shell and buttons",
+          "sha256": "16011cd8ca0b92329bed4c0d03a278c499c739053d71a53552716429486b13d6"
+        },
+        {
+          "path": "art/concept-homepage/partner-patch-canvas.png",
+          "role": "partner scene canvas (P1): screen content, with HUD and bottom line to be drawn inside the screen",
+          "sha256": "55a8697cbb6eae84bd63677c77cd074d3d5610c15b85b64b42a3159becdd0472"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "3:2",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x1024",
+      "time": "2026-10-06T19:35:01Z",
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/C3-attempt1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2528,
+          "height": 1696,
+          "sha256": "5f8e1e715155c7885b1926a439e8e2cb8b3af26ea346784f2cc6ccae7756a0d3"
+        },
+        "png": {
+          "file": "companion-partner-hands.png",
+          "width": 1536,
+          "height": 1024,
+          "sha256": "fb969183973e5bec0822b8dc2328bcf635276bccb25c4df9c34cf705313ccffe"
+        },
+        "finishReason": "STOP",
+        "seconds": 15.1,
+        "usage": {
+          "promptTokenCount": 879,
+          "candidatesTokenCount": 2118,
+          "totalTokenCount": 2997,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 363
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "id": "station-research-hands",
+      "shot": "S2",
+      "pass": null,
+      "attempt": 2,
+      "tag": "S2-attempt2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept product render, 1536x1024. The sage Station from the supplied kit render, a landscape two-thumb handheld, held in two hands at a wooden table at home in warm lamp light, tilted slightly toward the viewer; physical controls exactly as in the kit render. Its 1024x600 screen shows the supplied research screen unchanged: sealed hopper pod in a padded cradle under a pool of light, \"Hopper pod\", amber \"Needs 2 more Essence\", small Pip at right with \"Hopper · known\", header with chip 4, crystal 5, droplet 2. No other text, no other devices, no logos but MINIATURE BEASTS on the shell.",
+      "promptSource": "art/concept-brief-homepage.md, verbatim",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the kit render: take the sage Station from it (shell, corner bumpers, screws, the directional cross, the four small square buttons, the round Back and the orange Confirm, the MINIATURE BEASTS mark on the top bezel, materials); show no other device from it and no Caddy. The control row below the screen is EXACTLY: the cross at the left, then the four small square buttons HOME, RESEARCH, LIBRARY, HABITAT, then ONE round dark grey Back button with a left arrow, then the larger orange Confirm with a check mark at the right end; five labelled controls plus the cross, nothing more, no second round button. Image 2 is the research screen to display on the Station: reproduce it unchanged as the screen content, filling the display edge to edge with its header bar along the top, every string spelled exactly as in the image.",
+      "imageInputs": [
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "kit render (H1): the sage Station's shell, controls, materials and MINIATURE BEASTS mark",
+          "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+        },
+        {
+          "path": "art/concept-homepage/station-research-pod.png",
+          "role": "research screen (S1): shown on the Station's display unchanged",
+          "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "3:2",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x1024",
+      "time": "2026-10-06T19:35:37Z",
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/S2-attempt2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2528,
+          "height": 1696,
+          "sha256": "3b78de84c52cb3c49c06c5bcf09cc264ee80bcf2593246e64a53a72c677b1b0c"
+        },
+        "png": {
+          "file": "station-research-hands.png",
+          "width": 1536,
+          "height": 1024,
+          "sha256": "9e7d644208f978d10e0335ababe7a8c561a25aa126d000919b8aee11ecfecd6a"
+        },
+        "finishReason": "STOP",
+        "seconds": 24.1,
+        "usage": {
+          "promptTokenCount": 910,
+          "candidatesTokenCount": 1413,
+          "totalTokenCount": 2555,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 394
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 232,
+          "serviceTier": "standard"
+        }
+      }
     }
   ],
   "secondBatch": {
@@ -1785,5 +2625,17 @@
     },
     "rule": "one attempt per shot, one more only if the first failed its acceptance checklist",
     "layoutInputs": "layout/companion-screen-block.png and layout/station-screen-band.png are flat templates drawn with PIL (margin, screen block or band, HUD and header strips) and sent as layout truth; layout/caddy-card-pip-crop.png and layout/epaper-panel-passB.png are crops of caddy-print.png and hero-kit-passB.png."
+  },
+  "thirdBatch": {
+    "when": "2026-10-06, after the homepage spec added S2, C3 and V1-V7 to the brief",
+    "budget": "at most 11 image calls (9 shots + 2 retries)",
+    "used": 11,
+    "byModel": {
+      "gemini-3.1-flash-image": 8,
+      "gemini-3-pro-image": 3
+    },
+    "rule": "V1-V7 first, one attempt each, one retry only for the worst failed variant (V4); then S2, then C3; one retry for S2",
+    "variantInputs": "every variant call attached art/miniature-lives/assets/rich-plain-source.png as the supplied individual; V2 and V7 also attached rich-marked-source.png as the pale-islands reference",
+    "keying": "the API returns opaque JPEG; the cream background was requested flat and keyed afterwards to make the -512 RGBA portraits (see manifest derivation)"
   }
 }
