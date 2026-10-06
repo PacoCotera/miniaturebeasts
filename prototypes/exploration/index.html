@@ -276,7 +276,7 @@ const L = { MEADOW: 0, POND: 1, ROCK: 2, WOOD: 3, WATER: 4, CLIFF: 5 };
 const LAND_NAME = ['Meadow', 'Pond edge', 'Rock field', 'Wood', 'Shallows', 'Cliff'];
 const T = { GRASS: 0, TALL: 1, FLOWERS: 2, DARK: 3, SAND: 4, WATER: 5, REEDS: 6, ROCK: 7, TRUNK: 8, CLIFF: 9, CFLOOR: 10, CWALL: 11, STEP: 12, DEEP: 13, ISLE: 14 };
 const T_BLOCK = [0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1];
-const SAVE_KEY = 'mb-exploration-v3', SAVE_V = 3, OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2'];
+const SAVE_KEY = 'mb-exploration-v4', SAVE_V = 4, OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3'];
 
 // Three wild species. notice = [creep, walk] distance in tiles at which they notice you.
 // how = the shed trigger; ab = what a partner of this species can do.
@@ -700,7 +700,7 @@ function newWorld(seed) {
   S = { v: SAVE_V, seed, turn: 0, expN: 1, revealed: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     known: [], found: [], mibis: [], along: null, opened: {}, home: { e: 0, d: 0, s: 0, pods: [] },
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, cSel: 0 },
-    exp: null, report: null, totalActions: 0, nextId: 1, log: [] };
+    exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null };
   const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
@@ -868,7 +868,7 @@ function freeSpot(key, R, avoid, pred) {
 function ensureLive(key) {
   const ex = S.exp; if (ex.live[key]) return ex.live[key];
   const lay = layout(key), R = makeRng(hash(S.seed, 'live', key, ex.n));
-  const live = { key, cr: [], fr: [], strike: null, seen: {}, fid: 1, pt: null, evt: 0, rainOn: 0, shedEvt: {}, calmShed: 0, noted: {} };
+  const live = { key, cr: [], fr: [], strike: null, seen: {}, fid: 1, pt: null, rainOn: 0, stormShed: {}, calmShed: 0, noted: {} };
   ex.live[key] = live;
   for (const p of S.pods) if (p.k === key && p.x < 0) { const s = freeSpot(key, R, 5); if (s) { p.x = s.x; p.y = s.y; } }
   const nests = lay.feats.filter(f => f.kind === 'e');
@@ -1078,8 +1078,7 @@ function patchTick(info) {
   const raining = !lay.cave && stormRain(lay.cell % MW);
   const fog = !lay.cave && inFog(lay.cell);
   if (!lay.cave && stormCovers(lay.cell % MW) && !raining && live.rainOn) fxMsg('The rain eases for a moment', 0);
-  // Each spell of rain over a place is one shelter event: at most one hopper sheds per event.
-  if (raining && !live.rainOn) { live.rainOn = 1; live.evt++; }
+  if (raining) live.rainOn = 1;
   if (!raining) live.rainOn = 0;
   let strike = null;
   if (live.strike && live.strike.at <= ex.actions) {
@@ -1157,11 +1156,11 @@ function hideOrFlee(X, c, t) {
   if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = { x: h.x, y: h.y }; return; } }
   c.st = 'flee'; c.t = t;
 }
-// Shed limits: one hopper per shelter event, one glowtail per place per expedition, each creature once.
+// Shed limits: one hopper and one glowtail rain-curl per place per storm (lulls do not reset it), one glowtail per place per expedition, each creature once.
 function shedAllowed(c, X) {
   const w = crById.get(c.id);
   if (!c.ready || !w || w.s === S.exp.n) return false;
-  if (c.st === 'shake' || c.st === 'curl') return (X.live.shedEvt[c.sp] ?? -1) !== X.live.evt;
+  if (c.st === 'shake' || c.st === 'curl') return !X.live.stormShed[c.sp];
   if (c.st === 'glow') return !X.live.calmShed;
   return true;
 }
@@ -1177,7 +1176,7 @@ function whereWord(X, x, y) {
 }
 function shedPod(c, X) {
   const how = c.st === 'shake' ? 'shake' : c.st === 'glow' ? 'calm' : c.st === 'curl' ? 'curl' : 'meal';
-  if (how === 'shake' || how === 'curl') X.live.shedEvt[c.sp] = X.live.evt;
+  if (how === 'shake' || how === 'curl') X.live.stormShed[c.sp] = 1;
   if (how === 'calm') X.live.calmShed = 1;
   const p = freeAround(X.key, c.x, c.y, null) || { x: c.x, y: c.y };
   const id = 'p' + (S.nextId++);
@@ -1201,7 +1200,9 @@ function creatureTick(c, X) {
   let notice = sp.notice[X.noise === 'walk' ? 1 : 0];
   if (c.b > .6) notice--; if (X.fog) notice -= 2;
   if (calm && X.moved && d <= notice && d > notice - 2 && ['idle', 'seek'].includes(c.st) && !X.live.noted['c' + c.id]) {
-    X.live.noted['c' + c.id] = 1; fxMsg(X.ptName + ' keeps the ' + spName(c.sp) + ' calm', 0); }
+    X.live.noted['c' + c.id] = 1;
+    if (firstTime('calmkeep')) fxMsg('The ' + spName(c.sp) + ' would have noticed you. ' + X.ptName + ' keeps it calm', 2);
+    else fxMsg(X.ptName + ' keeps the ' + spName(c.sp) + ' calm', 1); }
   if (calm) notice -= 2;
   const sheltered = !!X.lay.shelter[c.y * PW + c.x];
   if (c.st === 'shake' || c.st === 'full' || c.st === 'glow') { if (shedAllowed(c, X)) shedPod(c, X); c.st = 'idle'; c.wet = 0; c.calm = 0; return; }
@@ -1401,7 +1402,11 @@ function worldTurn(pending) {
     .filter(o => o.dw || o.known).sort((a, b) => (b.known - a.known) || (!!b.dw - !!a.dw) || (mv[b.sp].n - mv[a.sp].n));
   if (moves.length) { const o = moves[0], who = o.known ? 'The ' + SPECIES[o.sp].plural : 'Unfamiliar creatures';
     lines.push(o.dw ? who + ' moved ' + o.dw + '.' : who + ' spread out.'); }
-  if (charged.length) lines.push('A storm charged stones ' + placePhrase(charged) + '.');
+  // A storm every turn would repeat itself: say it once, name the new place if it moved, stay quiet if it is the same place.
+  const stormWhere = charged.length ? placePhrase(charged) : null;
+  if (stormWhere && !S.lastStorm) lines.push('A storm charged stones ' + stormWhere + '.');
+  else if (stormWhere && stormWhere !== S.lastStorm) lines.push('The storm reached stones ' + stormWhere + '.');
+  S.lastStorm = stormWhere;
   if (bushes) lines.push('Fruit is back on ' + (bushes === 1 ? 'one bush.' : numWord(bushes) + ' bushes.'));
   if (lines.length < 3 && newPods.length) lines.push('Something new is stirring in ' + regionWord(newPods) + '.');
   if (lines.length < 3 && young.length) { const y0 = young[0]; lines.push('Young ' + (S.known.includes(y0.sp) ? SPECIES[y0.sp].plural : 'creatures') + ' were born ' + placePhrase([y0.c]) + '.'); }
@@ -1725,10 +1730,11 @@ function roofArt(chk) { return art('roof' + chk, () => { const pb = new PB(104, 
 const RING = () => art('ptring', () => { const pb = new PB(26, 9);
   for (let a = 0; a < Math.PI * 2; a += .05) { const x = Math.round(13 + Math.cos(a) * 11.5), y = Math.round(4 + Math.sin(a) * 3.5); if (Math.floor(a / .45) % 2 === 0) pb.set(x, y, C.orange); }
   return pb; });
-function bubbleArt(kind) { return art('bub' + kind, () => { const pb = new PB(11, 13), bg = { '!': C.yellow, '?': C.sprout, '…': C.bone }[kind], fg = { '!': C.void, '?': C.pine, '…': C.slate }[kind];
+function bubbleArt(kind) { return art('bub' + kind, () => { const pb = new PB(11, 13), bg = { '!': C.yellow, '?': C.sprout, '…': C.bone, '~': C.teal }[kind], fg = { '!': C.void, '?': C.pine, '…': C.slate, '~': C.mint }[kind];
   pb.rect(1, 0, 9, 11, bg); pb.rect(0, 1, 11, 9, bg); pb.set(5, 11, bg); pb.set(5, 12, bg);
   if (kind === '!') { pb.rect(5, 2, 1, 5, fg); pb.rect(5, 8, 1, 1, fg); }
   else if (kind === '?') { pb.rect(4, 2, 3, 1, fg); pb.set(7, 3, fg); pb.set(6, 4, fg); pb.set(5, 5, fg); pb.set(5, 6, fg); pb.set(5, 8, fg); }
+  else if (kind === '~') { pb.set(1, 6, fg); pb.set(2, 5, fg); pb.set(3, 5, fg); pb.set(4, 6, fg); pb.set(5, 6, fg); pb.set(6, 5, fg); pb.set(7, 5, fg); pb.set(8, 6, fg); }
   else { pb.set(2, 6, fg); pb.set(5, 6, fg); pb.set(8, 6, fg); }
   return pb; }); }
 const DROP = () => art('drop', () => { const pb = new PB(5, 7); pb.set(2, 0, C.ice); pb.rect(1, 1, 3, 2, C.ice); pb.rect(0, 3, 5, 3, C.ice); pb.rect(1, 6, 3, 1, C.sky); pb.set(1, 3, C.white); return pb; });
@@ -1836,10 +1842,11 @@ function tileKeys(lay) {
   }
   return (lay.tk = tk);
 }
-function tileCanvas(lay, i, light, fr) {
+function tilePB(lay, i, fr) {
   const k = tileKeys(lay)[i], f = k.anim ? fr : 0;
-  return art('t' + k.t + '.' + lay.base + '.' + k.v + '.' + k.m + '.' + f, () => buildTile(k.t, lay.base, k.v, k.m, f)).canvas(light);
+  return art('t' + k.t + '.' + lay.base + '.' + k.v + '.' + k.m + '.' + f, () => buildTile(k.t, lay.base, k.v, k.m, f));
 }
+function tileCanvas(lay, i, light, fr) { return tilePB(lay, i, fr).canvas(light); }
 
 // ---------- World map terrain (416×520), built once per world as one indexed image ----------
 function buildMapPB() {
@@ -1981,14 +1988,27 @@ function viewBg(col) {
 // ===================== 12. World map =====================
 let mapCv = null, mapCvDark = null, fogCv = null, fogCvDark = null, mapSeed = null;
 function ensureMap() { if (!mapCv || mapSeed !== G.seed) { const pb = buildMapPB(), fp = buildFogPB(G.seed); mapCv = pb.canvas(0); mapCvDark = pb.canvas(1); fogCv = fp.canvas(0); fogCvDark = fp.canvas(1); mapSeed = G.seed; } }
-// What one start glint promises: the strongest sign in its 3×3 (a beat beats tracks beats rings).
+// What one start glint promises: a sign genuinely in its 3x3 (slow beat, tracks, rings). Where a glint has
+// more than one, it shows the one the other glints show least, so the starts read differently.
 const spawnSignCache = new Map();
-function spawnSign(c) {
-  const k = S.seed + ':' + c; if (spawnSignCache.has(k)) return spawnSignCache.get(k);
+function spawnSignsFor(c) {
   const p = cxy(c); let b = 0, n = 0, r = 0;
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const q = y * MW + x;
     const s = cellSigns(q); b += s.b; r += s.r; n += S.cr.filter(w => w.c === q && !w.cv).length; }
-  const v = b ? 'b' : n >= 3 ? 't' : r ? 'r' : null; spawnSignCache.set(k, v); return v;
+  return [b && 'b', n >= 3 && 't', r && 'r'].filter(Boolean);   // strongest first
+}
+function spawnSign(c) {
+  const k = S.seed + ':' + c;
+  if (!spawnSignCache.has(k)) {
+    const opts = new Map(G.spawns.map(q => [q, spawnSignsFor(q)])), used = { b: 0, t: 0, r: 0 };
+    // glints with the fewest options choose first; each takes the least-shown sign it really has
+    for (const q of [...G.spawns].sort((x, y) => opts.get(x).length - opts.get(y).length || x - y)) {
+      const o = opts.get(q); let v = null;
+      for (const sg of o) if (v === null || used[sg] < used[v]) v = sg;
+      if (v) used[v]++; spawnSignCache.set(S.seed + ':' + q, v);
+    }
+  }
+  return spawnSignCache.get(k);
 }
 const SIGN_WORD = { b: 'slow beat nearby', t: 'tracks nearby', r: 'rings nearby' };
 // Signs worth drawing this turn: pins and the deep ? always; then beats, the strongest known-species tracks,
@@ -2090,7 +2110,30 @@ function caveLight(lay, live, P) {
   for (const c of live.cr) if (c.sp === 1 && !c.hide) src.push({ x: c.x, y: c.y, a: 2.5, b: 4 });
   for (const f of lay.feats) { if (f.kind === 'k' && stoneCharge(lay.key, f) > 0) src.push({ x: f.x, y: f.y, a: 2, b: 3.5 });
     if (f.kind === 'x') src.push({ x: f.x, y: f.y, a: 3, b: 4.5 }); if (f.kind === 'm') src.push({ x: f.x, y: f.y, a: 1.2, b: 2.4 }); }
-  return (x, y) => { let lv = 2; for (const s of src) { const d = Math.hypot(x - s.x, y - s.y); if (d <= s.a) return 0; if (d <= s.b) lv = 1; } return lv; };
+  // Darkness as a smooth value 0 (lit) to 2 (dark): each source ramps over one tile around its two radii.
+  // lightAt(x, y) is that value rounded to a level for whole sprites; lightAt.v takes fractional tile coordinates.
+  const v = (x, y) => { let lv = 2; for (const s of src) { const d = Math.hypot(x - s.x, y - s.y);
+    const q = Math.min(1, Math.max(0, d - (s.a - .5))) + Math.min(1, Math.max(0, d - (s.b - .5))); if (q < lv) lv = q; } return lv; };
+  const lightAt = (x, y) => Math.ceil(v(x, y) - .5);
+  lightAt.v = v; return lightAt;
+}
+// A tile on the edge of the light: the ordered 4x4 Bayer pattern (anchored to the world, so it does not
+// swim when the view scrolls) picks, per pixel, between the two neighbouring light levels, through the same LUTs.
+const edgeCv = document.createElement('canvas'); edgeCv.width = edgeCv.height = 32;
+const edgeG = edgeCv.getContext('2d'), edgeId = edgeG.createImageData(32, 32);
+function ditheredTile(pb, tx, ty, vf, dx, dy) {
+  const sample = (i, j) => vf(tx + i / 4 - .5, ty + j / 4 - .5), L = [];
+  for (let j = 0; j <= 4; j++) for (let i = 0; i <= 4; i++) L.push(sample(i, j));
+  const lo = Math.min(...L), hi = Math.max(...L);
+  if (hi - lo < .001 && Math.abs(lo - Math.round(lo)) < .001) return false;   // flat: use the plain tile
+  const d = edgeId.data;
+  for (let y = 0; y < 32; y++) { const fy = y / 8, j = Math.min(3, Math.floor(fy)), ty2 = fy - j;
+    for (let x = 0; x < 32; x++) { const fx = x / 8, i = Math.min(3, Math.floor(fx)), tx2 = fx - i;
+      const v = (L[j * 5 + i] * (1 - tx2) + L[j * 5 + i + 1] * tx2) * (1 - ty2) + (L[(j + 1) * 5 + i] * (1 - tx2) + L[(j + 1) * 5 + i + 1] * tx2) * ty2;
+      const lvl = Math.min(2, Math.floor(v + (BAYER[((ty * 32 + y) & 3) * 4 + ((tx * 32 + x) & 3)] + .5) / 16)), c = pb.p[y * 32 + x], o = (y * 32 + x) * 4;
+      if (c < 0) { d[o + 3] = 0; continue; }
+      const lut = REMAP[lvl], rgb = RGB[lut ? lut[c] : c]; d[o] = rgb[0]; d[o + 1] = rgb[1]; d[o + 2] = rgb[2]; d[o + 3] = 255; } }
+  edgeG.putImageData(edgeId, 0, 0); g.drawImage(edgeCv, dx, dy); return true;
 }
 const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle' };
 function drawPatch(t) {
@@ -2115,6 +2158,7 @@ function drawPatch(t) {
   const tx0 = Math.floor(camX / TS), ty0 = Math.floor(camY / TS);
   for (let ty = ty0; ty <= ty0 + Math.ceil(VIEW_H / TS) + 1; ty++) for (let tx = tx0; tx <= tx0 + Math.ceil(SCR_W / TS) + 1; tx++) {
     if (tx < 0 || ty < 0 || tx >= PW || ty >= PH) { R(W(tx * TS), H(ty * TS), TS, TS, C.void); continue; }
+    if (lightAt && ditheredTile(tilePB(lay, ty * PW + tx, fr), tx, ty, lightAt.v, W(tx * TS), H(ty * TS))) continue;
     g.drawImage(tileCanvas(lay, ty * PW + tx, tileLight(tx, ty), fr), W(tx * TS), H(ty * TS));
   }
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
@@ -2145,7 +2189,10 @@ function drawPatch(t) {
     if (c.hide) continue; if (!vis2(nr.x, nr.y)) continue;
     const pose = c.sp === 1 && c.st === 'curl' ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 6 ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 3 ? 'settle'
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : POSE[c.st] || 'idle';
-    items.push({ y: nr.y + 4, d: () => drawCreature(c, W(nr.x), H(nr.y), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y)) });
+    // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
+    const cue = !!live.pt && ex.pt && c.b <= .6 && ['idle', 'seek'].includes(c.st) && cheb(c, P) <= 6 && !(c.sp === 1 && c.calm >= 1)
+      && cheb(c, live.pt) <= 4 && (SPECIES[ex.pt.sp].ab === 'calm' || ex.pt.sp === c.sp);
+    items.push({ y: nr.y + 4, d: () => drawCreature(c, W(nr.x), H(nr.y), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
   }
   if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * TS, live.pt.y * TS, 150); const rp = RT.pt;
     items.push({ y: rp.y + 4, d: () => drawPartner(ex.pt.sp, live.pt, W(rp.x), H(rp.y), t) }); }
@@ -2199,7 +2246,7 @@ function drawPatch(t) {
   if (fogged) { const d = motion() ? Math.floor(t * 9) : 0; for (let i = 0; i < 6; i++) { const h = hash(9, i); blit(puffArt(i % 2 ? 6 : 4), ((h % 600) + d * (1 + i % 2)) % 600 - 96, VIEW_Y + 20 + (h >>> 12) % 460); } }
   g.restore();
 }
-function drawCreature(c, x, y, pose, t, rm) {
+function drawCreature(c, x, y, pose, t, rm, cue) {
   const m = motion(), fr = m ? Math.floor(t * 2.4 + c.id * .37) % 2 : 0;
   let dx = 0, dy = 0;
   if (pose === 'shake' || c.st === 'full' || pose === 'glow') dx = m ? (Math.floor(t * 16) % 2 ? 1 : -1) : 0;
@@ -2210,6 +2257,7 @@ function drawCreature(c, x, y, pose, t, rm) {
   if (c.st === 'alert') blit(bubbleArt('!'), x + 11, y - 9);
   else if (c.st === 'approach' || c.st === 'seek') blit(bubbleArt('?'), x + 11, y - 9);
   else if (c.snub) blit(bubbleArt('…'), x + 11, y - 9);
+  else if (cue) blit(bubbleArt('~'), x + 11, y - 9);
   else if (c.sp === 1 && c.calm >= 1 && c.st !== 'glow') { const n = Math.min(4, Math.floor(c.calm / 2)); // four pips fill as it settles (8 quiet actions)
     for (let i = 0; i < 4; i++) { R(x + 2 + i * 7, y - 2, 6, 6, C.ink); R(x + 3 + i * 7, y - 1, 4, 4, i < n ? C.yellow : C.stone); } }
   else if (c.sp === 1 && c.st === 'glow') blit(sparkArt(fr), x + 20, y + 2);
