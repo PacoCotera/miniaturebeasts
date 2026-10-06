@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 256" width="1160" height="256">
+  <title>Miniature Beasts lockup C</title>
+  <g transform="translate(8 28) scale(0.78)">
+  <!-- An abstract small creature in profile: a soft loaf body, a big round eye, stubby feet,
+       a tail nub and one sprout. No species features. -->
+  <g fill="#172e25">
+    <path fill-rule="evenodd" d="
+      M 70 202 C 40 202 26 178 30 150 C 34 116 70 96 110 98 C 128 72 160 60 192 70 C 226 82 238 118 228 150 C 220 180 196 202 160 202 Z
+      M 188 122 m -20 0 a 20 20 0 1 0 40 0 a 20 20 0 1 0 -40 0 Z"/>
+    <circle cx="192" cy="120" r="9"/>
+    <rect x="58" y="186" width="40" height="40" rx="20"/>
+    <rect x="148" y="186" width="40" height="40" rx="20"/>
+    <circle cx="30" cy="140" r="16"/>
+    <path d="M 162 76 C 140 54 150 22 186 14 C 202 44 190 70 162 76 Z"/>
+  </g>
+  </g>
+  <text x="246" y="160" fill="#172e25" font-family="'Arial Black', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="900" font-size="80" letter-spacing="-3">MINIATURE BEASTS</text>
+</svg>
