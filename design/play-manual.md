@@ -57,7 +57,9 @@ The world map is a grid of cells. Each cell is a place you can go down into. The
 | Pin | Your own mark. |
 | Gate | A way you cannot pass yet: a narrow hole (needs a digging partner), fast water (needs a swimmer), or a deep "?" (needs a tier 2 Probe). |
 
-A pod you saw and left behind shows the pod sign, and a lit **beacon** keeps its flame on the map for good. Signs on surveyed cells and inside a fog bank are hidden, except gates, pins, pods and Energy.
+A pod you saw and left behind shows the pod sign, and a lit **beacon** keeps its flame on the map for good. Your **start** shows a flag, a found **outpost** a small hut (its lamp lit once you light it), and a **skull** marks where the Probe broke. The map draws no trail. Signs on surveyed cells and inside a fog bank are hidden, except gates, pins, pods and Energy.
+
+**Outposts.** About six huts with a mast lamp stand across the world, never two close together. Find one by walking or Call, then **light it for 1 Energy**; it stays lit for good. A lit outpost lets you **send home** from its cell, **mend the Shield** for 1 Energy a bar (✓ twice), and gives **shelter**: no stray strikes while you stand within 3 tiles of it. It reveals no land.
 
 **Pins.** On the map, Call pins the cell you stand on for 1 Energy. Call on your own pin removes it, and if you placed it this expedition you get the Energy back. Gates pin themselves for free.
 
@@ -165,7 +167,7 @@ A storm is a band that moves across the map. The bolts in the bottom line show h
 - **Shelter.** Under a tree canopy, an overhang, in a cave or inside a fog bank, no stray strike can reach you. On the map, wood cells count as shelter.
 - **Patching.** On the Probe screen, 3 Energy patches one Shield bar. Press ✓ twice: the first press gets it ready.
 
-**When the Shield breaks** (0 bars), the expedition ends where you are. Your pods are safe and go home. The Energy, Data and Essence you were carrying are lost. Pins, the land you uncovered and what you learned stay. A broken Probe is mended for free.
+**When the Shield breaks** (0 bars), the expedition ends where you are and nothing goes home. The pods you carried fall at random spots in that place, and the cell gets a **skull** on the overview; go back down into it later to clear the skull and pick the pods up. The Energy, Data and Essence you were carrying are lost. Pins, the land you uncovered and what you learned stay. A broken Probe is mended for free.
 
 ### Fog banks
 
@@ -192,7 +194,7 @@ You can carry up to 20 of each. Essence never turns into Energy.
 
 ## 8. Going home
 
-An expedition ends when you choose **Send home** (in the menu, from anywhere) or when the Shield breaks. Cargo shows a **preview** first: how much you explored, which pods the Station will identify or hatch, and what mending the Shield will cost.
+An expedition ends when you choose **Send home** or when the Shield breaks. **Send home works only on your start cell (the flag on the map) or on a lit outpost.** Anywhere else Send home is greyed in the menu and the line says how far the nearest one is ("Start · 2 cells"); "Hold full" and "Everything in reach is explored" say "head back to the start". Cargo shows a **preview** first: how much you explored, which pods the Station will identify or hatch, and what mending the Shield will cost.
 1. **The Station mends the Shield** at 1 Energy for each missing bar, as many bars as your stored Energy covers. A broken Probe is mended for free. **Coming in the next build:** the Station always mends to at least two bars.
 2. **It identifies each pod** (your very first pod is free).
 3. **It hatches** one pod of a species you don't raise yet, if you can pay. A pod you can't afford waits at the Station and says what is missing ("costs 2 Energy + 4 Essence · short 2 Essence").
@@ -247,11 +249,11 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 | --- | --- | --- | --- | --- |
 | Pad | Step / hold to walk | Tap: creep · hold: walk | Move choice | Other mibis |
 | ✓ | Go down | Act on what you face, or Wait | Choose | Spend time / Take |
-| ← | Send home (menu) | Leave (menu) | Close | Mibis |
+| ← | Send home (menu; only at the flag or a lit outpost) | Leave (menu) | Close | Mibis |
 | ))) | Pin 1⚡ | Pulse, 11 tiles (1 action) | — | Call Dot: your mibi answers |
 
-**Costs**: pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Energy · hatch 2 Energy + 4 Essence · study 2 Data · mend at home 1 Energy a bar · tier 2 Probe 12 Energy + 4 Data.
+**Costs**: light an outpost 1 Energy · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Energy · hatch 2 Energy + 4 Essence · study 2 Data · mend at home 1 Energy a bar · tier 2 Probe 12 Energy + 4 Data.
 
 **Gains**: storm stone +2 (+3 at the peak) · warm stone +1 · dew +1 Essence · pressed fruit +2 Essence · tuft +1 Essence · a creature moment +1 Data (+2 the first time).
 
-**Odds**: stray strike per action in the open under rain: 2 bolts about 1 in 12, 3 bolts about 1 in 6 (next build: 1 in 20 and 1 in 10, never two hits within six actions). None in shelter or in a fog bank. Shield: 3 bars (tier 1), 4 bars (tier 2). A break keeps your pods and loses carried materials.
+**Odds**: stray strike per action in the open under rain: 2 bolts 1 in 20, 3 bolts 1 in 10, never two hits within six actions, and the first hit of a pass is a warned strike. None in shelter, beside a lit outpost or in a fog bank. Shield: 3 bars (tier 1), 4 bars (tier 2). A break sends nothing home: the pods fall where it broke (skull on the map) and carried materials are lost.

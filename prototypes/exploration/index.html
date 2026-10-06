@@ -193,7 +193,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
       <ul>
         <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or <kbd>WASD</kbd>, or the pad: move. Tap to creep one step; hold to walk. Creeping never startles a creature unless you step right next to it.</li>
         <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange button: <b>Confirm</b>. It does exactly what the bottom line says after ✓.</li>
-        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Leave" in a place, "← Send home" on the map, "← Mibis", "← close"). In the field it opens the menu: Leave (in a place) or Send home on top, then Wait, Probe, Cargo, Mibis.</li>
+        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Leave" in a place, "← Send home" on the start cell or a lit outpost, "← Mibis", "← close"). In the field it opens the menu: Leave (in a place) or Send home on top, then Wait, Probe, Cargo, Mibis.</li>
         <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. At home it calls the mibi with you, which answers..</li>
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
         <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
@@ -212,7 +212,8 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
         <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Trees, overhangs and woods are shelter.</li>
-        <li>Fill every dot in your reach, then Send home from the menu (Cargo shows "Explored N of M · fully surveyed K"). The Station spends what you bring.</li>
+        <li>Fill every dot in your reach, then head back to the flag (your start) and Send home from the menu; away from it the menu says how far. The Station spends what you bring. If the Probe breaks, nothing goes home: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
+        <li>Find an outpost (a hut with a mast) and light it for 1 Energy: from then on you can send home there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it.</li>
         <li>In a fog bank you see 4 tiles: creep close to wary creatures and fill up on dew.</li>
       </ol>
     </details>
@@ -301,7 +302,8 @@ const SAVE_KEY = 'mb-exploration-v7', SAVE_V = 7, OLD_SAVE_KEYS = ['mb-explorati
 const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shield: 4 } };
 const CAP = 20;                                   // each material caps at 20 carried
 // Station stand-in prices.
-const PRICE = { beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
+const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
+const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
 const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
 const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; elder after 6 more as an adult
 // Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
@@ -330,8 +332,8 @@ const MIBI_NAMES = ['Dot', 'Moss', 'Bean', 'Fig', 'Nib', 'Tuft', 'Pebble', 'Wren
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
 const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
-const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', pin: 'pin', burrow: 'needs a digger', water: 'fast water', deep: 'deep ?' };
-const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'Lit beacon · you lit it, it burns for good',
+const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'needs a digger', water: 'fast water', deep: 'deep ?' };
+const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'Lit beacon · you lit it, it burns for good', skull: 'Skull · the Probe broke here · its pods lie in this place', depot: DEPOT_NAME[0].toUpperCase() + DEPOT_NAME.slice(1) + ' · light it once: send home, mend and shelter there',
   pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow hole · a digging partner can open it', water: 'Fast water · needs a swimmer', deep: 'Deep ? · a tier 2 Probe can read it' };
 
 // ===================== 2. Seeded RNG and noise =====================
@@ -579,6 +581,26 @@ function beaconCells(seed) {
     if (!near) set.add(c); }
   G.beacons = { seed, set }; return set;
 }
+// Depots: about six per world, never two in one 5×5 area (Chebyshev distance 5 or more), on open land.
+function depotCells(seed) {
+  if (G.depots && G.depots.seed === seed) return G.depots.set;
+  const set = new Set(), R = makeRng(hash(seed, 'depots')), cand = [];
+  for (let c = 0; c < MW * MH; c++) if (passable(c) && G.land[c] !== L.WATER && !G.island[c] && c !== G.gate && c !== G.deep && c !== G.swim && !beaconCells(seed).has(c)) cand.push({ c, r: R.f() });
+  cand.sort((a, b) => a.r - b.r);
+  for (const { c } of cand) { if (set.size >= 6) break; const p = cxy(c);
+    if ([...set].every(d => { const q = cxy(d); return Math.max(Math.abs(p.x - q.x), Math.abs(p.y - q.y)) >= 5; })) set.add(c); }
+  G.depots = { seed, set }; return set;
+}
+function depotOf(c) { if (!passable(c)) return null; const key = String(c); return depotCells(S.seed).has(c) ? layout(key).feats.find(f => f.kind === 'h') || null : null; }
+const depotLit = c => { const f = depotOf(c); return !!f && !!fs(String(c), f.id).lit; };
+// Send points: the expedition's start, or a lit depot in reach. "Start · 2 cells" names the nearest one.
+function canSend() { const ex = S.exp; return !!ex && (ex.pos === ex.start || depotLit(ex.pos)); }
+function nearestSend() { const ex = S.exp, p = cxy(ex.pos), d = c => { const q = cxy(c); return Math.abs(p.x - q.x) + Math.abs(p.y - q.y); };
+  let best = { c: ex.start, n: d(ex.start), name: 'Start' };
+  for (const c of ex.reach) if (depotLit(c) && d(c) < best.n) best = { c, n: d(c), name: cap(DEPOT_NAME) };
+  return best; }
+function sendHint() { const b = nearestSend(); return b.name + ' · ' + b.n + ' cell' + (b.n === 1 ? '' : 's'); }
+function headBack() { if (canSend()) return '← Send home'; const b = nearestSend(); return 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')'; }
 function genPatch(cell) {
   const seed = S.seed, R = makeRng(hash(seed, 'patch', cell)), ns = hash(seed, 'pn', cell);
   const land = G.land[cell], { x: cx, y: cy } = cxy(cell), isFord = land === L.WATER;
@@ -691,6 +713,7 @@ function genPatch(cell) {
   addF('n', n(mix.n) + (cell === G.gate ? 1 : 0));
   // A beacon: lighting it shows land 3 cells around, beyond the Probe's range. (The hash salt keeps its old name so worlds stay the same.)
   if (beaconCells(seed).has(cell)) addF('j', 1);
+  if (depotCells(seed).has(cell)) addF('h', 1);   // a depot: a post with a hut and a mast lamp
   if (cell === G.deep) { const p = { x: 14 + R.int(5) - 2, y: 12 + R.int(4) };
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = p.x + dx, Y = p.y + dy; if (T_BLOCK[tiles[I(X, Y)]]) setT(X, Y, T.SAND); }
     carve(p.x, p.y + 1, spawnPt.x, spawnPt.y);
@@ -1023,7 +1046,7 @@ function checkExplored() {
   const ex = S.exp; if (!ex || ex.saidDone) return;
   const rc = reachCounts(); if (rc.surveyed < rc.total) return;
   ex.saidDone = ex.actions || 1; logEv('Everything in reach explored (' + rc.total + ' cells)');
-  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + rc.gated + ' cave needs a digger' : '') + ' · ← Send home', 9);   // first in the box, until the next action
+  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + rc.gated + ' cave needs a digger' : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
 }
 // The place's survey state for the line: "surveyed 2/4 · 3 to take", "surveyed · nothing to take", "not surveyed".
 // A place only counts as finished when a Call was made there (walking never hears what is buried) and no pod lies buried.
@@ -1118,7 +1141,7 @@ function startExpedition(type, cell) {
   chooseWarm(ex); ensureCharge(ex);
   const p = cxy(cell);
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : '') + ' · tier ' + S.tier);
-  fxOnce('mapintro', 'Walk with the pad · ✓ goes down · ← Send home', 3);
+  fxOnce('mapintro', 'Walk with the pad · ✓ goes down · the flag is your start: send home from there', 3);
   if (S.exp.shield < S.exp.smax) fxMsg('Shield ' + S.exp.shield + '/' + S.exp.smax + ' · stray strikes break it fast · shelter in a storm', 4);
   S.phase = 'map'; transition(); save();
 }
@@ -1128,7 +1151,7 @@ function advance(scope, info) {
   const ex = S.exp; ex.actions++; S.totalActions++;
   const col = cxy(ex.pos).x;
   // A stray strike rolled last action lands now, if you are still in the open under rain.
-  if (ex.stray && ex.stray.at <= ex.actions) { ex.stray = null; if (stormRain(col) && !sheltered() && !inFog(ex.pos)) strayHit(scope); }
+  if (ex.stray && ex.stray.at <= ex.actions) { ex.stray = null; if (stormRain(col) && !sheltered() && !depotShelter() && !inFog(ex.pos)) strayHit(scope); }
   if (!stormRain(col)) ex.passWarned = 0;   // a new pass over you starts with a warned strike before any stray
   if (ex.storm) {
     // The band crawls while it is over the place you are in (about 30 actions overhead); elsewhere it moves at map speed.
@@ -1152,12 +1175,12 @@ function advance(scope, info) {
   if (lvl === 2) fxOnce('odds', 'Strong storm · 1 in 20 each action in the open', 3);
   if (lvl === 3) fxOnce('oddsPeak', 'Storm peak · 1 in 10 each action in the open', 3);
   // Roll the next action's stray strike now, so a keen partner can feel it coming.
-  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && ex.passWarned && ex.actions - ex.hitAt >= 6 && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
+  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= 6 && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
     ex.stray = { at: ex.actions + 1 };
     const pt = ex.pt, keen = pt && (pt.elder || SPECIES[pt.sp].ab === 'nose');
     if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
   }
-  if (ex.shield <= 0 && !ex.ending) { ex.ending = 1; fxMsg('The Probe breaks · your pods are safe', 4); lockInput(1100); setTimeout(() => endExpedition('break'), 1100); }
+  if (ex.shield <= 0 && !ex.ending) { ex.ending = 1; fxMsg('The Probe breaks · your pods fall here', 4); lockInput(1100); setTimeout(() => endExpedition('break'), 1100); }
   checkExplored();
   save();
 }
@@ -1288,6 +1311,7 @@ function placePartnerNear(key, P) {
 function enterPatch() {
   const ex = S.exp, key = String(ex.pos), lay = layout(key); ensureLive(key); S.visited[ex.pos] = 1; updateSurvey(ex.pos);
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos);
+  if (S.skulls && S.skulls[ex.pos]) { delete S.skulls[ex.pos]; logEv('Back where the Probe broke · skull cleared'); fxMsg('The pods you lost lie here', 3); }
   const e = entryPoint(lay, key, ex.lastDir);
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
@@ -1403,6 +1427,12 @@ function patchAction() {
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
       case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : 'Collect dew', run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
+      case 'h': { const st = fs(key, ft.id);
+        if (!st.lit) return ex.cargo.e >= PRICE.depot ? { label: 'Light the ' + DEPOT_NAME + ' · 1 Energy', ctx: 'send home, mend and shelter here', run: () => lightDepot(ft) }
+          : { label: 'Light the ' + DEPOT_NAME + ' · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the ' + DEPOT_NAME + ' costs 1 Energy · you have 0'); FX.bumpAt = NOW; } };
+        if (ex.shield < ex.smax) return ex.cargo.e >= PRICE.depotMend ? { label: S.ui.depotArm ? 'Confirm: mend, 1 Energy' : 'Mend a bar · 1 Energy', ctx: 'Shield ' + ex.shield + '/' + ex.smax, run: () => depotMend() }
+          : { label: 'Mend a bar · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Mending costs 1 Energy a bar · you have 0'); FX.bumpAt = NOW; } };
+        return { label: 'Send home from here', ctx: cap(DEPOT_NAME) + ' · Shield whole', run: () => { S.ui.from = 'patch'; S.phase = 'cargo'; } }; }
       case 'j': if (!fs(key, ft.id).up) return ex.cargo.e >= PRICE.beacon ? { label: 'Light the beacon · 1 Energy', ctx: 'reveals the land around', run: () => lightBeacon(ft) }
         : { label: 'Light the beacon · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the beacon costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; break;
       case 'g':
@@ -1485,6 +1515,18 @@ function takeCharge(f) {
   if (storm > 0) setFS(key, f.id, { ch: ch - got, wt: S.turn }); else { setFS(key, f.id, { wt: S.turn }); ex.stats.warm = (ex.stats.warm || 0) + got; fxOnce('warmstone', '+1 Energy · a warm stone · the sun leaves a little in some stones', 1); }
   advance('patch', { noise: 'act' });
 }
+function lightDepot(f) {
+  const ex = S.exp, key = ex.patch.key; ex.cargo.e -= PRICE.depot; setFS(key, f.id, { lit: 1 }); fxFloat(f.x, f.y, '-' + PRICE.depot, 'energy');
+  logEv('Lit the ' + DEPOT_NAME + ' · −1 Energy'); fxMsg('The ' + DEPOT_NAME + ' is lit for good · send home, mend and shelter here', 3); advance('patch', { noise: 'act' });
+}
+// Mending at a lit depot: 1 Energy a bar, two presses (the first arms it).
+function depotMend() {
+  const ex = S.exp; if (!S.ui.depotArm) { S.ui.depotArm = 1; fxMsg('Mend one bar · 1 Energy · ✓ again to confirm', 3); return; }
+  S.ui.depotArm = 0; ex.cargo.e -= PRICE.depotMend; ex.shield = Math.min(ex.smax, ex.shield + 1); logEv('Mended at the ' + DEPOT_NAME + ' · −1 Energy');
+  fxMsg('Shield mended · ' + ex.shield + ' of ' + ex.smax, 3); advance('patch', { noise: 'act' });
+}
+// Shelter: within 3 tiles of a lit depot in its place, no stray strikes.
+function depotShelter() { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const f = depotOf(+P.key); return !!f && !!fs(P.key, f.id).lit && cheb(f, P) <= 3; }
 function lightBeacon(f) {
   const ex = S.exp, key = ex.patch.key, cell = layout(key).cell, before = ex.stats.rev; setFS(key, f.id, { up: 1 });
   ex.cargo.e -= PRICE.beacon; fxFloat(f.x, f.y, '-' + PRICE.beacon, 'energy');
@@ -1517,7 +1559,7 @@ function takePod(p, leave) {
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
   if (!S.found.includes('firstpod')) fxOnce('firstpod', 'Pods open at the Station · ← Send home when you’re ready', 3);
-  else if (!out && ex.cargo.pods.length >= ex.hold) fxOnce('holdfull', 'Hold full · swap, or ← Send home', 3, true);
+  else if (!out && ex.cargo.pods.length >= ex.hold) fxOnce('holdfull', 'Hold full · swap, or ' + headBack(), 3, true);
   advance('patch', { noise: 'act' });
 }
 function calmRadius(X) { return X.ptElder ? 8 : 4; }
@@ -2003,6 +2045,17 @@ function sendPreview() {
   if (!out.length) out.push(ex.cargo.e || ex.cargo.d || ex.cargo.s ? 'supplies go into the Station' : 'nothing to bring home yet');
   return out;
 }
+function dropPods(ex, rep) {
+  const key = ex.patch ? ex.patch.key : String(ex.pos), lay = layout(key), cell = lay.cell, R = makeRng(hash(S.seed, 'drop', ex.n, ex.actions)), taken = new Set(S.pods.filter(p => p.k === key).map(p => p.y * PW + p.x));
+  for (const f of lay.feats) taken.add(f.y * PW + f.x);
+  const free = []; for (let i = 0; i < PW * PH; i++) if (lay.reach[i] && !taken.has(i)) free.push(i);
+  rep.dropped = ex.cargo.pods.length; rep.at = cxy(cell);
+  for (const pod of ex.cargo.pods) { const i = free.splice(R.int(free.length), 1)[0]; if (i == null) break;
+    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1 }); }
+  (S.skulls = S.skulls || {})[cell] = 1;
+  logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
+  ex.cargo.pods = [];
+}
 function endExpedition(reason) {
   const ex = S.exp; if (!ex) return;
   const broke = reason === 'break', H = S.home; S.ui.lastPos = ex.pos; S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
@@ -2014,8 +2067,9 @@ function endExpedition(reason) {
   // the Station mends the Shield first, 1 Energy a missing bar, as far as the store covers; a break is mended free
   { const free = broke ? 0 : Math.max(0, Math.min(2, ex.smax) - ex.shield), miss = broke ? 0 : ex.smax - ex.shield - free, m = Math.min(miss, H.e); H.e -= m; S.shield = broke ? ex.smax : ex.shield + free + m;
     rep.mend = { m, free, short: miss - m, shield: S.shield, smax: ex.smax }; if (m) logEv('Shield mended · -' + m + ' Energy'); }
-  logEv(broke ? 'Probe broke · pods sent home, carried supplies lost' : 'Sent home · ' + ex.actions + ' actions');
-  for (const pod of ex.cargo.pods) {
+  logEv(broke ? 'Probe broke · carried supplies lost' : 'Sent home · ' + ex.actions + ' actions');
+  if (broke) dropPods(ex, rep);   // a break sends nothing home: the pods fall where the Probe broke
+  for (const pod of broke ? [] : ex.cargo.pods) {
     H.pods.push({ sp: pod.sp, g: pod.g, how: pod.how, idd: 0, n: ex.n, fresh: 1 });
     const disc = ['shake', 'calm', 'meal', 'slab', 'curl'].includes(pod.how) ? pod.how : null;
     if (disc && !S.found.includes(disc)) { S.found.push(disc); H.studies.push(disc === 'slab' ? 'Pods sometimes hide under slabs.' : disc === 'curl' ? SPECIES[1].learnCurl : SPECIES[pod.sp].learn); }
@@ -2401,6 +2455,18 @@ const SLAB = () => art('slab', () => { const pb = new PB(32, 32);
   pb.rect(3, 24, 27, 2, C.stone); pb.line(12, 11, 15, 17, C.stone); pb.line(15, 17, 13, 22, C.stone); pb.set(5, 11, C.white);
   pb.outline(); return pb; });
 // Beacon: a stone post with a lamp cage. Unlit the cage is dark; lit, a small flame burns (2 frames).
+// Depot: a small hut with a mast; its lamp is dark until lit, then it glows (2 frames).
+function depotArt(lit, fr) {
+  return art('depot' + (lit ? 1 : 0) + (lit ? fr : 0), () => { const pb = new PB(32, 32);
+    pb.ell(15, 28, 13, 3, C.stone);
+    pb.rect(4, 17, 18, 11, C.bark); pb.rect(4, 17, 18, 2, C.clay); pb.poly([[2, 18], [13, 9], [24, 18]], C.rust); pb.poly([[13, 9], [24, 18], [20, 18]], C.wine);
+    pb.rect(11, 21, 5, 7, C.soil); pb.rect(6, 20, 3, 3, lit ? C.amber : C.night);
+    pb.rect(26, 4, 2, 24, C.stone); pb.rect(26, 4, 1, 24, C.rockL); pb.rect(23, 1, 8, 1, C.soil); pb.rect(24, 2, 6, 4, lit ? C.amber : C.night); pb.rect(23, 6, 8, 1, C.soil);
+    if (lit) { pb.rect(26, 3, 2, 2, fr ? C.cream : C.yellow); }
+    pb.outline();
+    if (lit) for (const [x, y] of fr ? [[21, 2], [31, 5]] : [[22, 5], [31, 2]]) pb.set(x, y, C.cream);
+    return pb; });
+}
 function beaconArt(lit, fr) {
   return art('beacon' + (lit ? 1 : 0) + (lit ? fr : 0), () => { const pb = new PB(32, 32);
     pb.ell(16, 28, 9, 2.6, C.stone); pb.rect(12, 25, 8, 3, C.rock); pb.rect(12, 25, 8, 1, C.rockL);           // footing
@@ -2516,6 +2582,9 @@ const ICON = {
     for (const r of fr ? [6, 9.5] : [6.5, 10.5]) for (let a = -.9; a <= .9; a += .06) { pb.set(11.5 + Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); pb.set(11.5 - Math.cos(a) * r, 8.5 + Math.sin(a) * r, C.pink); }
     pb.outline(() => C.wine); return pb; }),
   pin: () => art('i-pin', () => { const pb = new PB(16, 22); pb.rect(2, 1, 2, 20, C.bone); pb.poly([[4, 1], [15, 5.5], [4, 10]], C.orange); pb.poly([[4, 6], [15, 5.5], [4, 10]], C.rust); pb.ell(3, 20, 3, 1.5, C.slate); pb.outline(() => C.void); return pb; }),
+  flag: () => art('i-flag', () => { const pb = new PB(13, 20); pb.rect(1, 1, 2, 19, C.bone); pb.poly([[3, 1], [12, 4.5], [3, 8]], C.orange); pb.rect(3, 2, 6, 1, C.amber); pb.outline(); return pb; }),
+  skull: () => art('i-skull', () => { const pb = new PB(14, 14); pb.ell(7, 6, 6, 5.5, C.bone); pb.rect(4, 10, 6, 3, C.bone); pb.ell(4.5, 6, 1.6, 1.8, C.void); pb.ell(9.5, 6, 1.6, 1.8, C.void); pb.rect(6, 9, 2, 1, C.void); pb.rect(5, 12, 1, 1, C.void); pb.rect(8, 12, 1, 1, C.void); pb.outline(); return pb; }),
+  depot: (lit) => art('i-depot' + (lit ? 1 : 0), () => { const pb = new PB(14, 16); pb.rect(1, 9, 9, 6, C.bark); pb.poly([[0, 9], [5.5, 5], [11, 9]], C.rust); pb.rect(4, 11, 3, 4, C.soil); pb.rect(11, 1, 1, 14, C.stone); pb.rect(10, 0, 3, 3, lit ? C.amber : C.night); if (lit) pb.set(11, 1, C.cream); pb.outline(); return pb; }),
   start: () => art('i-start', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 5.4, 5.4, C.bone, { clip: (x, y) => Math.hypot(x + .5 - 5.5, y + .5 - 5.5) > 3.8 }); return pb; }),
   arrow: (dir) => art('i-arr' + dir, () => { const pb = new PB(9, 13); pb.poly([[0, 0], [9, 6.5], [0, 13]], C.yellow); pb.outline(() => C.rust); return dir < 0 ? flipPB(pb) : pb; }),
   tri: () => art('i-tri', () => { const pb = new PB(8, 12); pb.poly([[0, 0], [8, 6], [0, 12]], C.orange); return pb; }),
@@ -2795,6 +2864,8 @@ function mapSigns() {
   const hide = c => placeDone(c) || (S.exp && inFog(c));   // a buried pod keeps its slow beat until found
   for (const p of S.pins) add(p.c, p.k === 'own' ? 'pin' : p.k, 10);
   if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);
+  for (const k in (S.skulls || {})) add(+k, 'skull', 11);   // where the Probe broke; the pods lie there until you come back
+  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) add(c, 'depot', 10, { lit: !!fs(String(c), f.id).lit }); }
   for (const k in S.cells) { if (k[0] === 'c') continue; const c = +k; if (S.revealed[c] && layout(k).feats.some(f => f.kind === 'j' && fs(k, f.id).up)) add(c, 'beacon', 10); }   // a lit beacon, for good   // a gated cell shows its gate
   // Energy the Probe has found stays marked until drawn, surveyed or not: solid bolt for storm charge, hollow for warm
   if (S.exp) for (const c of S.exp.reach) { const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
@@ -2821,6 +2892,8 @@ function drawSign(kind, s, px, py, fr) {
   else if (kind === 'water') blit(ICON.wave(), px + 5, py + 7);
   else if (kind === 'pin') blit(ICON.pin(), px + 5, py - 2);
   else if (kind === 'beacon') blit(ICON.beacon(fr), px + 1, py + 1);
+  else if (kind === 'skull') blit(ICON.skull(), px + 11, py + 11);
+  else if (kind === 'depot') blit(ICON.depot(s.lit), px + 11, py + 9);
 }
 function drawMap(mode, t) {
   ensureMap(); const ex = S.exp, fr = motion() ? Math.floor(t * 2) % 2 : 0;
@@ -2888,9 +2961,8 @@ function drawMap(mode, t) {
     const dots = (tr, col) => { g.fillStyle = HEX[col];
       for (let i = 1; i < tr.length; i++) { if (!inSq(tr[i - 1]) || !inSq(tr[i])) continue; const a = cxy(tr[i - 1]), b = cxy(tr[i]); const ax = ox + a.x * CELL + 12, ay = oy + a.y * CELL + 12, bx = ox + b.x * CELL + 12, by = oy + b.y * CELL + 12;
         const n = Math.max(Math.abs(bx - ax), Math.abs(by - ay)); for (let k = 0; k < n; k += 5) g.fillRect(Math.round(ax + (bx - ax) * k / n), Math.round(ay + (by - ay) * k / n), 2, 2); } };
-    if (S.lastTrail && S.turn === S.lastTrail.turn) dots(S.lastTrail.cells, 'stone');   // last expedition's, dim for one world turn, then gone
-    if (ex.trail.length > 1) dots(ex.trail, 'bone');
-    const s0 = cxy(ex.start); blit(ICON.start(), ox + s0.x * CELL + 7, oy + s0.y * CELL + 7);
+    // the trail is no longer drawn (its data stays for the world turn); the start shows a flag
+    const s0 = cxy(ex.start); blit(ICON.flag(), ox + s0.x * CELL + 7, oy + s0.y * CELL + 2);
   }
   for (const pin of S.pins) if (pin.k === 'own') { const p = cxy(pin.c); blit(ICON.pin(), ox + p.x * CELL + 5, oy + p.y * CELL - 2); }
   // pending work: each unexplored cell in reach gets a faint dotted outline, blinking slowly (gated cells show their gate instead)
@@ -3051,9 +3123,9 @@ function drawPatch(t) {
   }
   // y-sorted sprites
   const items = [];
-  for (const f of lay.feats) { if (!'bsukj'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * TS, y = p.y * TS; if (!vis2(x, y) || !see(p.x, p.y)) continue;
+  for (const f of lay.feats) { if (!'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * TS, y = p.y * TS; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     const rm = spriteRm(p.x, p.y); let a;
-    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr);
+    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(fs(P.key, f.id).lit ? 1 : 0, fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
       a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, blinkFr, 1) : stoneArt(stormCharge(P.key, f) > 0, false, fr); }
@@ -3347,8 +3419,8 @@ function nextHomeAdult() { const w = withMibi(), a = adults().filter(m => m !== 
 function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'Send home' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
-  if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, send, { id: 'wait', label: 'Wait' }].concat(base);
-  if (from === 'map' && S.exp) return [send, { id: 'wait', label: 'Wait' }].concat(base);
+  if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }].concat(base);
+  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }].concat(base);
   if ((from === 'station' || from === 'active') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
 }
@@ -3375,7 +3447,7 @@ function drawMenu(t) {
     if (sel) { panel(x + 10, y + 3, w - 20, rowH - 6, C.blush); R(x + 10, y + 7, 5, rowH - 14, C.orange); }
     menuIcon(it.id, x + 24, y + rowH / 2 - 14);
     if (it.sep) for (let k = x + 16; k < x + w - 16; k += 6) R(k, y - 1, 3, 2, C.stone);   // separator above New world
-    text(it.label, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8), it.dis ? C.mist : it.id === 'newworld' ? C.rust : C.ink, sc); });
+    text(it.label, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8), it.dis || it.far ? C.mist : it.id === 'newworld' ? C.rust : C.ink, sc); });
 }
 function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex.cargo.e >= PRICE.patch; }
 // The Probe screen, in three groups with one heading colour: the Probe (shield, reach, Energy, the tier 2 price
@@ -3399,15 +3471,18 @@ function drawProbe(t) {
     [(x, y) => blit(ICON.boltHollow(), x - 7, y - 8), 'Hollow bolt', 'warm stone found, +1'],
     [(x, y) => blit(ICON.pin(), x - 5, y - 10), 'Pin', 'your mark · 1 Energy'],
     [(x, y) => blit(ICON.beacon(0), x - 5, y - 7), 'Beacon', 'lit: shows the land'],
+    [(x, y) => blit(ICON.flag(), x - 6, y - 10), 'Flag', 'your start: send home'],
+    [(x, y) => blit(ICON.depot(1), x - 7, y - 8), cap(DEPOT_NAME), 'lit: send, mend, shelter'],
+    [(x, y) => blit(ICON.skull(), x - 7, y - 7), 'Skull', 'lost pods lie here'],
     [(x, y) => { blit(ICON.burrow(0), x - 14, y - 7); blit(BADGE(), x + 2, y - 9); }, 'Gate', 'a partner or tier 2'],
     [(x, y) => ditherFill(x - 16, y - 11, 32, 22, 'fog', 8), 'Fog bank', 'calm · 4 tiles of sight'],
     [(x, y) => { R(x - 16, y - 11, 32, 22, C.grass); blit(quarterVeil(0, 0), x - 13, y - 11); blit(quarterAlmost(0, 0), x + 1, y - 11); }, 'Quarters', 'dotted till surveyed'],
     [(x, y) => blit(podArt('bone', 1), x - 8, y - 10), 'Pod', 'seen, left behind'],
   ];
-  rows.forEach(([ic, a, b], i) => { const y = 186 + i * 26; panel(22, y, 36, 24, C.slate); g.save(); g.beginPath(); g.rect(22, y, 36, 24); g.clip(); ic(40, y + 12); g.restore(); text(a, C1, y + 5, C.bone); text(b, C2, y + 5, C.mist); });
-  head('Field guide', 456);
-  if (!S.known.length) text('No species identified yet', 24, 482, C.stone);
-  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 476, 130, 44, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 482); text(SPECIES[sp].name, x + 42, 490, C.bone); });
+  rows.forEach(([ic, a, b], i) => { const y = 184 + i * 21; panel(22, y, 36, 20, C.slate); g.save(); g.beginPath(); g.rect(22, y, 36, 20); g.clip(); ic(40, y + 10); g.restore(); text(a, C1, y + 3, C.bone); text(clipText(b, SCR_W - C2 - 8, 2), C2, y + 3, C.mist); });
+  head('Field guide', 472);
+  if (!S.known.length) text('No species identified yet', 24, 496, C.stone);
+  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 492, 130, 42, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 497); text(SPECIES[sp].name, x + 42, 505, C.bone); });
 }
 function drawMats(c, y, cap) {
   [['energy', 'Energy', c.e], ['data', 'Data', c.d], ['essence', 'Essence', c.s]].forEach(([ic, name, v], i) => { const x = 22 + i * 138;
@@ -3432,7 +3507,8 @@ function drawCargo(t) {
         const px = gx + i * pitch, py = gy + j * pitch, d = pitch - 2;
         if (c === ex.pos) R(px - 1, py - 1, d + 2, d + 2, C.amber);
         R(px, py, d, d, explored(c) ? C.mint : C.stone); if (!explored(c) && d > 2) R(px + 1, py + 1, d - 2, d - 2, C.night); } }
-    card(95, 266, 260, 54, true, true); R(98, 269, 254, 48, C.orange); text('Send home', SCR_W / 2, 282, C.bone, 3, 'center');
+    if (canSend()) { card(95, 266, 260, 54, true, true); R(98, 269, 254, 48, C.orange); text('Send home', SCR_W / 2, 282, C.bone, 3, 'center'); }
+    else { card(95, 266, 260, 54, false, false); text('Send home', SCR_W / 2, 276, C.mist, 3, 'center'); text(sendHint(), SCR_W / 2, 302, C.fog, 2, 'center'); }
     let y = 340; for (const l of sendPreview().slice(0, 5)) { R(40, y + 6, 4, 4, C.orange); text(clipText(l, 384, 2), 54, y, C.bone); y += 24; }
     text('Ends the expedition · the world turns', SCR_W / 2, y + 12, C.mist, 2, 'center');
   } else {
@@ -3558,7 +3634,7 @@ function drawStation(t) {
   const age = NOW - FX.transAt, pages = stationPages(), page = pages[S.ui.stPage] || 'cargo', last = S.ui.stPage >= pages.length - 1;
   let y = 38;
   if (page === 'cargo') {
-    if (r.reason === 'break') { text('The Probe broke', 22, y, C.rust, 3); y += 32; text('Your pods are safe. Carried supplies are lost:', 22, y, C.ink); y += 22;
+    if (r.reason === 'break') { text('The Probe broke', 22, y, C.rust, 3); y += 32; text(r.dropped ? 'Your ' + numWord(r.dropped) + ' pod' + (r.dropped === 1 ? '' : 's') + ' fell where it broke (skull on the map).' : 'Nothing was in the hold.', 22, y, C.ink); y += 22; text('Carried supplies are lost:', 22, y, C.ink); y += 22;
       text(r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing', 22, y, C.rust); y += 26; }
     else { text('Cargo arrives', 22, y, C.ink, 3); y += 32;
       if (r.items.length) { let x = 24; for (const it of r.items) { blit(ICON[{ e: 'energy', d: 'data', s: 'essence' }[it.k]](), x, y + 1); text(it.text, x + 20, y, C.ink); x += textW(it.text, 2) + 44; } y += 26; } }
@@ -3616,7 +3692,7 @@ function placeReason(c) {
   if (G.island[c]) return 'Out of reach';
   return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
 }
-const SIGN_ORDER = ['b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'deep'];
+const SIGN_ORDER = ['skull', 'depot', 'b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'deep'];
 function signWords(c) { const k = signsAt(c); return SIGN_ORDER.filter(s => k.includes(s)).map(s => SIGN_NAME[s]); }
 function landWord(c) {
   if (G.land[c] === L.WATER) return G.ford[c] ? 'shallows' : nextToIsland(c) ? 'fast water' : 'wide water';
@@ -3673,7 +3749,7 @@ function lineFor() {
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), [base + wx, base + ' · storm preview', base], 'back', !placeValid(c)); }
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? [base + wx, base + ' · storm preview', base] : wx.slice(3), 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
-      return L1('Go down', mapContext(), 'Send home');   // ← opens the menu, Send home on top
+      return L1('Go down', mapContext(), canSend() ? 'Send home' : 'menu');   // ← opens the menu, Send home on top where it works
     case 'patch': { const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
       const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
@@ -3687,9 +3763,10 @@ function lineFor() {
       return L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim); }
     case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close');
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
+      if (it.id === 'send' && it.far) return L1('Send home', sendHint(), 'close', true);
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what goes home'] : '', 'close'); }
     case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', '', 'close') : L1('', '', 'close');   // read-only: one way out
-    case 'cargo': return S.exp ? L1('Send home', 'ends the expedition', 'close') : L1('', '', 'close');
+    case 'cargo': return S.exp ? (canSend() ? L1('Send home', 'ends the expedition', 'close') : L1('', 'Send home: ' + sendHint(), 'close')) : L1('', '', 'close');
     case 'mibis': { const m = rosterList()[S.ui.rSel], w = withMibi(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');
       if (m === w) return L1('Visit ' + m.name, 'with you', 'menu');
       if (S.exp) return L1('Stays home', w ? w.name + ' is with you till home' : '', 'menu', true);
@@ -3765,6 +3842,7 @@ function moveCursor(dir) {
   const x = clamp(p.x + dx, 0, MW - 1), y = clamp(p.y + dy, 0, MH - 1); S.ui.cur = y * MW + x;
 }
 function act(k, mode) {
+  if (k !== 'confirm' && S && S.ui) S.ui.depotArm = 0;
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
   if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
   if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
@@ -3803,7 +3881,7 @@ function act(k, mode) {
       else if (k === 'confirm' && !(items[S.ui.menuSel] || {}).dis) { const id = (items[S.ui.menuSel] || items[0]).id;
         if (id === 'wait') { waitTick(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'station'; }   // folds to a strip: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
-        else if (id === 'send') S.phase = 'cargo';
+        else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('Send home works from the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; } }
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); }
           else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
@@ -3816,7 +3894,8 @@ function act(k, mode) {
       else if (k === 'back') { S.ui.patchArm = 0; S.phase = 'menu'; } else S.ui.patchArm = 0; break;
     case 'cargo':
       if (k === 'back') S.phase = 'menu';
-      else if (k === 'confirm' && S.exp) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); }
+      else if (k === 'confirm' && S.exp && canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); }
+      else if (k === 'confirm' && S.exp) { fxMsg('Send home works from the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; }
       break;
     case 'mibis': { const list = rosterList(), w = withMibi();
       if ((k === 'up' || k === 'down') && list.length) S.ui.rSel = clamp(S.ui.rSel + (k === 'down' ? 1 : -1), 0, list.length - 1);
@@ -4024,7 +4103,7 @@ requestAnimationFrame(frame);
 window.__mb = { get S() { return S; }, get G() { return G; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sendPreview, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, TEST,
-  capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, withMibi, callSlot, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
+  capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, withMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
