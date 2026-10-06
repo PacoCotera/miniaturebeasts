@@ -61,7 +61,7 @@ The world map is a grid of cells. Each cell is a place you can go down into. The
 
 A pod you saw and left behind shows the pod sign, and a lit **beacon** keeps its flame on the map for good. Your **start** shows a flag, a found **outpost** a small hut (its lamp lit once you light it), and a **skull** marks where the Probe broke. The map draws no trail. Signs on surveyed cells and inside a fog bank are hidden, except gates, pins, pods and Energy.
 
-**Outposts.** About six huts with a mast lamp stand across the world, never two close together. Find one by walking or Call, then **light it for 1 Energy**; it stays lit for good. A lit outpost lets you **send home** from its cell, **mend the Shield** for 1 Energy a bar (✓ twice), and gives **shelter**: no stray strikes while you stand within 3 tiles of it. It reveals no land.
+**Outposts.** About six huts with a mast lamp stand across the world, never two close together. Find one by walking or Call, then **light it for 1 Energy**; it stays lit for three world turns (this expedition and the next two). Its flame shrinks each world turn (big, medium, small), then it goes dark; relight it for 1 Energy (✓ twice). The light never changes during an expedition. While lit, an outpost lets you **send home** from its cell (that ends the expedition, as at the start), **mend the Shield** for 1 Energy a bar (✓ twice), and gives **shelter**: no stray strikes while you stand within 3 tiles of it. It reveals no land.
 
 **Pins.** On the map, Call pins the cell you stand on for 1 Energy. Call on your own pin removes it, and if you placed it this expedition you get the Energy back. Gates pin themselves for free.
 
@@ -254,7 +254,11 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 | ← | Send home (menu; only at the flag or a lit outpost) | Leave (menu) | Close | Mibis |
 | ))) | Pin 1⚡ | Pulse, 11 tiles (1 action) | — | Call Dot: your mibi answers |
 
-**Costs**: light an outpost 1 Energy · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Energy · hatch 2 Energy + 4 Essence · study 2 Data · mend at home 1 Energy a bar · tier 2 Probe 12 Energy + 4 Data.
+**Costs**: light or relight an outpost 1 Energy (lit 3 world turns) · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Energy · hatch 2 Energy + 4 Essence · study 2 Data · mend at home 1 Energy a bar · tier 2 Probe 12 Energy + 4 Data.
+
+**Stones**: plain grey · warm: an amber ring around its foot · charged: a blue-white crackle with a small bolt above · a yellow tile outline: lightning strikes there next.
+
+**Clock**: "T7" in the top bar is the world turn; it flashes when the world turns.
 
 **Gains**: storm stone +2 (+3 at the peak) · warm stone +1 · dew +1 Essence · pressed fruit +2 Essence · tuft +1 Essence · a creature moment +1 Data (+2 the first time).
 

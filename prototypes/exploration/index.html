@@ -219,7 +219,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Trees, overhangs and woods are shelter.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and Send home from the menu; away from it the menu says how far. The Station spends what you bring. If the Probe breaks, nothing goes home: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
-        <li>Find an outpost (a hut with a mast) and light it for 1 Energy: from then on you can send home there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it.</li>
+        <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can send home there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
         <li>In a fog bank you see 4 tiles: creep close to wary creatures and fill up on dew.</li>
       </ol>
     </details>
@@ -342,7 +342,7 @@ const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', c
 const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
 const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'needs a digger', water: 'fast water', deep: 'deep ?' };
-const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'Lit beacon · you lit it, it burns for good', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: DEPOT_NAME[0].toUpperCase() + DEPOT_NAME.slice(1) + ' · light it once: send home, mend and shelter there',
+const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'Lit beacon · you lit it, it burns for good', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: DEPOT_NAME[0].toUpperCase() + DEPOT_NAME.slice(1) + ' · lit, it lets you send home, mend and shelter for 3 world turns',
   pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow hole · a digging partner can open it', water: 'Fast water · needs a swimmer', deep: 'Deep ? · a tier 2 Probe can read it' };
 
 // ===================== 2. Seeded RNG and noise =====================
@@ -601,7 +601,10 @@ function depotCells(seed) {
   G.depots = { seed, set }; return set;
 }
 function depotOf(c) { if (!passable(c)) return null; const key = String(c); return depotCells(S.seed).has(c) ? layout(key).feats.find(f => f.kind === 'h') || null : null; }
-const depotLit = c => { const f = depotOf(c); return !!f && !!fs(String(c), f.id).lit; };
+// An outpost's light: lit for 3 world turns per lighting (this expedition and the next two); it changes only at the world turn.
+const OUTPOST_TURNS = 3;
+const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
+const depotLit = c => { const f = depotOf(c); return !!f && outpostLeft(String(c), f) > 0; };
 // Send points: the expedition's start, or a lit depot in reach. "Start · 2 cells" names the nearest one.
 function canSend() { const ex = S.exp; return !!ex && (ex.pos === ex.start || depotLit(ex.pos)); }
 function nearestSend() { const ex = S.exp, p = cxy(ex.pos), d = c => { const q = cxy(c); return Math.abs(p.x - q.x) + Math.abs(p.y - q.y); };
@@ -1439,12 +1442,14 @@ function patchAction() {
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
       case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : 'Collect dew', run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
-      case 'h': { const st = fs(key, ft.id);
-        if (!st.lit) return ex.cargo.e >= PRICE.depot ? { label: 'Light the ' + DEPOT_NAME + ' · 1 Energy', ctx: 'send home, mend and shelter here', run: () => lightDepot(ft) }
-          : { label: 'Light the ' + DEPOT_NAME + ' · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the ' + DEPOT_NAME + ' costs 1 Energy · you have 0'); FX.bumpAt = NOW; } };
-        if (ex.shield < ex.smax) return ex.cargo.e >= PRICE.depotMend ? { label: S.ui.depotArm ? 'Confirm: mend, 1 Energy' : 'Mend a bar · 1 Energy', ctx: 'Shield ' + ex.shield + '/' + ex.smax, run: () => depotMend() }
-          : { label: 'Mend a bar · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Mending costs 1 Energy a bar · you have 0'); FX.bumpAt = NOW; } };
-        return { label: 'Send home from here', ctx: cap(DEPOT_NAME) + ' · Shield whole', run: () => { S.ui.from = 'patch'; S.phase = 'cargo'; } }; }
+      case 'h': { const st = fs(key, ft.id), left = outpostLeft(key, ft), relight = !!st.lightT;
+        if (!left) { const lbl = relight ? (S.ui.depotArm ? 'Confirm: relight, 1 Energy' : 'Relight · 1 Energy') : 'Light the ' + DEPOT_NAME + ' · 1 Energy', ctx = relight ? cap(DEPOT_NAME) + ' · dark' : 'send home, mend and shelter here';
+          return ex.cargo.e >= PRICE.depot ? { label: lbl, ctx, run: () => lightDepot(ft, relight) }
+            : { label: lbl, ctx: (relight ? cap(DEPOT_NAME) + ' · dark · ' : '') + 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the ' + DEPOT_NAME + ' costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; }
+        const litCtx = cap(DEPOT_NAME) + ' · lit ' + left + ' more turn' + (left === 1 ? '' : 's');
+        if (ex.shield < ex.smax) return ex.cargo.e >= PRICE.depotMend ? { label: S.ui.depotArm ? 'Confirm: mend, 1 Energy' : 'Mend a bar · 1 Energy', ctx: litCtx + ' · Shield ' + ex.shield + '/' + ex.smax, run: () => depotMend() }
+          : { label: 'Mend a bar · 1 Energy', ctx: litCtx + ' · you have 0 Energy', dim: true, run: () => { fxMsg('Mending costs 1 Energy a bar · you have 0'); FX.bumpAt = NOW; } };
+        return { label: 'Send home from here', ctx: litCtx, run: () => { S.ui.from = 'patch'; S.phase = 'cargo'; } }; }
       case 'j': if (!fs(key, ft.id).up) return ex.cargo.e >= PRICE.beacon ? { label: 'Light the beacon · 1 Energy', ctx: 'reveals the land around', run: () => lightBeacon(ft) }
         : { label: 'Light the beacon · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the beacon costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; break;
       case 'g':
@@ -1527,9 +1532,11 @@ function takeCharge(f) {
   if (storm > 0) setFS(key, f.id, { ch: ch - got, wt: S.turn }); else { setFS(key, f.id, { wt: S.turn }); ex.stats.warm = (ex.stats.warm || 0) + got; fxOnce('warmstone', '+1 Energy · a warm stone · the sun leaves a little in some stones', 1); }
   advance('patch', { noise: 'act' });
 }
-function lightDepot(f) {
-  const ex = S.exp, key = ex.patch.key; ex.cargo.e -= PRICE.depot; setFS(key, f.id, { lit: 1 }); fxFloat(f.x, f.y, '-' + PRICE.depot, 'energy');
-  logEv('Lit the ' + DEPOT_NAME + ' · −1 Energy'); fxMsg('The ' + DEPOT_NAME + ' is lit for good · send home, mend and shelter here', 3); advance('patch', { noise: 'act' });
+function lightDepot(f, relight) {
+  if (relight && !S.ui.depotArm) { S.ui.depotArm = 1; fxMsg('Relight the ' + DEPOT_NAME + ' · 1 Energy · ✓ again to confirm', 3); return; }   // relighting takes two presses
+  const ex = S.exp, key = ex.patch.key; S.ui.depotArm = 0; ex.cargo.e -= PRICE.depot; setFS(key, f.id, { lightT: S.turn + OUTPOST_TURNS }); fxFloat(f.x, f.y, '-' + PRICE.depot, 'energy');
+  logEv((relight ? 'Relit' : 'Lit') + ' the ' + DEPOT_NAME + ' · −1 Energy · lit ' + OUTPOST_TURNS + ' turns');
+  fxMsg('The ' + DEPOT_NAME + ' is lit for ' + numWord(OUTPOST_TURNS) + ' turns · send home, mend and shelter here', 3); advance('patch', { noise: 'act' });
 }
 // Mending at a lit depot: 1 Energy a bar, two presses (the first arms it).
 function depotMend() {
@@ -1538,7 +1545,7 @@ function depotMend() {
   fxMsg('Shield mended · ' + ex.shield + ' of ' + ex.smax, 3); advance('patch', { noise: 'act' });
 }
 // Shelter: within 3 tiles of a lit depot in its place, no stray strikes.
-function depotShelter() { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const f = depotOf(+P.key); return !!f && !!fs(P.key, f.id).lit && cheb(f, P) <= 3; }
+function depotShelter() { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const f = depotOf(+P.key); return !!f && outpostLeft(P.key, f) > 0 && cheb(f, P) <= 3; }
 function lightBeacon(f) {
   const ex = S.exp, key = ex.patch.key, cell = layout(key).cell, before = ex.stats.rev; setFS(key, f.id, { up: 1 });
   ex.cargo.e -= PRICE.beacon; fxFloat(f.x, f.y, '-' + PRICE.beacon, 'energy');
@@ -2195,6 +2202,8 @@ function worldTurn(pending) {
   const lines = [];
   for (const m of grown) lines.push(S.with === m.id ? m.name + ' is grown · your Probe partner now.' : m.name + ' is grown · take ' + m.name + ' to bring it on expeditions.');
   for (const m of aged) lines.push(m.name + ' is an elder now · slower, with keener senses.');
+  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
+    if (left === 1) lines.push('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.'); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) lines.push('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.'); }
   // Movement: a species you know first; a direction only when the herd really drifted one way.
   const moves = [0, 1, 2].filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
     .filter(o => o.dw || o.known).sort((a, b) => (b.known - a.known) || (!!b.dw - !!a.dw) || (mv[b.sp].n - mv[a.sp].n));
@@ -2470,15 +2479,15 @@ const SLAB = () => art('slab', () => { const pb = new PB(32, 32);
   pb.outline(); return pb; });
 // Beacon: a stone post with a lamp cage. Unlit the cage is dark; lit, a small flame burns (2 frames).
 // Depot: a small hut with a mast; its lamp is dark until lit, then it glows (2 frames).
-function depotArt(lit, fr) {
-  return art('depot' + (lit ? 1 : 0) + (lit ? fr : 0), () => { const pb = new PB(32, 32);
+function depotArt(lit, fr) {   // lit: turns of light left (0 dark, 1 ember, 2 half, 3 full)
+  return art('depot' + lit + (lit ? fr : 0), () => { const pb = new PB(32, 32);
     pb.ell(15, 28, 13, 3, C.stone);
     pb.rect(4, 17, 18, 11, C.bark); pb.rect(4, 17, 18, 2, C.clay); pb.poly([[2, 18], [13, 9], [24, 18]], C.rust); pb.poly([[13, 9], [24, 18], [20, 18]], C.wine);
     pb.rect(11, 21, 5, 7, C.soil); pb.rect(6, 20, 3, 3, lit ? C.amber : C.night);
     pb.rect(26, 4, 2, 24, C.stone); pb.rect(26, 4, 1, 24, C.rockL); pb.rect(23, 1, 8, 1, C.soil); pb.rect(24, 2, 6, 4, lit ? C.amber : C.night); pb.rect(23, 6, 8, 1, C.soil);
-    if (lit) { pb.rect(26, 3, 2, 2, fr ? C.cream : C.yellow); }
     pb.outline();
-    if (lit) for (const [x, y] of fr ? [[21, 2], [31, 5]] : [[22, 5], [31, 2]]) pb.set(x, y, C.cream);
+    if (lit) { const h = [0, 3, 6, 9][lit], w = [0, 2, 3, 4][lit], t = fr ? 1 : 0;   // the flame above the lamp: its size is the light left
+      pb.ell(27, 6 - h / 2, w / 2 + .3, h / 2 + .4 + t * .3, C.orange); if (lit > 1) pb.ell(27, 6.5 - h / 3, w / 3 + .2, h / 3, C.yellow); if (lit > 2) pb.set(27, 4 - t, C.cream); }
     return pb; });
 }
 function beaconArt(lit, fr) {
@@ -2504,10 +2513,11 @@ function cupArt(full, cave) {
 // so it is never confused with a storm charge or with the strike warning (a yellow tile with a bolt).
 function stoneArt(lit, cave, fr, warm) {
   // warm: a 2 px ring on the ground around its foot (amber with yellow dashes; fr 1 = the dim beat of its slow blink)
-  if (warm && !lit && !cave) return art('stonew' + fr, () => { const pb = new PB(32, 32), b = stoneArt(0, cave, 0); pb.blit(b, 0, 0);
-    for (let a = 0; a < 6.283; a += .06) for (const d of [0, 1]) { const x = Math.round(16 + Math.cos(a) * (14.5 + d)), y = Math.round(25.5 + Math.sin(a) * (5 + d));
-      if (x >= 0 && y >= 0 && x < 32 && y < 32 && (pb.get(x, y) < 0 || pb.get(x, y) === C.amber || pb.get(x, y) === C.yellow || pb.get(x, y) === C.rust)) pb.set(x, y, fr ? C.rust : Math.floor(a / .5) % 2 ? C.amber : C.yellow); }
-    pb.rect(11, 9, 2, 1, fr ? C.orange : C.yellow); pb.set(12, 8, fr ? C.amber : C.cream); pb.set(11, 10, C.orange); return pb; });
+  // warm: one clean 2 px amber ring on the ground around its foot, pulsing slowly (fr 1 = the dim beat), nothing on the stone
+  if (warm && !lit && !cave) return art('stonew2' + fr, () => { const pb = new PB(32, 32), b = stoneArt(0, cave, 0); pb.blit(b, 0, 0);
+    for (let a = 0; a < 6.283; a += .04) for (const d of [0, 1]) { const x = Math.round(16 + Math.cos(a) * (14 + d)), y = Math.round(26 + Math.sin(a) * (4.5 + d));
+      if (x >= 0 && y >= 0 && x < 32 && y < 32 && pb.get(x, y) < 0) pb.set(x, y, fr ? C.orange : d ? C.amber : C.yellow); }
+    return pb; });
   return art('stone' + lit + cave + fr, () => { const pb = new PB(32, 32);
     if (cave) {
       const a = lit ? C.aqua : C.teal, b = lit ? C.mint : C.aqua, d = lit ? C.teal : C.tealD;
@@ -2519,8 +2529,11 @@ function stoneArt(lit, cave, fr, warm) {
     }
     pb.poly([[4, 27], [6, 14], [14, 6], [25, 10], [28, 26]], C.rock); pb.poly([[6, 14], [14, 6], [17, 15]], C.rockL); pb.poly([[17, 15], [25, 10], [28, 26], [17, 27]], C.stone);
     pb.outline();
-    if (lit) { pb.line(10, 8 + fr, 15, 14, C.yellow); pb.line(15, 14, 12, 18, C.yellow); pb.line(12, 18, 19, 24 - fr, C.cream);
-      for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const dd = Math.hypot(x - 16, y - 17); if (dd > 13 && dd < 16 && (x + y + fr) % 2 === 0 && pb.get(x, y) < 0) pb.set(x, y, C.cream); } }
+    if (lit) {   // charged: a bright blue-white crackle over the stone (2 frames) and a small bolt above it
+      const path = fr ? [[9, 12], [13, 15], [11, 18], [17, 20], [15, 23], [21, 25]] : [[8, 15], [12, 13], [15, 17], [13, 20], [19, 22], [23, 19]];
+      for (let i = 1; i < path.length; i++) pb.line(path[i - 1][0], path[i - 1][1], path[i][0], path[i][1], i % 2 ? C.white : C.ice);
+      for (const [x, y] of fr ? [[7, 11], [22, 26], [24, 13]] : [[6, 16], [24, 18], [10, 24]]) pb.set(x, y, C.ice);
+      pb.poly([[25, 0], [21, 4], [24, 4], [22, 8], [27, 3], [24, 3], [26, 0]], fr ? C.white : C.cream); pb.set(23, 4, C.sky); }
     return pb; });
 }
 function holeArt(glint) { return art('hole' + glint, () => { const pb = new PB(32, 32); pb.ell(16, 19, 10, 6, C.bark, { sh: [C.clay, C.soil] }); pb.ell(16, 20, 7.5, 4, C.void); if (glint) pb.rect(17, 20, 2, 2, C.yellow); return pb; }); }
@@ -2598,7 +2611,9 @@ const ICON = {
   pin: () => art('i-pin', () => { const pb = new PB(16, 22); pb.rect(2, 1, 2, 20, C.bone); pb.poly([[4, 1], [15, 5.5], [4, 10]], C.orange); pb.poly([[4, 6], [15, 5.5], [4, 10]], C.rust); pb.ell(3, 20, 3, 1.5, C.slate); pb.outline(() => C.void); return pb; }),
   flag: () => art('i-flag', () => { const pb = new PB(13, 20); pb.rect(1, 1, 2, 19, C.bone); pb.poly([[3, 1], [12, 4.5], [3, 8]], C.orange); pb.rect(3, 2, 6, 1, C.amber); pb.outline(); return pb; }),
   skull: () => art('i-skull', () => { const pb = new PB(14, 14); pb.ell(7, 6, 6, 5.5, C.bone); pb.rect(4, 10, 6, 3, C.bone); pb.ell(4.5, 6, 1.6, 1.8, C.void); pb.ell(9.5, 6, 1.6, 1.8, C.void); pb.rect(6, 9, 2, 1, C.void); pb.rect(5, 12, 1, 1, C.void); pb.rect(8, 12, 1, 1, C.void); pb.outline(); return pb; }),
-  depot: (lit) => art('i-depot' + (lit ? 1 : 0), () => { const pb = new PB(14, 16); pb.rect(1, 9, 9, 6, C.bark); pb.poly([[0, 9], [5.5, 5], [11, 9]], C.rust); pb.rect(4, 11, 3, 4, C.soil); pb.rect(11, 1, 1, 14, C.stone); pb.rect(10, 0, 3, 3, lit ? C.amber : C.night); if (lit) pb.set(11, 1, C.cream); pb.outline(); return pb; }),
+  depot: (lit) => art('i-depot' + (lit | 0), () => { const L = lit | 0, pb = new PB(16, 20); pb.rect(1, 13, 9, 6, C.bark); pb.poly([[0, 13], [5.5, 9], [11, 13]], C.rust); pb.rect(4, 15, 3, 4, C.soil); pb.rect(12, 6, 1, 13, C.stone); pb.rect(11, 5, 3, 2, L ? C.amber : C.night);
+    if (L) { const h = [0, 2, 4, 6][L]; pb.rect(12, 5 - h, 1, h, C.orange); if (L > 1) { pb.rect(11, 5 - h + 2, 3, h - 2, C.orange); pb.rect(12, 5 - h + 1, 1, h - 2, C.yellow); } if (L > 2) pb.set(12, 5 - h + 1, C.cream); }
+    pb.outline(); return pb; }),
   start: () => art('i-start', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 5.4, 5.4, C.bone, { clip: (x, y) => Math.hypot(x + .5 - 5.5, y + .5 - 5.5) > 3.8 }); return pb; }),
   arrow: (dir) => art('i-arr' + dir, () => { const pb = new PB(9, 13); pb.poly([[0, 0], [9, 6.5], [0, 13]], C.yellow); pb.outline(() => C.rust); return dir < 0 ? flipPB(pb) : pb; }),
   tri: () => art('i-tri', () => { const pb = new PB(8, 12); pb.poly([[0, 0], [8, 6], [0, 12]], C.orange); return pb; }),
@@ -2879,7 +2894,7 @@ function mapSigns() {
   for (const p of S.pins) add(p.c, p.k === 'own' ? 'pin' : p.k, 10);
   if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);
   for (const k in (S.skulls || {})) add(+k, 'skull', 11);   // where the Probe broke; the pods lie there until you come back
-  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) add(c, 'depot', 10, { lit: !!fs(String(c), f.id).lit }); }
+  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) add(c, 'depot', 10, { lit: outpostLeft(String(c), f) }); }
   for (const k in S.cells) { if (k[0] === 'c') continue; const c = +k; if (S.revealed[c] && layout(k).feats.some(f => f.kind === 'j' && fs(k, f.id).up)) add(c, 'beacon', 10); }   // a lit beacon, for good   // a gated cell shows its gate
   // Energy the Probe has found stays marked until drawn, surveyed or not: solid bolt for storm charge, hollow for warm
   if (S.exp) for (const c of S.exp.reach) { const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
@@ -2907,7 +2922,7 @@ function drawSign(kind, s, px, py, fr) {
   else if (kind === 'pin') blit(ICON.pin(), px + 5, py - 2);
   else if (kind === 'beacon') blit(ICON.beacon(fr), px + 1, py + 1);
   else if (kind === 'skull') blit(ICON.skull(), px + 11, py + 11);
-  else if (kind === 'depot') blit(ICON.depot(s.lit), px + 11, py + 9);
+  else if (kind === 'depot') blit(ICON.depot(s.lit), px + 9, py + 5);
 }
 // The reach view: in an expedition the map shows only the Probe's reach, drawn at its own scale (not a blow-up
 // of the 26 px map): 78 px cells at tier 1 (5×5), 48 px at tier 2 (9×9). Each cell shows its land as a patch of
@@ -2945,7 +2960,7 @@ function signSprite(kind, s, fr, big) {
     case 'pin': return ICON.pin();
     case 'flag': return ICON.flag();
     case 'skull': return sc('skull', ICON.skull());
-    case 'depot': return sc('depot' + (s.lit ? 1 : 0), ICON.depot(s.lit));
+    case 'depot': return sc('depot' + (s.lit | 0), ICON.depot(s.lit));
     case 'beacon': return sc('beacon' + fr, ICON.beacon(fr));
     case 'burrow': return sc('burrow', ICON.burrow(0));
     case 'water': return sc('wave', ICON.wave());
@@ -3006,7 +3021,7 @@ function drawInset(x, y, t, u) {
   if (ex.storm) { const a = Math.round(x + ex.storm.x * u), b = Math.round(x + (ex.storm.x + ex.storm.w) * u);
     for (const sx of [a, b]) if (sx > x && sx < x + W) for (let yy = y; yy < y + H; yy += 3) R(sx, yy, 1, 2, C.mist); }
   for (const pin of S.pins) R(x + (pin.c % MW) * u + o, y + ((pin.c / MW) | 0) * u + o, 2, 2, C.orange);
-  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, fs(String(c), f.id).lit ? C.amber : C.bark); }
+  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, outpostLeft(String(c), f) ? C.amber : C.bark); }
   for (const k in (S.skulls || {})) R(x + (k % MW) * u + o, y + ((k / MW) | 0) * u + o, d, d, C.bone);
   const s0 = cxy(ex.start), r = ex.range, rx0 = x + Math.max(0, s0.x - r) * u, ry0 = y + Math.max(0, s0.y - r) * u, rx1 = x + Math.min(MW, s0.x + r + 1) * u, ry1 = y + Math.min(MH, s0.y + r + 1) * u;
   R(rx0, ry0, rx1 - rx0, 1, C.amber); R(rx0, ry1 - 1, rx1 - rx0, 1, C.amber); R(rx0, ry0, 1, ry1 - ry0, C.amber); R(rx1 - 1, ry0, 1, ry1 - ry0, C.amber);
@@ -3242,7 +3257,7 @@ function drawPatch(t) {
   const items = [];
   for (const f of lay.feats) { if (!'bsukjh'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * TS, y = p.y * TS; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     const rm = spriteRm(p.x, p.y); let a;
-    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(fs(P.key, f.id).lit ? 1 : 0, fr);
+    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
       a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, blinkFr, 1) : stoneArt(stormCharge(P.key, f) > 0, false, fr); }
@@ -3294,8 +3309,7 @@ function drawPatch(t) {
   if (act.run) { const f = frontOf(P); brackets(W(f.x * TS + 1), H(f.y * TS + 1), TS - 2, TS - 2, C.amber); }
   // the strike warning: a tile glows one action before lightning hits it
   if (live.strike) { const x = W(live.strike.x * TS), y = H(live.strike.y * TS), col = fr ? C.cream : C.yellow;
-    ditherFill(x, y, TS, TS, 'yellow', 6); R(x, y, TS, 2, col); R(x, y + TS - 2, TS, 2, col); R(x, y, 2, TS, col); R(x + TS - 2, y, 2, TS, col);
-    blit(ICON.bolt('gold'), x + 10, y + 8); }
+    R(x, y, TS, 2, col); R(x, y + TS - 2, TS, 2, col); R(x, y, 2, TS, col); R(x + TS - 2, y, 2, TS, col); }   // strike warned: the tile's outline only
   for (const s2 of FX.strikes) { if (s2.space !== 'patch') continue; const age = NOW - s2.at; if (age > 380) continue;
     const x = W(s2.x * TS + 16), y = H(s2.y * TS + 16);
     if (age < 220 || !motion()) { let px2 = x + 10, py2 = VIEW_Y; for (let k = 0; py2 < y && k < 9; k++) { const nx = x + (k % 2 ? 9 : -9), ny = Math.min(y, py2 + 34); pline(px2, py2, nx, ny, C.cream, 3); pline(px2 + 1, py2, nx + 1, ny, C.white, 1); px2 = nx; py2 = ny; } }
@@ -3374,10 +3388,19 @@ function podSlot(x, y, pod) {
 }
 // Device status, far right of every top bar: battery and connectivity. Static placeholders for now.
 const STATUS_W = 30;
+// The world-turn clock, left of battery and radio: a small sun and "T7"; it flashes when the world turns.
+function drawClock(right) {
+  const lbl = 'T' + S.turn, w = textW(lbl, 2), x = right - w;
+  if (RT.turnShown !== S.turn) { if (RT.turnShown != null) RT.turnFlash = NOW; RT.turnShown = S.turn; }
+  const fl = NOW - (RT.turnFlash || -1e9) < 900 && Math.floor((NOW - RT.turnFlash) / 150) % 2 === 0;
+  if (fl) panel(x - 18, 3, w + 22, 20, C.amber);
+  blit(art('i-sun', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 2.6, 2.6, C.amber); for (const [x, y] of [[5, 0], [5, 10], [0, 5], [10, 5], [1, 1], [9, 1], [1, 9], [9, 9]]) pb.set(x, y, C.yellow); return pb; }), x - 14, 7);
+  text(lbl, x, 6, fl ? C.ink : C.fog); return x - 22;
+}
 function drawStatus(right) {
   blit(art('i-radio', () => { const pb = new PB(9, 9); [3, 5, 8].forEach((h, i) => pb.rect(i * 3, 9 - h, 2, h, i < 2 ? C.mist : C.stone)); return pb; }), right - 9, 8);
   blit(art('i-batt', () => { const pb = new PB(15, 9); pb.rect(0, 0, 13, 9, C.mist); pb.rect(1, 1, 11, 7, C.ink); pb.rect(13, 3, 2, 3, C.mist); pb.rect(2, 2, 3, 5, C.mint); pb.rect(6, 2, 3, 5, C.mint); return pb; }), right - 27, 8);
-  return right - STATUS_W - 6;
+  return drawClock(right - STATUS_W - 6) - 4;
 }
 // The reach grid, top-left corner: one dot per reachable cell in the Probe's range (5×5 at tier 1, 9×9 at tier 2).
 // Hollow: not explored; filled: explored (visited and Called in); your cell is framed; cells you can't reach get no dot.
@@ -3596,10 +3619,15 @@ function drawProbe(t) {
     [(x, y) => { R(x - 16, y - 11, 32, 22, C.grass); blit(quarterVeil(0, 0), x - 13, y - 11); blit(quarterAlmost(0, 0), x + 1, y - 11); }, 'Quarters', 'dotted till surveyed'],
     [(x, y) => blit(podArt('bone', 1), x - 8, y - 10), 'Pod', 'seen, left behind'],
   ];
-  rows.forEach(([ic, a, b], i) => { const y = 184 + i * 21; panel(22, y, 36, 20, C.slate); g.save(); g.beginPath(); g.rect(22, y, 36, 20); g.clip(); ic(40, y + 10); g.restore(); text(a, C1, y + 3, C.bone); text(clipText(b, SCR_W - C2 - 8, 2), C2, y + 3, C.mist); });
-  head('Field guide', 472);
-  if (!S.known.length) text('No species identified yet', 24, 496, C.stone);
-  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 492, 130, 42, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 497); text(SPECIES[sp].name, x + 42, 505, C.bone); });
+  rows.forEach(([ic, a, b], i) => { const y = 184 + i * 18; panel(22, y, 36, 17, C.slate); g.save(); g.beginPath(); g.rect(22, y, 36, 17); g.clip(); ic(40, y + 8); g.restore(); text(a, C1, y + 1, C.bone); text(clipText(b, SCR_W - C2 - 8, 2), C2, y + 1, C.mist); });
+  // stones in a place, at 1×: plain, warm (amber ring), charged (crackle and a bolt), and a warned strike (the tile's outline)
+  { const fr = motion() ? Math.floor(NOW / 400) % 2 : 0, y = 418;
+    [['plain', () => stoneArt(0, false, 0)], ['warm', () => stoneArt(0, false, fr, 1)], ['charged', () => stoneArt(1, false, fr)], ['strike', null]].forEach(([l, a], i) => { const x = 50 + i * 104;
+      panel(x, y, 34, 34, C.sand); if (a) blit(a(), x + 1, y + 1); else { const col = fr ? C.cream : C.yellow; R(x + 1, y + 1, 32, 2, col); R(x + 1, y + 31, 32, 2, col); R(x + 1, y + 1, 2, 32, col); R(x + 31, y + 1, 2, 32, col); }
+      text(l, x + 17, y + 37, C.fog, 2, 'center'); }); }
+  head('Field guide', 478);
+  if (!S.known.length) text('No species identified yet', 24, 500, C.stone);
+  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 496, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 500); text(SPECIES[sp].name, x + 42, 508, C.bone); });
 }
 function drawMats(c, y, cap) {
   [['energy', 'Energy', c.e], ['data', 'Data', c.d], ['essence', 'Essence', c.s]].forEach(([ic, name, v], i) => { const x = 22 + i * 138;
@@ -3628,6 +3656,7 @@ function drawCargo(t) {
     else { card(95, 266, 260, 54, false, false); text('Send home', SCR_W / 2, 276, C.mist, 3, 'center'); text(sendHint(), SCR_W / 2, 302, C.fog, 2, 'center'); }
     let y = 340; for (const l of sendPreview().slice(0, 5)) { R(40, y + 6, 4, 4, C.orange); text(clipText(l, 384, 2), 54, y, C.bone); y += 24; }
     text('Ends the expedition · the world turns', SCR_W / 2, y + 12, C.mist, 2, 'center');
+    text(clipText(turnLine(), 400, 2), SCR_W / 2, y + 36, C.stone, 2, 'center');
   } else {
     drawMats(S.home, 36, false);
     text('Probe tier ' + S.tier + (S.tier < 2 ? ' · tier 2 costs ' + PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data' : ''), 24, 96, C.fog);
@@ -3638,6 +3667,7 @@ function drawCargo(t) {
     const st = [0, 1, 2].map(sp => S.home.pods.filter(p => p.idd && p.sp === sp && S.mibis.some(m => m.sp === sp)).length);
     let sy = 360; st.forEach((n, sp) => { if (!n) return; text(clipText('Stored: ' + numWord(n) + ' ' + SPECIES[sp].name.toLowerCase() + ' pod' + (n > 1 ? 's' : '') + ' (raised)', 400, 2), 24, sy, C.mist); sy += 24; });
     text('Nothing is out on an expedition.', 24, 420, C.stone);
+    text(clipText(turnLine(), 400, 2), 24, 446, C.mist);
   }
 }
 // The top bar at home: Energy, then battery and connectivity, then what Call does.
@@ -3795,8 +3825,10 @@ function drawStation(t) {
 }
 // The way back out: a big Done button, the same as ✓ on the bottom line. It leads to the Companion's home view.
 function nextButton() { card(95, 482, 260, 48, true, true); R(98, 485, 254, 42, C.orange); text('Done', SCR_W / 2, 497, C.bone, 2, 'center'); }
+function outpostLights() { const out = []; for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && fs(String(c), f.id).lightT) out.push(outpostLeft(String(c), f)); } return out; }
+function turnLine() { const l = outpostLights(); return 'World turn ' + S.turn + (l.length ? ' · ' + DEPOT_NAME + ' lights: ' + l.join(', ') : ''); }
 function drawTurnLines(r, y) {
-  text('Meanwhile, the world turned', 22, y, C.stone); y += 26;
+  text('Meanwhile, the world turned', 22, y, C.stone); text(clipText(turnLine(), 410, 2), 22, y + 22, C.mist); y += 48;
   for (const l of r.lines.slice(0, 3)) { if (y > 430) break; R(26, y + 6, 4, 4, C.orange); wrapText(l, 390, 2).forEach((s, i) => text(s, 40, y + i * 20, C.ink)); y += 20 * wrapText(l, 390, 2).length + 6; }
 }
 
