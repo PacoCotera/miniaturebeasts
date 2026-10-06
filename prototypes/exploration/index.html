@@ -315,7 +315,7 @@ const MIBI_NAMES = ['Pip', 'Dot', 'Moss'];
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
 const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
-const SIGN_NAME = { t: 'tracks', b: 'slow beat', k: 'charge', pin: 'pin', burrow: 'narrow hole', water: 'fast water', deep: 'deep ?' };
+const SIGN_NAME = { t: 'tracks', b: 'slow beat', k: 'bolt', pin: 'pin', burrow: 'narrow hole', water: 'fast water', deep: 'deep ?' };
 const SIGN_HELP = { t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge',
   pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow hole · a digging partner can open it', water: 'Fast water · needs a swimmer', deep: 'Deep ? · a tier 2 Probe can read it' };
 
@@ -702,6 +702,17 @@ function composeMsg() {
   FX.msg = out;
 }
 function firstTime(k) { if (S.found.includes(k)) return false; S.found.push(k); return true; }
+// One-time lines: the flag is spent only if the line is still in the message box when the action ends
+// (a higher-priority note can push it out of the 78 characters). local: once per expedition instead of ever.
+function onceDone(key, local) { return local ? !!(S.exp && S.exp.once && S.exp.once[key]) : S.found.includes(key); }
+function fxOnce(key, textMsg, pri, local) {
+  if (onceDone(key, local) || FX.notes.some(n => n.once === key)) return;
+  FX.notes.push({ text: textMsg, pri: pri == null ? 2 : pri, once: key, local: !!local }); composeMsg();
+}
+function settleOnce() {
+  for (const n of FX.notes) if (n.once && FX.msg.includes(n.text) && !onceDone(n.once, n.local)) {
+    if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once); }
+}
 const spName = sp => S.known.includes(sp) ? SPECIES[sp].name.toLowerCase() : 'creature';
 function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW }); }
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
@@ -780,11 +791,13 @@ function revealCell(c) { if (!S.revealed[c]) { S.revealed[c] = 1; if (S.exp) S.e
 function stoneSeen(key, f) { return !!fs(key, f.id).sn; }
 function hiddenIn(c) {
   const key = String(c); let n = S.pods.filter(p => p.k === key && p.h).length;
+  if (c === G.gate) n += S.pods.filter(p => p.k === 'c' + c && (p.h || p.x < 0)).length;   // the cave under the gate counts
+
   if (passable(c)) for (const f of layout(key).feats) if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) n++;
   return n;
 }
 function pipsOf(c) {
-  const key = String(c); let n = S.pods.filter(p => p.k === key && !p.h && p.x >= 0).length;
+  const key = String(c); let n = S.pods.filter(p => (p.k === key || (c === G.gate && p.k === 'c' + c)) && !p.h && p.x >= 0).length;
   if (passable(c)) for (const f of layout(key).feats) if (f.kind === 'k' && stoneCharge(key, f) > 0 && stoneSeen(key, f)) n++;
   const live = S.exp && S.exp.live[key]; if (live) n += live.fr.length + live.tf.length;
   return Math.min(3, n);
@@ -872,7 +885,7 @@ function startExpedition(type, cell) {
   ex.reach = reachCells(cell, ex.range);
   const p = cxy(cell);
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : '') + ' · tier ' + S.tier);
-  if (firstTime('mapintro')) fxMsg('Walk with the pad · ✓ goes down · ← Wait and Send home', 3);
+  fxOnce('mapintro', 'Walk with the pad · ✓ goes down · ← Wait and Send home', 3);
   S.phase = 'map'; transition(); save();
 }
 
@@ -901,8 +914,8 @@ function advance(scope, info) {
   // The bolts: odds in words once, the first time each level is reached.
   const lvl = stormLevel(); ex.stats.maxLvl = Math.max(ex.stats.maxLvl, lvl);
   if (lvl >= 2) { ex.stats.stormActs++; if (!sheltered()) ex.stats.openStormActs++; }
-  if (lvl === 2 && firstTime('odds')) fxMsg('Strong storm · 1 in 12 each action in the open', 3);
-  if (lvl === 3 && firstTime('oddsPeak')) fxMsg('Storm peak · 1 in 6 each action in the open', 3);
+  if (lvl === 2) fxOnce('odds', 'Strong storm · 1 in 12 each action in the open', 3);
+  if (lvl === 3) fxOnce('oddsPeak', 'Storm peak · 1 in 6 each action in the open', 3);
   // Roll the next action's stray strike now, so a keen partner can feel it coming.
   if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
     ex.stray = { at: ex.actions + 1 };
@@ -915,10 +928,11 @@ function advance(scope, info) {
 }
 function shieldHit() {
   const ex = S.exp; ex.shield--; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++;
-  const first = firstTime('shield');
   if (ex.shield <= 0) { logEv('Probe broke'); return; }
-  fxMsg(first ? 'Probe hit! The bars top left are its Shield: ' + ex.shield + ' of ' + ex.smax + ' left' : 'Probe hit! Shield ' + ex.shield + ' of ' + ex.smax, 3); logEv('Probe hit · shield ' + ex.shield);
-  if (ex.shield === 1 && firstTime('bank')) fxMsg('A break loses what you carry · ← Send home banks it', 3);
+  if (!S.found.includes('shield')) fxOnce('shield', 'Probe hit! The bars top left are its Shield: ' + ex.shield + ' of ' + ex.smax + ' left', 4);
+  else fxMsg('Probe hit! Shield ' + ex.shield + ' of ' + ex.smax, 3);
+  logEv('Probe hit · shield ' + ex.shield);
+  if (ex.shield === 1) fxOnce('bank', 'A break loses what you carry · ← Send home banks it', 3);
 }
 // A stray strike: no warning (unless a keen partner felt it), lands where you stand.
 function strayHit(scope) {
@@ -938,7 +952,7 @@ function mapStrikeTick() {
   if (!ex.mstrike && stormRain(p.x) && rnd(S.seed, 'ms', ex.n, ex.actions) < .3) {
     const opts = []; for (const [dx, dy] of Object.values(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) opts.push(y * MW + x); }
     ex.mstrike = { c: opts[Math.floor(rnd(S.seed, 'mo', ex.n, ex.actions) * opts.length)], at: ex.actions + 1 };
-    if (firstTime('warn')) fxMsg('A bright cell means lightning strikes there next', 2);
+    fxOnce('warnMap', 'A bright cell means lightning strikes there next', 2);
   }
 }
 function nextToIsland(c) { const p = cxy(c); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && G.island[y * MW + x]) return true; } return false; }
@@ -959,7 +973,7 @@ function callMap() {
   if (own) { S.pins = S.pins.filter(p => p !== own); fxMsg('Pin removed'); logEv('Pin removed'); save(); return; }
   if (ex.cargo.e < PRICE.pin) { fxMsg('Pins cost 1 Energy · you have ' + ex.cargo.e); FX.bumpAt = NOW; return; }
   ex.cargo.e -= PRICE.pin; S.pins.push({ c, k: 'own' }); logEv('Pinned a cell (1 Energy)');
-  fxMsg(firstTime('sign:pin') ? 'Pinned · 1 Energy · ))) here again removes it' : 'Pinned · 1 Energy'); save();
+  if (S.found.includes('sign:pin')) fxMsg('Pinned · 1 Energy'); else fxOnce('sign:pin', 'Pinned · 1 Energy · ))) here again removes it', 2); save();
 }
 
 // ===================== 7. Patch rules =====================
@@ -1002,7 +1016,8 @@ function ensureLive(key) {
   ex.live[key] = live;
   // Buried pods lie 3–6 tiles from where you first come in, so the first Call can find them.
   const ent = lay.cave ? { x: 14, y: 27 } : entryPoint(lay, key, ex.lastDir);
-  for (const p of S.pods) if (p.k === key && p.x < 0) { const s = freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5); if (s) { p.x = s.x; p.y = s.y; } }
+  for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
+    if (s) { p.x = s.x; p.y = s.y; } else { S.pods.splice(S.pods.indexOf(p), 1); logEv('A pod had no room in this place and was dropped'); } }
   const nests = lay.feats.filter(f => f.kind === 'e');
   for (const w of S.cr) {
     if (w.c !== lay.cell || !!w.cv !== lay.cave) continue;
@@ -1037,7 +1052,7 @@ function enterPatch() {
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' };
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
-  if (firstTime('callintro')) fxMsg('))) Call sends a signal · things answer', 3);
+  if (!S.found.includes('callintro')) fxOnce('callintro', '))) Call sends a signal · things answer', 3);
   else if (isCleared(ex.pos)) nothingNew();
   save();
 }
@@ -1091,9 +1106,9 @@ const NOTHING = { label: 'Nothing here', run: null };
 function patchAction() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive(), f = frontOf(P);
   const o = occupant(key, f.x, f.y, 'player');
-  const nm = sp => S.known.includes(sp) ? ' to the ' + SPECIES[sp].name.toLowerCase() : '';
+  const nm = sp => S.known.includes(sp) ? ' · ' + SPECIES[sp].name.toLowerCase() : '';
   const fruit = ex.carry === 'fruit';
-  if (o && o.type === 'cr') return fruit ? { label: 'Offer the fruit' + nm(o.c.sp), run: () => offer(o.c) } : NOTHING;
+  if (o && o.type === 'cr') return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) } : NOTHING;
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
   if (o && o.type === 'tuft') return { label: 'Pick up the tuft', run: () => takeTuft(o.tf) };
   if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? 'Swap the pod' : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
@@ -1140,16 +1155,16 @@ function shakeBush(f) {
 }
 function pickUp(fr) {
   const live = curLive(); live.fr = live.fr.filter(q => q !== fr); S.exp.carry = 'fruit';
-  if (firstTime('fruithelp')) fxMsg('Put it down near a creature and back off · or ✓ against a rock or bush to press it', 2);
+  fxOnce('fruithelp', 'Put it down near a creature and back off · or ✓ against a rock or bush to press it', 2);
   advance('patch', { noise: 'act' });
 }
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; advance('patch', { noise: 'act' }); }
 function pressFruit() {
   const ex = S.exp, P = ex.patch; ex.carry = null;
-  const got = addMat('s', 2, P.x, P.y); if (firstTime('press')) fxMsg('+' + got + ' Essence · you pressed the fruit', 1);
+  const got = addMat('s', 2, P.x, P.y); fxOnce('press', '+' + got + ' Essence · you pressed the fruit', 1);
   advance('patch', { noise: 'act' });
 }
-function takeTuft(tf) { const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); if (firstTime('tuft')) fxMsg('+1 Essence · a tuft of shed fur', 1); advance('patch', { noise: 'act' }); }
+function takeTuft(tf) { const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxOnce('tuft', '+1 Essence · a tuft of shed fur', 1); advance('patch', { noise: 'act' }); }
 function pushSlab(f) {
   const ex = S.exp, key = ex.patch.key, pos = featPos(key, f), [dx, dy] = DIRS[ex.patch.dir], tx = pos.x + dx, ty = pos.y + dy;
   if (tx < 1 || ty < 1 || tx >= PW - 1 || ty >= PH - 1 || occupant(key, tx, ty) || podAt(key, tx, ty, true) || layout(key).tiles[ty * PW + tx] === T.STEP) { fxMsg('The slab won’t budge that way'); FX.bumpAt = NOW; return; }
@@ -1181,8 +1196,8 @@ function takePod(p) {
   if (out) S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, h: 0, g: out.g, how: out.how });
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
-  if (firstTime('firstpod')) fxMsg('Pods open at the Station · ← Send home when you’re ready', 3);
-  else if (!out && ex.cargo.pods.length >= ex.hold && !ex.saidFull) { ex.saidFull = 1; fxMsg('Hold full · swap, or ← Send home', 3); }
+  if (!S.found.includes('firstpod')) fxOnce('firstpod', 'Pods open at the Station · ← Send home when you’re ready', 3);
+  else if (!out && ex.cargo.pods.length >= ex.hold) fxOnce('holdfull', 'Hold full · swap, or ← Send home', 3, true);
   advance('patch', { noise: 'act' });
 }
 function calmRadius(X) { return X.ptElder ? 8 : 4; }
@@ -1205,7 +1220,7 @@ function offer(c) {
   if (c.b > .55 || calmedBy(c, X) || fog || c.st === 'approach' || c.st === 'seek') {
     ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; ex.stats.handFeeds++;
     awardMoment(c, 'eat', X);
-  } else { c.st = 'alert'; c.t = 1; c.go = 1; if (firstTime('wary')) fxMsg('The ' + spName(c.sp) + ' is wary · put the fruit down and back off', 2); }
+  } else { c.st = 'alert'; c.t = 1; c.go = 1; fxOnce('wary', 'The ' + spName(c.sp) + ' is wary · put the fruit down and back off', 2); }
   advance('patch', { noise: 'act' });
 }
 // Call in a place: the pulse. Hidden finds glint and stay outlined; curious creatures come, wary ones hide;
@@ -1227,7 +1242,7 @@ function callPlace() {
   const g = lay.feats.find(f => f.kind === 'g'), digNow = g && !S.opened[G.gate] && canDig() && cheb(P, g) <= 3;
   advance('patch', { noise: 'act', pulse: true, reach, call: true });
   if (!lay.cave) {
-    if (muffled) { if (!ex.saidMuffled) { ex.saidMuffled = 1; fxMsg('The fog muffles your call · it reaches 3 tiles', 2); } }
+    if (muffled) fxOnce('muffled', 'The fog muffles your call · it reaches 3 tiles', 3, true);
     else {
       S.called[lay.cell] = S.turn;
       const hid = hiddenIn(lay.cell);
@@ -1277,7 +1292,7 @@ function patchTick(info) {
   if (!lay.cave && stormLull() && stormOff(lay.cell % MW) < 1.5 && live.rainOn) fxMsg('The rain eases for a moment', 0);
   live.rainOn = raining ? 1 : 0;
   // wet air: dew cups fill again under the fog bank
-  if (fog) for (const f of lay.feats) if (f.kind === 'u' && !cupFull(key, f) && ex.actions - (fs(key, f.id).at || -99) >= 3) { setFS(key, f.id, { full: true }); if (firstTime('fogdew')) fxMsg('Dew gathers in the fog · the cups fill again', 1); }
+  if (fog) for (const f of lay.feats) if (f.kind === 'u' && !cupFull(key, f) && ex.actions - (fs(key, f.id).at || -99) >= 3) { setFS(key, f.id, { full: true }); fxOnce('fogdew', 'Dew gathers in the fog · the cups fill again', 1); }
   let strike = null;
   if (live.strike && live.strike.at <= ex.actions) {
     strike = live.strike; live.strike = null;
@@ -1296,7 +1311,7 @@ function patchTick(info) {
   // Warned strikes aim at stones (the storm's offer); the risk is the stray strike, rolled in advance().
   if (raining && !live.strike && rnd(S.seed, 'sk', ex.n, ex.actions) < .5) {
     live.strike = pickStrike(X);
-    if (live.strike) { live.strike.peak = peak; if (firstTime('warn')) fxMsg('A bright tile means lightning strikes there next', 2); }
+    if (live.strike) { live.strike.peak = peak; fxOnce('warn', 'A bright tile means lightning strikes there next', 2); }
   }
   if (!raining) live.strike = null;
 }
@@ -1412,7 +1427,7 @@ function creatureTick(c, X) {
     X.live.noted['c' + c.id] = 1;
     const short = X.ptName + ' keeps the ' + spName(c.sp) + ' calm', long = 'The ' + spName(c.sp) + ' would have noticed you. ' + X.ptName + ' keeps it calm';
     // the explanation is spent only once it is actually on the line; priority 2 only for that first line
-    if (!S.found.includes('calmkeep')) { fxMsg(long, 2); if (FX.msg.includes(long)) S.found.push('calmkeep'); else { FX.notes.pop(); fxMsg(short, 0); } }
+    if (!S.found.includes('calmkeep')) fxOnce('calmkeep', long, 2);
     else fxMsg(short, 0); }
   c.cue = calm && walking && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
   if (calm) notice -= 2;
@@ -1480,7 +1495,7 @@ function creatureTick(c, X) {
         const loud = walking, near = !(d >= 3 || (calm && d >= 2)), pulsed = X.pulse && d <= X.reach;
         if (!loud && !near && !pulsed) c.calm++;
         else { if (c.calm >= 2) fxMsg(pulsed ? 'Your call startled the ' + spName(1) + ' · it stopped settling' : 'The ' + spName(1) + ' looks up · ' + (loud ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
-        if (c.calm === 2) { if (firstTime('settle')) fxMsg('The ' + spName(1) + ' is settling · Keep still · ← Wait', 2); else if (X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(1) + ' is settling ' + whereWord(X, c.x, c.y), 0); }
+        if (c.calm === 2) { if (!S.found.includes('settle')) fxOnce('settle', 'The ' + spName(1) + ' is settling · Keep still · ← Wait', 2); else if (X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(1) + ' is settling ' + whereWord(X, c.x, c.y), 0); }
         if (c.calm >= 8 && !X.live.calmShed) { c.st = 'glow'; break; }
       }
       // Put it down and back off: an eater comes for fruit on the ground once you are 3 tiles from it.
@@ -1489,7 +1504,7 @@ function creatureTick(c, X) {
         let best = null, bd = 1e9, wanted = null;
         for (const f of X.live.fr) { if (cheb(c, f) > 10) continue; const dd = man(c, f); if (dd >= bd) continue; if (cheb(P, f) >= keep) { bd = dd; best = f; } else wanted = f; }
         if (best) { c.st = 'seek'; c.fid = best.id; if (cheb(c, best) > 1) stepToward(X, c, best, seekPace(c, best)); break; }
-        if (wanted && man(c, wanted) <= 8 && !X.away(c) && firstTime('coach')) fxMsg('The ' + spName(c.sp) + ' eyes the fruit · back off', 2);
+        if (wanted && man(c, wanted) <= 8 && !X.away(c) ) fxOnce('coach', 'The ' + spName(c.sp) + ' eyes the fruit · back off', 2);
       }
       if (c.sp === 1 && c.calm >= 2) break;   // settling: stays put
       if (rnd(S.seed, c.id, S.exp.actions, 'w') < (c.sp === 2 ? .25 : .4)) stepRandom(X, c);
@@ -1570,7 +1585,7 @@ function sendPreview() {
 }
 function endExpedition(reason) {
   const ex = S.exp; if (!ex) return;
-  const broke = reason === 'break', H = S.home;
+  const broke = reason === 'break', H = S.home; S.ui.lastPos = ex.pos;
   const rep = { reason, n: ex.n, items: [], lost: [], pods: [], ops: [], hatch: null, lines: [], upgrade: false, upgraded: false };
   for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
   if (!broke) { H.e += ex.cargo.e; H.d += ex.cargo.d; H.s += ex.cargo.s; }
@@ -2777,7 +2792,7 @@ function drawCargo(t) {
     text('Nothing is out on an expedition.', 24, 420, C.stone);
   }
 }
-function callTarget() { return riderMibi() || alongMibi(); }
+function callTarget() { return riderMibi(); }
 function drawCompanions(t) {
   viewBg(); drawTop('Companions', S.mibis.length ? S.mibis.length + ' raised' : '', callSlot());
   if (!S.mibis.length) { for (let a = 0; a < 6.28; a += .12) R(225 + Math.round(Math.cos(a) * 40), 170 + Math.round(Math.sin(a) * 40), 2, 2, C.stone);
@@ -2876,14 +2891,15 @@ function mapContext() {
   return hs.length ? [H + ' · ' + A, H + ' · Ahead: ' + there, H, here + ' · ' + A, A, here] : [here + ' · ' + A, A, here + ' · Ahead: ' + there, 'Ahead: ' + there, here];
 }
 // The first time the line names a sign, its one-line explanation shows once (only if it actually fits the message box).
-function fxOnce(key, textMsg, pri) { if (S.found.includes(key)) return; fxMsg(textMsg, pri); if (FX.msg.includes(textMsg)) S.found.push(key); else { FX.notes.pop(); composeMsg(); } }
+
 function noteSigns() {
   if (S.phase !== 'map' || !S.exp) return; const a = aheadCell();
   const kinds = new Set(signsAt(S.exp.pos).concat(a >= 0 && S.revealed[a] && inRange(a) ? signsAt(a) : []));
   for (const k of SIGN_ORDER) if (kinds.has(k)) fxOnce('sign:' + k, SIGN_HELP[k], 1);
 }
 function lineFor() {
-  const L1 = (ok, ctx, back, dim) => ({ ok, ctx: ctx || '', back: back || '', dim: !!dim });
+  // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
+  const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
     case 'setup': if (S.ui.sel === 2) { const n = nextPartner(); return L1(n ? 'Bring ' + n.name + ' along' : adults().length ? 'Go without a partner' : 'No grown partner yet', '', 'menu', !adults().length); }
       return S.ui.sel === 1 && !mibiWith('dig') ? L1('Needs a digger', 'Deep ground', 'menu', true) : L1('Choose ' + (S.ui.sel ? 'Deep ground' : 'Weather'), '', 'menu');
@@ -2963,7 +2979,7 @@ function moveCursor(dir) {
 }
 // Call on the Companions screen: the riding mibi hops to the front. Free.
 function callRider() {
-  const m = callTarget(); if (!m) { fxMsg('No mibi is riding with you'); return; }
+  const m = callTarget(); if (!m) { fxMsg('No one is riding'); return; }
   FX.callMibi = { id: m.id, at: NOW }; S.ui.cSel = Math.max(0, S.mibis.indexOf(m)); lockInput(300);
   fxMsg(isAdult(m) ? m.name + ' comes to the front' : m.name + ' hops to the front · learning to answer the call');
 }
@@ -3035,6 +3051,7 @@ function act(k, mode) {
   }
   if (S.exp && S.exp.patch == null && S.phase === 'patch') S.phase = 'map';
   noteSigns();
+  settleOnce();
   save();
 }
 

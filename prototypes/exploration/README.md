@@ -18,7 +18,9 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 - New world is offered only between expeditions (last menu entry).
 - One-time pointer messages: first map entry ("Walk with the pad · ✓ goes down · ← Wait and Send home"), first place ("))) Call sends a signal · things answer"), first pod ("Pods open at the Station · ← Send home when you're ready"), a settling glowtail ("… Keep still · ← Wait"), hold full ("Hold full · swap, or ← Send home"), nothing left ("Everything in reach is explored · ← Send home").
 - The depicted shell has Call directly above Back, both left of a larger Confirm. Call is teal with a ring texture.
-- The bottom line sets its glyphs 1 px apart (still 2× pixels) so the three parts fit 450 px.
+- The bottom line sets its glyphs 1 px apart (still 2× pixels) so the three parts fit 450 px. Every Confirm label is at most 24 characters ("Offer fruit · puffcap"); a longer one would be clipped, never the Back part.
+- One-time lines (explanations, pointers, the storm odds) count as shown only if they are still in the message box when the action ends; one pushed out by a more urgent line comes back next time.
+- Call on the Companions screen calls the mibi riding in the Companion; with nobody riding it only says "No one is riding".
 
 ## The loop
 
@@ -40,7 +42,7 @@ Every source is an act you choose. Each caps at 20 carried.
 - The band is 3 columns wide. Rain falls under its core; its edges are overcast only. While it is over the place you're in it crawls 0.14 columns per action (elsewhere 0.25), so a storm rains on one place for about 15 actions, with lulls of 3 actions in every 12.
 - The HUD shows 1–3 bolts: 1 approaching (or the dry edge, or a lull), 2 strong rain over you, 3 the peak (the band's centre, about 9 actions in a place).
 - **Stray strikes**: each action in the open under rain, 1 in 12 (strong) or 1 in 6 (peak). None in shelter: under a canopy, an overhang, in the cave, or on a wood cell on the map. None inside a fog bank. The odds are said in words once, the first strong storm and the first peak.
-- **Warned strikes** aim at stones (or open tiles near you, never your own tile), one action ahead on a glowing tile. On the map they land on a neighbouring cell. Lightning lights the map cell it strikes for good, even in fog (about one in seven of the band's flashes, plus every warned map strike). Stones charge at the world turn only where lightning really struck (warned, stray, a stone in a place) or under one flash in four.
+- **Warned strikes** aim at stones (or open tiles near you, never your own tile), one action ahead on a glowing tile. On the map they land on a neighbouring cell. Lightning lights the map cell it strikes for good, even in fog (about one in seven of the band's flashes, plus every warned map strike). Stones charge at the world turn only where lightning really struck (warned, stray, a stone in a place) or under one flash in four; at the world turn each stone in such a cell takes a +2 charge 60% of the time.
 - **Shield** (renamed from hull): 3 bars at tier 1, 4 at tier 2. At 0 the Probe breaks: "The Probe breaks · your pods are safe". The expedition ends where you are; all carried Energy, Data and Essence are lost; pods, pins and revealed land are kept. The next expedition starts mended, free. The first time the shield drops to 1 the game says a break loses what you carry.
 - A puffcap partner flinches one action before a stray strike; an elder partner of any species feels every one.
 
@@ -52,7 +54,7 @@ Every source is an act you choose. Each caps at 20 carried.
 | 2 | 4 (9×9) | 3 | 4 | Reads the deep "?" (once: a sealed pod rises) |
 
 - Stepping past the square bumps: "Edge of the Probe's range · tier 2 reaches further". Sweep is one ring at both tiers.
-- **Cell states**: fog (cloud) · seen (muted through the existing fade table) · visited (full colour, one white pip per thing left: a visible pod, a seen charged stone, fruit or a tuft on the ground; up to 3) · cleared (a small tick). A cell is cleared only after a Call inside it found nothing hidden anywhere in the place and nothing is left. A world turn that adds a pod or charge to a cell un-clears it.
+- **Cell states**: fog (cloud) · seen (muted through the existing fade table) · visited (full colour, one white pip per thing left: a visible pod, a seen charged stone, fruit or a tuft on the ground; up to 3) · cleared (a small tick). A cell is cleared only after a Call inside it found nothing hidden anywhere in the place and nothing is left. A world turn that adds a pod or charge to a cell un-clears it. The cell above the cave can't tick while the cave still holds a pod; a pod that finds no room in a place is dropped and logged.
 - **Five signs only**: paw (tracks), beat (a pod, buried or not), bolt (a charged stone), pin (yours), and a gate's own shape (narrow hole, fast water, deep "?"). Rings are gone. Signs on cleared cells and inside a fog bank are not drawn. Each sign's one-line explanation shows once, the first time the line names it.
 - The map's line names the cell you're on and the one you face ("wood · slow beat · Ahead: meadow"); when that is too long it keeps the part with signs.
 - **Survey cairn** (included): rock fields (35%) and meadows (8%) may hold one. Climbing it reveals land 3 cells around the place, beyond range.
