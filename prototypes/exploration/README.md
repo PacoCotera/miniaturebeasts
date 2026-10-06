@@ -1,75 +1,137 @@
-# Companion Field Test (exploration rough playable, round 4)
+# Companion Field Test (exploration round 2, prototype round 5)
 
-Tests the combined exploration design on an honest simulation of the Companion screen: a fogged 16×20 world map (start on any glint; placing reveals the 3×3), living patches with three token species, the action clock, storm and fog bank, partners hatched from pods, two partner gates, and Cargo → Station → world turn.
+Builds exploration round 2 ([`design/proposals/exploration-round-2.md`](../../design/proposals/exploration-round-2.md), its build scope plus §9 Fog bank) and the four-button control scheme ([`design/proposals/companion-controls.md`](../../design/proposals/companion-controls.md)) on an honest simulation of the Companion screen: a fogged 16×20 world map, living places, the action clock, storms and fog banks, materials with a purpose, the Station stand-in, partners by life stage, and Cargo → Station → world turn.
 
-Controls: arrows/WASD or the pad (tap = creep one step, hold = walk); Enter/Space or orange = Confirm (does what the bottom line says); Esc/Backspace or grey = Back, which opens the mode list (in a place too). No other controls.
+## Controls
 
-**Waiting.** During an expedition the mode list's first entry is **Wait**: one deliberate quiet action. The list stays open after waiting, so Confirm, Confirm… keeps waiting while the place stays visible behind the small list; Back returns. In a place the second entry is Leave (or Climb out); walking off an edge also leaves. Chosen over Back-then-Back, which would hide an action inside a navigation gesture.
+Four buttons. The bottom line always reads in three parts: **✓ what Confirm does** (at most 24 characters), the middle context (the only part that shrinks), and **← where Back goes** (at most 20 characters, never dropped). The HUD's top right always shows what **Call** will do, beside the Energy number.
+
+| | Pad | Confirm (Enter/Space) | Back (Esc/Backspace) | Call (C) |
+| --- | --- | --- | --- | --- |
+| Expedition choice, start map | Move between choices / glints | Choose; "Start here" | Menu (on the start map: back to the choice) | Nothing; its slot is empty |
+| Map | Tap one cell; hold to keep walking | Go down | Menu: Wait, Send home, Probe, Cargo, Companions | Pin this cell (1 Energy), or remove your own pin (free) |
+| Place | Tap: creep one step. Hold: walk | Act on what you face; "Nothing here" spends nothing | Menu: Wait, Leave this place, Send home, Probe, Cargo, Companions | Pulse (1 action) |
+| Menu | Move focus | Run the entry; after Wait the menu stays open | Close | Nothing |
+| Probe / Cargo / Companions | Move focus | Patch the shield / Send home / bring a mibi along | Close | Companions: calls the riding mibi to the front (free) |
+| Station | – | Continue, hatch, upgrade, next expedition | Menu (on the upgrade offer: not now) | Nothing |
+
+- New world is offered only between expeditions (last menu entry).
+- One-time pointer messages: first map entry ("Walk with the pad · ✓ goes down · ← Wait and Send home"), first place ("))) Call sends a signal · things answer"), first pod ("Pods open at the Station · ← Send home when you're ready"), a settling glowtail ("… Keep still · ← Wait"), hold full ("Hold full · swap, or ← Send home"), nothing left ("Everything in reach is explored · ← Send home").
+- The depicted shell has Call directly above Back, both left of a larger Confirm. Call is teal with a ring texture.
+- The bottom line sets its glyphs 1 px apart (still 2× pixels) so the three parts fit 450 px.
 
 ## The loop
-1. Expedition 1 has no partner. Bring a pod home with Cargo → Send.
-2. The Station screen shows the cargo, one line per item, and identifies the pod ("unknown species → Hopper"). The first time a shed trigger brings a pod home, it adds one discovery line ("Hoppers shed when they shake dry."). Identified species leave tracks on the map.
-3. A pod of a species you don't raise yet incubates: "Opened: a long-eared hopper. Name: Pip." The screen also lists the world-turn lines. That's 1 or 2 screens, with no menus.
-4. From the next expedition, the Partner row on the expedition screen (or Companions) offers "Bring Pip along". Each species gives its partner one ability:
-   - burrower (Glowtail): digs the narrow burrow under the cliff, which opens the cave and Deep ground;
-   - Hopper: calms wary creatures. They notice you two tiles later, don't bolt when you walk close, and accept fruit. A small teal wave above a wary creature shows the partner is keeping it calm, and the first time it holds still because of the partner the line says so;
-   - Puffcap: sniffs out buried pods within about 5 tiles.
-   If the first pod is a hopper, the burrow stays shut until you bring home a burrower pod.
-5. Gates: the burrow (needs a digger) and the fast water across from the river island (needs a swimmer; nothing swims yet). Bumping or pressing Confirm at a gate drops a pin. A partner goes to look at a gate it can handle and ignores the others.
 
-## Round 3 (from the round-2 playtest)
-- **Causes in the message line.** Results now show even when they happen offscreen: "Something dropped a pod near the overhang", "Something ate the fruit by a bush", "Pip keeps the hopper calm", "A glowtail is settling under a tree". In view they name the creature ("The hopper shook dry · a pod rolled loose"). The two or three most important notes share the line until your next action; Back and browsing the list keep it.
-- **Glowtails settle where you can see it.** By its hole or in the cave, a glowtail with you at least 3 tiles away (2 with a calming or kin partner) gains one step per quiet action. You see four pips over it fill, and it lowers and then curls up. The rule is still 8 quiet actions. The first time it shows "The glowtail is settling. Keep still". Walking or coming too close resets it with a reason ("looks up · too close"). A pulse within 7 tiles startles it: "Your pulse startled the glowtail · it stopped settling".
-- **An early burrower.** Every start glint has a rock or wood cell beside it with three glowtails and an overhang. A wet glowtail curls up in shelter during rain; after three curled actions one may drop a pod (one per place per storm). In the first two expeditions those glowtails are always ready, so the first storm can give a burrower pod without the burrow. New discovery: "Glowtails shed when they curl up out of the rain."
-- **An informed start.** Each glint shows its strongest nearby sign (slow beat, tracks or rings), and the line names the land and the sign. Placing a Weather start also previews where the storm band will begin.
-- **Fewer map signs.** Signs fade after one turn and disappear after two. Known-species tracks show only on each species' 3 strongest cells (2 or more creatures). All signs together cover at most 40% of revealed cells; pins and the deep "?" are always shown, and slow beats rank highest. Slow beats and pins are drawn larger. New pods from a world turn leave a beat on known land, so "something is stirring" can be found.
-- **Pods.** Each species has a subtle shell mark: two ear stripes on a hopper pod, a glow dot on a glowtail pod, cap spots on a puffcap pod. Pods have a dark outline and are drawn above canopies and roofs.
-- **Storm.** While the band is over your place it crawls, staying about 30 actions, and rains in spells with a 3-action lull every 12 ("The rain eases for a moment"; the line says "lull"). Elsewhere it moves at map speed, so it still arrives within about 12 actions. The lulls do not reset the shed cap (see Round 4). A direct strike costs a hull mark; the first hit explains the hull bars, and a "hull 2/3" tag shows for a few actions after any hit. The first warning tile is explained in words.
-- **Confirm never silently pulses.** A spent bush, rung stone, empty cup, uncharged stone or blocked tile says "Nothing here", and Confirm then does nothing and spends no action. Pulse happens only when the line says Pulse: open ground, a creature, or a charged stone not yet seen.
-- **Quieter HUD.** Supplies are unchanged, but their count shows only for a few actions after it changes ("+2"). The Cargo screen still has the totals.
-- **Small fixes.** The partner row on the expedition screen is selectable (one press). The "swap" float fits its box. The right side of the bottom line drops trailing words instead of truncating.
-- Save format v3 (superseded by v4 in round 4).
+1. Choose Weather (or Deep ground, with a digging partner), pick a start: the first time a glint, later any seen cell. A dotted square shows the Probe's range from that start.
+2. Walk the map. Each step lifts the fog one ring around you (not inside a fog bank). Go down into a place, press Call, gather.
+3. Send home from the menu (Cargo shows a preview of what will happen), or the Probe breaks. The Station spends what you bring, then the world turns once.
 
-## Round 4 (tuning)
-- **One shed per place per storm.** A place gives at most one hopper pod and one glowtail rain-curl pod per storm, however many spells of rain the lulls split it into. The lulls themselves stay.
-- **Start signs vary.** Each start glint shows a sign it really has (slow beat, tracks or rings), choosing the one the other glints show least. Nothing is invented: a glint with only tracks still shows tracks.
-- **World-turn storm line.** "A storm charged stones…" is said once. If the next turn's storm charged stones in the same place it is left out; if elsewhere it reads "The storm reached stones near the cliff."
-- **Hopper partner is visible.** The first time a wary creature stays put because of a calming partner the line reads "The hopper would have noticed you. Pip keeps it calm"; later ones use the shorter "Pip keeps the hopper calm". A small teal wave bubble shows over wary creatures the partner is calming. The numeric effect is unchanged.
-- **Softer cave light.** Light levels are still per tile, but a tile that borders a darker level uses a pre-dithered edge variant, autotiled like shores: 4 sides and 4 corners, with the ordered 4×4 Bayer pattern baked in through the same palette lookup tables. The fade runs about half a tile in from the border. Variants are built on first use and cached, so a tile costs one lookup and one blit. No blending, no new colours.
-- Save format v4; v1 to v3 saves are discarded.
+## Materials
+
+Every source is an act you choose. Each caps at 20 carried.
+
+- **Energy**: draw a struck stone's charge (+2, +3 if struck at the storm's peak). Spent in the field on pins (1) and shield patches (3 for one bar, on the Probe screen). Spent at the Station on identifying (1), hatching (2) and the tier 2 Probe (12).
+- **Data**: only from creature moments you cause: a creature eats your fruit, or a glowtail settles because you kept still. +1, or +2 the first time ever for that species and moment; once per creature per expedition. Spent at the Station on studies (2 each, one line per discovery) and the tier 2 Probe (8).
+- **Essence**: dew from a full cup (+1), pressing a fruit instead of feeding it (+2), the tuft a hopper leaves when it shakes dry (+1). Spent at the Station on hatching a founder (4).
+- Humming stones are gone. A shaken bush drops one fruit.
+
+## Storm and Shield
+
+- The band is 3 columns wide. Rain falls under its core; its edges are overcast only. While it is over the place you're in it crawls 0.14 columns per action (elsewhere 0.25), so a storm rains on one place for about 15 actions, with lulls of 3 actions in every 12.
+- The HUD shows 1–3 bolts: 1 approaching (or the dry edge, or a lull), 2 strong rain over you, 3 the peak (the band's centre, about 9 actions in a place).
+- **Stray strikes**: each action in the open under rain, 1 in 12 (strong) or 1 in 6 (peak). None in shelter: under a canopy, an overhang, in the cave, or on a wood cell on the map. None inside a fog bank. The odds are said in words once, the first strong storm and the first peak.
+- **Warned strikes** aim at stones (or open tiles near you, never your own tile), one action ahead on a glowing tile. On the map they land on a neighbouring cell. Lightning lights the map cell it strikes for good, even in fog (about one in seven of the band's flashes, plus every warned map strike). Stones charge at the world turn only where lightning really struck (warned, stray, a stone in a place) or under one flash in four.
+- **Shield** (renamed from hull): 3 bars at tier 1, 4 at tier 2. At 0 the Probe breaks: "The Probe breaks · your pods are safe". The expedition ends where you are; all carried Energy, Data and Essence are lost; pods, pins and revealed land are kept. The next expedition starts mended, free. The first time the shield drops to 1 the game says a break loses what you carry.
+- A puffcap partner flinches one action before a stray strike; an elder partner of any species feels every one.
+
+## Range, tiers and the map
+
+| Tier | Range from start | Pods carried | Shield | Also |
+| --- | --- | --- | --- | --- |
+| 1 | 2 (5×5) | 2 | 3 | – |
+| 2 | 4 (9×9) | 3 | 4 | Reads the deep "?" (once: a sealed pod rises) |
+
+- Stepping past the square bumps: "Edge of the Probe's range · tier 2 reaches further". Sweep is one ring at both tiers.
+- **Cell states**: fog (cloud) · seen (muted through the existing fade table) · visited (full colour, one white pip per thing left: a visible pod, a seen charged stone, fruit or a tuft on the ground; up to 3) · cleared (a small tick). A cell is cleared only after a Call inside it found nothing hidden anywhere in the place and nothing is left. A world turn that adds a pod or charge to a cell un-clears it.
+- **Five signs only**: paw (tracks), beat (a pod, buried or not), bolt (a charged stone), pin (yours), and a gate's own shape (narrow hole, fast water, deep "?"). Rings are gone. Signs on cleared cells and inside a fog bank are not drawn. Each sign's one-line explanation shows once, the first time the line names it.
+- The map's line names the cell you're on and the one you face ("wood · slow beat · Ahead: meadow"); when that is too long it keeps the part with signs.
+- **Survey cairn** (included): rock fields (35%) and meadows (8%) may hold one. Climbing it reveals land 3 cells around the place, beyond range.
+
+## Going home
+
+- Hold full, "Everything in reach is explored" (every cell in reach visited and called in), "Nothing new until the world turns" (after that, once the storm has gone or on re-entering a cleared place), the first-pod line, and the banking line at shield 1.
+- **Send home** is in the menu (second on the map, third in a place) and opens Cargo, which previews the Station's work ("two pods to identify · a new pod can hatch · Probe tier 2 is ready").
+
+## Call
+
+- **In a place** (1 action): a ring spreads 7 tiles. Hidden pods and charged stones glint and stay outlined until taken. Curious creatures show "?" and come closer; wary ones show "!" for one action, then hide or run. A settling glowtail is startled. Your partner comes; a digger near the burrow digs it. If nothing hidden is left anywhere in the place, the cell is marked; otherwise "Nothing close · something may be further off".
+- **On the map**: pins your cell for 1 Energy, or removes your own pin for free. At 0 Energy the slot dims and a press says "Pins cost 1 Energy · you have 0". Gate pins stay automatic and free.
+- **On the Companions screen**: the riding mibi hops to the front. Free.
+
+## Creatures and feeding
+
+- Creeping never startles a creature unless you step right next to it (curious ones, and ones your partner calms, not even then). Walking startles anything within its notice range.
+- A startled creature shows "!" for one action. If you keep coming it flees: 3 tiles over two actions, never off-screen, then stops and watches. After 3 quiet actions it goes back to its routine. Glowtails dive into a hole instead.
+- **Put it down and back off**: fruit on the ground draws an eater within 10 tiles (it closes in fast, then slows: about 4 quiet actions) once you are 3 tiles from the fruit (1 for curious or calmed creatures). Sheltering creatures wait out the rain first. Coaching once: "The puffcap eyes the fruit · back off".
+- **Hand-offer** works for curious creatures, with a calming partner near, or inside a fog bank; a wary one shows "!" and backs off, with a one-time hint.
+- Carrying fruit: facing empty ground puts it down; facing anything solid presses it (+2 Essence).
+
+## Fog bank
+
+Cover: creatures notice walking 2 tiles later and creeping never startles, even wary ones; hand-feeding a wary creature works. Dew cups refill about every 3 actions while the bank is over the place. Inside the bank the map sweep stops and signs are hidden. Call reaches 3 tiles and can't mark a place cleared, unless a glowtail (glowing) partner is along. No stray strikes. It drifts with the field clock.
+
+## Station stand-in
+
+After each expedition the Station works through its store in order: identify each pod (1 Energy), read each waiting study (2 Data; one line per discovery), hatch one founder of a species you don't raise yet (2 Energy + 4 Essence). Whatever it can't pay for waits and says what it needs ("Pod waits · needs 1 Energy to identify", "needs 2 more Essence"). When the store holds 12 Energy and 8 Data at tier 1, a page offers the tier 2 Probe (Confirm upgrades, Back declines). Then the world-turn lines.
+
+## Partners by life stage
+
+- New pods hatch as **juveniles**. A juvenile can ride in the Companion (Companions screen: "Let Dot ride along"); it doesn't join expeditions and changes nothing in the Probe. After 2 world turns it is an **adult** and can be brought along ("Pip is grown" in the world-turn lines).
+- After 6 world turns as an adult a mibi becomes an **elder**: double calming and sniffing radius, feels every stray strike, trails two tiles behind, and needs two actions to dig.
+- Abilities by species as before: glowtail digs the narrow burrow (and glows, restoring a muffled Call), hopper calms wary creatures, puffcap sniffs out buried pods (and flinches before stray strikes).
 
 ## Screen and budget assumptions (as if targeting the ESP32-S3 Companion)
-- **Frame.** Offscreen 450×600 at 1:1 device pixels, blitted to the page with `image-rendering: pixelated`. Drawing uses integer coordinates only. There are no anti-aliased lines, gradients, alpha blending or blur. The page snaps its scale to a whole number of physical pixels per device pixel when that costs ≤15% size (a phone at 3× gets exactly 2×).
-- **Palette.** 48 colours, kept as data (`PALETTE`) at the top of the script and shown in the Observer. A check in the tests confirms every captured pixel is a palette entry. Effects that would need blending use one of two tricks instead. Storm light, cave dim and dark, fog and faded map signs are palette lookup tables (a 48-entry LUT each). "See-through" fog, warnings, dimmed menus and transitions use an ordered 4×4 Bayer dither. Both carry over directly to LVGL I8 images or to an RGB565 LUT.
-- **Layout.** HUD 26 px, view 450×540, action line 34 px. Text is a 5×7 bitmap font drawn at 2× minimum (14 px caps) and at 3× for headings. On a 390 px phone that's about 9.6 CSS px caps; on the real 2.41" panel it's about 1.1 mm.
-- **Tiles.** Patches are 28×32 tiles of 32×32 px; the view shows at most 16×19 tiles, so up to 304 tile blits per full redraw. Tiles are autotiled with 4-bit neighbour masks (shores, boulders, cliff lips), with 2–4 variants and 2 water frames. One play session used about 40 distinct tiles (40 KB at 8 bpp); the worst case is about 300 tiles (300 KB) in flash. Light levels are LUT swaps, not extra tiles.
-- **Map.** 16×20 cells of 26 px (416×520). Terrain and the fog cloud layer are each baked once per world: 2 × 216 KB at 8 bpp in PSRAM, or redrawn from cell tiles. Per-frame overlays are fog cells, signs, the storm band (a darker copy of the same image), pins, the pawn and the trail.
-- **Sprites.** Creature, partner and player tokens are 32×32. Features are ≤32×32, tree canopies 88×76 and overhang roofs 104×22. The budget is ≤40 sprites per frame: about 12 creatures, 1 partner, 1 player, about 15 features, pods and fruit, and ≤6 canopies. Canopies and roofs switch to a checkerboard version when something stands under them. About 70 sprite images (≈115 KB at 8 bpp) were built in one session; the prototype builds them procedurally at load, where the device would ship them as a baked atlas.
-- **Redraw.** The browser redraws the full frame on every animation frame for simplicity. On the device: redraw on input or action; slides of 110–170 ms run at full rate (the camera scrolls, so the view redraws fully); between actions run only 2-frame idle cycles at 2–4 Hz using dirty rectangles around sprites, water and the warning tile. No per-pixel effects.
-- **Motion.** Hold-to-walk starts after 230 ms and repeats every 150 ms, matching the 150 ms slide, so a held walk is smooth; a tap is exactly one creeping step. A hull hit gives a 260 ms 3 px shake and a 90 ms bright border; Confirm-pulse sends an expanding ring. With reduced motion: no shake, flash, slides or blinking; static rings and a steady border instead. Messages stay until the next action.
 
-## Round-1 fixes (round 2)
-- The storm band starts 3 columns upwind of the start, so it arrives in about 12 actions. A strike is warned one action ahead on a glowing tile, with a message when the strike is aimed at you. Lightning picks stones about 60% of the time and your tile about 8% (12% when there are no stones).
-- Hoppers sheltering together: at most one sheds per place per storm. The others shake without shedding.
-- The cave no longer gives pods freely with a partner. A glowtail needs 8 quiet actions with you at least 3 tiles away (2 with a calming or kin partner), and each cave gives at most one such pod per expedition.
-- The world turn reads as 2–3 plain lines ("The hoppers moved north. A storm charged stones near the cliff. Fruit is back on two bushes.").
+- **Frame.** Offscreen 450×600 at 1:1 device pixels, blitted to the page with `image-rendering: pixelated`. Integer coordinates only; no anti-aliasing, gradients, alpha blending or blur. The page snaps its scale to a whole number of physical pixels per device pixel when that costs ≤15% size.
+- **Palette.** 48 colours, kept as data (`PALETTE`) at the top of the script and shown in the Observer. `__mb.offPalette()` confirms every pixel of the frame is a palette entry. Blending effects use only palette lookup tables (storm light, cave dim and dark, fog, the fade table for seen cells and old signs) and the ordered 4×4 Bayer dither (fog bank, warnings, dimmed menus, transitions). No new tables were added this round.
+- **Layout.** HUD 26 px, view 450×540, bottom line 34 px. Text is a 5×7 bitmap font at 2× minimum (14 px caps), 3× for headings; the bottom line sets glyphs 1 px apart.
+- **Tiles.** Places are 28×32 tiles of 32×32 px; at most 16×19 tiles in view (≤304 tile blits per full redraw), autotiled by 4-bit masks with 2–4 variants and 2 water frames.
+- **Map.** 16×20 cells of 26 px. Terrain, its storm-dark copy, its faded copy and the fog cloud layer are baked once per world (4 × 216 KB at 8 bpp, or redrawn from cell tiles). Per-frame overlays: fog cells, faded seen cells, pips and ticks, signs, the storm band, the range square, pins, the pawn and the trail.
+- **Sprites.** Tokens are 32×32; features ≤32×32; canopies 88×76; overhang roofs 104×22. Budget ≤40 sprites per frame. New this round: tufts (14×10), the cairn (32×32), pod outlines (dots, no sprite).
+- **Redraw.** The browser redraws every animation frame; the device would redraw on input or action, with 110–170 ms slides at full rate and 2–4 Hz idle cycles using dirty rectangles. No per-pixel effects.
+- **Motion.** Hold-to-walk starts after 230 ms and repeats every 150 ms. A shield hit gives a 260 ms 3 px shake and a 90 ms bright border; Call sends an expanding ring. With reduced motion: no shake, flash, slides or blinking.
 
 ## Faked or simplified
-- The Station is a stand-in. Identification and incubation are instant, mibis are named automatically (Pip, Dot, Moss), and a pod hatches only if you don't raise that species yet. Other pods are stored but do nothing. There is no care, bonding, research or Probe tiers.
-- Abilities come from species, not traits. Creature behaviour is a small per-species state machine. Creatures are tokens: procedural pixel art built at load.
-- The island across the fast water can't be reached; the pod on it is scenery.
-- The deep "?" only pins (tier 2 doesn't exist). Probe range is not enforced.
-- The Fredoka web font is used only for the page around the device; the device screen uses the bitmap font.
+
+- The Station is a stand-in: instant identification, hatching and studies, priced but with no screens beyond one page each. A founder hatches only for a species you don't raise yet; other pods are stored and do nothing. Research is one line per discovery. Names are automatic (Pip, Dot, Moss).
+- "Shakes dry" is not a Data moment: a hopper shakes because of rain, not because of you, so it gives a tuft (Essence) instead. Data moments are eating your fruit and a glowtail settling.
+- A riding juvenile's "first training" is only the Call animation; nothing tracks it.
+- Abilities come from species, not traits. Creatures are procedural tokens.
+- The island across the fast water can't be reached; nothing swims yet.
+- Buried pods lie 3–6 tiles from where you first enter a place, so the first Call can find them.
+- Clearing a place checks for hidden finds across the whole place, so a Call far from a buried pod says "Nothing close · something may be further off" rather than marking the cell.
+- Patching the shield spends 3 Energy but no field-clock action.
+- Fog bank tuning (3-action dew refill, notice −2) is a first guess.
+
+## Measured with scripted play (seeds 7, 13, 42)
+
+- A thorough player (gathers everything, never shelters) fills the hold at a median of about 150–180 actions (100–440); a scout (enter, Call, take pods, leave) hears "Everything in reach is explored" at a median of 53 actions (37–112).
+- Breaks: 4 of 21 storm expeditions for a player who stays in the open the whole storm.
+- New cells per expedition: median 18–20 for the thorough player, 36 for the scout (who walks the whole square and climbs no cairns).
+- The first put-down feed without a partner succeeded on the first or second try (seeds 7, 42, 5, 99).
 
 ## Known issues
-- Ground types meet with hard tile edges (no blended transitions).
-- Tablet scale factors that don't snap (for example about 1.9× on an iPad in landscape) give slightly uneven pixel widths.
-- The hopper partner's calming effect is real but modest; it is now visible, not stronger.
-- Notes can crowd the line: up to about 78 characters fit, and lower-priority notes are dropped.
-- Waiting takes two presses the first time (Back, Confirm), then one per action.
+
+- Places are large (28×32 tiles): a thorough player spends 50–110 actions in one, so the hold usually fills before "Everything in reach is explored" appears, and some expeditions run past 300 actions.
+- Energy is scarce unless the player stands by stones in a storm (median 2–3 per expedition), so pods often wait at the Station for Energy. Essence is plentiful (dew, pressing, tufts) and often caps at 20.
+- Seen cells in meadows fade only from grass to a darker green through the existing fade table; wood, water and rock fade much more.
+- The map line rarely fits both the cell you're on and the one ahead in full; it keeps the part that has signs.
+- Ground types meet with hard tile edges. Tablet scale factors that don't snap give slightly uneven pixel widths.
 - Some browsers block clipboard access; "Copy playtest notes" then shows the notes selected in a text box.
 
 ## Persistence and tools
-- Saves to localStorage with save format v4; older saves are discarded on load. The game works without storage (in memory only). New world is in the mode list. `?seed=N` makes the next new world reproducible.
-- The Observer panel shows expedition, world turn, actions, location, partner, seed, the last 8 events and the palette swatches, plus a "Copy playtest notes" button.
+
+- Saves to localStorage with save format v5; older saves (v1–v4) are discarded on load. Works without storage. `?seed=N` makes the next new world reproducible.
+- The Observer shows expedition, world turn, actions, location, partner and rider, Probe (tier, range, hold, shield, storm bolts), carried and Station materials, map state counts (seen, visited, cleared, fog, explored in reach), seed, the last 8 events and the palette, plus "Copy playtest notes".
+- Test hooks: `window.__mb` (state, `lineFor`, `capture`, `offPalette`, `act`, `press`/`release`, `reachCounts`, `isCleared`, `pipsOf`, `stormLevel`, `sendPreview`, `mapCounts` and others).
 - The build stamp reads `../../build.json` (written by CI); a local copy shows "local build". One self-contained file with no build step.
