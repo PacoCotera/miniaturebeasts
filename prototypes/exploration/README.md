@@ -78,6 +78,10 @@ Every source is an act you choose. Each caps at 20 carried.
 
 ## Range, tiers and the map
 
+- **The reach view.** During an expedition the map shows only the Probe's reach: 5×5 cells at 3× (78 px cells) at tier 1, 9×9 at 2× (52 px, cropped 9 px each side) at tier 2. It is the same map drawing, scaled by whole pixels, so quarters, signs, pending outlines, gates, the start flag, skulls, outposts and beacons all read at that size; the reach square's dashes frame it. Below it (tier 1): the flag with the way home ("Start · about 2 cells", or "Send home here"), "Explored N of M in reach", and a 96×120 inset of the whole world at 6 px a cell (fog dark, seen cells faded, visited cells in colour, the reach in amber, the Probe blinking, pins, outposts and skulls as dots, the storm's edges in mist); at tier 2 the inset sits over the view's bottom-right corner. Walking off the reach, edge crossings, Call pins and the way-home hint work as before.
+- **Full map** (a menu entry on the map) shows the whole 16×20 map at 26 px as its own screen; ← closes it. Picking a start still uses the whole map, and a beacon's sweep shows on the whole map.
+- **Cost:** drawMap mean 2.13–2.34 ms per call; the reach view (drawMap plus one scaled blit plus the inset) 2.88–2.91 ms (seeds 7, 13, 42; within 1.4×).
+
 | Tier | Range from start | Pods carried | Shield | Also |
 | --- | --- | --- | --- | --- |
 | 1 | 2 (5×5) | 2 | 3 | – |

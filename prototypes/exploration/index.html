@@ -207,6 +207,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
     <details open>
       <summary>What to try</summary>
       <ol>
+        <li>On an expedition the map shows your reach large, with the whole world small in the corner; "Full map" in the menu shows it all.</li>
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
         <li>Go down into a place and Call in each quarter. Watch the overview: its quarters lose their dots as you survey them.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
@@ -2899,6 +2900,50 @@ function drawSign(kind, s, px, py, fr) {
   else if (kind === 'skull') blit(ICON.skull(), px + 11, py + 11);
   else if (kind === 'depot') blit(ICON.depot(s.lit), px + 11, py + 9);
 }
+// The reach view: in an expedition the map shows only the Probe's reach, at 3× (78 px cells; 2× at tier 2),
+// drawn by the same drawMap and scaled by whole pixels, with a strip below: the way home, the count, and a
+// 96×120 inset of the whole world (6 px a cell) with the reach marked. "Full map" in the menu shows it all.
+let reachCv = null;
+const INSET = { w: MW * 6, h: MH * 6 };
+function reachGeom() {
+  const ex = S.exp, r = ex.range, n = r * 2 + 1, k = n <= 5 ? 3 : 2, s0 = cxy(ex.start), size = n * CELL * k;
+  const dx = Math.round((SCR_W - size) / 2), dy = VIEW_Y + (k === 3 ? 6 : 2);
+  return { r, n, k, s0, size, dx, dy, sx: MAP_X + (s0.x - r) * CELL, sy: MAP_Y + (s0.y - r) * CELL, sw: n * CELL };
+}
+function drawReachView(t) {
+  if (S.exp.beaconView) { drawMap('map', t); return; }   // a beacon's sweep shows the land around, beyond the reach
+  drawMap('map', t);
+  const q = reachGeom();
+  if (!reachCv || reachCv.width !== q.sw) { reachCv = document.createElement('canvas'); reachCv.width = reachCv.height = q.sw; }
+  const rc = reachCv.getContext('2d'); rc.imageSmoothingEnabled = false; rc.fillStyle = HEX[C.void]; rc.fillRect(0, 0, q.sw, q.sw);
+  rc.drawImage(scr, q.sx, q.sy, q.sw, q.sw, 0, 0, q.sw, q.sw);
+  R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
+  g.drawImage(reachCv, 0, 0, q.sw, q.sw, q.dx, q.dy, q.size, q.size);
+  const p = cxy(S.exp.pos), cs = CELL * q.k;
+  RT.plScr = { x: q.dx + (p.x - (q.s0.x - q.r)) * cs + cs / 2, y: q.dy + (p.y - (q.s0.y - q.r)) * cs + cs / 2 };
+  // the strip: the way home and the count (tier 1), and the inset
+  const ix = SCR_W - INSET.w - 12, iy = VIEW_Y + VIEW_H - INSET.h - 8;
+  if (q.k === 3) { const ty = q.dy + q.size + 12;
+    blit(ICON.flag(), 12, ty - 2); text(canSend() ? 'Send home here' : sendHint(), 32, ty, C.bone);
+    text(clipText(surveyedLine(), ix - 24, 2), 12, ty + 28, C.mist); }
+  drawInset(ix, iy, t);
+}
+function drawInset(x, y, t) {
+  const ex = S.exp; ensureMap();
+  panel(x - 3, y - 3, INSET.w + 6, INSET.h + 6, C.ink, C.slate);
+  g.drawImage(mapCvFade, 0, 0, MW * CELL, MH * CELL, x, y, INSET.w, INSET.h);
+  for (let c = 0; c < MW * MH; c++) { const cx = x + (c % MW) * 6, cy = y + ((c / MW) | 0) * 6;
+    if (!S.revealed[c]) R(cx, cy, 6, 6, C.night);
+    else if (S.visited[c]) g.drawImage(mapCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, 6, 6); }
+  if (ex.storm) { const a = Math.round(x + ex.storm.x * 6), b = Math.round(x + (ex.storm.x + ex.storm.w) * 6);
+    for (const sx of [a, b]) if (sx > x && sx < x + INSET.w) for (let yy = y; yy < y + INSET.h; yy += 3) R(sx, yy, 1, 2, C.mist); }
+  for (const pin of S.pins) R(x + (pin.c % MW) * 6 + 2, y + ((pin.c / MW) | 0) * 6 + 2, 2, 2, C.orange);
+  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * 6 + 1, y + ((c / MW) | 0) * 6 + 1, 4, 4, fs(String(c), f.id).lit ? C.amber : C.bark); }
+  for (const k in (S.skulls || {})) R(x + (k % MW) * 6 + 1, y + ((k / MW) | 0) * 6 + 1, 4, 4, C.bone);
+  const s0 = cxy(ex.start), r = ex.range, rx0 = x + Math.max(0, s0.x - r) * 6, ry0 = y + Math.max(0, s0.y - r) * 6, rx1 = x + Math.min(MW, s0.x + r + 1) * 6, ry1 = y + Math.min(MH, s0.y + r + 1) * 6;
+  R(rx0, ry0, rx1 - rx0, 1, C.amber); R(rx0, ry1 - 1, rx1 - rx0, 1, C.amber); R(rx0, ry0, 1, ry1 - ry0, C.amber); R(rx1 - 1, ry0, 1, ry1 - ry0, C.amber);
+  if (!motion() || Math.floor(t * 2) % 2 === 0) { const pp = cxy(ex.pos); R(x + pp.x * 6 + 1, y + pp.y * 6 + 1, 4, 4, C.bone); }
+}
 function drawMap(mode, t) {
   ensureMap(); const ex = S.exp, fr = motion() ? Math.floor(t * 2) % 2 : 0;
   // while placing a Weather start, the band shows where it would begin
@@ -3424,7 +3469,7 @@ function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'Send home' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }].concat(base);
-  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }].concat(base);
+  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }, { id: 'fullmap', label: 'Full map' }].concat(base);
   if ((from === 'station' || from === 'active') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
 }
@@ -3439,7 +3484,7 @@ function menuIcon(id, x, y) {
 }
 function drawMenu(t) {
   const items = menuItems(), overField = S.exp && (S.ui.from === 'patch' && S.exp.patch || S.ui.from === 'map');
-  if (S.ui.from === 'patch' && S.exp && S.exp.patch) drawPatch(t); else if (S.ui.from === 'map') drawMap('map', t); else if (S.ui.from === 'station') drawStation(t); else if (S.ui.from === 'active') drawActive(t); else drawSetup(t);
+  if (S.ui.from === 'patch' && S.exp && S.exp.patch) drawPatch(t); else if (S.ui.from === 'map') drawReachView(t); else if (S.ui.from === 'station') drawStation(t); else if (S.ui.from === 'active') drawActive(t); else drawSetup(t);
   if (S.ui.waiting && overField) return;   // waiting: the whole place stays in view; the bottom line is the strip
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
   const pl = RT.plScr, left = overField && pl && pl.x > SCR_W / 2;
@@ -3781,6 +3826,7 @@ function lineFor() {
       if (S.exp) return L1('Stays home', w ? w.name + ' is with you till home' : '', 'Mibis', true);
       return L1('Take ' + m.name, ctx, 'Mibis'); }
     case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
+    case 'fullmap': return L1('', 'the whole map', 'close');
     case 'station': { const pages = stationPages(), page = pages[S.ui.stPage], last = S.ui.stPage >= pages.length - 1;
       if (page === 'upgrade' && !S.report.upgraded) return L1(S.ui.upArm ? 'Confirm: upgrade' : 'Upgrade the Probe', PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 'not now');
       if (!last) return L1(pages[S.ui.stPage + 1] === 'hatch' ? 'Hatch the pod' : 'Continue', '', 'menu');
@@ -3793,7 +3839,8 @@ function render(t) {
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
-    case 'map': drawMap('map', t); drawHUD(); break;
+    case 'map': drawReachView(t); drawHUD(); break;
+    case 'fullmap': drawMap('map', t); drawHUD(); break;
     case 'patch': drawPatch(t); drawHUD(); drawSwap(); break;
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
@@ -3887,6 +3934,7 @@ function act(k, mode) {
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
         else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('Send home works from the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; } }
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
+        else if (id === 'fullmap') { S.phase = 'fullmap'; transition(); }
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); }
           else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
         else { S.phase = id; S.ui.nw = 0; S.ui.rSel = 0; S.ui.rFrom = 'menu'; } }
@@ -3921,6 +3969,7 @@ function act(k, mode) {
         else if (S.exp) { const w = withMibi(); fxMsg(w ? w.name + ' is with you until you’re home' : 'Partners are chosen before you set out'); FX.bumpAt = NOW; }
         else takeMibi(m); }
       break; }
+    case 'fullmap': if (k === 'back') { S.phase = 'map'; transition(); } break;
     case 'newworld':
       if (k === 'up' || k === 'down') S.ui.nw = k === 'down' ? 1 : 0;
       else if (k === 'back') S.phase = 'menu';
