@@ -1,5 +1,9 @@
 # Exploration, round 2: purpose, stakes and progress
 
+**Decided 2026-10-06:** all seven decisions below were taken as recommended
+(materials, prices, Shield, breaking keeps pods, Call, reach and hold, fog bank).
+The numbers stay open to tuning after play.
+
 **Proposal.** This builds on the [combined design](exploration-options/combined-design.md)
 and the round-3 rough playable (`prototypes/exploration/`). It answers seven
 questions raised by the first owner play and the round-2 playtest. Lines marked

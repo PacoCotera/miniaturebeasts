@@ -1,5 +1,10 @@
 # Companion controls: four buttons
 
+**Decided 2026-10-06:** Call's hint lives in the HUD; Call sits above Back as
+drawn, pending the bench console; New world is offered only outside an
+expedition. Back's label naming the menu's top entries is a working rule until
+play confirms it.
+
 **Proposal.** A control scheme for the Companion's pad, Confirm, Back and the new
 Call button, building on [exploration round 2](exploration-round-2.md) §7 and
 [interaction](../interaction.md). Lines marked **Decided** restate owner
