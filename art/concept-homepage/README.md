@@ -1,6 +1,6 @@
 # Homepage concept art: generated candidates
 
-Everything in this folder is a **generated candidate** for the seven shots in
+Everything in this folder is a **generated candidate** for the ten shots in
 [`../concept-brief-homepage.md`](../concept-brief-homepage.md). Nothing is accepted
 yet, nothing is placed on the page, and every image is concept art: caption it so
 ("Concept art"; "Concept screen, not from the build"), never as a capture.
@@ -23,23 +23,36 @@ HTTP 429, "Your project has exceeded its monthly spending cap". No shot got a th
 attempt and L1 has a single attempt. Each other shot had two attempts, one per model
 (H1 pass A had three).
 
+**Second batch.** After the cap was raised, a second run with a hard budget of 8
+calls produced the remaining shots: H1 pass C (the card string), D1, D2 and E1.
+It used 7 calls (4 Flash, 3 Pro), one attempt per shot and one more only where the
+first failed its checklist (H1 pass C, D1 and E1 each took two; D2 took one). Four
+small layout images in `layout/` were sent as extra inputs in that batch: two flat
+templates drawn with PIL (the Companion screen block with its HUD and bottom-line
+strips; the Station band with its header strip) and two crops (the K1 card Pip and
+the pass B e-paper panel). They are inputs, not candidates.
+
 ![Contact sheet](contact-sheet.png)
 
 ## The candidates
 
 | Shot | File | Kept attempt | Model |
 | --- | --- | --- | --- |
-| H1 `hero-kit` | `hero-kit.png` 1536×1024 | pass A attempt 3, pass B attempt 2 | A: pro, B: flash |
+| H1 `hero-kit` | `hero-kit.png` 1536×1024 | pass A attempt 3, pass B attempt 2, pass C attempt 2 | A: pro, B: flash, C: pro |
 | C1 `companion-map-hands` | `companion-map-hands.png` 1536×1024 | attempt 2 | flash |
 | C2 `companion-storm` | `companion-storm.png` 1024×1536 | attempt 2 | flash |
 | K1 `caddy-print` | `caddy-print.png` 1536×1024 | attempt 1 | pro |
 | S1 `station-research-pod` | `station-research-pod.png` 1024×600 (crop of `-canvas.png`) | attempt 1 | pro |
 | P1 `partner-patch` | `partner-patch.png` 900×1200, `-450x600.png` (crops of `-canvas.png`) | attempt 2 | flash |
 | L1 `pip-life-stages` | `pip-life-stages.png` 1536×1024 RGBA | attempt 1 (only one) | pro |
+| D1 `companion-resident-home` | `companion-resident-home.png` 900×1200, `-450x600.png` (crops of `-canvas.png`) | attempt 2 | flash |
+| D2 `station-known-forms` | `station-known-forms.png` 1024×600 (crop of `-canvas.png`) | attempt 1 | pro |
+| E1 `caddy-summary-epaper` | `caddy-summary-epaper.png` 1600×479 (scaled and padded from `-canvas.png`) | attempt 2 | pro |
 
 `hero-kit-passA.png` is the pass A result (four-button Companion, new screen) that
-pass B edited; it is kept because C1, C2 and K1 were generated against the pass B
-result, so the device reference chain is on record.
+pass B edited, and `hero-kit-passB.png` is the pass B result that pass C edited;
+both are kept because C1, C2, K1 and E1 were generated against the pass B result,
+so the device reference chain is on record.
 
 ## Checklist results per candidate
 
@@ -56,9 +69,18 @@ Judged at the size the page shows each image and, for screens, at 1×.
   4, 5, 2, "Pip · PIP-001", "1 resident"; Cached and Connections lines removed.
 - Pass: Pip is plain-coated with cream belly, orange eyes and three leaves on all
   three devices.
-- **Fail:** the printed card still reads "Sample A". The pass B prompt lists only
-  screen strings, so the card was never asked to change. One more small edit is
-  needed, or the card string gets covered on the page.
+- Pass (pass C): the printed card now reads "Pip · PIP-001" over the thin rule and
+  the leaf mark; the printed Pip, PRINT and FEED labels and the card's curl are kept.
+- **Fail (pass C drift):** the edit was asked to change nothing else, but the
+  re-render drifted three strings: the Station header's "Essence" reads "Excence",
+  the e-paper "Essence" reads "Exsence", and the Station subtitle "Hopper pod" reads
+  "Happer pod". Counts, every other label and both creature portraits are intact.
+  Rule 5 allows garbled screen strings to be set in the page instead; the owner
+  may also prefer `hero-kit-passB.png` with the card string covered on the page.
+- Rejected: pass C attempt 1 (flash) got the card right and kept "Essence" and
+  "Adult", but garbled the PRINT button label to "PUINT" and the same "Hopper pod"
+  to "Happer pod"; a wrong physical label cannot be fixed in the page, so the pro
+  attempt was kept.
 - Partial: outside the edits the render matches family-concept-v2 to the eye; small
   drift is visible on the Station header's original layout and the pad is drawn a
   little larger. The 50 % overlay check is for the owner.
@@ -147,6 +169,57 @@ Judged at the size the page shows each image and, for screens, at 1×.
   corners are alpha 0). This is keyed, not generated, alpha.
 - Only one attempt: the second was refused by the spending cap.
 
+### D1 `companion-resident-home`
+- Pass: Pip reads as the HiBit Pip at 450×600, 1× (`companion-resident-home-450x600.png`):
+  plain coat, cream belly, orange eyes with cream rings, tiny smile, three leaves.
+  The crown leaves are drawn larger than the source's and the backdrop is a soft
+  green and cream wash rather than clover tufts on grass, though two clovers are there.
+- Pass: the HUD shows three shield bars (two white, the third half dim), two empty
+  pod outlines, a tiny Pip face, "⚡5" and a teal "))) " Call slot, with the far
+  right left as an empty dark slot and no battery or connectivity glyph.
+- Pass: "Pip", "Plain coat", "✓ Spend time together", "home" and "← Menu" are
+  spelled exactly and nothing else is written.
+- **Fail:** everything is not inside the 900×1200 block. As with P1, the model drew
+  the HUD and the bottom line on the dark margin around the picture, even with the
+  layout template as an input, and "home" dropped under the bottom line. The
+  900×1200 crop therefore holds the scene and the two labels only; the HUD and
+  bottom line are in `companion-resident-home-canvas.png`.
+- Rejected: attempt 1 (no layout template) put the HUD and bottom line outside the
+  block too, wrapped the bottom line onto two lines at twice the size, and set
+  "home" and "← Menu" on a second row.
+
+### D2 `station-known-forms`
+- Pass: both figures share silhouette, cream belly, orange eyes with cream rings and
+  exactly three leaves; the only difference is the cream islands on the right one's
+  back and flanks. No horns, tails or colour changes.
+- Pass: the pale one is labelled "Hypothetical" / "Pale markings" and the plain one
+  "Pip" / "Plain coat"; the plain one matches the rich Pip's pose and treatment.
+- Pass: header "MINIATURE BEASTS · Known forms" with chip 4, crystal 5, droplet 2,
+  inside the band; all four quoted strings read at 1024×600; no genotype letters.
+- Pass: it reads as a designed game screen, not a lab report; teal-blue backdrop,
+  sand floor, no symbols between the figures.
+- Partial: the prompt asks for the two figures facing each other; both face
+  viewer-left in the same pose. The model inset the screen on all four sides, so the
+  1024×600 crop is the inset band, trimmed to 1024:600 at the empty floor.
+- One attempt (pro); it passed, so no second attempt was made.
+
+### E1 `caddy-summary-epaper`
+- Pass: four greys to the eye (white, light grey, dark grey, black) with ordered
+  dither for shading; no hue. Measured on the raw JPEG, one percent of pixels carry
+  faint chroma noise and the edges are anti-aliased, so it is not a literal
+  four-value image.
+- Pass: the e-paper Pip has the card Pip's silhouette, three-leaf crown and plain
+  coat, in black, dark grey and white with dither.
+- Pass: "Pip · PIP-001", "1 resident", "Hopper pod · waiting" and the counts 4, 5, 2
+  with chip, crystal and droplet icons are spelled exactly; thin dark rules divide
+  the three areas; no Cached, Connections, clock, QR or marks of any kind.
+- Partial: the model filled the whole 21:9 canvas instead of the centred 1600×479
+  band, so `caddy-summary-epaper.png` is a uniform scale of the canvas padded with
+  paper white at the sides (nothing redrawn); the counts column sits at the right
+  as on the Caddy, but the three areas are spaced more widely than the Caddy's panel.
+- Rejected: attempt 1 (flash, with the K1 photograph and the hero render as inputs)
+  returned a blurred photograph of the dock with a card, not a flat screen.
+
 ## Limits
 
 - Generated pixel-style screens are resampled 2K outputs, not authored native
@@ -154,4 +227,8 @@ Judged at the size the page shows each image and, for screens, at 1×.
   line from the design.
 - Device renders show the devices as designed as far as the model followed the
   prompt; the checklist lines above say where it did not.
+- The brief-size E1 file is scaled and padded, not generated at 1600×479; the D1
+  and D2 screens are crops of a larger canvas, as recorded in `manifest.json`.
+- Spend: first batch 17 calls (one refused by the cap); second batch 7 calls of the
+  8 allowed, 4 on `gemini-3.1-flash-image` and 3 on `gemini-3-pro-image`.
 - Nothing here establishes a runtime, a renderer or hardware behaviour.

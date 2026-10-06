@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 256" width="1160" height="256">
+  <title>Miniature Beasts lockup A</title>
+  <g transform="translate(8 28) scale(0.78)">
+  <!-- A "B" lying on its back: the stem is the base, the two bowls rise as the humps of an "M".
+       The left counter stays a letter counter; the right one is a round eye, so the letters wake up. -->
+  <path fill="#172e25" fill-rule="evenodd" d="
+    M 28 182 L 28 112 A 50 50 0 0 1 128 112 A 50 50 0 0 1 228 112 L 228 182 A 32 32 0 0 1 196 214 L 60 214 A 32 32 0 0 1 28 182 Z
+    M 62 180 L 62 114 A 16 16 0 0 1 94 114 L 94 180 Z
+    M 178 132 m -22 0 a 22 22 0 1 0 44 0 a 22 22 0 1 0 -44 0 Z"/>
+  <circle fill="#172e25" cx="184" cy="128" r="10"/>
+  </g>
+  <text x="246" y="160" fill="#172e25" font-family="'Arial Black', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="900" font-size="80" letter-spacing="-3">MINIATURE BEASTS</text>
+</svg>

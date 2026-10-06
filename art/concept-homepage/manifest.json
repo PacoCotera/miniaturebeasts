@@ -11,7 +11,10 @@
     "K1": "caddy-print.png",
     "S1": "station-research-pod.png",
     "P1": "partner-patch.png",
-    "L1": "pip-life-stages.png"
+    "L1": "pip-life-stages.png",
+    "D1": "companion-resident-home.png",
+    "D2": "station-known-forms.png",
+    "E1": "caddy-summary-epaper.png"
   },
   "sources": {
     "tool": "Gemini API",
@@ -19,9 +22,20 @@
       "gemini-3-pro-image",
       "gemini-3.1-flash-image"
     ],
-    "successfulCalls": 16,
+    "successfulCalls": 23,
     "failedCalls": 1,
-    "originalBytes": "raw/ holds the unaltered JPEG the API returned for each kept candidate; rejected attempts are stored only as their PNG resamples."
+    "originalBytes": "raw/ holds the unaltered JPEG the API returned for each kept candidate; rejected attempts are stored only as their PNG resamples.",
+    "batches": [
+      {
+        "calls": 17,
+        "note": "first batch: H1 passes A and B, C1, C2, K1, S1, P1, L1; stopped by the spending cap"
+      },
+      {
+        "calls": 7,
+        "note": "second batch: H1 pass C, D1, D2, E1; budget 8, used 7 (4 Flash, 3 Pro)"
+      }
+    ],
+    "layoutInputs": "layout/ holds the flat layout templates and reference crops sent as image inputs in the second batch; they are inputs, not candidates."
   },
   "derivation": {
     "station-research-pod.png": {
@@ -67,13 +81,76 @@
     "all 1536x1024 and 1024x1536 PNGs": {
       "from": "the raw 2K JPEG output (2528x1696 or 1696x2528)",
       "resample": "LANCZOS to the brief size; sRGB; no retouching"
+    },
+    "hero-kit.png": {
+      "from": "raw/H1C-attempt2.jpg",
+      "resample": "LANCZOS to 1536x1024",
+      "chain": "family-concept-v2 -> hero-kit-passA.png (pass A) -> hero-kit-passB.png (pass B) -> hero-kit.png (pass C: card text only)"
+    },
+    "companion-resident-home.png": {
+      "from": "raw/D1-attempt2.jpg",
+      "rawSize": [
+        1696,
+        2528
+      ],
+      "cropRect": {
+        "x": 98,
+        "y": 225,
+        "width": 1500,
+        "height": 2000
+      },
+      "detection": "rows and columns where fewer than half the pixels are dark (max channel below 60): the picture spans x 120-1575, y 264-1647 and the labels end at y 1913; the crop is the 3:4 window that holds both with margin and excludes the HUD (ends y 214) and the bottom line (starts y 2235)",
+      "note": "The model drew the HUD and the bottom line on the dark margin outside the picture block, as in P1, so this crop holds the scene and the Pip / Plain coat labels only; the HUD and bottom line are in companion-resident-home-canvas.png.",
+      "resample": "LANCZOS to 900x1200"
+    },
+    "companion-resident-home-450x600.png": {
+      "from": "companion-resident-home.png",
+      "resample": "BOX (area average) 2:1 to 450x600"
+    },
+    "station-known-forms.png": {
+      "from": "raw/D2-attempt1.jpg",
+      "rawSize": [
+        2528,
+        1696
+      ],
+      "cropRect": {
+        "x": 150,
+        "y": 163,
+        "width": 2228,
+        "height": 1305
+      },
+      "detection": "rows and columns where fewer than half the pixels are dark (max channel below 50): the band spans x 150-2377, y 151-1545 (1.60:1); trimmed to 1024:600 by taking 12 rows off the top margin and 78 off the empty floor at the bottom",
+      "note": "The model inset the screen on all four sides rather than filling the canvas width; the header bar is inside the band as asked.",
+      "resample": "LANCZOS to 1024x600"
+    },
+    "caddy-summary-epaper.png": {
+      "from": "raw/E1-attempt2.jpg",
+      "rawSize": [
+        3168,
+        1344
+      ],
+      "cropRect": {
+        "x": 0,
+        "y": 58,
+        "width": 3168,
+        "height": 1229
+      },
+      "steps": "rows holding ink (luma below 200) span y 88-1257; cropped with a 30 px margin, scaled uniformly by 0.3897 to 479 px tall (1235 px wide, LANCZOS), then padded to 1600 px wide with the paper colour sampled from the canvas corner (RGB (246, 248, 249)), 182 px at the left",
+      "note": "The model filled the 21:9 canvas edge to edge instead of the centred 1600x479 band the preamble asked for, and a straight 3.34:1 crop would cut the crown leaves, the chip icon and the bottom strings, so the brief-size file is a uniform scale with white side margins. Nothing is redrawn or moved; the full canvas is caddy-summary-epaper-canvas.png."
+    },
+    "caddy-summary-epaper-canvas.png": {
+      "from": "raw/E1-attempt2.jpg",
+      "resample": "LANCZOS to 1600x679 (the whole 21:9 canvas)"
     }
   },
   "caveats": [
     "Generated images: concept art, to be captioned as such; never a capture from the build.",
     "HiBit screens are generated pixel-style art resampled from a 2K output, not authored native 450x600 masters; the logical pixel grid is not exact.",
     "The API returned opaque JPEG; pip-life-stages.png alpha is keyed from a flat white background (see derivation).",
-    "Second attempts for L1 and all third attempts were blocked by the API monthly spending cap (HTTP 429)."
+    "First batch: second attempts for L1 and all third attempts were blocked by the API monthly spending cap (HTTP 429).",
+    "Second batch (H1 pass C, D1, D2, E1): 7 of the 8 allowed calls; every shot had at most two attempts.",
+    "hero-kit.png (pass C) carries the card fix but the edit drifted two Essence labels and the Station subtitle; see README.",
+    "caddy-summary-epaper.png is a JPEG-born e-paper mock: four greys to the eye, with faint JPEG chroma and anti-aliased edges, not a literal four-value image."
   ],
   "artifacts": [
     {
@@ -86,12 +163,57 @@
       "status": "candidate"
     },
     {
+      "path": "caddy-summary-epaper-canvas.png",
+      "width": 1600,
+      "height": 679,
+      "mode": "RGB",
+      "bytes": 1171385,
+      "sha256": "7fe5d808631a32e6fc0511ad5abf73dc917207c6ff3622484c47d41b78750534",
+      "status": "candidate (full canvas)"
+    },
+    {
+      "path": "caddy-summary-epaper.png",
+      "width": 1600,
+      "height": 479,
+      "mode": "RGB",
+      "bytes": 687329,
+      "sha256": "666272dd9d06dff30141765d1a6cbaf27eb3d1ee285845e4deb506f69a0d652f",
+      "status": "candidate"
+    },
+    {
       "path": "companion-map-hands.png",
       "width": 1536,
       "height": 1024,
       "mode": "RGB",
       "bytes": 1929814,
       "sha256": "16011cd8ca0b92329bed4c0d03a278c499c739053d71a53552716429486b13d6",
+      "status": "candidate"
+    },
+    {
+      "path": "companion-resident-home-450x600.png",
+      "width": 450,
+      "height": 600,
+      "mode": "RGB",
+      "bytes": 252983,
+      "sha256": "98a52217177a28364b01a593d18ea04bd0f81f45038729eb80f3162b4808e8e6",
+      "status": "candidate (1x derivative)"
+    },
+    {
+      "path": "companion-resident-home-canvas.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 1452395,
+      "sha256": "8a3263ad8e095813fa8ccfcdc81df06b81e437050de0bd6a9cb8c044be917b70",
+      "status": "candidate (full canvas)"
+    },
+    {
+      "path": "companion-resident-home.png",
+      "width": 900,
+      "height": 1200,
+      "mode": "RGB",
+      "bytes": 1006044,
+      "sha256": "bd47385ee44b8f9c44d0ae35408e6007c8155dfcd64efa3b5900e9f6e962acdf",
       "status": "candidate"
     },
     {
@@ -105,11 +227,11 @@
     },
     {
       "path": "contact-sheet.png",
-      "width": 1994,
-      "height": 958,
+      "width": 3154,
+      "height": 888,
       "mode": "RGB",
-      "bytes": 1384422,
-      "sha256": "41a75092dcea593b550a077857493df4aeac111e04204f2f74cc244f1b077e3d",
+      "bytes": 2560612,
+      "sha256": "831abf299cd744816c76027e2d00fe62bca68e0a660b1c427858e00371489f1c",
       "status": "index"
     },
     {
@@ -122,13 +244,58 @@
       "status": "intermediate (pass A result, input to pass B)"
     },
     {
-      "path": "hero-kit.png",
+      "path": "hero-kit-passB.png",
       "width": 1536,
       "height": 1024,
       "mode": "RGB",
       "bytes": 2120306,
       "sha256": "dd8009fb3eb525909a32b260aefd4052bdb6718b4c80a2b36a3674031e09a19c",
-      "status": "candidate"
+      "status": "intermediate (pass B result, input to pass C; the device reference for C1, C2, K1 and E1)"
+    },
+    {
+      "path": "hero-kit.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2116425,
+      "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2",
+      "status": "candidate (pass C)"
+    },
+    {
+      "path": "layout/caddy-card-pip-crop.png",
+      "width": 260,
+      "height": 200,
+      "mode": "RGB",
+      "bytes": 105066,
+      "sha256": "f31096dd200c648dedac206434f14c6d3558ef53ac315d3dc621c998c3db0d31",
+      "status": "input (layout truth or reference crop sent to the model)"
+    },
+    {
+      "path": "layout/companion-screen-block.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 8025,
+      "sha256": "65779baca59fcfee84724de36ba28adbb382fa6f4c7f4d743cfb5adab3652234",
+      "status": "input (layout truth or reference crop sent to the model)"
+    },
+    {
+      "path": "layout/epaper-panel-passB.png",
+      "width": 545,
+      "height": 155,
+      "mode": "RGB",
+      "bytes": 128098,
+      "sha256": "437339cfc0cb7c80c23f84927f8cfdc1caeed64e3df6b8db35f195624c902881",
+      "status": "input (layout truth or reference crop sent to the model)"
+    },
+    {
+      "path": "layout/station-screen-band.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 7022,
+      "sha256": "75fc32fe2ba838d70e1ac6167709380b7c5a66fc4a2a47ca259c99a800a596a9",
+      "status": "input (layout truth or reference crop sent to the model)"
     },
     {
       "path": "partner-patch-450x600.png",
@@ -167,24 +334,6 @@
       "status": "candidate"
     },
     {
-      "path": "station-research-pod-canvas.png",
-      "width": 1536,
-      "height": 1024,
-      "mode": "RGB",
-      "bytes": 1219204,
-      "sha256": "e6a8b2d20b6f0c94857259654bb97baf55138c3b008e11a376a7820db15dbf16",
-      "status": "candidate (full canvas)"
-    },
-    {
-      "path": "station-research-pod.png",
-      "width": 1024,
-      "height": 600,
-      "mode": "RGB",
-      "bytes": 482065,
-      "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110",
-      "status": "candidate"
-    },
-    {
       "path": "raw/C1-attempt2.jpg",
       "width": 2528,
       "height": 1696,
@@ -203,6 +352,33 @@
       "status": "original (unaltered model output)"
     },
     {
+      "path": "raw/D1-attempt2.jpg",
+      "width": 1696,
+      "height": 2528,
+      "mode": "RGB",
+      "bytes": 1604667,
+      "sha256": "46e52da6e721d1b22a1735789c9c737557b62be0f0ab05cf4f31f5754affe50f",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/D2-attempt1.jpg",
+      "width": 2528,
+      "height": 1696,
+      "mode": "RGB",
+      "bytes": 1629477,
+      "sha256": "ce7a5fc8223921b64dc8d3d01789c6a3f39b84db2b417c2ee10f86dbb2802efd",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/E1-attempt2.jpg",
+      "width": 3168,
+      "height": 1344,
+      "mode": "RGB",
+      "bytes": 1787933,
+      "sha256": "be38be2c27574ac48b0d333042dd41fe9f12865dc54d308661477d57cc063ce9",
+      "status": "original (unaltered model output)"
+    },
+    {
       "path": "raw/H1A-attempt3.jpg",
       "width": 2528,
       "height": 1696,
@@ -218,6 +394,15 @@
       "mode": "RGB",
       "bytes": 2528354,
       "sha256": "fdb98d7c518ffd7691547524fde01b64096651d81dc70b48297030be3efb38c6",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/H1C-attempt2.jpg",
+      "width": 2528,
+      "height": 1696,
+      "mode": "RGB",
+      "bytes": 2485822,
+      "sha256": "0881458d5e6cfa20eb0464a766199a15a319f39fd25f2c57ccd4ed8ac0732c4b",
       "status": "original (unaltered model output)"
     },
     {
@@ -266,12 +451,30 @@
       "status": "rejected"
     },
     {
+      "path": "rejected/caddy-summary-epaper-attempt1.png",
+      "width": 1600,
+      "height": 679,
+      "mode": "RGB",
+      "bytes": 1105630,
+      "sha256": "a295bf78ca1325c5dd2cddba2c80febcda6b1320e15ff92393b2946f4f86d341",
+      "status": "rejected"
+    },
+    {
       "path": "rejected/companion-map-hands-attempt1.png",
       "width": 1536,
       "height": 1024,
       "mode": "RGB",
       "bytes": 1937372,
       "sha256": "470d1ec7323c9726f8668d8a1b5ea5ddd382011a9e36b7eeaef1408c41c0c8d4",
+      "status": "rejected"
+    },
+    {
+      "path": "rejected/companion-resident-home-attempt1.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 1465725,
+      "sha256": "be6d69de2a06a5d78e579d034334588c7fd920d5f28295fb149cb2ac7e5590b1",
       "status": "rejected"
     },
     {
@@ -311,6 +514,15 @@
       "status": "rejected"
     },
     {
+      "path": "rejected/hero-kit-passC-attempt1.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2118302,
+      "sha256": "a82657eff54e08b91a5bf33d757643e5cb825ce5cebeac1d4fd45599c66e4b58",
+      "status": "rejected"
+    },
+    {
       "path": "rejected/partner-patch-attempt1.png",
       "width": 1024,
       "height": 1536,
@@ -327,6 +539,42 @@
       "bytes": 1301521,
       "sha256": "56466e76a12e72bb2104051560c8cf3a80a9b885e27f8b00e0687a1a463d8c04",
       "status": "rejected"
+    },
+    {
+      "path": "station-known-forms-canvas.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 1448279,
+      "sha256": "0338a77c745f2c847890572a7e3d2791b1e8fff503127ddd5bc122ed7fae6bfb",
+      "status": "candidate (full canvas)"
+    },
+    {
+      "path": "station-known-forms.png",
+      "width": 1024,
+      "height": 600,
+      "mode": "RGB",
+      "bytes": 609015,
+      "sha256": "024f765fdf470f32cad371583a4067a4fd79bd5ff893d0e9ace9f9fd00db37f3",
+      "status": "candidate"
+    },
+    {
+      "path": "station-research-pod-canvas.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 1219204,
+      "sha256": "e6a8b2d20b6f0c94857259654bb97baf55138c3b008e11a376a7820db15dbf16",
+      "status": "candidate (full canvas)"
+    },
+    {
+      "path": "station-research-pod.png",
+      "width": 1024,
+      "height": 600,
+      "mode": "RGB",
+      "bytes": 482065,
+      "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110",
+      "status": "candidate"
     }
   ]
 }

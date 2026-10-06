@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <title>Miniature Beasts mark B: seed-pod</title>
+  <!-- A plump, sealed seed-pod sprouting three rounded leaves; a round highlight gives it volume. -->
+  <g fill="#172e25">
+    <path fill-rule="evenodd" d="
+      M 128 118 C 180 118 204 152 204 182 C 204 216 172 236 128 236 C 84 236 52 216 52 182 C 52 152 76 118 128 118 Z
+      M 96 160 m -13 0 a 13 13 0 1 0 26 0 a 13 13 0 1 0 -26 0 Z"/>
+    <rect x="118" y="90" width="20" height="40" rx="10"/>
+    <ellipse cx="128" cy="58" rx="20" ry="36"/>
+    <ellipse cx="128" cy="58" rx="19" ry="34" transform="rotate(-62 128 104)"/>
+    <ellipse cx="128" cy="58" rx="19" ry="34" transform="rotate(62 128 104)"/>
+  </g>
+</svg>
