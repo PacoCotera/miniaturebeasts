@@ -31,16 +31,16 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 
 ## Survey
 
-- **The veil.** Every place (not the cave under the cliff) starts veiled: the ground shows through, one step darker with a 4×4 dot pattern, so you can see where to walk. Features, creatures, pods, fruit, tufts and charge on a veiled tile are not drawn. Facing one, Confirm reads "Veiled · Call to see" and spends nothing; bumping into one says "Something is there under the veil · ))) Call to see". Landmarks show anyway: the narrow burrow, the cave exit, the pod on the island. Fruit you put down yourself stays visible. A creature that walks onto unveiled ground in sight shows.
-- **Call lifts it** in a 15×15 square around you (7 tiles; 3 in a fog bank unless a glowtail partner is along), matching its ring. Walking never lifts it. Tiles no Call could reach (more than 7 tiles from any walkable tile, like the far side of fast water) don't count and show plainly.
-- **Quarters.** A place has four quarters of 14×16 tiles. A quarter is surveyed when 90% of its surveyable tiles are unveiled; a cell is surveyed when all four are. The line names it: "rock field · half surveyed".
+- **The veil.** Every place (not the cave under the cliff) starts veiled: the ground shows through, one step darker with a 4×4 dot pattern, so you can see where to walk. Creatures always show (in sight); features, pods, drops (fruit, tufts) and stones on a veiled tile are not drawn. Facing one, Confirm reads "Veiled · Call to see" and spends nothing; bumping into one says "Something is there under the veil · ))) Call to see". Landmarks show anyway: the narrow burrow, the cave exit, the pod on the island. Fruit you put down yourself stays visible.
+- **Call lifts it** in a 23×23 square around you (11 tiles; 5 in a fog bank unless a glowtail partner is along), matching its ring. Walking never lifts it. Lightning striking a veiled stone lifts the 3×3 around it. Tiles no Call could reach (more than 11 tiles from any walkable tile) don't count and show plainly.
+- **Quarters.** A place has four quarters of 14×16 tiles. A quarter is surveyed when 75% of its surveyable tiles are unveiled. A cell counts as **explored** (its reach dot fills) once it is visited and 3 of its 4 quarters are surveyed; the overview still draws all four. The line names it: "rock field · half surveyed", "· surveyed" at four.
 - **Call reports** how much is surveyed and what is still there to take: "Surveyed · 1 pod, 2 dew left", "Half surveyed · 2 fruit left", "Survey begun · Call further on · nothing to take yet". It never says "Nothing here". A pod still lying in the place glints again.
 - **The overview** draws each visited cell in quarters of 13 px: dotted (night dither) while unsurveyed, whole once surveyed. Pips (up to 3) count what is left to take in the unveiled part: pods, charge, warm stones, full dew cups, bushes with fruit, fruit on the ground, tufts, unclimbed cairns. The tick and the word "cleared" are gone. A located pod is a pip; its beat sign goes.
 - **The world turn** veils again what changed: the quarter of a stone that took fresh storm charge, the whole place where a new pod arrived. A surveyed place that was not changed stays surveyed across expeditions.
 
 ## Completion
 
-- **The reach grid.** One dot per reachable cell in the range square (5×5 at tier 1, 9×9 at tier 2): hollow while unsurveyed, filled (mint) once surveyed, your cell framed in amber, no dot for cells you can't reach (water, cliff, the island).
+- **The reach grid.** One dot per reachable cell in the range square (5×5 at tier 1, 9×9 at tier 2): hollow until explored, filled (mint) once 3 of its 4 quarters are surveyed, your cell framed in amber, no dot for cells you can't reach (water, cliff, the island).
 - **"Everything in reach is explored · ← Send home"** fires as the last dot fills (after the Call that completes it).
 - **Cargo** shows "Surveyed N of M in reach" with the same grid beside it.
 - **Wait** says what changed: "The storm edges east · two hoppers wander", "The fog bank rolls in", "The puffcap finished its meal", "Dew gathers in a cup"; or "Nothing is moving here".
@@ -65,7 +65,7 @@ Every source is an act you choose. Each caps at 20 carried.
 
 - **Energy never stalls.** Every expedition starts with at least one Energy source in reach: a storm charge or a warm stone. If there is none, the sun warms the stone closest to a place's way in near the start. (The round-2 rule of two lit stones on the first expedition is gone; warm stones cover it. In the scripted runs the guarantee never had to act.) On the first expedition the storm still starts two columns further away.
 - The band is 3 columns wide; rain falls under its core. While it is over you it crawls 0.14 columns per action (elsewhere 0.25), with lulls of 3 actions in every 12. The HUD shows 1–3 bolts and, beside them, the way it heads.
-- **Stray strikes**: each action in the open under rain, 1 in 12 (strong) or 1 in 6 (peak); none in shelter or inside a fog bank. **Warned strikes** aim at stones (or open tiles near you, never your own tile), one action ahead. A struck stone under the veil stays hidden until a Call: only Call lifts the veil.
+- **Stray strikes**: each action in the open under rain, 1 in 12 (strong) or 1 in 6 (peak); none in shelter or inside a fog bank. **Warned strikes** aim at stones (or open tiles near you, never your own tile), one action ahead. A strike on a veiled stone lifts the veil 3×3 around it, so its fresh charge shows.
 - Stones charge at the world turn where lightning really struck or under one flash in four (60% of the stones there, +2), and that quarter of the place is veiled again.
 - **Shield**: 3 bars at tier 1, 4 at tier 2. At 0 the Probe breaks: pods are kept, carried Energy, Data and Essence are lost; the next expedition starts mended.
 
@@ -83,20 +83,20 @@ Every source is an act you choose. Each caps at 20 carried.
 
 ## Call
 
-- **In a place** (1 action): lifts the veil (see Survey). Hidden pods and charged or warm stones in the square glint and stay outlined until taken. Curious creatures show "?" and come closer; wary ones show "!" for one action, then hide or run. A settling glowtail is startled. Your partner comes; a digger near the burrow digs it.
+- **In a place** (1 action): lifts the veil 11 tiles around you (see Survey). Hidden pods and charged or warm stones in the square glint and stay outlined until taken. Curious creatures show "?" and come closer; wary ones show "!" for one action, then hide or run. A settling glowtail is startled. Your partner comes; a digger near the burrow digs it.
 - **On the map**: pins your cell for 1 Energy, or removes your own pin for free.
 - **On the Companions screen**: the riding mibi hops to the front. Free.
 
 ## Creatures and feeding
 
-- **Four bubbles**, one at a time, each explained once the first time it shows in view: **!** startled ("stop, or it runs"), **?** curious ("it will come closer"), **fruit** (a red fruit on blush: "it eats what you carry · offer it, or put it down and back off"), **…** settling, with four pips under the creature that fill as it settles ("keep still with ← Wait"). The fruit bubble shows on every eater in view while you carry fruit. The partner-calm tilde from round 2 is kept.
-- **Diet before you offer.** Facing a creature you can see, the line names it and its diet: "Hopper · eats fruit", "Glowtail · doesn't eat fruit · settles when you keep still" (an unidentified species reads "Creature"). With fruit in hand, Confirm reads "Offer fruit" only for eaters; for a non-eater it reads "Doesn't eat fruit" (dimmed) and a press says so and spends nothing.
+- **Four bubbles**, one at a time, each explained once the first time it shows in view: **!** startled ("stop, or it runs"), **?** curious ("it will come closer"), **fruit** (a red fruit on blush: "it eats what you carry · offer it, or put it down and back off"), **…** settling, with four pips under the creature that fill as it settles ("keep still with ← Wait"). The fruit bubble shows on every eater of an identified species in view while you carry fruit. The partner-calm tilde from round 2 is kept.
+- **Diet before you offer.** Facing a creature of a species you have identified, the line names it and its diet: "Hopper · eats fruit", "Glowtail · doesn't eat fruit · settles when you keep still". An unidentified one reads "Unknown creature · watch what it does". The fruit bubble shows only on eaters of identified species. With fruit in hand, Confirm reads "Offer fruit" only for eaters; for a non-eater it reads "Doesn't eat fruit" (dimmed) and a press says so and spends nothing.
 - A shaken bush says who eats its fruit: "A fruit drops · hoppers eat these", or "no one here eats fruit". Putting fruit down explains itself once ("Fruit down · eaters come when you back off").
 - Creeping never startles a creature unless you step right next to it. A startled creature flees 3 tiles, never off-screen, then watches; after 3 quiet actions it goes back to its routine.
 
 ## Fog bank
 
-Cover: creatures notice walking 2 tiles later and creeping never startles; hand-feeding a wary creature works; dew cups refill about every 3 actions; no stray strikes; the map sweep stops and signs are hidden. **Sight is 4 tiles** (6 with a glowtail partner): beyond it the land takes the fog table and nothing on it is drawn. The veil and the fog look different: the veil is darker with night dots, the fog is pale with drifting puffs. Call reaches 3 tiles inside. The fog bank drifts with the field clock.
+Cover: creatures notice walking 2 tiles later and creeping never startles; hand-feeding a wary creature works; dew cups refill about every 3 actions; no stray strikes; the map sweep stops and signs are hidden. **Sight is 4 tiles** (6 with a glowtail partner): beyond it the land takes the fog table and nothing on it is drawn. The veil and the fog look different: the veil is darker with night dots, the fog is pale with drifting puffs. Call reaches 5 tiles inside. The fog bank drifts with the field clock.
 
 ## Station stand-in
 
@@ -133,22 +133,29 @@ New pods hatch as juveniles (ride in the Companion), grow up after 2 world turns
 
 ## Measured with scripted play (seeds 7, 13, 42)
 
-A bot plays through the real controls (`__mb.act`): it walks to the tile whose Call would unveil the most of the unsurveyed quarters, Calls, repeats until the place is surveyed, gathers, then walks off the edge toward the nearest unsurveyed cell. The **scout** takes pods and Energy; the **thorough** bot also takes dew, shakes bushes and presses the fruit, picks up tufts and climbs cairns.
+A bot plays through the real controls (`__mb.act`): it walks to the tile whose Call would unveil the most of the unsurveyed quarters, Calls, and repeats; the **scout** stops at 3 quarters (explored) and takes pods and Energy; the **thorough** bot surveys all four quarters and also takes dew, shakes bushes and presses the fruit, picks up tufts and climbs cairns. Then it walks off the edge toward the nearest unexplored cell.
 
-- **Energy home per calm expedition** (no storm; 60 expeditions, five in a row per world, ending after 130–370 actions, median 235, about two places): mean 1.9, median 2, range 0–6; 11 of 60 brought none. About two thirds of it is warm stones, the rest charge left by earlier storms. At 30% warm odds the mean was 1.6; at 8% it was under 1.
-- **With a storm stay** (Calls while sheltering, draws struck stones, banks at shield 1; 15 Weather expeditions): median 4.5 Energy home when sent (0–11); 3 of 15 broke.
-- **Calls per place**: mean 6.5, median 6 (a well-placed player needs 4–5; up to 14 under a fog bank, where Call reaches 3 tiles). A place takes about 100 actions to survey and gather.
-- **Cells fully surveyed per expedition**: about 2 (1–3) in 230–280 actions.
-- **Actions until "Everything in reach is explored"** (one expedition run to the end): scout 1,797 (15 reachable cells), 2,097 (18) and 3,975 (25, with a fog bank on the way); thorough 2,113, 2,626, and not reached by 4,128 actions (seed 7, 20 of 25 cells). A whole tier-1 reach brings home 10–20 Energy.
-- **Edge-walk presses per crossing**: 2 (step off, Confirm) in every crossing measured.
+Survey pace, tuned in three steps (radius 11, then 75%, then explored at 3 of 4 quarters):
+
+| | Calls per place (median) | Scout to "everything explored" | Thorough |
+| --- | --- | --- | --- |
+| Round 3 as first built (7, 90%, 4/4) | 6 | 1,797–3,975 | 2,113–not reached by 4,128 |
+| Radius 11 | 4 | 1,174–2,280 | 1,580–3,117 |
+| + 75% | 3 | 858–1,714 | 1,305–2,803 |
+| + explored at 3/4 (current) | 2 | 743–1,540 | 1,295–2,796 |
+
+The reach holds 15, 18 and 25 cells on the three seeds; a scout spends about 50–60 actions per cell (walking in, two Calls, walking out), so the target of 200 (scout) and 450 (thorough) actions is not met.
+
+- **Energy home per calm expedition** (no storm; 30 expeditions, five in a row per world, median 231 actions): mean 2.8, median 2.5, range 0–7; 3 of 30 brought none. Warm odds stay at 45%.
+- **With a storm stay** (measured before the survey tuning; Calls while sheltering, draws struck stones, banks at shield 1; 15 Weather expeditions): median 4.5 Energy home when sent (0–11); 3 of 15 broke.
+- **Edge-walk presses per crossing**: 2 (step off, Confirm).
 - **Wait**: on the map with no storm or fog near, "Nothing is moving here"; in a place with creatures it almost always names one moving.
 
 ## Known issues
 
-- **Completing a reach takes far too long** (1,800–4,000 actions; see above). With 28×32 places and a 15×15 Call a place needs 5–7 Calls and about 100 actions, so in a normal expedition only one or two dots fill. The proposal's own remedy (places of about 20×24 tiles, 3–4 Calls) is generator work outside this round's scope; a smaller Call threshold or fewer quarters are the other levers. Needs an owner decision.
-- Calm Energy is about 2 per expedition only because a survey is slow: it scales with places visited (about 1 per place). Smaller places would raise it unless the warm odds drop with them.
+- **Completing a reach is still long** (743–1,540 actions for a scout; see above): with places at 28×32 tiles the walk through each place sets the floor, whatever the Call does.
+- Calm Energy scales with places visited (about 1 per place); faster surveys would raise it unless the warm odds drop.
 - A place stays surveyed across expeditions, so its warm stones show on arrival without a Call; revisiting surveyed places nearby is a cheap source of +1s.
-- Lightning striking a veiled stone leaves it hidden until a Call (only Call lifts the veil), which can read as a strike that did nothing.
 - The veil has hard tile edges, as the ground types do. At 1× the map's dotted quarters on dark ground (wood) are subtle.
 - Seen meadow cells fade only from grass to a darker green. The map line rarely fits the cell you're on and the one ahead in full.
 - Tablet scale factors that don't snap give slightly uneven pixel widths. Some browsers block clipboard access; "Copy playtest notes" then shows the notes selected in a text box.
