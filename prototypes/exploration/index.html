@@ -2514,9 +2514,11 @@ function cupArt(full, cave) {
 function stoneArt(lit, cave, fr, warm) {
   // warm: a 2 px ring on the ground around its foot (amber with yellow dashes; fr 1 = the dim beat of its slow blink)
   // warm: one clean 2 px amber ring on the ground around its foot, pulsing slowly (fr 1 = the dim beat), nothing on the stone
-  if (warm && !lit && !cave) return art('stonew2' + fr, () => { const pb = new PB(32, 32), b = stoneArt(0, cave, 0); pb.blit(b, 0, 0);
-    for (let a = 0; a < 6.283; a += .04) for (const d of [0, 1]) { const x = Math.round(16 + Math.cos(a) * (14 + d)), y = Math.round(26 + Math.sin(a) * (4.5 + d));
-      if (x >= 0 && y >= 0 && x < 32 && y < 32 && pb.get(x, y) < 0) pb.set(x, y, fr ? C.orange : d ? C.amber : C.yellow); }
+  // warm: a 2 px amber ring fully inside the tile (a 26 px circle) and a 3 px amber dot on the stone's top; the slow
+  // pulse swaps the ring between two ambers (fr 1 = the dim beat)
+  if (warm && !lit && !cave) return art('stonew3' + fr, () => { const pb = new PB(32, 32), b = stoneArt(0, cave, 0);
+    for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const d = Math.hypot(x + .5 - 16, y + .5 - 16); if (d <= 13 && d > 11) pb.set(x, y, fr ? C.orange : C.amber); }
+    pb.blit(b, 0, 0); pb.rect(13, 5, 3, 3, fr ? C.orange : C.amber); pb.set(14, 5, fr ? C.amber : C.yellow);
     return pb; });
   return art('stone' + lit + cave + fr, () => { const pb = new PB(32, 32);
     if (cave) {

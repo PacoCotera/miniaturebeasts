@@ -256,7 +256,7 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 
 **Costs**: light or relight an outpost 1 Energy (lit 3 world turns) · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Energy · hatch 2 Energy + 4 Essence · study 2 Data · mend at home 1 Energy a bar · tier 2 Probe 12 Energy + 4 Data.
 
-**Stones**: plain grey · warm: an amber ring around its foot · charged: a blue-white crackle with a small bolt above · a yellow tile outline: lightning strikes there next.
+**Stones**: plain grey · warm: an amber ring around it and an amber dot on top · charged: a blue-white crackle with a small bolt above · a yellow tile outline: lightning strikes there next.
 
 **Clock**: "T7" in the top bar is the world turn; it flashes when the world turns.
 
