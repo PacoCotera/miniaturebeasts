@@ -122,7 +122,7 @@ body{
 .panel li::marker{color:var(--muted)}
 kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var(--line); border-bottom-width:2px; border-radius:5px; padding:2px 5px; white-space:nowrap}
 .muted{color:var(--muted)}
-.observer{border-top:1px solid var(--line); padding-top:12px; margin-top:2px}
+.observer{border-top:1px solid var(--line); padding-top:12px}
 .switch{display:inline-flex; align-items:center; gap:10px; background:none; border:none; padding:2px 0; color:var(--ink); font: 500 15px/1.4 var(--font-ui); cursor:pointer; border-radius:6px}
 .switch .track{width:36px; height:20px; border-radius:10px; background:var(--line); position:relative; transition:background .15s}
 .switch .track::after{content:""; position:absolute; left:3px; top:3px; width:14px; height:14px; border-radius:50%; background:var(--panel); box-shadow:0 1px 2px rgba(0,0,0,.3); transition:left .15s}
@@ -138,7 +138,8 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 .obs .log:empty::before{content:"Nothing yet"; color:var(--muted); margin-left:-20px}
 .pal{display:grid; grid-template-columns:repeat(12, 1fr); gap:3px; max-width:300px}
 .pal i{display:block; aspect-ratio:1; border-radius:2px; box-shadow: inset 0 0 0 1px rgba(127,127,127,.35)}
-.obs-row{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.obs-row{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.obs-row .btn{padding:6px 10px; font-size:13px}
 .reset-ask{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--chip); font: 500 14px/1.4 var(--font-ui); color:var(--ink)}
 .reset-ask[hidden]{display:none}
 .btn-danger{color:#a6420c; border-color:#a6420c}
@@ -191,8 +192,8 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 
   <aside class="panel" aria-label="Playtest notes">
     <h1>Companion Field Test</h1>
-    <p class="lede">Miniature Beasts · exploration rough playable. The screen is drawn as the Companion would draw it: 450×600 pixels, 48 colours. Creatures are tokens, not art.</p>
-    <details open>
+    <p class="lede">Exploration on a simulated Companion screen.</p>
+    <details id="howTo">
       <summary>How to play</summary>
       <ul>
         <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or <kbd>WASD</kbd>, or the pad: move. Tap to creep one step; hold to walk. Creeping never startles a creature unless you step right next to it.</li>
@@ -208,7 +209,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>Bubbles: <b>!</b> startled, stop or it runs · <b>?</b> curious, it comes closer · <b>fruit</b> it eats what you carry · <b>…</b> settling, keep still.</li>
       </ul>
     </details>
-    <details open>
+    <details id="whatTry">
       <summary>What to try</summary>
       <ol>
         <li>On an expedition the map shows your reach large, with the whole world small in the corner; "Full map" in the menu shows it all.</li>
@@ -4155,6 +4156,10 @@ copyBtn.addEventListener('click', () => {
 
 // ===================== 18. Boot =====================
 if (!load()) newWorld(urlSeed());
+// The side panel's two sections start collapsed; each one's open state is remembered per browser.
+for (const id of ['howTo', 'whatTry']) { const d = document.getElementById(id), k = 'mb-panel-' + id;
+  try { if (localStorage.getItem(k) === '1') d.open = true; } catch (e) { }
+  d.addEventListener('toggle', () => { try { localStorage.setItem(k, d.open ? '1' : '0'); } catch (e) { } }); }
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
 { const btn = document.getElementById('resetGame'), ask = document.getElementById('resetAsk'), yes = document.getElementById('resetYes'), no = document.getElementById('resetNo');
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
