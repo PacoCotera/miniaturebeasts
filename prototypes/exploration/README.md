@@ -1,25 +1,27 @@
-# Companion Field Test (exploration round 3, prototype round 6)
+# Companion Field Test (exploration round 3 + Companion mode, prototype round 7)
 
-Builds exploration round 3 ([`design/proposals/exploration-round-3.md`](../../design/proposals/exploration-round-3.md), its build scope, with the owner's condition that warm stones stay scarce) on top of round 2 ([`exploration-round-2.md`](../../design/proposals/exploration-round-2.md)) and the four-button control scheme ([`companion-controls.md`](../../design/proposals/companion-controls.md)), on an honest simulation of the Companion screen: a fogged 16×20 world map, living places under a survey veil, the action clock, storms and fog banks, materials with a purpose, the Station stand-in, partners by life stage, and Cargo → Station → world turn.
+Builds exploration round 3 ([`design/proposals/exploration-round-3.md`](../../design/proposals/exploration-round-3.md), its build scope, with the owner's condition that warm stones stay scarce) on top of round 2 ([`exploration-round-2.md`](../../design/proposals/exploration-round-2.md)) and the four-button control scheme ([`companion-controls.md`](../../design/proposals/companion-controls.md)), and Companion mode ([`companion-mode.md`](../../design/proposals/companion-mode.md): one "with you" slot, the active mibi screen, Energy via the Probe, the ← key), on an honest simulation of the Companion screen: a fogged 16×20 world map, living places under a survey veil, the action clock, storms and fog banks, materials with a purpose, the Station stand-in, the mibi with you, and Cargo → Station → the Companion's home view → world turn.
 
 ## Controls
 
-Four buttons. The bottom line always reads in three parts: **✓ what Confirm does** (at most 24 characters), the middle context (the only part that shrinks), and **← where Back goes** (at most 20 characters, never dropped). The HUD's top right always shows what **Call** will do, beside the Energy number.
+Four buttons. The bottom line always reads in three parts: **✓ what Confirm does** (at most 24 characters), the middle context (the only part that shrinks), and **← what the ← key does** (at most 20 characters, never dropped). The key is engraved with the ← glyph only ("Back" stays its internal name); the bottom line names what it opens on every screen. The HUD's top right always shows what **Call** will do, beside the Energy number.
 
-| | Pad | Confirm (Enter/Space) | Back (Esc/Backspace) | Call (C) |
+| | Pad | Confirm (Enter/Space) | ← (Esc/Backspace) | Call (C) |
 | --- | --- | --- | --- | --- |
 | Expedition choice, start map | Move between choices / glints | Choose; "Start here" | Menu (on the start map: back to the choice) | Nothing; its slot is empty |
-| Map | Tap one cell; hold to keep walking | Go down | Menu: Wait, Send home, Probe, Cargo, Companions | Pin this cell (1 Energy), or remove your own pin (free) |
-| Place | Tap: creep one step. Hold: walk. Off the edge: onto the next map cell | Act on what you face; "Nothing here" and "Veiled · Call to see" spend nothing | Menu: Wait, Leave this place, Send home, Probe, Cargo, Companions | Call: survey and pulse (1 action) |
+| Map | Tap one cell; hold to keep walking | Go down | Menu: Wait, Send home, Probe, Cargo, Mibis | Pin this cell (1 Energy), or remove your own pin (free) |
+| Place | Tap: creep one step. Hold: walk. Off the edge: onto the next map cell | Act on what you face; "Nothing here" and "Veiled · Call to see" spend nothing | Menu: Wait, Leave this place, Send home, Probe, Cargo, Mibis | Call: survey and pulse (1 action) |
 | Menu | Move focus | Run the entry; after Wait the menu stays open | Close | Nothing |
-| Probe / Cargo / Companions | Move focus | Patch the shield (two presses: the first arms it) / Send home / bring a mibi along | Close | Companions: calls the riding mibi to the front (free) |
-| Station | – | Continue, hatch, upgrade, next expedition | Menu (on the upgrade offer: not now) | Nothing |
+| Probe / Cargo | Move focus | Patch the shield (two presses: the first arms it) / Send home | Close | Nothing |
+| Mibis (roster) | Move between mibis | "Take Moss" (one press; the previous one goes home, Moss's screen shows) / "Visit Dot" on the mibi with you | "← menu" | The mibi with you answers (free) |
+| Active mibi (home view) | Left/right: the other mibis' screens | "Spend time with Dot" on the mibi with you; "Take Moss" on a mibi at home | "← Mibis" | The mibi with you answers; from another mibi's screen the view comes back to it first (free) |
+| Station | – | Continue, hatch, upgrade, Done (to the home view) | Menu (on the upgrade offer: not now, to the home view) | Nothing |
 
 - New world is offered only between expeditions (last menu entry).
 - One-time pointer messages: first map entry ("Walk with the pad · ✓ goes down · ← Wait and Send home"), first place ("A veil hides what is here · ))) Call lifts it around you"), first edge crossing ("Onto the next cell · ✓ goes down into it"), the storm's arrow on the map ("▶ · the yellow arrow · the storm moves this way"), first pod, first warm stone, hold full, the four creature bubbles, nothing left ("Everything in reach is explored · ← Send home").
 - The menu keeps the same rows everywhere: on the map the Leave row shows dimmed ("Leave · in a place") and focus skips it. The tier 2 upgrade also takes two presses.
 - The menu shows no action count. Its Send home entry reads "Explored N of M in reach" on the bottom line.
-- The depicted shell has Call directly above Back, both left of a larger Confirm. Call is teal with a ring texture.
+- The depicted shell has Call directly above the ← key (engraved ← only), both left of a larger Confirm. Call is teal with a ring texture.
 - The bottom line sets its glyphs 1 px apart (still 2× pixels) so the three parts fit 450 px.
 - One-time lines count as shown only if they are still in the message box when the action ends; one pushed out by a more urgent line comes back next time.
 
@@ -28,7 +30,7 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 1. Choose Weather (or Deep ground, with a digging partner), pick a start: the first time a glint, later any seen cell. A dotted square shows the Probe's range from that start; the dot grid in the HUD's top-left corner is the same square.
 2. Walk the map. Each step lifts the fog one ring around you (not inside a fog bank). Go down into a place: it lies under a veil. Call to survey it, quarter by quarter, and gather what the survey shows.
 3. Walk off the place's edge onto the next cell, Confirm, and survey that one. Each place you Call in fills its dot.
-4. Send home from the menu (Cargo shows "Explored N of M · fully surveyed K" and what the Station will do), or the Probe breaks. The Station spends what you bring, then the world turns once.
+4. Send home from the menu (Cargo shows "Explored N of M · fully surveyed K" and what the Station will do), or the Probe breaks. The Station spends what you bring, then the world turns once. ✓ Done shows the Companion's home view: the mibi with you, large. ← Mibis, ← menu (Next expedition focused), ✓ sets out again.
 
 ## Survey
 
@@ -78,7 +80,7 @@ Every source is an act you choose. Each caps at 20 carried.
 | 2 | 4 (9×9) | 3 | 4 | Reads the deep "?" (once: a sealed pod rises) |
 
 - **Cell states**: fog (cloud) · seen (muted through the fade table) · visited (full colour, in quarters, dotted until surveyed, with pips for what is left).
-- **Five signs**: paw (tracks), beat (a pod not found yet), bolt (a storm-charged stone; warm stones give none), pin (yours), and a gate's own shape. Signs on surveyed cells and inside a fog bank are not drawn, except gates and pins.
+- **Five signs**: paw (tracks), beat (a pod not found yet), bolt (a storm-charged stone; hollow for a warm stone a Call has found), pin (yours), and a gate's own shape. Signs on surveyed cells and inside a fog bank are not drawn, except gates, pins and found Energy. The sweep alone never shows a warm stone: only a Call finds one.
 - The map's line names the cell you're on, how much of it is surveyed, and the one you face ("meadow · half surveyed · Ahead: wood").
 - **Survey cairn**: climbing it reveals land 3 cells around, beyond range; the fog lifts ring by ring from it.
 
@@ -86,7 +88,8 @@ Every source is an act you choose. Each caps at 20 carried.
 
 - **In a place** (1 action): lifts the veil 11 tiles around you (see Survey). Hidden pods and charged or warm stones in the square glint and stay outlined until taken. Curious creatures show "?" and come closer; wary ones show "!" for one action, then hide or run. A settling glowtail is startled. Your partner comes; a digger near the burrow digs it.
 - **On the map**: pins your cell for 1 Energy, or removes your own pin for free.
-- **On the Companions screen**: the riding mibi hops to the front. Free.
+- **At home** (Mibis and the active mibi screen): the mibi with you hops to the front and chirps; a juvenile looks the wrong way first on two calls in three. Free.
+- **Finding Energy.** A Call that leaves any charge or warm stone showing in the place leads its tally with it: "Energy nearby · a warm stone north · Half surveyed". The stone's map cell keeps a bolt until it is drawn, surveyed or not: solid for storm charge, hollow (yellow rim, dark inside, a little fatter) for a warm stone. The Probe screen reads "Energy in reach: N" (Energy in found, undrawn stones in the reach).
 
 ## Creatures and feeding
 
@@ -103,20 +106,28 @@ Cover: creatures notice walking 2 tiles later and creeping never startles; hand-
 
 After each expedition the Station identifies each pod (1 Energy; the first pod ever is free), reads waiting studies (2 Data each), hatches one founder of a species you don't raise yet (2 Energy + 4 Essence), and offers the tier 2 Probe at 12 Energy + 4 Data. Whatever it can't pay for waits and says what it needs. Then up to three world-turn lines and a large **Next expedition** button.
 
+## The mibi with you
+
+- **One slot.** Exactly one mibi is **with you** in the Companion; everyone else is **at home**. Grown (adult or elder), it is also the expedition partner. A juvenile with you comes along in the Companion but is no partner: the expedition screen's partner row reads "Dot is with you · too young for the Probe". Grown, it becomes the partner with no press ("Dot is grown · your Probe partner now").
+- **Choosing is one press**: ✓ "Take Moss" on Mibis, on Moss's own screen, or on the expedition screen's partner row ("Take Moss instead", cycling through grown mibis at home). The message says "Dot stays home · Moss is with you". Deep ground with a digger at home reads "Take Fig · go deep": one press takes it and goes.
+- **Edge cases.** No mibis: an empty pod outline, "No mibi yet · Bring a pod home, it hatches at the Station", Call's slot empty, ✓ Next expedition. A hatch takes the slot only when no one is with you; otherwise it waits at home. Mid-expedition the roster is read-only ("Moss is with you until you're home"). The slot is saved and carries across expeditions and world turns.
+- **The active mibi screen** (the Companion's home view, after the Station's ✓ Done, or ✓ Visit on Mibis): the token art at 8× (256×256, pixel for pixel) on a stage, a slow two-frame idle (still under reduced motion), name, stage chip, species and ability, and the status ("with you · joins the Probe", "with you · too young for the Probe (1 world turn)", "at home · grown this turn"). Page dots below (the mibi with you ringed in amber); ◀ ▶ when there are others. No needs, meters or mood until bonding and care exist (the slot is left empty).
+- **Spend time** is action-less and gives nothing: a short species moment (a hopper leans on the glass, paw marks; a glowtail glows, dithered halo and sparks; a puffcap puffs) and one line from its last expedition ("Moss remembers the meadow", the land it saw most), or "hasn't been out yet".
+
 ## Partners by life stage
 
-New pods hatch as juveniles (ride in the Companion), grow up after 2 world turns (can come along), and become elders after 6 more (double calming and sniffing radius, feel every stray strike, slow). A glowtail digs the narrow burrow and glows (Call keeps its reach and sight widens to 6 tiles in a fog bank); a hopper calms wary creatures; a puffcap sniffs out buried pods and flinches before stray strikes.
+New pods hatch as juveniles (with you in the Companion if the slot is free, too young for the Probe), grow up after 2 world turns (can be your partner), and become elders after 6 more (double calming and sniffing radius, feel every stray strike, slow). A glowtail digs the narrow burrow and glows (Call keeps its reach and sight widens to 6 tiles in a fog bank); a hopper calms wary creatures; a puffcap sniffs out buried pods and flinches before stray strikes.
 
 ## Screen and budget assumptions (as if targeting the ESP32-S3 Companion)
 
 - **Frame.** Offscreen 450×600 at 1:1 device pixels, blitted to the page with `image-rendering: pixelated`. Integer coordinates only; no anti-aliasing, gradients, alpha blending or blur. The page snaps its scale to a whole number of physical pixels per device pixel when that costs ≤15% size.
-- **Palette.** 48 colours, kept as data (`PALETTE`) at the top of the script and shown in the Observer. `__mb.offPalette()` confirms every pixel of the frame is a palette entry (checked this round on the map, a veiled and an unveiled place, the storm, a fog bank, the Station and Companions). Blending effects use only palette lookup tables (storm light, cave dim and dark, fog, the fade table for seen cells and old signs) and the ordered 4×4 Bayer dither (fog bank, warnings, dimmed menus, transitions, the survey veil, unsurveyed quarters on the map). No new tables were added this round.
+- **Palette.** 48 colours, kept as data (`PALETTE`) at the top of the script and shown in the Observer. `__mb.offPalette()` confirms every pixel of the frame is a palette entry (checked this round on the map, a veiled and an unveiled place, the storm, a fog bank, the Station, the Mibis roster, the active mibi screen and the Probe screen). Blending effects use only palette lookup tables (storm light, cave dim and dark, fog, the fade table for seen cells and old signs) and the ordered 4×4 Bayer dither (fog bank, warnings, dimmed menus, transitions, the survey veil, unsurveyed quarters on the map). No new tables were added this round.
 - **Layout.** HUD 26 px, view 450×540, bottom line 34 px. The HUD holds, left to right: the reach grid (3 px dots at tier 1, 2 px at tier 2, 1 px gaps; 9×9 at tier 2 is the full 26 px), shield bars, pod outlines, the partner (its name drops when space runs out); then the fog heading, storm bolts and heading, Energy, the Call slot, and at the far right a 30 px status slot for battery and connectivity. Text is a 5×7 bitmap font at 2× minimum (14 px caps), 3× for headings; the bottom line sets glyphs 1 px apart.
 - **Tiles.** Places are 28×32 tiles of 32×32 px; at most 16×19 tiles in view (≤304 tile blits per full redraw), autotiled by 4-bit masks with 2–4 variants and 2 water frames.
 - **The veil.** One bit per tile, stored as 32 row words per place (128 bytes), plus a 4-bit quarter mask per map cell. A veiled tile is drawn from a variant of the same tile baked once per tile and light level (the DARK table plus a 4×4 Bayer dot of night), so it costs no extra blit and no per-pixel work per frame. Canopies and overhang roofs over veiled tiles use the same variant. Inside a fog bank, tiles beyond sight use the existing fog-table variant.
 - **Map.** 16×20 cells of 26 px. Terrain, its storm-dark copy, its faded copy and the fog cloud layer are baked once per world (4 × 216 KB at 8 bpp, or redrawn from cell tiles). Per-frame overlays: fog cells, faded seen cells, a 13×13 dither sprite per unsurveyed quarter of a visited cell (at most 4 per cell), pips, signs, the storm band, the range square, pins, the pawn and the trail.
 - **Benchmark** (headless Chromium, mean ms per call over 300 calls, seeds 7, 13, 42, against main): drawMap 2.11–2.38 main vs 2.22–2.30 here (and 2.41–2.45 vs 2.31–2.47 with visited cells); drawPatch 0.89–0.90 vs 0.91–1.00 in a veiled place, 0.92–1.21 vs 0.94–1.03 half surveyed, 0.93–1.02 vs 0.98–1.06 in a fog bank. All within 1.15× of main.
-- **Sprites.** Tokens are 32×32; features ≤32×32; canopies 88×76; overhang roofs 104×22. Budget ≤40 sprites per frame. New this round: the fruit bubble (11×13), the warm stone (32×32, a ring of dots baked in), the battery and radio icons (15×9, 9×9). The veil hides sprites, so a veiled place draws fewer.
+- **Sprites.** Tokens are 32×32; features ≤32×32; canopies 88×76; overhang roofs 104×22. Budget ≤40 sprites per frame. New this round: the fruit bubble (11×13), the warm stone (32×32, a ring of dots baked in), the battery and radio icons (15×9, 9×9). The veil hides sprites, so a veiled place draws fewer. Companion mode adds the mibi at 8× (256×256, baked once per species, pose and frame by integer upscale of the 32×32 token), its floor shadow (180×22), the glowtail's dithered halo (300×220, checkerboard), the hollow bolt (14×17) and the hopper's paw marks (27×27, the 9×9 icon at 3×); the active screen draws at most about 10 sprites plus text.
 - **Redraw.** The browser redraws every animation frame; the device would redraw on input or action, with 110–170 ms slides at full rate and 2–4 Hz idle cycles using dirty rectangles. No per-pixel effects.
 - **Motion.** Hold-to-walk starts after 230 ms and repeats every 150 ms. A shield hit gives a 260 ms 3 px shake and a 90 ms bright border; Call sends an expanding ring. With reduced motion: no shake, flash, slides or blinking.
 
@@ -166,7 +177,7 @@ The reach holds 15, 18 and 25 cells on the three seeds; a scout spends about 33�
 
 ## Persistence and tools
 
-- Saves to localStorage with save format v6; older saves (v1–v5) are discarded on load. Works without storage. `?seed=N` sets the seed of the next New world; a saved world keeps playing until you choose New world.
-- The Observer shows expedition, world turn, actions, location, partner and rider, Probe, carried and Station materials, map counts (visited, surveyed, seen, fog; in reach), **Survey** (the current cell's four quarter percentages, its Calls, and "Explored N of M in reach"), **Energy** (warm and storm-charged stones in reach, how many unveiled, and Energy drawn from warm stones this expedition), seed, the last 8 events and the palette, plus "Copy playtest notes".
+- Saves to localStorage with save format v7 (one `with` slot replaces `along` and `rider`); older saves (v1–v6) are discarded on load. Works without storage. `?seed=N` sets the seed of the next New world; a saved world keeps playing until you choose New world.
+- The Observer shows expedition, world turn, actions, location, the mibi with you (and whether it is the partner) and who is at home, Probe, carried and Station materials, map counts (visited, surveyed, seen, fog; in reach), **Survey** (the current cell's four quarter percentages, its Calls, and "Explored N of M in reach"), **Energy** (warm and storm-charged stones in reach, how many unveiled, and Energy drawn from warm stones this expedition), seed, the last 8 events and the palette, plus "Copy playtest notes".
 - Test hooks: `window.__mb` (state, `lineFor`, `capture`, `offPalette`, `act`, `press`/`release`, `reachCounts`, `surveyed`, `quarterFracs`, `unveiled`, `leftCounts`, `pipsOf`, `stoneWarm`, `stormCharge`, `sightR`, `bubbleOf`, `crossReason`, `stormLevel`, `sendPreview`, `mapCounts`, `TEST` and others).
 - The build stamp reads `../../build.json` (written by CI); a local copy shows "local build". One self-contained file with no build step.
