@@ -1,19 +1,34 @@
-# Companion Field Test (exploration rough playable, round 2)
+# Companion Field Test (exploration rough playable, round 3)
 
 Tests the combined exploration design on an honest simulation of the Companion screen: a fogged 16×20 world map (start on any glint; placing reveals the 3×3), living patches with three token species, the action clock, storm and fog bank, partners hatched from pods, two partner gates, and Cargo → Station → world turn.
 
-Controls: arrows/WASD or the pad (tap = creep one step, hold = walk); Enter/Space or orange = Confirm (does what the bottom line says); Esc/Backspace or grey = Back (patch → map → mode list). No other controls.
+Controls: arrows/WASD or the pad (tap = creep one step, hold = walk); Enter/Space or orange = Confirm (does what the bottom line says); Esc/Backspace or grey = Back, which opens the mode list (in a place too). No other controls.
+
+**Waiting.** During an expedition the mode list's first entry is **Wait**: one deliberate quiet action. The list stays open after waiting, so Confirm, Confirm… keeps waiting while the place stays visible behind the small list; Back returns. In a place the second entry is Leave (or Climb out); walking off an edge also leaves. Chosen over Back-then-Back, which would hide an action inside a navigation gesture.
 
 ## The loop
 1. Expedition 1 has no partner. Bring a pod home with Cargo → Send.
 2. The Station screen shows the cargo, one line per item, and identifies the pod ("unknown species → Hopper"). The first time a shed trigger brings a pod home, it adds one discovery line ("Hoppers shed when they shake dry."). Identified species leave tracks on the map.
 3. A pod of a species you don't raise yet incubates: "Opened: a long-eared hopper. Name: Pip." The screen also lists the world-turn lines. That's 1 or 2 screens, with no menus.
-4. From the next expedition, Companions offers "Bring Pip along". Each species gives its partner one ability:
+4. From the next expedition, the Partner row on the expedition screen (or Companions) offers "Bring Pip along". Each species gives its partner one ability:
    - burrower (Glowtail): digs the narrow burrow under the cliff, which opens the cave and Deep ground;
    - Hopper: calms wary creatures. They notice you two tiles later, don't bolt when you walk close, and accept fruit;
    - Puffcap: sniffs out buried pods within about 5 tiles.
    If the first pod is a hopper, the burrow stays shut until you bring home a burrower pod.
 5. Gates: the burrow (needs a digger) and the fast water across from the river island (needs a swimmer; nothing swims yet). Bumping or pressing Confirm at a gate drops a pin. A partner goes to look at a gate it can handle and ignores the others.
+
+## Round 3 (from the round-2 playtest)
+- **Causes in the message line.** Results now show even when they happen offscreen: "Something dropped a pod near the overhang", "Something ate the fruit by a bush", "Pip keeps the hopper calm", "A glowtail is settling under a tree". In view they name the creature ("The hopper shook dry · a pod rolled loose"). The two or three most important notes share the line until your next action; Back and browsing the list keep it.
+- **Glowtails settle where you can see it.** By its hole or in the cave, a glowtail with you at least 3 tiles away (2 with a calming or kin partner) gains one step per quiet action. You see four pips over it fill, and it lowers and then curls up. The rule is still 8 quiet actions. The first time it shows "The glowtail is settling. Keep still". Walking or coming too close resets it with a reason ("looks up · too close"). A pulse within 7 tiles startles it: "Your pulse startled the glowtail · it stopped settling".
+- **An early burrower.** Every start glint has a rock or wood cell beside it with three glowtails and an overhang. A wet glowtail curls up in shelter during rain; after three curled actions one may drop a pod (one per species per rain spell). In the first two expeditions those glowtails are always ready, so the first storm can give a burrower pod without the burrow. New discovery: "Glowtails shed when they curl up out of the rain."
+- **An informed start.** Each glint shows its strongest nearby sign (slow beat, tracks or rings), and the line names the land and the sign. Placing a Weather start also previews where the storm band will begin.
+- **Fewer map signs.** Signs fade after one turn and disappear after two. Known-species tracks show only on each species' 3 strongest cells (2 or more creatures). All signs together cover at most 40% of revealed cells; pins and the deep "?" are always shown, and slow beats rank highest. Slow beats and pins are drawn larger. New pods from a world turn leave a beat on known land, so "something is stirring" can be found.
+- **Pods.** Each species has a subtle shell mark: two ear stripes on a hopper pod, a glow dot on a glowtail pod, cap spots on a puffcap pod. Pods have a dark outline and are drawn above canopies and roofs.
+- **Storm.** While the band is over your place it crawls, staying about 30 actions, and rains in spells with a 3-action lull every 12 ("The rain eases for a moment"; the line says "lull"). Elsewhere it moves at map speed, so it still arrives within about 12 actions. Lulls make each rain spell a new shelter event. A direct strike costs a hull mark; the first hit explains the hull bars, and a "hull 2/3" tag shows for a few actions after any hit. The first warning tile is explained in words.
+- **Confirm never silently pulses.** A spent bush, rung stone, empty cup, uncharged stone or blocked tile says "Nothing here", and Confirm then does nothing and spends no action. Pulse happens only when the line says Pulse: open ground, a creature, or a charged stone not yet seen.
+- **Quieter HUD.** Supplies are unchanged, but their count shows only for a few actions after it changes ("+2"). The Cargo screen still has the totals.
+- **Small fixes.** The partner row on the expedition screen is selectable (one press). The "swap" float fits its box. The right side of the bottom line drops trailing words instead of truncating.
+- Save format v3; v1 and v2 saves are discarded.
 
 ## Screen and budget assumptions (as if targeting the ESP32-S3 Companion)
 - **Frame.** Offscreen 450×600 at 1:1 device pixels, blitted to the page with `image-rendering: pixelated`. Drawing uses integer coordinates only. There are no anti-aliased lines, gradients, alpha blending or blur. The page snaps its scale to a whole number of physical pixels per device pixel when that costs ≤15% size (a phone at 3× gets exactly 2×).
@@ -25,7 +40,7 @@ Controls: arrows/WASD or the pad (tap = creep one step, hold = walk); Enter/Spac
 - **Redraw.** The browser redraws the full frame on every animation frame for simplicity. On the device: redraw on input or action; slides of 110–170 ms run at full rate (the camera scrolls, so the view redraws fully); between actions run only 2-frame idle cycles at 2–4 Hz using dirty rectangles around sprites, water and the warning tile. No per-pixel effects.
 - **Motion.** Hold-to-walk starts after 230 ms and repeats every 150 ms, matching the 150 ms slide, so a held walk is smooth; a tap is exactly one creeping step. A hull hit gives a 260 ms 3 px shake and a 90 ms bright border; Confirm-pulse sends an expanding ring. With reduced motion: no shake, flash, slides or blinking; static rings and a steady border instead. Messages stay until the next action.
 
-## Round-1 fixes in this build
+## Round-1 fixes (round 2)
 - The storm band starts 3 columns upwind of the start, so it arrives in about 12 actions. A strike is warned one action ahead on a glowing tile, with a message when the strike is aimed at you. Lightning picks stones about 60% of the time and your tile about 8% (12% when there are no stones).
 - Hoppers sheltering together: at most one sheds per shelter event (one spell of rain over a place). The others shake without shedding.
 - The cave no longer gives pods freely with a partner. A glowtail needs 8 quiet actions with you at least 3 tiles away (2 with a calming or kin partner), and each cave gives at most one such pod per expedition.
@@ -43,9 +58,13 @@ Controls: arrows/WASD or the pad (tap = creep one step, hold = walk); Enter/Spac
 - Tablet scale factors that don't snap (for example about 1.9× on an iPad in landscape) give slightly uneven pixel widths.
 - The hopper partner's calming effect is real but modest; in scripted runs flee counts dropped (2 → 0, 1 → 0) or were already 0.
 - Weather expeditions always have a storm, so "A storm charged stones…" appears almost every turn.
+- Lulls make every rain spell a new shelter event, so a long storm can give two or three hopper pods in one place.
+- Notes can crowd the line: up to about 78 characters fit, and lower-priority notes are dropped.
+- In the test seeds every start glint showed tracks (creatures are everywhere), so the start signs vary less than intended.
+- Waiting takes two presses the first time (Back, Confirm), then one per action.
 - Some browsers block clipboard access; "Copy playtest notes" then shows the notes selected in a text box.
 
 ## Persistence and tools
-- Saves to localStorage with save format v2; round-1 saves are discarded on load. The game works without storage (in memory only). New world is in the mode list. `?seed=N` makes the next new world reproducible.
+- Saves to localStorage with save format v3; older saves are discarded on load. The game works without storage (in memory only). New world is in the mode list. `?seed=N` makes the next new world reproducible.
 - The Observer panel shows expedition, world turn, actions, location, partner, seed, the last 8 events and the palette swatches, plus a "Copy playtest notes" button.
 - The build stamp reads `../../build.json` (written by CI); a local copy shows "local build". One self-contained file with no build step.
