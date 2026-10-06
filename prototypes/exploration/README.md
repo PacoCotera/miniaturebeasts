@@ -4,12 +4,12 @@ Builds exploration round 3 ([`design/proposals/exploration-round-3.md`](../../de
 
 ## Controls
 
-Four buttons. The bottom line always reads in three parts: **✓ what Confirm does** (at most 24 characters), the middle context (the only part that shrinks), and **← what the ← key does** (at most 20 characters, never dropped). The key is engraved with the ← glyph only ("Back" stays its internal name); the bottom line names what it opens on every screen: "← Wait · Leave" in a place (both apply), "← Leave" alone in a place that is fully surveyed with nothing to take (one press out), "← Wait · Send home" on the map ("← Send home · Wait" once the reach is explored), "← close" on screens. A screen never offers two ways out: read-only screens (Probe without a patch to make, Cargo at home) leave the ✓ part empty. The middle carries the place and its survey state, then the **conditions**: storm bolts (1–3) with the storm's heading ◀/▶, and the fog bank's patch with its drift, explained once on first sighting ("Bottom line: bolts are the storm · it moves ◀ west"). It drops the place name first and never drops below the survey words. The HUD's top right shows what **Call** does right now as a verb ("))) pulse", "))) pin 1⚡", "))) call Dot"), explained once ("))) shows what the Call button does here").
+Four buttons. The bottom line always reads in three parts: **✓ what Confirm does** (at most 28 characters), the middle context (the only part that shrinks), and **← what the ← key does** (at most 20 characters, never dropped). The key is engraved with the ← glyph only ("Back" stays its internal name); the bottom line names what it opens on every screen: "← Wait · Leave" in a place (both apply), "← Leave" alone in a place that is fully surveyed with nothing to take (one press out), "← Wait · Send home" on the map ("← Send home · Wait" once the reach is explored), "← close" on screens. A screen never offers two ways out: read-only screens (Probe without a patch to make, Cargo at home) leave the ✓ part empty. The middle carries the place and its survey state, then the **conditions**: storm bolts (1–3) with the storm's heading ◀/▶, and the fog bank's patch with its drift, explained once on first sighting ("Bottom line: bolts are the storm · it moves ◀ west"). It drops the place name first and never drops below the survey words. The HUD's top right shows what **Call** does right now as a verb ("))) pulse", "))) pin 1⚡", "))) call Dot"), explained once ("))) shows what the Call button does here").
 
 | | Pad | Confirm (Enter/Space) | ← (Esc/Backspace) | Call (C) |
 | --- | --- | --- | --- | --- |
 | Expedition choice, start map | Move between choices / glints | Choose; "Start here" | Menu (on the start map: back to the choice) | Nothing; its slot is empty |
-| Map | Tap one cell; hold to keep walking | Go down | "← Wait · Send home": the menu (Wait, Send home, Probe, Cargo, Mibis) | Pin this cell (1 Energy), or remove your own pin (free) |
+| Map | Tap one cell; hold to keep walking | Go down | "← Wait · Send home": the menu (Wait, Send home, Probe, Cargo, Mibis) | Pin this cell (1 Energy), or remove your own pin (the Energy comes back if you pinned it this expedition) |
 | Place | Tap: creep one step. Hold: walk. Off the edge: onto the next map cell | Act on what you face; facing nothing, **✓ Wait** (one action, the same as the menu's Wait); "Veiled · Call to see" spends nothing. A pod with a full hold opens the swap chooser | "← Wait · Leave": the menu (Wait, Leave this place, Send home, Probe, Cargo, Mibis); "← Leave" in a finished, empty place | Pulse: survey further (1 action) |
 | Menu | Move focus | Run the entry; after Wait the menu stays open | Close | Nothing |
 | Probe / Cargo | Move focus | Patch the shield (two presses: the first arms it) / Send home | Close | Nothing |
@@ -18,6 +18,7 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 | Station | – | Continue, hatch, upgrade, Done (to the home view) | Menu (on the upgrade offer: not now, to the home view) | Nothing |
 
 - New world is offered only between expeditions (last menu entry).
+- **Edges and messages.** A held walk stops on a place's edge tile ("Edge of the place · tap again to step off"); stepping off needs a fresh tap. The message box never clips words: notes that don't fit in two lines wait for the next action, and one long note may take three lines.
 - One-time pointer messages: first map entry ("Walk with the pad · ✓ goes down · ← Wait and Send home"), first place ("The veil lifts as you walk · Call sweeps further"), first edge crossing ("Onto the next cell · ✓ goes down into it"), the storm's arrow on the map ("▶ · the yellow arrow · the storm moves this way"), first pod, first warm stone, hold full, the four creature bubbles, nothing left ("Everything in reach is explored · ← Send home").
 - The menu keeps the same rows everywhere: on the map the Leave row shows dimmed ("Leave · in a place") and focus skips it. The tier 2 upgrade also takes two presses.
 - The menu shows no action count. Its Send home entry reads "Explored N of M in reach" on the bottom line.
@@ -34,11 +35,13 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 
 ## Survey
 
+- **Call finishes quarters.** A Call sweeps the rest of the quarter you stand in, and of any quarter that is now three quarters seen, so walking a place and Calling once in each quarter always reaches 4/4. Checked by script: walking plus one Call per quarter on 33 places (seeds 7, 13, 42) reached 4/4 in all 33.
+
 - **The veil.** Every place (not the cave under the cliff) starts veiled: the ground shows through, one step darker with a 4×4 dot pattern, so you can see where to walk. Creatures always show (in sight); features, pods, drops (fruit, tufts) and stones on a veiled tile are not drawn. Facing one, Confirm reads "Veiled · Call to see" and spends nothing; bumping into one says "Something is there under the veil · ))) Call to see". Landmarks show anyway: the narrow burrow, the cave exit, the pod on the island. Fruit you put down yourself stays visible.
 - **Call lifts it** in a 23×23 square around you (11 tiles; 5 in a fog bank unless a glowtail partner is along), matching its ring. **Walking lifts it too**, in a circle of 3 tiles around the pawn (like the cave light), spreading only through open ground: it lifts the first shore, trunk or cliff tile it meets but nothing behind it, at every step and on arrival; whatever is lifted stays lifted. Quarters and "fully surveyed" count walked tiles, so walking a place thoroughly can survey it; "explored" (the reach dot) still needs one Call there. A Call that adds nothing new reads "· walk or Call further on". Walking does not dig up buried pods or make creatures react: that is still Call's. Lightning striking a veiled stone lifts the 3×3 around it. Tiles no Call could reach (more than 11 tiles from any walkable tile) don't count and show plainly.
 - **Quarters.** A place has four quarters of 14×16 tiles. A quarter is **surveyed** only when every tile in it that a Call could reach is unveiled, so the words never run ahead of the picture; the overview draws a quarter that is 75% or more unveiled with a lighter "almost" dot tint, and the Call tally names what is left ("3/4 surveyed · a corner north-east still veiled"). Checked by script: on 31 places across seeds 3, 5, 7, 13 and 42 (a bot surveying to 100%), every time the line or the tally said "surveyed" the place had 0 veiled tiles. A cell counts as **explored** (its reach dot fills) once it is visited and at least one Call was made inside it; the overview still draws all four quarters, so a partial and a full survey stay visible. The bottom line names it in words a child reads, one step brighter than the rest of the middle: "rock field · surveyed 2/4 · 3 to take" while things remain, "rock field · surveyed · nothing to take" when done, "rock field · not surveyed" before any quarter is. Walking alone never hears what is buried: a place surveyed by walking reads "surveyed · Call to hear below" until a Call is made there, and a place counts as finished ("nothing to take", the one-press "← Leave", its slow beat hidden on the map) only after a Call there and with no pod still buried.
 - **Call reports** how much is surveyed and what is still there to take, each kind with the way to its nearest one ("Half surveyed · a pod east, a warm stone north-west"); announced pods keep the dotted outline until taken. Earlier examples: "Surveyed · 1 pod, 2 dew left", "Half surveyed · 2 fruit", "Survey begun · Call further on · nothing to take yet". It never says "Nothing here". A pod still lying in the place glints again.
-- **The overview** draws each visited cell in quarters of 13 px: dotted (night dither) while a quarter is under 75% unveiled, a lighter "almost" dot tint from 75% until every tile is unveiled, whole once surveyed. It marks only what is worth coming back for: a pod you saw and left behind shows the pod sign, a found charged stone the bolt, a found warm stone the hollow bolt. Fruit, dew, tufts and cairns never mark the map (no pips); the Call tally, Cargo and the map line still count them ("Ahead: wood · 3 to take"). The trail of this expedition is drawn in bone; the last expedition's trail stays dim (stone) during the next expedition, then is gone; both only inside the current reach square.
+- **The overview** draws each visited cell in quarters of 13 px: dotted (night dither) while a quarter is under 75% unveiled, a lighter "almost" dot tint from 75% until every tile is unveiled, whole once surveyed. It marks only what is worth coming back for: a pod you saw and left behind shows the pod sign, a found charged stone the bolt, a found warm stone the hollow bolt. Fruit, dew, tufts and unlit beacons never mark the map (no pips); the Call tally, Cargo and the map line still count them ("Ahead: wood · 3 to take"). The trail of this expedition is drawn in bone; the last expedition's trail stays dim (stone) during the next expedition, then is gone; both only inside the current reach square.
 - **The world turn** veils again what changed: the quarter of a stone that took fresh storm charge, the whole place where a new pod arrived (its reach dot empties: it needs a Call again). A surveyed place that was not changed stays surveyed across expeditions.
 
 ## Completion
@@ -84,7 +87,7 @@ Every source is an act you choose. Each caps at 20 carried.
 - **Five signs**: paw (tracks), beat (a pod not found yet), bolt (a storm-charged stone; hollow for a warm stone a Call has found), pin (yours), and a gate's own shape. Signs on surveyed cells and inside a fog bank are not drawn, except gates, pins and found Energy. The sweep alone never shows a warm stone: only a Call finds one.
 - The map's line names the cell you're on, how much of it is surveyed, and the one you face ("meadow · half surveyed · Ahead: wood").
 - **Slabs** spawn only where some push works (a free tile beyond, a reachable tile to stand on opposite) and water or cliff touches at most one side; the generator moves any that fail to the nearest spot that passes.
-- **Survey cairn**: climbing it costs **1 Energy** ("✓ Climb · reveals the land around · 1 Energy"; at 0 it dims and says why) and reveals land 3 cells around, beyond range; the map shows the fog lifting ring by ring, then (after the sweep, or at any press) you are back exactly where you stood beside the rock, facing it.
+- **Beacon** (was the survey cairn): a stone post with a lamp cage, dark until lit. "✓ Light the beacon · 1 Energy" (at 0 Energy it dims and says why) reveals land 3 cells around, beyond range; the map shows the fog lifting ring by ring, then (after the sweep, or at any press) you are back exactly where you stood, facing it. The log says "Lit the beacon · −1 Energy · N cells". Lit, it burns with a 2-frame flame in the place and shows a lit-beacon sign on the overview for good.
 
 ## Call
 
@@ -106,7 +109,7 @@ Cover: creatures notice walking 2 tiles later and creeping never startles; hand-
 
 ## Station stand-in
 
-After each expedition the Station identifies each pod (1 Energy; the first pod ever is free), reads waiting studies (2 Data each), hatches one founder of a species you don't raise yet (2 Energy + 4 Essence), and offers the tier 2 Probe at 12 Energy + 4 Data. Whatever it can't pay for waits and says what it needs. Before anything else it mends the Shield (1 Energy a bar, see Storm and Shield). Then up to three world-turn lines and a large **Done** button to the Companion's home view.
+After each expedition the Station identifies each pod (1 Energy; the first pod ever is free), reads waiting studies (2 Data each), hatches one founder of a species you don't raise yet (2 Energy + 4 Essence), and offers the tier 2 Probe at 12 Energy + 4 Data. Whatever it can't pay for waits and says the full price and what is short ("costs 2 Energy + 4 Essence · short 2 Essence", "logging costs 1 Energy · short 1 Energy"); a second pod of a species already waiting to hatch says "one hopper pod hatches first" ("already raised" only when you really raise that species). Before anything else it mends the Shield (1 Energy a bar, see Storm and Shield). Then up to three world-turn lines and a large **Done** button to the Companion's home view.
 
 ## The mibi with you
 
@@ -123,11 +126,11 @@ After each expedition the Station identifies each pod (1 Energy; the first pod e
 
 ## The partner in a place
 
-- Your partner stands on a 2 px teal ring (wild creatures never have one) and shows a small name tag for the first 3 actions in each place and for 3 actions after each Call. The HUD token sits on the same ring.
+- Your partner stands on a 2 px bright teal ring with a 1 px dark outline (wild creatures never have one) and shows a small name tag above it, with a pointer down to it, for the first 3 actions in each place and for 3 actions after each Call. The tag is drawn after every sprite and moves sideways off the player if it would cover them. The HUD token sits on the same ring.
 
 ## Partners by life stage
 
-New pods hatch as juveniles (with you in the Companion if the slot is free, too young for the Probe), grow up after 2 world turns (can be your partner), and become elders after 6 more (double calming and sniffing radius, feel every stray strike, slow). A glowtail digs the narrow burrow and glows (Call keeps its reach and sight widens to 6 tiles in a fog bank); a hopper calms wary creatures; a puffcap sniffs out buried pods and flinches before stray strikes.
+New pods hatch as juveniles (with you in the Companion if the slot is free, too young for the Probe), grow up after 2 world turns counted from the turn after they hatch, so the hatch card and the mibi screen both say "2 world turns" (can be your partner), and become elders after 6 more (double calming and sniffing radius, feel every stray strike, slow). A glowtail digs the narrow burrow and glows (Call keeps its reach and sight widens to 6 tiles in a fog bank); a hopper calms wary creatures; a puffcap sniffs out buried pods and flinches before stray strikes.
 
 ## Screen and budget assumptions (as if targeting the ESP32-S3 Companion)
 
@@ -155,7 +158,7 @@ New pods hatch as juveniles (with you in the Companion if the slot is free, too 
 
 ## Measured with scripted play (seeds 7, 13, 42)
 
-A bot plays through the real controls (`__mb.act`): it walks to the tile whose Call would unveil the most of the unsurveyed quarters, Calls, and repeats; the **scout** Calls once per place (explored) and takes pods and Energy it sees; the **thorough** bot surveys all four quarters and also takes dew, shakes bushes and presses the fruit, picks up tufts and climbs cairns. Then it walks off the edge toward the nearest unexplored cell.
+A bot plays through the real controls (`__mb.act`): it walks to the tile whose Call would unveil the most of the unsurveyed quarters, Calls, and repeats; the **scout** Calls once per place (explored) and takes pods and Energy it sees; the **thorough** bot surveys all four quarters and also takes dew, shakes bushes and presses the fruit, picks up tufts and lights beacons. Then it walks off the edge toward the nearest unexplored cell.
 
 Survey pace, tuned in steps (radius 11, then 75%, then explored at 3 of 4 quarters, then explored = visited and one Call):
 
@@ -185,6 +188,8 @@ The reach holds 15, 18 and 25 cells on the three seeds; a scout spends about 33�
 - **Slabs** (generator check over every place of seeds 7, 13, 42, 3, 5: 1,319 places with slabs, 1,483 slabs): before, 15 slabs could not be pushed at spawn or had water or cliff on two sides; after, 0. A slab pushed into a spot it can't leave says once "The slab is wedged".
 
 ## Known issues
+
+- Left from playtest r6: an empty dew cup still looks much like a full one (art); creatures that crowd you after a Call can hem you in for a few actions (tuning); the fog arrow against the Wait words ("drifts south-west" with ▶) was not reproduced: both read the same drift; a second creature meal in an expedition gives no Data and says nothing.
 
 - **Completing a reach is still long** (538–845 actions for a scout; see above): with places at 28×32 tiles the walk through each place sets the floor, whatever the Call does.
 - Calm Energy scales with places visited (about 1 per place); faster surveys would raise it unless the warm odds drop.

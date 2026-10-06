@@ -302,7 +302,7 @@ const SAVE_KEY = 'mb-exploration-v7', SAVE_V = 7, OLD_SAVE_KEYS = ['mb-explorati
 const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shield: 4 } };
 const CAP = 20;                                   // each material caps at 20 carried
 // Station stand-in prices.
-const PRICE = { cairn: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
+const PRICE = { beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
 const STRAY = { strong: 1 / 12, peak: 1 / 6 };   // stray strike odds per action in the open
 const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; elder after 6 more as an adult
 // Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
@@ -330,8 +330,8 @@ const MIBI_NAMES = ['Dot', 'Moss', 'Bean', 'Fig', 'Nib', 'Tuft', 'Pebble', 'Wren
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
 const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
-const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', pin: 'pin', burrow: 'needs a digger', water: 'fast water', deep: 'deep ?' };
-const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy',
+const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', pin: 'pin', burrow: 'needs a digger', water: 'fast water', deep: 'deep ?' };
+const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'Lit beacon · you lit it, it burns for good',
   pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow hole · a digging partner can open it', water: 'Fast water · needs a swimmer', deep: 'Deep ? · a tier 2 Probe can read it' };
 
 // ===================== 2. Seeded RNG and noise =====================
@@ -678,7 +678,7 @@ function genPatch(cell) {
   addF('k', n(mix.k), () => ({ ch: R.chance(.1) ? 2 : 0 }));
   addF('s', n(mix.s), () => ({ under: R.chance(.22) ? 'pod' : null }));
   addF('n', n(mix.n) + (cell === G.gate ? 1 : 0));
-  // A survey cairn: climbing it shows land 3 cells around, beyond the Probe's range.
+  // A beacon: lighting it shows land 3 cells around, beyond the Probe's range. (The hash salt keeps its old name so worlds stay the same.)
   if (land === L.ROCK || land === L.MEADOW) { const cr = makeRng(hash(seed, 'cairn', cell)); if (cr.chance(land === L.ROCK ? .35 : .08)) addF('j', 1); }
   if (cell === G.deep) { const p = { x: 14 + R.int(5) - 2, y: 12 + R.int(4) };
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = p.x + dx, Y = p.y + dy; if (T_BLOCK[tiles[I(X, Y)]]) setT(X, Y, T.SAND); }
@@ -725,8 +725,9 @@ let NOW = 0;
 // Messages: actions and offscreen results both add notes; the most important ones share the line until the next action.
 function fxMsg(text, pri) { FX.notes.push({ text, pri: pri == null ? 2 : pri }); composeMsg(); }
 function composeMsg() {
-  const n = FX.notes.slice().sort((a, b) => b.pri - a.pri); let out = '';
-  for (const x of n) { if (out.includes(x.text)) continue; const t = out ? out + ' · ' + x.text : x.text; if (out && t.length > 78) continue; out = t; }
+  const n = FX.notes.slice().sort((a, b) => b.pri - a.pri); let out = ''; FX.held = [];
+  for (const x of n) { if (out.includes(x.text)) continue; const t = out ? out + ' · ' + x.text : x.text;
+    if (out && (typeof wrapText !== 'function' || wrapText(t, 400, 2).length > 2)) { if (!x.once) FX.held.push(x); continue; } out = t; }   // shown on the next action instead
   FX.msg = out;
 }
 function firstTime(k) { if (S.found.includes(k)) return false; S.found.push(k); return true; }
@@ -929,16 +930,16 @@ function leftItems(c) {
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
   for (const f of layout(key).feats) { if (!see(f.x, f.y)) continue;
     if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
-    if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'cairn', x: f.x, y: f.y }); }
+    if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'beacon', x: f.x, y: f.y }); }
   if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
   return out;
 }
-function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, fruit: 0, tuft: 0, cairn: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
+function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, fruit: 0, tuft: 0, beacon: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
 function leftTotal(c) { const n = leftCounts(c); return Object.values(n).reduce((a, b) => a + b, 0); }
 function pipsOf(c) { return Math.min(3, leftTotal(c)); }
 // What is left, each kind with the way to its nearest one from where you stand: "a pod east, a warm stone north-west".
 function leftPhrase(c, P, room, kinds) {
-  const items = leftItems(c).filter(i => !kinds || kinds.includes(i.k)), w = { pod: ['a pod', 'pods'], charge: ['a charge', 'charges'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], fruit: ['a fruit', 'fruit'], tuft: ['a tuft', 'tufts'], cairn: ['a cairn', 'cairns'] };
+  const items = leftItems(c).filter(i => !kinds || kinds.includes(i.k)), w = { pod: ['a pod', 'pods'], charge: ['a charge', 'charges'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], fruit: ['a fruit', 'fruit'], tuft: ['a tuft', 'tufts'], beacon: ['an unlit beacon', 'unlit beacons'] };
   let out = '';
   for (const k of Object.keys(w)) { const its = items.filter(i => i.k === k); if (!its.length) continue;
     let dir = '';
@@ -1173,10 +1174,11 @@ function mapStep(dir) {
 // Call on the map: pin your cell for 1 Energy, or remove your own pin for free. Gate pins stay free and automatic.
 function callMap() {
   const ex = S.exp, c = ex.pos, own = ownPin(c);
-  if (own) { S.pins = S.pins.filter(p => p !== own); fxMsg('Pin removed'); logEv('Pin removed'); save(); return; }
+  if (own) { S.pins = S.pins.filter(p => p !== own); const back = own.exp === ex.n; if (back) ex.cargo.e += PRICE.pin;
+    fxMsg(back ? 'Pin removed · 1 Energy back' : 'Pin removed'); logEv('Pin removed' + (back ? ' · +1 Energy' : '')); save(); return; }
   if (ex.cargo.e < PRICE.pin) { fxMsg('Pins cost 1 Energy · you have ' + ex.cargo.e); FX.bumpAt = NOW; return; }
-  ex.cargo.e -= PRICE.pin; S.pins.push({ c, k: 'own' }); logEv('Pinned a cell (1 Energy)');
-  if (S.found.includes('sign:pin')) fxMsg('Pinned · 1 Energy'); else fxOnce('sign:pin', 'Pinned · 1 Energy · ))) here again removes it', 2); save();
+  ex.cargo.e -= PRICE.pin; S.pins.push({ c, k: 'own', exp: ex.n }); logEv('Pinned a cell (1 Energy)');
+  if (S.found.includes('sign:pin')) fxMsg('Pinned · 1 Energy'); else fxOnce('sign:pin', 'Pinned · 1 Energy · ))) here again removes it and gives it back', 2); save();
 }
 
 // ===================== 7. Patch rules =====================
@@ -1286,7 +1288,7 @@ function patchStep(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
   P.dir = dir; P.noise = mode;
   const x = P.x + dx, y = P.y + dy;
-  if (x < 0 || y < 0 || x >= PW || y >= PH) { if (!layout(key).cave) crossEdge(dir); return; }
+  if (x < 0 || y < 0 || x >= PW || y >= PH) { if (mode === 'walk') { stopRepeat(); fxOnce('edgehold', 'Edge of the place · tap again to step off', 1); return; } if (!layout(key).cave) crossEdge(dir); return; }
   const o = occupant(key, x, y, 'player');
   if (o && o.type === 'pt') { live.pt.x = P.x; live.pt.y = P.y; }
   else if (o) {
@@ -1366,8 +1368,8 @@ function patchAction() {
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
       case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : 'Collect dew', run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
-      case 'j': if (!fs(key, ft.id).up) return ex.cargo.e >= PRICE.cairn ? { label: 'Climb', ctx: 'reveals the land around · 1 Energy', run: () => climbCairn(ft) }
-        : { label: 'Climb', ctx: 'needs 1 Energy · you have 0', dim: true, run: () => { fxMsg('Climbing the cairn costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; break;
+      case 'j': if (!fs(key, ft.id).up) return ex.cargo.e >= PRICE.beacon ? { label: 'Light the beacon · 1 Energy', ctx: 'reveals the land around', run: () => lightBeacon(ft) }
+        : { label: 'Light the beacon · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the beacon costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; break;
       case 'g':
         if (S.opened[G.gate]) return { label: 'Go down the burrow', run: () => { advance('patch', { noise: 'act' }); enterCave(); } };
         if (canDig()) return { label: (ex.digProg ? 'Keep digging' : ex.pt.name + ' digs'), run: dig };
@@ -1448,17 +1450,17 @@ function takeCharge(f) {
   if (storm > 0) setFS(key, f.id, { ch: ch - got, wt: S.turn }); else { setFS(key, f.id, { wt: S.turn }); ex.stats.warm = (ex.stats.warm || 0) + got; fxOnce('warmstone', '+1 Energy · a warm stone · the sun leaves a little in some stones', 1); }
   advance('patch', { noise: 'act' });
 }
-function climbCairn(f) {
+function lightBeacon(f) {
   const ex = S.exp, key = ex.patch.key, cell = layout(key).cell, before = ex.stats.rev; setFS(key, f.id, { up: 1 });
-  ex.cargo.e -= PRICE.cairn; fxFloat(f.x, f.y, '-' + PRICE.cairn, 'energy');
+  ex.cargo.e -= PRICE.beacon; fxFloat(f.x, f.y, '-' + PRICE.beacon, 'energy');
   const was = S.revealed.slice(); revealAround(cell, 3); const n = ex.stats.rev - before;
-  logEv('Climbed a cairn · ' + n + ' cells');
+  logEv('Lit the beacon · −' + PRICE.beacon + ' Energy · ' + n + ' cells');
   advance('patch', { noise: 'act' });
-  if (n && S.exp && !S.exp.ending) { // show it: back on the map, the fog lifts outward from the cairn
+  if (n && S.exp && !S.exp.ending) { // show it: back on the map, the fog lifts outward from the beacon
     const p0 = cxy(cell); FX.reveal = { at: NOW + 200, cells: [] };
     for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && !was[c]) FX.reveal.cells.push({ c, d: cheb(cxy(c), p0) });
-    ex.cairnView = 1; FX.cairnAt = NOW; S.phase = 'map'; }   // the map shows the sweep; the place (and where you stand) stays as it was
-  fxMsg(n ? 'The cairn shows the land around · ' + n + ' cell' + (n > 1 ? 's' : '') + ' revealed' : 'From the cairn · nothing new in sight', 2);
+    ex.beaconView = 1; FX.beaconAt = NOW; S.phase = 'map'; }   // the map shows the sweep; the place (and where you stand) stays as it was
+  fxMsg((n ? 'The beacon lights the land around · ' + n + ' cell' + (n > 1 ? 's' : '') + ' revealed' : 'The beacon burns · nothing new in sight') + ' · −1 Energy', 2);
 }
 // Pods, named for the player: the species if identified, and one tag that tells two pods apart (where it came from).
 function podName(p, short) { return S.known.includes(p.sp) ? SPECIES[p.sp].name + (short ? '' : ' pod') : short ? 'unknown' : 'Unknown pod'; }
@@ -1524,7 +1526,14 @@ function callPlace() {
     if (f.kind === 'g' && !S.opened[G.gate]) fxGlint(f.x, f.y, 350);
   }
   const before = lay.cave ? 0 : svyFull(lay.cell);
-  if (!lay.cave) { unveil(key, P.x, P.y, reach); updateSurvey(lay.cell); (S.called = S.called || {})[lay.cell] = 1; }
+  if (!lay.cave) { unveil(key, P.x, P.y, reach); updateSurvey(lay.cell); (S.called = S.called || {})[lay.cell] = 1;
+    // a Call finishes any quarter that is now three quarters seen: the corners walls and water hide are swept too,
+    // so 4/4 is reachable and the words never wait on a few stray tiles
+    // (also the quarter you stand in, and a quarter with no ground to stand on once a Call has seen a quarter of it)
+    const m75 = S.svy[lay.cell] || 0, v = S.veil[key], fr = quarterFracs(lay.cell), here = qOf(P.x, P.y);
+    const standable = [0, 0, 0, 0]; for (let i = 0; i < PW * PH; i++) if (lay.reach[i]) standable[qOf(i % PW, (i / PW) | 0)] = 1;
+    for (let q = 0; q < 4; q++) if (((m75 >> q) & 1) || q === here || (!standable[q] && fr[q] >= .25)) { const x0 = q & 1 ? QW : 0, y0 = q & 2 ? QH : 0, bits = (((1 << QW) - 1) << x0) >>> 0; for (let y = y0; y < y0 + QH; y++) v[y] = (v[y] | bits) >>> 0; }
+    updateSurvey(lay.cell); }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach };
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
   logEv('Call' + (found ? ' · found ' + found : '') + (lay.cave ? '' : ' · ' + surveyWord(lay.cell)));
@@ -1541,7 +1550,7 @@ function callPlace() {
     const head = m === 15 ? 'Surveyed' : (m ? qCount(m) + '/4 surveyed' : 'Survey begun') + (almost ? ' · a corner ' + vw.dir + ' still veiled' : m === before ? ' · walk or Call further on' : '');
     for (const q of S.pods) if (q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y)) q.out = 1;   // announced pods keep the dotted outline until taken
     // a Call that finds Energy says so first: "Energy nearby · a warm stone north"
-    const en = leftPhrase(lay.cell, P, 40, ['charge', 'warm']), rest = leftPhrase(lay.cell, P, 30, ['pod', 'dew', 'fruit', 'tuft', 'cairn']);
+    const en = leftPhrase(lay.cell, P, 40, ['charge', 'warm']), rest = leftPhrase(lay.cell, P, 30, ['pod', 'dew', 'fruit', 'tuft', 'beacon']);
     if (en) { let t = 'Energy nearby · ' + en + ' · ' + head; if (rest && (t + ' · ' + rest).length <= 72) t += ' · ' + rest; fxMsg(t, 2); }
     else fxMsg(head + ' · ' + (left || (m === 15 ? 'nothing to take' : 'nothing to take yet')), found ? 1 : 2);
     if (m === 15 && before !== 15) logEv('Surveyed a place');
@@ -1915,9 +1924,10 @@ function partnerTick(X) {
 // ===================== 9. Expedition end, Station, world turn =====================
 // The Station stand-in. Prices: identify 1 Energy, hatch a founder 2 Energy + 4 Essence, a study 2 Data,
 // Probe tier 2 12 Energy + 4 Data (tuning this round). What can't be paid waits and says what it needs.
-function needText(e, s, d) {
+// What waiting costs, in full, and what is short: "costs 2 Energy + 4 Essence · short 2 Essence".
+function needText(e, s, d, full) {
   const parts = []; if (e > 0) parts.push(e + ' Energy'); if (s > 0) parts.push(s + ' Essence'); if (d > 0) parts.push(d + ' Data');
-  return 'needs ' + parts.join(' + ');
+  return (full ? 'costs ' + full + ' · ' : '') + 'short ' + parts.join(' + ');
 }
 // Pure: what the Station would do with this store (h is a copy and is changed).
 function stationPlan(h) {
@@ -1925,16 +1935,17 @@ function stationPlan(h) {
   let free = !S.found.includes('freeid');   // the first pod ever is identified for free
   for (const p of h.pods) if (!p.idd) {
     if (free) { free = false; p.idd = 1; ops.push({ k: 'id', p, free: true }); }
-    else if (h.e >= PRICE.identify) { h.e -= PRICE.identify; p.idd = 1; ops.push({ k: 'id', p }); } else ops.push({ k: 'wait', p, need: 'needs 1 Energy to identify' }); }
+    else if (h.e >= PRICE.identify) { h.e -= PRICE.identify; p.idd = 1; ops.push({ k: 'id', p }); } else ops.push({ k: 'wait', p, need: (S.known.includes(p.sp) ? 'logging' : 'identifying') + ' costs 1 Energy · short 1 Energy' }); }
   while (h.studies.length && h.d >= PRICE.study) { h.d -= PRICE.study; ops.push({ k: 'study', text: h.studies.shift() }); }
-  if (h.studies.length) ops.push({ k: 'waitStudy', n: h.studies.length, need: needText(0, 0, PRICE.study - h.d) });
-  const raised = new Set(S.mibis.map(m => m.sp)); let hatched = 0;
+  if (h.studies.length) ops.push({ k: 'waitStudy', n: h.studies.length, need: needText(0, 0, PRICE.study - h.d, PRICE.study + ' Data') });
+  const raised = new Set(S.mibis.map(m => m.sp)), queued = new Set(); let hatched = 0;
   for (const p of h.pods.slice()) {
     if (!p.idd) continue;
     if (raised.has(p.sp)) { if (p.fresh) ops.push({ k: 'stored', p }); continue; }
-    raised.add(p.sp);
+    if (queued.has(p.sp)) { ops.push({ k: 'wait', p, need: 'one ' + SPECIES[p.sp].name.toLowerCase() + ' pod hatches first' }); continue; }
+    queued.add(p.sp);
     if (!hatched && h.e >= PRICE.hatchE && h.s >= PRICE.hatchS) { h.e -= PRICE.hatchE; h.s -= PRICE.hatchS; h.pods.splice(h.pods.indexOf(p), 1); hatched = 1; ops.push({ k: 'hatch', p }); }
-    else ops.push({ k: 'wait', p, need: hatched ? 'hatches next time' : needText(PRICE.hatchE - h.e, PRICE.hatchS - h.s, 0) });
+    else ops.push({ k: 'wait', p, need: hatched ? 'hatches next time' : needText(PRICE.hatchE - h.e, PRICE.hatchS - h.s, 0, PRICE.hatchE + ' Energy + ' + PRICE.hatchS + ' Essence') });
   }
   return ops;
 }
@@ -1956,7 +1967,7 @@ function sendPreview() {
   if (idWait) out.push(numWord(idWait) + ' pod' + (idWait > 1 ? 's wait' : ' waits') + ' · needs Energy');
   for (const o of ops) { const nm = o.p && (o.p.fresh && !S.known.includes(o.p.sp) ? 'a new pod' : (S.known.includes(o.p.sp) ? SPECIES[o.p.sp].name.toLowerCase() + ' pod' : 'a pod'));
     if (o.k === 'hatch') out.push(nm + ' can hatch');
-    else if (o.k === 'wait' && o.p.idd) out.push(o.need === 'hatches next time' ? 'one more waits its turn' : nm + ' ' + o.need); }
+    else if (o.k === 'wait' && o.p.idd) out.push(o.need === 'hatches next time' ? 'one more waits its turn' : nm + ' waits · ' + o.need); }
   for (const sp of [0, 1, 2]) { const n = ops.filter(o => o.k === 'stored' && o.p.sp === sp).length; if (n) out.push(numWord(n) + ' ' + SPECIES[sp].name.toLowerCase() + ' pod' + (n > 1 ? 's' : '') + ' stored (raised)'); }
   if (ops.some(o => o.k === 'study')) out.push('a study can be read');
   const h = homeCopy([], ex.cargo); h.e -= mend; if (S.tier < 2 && h.e >= PRICE.tier2E && h.d >= PRICE.tier2D) out.push('Probe tier 2 is ready');
@@ -1988,7 +1999,7 @@ function endExpedition(reason) {
     else if (o.k === 'study') { H.d -= PRICE.study; H.studies.shift(); rep.ops.push(o); }
     else if (o.k === 'hatch') { const q = H.pods.find(x => x.idd && x.sp === o.p.sp);
       H.e -= PRICE.hatchE; H.s -= PRICE.hatchS; H.pods.splice(H.pods.indexOf(q), 1);
-      const m = { id: S.mibis.length + 1, name: MIBI_NAMES[S.mibis.length] || 'Mibi ' + (S.mibis.length + 1), sp: q.sp, from: ex.n, born: S.turn };
+      const m = { id: S.mibis.length + 1, name: MIBI_NAMES[S.mibis.length] || 'Mibi ' + (S.mibis.length + 1), sp: q.sp, from: ex.n, born: S.turn + 1 };   // counted from the world turn that follows: JUVENILE_TURNS more turns to grow
       S.mibis.push(m); rep.hatch = Object.assign({ g: q.g }, m); logEv('Hatched ' + m.name + ' · ' + SPECIES[m.sp].name);
       if (S.with == null) S.with = m.id; }   // a hatch takes the slot only when no one is with you (nothing else selects itself)
     else rep.ops.push(o);
@@ -2217,7 +2228,7 @@ const GLYPHS = {
   6: '.##.|#...|#...|###.|#..#|#..#|.##.', 7: '####|...#|..#.|.#..|.#..|.#..|.#..', 8: '.##.|#..#|#..#|.##.|#..#|#..#|.##.',
   9: '.##.|#..#|#..#|.###|...#|...#|.##.',
   ' ': '...|...|...|...|...|...|...', '.': '.|.|.|.|.|.|#', ',': '.|.|.|.|.|#|#|#', '!': '#|#|#|#|#|.|#', '?': '.##.|#..#|...#|..#.|.#..|....|.#..',
-  ':': '.|.|.|#|.|.|#', ';': '.|.|.|#|.|.|#|#', '·': '.|.|.|.|#|.|.', '-': '...|...|...|...|###|...|...', '+': '...|...|.#.|.#.|###|.#.|.#.',
+  ':': '.|.|.|#|.|.|#', ';': '.|.|.|#|.|.|#|#', '·': '.|.|.|.|#|.|.', '-': '...|...|...|...|###|...|...', '−': '....|....|....|....|####|....|....', '+': '...|...|.#.|.#.|###|.#.|.#.',
   "'": '#|#|.|.|.|.|.', '"': '#.#|#.#|...|...|...|...|...', '(': '.#|#.|#.|#.|#.|#.|.#', ')': '#.|.#|.#|.#|.#|.#|#.', '/': '..#|..#|.#.|.#.|.#.|#..|#..',
   '…': '.....|.....|.....|.....|.....|.....|#.#.#', '→': '......|......|...#..|....#.|######|....#.|...#..', '←': '......|......|..#...|.#....|######|.#....|..#...',
   '▶': '#....|##...|###..|####.|###..|##...|#....', '◀': '....#|...##|..###|.####|..###|...##|....#',
@@ -2360,13 +2371,18 @@ const SLAB = () => art('slab', () => { const pb = new PB(32, 32);
   pb.poly([[4, 10], [28, 10], [29, 26], [3, 26]], C.rock); pb.poly([[4, 10], [28, 10], [28, 16], [4, 16]], C.rockL);
   pb.rect(3, 24, 27, 2, C.stone); pb.line(12, 11, 15, 17, C.stone); pb.line(15, 17, 13, 22, C.stone); pb.set(5, 11, C.white);
   pb.outline(); return pb; });
-// Survey cairn: a stack of flat stones with a little flag once climbed.
-function cairnArt(up) {
-  return art('cairn' + up, () => { const pb = new PB(32, 32);
-    pb.ell(16, 27, 11, 3.5, C.stone); pb.ell(16, 25, 10, 3.6, C.rock, { sh: [C.rockL, C.stone] }); pb.ell(15, 19.5, 8, 3.2, C.rock, { sh: [C.rockL, C.stone] });
-    pb.ell(17, 14.5, 6, 2.8, C.rock, { sh: [C.rockL, C.stone] }); pb.ell(16, 10, 3.8, 2.4, C.rockL, { sh: [C.white, C.rock] });
-    if (up) { pb.ell(16, 6, 2.6, 1.6, C.rockL, { sh: [C.white, C.rock] }); }   // a capstone once climbed (flags are only for pins)
-    pb.outline(); return pb; });
+// Beacon: a stone post with a lamp cage. Unlit the cage is dark; lit, a small flame burns (2 frames).
+function beaconArt(lit, fr) {
+  return art('beacon' + (lit ? 1 : 0) + (lit ? fr : 0), () => { const pb = new PB(32, 32);
+    pb.ell(16, 28, 9, 2.6, C.stone); pb.rect(12, 25, 8, 3, C.rock); pb.rect(12, 25, 8, 1, C.rockL);           // footing
+    pb.rect(13, 12, 6, 14, C.rock); pb.rect(13, 12, 2, 14, C.rockL); pb.rect(17, 12, 2, 14, C.stone);          // the post
+    pb.rect(11, 11, 10, 2, C.soil); pb.rect(11, 2, 10, 1, C.soil); pb.rect(12, 1, 8, 1, C.bark);              // cage floor and roof
+    pb.rect(12, 3, 8, 8, lit ? C.wine : C.night);                                                            // inside the cage
+    if (lit) { const t = fr ? 1 : 0; pb.ell(16, 8 - t * .5, 3, 3.6 + t * .5, C.orange); pb.ell(16, 8.5 - t * .5, 2, 2.6 + t * .4, C.amber); pb.ell(16, 9, 1, 1.4 + t * .4, C.cream); }
+    for (const x of [11, 15, 20]) pb.rect(x, 3, 1, 8, C.soil);                                                 // cage bars
+    pb.outline();
+    if (lit) for (const [x, y] of fr ? [[9, 4], [23, 6], [10, 10]] : [[8, 6], [22, 3], [22, 10]]) pb.set(x, y, C.cream);   // glow
+    return pb; });
 }
 function cupArt(full, cave) {
   return art('cup' + full + cave, () => { const pb = new PB(32, 32);
@@ -2432,8 +2448,13 @@ function roofArt(chk) { return art('roof' + chk, () => { const pb = new PB(104, 
   if (chk) for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) if ((x + y) % 2) pb.p[y * pb.w + x] = -1;
   return pb; }); }
 // The partner's marker: a 2 px teal ring under its feet (wild creatures never get one). Small copy for the HUD token.
-const RING = () => art('ptring', () => { const pb = new PB(26, 9); pb.ell(13, 4.5, 12.5, 4.4, C.teal); pb.ell(13, 4.5, 10.5, 2.4, C.void); for (let k = 0; k < pb.p.length; k++) if (pb.p[k] === C.void) pb.p[k] = -1; return pb; });
-const RING_S = () => art('ptrings', () => { const pb = new PB(14, 5); pb.ell(7, 2.5, 6.8, 2.5, C.teal); pb.ell(7, 2.5, 4.8, 1, C.void); for (let k = 0; k < pb.p.length; k++) if (pb.p[k] === C.void) pb.p[k] = -1; return pb; });
+// The partner's marker: a 2 px bright teal ring with a 1 px dark outline (wild creatures never get one). Small copy for the HUD token.
+const ringArt = (key, w, h) => art(key, () => { const pb = new PB(w, h), cx = w / 2, cy = h / 2;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const d = Math.hypot((x + .5 - cx) / (w / 2 - .5), (y + .5 - cy) / (h / 2 - .5)), t = (w / 2 - .5) * (1 - d);
+    if (t >= -0.01 && t < 1) pb.set(x, y, C.tealD); else if (t >= 1 && t < 3) pb.set(x, y, C.aqua); else if (t >= 3 && t < 4) pb.set(x, y, C.tealD); }
+  return pb; });
+const RING = () => ringArt('ptring2', 28, 11);
+const RING_S = () => ringArt('ptrings2', 14, 6);
 function bubbleArt(kind) { return art('bub' + kind, () => { const pb = new PB(11, 13), bg = { '!': C.yellow, '?': C.sprout, '…': C.bone, '~': C.teal, f: C.blush }[kind], fg = { '!': C.void, '?': C.pine, '…': C.slate, '~': C.mint, f: C.red }[kind];
   pb.rect(1, 0, 9, 11, bg); pb.rect(0, 1, 11, 9, bg); pb.set(5, 11, bg); pb.set(5, 12, bg);
   if (kind === '!') { pb.rect(5, 2, 1, 5, fg); pb.rect(5, 8, 1, 1, fg); }
@@ -2452,6 +2473,8 @@ const ICON = {
   data: () => art('i-data', () => { const pb = new PB(14, 14); pb.rect(1, 1, 12, 12, C.sky); pb.rect(0, 2, 14, 10, C.sky); pb.rect(2, 0, 10, 14, C.sky); pb.rect(3, 4, 8, 2, C.white); pb.rect(3, 8, 5, 2, C.white); pb.rect(2, 12, 10, 2, C.river); pb.rect(0, 11, 1, 1, C.river); pb.rect(13, 11, 1, 1, C.river); return pb; }),
   essence: () => art('i-ess', () => { const pb = new PB(14, 14); pb.ell(7, 7, 6.6, 6.6, C.grass, { sh: [C.lime, C.leaf] }); pb.rect(4, 3, 2, 2, C.white); return pb; }),
   // The same bolt with its inside left open (the ground shows through): a found warm stone.
+  beacon: (fr) => art('i-beacon' + (fr ? 1 : 0), () => { const pb = new PB(10, 14); pb.rect(3, 6, 4, 8, C.rock); pb.rect(3, 6, 1, 8, C.rockL); pb.rect(1, 5, 8, 1, C.soil); pb.rect(1, 0, 8, 1, C.soil);
+    pb.rect(2, 1, 6, 4, C.wine); pb.ell(5, 3 - (fr ? .5 : 0), 1.8, 2 + (fr ? .4 : 0), C.amber); pb.set(5, 3, C.cream); pb.outline(); return pb; }),
   boltHollow: () => art('i-boltH', () => { const a = new PB(14, 17); a.poly([[9, 0], [0, 10], [6, 10], [3, 17], [14, 6], [8, 6], [12, 0]], C.yellow); const pb = new PB(14, 17);   // a little fatter than the bolt, so the open inside reads
     const inA = (x, y) => a.get(x, y) >= 0;
     for (let y = 0; y < 17; y++) for (let x = 0; x < 14; x++) if (inA(x, y)) pb.set(x, y, inA(x - 1, y) && inA(x + 1, y) && inA(x, y - 1) && inA(x, y + 1) ? C.ink : C.yellow);   // a yellow rim, dark inside
@@ -2742,7 +2765,8 @@ function mapSigns() {
   // a surveyed cell has nothing hidden left to sign; a located pod shows as a pip, not a sign
   const hide = c => placeDone(c) || (S.exp && inFog(c));   // a buried pod keeps its slow beat until found
   for (const p of S.pins) add(p.c, p.k === 'own' ? 'pin' : p.k, 10);
-  if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);   // a gated cell shows its gate
+  if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);
+  for (const k in S.cells) { if (k[0] === 'c') continue; const c = +k; if (S.revealed[c] && layout(k).feats.some(f => f.kind === 'j' && fs(k, f.id).up)) add(c, 'beacon', 10); }   // a lit beacon, for good   // a gated cell shows its gate
   // Energy the Probe has found stays marked until drawn, surveyed or not: solid bolt for storm charge, hollow for warm
   if (S.exp) for (const c of S.exp.reach) { const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
     if (S.visited[c] && passable(c) && leftItems(c).some(i => i.k === 'pod' && !i.cave)) add(c, 'pod', 9); }   // a pod you saw and left behind
@@ -2767,6 +2791,7 @@ function drawSign(kind, s, px, py, fr) {
   else if (kind === 'burrow') blit(ICON.burrow(0), px + 5, py + 6);
   else if (kind === 'water') blit(ICON.wave(), px + 5, py + 7);
   else if (kind === 'pin') blit(ICON.pin(), px + 5, py - 2);
+  else if (kind === 'beacon') blit(ICON.beacon(fr), px + 1, py + 1);
 }
 function drawMap(mode, t) {
   ensureMap(); const ex = S.exp, fr = motion() ? Math.floor(t * 2) % 2 : 0;
@@ -2787,7 +2812,7 @@ function drawMap(mode, t) {
     const { x, y } = cxy(c), px = ox + x * CELL, py = oy + y * CELL;
     const inBand = !preview && x * CELL >= bx0 && x * CELL < bx1;
     if (!S.revealed[c]) { g.drawImage(inBand ? fogCvDark : fogCv, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL); continue; }
-    const rv = FX.reveal && FX.reveal.cells.find(q => q.c === c);   // a cairn's sweep: cells flip from fog ring by ring
+    const rv = FX.reveal && FX.reveal.cells.find(q => q.c === c);   // a beacon's sweep: cells flip from fog ring by ring
     if (rv) { const a = NOW - FX.reveal.at - rv.d * 140; if (a < 0) { g.drawImage(fogCv, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL); continue; }
       if (a < 240 && motion()) ditherFill(px, py, CELL, CELL, 'night', 16 - Math.floor(a / 15)); }
     if (!S.visited[c] && !inBand) g.drawImage(mapCvFade, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL);   // seen, never visited: muted
@@ -2997,7 +3022,7 @@ function drawPatch(t) {
   const items = [];
   for (const f of lay.feats) { if (!'bsukj'.includes(f.kind)) continue; const p = featPos(P.key, f), x = p.x * TS, y = p.y * TS; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     const rm = spriteRm(p.x, p.y); let a;
-    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = cairnArt(fs(P.key, f.id).up ? 1 : 0);
+    if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
       a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, blinkFr, 1) : stoneArt(stormCharge(P.key, f) > 0, false, fr); }
@@ -3017,14 +3042,18 @@ function drawPatch(t) {
   }
   if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * TS, live.pt.y * TS, ex.pt.elder ? 220 : 150); const rp = RT.pt;
     items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, W(rp.x), H(rp.y), t);
-      if (ex.actions < (ex.ptTagUntil || 0)) { const nm = ex.pt.name, w = textW(nm, 2) + 10, nx = W(rp.x) + 16 - Math.round(w / 2), ny = H(rp.y) - 24; panel(nx, ny, w, 20, C.ink, C.teal); text(nm, nx + 5, ny + 3, C.mint); }   /* its name tag: first actions in a place, and when Called */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), W(rp.x) + 11, H(rp.y) - 9); } }); }
+      if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: W(rp.x) + 16, y: H(rp.y), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), W(rp.x) + 11, H(rp.y) - 9); } }); }
   let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
   items.push({ y: RT.pl.y + 5, d: () => {
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
     blit(playerArt(P.dir, pose, f2), W(RT.pl.x) + bx, H(RT.pl.y));
     if (ex.carry) blit(FRUIT(), W(RT.pl.x + 10) + bx, H(RT.pl.y - 6)); } });
-  items.sort((a, b) => a.y - b.y).forEach(it => it.d());
+  RT.tag = null; items.sort((a, b) => a.y - b.y).forEach(it => it.d());
+  // the partner's name tag: above it, with a pointer down to it, shifted sideways so it never covers the player
+  if (RT.tag) { const tg = RT.tag, w = textW(tg.name, 2) + 10, pl = RT.plScr; let nx = tg.x - Math.round(w / 2), ny = tg.y - 26;
+    if (pl && nx < pl.x + 18 && nx + w > pl.x - 18 && ny < pl.y + 18 && ny + 20 > pl.y - 20) nx = pl.x > tg.x ? pl.x - 20 - w : pl.x + 20;
+    R(tg.x - 1, ny + 20, 2, 5, C.aqua); panel(nx, ny, w, 20, C.ink, C.aqua); text(tg.name, nx + 5, ny + 3, C.mint); }
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK) {
@@ -3090,7 +3119,7 @@ function drawCreature(c, x, y, pose, t, rm, cue) {
 }
 function drawPartner(sp, pt, x, y, t) {
   const m = motion(), fr = m ? Math.floor(t * 2.4) % 2 : 0;
-  blit(RING(), x + 3, y + 24);
+  blit(RING(), x + 2, y + 23);
   const pose = pt.st === 'sniff' ? 'alert' : 'idle', dy = pt.st === 'dig' ? (m ? Math.floor(t * 12) % 2 * 2 : 0) : pose === 'idle' ? fr : 0;
   blit(creatureArt(sp, pose, 0), x, y + dy, 0, (pt.face || 1) < 0);
   const f = pt.face || 1;
@@ -3232,7 +3261,7 @@ function drawSwap() {
 }
 function drawMessage() {
   if (!FX.msg || (S.phase === 'patch' && S.ui.swap)) return;   // the swap chooser has the space
-  const lines = wrapText(FX.msg, 400, 2).slice(0, 2), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
+  const lines = wrapText(FX.msg, 400, 2).slice(0, 3), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
   // the box sits above the bottom line, or at the top of the view when the player stands where it would cover them
   const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = pl && pl.y + 20 > low ? VIEW_Y + 8 : low;
   panel(x, y, w, h, C.ink, C.amber);
@@ -3323,7 +3352,7 @@ function drawProbe(t) {
   const head = (l, y) => text(l, 24, y, C.mist), C1 = 70, C2 = 212;
   head('Probe', 34);
   shieldBars(24, 58, ex ? ex.shield : (S.shield != null ? S.shield : tier.shield), ex ? ex.smax : tier.shield, 12, 22);
-  text('Reaches ' + tier.range + ' cells · carries ' + tier.hold + ' pods', 120, 54, C.fog);
+  text('Reaches ' + tier.range + ' cells each way · ' + tier.hold + ' pods', 120, 54, C.fog);
   const sh = ex ? (canPatch() ? (S.ui.patchArm ? '✓ again: patch, 3 Energy' : '3 Energy mends a bar') : ex.shield >= ex.smax ? 'Shield is whole' : 'Patch: 3 Energy · have ' + ex.cargo.e) : 'Station mends 1 Energy a bar';
   text(sh, 120, 76, ex && canPatch() ? C.amber : C.stone);
   { const er = energyInReach(); blit(ICON.energy(), 24, 103); text(ex ? 'Energy in reach: ' + er.e : 'Energy at the Station: ' + S.home.e, 44, 102, C.bone);
@@ -3336,15 +3365,16 @@ function drawProbe(t) {
     [(x, y) => blit(ICON.bolt(), x - 6, y - 8), 'Bolt', 'storm charge, +2 or +3'],
     [(x, y) => blit(ICON.boltHollow(), x - 7, y - 8), 'Hollow bolt', 'warm stone found, +1'],
     [(x, y) => blit(ICON.pin(), x - 5, y - 10), 'Pin', 'your mark · 1 Energy'],
+    [(x, y) => blit(ICON.beacon(0), x - 5, y - 7), 'Beacon', 'lit: shows the land'],
     [(x, y) => { blit(ICON.burrow(0), x - 14, y - 7); blit(BADGE(), x + 2, y - 9); }, 'Gate', 'a partner or tier 2'],
     [(x, y) => ditherFill(x - 16, y - 11, 32, 22, 'fog', 8), 'Fog bank', 'calm · 4 tiles of sight'],
     [(x, y) => { R(x - 16, y - 11, 32, 22, C.grass); blit(quarterVeil(0, 0), x - 13, y - 11); blit(quarterAlmost(0, 0), x + 1, y - 11); }, 'Quarters', 'dotted till surveyed'],
     [(x, y) => blit(podArt('bone', 1), x - 8, y - 10), 'Pod', 'seen, left behind'],
   ];
-  rows.forEach(([ic, a, b], i) => { const y = 186 + i * 28; panel(22, y, 36, 24, C.slate); g.save(); g.beginPath(); g.rect(22, y, 36, 24); g.clip(); ic(40, y + 12); g.restore(); text(a, C1, y + 5, C.bone); text(b, C2, y + 5, C.mist); });
-  head('Field guide', 448);
-  if (!S.known.length) text('No species identified yet', 24, 474, C.stone);
-  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 468, 130, 44, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 474); text(SPECIES[sp].name, x + 42, 482, C.bone); });
+  rows.forEach(([ic, a, b], i) => { const y = 186 + i * 26; panel(22, y, 36, 24, C.slate); g.save(); g.beginPath(); g.rect(22, y, 36, 24); g.clip(); ic(40, y + 12); g.restore(); text(a, C1, y + 5, C.bone); text(b, C2, y + 5, C.mist); });
+  head('Field guide', 456);
+  if (!S.known.length) text('No species identified yet', 24, 482, C.stone);
+  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 476, 130, 44, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 482); text(SPECIES[sp].name, x + 42, 490, C.bone); });
 }
 function drawMats(c, y, cap) {
   [['energy', 'Energy', c.e], ['data', 'Data', c.d], ['essence', 'Essence', c.s]].forEach(([ic, name, v], i) => { const x = 22 + i * 138;
@@ -3396,7 +3426,9 @@ function emptyPod(cx, cy) { for (let a = 0; a < 6.28; a += .1) R(cx + Math.round
 function drawNoMibi() {
   emptyPod(225, 190);
   text('No mibi yet', SCR_W / 2, 270, C.bone, 3, 'center');
-  text('Bring a pod home,', SCR_W / 2, 314, C.mist, 2, 'center'); text('it hatches at the Station.', SCR_W / 2, 336, C.mist, 2, 'center');
+  const wt = S.home.pods.length && stationPlan(homeCopy()).find(o => o.k === 'wait' && o.p);
+  if (wt) { text('A pod waits at the Station:', SCR_W / 2, 314, C.mist, 2, 'center'); text(clipText(wt.need, 420, 2), SCR_W / 2, 336, C.mist, 2, 'center'); }
+  else { text('Bring a pod home,', SCR_W / 2, 314, C.mist, 2, 'center'); text('it hatches at the Station.', SCR_W / 2, 336, C.mist, 2, 'center'); }
 }
 // A juvenile answering Call is still learning: it looks the wrong way first, on two calls in three.
 function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return null; const a = NOW - h.at; return a < 1500 ? Object.assign({ a }, h) : null; }
@@ -3505,7 +3537,7 @@ function drawStation(t) {
         const nm = SPECIES[o.p.sp].name; if (o.newSp && motion() && age < 700) text('unknown species', 48, y + 8, C.bark); else text(o.free ? 'First pod · ' + nm : o.newSp ? 'New: ' + nm + ' pod' : nm + ' pod logged', 48, y + 8, C.ink);
         text(o.free ? 'identified free' : '-1 Energy', 424, y + 8, C.bark, 2, 'right'); y += 34; }
       else if (o.k === 'study') { blit(sparkArt(true), 22, y + 2); const ls = wrapText(o.text, 300, 2); ls.forEach((l, i) => text(l, 44, y + i * 20, C.rust)); text('-2 Data', 424, y, C.bark, 2, 'right'); y += 20 * ls.length + 8; }
-      else if (o.k === 'wait') { panel(18, y, 414, 30, C.bone); podSlot(24, y + 4, o.p); text(clipText((o.p.idd ? SPECIES[o.p.sp].name + ' pod' : 'Pod') + ' waits · ' + o.need, 370, 2), 48, y + 8, C.wine); y += 34; }
+      else if (o.k === 'wait') { panel(18, y, 414, 48, C.bone); podSlot(24, y + 4, o.p); text(((o.p.idd || S.known.includes(o.p.sp)) ? SPECIES[o.p.sp].name + ' pod' : 'Pod') + ' waits', 48, y + 6, C.ink); text(clipText(o.need, 370, 2), 48, y + 26, C.wine); y += 52; }
       else if (o.k === 'waitStudy') { text('A study waits · ' + o.need, 22, y, C.wine); y += 24; }
       else if (o.k === 'stored') { panel(18, y, 414, 30, C.bone); podSlot(24, y + 4, o.p); text(clipText(SPECIES[o.p.sp].name + ' pod stored · already raised', 370, 2), 48, y + 8, C.stone); y += 34; }
     }
@@ -3521,7 +3553,7 @@ function drawStation(t) {
     if (!done) { const wob = Math.floor(age / 90) % 4, ox = [0, 2, 0, -2][wob]; blit(podArt(POD_SHELL[m.g] || 'bone', 3, m.sp), 201 + ox, y + 44); }
     else { blit(creatureArt(m.sp, 'idle', motion() ? Math.floor(t * 2.4) % 2 : 0, 2), 28, y + 44);
       text('Opened: ' + SPECIES[m.sp].born + '.', 112, y + 30, C.ink); text('Name: ' + m.name + '.', 112, y + 56, C.ink, 3);
-      wrapText((S.with === m.id ? m.name + ' is with you in the Companion. ' : m.name + ' waits at home · take it on Mibis. ') + 'Too young for the Probe for two world turns.', 300, 2).slice(0, 3).forEach((l, i) => text(l, 112, y + 88 + i * 20, C.bark)); }
+      wrapText((S.with === m.id ? m.name + ' is with you in the Companion. ' : m.name + ' waits at home · take it on Mibis. ') + 'Too young for the Probe for ' + numWord(JUVENILE_TURNS) + ' world turns.', 300, 2).slice(0, 3).forEach((l, i) => text(l, 112, y + 88 + i * 20, C.bark)); }
     y += 164;
     if (done && last) { drawTurnLines(r, y + 6); nextButton(); }
   } else if (page === 'upgrade') {
@@ -3550,7 +3582,7 @@ function placeReason(c) {
   if (G.island[c]) return 'Out of reach';
   return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
 }
-const SIGN_ORDER = ['b', 'pod', 't', 'k', 'kw', 'pin', 'burrow', 'water', 'deep'];
+const SIGN_ORDER = ['b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'deep'];
 function signWords(c) { const k = signsAt(c); return SIGN_ORDER.filter(s => k.includes(s)).map(s => SIGN_NAME[s]); }
 function landWord(c) {
   if (G.land[c] === L.WATER) return G.ford[c] ? 'shallows' : nextToIsland(c) ? 'fast water' : 'wide water';
@@ -3593,7 +3625,7 @@ function dietLine(sp, long) {
 }
 function lineFor() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
-  const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
+  const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 28 ? ok.slice(0, 27) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
     case 'setup': if (S.ui.sel === 2) { const w = withMibi(), n = nextHomeAdult();
         if (n) return L1('Take ' + n.name + (w ? ' instead' : ''), partnerRow(), 'menu');
@@ -3602,10 +3634,10 @@ function lineFor() {
       if (S.ui.sel === 1 && !digPartner()) { const d = mibiWith('dig'); return d ? L1('Take ' + d.name + ' · go deep', 'Deep ground', 'menu') : L1('Needs a digger', 'Deep ground', 'menu', true); }
       return L1('Choose ' + (S.ui.sel ? 'Deep ground' : 'Weather'), '', 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
-      const wx = S.ui.type !== 'deep' ? ' · storm would start here' : '';   // the dotted band is a preview, not the live storm
+      const wx = S.ui.type !== 'deep' ? ' · dotted band: where the storm starts' : '';   // the dotted band is a preview, not the live storm
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), [base + wx, base + ' · storm preview', base], 'back', !placeValid(c)); }
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? [base + wx, base + ' · storm preview', base] : wx.slice(3), 'back', !placeValid(c)); }
-    case 'map': if (S.exp.cairnView) return L1('', 'the land around the cairn', 'back');
+    case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
       return L1('Go down', mapContext(), S.exp.saidDone ? 'Send home · Wait' : 'Wait · Send home');   // the reach is done: Send home comes first
     case 'patch': { const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
       const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
@@ -3669,12 +3701,12 @@ function frame(t) {
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > 800) FX.pulse = null;
   if (FX.reveal && NOW - FX.reveal.at > 1200) FX.reveal = null;
-  if (S.exp && S.exp.cairnView && !FX.reveal && NOW - (FX.cairnAt || 0) > 1700) { cairnBack(); save(); }   // the sweep done: back beside the rock
+  if (S.exp && S.exp.beaconView && !FX.reveal && NOW - (FX.beaconAt || 0) > 1700) { beaconBack(); save(); }   // the sweep done: back beside the beacon
   requestAnimationFrame(frame);
 }
 
 // ===================== 16. Input: Companion controls =====================
-function cairnBack() { const ex = S.exp; if (!ex || !ex.cairnView) return; delete ex.cairnView; if (ex.patch) { S.phase = 'patch'; transition(); } }
+function beaconBack() { const ex = S.exp; if (!ex || !ex.beaconView) return; delete ex.beaconView; if (ex.patch) { S.phase = 'patch'; transition(); } }
 function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.ui.nwArm = 0; S.ui.waiting = 0; S.phase = 'menu';
   if (S.ui.from === 'map' && S.exp && S.exp.saidDone) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => i.id === 'send')); }   // focus on Send home once the reach is done
 function chooseType() {
@@ -3699,9 +3731,9 @@ function moveCursor(dir) {
 }
 function act(k, mode) {
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
-  if (S.exp && S.exp.cairnView) { cairnBack(); save(); return; }   // any press: back beside the cairn
+  if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
   if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
-  if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.notes = []; }   // a message lasts until the next action (Back and browsing the list keep it)
+  if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
   const isDir = k in DIRS;
   switch (S.phase) {
     case 'setup':
@@ -3739,7 +3771,7 @@ function act(k, mode) {
         else if (id === 'send') S.phase = 'cargo';
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); }
-          else { S.ui.nwArm = 1; fxMsg('New world erases this one · Confirm again', 3); } }
+          else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
         else { S.phase = id; S.ui.nw = 0; S.ui.rSel = 0; S.ui.rFrom = 'menu'; } }
       else if (k === 'back') S.phase = S.ui.from || 'setup';
       break; }
