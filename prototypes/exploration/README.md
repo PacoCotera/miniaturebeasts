@@ -39,6 +39,8 @@ Every source is an act you choose. Each caps at 20 carried.
 
 ## Storm and Shield
 
+- **Energy never stalls.** Every expedition starts with at least one charged stone in reach (two on the first expedition), lit so it shows in the place and with its bolt sign on the map. It is chosen close to the way into its place; if no seen cell has one, a nearby cell is lit up as a lightning strike would. On the first expedition the storm starts two columns further away, so a new player can drain the stones before it arrives. Measured: 20 of 20 scripted first expeditions (seeds 1–20) brought home ≥ 2 Energy by heading for the bolt signs (6–24 actions).
+
 - The band is 3 columns wide. Rain falls under its core; its edges are overcast only. While it is over you, on the map or in a place, it crawls 0.14 columns per action (elsewhere 0.25), so a storm rains on one place for about 15 actions, with lulls of 3 actions in every 12.
 - The HUD shows 1–3 bolts: 1 approaching (or the dry edge, or a lull), 2 strong rain over you, 3 the peak (the band's centre, about 9 actions in a place).
 - **Stray strikes**: each action in the open under rain, 1 in 12 (strong) or 1 in 6 (peak). Measured over 300 forced actions in the open: 0.077–0.093 strong, 0.167–0.177 peak. None in shelter: under a canopy, an overhang, in the cave, or on a wood cell on the map. None inside a fog bank. The odds are said in words once, the first strong storm and the first peak.
@@ -54,16 +56,17 @@ Every source is an act you choose. Each caps at 20 carried.
 | 2 | 4 (9×9) | 3 | 4 | Reads the deep "?" (once: a sealed pod rises) |
 
 - Stepping past the square bumps: "Edge of the Probe's range · tier 2 reaches further". Sweep is one ring at both tiers.
-- **Cell states**: fog (cloud) · seen (muted through the existing fade table) · visited (full colour, one white pip per thing left: a visible pod, a seen charged stone, fruit or a tuft on the ground; up to 3) · cleared (a small tick). A cell is cleared only after a Call inside it found nothing hidden anywhere in the place and nothing is left: no pod, charge, fruit or tuft, and no full dew cup, bush with fruit or unclimbed cairn. A Call says "Nothing hidden · nothing left here" only then; "Nothing hidden" otherwise, and if a pod is still lying in the place it glints and the line says where. A world turn that adds a pod or charge to a cell un-clears it. The cell above the cave can't tick while the cave still holds a pod; a pod that finds no room in a place is dropped and logged.
-- **Five signs only**: paw (tracks), beat (a pod, buried or not), bolt (a charged stone), pin (yours), and a gate's own shape (narrow hole, fast water, deep "?"). A pod in the cave under the cliff shows as the narrow-hole sign ("needs a digger"), never as a beat. The map counts (Cargo's "In reach", the Observer) come from one function: visited includes cleared.
+- **Cell states**: fog (cloud) · seen (muted through the existing fade table) · visited (full colour, one white pip per thing left: a visible pod, a seen charged stone, fruit or a tuft on the ground; up to 3) · cleared (a small tick). A cell is cleared only after a Call inside it found nothing hidden anywhere in the place and nothing is left: no pod, charge, fruit or tuft, and no full dew cup, bush with fruit or unclimbed cairn. A Call says "Nothing hidden · nothing left here" only then, and never while a creature is in the place; otherwise "Nothing hidden" and what remains ("a tuft and a full cup remain"), and if a pod is still lying in the place it glints and the line says where. A world turn that adds a pod or charge to a cell un-clears it. The cell above the cave can't tick while the cave still holds a pod; a pod that finds no room in a place is dropped and logged.
+- **Five signs only**: paw (tracks), beat (a pod, buried or not), bolt (a charged stone), pin (yours), and a gate's own shape (narrow hole, fast water, deep "?"). A beat always means a pod not found yet; a pod already located but not taken shows as a small pod instead. A pod in the cave under the cliff shows as the narrow-hole sign ("needs a digger"), never as a beat. The map counts (Cargo's "In reach", the Observer) come from one function: visited includes cleared.
 - The fog bank is in the Probe legend and has a first-sighting line ("Fog bank · creatures calm inside, nothing seen").
 - On the start map the storm band is a dotted preview of where the storm would begin; the top bar says so. Rings are gone. Signs on cleared cells and inside a fog bank are not drawn. Each sign's one-line explanation shows once, the first time the line names it.
 - The map's line names the cell you're on and the one you face ("wood · slow beat · Ahead: meadow"); when that is too long it keeps the part with signs.
-- **Survey cairn** (included): rock fields (35%) and meadows (8%) may hold one. Climbing it reveals land 3 cells around the place, beyond range.
+- **Survey cairn** (included): rock fields (35%) and meadows (8%) may hold one. Climbing it reveals land 3 cells around the place, beyond range: the Probe goes back up to the map and the fog lifts ring by ring from the cairn ("The cairn shows the land around · 8 cells revealed"). A climbed cairn gets a capstone, not a flag (flags are pins).
+- The pawn has a light ring and the start marker a dark outline, so both read on any ground. Cargo counts read "In reach: visited 5 · cleared 1 · of 25"; creature moments read "11 creature moments (Data)".
 
 ## Going home
 
-- Hold full, "Everything in reach is explored" (every cell in reach visited and called in), "Nothing new until the world turns" (after that, once the storm has gone or on re-entering a cleared place), the first-pod line, and the banking line at shield 1.
+- Hold full, "Everything in reach is explored" (every reachable cell in the square visited, and nothing left there that you could take: no visible pod while the hold has room, no seen charged stone, tuft, full cup, bush with fruit or unclimbed cairn; fruit on the floor, creatures and hidden finds don't count; a Call is not required), "Nothing new until the world turns" (after that, once the storm has gone or on re-entering a cleared place), the first-pod line, and the banking line at shield 1.
 - **Send home** is in the menu (second on the map, third in a place) and opens Cargo, which previews the Station's work ("two new pods to identify · a new pod can hatch · Probe tier 2 is ready").
 
 ## Call
@@ -75,6 +78,8 @@ Every source is an act you choose. Each caps at 20 carried.
 ## Creatures and feeding
 
 - Creeping never startles a creature unless you step right next to it (curious ones, and ones your partner calms, not even then). Walking startles anything within its notice range.
+- The first time a "!" or a "?" shows in view, a line explains it ("! · it noticed you, keep still or back off", "? · curious, it may come closer").
+- Fruit is for hoppers and puffcaps. Facing a glowtail with fruit, the line reads "Not a fruit eater" and the first press says "The glowtail isn't interested · hoppers and puffcaps eat fruit"; with empty hands it reads "Watch, or Call".
 - A startled creature shows "!" for one action. If you keep coming it flees: 3 tiles over two actions, never off-screen, then stops and watches. After 3 quiet actions it goes back to its routine. Glowtails dive into a hole instead.
 - **Put it down and back off**: fruit on the ground draws an eater within 10 tiles (it closes in fast, then slows: about 4 quiet actions) once you are 3 tiles from the fruit (1 for curious or calmed creatures). Sheltering creatures wait out the rain first. Coaching once: "The puffcap eyes the fruit · back off".
 - **Hand-offer** works for curious creatures, with a calming partner near, or inside a fog bank; a wary one shows "!" and backs off, with a one-time hint.
@@ -86,13 +91,13 @@ Cover: creatures notice walking 2 tiles later and creeping never startles, even 
 
 ## Station stand-in
 
-After each expedition the Station works through its store in order: identify each pod (1 Energy), read each waiting study (2 Data; one line per discovery), hatch one founder of a species you don't raise yet (2 Energy + 4 Essence). A pod of a species you already raise is logged and stored, and the Station says so ("Hopper pod · you raise hoppers · stored"). Whatever it can't pay for waits and says what it needs ("Pod waits · needs 1 Energy to identify", "needs 2 more Essence"). When the store holds 12 Energy and 4 Data at tier 1, a page offers the tier 2 Probe (Confirm upgrades, Back declines). Then the world-turn lines.
+After each expedition the Station works through its store in order: identify each pod (1 Energy; the first pod ever is identified for free, "First pod · identified for free"), read each waiting study (2 Data; one line per discovery), hatch one founder of a species you don't raise yet (2 Energy + 4 Essence). A pod of a species you already raise is logged and stored, and the Station says so ("Hopper pod · you raise hoppers · stored"). Whatever it can't pay for waits and says what it needs ("Pod waits · needs 1 Energy to identify", "needs 2 more Essence"). When the store holds 12 Energy and 4 Data at tier 1, a page offers the tier 2 Probe (Confirm upgrades, Back declines). Then up to three world-turn lines. The last page has a large **Next expedition** button (✓ does the same). Back opens a menu that lists Next expedition first and New world last, under a separator; New world asks "New world erases this one · Confirm again" before it does anything.
 
 ## Partners by life stage
 
 - New pods hatch as **juveniles**. A juvenile can ride in the Companion (Companions screen: "Let Dot ride along"); it doesn't join expeditions and changes nothing in the Probe. After 2 world turns it is an **adult** and can be brought along ("Pip is grown" in the world-turn lines).
 - After 6 world turns as an adult a mibi becomes an **elder**: double calming and sniffing radius, feels every stray strike, trails two tiles behind, and needs two actions to dig.
-- Deep ground starts at the narrow burrow under the cliff (it is revealed and pinned). Facing it with a digging partner, Confirm reads "Pip digs" and the cave opens. Facing an ordinary glowtail hole, the partner points to the burrow instead.
+- Deep ground starts at the narrow burrow under the cliff (it is revealed and pinned). Facing it with a digging partner, Confirm reads "Pip digs" and the cave opens. Facing an ordinary glowtail hole, the partner points to the burrow instead and names its direction ("…under the cliff, north-east"); the burrow's cell gets its gate sign on the map.
 - Abilities by species as before: glowtail digs the narrow burrow (and glows, restoring a muffled Call), hopper calms wary creatures, puffcap sniffs out buried pods (and flinches before stray strikes).
 
 ## Screen and budget assumptions (as if targeting the ESP32-S3 Companion)
