@@ -32,16 +32,16 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 
 Every source is an act you choose. Each caps at 20 carried.
 
-- **Energy**: draw a struck stone's charge (+2, +3 if struck at the storm's peak). Spent in the field on pins (1) and shield patches (3 for one bar, on the Probe screen). Spent at the Station on identifying (1), hatching (2) and the tier 2 Probe (12).
-- **Data**: only from creature moments you cause: a creature eats your fruit, or a glowtail settles because you kept still. +1, or +2 the first time ever for that species and moment; once per creature per expedition. Spent at the Station on studies (2 each, one line per discovery) and the tier 2 Probe (8).
+- **Energy**: draw a struck stone's charge (+2, +3 if struck at the storm's peak). Spent in the field on pins (1) and shield patches (3 for one bar, on the Probe screen). Spent at the Station on identifying or logging a pod (1), hatching (2) and the tier 2 Probe (12).
+- **Data**: only from creature moments you cause: a creature eats your fruit, or a glowtail settles because you kept still. +1, or +2 the first time ever for that species and moment and for the first moment with each species on an expedition (tuning to confirm); once per creature per expedition. Spent at the Station on studies (2 each, one line per discovery) and the tier 2 Probe (4, tuning to confirm; the proposal says 8).
 - **Essence**: dew from a full cup (+1), pressing a fruit instead of feeding it (+2), the tuft a hopper leaves when it shakes dry (+1). Spent at the Station on hatching a founder (4).
 - Humming stones are gone. A shaken bush drops one fruit.
 
 ## Storm and Shield
 
-- The band is 3 columns wide. Rain falls under its core; its edges are overcast only. While it is over the place you're in it crawls 0.14 columns per action (elsewhere 0.25), so a storm rains on one place for about 15 actions, with lulls of 3 actions in every 12.
+- The band is 3 columns wide. Rain falls under its core; its edges are overcast only. While it is over you, on the map or in a place, it crawls 0.14 columns per action (elsewhere 0.25), so a storm rains on one place for about 15 actions, with lulls of 3 actions in every 12.
 - The HUD shows 1–3 bolts: 1 approaching (or the dry edge, or a lull), 2 strong rain over you, 3 the peak (the band's centre, about 9 actions in a place).
-- **Stray strikes**: each action in the open under rain, 1 in 12 (strong) or 1 in 6 (peak). None in shelter: under a canopy, an overhang, in the cave, or on a wood cell on the map. None inside a fog bank. The odds are said in words once, the first strong storm and the first peak.
+- **Stray strikes**: each action in the open under rain, 1 in 12 (strong) or 1 in 6 (peak). Measured over 300 forced actions in the open: 0.077–0.093 strong, 0.167–0.177 peak. None in shelter: under a canopy, an overhang, in the cave, or on a wood cell on the map. None inside a fog bank. The odds are said in words once, the first strong storm and the first peak.
 - **Warned strikes** aim at stones (or open tiles near you, never your own tile), one action ahead on a glowing tile. On the map they land on a neighbouring cell. Lightning lights the map cell it strikes for good, even in fog (about one in seven of the band's flashes, plus every warned map strike). Stones charge at the world turn only where lightning really struck (warned, stray, a stone in a place) or under one flash in four; at the world turn each stone in such a cell takes a +2 charge 60% of the time.
 - **Shield** (renamed from hull): 3 bars at tier 1, 4 at tier 2. At 0 the Probe breaks: "The Probe breaks · your pods are safe". The expedition ends where you are; all carried Energy, Data and Essence are lost; pods, pins and revealed land are kept. The next expedition starts mended, free. The first time the shield drops to 1 the game says a break loses what you carry.
 - A puffcap partner flinches one action before a stray strike; an elder partner of any species feels every one.
@@ -54,15 +54,17 @@ Every source is an act you choose. Each caps at 20 carried.
 | 2 | 4 (9×9) | 3 | 4 | Reads the deep "?" (once: a sealed pod rises) |
 
 - Stepping past the square bumps: "Edge of the Probe's range · tier 2 reaches further". Sweep is one ring at both tiers.
-- **Cell states**: fog (cloud) · seen (muted through the existing fade table) · visited (full colour, one white pip per thing left: a visible pod, a seen charged stone, fruit or a tuft on the ground; up to 3) · cleared (a small tick). A cell is cleared only after a Call inside it found nothing hidden anywhere in the place and nothing is left. A world turn that adds a pod or charge to a cell un-clears it. The cell above the cave can't tick while the cave still holds a pod; a pod that finds no room in a place is dropped and logged.
-- **Five signs only**: paw (tracks), beat (a pod, buried or not), bolt (a charged stone), pin (yours), and a gate's own shape (narrow hole, fast water, deep "?"). Rings are gone. Signs on cleared cells and inside a fog bank are not drawn. Each sign's one-line explanation shows once, the first time the line names it.
+- **Cell states**: fog (cloud) · seen (muted through the existing fade table) · visited (full colour, one white pip per thing left: a visible pod, a seen charged stone, fruit or a tuft on the ground; up to 3) · cleared (a small tick). A cell is cleared only after a Call inside it found nothing hidden anywhere in the place and nothing is left: no pod, charge, fruit or tuft, and no full dew cup, bush with fruit or unclimbed cairn. A Call says "Nothing hidden · nothing left here" only then; "Nothing hidden" otherwise, and if a pod is still lying in the place it glints and the line says where. A world turn that adds a pod or charge to a cell un-clears it. The cell above the cave can't tick while the cave still holds a pod; a pod that finds no room in a place is dropped and logged.
+- **Five signs only**: paw (tracks), beat (a pod, buried or not), bolt (a charged stone), pin (yours), and a gate's own shape (narrow hole, fast water, deep "?"). A pod in the cave under the cliff shows as the narrow-hole sign ("needs a digger"), never as a beat. The map counts (Cargo's "In reach", the Observer) come from one function: visited includes cleared.
+- The fog bank is in the Probe legend and has a first-sighting line ("Fog bank · creatures calm inside, nothing seen").
+- On the start map the storm band is a dotted preview of where the storm would begin; the top bar says so. Rings are gone. Signs on cleared cells and inside a fog bank are not drawn. Each sign's one-line explanation shows once, the first time the line names it.
 - The map's line names the cell you're on and the one you face ("wood · slow beat · Ahead: meadow"); when that is too long it keeps the part with signs.
 - **Survey cairn** (included): rock fields (35%) and meadows (8%) may hold one. Climbing it reveals land 3 cells around the place, beyond range.
 
 ## Going home
 
 - Hold full, "Everything in reach is explored" (every cell in reach visited and called in), "Nothing new until the world turns" (after that, once the storm has gone or on re-entering a cleared place), the first-pod line, and the banking line at shield 1.
-- **Send home** is in the menu (second on the map, third in a place) and opens Cargo, which previews the Station's work ("two pods to identify · a new pod can hatch · Probe tier 2 is ready").
+- **Send home** is in the menu (second on the map, third in a place) and opens Cargo, which previews the Station's work ("two new pods to identify · a new pod can hatch · Probe tier 2 is ready").
 
 ## Call
 
@@ -76,7 +78,7 @@ Every source is an act you choose. Each caps at 20 carried.
 - A startled creature shows "!" for one action. If you keep coming it flees: 3 tiles over two actions, never off-screen, then stops and watches. After 3 quiet actions it goes back to its routine. Glowtails dive into a hole instead.
 - **Put it down and back off**: fruit on the ground draws an eater within 10 tiles (it closes in fast, then slows: about 4 quiet actions) once you are 3 tiles from the fruit (1 for curious or calmed creatures). Sheltering creatures wait out the rain first. Coaching once: "The puffcap eyes the fruit · back off".
 - **Hand-offer** works for curious creatures, with a calming partner near, or inside a fog bank; a wary one shows "!" and backs off, with a one-time hint.
-- Carrying fruit: facing empty ground puts it down; facing anything solid presses it (+2 Essence).
+- Carrying fruit: facing empty ground puts it down; facing anything solid presses it (+2 Essence). Facing a creature with empty hands: "✓ Bring fruit, or Call" (it says the creature is watching you; no action spent).
 
 ## Fog bank
 
@@ -84,12 +86,13 @@ Cover: creatures notice walking 2 tiles later and creeping never startles, even 
 
 ## Station stand-in
 
-After each expedition the Station works through its store in order: identify each pod (1 Energy), read each waiting study (2 Data; one line per discovery), hatch one founder of a species you don't raise yet (2 Energy + 4 Essence). Whatever it can't pay for waits and says what it needs ("Pod waits · needs 1 Energy to identify", "needs 2 more Essence"). When the store holds 12 Energy and 8 Data at tier 1, a page offers the tier 2 Probe (Confirm upgrades, Back declines). Then the world-turn lines.
+After each expedition the Station works through its store in order: identify each pod (1 Energy), read each waiting study (2 Data; one line per discovery), hatch one founder of a species you don't raise yet (2 Energy + 4 Essence). A pod of a species you already raise is logged and stored, and the Station says so ("Hopper pod · you raise hoppers · stored"). Whatever it can't pay for waits and says what it needs ("Pod waits · needs 1 Energy to identify", "needs 2 more Essence"). When the store holds 12 Energy and 4 Data at tier 1, a page offers the tier 2 Probe (Confirm upgrades, Back declines). Then the world-turn lines.
 
 ## Partners by life stage
 
 - New pods hatch as **juveniles**. A juvenile can ride in the Companion (Companions screen: "Let Dot ride along"); it doesn't join expeditions and changes nothing in the Probe. After 2 world turns it is an **adult** and can be brought along ("Pip is grown" in the world-turn lines).
 - After 6 world turns as an adult a mibi becomes an **elder**: double calming and sniffing radius, feels every stray strike, trails two tiles behind, and needs two actions to dig.
+- Deep ground starts at the narrow burrow under the cliff (it is revealed and pinned). Facing it with a digging partner, Confirm reads "Pip digs" and the cave opens. Facing an ordinary glowtail hole, the partner points to the burrow instead.
 - Abilities by species as before: glowtail digs the narrow burrow (and glows, restoring a muffled Call), hopper calms wary creatures, puffcap sniffs out buried pods (and flinches before stray strikes).
 
 ## Screen and budget assumptions (as if targeting the ESP32-S3 Companion)
@@ -118,7 +121,7 @@ After each expedition the Station works through its store in order: identify eac
 ## Measured with scripted play (seeds 7, 13, 42)
 
 - A thorough player (gathers everything, never shelters) fills the hold at a median of about 150–180 actions (100–440); a scout (enter, Call, take pods, leave) hears "Everything in reach is explored" at a median of 53 actions (37–112).
-- Breaks: 4 of 21 storm expeditions for a player who stays in the open the whole storm.
+- Breaks: 4 of 21 storm expeditions for a player who stays in the open in a place the whole storm (0.10 hits per open storm action); 3 of 6 open storm passes for a player waiting on the map.
 - New cells per expedition: median 18–20 for the thorough player, 36 for the scout (who walks the whole square and climbs no cairns).
 - The first put-down feed without a partner succeeded on the first or second try (seeds 7, 42, 5, 99).
 
@@ -133,7 +136,7 @@ After each expedition the Station works through its store in order: identify eac
 
 ## Persistence and tools
 
-- Saves to localStorage with save format v5; older saves (v1–v4) are discarded on load. Works without storage. `?seed=N` makes the next new world reproducible.
+- Saves to localStorage with save format v5; older saves (v1–v4) are discarded on load. Works without storage. `?seed=N` sets the seed of the next New world; a saved world keeps playing until you choose New world (last menu entry between expeditions).
 - The Observer shows expedition, world turn, actions, location, partner and rider, Probe (tier, range, hold, shield, storm bolts), carried and Station materials, map state counts (seen, visited, cleared, fog, explored in reach), seed, the last 8 events and the palette, plus "Copy playtest notes".
 - Test hooks: `window.__mb` (state, `lineFor`, `capture`, `offPalette`, `act`, `press`/`release`, `reachCounts`, `isCleared`, `pipsOf`, `stormLevel`, `sendPreview`, `mapCounts` and others).
 - The build stamp reads `../../build.json` (written by CI); a local copy shows "local build". One self-contained file with no build step.
