@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "status": "Generated candidates for the homepage concept brief; awaiting acceptance. Nothing here is accepted or placed on the page.",
+  "generated": true,
+  "brief": "art/concept-brief-homepage.md",
+  "prompts": "prompts.json",
+  "shots": {
+    "H1": "hero-kit.png",
+    "C1": "companion-map-hands.png",
+    "C2": "companion-storm.png",
+    "K1": "caddy-print.png",
+    "S1": "station-research-pod.png",
+    "P1": "partner-patch.png",
+    "L1": "pip-life-stages.png"
+  },
+  "sources": {
+    "tool": "Gemini API",
+    "models": [
+      "gemini-3-pro-image",
+      "gemini-3.1-flash-image"
+    ],
+    "successfulCalls": 16,
+    "failedCalls": 1,
+    "originalBytes": "raw/ holds the unaltered JPEG the API returned for each kept candidate; rejected attempts are stored only as their PNG resamples."
+  },
+  "derivation": {
+    "station-research-pod.png": {
+      "from": "raw/S1-attempt1.jpg",
+      "rawSize": [
+        2528,
+        1696
+      ],
+      "cropRect": {
+        "x": 0,
+        "y": 0,
+        "width": 2528,
+        "height": 1481
+      },
+      "note": "The model put the header bar in the top margin and left only the bottom margin dark, so the screen band is the top 900/1024 of the canvas rather than the centred band the brief specified.",
+      "resample": "LANCZOS to 1024x600"
+    },
+    "partner-patch.png": {
+      "from": "raw/P1-attempt2.jpg",
+      "rawSize": [
+        1696,
+        2528
+      ],
+      "cropRect": {
+        "x": 102,
+        "y": 275,
+        "width": 1492,
+        "height": 1989
+      },
+      "detection": "rows and columns where more than half the pixels have HSV saturation above 60/255 and value above 80/255, longest run, then trimmed to exactly 3:4 and centred",
+      "note": "The model drew the HUD and bottom line on the dark margin outside the 900x1200 block, so this crop holds the scene only; the HUD and bottom line are visible in partner-patch-canvas.png.",
+      "resample": "LANCZOS to 900x1200"
+    },
+    "partner-patch-450x600.png": {
+      "from": "partner-patch.png",
+      "resample": "BOX (area average) 2:1 to 450x600"
+    },
+    "pip-life-stages.png": {
+      "from": "raw/L1-attempt1.jpg via the 1536x1024 LANCZOS resample",
+      "alpha": "The API returns opaque JPEG; the background was requested as flat pure white and keyed: alpha = clamp((distance to white - 10) / 35, 0, 1); colour un-composited from white for partial pixels. Soft contact shadows keep partial alpha.",
+      "evidenceLimit": "Keyed alpha, not generated alpha. Canvas corners are alpha 0; 0.8 percent of pixels are partial."
+    },
+    "all 1536x1024 and 1024x1536 PNGs": {
+      "from": "the raw 2K JPEG output (2528x1696 or 1696x2528)",
+      "resample": "LANCZOS to the brief size; sRGB; no retouching"
+    }
+  },
+  "caveats": [
+    "Generated images: concept art, to be captioned as such; never a capture from the build.",
+    "HiBit screens are generated pixel-style art resampled from a 2K output, not authored native 450x600 masters; the logical pixel grid is not exact.",
+    "The API returned opaque JPEG; pip-life-stages.png alpha is keyed from a flat white background (see derivation).",
+    "Second attempts for L1 and all third attempts were blocked by the API monthly spending cap (HTTP 429)."
+  ],
+  "artifacts": [
+    {
+      "path": "caddy-print.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 1993814,
+      "sha256": "fafea729166b7adfaa5d61e7f414d1bb0e29ded06efe675af9a427dadc4334ce",
+      "status": "candidate"
+    },
+    {
+      "path": "companion-map-hands.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 1929814,
+      "sha256": "16011cd8ca0b92329bed4c0d03a278c499c739053d71a53552716429486b13d6",
+      "status": "candidate"
+    },
+    {
+      "path": "companion-storm.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 2259592,
+      "sha256": "77dd683caec7f3c444844c6f70ff0e51de9355812a53a4876e0ee01e5ec0d450",
+      "status": "candidate"
+    },
+    {
+      "path": "contact-sheet.png",
+      "width": 1994,
+      "height": 958,
+      "mode": "RGB",
+      "bytes": 1384422,
+      "sha256": "41a75092dcea593b550a077857493df4aeac111e04204f2f74cc244f1b077e3d",
+      "status": "index"
+    },
+    {
+      "path": "hero-kit-passA.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2130173,
+      "sha256": "0f6744ab034ec70ba1d292123f53b6cb25ca6b42266baa167e66b75291ebadd8",
+      "status": "intermediate (pass A result, input to pass B)"
+    },
+    {
+      "path": "hero-kit.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2120306,
+      "sha256": "dd8009fb3eb525909a32b260aefd4052bdb6718b4c80a2b36a3674031e09a19c",
+      "status": "candidate"
+    },
+    {
+      "path": "partner-patch-450x600.png",
+      "width": 450,
+      "height": 600,
+      "mode": "RGB",
+      "bytes": 332906,
+      "sha256": "d9a1c093f0125396cb70afe00e220d3a293e360b697bfa06437bcf43acc4b2a0",
+      "status": "candidate (1x derivative)"
+    },
+    {
+      "path": "partner-patch-canvas.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 1668987,
+      "sha256": "55a8697cbb6eae84bd63677c77cd074d3d5610c15b85b64b42a3159becdd0472",
+      "status": "candidate (full canvas with HUD and bottom line)"
+    },
+    {
+      "path": "partner-patch.png",
+      "width": 900,
+      "height": 1200,
+      "mode": "RGB",
+      "bytes": 1199173,
+      "sha256": "44e20cdb4ad1ed769b31ef15294cd934742813267ea72ba94e1880dcd5f53e3b",
+      "status": "candidate"
+    },
+    {
+      "path": "pip-life-stages.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "bytes": 949785,
+      "sha256": "377852f1bb2ce67d26c769a0c5bce4cd5ec52d6db514b2b54b8407bfb06f220d",
+      "status": "candidate"
+    },
+    {
+      "path": "station-research-pod-canvas.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 1219204,
+      "sha256": "e6a8b2d20b6f0c94857259654bb97baf55138c3b008e11a376a7820db15dbf16",
+      "status": "candidate (full canvas)"
+    },
+    {
+      "path": "station-research-pod.png",
+      "width": 1024,
+      "height": 600,
+      "mode": "RGB",
+      "bytes": 482065,
+      "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110",
+      "status": "candidate"
+    },
+    {
+      "path": "raw/C1-attempt2.jpg",
+      "width": 2528,
+      "height": 1696,
+      "mode": "RGB",
+      "bytes": 2238714,
+      "sha256": "ce9c18eff25457d1cb83cc9bf445841bed4092314ee6d955bcd16cfd5940d1ac",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/C2-attempt2.jpg",
+      "width": 1696,
+      "height": 2528,
+      "mode": "RGB",
+      "bytes": 2787156,
+      "sha256": "06192a85cc8b1aa17e75ca6f1d8b02ed3a110e07063cc39f3a4d17171a705cc2",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/H1A-attempt3.jpg",
+      "width": 2528,
+      "height": 1696,
+      "mode": "RGB",
+      "bytes": 2621443,
+      "sha256": "4670aa1a3d382a44ebdc76242b8910fae5ef1cf19e2c314e1c9b2c6bc270915b",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/H1B-attempt2.jpg",
+      "width": 2528,
+      "height": 1696,
+      "mode": "RGB",
+      "bytes": 2528354,
+      "sha256": "fdb98d7c518ffd7691547524fde01b64096651d81dc70b48297030be3efb38c6",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/K1-attempt1.jpg",
+      "width": 2528,
+      "height": 1696,
+      "mode": "RGB",
+      "bytes": 2202316,
+      "sha256": "0abdd7098bd027f9f0a5326aa4e61d18ae472791e90a9438e38a693eb4f102aa",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/L1-attempt1.jpg",
+      "width": 2528,
+      "height": 1696,
+      "mode": "RGB",
+      "bytes": 1745358,
+      "sha256": "7aff3f10e50ec0d66b379a008c099ecd5b1e23567aa4fa7f40599c6ea3b83abf",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/P1-attempt2.jpg",
+      "width": 1696,
+      "height": 2528,
+      "mode": "RGB",
+      "bytes": 2123028,
+      "sha256": "eaa96cd961c6395ee9b7b9b7ae04896bed03d62a3de115582a6a09b815d27239",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/S1-attempt1.jpg",
+      "width": 2528,
+      "height": 1696,
+      "mode": "RGB",
+      "bytes": 1331755,
+      "sha256": "ee8d15a4c64f4e7905b9e34f322769d0683b967e2bc3fb42be820b3719c41b74",
+      "status": "original (unaltered model output)"
+    },
+    {
+      "path": "rejected/caddy-print-attempt2.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2062861,
+      "sha256": "6eed20c6d2be3d167f4e8084ba6f2b80698fa1a58ca99802e7511196982dae46",
+      "status": "rejected"
+    },
+    {
+      "path": "rejected/companion-map-hands-attempt1.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 1937372,
+      "sha256": "470d1ec7323c9726f8668d8a1b5ea5ddd382011a9e36b7eeaef1408c41c0c8d4",
+      "status": "rejected"
+    },
+    {
+      "path": "rejected/companion-storm-attempt1.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 2504816,
+      "sha256": "2564e7f8f4893672293fe8f2ab32b78348a4fc756c26d357953adc1cccb865dd",
+      "status": "rejected"
+    },
+    {
+      "path": "rejected/hero-kit-passA-attempt1.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2131949,
+      "sha256": "c5a52f5617bc39e81191d775896fb951c99c04f163f6b1a3c4ca30622a18bb4b",
+      "status": "rejected"
+    },
+    {
+      "path": "rejected/hero-kit-passA-attempt2.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2147064,
+      "sha256": "4056242453e491fb202c68215b05188f5462b93654f0c2a9561f6c5dc93664bb",
+      "status": "rejected"
+    },
+    {
+      "path": "rejected/hero-kit-passB-attempt1.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2097915,
+      "sha256": "168a366ff2c56566a8057112a8338c20877cc9d1c112bfe90a4d05b157bdd285",
+      "status": "rejected"
+    },
+    {
+      "path": "rejected/partner-patch-attempt1.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 1661969,
+      "sha256": "cb20e13e3811fe5a668fe53d1ce6aeedf491529234e0e7c30af4a6be0a5114bc",
+      "status": "rejected"
+    },
+    {
+      "path": "rejected/station-research-pod-attempt2.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 1301521,
+      "sha256": "56466e76a12e72bb2104051560c8cf3a80a9b885e27f8b00e0687a1a463d8c04",
+      "status": "rejected"
+    }
+  ]
+}
