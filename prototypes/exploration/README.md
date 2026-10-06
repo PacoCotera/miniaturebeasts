@@ -17,7 +17,7 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 
 - New world is offered only between expeditions (last menu entry).
 - One-time pointer messages: first map entry ("Walk with the pad · ✓ goes down · ← Wait and Send home"), first place ("A veil hides what is here · ))) Call lifts it around you"), first edge crossing ("Onto the next cell · ✓ goes down into it"), the storm's arrow on the map ("▶ · the yellow arrow · the storm moves this way"), first pod, first warm stone, hold full, the four creature bubbles, nothing left ("Everything in reach is explored · ← Send home").
-- The menu shows no action count. Its Send home entry reads "Surveyed N of M in reach" on the bottom line.
+- The menu shows no action count. Its Send home entry reads "Explored N of M in reach" on the bottom line.
 - The depicted shell has Call directly above Back, both left of a larger Confirm. Call is teal with a ring texture.
 - The bottom line sets its glyphs 1 px apart (still 2× pixels) so the three parts fit 450 px.
 - One-time lines count as shown only if they are still in the message box when the action ends; one pushed out by a more urgent line comes back next time.
@@ -26,23 +26,23 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 
 1. Choose Weather (or Deep ground, with a digging partner), pick a start: the first time a glint, later any seen cell. A dotted square shows the Probe's range from that start; the dot grid in the HUD's top-left corner is the same square.
 2. Walk the map. Each step lifts the fog one ring around you (not inside a fog bank). Go down into a place: it lies under a veil. Call to survey it, quarter by quarter, and gather what the survey shows.
-3. Walk off the place's edge onto the next cell, Confirm, and survey that one. Each surveyed cell fills its dot.
-4. Send home from the menu (Cargo shows "Surveyed N of M in reach" and what the Station will do), or the Probe breaks. The Station spends what you bring, then the world turns once.
+3. Walk off the place's edge onto the next cell, Confirm, and survey that one. Each place you Call in fills its dot.
+4. Send home from the menu (Cargo shows "Explored N of M · fully surveyed K" and what the Station will do), or the Probe breaks. The Station spends what you bring, then the world turns once.
 
 ## Survey
 
 - **The veil.** Every place (not the cave under the cliff) starts veiled: the ground shows through, one step darker with a 4×4 dot pattern, so you can see where to walk. Creatures always show (in sight); features, pods, drops (fruit, tufts) and stones on a veiled tile are not drawn. Facing one, Confirm reads "Veiled · Call to see" and spends nothing; bumping into one says "Something is there under the veil · ))) Call to see". Landmarks show anyway: the narrow burrow, the cave exit, the pod on the island. Fruit you put down yourself stays visible.
 - **Call lifts it** in a 23×23 square around you (11 tiles; 5 in a fog bank unless a glowtail partner is along), matching its ring. Walking never lifts it. Lightning striking a veiled stone lifts the 3×3 around it. Tiles no Call could reach (more than 11 tiles from any walkable tile) don't count and show plainly.
-- **Quarters.** A place has four quarters of 14×16 tiles. A quarter is surveyed when 75% of its surveyable tiles are unveiled. A cell counts as **explored** (its reach dot fills) once it is visited and 3 of its 4 quarters are surveyed; the overview still draws all four. The line names it: "rock field · half surveyed", "· surveyed" at four.
+- **Quarters.** A place has four quarters of 14×16 tiles. A quarter is surveyed when 75% of its surveyable tiles are unveiled. A cell counts as **explored** (its reach dot fills) once it is visited and at least one Call was made inside it; the overview still draws all four quarters, so a partial and a full survey stay visible. The line names it: "rock field · half surveyed", "· surveyed" at four.
 - **Call reports** how much is surveyed and what is still there to take: "Surveyed · 1 pod, 2 dew left", "Half surveyed · 2 fruit left", "Survey begun · Call further on · nothing to take yet". It never says "Nothing here". A pod still lying in the place glints again.
 - **The overview** draws each visited cell in quarters of 13 px: dotted (night dither) while unsurveyed, whole once surveyed. Pips (up to 3) count what is left to take in the unveiled part: pods, charge, warm stones, full dew cups, bushes with fruit, fruit on the ground, tufts, unclimbed cairns. The tick and the word "cleared" are gone. A located pod is a pip; its beat sign goes.
 - **The world turn** veils again what changed: the quarter of a stone that took fresh storm charge, the whole place where a new pod arrived. A surveyed place that was not changed stays surveyed across expeditions.
 
 ## Completion
 
-- **The reach grid.** One dot per reachable cell in the range square (5×5 at tier 1, 9×9 at tier 2): hollow until explored, filled (mint) once 3 of its 4 quarters are surveyed, your cell framed in amber, no dot for cells you can't reach (water, cliff, the island).
+- **The reach grid.** One dot per reachable cell in the range square (5×5 at tier 1, 9×9 at tier 2): hollow until explored, filled (mint) once you have been in the place and Called there, your cell framed in amber, no dot for cells you can't reach (water, cliff, the island).
 - **"Everything in reach is explored · ← Send home"** fires as the last dot fills (after the Call that completes it).
-- **Cargo** shows "Surveyed N of M in reach" with the same grid beside it.
+- **Cargo** shows "Explored N of M · fully surveyed K" with the same grid beside it; the menu's Send home entry reads "Explored N of M in reach".
 - **Wait** says what changed: "The storm edges east · two hoppers wander", "The fog bank rolls in", "The puffcap finished its meal", "Dew gathers in a cup"; or "Nothing is moving here".
 - **Headings.** Beside the HUD bolts, ◀ or ▶ shows which way the storm heads; when a fog bank is within two cells, a small fog patch with its own ◀ or ▶. No sun arc, no day-part.
 
@@ -90,7 +90,7 @@ Every source is an act you choose. Each caps at 20 carried.
 ## Creatures and feeding
 
 - **Four bubbles**, one at a time, each explained once the first time it shows in view: **!** startled ("stop, or it runs"), **?** curious ("it will come closer"), **fruit** (a red fruit on blush: "it eats what you carry · offer it, or put it down and back off"), **…** settling, with four pips under the creature that fill as it settles ("keep still with ← Wait"). The fruit bubble shows on every eater of an identified species in view while you carry fruit. The partner-calm tilde from round 2 is kept.
-- **Diet before you offer.** Facing a creature of a species you have identified, the line names it and its diet: "Hopper · eats fruit", "Glowtail · doesn't eat fruit · settles when you keep still". An unidentified one reads "Unknown creature · watch what it does". The fruit bubble shows only on eaters of identified species. With fruit in hand, Confirm reads "Offer fruit" only for eaters; for a non-eater it reads "Doesn't eat fruit" (dimmed) and a press says so and spends nothing.
+- **Diet before you offer.** Facing a creature of a species you have identified, the line names it and its diet: "Hopper · eats fruit", "Glowtail · doesn't eat fruit · settles when you keep still". An unidentified one reads "Unknown creature · watch what it does", and with fruit in hand Confirm on an unidentified non-eater reads only "Unknown creature" (no offer, no diet). The fruit bubble shows only on eaters of identified species. With fruit in hand, Confirm reads "Offer fruit" only for eaters; for a non-eater it reads "Doesn't eat fruit" (dimmed) and a press says so and spends nothing.
 - A shaken bush says who eats its fruit: "A fruit drops · hoppers eat these", or "no one here eats fruit". Putting fruit down explains itself once ("Fruit down · eaters come when you back off").
 - Creeping never startles a creature unless you step right next to it. A startled creature flees 3 tiles, never off-screen, then watches; after 3 quiet actions it goes back to its routine.
 
@@ -133,27 +133,28 @@ New pods hatch as juveniles (ride in the Companion), grow up after 2 world turns
 
 ## Measured with scripted play (seeds 7, 13, 42)
 
-A bot plays through the real controls (`__mb.act`): it walks to the tile whose Call would unveil the most of the unsurveyed quarters, Calls, and repeats; the **scout** stops at 3 quarters (explored) and takes pods and Energy; the **thorough** bot surveys all four quarters and also takes dew, shakes bushes and presses the fruit, picks up tufts and climbs cairns. Then it walks off the edge toward the nearest unexplored cell.
+A bot plays through the real controls (`__mb.act`): it walks to the tile whose Call would unveil the most of the unsurveyed quarters, Calls, and repeats; the **scout** Calls once per place (explored) and takes pods and Energy it sees; the **thorough** bot surveys all four quarters and also takes dew, shakes bushes and presses the fruit, picks up tufts and climbs cairns. Then it walks off the edge toward the nearest unexplored cell.
 
-Survey pace, tuned in three steps (radius 11, then 75%, then explored at 3 of 4 quarters):
+Survey pace, tuned in steps (radius 11, then 75%, then explored at 3 of 4 quarters, then explored = visited and one Call):
 
 | | Calls per place (median) | Scout to "everything explored" | Thorough |
 | --- | --- | --- | --- |
 | Round 3 as first built (7, 90%, 4/4) | 6 | 1,797–3,975 | 2,113–not reached by 4,128 |
 | Radius 11 | 4 | 1,174–2,280 | 1,580–3,117 |
 | + 75% | 3 | 858–1,714 | 1,305–2,803 |
-| + explored at 3/4 (current) | 2 | 743–1,540 | 1,295–2,796 |
+| + explored at 3/4 | 2 | 743–1,540 | 1,295–2,796 |
+| Explored = visited + one Call (current; thorough still surveys all four quarters) | scout 1, thorough 3 | 548–837 | 1,288–2,783 |
 
-The reach holds 15, 18 and 25 cells on the three seeds; a scout spends about 50–60 actions per cell (walking in, two Calls, walking out), so the target of 200 (scout) and 450 (thorough) actions is not met.
+The reach holds 15, 18 and 25 cells on the three seeds; a scout spends about 33–37 actions per cell (walking in, one Call, picking up what it shows, walking out), so the target of 200 (scout) and 450 (thorough) actions is not met.
 
-- **Energy home per calm expedition** (no storm; 30 expeditions, five in a row per world, median 231 actions): mean 2.8, median 2.5, range 0–7; 3 of 30 brought none. Warm odds stay at 45%.
+- **Energy home per calm expedition** (no storm; 30 expeditions, five in a row per world, median 220 actions): mean 2.6, median 2, range 0–7; 4 of 30 brought none. Warm odds stay at 45%.
 - **With a storm stay** (measured before the survey tuning; Calls while sheltering, draws struck stones, banks at shield 1; 15 Weather expeditions): median 4.5 Energy home when sent (0–11); 3 of 15 broke.
 - **Edge-walk presses per crossing**: 2 (step off, Confirm).
 - **Wait**: on the map with no storm or fog near, "Nothing is moving here"; in a place with creatures it almost always names one moving.
 
 ## Known issues
 
-- **Completing a reach is still long** (743–1,540 actions for a scout; see above): with places at 28×32 tiles the walk through each place sets the floor, whatever the Call does.
+- **Completing a reach is still long** (548–837 actions for a scout; see above): with places at 28×32 tiles the walk through each place sets the floor, whatever the Call does.
 - Calm Energy scales with places visited (about 1 per place); faster surveys would raise it unless the warm odds drop.
 - A place stays surveyed across expeditions, so its warm stones show on arrival without a Call; revisiting surveyed places nearby is a cheap source of +1s.
 - The veil has hard tile edges, as the ground types do. At 1× the map's dotted quarters on dark ground (wood) are subtle.
@@ -163,6 +164,6 @@ The reach holds 15, 18 and 25 cells on the three seeds; a scout spends about 50�
 ## Persistence and tools
 
 - Saves to localStorage with save format v6; older saves (v1–v5) are discarded on load. Works without storage. `?seed=N` sets the seed of the next New world; a saved world keeps playing until you choose New world.
-- The Observer shows expedition, world turn, actions, location, partner and rider, Probe, carried and Station materials, map counts (visited, surveyed, seen, fog; in reach), **Survey** (the current cell's four quarter percentages, its Calls, and "Surveyed N of M in reach"), **Energy** (warm and storm-charged stones in reach, how many unveiled, and Energy drawn from warm stones this expedition), seed, the last 8 events and the palette, plus "Copy playtest notes".
+- The Observer shows expedition, world turn, actions, location, partner and rider, Probe, carried and Station materials, map counts (visited, surveyed, seen, fog; in reach), **Survey** (the current cell's four quarter percentages, its Calls, and "Explored N of M in reach"), **Energy** (warm and storm-charged stones in reach, how many unveiled, and Energy drawn from warm stones this expedition), seed, the last 8 events and the palette, plus "Copy playtest notes".
 - Test hooks: `window.__mb` (state, `lineFor`, `capture`, `offPalette`, `act`, `press`/`release`, `reachCounts`, `surveyed`, `quarterFracs`, `unveiled`, `leftCounts`, `pipsOf`, `stoneWarm`, `stormCharge`, `sightR`, `bubbleOf`, `crossReason`, `stormLevel`, `sendPreview`, `mapCounts`, `TEST` and others).
 - The build stamp reads `../../build.json` (written by CI); a local copy shows "local build". One self-contained file with no build step.

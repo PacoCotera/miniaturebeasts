@@ -198,7 +198,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. On the Companions screen it calls the mibi riding with you. The top right of the screen says what it will do.</li>
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing; Wait says what moved, or "Nothing is moving here".</li>
         <li>Each place starts under a veil: you see the ground, not what is on it. <b>Call</b> lifts it 11 tiles around you (5 in a fog bank); creatures show through it. A quarter of the place counts as surveyed at 75%.</li>
-        <li>The dots top left are your reach, one per cell: hollow until surveyed, filled once three of its four quarters are surveyed, your cell framed. Fill them all and everything in reach is explored.</li>
+        <li>The dots top left are your reach, one per cell: a dot fills once you have been in that place and Called there; your cell is framed. Fill them all and everything in reach is explored. The map's quarters show how fully each place is surveyed.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
         <li>Bubbles: <b>!</b> startled, stop or it runs · <b>?</b> curious, it comes closer · <b>fruit</b> it eats what you carry · <b>…</b> settling, keep still.</li>
       </ul>
@@ -211,7 +211,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>Look for warm stones (a dim amber ring): +1 Energy each, only a few each world turn. Storm-struck stones (a yellow zigzag) give +2 or +3.</li>
         <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Trees, overhangs and woods are shelter.</li>
-        <li>Fill every dot in your reach, then Send home from the menu (Cargo shows "Surveyed N of M in reach"). The Station spends what you bring.</li>
+        <li>Fill every dot in your reach, then Send home from the menu (Cargo shows "Explored N of M · fully surveyed K"). The Station spends what you bring.</li>
         <li>In a fog bank you see 4 tiles: creep close to wary creatures and fill up on dew.</li>
       </ol>
     </details>
@@ -307,7 +307,7 @@ const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; e
 // Kept scarce on purpose (decision 2026-10-06): a calm expedition should bring home about 2–3 Energy.
 const WARM_P = 0.45;
 // Survey: Call lifts the veil CALL_R tiles around you (CALL_R_FOG in a fog bank); a quarter of 14×16 tiles counts at SURVEY_AT.
-// A cell counts as explored (its reach dot fills) once it is visited and EXPLORE_Q of its quarters are surveyed.
+// A cell counts as explored (its reach dot fills) once it is visited and a Call was made inside it; the quarters show how fully.
 const CALL_R = 11, CALL_R_FOG = 5, QW = PW / 2, QH = PH / 2, SURVEY_AT = 0.75, EXPLORE_Q = 3;
 // Sight inside a fog bank, in tiles (a glowing partner widens it).
 const SIGHT_FOG = 4, SIGHT_GLOW = 6;
@@ -755,7 +755,7 @@ function newWorld(seed) {
   layoutCache.clear();
   genWorld(seed);
   S = { v: SAVE_V, seed, turn: 0, expN: 1, revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
-    veil: {}, svy: {}, known: [], found: [], met: [], firsts: {}, mibis: [], along: null, rider: null, opened: {}, tier: 1, deepRead: 0,
+    veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], along: null, rider: null, opened: {}, tier: 1, deepRead: 0,
     home: { e: 0, d: 0, s: 0, pods: [], studies: [] },
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, cSel: 0 },
     exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
@@ -857,7 +857,7 @@ function reveil(c, q) {
 function stoneSeen(key, f) { return key[0] === 'c' ? !!fs(key, f.id).sn : unveiled(key, f.x, f.y); }
 const qCount = m => (m & 1) + ((m >> 1) & 1) + ((m >> 2) & 1) + ((m >> 3) & 1);
 function surveyed(c) { return S.svy[c] === 15; }
-function explored(c) { return !!S.visited[c] && qCount(S.svy[c] || 0) >= EXPLORE_Q; }
+function explored(c) { return !!S.visited[c] && !!(S.called && S.called[c]); }
 function surveyWord(c) { return ['not surveyed', 'a quarter surveyed', 'half surveyed', 'three quarters surveyed', 'surveyed'][qCount(S.svy[c] || 0)]; }
 // What can still be taken in a place, counting only what you can see (unveiled): the pips on the map and
 // the tail of a Call's report ("1 dew, 1 fruit left").
@@ -896,18 +896,19 @@ function reachCells(start, range) {
 }
 // The one place the map's numbers are counted.
 function cellCounts(cells) {
-  const o = { visited: 0, surveyed: 0, seen: 0, fog: 0, total: 0 };
-  for (const c of cells) { o.total++; if (explored(c)) o.surveyed++;
+  const o = { visited: 0, surveyed: 0, full: 0, seen: 0, fog: 0, total: 0 };
+  for (const c of cells) { o.total++; if (explored(c)) o.surveyed++; if (surveyed(c)) o.full++;
     if (S.visited[c]) o.visited++; else if (S.revealed[c]) o.seen++; else o.fog++; }
   return o;
 }
 function reachCounts() { return S.exp ? cellCounts(S.exp.reach) : cellCounts([]); }
-function surveyedLine() { const rc = reachCounts(); return 'Surveyed ' + rc.surveyed + ' of ' + rc.total + ' in reach'; }
+function surveyedLine() { const rc = reachCounts(); return 'Explored ' + rc.surveyed + ' of ' + rc.total + ' in reach'; }
+function cargoLine() { const rc = reachCounts(); return 'Explored ' + rc.surveyed + ' of ' + rc.total + ' · fully surveyed ' + rc.full; }
 // The going-home lines: said once each, at their moments. "Explored" arrives as the last reach dot fills.
 function checkExplored() {
   const ex = S.exp; if (!ex || ex.saidDone) return;
   const rc = reachCounts(); if (rc.surveyed < rc.total) return;
-  ex.saidDone = ex.actions; logEv('Everything in reach surveyed (' + rc.total + ' cells)');
+  ex.saidDone = ex.actions; logEv('Everything in reach explored (' + rc.total + ' cells)');
   fxMsg('Everything in reach is explored · ← Send home', 3);
 }
 function nothingNew() { const ex = S.exp; if (!ex || !ex.saidDone || ex.saidNothing || ex.storm) return; ex.saidNothing = 1; fxMsg('Nothing new until the world turns', 2); }
@@ -1243,6 +1244,7 @@ function patchAction() {
     return { label: 'Veiled · Call to see', run: null };
   if (o && o.type === 'cr') {
     // never offered to a non-eater: the label says so and pressing spends nothing
+    if (!SPECIES[o.c.sp].eats && fruit && !S.known.includes(o.c.sp)) return { label: 'Unknown creature', run: null };   // no offer, and no diet before it is identified
     if (!SPECIES[o.c.sp].eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
       fxMsg(fruit ? (S.known.includes(o.c.sp) ? cap(SPECIES[o.c.sp].plural) + ' don’t' : 'This creature doesn’t') + ' eat fruit · hoppers and puffcaps do' : 'The ' + spName(o.c.sp) + ' watches you · keep still and it settles, or Call', 2); } };
     return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) }
@@ -1394,7 +1396,7 @@ function callPlace() {
     if (f.kind === 'g' && !S.opened[G.gate]) fxGlint(f.x, f.y, 350);
   }
   const before = lay.cave ? 0 : S.svy[lay.cell] || 0;
-  if (!lay.cave) { unveil(key, P.x, P.y, reach); updateSurvey(lay.cell); }
+  if (!lay.cave) { unveil(key, P.x, P.y, reach); updateSurvey(lay.cell); (S.called = S.called || {})[lay.cell] = 1; }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach };
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
   logEv('Call' + (found ? ' · found ' + found : '') + (lay.cave ? '' : ' · ' + surveyWord(lay.cell)));
@@ -3077,8 +3079,8 @@ function drawCargo(t) {
       if (ex.newMet.includes(sp)) R(x + 33, 180, 5, 5, C.amber); });
     text(ex.moments.length + ' creature moment' + (ex.moments.length === 1 ? '' : 's') + ' (Data)', 180, 190, C.fog);
     // how much of the reach is done, in the same picture as the HUD corner
-    const rc = reachCounts(); text(surveyedLine(), 24, 232, C.fog);
-    { const r = S.exp.range, n = r * 2 + 1, pitch = n <= 5 ? 7 : 4, s0 = cxy(ex.start), reach = new Set(ex.reach), gx = 24 + textW(surveyedLine(), 2) + 18, gy = 239 - Math.floor(n * pitch / 2);
+    const rc = reachCounts(); text(cargoLine(), 24, 232, C.fog);
+    { const r = S.exp.range, n = r * 2 + 1, pitch = n <= 5 ? 7 : 4, s0 = cxy(ex.start), reach = new Set(ex.reach), gx = 24 + textW(cargoLine(), 2) + 14, gy = 239 - Math.floor(n * pitch / 2);
       for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) { const X = s0.x - r + i, Y = s0.y - r + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; const c = Y * MW + X; if (!reach.has(c)) continue;
         const px = gx + i * pitch, py = gy + j * pitch, d = pitch - 2;
         if (c === ex.pos) R(px - 1, py - 1, d + 2, d + 2, C.amber);
