@@ -5,1286 +5,545 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#172e25">
 <title>Miniature Beasts</title>
-<meta name="description" content="A creature game played on its own little devices. Explore a fogged world with a handheld Companion, bring seed-pods home to a Station, and raise mibis whose genes really work. Open source, in development.">
+<meta name="description" content="A handheld creature game: explore a fogged world on the Companion, bring sealed pods home to the Station, and raise mibis whose genes really work. Open source, made in public.">
 <style>
 :root {
   color-scheme: light;
-  --ink: #222e26;
   --forest: #172e25;
   --paper: #f5f2e9;
+  --sage: #dce3c5;
+  --panel: #e6e8dd;
+  --ink: #222e26;
+  --muted: #61725f;
+  --on-dark: #e5eadd;
+  --lime: #dcdf9b;
   --orange: #ee9b58;
   --line: #c9cec2;
-  font-family: Arial, Helvetica, sans-serif;
-  color: var(--ink);
-  background: var(--paper);
+
+  /* The four type sizes. No others. */
+  --fs-display: clamp(2.75rem, 5vw, 4.5rem);
+  --fs-section: clamp(2rem, 3.4vw, 3.25rem);
+  --fs-body: 1.0625rem;
+  --fs-caption: 0.8125rem;
+
+  --content: 1200px;
+  --gutter: 32px;
+  --pad: 112px;
+  --overlap: 64px;
+  --radius: 12px;
+  --p: 160px; /* family-tree portrait */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-synthesis: none;
   scroll-behavior: smooth;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  overflow-x: clip;
 }
 
-a {
-  color: inherit;
+h1, h2, p, figure, ul, ol, dl, dd { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+img { display: block; width: 100%; height: auto; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+
+/* Type roles */
+h1 {
+  font-size: var(--fs-display);
+  font-weight: 800;
+  line-height: .98;
+  letter-spacing: -.03em;
+  max-width: 20ch; /* keeps the two-line break; 14ch would split the first line */
+}
+h1 span { color: var(--lime); }
+h2, .wordmark-lg {
+  font-size: var(--fs-section);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.02em;
+  max-width: 22ch; /* keeps the two-line break */
+}
+.copy { max-width: 36em; }
+.eyebrow, .label {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  line-height: 1.55;
+}
+.eyebrow { margin-bottom: 12px; color: var(--muted); }
+figcaption, .caption {
+  font-size: var(--fs-caption);
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 60ch;
+}
+figcaption { padding-top: 12px; }
+figcaption .label, .caption > .label { margin-right: .35em; }
+.title { font-weight: 700; }
+
+/* Layout */
+.wrap {
+  max-width: calc(var(--content) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.section { padding: var(--pad) 0; }
+.section.ruled > .wrap::before {
+  content: "";
+  display: block;
+  border-top: 1px solid var(--line);
+  margin-top: calc(-1 * var(--pad));
+  margin-bottom: var(--pad);
+}
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 24px 48px;
+  align-items: end;
+}
+.head .copy { padding-bottom: .2em; }
+.shot { margin-top: 48px; }
+.shot img { border-radius: var(--radius); }
+.panel {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.pair {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.pair .title { margin-bottom: 12px; }
+.pair img { border-radius: 8px; }
+.pair .flat img { border-radius: 0; }
+
+/* Buttons and nav */
+.button {
+  display: inline-block;
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 14px 22px;
+  border-radius: 999px;
   text-decoration: none;
 }
-
-a:focus-visible, summary:focus-visible {
-  outline: 3px solid #c45112;
-  outline-offset: 5px;
-}
-
-a:hover {
-  text-decoration: underline;
-  text-underline-offset: .25em;
-}
-
-img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-figure, p, h1, h2, h3 {
-  margin: 0;
-}
-
-h1, h2, h3 {
-  font-weight: 800;
-  letter-spacing: -.055em;
-  line-height: 1.05;
-}
-
-h1 {
-  font-size: clamp(2.8rem, 4.2vw, 4.8rem);
-}
-
-h2 {
-  font-size: clamp(2.5rem, 4.2vw, 4.2rem);
-}
-
-h3 {
-  font-size: clamp(1.55rem, 2.1vw, 2.1rem);
-  margin-bottom: .85rem;
-}
-
-p {
-  font-size: 1.0625rem;
-  line-height: 1.65;
-}
-
-p + p {
-  margin-top: 1rem;
-}
-
-section[id] {
-  scroll-margin-top: 1.5rem;
-}
-
-figcaption {
-  font-size: .8rem;
-  line-height: 1.5;
-  padding-top: .7rem;
-  color: #566253;
-}
-
-.eyebrow, .chapter {
-  font-size: .8rem;
-  font-weight: 700;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  line-height: 1.5;
-}
-
-.eyebrow {
-  margin-bottom: 1.2rem;
-}
-
-.chapter {
-  margin-bottom: .7rem;
-}
+.button.primary { background: var(--orange); color: var(--forest); }
+.button.ghost { box-shadow: inset 0 0 0 1.5px var(--on-dark); color: var(--on-dark); padding: 10px 18px; }
+.button:hover { filter: brightness(1.06); }
+.link { font-weight: 700; color: var(--on-dark); }
 
 .skip {
-  position: fixed;
-  top: -6rem;
-  left: 1rem;
-  z-index: 10;
-  padding: 1rem;
-  background: white;
+  position: absolute; left: 16px; top: -100px; z-index: 5;
+  background: var(--paper); color: var(--ink); padding: 12px; font-weight: 700;
 }
+.skip:focus { top: 16px; }
 
-.skip:focus {
-  top: 1rem;
-}
-
+/* Dark block 1: masthead + hero */
+.top { background: var(--forest); color: var(--on-dark); position: relative; z-index: 1; }
 .masthead {
-  max-width: 1600px;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
-  padding: 1.5rem 4.5%;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding-top: 24px; padding-bottom: 24px;
 }
-
-.wordmark {
-  position: relative;
-  padding-right: 1.7rem;
-  font-weight: 900;
-  font-size: 1.3rem;
-  letter-spacing: -.055em;
-  line-height: .92;
-}
-
-.wordmark span {
-  position: absolute;
-  right: 0;
-  top: 0;
-  color: #b45020;
-  font-size: 1.4rem;
-}
-
-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.8rem;
-}
-
-nav a {
-  font-size: .9rem;
-  font-weight: 600;
-}
-
-.nav-cta {
-  border: 1px solid var(--ink);
-  padding: .75rem 1rem;
-  border-radius: 4px;
-}
+.wordmark { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; text-decoration: none; }
+.masthead nav { display: flex; align-items: center; gap: 28px; font-weight: 700; }
+.masthead nav a:not(.button) { text-decoration: none; }
+.masthead nav a:not(.button):hover { text-decoration: underline; }
 
 .hero {
   display: grid;
-  grid-template-columns: .85fr 1.35fr;
-  max-width: 1600px;
-  margin: auto;
-  background: var(--forest);
-  color: var(--paper);
-  align-items: center;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-areas: "head head" "copy pic";
+  grid-template-rows: auto 1fr;
+  column-gap: 48px;
+  padding-top: 48px;
+  padding-bottom: 48px;
 }
-
-.hero-copy {
-  padding: 3.7rem 9%;
-}
-
-.hero h1 {
-  margin-bottom: 1.6rem;
-}
-
-.hero h1 em {
-  font-style: normal;
-  color: #dcdf9b;
-}
-
-.hero p:not(.eyebrow):not(.hero-credit) {
-  color: #e5eadd;
-}
-
-.hero-intro {
-  font-size: 1.15rem;
-}
-
-.hero-credit {
-  font-size: .8rem;
-  color: #c5d0bf;
-  margin-top: 1.6rem;
-}
-
+.hero-head { grid-area: head; align-self: end; }
+.hero-head .eyebrow { color: var(--lime); }
+.hero-copy { grid-area: copy; padding-top: 24px; align-self: start; }
+.hero-copy .copy { color: var(--on-dark); }
+.hero-copy .button { margin-top: 32px; }
 .hero-art {
-  padding: 1.8rem 1.8rem 1.8rem 0;
+  grid-area: pic;
+  margin-top: 24px;
+  position: relative;
+  margin-bottom: calc(-48px - var(--overlap));
+  align-self: end;
 }
+.hero-art img { border-radius: var(--radius); }
+.hero-art figcaption { position: absolute; top: 100%; left: 0; white-space: nowrap; }
 
-.hero-art img {
-  border-radius: 5px;
-}
+/* Paper intro: hero caption lands here, then the device strip */
+.intro { padding-top: calc(var(--overlap) + 64px); padding-bottom: var(--pad); }
+.strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.strip img { border-radius: 8px; }
+.strip figcaption { padding-top: 12px; color: var(--ink); max-width: none; }
+.strip .title { display: block; font-size: var(--fs-body); }
+.strip figcaption span:last-child { color: var(--muted); }
 
-.hero-art figcaption {
-  color: #cad4c4;
-}
+/* Station supplies */
+.supplies { display: flex; flex-wrap: wrap; gap: 16px 40px; margin-top: 24px; }
+.supplies li { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.supplies svg { width: 32px; height: 32px; flex: none; }
 
-.actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-  margin-top: 1.6rem;
-}
+/* Caddy pair: E1 sits level with the card */
+.caddy .pair { align-items: center; }
 
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: .95rem 1.25rem;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.4;
-  text-align: center;
-}
-
-.cream {
-  background: var(--paper);
-  color: var(--forest);
-}
-
-.dark {
-  color: var(--paper);
-  background: var(--forest);
-}
-
-.outline {
-  border-color: var(--ink);
-  margin-top: 1.5rem;
-}
-
-.underlined {
-  font-weight: 600;
-  font-size: 1rem;
-  text-decoration: underline;
-  text-underline-offset: .3em;
-  line-height: 1.6;
-}
-
-.kit-strip {
+/* Genetics: sage band, family tree */
+.genetics { background: var(--sage); }
+.tree {
+  --gap: 64px;
+  --conn: 40px;
+  width: min(100%, calc(4 * (var(--p) + var(--gap))));
+  margin: 48px auto 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  padding: 1.6rem 5%;
-  max-width: 1600px;
-  margin: auto;
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-rows: auto var(--conn) auto var(--conn) auto auto;
 }
-
-.kit-strip p {
-  margin: 0;
-  line-height: 1.5;
+.kin { text-align: center; position: relative; z-index: 1; }
+.kin img { width: var(--p); margin: 0 auto; }
+.kin figcaption { padding-top: 4px; max-width: none; color: var(--ink); }
+.kin figcaption span { display: block; }
+.kin figcaption span + span { color: var(--muted); }
+.kin.ring img { border-radius: 50%; box-shadow: 0 0 0 2px var(--orange); }
+.join { position: relative; pointer-events: none; }
+.join::before {
+  content: ""; position: absolute;
+  left: calc(var(--p) / 2); right: calc(var(--p) / 2);
+  top: calc(var(--p) / 2 - 1px);
+  border-top: 2px solid var(--ink);
 }
-
-.kit-strip strong, .kit-strip span {
-  display: block;
+.join::after {
+  content: ""; position: absolute;
+  left: calc(50% - 1px); top: calc(var(--p) / 2); bottom: 0;
+  border-left: 2px solid var(--ink);
 }
+.kids { border: 2px solid var(--ink); border-bottom: 0; margin: 0 -1px; }
+.note { align-self: center; padding-left: 12px; color: var(--ink); }
+.tree-cap { margin-top: 48px; }
 
-.kit-strip strong {
-  font-size: 1.1rem;
-}
+/* Life: three stage names under L1 */
+.stages { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; padding-top: 8px; }
 
-.kit-strip span {
-  font-size: .9rem;
-  margin-top: .2rem;
-}
+/* FAQ */
+.faq-grid::before { grid-column: 1 / -1; }
+.faq-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 24px 48px; align-items: start; }
+.faq details + details { border-top: 1px solid var(--line); }
+.faq summary { font-weight: 700; cursor: pointer; padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-weight: 400; }
+.faq details[open] summary::after { content: "−"; }
+.faq details p { padding-bottom: 16px; max-width: 36em; }
+.faq .panel { padding-top: 8px; padding-bottom: 8px; }
 
-.section {
-  padding: clamp(4rem, 6.5vw, 6.5rem) max(5%, calc((100vw - 1320px) / 2));
-}
-
-.section-heading {
+/* Dark block 2: play and source + footer */
+.end { background: var(--forest); color: var(--on-dark); }
+.end .section { padding-bottom: 64px; }
+.play {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 8%;
-  align-items: end;
-}
-
-.section-heading > p, .section-heading > div:last-child {
-  max-width: 42rem;
-}
-
-.screen-pair {
-  margin-top: 3rem;
-  display: grid;
-  grid-template-columns: .75fr 1.45fr;
-  gap: 2rem;
-  align-items: start;
-}
-
-.screen-pair article {
-  padding: 2rem;
-  border: 1px solid var(--line);
-  background: #e6e8dd;
-  min-width: 0;
-}
-
-.device-heading {
-  min-height: 13rem;
-}
-
-.device-heading p:not(.chapter) {
-  font-size: 1rem;
-}
-
-.screen-pair figure {
-  margin-top: 1.5rem;
-}
-
-.companion-panel figure {
-  max-width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.screen-pair img {
-  border: 1px solid #b6bea9;
-}
-
-.screen-note {
-  border-top: 1px solid #bdc5b4;
-  padding-top: 1.3rem;
-  margin-top: 2rem;
-  max-width: 38rem;
-}
-
-.image-link {
-  display: block;
-}
-
-.mechanics {
-  background: #e5e9de;
-}
-
-.mechanics-grid {
-  display: grid;
-  grid-template-columns: .75fr 1.45fr;
-  gap: 3.5rem;
-  margin-top: 3rem;
-  align-items: start;
-}
-
-.mechanic-label {
-  border-top: 1px solid #a8b29f;
-  padding: 1.2rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: .4rem;
-  font-size: .8rem;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-}
-
-.mechanic-label strong {
-  font-size: 1rem;
-}
-
-.map-study {
-  max-width: 330px;
-  margin: 0 auto;
-}
-
-.mechanics-grid figure {
-  margin-bottom: 1.8rem;
-}
-
-.mechanics-grid img {
-  border: 1px solid #b9c1b1;
-}
-
-.loop-strip {
-  list-style: none;
-  padding: 2rem 0 0;
-  margin: 3rem 0 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  border-top: 1px solid #a8b29f;
-}
-
-.loop-strip li {
-  display: flex;
-  gap: 1rem;
-}
-
-.loop-strip li > span {
-  font-size: .8rem;
-  padding-top: .25rem;
-  color: #53664c;
-  font-weight: 700;
-}
-
-.loop-strip h3 {
-  font-size: 1.35rem;
-  letter-spacing: -.025em;
-  margin-bottom: .5rem;
-}
-
-.loop-strip p {
-  font-size: .95rem;
-}
-
-.genetics {
-  background: #17271f;
-  color: var(--paper);
-}
-
-.genetics .eyebrow {
-  color: #dcdf9b;
-}
-
-.genetics p {
-  color: #d9e1d5;
-}
-
-.large-copy {
-  font-size: clamp(1.25rem, 1.6vw, 1.55rem);
-  line-height: 1.45;
-}
-
-.genome-layout {
-  display: grid;
-  grid-template-columns: .8fr 1.2fr;
-  gap: 8%;
-  margin-top: 3.5rem;
-  align-items: start;
-}
-
-.genome-story {
-  position: sticky;
-  top: 2rem;
-}
-
-.genome-story h3 {
-  max-width: 17ch;
-}
-
-.genome-story .underlined {
-  display: inline-block;
-  margin-top: 1.5rem;
-  color: #dcdf9b;
-}
-
-.genome-layers {
-  padding: 1.5rem 1.8rem;
-  background: #20372b;
-  border: 1px solid #46604a;
-}
-
-.layers-label {
-  font-size: .75rem;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  font-weight: 700;
-}
-
-.genome-layers dl {
-  margin: .8rem 0 0;
-}
-
-.genome-layers dl > div {
-  border-top: 1px solid #4c614f;
-  padding: .85rem 0;
-}
-
-.genome-layers dt {
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.genome-layers dt span {
-  display: inline-block;
-  width: 2rem;
-  color: #ccd59b;
-  font: .75rem ui-monospace, monospace;
-}
-
-.genome-layers dd {
-  margin: .3rem 0 0 2rem;
-  font-size: .9rem;
-  line-height: 1.4;
-  color: #bbcdbb;
-}
-
-.inheritance {
-  border-top: 1px solid #61725f;
-  padding-top: 3rem;
-  margin-top: 3rem;
-  display: grid;
-  grid-template-columns: .8fr 1.2fr;
-  gap: 8%;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  gap: 48px;
   align-items: center;
 }
-
-.inheritance-example {
-  padding: 1.8rem;
-  border: 1px solid #61725f;
+.play .eyebrow { color: var(--lime); }
+.play h2 + .copy { margin-top: 24px; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 32px; }
+.play figure { max-width: 320px; justify-self: end; width: 100%; }
+.play img { border-radius: var(--radius); }
+.end figcaption, .end .caption { color: rgb(229 234 221 / .75); }
+footer { padding-bottom: 32px; }
+.foot {
+  border-top: 1px solid rgb(229 234 221 / .2);
+  padding-top: 48px;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 16px 32px;
 }
+.wordmark-lg { text-transform: uppercase; text-decoration: none; max-width: none; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 28px; font-weight: 700; }
+.foot nav a { text-decoration: none; }
+.foot nav a:hover { text-decoration: underline; }
+.foot-lines { margin-top: 24px; }
+.foot-lines .caption { max-width: none; }
+.build { text-align: right; margin-top: 24px; max-width: none; color: rgb(229 234 221 / .45); }
 
-.parents {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.8rem;
-  text-align: center;
-}
-
-.inheritance b {
-  display: block;
-  font: 700 2rem ui-monospace, monospace;
-  margin-bottom: .5rem;
-  color: #f5f2e9;
-}
-
-.inheritance small {
-  color: #becdb6;
-  font-size: .8rem;
-}
-
-.cross {
-  font-size: 1.7rem;
-}
-
-.offspring-label {
-  text-align: center;
-  padding: .8rem 0;
-  font-size: .8rem;
-}
-
-.offspring {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: .5rem;
-}
-
-.offspring p {
-  margin: 0;
-  padding: 1rem .4rem;
-  text-align: center;
-  border: 1px solid #6e8464;
-  font-size: .9rem;
-  line-height: 1.5;
-}
-
-.offspring .pale {
-  background: #dce3c5;
-  color: #17271f;
-}
-
-.pale b, .pale small {
-  color: #17271f;
-}
-
-.example-note {
-  font-size: .8rem;
-}
-
-.caddy-display {
-  margin-top: 2.5rem;
-}
-
-.caddy-display img {
-  border: 1px solid #b4b9ac;
-}
-
-.caddy-features {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
-  margin-top: 2.5rem;
-}
-
-.caddy-features h3 {
-  font-size: 1.55rem;
-}
-
-.open-source {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8%;
-  background: #dce4cb;
-}
-
-.open-source > div:last-child {
-  align-self: center;
-}
-
-.preview {
-  background: var(--orange);
-  text-align: center;
-}
-
-.preview h2 {
-  margin-bottom: 1.5rem;
-}
-
-.preview > p:not(.eyebrow) {
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.preview .actions {
-  justify-content: center;
-}
-
-.preview .preview-note {
-  font-size: .9rem;
-  max-width: 590px;
-  margin-top: 1.5rem;
-}
-
-.questions {
-  display: grid;
-  grid-template-columns: .8fr 1.2fr;
-  gap: 10%;
-}
-
-.questions h2 {
-  max-width: 10ch;
-}
-
-.faq details {
-  padding: 1.25rem 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.faq details:first-child {
-  border-top: 1px solid var(--line);
-}
-
-.faq summary {
-  font-size: 1.1rem;
-  font-weight: 600;
-  line-height: 1.5;
-  cursor: pointer;
-}
-
-.faq p {
-  margin-top: 1rem;
-}
-
-.faq p a {
-  text-decoration: underline;
-}
-
-footer {
-  background: var(--forest);
-  color: var(--paper);
-  padding: 3.5rem 5% 2rem;
-}
-
-.footer-brand {
-  font-size: clamp(1.7rem, 5.5vw, 5.4rem);
-  font-weight: 900;
-  letter-spacing: -.06em;
-  line-height: 1.2;
-}
-
-.footer-brand span {
-  color: var(--orange);
-  margin-left: .15em;
-}
-
-.footer-bottom {
-  margin-top: 2rem;
-  border-top: 1px solid #6b7c6b;
-  padding-top: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.footer-bottom p, .footer-bottom a {
-  font-size: .875rem;
-}
-
-@media (max-width: 1050px) {
-  .hero {
-    grid-template-columns: 1fr 1.2fr;
-  }
-  .hero-copy {
-    padding: 2.5rem 8%;
-  }
-  .hero-art {
-    padding-right: 1.3rem;
-  }
-  nav {
-    gap: 1rem;
-  }
-  .screen-pair article {
-    padding: 1.3rem;
-  }
-  .device-heading {
-    min-height: 15rem;
-  }
-  .mechanics-grid {
-    gap: 2rem;
-  }
-}
-
+/* Phone */
 @media (max-width: 760px) {
-  .masthead {
-    padding: 1.2rem 5%;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-  .wordmark {
-    font-size: 1.05rem;
-    margin-top: .3rem;
-  }
-  .wordmark span {
-    font-size: 1.2rem;
-  }
-  .masthead nav {
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: .65rem 1rem;
-    max-width: 65%;
-  }
-  .masthead nav a {
-    font-size: .8rem;
-  }
-  .nav-cta {
-    padding: .4rem .6rem;
-  }
-  .hero {
-    grid-template-columns: 1fr;
-  }
-  .hero-art {
-    order: -1;
-    padding: 0;
-  }
-  .hero-art img {
-    border-radius: 0;
-  }
-  .hero-art figcaption {
-    padding: .7rem 6% 0;
-  }
-  .hero-copy {
-    padding: 2rem 6% 2.5rem;
-  }
-  h1 {
-    font-size: clamp(2.8rem, 10vw, 4rem);
-  }
-  .kit-strip {
-    gap: .6rem;
-    padding: 1.2rem 6%;
-  }
-  .kit-strip strong {
-    font-size: .95rem;
-  }
-  .kit-strip span {
-    font-size: .75rem;
-  }
-  .section {
-    padding: 3.5rem 6%;
-  }
-  .section-heading, .screen-pair, .mechanics-grid, .genome-layout, .inheritance, .open-source, .questions {
-    grid-template-columns: 1fr;
-    gap: 1.7rem;
-  }
-  .screen-pair, .mechanics-grid, .genome-layout {
-    margin-top: 2rem;
-  }
-  .screen-pair {
-    gap: 1.5rem;
-  }
-  .screen-pair article {
-    padding: 1.4rem;
-  }
-  .device-heading {
-    min-height: 0;
-  }
-  .screen-pair figure {
-    margin-top: 1.5rem;
-  }
-  .screen-note {
-    margin-top: 1.5rem;
-    font-size: .95rem;
-  }
-  .loop-strip, .caddy-features {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  .genome-story {
-    position: static;
-  }
-  .genome-story h3 {
-    max-width: none;
-  }
-  .genome-layers {
-    padding: 1.3rem;
-  }
-  .inheritance {
-    margin-top: 2rem;
-    padding-top: 2rem;
-  }
-  .inheritance-example {
-    padding: 1.2rem .75rem;
-  }
-  .parents {
-    gap: 1rem;
-    font-size: .95rem;
-  }
-  .offspring {
-    gap: .35rem;
-  }
-  .offspring p {
-    font-size: .8rem;
-  }
-  .offspring small {
-    font-size: .72rem;
-  }
-  .questions h2 {
-    max-width: none;
-  }
-  .footer-bottom {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .footer-bottom nav {
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-}
+  :root { --gutter: 16px; --pad: 64px; --overlap: 32px; --p: 76px; }
+  .masthead nav a:not(.button) { display: none; }
+  .head, .faq-grid, .play, .pair { grid-template-columns: 1fr; }
+  .head .copy { padding-bottom: 0; }
 
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    scroll-behavior: auto;
+  /* Hero: headline, picture, copy, button. The dark block ends 32 px above the picture's foot. */
+  .top { background: transparent; }
+  .masthead { background: var(--forest); box-shadow: 0 0 0 100vmax var(--forest); clip-path: inset(0 -100vmax); }
+  .hero { grid-template-columns: 1fr; grid-template-areas: "head" "pic" "copy"; padding-top: 24px; padding-bottom: 0; }
+  .hero-art { margin: 32px 0 0; isolation: isolate; }
+  .hero-art::before {
+    content: ""; position: absolute; z-index: -1;
+    left: 0; right: 0; top: -100vh; bottom: var(--overlap);
+    background: var(--forest);
+    box-shadow: 0 0 0 100vmax var(--forest);
+    clip-path: inset(0 -100vmax);
   }
-}
+  .hero-head { position: relative; z-index: 1; }
+  .masthead { position: relative; z-index: 2; }
+  .hero-art figcaption { position: static; white-space: normal; }
+  .hero-copy { padding-top: 24px; }
+  .hero-copy .copy { color: var(--ink); }
+  .hero-copy .button { margin-top: 24px; }
+  .intro { padding-top: 48px; }
 
-/* ---- Additions for the 2026 page, in v1's panel language ---- */
-.wordmark { color: var(--ink); }
-.hero-status { color: #e5eadd; font-size: .95rem; margin-top: 1rem; }
-.label {
-  display: inline-block;
-  font-size: .68rem;
-  font-weight: 700;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  border: 1px solid currentColor;
-  border-radius: 3px;
-  padding: .1rem .4rem;
-  margin-right: .45rem;
-  vertical-align: .1em;
-}
-.panel {
-  padding: 2rem;
-  border: 1px solid var(--line);
-  background: #e6e8dd;
-  min-width: 0;
-}
-.panel h3 { font-size: clamp(1.4rem, 1.8vw, 1.8rem); }
-.buttons { list-style: none; padding: 0; margin: 1.2rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem; }
-.buttons li { font-size: .85rem; font-weight: 700; border: 1px solid #b6bea9; background: var(--paper); padding: .35rem .6rem .35rem .4rem; border-radius: 3px; display: inline-flex; gap: .45rem; align-items: center; }
-.buttons i { font-style: normal; display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; color: #fff; font-size: .72rem; }
-.caddy-panel { grid-column: 1 / -1; display: grid; grid-template-columns: .75fr 1.45fr; gap: 2rem; align-items: center; }
-.caddy-panel figure { margin-top: 0 !important; }
-.caddy-panel .caddy-summary { grid-column: 1 / -1; }
-.caddy-summary img { background: #fff; }
+  /* Device strip: scroll-snap row inside the band */
+  .strip {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+    margin: 0 -24px; padding: 0 24px 4px; scroll-padding: 0 24px;
+  }
+  .strip figure { flex: 0 0 72%; scroll-snap-align: start; }
+  .intro .panel { padding: 16px 24px; overflow: hidden; }
 
-/* Expedition */
-.exp-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; align-items: start; }
-.exp-shots .panel figure { max-width: 360px; margin: 0 auto; }
-.exp-shots img { border: 1px solid #b9c1b1; }
-.exp-shots .panel h3 { margin-top: 1.4rem; }
-.exp-concept { display: grid; grid-template-columns: 2.25fr 1fr; gap: 2rem; margin-top: 2rem; align-items: start; }
-.exp-concept img { border: 1px solid #b9c1b1; }
-.steps { list-style: none; padding: 2rem 0 0; margin: 3rem 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem 2.5rem; border-top: 1px solid #a8b29f; }
-.steps li { display: flex; gap: 1rem; }
-.steps li > span { font-size: .8rem; padding-top: .25rem; color: #53664c; font-weight: 700; }
-.steps h3 { font-size: 1.25rem; letter-spacing: -.025em; margin-bottom: .45rem; }
-.steps p { font-size: .95rem; }
-.field-note { border-top: 1px solid #bdc5b4; padding-top: 1.3rem; margin-top: 2.5rem; max-width: 52rem; }
-.field-note span { color: #566253; }
+  /* Full-bleed renders edge to edge, caption in the gutter */
+  .shot { margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); }
+  .shot img { border-radius: 0; }
+  .shot figcaption { padding-left: var(--gutter); padding-right: var(--gutter); }
+  .pair .panel, .pair { gap: 24px; }
+  .caddy .pair { align-items: start; }
 
-/* Station */
-.station-grid { display: grid; grid-template-columns: .75fr 1.45fr; gap: 3.5rem; margin-top: 3rem; align-items: start; }
-.flow { list-style: none; padding: 0; margin: 0; }
-.flow li { border-top: 1px solid var(--line); padding: 1.1rem 0; }
-.flow li:last-child { border-bottom: 1px solid var(--line); }
-.flow strong { display: block; font-size: 1.1rem; margin-bottom: .2rem; }
-.flow p { font-size: .98rem; }
-.station-grid .panel img { border: 1px solid #b6bea9; }
-.supplies { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3.5rem; }
-.supplies .chapter span { display: inline-block; width: .7rem; height: .7rem; border-radius: 2px; margin-right: .45rem; vertical-align: -.02em; }
-.supplies h3 { font-size: 1.55rem; }
-.supplies-head { margin-top: 4rem; border-top: 1px solid var(--line); padding-top: 2.5rem; display: grid; grid-template-columns: 1.1fr 1fr; gap: 8%; align-items: end; }
-.supplies-head h3 { margin: 0; font-size: clamp(1.8rem, 2.6vw, 2.6rem); }
-
-/* Genetics */
-.genetics h3 { color: var(--paper); }
-.rules { list-style: none; padding: 0; margin: 1.6rem 0 0; }
-.rules li { border-top: 1px solid #4c614f; padding: .85rem 0; color: #d9e1d5; font-size: .98rem; line-height: 1.55; }
-.inheritance .parents { margin: 0; }
-.inheritance .parents > span, .offspring > p { display: grid; justify-items: center; gap: .1rem; }
-.mibi-img { width: 100%; max-width: 150px; margin: 0 auto .6rem; border: 1px solid #6e8464; background: #f3eedf; }
-.parents .mibi-img { max-width: 170px; }
-.offspring p { padding: .7rem .4rem 1rem; }
-
-/* Life */
-.life { background: #e8eadf; }
-.life-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
-.life-grid .panel { background: var(--paper); }
-.life-grid .panel > p:last-child { margin-top: 1.2rem; font-size: .8rem; color: #566253; }
-.life-shot { max-width: 240px; margin: 0 auto 1.4rem; }
-.life-shot img { border: 1px solid #b6bea9; }
-.life-stages { margin: 0 -.5rem 1rem; }
-.life-stages figcaption { padding-left: .5rem; padding-right: .5rem; }
-.stages { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.stages li { padding: .7rem .3rem; font-size: .85rem; font-weight: 700; text-align: center; }
-.stages li + li { border-left: 1px solid var(--line); }
-.stages li span { display: block; font-weight: 400; font-size: .75rem; color: #566253; }
-
-/* Open source */
-.links { list-style: none; padding: 0; margin: 1.6rem 0 0; }
-.links li { border-top: 1px solid #a8b29f; }
-.links li:last-child { border-bottom: 1px solid #a8b29f; }
-.links a { display: block; padding: 1rem 0; font-weight: 700; font-size: 1.05rem; }
-.links a span { display: block; font-weight: 400; font-size: .9rem; color: #4d5a4b; margin-top: .15rem; }
-.licences { font-size: .9rem; margin-top: 1.4rem; }
-
-/* Sandbox band */
-.sandbox { background: var(--forest); color: var(--paper); text-align: center; }
-.sandbox .eyebrow { color: #dcdf9b; }
-.sandbox h2 { margin-bottom: 1.5rem; }
-.sandbox > p:not(.eyebrow) { max-width: 650px; margin-left: auto; margin-right: auto; color: #e5eadd; }
-.sandbox .actions { justify-content: center; }
-.sandbox .keys { font-size: .9rem; margin-top: 1.5rem; }
-.sandbox .stamp { font-size: .8rem; color: #c5d0bf; }
-.sandbox .stamp small { font-size: inherit; }
-
-@media (max-width: 1050px) {
-  .steps { grid-template-columns: repeat(2, 1fr); }
-  .life-grid { gap: 1.2rem; }
-  .panel { padding: 1.3rem; }
-}
-@media (max-width: 760px) {
-  .caddy-panel, .exp-shots, .station-grid, .supplies, .supplies-head, .life-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-  .exp-shots { grid-template-columns: 1fr 1fr; gap: .8rem; }
-  .exp-shots .panel { padding: .8rem; }
-  .exp-concept { grid-template-columns: 1fr; gap: 1.5rem; }
-  .exp-concept figure + figure { max-width: 260px; margin: 0 auto; width: 100%; }
-  .exp-shots .panel h3 { font-size: 1.15rem; }
-  .exp-shots .panel p { font-size: .9rem; }
-  .steps { grid-template-columns: 1fr; gap: 1.3rem; }
-  .panel { padding: 1.4rem; }
-  .mibi-img { margin-bottom: .4rem; }
+  .tree { --gap: 13px; --conn: 24px; grid-template-rows: auto var(--conn) auto var(--conn) auto auto; }
+  .note { grid-column: 1 / -1 !important; grid-row: 6 !important; text-align: center; padding: 16px 0 0; }
+  .play figure { justify-self: start; max-width: 260px; }
+  .build { text-align: left; }
 }
 </style>
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
-  <header class="masthead">
-    <a class="wordmark" href="#main" aria-label="Miniature Beasts home">MINIATURE<br>BEASTS<span aria-hidden="true">✳</span></a>
-    <nav aria-label="Main navigation">
-      <a href="#devices">The devices</a>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="top">
+  <header class="wrap masthead">
+    <a class="wordmark" href="#main">Miniature Beasts</a>
+    <nav aria-label="Main">
       <a href="#expedition">Expeditions</a>
-      <a href="#genetics">The genetics</a>
-      <a class="nav-cta" href="#sandbox">Take an early look</a>
+      <a href="#station">Station</a>
+      <a href="#caddy">Caddy</a>
+      <a href="#genetics">Genetics</a>
+      <a class="button ghost" href="sandbox/exploration/">Play</a>
     </nav>
   </header>
-  <main id="main">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-copy">
-        <p class="eyebrow">A creature game you can hold</p>
-        <h1 id="hero-title">One for the field.<br><em>One for home.</em></h1>
-        <p class="hero-intro">Explore a fogged world on a handheld Companion. Bring sealed seed-pods home to a Station and find out what’s inside.</p>
-        <p>Every creature you raise, a mibi, runs on genes that really work.</p>
-        <div class="actions">
-          <a class="button cream" href="#devices">Meet the kit</a>
-          <a class="underlined" href="sandbox/exploration/">Play the rough sandbox</a>
-        </div>
-        <p class="hero-status">The exploration prototype plays in your browser today. The devices are still concept art.</p>
-        <p class="hero-credit">In development, in the open · By Dirty Pawz Press, Mexico City</p>
-      </div>
-      <figure class="hero-art">
-        <img src="assets/hero-kit.webp" width="1536" height="1024" fetchpriority="high"
-             alt="Concept render of the kit on a wooden table: a grey-green Station whose research screen shows Pip plain beside a pale-marked form, a cream Companion showing Pip in a pixel-art clearing, both docked in a Caddy whose small grey e-paper screen lists counts and whose printer feeds out a paper card of Pip.">
-        <figcaption>Concept art · Station, Companion &amp; Caddy · Shapes, buttons and screens will change</figcaption>
-      </figure>
-    </section>
-    <div class="kit-strip" aria-label="The three parts of the kit">
-      <p><strong>Companion</strong><span>Handheld explorer &amp; HiBit screen</span></p>
-      <p><strong>Station</strong><span>Home lab &amp; richer art</span></p>
-      <p><strong>Caddy</strong><span>Charge, check in &amp; print</span></p>
+
+  <section class="wrap hero" aria-labelledby="hero-title">
+    <div class="hero-head">
+      <p class="eyebrow">A creature game you can hold</p>
+      <h1 id="hero-title">One for the field.<br><span>One for home.</span></h1>
     </div>
+    <figure class="hero-art">
+      <img src="assets/hero-kit.webp" width="1536" height="1024" fetchpriority="high"
+        alt="Concept render of the kit on a wooden table: the sage Station showing Pip plain beside a pale-marked Pip, the cream Companion showing Pip in a pixel-art clearing, both docked in the Caddy, whose e-paper lists the counts and whose printer feeds out a paper card of Pip.">
+      <figcaption><span class="label">Concept</span>The kit: Station, Companion and Caddy</figcaption>
+    </figure>
+    <div class="hero-copy">
+      <p class="copy">Explore a fogged world on the Companion, bring sealed pods home to the Station, and raise mibis whose genes really work.</p>
+      <a class="button primary" href="sandbox/exploration/">Play the field test</a>
+    </div>
+  </section>
+</div>
 
-    <section class="section devices" id="devices" aria-labelledby="devices-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">Three devices, two screens</p><h2 id="devices-title">The game lives<br>in the hardware.</h2></div>
-        <p>A handheld for going out, a home device for working things out, and a dock that keeps them together. Each part of the game has its own place, and its own buttons.</p>
+<main id="main">
+  <div class="intro">
+    <div class="wrap">
+      <div class="panel">
+        <div class="strip" aria-label="The three parts of the kit">
+          <figure>
+            <img src="assets/strip-companion.webp" width="560" height="560" loading="lazy" alt="The Companion, a cream handheld with a pad, Call, Back and Confirm, showing Pip in a pixel-art clearing.">
+            <figcaption><span class="title">Companion</span><span>Explore the fogged world.</span></figcaption>
+          </figure>
+          <figure>
+            <img src="assets/strip-station.webp" width="560" height="560" loading="lazy" alt="The Station, a sage two-thumb handheld, showing a research screen with Pip plain beside a pale-marked Pip.">
+            <figcaption><span class="title">Station</span><span>Research, hatch and raise.</span></figcaption>
+          </figure>
+          <figure>
+            <img src="assets/strip-caddy.webp" width="560" height="560" loading="lazy" alt="The Caddy dock with its e-paper counts, PRINT and FEED buttons, feeding out a paper card of Pip.">
+            <figcaption><span class="title">Caddy</span><span>Charge, connect and print.</span></figcaption>
+          </figure>
+        </div>
       </div>
-      <div class="screen-pair">
-        <article class="companion-panel">
-          <div class="device-heading">
-            <p class="chapter">01 / Companion</p>
-            <h3>Take the world with you.</h3>
-            <p>A 450×600 colour screen in your hand. In <strong>Probe</strong> mode you walk the world map and go down into living places. At home, the mibi riding with you lives on its screen.</p>
-            <ul class="buttons" aria-label="The Companion’s four buttons">
-              <li><i style="background:#4a4a48">✣</i>Pad</li>
-              <li><i style="background:#e26a2c">✓</i>Confirm</li>
-              <li><i style="background:#77746c">←</i>Back</li>
-              <li><i style="background:#2f8a86">)))</i>Call</li>
-            </ul>
-          </div>
-          <figure>
-            <img src="assets/companion-resident-home.webp" width="450" height="600" loading="lazy"
-              alt="Companion screen concept in pixel art: Pip, a round dark mibi with a cream belly, orange eyes and a crown of three green leaves, sits among clovers on a soft green wash above the labels Pip and Plain coat.">
-            <figcaption><span class="label">Concept screen, not from the build</span>Companion · Pip at home in HiBit pixel art</figcaption>
-          </figure>
-        </article>
-        <article class="station-panel">
-          <div class="device-heading">
-            <p class="chapter">02 / Station</p>
-            <h3>Make room for a bigger picture.</h3>
-            <p>A 1024×600 screen you hold with both thumbs or play flat on the table. It opens your pods, runs research and incubation, and keeps your collection on an always-on screen, with your mibis living in a vivarium.</p>
-          </div>
-          <figure>
-            <img src="assets/station-known-forms.webp" width="1024" height="600" loading="lazy"
-              alt="Station screen concept headed Miniature Beasts · Known forms, with counts 4, 5 and 2: Pip, labelled Plain coat, stands beside a mibi of the same species labelled Hypothetical, Pale markings, with cream patches on its back and sides, on sand against a teal backdrop.">
-            <figcaption><span class="label">Concept screen, not from the build</span>Station · The same Pip beside a pale-marked version</figcaption>
-          </figure>
-          <p class="screen-note">One mibi, one identity: the same individual on the Companion, the Station and the paper card.</p>
-        </article>
-        <article class="caddy-panel">
-          <div>
-            <p class="chapter">03 / Caddy</p>
-            <h3>Dock the kit.</h3>
-            <p>Set both handhelds down and they charge, ready for the next session. A quiet four-grey e-paper screen shows your world at a glance, and a small printer puts a mibi on paper.</p>
-          </div>
-          <figure>
-            <img src="assets/caddy-print.webp" width="1200" height="800" loading="lazy"
-              alt="Concept render of the Caddy close up: beside its PRINT and FEED buttons, the printer slot feeds out a white paper card with a black dithered Pip above the words Pip and PIP-001.">
-            <figcaption><span class="label">Concept art</span>The Caddy prints a mibi’s card</figcaption>
-          </figure>
-          <figure class="caddy-summary">
-            <picture>
-              <source media="(max-width: 760px)" srcset="assets/caddy-summary-epaper-small.webp" width="839" height="479">
-              <img src="assets/caddy-summary-epaper.webp" width="1600" height="479" loading="lazy"
-              alt="Caddy e-paper summary concept in four greys with dithered shading: Pip · PIP-001 and 1 resident beside a dithered Pip, a sealed Hopper pod marked waiting, and the counts 4, 5 and 2 beside chip, crystal and droplet icons.">
-            </picture>
-            <figcaption><span class="label">Concept screen, not from the build</span>Caddy · The four-grey e-paper summary</figcaption>
-          </figure>
-        </article>
-      </div>
-    </section>
+    </div>
+  </div>
 
-    <section class="section mechanics" id="expedition" aria-labelledby="exp-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">An expedition</p><h2 id="exp-title">Walk into the fog.<br>Bring something home.</h2></div>
-        <p>This part already plays. These screens come from the rough playable in the sandbox: real rules, tokens for creatures, no finished art.</p>
+  <section class="section ruled" id="expedition" aria-labelledby="exp-title">
+    <div class="wrap">
+      <p class="eyebrow">Expedition</p>
+      <div class="head">
+        <h2 id="exp-title">Walk into the fog.<br>Bring something home.</h2>
+        <p class="copy">Every step lifts the fog. Places react to you: shake a bush, wait, see who comes to eat. Storms charge stones with Energy and can break your Probe. Pick up sealed pods.</p>
       </div>
-      <div class="exp-shots">
-        <article class="panel">
-          <div class="mechanic-label"><span>Out on the map</span><strong>Companion / Probe</strong></div>
-          <figure>
-            <img src="assets/prototype-map.webp" width="1044" height="1664" loading="lazy"
-              alt="Screenshot of the Companion field test showing the world map: most of it covered in purple fog, a few revealed cells of wood, meadow and a pond near the top, small sign icons, and a dotted storm band crossing the map.">
-            <figcaption><span class="label">Rough playable</span>The fogged world map</figcaption>
-          </figure>
-          <h3>The fog lifts as you go.</h3>
-          <p>One ring around every step. The map remembers what you’ve seen.</p>
-        </article>
-        <article class="panel">
-          <div class="mechanic-label"><span>Down in a place</span><strong>A living patch</strong></div>
-          <figure>
-            <img src="assets/prototype-storm.webp" width="1044" height="1664" loading="lazy"
-              alt="Screenshot of the Companion field test inside a wood during a storm: rain streaks over dark grass, round trees, the orange player token by a tree, and a glowing yellow tile warning where lightning will strike next.">
-            <figcaption><span class="label">Rough playable</span>A wood as the storm hits · The yellow tile is the next strike</figcaption>
-          </figure>
-          <h3>Stay out, or shelter.</h3>
-          <p>Storms charge stones with Energy, and can break your Probe.</p>
-        </article>
-      </div>
-      <div class="panel exp-concept">
-        <figure>
-          <img src="assets/companion-map-hands.webp" width="1200" height="800" loading="lazy"
-            alt="Concept render of two hands holding the Companion outdoors, thumbs on the pad and the Confirm button; its screen shows a fogged pixel map with a small revealed patch, sign icons and a rain band at the left.">
-          <figcaption><span class="label">Concept art</span>The Companion out on the map</figcaption>
-        </figure>
-        <figure>
-          <img src="assets/companion-storm.webp" width="600" height="900" loading="lazy"
-            alt="Concept render of the Companion lying on mossy stone; its screen shows a dark pixel-art wood in a storm, with a charged stone, a yellow-outlined warning tile and Pip sheltering beside the player under a tree.">
-          <figcaption><span class="label">Concept art</span>A wood as the storm hits</figcaption>
-        </figure>
-      </div>
-      <ol class="steps">
-        <li><span>01</span><div><h3>Pick a start</h3><p>Any cell you can see is a start. Each glint hints at what’s near: tracks, a slow beat underground, or supplies.</p></div></li>
-        <li><span>02</span><div><h3>Walk the map</h3><p>The fog lifts around every step, and the bottom line names what’s ahead.</p></div></li>
-        <li><span>03</span><div><h3>Go down into a place</h3><p>Creatures, bushes, stones and holes react to you. Shake a bush, put the fruit down, back off and watch who comes to eat.</p></div></li>
-        <li><span>04</span><div><h3>Gamble on the storm</h3><p>Stay in the rain to collect Energy from struck stones, and risk a strike that breaks your Probe. Or shelter under a tree.</p></div></li>
-        <li><span>05</span><div><h3>Pick up seed-pods</h3><p>A pod is sealed. It names its species if you’ve met it, otherwise “unknown species”. What’s inside waits for the Station.</p></div></li>
-        <li><span>06</span><div><h3>Send the cargo home</h3><p>Then the world turns: creatures roam and breed, storms leave charged stones, new finds appear. Nothing simply refills.</p></div></li>
-      </ol>
-      <p class="field-note">No timers. The world moves only when you move or act, so you can stop and think. <span>Designed for the next build: a Call button that pulses, lures and pins; a Shield the storm wears down; Probe tiers that reach further into the fog.</span></p>
-    </section>
+      <figure class="shot">
+        <img src="assets/companion-map-hands.webp" width="1536" height="1024" loading="lazy"
+          alt="Two hands hold the Companion outdoors, thumbs on the pad and Confirm; its screen shows a fogged pixel map with a small revealed patch, sign icons, a rain band at the left and the line Go down, wood, slow beat.">
+        <figcaption><span class="label">Concept</span>The Companion out on the map</figcaption>
+      </figure>
+    </div>
+  </section>
 
-    <section class="section station" id="station" aria-labelledby="station-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">Back at the Station</p><h2 id="station-title">Open the pod.<br>Decide what it becomes.</h2></div>
-        <p>One pod makes one mibi. Hatch it as it is, or study it first and choose from what it already carries. <span class="label">Designed, not built yet</span></p>
-      </div>
-      <div class="station-grid">
-        <ol class="flow">
-          <li><strong>Identify</strong><p>Find out the pod’s species. That’s enough to hatch it unchanged; you never have to decode it all.</p></li>
-          <li><strong>Research, if you want</strong><p>Each study shows something this pod carries, like a hidden marking. What you learn stays learned.</p></li>
-          <li><strong>Create</strong><p>Keep the pod as it is, or set a trait you’ve researched, using only what this pod really carries.</p></li>
-          <li><strong>Incubate and open</strong><p>The mibi you meet is the one you made. No rerolls.</p></li>
-        </ol>
-        <article class="panel">
-          <div class="mechanic-label"><span>At the bench</span><strong>Station / Research</strong></div>
-          <figure>
-            <img src="assets/station-research-pod.webp" width="1024" height="600" loading="lazy"
-              alt="Station screen concept: a sealed olive-green Hopper pod with a three-leaf mark rests in a padded cradle under a warm spotlight, labelled Needs 2 more Essence, beside Pip labelled Hopper · known, with the counts 4, 5 and 2 in the header.">
-            <figcaption><span class="label">Concept screen, not from the build</span>Station · A sealed pod waiting at the bench</figcaption>
-          </figure>
-        </article>
-      </div>
-      <div class="supplies-head">
-        <h3>What the field gives the lab.</h3>
-        <p>Three supplies, each from something you do on an expedition, each with a job at the Station.</p>
-      </div>
-      <div class="supplies">
-        <article><p class="chapter"><span style="background:#e8a92a"></span>Energy</p><h3>Charge from the storm.</h3><p>Drawn from storm-struck stones. It runs every machine: the Probe in the field, identifying and incubating at home.</p></article>
-        <article><p class="chapter"><span style="background:#3f7fd6"></span>Data</p><h3>Moments you cause.</h3><p>A creature eats your fruit, shakes dry or settles because of you. The Station reads genomes against them.</p></article>
-        <article><p class="chapter"><span style="background:#4fb062"></span>Essence</p><h3>What bodies grow from.</h3><p>Dew, pressed fruit, a shed tuft. Bigger bodies need more.</p></article>
-      </div>
-      <ol class="loop-strip">
-        <li><span>01</span><div><h3>Explore &amp; gather</h3><p>Bring seed-pods and supplies home from the Companion.</p></div></li>
-        <li><span>02</span><div><h3>Research &amp; create</h3><p>Identify a pod, study it if you like, and start an incubation.</p></div></li>
-        <li><span>03</span><div><h3>Raise &amp; return</h3><p>Bond with a mibi, help it grow, and take a partner on your next expedition.</p></div></li>
-      </ol>
-    </section>
-
-    <section class="section genetics" id="genetics" aria-labelledby="genetics-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">Real genetics, under the fur</p><h2 id="genetics-title">Small creatures.<br>Real inheritance.</h2></div>
-        <div><p class="large-copy">A mibi’s looks and abilities come from its genome, and the genes follow real inheritance.</p><p>You learn it by looking and breeding, not by reading.</p></div>
-      </div>
-      <div class="inheritance">
+  <section class="section ruled" id="station" aria-labelledby="station-title">
+    <div class="wrap">
+      <p class="eyebrow">Station</p>
+      <div class="head">
+        <h2 id="station-title">Open the pod.<br>Decide what it becomes.</h2>
         <div>
-          <p class="chapter">One marking, one species</p>
-          <h3>Two plain parents.<br>One surprise.</h3>
-          <p>Pip’s pale markings are recessive. A plain Pip can carry pale without showing it. Breed two carriers and about one child in four comes out marked.</p>
-          <ul class="rules">
-            <li>A pod can only become what it carries. Knowing about pale from another pod doesn’t put it in this one.</li>
-            <li>Breeding happens within a species, and every child is a new individual with two real parents.</li>
-            <li>Genomes start small and grow more complex as you find rarer pods.</li>
-            <li>For the curious: the genome is the seed for a mibi’s body, markings, movement and behaviour.</li>
+          <p class="copy">One pod makes one mibi. Hatch it as it is, or study it first and choose from what it already carries. Energy, Data and Essence from the field power it all.</p>
+          <ul class="supplies" aria-label="Supplies">
+            <li><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#3f7fd6"><rect x="8" y="8" width="16" height="16" rx="2"/><rect x="11" y="3" width="2" height="5"/><rect x="15" y="3" width="2" height="5"/><rect x="19" y="3" width="2" height="5"/><rect x="11" y="24" width="2" height="5"/><rect x="15" y="24" width="2" height="5"/><rect x="19" y="24" width="2" height="5"/><rect x="3" y="11" width="5" height="2"/><rect x="3" y="15" width="5" height="2"/><rect x="3" y="19" width="5" height="2"/><rect x="24" y="11" width="5" height="2"/><rect x="24" y="15" width="5" height="2"/><rect x="24" y="19" width="5" height="2"/></g><rect x="11" y="11" width="10" height="10" rx="1" fill="#9cc3f2"/></svg>Data</li>
+            <li><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l9 8-9 18-9-18z" fill="#e8a92a"/><path d="M16 3l9 8h-9zM7 11h9l0 18z" fill="#f6cf6a"/></svg>Energy</li>
+            <li><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3c5 7 9 11.5 9 16.5a9 9 0 0 1-18 0C7 14.5 11 10 16 3z" fill="#4fb062"/><ellipse cx="12.5" cy="19" rx="2" ry="3.5" fill="#bfe7c6"/></svg>Essence</li>
           </ul>
         </div>
+      </div>
+      <figure class="shot">
+        <img src="assets/station-research-hands.webp" width="1536" height="1024" loading="lazy"
+          alt="Two hands hold the sage Station at a wooden table in lamp light; its screen shows a sealed green Hopper pod in a padded cradle under a pool of light, marked Needs 2 more Essence, with Pip at the right labelled Hopper, known.">
+        <figcaption><span class="label">Concept</span>The Station at home: a sealed pod at the research bench</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section ruled caddy" id="caddy" aria-labelledby="caddy-title">
+    <div class="wrap">
+      <p class="eyebrow">Caddy</p>
+      <div class="head">
+        <h2 id="caddy-title">Dock the kit.<br>Print what you find.</h2>
+        <p class="copy">The Caddy charges both handhelds, lets them talk to each other and connects the kit to the cloud. Its printer is part of play: a module that answers what you do, card by card.</p>
+      </div>
+      <div class="panel pair">
         <figure>
-          <div class="inheritance-example" aria-label="Example pale-marking inheritance">
-            <p class="parents">
-              <span><img class="mibi-img" src="assets/pip-plain.webp" width="300" height="310" loading="lazy" alt="Pip with a plain dark coat."><b>Pp</b>Plain parent<small>Carries pale</small></span>
-              <span class="cross" aria-hidden="true">×</span>
-              <span><img class="mibi-img" src="assets/pip-plain.webp" width="300" height="310" loading="lazy" alt="A second plain Pip."><b>Pp</b>Plain parent<small>Carries pale</small></span>
-            </p>
-            <p class="offspring-label">Their children can be <span aria-hidden="true">↓</span></p>
-            <div class="offspring">
-              <p><img class="mibi-img" src="assets/pip-plain.webp" width="300" height="310" loading="lazy" alt="Plain child."><b>PP</b>Plain<small>About 1 in 4</small></p>
-              <p><img class="mibi-img" src="assets/pip-plain.webp" width="300" height="310" loading="lazy" alt="Plain child that carries pale."><b>Pp</b>Carries pale<small>About 2 in 4</small></p>
-              <p class="pale"><img class="mibi-img" src="assets/pip-pale.webp" width="300" height="310" loading="lazy" alt="Child with cream pale markings on its back and sides."><b>pp</b>Pale markings<small>About 1 in 4</small></p>
-            </div>
-            <p class="example-note">The letters are for you; in the game the creature shows it.</p>
-          </div>
-          <figcaption style="color:#becdb6">Concept art · Pip, the first mibi, in the accepted Miniature Lives look</figcaption>
+          <img src="assets/caddy-print.webp" width="1200" height="800" loading="lazy"
+            alt="Close up of the Caddy: beside its PRINT and FEED buttons, the printer slot feeds out a white card with a dithered Pip above the words Pip and PIP-001.">
+          <figcaption><span class="label">Concept</span>The Caddy prints a mibi’s card</figcaption>
+        </figure>
+        <figure class="flat">
+          <img src="assets/caddy-summary-epaper.webp" width="1200" height="359" loading="lazy"
+            alt="The Caddy’s e-paper summary in four greys: a dithered Pip with Pip, PIP-001, 1 resident; a sealed Hopper pod, waiting; and the counts 4, 5 and 2 beside chip, crystal and droplet icons.">
+          <figcaption><span class="label">Concept</span>The e-paper summary on the Caddy, in four greys</figcaption>
         </figure>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section life" id="life" aria-labelledby="life-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">The long game</p><h2 id="life-title">Raise partners.<br>Grow families.</h2></div>
-        <p>Keep a mibi, or bond with it and bring it along. Pretty, rare, capable or just loved: you choose what you’re after.</p>
+  <section class="section genetics" id="genetics" aria-labelledby="genetics-title">
+    <div class="wrap">
+      <p class="eyebrow">Genetics</p>
+      <div class="head">
+        <h2 id="genetics-title">One species.<br>Endless families.</h2>
+        <p class="copy">Every pup is new: coat, markings, crown, ears, size. Some traits hide for a generation and come back. Breed for what you love; your family is yours to shape.</p>
       </div>
-      <div class="life-grid">
-        <article class="panel">
-          <p class="chapter">01 / Partners</p>
-          <h3>Partners open the map.</h3>
-          <figure class="life-shot">
-            <img src="assets/partner-patch.webp" width="450" height="600" loading="lazy"
-              alt="Companion screen concept in pixel art: Pip stands beside the orange player pawn inside a teal ring on a meadow, looking up at it, next to a patch of glinting soil, a pond and clovers.">
-            <figcaption><span class="label">Concept screen, not from the build</span>Pip beside you at a patch to dig · Scene only, without the screen’s status line</figcaption>
-          </figure>
-          <p>A bonded mibi helps with its own abilities. In the sandbox a burrower digs open a narrow burrow, a hopper keeps wary creatures calm, a puffcap sniffs out buried pods. You can always explore alone; partners take you further.</p>
-          <p><span class="label">In the rough playable</span></p>
-        </article>
-        <article class="panel">
-          <p class="chapter">02 / Life stages</p>
-          <h3>A whole life.</h3>
-          <figure class="life-stages">
-            <img src="assets/pip-life-stages.webp" width="1200" height="477" loading="lazy"
-              alt="Three Pips side by side: a small round juvenile with large eyes and bright leaf buds, an adult, and a heavier elder with half-lidded eyes and broad, drooping dark green leaves.">
-            <figcaption><span class="label">Concept art</span>Pip as juvenile, adult and elder</figcaption>
-          </figure>
-          <ul class="stages" aria-label="Life stages">
-            <li>Embryo<span>incubating</span></li>
-            <li>Juvenile<span>rides along</span></li>
-            <li>Adult<span>explores</span></li>
-            <li>Elderly<span>wiser, slower</span></li>
-          </ul>
-          <p>A juvenile rides in the Companion while it trains, and comes when you Call. Adults come on expeditions. Elders stay partners with new strengths.</p>
-          <p><span class="label">Designed, not built yet</span></p>
-        </article>
-        <article class="panel">
-          <p class="chapter">03 / Families</p>
-          <h3>Families within a species.</h3>
-          <p>Breed for a marking, an ability or a lineage you love. Every child is new, and remembers where its genes came from. Only bonded mibis need care; the rest never wait on you.</p>
-          <p><span class="label">Designed, not built yet</span></p>
-        </article>
-      </div>
-    </section>
+      <div class="tree" role="group" aria-label="An imagined family of three generations">
+        <figure class="kin" style="grid-area:1/1/2/3"><img src="assets/tree-pip.webp" width="320" height="320" loading="lazy" alt="Pip: charcoal coat, plain, three leaves, short ears."><figcaption><span class="label">Pip</span><span>charcoal</span></figcaption></figure>
+        <figure class="kin" style="grid-area:1/3/2/5"><img src="assets/tree-rust.webp" width="320" height="320" loading="lazy" alt="Rust: russet coat, plain, three leaves, round ears."><figcaption><span class="label">Rust</span><span>russet</span></figcaption></figure>
+        <figure class="kin" style="grid-area:1/5/2/7"><img src="assets/tree-sable.webp" width="320" height="320" loading="lazy" alt="Sable: charcoal coat with cream pale islands, long ears."><figcaption><span class="label">Sable</span><span>pale</span></figcaption></figure>
+        <figure class="kin" style="grid-area:1/7/2/9"><img src="assets/tree-bramble.webp" width="320" height="320" loading="lazy" alt="Bramble: charcoal, plain, five-leaf crown, large."><figcaption><span class="label">Bramble</span><span>five-leaf</span></figcaption></figure>
+        <div class="join" style="grid-area:1/2/3/4" aria-hidden="true"></div>
+        <div class="join" style="grid-area:1/6/3/8" aria-hidden="true"></div>
 
-    <section class="section open-source" id="open-source" aria-labelledby="open-title">
+        <figure class="kin" style="grid-area:3/2/4/4"><img src="assets/tree-ember.webp" width="320" height="320" loading="lazy" alt="Ember, child of Pip and Rust: russet, plain, three leaves, short ears."><figcaption><span class="label">Ember</span><span>russet</span></figcaption></figure>
+        <figure class="kin" style="grid-area:3/6/4/8"><img src="assets/tree-thistle.webp" width="320" height="320" loading="lazy" alt="Thistle, child of Sable and Bramble: charcoal, plain, five leaves, long ears, small."><figcaption><span class="label">Thistle</span><span>long-eared</span></figcaption></figure>
+        <div class="join" style="grid-area:3/3/4/7" aria-hidden="true"></div>
+        <div class="kids" style="grid-area:4/4/5/6" aria-hidden="true"></div>
+
+        <figure class="kin" style="grid-area:5/3/6/5"><img src="assets/tree-moss.webp" width="320" height="320" loading="lazy" alt="Moss, child of Ember and Thistle: russet, plain, curled leaves, large."><figcaption><span class="label">Moss</span><span>curled</span></figcaption></figure>
+        <figure class="kin ring" style="grid-area:5/5/6/7"><img src="assets/tree-dapple.webp" width="320" height="320" loading="lazy" alt="Dapple, child of Ember and Thistle: russet with cream pale islands, long ears, five leaves."><figcaption><span class="label">Dapple</span><span>pale</span></figcaption></figure>
+        <p class="caption note" style="grid-area:5/7/6/9">Pale islands, last seen on grandmother Sable.</p>
+      </div>
+      <p class="caption tree-cap"><span class="label">Concept</span>An imagined family of Pip’s species; generated portraits, not from the game.</p>
+    </div>
+  </section>
+
+  <section class="section" id="life" aria-labelledby="life-title">
+    <div class="wrap">
+      <p class="eyebrow">Life</p>
+      <div class="head">
+        <h2 id="life-title">Raise partners.<br>Grow families.</h2>
+        <p class="copy">Bond with a mibi and it comes along, digging, calming, sniffing out buried pods. It grows from juvenile to elder, and its children remember where their genes came from.</p>
+      </div>
+      <div class="panel pair">
+        <figure>
+          <p class="title">Partner at work</p>
+          <img src="assets/companion-partner-hands.webp" width="1200" height="800" loading="lazy"
+            alt="Two hands hold the Companion in a garden; its screen shows Pip beside the orange player pawn inside the teal Call ring on a meadow, near a glinting patch of soil, with the line Dig here, meadow.">
+          <figcaption><span class="label">Concept</span>Pip beside you at a patch to dig</figcaption>
+        </figure>
+        <figure class="flat">
+          <p class="title">A whole life</p>
+          <img src="assets/pip-life-stages.webp" width="1200" height="458" loading="lazy"
+            alt="Three Pips side by side: a small round juvenile with bright leaf buds, an adult, and a heavier elder with half-lidded eyes and broad drooping leaves.">
+          <ol class="stages caption" aria-label="Life stages"><li>Juvenile</li><li>Adult</li><li>Elder</li></ol>
+          <figcaption><span class="label">Concept</span>Pip as juvenile, adult and elder</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section ruled" id="faq" aria-labelledby="faq-title">
+    <div class="wrap faq-grid">
+      <h2 id="faq-title">A few fair questions.</h2>
+      <div class="panel faq">
+        <details><summary>Is it real?</summary><p>The exploration field test is real: pictures marked ROUGH PLAYABLE come from it. Pictures marked CONCEPT are generated art; no device exists yet. The game gets proven in software first, then boards and cases.</p></details>
+        <details><summary>When can I get one?</summary><p>There’s no date and no price yet. The <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/ROADMAP.md">roadmap</a> shows what is being built now and what comes next.</p></details>
+        <details><summary>Can I build one myself?</summary><p>Not yet: the hardware isn’t designed. When it is, the boards and cases will be published as open hardware, to print and put together with common tools. The software is open source already.</p></details>
+        <details><summary>Do I need to know genetics?</summary><p>No. You play by looking, comparing and breeding. The real framework underneath is there for the curious: read the <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/creatures-and-genomics.md">genetics design</a>.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="end">
+  <section class="section" id="play" aria-labelledby="play-title">
+    <div class="wrap play">
       <div>
-        <p class="eyebrow">Open source, all of it</p>
-        <h2 id="open-title">Read the rules.<br>Follow the build.</h2>
-        <p class="large-copy" style="margin-top:1.6rem">The code, the game design, the genetics and the hardware are being made in public.</p>
-        <p>Every decision and every open question is written down. The devices are planned around ESP32 chips and a Raspberry Pi, with native firmware; cases will be 3D printed in small batches and put together with common tools.</p>
-        <p class="licences">Software AGPL-3.0 · Hardware CERN-OHL-S-2.0 · Documentation and art CC BY-SA 4.0</p>
+        <p class="eyebrow">Play and source</p>
+        <h2 id="play-title">Play it today.<br>Read every rule.</h2>
+        <p class="copy">The exploration field test runs in your browser now. The code, the design, the genetics and the hardware are open source, made in public.</p>
+        <div class="actions">
+          <a class="button primary" href="sandbox/exploration/">Play the field test</a>
+          <a class="link" href="https://github.com/PacoCotera/miniaturebeasts">Source on GitHub</a>
+        </div>
       </div>
-      <div>
-        <ul class="links">
-          <li><a href="https://github.com/PacoCotera/miniaturebeasts">Source on GitHub<span>Code, prototypes, art and hardware concepts.</span></a></li>
-          <li><a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/game.md">The game design<span>What’s decided and what’s still open.</span></a></li>
-          <li><a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/ROADMAP.md">The roadmap<span>Exploration first, then creatures, then the first connected game.</span></a></li>
-          <li><a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/LICENSING.md">Licensing<span>What you can build, share and sell.</span></a></li>
-        </ul>
-        <a class="button outline" href="https://github.com/PacoCotera/miniaturebeasts">Explore the project</a>
-      </div>
-    </section>
-
-    <section class="section sandbox" id="sandbox" aria-labelledby="sandbox-title">
-      <p class="eyebrow">Try it in your browser</p>
-      <h2 id="sandbox-title">Take an early look.</h2>
-      <p>The exploration field test, straight from the repository: one Companion screen with fog, living places, a storm and seed-pods. Tokens instead of art; rules first.</p>
-      <div class="actions"><a class="button cream" href="sandbox/exploration/">Play the exploration field test</a></div>
-      <p class="keys">Arrow keys to walk · Enter to confirm · Esc for the menu</p>
-      <p class="stamp"><small id="build">build pending</small></p>
-    </section>
-
-    <section class="section questions" id="faq" aria-labelledby="questions-title">
-      <h2 id="questions-title">A few fair questions.</h2>
-      <div class="faq">
-        <details><summary>Is it real?</summary><p>The game is being designed and built now. The exploration prototype is real and playable in your browser. The device pictures are concept art: nothing physical has been built yet, and the plan is to prove the game in software and playtest it before making boards and cases.</p></details>
-        <details><summary>When can I get one?</summary><p>There’s no date and no price. Follow the <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/ROADMAP.md">roadmap</a> to see what’s being built and what comes next.</p></details>
-        <details><summary>Can I build one myself?</summary><p>Not yet, because the hardware isn’t designed. When it is, the boards and cases will be published as open hardware, to be printed and assembled with common tools. The software is open source already.</p></details>
-        <details><summary>Do I need to know genetics?</summary><p>No. Children can play by looking, comparing and breeding. The real framework underneath is there for anyone who wants to dig in.</p></details>
-      </div>
-    </section>
-  </main>
-  <footer>
-    <a class="footer-brand" href="#main">MINIATURE BEASTS<span aria-hidden="true">✳</span></a>
-    <div class="footer-bottom"><p>A project by Dirty Pawz Press · Mexico City</p><nav aria-label="Footer navigation"><a href="https://github.com/PacoCotera/miniaturebeasts">GitHub</a><a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/ROADMAP.md">Roadmap</a><a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/LICENSING.md">Licensing</a></nav></div>
+      <figure>
+        <img src="assets/prototype-map.webp" width="1044" height="1664" loading="lazy"
+          alt="Screenshot of the field test in a Companion frame: a world map mostly under purple fog, a few revealed cells of wood, meadow and a pond, small sign icons and a dotted storm band.">
+        <figcaption><span class="label">Rough playable</span>The fogged world map in the field test</figcaption>
+      </figure>
+    </div>
+  </section>
+  <footer class="wrap">
+    <div class="foot">
+      <a class="wordmark-lg" href="#main">Miniature Beasts</a>
+      <nav aria-label="Footer">
+        <a href="https://github.com/PacoCotera/miniaturebeasts">GitHub</a>
+        <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/ROADMAP.md">Roadmap</a>
+        <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/LICENSING.md">Licensing</a>
+      </nav>
+    </div>
+    <div class="foot-lines">
+      <p class="caption">A project by Dirty Pawz Press · Mexico City</p>
+      <p class="caption">Software AGPL-3.0 · Hardware CERN-OHL-S-2.0 · Documentation and art CC BY-SA 4.0</p>
+    </div>
+    <p class="caption build" id="build">build pending</p>
   </footer>
+</div>
 <script>
-  fetch('build.json').then(r=>r.json()).then(b=>{
-    const t=new Date(b.built).toLocaleString('en-GB',{timeZone:'America/Mexico_City',hour12:false,day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
-    document.getElementById('build').textContent='build '+b.short+' · '+t;
-  }).catch(()=>{document.getElementById('build').textContent='local build'});
+  fetch('build.json').then(r => r.json()).then(b => {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone: 'America/Mexico_City', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'}).formatToParts(new Date(b.built)).map(x => [x.type, x.value]));
+    document.getElementById('build').textContent = 'build ' + b.short + ' · ' + p.year + '-' + p.month + '-' + p.day + ' ' + p.hour + ':' + p.minute;
+  }).catch(() => { document.getElementById('build').textContent = 'local build'; });
 </script>
 </body>
 </html>
