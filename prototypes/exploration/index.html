@@ -2909,49 +2909,108 @@ function drawSign(kind, s, px, py, fr) {
   else if (kind === 'skull') blit(ICON.skull(), px + 11, py + 11);
   else if (kind === 'depot') blit(ICON.depot(s.lit), px + 11, py + 9);
 }
-// The reach view: in an expedition the map shows only the Probe's reach, at 3× (78 px cells; 2× at tier 2),
-// drawn by the same drawMap and scaled by whole pixels, with a strip below: the way home, the count, and a
-// 96×120 inset of the whole world (6 px a cell) with the reach marked. "Full map" in the menu shows it all.
-let reachCv = null;
+// The reach view: in an expedition the map shows only the Probe's reach, drawn at its own scale (not a blow-up
+// of the 26 px map): 78 px cells at tier 1 (5×5), 48 px at tier 2 (9×9). Each cell shows its land as a patch of
+// the place's real 32 px tiles, its quarters (dotted while unsurveyed), its signs at 1× or 2× in corner slots,
+// pending outlines, the pawn at 2×; fog cells show the map's fog texture. Below: the way home, the count, and a
+// small inset of the whole world. "Full map" in the menu switches to the whole map at 26 px.
 const INSET = { w: MW * 6, h: MH * 6 };
 function reachGeom() {
-  const ex = S.exp, r = ex.range, n = r * 2 + 1, k = n <= 5 ? 3 : 2, s0 = cxy(ex.start), size = n * CELL * k;
-  const dx = Math.round((SCR_W - size) / 2), dy = VIEW_Y + (k === 3 ? 6 : 2);
-  return { r, n, k, s0, size, dx, dy, sx: MAP_X + (s0.x - r) * CELL, sy: MAP_Y + (s0.y - r) * CELL, sw: n * CELL };
+  const ex = S.exp, r = ex.range, n = r * 2 + 1, cs = n <= 5 ? 78 : 48, size = n * cs, s0 = cxy(ex.start);
+  return { r, n, cs, size, s0, dx: Math.round((SCR_W - size) / 2), dy: VIEW_Y + 4, big: n <= 5 };
+}
+// A cell's land: the middle of its place, 3×3 of the real tiles cropped to the cell. Seen-but-not-visited cells
+// take the fade table, cells under the storm the dark table, as on the map.
+function landPatch(c, cs, rm, fr) {
+  return art('rv' + c + ':' + cs + ':' + rm + ':' + fr + ':' + S.seed, () => {
+    const pb = new PB(cs, cs);
+    if (!passable(c)) {   // wide water or cliff: no place to borrow tiles from
+      const water = G.land[c] === L.WATER, base = water ? C.sea : C.slate, hi = water ? C.river : C.stone;
+      for (let y = 0; y < cs; y++) for (let x = 0; x < cs; x++) pb.set(x, y, (water ? ((x + y * 3) % 17 === 0 || (y % 12 === 4 && (x + y) % 9 < 5)) : ((x * 7 + y * 13) % 23 === 0)) ? hi : base);
+      return pb; }
+    const lay = layout(String(c)), off = Math.round((96 - cs) / 2);
+    for (let ty = 0; ty < 3; ty++) for (let tx = 0; tx < 3; tx++) { const t = tilePB(lay, (15 + ty) * PW + 13 + tx, fr);
+      for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const X = tx * 32 + x - off, Y = ty * 32 + y - off; if (X < 0 || Y < 0 || X >= cs || Y >= cs) continue; const v = t.p[y * 32 + x]; if (v >= 0) pb.set(X, Y, v); } }
+    return pb; }).canvas(rm);
+}
+const up2 = (key, pb) => upArt('s2' + key, pb, 2);
+function signSprite(kind, s, fr, big) {
+  const k = big ? 2 : 1, sc = (key, pb) => k === 2 ? up2(key, pb) : pb;
+  switch (kind) {
+    case 'pod': return podArt('bone', 1);   // 16×20, always 1×
+    case 't': return sc('paw' + (s.sp != null ? SPECIES[s.sp].col.body : 'bone'), ICON.paw(s.sp != null ? SPECIES[s.sp].col.body : 'bone'));
+    case 'b': return ICON.beat(fr);
+    case 'k': return sc('bolt', ICON.bolt());
+    case 'kw': return sc('boltH', ICON.boltHollow());
+    case 'pin': return ICON.pin();
+    case 'flag': return ICON.flag();
+    case 'skull': return sc('skull', ICON.skull());
+    case 'depot': return sc('depot' + (s.lit ? 1 : 0), ICON.depot(s.lit));
+    case 'beacon': return sc('beacon' + fr, ICON.beacon(fr));
+    case 'burrow': return sc('burrow', ICON.burrow(0));
+    case 'water': return sc('wave', ICON.wave());
+    case 'deep': return BADGE();
+  }
+  return null;
 }
 function drawReachView(t) {
-  if (S.exp.beaconView || S.ui.mapFull) { drawMap('map', t); return; }   // the whole map, when chosen in the menu (it stays chosen)   // a beacon's sweep shows the land around, beyond the reach
-  drawMap('map', t);
-  const q = reachGeom();
-  if (!reachCv || reachCv.width !== q.sw) { reachCv = document.createElement('canvas'); reachCv.width = reachCv.height = q.sw; }
-  const rc = reachCv.getContext('2d'); rc.imageSmoothingEnabled = false; rc.fillStyle = HEX[C.void]; rc.fillRect(0, 0, q.sw, q.sw);
-  rc.drawImage(scr, q.sx, q.sy, q.sw, q.sw, 0, 0, q.sw, q.sw);
+  if (S.exp.beaconView || S.ui.mapFull) { drawMap('map', t); return; }   // the whole map, when chosen in the menu (it stays chosen)
+  ensureMap();
+  const ex = S.exp, q = reachGeom(), fr = motion() ? Math.floor(t * 2) % 2 : 0, blink = !motion() || Math.floor(t / .9) % 2 === 0;
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
-  g.drawImage(reachCv, 0, 0, q.sw, q.sw, q.dx, q.dy, q.size, q.size);
-  const p = cxy(S.exp.pos), cs = CELL * q.k;
-  RT.plScr = { x: q.dx + (p.x - (q.s0.x - q.r)) * cs + cs / 2, y: q.dy + (p.y - (q.s0.y - q.r)) * cs + cs / 2 };
-  // the strip: the way home and the count (tier 1), and the inset
-  const ix = SCR_W - INSET.w - 12, iy = VIEW_Y + VIEW_H - INSET.h - 8;
-  if (q.k === 3) { const ty = q.dy + q.size + 12;
-    blit(ICON.flag(), 12, ty - 2); text(canSend() ? 'Send home here' : sendHint(), 32, ty, C.bone);
-    text(clipText(surveyedLine(), ix - 24, 2), 12, ty + 28, C.mist); }
-  drawInset(ix, iy, t);
+  const signs = new Map(mapSigns().map(e => [e.c, e.list]));
+  for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
+    const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
+    if (X < 0 || Y < 0 || X >= MW || Y >= MH) { R(x, y, q.cs, q.cs, C.void); continue; }
+    const c = Y * MW + X;
+    if (!S.revealed[c]) {   // fog: the map's fog texture at 1×, tiled
+      for (let yy = 0; yy < q.cs; yy += CELL) for (let xx = 0; xx < q.cs; xx += CELL) { const w = Math.min(CELL, q.cs - xx), h = Math.min(CELL, q.cs - yy); g.drawImage(fogCv, X * CELL, Y * CELL, w, h, x + xx, y + yy, w, h); }
+      continue; }
+    const rm = !S.visited[c] ? 4 : (ex.storm && stormCovers(X)) ? 1 : 0;
+    g.drawImage(landPatch(c, q.cs, rm, 0), x, y);
+    if (S.visited[c] && passable(c)) {   // quarters: unsurveyed under the dither, 75% lighter, a dotted grid between them
+      const m = S.svy[c] || 0, mf = svyFull(c), h = q.cs / 2;
+      for (let k = 0; k < 4; k++) if (!((mf >> k) & 1)) ditherFill(x + (k & 1) * h, y + (k >> 1) * h, h, h, 'night', (m >> k) & 1 ? 2 : 7);
+      for (let k = 0; k < q.cs; k += 3) { R(x + h, y + k, 1, 1, C.ink); R(x + k, y + h, 1, 1, C.ink); } }
+    if (ex.mstrike && ex.mstrike.c === c) { ditherFill(x, y, q.cs, q.cs, 'yellow', 6); blit(q.big ? up2('bolt', ICON.bolt()) : ICON.bolt(), x + q.cs / 2 - (q.big ? 12 : 6), y + q.cs / 2 - (q.big ? 16 : 8)); }
+    if (!explored(c) && !gatedCell(c) && ex.reach.includes(c) && blink) for (let k = 2; k < q.cs - 2; k += 3) { R(x + k, y + 2, 1, 1, C.fog); R(x + k, y + q.cs - 3, 1, 1, C.fog); R(x + 2, y + k, 1, 1, C.fog); R(x + q.cs - 3, y + k, 1, 1, C.fog); }
+    // signs in corner slots: the start flag first, then the cell's signs in their usual order
+    const list = (c === ex.start ? [{ kind: 'flag' }] : []).concat((signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind)));
+    list.slice(0, 4).forEach((sg, n) => { const a = signSprite(sg.kind, sg, fr, q.big); if (!a) return; const pad = 3;
+      const sx = n & 1 ? x + q.cs - pad - a.w : x + pad, sy = n & 2 ? y + q.cs - pad - a.h : y + pad; blit(a, sx, sy, sg.rm || 0); });
+  }
+  // the storm's heading at the band's leading edge, if it is in the reach
+  if (ex.storm) { const lead = ex.storm.dir > 0 ? ex.storm.x + ex.storm.w : ex.storm.x, lx = q.dx + (lead - (q.s0.x - q.r)) * q.cs; if (lx > q.dx && lx < q.dx + q.size) blit(ICON.arrow(ex.storm.dir), Math.round(lx) - 6, q.dy + q.size / 2 - 6); }
+  // the pawn at 2× (1× at tier 2), and the frame
+  const p = cxy(ex.pos), px = q.dx + (p.x - (q.s0.x - q.r)) * q.cs + q.cs / 2, py = q.dy + (p.y - (q.s0.y - q.r)) * q.cs + q.cs / 2;
+  const pawn = q.big ? up2('pawn' + (ex.face || 'down'), ICON.pawn(ex.face || 'down')) : ICON.pawn(ex.face || 'down');
+  blit(pawn, Math.round(px - pawn.w / 2), Math.round(py - pawn.h / 2)); RT.plScr = { x: px, y: py };
+  for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
+  // the band below: plain 2× text on the left, the inset on the right, nothing on top of each other
+  const by = q.dy + q.size + 8, u = q.big ? 6 : 4, iw = MW * u, ih = MH * u, ix = SCR_W - iw - 10, iy = by + 3;
+  const tw = ix - 22;
+  if (FX.msg) {   // a message takes the band's text space for one action, so nothing covers the reach or the inset
+    const lines = wrapText(FX.msg, tw - 16, 2).slice(0, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20)), h = lines.length * 20 + 12;
+    panel(8, by, tw + 4, h, C.ink, C.amber); lines.forEach((l, i) => text(l, 16, by + 6 + i * 20, C.bone)); RT.msgInBand = true; }
+  else { blit(ICON.flag(), 12, by + 2); text(clipText(canSend() ? 'Send home here' : sendHint(), tw - 20, 2), 30, by + 4, C.bone);
+    text(clipText(surveyedLine(), tw, 2), 12, by + 28, C.mist); }
+  drawInset(ix, iy, t, u);
 }
-function drawInset(x, y, t) {
-  const ex = S.exp; ensureMap();
-  panel(x - 3, y - 3, INSET.w + 6, INSET.h + 6, C.ink, C.slate);
-  g.drawImage(mapCvFade, 0, 0, MW * CELL, MH * CELL, x, y, INSET.w, INSET.h);
-  for (let c = 0; c < MW * MH; c++) { const cx = x + (c % MW) * 6, cy = y + ((c / MW) | 0) * 6;
-    if (!S.revealed[c]) R(cx, cy, 6, 6, C.night);
-    else if (S.visited[c]) g.drawImage(mapCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, 6, 6); }
-  if (ex.storm) { const a = Math.round(x + ex.storm.x * 6), b = Math.round(x + (ex.storm.x + ex.storm.w) * 6);
-    for (const sx of [a, b]) if (sx > x && sx < x + INSET.w) for (let yy = y; yy < y + INSET.h; yy += 3) R(sx, yy, 1, 2, C.mist); }
-  for (const pin of S.pins) R(x + (pin.c % MW) * 6 + 2, y + ((pin.c / MW) | 0) * 6 + 2, 2, 2, C.orange);
-  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * 6 + 1, y + ((c / MW) | 0) * 6 + 1, 4, 4, fs(String(c), f.id).lit ? C.amber : C.bark); }
-  for (const k in (S.skulls || {})) R(x + (k % MW) * 6 + 1, y + ((k / MW) | 0) * 6 + 1, 4, 4, C.bone);
-  const s0 = cxy(ex.start), r = ex.range, rx0 = x + Math.max(0, s0.x - r) * 6, ry0 = y + Math.max(0, s0.y - r) * 6, rx1 = x + Math.min(MW, s0.x + r + 1) * 6, ry1 = y + Math.min(MH, s0.y + r + 1) * 6;
+function drawInset(x, y, t, u) {
+  const ex = S.exp; u = u || 6; ensureMap(); const W = MW * u, H = MH * u, d = Math.max(2, u - 2), o = Math.floor((u - d) / 2);
+  panel(x - 3, y - 3, W + 6, H + 6, C.ink, C.slate);
+  g.drawImage(mapCvFade, 0, 0, MW * CELL, MH * CELL, x, y, W, H);
+  for (let c = 0; c < MW * MH; c++) { const cx = x + (c % MW) * u, cy = y + ((c / MW) | 0) * u;
+    if (!S.revealed[c]) R(cx, cy, u, u, C.night);
+    else if (S.visited[c]) g.drawImage(mapCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, u, u); }
+  if (ex.storm) { const a = Math.round(x + ex.storm.x * u), b = Math.round(x + (ex.storm.x + ex.storm.w) * u);
+    for (const sx of [a, b]) if (sx > x && sx < x + W) for (let yy = y; yy < y + H; yy += 3) R(sx, yy, 1, 2, C.mist); }
+  for (const pin of S.pins) R(x + (pin.c % MW) * u + o, y + ((pin.c / MW) | 0) * u + o, 2, 2, C.orange);
+  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, fs(String(c), f.id).lit ? C.amber : C.bark); }
+  for (const k in (S.skulls || {})) R(x + (k % MW) * u + o, y + ((k / MW) | 0) * u + o, d, d, C.bone);
+  const s0 = cxy(ex.start), r = ex.range, rx0 = x + Math.max(0, s0.x - r) * u, ry0 = y + Math.max(0, s0.y - r) * u, rx1 = x + Math.min(MW, s0.x + r + 1) * u, ry1 = y + Math.min(MH, s0.y + r + 1) * u;
   R(rx0, ry0, rx1 - rx0, 1, C.amber); R(rx0, ry1 - 1, rx1 - rx0, 1, C.amber); R(rx0, ry0, 1, ry1 - ry0, C.amber); R(rx1 - 1, ry0, 1, ry1 - ry0, C.amber);
-  if (!motion() || Math.floor(t * 2) % 2 === 0) { const pp = cxy(ex.pos); R(x + pp.x * 6 + 1, y + pp.y * 6 + 1, 4, 4, C.bone); }
+  if (!motion() || Math.floor(t * 2) % 2 === 0) { const pp = cxy(ex.pos); R(x + pp.x * u + o, y + pp.y * u + o, d, d, C.bone); }
 }
 function drawMap(mode, t) {
   ensureMap(); const ex = S.exp, fr = motion() ? Math.floor(t * 2) % 2 : 0;
@@ -3421,7 +3480,7 @@ function drawSwap() {
   text(clipText('leave ' + podName(sw.held[sw.sel], true) + ' here, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
 }
 function drawMessage() {
-  if (!FX.msg || (S.phase === 'patch' && S.ui.swap)) return;   // the swap chooser has the space
+  if (!FX.msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return;   // the reach view shows it in its band   // the swap chooser has the space
   const lines = wrapText(FX.msg, 400, 2).slice(0, 3), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
   // the box sits above the bottom line, or at the top of the view when the player stands where it would cover them
   const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = pl && pl.y + 20 > low ? VIEW_Y + 8 : low;
@@ -3843,7 +3902,7 @@ function lineFor() {
   return L1('', '', '');
 }
 function render(t) {
-  g.setTransform(1, 0, 0, 1, 0, 0); RT.plScr = null;
+  g.setTransform(1, 0, 0, 1, 0, 0); RT.plScr = null; RT.msgInBand = false;
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
