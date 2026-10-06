@@ -5,6 +5,7 @@ has one home; the documents link to each other instead of repeating.
 
 | Document | Covers |
 | --- | --- |
+| [Play manual](play-manual.md) | The rules of the current exploration build, written for players |
 | [The game](game.md) | What the player does, the core loop, design principles and every mechanic's current status |
 | [World and exploration](world-and-exploration.md) | The open map: requirements, constraints and the design work still to do |
 | [Creatures and genomics](creatures-and-genomics.md) | Species, genomes, inheritance, research, creating a mibi, breeding |
