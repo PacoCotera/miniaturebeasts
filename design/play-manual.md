@@ -40,7 +40,7 @@ The bottom line always has three parts:
 
 ## 3. The map
 
-During an expedition the map shows just your **reach**, large: the 5×5 cells your Probe can get to (9×9 at tier 2, a bit smaller). Under it are the way home ("Start · about 2 cells"), how much of the reach you have explored, and a small picture of the whole world with your reach marked in amber and your Probe blinking. To see everything at once, choose **Full map** in the menu (← closes it). When you pick a start, you see the whole map.
+During an expedition the map shows just your **reach**, large: the 5×5 cells your Probe can get to (9×9 at tier 2, a bit smaller). Under it are the way home ("Start · about 2 cells"), how much of the reach you have explored, and a small picture of the whole world with your reach marked in amber and your Probe blinking. To see everything at once, choose **Full map** in the menu; you can keep playing on it, and **Reach view** in the menu switches back. The game remembers your choice. When you pick a start, you see the whole map.
 
 The world map is a grid of cells. Each cell is a place you can go down into. The line on the map names your cell, how much of it is surveyed, and the cell you face: "meadow · half surveyed · Ahead: wood".
 

@@ -212,7 +212,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
     <details id="whatTry">
       <summary>What to try</summary>
       <ol>
-        <li>On an expedition the map shows your reach large, with the whole world small in the corner; "Full map" in the menu shows it all.</li>
+        <li>On an expedition the map shows your reach large, with the whole world small in the corner; "Full map" in the menu switches to the whole map (and "Reach view" back).</li>
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
         <li>Go down into a place and Call in each quarter. Watch the overview: its quarters lose their dots as you survey them.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
@@ -2920,7 +2920,7 @@ function reachGeom() {
   return { r, n, k, s0, size, dx, dy, sx: MAP_X + (s0.x - r) * CELL, sy: MAP_Y + (s0.y - r) * CELL, sw: n * CELL };
 }
 function drawReachView(t) {
-  if (S.exp.beaconView) { drawMap('map', t); return; }   // a beacon's sweep shows the land around, beyond the reach
+  if (S.exp.beaconView || S.ui.mapFull) { drawMap('map', t); return; }   // the whole map, when chosen in the menu (it stays chosen)   // a beacon's sweep shows the land around, beyond the reach
   drawMap('map', t);
   const q = reachGeom();
   if (!reachCv || reachCv.width !== q.sw) { reachCv = document.createElement('canvas'); reachCv.width = reachCv.height = q.sw; }
@@ -3478,7 +3478,7 @@ function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'Send home' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }].concat(base);
-  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }, { id: 'fullmap', label: 'Full map' }].concat(base);
+  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }, { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
   if ((from === 'station' || from === 'active') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
 }
@@ -3835,7 +3835,6 @@ function lineFor() {
       if (S.exp) return L1('Stays home', w ? w.name + ' is with you till home' : '', 'Mibis', true);
       return L1('Take ' + m.name, ctx, 'Mibis'); }
     case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
-    case 'fullmap': return L1('', 'the whole map', 'close');
     case 'station': { const pages = stationPages(), page = pages[S.ui.stPage], last = S.ui.stPage >= pages.length - 1;
       if (page === 'upgrade' && !S.report.upgraded) return L1(S.ui.upArm ? 'Confirm: upgrade' : 'Upgrade the Probe', PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 'not now');
       if (!last) return L1(pages[S.ui.stPage + 1] === 'hatch' ? 'Hatch the pod' : 'Continue', '', 'menu');
@@ -3849,7 +3848,6 @@ function render(t) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
     case 'map': drawReachView(t); drawHUD(); break;
-    case 'fullmap': drawMap('map', t); drawHUD(); break;
     case 'patch': drawPatch(t); drawHUD(); drawSwap(); break;
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
@@ -3943,7 +3941,7 @@ function act(k, mode) {
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
         else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('Send home works from the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; } }
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
-        else if (id === 'fullmap') { S.phase = 'fullmap'; transition(); }
+        else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); }
           else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
         else { S.phase = id; S.ui.nw = 0; S.ui.rSel = 0; S.ui.rFrom = 'menu'; } }
@@ -3978,7 +3976,6 @@ function act(k, mode) {
         else if (S.exp) { const w = withMibi(); fxMsg(w ? w.name + ' is with you until you’re home' : 'Partners are chosen before you set out'); FX.bumpAt = NOW; }
         else takeMibi(m); }
       break; }
-    case 'fullmap': if (k === 'back') { S.phase = 'map'; transition(); } break;
     case 'newworld':
       if (k === 'up' || k === 'down') S.ui.nw = k === 'down' ? 1 : 0;
       else if (k === 'back') S.phase = 'menu';
@@ -4156,10 +4153,8 @@ copyBtn.addEventListener('click', () => {
 
 // ===================== 18. Boot =====================
 if (!load()) newWorld(urlSeed());
-// The side panel's two sections start collapsed; each one's open state is remembered per browser.
-for (const id of ['howTo', 'whatTry']) { const d = document.getElementById(id), k = 'mb-panel-' + id;
-  try { if (localStorage.getItem(k) === '1') d.open = true; } catch (e) { }
-  d.addEventListener('toggle', () => { try { localStorage.setItem(k, d.open ? '1' : '0'); } catch (e) { } }); }
+// The side panel's two sections start collapsed on every load.
+for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
 { const btn = document.getElementById('resetGame'), ask = document.getElementById('resetAsk'), yes = document.getElementById('resetYes'), no = document.getElementById('resetNo');
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
