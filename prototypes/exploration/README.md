@@ -35,7 +35,7 @@ Controls: arrows/WASD or the pad (tap = creep one step, hold = walk); Enter/Spac
 - **Start signs vary.** Each start glint shows a sign it really has (slow beat, tracks or rings), choosing the one the other glints show least. Nothing is invented: a glint with only tracks still shows tracks.
 - **World-turn storm line.** "A storm charged stones…" is said once. If the next turn's storm charged stones in the same place it is left out; if elsewhere it reads "The storm reached stones near the cliff."
 - **Hopper partner is visible.** The first time a wary creature stays put because of a calming partner the line reads "The hopper would have noticed you. Pip keeps it calm"; later ones use the shorter "Pip keeps the hopper calm". A small teal wave bubble shows over wary creatures the partner is calming. The numeric effect is unchanged.
-- **Softer cave light.** Where light levels meet, the ordered 4×4 Bayer pattern (fixed to the world, so it doesn't swim when the view scrolls) chooses per pixel between the two levels, through the same palette lookup tables. Light falls off smoothly over about one tile instead of per tile. No blending, no new colours.
+- **Softer cave light.** Light levels are still per tile, but a tile that borders a darker level uses a pre-dithered edge variant, autotiled like shores: 4 sides and 4 corners, with the ordered 4×4 Bayer pattern baked in through the same palette lookup tables. The fade runs about half a tile in from the border. Variants are built on first use and cached, so a tile costs one lookup and one blit. No blending, no new colours.
 - Save format v4; v1 to v3 saves are discarded.
 
 ## Screen and budget assumptions (as if targeting the ESP32-S3 Companion)

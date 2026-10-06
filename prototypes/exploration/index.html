@@ -1845,9 +1845,10 @@ function tileKeys(lay) {
   }
   return (lay.tk = tk);
 }
+function tileKey(lay, i, fr) { const k = tileKeys(lay)[i]; return 't' + k.t + '.' + lay.base + '.' + k.v + '.' + k.m + '.' + (k.anim ? fr : 0); }
 function tilePB(lay, i, fr) {
   const k = tileKeys(lay)[i], f = k.anim ? fr : 0;
-  return art('t' + k.t + '.' + lay.base + '.' + k.v + '.' + k.m + '.' + f, () => buildTile(k.t, lay.base, k.v, k.m, f));
+  return art(tileKey(lay, i, fr), () => buildTile(k.t, lay.base, k.v, k.m, f));
 }
 function tileCanvas(lay, i, light, fr) { return tilePB(lay, i, fr).canvas(light); }
 
@@ -2113,35 +2114,30 @@ function caveLight(lay, live, P) {
   for (const c of live.cr) if (c.sp === 1 && !c.hide) src.push({ x: c.x, y: c.y, a: 2.5, b: 4 });
   for (const f of lay.feats) { if (f.kind === 'k' && stoneCharge(lay.key, f) > 0) src.push({ x: f.x, y: f.y, a: 2, b: 3.5 });
     if (f.kind === 'x') src.push({ x: f.x, y: f.y, a: 3, b: 4.5 }); if (f.kind === 'm') src.push({ x: f.x, y: f.y, a: 1.2, b: 2.4 }); }
-  // Darkness as a smooth value 0 (lit) to 2 (dark): each source ramps over one tile around its two radii.
-  // lightAt(x, y) is that value rounded to a level for whole sprites; lightAt.v takes fractional tile coordinates.
-  const f = (s, d) => Math.min(1, Math.max(0, d - (s.a - .5))) + Math.min(1, Math.max(0, d - (s.b - .5)));
-  const v = (x, y) => { let lv = 2; for (const s of src) { const q = f(s, Math.hypot(x - s.x, y - s.y)); if (q < lv) lv = q; } return lv; };
-  const lightAt = (x, y) => Math.ceil(v(x, y) - .5);
-  // Cheap bounds for a whole tile (centre distance +/- its half diagonal): 0, 1 or 2 when the tile is flat, else -1 (an edge).
-  lightAt.cls = (tx, ty) => { let lo = 2, hi = 2;
-    for (const s of src) { const d = Math.hypot(tx - s.x, ty - s.y); lo = Math.min(lo, f(s, d - .72)); hi = Math.min(hi, f(s, d + .72)); }
-    return hi <= 0 ? 0 : lo >= 2 ? 2 : lo >= 1 && hi <= 1 ? 1 : -1; };
-  lightAt.v = v; lightAt.sig = src.map(s => s.x + ',' + s.y + ',' + s.a + ',' + s.b).join(';'); return lightAt;
+  return (x, y) => { let lv = 2; for (const s of src) { const d = Math.hypot(x - s.x, y - s.y); if (d <= s.a) return 0; if (d <= s.b) lv = 1; } return lv; };
 }
-// A tile on the edge of the light: the ordered 4x4 Bayer pattern (anchored to the world, so it does not
-// swim when the view scrolls) picks, per pixel, between the two neighbouring light levels, through the same LUTs.
-// Results are cached per tile until the lights, the animation frame or the patch change.
-const EDGE = { sig: '', tiles: new Map(), pool: [] };   // pool: canvases reused when the lights change
-function ditheredTile(pb, tx, ty, vf) {
-  const L = []; for (let j = 0; j <= 4; j++) for (let i = 0; i <= 4; i++) L.push(vf(tx + i / 4 - .5, ty + j / 4 - .5));
-  let lo = 9, hi = -9; for (const q of L) { if (q < lo) lo = q; if (q > hi) hi = q; }
-  if (hi - lo < .001 && Math.abs(lo - Math.round(lo)) < .001) return Math.round(lo);   // flat after all: a plain tile level
-  let cv = EDGE.pool.pop(); if (!cv) { cv = document.createElement('canvas'); cv.width = cv.height = 32; cv.id32 = cv.getContext('2d').createImageData(32, 32); cv.u32 = new Uint32Array(cv.id32.data.buffer); }
-  const cg = cv.getContext('2d'), id = cv.id32, u = cv.u32, p = pb.p, t0 = (ty * 32) & 3, x0 = (tx * 32) & 3;
-  if (!EDGE.pack) EDGE.pack = [0, 1, 2].map(l => RGB.map((_, c) => { const q = RGB[REMAP[l] ? REMAP[l][c] : c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }));
-  const pk = EDGE.pack, th = BAYER.map(q => (q + .5) / 16);
-  for (let y = 0; y < 32; y++) { const fy = y / 8, j = Math.min(3, Math.floor(fy)), wy = fy - j, bi = ((t0 + y) & 3) * 4;
-    for (let i = 0; i < 4; i++) { // one lattice cell: 8 pixels across, interpolated down the left and right edges first
-      const l0 = L[j * 5 + i] * (1 - wy) + L[(j + 1) * 5 + i] * wy, l1 = L[j * 5 + i + 1] * (1 - wy) + L[(j + 1) * 5 + i + 1] * wy;
-      for (let k = 0; k < 8; k++) { const x = i * 8 + k, o = y * 32 + x, c = p[o]; if (c < 0) { u[o] = 0; continue; }
-        const v = l0 + (l1 - l0) * (k / 8), lvl = Math.floor(v + th[bi + ((x0 + x) & 3)]); u[o] = pk[lvl > 2 ? 2 : lvl][c]; } } }
-  cg.putImageData(id, 0, 0); return cv;
+// Light edges are autotiled like shores: a tile that borders a darker light level gets a pre-dithered variant
+// (this level fading into the next one), chosen from the 4 sides and 4 corners where the neighbour is darker.
+// The 4x4 Bayer pattern is baked into the variant through the same LUTs; variants are built on first use and cached.
+const FADE_W = 16, EDGE_FADE = new Map(), EDGE_TILE = new Map();
+function edgeFade(mask) { // per pixel: how far (0..1) toward the darker level, strongest at the borders
+  let f = EDGE_FADE.get(mask); if (f) return f; f = new Float32Array(1024);
+  for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { let t = 0;
+    const sides = [[1, y + .5], [2, 32 - x - .5], [4, 32 - y - .5], [8, x + .5]];
+    for (const [bit, d] of sides) if (mask & bit) t = Math.max(t, 1 - d / FADE_W);
+    const corners = [[16, x + .5, y + .5], [32, 32 - x - .5, y + .5], [64, 32 - x - .5, 32 - y - .5], [128, x + .5, 32 - y - .5]];
+    for (const [bit, dx, dy] of corners) if (mask & bit) t = Math.max(t, 1 - Math.hypot(dx, dy) / FADE_W);
+    f[y * 32 + x] = t; }
+  EDGE_FADE.set(mask, f); return f;
+}
+function edgeTile(pbKey, pb, L, mask) {
+  const key = pbKey + '|' + L + '|' + mask; let cv = EDGE_TILE.get(key); if (cv) return cv;
+  cv = document.createElement('canvas'); cv.width = cv.height = 32;
+  const cg = cv.getContext('2d'), id = cg.createImageData(32, 32), u = new Uint32Array(id.data.buffer), f = edgeFade(mask);
+  const pk = lv => RGB.map((_, c) => { const q = RGB[REMAP[lv] ? REMAP[lv][c] : c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }), a = pk(L), b = pk(L + 1);
+  for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const o = y * 32 + x, c = pb.p[o]; if (c < 0) continue;
+    u[o] = (f[o] > (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16 ? b : a)[c]; }
+  cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
 }
 const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle' };
 function drawPatch(t) {
@@ -2157,7 +2153,6 @@ function drawPatch(t) {
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
     if (gap >= 0 && gap < 3) { darkW = Math.ceil((3 - gap) * 2.4) * TS; darkLeft = st.dir > 0; } }
   const lightAt = lay.cave ? caveLight(lay, live, P) : null;
-  if (lightAt) { const sg = P.key + '|' + fr + '|' + lightAt.sig; if (EDGE.sig !== sg) { EDGE.sig = sg; for (const c of EDGE.tiles.values()) if (typeof c !== 'number') EDGE.pool.push(c); EDGE.tiles.clear(); } }
   const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (overcast) return 1; if (fogged) return 3;
     if (darkW) { const cx = W(tx * TS + 16); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? 1 : 0; } return 0; };
   // (the approaching storm darkens whole tile columns on the side it comes from)
@@ -2165,12 +2160,14 @@ function drawPatch(t) {
   clipView();
   // tile map
   const tx0 = Math.floor(camX / TS), ty0 = Math.floor(camY / TS);
+  const lvGrid = new Map(), lvAt = (x, y) => { const k = (y + 2) * 64 + x + 2; let v = lvGrid.get(k); if (v === undefined) { v = lightAt(x, y); lvGrid.set(k, v); } return v; };
   for (let ty = ty0; ty <= ty0 + Math.ceil(VIEW_H / TS) + 1; ty++) for (let tx = tx0; tx <= tx0 + Math.ceil(SCR_W / TS) + 1; tx++) {
     if (tx < 0 || ty < 0 || tx >= PW || ty >= PH) { R(W(tx * TS), H(ty * TS), TS, TS, C.void); continue; }
-    if (lightAt) { const k = lightAt.cls(tx, ty), i = ty * PW + tx;
-      if (k < 0) { let cv = EDGE.tiles.get(i); if (cv === undefined) { cv = ditheredTile(tilePB(lay, i, fr), tx, ty, lightAt.v); EDGE.tiles.set(i, cv); }
-        if (typeof cv === 'number') g.drawImage(tileCanvas(lay, i, cv, fr), W(tx * TS), H(ty * TS)); else g.drawImage(cv, W(tx * TS), H(ty * TS)); }
-      else g.drawImage(tileCanvas(lay, i, k, fr), W(tx * TS), H(ty * TS));
+    if (lightAt) { const i = ty * PW + tx, L = lvAt(tx, ty);
+      let m = 0; if (L < 2) { const dk = (x, y) => lvAt(x, y) > L, u = dk(tx, ty - 1), r = dk(tx + 1, ty), d = dk(tx, ty + 1), l = dk(tx - 1, ty);
+        m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
+        if (!u && !l && dk(tx - 1, ty - 1)) m |= 16; if (!u && !r && dk(tx + 1, ty - 1)) m |= 32; if (!d && !r && dk(tx + 1, ty + 1)) m |= 64; if (!d && !l && dk(tx - 1, ty + 1)) m |= 128; }
+      g.drawImage(m ? edgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L, m) : tileCanvas(lay, i, L, fr), W(tx * TS), H(ty * TS));
       continue; }
     g.drawImage(tileCanvas(lay, ty * PW + tx, tileLight(tx, ty), fr), W(tx * TS), H(ty * TS));
   }
