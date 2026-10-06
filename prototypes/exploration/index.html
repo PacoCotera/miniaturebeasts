@@ -333,7 +333,7 @@ const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', c
 const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
 const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'needs a digger', water: 'fast water', deep: 'deep ?' };
-const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'Lit beacon · you lit it, it burns for good', skull: 'Skull · the Probe broke here · its pods lie in this place', depot: DEPOT_NAME[0].toUpperCase() + DEPOT_NAME.slice(1) + ' · light it once: send home, mend and shelter there',
+const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'Lit beacon · you lit it, it burns for good', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: DEPOT_NAME[0].toUpperCase() + DEPOT_NAME.slice(1) + ' · light it once: send home, mend and shelter there',
   pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow hole · a digging partner can open it', water: 'Fast water · needs a swimmer', deep: 'Deep ? · a tier 2 Probe can read it' };
 
 // ===================== 2. Seeded RNG and noise =====================
@@ -599,8 +599,8 @@ function nearestSend() { const ex = S.exp, p = cxy(ex.pos), d = c => { const q =
   let best = { c: ex.start, n: d(ex.start), name: 'Start' };
   for (const c of ex.reach) if (depotLit(c) && d(c) < best.n) best = { c, n: d(c), name: cap(DEPOT_NAME) };
   return best; }
-function sendHint() { const b = nearestSend(); return b.name + ' · ' + b.n + ' cell' + (b.n === 1 ? '' : 's'); }
-function headBack() { if (canSend()) return '← Send home'; const b = nearestSend(); return 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')'; }
+function sendHint() { const b = nearestSend(); return b.name + ' · about ' + b.n + ' cell' + (b.n === 1 ? '' : 's'); }
+function headBack() { if (canSend()) return '← Send home'; const b = nearestSend(); return 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (about ' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')'; }
 function genPatch(cell) {
   const seed = S.seed, R = makeRng(hash(seed, 'patch', cell)), ns = hash(seed, 'pn', cell);
   const land = G.land[cell], { x: cx, y: cy } = cxy(cell), isFord = land === L.WATER;
@@ -1311,7 +1311,7 @@ function placePartnerNear(key, P) {
 function enterPatch() {
   const ex = S.exp, key = String(ex.pos), lay = layout(key); ensureLive(key); S.visited[ex.pos] = 1; updateSurvey(ex.pos);
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos);
-  if (S.skulls && S.skulls[ex.pos]) { delete S.skulls[ex.pos]; logEv('Back where the Probe broke · skull cleared'); fxMsg('The pods you lost lie here', 3); }
+  clearSkull(key);
   const e = entryPoint(lay, key, ex.lastDir);
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
@@ -1321,8 +1321,10 @@ function enterPatch() {
   fxOnce('backplace', '← opens the menu · Leave is first', 2);
   save();
 }
+// The skull clears only when you go down into the place that holds the lost pods.
+function clearSkull(key) { if (!S.skulls) return; for (const c in S.skulls) { const k = S.skulls[c] === 1 ? String(c) : S.skulls[c]; if (k === key) { delete S.skulls[c]; logEv('Back where the Probe broke · skull cleared'); fxMsg('The pods you lost lie here', 3); } } }
 function enterCave() {
-  const ex = S.exp, key = 'c' + G.gate; ensureLive(key);
+  const ex = S.exp, key = 'c' + G.gate; ensureLive(key); clearSkull(key);
   ex.patch = { key, x: 14, y: 27, dir: 'up', noise: 'creep' };
   placePartnerNear(key, ex.patch); transition(); logEv('Went down the burrow'); save();
 }
@@ -2047,12 +2049,14 @@ function sendPreview() {
 }
 function dropPods(ex, rep) {
   const key = ex.patch ? ex.patch.key : String(ex.pos), lay = layout(key), cell = lay.cell, R = makeRng(hash(S.seed, 'drop', ex.n, ex.actions)), taken = new Set(S.pods.filter(p => p.k === key).map(p => p.y * PW + p.x));
-  for (const f of lay.feats) taken.add(f.y * PW + f.x);
+  for (const f of lay.feats) { const p = featPos(key, f); taken.add(p.y * PW + p.x); }   // moved slabs where they are now
+  const live = ex.live && ex.live[key]; if (live) { for (const c of live.cr) taken.add(c.y * PW + c.x); if (live.pt) taken.add(live.pt.y * PW + live.pt.x); }
+  if (ex.patch) taken.add(ex.patch.y * PW + ex.patch.x);
   const free = []; for (let i = 0; i < PW * PH; i++) if (lay.reach[i] && !taken.has(i)) free.push(i);
   rep.dropped = ex.cargo.pods.length; rep.at = cxy(cell);
-  for (const pod of ex.cargo.pods) { const i = free.splice(R.int(free.length), 1)[0]; if (i == null) break;
+  for (const pod of ex.cargo.pods) { const i = free.length ? free.splice(R.int(free.length), 1)[0] : lay.spawnPt.y * PW + lay.spawnPt.x;   // no free tile: the entry tile, stacked
     S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1 }); }
-  (S.skulls = S.skulls || {})[cell] = 1;
+  if (rep.dropped) (S.skulls = S.skulls || {})[cell] = key;   // which place holds the pods (the cave sits under the gate cell)
   logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
   ex.cargo.pods = [];
 }

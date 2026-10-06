@@ -194,7 +194,7 @@ You can carry up to 20 of each. Essence never turns into Energy.
 
 ## 8. Going home
 
-An expedition ends when you choose **Send home** or when the Shield breaks. **Send home works only on your start cell (the flag on the map) or on a lit outpost.** Anywhere else Send home is greyed in the menu and the line says how far the nearest one is ("Start · 2 cells"); "Hold full" and "Everything in reach is explored" say "head back to the start". Cargo shows a **preview** first: how much you explored, which pods the Station will identify or hatch, and what mending the Shield will cost.
+An expedition ends when you choose **Send home** or when the Shield breaks. **Send home works only on your start cell (the flag on the map) or on a lit outpost.** Anywhere else Send home is greyed in the menu and the line says how far the nearest one is ("Start · about 2 cells"); "Hold full" and "Everything in reach is explored" say "head back to the start". Cargo shows a **preview** first: how much you explored, which pods the Station will identify or hatch, and what mending the Shield will cost.
 1. **The Station mends the Shield** at 1 Energy for each missing bar, as many bars as your stored Energy covers. A broken Probe is mended for free. **Coming in the next build:** the Station always mends to at least two bars.
 2. **It identifies each pod** (your very first pod is free).
 3. **It hatches** one pod of a species you don't raise yet, if you can pay. A pod you can't afford waits at the Station and says what is missing ("costs 2 Energy + 4 Essence · short 2 Essence").
