@@ -4,70 +4,488 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Miniature Beasts</title>
-<meta name="description" content="A creature game, a genetics toy and a small family of handheld devices. In development.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600&display=swap">
+<meta name="description" content="A creature game played on its own little devices. Explore a fogged world with a pocket Companion, bring seed-pods home to a Station, and raise mibis whose genes really work. Open source, in development.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap">
 <style>
-  /* Layout: one column, creature first, then what it is, then the sandbox. */
   :root{
-    --bg:#f3efe6; --fg:#2b2a26; --muted:#6b6760; --line:#d9d3c6;
-    --accent:#e26a2c; --card:#fbf9f4;
+    --bg:#f3efe6; --bg2:#e9e3d5; --fg:#2b2a26; --muted:#66625a; --line:#d6cfbf; --card:#fbf9f4;
+    --accent:#e26a2c; --accent-ink:#b8501b; --sage:#4f6b55; --teal:#2f8a86; --bezel:#24232a;
+    --night:#24303a; --night-fg:#eef1ee; --night-muted:#b7c2c0;
     --display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
     --body:"Nunito","Segoe UI",system-ui,sans-serif;
+    color-scheme:light;
   }
-  @media (prefers-color-scheme:dark){ :root{ --bg:#1d1c1a; --fg:#ece7dc; --muted:#a8a296; --line:#3a3833; --card:#262521; color-scheme:dark } }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#1b1a18; --bg2:#23221f; --fg:#ece7dc; --muted:#aaa497; --line:#3a3833; --card:#272622;
+      --accent:#ee7a3c; --accent-ink:#f29a68; --sage:#8fb596; --teal:#5cc0ba; --bezel:#0f0f12;
+      --night:#141c22; color-scheme:dark }
+  }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.55;padding-block:32px;padding-inline:16px}
-  main{max-width:720px;margin:0 auto;display:grid;gap:36px}
-  h1,h2{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0}
-  h1{font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.05}
-  h2{font-size:1.35rem}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.55;font-size:1.0625rem;overflow-x:hidden}
+  img{max-width:100%;height:auto;display:block}
+  a{color:var(--accent-ink)}
+  a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+  h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.08;margin:0;text-wrap:balance}
+  h1{font-size:clamp(2.4rem,7.5vw,4.6rem);letter-spacing:-.01em}
+  h2{font-size:clamp(1.9rem,5vw,3rem)}
+  h3{font-size:1.3rem}
   p{margin:0;max-width:62ch}
-  .lead{font-size:1.15rem}
-  .pip{display:grid;gap:14px;justify-items:center;text-align:center}
-  .pip img{width:min(100%,560px);height:auto;border-radius:14px}
-  .pip small{color:var(--muted)}
-  section{display:grid;gap:12px}
-  .status{border-left:4px solid var(--accent);padding-left:14px;color:var(--muted)}
-  .sandbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:10px}
-  .sandbox a.play{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-family:var(--display);font-weight:600;padding:10px 18px;border-radius:999px}
-  .sandbox a.play:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
-  a{color:var(--accent)}
-  footer{color:var(--muted);font-size:.9rem;display:flex;flex-wrap:wrap;gap:8px 20px;border-top:1px solid var(--line);padding-top:18px}
-  ul{margin:0;padding-left:1.2em}
+  ul,ol{margin:0}
+  .wrap{max-width:1160px;margin:0 auto;padding-inline:16px}
+  section{padding-block:clamp(56px,9vw,104px)}
+  .kicker{font-family:var(--display);font-weight:600;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:12px}
+  .lead{font-size:clamp(1.1rem,2.2vw,1.3rem)}
+  .muted{color:var(--muted)}
+  .stack{display:grid;gap:16px;align-content:start}
+  .tag{display:inline-block;font-family:var(--display);font-weight:500;font-size:.78rem;letter-spacing:.04em;padding:2px 10px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap}
+  .tag.concept{color:var(--muted)}
+  .tag.play{color:var(--teal)}
+  .tag.designed{color:var(--sage)}
+  figure{margin:0;display:grid;gap:10px}
+  figcaption{font-size:.9rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+  .btn{display:inline-block;font-family:var(--display);font-weight:600;font-size:1.05rem;text-decoration:none;padding:12px 22px;border-radius:999px;border:2px solid var(--fg);color:var(--fg)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn:hover{transform:translateY(-1px)}
+  .bezel{background:var(--bezel);padding:10px;border-radius:18px}
+  .bezel img{border-radius:8px}
+
+  /* Header */
+  header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px}
+  .wordmark{font-family:var(--display);font-weight:600;font-size:1.15rem;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--fg);white-space:nowrap}
+  .wordmark span{color:var(--accent)}
+  header nav{display:flex;gap:4px 18px;align-items:center}
+  header nav a{color:var(--fg);text-decoration:none;font-weight:600;font-size:.95rem}
+  header nav a.nav-play{background:var(--fg);color:var(--bg);padding:6px 14px;border-radius:999px;font-family:var(--display)}
+  header nav .nav-sec{display:none}
+  @media (min-width:860px){ header nav .nav-sec{display:inline} }
+
+  /* Hero */
+  .hero{padding-top:clamp(32px,6vw,72px)}
+  .hero .wrap{display:grid;gap:32px}
+  .hero-copy{display:grid;gap:18px}
+  .hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+  .hero .status{font-size:.95rem;color:var(--muted)}
+  .hero-art img{border-radius:20px}
+  @media (max-width:959px){ .hero-art{order:-1} }
+  @media (min-width:960px){ .hero .wrap{grid-template-columns:5fr 6fr;align-items:center} }
+
+  /* Kit */
+  .kit{background:var(--bg2)}
+  .sec-head{display:grid;gap:14px;margin-bottom:clamp(28px,5vw,48px)}
+  @media (min-width:860px){ .sec-head{grid-template-columns:1fr 1fr;align-items:end;gap:40px} }
+  .devices{display:grid;gap:20px}
+  .device{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;display:grid;gap:14px;align-content:start}
+  .device .role{font-family:var(--display);font-weight:500;color:var(--muted)}
+  .device ul{padding-left:1.1em;display:grid;gap:4px}
+  .device.companion .bezel{max-width:300px;justify-self:center}
+  @media (min-width:860px){
+    .devices{grid-template-columns:5fr 8fr}
+    .device.caddy{grid-column:1/-1;grid-template-columns:1fr 1.6fr;align-items:center;gap:28px}
+  }
+  .buttons{display:flex;flex-wrap:wrap;gap:8px}
+  .key{display:inline-flex;align-items:center;gap:6px;font-size:.9rem;font-weight:700;padding:3px 10px 3px 4px;border-radius:999px;background:var(--bg2)}
+  .key i{font-style:normal;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;color:#fff;font-size:.8rem}
+  .same{margin-top:28px;font-family:var(--display);font-size:1.25rem;font-weight:500}
+
+  /* Expedition */
+  .exp{background:var(--night);color:var(--night-fg)}
+  .exp .kicker{color:#f2a172}
+  .exp .muted, .exp figcaption{color:var(--night-muted)}
+  .exp .tag.play{color:#6fd3cd} .exp .tag.designed{color:#a9cfae}
+  .exp a{color:#f2a172}
+  .exp-grid{display:grid;gap:36px}
+  .shots{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  .shots img{border-radius:14px}
+  .steps{list-style:none;padding:0;display:grid;gap:18px;counter-reset:s}
+  .steps li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start}
+  .steps li::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:600;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#f2a172;color:#24303a}
+  .steps b{font-family:var(--display);font-weight:600;font-size:1.1rem;display:block}
+  @media (min-width:960px){ .exp-grid{grid-template-columns:1fr 1fr;align-items:start;gap:56px} .shots{position:sticky;top:80px} }
+  .note{border-left:4px solid #6fd3cd;padding-left:14px}
+
+  /* Station */
+  .station-grid{display:grid;gap:28px}
+  @media (min-width:960px){ .station-grid{grid-template-columns:1fr 1fr;align-items:start} }
+  .flow{list-style:none;padding:0;display:grid;gap:14px}
+  .flow li{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+  .flow b{font-family:var(--display);font-weight:600}
+  .mats{display:grid;gap:12px;margin-top:8px}
+  @media (min-width:640px){ .mats{grid-template-columns:repeat(3,1fr)} }
+  .mat{border-radius:16px;padding:16px;border:2px solid var(--line);display:grid;gap:6px;align-content:start}
+  .mat h3{font-size:1.15rem;display:flex;gap:8px;align-items:center}
+  .mat h3::before{content:"";width:14px;height:14px;border-radius:4px;background:var(--c)}
+  .mat.energy{--c:#e8a92a} .mat.data{--c:#3f7fd6} .mat.essence{--c:#4fb062}
+  .mat p{font-size:.95rem}
+
+  /* Genetics */
+  .genes{background:var(--bg2)}
+  .cross{display:grid;gap:18px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(16px,3vw,28px)}
+  .parents,.kids{display:grid;gap:10px;align-items:end}
+  .parents{grid-template-columns:1fr auto 1fr}
+  .kids{grid-template-columns:repeat(3,1fr)}
+  .mibi{display:grid;gap:4px;justify-items:center;text-align:center}
+  .mibi img{width:100%;max-width:170px;border-radius:14px;background:#f3efe6}
+  .mibi code{font-family:var(--display);font-weight:600;font-size:1.2rem}
+  .mibi small{color:var(--muted);line-height:1.3}
+  .times{font-family:var(--display);font-size:1.6rem;color:var(--muted);align-self:center}
+  .arrow{text-align:center;color:var(--muted);font-weight:600}
+  .genes-grid{display:grid;gap:32px}
+  @media (min-width:960px){ .genes-grid{grid-template-columns:5fr 6fr;align-items:center;gap:56px} }
+  .rules{padding-left:1.1em;display:grid;gap:8px}
+
+  /* Life */
+  .life-cards{display:grid;gap:16px}
+  @media (min-width:760px){ .life-cards{grid-template-columns:repeat(3,1fr)} }
+  .life-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:10px;align-content:start}
+  .stages{list-style:none;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px}
+  .stages li{text-align:center;font-size:.85rem;font-weight:700;padding:8px 2px;border-radius:10px;background:var(--bg2)}
+  .stages li span{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+
+  /* Open */
+  .open{background:var(--sage);color:#fff}
+  @media (prefers-color-scheme:dark){ .open{background:#2c3d30} }
+  .open .kicker{color:#fde3c8}
+  .open a{color:#fff}
+  .open-grid{display:grid;gap:28px}
+  @media (min-width:900px){ .open-grid{grid-template-columns:1fr 1fr;gap:56px} }
+  .links{list-style:none;padding:0;display:grid;gap:10px}
+  .links a{display:block;padding:14px 16px;border:2px solid rgba(255,255,255,.55);border-radius:14px;text-decoration:none;font-weight:700}
+  .links a span{display:block;font-weight:400;opacity:.85;font-size:.95rem}
+  .links a:hover{background:rgba(255,255,255,.1)}
+  .licences{font-size:.95rem;opacity:.92}
+
+  /* Sandbox */
+  .sandbox{background:var(--accent);color:#fff;text-align:center}
+  .sandbox .wrap{display:grid;gap:18px;justify-items:center}
+  .sandbox p{max-width:56ch}
+  .sandbox a.play{display:inline-block;background:#fff;color:#8d3a10;text-decoration:none;font-family:var(--display);font-weight:600;font-size:1.15rem;padding:14px 26px;border-radius:999px}
+  .sandbox a.play:focus-visible{outline:3px solid #2b2a26;outline-offset:3px}
+  .sandbox .keys{font-size:.95rem;opacity:.95}
+  .sandbox small{opacity:.9}
+  @media (prefers-color-scheme:dark){ .sandbox{background:#9b4518} }
+
+  /* FAQ */
+  .faq-grid{display:grid;gap:24px}
+  @media (min-width:900px){ .faq-grid{grid-template-columns:2fr 3fr;gap:56px} }
+  details{border-bottom:1px solid var(--line);padding:16px 0}
+  details:first-of-type{border-top:1px solid var(--line)}
+  summary{font-family:var(--display);font-weight:600;font-size:1.2rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--accent);font-size:1.4rem;line-height:1}
+  details[open] summary::after{content:"–"}
+  details p{margin-top:10px;color:var(--muted)}
+
+  footer.foot{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);font-size:.92rem}
+  footer.foot .wrap{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between}
+  footer.foot a{color:var(--muted)}
 </style>
 </head>
 <body>
-<main>
-  <section class="pip">
-    <img src="pip.png" alt="Pip, a small rounded creature with a leaf crown, plain and with pale markings, as shown on the Companion and the Station screens." width="1225" height="1782">
-    <small>Pip, the first mibi, in the Miniature Lives look.</small>
+<header class="top">
+  <div class="wrap">
+    <a class="wordmark" href="#top">Miniature Beasts <span>✳</span></a>
+    <nav aria-label="Sections">
+      <a class="nav-sec" href="#kit">The kit</a>
+      <a class="nav-sec" href="#expedition">Expeditions</a>
+      <a class="nav-sec" href="#genetics">Genetics</a>
+      <a class="nav-sec" href="#open">Open source</a>
+      <a class="nav-play" href="#sandbox">Play</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 1. Hero -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero-copy">
+        <p class="kicker">A creature game you can hold</p>
+        <h1 id="hero-title">Go out with one device. Come home to another.</h1>
+        <p class="lead">Explore a fogged world on a pocket Companion, bring sealed seed-pods home to a Station, and find out what’s inside. Every creature you raise, a mibi, runs on genes that really work.</p>
+        <div class="ctas">
+          <a class="btn primary" href="sandbox/exploration/">Play the rough sandbox</a>
+          <a class="btn" href="#kit">Meet the kit</a>
+        </div>
+        <p class="status">In development, in the open, by Dirty Pawz Press in Mexico City. The exploration prototype runs in your browser today; the devices are still concept art.</p>
+      </div>
+      <figure class="hero-art">
+        <img src="assets/kit-family-concept.webp" width="1536" height="1024" fetchpriority="high"
+             alt="Concept render of the kit on a wooden table: a sage-green Station showing two mibis side by side, a cream Companion showing Pip in a forest, both docked in a Caddy with a small grey summary screen and a printer feeding out a paper card of Pip.">
+        <figcaption><span class="tag concept">Concept art</span> Station, Companion and Caddy. Shapes, buttons and screens will change.</figcaption>
+      </figure>
+    </div>
   </section>
 
-  <section>
-    <h1>Miniature Beasts</h1>
-    <p class="lead">A creature game, a genetics toy and a small family of handheld devices. You explore with a portable Companion, bring samples home to a Station, learn what their inherited traits can do, create a mibi and raise families within each species.</p>
-    <p class="status">In development. The open-map exploration, the creature roster and the physical kit are being designed in the open. Nothing here is finished.</p>
+  <!-- 2. The kit -->
+  <section class="kit" id="kit" aria-labelledby="kit-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Three devices, two screens</p>
+          <h2 id="kit-title">The game lives in the hardware.</h2>
+        </div>
+        <p class="lead">Not an app on a phone. A pocket device for going out, a home device for working things out, and a dock that keeps them together. Each part of the game has its own place, and its own buttons.</p>
+      </div>
+
+      <div class="devices">
+        <article class="device companion">
+          <div class="stack">
+            <h3>Companion</h3>
+            <p class="role">Pocket device · 450×600 colour screen</p>
+            <p>Take it on expeditions. In <strong>Probe</strong> mode you walk the world map and go down into living places. At home, the mibi riding with you lives on its screen.</p>
+            <div class="buttons" aria-label="The Companion’s four buttons">
+              <span class="key"><i style="background:#555">✣</i>Pad</span>
+              <span class="key"><i style="background:#e26a2c">✓</i>Confirm</span>
+              <span class="key"><i style="background:#77746c">←</i>Back</span>
+              <span class="key"><i style="background:#2f8a86">)))</i>Call</span>
+            </div>
+          </div>
+          <figure>
+            <div class="bezel"><img src="assets/companion-hibit.webp" width="450" height="600" loading="lazy"
+              alt="Companion screen study: Pip, a round dark mibi with a crown of three green leaves and orange eyes, drawn in crisp pixel art above the words Plain coat and a Spend time together button."></div>
+            <figcaption><span class="tag concept">Appearance study</span> HiBit art: detailed pixels, built to read on a small screen.</figcaption>
+          </figure>
+        </article>
+
+        <article class="device station">
+          <div class="stack">
+            <h3>Station</h3>
+            <p class="role">Home device · 1024×600 colour screen</p>
+            <p>Hold it with both thumbs or play it flat on the table. It opens your pods, runs research and incubation, and keeps your collection on an always-on screen, with your mibis living in a vivarium.</p>
+          </div>
+          <figure>
+            <div class="bezel"><img src="assets/station-rich.webp" width="1024" height="600" loading="lazy"
+              alt="Station screen study titled Known forms: Pip with a plain coat beside a hypothetical mibi of the same species with cream pale markings, both painted with soft light and detail."></div>
+            <figcaption><span class="tag concept">Appearance study</span> The same Pip in richer detail, beside a pale-marked version.</figcaption>
+          </figure>
+        </article>
+
+        <article class="device caddy">
+          <div class="stack">
+            <h3>Caddy</h3>
+            <p class="role">Dock · e-paper summary · printer</p>
+            <p>Set both handhelds down and they charge, ready for the next session. A quiet four-grey screen shows your world at a glance, and a small printer puts a mibi on paper.</p>
+          </div>
+          <figure>
+            <div class="bezel" style="background:#d9d9d6"><img src="assets/caddy-summary.webp" width="1600" height="479" loading="lazy"
+              alt="Caddy summary concept in shades of grey: Pip under Residents, a sealed sample capsule under Sample record, and counts for Data, Energy and Essence."></div>
+            <figcaption><span class="tag concept">Concept art</span> The Caddy’s summary screen.</figcaption>
+          </figure>
+        </article>
+      </div>
+      <p class="same">One mibi, one identity: the same individual on the Companion, the Station and the paper card.</p>
+    </div>
   </section>
 
-  <section class="sandbox">
-    <h2>Sandbox</h2>
-    <p>Rough playables, straight from the repository. Tokens instead of art; rules first.</p>
-    <p><a class="play" href="sandbox/exploration/">Play the exploration field test</a></p>
-    <p><small id="build">build pending</small></p>
+  <!-- 3. An expedition -->
+  <section class="exp" id="expedition" aria-labelledby="exp-title">
+    <div class="wrap exp-grid">
+      <div class="stack">
+        <p class="kicker">An expedition</p>
+        <h2 id="exp-title">Walk into the fog. Bring something home.</h2>
+        <p class="lead">This part already plays. These screens come from the rough playable in the sandbox: real rules, tokens for creatures, no finished art.</p>
+        <ol class="steps">
+          <li><div><b>Pick a start at the edge of the fog.</b>Any cell you can see is a starting point. Each glint hints at what’s near: tracks, a slow beat underground, or supplies.</div></li>
+          <li><div><b>Walk the map.</b>The fog lifts one ring around every step. The map remembers what you’ve seen, and the bottom line names what’s ahead.</div></li>
+          <li><div><b>Go down into a place.</b>Every cell is a small living patch: creatures, bushes, stones and holes that react to you. Shake a bush, put the fruit down, back off and watch who comes to eat.</div></li>
+          <li><div><b>Gamble on the storm.</b>Lightning charges stones with Energy. Stay out in the rain to collect it, and risk a strike that breaks your Probe. Shelter under a tree, or push your luck.</div></li>
+          <li><div><b>Pick up seed-pods.</b>A pod is sealed. If you’ve met its species it says which; otherwise it says “unknown species”. What’s inside waits for the Station.</div></li>
+          <li><div><b>Send the cargo home.</b>Pods go to the Station. Then the world turns: creatures roam and breed, the storm leaves charged stones, new finds appear. Nothing simply refills.</div></li>
+        </ol>
+        <p class="note">No timers. The world moves only when you move or act, so you can stop and think. <span class="muted">Designed for the next build: a Call button that pulses, lures and pins; a Shield the storm wears down; Probe tiers that reach further into the fog.</span></p>
+      </div>
+      <div class="shots">
+        <figure>
+          <img src="assets/prototype-map.webp" width="1044" height="1664" loading="lazy"
+            alt="Screenshot of the Companion field test showing the world map: most of it covered in purple fog, a few revealed cells of wood, meadow and a pond near the top, small sign icons, and a dotted storm band crossing the map.">
+          <figcaption><span class="tag play">Rough playable</span> The fogged world map.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/prototype-storm.webp" width="1044" height="1664" loading="lazy"
+            alt="Screenshot of the Companion field test inside a wood during a storm: rain streaks over dark grass, round trees, the orange player token sheltering by a tree, and a glowing yellow tile warning where lightning will strike next.">
+          <figcaption><span class="tag play">Rough playable</span> In a wood as the storm hits. The yellow tile is the next strike.</figcaption>
+        </figure>
+      </div>
+    </div>
   </section>
 
-  <section>
-    <h2>How it is made</h2>
-    <ul>
-      <li><a href="https://github.com/PacoCotera/miniaturebeasts">Source, design and plan on GitHub</a>. Software is AGPL-3.0, hardware CERN-OHL-S, documentation and art CC BY-SA.</li>
-      <li>The <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/game.md">game design</a> says what is decided and what is still open.</li>
-      <li>The <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/ROADMAP.md">roadmap</a> says what comes next.</li>
-    </ul>
+  <!-- 4. The Station -->
+  <section id="station" aria-labelledby="station-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Back at the Station</p>
+          <h2 id="station-title">Open the pod. Decide what it becomes.</h2>
+        </div>
+        <p class="lead">One pod makes one mibi. You can hatch it as it is, or study it first and choose from what it already carries. <span class="tag designed">Designed, not built yet</span></p>
+      </div>
+      <div class="station-grid">
+        <ol class="flow">
+          <li><b>Identify.</b> Find out the pod’s species. That’s enough to hatch it unchanged; you never have to decode it all.</li>
+          <li><b>Research, if you want.</b> Each study shows something this pod carries, like a hidden marking. What you learn stays learned.</li>
+          <li><b>Create.</b> Keep the pod as it is, or set a trait you’ve researched, using only what this pod really carries.</li>
+          <li><b>Incubate and open.</b> The mibi you meet is the one you made. No rerolls.</li>
+        </ol>
+        <figure>
+          <div class="bezel"><img src="assets/station-research-study.webp" width="1024" height="600" loading="lazy"
+            alt="Early Station research layout: a sample capsule with the result Pp, This sample carries pale, and a panel comparing Pp, which carries pale, with pp, which shows pale."></div>
+          <figcaption><span class="tag concept">Early layout study</span> A research result from the first prototype. The look is being redesigned.</figcaption>
+        </figure>
+      </div>
+
+      <h3 style="margin-top:44px">What the field gives the lab</h3>
+      <p class="muted" style="margin-top:8px">Three supplies, each from something you do on an expedition, each with a job at the Station.</p>
+      <div class="mats">
+        <div class="mat energy"><h3>Energy</h3><p>Charge drawn from storm-struck stones. It runs every machine: the Probe in the field, identifying and incubating at home.</p></div>
+        <div class="mat data"><h3>Data</h3><p>Creature moments you cause: one eats your fruit, shakes dry or settles because of you. The Station reads genomes against them.</p></div>
+        <div class="mat essence"><h3>Essence</h3><p>Living matter: dew, pressed fruit, a shed tuft. It’s what a new body is grown from, and bigger bodies need more.</p></div>
+      </div>
+    </div>
   </section>
 
-  <footer><span>A Dirty Pawz Press project</span><span>Mexico City</span></footer>
+  <!-- 5. Genetics -->
+  <section class="genes" id="genetics" aria-labelledby="genes-title">
+    <div class="wrap genes-grid">
+      <div class="stack">
+        <p class="kicker">Real genetics, under the fur</p>
+        <h2 id="genes-title">Two plain parents. One surprise.</h2>
+        <p class="lead">A mibi’s looks and abilities come from its genome, and the genes follow real inheritance. You learn it by looking and breeding, not by reading.</p>
+        <p>Pip’s pale markings are recessive. A plain Pip can carry pale without showing it. Breed two carriers and about one child in four comes out marked.</p>
+        <ul class="rules">
+          <li>A pod can only become what it carries. Knowing about pale from another pod doesn’t put it in this one.</li>
+          <li>Breeding happens within a species, and every child is a new individual with two real parents.</li>
+          <li>Genomes start small and grow more complex as you find rarer pods.</li>
+          <li>For the curious: the genome is the seed for a mibi’s body, markings, movement and behaviour.</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="cross">
+          <div class="parents">
+            <div class="mibi"><img src="assets/pip-plain.webp" width="300" height="310" loading="lazy" alt="Pip with a plain dark coat."><code>Pp</code><small>Plain, carries pale</small></div>
+            <span class="times" aria-hidden="true">×</span>
+            <div class="mibi"><img src="assets/pip-plain.webp" width="300" height="310" loading="lazy" alt="A second plain Pip."><code>Pp</code><small>Plain, carries pale</small></div>
+          </div>
+          <p class="arrow">Their children can be</p>
+          <div class="kids">
+            <div class="mibi"><img src="assets/pip-plain.webp" width="300" height="310" loading="lazy" alt="Plain child."><code>PP</code><small>Plain<br>about 1 in 4</small></div>
+            <div class="mibi"><img src="assets/pip-plain.webp" width="300" height="310" loading="lazy" alt="Plain child that carries pale."><code>Pp</code><small>Plain, carries pale<br>about 2 in 4</small></div>
+            <div class="mibi"><img src="assets/pip-pale.webp" width="300" height="310" loading="lazy" alt="Child with cream pale markings on its back and sides."><code>pp</code><small>Pale markings<br>about 1 in 4</small></div>
+          </div>
+        </div>
+        <figcaption><span class="tag concept">Concept art</span> Pip, the first mibi, in the accepted Miniature Lives look. The letters are for you; in the game the creature shows it.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 6. Life with mibis -->
+  <section id="life" aria-labelledby="life-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">The long game</p>
+          <h2 id="life-title">Raise partners. Grow families.</h2>
+        </div>
+        <p class="lead">Keep a mibi, or bond with it and bring it along. Pretty, rare, capable or just loved: you choose what you’re after.</p>
+      </div>
+      <div class="life-cards">
+        <article class="life-card">
+          <h3>Partners open the map</h3>
+          <p>A bonded mibi helps with its own abilities. In the sandbox a burrower digs open a narrow burrow, a hopper keeps wary creatures calm, a puffcap sniffs out buried pods. You can always explore alone; partners take you further.</p>
+          <p><span class="tag play">In the rough playable</span></p>
+        </article>
+        <article class="life-card">
+          <h3>A whole life</h3>
+          <ul class="stages" aria-label="Life stages">
+            <li>Embryo<span>incubating</span></li>
+            <li>Juvenile<span>rides along</span></li>
+            <li>Adult<span>explores</span></li>
+            <li>Elderly<span>wiser, slower</span></li>
+          </ul>
+          <p>A juvenile rides in the Companion while it trains, and comes when you Call. Adults come on expeditions. Elders stay partners with new strengths.</p>
+          <p><span class="tag designed">Designed, not built yet</span></p>
+        </article>
+        <article class="life-card">
+          <h3>Families within a species</h3>
+          <p>Breed for a marking, an ability or a lineage you love. Every child is new, and remembers where its genes came from. Only bonded mibis need care; the rest never wait on you.</p>
+          <p><span class="tag designed">Designed, not built yet</span></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Open source -->
+  <section class="open" id="open" aria-labelledby="open-title">
+    <div class="wrap open-grid">
+      <div class="stack">
+        <p class="kicker">Open source, all of it</p>
+        <h2 id="open-title">Read the rules. Fork the code. Follow the build.</h2>
+        <p class="lead">The code, the game design, the genetics and the hardware are being made in public. Every decision and every open question is written down.</p>
+        <p>The devices are planned around ESP32 chips and a Raspberry Pi, with native firmware. Cases will be 3D printed in small batches and put together with common tools.</p>
+        <p class="licences">Software AGPL-3.0 · hardware CERN-OHL-S-2.0 · documentation and art CC BY-SA 4.0.</p>
+      </div>
+      <ul class="links">
+        <li><a href="https://github.com/PacoCotera/miniaturebeasts">Source on GitHub<span>Code, prototypes, art and hardware concepts.</span></a></li>
+        <li><a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/game.md">The game design<span>What’s decided and what’s still open.</span></a></li>
+        <li><a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/ROADMAP.md">The roadmap<span>Exploration first, then creatures, then the first connected game.</span></a></li>
+        <li><a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/LICENSING.md">Licensing<span>What you can build, share and sell.</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8. Sandbox -->
+  <section class="sandbox" id="sandbox" aria-labelledby="sandbox-title">
+    <div class="wrap">
+      <h2 id="sandbox-title">Play the field test.</h2>
+      <p>The exploration prototype, straight from the repository. One Companion screen in your browser: fog, living places, a storm and seed-pods. Tokens instead of art; rules first.</p>
+      <p><a class="play" href="sandbox/exploration/">Play the exploration field test</a></p>
+      <p class="keys">Arrow keys to walk · Enter to confirm · Esc for the menu</p>
+      <p><small id="build">build pending</small></p>
+    </div>
+  </section>
+
+  <!-- 9. FAQ -->
+  <section id="faq" aria-labelledby="faq-title">
+    <div class="wrap faq-grid">
+      <div class="stack">
+        <h2 id="faq-title">Fair questions.</h2>
+        <p class="muted">Short answers. The design documents have the long ones.</p>
+      </div>
+      <div>
+        <details>
+          <summary>Is it real?</summary>
+          <p>The game is being designed and built now. The exploration prototype is real and playable in your browser. The device pictures are concept art: nothing physical has been built yet, and the plan is to prove the game in software and playtest it before making boards and cases.</p>
+        </details>
+        <details>
+          <summary>When can I get one?</summary>
+          <p>There’s no date and no price. Follow the roadmap on GitHub to see what’s being built and what comes next.</p>
+        </details>
+        <details>
+          <summary>Can I build one myself?</summary>
+          <p>Not yet, because the hardware isn’t designed. When it is, the boards and cases will be published as open hardware, to be printed and assembled with common tools. The software is open source already.</p>
+        </details>
+        <details>
+          <summary>Is it an app?</summary>
+          <p>No. It’s designed for its own devices, with physical buttons and no touch shortcuts. The prototypes run in a browser so people can play them while the hardware is worked out. If dedicated hardware doesn’t work out, the fallback is a mobile app.</p>
+        </details>
+        <details>
+          <summary>Do I need to know genetics?</summary>
+          <p>No. Children can play by looking, comparing and breeding. The real framework underneath is there for anyone who wants to dig in.</p>
+        </details>
+      </div>
+    </div>
+  </section>
 </main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Miniature Beasts · a Dirty Pawz Press project · Mexico City</span>
+    <span><a href="https://github.com/PacoCotera/miniaturebeasts">GitHub</a> · <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/LICENSING.md">Licensing</a></span>
+  </div>
+</footer>
 <script>
   fetch('build.json').then(r=>r.json()).then(b=>{
     const t=new Date(b.built).toLocaleString('en-GB',{timeZone:'America/Mexico_City',hour12:false,day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
