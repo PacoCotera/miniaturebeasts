@@ -123,7 +123,7 @@ New pods hatch as juveniles (ride in the Companion), grow up after 2 world turns
 
 - The battery and connectivity icons at the far right of the HUD and top bars are **static placeholders** drawn in palette (a battery two-thirds full, two of three radio bars). They reserve the space; nothing measures anything.
 - The HUD keeps Energy as its only material number (whether it should show all three materials is open for the owner).
-- The Station is a stand-in: instant identification, hatching and studies, one page each. Names are automatic.
+- The Station is a stand-in: instant identification, hatching and studies, one page each. Names are automatic (Dot, Moss, Bean, Fig, Nib, Tuft, Pebble, Wren).
 - The cave under the cliff has no veil (it has its own darkness and lighting).
 - Warm stones are chosen, not grown: the expedition stores which 3–5 stones in its reach are warm this turn; stones outside the reach are never warm while you can't reach them.
 - Wait's report looks at the creatures in view, the storm, the fog bank and dew cups; it says at most two creature changes.
