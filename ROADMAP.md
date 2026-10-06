@@ -37,7 +37,11 @@ alongside only when they have something independent to do.
 
 **Review:** the project lead reads `design/` and this roadmap.
 
-## Phase 1: Exploration
+## Phase 1: Exploration (in progress)
+
+Status: step 1 done (the combined world-map + living-patch model was chosen);
+step 2 built as a browser prototype and live in the sandbox, awaiting play;
+step 3 pending.
 
 **Outcome:** the project lead plays an open-map expedition and judges whether it makes them
 curious.

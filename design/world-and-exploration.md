@@ -154,8 +154,12 @@ Games the earlier work cited as inspiration, for hypotheses only:
 - No Man's Sky (surveying);
 - New Pokémon Snap (intervening to change what a creature does).
 
-## How this gets decided
+## Where this stands
 
-Phase 1 of the [roadmap](../ROADMAP.md): two or three exploration models, each
-shown as the same expedition at device size, then a playable rough version of the
-chosen one.
+The model is chosen: a fogged world map with living patches, as written up in
+[the combined design](proposals/exploration-options/combined-design.md)
+(**Proposal**, partly **Decided**; see the Requirements above for what is
+decided). A rough playable of it runs at
+[miniaturebeasts.com/sandbox/exploration/](https://miniaturebeasts.com/sandbox/exploration/)
+(`prototypes/exploration/`). Once it has been played and the open questions in
+the combined design are answered, this document absorbs the decided design.
