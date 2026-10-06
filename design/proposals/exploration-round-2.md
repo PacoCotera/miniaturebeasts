@@ -311,6 +311,36 @@ strengths and weaknesses.
 | Adult | Full partner | Its species ability (dig, calm, sniff) at full strength. Comes on Call |
 | Elder | Partner | Wider senses: double calming and sniffing radius, and it feels every stray strike coming. Slow: trails two tiles behind and needs 2 actions to dig |
 
+## 9. Fog bank
+
+Today the fog bank only changes the picture: it dims the place and stops the map
+sweep. **Proposal: make it the storm's opposite, a safe event that trades
+sight for closeness.**
+
+- **Cover.** Inside the bank, creatures notice you 2 tiles later (as now), and
+  creeping never startles even wary ones. You can hand-feed a wary creature
+  without a partner, and the moments you cause earn Data as usual. Fog gives
+  nothing for being in it.
+- **Wet air.** Dew cups fill while the bank is over a place, as after rain;
+  taking the dew (Confirm) gives Essence. Fog is the steady Essence event, as
+  storms are the Energy event.
+- **Blindness.** Inside the bank the map sweep stops, so no fog lifts, and
+  signs there are hidden. Call reaches 3 tiles instead of 7, and a muffled Call
+  can't mark a cell cleared. A glowing partner restores the full Call.
+- **No Shield risk.** Leaving is free, and the bank drifts with the field clock.
+  Nothing makes you wait for it; you act inside it or walk out.
+- **The choice.** In a fog bank you can see and map less, but you get closer to
+  creatures and gather Essence. Do you go in or go around?
+
+**Cost.** One new rule (creeping in fog never startles) and dew refilling under
+fog, both small. It may make feeding too easy; watch how often a partner's
+calming still matters.
+
+**Alternative: cut the fog bank for this round.** Weather expeditions become
+storm-only. It saves build and tuning time and keeps the playtest focused on the
+storm gamble. The cost is less variety between expeditions, and nothing to show
+Essence as its own weather event yet.
+
 ## Decisions for the owner
 
 1. **Materials.** Keep Energy, Data and Essence, with Data coming from creature
@@ -327,6 +357,8 @@ strengths and weaknesses.
    mode list?
 6. **Reach and hold.** Tier 1 reaches 2 cells from the start and carries 2 pods
    (tier 2: 4 cells, 3 pods). Is that the right size for an expedition?
+7. **Fog bank.** Make it a safe cover event (wary creatures approachable, dew for
+   Essence, sight and Call cut to 3 tiles), or cut it for this round?
 
 ## Build scope for the next prototype round
 
@@ -351,6 +383,8 @@ strengths and weaknesses.
   the curious response to Call.
 - **Partners.** An optional elder flag (slow, keen); juveniles selectable as
   riders only. Save format v5; older saves are discarded.
+- **Fog bank.** Creeping never startles inside it, dew cups refill under it, no
+  sweep and hidden signs inside it, Call at 3 tiles with no clearing.
 
 **Watch for in a playtest:**
 - **Length.** Do expeditions end on their own (about 60–150 actions), and does
