@@ -194,7 +194,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
       <ul>
         <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or <kbd>WASD</kbd>, or the pad: move. Tap to creep one step; hold to walk. Creeping never startles a creature unless you step right next to it.</li>
         <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange button: <b>Confirm</b>. It does exactly what the bottom line says after ✓.</li>
-        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Wait · Leave" in a place, "← menu" on the map, "← Mibis", "← close"). In the field it opens the menu: Wait, Leave, Send home, Probe, Cargo, Mibis.</li>
+        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Wait · Leave" in a place, "← Wait · Send home" on the map, "← Mibis", "← close"). In the field it opens the menu: Wait, Leave, Send home, Probe, Cargo, Mibis.</li>
         <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. At home it calls the mibi with you, which answers. The top right of the screen says what it will do.</li>
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
         <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 3 tiles around you as you walk, and stays lifted; <b>Call</b> sweeps it away 11 tiles around you (5 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
@@ -889,9 +889,12 @@ const WALK_R = 3;
 function walkLift() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
   const v = S.veil[P.key] || (S.veil[P.key] = new Array(PH).fill(0)), c = layout(P.key).cell, before = svyFull(c);
-  for (let dy = -WALK_R; dy <= WALK_R; dy++) { const y = P.y + dy; if (y < 0 || y >= PH) continue; let bits = 0;
-    for (let dx = -WALK_R; dx <= WALK_R; dx++) { const x = P.x + dx; if (x >= 0 && x < PW && dx * dx + dy * dy <= (WALK_R + .3) ** 2) bits |= 1 << x; }
-    v[y] = (v[y] | bits) >>> 0; }
+  // a small flood from the pawn through open ground: it lifts the first blocking tile it meets (a shore, a trunk)
+  // but never what lies behind it, so it doesn't see across water or cliff
+  const tiles = layout(P.key).tiles, seen = new Set([P.y * PW + P.x]), q = [[P.x, P.y]];
+  for (let h = 0; h < q.length; h++) { const [x, y] = q[h]; v[y] = (v[y] | (1 << x)) >>> 0; if (h && T_BLOCK[tiles[y * PW + x]]) continue;
+    for (const [dx, dy] of Object.values(DIRS)) { const X = x + dx, Y = y + dy, k = Y * PW + X;
+      if (X < 0 || Y < 0 || X >= PW || Y >= PH || seen.has(k) || (X - P.x) ** 2 + (Y - P.y) ** 2 > (WALK_R + .3) ** 2) continue; seen.add(k); q.push([X, Y]); } }
   updateSurvey(c); if (svyFull(c) === 15 && before !== 15) logEv('Surveyed a place (walking)');
 }
 function veilAround(key, cx, cy, r) {
@@ -993,15 +996,19 @@ function checkExplored() {
   fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + rc.gated + ' cave needs a digger' : '') + ' · ← Send home', 9);   // first in the box, until the next action
 }
 // The place's survey state for the line: "surveyed 2/4 · 3 to take", "surveyed · nothing to take", "not surveyed".
+// A place only counts as finished when a Call was made there (walking never hears what is buried) and no pod lies buried.
+const buriedIn = c => S.pods.filter(p => p.k === String(c) && p.h).length;
+const placeDone = c => surveyed(c) && explored(c) && !buriedIn(c);
 function placeState(c, short) {
   const q = qCount(svyFull(c)), n = leftTotal(c), sv = q === 4 ? 'surveyed' : q ? 'surveyed ' + q + '/4' : 'not surveyed';
   if (short) return sv;
-  return sv + (n ? ' · ' + n + ' to take' : q === 4 ? ' · nothing to take' : '');
+  if (q === 4 && !explored(c)) return sv + (n ? ' · ' + n + ' to take' : '') + ' · Call to hear below';
+  return sv + (n ? ' · ' + n + ' to take' : placeDone(c) ? ' · nothing to take' : '');
 }
 // A fully surveyed place with nothing to take: ← leaves in one press (unless a glowtail is settling and Wait matters).
 function doneEmpty() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const c = layout(P.key).cell;
-  return surveyed(c) && !leftTotal(c) && !curLive().cr.some(q => bubbleOf(q) === '…');
+  return placeDone(c) && !leftTotal(c) && !curLive().cr.some(q => bubbleOf(q) === '…');
 }
 function nothingNew() { const ex = S.exp; if (!ex || !ex.saidDone || ex.saidNothing || ex.storm) return; ex.saidNothing = 1; fxMsg('Nothing new until the world turns', 2); }
 
@@ -1591,7 +1598,7 @@ function waitTick(scope) {
   if (scope === 'patch' && ex.patch) routineStep(a);
   const ch = waitChanges(a, waitSnap(scope), scope);
   if (ch.length) fxMsg(cap(ch.join(' · ')), 1);
-  else if (FX.notes.length === notes) fxMsg('Nothing is moving here · ← Leave', 1);
+  else if (FX.notes.length === notes) fxMsg('Nothing is moving here · ← ' + (scope === 'patch' ? 'Leave' : 'Send home'), 1);
   ex.stats.waits = (ex.stats.waits || 0) + 1; if (!ch.length) ex.stats.idleWaits = (ex.stats.idleWaits || 0) + 1;
 }
 // While you wait, if no creature in sight moved, one idle one takes a visible routine step (toward you if it can).
@@ -2733,7 +2740,7 @@ const SIGN_WORD = { b: 'slow beat', t: 'tracks' };
 function mapSigns() {
   const out = new Map(), add = (c, kind, pri, extra) => { let e = out.get(c); if (!e) { e = { c, pri: 0, list: [] }; out.set(c, e); } if (e.list.some(q => q.kind === kind)) return; e.list.push(Object.assign({ kind }, extra || {})); e.pri = Math.max(e.pri, pri); };
   // a surveyed cell has nothing hidden left to sign; a located pod shows as a pip, not a sign
-  const hide = c => surveyed(c) || (S.exp && inFog(c));
+  const hide = c => placeDone(c) || (S.exp && inFog(c));   // a buried pod keeps its slow beat until found
   for (const p of S.pins) add(p.c, p.k === 'own' ? 'pin' : p.k, 10);
   if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);   // a gated cell shows its gate
   // Energy the Probe has found stays marked until drawn, surveyed or not: solid bolt for storm charge, hollow for warm
@@ -2827,7 +2834,7 @@ function drawMap(mode, t) {
     const dots = (tr, col) => { g.fillStyle = HEX[col];
       for (let i = 1; i < tr.length; i++) { if (!inSq(tr[i - 1]) || !inSq(tr[i])) continue; const a = cxy(tr[i - 1]), b = cxy(tr[i]); const ax = ox + a.x * CELL + 12, ay = oy + a.y * CELL + 12, bx = ox + b.x * CELL + 12, by = oy + b.y * CELL + 12;
         const n = Math.max(Math.abs(bx - ax), Math.abs(by - ay)); for (let k = 0; k < n; k += 5) g.fillRect(Math.round(ax + (bx - ax) * k / n), Math.round(ay + (by - ay) * k / n), 2, 2); } };
-    if (S.lastTrail && S.turn - S.lastTrail.turn === 1) dots(S.lastTrail.cells, 'stone');   // last expedition's, dim for one world turn, then gone
+    if (S.lastTrail && S.turn === S.lastTrail.turn) dots(S.lastTrail.cells, 'stone');   // last expedition's, dim for one world turn, then gone
     if (ex.trail.length > 1) dots(ex.trail, 'bone');
     const s0 = cxy(ex.start); blit(ICON.start(), ox + s0.x * CELL + 7, oy + s0.y * CELL + 7);
   }
@@ -2901,13 +2908,14 @@ function fogFade(mask) { let f = FOG_FADE.get(mask); if (f) return f; f = new Fl
     for (const [bit, dx, dy] of [[16, x + .5, y + .5], [32, 32 - x - .5, y + .5], [64, 32 - x - .5, 32 - y - .5], [128, x + .5, 32 - y - .5]]) if (mask & bit) t = Math.max(t, 1 - Math.hypot(dx, dy) / 32);
     f[y * 32 + x] = t * .9; }
   FOG_FADE.set(mask, f); return f; }
-function fogEdgeTile(pbKey, pb, L, mask) {
-  const key = 'f' + pbKey + '|' + L + '|' + mask; let cv = EDGE_TILE.get(key); if (cv) return cv;
+function fogEdgeTile(pbKey, pb, L, mask, veil) {
+  const key = 'f' + pbKey + '|' + L + '|' + mask + (veil ? 'v' : ''); let cv = EDGE_TILE.get(key); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = 32;
   const cg = cv.getContext('2d'), id = cg.createImageData(32, 32), u = new Uint32Array(id.data.buffer), f = fogFade(mask), lut = REMAP[L];
   const pk = c => { const q = RGB[c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; };
   for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const o = y * 32 + x, c = pb.p[o]; if (c < 0) continue;
-    u[o] = pk(f[o] > (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16 ? FOGLUT[c] : lut ? lut[c] : c); }
+    const b = BAYER[(y & 3) * 4 + (x & 3)], lc = lut ? lut[c] : c;
+    u[o] = pk(f[o] > (b + .5) / 16 ? FOGLUT[c] : veil ? (b < 4 ? C.night : DARK[lc]) : lc); }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
 }
 // The same for the survey veil: an unveiled tile beside veiled ones fades into the veil's dots at the shared sides.
@@ -2961,10 +2969,10 @@ function drawPatch(t) {
       g.drawImage(m ? edgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L, m) : tileCanvas(lay, i, L, fr), W(tx * TS), H(ty * TS));
       continue; }
     const L0 = tileLight(tx, ty), i = ty * PW + tx, uv = uvAt(tx, ty);
-    if (fogged && L0 !== 3 && uv) { const fk = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y), u = fk(tx, ty - 1), r = fk(tx + 1, ty), d = fk(tx, ty + 1), l = fk(tx - 1, ty);
+    if (fogged && L0 !== 3) { const fk = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y), u = fk(tx, ty - 1), r = fk(tx + 1, ty), d = fk(tx, ty + 1), l = fk(tx - 1, ty);
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
       if (!u && !l && fk(tx - 1, ty - 1)) m |= 16; if (!u && !r && fk(tx + 1, ty - 1)) m |= 32; if (!d && !r && fk(tx + 1, ty + 1)) m |= 64; if (!d && !l && fk(tx - 1, ty + 1)) m |= 128;
-      if (m) { g.drawImage(fogEdgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L0, m), W(tx * TS), H(ty * TS)); continue; } }
+      if (m) { g.drawImage(fogEdgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L0, m, !uv), W(tx * TS), H(ty * TS)); continue; } }
     if (L0 !== 3 && uv) { const vk = (x, y) => !uvAt(x, y), u = vk(tx, ty - 1), r = vk(tx + 1, ty), d = vk(tx, ty + 1), l = vk(tx - 1, ty);
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
       if (!u && !l && vk(tx - 1, ty - 1)) m |= 16; if (!u && !r && vk(tx + 1, ty - 1)) m |= 32; if (!d && !r && vk(tx + 1, ty + 1)) m |= 64; if (!d && !l && vk(tx - 1, ty + 1)) m |= 128;
@@ -3223,7 +3231,7 @@ function drawSwap() {
   text(clipText('leave ' + podName(sw.held[sw.sel], true) + ' here, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
 }
 function drawMessage() {
-  if (!FX.msg) return;
+  if (!FX.msg || (S.phase === 'patch' && S.ui.swap)) return;   // the swap chooser has the space
   const lines = wrapText(FX.msg, 400, 2).slice(0, 2), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
   // the box sits above the bottom line, or at the top of the view when the player stands where it would cover them
   const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = pl && pl.y + 20 > low ? VIEW_Y + 8 : low;
@@ -3254,7 +3262,7 @@ function drawSetup(t) {
   const w = withMibi(), pm = partnerMibi();
   if (sel === 2) brackets(14, 324, 422, 116, C.amber);
   if (w) { panel(20, 330, 410, 104, C.ink, C.slate);
-    blit(creatureArt(w.sp, 'idle', 0, 2), 30, 344); blit(RING(), 49, 398);
+    blit(creatureArt(w.sp, 'idle', 0, 2), 30, 344); if (pm) blit(RING(), 49, 398);
     wrapText(partnerRow(), 310, 2).slice(0, 2).forEach((l, i) => text(l, 112, 346 + i * 22, pm ? C.bone : C.amber));
     const st = mibiStage(w); chip(112, 398, st, pm ? 'orange' : 'teal', 'bone'); text(SPECIES[w.sp].name.toLowerCase(), 112 + textW(st, 2) + 26, 402, C.mist); }
   else if (S.mibis.length) { text('No one with you', 24, 340, C.bone); text('Choose this row to take ' + S.mibis[0].name, 24, 366, C.mist); }
@@ -3597,8 +3605,8 @@ function lineFor() {
       const wx = S.ui.type !== 'deep' ? ' · storm would start here' : '';   // the dotted band is a preview, not the live storm
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), [base + wx, base + ' · storm preview', base], 'back', !placeValid(c)); }
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? [base + wx, base + ' · storm preview', base] : wx.slice(3), 'back', !placeValid(c)); }
-    case 'map': if (S.exp.cairnView) return L1('Back to the cairn', 'the land around', 'back');
-      return L1('Go down', mapContext(), S.exp.saidDone ? 'Send home · Wait' : 'menu');   // the reach is done: Send home comes first
+    case 'map': if (S.exp.cairnView) return L1('', 'the land around the cairn', 'back');
+      return L1('Go down', mapContext(), S.exp.saidDone ? 'Send home · Wait' : 'Wait · Send home');   // the reach is done: Send home comes first
     case 'patch': { const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
       const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
@@ -3607,7 +3615,7 @@ function lineFor() {
       const sv = '\x01' + placeState(lay.cell);
       let ctx = lay.cave ? 'cave' : [LAND_NAME[lay.land] + ' · ' + sv + wx, sv + wx, sv, '\x01' + placeState(lay.cell, true)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
-      if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Swap for ' + podName(sw.held[sw.sel], true) : 'Swap', '', 'keep'); }
+      if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep'); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       return L1(a.label, ctx, lay.cave ? 'Wait · Climb out' : doneEmpty() ? 'Leave' : 'Wait · Leave', !a.run || a.dim); }
     case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close');
