@@ -177,7 +177,6 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
           <button class="key btn-round call" data-key="call" aria-label="Call"><svg viewBox="0 0 26 26"><path d="M7 8a7 7 0 0 1 0 10M11.5 5a11 11 0 0 1 0 16M16 2.5a14.5 14.5 0 0 1 0 21"/><circle cx="4" cy="13" r="1.6" fill="#eafff9" stroke="none"/></svg></button>
           <button class="key btn-round back" data-key="back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
           <button class="key btn-round confirm" data-key="confirm" aria-label="Confirm"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
-          <span class="engrave" style="left:332px;top:66px">CALL</span>
           <span class="engrave" style="left:345px;top:144px">←</span>
           <span class="engrave" style="left:406px;top:124px">CONFIRM</span>
         </div>
@@ -195,7 +194,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or <kbd>WASD</kbd>, or the pad: move. Tap to creep one step; hold to walk. Creeping never startles a creature unless you step right next to it.</li>
         <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange button: <b>Confirm</b>. It does exactly what the bottom line says after ✓.</li>
         <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Leave" in a place, "← Send home" on the map, "← Mibis", "← close"). In the field it opens the menu: Leave (in a place) or Send home on top, then Wait, Probe, Cargo, Mibis.</li>
-        <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. At home it calls the mibi with you, which answers. The top right of the screen says what it will do.</li>
+        <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. At home it calls the mibi with you, which answers..</li>
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
         <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
         <li>The dots top left are your reach, one per cell: a dot fills once you have been in that place and Called there; your cell is framed. Fill them all and everything in reach is explored. The map's quarters show how fully each place is surveyed.</li>
@@ -569,6 +568,17 @@ function finishLayout(lay, R, spawnPt0, occ) {
   return lay;
 }
 
+// Beacons for the whole world, chosen once: the same seeded roll per cell as before, but a beacon is kept only
+// if no beacon already stands within 2 cells (a spacing of at least 3), so two never sit side by side.
+function beaconCells(seed) {
+  if (G.beacons && G.beacons.seed === seed) return G.beacons.set;
+  const set = new Set();
+  for (let c = 0; c < MW * MH; c++) { const land = G.land[c]; if (land !== L.ROCK && land !== L.MEADOW) continue;
+    const cr = makeRng(hash(seed, 'cairn', c)); if (!cr.chance(land === L.ROCK ? .35 : .08)) continue;
+    const p = cxy(c); let near = false; for (const b of set) { const q = cxy(b); if (Math.max(Math.abs(p.x - q.x), Math.abs(p.y - q.y)) <= 2) { near = true; break; } }
+    if (!near) set.add(c); }
+  G.beacons = { seed, set }; return set;
+}
 function genPatch(cell) {
   const seed = S.seed, R = makeRng(hash(seed, 'patch', cell)), ns = hash(seed, 'pn', cell);
   const land = G.land[cell], { x: cx, y: cy } = cxy(cell), isFord = land === L.WATER;
@@ -680,7 +690,7 @@ function genPatch(cell) {
   addF('s', n(mix.s), () => ({ under: R.chance(.22) ? 'pod' : null }));
   addF('n', n(mix.n) + (cell === G.gate ? 1 : 0));
   // A beacon: lighting it shows land 3 cells around, beyond the Probe's range. (The hash salt keeps its old name so worlds stay the same.)
-  if (land === L.ROCK || land === L.MEADOW) { const cr = makeRng(hash(seed, 'cairn', cell)); if (cr.chance(land === L.ROCK ? .35 : .08)) addF('j', 1); }
+  if (beaconCells(seed).has(cell)) addF('j', 1);
   if (cell === G.deep) { const p = { x: 14 + R.int(5) - 2, y: 12 + R.int(4) };
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = p.x + dx, Y = p.y + dy; if (T_BLOCK[tiles[I(X, Y)]]) setT(X, Y, T.SAND); }
     carve(p.x, p.y + 1, spawnPt.x, spawnPt.y);
@@ -3157,7 +3167,9 @@ function callSlot() {
   if (S.phase === 'mibis' || S.phase === 'active') { const m = withMibi(); return m ? { label: 'Call ' + m.name } : null; }
   return null;
 }
-function drawCallSlot(cs, right) {
+// The Call slot is gone from the top bar (the one-time lines explain Call); this keeps the layout code in one place.
+function drawCallSlot(cs, right) { return right; }
+function drawCallSlotOld(cs, right) {
   if (!cs) return right;
   let rx = right; const col = cs.dim ? C.stone : C.mint;
   if (cs.energy) { blit(ICON.energy(), rx - 14, 6, cs.dim ? 4 : 0); rx -= 16; }
@@ -3227,9 +3239,7 @@ function drawHUD() {
   x += 4;
   // what has to fit right of the partner's token: storm and fog headings, three counters, Call, battery and radio
   const lvl = 0, fogW = 0, stormW = 0;   // conditions (storm, fog bank) live on the bottom line now
-  let cs = callSlot(); const room = SCR_W - 6 - STATUS_W - 6 - countersW(ex.cargo) - 6 - stormW - fogW - (ex.pt ? 15 : 0) - x;
-  if (cs && callSlotW(cs) > room) cs = { label: cs.label.split(' ')[0].slice(0, 5), dim: cs.dim };   // the glyph and its verb only
-  let rx = drawCallSlot(cs, drawStatus(SCR_W - 6)) - 2;
+  let rx = drawStatus(SCR_W - 6) - 2;
   rx -= countersW(ex.cargo); drawCounters(rx, ex.cargo, 'x'); rx -= 6;
   if (ex.pt && x + 14 < rx) { blit(RING_S(), x - 1, 18); blit(ICON.mini(ex.pt.sp), x, 7); if (x + 15 + textW(ex.pt.name, 2) < rx - 4) text(ex.pt.name, x + 15, 6, C.amber); }
   if (ex.actions - ex.hitAt <= 5) { panel(4, HUD_H + 3, 112, 22, C.ink, C.coral); text('Shield ' + ex.shield + '/' + ex.smax, 12, HUD_H + 7, C.bone); }

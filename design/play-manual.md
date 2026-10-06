@@ -19,7 +19,7 @@ Your **mibis** are the creatures you hatch. One of them is always **with you** i
 | **Pad** | Moves. On the map, one tap is one step; hold to keep walking. In a place, a tap is a careful step (creeping); holding walks. In menus, it moves the choice. |
 | **✓ Confirm** (the big one) | Does the thing in front of you: go down into a place, take a pod, shake a bush. Facing nothing in a place, it waits. |
 | **← key** | Opens the menu, or closes the screen you are on. The bottom line names what it opens by the menu's top entry: "← Leave" in a place, "← Send home" on the map. |
-| **))) Call** (teal, above ←) | Sends a signal and things answer. In a place it pulses: it lifts the veil and finds things; on the map it drops a pin for 1 Energy; at home your mibi answers. |
+| **))) Call** (the teal button above ←, no word on it) | Sends a signal and things answer. In a place it pulses: it lifts the veil and finds things; on the map it drops a pin for 1 Energy; at home your mibi answers. |
 
 ### The bottom line
 
@@ -36,7 +36,6 @@ The bottom line always has three parts:
 - **Pods**: one outline per pod you can carry, filled with the pod's shell when you take one.
 - **Partner**: the mibi with you on a teal ring, with its name if there is room.
 - **The three counters**: Energy, Data and Essence. They count up with a flash when you gain something, even when it happens out of sight.
-- **The Call action**: what the teal Call button does right now, after its glyph: "))) Pulse" in a place, "))) Pin 1⚡" on the map, "))) Call Dot" at home.
 - **Battery and radio**: the Companion's own power and connection.
 
 ## 3. The map
