@@ -197,7 +197,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Wait · Leave" in a place, "← Wait · Send home" on the map, "← Mibis", "← close"). In the field it opens the menu: Wait, Leave, Send home, Probe, Cargo, Mibis.</li>
         <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. At home it calls the mibi with you, which answers. The top right of the screen says what it will do.</li>
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
-        <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 3 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
+        <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
         <li>The dots top left are your reach, one per cell: a dot fills once you have been in that place and Called there; your cell is framed. Fill them all and everything in reach is explored. The map's quarters show how fully each place is surveyed.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
         <li>One mibi is <b>with you</b> in the Companion. Grown, it is your Probe partner; a juvenile comes along in the Companion but is too young for the Probe. On <b>Mibis</b> (in the menu), ✓ on another mibi takes it instead: one press.</li>
@@ -303,7 +303,7 @@ const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shie
 const CAP = 20;                                   // each material caps at 20 carried
 // Station stand-in prices.
 const PRICE = { beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
-const STRAY = { strong: 1 / 12, peak: 1 / 6 };   // stray strike odds per action in the open
+const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
 const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; elder after 6 more as an adult
 // Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
 // 3 to 5 in the Probe's reach, chosen when the expedition sets out. Kept scarce on purpose (decision 2026-10-06).
@@ -872,6 +872,14 @@ function unveilRound(key, cx, cy, r) {
   const v = S.veil[key] || (S.veil[key] = new Array(PH).fill(0)), lifted = new Set();
   for (let y = Math.max(0, cy - r); y <= Math.min(PH - 1, cy + r); y++) for (let x = Math.max(0, cx - r); x <= Math.min(PW - 1, cx + r); x++)
     if (inCall({ x: cx, y: cy }, x, y, r) && !((v[y] >>> x) & 1)) { v[y] = (v[y] | (1 << x)) >>> 0; lifted.add(y * PW + x); }
+  // smooth gaps: a veiled tile just outside the ring (up to 3 tiles) with unveiled land right behind it, outward, lifts too
+  const isU = (x, y) => x < 0 || y < 0 || x >= PW || y >= PH || ((v[y] >>> x) & 1);
+  for (let y = Math.max(0, cy - r - 3); y <= Math.min(PH - 1, cy + r + 3); y++) for (let x = Math.max(0, cx - r - 3); x <= Math.min(PW - 1, cx + r + 3); x++) {
+    const d = Math.hypot(x - cx, y - cy); if (d <= r + .5 || d > r + 3.5 || ((v[y] >>> x) & 1)) continue;
+    const ux = (x - cx) / d, uy = (y - cy) / d; let behind = false;
+    for (let k = 1; k <= 3 && !behind; k++) { const bx = Math.round(x + ux * k), by = Math.round(y + uy * k); if (bx >= 0 && by >= 0 && bx < PW && by < PH && isU(bx, by)) behind = true; }
+    if (behind) lifted.add(y * PW + x); }
+  for (const i of lifted) { const x = i % PW, y = (i / PW) | 0; v[y] = (v[y] | (1 << x)) >>> 0; }
   return lifted;
 }
 // Unveiled: lifted by a Call, or never surveyable. The cave has no veil (it has its own dark).
@@ -897,7 +905,7 @@ function unveil(key, cx, cy, r) {
 }
 // Walking lifts the veil in a short circle around the pawn (like the cave light); Call still sweeps much further.
 // Whatever is lifted stays lifted. Quarters and "fully surveyed" count it; "explored" still needs a Call.
-const WALK_R = 3;
+const WALK_R = 4;
 function walkLift() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
   const v = S.veil[P.key] || (S.veil[P.key] = new Array(PH).fill(0)), c = layout(P.key).cell, before = svyFull(c);
@@ -1108,10 +1116,11 @@ function advance(scope, info) {
   const col = cxy(ex.pos).x;
   // A stray strike rolled last action lands now, if you are still in the open under rain.
   if (ex.stray && ex.stray.at <= ex.actions) { ex.stray = null; if (stormRain(col) && !sheltered() && !inFog(ex.pos)) strayHit(scope); }
+  if (!stormRain(col)) ex.passWarned = 0;   // a new pass over you starts with a warned strike before any stray
   if (ex.storm) {
     // The band crawls while it is over the place you are in (about 30 actions overhead); elsewhere it moves at map speed.
     const over = !(ex.patch && layout(ex.patch.key).cave) && stormCovers(cxy(ex.pos).x);
-    ex.storm.x += (over ? .14 : ex.storm.v) * ex.storm.dir; ex.storm.t = (ex.storm.t || 0) + 1;
+    ex.storm.x += (over ? .2 : ex.storm.v) * ex.storm.dir;   // overhead the band crawls: a pass of rain is about 15–20 actions ex.storm.t = (ex.storm.t || 0) + 1;
     if (ex.storm.x > MW + 1 || ex.storm.x + ex.storm.w < -1) { ex.storm = null; if (ex.saidDone) nothingNew(); }
     else { // a flash somewhere inside the band each tick; some of them light the land for good
       const cols = []; for (let x = 0; x < MW; x++) if (stormCovers(x)) cols.push(x);
@@ -1127,10 +1136,10 @@ function advance(scope, info) {
   // The bolts: odds in words once, the first time each level is reached.
   const lvl = stormLevel(); ex.stats.maxLvl = Math.max(ex.stats.maxLvl, lvl);
   if (lvl >= 2) { ex.stats.stormActs++; if (!sheltered()) ex.stats.openStormActs++; }
-  if (lvl === 2) fxOnce('odds', 'Strong storm · 1 in 12 each action in the open', 3);
-  if (lvl === 3) fxOnce('oddsPeak', 'Storm peak · 1 in 6 each action in the open', 3);
+  if (lvl === 2) fxOnce('odds', 'Strong storm · 1 in 20 each action in the open', 3);
+  if (lvl === 3) fxOnce('oddsPeak', 'Storm peak · 1 in 10 each action in the open', 3);
   // Roll the next action's stray strike now, so a keen partner can feel it coming.
-  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
+  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && ex.passWarned && ex.actions - ex.hitAt >= 6 && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
     ex.stray = { at: ex.actions + 1 };
     const pt = ex.pt, keen = pt && (pt.elder || SPECIES[pt.sp].ab === 'nose');
     if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
@@ -1160,7 +1169,7 @@ function strayHit(scope) {
 function mapStrikeTick() {
   const ex = S.exp;
   if (ex.mstrike && ex.mstrike.at <= ex.actions) {
-    const c = ex.mstrike.c; ex.mstrike = null; ex.stormCells[c] = 1; revealCell(c);
+    const c = ex.mstrike.c; ex.mstrike = null; ex.stormCells[c] = 1; revealCell(c); ex.passWarned = 1;
     FX.strikes.push({ space: 'map', c, at: NOW });
   }
   const p = cxy(ex.pos);
@@ -1664,7 +1673,7 @@ function patchTick(info) {
   if (fog) for (const f of lay.feats) if (f.kind === 'u' && !cupFull(key, f) && ex.actions - (fs(key, f.id).at || -99) >= 3) { setFS(key, f.id, { full: true }); fxOnce('fogdew', 'Dew gathers in the fog · the cups fill again', 1); }
   let strike = null;
   if (live.strike && live.strike.at <= ex.actions) {
-    strike = live.strike; live.strike = null;
+    strike = live.strike; live.strike = null; ex.passWarned = 1;
     FX.strikes.push({ space: 'patch', x: strike.x, y: strike.y, at: NOW });
     const st = lay.feats.find(f => f.kind === 'k' && f.x === strike.x && f.y === strike.y);
     // a stone takes charge at most once per storm pass over the place; struck again, nothing more
@@ -1962,10 +1971,10 @@ function homeCopy(extraPods, mats) {
 }
 // The Cargo screen's preview of what sending home will do.
 function sendPreview() {
-  const ex = S.exp, newPods = ex.cargo.pods.map(p => ({ sp: p.sp, g: p.g, how: p.how, fresh: 1 })), hc = homeCopy(newPods, ex.cargo), miss = ex.smax - ex.shield, mend = Math.min(miss, hc.e);
+  const ex = S.exp, newPods = ex.cargo.pods.map(p => ({ sp: p.sp, g: p.g, how: p.how, fresh: 1 })), hc = homeCopy(newPods, ex.cargo), free = Math.max(0, Math.min(2, ex.smax) - ex.shield), miss = ex.smax - ex.shield - free, mend = Math.min(miss, hc.e);
   hc.e -= mend; const ops = stationPlan(hc);
   const out = [];
-  if (miss) out.push(mend === miss ? 'Shield mended · ' + mend + ' Energy' : 'Shield ' + (ex.shield + mend) + '/' + ex.smax + ' · needs ' + (miss - mend) + ' more Energy to mend'); const ids = ops.filter(o => o.k === 'id' && o.p.fresh).length, idWait = ops.filter(o => o.k === 'wait' && o.p.fresh && !o.p.idd).length;
+  if (miss || free) out.push(mend === miss ? 'Shield mended · ' + [free ? free + ' free' : '', mend ? mend + ' Energy' : ''].filter(Boolean).join(' + ') : 'Shield ' + (ex.shield + free + mend) + '/' + ex.smax + ' · needs ' + (miss - mend) + ' more Energy to mend'); const ids = ops.filter(o => o.k === 'id' && o.p.fresh).length, idWait = ops.filter(o => o.k === 'wait' && o.p.fresh && !o.p.idd).length;
   const idNew = ops.filter(o => o.k === 'id' && o.p.fresh && !S.known.includes(o.p.sp)).length, idKnown = ids - idNew;
   if (ops.some(o => o.free)) out.push('First pod · identified for free');
   if (idNew) out.push(numWord(idNew) + ' new pod' + (idNew > 1 ? 's' : '') + ' to identify');
@@ -1989,8 +1998,8 @@ function endExpedition(reason) {
   for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
   if (!broke) { H.e += ex.cargo.e; H.d += ex.cargo.d; H.s += ex.cargo.s; }
   // the Station mends the Shield first, 1 Energy a missing bar, as far as the store covers; a break is mended free
-  { const miss = broke ? 0 : ex.smax - ex.shield, m = Math.min(miss, H.e); H.e -= m; S.shield = broke ? ex.smax : ex.shield + m;
-    rep.mend = { m, short: miss - m, shield: S.shield, smax: ex.smax }; if (m) logEv('Shield mended · -' + m + ' Energy'); }
+  { const free = broke ? 0 : Math.max(0, Math.min(2, ex.smax) - ex.shield), miss = broke ? 0 : ex.smax - ex.shield - free, m = Math.min(miss, H.e); H.e -= m; S.shield = broke ? ex.smax : ex.shield + free + m;
+    rep.mend = { m, free, short: miss - m, shield: S.shield, smax: ex.smax }; if (m) logEv('Shield mended · -' + m + ' Energy'); }
   logEv(broke ? 'Probe broke · pods sent home, carried supplies lost' : 'Sent home · ' + ex.actions + ' actions');
   for (const pod of ex.cargo.pods) {
     H.pods.push({ sp: pod.sp, g: pod.g, how: pod.how, idd: 0, n: ex.n, fresh: 1 });
@@ -3538,7 +3547,8 @@ function drawStation(t) {
       text(r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing', 22, y, C.rust); y += 26; }
     else { text('Cargo arrives', 22, y, C.ink, 3); y += 32;
       if (r.items.length) { let x = 24; for (const it of r.items) { blit(ICON[{ e: 'energy', d: 'data', s: 'essence' }[it.k]](), x, y + 1); text(it.text, x + 20, y, C.ink); x += textW(it.text, 2) + 44; } y += 26; } }
-    if (r.mend && (r.mend.m || r.mend.short)) { text(r.mend.short ? 'Shield ' + r.mend.shield + '/' + r.mend.smax + ' · needs ' + r.mend.short + ' more Energy to mend' : 'Shield mended · −' + r.mend.m + ' Energy', 22, y, r.mend.short ? C.wine : C.ink); y += 26; }
+    if (r.mend && (r.mend.m || r.mend.short || r.mend.free)) { const fr = r.mend.free ? r.mend.free + ' bar' + (r.mend.free > 1 ? 's' : '') + ' free' : '';
+      text(clipText(r.mend.short ? 'Shield ' + r.mend.shield + '/' + r.mend.smax + (fr ? ' · ' + fr : '') + ' · 1 more Energy a bar' : 'Shield mended · ' + [fr, r.mend.m ? '−' + r.mend.m + ' Energy' : ''].filter(Boolean).join(' · '), 410, 2), 22, y, r.mend.short ? C.wine : C.ink); y += 26; }
     if (!r.items.length && !r.ops.length && r.reason !== 'break' && !r.hatch && !(r.mend && r.mend.m)) { text('Nothing in the cargo this time.', 22, y, C.stone); y += 24; }
     for (const o of r.ops) {
       if (y > 400) break;
