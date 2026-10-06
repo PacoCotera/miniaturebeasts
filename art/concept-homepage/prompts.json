@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Generated candidates for the seven homepage shots in art/concept-brief-homepage.md; concept art awaiting acceptance, not captures and not authored pixel masters.",
+  "purpose": "Generated candidates for the ten homepage shots in art/concept-brief-homepage.md; concept art awaiting acceptance, not captures and not authored pixel masters.",
   "brief": "art/concept-brief-homepage.md",
   "tool": {
     "name": "Gemini API",
@@ -10,17 +10,17 @@
       "gemini-3-pro-image": "Gemini 3 Pro Image (listed as newest pro image model)",
       "gemini-3.1-flash-image": "Gemini 3.1 Flash Image (listed as newest image model)"
     },
-    "modelChoice": "Both image models listed for the key were used. Flash was tried first; after two Flash attempts failed the H1 button layout, the Pro model was used for the third and then each later shot ran one attempt on each model so the better one could be kept.",
+    "modelChoice": "Both image models listed for the key were used. Flash was tried first; after two Flash attempts failed the H1 button layout, the Pro model was used for the third and then each later shot ran one attempt on each model so the better one could be kept. Second batch (H1 pass C, D1, D2, E1): Flash first where the checklist is layout and identity (H1 pass C, D1, E1); Pro for D2, whose checklist needs two figures that match the rich Pip exactly, and for the retries whose first attempt failed on text fidelity (H1 pass C) or on following the flat-screen instruction (E1).",
     "generationConfig": {
       "responseModalities": [
         "IMAGE"
       ],
       "imageConfig": {
-        "aspectRatio": "3:2 or 2:3",
+        "aspectRatio": "3:2, 2:3 or 21:9",
         "imageSize": "2K"
       }
     },
-    "output": "image/jpeg at 2528x1696 or 1696x2528; no transparency option; resampled with LANCZOS to the brief sizes and stored as PNG",
+    "output": "image/jpeg at 2528x1696, 1696x2528 or 3168x1344 (21:9); no transparency option; resampled with LANCZOS to the brief sizes and stored as PNG",
     "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the brief prompt followed verbatim as the last text part."
   },
   "stopped": {
@@ -1255,6 +1255,535 @@
           "status": "RESOURCE_EXHAUSTED"
         }
       }
+    },
+    {
+      "id": "hero-kit",
+      "shot": "H1",
+      "pass": "C",
+      "attempt": 1,
+      "tag": "H1C-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: retained 1536x1024 Miniature Beasts hardware family concept render. Change ONLY the text printed on the white thermal card coming out of the Caddy's printer slot, and preserve every other pixel: all three devices, every screen, the printed Pip drawing on the card, the small leaf mark and the thin rule on the card, the card's shape and curl, the tabletop, the light and the layout. On the card, the two text lines \"PIP-001\" and \"Sample A\" become the single line \"Pip · PIP-001\", centred where they were, in the same crisp black thermal type and the same size. No other text, icon, mark or control changes; no new text anywhere.",
+      "promptSource": "written for pass C in the pass B style; the brief's H1 'Next edit pass' note gives only the string",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the retained render to edit (the pass B result).",
+      "imageInputs": [
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "edit target: the pass B hero render",
+          "sha256": "dd8009fb3eb525909a32b260aefd4052bdb6718b4c80a2b36a3674031e09a19c",
+          "note": "the pass B result as it was at call time; now stored as art/concept-homepage/hero-kit-passB.png"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "3:2",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x1024",
+      "time": "2026-10-06T18:36:10Z",
+      "result": {
+        "status": "success",
+        "disposition": "rejected",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2528,
+          "height": 1696,
+          "sha256": "2f5ed4c44d0ccc10021078c22cedd43b68a76ad171896eaf1cd8a88ef14a61be",
+          "note": "Original JPEG not stored to limit repository size; the PNG is a LANCZOS resample of it."
+        },
+        "png": {
+          "file": "rejected/hero-kit-passC-attempt1.png",
+          "width": 1536,
+          "height": 1024,
+          "sha256": "a82657eff54e08b91a5bf33d757643e5cb825ce5cebeac1d4fd45599c66e4b58"
+        },
+        "finishReason": "STOP",
+        "seconds": 15.9,
+        "usage": {
+          "promptTokenCount": 463,
+          "candidatesTokenCount": 1953,
+          "totalTokenCount": 2416,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 205
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "id": "hero-kit",
+      "shot": "H1",
+      "pass": "C",
+      "attempt": 2,
+      "tag": "H1C-attempt2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: retained 1536x1024 Miniature Beasts hardware family concept render. Change ONLY the text printed on the white thermal card coming out of the Caddy's printer slot, and preserve every other pixel: all three devices, every screen, the printed Pip drawing on the card, the small leaf mark and the thin rule on the card, the card's shape and curl, the tabletop, the light and the layout. The button labels PRINT and FEED beside the slot, the shell labels CALL, BACK and CONFIRM, and every other printed word stay exactly as they are, spelled exactly. On the card, the two text lines \"PIP-001\" and \"Sample A\" become the single line \"Pip · PIP-001\", centred where they were, in the same crisp black thermal type and the same size. No other text, icon, mark or control changes; no new text anywhere.",
+      "promptSource": "written for pass C in the pass B style, with the PRINT, FEED and shell labels named as preserved after attempt 1 garbled PRINT",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the retained render to edit (the pass B result).",
+      "imageInputs": [
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "edit target: the pass B hero render",
+          "sha256": "dd8009fb3eb525909a32b260aefd4052bdb6718b4c80a2b36a3674031e09a19c",
+          "note": "the pass B result as it was at call time; now stored as art/concept-homepage/hero-kit-passB.png"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "3:2",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x1024",
+      "time": "2026-10-06T18:37:22Z",
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/H1C-attempt2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2528,
+          "height": 1696,
+          "sha256": "0881458d5e6cfa20eb0464a766199a15a319f39fd25f2c57ccd4ed8ac0732c4b"
+        },
+        "png": {
+          "file": "hero-kit.png",
+          "width": 1536,
+          "height": 1024,
+          "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+        },
+        "finishReason": "STOP",
+        "seconds": 23.0,
+        "usage": {
+          "promptTokenCount": 497,
+          "candidatesTokenCount": 1280,
+          "totalTokenCount": 1951,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 239
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 174,
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "id": "companion-resident-home",
+      "shot": "D1",
+      "pass": null,
+      "attempt": 1,
+      "tag": "D1-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Companion screen concept, 1024x1536 canvas; the screen is a centred 900x1200 block (450x600 logical pixels at exactly 2x) on a plain dark margin. Flat screen, not a device photograph. Everything, including the HUD and bottom line, must be INSIDE the block.\nDESIGN AT LOW RESOLUTION FIRST: deliberate contemporary HiBit pixel art on a 450x600 grid, crisp stepped edges, broad coherent pixel clusters, rounded volume, restrained highlights. No painted-then-pixelated look, no dither spray, no blur. Match the supplied HiBit Pip exactly in identity and pixel craft.\nSCENE: Pip alone, sitting centred and facing the viewer, about 300 logical pixels tall: broad squat charcoal quadruped, cream belly, large orange eyes with cream rings, tiny smile, three green leaf crown lobes, plain coat with no pale marks. Behind it a soft sunny garden corner in bright greens, teal and cream, a few clover tufts, nothing else. Below Pip, the words \"Pip\" and \"Plain coat\" in small clean pixel type.\nHUD: 26 px dark top bar. At left: three white shield bars, two empty rounded pod outlines, a tiny Pip face. Towards the right: an amber bolt with \"5\", then a teal rounded slot with \")))\" for Call. Leave the far-right 40 px of the bar empty dark: reserve it for a battery and a connectivity indicator, draw neither. Bottom line, 34 px: orange \"✓ Spend time together\" at left, grey \"home\" in the middle, grey \"← Menu\" at right. No other text.\nConstraints: saturated playful colour; no other creatures; no speech bubbles, hearts, stat bars, menus or buttons drawn on the scene; no logos.",
+      "promptSource": "art/concept-brief-homepage.md, verbatim",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted HiBit Pip source (identity and pixel craft). Image 2 shows that Pip at Companion screen size, in the accepted resident pose.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/hibit-plain-source.png",
+          "role": "accepted HiBit Pip source: identity and pixel craft",
+          "sha256": "998148d2fb412371e3554c5371af6d15827d939d1727a21b3cdd664190b47f1c"
+        },
+        {
+          "path": "art/miniature-lives/exports/companion-resident.png",
+          "role": "accepted HiBit Pip at Companion screen size, the resident pose",
+          "sha256": "fc7b893a09b5ede42fd0ac1a85d0d3ee3c5277a85ed3b261c66546dd401fee4d"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "2:3",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1536",
+      "time": "2026-10-06T18:38:20Z",
+      "result": {
+        "status": "success",
+        "disposition": "rejected",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 1696,
+          "height": 2528,
+          "sha256": "519c23124ea898b8ffb3093272aa9f89464cd609abea65bce61e5cf3eea70bd1",
+          "note": "Original JPEG not stored to limit repository size; the PNG is a LANCZOS resample of it."
+        },
+        "png": {
+          "file": "rejected/companion-resident-home-attempt1.png",
+          "width": 1024,
+          "height": 1536,
+          "sha256": "be6d69de2a06a5d78e579d034334588c7fd920d5f28295fb149cb2ac7e5590b1"
+        },
+        "finishReason": "STOP",
+        "seconds": 13.8,
+        "usage": {
+          "promptTokenCount": 999,
+          "candidatesTokenCount": 2134,
+          "totalTokenCount": 3133,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 483
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "id": "companion-resident-home",
+      "shot": "D1",
+      "pass": null,
+      "attempt": 2,
+      "tag": "D1-attempt2",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Companion screen concept, 1024x1536 canvas; the screen is a centred 900x1200 block (450x600 logical pixels at exactly 2x) on a plain dark margin. Flat screen, not a device photograph. Everything, including the HUD and bottom line, must be INSIDE the block.\nDESIGN AT LOW RESOLUTION FIRST: deliberate contemporary HiBit pixel art on a 450x600 grid, crisp stepped edges, broad coherent pixel clusters, rounded volume, restrained highlights. No painted-then-pixelated look, no dither spray, no blur. Match the supplied HiBit Pip exactly in identity and pixel craft.\nSCENE: Pip alone, sitting centred and facing the viewer, about 300 logical pixels tall: broad squat charcoal quadruped, cream belly, large orange eyes with cream rings, tiny smile, three green leaf crown lobes, plain coat with no pale marks. Behind it a soft sunny garden corner in bright greens, teal and cream, a few clover tufts, nothing else. Below Pip, the words \"Pip\" and \"Plain coat\" in small clean pixel type.\nHUD: 26 px dark top bar. At left: three white shield bars, two empty rounded pod outlines, a tiny Pip face. Towards the right: an amber bolt with \"5\", then a teal rounded slot with \")))\" for Call. Leave the far-right 40 px of the bar empty dark: reserve it for a battery and a connectivity indicator, draw neither. Bottom line, 34 px: orange \"✓ Spend time together\" at left, grey \"home\" in the middle, grey \"← Menu\" at right. No other text.\nConstraints: saturated playful colour; no other creatures; no speech bubbles, hearts, stat bars, menus or buttons drawn on the scene; no logos.",
+      "promptSource": "art/concept-brief-homepage.md, verbatim",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted HiBit Pip source (identity and pixel craft). Image 2 shows that Pip at Companion screen size, in the accepted resident pose. Image 3 is layout truth only, not style: the plain dark margin, the single centred 900x1200 screen block (green), and inside that block the dark HUD strip at its top and the dark bottom-line strip at its bottom; draw the HUD bar and the bottom line inside those strips, on one line each, and draw nothing on the dark margin.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/hibit-plain-source.png",
+          "role": "accepted HiBit Pip source: identity and pixel craft",
+          "sha256": "998148d2fb412371e3554c5371af6d15827d939d1727a21b3cdd664190b47f1c"
+        },
+        {
+          "path": "art/miniature-lives/exports/companion-resident.png",
+          "role": "accepted HiBit Pip at Companion screen size, the resident pose",
+          "sha256": "fc7b893a09b5ede42fd0ac1a85d0d3ee3c5277a85ed3b261c66546dd401fee4d"
+        },
+        {
+          "path": "art/concept-homepage/layout/companion-screen-block.png",
+          "role": "layout truth only: canvas margin, 900x1200 screen block, HUD strip and bottom-line strip inside it",
+          "sha256": "65779baca59fcfee84724de36ba28adbb382fa6f4c7f4d743cfb5adab3652234"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "2:3",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1536",
+      "time": "2026-10-06T18:40:18Z",
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/D1-attempt2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 1696,
+          "height": 2528,
+          "sha256": "46e52da6e721d1b22a1735789c9c737557b62be0f0ab05cf4f31f5754affe50f"
+        },
+        "png": {
+          "file": "companion-resident-home-canvas.png",
+          "width": 1024,
+          "height": 1536,
+          "sha256": "8a3263ad8e095813fa8ccfcdc81df06b81e437050de0bd6a9cb8c044be917b70"
+        },
+        "finishReason": "STOP",
+        "seconds": 13.9,
+        "usage": {
+          "promptTokenCount": 1370,
+          "candidatesTokenCount": 2201,
+          "totalTokenCount": 3571,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 596
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "id": "station-known-forms",
+      "shot": "D2",
+      "pass": null,
+      "attempt": 1,
+      "tag": "D2-attempt1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, 1536x1024 canvas; the screen occupies a centred 1536x900 band with plain dark margins above and below for cropping to 1024x600. Flat screen design, not a device photograph. Header bar INSIDE the band. Design at 1024x600 first: large shapes, no fine print.\nSTYLE: the matched richer Miniature Lives treatment, as the supplied rich Pip and lab-known-comparison: softly sculpted ceramic/resin volumes, directional light from upper left, calm deep teal-blue backdrop, generous space. Not pixel art.\nCONTENT: two figures of one species on one shared soft floor, equal size, same three-quarter pose facing each other. LEFT: Pip exactly as supplied: broad squat charcoal quadruped, cream belly, orange eyes with cream rings, three green leaf crown lobes, plain coat; under it \"Pip\" and \"Plain coat\". RIGHT: the same body, proportions, eyes and leaves, with cream pale markings as broad soft islands on the back and flanks and nothing else changed; under it \"Hypothetical\" and \"Pale markings\". No symbols between the figures. Thin header bar: at left \"MINIATURE BEASTS · Known forms\"; at right a blue data chip \"4\", an amber energy crystal \"5\", a green essence droplet \"2\". No other text.\nConstraints: no tables, letters, genotype labels, percentages, DNA helices, glassware or buttons; no horns, tails or colour changes on either; no other creatures; no logos besides the wordmark; saturated, warm and playful.",
+      "promptSource": "art/concept-brief-homepage.md, verbatim",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted rich Pip (identity, treatment); the left figure must match it exactly. Image 2 shows the rich treatment at Station screen size with the plain and pale-marked forms side by side. Image 3 is a material reference only, not layout or content. Image 4 is layout truth only, not style: the plain dark margins above and below, the centred 1536x900 screen band, and the header strip inside the band at its top; draw everything, including the header bar, inside the band and nothing on the margins.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "accepted rich Pip: identity and treatment",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        },
+        {
+          "path": "art/miniature-lives/exports/lab-known-comparison.png",
+          "role": "rich treatment at Station screen size, plain and pale-marked forms",
+          "sha256": "d77667b8360b2bbc580fc6e49881af1eeeecdebe8a48f1b64557d7df854368f4"
+        },
+        {
+          "path": "art/visual-directions/02-miniature-lives.png",
+          "role": "material reference only",
+          "sha256": "09563babe19eb0c39a427ca6bf466e51696a5e00afb0cd0b74db024722ecd070"
+        },
+        {
+          "path": "art/concept-homepage/layout/station-screen-band.png",
+          "role": "layout truth only: canvas margins, 1536x900 screen band, header strip inside it",
+          "sha256": "75fc32fe2ba838d70e1ac6167709380b7c5a66fc4a2a47ca259c99a800a596a9"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "3:2",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x1024",
+      "time": "2026-10-06T18:40:32Z",
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/D2-attempt1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2528,
+          "height": 1696,
+          "sha256": "ce7a5fc8223921b64dc8d3d01789c6a3f39b84db2b417c2ee10f86dbb2802efd"
+        },
+        "png": {
+          "file": "station-known-forms-canvas.png",
+          "width": 1536,
+          "height": 1024,
+          "sha256": "0338a77c745f2c847890572a7e3d2791b1e8fff503127ddd5bc122ed7fae6bfb"
+        },
+        "finishReason": "STOP",
+        "seconds": 24.1,
+        "usage": {
+          "promptTokenCount": 1582,
+          "candidatesTokenCount": 1504,
+          "totalTokenCount": 3380,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 550
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1032
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 294,
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "id": "caddy-summary-epaper",
+      "shot": "E1",
+      "pass": null,
+      "attempt": 1,
+      "tag": "E1-attempt1",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Caddy e-paper summary screen concept, flat 1600x479 landscape, opaque. Exactly FOUR greys and nothing else: white, light grey, dark grey, black. No colour, no gradients; any shading is ordered dither in those four greys, crisp like e-paper.\nLAYOUT: left third, a small Pip in black, dark grey and white (broad squat quadruped, pale belly, large eyes with pale rings, three leaf crown lobes, plain coat) with \"Pip · PIP-001\" and \"1 resident\" beneath. Middle, a rounded pod outline with a three-leaf mark and \"Hopper pod · waiting\" beneath. Right, three small stacked rows of icon and count: a data chip \"4\", an energy crystal \"5\", an essence droplet \"2\". Thin rule lines in dark grey between the three areas. No other text.\nConstraints: no \"Cached\", \"Connections\", clock or status text or icons; no QR code; no logos or marks of any kind; no colour; no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, verbatim",
+      "preamble": "Reference images follow; their roles are stated. Image 1 shows the printed thermal card Pip whose silhouette, crown and plain coat the e-paper Pip must match. Image 2 is layout truth only: the four-grey e-paper summary on the Caddy in the hero render (resident, pod, counts), to be drawn flat and full-size here. Technical note: this canvas is 21:9; lay the whole summary out in one centred horizontal band of 1600x479 proportion (the full canvas width by about 70 percent of its height) and leave plain white e-paper above and below it with nothing drawn there.",
+      "imageInputs": [
+        {
+          "path": "art/concept-homepage/caddy-print.png",
+          "role": "printed card Pip: silhouette, crown and plain coat to match",
+          "sha256": "fafea729166b7adfaa5d61e7f414d1bb0e29ded06efe675af9a427dadc4334ce"
+        },
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "layout truth only: the Caddy e-paper summary as in H1 pass B",
+          "sha256": "dd8009fb3eb525909a32b260aefd4052bdb6718b4c80a2b36a3674031e09a19c",
+          "note": "the pass B result as it was at call time; now stored as art/concept-homepage/hero-kit-passB.png"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "21:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1600x479 (canvas resampled to 1600x679)",
+      "time": "2026-10-06T18:40:56Z",
+      "result": {
+        "status": "success",
+        "disposition": "rejected",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 3168,
+          "height": 1344,
+          "sha256": "f3ac9b710b2984763a7d153e8492b00cc22554c851a0d612269fda3179c82960",
+          "note": "Original JPEG not stored to limit repository size; the PNG is a LANCZOS resample of it."
+        },
+        "png": {
+          "file": "rejected/caddy-summary-epaper-attempt1.png",
+          "width": 1600,
+          "height": 679,
+          "sha256": "a295bf78ca1325c5dd2cddba2c80febcda6b1320e15ff92393b2946f4f86d341"
+        },
+        "finishReason": "STOP",
+        "seconds": 15.3,
+        "usage": {
+          "promptTokenCount": 929,
+          "candidatesTokenCount": 2100,
+          "totalTokenCount": 3029,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 413
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "id": "caddy-summary-epaper",
+      "shot": "E1",
+      "pass": null,
+      "attempt": 2,
+      "tag": "E1-attempt2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Caddy e-paper summary screen concept, flat 1600x479 landscape, opaque. Exactly FOUR greys and nothing else: white, light grey, dark grey, black. No colour, no gradients; any shading is ordered dither in those four greys, crisp like e-paper.\nLAYOUT: left third, a small Pip in black, dark grey and white (broad squat quadruped, pale belly, large eyes with pale rings, three leaf crown lobes, plain coat) with \"Pip · PIP-001\" and \"1 resident\" beneath. Middle, a rounded pod outline with a three-leaf mark and \"Hopper pod · waiting\" beneath. Right, three small stacked rows of icon and count: a data chip \"4\", an energy crystal \"5\", an essence droplet \"2\". Thin rule lines in dark grey between the three areas. No other text.\nConstraints: no \"Cached\", \"Connections\", clock or status text or icons; no QR code; no logos or marks of any kind; no colour; no other creatures.",
+      "promptSource": "art/concept-brief-homepage.md, verbatim",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is a crop of the printed thermal card Pip whose silhouette, crown and plain coat the e-paper Pip must match, redrawn here in the four e-paper greys. Image 2 is layout truth only: a crop of the four-grey e-paper summary panel on the Caddy in the hero render (resident, pod, counts); reproduce that layout flat and full-size, with the strings the prompt quotes. Flat 2D screen graphic, not a device photograph: no Caddy body, buttons, table, perspective, shadows or blur; the e-paper display fills the canvas edge to edge. Technical note: this canvas is 21:9; lay the whole summary out in one centred horizontal band of 1600x479 proportion (the full canvas width by about 70 percent of its height) and leave plain white e-paper above and below it with nothing drawn there.",
+      "imageInputs": [
+        {
+          "path": "art/concept-homepage/layout/caddy-card-pip-crop.png",
+          "role": "printed card Pip crop: silhouette, crown and plain coat to match",
+          "sha256": "f31096dd200c648dedac206434f14c6d3558ef53ac315d3dc621c998c3db0d31"
+        },
+        {
+          "path": "art/concept-homepage/layout/epaper-panel-passB.png",
+          "role": "layout truth only: the Caddy e-paper summary panel from H1 pass B",
+          "sha256": "437339cfc0cb7c80c23f84927f8cfdc1caeed64e3df6b8db35f195624c902881"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "21:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1600x479 (canvas resampled to 1600x679)",
+      "time": "2026-10-06T18:42:22Z",
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/E1-attempt2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 3168,
+          "height": 1344,
+          "sha256": "be38be2c27574ac48b0d333042dd41fe9f12865dc54d308661477d57cc063ce9"
+        },
+        "png": {
+          "file": "caddy-summary-epaper-canvas.png",
+          "width": 1600,
+          "height": 679,
+          "sha256": "7fe5d808631a32e6fc0511ad5abf73dc917207c6ff3622484c47d41b78750534"
+        },
+        "finishReason": "STOP",
+        "seconds": 26.9,
+        "usage": {
+          "promptTokenCount": 994,
+          "candidatesTokenCount": 1588,
+          "totalTokenCount": 2844,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 478
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 262,
+          "serviceTier": "standard"
+        }
+      }
     }
-  ]
+  ],
+  "secondBatch": {
+    "when": "2026-10-06, after the spending cap was raised",
+    "budget": "at most 8 image calls",
+    "used": 7,
+    "byModel": {
+      "gemini-3.1-flash-image": 4,
+      "gemini-3-pro-image": 3
+    },
+    "rule": "one attempt per shot, one more only if the first failed its acceptance checklist",
+    "layoutInputs": "layout/companion-screen-block.png and layout/station-screen-band.png are flat templates drawn with PIL (margin, screen block or band, HUD and header strips) and sent as layout truth; layout/caddy-card-pip-crop.png and layout/epaper-panel-passB.png are crops of caddy-print.png and hero-kit-passB.png."
+  }
 }
