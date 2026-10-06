@@ -82,6 +82,8 @@ Use case: precise-object-edit. Asset type: retained 1536x1024 Miniature Beasts h
 - The only marks are MINIATURE BEASTS and COMPANION; no Sample, Cached or Connections strings remain.
 - Pip is identical on all three devices: plain coat, cream belly, orange eyes, three leaves.
 - Everything outside the edits matches family-concept-v2 (overlay at 50% to check).
+- **Next edit pass:** the printed card must read "Pip · PIP-001", not "Sample A" (pass B
+  listed only screen strings). Add a pass C: change only the card text to "Pip · PIP-001".
 
 ### C1 `companion-map-hands`: the fogged world map, held
 - **Goes:** Expedition section, a wide image above the two prototype screenshots.
@@ -105,8 +107,8 @@ Constraints: saturated playful colour, no brown or grey palette; no creatures on
 - Screen text is exactly the quoted strings or absent.
 
 ### C2 `companion-storm`: a living patch under a storm
-- **Goes:** Devices section, 01 / Companion card (the HiBit study moves to Life stages
-  or the art page).
+- **Goes:** Expedition section, beside C1 above the prototype screenshots (D1 now takes
+  the Devices 01 slot; the old HiBit study is retired).
 - **Format:** 2:3, 1024×1536, opaque.
 - **Shows:** the Companion lying almost flat on a mossy stone, seen from above at a
   slight angle. Its screen is a wood under a strong storm: rain, a struck stone
@@ -157,7 +159,7 @@ Constraints: MINIATURE BEASTS embossed on the Caddy, plus one small Dirty Pawz P
 **Accept when:**
 - The printed Pip has the same silhouette, crown and plain coat as the screen Pip, in black on white only.
 - The card says only "Pip" and "PIP-001".
-- No marks other than MINIATURE BEASTS; no lights.
+- Marks: MINIATURE BEASTS and one small Dirty Pawz Press mark on the Caddy only (rule 4); no Critter Lab, no lights.
 - The Caddy matches the hero render's Caddy.
 
 ### P1 `partner-patch`: the partner answers the call
@@ -196,6 +198,78 @@ Constraints: no added horns, tails, whiskers, beards, markings, grey hair, wrink
 - The adult matches the accepted rich Pip; nobody reads it as a family.
 - Transparent alpha with no halo.
 
+### D1 `companion-resident-home`: Pip at home on the Companion
+- **Goes:** Devices section, 01 / Companion card, replacing `website/assets/companion-hibit.webp`
+  (from `v1/website/dist/assets/companion-hibit.png`).
+- **Format:** generate 1024x1536, screen a centred 900x1200 block; crop, keep 900x1200 and 450x600.
+- **Shows:** the resident screen: Pip in crisp HiBit pixel art, close and centred on a warm
+  meadow-green home backdrop, in the accepted pose of `companion-resident.png`. The HUD is
+  the designed Companion's, with its far right left clear for battery and connectivity.
+
+```
+Use case: stylized-concept. Asset type: Miniature Beasts Companion screen concept, 1024x1536 canvas; the screen is a centred 900x1200 block (450x600 logical pixels at exactly 2x) on a plain dark margin. Flat screen, not a device photograph. Everything, including the HUD and bottom line, must be INSIDE the block.
+DESIGN AT LOW RESOLUTION FIRST: deliberate contemporary HiBit pixel art on a 450x600 grid, crisp stepped edges, broad coherent pixel clusters, rounded volume, restrained highlights. No painted-then-pixelated look, no dither spray, no blur. Match the supplied HiBit Pip exactly in identity and pixel craft.
+SCENE: Pip alone, sitting centred and facing the viewer, about 300 logical pixels tall: broad squat charcoal quadruped, cream belly, large orange eyes with cream rings, tiny smile, three green leaf crown lobes, plain coat with no pale marks. Behind it a soft sunny garden corner in bright greens, teal and cream, a few clover tufts, nothing else. Below Pip, the words "Pip" and "Plain coat" in small clean pixel type.
+HUD: 26 px dark top bar. At left: three white shield bars, two empty rounded pod outlines, a tiny Pip face. Towards the right: an amber bolt with "5", then a teal rounded slot with ")))" for Call. Leave the far-right 40 px of the bar empty dark: reserve it for a battery and a connectivity indicator, draw neither. Bottom line, 34 px: orange "✓ Spend time together" at left, grey "home" in the middle, grey "← Menu" at right. No other text.
+Constraints: saturated playful colour; no other creatures; no speech bubbles, hearts, stat bars, menus or buttons drawn on the scene; no logos.
+```
+**Accept when:**
+- Pip is identical to the accepted HiBit Pip at 450x600, 1x: plain coat, cream belly, orange eyes, three leaves.
+- HUD shows shield bars, two pod outlines, the Energy number and a teal Call slot, with an empty reserved far-right slot and no battery or connectivity glyph.
+- Bottom line and "Pip" / "Plain coat" are spelled exactly; nothing else is written.
+- Everything is inside the 900x1200 block (the P1 crop problem).
+
+### D2 `station-known-forms`: Pip beside the pale-marked Pip
+- **Goes:** Devices section, 02 / Station, replacing `website/assets/station-rich.webp`
+  (from `station-rich.png`; the richer layout of `art/miniature-lives/exports/lab-known-comparison.png`).
+- **Format:** generate 1536x1024, screen in a centred 1536x900 band; crop, resample to 1024x600.
+- **Shows:** the designed Station screen: Pip (plain) left and, right, the same Pip with cream
+  pale markings, clearly a hypothetical form of the same species, on one calm teal-blue stage.
+
+```
+Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, 1536x1024 canvas; the screen occupies a centred 1536x900 band with plain dark margins above and below for cropping to 1024x600. Flat screen design, not a device photograph. Header bar INSIDE the band. Design at 1024x600 first: large shapes, no fine print.
+STYLE: the matched richer Miniature Lives treatment, as the supplied rich Pip and lab-known-comparison: softly sculpted ceramic/resin volumes, directional light from upper left, calm deep teal-blue backdrop, generous space. Not pixel art.
+CONTENT: two figures of one species on one shared soft floor, equal size, same three-quarter pose facing each other. LEFT: Pip exactly as supplied: broad squat charcoal quadruped, cream belly, orange eyes with cream rings, three green leaf crown lobes, plain coat; under it "Pip" and "Plain coat". RIGHT: the same body, proportions, eyes and leaves, with cream pale markings as broad soft islands on the back and flanks and nothing else changed; under it "Hypothetical" and "Pale markings". No symbols between the figures. Thin header bar: at left "MINIATURE BEASTS · Known forms"; at right a blue data chip "4", an amber energy crystal "5", a green essence droplet "2". No other text.
+Constraints: no tables, letters, genotype labels, percentages, DNA helices, glassware or buttons; no horns, tails or colour changes on either; no other creatures; no logos besides the wordmark; saturated, warm and playful.
+```
+**Accept when:**
+- Both figures share silhouette, belly, eyes and exactly three leaves; the only difference is the cream islands.
+- The pale one is labelled hypothetical; the plain one matches `rich-plain-300x310.png`.
+- Header counts 4, 5, 2 and the four quoted strings read at 1024x600; no genotype letters.
+- It reads as a designed game screen, not a lab report.
+
+### E1 `caddy-summary-epaper`: the four-grey world summary
+- **Goes:** Devices section, 03 / Caddy, replacing `website/assets/caddy-summary.webp`
+  (from `caddy-summary.png`).
+- **Format:** generate 3:1 or nearest, resample to 1600x479, opaque. Flat screen, not a photograph.
+- **Shows:** the e-paper summary exactly as in H1 pass B: a resident, the waiting pod, three counts.
+
+```
+Use case: stylized-concept. Asset type: Miniature Beasts Caddy e-paper summary screen concept, flat 1600x479 landscape, opaque. Exactly FOUR greys and nothing else: white, light grey, dark grey, black. No colour, no gradients; any shading is ordered dither in those four greys, crisp like e-paper.
+LAYOUT: left third, a small Pip in black, dark grey and white (broad squat quadruped, pale belly, large eyes with pale rings, three leaf crown lobes, plain coat) with "Pip · PIP-001" and "1 resident" beneath. Middle, a rounded pod outline with a three-leaf mark and "Hopper pod · waiting" beneath. Right, three small stacked rows of icon and count: a data chip "4", an energy crystal "5", an essence droplet "2". Thin rule lines in dark grey between the three areas. No other text.
+Constraints: no "Cached", "Connections", clock or status text or icons; no QR code; no logos or marks of any kind; no colour; no other creatures.
+```
+**Accept when:**
+- Only four greys appear; no hue, no soft gradients.
+- Pip matches the printed card Pip's silhouette, crown and plain coat.
+- The five quoted strings and counts 4, 5, 2 are spelled exactly; no Cached or Connections strings.
+- No marks on the screen (the Dirty Pawz Press mark belongs to the Caddy body in K1 and H1).
+
+## Page map
+
+| Section | Image (current source) | Shot | Status |
+| --- | --- | --- | --- |
+| Hero | `kit-family-concept` | H1 `hero-kit` | candidate (needs card "Pip · PIP-001" pass) |
+| Devices 01 Companion | `companion-hibit` | D1 `companion-resident-home` | to generate |
+| Devices 02 Station | `station-rich` | D2 `station-known-forms` | to generate |
+| Devices 03 Caddy | `caddy-summary` | E1 `caddy-summary-epaper` | to generate |
+| Devices 03 Caddy (new, beside summary) | none | K1 `caddy-print` | candidate |
+| Expedition (new, above screenshots) | none | C1 `companion-map-hands`, C2 `companion-storm` | candidate |
+| Expedition | `prototype-map`, `prototype-storm` | real screenshots | keep (not art) |
+| Station | `station-research-study` | S1 `station-research-pod` (covers it; the Pp panel stays as page text) | candidate |
+| Genetics | `pip-plain` x4, `pip-pale` (Punnett crops) | none | keep (Pip crops, unchanged genes) |
+| Life (new) | none | P1 `partner-patch`, L1 `pip-life-stages` | candidate |
+
 ## Consistency and order
 
 **Style references** (supplied as image inputs, with their role stated in the
@@ -214,6 +288,6 @@ prompt):
   names, knobs, separate Probe).
 
 **Order:** H1 first (it fixes the four-button Companion for every later device shot),
-then C1, C2, K1, then the screens S1 and P1, then L1. Judge each at the size the page
+then C1, C2, K1, then the screens D1, D2, E1, S1 and P1, then L1. Judge each at the size the page
 shows it and, for screens, at device size at 1×. Keep every original, its exact
 prompt and its hash, and caption each image as concept art on the page.
