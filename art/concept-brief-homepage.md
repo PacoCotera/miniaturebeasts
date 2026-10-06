@@ -255,6 +255,47 @@ Constraints: no "Cached", "Connections", clock or status text or icons; no QR co
 - The five quoted strings and counts 4, 5, 2 are spelled exactly; no Cached or Connections strings.
 - No marks on the screen (the Dirty Pawz Press mark belongs to the Caddy body in K1 and H1).
 
+### Batch 3 (homepage spec, 2026-10-06)
+
+Placement and layout: [`../design/proposals/homepage-spec.md`](../design/proposals/homepage-spec.md).
+Budget: 9 calls, one per shot; a second attempt only for a failed checklist.
+
+#### S2 `station-research-hands`: the research screen inside the Station
+- **Goes:** Station section, full-bleed. 1536×1024. Inputs: H1 (Station shell), S1 (screen).
+```
+Use case: stylized-concept product render, 1536x1024. The sage Station from the supplied kit render, a landscape two-thumb handheld, held in two hands at a wooden table at home in warm lamp light, tilted slightly toward the viewer; physical controls exactly as in the kit render. Its 1024x600 screen shows the supplied research screen unchanged: sealed hopper pod in a padded cradle under a pool of light, "Hopper pod", amber "Needs 2 more Essence", small Pip at right with "Hopper · known", header with chip 4, crystal 5, droplet 2. No other text, no other devices, no logos but MINIATURE BEASTS on the shell.
+```
+**Accept when:** the Station matches H1; the screen reads at page size; strings exact or maskable.
+
+#### C3 `companion-partner-hands`: a partner at work
+- **Goes:** Life panel, left. 1536×1024. Inputs: C1 (hands, device), P1 canvas (screen).
+```
+Use case: stylized-concept product render, 1536x1024, an edit of the supplied hands render. Same Companion, same hands and button rules, outdoors in soft morning light. The screen shows the supplied partner scene in HiBit pixel art: Pip beside the player's pawn inside the teal Call ring, glinting soil at a dig patch. HUD and bottom line inside the screen block: "⚡3", "))) call", "✓ Dig here · meadow · ← Wait · Leave". Nothing else changes.
+```
+**Accept when:** HUD and bottom line are inside the screen; buttons follow rule 3.
+
+#### V1–V7 Pip-species variants (family tree portraits)
+- **Goes:** Genetics tree, composed in HTML/CSS; V0 is the accepted rich Pip.
+- **Format:** 1024×1024, flat cream `#f5f2e9` background (keyed to alpha), richer
+  treatment. Input: `art/miniature-lives/assets/rich-plain-source.png` (pose, light,
+  body plan). Rule 6 is relaxed for these only: they are other individuals of Pip's
+  species, not Pip, and differ only in the listed traits.
+```
+Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: {TRAITS}. No text, no props, no scenery, no other creatures.
+```
+| Id | Name | {TRAITS} |
+| --- | --- | --- |
+| V1 | Rust | warm russet coat instead of charcoal; short rounded ears visible |
+| V2 | Sable | cream pale islands on back and flanks as in the pale-marked reference; long upright ears |
+| V3 | Bramble | five leaf lobes on the crown; body 20 % larger and heavier |
+| V4 | Ember | warm russet coat; short ears |
+| V5 | Thistle | five leaf lobes; long upright ears; body 15 % smaller |
+| V6 | Moss | warm russet coat; three leaves curled at the tips; body 15 % larger |
+| V7 | Dapple | warm russet coat with cream pale islands on back and flanks; long upright ears; five leaf lobes |
+
+**Accept when:** each reads as the same species as Pip at 76 px and 160 px; only the
+listed traits differ; pose and light match across the set; no halo after keying.
+
 ## Page map
 
 | Section | Image (current source) | Shot | Status |
