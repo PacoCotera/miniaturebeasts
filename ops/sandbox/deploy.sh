@@ -19,7 +19,8 @@ curl -fsSL "$sum_url" -o "$work/site.sha256"
 (cd "$work" && sed 's# .*# site.tar.gz#' site.sha256 | sha256sum -c --quiet)
 install -d "$ROOT/releases/$tag"
 tar -C "$ROOT/releases/$tag" -xzf "$work/site.tar.gz"
-chown -R www-data:www-data "$ROOT/releases/$tag"
+chmod -R a+rX "$ROOT/releases/$tag"
 ln -sfn "$ROOT/releases/$tag" "$ROOT/current.new" && mv -T "$ROOT/current.new" "$ROOT/current"
 ls -1dt "$ROOT"/releases/sandbox-* | tail -n +6 | xargs -r rm -rf
+systemctl reload caddy 2>/dev/null || true
 echo "deployed $tag"

@@ -7,7 +7,7 @@ set -euo pipefail
 REPO="PacoCotera/miniaturebeasts"
 apt-get update -qq
 apt-get install -y -qq --no-install-recommends curl ca-certificates caddy jq >/dev/null
-install -d -o www-data -g www-data /srv/miniaturebeasts/releases
+install -d -m 755 /srv/miniaturebeasts/releases
 curl -fsSL "https://raw.githubusercontent.com/$REPO/main/ops/sandbox/deploy.sh" -o /usr/local/bin/mb-sandbox-deploy
 chmod 755 /usr/local/bin/mb-sandbox-deploy
 cat > /etc/caddy/Caddyfile <<'CADDY'
@@ -37,6 +37,10 @@ OnUnitActiveSec=2min
 WantedBy=timers.target
 UNIT
 systemctl daemon-reload
-systemctl enable --now caddy mb-sandbox-deploy.timer
+systemctl enable --now mb-sandbox-deploy.timer
 /usr/local/bin/mb-sandbox-deploy || true
+systemctl enable caddy
+systemctl restart caddy
+sleep 1
+curl -fsS http://localhost/build.json || { echo 'build.json not served; see: journalctl -u caddy -n 30'; exit 1; }
 echo "Sandbox installed. Serving on port 80 from /srv/miniaturebeasts/current."
