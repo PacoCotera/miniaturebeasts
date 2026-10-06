@@ -881,12 +881,16 @@ footer {
 .buttons i { font-style: normal; display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; color: #fff; font-size: .72rem; }
 .caddy-panel { grid-column: 1 / -1; display: grid; grid-template-columns: .75fr 1.45fr; gap: 2rem; align-items: center; }
 .caddy-panel figure { margin-top: 0 !important; }
+.caddy-panel .caddy-summary { grid-column: 1 / -1; }
+.caddy-summary img { background: #fff; }
 
 /* Expedition */
 .exp-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; align-items: start; }
 .exp-shots .panel figure { max-width: 360px; margin: 0 auto; }
 .exp-shots img { border: 1px solid #b9c1b1; }
 .exp-shots .panel h3 { margin-top: 1.4rem; }
+.exp-concept { display: grid; grid-template-columns: 2.25fr 1fr; gap: 2rem; margin-top: 2rem; align-items: start; }
+.exp-concept img { border: 1px solid #b9c1b1; }
 .steps { list-style: none; padding: 2rem 0 0; margin: 3rem 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem 2.5rem; border-top: 1px solid #a8b29f; }
 .steps li { display: flex; gap: 1rem; }
 .steps li > span { font-size: .8rem; padding-top: .25rem; color: #53664c; font-weight: 700; }
@@ -924,6 +928,10 @@ footer {
 .life-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
 .life-grid .panel { background: var(--paper); }
 .life-grid .panel > p:last-child { margin-top: 1.2rem; font-size: .8rem; color: #566253; }
+.life-shot { max-width: 240px; margin: 0 auto 1.4rem; }
+.life-shot img { border: 1px solid #b6bea9; }
+.life-stages { margin: 0 -.5rem 1rem; }
+.life-stages figcaption { padding-left: .5rem; padding-right: .5rem; }
 .stages { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .stages li { padding: .7rem .3rem; font-size: .85rem; font-weight: 700; text-align: center; }
 .stages li + li { border-left: 1px solid var(--line); }
@@ -956,6 +964,8 @@ footer {
   .caddy-panel, .exp-shots, .station-grid, .supplies, .supplies-head, .life-grid { grid-template-columns: 1fr; gap: 1.5rem; }
   .exp-shots { grid-template-columns: 1fr 1fr; gap: .8rem; }
   .exp-shots .panel { padding: .8rem; }
+  .exp-concept { grid-template-columns: 1fr; gap: 1.5rem; }
+  .exp-concept figure + figure { max-width: 260px; margin: 0 auto; width: 100%; }
   .exp-shots .panel h3 { font-size: 1.15rem; }
   .exp-shots .panel p { font-size: .9rem; }
   .steps { grid-template-columns: 1fr; gap: 1.3rem; }
@@ -990,8 +1000,8 @@ footer {
         <p class="hero-credit">In development, in the open · By Dirty Pawz Press, Mexico City</p>
       </div>
       <figure class="hero-art">
-        <img src="assets/kit-family-concept.webp" width="1536" height="1024" fetchpriority="high"
-             alt="Concept render of the kit on a wooden table: a sage-green Station showing two mibis side by side, a cream Companion showing Pip in a forest, both docked in a Caddy with a small grey summary screen and a printer feeding out a paper card of Pip.">
+        <img src="assets/hero-kit.webp" width="1536" height="1024" fetchpriority="high"
+             alt="Concept render of the kit on a wooden table: a grey-green Station showing research on a Hopper pod beside Pip, a cream Companion showing Pip in a pixel-art clearing, both docked in a Caddy whose small grey e-paper screen lists counts and whose printer feeds out a paper card reading Pip · PIP-001.">
         <figcaption>Concept art · Station, Companion &amp; Caddy · Shapes, buttons and screens will change</figcaption>
       </figure>
     </section>
@@ -1020,9 +1030,9 @@ footer {
             </ul>
           </div>
           <figure>
-            <img src="assets/companion-hibit.webp" width="450" height="600" loading="lazy"
-              alt="Companion screen study: Pip, a round dark mibi with a crown of three green leaves and orange eyes, drawn in crisp pixel art above the words Plain coat and a Spend time together button.">
-            <figcaption>Companion · HiBit appearance study</figcaption>
+            <img src="assets/companion-resident-home.webp" width="450" height="600" loading="lazy"
+              alt="Companion screen concept in pixel art: Pip, a round dark mibi with a cream belly, orange eyes and a crown of three green leaves, sits among clovers on a soft green wash above the labels Pip and Plain coat.">
+            <figcaption><span class="label">Concept screen, not from the build</span>Companion · Pip at home in HiBit pixel art</figcaption>
           </figure>
         </article>
         <article class="station-panel">
@@ -1032,9 +1042,9 @@ footer {
             <p>A 1024×600 screen you hold with both thumbs or play flat on the table. It opens your pods, runs research and incubation, and keeps your collection on an always-on screen, with your mibis living in a vivarium.</p>
           </div>
           <figure>
-            <img src="assets/station-rich.webp" width="1024" height="600" loading="lazy"
-              alt="Station screen study titled Known forms: Pip with a plain coat beside a hypothetical mibi of the same species with cream pale markings, both painted with soft light and detail.">
-            <figcaption>Station · Richer appearance study · The same Pip beside a pale-marked version</figcaption>
+            <img src="assets/station-known-forms.webp" width="1024" height="600" loading="lazy"
+              alt="Station screen concept headed Miniature Beasts · Known forms, with counts 4, 5 and 2: Pip, labelled Plain coat, stands beside a mibi of the same species labelled Hypothetical, Pale markings, with cream patches on its back and sides, on sand against a teal backdrop.">
+            <figcaption><span class="label">Concept screen, not from the build</span>Station · The same Pip beside a pale-marked version</figcaption>
           </figure>
           <p class="screen-note">One mibi, one identity: the same individual on the Companion, the Station and the paper card.</p>
         </article>
@@ -1045,9 +1055,14 @@ footer {
             <p>Set both handhelds down and they charge, ready for the next session. A quiet four-grey e-paper screen shows your world at a glance, and a small printer puts a mibi on paper.</p>
           </div>
           <figure>
-            <img src="assets/caddy-summary.webp" width="1600" height="479" loading="lazy"
-              alt="Caddy summary concept in shades of grey: Pip under Residents, a sealed sample capsule under Sample record, and counts for Data, Energy and Essence.">
-            <figcaption>Caddy summary display · Concept art</figcaption>
+            <img src="assets/caddy-print.webp" width="1200" height="800" loading="lazy"
+              alt="Concept render of the Caddy close up: beside its PRINT and FEED buttons, the printer slot feeds out a white paper card with a black dithered Pip above the words Pip and PIP-001.">
+            <figcaption><span class="label">Concept art</span>The Caddy prints a mibi’s card</figcaption>
+          </figure>
+          <figure class="caddy-summary">
+            <img src="assets/caddy-summary-epaper.webp" width="1600" height="479" loading="lazy"
+              alt="Caddy e-paper summary concept in four greys with dithered shading: Pip · PIP-001 and 1 resident beside a dithered Pip, a sealed Hopper pod marked waiting, and the counts 4, 5 and 2 beside chip, crystal and droplet icons.">
+            <figcaption><span class="label">Concept screen, not from the build</span>Caddy · The four-grey e-paper summary</figcaption>
           </figure>
         </article>
       </div>
@@ -1080,6 +1095,18 @@ footer {
           <p>Storms charge stones with Energy, and can break your Probe.</p>
         </article>
       </div>
+      <div class="panel exp-concept">
+        <figure>
+          <img src="assets/companion-map-hands.webp" width="1200" height="800" loading="lazy"
+            alt="Concept render of two hands holding the Companion outdoors, thumbs on the pad and the Confirm button; its screen shows a fogged pixel map with a small revealed patch, sign icons and a rain band at the left.">
+          <figcaption><span class="label">Concept art</span>The Companion out on the map</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/companion-storm.webp" width="600" height="900" loading="lazy"
+            alt="Concept render of the Companion lying on mossy stone; its screen shows a dark pixel-art wood in a storm, with a charged stone, a yellow-outlined warning tile and Pip sheltering beside the player under a tree.">
+          <figcaption><span class="label">Concept art</span>A wood as the storm hits</figcaption>
+        </figure>
+      </div>
       <ol class="steps">
         <li><span>01</span><div><h3>Pick a start</h3><p>Any cell you can see is a start. Each glint hints at what’s near: tracks, a slow beat underground, or supplies.</p></div></li>
         <li><span>02</span><div><h3>Walk the map</h3><p>The fog lifts around every step, and the bottom line names what’s ahead.</p></div></li>
@@ -1106,9 +1133,9 @@ footer {
         <article class="panel">
           <div class="mechanic-label"><span>At the bench</span><strong>Station / Research</strong></div>
           <figure>
-            <img src="assets/station-research-study.webp" width="1024" height="600" loading="lazy"
-              alt="Early Station research layout: a sample capsule with the result Pp, This sample carries pale, and a panel comparing Pp, which carries pale, with pp, which shows pale.">
-            <figcaption><span class="label">Early layout study</span>A research result from the first prototype · The look is being redesigned</figcaption>
+            <img src="assets/station-research-pod.webp" width="1024" height="600" loading="lazy"
+              alt="Station screen concept: a sealed olive-green Hopper pod with a three-leaf mark rests in a padded cradle under a warm spotlight, labelled Needs 2 more Essence, beside Pip labelled Hopper · known, with the counts 4, 5 and 2 in the header.">
+            <figcaption><span class="label">Concept screen, not from the build</span>Station · A sealed pod waiting at the bench</figcaption>
           </figure>
         </article>
       </div>
@@ -1174,12 +1201,22 @@ footer {
         <article class="panel">
           <p class="chapter">01 / Partners</p>
           <h3>Partners open the map.</h3>
+          <figure class="life-shot">
+            <img src="assets/partner-patch.webp" width="450" height="600" loading="lazy"
+              alt="Companion screen concept in pixel art: Pip stands beside the orange player pawn inside a teal ring on a meadow, looking up at it, next to a patch of glinting soil, a pond and clovers.">
+            <figcaption><span class="label">Concept screen, not from the build</span>Pip beside you at a patch to dig · Scene only, without the screen’s status line</figcaption>
+          </figure>
           <p>A bonded mibi helps with its own abilities. In the sandbox a burrower digs open a narrow burrow, a hopper keeps wary creatures calm, a puffcap sniffs out buried pods. You can always explore alone; partners take you further.</p>
           <p><span class="label">In the rough playable</span></p>
         </article>
         <article class="panel">
           <p class="chapter">02 / Life stages</p>
           <h3>A whole life.</h3>
+          <figure class="life-stages">
+            <img src="assets/pip-life-stages.webp" width="1200" height="477" loading="lazy"
+              alt="Three Pips side by side: a small round juvenile with large eyes and bright leaf buds, an adult, and a heavier elder with half-lidded eyes and broad, drooping dark green leaves.">
+            <figcaption><span class="label">Concept art</span>Pip as juvenile, adult and elder</figcaption>
+          </figure>
           <ul class="stages" aria-label="Life stages">
             <li>Embryo<span>incubating</span></li>
             <li>Juvenile<span>rides along</span></li>
