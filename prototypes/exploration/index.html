@@ -885,12 +885,13 @@ function advance(scope, info) {
   if (ex.storm) {
     // The band crawls while it is over the place you are in (about 30 actions overhead); elsewhere it moves at map speed.
     const over = scope === 'patch' && ex.patch && !layout(ex.patch.key).cave && stormCovers(layout(ex.patch.key).cell % MW);
-    ex.storm.x += (over ? .16 : ex.storm.v) * ex.storm.dir; ex.storm.t = (ex.storm.t || 0) + 1;
+    ex.storm.x += (over ? .14 : ex.storm.v) * ex.storm.dir; ex.storm.t = (ex.storm.t || 0) + 1;
     if (ex.storm.x > MW + 1 || ex.storm.x + ex.storm.w < -1) { ex.storm = null; if (ex.saidDone) nothingNew(); }
     else { // a flash somewhere inside the band each tick; some of them light the land for good
       const cols = []; for (let x = 0; x < MW; x++) if (stormCovers(x)) cols.push(x);
       if (cols.length && !stormLull()) { const x = cols[hash(S.seed, 'sm', ex.n, ex.actions) % cols.length], y = hash(S.seed, 'smy', ex.n, ex.actions) % MH, c = y * MW + x;
-        FX.bolts.push({ c, at: NOW });   // only real strikes (warned, stray, or on a stone you saw) leave charge for the world turn
+        FX.bolts.push({ c, at: NOW });
+        if (hash(S.seed, 'chg', ex.n, ex.actions) % 4 === 0) ex.stormCells[c] = 1;   // one flash in four charges stones there for the world turn
         if (hash(S.seed, 'lit', ex.n, ex.actions) % 7 === 0 && !S.revealed[c]) { revealCell(c); ex.stats.lit++; } }
     }
   }
@@ -1682,7 +1683,8 @@ function worldTurn(pending) {
   for (const c of newPods) if (S.revealed[c]) recordSigns(c);
   // Two or three plain lines a player would care about.
   const lines = [];
-  for (const m of grown) lines.push(m.name + ' is grown · can come along on expeditions.');
+  for (const m of grown) { lines.push(m.name + ' is grown · can come along on expeditions.');
+    if (S.rider === m.id) { const y = S.mibis.find(q => !isAdult(q)); S.rider = y ? y.id : S.rider; } }   // a younger mibi takes its seat
   for (const m of aged) lines.push(m.name + ' is an elder now · slower, with keener senses.');
   // Movement: a species you know first; a direction only when the herd really drifted one way.
   const moves = [0, 1, 2].filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
