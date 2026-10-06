@@ -138,6 +138,10 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 .obs .log:empty::before{content:"Nothing yet"; color:var(--muted); margin-left:-20px}
 .pal{display:grid; grid-template-columns:repeat(12, 1fr); gap:3px; max-width:300px}
 .pal i{display:block; aspect-ratio:1; border-radius:2px; box-shadow: inset 0 0 0 1px rgba(127,127,127,.35)}
+.obs-row{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.reset-ask{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--chip); font: 500 14px/1.4 var(--font-ui); color:var(--ink)}
+.reset-ask[hidden]{display:none}
+.btn-danger{color:#a6420c; border-color:#a6420c}
 .copy-row{display:flex; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap}
 .btn{font: 500 14px/1 var(--font-ui); background:var(--chip); color:var(--ink); border:1px solid var(--line); border-bottom-width:2px; border-radius:8px; padding:9px 12px; cursor:pointer}
 .btn:hover{border-color:var(--muted)}
@@ -219,7 +223,10 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
       </ol>
     </details>
     <div class="observer">
-      <button class="switch" id="obsToggle" aria-pressed="false" aria-controls="obs"><span class="track"></span>Observer</button>
+      <div class="obs-row"><button class="switch" id="obsToggle" aria-pressed="false" aria-controls="obs"><span class="track"></span>Observer</button>
+        <button class="btn" id="resetGame" type="button">Reset game</button></div>
+      <div class="reset-ask" id="resetAsk" hidden role="alertdialog" aria-labelledby="resetQ"><span id="resetQ">Erase this world and start fresh?</span>
+        <button class="btn btn-danger" id="resetYes" type="button">Erase and start fresh</button><button class="btn" id="resetNo" type="button">Keep playing</button></div>
       <div class="obs" id="obs" hidden>
         <dl>
           <dt>Expedition</dt><dd id="oExp">–</dd>
@@ -823,6 +830,7 @@ function newWorld(seed) {
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
 function save() {
+  if (window.__mbResetting) return;   // a reset is reloading: nothing may write the save back
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep playing in memory */ }
   if (typeof onStateChanged === 'function') onStateChanged();
 }
@@ -4147,6 +4155,13 @@ copyBtn.addEventListener('click', () => {
 
 // ===================== 18. Boot =====================
 if (!load()) newWorld(urlSeed());
+// Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
+{ const btn = document.getElementById('resetGame'), ask = document.getElementById('resetAsk'), yes = document.getElementById('resetYes'), no = document.getElementById('resetNo');
+  const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
+  btn.addEventListener('click', () => { ask.hidden = false; yes.focus(); });
+  no.addEventListener('click', back);
+  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
+    window.__mbResetting = true; location.reload(); }); }
 if (S.exp && S.exp.shield <= 0) endExpedition('break');
 if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup';
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
