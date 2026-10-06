@@ -197,7 +197,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Wait · Leave" in a place, "← Wait · Send home" on the map, "← Mibis", "← close"). In the field it opens the menu: Wait, Leave, Send home, Probe, Cargo, Mibis.</li>
         <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. At home it calls the mibi with you, which answers. The top right of the screen says what it will do.</li>
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
-        <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 3 tiles around you as you walk, and stays lifted; <b>Call</b> sweeps it away 11 tiles around you (5 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
+        <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 3 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
         <li>The dots top left are your reach, one per cell: a dot fills once you have been in that place and Called there; your cell is framed. Fill them all and everything in reach is explored. The map's quarters show how fully each place is surveyed.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
         <li>One mibi is <b>with you</b> in the Companion. Grown, it is your Probe partner; a juvenile comes along in the Companion but is too young for the Probe. On <b>Mibis</b> (in the menu), ✓ on another mibi takes it instead: one press.</li>
@@ -309,7 +309,8 @@ const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; e
 // 3 to 5 in the Probe's reach, chosen when the expedition sets out. Kept scarce on purpose (decision 2026-10-06).
 const WARM_MIN = 3, WARM_MAX = 5, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
 // Survey: Call lifts the veil CALL_R tiles around you (CALL_R_FOG in a fog bank); a quarter of 14×16 tiles counts at SURVEY_AT.
-const CALL_R = 11, CALL_R_FOG = 5, QW = PW / 2, QH = PH / 2, SURVEY_AT = 0.75;
+const CALL_R = 7, CALL_R_FOG = 4,   // the Call's range: a round 7 tiles (4 in a fog bank); its ring IS the unveil
+      QW = PW / 2, QH = PH / 2, SURVEY_AT = 0.75;
 // Sight inside a fog bank, in tiles (a glowing partner widens it).
 const SIGHT_FOG = 4, SIGHT_GLOW = 6;
 
@@ -858,10 +859,20 @@ function revealCell(c) { if (!S.revealed[c]) { S.revealed[c] = 1; if (S.exp) S.e
 const qOf = (x, y) => (y >= QH ? 2 : 0) + (x >= QW ? 1 : 0);
 function surveyable(lay) {
   if (lay.svy) return lay.svy;
-  const r = CALL_R, h = new Uint8Array(PW * PH), o = new Uint8Array(PW * PH), n = [0, 0, 0, 0];
-  for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) { let v = 0; for (let k = Math.max(0, x - r); k <= Math.min(PW - 1, x + r) && !v; k++) v = lay.reach[y * PW + k]; h[y * PW + x] = v; }
-  for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) { let v = 0; for (let k = Math.max(0, y - r); k <= Math.min(PH - 1, y + r) && !v; k++) v = h[k * PW + x]; o[y * PW + x] = v; if (v) n[qOf(x, y)]++; }
+  const r = CALL_R, rr = (r + .5) ** 2, o = new Uint8Array(PW * PH), n = [0, 0, 0, 0];
+  for (let i = 0; i < PW * PH; i++) { if (!lay.reach[i]) continue; const x0 = i % PW, y0 = (i / PW) | 0;
+    for (let y = Math.max(0, y0 - r); y <= Math.min(PH - 1, y0 + r); y++) for (let x = Math.max(0, x0 - r); x <= Math.min(PW - 1, x0 + r); x++) if ((x - x0) ** 2 + (y - y0) ** 2 <= rr) o[y * PW + x] = 1; }
+  for (let i = 0; i < PW * PH; i++) if (o[i]) n[qOf(i % PW, (i / PW) | 0)]++;
   lay.svyN = n; return (lay.svy = o);
+}
+// A Call's round range: the tiles it lifts (and finds things on).
+const CALL_MS = 300;
+const inCall = (P, x, y, r) => (x - P.x) ** 2 + (y - P.y) ** 2 <= (r + .5) ** 2;
+function unveilRound(key, cx, cy, r) {
+  const v = S.veil[key] || (S.veil[key] = new Array(PH).fill(0)), lifted = new Set();
+  for (let y = Math.max(0, cy - r); y <= Math.min(PH - 1, cy + r); y++) for (let x = Math.max(0, cx - r); x <= Math.min(PW - 1, cx + r); x++)
+    if (inCall({ x: cx, y: cy }, x, y, r) && !((v[y] >>> x) & 1)) { v[y] = (v[y] | (1 << x)) >>> 0; lifted.add(y * PW + x); }
+  return lifted;
 }
 // Unveiled: lifted by a Call, or never surveyable. The cave has no veil (it has its own dark).
 function unveiled(key, x, y) {
@@ -1087,6 +1098,7 @@ function startExpedition(type, cell) {
   const p = cxy(cell);
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : '') + ' · tier ' + S.tier);
   fxOnce('mapintro', 'Walk with the pad · ✓ goes down · ← Wait and Send home', 3);
+  if (S.exp.shield < S.exp.smax) fxMsg('Shield ' + S.exp.shield + '/' + S.exp.smax + ' · stray strikes break it fast · shelter in a storm', 4);
   S.phase = 'map'; transition(); save();
 }
 
@@ -1518,23 +1530,17 @@ function callPlace() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive();
   const fogged = !lay.cave && inFog(lay.cell), glow = ex.pt && ex.pt.sp === 1, muffled = fogged && !glow, reach = muffled ? CALL_R_FOG : CALL_R;
   let found = 0;
-  for (const p of S.pods) if (p.k === key && p.h && p.x >= 0 && cheb(p, P) <= reach) { p.h = 0; p.out = 1; fxGlint(p.x, p.y, 350); found++; }
+  for (const p of S.pods) if (p.k === key && p.h && p.x >= 0 && inCall(P, p.x, p.y, reach)) { p.h = 0; p.out = 1; fxGlint(p.x, p.y, 350); found++; }
   for (const f of lay.feats) {
-    const fp = featPos(key, f); if (cheb(fp, P) > reach) continue;
+    const fp = featPos(key, f); if (!inCall(P, fp.x, fp.y, reach)) continue;
     if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) { if (lay.cave) setFS(key, f.id, { sn: 1 }); fxGlint(f.x, f.y, 350); found++; }
     if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); found++; }
     if (f.kind === 'g' && !S.opened[G.gate]) fxGlint(f.x, f.y, 350);
   }
   const before = lay.cave ? 0 : svyFull(lay.cell);
-  if (!lay.cave) { unveil(key, P.x, P.y, reach); updateSurvey(lay.cell); (S.called = S.called || {})[lay.cell] = 1;
-    // a Call finishes any quarter that is now three quarters seen: the corners walls and water hide are swept too,
-    // so 4/4 is reachable and the words never wait on a few stray tiles
-    // (also the quarter you stand in, and a quarter with no ground to stand on once a Call has seen a quarter of it)
-    const m75 = S.svy[lay.cell] || 0, v = S.veil[key], fr = quarterFracs(lay.cell), here = qOf(P.x, P.y);
-    const standable = [0, 0, 0, 0]; for (let i = 0; i < PW * PH; i++) if (lay.reach[i]) standable[qOf(i % PW, (i / PW) | 0)] = 1;
-    for (let q = 0; q < 4; q++) if (((m75 >> q) & 1) || q === here || (!standable[q] && fr[q] >= .25)) { const x0 = q & 1 ? QW : 0, y0 = q & 2 ? QH : 0, bits = (((1 << QW) - 1) << x0) >>> 0; for (let y = y0; y < y0 + QH; y++) v[y] = (v[y] | bits) >>> 0; }
-    updateSurvey(lay.cell); }
-  FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach };
+  let lifted = null;
+  if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); updateSurvey(lay.cell); (S.called = S.called || {})[lay.cell] = 1; }
+  FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach, key, lifted };   // the ring sweeps out over 300 ms and the veil lifts as it passes
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
   logEv('Call' + (found ? ' · found ' + found : '') + (lay.cave ? '' : ' · ' + surveyWord(lay.cell)));
   // the partner answers: a digger near the burrow digs it
@@ -2970,7 +2976,9 @@ function drawPatch(t) {
   const lightAt = lay.cave ? caveLight(lay, live, P) : null;
   // fog bank: sight is 4 tiles (6 with a glowing partner); beyond it the land takes the fog table and nothing else shows
   const sight = sightR(lay), inS = (x, y) => sight >= 99 || Math.hypot(x - P.x, y - P.y) <= sight + .5;
-  const see = (x, y) => inS(x, y) && unveiled(P.key, x, y);   // the survey veil hides what stands on a tile until a Call
+  const pu = FX.pulse && FX.pulse.key === P.key && FX.pulse.lifted && motion() && NOW - FX.pulse.at < CALL_MS ? FX.pulse : null, puR = pu ? pu.r * (NOW - pu.at) / CALL_MS : 0;
+  const shown = (x, y) => unveiled(P.key, x, y) && !(pu && pu.lifted.has(y * PW + x) && (x - pu.x) ** 2 + (y - pu.y) ** 2 > (puR + .5) ** 2);
+  const see = (x, y) => inS(x, y) && shown(x, y);   // the survey veil hides what stands on a tile until a Call
   const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; if (overcast) return 1;
     if (darkW) { const cx = W(tx * TS + 16); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? 1 : 0; } return 0; };
   // (the approaching storm darkens whole tile columns on the side it comes from)
@@ -2983,7 +2991,7 @@ function drawPatch(t) {
   const tx0 = Math.floor(camX / TS), ty0 = Math.floor(camY / TS);
   const sgGrid = new Map(), inSG = (x, y) => { const k = y * PW + x; let v = sgGrid.get(k); if (v === undefined) { v = inS(x, y); sgGrid.set(k, v); } return v; };
   // unveiled, per tile, read once per frame (off the place counts as unveiled, so edges never fade into the border)
-  const uvGrid = new Map(), uvAt = (x, y) => { if (x < 0 || y < 0 || x >= PW || y >= PH) return true; const k = y * PW + x; let v = uvGrid.get(k); if (v === undefined) { v = unveiled(P.key, x, y); uvGrid.set(k, v); } return v; };
+  const uvGrid = new Map(), uvAt = (x, y) => { if (x < 0 || y < 0 || x >= PW || y >= PH) return true; const k = y * PW + x; let v = uvGrid.get(k); if (v === undefined) { v = shown(x, y); uvGrid.set(k, v); } return v; };
   const lvGrid = new Map(), lvAt = (x, y) => { const k = (y + 2) * 64 + x + 2; let v = lvGrid.get(k); if (v === undefined) { v = lightAt(x, y); lvGrid.set(k, v); } return v; };
   for (let ty = ty0; ty <= ty0 + Math.ceil(VIEW_H / TS) + 1; ty++) for (let tx = tx0; tx <= tx0 + Math.ceil(SCR_W / TS) + 1; tx++) {
     if (tx < 0 || ty < 0 || tx >= PW || ty >= PH) { R(W(tx * TS), H(ty * TS), TS, TS, C.void); continue; }
@@ -3082,9 +3090,9 @@ function drawPatch(t) {
     circ(x, y, motion() ? 10 + Math.floor(age / 30) : 18, C.yellow); }
   for (const r of FX.rings) { const age = NOW - r.at; if (age < 0 || age > 900) continue;
     const a = sparkArt(!motion() || Math.floor(age / 120) % 2 === 0); blit(a, W(r.x * TS + 16) - Math.floor(a.w / 2), H(r.y * TS + 12) - Math.floor(a.h / 2)); }
-  if (FX.pulse) { const age = NOW - FX.pulse.at, cx = W(FX.pulse.x * TS + 16), cy = H(FX.pulse.y * TS + 16), maxR = (FX.pulse.r || 7) * TS;
-    if (motion() && age < 520) { circ(cx, cy, 8 + (maxR - 8) * age / 520, C.ice); if (age > 110) circ(cx, cy, 8 + (maxR - 8) * (age - 110) / 520, C.sky, true); }
-    else if (!motion() && age < 650) circ(cx, cy, maxR, C.ice, true); }
+  if (FX.pulse) { const age = NOW - FX.pulse.at, cx = W(FX.pulse.x * TS + 16), cy = H(FX.pulse.y * TS + 16), maxR = (FX.pulse.r + .5) * TS;   // the range's edge
+    if (motion() && age < CALL_MS) circ(cx, cy, 8 + (maxR - 8) * age / CALL_MS, C.ice);            // the leading edge: the veil lifts behind it
+    else if (age < CALL_MS + 400) circ(cx, cy, maxR, C.ice, true); }                                // then the final contour: exactly the Call's range
   if (FX.dig) { const age = NOW - FX.dig.at, x = W(FX.dig.x * TS + 16), y = H(FX.dig.y * TS + 26);
     for (let i = 0; i < 6; i++) { const a = ((age / 300) + i / 6) % 1; R(x - 12 + i * 5, y - Math.round(Math.sin(a * Math.PI) * 14), 2, 2, i % 2 ? C.clay : C.bark); } }
   for (const f of FX.floats) { const age = NOW - f.at; if (age > 1200) continue;
@@ -3279,7 +3287,8 @@ function adults() { return S.mibis.filter(isAdult); }
 function drawSetup(t) {
   viewBg();
   drawTop('Expedition ' + S.expN, (S.turn ? 'world turn ' + S.turn : 'a new world') + ' · Probe tier ' + S.tier);
-  text('Choose your expedition', SCR_W / 2, 42, C.fog, 2, 'center');
+  const shN = S.shield != null ? Math.min(S.shield, tierOf().shield) : tierOf().shield;
+  text(shN < tierOf().shield ? 'Shield ' + shN + '/' + tierOf().shield + ' · mend at the Station, 1 Energy a bar' : 'Choose your expedition', SCR_W / 2, 42, shN < tierOf().shield ? C.amber : C.fog, 2, 'center');
   const sel = S.ui.sel, dig = digPartner(), digHome = !dig && mibiWith('dig'), deepOk = !!(dig || digHome);
   card(20, 70, 410, 96, sel === 0, true);
   disc(34, 86, 32, 'sand', 'clay'); weatherIcon(66, 116, true);
@@ -3699,7 +3708,7 @@ function frame(t) {
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
-  if (FX.pulse && NOW - FX.pulse.at > 800) FX.pulse = null;
+  if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
   if (FX.reveal && NOW - FX.reveal.at > 1200) FX.reveal = null;
   if (S.exp && S.exp.beaconView && !FX.reveal && NOW - (FX.beaconAt || 0) > 1700) { beaconBack(); save(); }   // the sweep done: back beside the beacon
   requestAnimationFrame(frame);
