@@ -876,22 +876,30 @@ function explored(c) { return !!S.visited[c] && !!(S.called && S.called[c]); }
 function surveyWord(c) { return ['not surveyed', 'a quarter surveyed', 'half surveyed', 'three quarters surveyed', 'surveyed'][qCount(S.svy[c] || 0)]; }
 // What can still be taken in a place, counting only what you can see (unveiled): the pips on the map and
 // the tail of a Call's report ("1 dew, 1 fruit left").
-function leftCounts(c) {
-  const n = { pod: 0, charge: 0, warm: 0, dew: 0, fruit: 0, tuft: 0, cairn: 0 }; if (!passable(c)) return n;
+function leftItems(c) {
+  const out = []; if (!passable(c)) return out;
   const key = String(c), live = S.exp && S.exp.live[key], see = (x, y) => unveiled(key, x, y);
-  n.pod = S.pods.filter(p => (p.k === key || (c === G.gate && p.k === 'c' + c)) && !p.h && p.x >= 0 && (p.k !== key || see(p.x, p.y))).length;
+  for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
   for (const f of layout(key).feats) { if (!see(f.x, f.y)) continue;
-    if (f.kind === 'k') { if (stormCharge(key, f) > 0) n.charge++; else if (stoneWarm(key, f)) n.warm++; }
-    if (f.kind === 'u' && cupFull(key, f)) n.dew++; if (f.kind === 'b' && bushFull(key, f)) n.fruit++; if (f.kind === 'j' && !fs(key, f.id).up) n.cairn++; }
-  if (live) { n.fruit += live.fr.filter(q => see(q.x, q.y) || q.put).length; n.tuft = live.tf.filter(q => see(q.x, q.y)).length; }
-  return n;
+    if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
+    if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'cairn', x: f.x, y: f.y }); }
+  if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
+  return out;
 }
+function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, fruit: 0, tuft: 0, cairn: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
 function leftTotal(c) { const n = leftCounts(c); return Object.values(n).reduce((a, b) => a + b, 0); }
 function pipsOf(c) { return Math.min(3, leftTotal(c)); }
-function leftPhrase(c) {
-  const n = leftCounts(c), w = { pod: ['pod', 'pods'], charge: ['charge', 'charges'], warm: ['warm stone', 'warm stones'], dew: ['dew', 'dew'], fruit: ['fruit', 'fruit'], tuft: ['tuft', 'tufts'], cairn: ['cairn', 'cairns'] };
-  const parts = Object.keys(n).filter(k => n[k]).map(k => n[k] + ' ' + w[k][n[k] > 1 ? 1 : 0]);
-  return parts.length ? parts.slice(0, 3).join(', ') + ' left' : '';
+// What is left, each kind with the way to its nearest one from where you stand: "a pod east, a warm stone north-west".
+function leftPhrase(c, P, room) {
+  const items = leftItems(c), w = { pod: ['a pod', 'pods'], charge: ['a charge', 'charges'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], fruit: ['a fruit', 'fruit'], tuft: ['a tuft', 'tufts'], cairn: ['a cairn', 'cairns'] };
+  let out = '';
+  for (const k of Object.keys(w)) { const its = items.filter(i => i.k === k); if (!its.length) continue;
+    let dir = '';
+    if (P) { const near = its.reduce((a, b) => cheb(a, P) <= cheb(b, P) ? a : b), dx = near.x - P.x, dy = near.y - P.y;
+      dir = near.cave ? ' in the cave' : cheb(near, P) <= 2 ? ' close by' : ' ' + (dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))) || 'close by'); }
+    const part = (its.length === 1 ? w[k][0] : its.length + ' ' + w[k][1]) + dir, t = out ? out + ', ' + part : part;
+    if (out && t.length > (room || 60)) break; out = t; }
+  return out;
 }
 // Hidden finds still under the veil or buried (for the Observer and tests).
 function hiddenIn(c) {
@@ -1043,11 +1051,14 @@ function advance(scope, info) {
   checkExplored();
   save();
 }
-function shieldHit() {
+function shieldHit(stray) {
   const ex = S.exp; ex.shield--; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++;
+  if (typeof stopRepeat === 'function') stopRepeat();   // a held walk stops on a hit, so the hit is seen
+  lockInput(250);
   if (ex.shield <= 0) { logEv('Probe broke'); return; }
-  if (!S.found.includes('shield')) fxOnce('shield', 'Probe hit! The bars top left are its Shield: ' + ex.shield + ' of ' + ex.smax + ' left', 4);
-  else fxMsg('Probe hit! Shield ' + ex.shield + ' of ' + ex.smax, 3);
+  fxMsg((stray ? 'A stray strike hit the Probe' : 'Probe hit!') + ' · Shield ' + ex.shield + '/' + ex.smax, 4);
+  if (!S.found.includes('shield')) fxOnce('shield', 'The bars top left are the Probe’s Shield', 3);
+  if (stray) fxOnce('strayexp', 'Stray strikes hit anywhere in the open · shelter under trees and overhangs', 3);
   logEv('Probe hit · shield ' + ex.shield);
   if (ex.shield === 1) fxOnce('bank', 'A break loses what you carry · ← Send home banks it', 3);
 }
@@ -1056,7 +1067,7 @@ function strayHit(scope) {
   const ex = S.exp;
   if (scope === 'patch' && ex.patch) FX.strikes.push({ space: 'patch', x: ex.patch.x, y: ex.patch.y, at: NOW });
   else FX.strikes.push({ space: 'map', c: ex.pos, at: NOW });
-  ex.stormCells[ex.pos] = 1; shieldHit();
+  ex.stormCells[ex.pos] = 1; shieldHit(true);
 }
 function mapStrikeTick() {
   const ex = S.exp;
@@ -1424,9 +1435,10 @@ function callPlace() {
   advance('patch', { noise: 'act', pulse: true, reach, call: true });
   if (!lay.cave) {
     if (muffled) fxOnce('muffled', 'The fog muffles your call · it reaches ' + CALL_R_FOG + ' tiles', 3, true);
-    const m = S.svy[lay.cell] || 0, left = leftPhrase(lay.cell), lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
+    const m = S.svy[lay.cell] || 0, left = leftPhrase(lay.cell, P, 44), lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
     if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); }   // a pod still lying here glints again, so a beat always leads somewhere
     const head = m === 15 ? 'Surveyed' : (m ? cap(surveyWord(lay.cell)) : 'Survey begun') + (m === before ? ' · Call further on' : '');
+    for (const q of S.pods) if (q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y)) q.out = 1;   // announced pods keep the dotted outline until taken
     fxMsg(head + ' · ' + (left || (m === 15 ? 'nothing left to take' : 'nothing to take yet')), found ? 1 : 2);
     if (m === 15 && before !== 15) logEv('Surveyed a place');
     checkExplored();
@@ -1525,7 +1537,8 @@ function patchTick(info) {
     strike = live.strike; live.strike = null;
     FX.strikes.push({ space: 'patch', x: strike.x, y: strike.y, at: NOW });
     const st = lay.feats.find(f => f.kind === 'k' && f.x === strike.x && f.y === strike.y);
-    if (st) { setFS(key, st.id, { ch: Math.max(stormCharge(key, st), strike.peak ? 3 : 2), sn: 1 });
+    // a stone takes charge at most once per storm pass over the place; struck again, nothing more
+    if (st && !(live.struck = live.struck || {})[st.id]) { live.struck[st.id] = 1; setFS(key, st.id, { ch: Math.max(stormCharge(key, st), strike.peak ? 3 : 2), sn: 1 });
       if (!lay.cave && !unveiled(key, st.x, st.y)) { unveil(key, st.x, st.y, 1); updateSurvey(lay.cell); } }   // the flash shows a 3×3 around the stone
     ex.stormCells[lay.cell] = 1;
   }
@@ -1536,6 +1549,7 @@ function patchTick(info) {
   for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);
+  if (!lay.cave) for (const f of lay.feats) if (f.kind === 'k' && cheb(f, P) <= 3 && unveiled(key, f.x, f.y) && stormCharge(key, f) <= 0 && stoneWarm(key, f) && fs(key, f.id).wseen !== S.turn) setFS(key, f.id, { wseen: S.turn });   // its ring stops blinking once you have been near
   // the four bubbles over creatures, each explained the first time it shows in view
   const inView = live.cr.filter(c => !c.hide && !X.away(c) && inSight(c.x, c.y));
   for (const c of inView) { const b = bubbleOf(c, ex.carry); if (b && BUBBLE_HELP[b]) fxOnce('mark' + b, BUBBLE_HELP[b], 2); }
@@ -1550,7 +1564,7 @@ function patchTick(info) {
 function pickStrike(X) {
   const { lay, P } = X, ex = S.exp, r = rnd(S.seed, 'st', ex.n, ex.actions), r2 = rnd(S.seed, 'st2', ex.n, ex.actions);
   const open = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !lay.shelter[y * PW + x] && !T_BLOCK[lay.tiles[y * PW + x]];
-  const stones = lay.feats.filter(f => f.kind === 'k' && cheb(f, P) <= 8);
+  const stones = lay.feats.filter(f => f.kind === 'k' && cheb(f, P) <= 8 && !(X.live.struck && X.live.struck[f.id]));   // a stone struck this pass isn't aimed at again
   if (stones.length && r < .65) { const s = stones[Math.floor(r2 * stones.length)]; return { x: s.x, y: s.y, at: ex.actions + 1 }; }
   for (let k = 0; k < 10; k++) { const x = P.x + Math.floor(rnd(S.seed, 'zx', ex.actions, k) * 11) - 5, y = P.y + Math.floor(rnd(S.seed, 'zy', ex.actions, k) * 11) - 5;
     if (open(x, y) && cheb({ x, y }, P) >= 2) return { x, y, at: ex.actions + 1 }; }
@@ -1787,8 +1801,8 @@ function partnerTick(X) {
 // The Station stand-in. Prices: identify 1 Energy, hatch a founder 2 Energy + 4 Essence, a study 2 Data,
 // Probe tier 2 12 Energy + 4 Data (tuning this round). What can't be paid waits and says what it needs.
 function needText(e, s, d) {
-  const parts = []; if (e > 0) parts.push(e + ' more Energy'); if (s > 0) parts.push(s + ' more Essence'); if (d > 0) parts.push(d + ' more Data');
-  return 'needs ' + parts.join(' and ');
+  const parts = []; if (e > 0) parts.push(e + ' Energy'); if (s > 0) parts.push(s + ' Essence'); if (d > 0) parts.push(d + ' Data');
+  return 'needs ' + parts.join(' + ');
 }
 // Pure: what the Station would do with this store (h is a copy and is changed).
 function stationPlan(h) {
@@ -1821,12 +1835,12 @@ function sendPreview() {
   const idNew = ops.filter(o => o.k === 'id' && o.p.fresh && !S.known.includes(o.p.sp)).length, idKnown = ids - idNew;
   if (ops.some(o => o.free)) out.push('First pod · identified for free');
   if (idNew) out.push(numWord(idNew) + ' new pod' + (idNew > 1 ? 's' : '') + ' to identify');
-  if (idKnown) out.push(numWord(idKnown) + ' known pod' + (idKnown > 1 ? 's' : '') + ' to log · 1 Energy each');
+  if (idKnown) out.push(numWord(idKnown) + ' known pod' + (idKnown > 1 ? 's' : '') + ' to log · 1 Energy');
   if (idWait) out.push(numWord(idWait) + ' pod' + (idWait > 1 ? 's wait' : ' waits') + ' · needs Energy');
   for (const o of ops) { const nm = o.p && (o.p.fresh && !S.known.includes(o.p.sp) ? 'a new pod' : (S.known.includes(o.p.sp) ? SPECIES[o.p.sp].name.toLowerCase() + ' pod' : 'a pod'));
     if (o.k === 'hatch') out.push(nm + ' can hatch');
     else if (o.k === 'wait' && o.p.idd) out.push(o.need === 'hatches next time' ? 'one more waits its turn' : nm + ' ' + o.need); }
-  for (const sp of [0, 1, 2]) { const n = ops.filter(o => o.k === 'stored' && o.p.sp === sp).length; if (n) out.push(numWord(n) + ' ' + SPECIES[sp].name.toLowerCase() + ' pod' + (n > 1 ? 's' : '') + ' stored · you raise ' + SPECIES[sp].plural); }
+  for (const sp of [0, 1, 2]) { const n = ops.filter(o => o.k === 'stored' && o.p.sp === sp).length; if (n) out.push(numWord(n) + ' ' + SPECIES[sp].name.toLowerCase() + ' pod' + (n > 1 ? 's' : '') + ' stored (raised)'); }
   if (ops.some(o => o.k === 'study')) out.push('a study can be read');
   const h = homeCopy([], ex.cargo); if (S.tier < 2 && h.e >= PRICE.tier2E && h.d >= PRICE.tier2D) out.push('Probe tier 2 is ready');
   if (!out.length) out.push(ex.cargo.e || ex.cargo.d || ex.cargo.s ? 'supplies go into the Station' : 'nothing to bring home yet');
@@ -2242,10 +2256,11 @@ function cupArt(full, cave) {
 // lit: storm charge (yellow zigzag and a cream ring); warm: only a dim amber ring of dots and one glint, no zigzag,
 // so it is never confused with a storm charge or with the strike warning (a yellow tile with a bolt).
 function stoneArt(lit, cave, fr, warm) {
+  // warm: a 2 px ring on the ground around its foot (amber with yellow dashes; fr 1 = the dim beat of its slow blink)
   if (warm && !lit && !cave) return art('stonew' + fr, () => { const pb = new PB(32, 32), b = stoneArt(0, cave, 0); pb.blit(b, 0, 0);
-    // a dotted ring on the ground around its foot, rust and amber, and a warm glint on top
-    for (let a = 0; a < 6.283; a += .17) { const x = Math.round(16 + Math.cos(a) * 15), y = Math.round(25 + Math.sin(a) * 5.5); if (pb.get(x, y) < 0 && pb.get(x, y - 1) !== C.rust) pb.set(x, y, Math.round(a / .17 + fr) % 3 ? C.rust : C.amber); }
-    pb.rect(11, 9, 2, 1, C.amber); pb.set(12, 8, fr ? C.cream : C.amber); pb.set(11, 10, C.orange); return pb; });
+    for (let a = 0; a < 6.283; a += .06) for (const d of [0, 1]) { const x = Math.round(16 + Math.cos(a) * (14.5 + d)), y = Math.round(25.5 + Math.sin(a) * (5 + d));
+      if (x >= 0 && y >= 0 && x < 32 && y < 32 && (pb.get(x, y) < 0 || pb.get(x, y) === C.amber || pb.get(x, y) === C.yellow || pb.get(x, y) === C.rust)) pb.set(x, y, fr ? C.rust : Math.floor(a / .5) % 2 ? C.amber : C.yellow); }
+    pb.rect(11, 9, 2, 1, fr ? C.orange : C.yellow); pb.set(12, 8, fr ? C.amber : C.cream); pb.set(11, 10, C.orange); return pb; });
   return art('stone' + lit + cave + fr, () => { const pb = new PB(32, 32);
     if (cave) {
       const a = lit ? C.aqua : C.teal, b = lit ? C.mint : C.aqua, d = lit ? C.teal : C.tealD;
@@ -2803,7 +2818,8 @@ function drawPatch(t) {
     const rm = spriteRm(p.x, p.y); let a;
     if (f.kind === 'b') a = bushArt(bushFull(P.key, f), 0); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = cairnArt(fs(P.key, f.id).up ? 1 : 0);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
-    else a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : stoneArt(stormCharge(P.key, f) > 0, false, fr, stoneWarm(P.key, f));
+    else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
+      a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, blinkFr, 1) : stoneArt(stormCharge(P.key, f) > 0, false, fr); }
     const rr = f.kind === 'k' && lay.cave && stoneCharge(P.key, f) > 0 ? 0 : rm;
     items.push({ y: y + 1, d: () => blit(a, W(x), H(y), rr) }); }
 
@@ -3018,7 +3034,8 @@ function drawSetup(t) {
     text(SPECIES[pm.sp].name + ' · ' + SPECIES[pm.sp].abText, 112, 392, C.fog); }
   else if (adults().length) { text('No partner along', 24, 340, C.bone); text('Choose this row to bring ' + adults()[0].name, 24, 366, C.mist); }
   else if (S.mibis.length) { text('No grown partner yet', 24, 340, C.bone); text('Young mibis grow up in two world turns.', 24, 366, C.mist); }
-  else { text('No partner yet', 24, 340, C.bone); text('Bring a pod home to hatch one.', 24, 366, C.mist); }
+  else { const w = stationPlan(homeCopy()).find(o => o.k === 'wait' && o.p);
+    text('No partner yet', 24, 340, C.bone); wrapText(w ? 'A pod waits at the Station (' + w.need + ')' : 'Bring a pod home to hatch one.', 400, 2).slice(0, 2).forEach((l, i) => text(l, 24, 366 + i * 22, C.mist)); }
   if (rd && rd !== pm) { const home = S.mibis.filter(m => m !== rd && m !== pm).map(m => m.name);
     blit(ICON.mini(rd.sp), 24, 455); text(clipText(rd.name + ' rides in the Companion' + (home.length ? ' · ' + home.join(', ') + ' at home' : ''), 400, 2), 42, 452, C.fog); }
 }
@@ -3027,7 +3044,7 @@ function drawSetup(t) {
 function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'companions', label: 'Companions' }], send = { id: 'send', label: 'Send home' };
   if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'wait', label: 'Wait' }, { id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, send].concat(base);
-  if (from === 'map' && S.exp) return [{ id: 'wait', label: 'Wait' }, send].concat(base);
+  if (from === 'map' && S.exp) return [{ id: 'wait', label: 'Wait' }, { id: 'leave', label: 'Leave · in a place', dis: 1 }, send].concat(base);   // same rows as in a place
   if (from === 'station') return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
 }
@@ -3054,7 +3071,7 @@ function drawMenu(t) {
     if (sel) { panel(x + 10, y + 3, w - 20, rowH - 6, C.blush); R(x + 10, y + 7, 5, rowH - 14, C.orange); }
     menuIcon(it.id, x + 24, y + rowH / 2 - 14);
     if (it.sep) for (let k = x + 16; k < x + w - 16; k += 6) R(k, y - 1, 3, 2, C.stone);   // separator above New world
-    text(it.label, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8), it.id === 'newworld' ? C.rust : C.ink, sc); });
+    text(it.label, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8), it.dis ? C.mist : it.id === 'newworld' ? C.rust : C.ink, sc); });
 }
 function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex.cargo.e >= PRICE.patch; }
 function drawProbe(t) {
@@ -3062,7 +3079,7 @@ function drawProbe(t) {
   text('Shield', 24, 40, C.mist);
   shieldBars(24, 64, ex ? ex.shield : tier.shield, ex ? ex.smax : tier.shield, 12, 22);
   text('Reaches ' + tier.range + ' cells from the start', 120, 40, C.fog); text('Carries ' + tier.hold + ' pods · sweeps 1 ring', 120, 62, C.fog);
-  text(ex ? (canPatch() ? '3 Energy mends one bar · ✓ to patch' : ex.shield >= ex.smax ? 'Shield is whole' : 'Patching needs 3 Energy · you have ' + ex.cargo.e) : 'Mended free at the Station', 120, 84, ex && canPatch() ? C.amber : C.stone);
+  text(ex ? (canPatch() ? (S.ui.patchArm ? '✓ again: patch, 3 Energy' : '3 Energy mends a bar') : ex.shield >= ex.smax ? 'Shield is whole' : 'Patch: 3 Energy · have ' + ex.cargo.e) : 'Mended free at the Station', 120, 84, ex && canPatch() ? C.amber : C.stone);
   text('Signs on the map', 24, 116, C.mist);
   const rows = [
     [(x, y) => { blit(ICON.paw('bone'), x - 8, y); blit(ICON.paw('bone'), x - 1, y - 6); }, 'Tracks', 'creatures live here'],
@@ -3074,7 +3091,7 @@ function drawProbe(t) {
   ];
   rows.forEach(([ic, a, b], i) => { const y = 136 + i * 30; panel(22, y, 36, 30, C.slate); ic(40, y + 15); text(a, 70, y + 8, C.bone); text(b, 196, y + 8, C.mist); });
   text('Cells', 24, 322, C.mist);
-  const cs = [[() => { panel(22, 344, 36, 26, C.grass); blit(quarterVeil(0, 0), 27, 345); blit(quarterVeil(0, 0), 40, 358); blit(ICON.pip(), 46, 349); }, 'quarters: dotted until a Call surveys them'],
+  const cs = [[() => { panel(22, 344, 36, 26, C.grass); blit(quarterVeil(0, 0), 27, 345); blit(quarterVeil(0, 0), 40, 358); blit(ICON.pip(), 46, 349); }, 'quarters: dotted till surveyed'],
     [() => { panel(22, 376, 36, 26, C.night); blit(ICON.pip(), 30, 387); blit(ICON.pip(), 38, 387); }, 'pips: something left to take']];
   cs.forEach(([d, l], i) => { d(); text(l, 70, 348 + i * 32, C.fog); });
   if (S.tier < 2) text('Tier 2 at the Station: ' + PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 24, 420, C.amber);
@@ -3106,7 +3123,7 @@ function drawCargo(t) {
         if (c === ex.pos) R(px - 1, py - 1, d + 2, d + 2, C.amber);
         R(px, py, d, d, explored(c) ? C.mint : C.stone); if (!explored(c) && d > 2) R(px + 1, py + 1, d - 2, d - 2, C.night); } }
     card(95, 266, 260, 54, true, true); R(98, 269, 254, 48, C.orange); text('Send home', SCR_W / 2, 282, C.bone, 3, 'center');
-    let y = 340; for (const l of sendPreview().slice(0, 5)) { R(40, y + 6, 4, 4, C.orange); text(l, 54, y, C.bone); y += 24; }
+    let y = 340; for (const l of sendPreview().slice(0, 5)) { R(40, y + 6, 4, 4, C.orange); text(clipText(l, 384, 2), 54, y, C.bone); y += 24; }
     text('Ends the expedition · the world turns', SCR_W / 2, y + 12, C.mist, 2, 'center');
   } else {
     drawMats(S.home, 36, false);
@@ -3116,7 +3133,7 @@ function drawCargo(t) {
     if (!waits.length) text('Nothing waiting', 24, 158, C.stone);
     waits.slice(0, 6).forEach((o, i) => { const y = 156 + i * 34; if (o.p) { podSlot(24, y - 4, o.p); text(clipText((o.p.idd ? SPECIES[o.p.sp].name + ' pod' : 'unknown pod') + ' · ' + o.need, 390, 2), 48, y, C.bone); } else { blit(sparkArt(false), 28, y + 2); text('A study · ' + o.need, 48, y, C.bone); } });
     const st = [0, 1, 2].map(sp => S.home.pods.filter(p => p.idd && p.sp === sp && S.mibis.some(m => m.sp === sp)).length);
-    let sy = 360; st.forEach((n, sp) => { if (!n) return; text('Stored: ' + numWord(n) + ' ' + SPECIES[sp].name.toLowerCase() + ' pod' + (n > 1 ? 's' : '') + ' · you raise ' + SPECIES[sp].plural, 24, sy, C.mist); sy += 24; });
+    let sy = 360; st.forEach((n, sp) => { if (!n) return; text(clipText('Stored: ' + numWord(n) + ' ' + SPECIES[sp].name.toLowerCase() + ' pod' + (n > 1 ? 's' : '') + ' (raised)', 400, 2), 24, sy, C.mist); sy += 24; });
     text('Nothing is out on an expedition.', 24, 420, C.stone);
   }
 }
@@ -3174,7 +3191,7 @@ function drawStation(t) {
       else if (o.k === 'study') { blit(sparkArt(true), 22, y + 2); const ls = wrapText(o.text, 300, 2); ls.forEach((l, i) => text(l, 44, y + i * 20, C.rust)); text('-2 Data', 424, y, C.bark, 2, 'right'); y += 20 * ls.length + 8; }
       else if (o.k === 'wait') { panel(18, y, 414, 30, C.bone); podSlot(24, y + 4, o.p); text(clipText((o.p.idd ? SPECIES[o.p.sp].name + ' pod' : 'Pod') + ' waits · ' + o.need, 370, 2), 48, y + 8, C.wine); y += 34; }
       else if (o.k === 'waitStudy') { text('A study waits · ' + o.need, 22, y, C.wine); y += 24; }
-      else if (o.k === 'stored') { panel(18, y, 414, 30, C.bone); podSlot(24, y + 4, o.p); text(clipText(SPECIES[o.p.sp].name + ' pod · you raise ' + SPECIES[o.p.sp].plural + ' · stored', 370, 2), 48, y + 8, C.stone); y += 34; }
+      else if (o.k === 'stored') { panel(18, y, 414, 30, C.bone); podSlot(24, y + 4, o.p); text(clipText(SPECIES[o.p.sp].name + ' pod stored · already raised', 370, 2), 48, y + 8, C.stone); y += 34; }
     }
     if (r.hatch) { panel(18, y, 414, 30, C.sand); podSlot(24, y + 4, { g: r.hatch.g, sp: r.hatch.sp }); text(SPECIES[r.hatch.sp].name + ' pod hatches', 48, y + 8, C.ink);
       text('-4', 424, y + 8, C.bark, 2, 'right'); blit(ICON.essence(), 386, y + 8); text('-2', 378, y + 8, C.bark, 2, 'right'); blit(ICON.energy(), 340, y + 8); y += 34; }
@@ -3271,14 +3288,14 @@ function lineFor() {
     case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close');
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what goes home'] : '', 'close'); }
-    case 'probe': return canPatch() ? L1('Patch the shield', '3 Energy for one bar', 'close') : L1('Close', '', 'close');
+    case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch the shield', S.ui.patchArm ? '' : '3 Energy for one bar', 'close') : L1('Close', '', 'close');
     case 'cargo': return S.exp ? L1('Send home', 'ends the expedition', 'close') : L1('Close', '', 'close');
     case 'companions': { const m = S.mibis[S.ui.cSel]; if (S.exp || !m) return L1('Close', '', 'close');
       if (!isAdult(m)) return L1(S.rider === m.id ? 'Leave ' + m.name + ' at home' : 'Let ' + m.name + ' ride along', 'juvenile', 'close');
       return L1(S.along === m.id ? 'Leave ' + m.name + ' at home' : 'Bring ' + m.name + ' along', mibiStage(m), 'close'); }
     case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
     case 'station': { const pages = stationPages(), page = pages[S.ui.stPage], last = S.ui.stPage >= pages.length - 1;
-      if (page === 'upgrade' && !S.report.upgraded) return L1('Upgrade the Probe', PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 'not now');
+      if (page === 'upgrade' && !S.report.upgraded) return L1(S.ui.upArm ? 'Confirm: upgrade' : 'Upgrade the Probe', PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 'not now');
       if (!last) return L1(pages[S.ui.stPage + 1] === 'hatch' ? 'Hatch the pod' : 'Continue', '', 'menu');
       return L1('Next expedition', '', 'menu'); }
   }
@@ -3372,9 +3389,8 @@ function act(k, mode) {
     case 'menu': { const items = menuItems(), n = items.length; if (k !== 'confirm') S.ui.nwArm = 0;
       // while waiting the menu is folded to the bottom strip: Confirm waits again, Back or the pad bring the full menu back
       if (S.ui.waiting) { if (k === 'confirm') { waitTick(S.ui.from); if (S.phase === 'menu' && !S.exp) S.phase = 'station'; } else S.ui.waiting = 0; break; }
-      if (k === 'up') S.ui.menuSel = (S.ui.menuSel + n - 1) % n;
-      else if (k === 'down') S.ui.menuSel = (S.ui.menuSel + 1) % n;
-      else if (k === 'confirm') { const id = (items[S.ui.menuSel] || items[0]).id;
+      if (k === 'up' || k === 'down') { const d = k === 'up' ? n - 1 : 1; do S.ui.menuSel = (S.ui.menuSel + d) % n; while (items[S.ui.menuSel].dis); }   // a dimmed row keeps its place but focus skips it
+      else if (k === 'confirm' && !(items[S.ui.menuSel] || {}).dis) { const id = (items[S.ui.menuSel] || items[0]).id;
         if (id === 'wait') { waitTick(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'station'; }   // folds to a strip: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
         else if (id === 'send') S.phase = 'cargo';
@@ -3384,9 +3400,10 @@ function act(k, mode) {
         else { S.phase = id; S.ui.nw = 0; S.ui.cSel = Math.max(0, S.mibis.findIndex(m => m.id === (S.rider != null ? S.rider : S.along))); } }
       else if (k === 'back') S.phase = S.ui.from || 'setup';
       break; }
-    case 'probe':
-      if (k === 'confirm' && canPatch()) { const ex = S.exp; ex.cargo.e -= PRICE.patch; ex.shield++; logEv('Patched the shield (3 Energy)'); fxMsg('Shield patched · ' + ex.shield + ' of ' + ex.smax); }
-      else if (k === 'back' || k === 'confirm') S.phase = 'menu'; break;
+    case 'probe':   // patching spends Energy: two presses, the first only arms it
+      if (k === 'confirm' && canPatch() && !S.ui.patchArm) { S.ui.patchArm = 1; fxMsg('Patch shield · 3 Energy · ✓ again to confirm', 3); }
+      else if (k === 'confirm' && canPatch()) { const ex = S.exp; S.ui.patchArm = 0; ex.cargo.e -= PRICE.patch; ex.shield++; logEv('Patched the shield (3 Energy)'); fxMsg('Shield patched · ' + ex.shield + ' of ' + ex.smax); }
+      else if (k === 'back' || k === 'confirm') { S.ui.patchArm = 0; S.phase = 'menu'; } else S.ui.patchArm = 0; break;
     case 'cargo':
       if (k === 'back') S.phase = 'menu';
       else if (k === 'confirm') { if (S.exp) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); } else S.phase = 'menu'; }
@@ -3409,10 +3426,11 @@ function act(k, mode) {
     case 'station': {
       const pages = stationPages(), page = pages[S.ui.stPage], last = S.ui.stPage >= pages.length - 1;
       if (k === 'confirm') {
-        if (page === 'upgrade' && !S.report.upgraded) { upgradeProbe(); lockInput(300); }
+        if (page === 'upgrade' && !S.report.upgraded && !S.ui.upArm) { S.ui.upArm = 1; fxMsg('Tier 2 · ' + PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data · ✓ again to confirm', 3); }
+        else if (page === 'upgrade' && !S.report.upgraded) { S.ui.upArm = 0; upgradeProbe(); lockInput(300); }
         else if (!last) { S.ui.stPage++; transition(); if (pages[S.ui.stPage] === 'hatch') lockInput(motion() ? 1150 : 160); }
         else { S.phase = 'setup'; S.ui.sel = 0; transition(); }
-      } else if (k === 'back') { if (page === 'upgrade' && !S.report.upgraded) { S.phase = 'setup'; S.ui.sel = 0; transition(); } else openMenu(); }
+      } else if (k === 'back') { S.ui.upArm = 0; if (page === 'upgrade' && !S.report.upgraded) { S.phase = 'setup'; S.ui.sel = 0; transition(); } else openMenu(); }
       break; }
   }
   if (S.exp && S.exp.patch == null && S.phase === 'patch') S.phase = 'map';
@@ -3456,7 +3474,8 @@ window.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = keyOf(e); if (!k) return;
   const inPanel = e.target && e.target.closest && e.target.closest('.panel');
-  if (inPanel && (k === 'confirm' || k === 'back' || e.target.tagName === 'TEXTAREA')) return;   // panel controls keep their own keys
+  if (e.target && e.target.tagName === 'TEXTAREA') e.target.blur();   // the notes box gives the keys back to the game (copying uses Ctrl/⌘)
+  else if (inPanel && (k === 'confirm' || k === 'back')) return;   // panel controls keep their own keys
   e.preventDefault(); if (e.repeat) return;
   const b = document.querySelector(`.key[data-key="${k}"]`); if (b) b.classList.add('is-down');
   press(k);
@@ -3493,7 +3512,7 @@ fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw ne
 
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
 function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
-obsBtn.addEventListener('click', () => setObserver(obsBtn.getAttribute('aria-pressed') !== 'true'));
+obsBtn.addEventListener('click', e => { setObserver(obsBtn.getAttribute('aria-pressed') !== 'true'); if (e.detail) obsBtn.blur(); });   // a mouse click hands the keys back to the game
 (function buildPalette() {
   const el = document.getElementById('oPal');
   PALETTE.forEach(([n, h]) => { const i = document.createElement('i'); i.style.background = h; i.title = n + ' ' + h; el.appendChild(i); });
@@ -3565,6 +3584,7 @@ function notesText() {
 }
 const copyBtn = document.getElementById('copyNotes'), copyMsg = document.getElementById('copyMsg'), notesTa = document.getElementById('notesFallback');
 copyBtn.addEventListener('click', () => {
+  copyBtn.blur();   // Enter goes back to the game, not to this button
   const t = notesText();
   const fallback = () => { notesTa.hidden = false; notesTa.value = t; notesTa.focus(); notesTa.select(); copyMsg.textContent = 'Selected. Press Ctrl+C or ⌘C to copy.'; };
   try {
