@@ -1,5 +1,10 @@
 # Exploration, round 3: energy, survey and reading the world
 
+**Decided 2026-10-06:** all five decisions below were taken as recommended, with
+one condition on Energy: warm stones must not be abundant. Energy stays a
+sought-for resource, and Energy and pods both stay somewhat scarce, so a player
+does not end up with a multitude of mibis.
+
 **Proposal**, building on the decided and built [round 2](exploration-round-2.md),
 after the owner's second play and playtest r4. **Decided** marks owner decisions.
 
