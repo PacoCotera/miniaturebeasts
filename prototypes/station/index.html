@@ -39,47 +39,58 @@ body{
 .device-col{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 1 auto; max-width:100%}
 .stamp{font: 500 13px/1.2 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center}
 
-/* ===== The Station: a two-thumb landscape handheld (keeps its own look in both themes) ===== */
-.fit{position:relative}
+/* ===== The Station: screen on top, one row of big keys under it (keeps its own look in both themes) =====
+   Only the screen scales to the window; the keys keep their real size, so they stay pressable on a phone. */
+.fit{position:relative; max-width:100%}
 .station{
   --sage-1:#b9c6b0; --sage-2:#a1b097; --sage-3:#8a9a80; --key-ink:#f6f1e6;
-  position:absolute; left:0; top:0; transform-origin:0 0; width:1400px; height:790px; border-radius:70px;
+  --pk:62px; /* one pad key; the other keys follow it, so the row fits any phone in one line */
+  position:relative; width:max-content; max-width:100%; border-radius:40px; padding:30px 14px 18px;
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .3 0 0 0 0 .22 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
     linear-gradient(170deg, var(--sage-1) 0%, var(--sage-2) 55%, var(--sage-3) 100%);
   box-shadow: inset 0 3px 0 rgba(255,255,255,.5), inset 0 -8px 16px rgba(30,45,30,.25), 0 2px 0 #6f7d66, 0 22px 50px rgba(15,20,12,.35), 0 5px 12px rgba(15,20,12,.25);
   user-select:none; -webkit-user-select:none; touch-action:none; -webkit-tap-highlight-color:transparent;
 }
-.grip{position:absolute; top:120px; width:120px; height:520px; border-radius:60px; background:linear-gradient(180deg, rgba(40,52,38,.16), rgba(40,52,38,.05)); pointer-events:none}
-.grip.l{left:26px} .grip.r{right:26px}
 .st-brand{position:absolute; left:0; right:0; top:10px; text-align:center; font:600 13px/1 var(--font-ui); letter-spacing:.3em; color:#55624f; text-shadow:0 1px 0 rgba(255,255,255,.45)}
 .st-brand span{font-weight:400; letter-spacing:.2em; margin-left:.6em; padding-left:.6em; border-left:2px solid #d06a2c}
-.st-bezel{position:absolute; left:176px; top:32px; width:1048px; height:624px; border-radius:22px; background:linear-gradient(180deg,#25292a,#181a1b); padding:12px; box-shadow: inset 0 2px 5px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.45)}
-.st-bezel canvas{display:block; width:1024px; height:600px; pointer-events:none; background:#121a16; image-rendering:crisp-edges; image-rendering:pixelated}
-.k{appearance:none; border:none; padding:0; margin:0; cursor:pointer; position:absolute; outline:none; touch-action:none; -webkit-tap-highlight-color:transparent}
+.st-bezel{border-radius:22px; background:linear-gradient(180deg,#25292a,#181a1b); padding:12px; box-shadow: inset 0 2px 5px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.45)}
+.st-bezel canvas{display:block; width:1024px; max-width:100%; height:auto; aspect-ratio:1024/600; pointer-events:none; background:#121a16; image-rendering:crisp-edges; image-rendering:pixelated}
+.k{appearance:none; border:none; padding:0; margin:0; cursor:pointer; position:relative; outline:none; touch-action:none; -webkit-tap-highlight-color:transparent}
 .k:focus-visible{outline:3px solid #ffd166; outline-offset:3px}
-.pad{position:absolute; left:28px; top:300px; width:132px; height:132px}
+/* The key row: pad | the four view keys | Back and Confirm. On a narrow shell the view keys take a row of their own above. */
+.controls{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:18px 20px; padding:24px 12px 8px}
+.pad{position:relative; width:calc(var(--pk) * 3); height:calc(var(--pk) * 3); flex:none}
 .pad::before{content:""; position:absolute; inset:-10px; border-radius:50%; background:radial-gradient(circle, rgba(40,50,35,.25), rgba(40,50,35,0) 70%)}
-.pad .hub{position:absolute; left:44px; top:44px; width:44px; height:44px; background:#2f3236}
-.pad .k{width:44px; height:44px; background:linear-gradient(180deg,#3a3d42,#2f3236); box-shadow:0 3px 0 #17181a, inset 0 1px 0 rgba(255,255,255,.12); display:grid; place-items:center}
-.pad .k svg{width:16px; height:16px; fill:#9a9ea6}
-.pad .up{left:44px; top:0; border-radius:8px 8px 0 0} .pad .down{left:44px; top:88px; border-radius:0 0 8px 8px}
-.pad .left{left:0; top:44px; border-radius:8px 0 0 8px} .pad .right{left:88px; top:44px; border-radius:0 8px 8px 0}
-.pad .k.is-down{transform:translateY(2px); box-shadow:0 1px 0 #17181a, inset 0 2px 3px rgba(0,0,0,.5)}
-.mid{position:absolute; left:0; right:0; top:680px; display:flex; justify-content:center; gap:26px}
-.mid .k{position:relative; width:128px; height:46px; border-radius:23px; color:var(--key-ink); font:600 13px/1 var(--font-ui); letter-spacing:.14em; text-transform:uppercase; box-shadow:0 4px 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.3)}
-.mid .k.is-down{transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.35), inset 0 2px 4px rgba(0,0,0,.35)}
+.pad .hub{position:absolute; left:var(--pk); top:var(--pk); width:var(--pk); height:var(--pk); background:#2f3236}
+.pad .hub::after{content:""; position:absolute; left:calc(50% - 10px); top:calc(50% - 10px); width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 40% 35%, #3d4146, #24272a)}
+.pad .k{position:absolute; width:var(--pk); height:var(--pk); background:linear-gradient(180deg,#3a3d42,#2f3236); box-shadow:0 4px 0 #17181a, inset 0 1px 0 rgba(255,255,255,.12); display:grid; place-items:center}
+.pad .k svg{width:24px; height:24px; fill:#9a9ea6}
+.pad .up{left:var(--pk); top:0; border-radius:10px 10px 0 0} .pad .down{left:var(--pk); top:calc(var(--pk) * 2); border-radius:0 0 10px 10px}
+.pad .left{left:0; top:var(--pk); border-radius:10px 0 0 10px} .pad .right{left:calc(var(--pk) * 2); top:var(--pk); border-radius:0 10px 10px 0}
+.pad .k.is-down{transform:translateY(2px); box-shadow:0 2px 0 #17181a, inset 0 2px 3px rgba(0,0,0,.5)}
+.views{display:flex; flex:1 1 380px; justify-content:center; gap:14px; flex-wrap:wrap}
+.views .k{flex:1 1 0; min-width:112px; max-width:180px; height:60px; border-radius:30px; color:var(--key-ink); font:600 14px/1 var(--font-ui); letter-spacing:.12em; text-transform:uppercase; box-shadow:0 5px 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.3)}
+.views .k.is-down{transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,.35), inset 0 2px 4px rgba(0,0,0,.35)}
 .k.home{background:linear-gradient(180deg,#f0a548,#d47f22)} .k.research{background:linear-gradient(180deg,#36b4a3,#1d8a7c)}
 .k.library{background:linear-gradient(180deg,#9a74e0,#6f4cba)} .k.habitat{background:linear-gradient(180deg,#78b85a,#4f8c37)}
-.k.back{left:1236px; top:398px; width:64px; height:64px; border-radius:50%; background:radial-gradient(circle at 40% 30%,#5d6167,#3a3d42); box-shadow:0 4px 0 #1d1f22, inset 0 1px 0 rgba(255,255,255,.15); display:grid; place-items:center}
-.k.back svg{width:24px; height:24px; stroke:#e9e6df; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
-.k.confirm{left:1270px; top:270px; width:96px; height:96px; border-radius:50%; background:radial-gradient(circle at 40% 30%,#ff8a45,#f0661a 55%,#c94f0d); box-shadow:0 5px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35); display:grid; place-items:center}
-.k.confirm svg{width:40px; height:40px; stroke:#fff8ef; fill:none; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round}
-.k.back.is-down{transform:translateY(3px); box-shadow:0 1px 0 #1d1f22, inset 0 2px 4px rgba(0,0,0,.5)}
-.k.confirm.is-down{transform:translateY(4px); box-shadow:0 1px 0 #8c3608, inset 0 2px 5px rgba(0,0,0,.35)}
-.eng{position:absolute; font:600 11px/1 var(--font-ui); letter-spacing:.18em; color:#55624f; text-shadow:0 1px 0 rgba(255,255,255,.45); pointer-events:none}
-.speaker{position:absolute; top:520px; display:grid; grid-template-columns:repeat(3,7px); gap:7px}
-.speaker i{width:7px; height:7px; border-radius:50%; background:#6f7d66; box-shadow:inset 0 1px 1px rgba(0,0,0,.4)}
+.act{display:flex; align-items:flex-end; gap:26px; flex:none; padding-right:6px}
+.act .key{display:flex; flex-direction:column; align-items:center; gap:8px}
+.k.back{width:calc(var(--pk) * 1.16); height:calc(var(--pk) * 1.16); border-radius:50%; background:radial-gradient(circle at 40% 30%,#5d6167,#3a3d42); box-shadow:0 5px 0 #1d1f22, inset 0 1px 0 rgba(255,255,255,.15); display:grid; place-items:center}
+.k.back svg{width:28px; height:28px; stroke:#e9e6df; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.k.confirm{width:calc(var(--pk) * 1.74); height:calc(var(--pk) * 1.74); border-radius:50%; background:radial-gradient(circle at 40% 30%,#ff8a45,#f0661a 55%,#c94f0d); box-shadow:0 6px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35); display:grid; place-items:center}
+.k.confirm svg{width:46px; height:46px; stroke:#fff8ef; fill:none; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round}
+.k.back.is-down{transform:translateY(3px); box-shadow:0 2px 0 #1d1f22, inset 0 2px 4px rgba(0,0,0,.5)}
+.k.confirm.is-down{transform:translateY(4px); box-shadow:0 2px 0 #8c3608, inset 0 2px 5px rgba(0,0,0,.35)}
+.eng{font:600 11px/1 var(--font-ui); letter-spacing:.18em; color:#55624f; text-shadow:0 1px 0 rgba(255,255,255,.45); pointer-events:none}
+@media (max-width: 760px){
+  .station{--pk:clamp(44px, 13.3vw, 62px); border-radius:28px; padding:26px 8px 14px}
+  .st-bezel{padding:8px; border-radius:14px}
+  .controls{padding:18px 2px 4px; gap:14px 10px}
+  .views{order:-1; flex-basis:100%; gap:8px}
+  .views .k{min-width:0; height:54px; font-size:12px; letter-spacing:.06em}
+  .act{gap:12px; padding-right:0}
+}
 
 /* ===== The Caddy beside it (prototype only: one key, Dock / Lift) ===== */
 .caddy-row{display:flex; align-items:center; gap:18px; flex-wrap:wrap; justify-content:center}
@@ -89,7 +100,7 @@ body{
 .caddy .slot .comp{position:absolute; left:18px; top:-26px; width:40px; height:64px; border-radius:9px; background:linear-gradient(160deg,#ddd4c1,#b3a790); box-shadow:0 3px 6px rgba(0,0,0,.35); transition:top .25s, opacity .25s}
 .caddy .slot .comp::after{content:""; position:absolute; left:6px; top:7px; width:28px; height:34px; border-radius:4px; background:#1a1c1f}
 .caddy.lifted .slot .comp{top:-70px; opacity:0}
-.caddy .k.dock{left:266px; top:26px; width:60px; height:60px; border-radius:50%; background:radial-gradient(circle at 40% 30%,#6c7480,#454b54); box-shadow:0 4px 0 #24282d, inset 0 1px 0 rgba(255,255,255,.2); color:#eef0f2; font:600 11px/1.1 var(--font-ui); letter-spacing:.08em}
+.caddy .k.dock{position:absolute; left:266px; top:26px; width:60px; height:60px; border-radius:50%; background:radial-gradient(circle at 40% 30%,#6c7480,#454b54); box-shadow:0 4px 0 #24282d, inset 0 1px 0 rgba(255,255,255,.2); color:#eef0f2; font:600 11px/1.1 var(--font-ui); letter-spacing:.08em}
 .caddy .k.dock.is-down{transform:translateY(3px); box-shadow:0 1px 0 #24282d}
 .caddy-note{font:500 13px/1.4 var(--font-ui); color:var(--muted); max-width:300px}
 
@@ -126,28 +137,27 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
   <div class="device-col">
     <div class="fit" id="fit">
       <div class="station" id="station" aria-label="Station device">
-        <div class="grip l"></div><div class="grip r"></div>
         <div class="st-brand">MINIATURE BEASTS<span>STATION</span></div>
         <div class="st-bezel"><canvas id="screen" width="1024" height="600" role="img" aria-label="Station screen"></canvas></div>
-        <div class="pad">
-          <div class="hub"></div>
-          <button class="k up" data-key="up" aria-label="Up"><svg viewBox="0 0 16 16"><path d="M8 3l5 7H3z"/></svg></button>
-          <button class="k left" data-key="left" aria-label="Left"><svg viewBox="0 0 16 16"><path d="M3 8l7-5v10z"/></svg></button>
-          <button class="k right" data-key="right" aria-label="Right"><svg viewBox="0 0 16 16"><path d="M13 8L6 3v10z"/></svg></button>
-          <button class="k down" data-key="down" aria-label="Down"><svg viewBox="0 0 16 16"><path d="M8 13L3 6h10z"/></svg></button>
+        <div class="controls">
+          <div class="pad">
+            <div class="hub"></div>
+            <button class="k up" data-key="up" aria-label="Up"><svg viewBox="0 0 16 16"><path d="M8 3l5 7H3z"/></svg></button>
+            <button class="k left" data-key="left" aria-label="Left"><svg viewBox="0 0 16 16"><path d="M3 8l7-5v10z"/></svg></button>
+            <button class="k right" data-key="right" aria-label="Right"><svg viewBox="0 0 16 16"><path d="M13 8L6 3v10z"/></svg></button>
+            <button class="k down" data-key="down" aria-label="Down"><svg viewBox="0 0 16 16"><path d="M8 13L3 6h10z"/></svg></button>
+          </div>
+          <div class="views">
+            <button class="k home" data-key="home" aria-label="Home">Home</button>
+            <button class="k research" data-key="research" aria-label="Research">Research</button>
+            <button class="k library" data-key="library" aria-label="Library">Library</button>
+            <button class="k habitat" data-key="habitat" aria-label="Habitat">Habitat</button>
+          </div>
+          <div class="act">
+            <div class="key"><button class="k back" data-key="back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button><span class="eng">←</span></div>
+            <div class="key"><button class="k confirm" data-key="confirm" aria-label="Confirm"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><span class="eng">CONFIRM</span></div>
+          </div>
         </div>
-        <div class="speaker" style="left:62px"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="speaker" style="left:1290px"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="mid">
-          <button class="k home" data-key="home" aria-label="Home">Home</button>
-          <button class="k research" data-key="research" aria-label="Research">Research</button>
-          <button class="k library" data-key="library" aria-label="Library">Library</button>
-          <button class="k habitat" data-key="habitat" aria-label="Habitat">Habitat</button>
-        </div>
-        <button class="k back" data-key="back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
-        <button class="k confirm" data-key="confirm" aria-label="Confirm"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
-        <span class="eng" style="left:1262px;top:472px">←</span>
-        <span class="eng" style="left:1282px;top:378px">CONFIRM</span>
       </div>
     </div>
     <div class="caddy-row">
@@ -1796,13 +1806,14 @@ window.addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (!k) return
 window.addEventListener('blur', () => document.querySelectorAll('.k.is-down').forEach(b => b.classList.remove('is-down')));
 
 // ===================== 10. Page: fit, the Caddy, debug strip, sharing the save, boot =====================
-const fitEl = document.getElementById('fit');
+const screenEl = document.getElementById('screen');
+// Only the screen scales to the window; the keys keep their real size. When the screen would land close
+// to a whole number of physical pixels per device pixel, snap to it so the pixel grid stays even.
 function fit() {
-  const W = 1400, H = 790, vw = document.documentElement.clientWidth, vh = window.innerHeight, dpr = window.devicePixelRatio || 1;
-  const desktop = vw >= 900 && window.matchMedia && matchMedia('(pointer: fine)').matches;
-  let s = Math.min(1, (vw - 32) / W); if (!desktop) s = Math.min(s, (vh - 40) / H); s = Math.max(.2, s);
+  const W = 1024, vw = document.documentElement.clientWidth, dpr = window.devicePixelRatio || 1, room = vw < 761 ? 32 + 36 : 32 + 52;
+  let s = Math.min(1, (vw - room) / W); s = Math.max(.25, s);
   const k = Math.floor(s * dpr + 1e-6); if (k >= 1 && k / dpr >= s * .85) s = k / dpr;
-  fitEl.style.width = (W * s) + 'px'; fitEl.style.height = (H * s) + 'px'; stationEl.style.transform = `scale(${s})`;
+  screenEl.style.width = Math.round(W * s) + 'px';
 }
 window.addEventListener('resize', fit);
 const caddyEl = document.getElementById('caddy'), dockKeyEl = document.getElementById('dockKey'), caddyPaper = document.getElementById('caddyPaper');
