@@ -1,0 +1,86 @@
+{
+  "id": "arrival-fresh",
+  "direction": "B",
+  "round": 2,
+  "attempt": 1,
+  "tag": "D-B-r2-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen during dock and arrival, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium and every creature in it, the creature inside the cream ring and its name, the sleeping one in the nest, the ribbon, the open bay with its crates and rail, the Incubation module, the docked handheld, the top bar and bottom line.\nTHREE CHANGES ONLY: (1) The POD RACK module shows exactly SIX round wells in ONE row, evenly spaced: four hold seed-pods (green, blue, violet, amber-brown), two are empty; the small amber-brown seed-pod on the rail stays on the rail above. (2) The bottom-right module's label reads only \"Probe dock\", small and quiet, with no other word. (3) Move the top bar's right text \"Companion docked · 2 crates\" and the bottom line's right text \"arrival playing\" left so each ends about 60 px inside the right edge, fully readable; also move the three counters' icons and digits so they sit together at the centre of the top bar.\nText stays exactly as it is in Image 1; add no text and no captions.\nConstraints: change nothing outside the named module; no new creatures; no digits; no logos.",
+  "preamble": "Reference image follows; its role is stated. Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/dock/round1/D-B-r1-a2-canvas.png",
+      "role": "edit target: the round 1 near-pass",
+      "sha256": "1979dcc552b51493f7481c2b732f540d9c95569155a67edd9e83f0d1447d183c"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T08:16:36Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "0f39c6766824afbc21f4ad41c8bbfb638648696170af11c0c7d5ac2647a525c5",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "D-B-r2-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "b29a45b36c5374d4a31d7d275cdf2918f8986a71669c6b0c223e8ee01aa63dfe"
+    },
+    "screen": {
+      "file": "D-B-r2-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "aa565be71aeb778152375c8a696f5046e59df1092e2305b3255b3898287fcef2",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 22.9,
+    "usage": {
+      "promptTokenCount": 591,
+      "candidatesTokenCount": 1344,
+      "totalTokenCount": 2157,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 333
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 222,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected (the three-change edit of the near-pass drifted into a fantasy interface with a 'Name' banner and invented creatures)"
+  }
+}

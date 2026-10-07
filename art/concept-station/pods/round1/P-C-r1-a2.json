@@ -35,12 +35,13 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "raw/P-C-r1-a2.jpg",
-      "stored": true,
+      "file": null,
+      "stored": false,
       "mimeType": "image/jpeg",
       "width": 2752,
       "height": 1536,
-      "sha256": "d131e305d04cda186ee18798fbbc471636083fcb4f8203a4facad8f5d01714f7"
+      "sha256": "d131e305d04cda186ee18798fbbc471636083fcb4f8203a4facad8f5d01714f7",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
     },
     "png": {
       "file": "P-C-r1-a2-canvas.png",
@@ -89,6 +90,7 @@
       ],
       "thoughtsTokenCount": 460,
       "serviceTier": "standard"
-    }
+    },
+    "disposition": "rejected (no whorl; five wells; labels large; drop icon instead of a diamond in the bottom line; direction not chosen)"
   }
 }

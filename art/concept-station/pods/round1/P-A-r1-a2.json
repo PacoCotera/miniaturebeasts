@@ -40,7 +40,7 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "raw/P-A-r1-a2.jpg",
+      "file": "round1/raw/P-A-r1-a2.jpg",
       "stored": true,
       "mimeType": "image/jpeg",
       "width": 2752,
@@ -94,6 +94,7 @@
       ],
       "thoughtsTokenCount": 412,
       "serviceTier": "standard"
-    }
+    },
+    "disposition": "kept: round 1 pick and edit target for round 2 (five wells; cow-like hide in the markings viewport; right strings at the edge)"
   }
 }

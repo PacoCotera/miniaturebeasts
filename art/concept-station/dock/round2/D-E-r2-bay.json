@@ -1,0 +1,85 @@
+{
+  "id": "bay-region",
+  "direction": "E",
+  "round": 2,
+  "attempt": 1,
+  "tag": "D-E-r2-bay",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen concept, 16:9, flat screen design filling the canvas. Edit ONE region of the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium and everything in it, the creature inside the cream ring and its plate, the top bar, the bottom line, and every module you are not asked to touch. Same camera, same chrome materials, same clean painted light from the upper left, no noise.\nONE REGION: the top module of the right column, the SAMPLE BAY, and the module directly under it, the POD RACK. Bay: its door swings open to the right and a cool blue-white beam lights the inside; the left crate's lid is open with its orange seal tag broken and hanging, the right crate stays sealed with its tag; a short slate rail leaves the bay's lower-left corner and curves down into the pod rack. Rack: exactly six round wells in one row; four hold seed-pods (green, blue, violet, and a new amber-brown one just seated in the fourth), two are empty; one more small amber-brown seed-pod sits on the rail mid-way between bay and rack. Keep both modules' engraved labels and lamps. Nothing else changes.\nText stays exactly as it is in Image 1; add no text and no captions.\nConstraints: change nothing outside the named module; no new creatures; no digits; no logos.",
+  "preamble": "Reference image follows; its role is stated. Image 1 is the screen to edit; only the sample bay and pod rack modules change.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round3/A-r3-a1-canvas.png",
+      "role": "edit target: the approved Home screen",
+      "sha256": "5f6c764fc53e1431b592b53671a5a5f52a8b99793e70e73f0641a479a2bad15d"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T08:15:34Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "round2/raw/D-E-r2-bay.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "b951e2ca6b4103d02a9b5d30295b75164d6939da8ad4d0df33ab27826d2dce78"
+    },
+    "png": {
+      "file": "D-E-r2-bay-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "adb4719be1d691fddbcc803aa59610ec83ae634a5b2a17a1ac396b41a4873256"
+    },
+    "screen": {
+      "file": "D-E-r2-bay-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "b9d7ddafb974830d4cb549ff78dab6ef21ddfad013525a9ec414e23bbf32353c",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 25.2,
+    "usage": {
+      "promptTokenCount": 611,
+      "candidatesTokenCount": 1362,
+      "totalTokenCount": 2211,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 353
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 238,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept: region edit held (bay open, beam, rail with pods); the rack came back with four wells; composited into D-C1"
+  }
+}

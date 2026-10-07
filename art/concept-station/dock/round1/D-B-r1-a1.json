@@ -40,12 +40,13 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "raw/D-B-r1-a1.jpg",
-      "stored": true,
+      "file": null,
+      "stored": false,
       "mimeType": "image/jpeg",
       "width": 2752,
       "height": 1536,
-      "sha256": "00f76ddfa66800ce4cccb172a5c4a8379a5789f7d1e2a1bf4042a00a592900dc"
+      "sha256": "00f76ddfa66800ce4cccb172a5c4a8379a5789f7d1e2a1bf4042a00a592900dc",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
     },
     "png": {
       "file": "D-B-r1-a1-canvas.png",
@@ -94,6 +95,7 @@
       ],
       "thoughtsTokenCount": 332,
       "serviceTier": "standard"
-    }
+    },
+    "disposition": "rejected (fresh: Pip drawn as a grasshopper and Dot as a kitten; bay, rail, rack and docked Companion read well and inform round 2)"
   }
 }

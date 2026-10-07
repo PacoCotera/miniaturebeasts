@@ -40,7 +40,7 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "raw/D-B-r1-a2.jpg",
+      "file": "round1/raw/D-B-r1-a2.jpg",
       "stored": true,
       "mimeType": "image/jpeg",
       "width": 2752,
@@ -93,6 +93,7 @@
         }
       ],
       "serviceTier": "standard"
-    }
+    },
+    "disposition": "kept: round 1 near-pass and edit target for round 2 (seven wells in two rows; leaked 'Module' in the dock label; right strings at the edge; residents do not turn)"
   }
 }

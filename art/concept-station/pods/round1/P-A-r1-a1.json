@@ -40,12 +40,13 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "raw/P-A-r1-a1.jpg",
-      "stored": true,
+      "file": null,
+      "stored": false,
       "mimeType": "image/jpeg",
       "width": 2752,
       "height": 1536,
-      "sha256": "1fbf4607bb49eb2561ac95c4a389858a865719a5e7f95872ad01ac7560648fcb"
+      "sha256": "1fbf4607bb49eb2561ac95c4a389858a865719a5e7f95872ad01ac7560648fcb",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
     },
     "png": {
       "file": "P-A-r1-a1-canvas.png",
@@ -93,6 +94,7 @@
         }
       ],
       "serviceTier": "standard"
-    }
+    },
+    "disposition": "rejected (leaked captions RACK COLUMN, RETURN GATE, SPECIMEN, FINGERPRINT WHORL; five wells; right strings clipped)"
   }
 }

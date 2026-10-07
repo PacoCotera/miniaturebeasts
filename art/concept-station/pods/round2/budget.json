@@ -1,0 +1,12 @@
+{
+  "successfulCalls": 4,
+  "runs": [
+    {
+      "time": "2026-10-07T08:15:34Z",
+      "plan": "scratchpad-of/-home-user-miniaturebeasts/b951398d-74c3-50ba-be6f-9ba22988419a/scratchpad/plan-pods-r2-flat.json",
+      "ids": null,
+      "success": 4,
+      "error": 0
+    }
+  ]
+}

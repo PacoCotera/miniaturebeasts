@@ -35,12 +35,13 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "raw/D-A-r1-a2.jpg",
-      "stored": true,
+      "file": null,
+      "stored": false,
       "mimeType": "image/jpeg",
       "width": 2752,
       "height": 1536,
-      "sha256": "c7f68b55a8c123bf398502e186ef2afbae31f5abc2b7d5b1057d78130db8967a"
+      "sha256": "c7f68b55a8c123bf398502e186ef2afbae31f5abc2b7d5b1057d78130db8967a",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
     },
     "png": {
       "file": "D-A-r1-a2-canvas.png",
@@ -89,6 +90,7 @@
       ],
       "thoughtsTokenCount": 219,
       "serviceTier": "standard"
-    }
+    },
+    "disposition": "rejected (four-change edit re-rendered the whole screen: rodent in place of Pip, kitten in the nest, layout reflowed)"
   }
 }

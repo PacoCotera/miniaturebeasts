@@ -1,0 +1,19 @@
+{
+  "base": "art/concept-station/dock/composite/D-C1-canvas.png",
+  "pastes": [
+    {
+      "region": "pod rack from the rack-only edit",
+      "source": "art/concept-station/dock/round3/D-E-r3-rack-canvas.png",
+      "canvasRect": [
+        992,
+        245,
+        1487,
+        403
+      ]
+    }
+  ],
+  "outputs": {
+    "canvas": "art/concept-station/dock/composite/D-C2-canvas.png",
+    "screen": "art/concept-station/dock/composite/D-C2-1024x600.png"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "id": "rack-region",
+  "direction": "E",
+  "round": 3,
+  "attempt": 1,
+  "tag": "D-E-r3-rack",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen concept, 16:9, flat screen design filling the canvas. Edit ONE module of the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium and everything in it, the other modules, the top bar and the bottom line.\nONE MODULE: the second module of the right column, the POD RACK. Redraw its wells as exactly SIX round wells in ONE evenly spaced row across the module: the first four hold seed-pods (green, blue, violet, amber-brown), the last two are empty dark rings. Keep the short rail above the wells with the one amber-brown seed-pod travelling on it, the module's engraved label and its lamp. Nothing else changes.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing outside the named module; no digits; no logos.",
+  "preamble": "Reference image follows; its role is stated. Image 1 is the screen to edit; only the pod rack module changes.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/dock/composite/D-C1-canvas.png",
+      "role": "edit target: the composite of the approved Home with the bay and dock region edits",
+      "sha256": "af86e59a48e9dfbcc38fa0c059dc21fbf43520873ee08618bd7a2890dfa2ec52"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T08:19:36Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "round3/raw/D-E-r3-rack.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "9bf612bca7def8aec165691cee2f7491157eca1ae455de713bf697a90e5cf2b1"
+    },
+    "png": {
+      "file": "D-E-r3-rack-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "5aa335171c841ddb6549e33691f761b5240cba51ae36c0a601a10bfaf9ca9504"
+    },
+    "screen": {
+      "file": "D-E-r3-rack-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "38084edabbe71e1555bf60ca2d296a04bf7b0658a768f4c915d204281014852d",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 27.2,
+    "usage": {
+      "promptTokenCount": 501,
+      "candidatesTokenCount": 1342,
+      "totalTokenCount": 2034,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 243
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 191,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept (held, but the model returned the rack unchanged: four wells; composited into D-C2 as the base for the final edits)"
+  }
+}

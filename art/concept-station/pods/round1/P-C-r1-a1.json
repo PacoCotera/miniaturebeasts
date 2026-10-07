@@ -35,12 +35,13 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "raw/P-C-r1-a1.jpg",
-      "stored": true,
+      "file": null,
+      "stored": false,
       "mimeType": "image/jpeg",
       "width": 2752,
       "height": 1536,
-      "sha256": "b420e80e879c9c4ec3862f4f8d646f9139d5b601355f507a17b769bd799c031f"
+      "sha256": "b420e80e879c9c4ec3862f4f8d646f9139d5b601355f507a17b769bd799c031f",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
     },
     "png": {
       "file": "P-C-r1-a1-canvas.png",
@@ -88,6 +89,7 @@
         }
       ],
       "serviceTier": "standard"
-    }
+    },
+    "disposition": "rejected (leaked MICROSCOPE STAGE PLATE and a prompt sentence; numbered circles; direction not chosen)"
   }
 }

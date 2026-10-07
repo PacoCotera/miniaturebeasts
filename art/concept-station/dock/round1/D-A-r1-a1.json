@@ -35,12 +35,13 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "raw/D-A-r1-a1.jpg",
-      "stored": true,
+      "file": null,
+      "stored": false,
       "mimeType": "image/jpeg",
       "width": 2752,
       "height": 1536,
-      "sha256": "f54d171029d8e22e3b49359581558b6509d9babe151685adfb7d459eeb6d8359"
+      "sha256": "f54d171029d8e22e3b49359581558b6509d9babe151685adfb7d459eeb6d8359",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
     },
     "png": {
       "file": "D-A-r1-a1-canvas.png",
@@ -89,6 +90,7 @@
       ],
       "thoughtsTokenCount": 350,
       "serviceTier": "standard"
-    }
+    },
+    "disposition": "rejected (four-change edit re-rendered the whole screen: vivarium gone, a cat in a glass jar, purple diamond)"
   }
 }

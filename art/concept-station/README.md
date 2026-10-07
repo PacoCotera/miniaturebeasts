@@ -10,6 +10,8 @@ Everything in this folder is **generated concept art** for the Station's Home sc
 
 **Where the brief and the guide differed, the guide won** (bolt, diamond and drop icons; no wood or felt; cream ring instead of brackets; daylight instead of a lamp cone). The brief's section 7b lists the differences. Round 1 was dispatched before the guide arrived and shows the older choices.
 
+**Next screens, same process:** [Pods](pods/README.md) (the trait windows and the whorl, as a modern digital lab; recommended `pods/round3/P-D-r3-a2`) and [Dock and arrival](dock/README.md) (the arrival playing on this Home; recommended `dock/round3/D-E-r3-a1`). Each folder has its own brief, prompts.json, contact sheet and owner questions.
+
 [`prompts.json`](prompts.json) holds every call in the homepage file's schema: prompt verbatim, references and their roles with hashes, model, sizes, the result's hashes and its disposition. Each round folder keeps `raw/{tag}.jpg` byte-exact, `{tag}-canvas.png` (the 16:9 canvas at 1536×864) and `{tag}-1024x600.png` (the screen: the centred 1024:600 band, 2 percent bleed trimmed each side) with a JSON sidecar per call. [`layout/`](layout/) holds the two flat layout inputs sent to the generator: the brief's wireframe rendered at 1024×600 and a block template; they are inputs, not candidates.
 
 Tool: Gemini API, `generateContent` with image output, 16:9 at 2K (2752×1536 JPEG), `gemini-3.1-flash-image` for the layout round and `gemini-3-pro-image` for the refinements, references attached as inline images each preceded by its role. The exact call pattern is the one recorded in [`../concept-homepage/prompts.json`](../concept-homepage/prompts.json).

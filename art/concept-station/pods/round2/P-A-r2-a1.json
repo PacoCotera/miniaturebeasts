@@ -1,0 +1,91 @@
+{
+  "id": "specimen-stage",
+  "direction": "A",
+  "round": 2,
+  "attempt": 1,
+  "tag": "P-A-r2-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station PODS screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the layout, the four viewports and their frost, star and rings, the pod, nest, plate and beam, the whorl, the gate, the top bar and bottom line and all their text.\nTHREE CHANGES ONLY: (1) The rack column shows exactly SIX round wells in one vertical column, evenly spaced: the top three hold the green, blue and violet seed-pods as now, the lower three are empty and dark; the gate with the leaf mark stays at the foot. (2) Inside the first viewport, MARKINGS, replace the brown-and-white animal hide with a close, warm, sculpted drawing of the hopper's flank from Image 2: smooth charcoal body with the soft boundary of its cream belly along the lower edge, lit from the top left, no face; keep the misty pearl seed on the sill and the word under it. (3) Move the top bar's right text \"Companion away · with Dot\" and the bottom line's right text \"crown glints · something new\" left so each ends about 60 px inside the right edge, fully readable.\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\", ending well inside the edge. On a small plate on the nest's front \"Hopper pod\" and under it small \"rock field · a hopper felt safe\". One small word under each viewport: \"markings\", \"crown\", \"colour\", \"gait\". Under the first viewport a small line \"shows plain · hides pale\". Bottom line: orange \"✓ Study crown · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"Hopper pod · identified\" in the middle, grey \"crown glints · something new\" at right, ending well inside the edge. No captions naming parts of the screen.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; frosted panes show frost only, never anything behind; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper: the markings drawing is the hopper's flank, charcoal with a cream belly edge, never a cow, horse or deer; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip: the hopper whose flank the markings viewport must show.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/pods/round1/P-A-r1-a2-canvas.png",
+      "role": "edit target: the round 1 pick (kept as the Home-chrome fallback)",
+      "sha256": "cdb03684a7280ea9ce4468ac6e75a99968294918c14df89c9f9720a6fa8a8578"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip, the hopper: the flank to draw inside the markings viewport",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T08:15:00Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "b31536178128d96dcf38130df7fdb80d9ccc63cd37dbf08c53a4b992a75a1b9d",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "P-A-r2-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "dc47c1fbdad9935466e6931e7dfa600db57ce24d76826527095e6be8bddea752"
+    },
+    "screen": {
+      "file": "P-A-r2-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "8b4907c7193098f7c9f2bd5134978668106c7c89234f33e30b12fdda1c93439b",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 28.7,
+    "usage": {
+      "promptTokenCount": 1136,
+      "candidatesTokenCount": 1413,
+      "totalTokenCount": 2744,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 620
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 195,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected (the fallback edit drifted into a fantasy game interface with invented currencies and icons)"
+  }
+}

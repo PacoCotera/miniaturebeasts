@@ -1,0 +1,1040 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Generated candidates for the Station Dock and arrival moment in art/concept-station/dock/brief-dock.md; concept art awaiting the owner's choice, not captures and not authored masters.",
+  "brief": "art/concept-station/dock/brief-dock.md",
+  "tool": {
+    "name": "Gemini API",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+    "auth": "API key from the environment; not recorded",
+    "models": {
+      "gemini-3-pro-image": "Gemini 3 Pro Image: final candidates and refinements",
+      "gemini-3.1-flash-image": "Gemini 3.1 Flash Image: layout round"
+    },
+    "modelChoice": "Pro for edits of the approved Home and for fresh generations needing exact strings; one Flash fresh generation in round 1 for comparison.",
+    "generationConfig": {
+      "responseModalities": [
+        "IMAGE"
+      ],
+      "imageConfig": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      }
+    },
+    "output": "image/jpeg 2752x1536 (16:9 at 2K), kept byte-exact in raw/ for kept candidates; LANCZOS to 1536x864 as the canvas PNG; the screen PNG is the centred 1024:600 band resampled to 1024x600. Composites made by rectangle from region edits are recorded in their own JSON beside the file.",
+    "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the preamble, then the prompt verbatim as the last text part.",
+    "budget": "At most 20 generations for this screen; 10 used (round 1: 4, round 2: 3, round 3: 3), 1 on gemini-3.1-flash-image and 9 on gemini-3-pro-image. No call failed; none was retried. Two composites (D-C1, D-C2) were made by rectangle without generation."
+  },
+  "plan": {
+    "references": {
+      "art/concept-station/round3/A-r3-a1-1024x600.png and -canvas.png": "approved Station Home concept: the screen this moment plays on; edit target for region edits",
+      "art/concept-homepage/hero-kit.png": "the kit render: the Companion handheld to seat in the dock",
+      "art/miniature-lives/assets/rich-plain-300x310.png": "accepted rich Pip; Dot is the same species asleep",
+      "art/concept-station/dock/layout/dock-layout-template.png": "layout truth only: notes-free flat boxes at 1024x600"
+    },
+    "directions": {
+      "A arrival-edit": "Four-change edits of the approved Home (rejected: edits of that size re-render the screen).",
+      "B arrival-fresh": "Fresh generations with the approved Home as composition reference and the kit render for the Companion.",
+      "E region-edit (round 2)": "Single-module edits of the approved Home (bay and rack; Probe dock), composited back by rectangle so the vivarium stays pixel-exact."
+    },
+    "vibe": "Owner, 2026-10-07: the overview (Home's frame, Dock and arrival) keeps the industrial, plasticky hardware design of A-r3-a1.",
+    "rounds": "Round 1: two edits and two fresh. Round 2: a three-change edit of the near-pass plus two region edits for a composite. Round 3 only for a near-pass one change would fix."
+  },
+  "recommended": {
+    "tag": "D-E-r3-a1",
+    "screen": "round3/D-E-r3-a1-1024x600.png",
+    "canvas": "round3/D-E-r3-a1-canvas.png",
+    "raw": "round3/raw/D-E-r3-a1.jpg",
+    "editChain": [
+      "round3/A-r3-a1 (Home)",
+      "round2/D-E-r2-bay + round2/D-E-r2-dock -> composite/D-C1",
+      "round3/D-E-r3-rack -> composite/D-C2",
+      "round3/D-E-r3-a1"
+    ]
+  },
+  "calls": [
+    {
+      "id": "arrival-edit",
+      "direction": "A",
+      "round": 1,
+      "attempt": 1,
+      "tag": "D-A-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the layout, the slate bezel and module column, the vivarium's plants, rocks, pool, burrow, moss and light, Pip exactly as drawn with its ring and plate, the glowtail, the puffcap, the Incubation module, the bottom line's layout, every status lamp.\nFOUR CHANGES ONLY: (1) The SAMPLE BAY module: its door is open and a cool blue-white beam lights the inside; the left crate's lid is open with its orange seal tag broken, the right crate still sealed with its tag; a short slate rail runs from the bay's lower-left corner down to the POD RACK, and one small amber-brown seed-pod travels along it mid-way while another has just seated in the rack's fourth well, so the rack reads four pods (green, blue, violet, amber-brown) and two empty wells, exactly six wells in one row. (2) The PROBE DOCK module: the Companion handheld from Image 2 sits upright in the cradle, screen dark, about 110 px tall, its orange Confirm visible; the module's lamp is green; the three Shield plates beside it show two lit cream and one dark. (3) The frosted-glass nest in the vivarium's lower right now holds Dot, a second hopper of exactly Pip's species and colours, slightly smaller, curled asleep, eyes closed. (4) Replace the top bar's right text with \"Companion docked · 2 crates\", draw the three counters slightly brighter, and add a slim slate ribbon across the top edge of the stage, over the vivarium's top bezel, reading \"Expedition 4 home · 2 pods\" in cream; the bottom line reads orange \"✓ Look at the new pods\", grey \"the room\", grey \"arrival playing\".\nTEXT, exactly these and nothing else: top bar left \"Home  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\", drawn slightly brighter as if ticking; top bar right \"Companion docked · 2 crates\". A slim slate ribbon across the top of the stage reads \"Expedition 4 home · 2 pods\". On the small plate under Pip \"Pip\" and \"hopper · adult\". Module words, engraved and quiet: \"Sample bay\", \"Pod rack\", \"Incubation\", \"Probe dock\". Bottom line: orange \"✓ Look at the new pods\" at left, grey \"the room\" in the middle, grey \"arrival playing\" at right.\nConstraints: nothing of the field: no map, no landscape, no extra counters; no tables, title bars, bullet lists, progress bars, boxed buttons or digits on the bench; no logos; no creatures other than Pip, the glowtail, the puffcap and Dot asleep; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the kit render: take only the Companion handheld from it. Image 3 is the accepted rich Pip, already in Image 1; keep it, and draw Dot as the same species asleep.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-canvas.png",
+          "role": "edit target: the approved Home screen",
+          "sha256": "5f6c764fc53e1431b592b53671a5a5f52a8b99793e70e73f0641a479a2bad15d"
+        },
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "the kit render: take only the Companion handheld from it to seat in the dock",
+          "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip: keep Pip unchanged; Dot is the same species asleep",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T07:06:56Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "f54d171029d8e22e3b49359581558b6509d9babe151685adfb7d459eeb6d8359",
+          "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "round1/D-A-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "20428c4a8b6c5c0ac7f065edbafc055ca4eb21de8fc858978617c984396e3417"
+        },
+        "screen": {
+          "file": "round1/D-A-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "1c49f6d41fe44e762147f0282e87a750acb3273308ff434bf7f07c7739737883",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 26.8,
+        "usage": {
+          "promptTokenCount": 1522,
+          "candidatesTokenCount": 1417,
+          "totalTokenCount": 3289,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 748
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 350,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (four-change edit re-rendered the whole screen: vivarium gone, a cat in a glass jar, purple diamond)"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    },
+    {
+      "id": "arrival-edit",
+      "direction": "A",
+      "round": 1,
+      "attempt": 2,
+      "tag": "D-A-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the layout, the slate bezel and module column, the vivarium's plants, rocks, pool, burrow, moss and light, Pip exactly as drawn with its ring and plate, the glowtail, the puffcap, the Incubation module, the bottom line's layout, every status lamp.\nFOUR CHANGES ONLY: (1) The SAMPLE BAY module: its door is open and a cool blue-white beam lights the inside; the left crate's lid is open with its orange seal tag broken, the right crate still sealed with its tag; a short slate rail runs from the bay's lower-left corner down to the POD RACK, and one small amber-brown seed-pod travels along it mid-way while another has just seated in the rack's fourth well, so the rack reads four pods (green, blue, violet, amber-brown) and two empty wells, exactly six wells in one row. (2) The PROBE DOCK module: the Companion handheld from Image 2 sits upright in the cradle, screen dark, about 110 px tall, its orange Confirm visible; the module's lamp is green; the three Shield plates beside it show two lit cream and one dark. (3) The frosted-glass nest in the vivarium's lower right now holds Dot, a second hopper of exactly Pip's species and colours, slightly smaller, curled asleep, eyes closed. (4) Replace the top bar's right text with \"Companion docked · 2 crates\", draw the three counters slightly brighter, and add a slim slate ribbon across the top edge of the stage, over the vivarium's top bezel, reading \"Expedition 4 home · 2 pods\" in cream; the bottom line reads orange \"✓ Look at the new pods\", grey \"the room\", grey \"arrival playing\".\nTEXT, exactly these and nothing else: top bar left \"Home  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\", drawn slightly brighter as if ticking; top bar right \"Companion docked · 2 crates\". A slim slate ribbon across the top of the stage reads \"Expedition 4 home · 2 pods\". On the small plate under Pip \"Pip\" and \"hopper · adult\". Module words, engraved and quiet: \"Sample bay\", \"Pod rack\", \"Incubation\", \"Probe dock\". Bottom line: orange \"✓ Look at the new pods\" at left, grey \"the room\" in the middle, grey \"arrival playing\" at right.\nConstraints: nothing of the field: no map, no landscape, no extra counters; no tables, title bars, bullet lists, progress bars, boxed buttons or digits on the bench; no logos; no creatures other than Pip, the glowtail, the puffcap and Dot asleep; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the kit render: take only the Companion handheld from it. Image 3 is the accepted rich Pip, already in Image 1; keep it, and draw Dot as the same species asleep.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-canvas.png",
+          "role": "edit target: the approved Home screen",
+          "sha256": "5f6c764fc53e1431b592b53671a5a5f52a8b99793e70e73f0641a479a2bad15d"
+        },
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "the kit render: take only the Companion handheld from it to seat in the dock",
+          "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip: keep Pip unchanged; Dot is the same species asleep",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T07:07:28Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "c7f68b55a8c123bf398502e186ef2afbae31f5abc2b7d5b1057d78130db8967a",
+          "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "round1/D-A-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "99d61e449f943299717ff9db7b92584f95bce02e7edccd336e09a0fedbfccd3e"
+        },
+        "screen": {
+          "file": "round1/D-A-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "b3e4705d2b9001fb7faff6be5463da455f7e043fd164e5ff352c7c3d321277d6",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 30.9,
+        "usage": {
+          "promptTokenCount": 1522,
+          "candidatesTokenCount": 1562,
+          "totalTokenCount": 3303,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 748
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 219,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (four-change edit re-rendered the whole screen: rodent in place of Pip, kitten in the nest, layout reflowed)"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    },
+    {
+      "id": "arrival-fresh",
+      "direction": "B",
+      "round": 1,
+      "attempt": 1,
+      "tag": "D-B-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station HOME screen during DOCK AND ARRIVAL, a flat screen design that fills the whole 16:9 canvas edge to edge (the outer 2 percent at left and right is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first.\nSTYLE: exactly the approved Station Home screen supplied as Image 1: the same chrome, module column, vivarium, light and smooth type, so this reads as the same device a moment later. One key light from the upper left, clean painted light, crisp edges, no noise or dither. The vivarium is the only warm light; the chrome is cool; the bay's inner beam is cool blue-white. Labels are one small engraved word, low contrast, read second. No wood, no felt, no lamp fixture.\nLAYOUT, as the supplied Home screen and template: top bar, the bevelled vivarium window on the left two thirds, the column of four slate modules on the right third, bottom line. THE MOMENT: the Companion has docked and the player has opened the bay. SAMPLE BAY module: door open, a cool blue-white beam inside, two slate-and-teal crates with orange seal tags, the left one open with its tag broken, the right one still sealed with a small place stamp; a short slate rail curves from the bay down to the POD RACK, one small amber-brown seed-pod travelling along it, another just seated, so the rack shows exactly six wells in one row with four pods (green, blue, violet, amber-brown) and two empty. INCUBATION module unchanged: a glass dome with a glowing green embryo and a ring of five leaves, two bright. PROBE DOCK module: the Companion handheld from the kit render seated upright in the cradle, screen dark, about 110 px tall, orange Confirm visible, the module lamp green, three Shield plates beside it, two lit cream and one dark. A slim slate RIBBON crosses the top edge of the stage over the vivarium's bezel. In the VIVARIUM, the same habitat as the Home screen in warm daylight: Pip, exactly the supplied rich Pip, at the centre on moss inside a thin cream ring, head turned toward the bay at the right, its small plate under it; the glowtail at the left and the puffcap mibi at the right also looking toward the bay; the frosted-glass nest at the lower right now holds Dot, a second hopper of Pip's species and colours, slightly smaller, curled asleep.\nTEXT, exactly these and nothing else: top bar left \"Home  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\", drawn slightly brighter as if ticking; top bar right \"Companion docked · 2 crates\". A slim slate ribbon across the top of the stage reads \"Expedition 4 home · 2 pods\". On the small plate under Pip \"Pip\" and \"hopper · adult\". Module words, engraved and quiet: \"Sample bay\", \"Pod rack\", \"Incubation\", \"Probe dock\". Bottom line: orange \"✓ Look at the new pods\" at left, grey \"the room\" in the middle, grey \"arrival playing\" at right.\nConstraints: nothing of the field: no map, no landscape, no extra counters; no tables, title bars, bullet lists, progress bars, boxed buttons or digits on the bench; no logos; no creatures other than Pip, the glowtail, the puffcap and Dot asleep; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Station Home screen: this is the same screen a moment later; keep everything of it that the prompt does not change. Image 2 is the kit render: take only the Companion handheld from it, to sit in the dock. Image 3 is the accepted rich Pip; keep Pip exactly, and draw Dot as the same species asleep. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: the screen this moment plays on; keep its chrome, modules, vivarium, light and type",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "the kit render: take the Companion handheld from it (warm stone shell, charcoal bumpers, portrait screen, cross pad, teal Call, dark Back, orange Confirm) to seat in the Probe dock; nothing else from it",
+          "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip: identity to keep exact; Dot is the same species, drawn asleep and slightly smaller",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/concept-station/dock/layout/dock-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 (Home's layout plus the ribbon, the open bay, the rail to the rack, the Companion seated in the dock, Dot in the nest); not style",
+          "sha256": "9301a639b70511f7a717a4101c2dcbd840632c3a541034f8a620bcedd95f0b05"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T07:08:03Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "00f76ddfa66800ce4cccb172a5c4a8379a5789f7d1e2a1bf4042a00a592900dc",
+          "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "round1/D-B-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "b048e5f4ea7c18d0e87ded9cdcfc9d0be163f9a98d1e0efc3f593566d63f7e3b"
+        },
+        "screen": {
+          "file": "round1/D-B-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "a0c94c9e6de34c5ad2ae00458c326ecf6b8d2d3bcb6a4581cabc746e01506414",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 25.5,
+        "usage": {
+          "promptTokenCount": 2078,
+          "candidatesTokenCount": 1590,
+          "totalTokenCount": 4000,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1046
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1032
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 332,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (fresh: Pip drawn as a grasshopper and Dot as a kitten; bay, rail, rack and docked Companion read well and inform round 2)"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    },
+    {
+      "id": "arrival-fresh",
+      "direction": "B",
+      "round": 1,
+      "attempt": 2,
+      "tag": "D-B-r1-a2",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station HOME screen during DOCK AND ARRIVAL, a flat screen design that fills the whole 16:9 canvas edge to edge (the outer 2 percent at left and right is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first.\nSTYLE: exactly the approved Station Home screen supplied as Image 1: the same chrome, module column, vivarium, light and smooth type, so this reads as the same device a moment later. One key light from the upper left, clean painted light, crisp edges, no noise or dither. The vivarium is the only warm light; the chrome is cool; the bay's inner beam is cool blue-white. Labels are one small engraved word, low contrast, read second. No wood, no felt, no lamp fixture.\nLAYOUT, as the supplied Home screen and template: top bar, the bevelled vivarium window on the left two thirds, the column of four slate modules on the right third, bottom line. THE MOMENT: the Companion has docked and the player has opened the bay. SAMPLE BAY module: door open, a cool blue-white beam inside, two slate-and-teal crates with orange seal tags, the left one open with its tag broken, the right one still sealed with a small place stamp; a short slate rail curves from the bay down to the POD RACK, one small amber-brown seed-pod travelling along it, another just seated, so the rack shows exactly six wells in one row with four pods (green, blue, violet, amber-brown) and two empty. INCUBATION module unchanged: a glass dome with a glowing green embryo and a ring of five leaves, two bright. PROBE DOCK module: the Companion handheld from the kit render seated upright in the cradle, screen dark, about 110 px tall, orange Confirm visible, the module lamp green, three Shield plates beside it, two lit cream and one dark. A slim slate RIBBON crosses the top edge of the stage over the vivarium's bezel. In the VIVARIUM, the same habitat as the Home screen in warm daylight: Pip, exactly the supplied rich Pip, at the centre on moss inside a thin cream ring, head turned toward the bay at the right, its small plate under it; the glowtail at the left and the puffcap mibi at the right also looking toward the bay; the frosted-glass nest at the lower right now holds Dot, a second hopper of Pip's species and colours, slightly smaller, curled asleep.\nTEXT, exactly these and nothing else: top bar left \"Home  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\", drawn slightly brighter as if ticking; top bar right \"Companion docked · 2 crates\". A slim slate ribbon across the top of the stage reads \"Expedition 4 home · 2 pods\". On the small plate under Pip \"Pip\" and \"hopper · adult\". Module words, engraved and quiet: \"Sample bay\", \"Pod rack\", \"Incubation\", \"Probe dock\". Bottom line: orange \"✓ Look at the new pods\" at left, grey \"the room\" in the middle, grey \"arrival playing\" at right.\nConstraints: nothing of the field: no map, no landscape, no extra counters; no tables, title bars, bullet lists, progress bars, boxed buttons or digits on the bench; no logos; no creatures other than Pip, the glowtail, the puffcap and Dot asleep; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Station Home screen: this is the same screen a moment later; keep everything of it that the prompt does not change. Image 2 is the kit render: take only the Companion handheld from it, to sit in the dock. Image 3 is the accepted rich Pip; keep Pip exactly, and draw Dot as the same species asleep. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: the screen this moment plays on; keep its chrome, modules, vivarium, light and type",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "the kit render: take the Companion handheld from it (warm stone shell, charcoal bumpers, portrait screen, cross pad, teal Call, dark Back, orange Confirm) to seat in the Probe dock; nothing else from it",
+          "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip: identity to keep exact; Dot is the same species, drawn asleep and slightly smaller",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/concept-station/dock/layout/dock-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 (Home's layout plus the ribbon, the open bay, the rail to the rack, the Companion seated in the dock, Dot in the nest); not style",
+          "sha256": "9301a639b70511f7a717a4101c2dcbd840632c3a541034f8a620bcedd95f0b05"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T07:08:33Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/D-B-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "f6785bf026ff22f2447787eefce072bb30a444e59187adda3af1d7f7781dd7b4"
+        },
+        "png": {
+          "file": "round1/D-B-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "1979dcc552b51493f7481c2b732f540d9c95569155a67edd9e83f0d1447d183c"
+        },
+        "screen": {
+          "file": "round1/D-B-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "e15ea46e0be2d179db2ebcfd21d20458f2698ea4648c68f2c4daf2e1df962590",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 317.5,
+        "usage": {
+          "promptTokenCount": 2078,
+          "candidatesTokenCount": 2415,
+          "totalTokenCount": 4493,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1046
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1032
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: round 1 near-pass and edit target for round 2 (seven wells in two rows; leaked 'Module' in the dock label; right strings at the edge; residents do not turn)"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    },
+    {
+      "id": "arrival-fresh",
+      "direction": "B",
+      "round": 2,
+      "attempt": 1,
+      "tag": "D-B-r2-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen during dock and arrival, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium and every creature in it, the creature inside the cream ring and its name, the sleeping one in the nest, the ribbon, the open bay with its crates and rail, the Incubation module, the docked handheld, the top bar and bottom line.\nTHREE CHANGES ONLY: (1) The POD RACK module shows exactly SIX round wells in ONE row, evenly spaced: four hold seed-pods (green, blue, violet, amber-brown), two are empty; the small amber-brown seed-pod on the rail stays on the rail above. (2) The bottom-right module's label reads only \"Probe dock\", small and quiet, with no other word. (3) Move the top bar's right text \"Companion docked · 2 crates\" and the bottom line's right text \"arrival playing\" left so each ends about 60 px inside the right edge, fully readable; also move the three counters' icons and digits so they sit together at the centre of the top bar.\nText stays exactly as it is in Image 1; add no text and no captions.\nConstraints: change nothing outside the named module; no new creatures; no digits; no logos.",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/dock/round1/D-B-r1-a2-canvas.png",
+          "role": "edit target: the round 1 near-pass",
+          "sha256": "1979dcc552b51493f7481c2b732f540d9c95569155a67edd9e83f0d1447d183c"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T08:16:36Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "0f39c6766824afbc21f4ad41c8bbfb638648696170af11c0c7d5ac2647a525c5",
+          "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "round2/D-B-r2-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "b29a45b36c5374d4a31d7d275cdf2918f8986a71669c6b0c223e8ee01aa63dfe"
+        },
+        "screen": {
+          "file": "round2/D-B-r2-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "aa565be71aeb778152375c8a696f5046e59df1092e2305b3255b3898287fcef2",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 22.9,
+        "usage": {
+          "promptTokenCount": 591,
+          "candidatesTokenCount": 1344,
+          "totalTokenCount": 2157,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 333
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 222,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (the three-change edit of the near-pass drifted into a fantasy interface with a 'Name' banner and invented creatures)"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    },
+    {
+      "id": "bay-region",
+      "direction": "E",
+      "round": 2,
+      "attempt": 1,
+      "tag": "D-E-r2-bay",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen concept, 16:9, flat screen design filling the canvas. Edit ONE region of the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium and everything in it, the creature inside the cream ring and its plate, the top bar, the bottom line, and every module you are not asked to touch. Same camera, same chrome materials, same clean painted light from the upper left, no noise.\nONE REGION: the top module of the right column, the SAMPLE BAY, and the module directly under it, the POD RACK. Bay: its door swings open to the right and a cool blue-white beam lights the inside; the left crate's lid is open with its orange seal tag broken and hanging, the right crate stays sealed with its tag; a short slate rail leaves the bay's lower-left corner and curves down into the pod rack. Rack: exactly six round wells in one row; four hold seed-pods (green, blue, violet, and a new amber-brown one just seated in the fourth), two are empty; one more small amber-brown seed-pod sits on the rail mid-way between bay and rack. Keep both modules' engraved labels and lamps. Nothing else changes.\nText stays exactly as it is in Image 1; add no text and no captions.\nConstraints: change nothing outside the named module; no new creatures; no digits; no logos.",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the screen to edit; only the sample bay and pod rack modules change.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-canvas.png",
+          "role": "edit target: the approved Home screen",
+          "sha256": "5f6c764fc53e1431b592b53671a5a5f52a8b99793e70e73f0641a479a2bad15d"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T08:15:34Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/D-E-r2-bay.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "b951e2ca6b4103d02a9b5d30295b75164d6939da8ad4d0df33ab27826d2dce78"
+        },
+        "png": {
+          "file": "round2/D-E-r2-bay-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "adb4719be1d691fddbcc803aa59610ec83ae634a5b2a17a1ac396b41a4873256"
+        },
+        "screen": {
+          "file": "round2/D-E-r2-bay-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "b9d7ddafb974830d4cb549ff78dab6ef21ddfad013525a9ec414e23bbf32353c",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 25.2,
+        "usage": {
+          "promptTokenCount": 611,
+          "candidatesTokenCount": 1362,
+          "totalTokenCount": 2211,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 353
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 238,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: region edit held (bay open, beam, rail with pods); the rack came back with four wells; composited into D-C1"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    },
+    {
+      "id": "dock-region",
+      "direction": "E",
+      "round": 2,
+      "attempt": 1,
+      "tag": "D-E-r2-dock",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen concept, 16:9, flat screen design filling the canvas. Edit ONE region of the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium and everything in it, the creature inside the cream ring and its plate, the top bar, the bottom line, and every module you are not asked to touch. Same camera, same chrome materials, same clean painted light from the upper left, no noise.\nONE REGION: the bottom module of the right column, the PROBE DOCK. The handheld from Image 2, the Companion, sits upright in the module's cradle: a warm stone shell with charcoal corner bumpers, a portrait screen that is dark, a small directional cross, and a visible orange round button; about a third of the module's width, its top reaching the module's top edge. Beside it the three small Shield plates show two lit cream and one dark. The module's lamp is green. Keep the engraved label. Nothing else changes.\nText stays exactly as it is in Image 1; add no text and no captions.\nConstraints: change nothing outside the named module; no new creatures; no digits; no logos.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit; only the Probe dock module changes. Image 2 is the kit render: take only the portrait handheld, the Companion, from it.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-canvas.png",
+          "role": "edit target: the approved Home screen",
+          "sha256": "5f6c764fc53e1431b592b53671a5a5f52a8b99793e70e73f0641a479a2bad15d"
+        },
+        {
+          "path": "art/concept-homepage/hero-kit.png",
+          "role": "the kit render: take only the portrait handheld with the orange button from it, the Companion, to seat in the dock",
+          "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T08:16:03Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/D-E-r2-dock.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "2bdf90eeec66e8d971dc72d7415a6853c7ed2b031e8578d707290fcb924af7c0"
+        },
+        "png": {
+          "file": "round2/D-E-r2-dock-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "6817190bcbb1dda0d0b9ad75ec3727740a4d00d53cdbec3b4b4ed5a921226586"
+        },
+        "screen": {
+          "file": "round2/D-E-r2-dock-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "9d28664df1897fd7e6b411ed839c6af7be61d5acc52e32ec703690fa5fe5d292",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 29.3,
+        "usage": {
+          "promptTokenCount": 863,
+          "candidatesTokenCount": 1344,
+          "totalTokenCount": 2421,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 347
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 214,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: region edit held (Companion seated, two plates lit); the Companion rises over the incubation module and the lamp is amber; composited into D-C1"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    },
+    {
+      "id": "arrival-composite",
+      "direction": "E",
+      "round": 3,
+      "attempt": 1,
+      "tag": "D-E-r3-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen during dock and arrival, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium with its plants, rocks, pool and burrow, the creature inside the cream ring and its plate, the small teal creature at the left, the red-capped creature at the right, the right-hand column of modules with the open bay, the rail, the rack, the dome and the seated handheld, and the layout of the top bar and bottom line.\nTHREE CHANGES ONLY: (1) TEXT: the top bar's right text becomes \"Companion docked · 2 crates\", ending about 60 px inside the right edge; the bottom line becomes orange \"✓ Look at the new pods\" at left, grey \"the room\" in the middle and grey \"arrival playing\" at right, ending about 60 px inside the right edge; same type, same sizes. (2) RIBBON: a slim slate band across the top edge of the stage, lying over the vivarium's top bezel from the left margin to the module column, with cream text \"Expedition 4 home · 2 pods\" centred on it. (3) NEST: the empty frosted-glass nest at the vivarium's lower right now holds Dot, a second creature of exactly the same species and colours as the one inside the ring in Image 2 (charcoal body, cream belly, three green leaf crown lobes), slightly smaller, curled up asleep with its eyes closed.\nOnly the text named in the changes is replaced; everything else stays exactly as it is.\nConstraints: no new modules or objects; no digits on the bench; no logos; the sleeping creature is the same species and colours as the one in the ring, never a cat, dog or rodent.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip, the same species as the sleeping creature to draw in the nest.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/dock/composite/D-C2-canvas.png",
+          "role": "edit target: the composite of the approved Home with the bay, rack and dock region edits",
+          "sha256": "d0f879479b4991cc0424499eb2e3c59713e852c065dd4920388793ed0d4632e6"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip: the species and colours Dot shares; Pip itself stays unchanged in Image 1",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T08:20:08Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/D-E-r3-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "9f68f668a07e9a6caa552846d0b42efdeb2f156d4939d8140131980e2a847991"
+        },
+        "png": {
+          "file": "round3/D-E-r3-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "e58700abeee72267cdcdb3648bec8b88665f2937eca876db243e8339d6f0da58"
+        },
+        "screen": {
+          "file": "round3/D-E-r3-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "65ad636cab06a5d8c6a89bf94c7d1daeea3ae466c45f788677aed41b130ccca7",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 26.6,
+        "usage": {
+          "promptTokenCount": 999,
+          "candidatesTokenCount": 1393,
+          "totalTokenCount": 2609,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 483
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 217,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: recommended candidate (ribbon, docked state, Dot asleep as the same species, new bottom line; four wells and a stray drop icon remain)"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    },
+    {
+      "id": "rack-region",
+      "direction": "E",
+      "round": 3,
+      "attempt": 1,
+      "tag": "D-E-r3-rack",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen concept, 16:9, flat screen design filling the canvas. Edit ONE module of the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium and everything in it, the other modules, the top bar and the bottom line.\nONE MODULE: the second module of the right column, the POD RACK. Redraw its wells as exactly SIX round wells in ONE evenly spaced row across the module: the first four hold seed-pods (green, blue, violet, amber-brown), the last two are empty dark rings. Keep the short rail above the wells with the one amber-brown seed-pod travelling on it, the module's engraved label and its lamp. Nothing else changes.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing outside the named module; no digits; no logos.",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the screen to edit; only the pod rack module changes.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/dock/composite/D-C1-canvas.png",
+          "role": "edit target: the composite of the approved Home with the bay and dock region edits",
+          "sha256": "af86e59a48e9dfbcc38fa0c059dc21fbf43520873ee08618bd7a2890dfa2ec52"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T08:19:36Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/D-E-r3-rack.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "9bf612bca7def8aec165691cee2f7491157eca1ae455de713bf697a90e5cf2b1"
+        },
+        "png": {
+          "file": "round3/D-E-r3-rack-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "5aa335171c841ddb6549e33691f761b5240cba51ae36c0a601a10bfaf9ca9504"
+        },
+        "screen": {
+          "file": "round3/D-E-r3-rack-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "38084edabbe71e1555bf60ca2d296a04bf7b0658a768f4c915d204281014852d",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 27.2,
+        "usage": {
+          "promptTokenCount": 501,
+          "candidatesTokenCount": 1342,
+          "totalTokenCount": 2034,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 243
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 191,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept (held, but the model returned the rack unchanged: four wells; composited into D-C2 as the base for the final edits)"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    },
+    {
+      "id": "arrival-composite",
+      "direction": "E",
+      "round": 3,
+      "attempt": 2,
+      "tag": "D-E-r3-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen during dock and arrival, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium with its plants, rocks, pool and burrow, the creature inside the cream ring and its plate, the small teal creature at the left, the red-capped creature at the right, the right-hand column of modules with the open bay, the rail, the rack, the dome and the seated handheld, and the layout of the top bar and bottom line.\nTHREE CHANGES ONLY: (1) TEXT: the top bar's right text becomes \"Companion docked · 2 crates\", ending about 60 px inside the right edge; the bottom line becomes orange \"✓ Look at the new pods\" at left, grey \"the room\" in the middle and grey \"arrival playing\" at right, ending about 60 px inside the right edge; same type, same sizes. (2) RIBBON: a slim slate band across the top edge of the stage, lying over the vivarium's top bezel from the left margin to the module column, with cream text \"Expedition 4 home · 2 pods\" centred on it. (3) NEST: the empty frosted-glass nest at the vivarium's lower right now holds Dot, a second creature of exactly the same species and colours as the one inside the ring in Image 2 (charcoal body, cream belly, three green leaf crown lobes), slightly smaller, curled up asleep with its eyes closed.\nOnly the text named in the changes is replaced; everything else stays exactly as it is.\nConstraints: no new modules or objects; no digits on the bench; no logos; the sleeping creature is the same species and colours as the one in the ring, never a cat, dog or rodent.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip, the same species as the sleeping creature to draw in the nest.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/dock/composite/D-C2-canvas.png",
+          "role": "edit target: the composite of the approved Home with the bay, rack and dock region edits",
+          "sha256": "d0f879479b4991cc0424499eb2e3c59713e852c065dd4920388793ed0d4632e6"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip: the species and colours Dot shares; Pip itself stays unchanged in Image 1",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T08:20:38Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/D-E-r3-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "9bc0d467e00cf2891513ddfb3ab604c1f68c9d022a174b17cfae8fb0554c4761"
+        },
+        "png": {
+          "file": "round3/D-E-r3-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "47b5dd4a5945d106c233a0f7f06345f7e5648ee1deefccafd4d2d053d6c4bc23"
+        },
+        "screen": {
+          "file": "round3/D-E-r3-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "b376ac30df14efa4c72617dab9876fc02a72823f2106fc4e16ef6a615c83bc44",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 24.8,
+        "usage": {
+          "promptTokenCount": 999,
+          "candidatesTokenCount": 1357,
+          "totalTokenCount": 2548,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 483
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 192,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as runner-up (the same edit held; Dot slightly less clean)"
+      },
+      "promptSource": "art/concept-station/dock/prompts.json plan (art director), from brief-dock.md"
+    }
+  ],
+  "composites": [
+    {
+      "base": "art/concept-station/round3/A-r3-a1-canvas.png",
+      "pastes": [
+        {
+          "region": "bay+rack from the bay edit",
+          "source": "art/concept-station/dock/round2/D-E-r2-bay-canvas.png",
+          "canvasRect": [
+            992,
+            69,
+            1487,
+            400
+          ]
+        },
+        {
+          "region": "incubation and probe dock from the dock edit",
+          "source": "art/concept-station/dock/round2/D-E-r2-dock-canvas.png",
+          "canvasRect": [
+            992,
+            406,
+            1487,
+            798
+          ]
+        }
+      ],
+      "outputs": {
+        "canvas": "art/concept-station/dock/composite/D-C1-canvas.png",
+        "screen": "art/concept-station/dock/composite/D-C1-1024x600.png",
+        "bandRect": [
+          30,
+          0,
+          1505,
+          864
+        ]
+      }
+    },
+    {
+      "base": "art/concept-station/dock/composite/D-C1-canvas.png",
+      "pastes": [
+        {
+          "region": "pod rack from the rack-only edit",
+          "source": "art/concept-station/dock/round3/D-E-r3-rack-canvas.png",
+          "canvasRect": [
+            992,
+            245,
+            1487,
+            403
+          ]
+        }
+      ],
+      "outputs": {
+        "canvas": "art/concept-station/dock/composite/D-C2-canvas.png",
+        "screen": "art/concept-station/dock/composite/D-C2-1024x600.png"
+      }
+    }
+  ]
+}

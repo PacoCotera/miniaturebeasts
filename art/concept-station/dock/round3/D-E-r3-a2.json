@@ -1,0 +1,90 @@
+{
+  "id": "arrival-composite",
+  "direction": "E",
+  "round": 3,
+  "attempt": 2,
+  "tag": "D-E-r3-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen during dock and arrival, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel exactly: the vivarium with its plants, rocks, pool and burrow, the creature inside the cream ring and its plate, the small teal creature at the left, the red-capped creature at the right, the right-hand column of modules with the open bay, the rail, the rack, the dome and the seated handheld, and the layout of the top bar and bottom line.\nTHREE CHANGES ONLY: (1) TEXT: the top bar's right text becomes \"Companion docked · 2 crates\", ending about 60 px inside the right edge; the bottom line becomes orange \"✓ Look at the new pods\" at left, grey \"the room\" in the middle and grey \"arrival playing\" at right, ending about 60 px inside the right edge; same type, same sizes. (2) RIBBON: a slim slate band across the top edge of the stage, lying over the vivarium's top bezel from the left margin to the module column, with cream text \"Expedition 4 home · 2 pods\" centred on it. (3) NEST: the empty frosted-glass nest at the vivarium's lower right now holds Dot, a second creature of exactly the same species and colours as the one inside the ring in Image 2 (charcoal body, cream belly, three green leaf crown lobes), slightly smaller, curled up asleep with its eyes closed.\nOnly the text named in the changes is replaced; everything else stays exactly as it is.\nConstraints: no new modules or objects; no digits on the bench; no logos; the sleeping creature is the same species and colours as the one in the ring, never a cat, dog or rodent.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip, the same species as the sleeping creature to draw in the nest.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/dock/composite/D-C2-canvas.png",
+      "role": "edit target: the composite of the approved Home with the bay, rack and dock region edits",
+      "sha256": "d0f879479b4991cc0424499eb2e3c59713e852c065dd4920388793ed0d4632e6"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: the species and colours Dot shares; Pip itself stays unchanged in Image 1",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T08:20:38Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "round3/raw/D-E-r3-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "9bc0d467e00cf2891513ddfb3ab604c1f68c9d022a174b17cfae8fb0554c4761"
+    },
+    "png": {
+      "file": "D-E-r3-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "47b5dd4a5945d106c233a0f7f06345f7e5648ee1deefccafd4d2d053d6c4bc23"
+    },
+    "screen": {
+      "file": "D-E-r3-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "b376ac30df14efa4c72617dab9876fc02a72823f2106fc4e16ef6a615c83bc44",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 24.8,
+    "usage": {
+      "promptTokenCount": 999,
+      "candidatesTokenCount": 1357,
+      "totalTokenCount": 2548,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 483
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 192,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept as runner-up (the same edit held; Dot slightly less clean)"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": "dark-lab",
+  "direction": "D",
+  "round": 3,
+  "attempt": 3,
+  "tag": "P-D-r3-a3",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station PODS screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the dark glass ground, the four viewports, the pod, nest, plate, beam and whorl, the gate, the top bar and bottom line and all their text.\nONE CHANGE ONLY: the rack strip at the left currently shows five round wells; redraw it with exactly SIX round wells in one vertical column, evenly spaced between the top of the strip and the gate at its foot, each well the same size as now: the top three hold the green, blue and violet seed-pods as now (the top one keeps its cream focus ring), the lower three are empty dark rings. Count them: six wells.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing else.",
+  "preamble": "Reference image follows; its role is stated. Image 1 is the screen to edit; only the rack strip changes.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/pods/round3/P-D-r3-a2-canvas.png",
+      "role": "edit target: the round 3 near-pass",
+      "sha256": "47c6db9865174908b24c32d25f2f517db5263dfd9630315ca069a40f5d6a590e"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T08:20:03Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "d26fc12a1c5c5d194b70d64d8445f7c779721ed371bb18632504d9ae724907c4",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "P-D-r3-a3-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "ed7820e56700af3c1455b3a8f71cde50261f6389fb6096077c881d93c66366d5"
+    },
+    "screen": {
+      "file": "P-D-r3-a3-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "fef57e7c66382c77c22d3fef299d7a2fb11338ba364b91d96cc9086f294a0f3d",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 24.4,
+    "usage": {
+      "promptTokenCount": 494,
+      "candidatesTokenCount": 1316,
+      "totalTokenCount": 1987,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 236
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 177,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected as a no-op (the one-change six-wells edit returned the screen unchanged: five wells)"
+  }
+}

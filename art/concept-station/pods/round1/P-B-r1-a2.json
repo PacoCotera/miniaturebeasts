@@ -35,7 +35,7 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "raw/P-B-r1-a2.jpg",
+      "file": "round1/raw/P-B-r1-a2.jpg",
       "stored": true,
       "mimeType": "image/jpeg",
       "width": 2752,
@@ -89,6 +89,7 @@
       ],
       "thoughtsTokenCount": 339,
       "serviceTier": "standard"
-    }
+    },
+    "disposition": "kept as reference (six wells, quiet labels; whorl drawn as a thumbprint; horse-like hide; text clipped both sides)"
   }
 }

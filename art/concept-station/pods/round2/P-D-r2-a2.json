@@ -1,0 +1,100 @@
+{
+  "id": "dark-lab",
+  "direction": "D",
+  "round": 2,
+  "attempt": 2,
+  "tag": "P-D-r2-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station PODS screen concept, a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges, because the outer 2 percent is bleed that is trimmed later to 1024x600. Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument: clean glass, precise hairline readouts, machined viewports, calm and exact. Not Home's plasticky slate modules. Still the same device as the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom line grammar, the same key light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The pod on its nest under the instrument beam is the one warm, bright thing; everything else is cool and exact. Labels are one small engraved or etched word, low contrast, read second. No wood, no felt, no lamp fixture drawn; the beam falls from the upper left.\nTREATMENT, dark lab: a near-black blue-teal glass ground with faint hairline rules and tick marks etched in it, like the dark display of a precision instrument; surfaces are deep dark glass and anodised graphite with thin lit edges; readouts are small etched marks and tiny lamps, not panels. LAYOUT, as the template: a thin top bar (40 px) and bottom line (38 px). At the left a slim RACK: six round wells (count them: six) set in one vertical strip of dark glass, each well a machined ring with a soft inner glow, the top three holding smooth seed-pods (green, blue, violet), the lower three empty, the top well lifted with a thin cream focus ring; at its foot a return GATE: a small dark glass hatch with an etched leaf mark. At the centre of the stage the SPECIMEN on a floating glass stage plate with a lit edge: a sealed plum-sized seed-pod, warm green ribbed shell with a small embossed three-leaf mark, its top faintly translucent so the squat silhouette of the hopper (round body, three-leaf crest) shows inside, resting on a padded cream-grey enamel nest; a cool beam from the upper left pools warm on the pod, the brightest thing on screen; a small plate on the nest's front. Above the pod FOUR TRAIT VIEWPORTS in a shallow arc: round machined viewports, each a dark bevelled ring with a thin lit edge, a tiny etched emblem at the top of the ring (a swirl, a crown, a drop, a paw), a small lamp, one quiet word under each. States left to right: (1) MARKINGS, studied, lamp lit: the pane is clear and shows a close, warm, sculpted drawing of the hopper's flank, smooth charcoal with the soft boundary of its cream belly along the lower edge, no face; on the sill a small misty pearl seed with a ghost of pale cream islands inside. (2) CROWN, lamp dark: frosted pale blue-white glass with one small four-point star glinting, nothing behind the frost. (3) COLOUR, lamp dark: frosted, nothing behind. (4) GAIT, lamp dark: frosted, two small joined rings etched on the ring's lower edge. At the right of the nest, on the stage plate, the FINGERPRINT WHORL: a round glyph of four petals of nested fine ridges, clockwise from top left, only the first petal filled in charcoal with a tiny cream dot at its base, a tiny leaf at the centre.\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\", ending well inside the edge. On a small plate on the nest's front \"Hopper pod\" and under it small \"rock field · a hopper felt safe\". One small word under each viewport: \"markings\", \"crown\", \"colour\", \"gait\". Under the first viewport a small line \"shows plain · hides pale\". Bottom line: orange \"✓ Study crown · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"Hopper pod · identified\" in the middle, grey \"crown glints · something new\" at right, ending well inside the edge. No captions naming parts of the screen.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; frosted panes show frost only, never anything behind; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper: the markings drawing is the hopper's flank, charcoal with a cream belly edge, never a cow, horse or deer; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Station Home screen: the same device, so match its type, counters, bottom line and light direction only; its plasticky module chrome is not for this screen. Image 2 is the approved pod in its cradle under a beam. Image 3 is the accepted rich Pip, the hopper whose flank the markings viewport shows and whose silhouette shows in the shell. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+      "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction; do NOT take its slate module chrome, the bench is a different vibe",
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+    },
+    {
+      "path": "art/concept-homepage/station-research-pod.png",
+      "role": "approved pod in its cradle under a beam: the anchor for the specimen",
+      "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip, the hopper: the flank to draw inside the markings viewport and the silhouette inside the shell",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "path": "art/concept-station/pods/layout/pods-layout-template.png",
+      "role": "layout truth only: flat boxes at 1024x600 (rack column with six wells, four viewports in an arc, pod on nest, name plate, whorl); not style",
+      "sha256": "9b97d907bde2f78c1c54ce266d05c37860f6843722a3ec65a521bce049ef4b71"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T08:13:50Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "round2/raw/P-D-r2-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "2c844fd07bd422604dc2b896ed3ce17ae316f3ffa275756700d2d66f17a1c533"
+    },
+    "png": {
+      "file": "P-D-r2-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "7ba75187846c096eb84a3aad7f496d3d9941f23742f68ec6645e4e7bab16f67d"
+    },
+    "screen": {
+      "file": "P-D-r2-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "158f833b9071df84606bc2473b3aa047cd45cb0efcfa1ca88d72880d56498942",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 29.5,
+    "usage": {
+      "promptTokenCount": 2361,
+      "candidatesTokenCount": 1963,
+      "totalTokenCount": 4733,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1329
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1032
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 409,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept: round 2 near-pass and edit target for round 3 (pale frost, glint, rings, flank and seed right; five wells; whorl drawn as a thumbprint)"
+  }
+}

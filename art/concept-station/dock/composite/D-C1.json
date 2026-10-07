@@ -1,0 +1,35 @@
+{
+  "base": "art/concept-station/round3/A-r3-a1-canvas.png",
+  "pastes": [
+    {
+      "region": "bay+rack from the bay edit",
+      "source": "art/concept-station/dock/round2/D-E-r2-bay-canvas.png",
+      "canvasRect": [
+        992,
+        69,
+        1487,
+        400
+      ]
+    },
+    {
+      "region": "incubation and probe dock from the dock edit",
+      "source": "art/concept-station/dock/round2/D-E-r2-dock-canvas.png",
+      "canvasRect": [
+        992,
+        406,
+        1487,
+        798
+      ]
+    }
+  ],
+  "outputs": {
+    "canvas": "art/concept-station/dock/composite/D-C1-canvas.png",
+    "screen": "art/concept-station/dock/composite/D-C1-1024x600.png",
+    "bandRect": [
+      30,
+      0,
+      1505,
+      864
+    ]
+  }
+}

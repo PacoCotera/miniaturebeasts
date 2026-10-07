@@ -1,0 +1,91 @@
+{
+  "id": "dark-lab",
+  "direction": "D",
+  "round": 3,
+  "attempt": 1,
+  "tag": "P-D-r3-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station PODS screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the dark glass ground, the four viewports with their frost, star, rings, flank drawing and seed, the pod, nest, plate and beam, the gate, the top bar and bottom line and all their text.\nTWO CHANGES ONLY: (1) The rack strip at the left shows exactly SIX round wells in one vertical column, evenly spaced between the top of the strip and the gate: the top three hold the green, blue and violet seed-pods as now, the lower three are empty dark rings. (2) Replace the thumbprint glyph at the right of the nest with the FINGERPRINT WHORL as in Image 2's sketch: a round glyph of FOUR petals arranged like a four-leaf clover, each petal made of three to five nested fine ridge lines, clockwise from top left; only the top-left petal is filled solid charcoal with a tiny cream dot at its base; the other three stay as fine ridge lines; a tiny leaf at the centre; same size and position as the glyph it replaces.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing else; no new objects, labels or captions.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is a wireframe sheet; use only its fingerprint whorl sketch at the lower right as the shape to draw.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/pods/round2/P-D-r2-a2-canvas.png",
+      "role": "edit target: the round 2 near-pass",
+      "sha256": "7ba75187846c096eb84a3aad7f496d3d9941f23742f68ec6645e4e7bab16f67d"
+    },
+    {
+      "path": "art/concept-station/pods/layout/trait-window-states-wireframe.png",
+      "role": "sketch of the fingerprint whorl (lower right of the sheet): four petals of nested ridges, one lit; layout reference only, not style",
+      "sha256": "fd70039760448c1ea77642b28d8a443434f4e31536e062b2cdcbcf78948cd937"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T08:18:14Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "426bc1f885d68c123e796a67852f6e9b0b5f346407428454f9d2cd87b3ab35e4",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "P-D-r3-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "cd707ad65c540fabd6db0764228858c5edfeedbcc911cbd3b947627793b2a6c4"
+    },
+    "screen": {
+      "file": "P-D-r3-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "965e0e82d0a6de6717deb27cddc827f45ac11b0675fe0741ec4234010ada7724",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 28.4,
+    "usage": {
+      "promptTokenCount": 897,
+      "candidatesTokenCount": 1348,
+      "totalTokenCount": 2466,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 381
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 221,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected (the two-change edit drifted into a labelled diagram on cream paper)"
+  }
+}
