@@ -79,9 +79,8 @@ Characters (pawn, mibis) are never darkened by storm or veil, so they always rea
 Shadows shift cool, highlights warm (green's darkest step leans teal; red falls to violet).
 Tables, all palette lookups: **DARK** (storm light, shade, drop shadows; storms go blue, not
 brown-grey), **LIGHT** (lamp pools), **veil** (unsurveyed ground in a place: DARK plus a 4×4 night
-dot, 16 px dithered edge), **mist** (unexplored land: a Bayer screen of fog white, white and pale
-blue, thicker away from the explored island, over ground drained pale), **fade** (seen cells:
-DARK, checker).
+dot, 16 px dithered edge), **cloud bank** (unexplored map: lavender masses, no ground drawn
+under them, darkening away from the explored island), **fade** (seen cells: DARK, checker).
 
 **Station palette: 96 colours**: the 48 plus an in-between step for every main ramp (8–11
 steps per hue), the evening room (five deep moss tones), lamp (three warm creams), glass and
@@ -166,15 +165,16 @@ drawn clouds), Pin, Battery, Radio; states: hollow bolt, Shield gone, free pod s
   short ears, small cap) and elder. Elders read calm and dignified, never drooping: eyes
   open, frosted ear tips and a chest ruff, a gold-tipped crest, a wide frilled cap with moss.
 - **Motion frames** (water, shore, flame, crackle, Call ring, veil edge, warm stone) and
-  **weather masters**: six hand-drawn cumulus in fair, far and storm tones, three wisps, the
-  mist ramp; clouds drift 1 px per action, rain leans with the storm's heading.
+  **weather masters**: six hand-drawn cumulus pieces, a heap built from them (N5 body, V4/N6
+  rim lit toward the island, N4 underside and creases) and the rain sheet; clouds drift 1 px per
+  action, rain leans with the storm's heading.
 - **12 HUD icons** and four states; **outpost** in four states, **beacon** in three.
 
 The same part-based construction renders the Station's richer creatures at 2.5–3.6× with
 Station ramps and dithered bands (the vivarium mock-up), not upscales. It also points to the
 genome-to-sprite pipeline: parts and markings are parameters, and art never changes genes.
 
-![Tiles, motion frames, pawn, species, icons, outpost and beacon at 3×](ui-kit/samples-3x.png)
+![Tiles, motion frames, pawn, species, weather masters, icons, outpost and beacon at 3×](ui-kit/samples-3x.png)
 
 *The sample sheet at 3×. The pixel-exact sheet is [samples-1x.png](ui-kit/samples-1x.png).*
 
@@ -188,14 +188,23 @@ genome-to-sprite pipeline: parts and markings are parameters, and art never chan
 
   *Companion place in a storm, 450×600 at 1×.*
 
-- **Companion reach view:** 78 px cells cut from real tiles, seen cells faded, unsurveyed
-  quarters dotted; mist thickening away from the explored island over faint land, wisps, two
-  layers of cumulus with ground shadows; the storm band as dark cloud shadow, rain leaning
-  east, a lit leading edge; range, flag, beacon, outpost, signs, a gated cave, the inset.
+- **Companion reach view**, matched to the approved concept: only explored and seen cells show
+  ground (78 px, cut from real tiles; seen cells faded, unsurveyed quarters dotted); everything
+  else is one lavender cloud bank of big heaps built from the hand-drawn pieces, each lit
+  (V4/N6) on the side facing the island so the land sits in a bright pocket, shaded (N4) below,
+  darkening away from it, lapping unevenly over the pocket's edge. The rain is one diagonal
+  sheet of pale streaks over darker cloud at the left, with a straight soft edge and no cells
+  under it. Signs are 24 px: paw tracks, signal rings, bolt, pin, white pips; the pawn carries a
+  2 px dark silhouette. Range, flag, outpost, a gated cave, the inset.
 
   <img src="ui-kit/companion-reach.png" width="450" alt="Companion reach view, 450×600 at 1×">
 
   *Companion reach view at 1×. Both Companion screens side by side at 2×: [companion-2x.png](ui-kit/companion-2x.png).*
+
+  ![The approved concept beside the kit's reach view](ui-kit/reach-vs-concept.png)
+
+  *Left: the approved concept companion-map-hands (generated), its screen scaled to 450×600.
+  Right: the kit's reach view at 1×, drawn in the 48 colours.*
 
 - **Station Home:** a lit glass vivarium with residents at Station size, focus on one
   resident; the bench as objects: bay door with the Companion mark, six felt cups with a glint,
