@@ -19,12 +19,13 @@
   "result": {
     "status": "success",
     "original": {
-      "file": "generated/raw/ST-F-r1-a2.jpg",
-      "stored": true,
+      "file": null,
+      "stored": false,
       "mimeType": "image/jpeg",
       "width": 2048,
       "height": 2048,
-      "sha256": "5837b1031966087b5c33176837841d6b7a76eb8e97bdb6f4042ef709547d4236"
+      "sha256": "5837b1031966087b5c33176837841d6b7a76eb8e97bdb6f4042ef709547d4236",
+      "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
     },
     "png": {
       "file": "ST-F-r1-a2-canvas.png",
@@ -53,6 +54,6 @@
       "thoughtsTokenCount": 225,
       "serviceTier": "standard"
     },
-    "disposition": "kept: recommended Fanalia tome plate (lantern border with marigold glow, flat deckled page, a rule beneath)"
+    "disposition": "rejected as a plate (handsome lantern border, but its nested rectangular frames compete with the stamp's frame: the composite decodes only with the reader's full candidate search, not the default; kept as the reason for round 2)"
   }
 }
