@@ -37,11 +37,13 @@ alongside only when they have something independent to do.
 
 **Review:** the project lead reads `design/` and this roadmap.
 
-## Phase 1: Exploration (in progress)
+## Phase 1: Exploration (complete)
 
-Status: step 1 done (the combined world-map + living-patch model was chosen);
-step 2 built as a browser prototype and live in the sandbox, awaiting play;
-step 3 pending.
+Status: complete. Step 1 done (the combined world-map + living-patch model was
+chosen); step 2 done (the browser prototype in the sandbox, played and approved
+as built); step 3 done ([world and exploration](design/world-and-exploration.md)
+holds the decided design). Refinement continues once the full game loop is
+sketched.
 
 **Outcome:** the project lead plays an open-map expedition and judges whether it makes them
 curious.
@@ -171,9 +173,10 @@ The direction for the site:
 
 ## Decisions needed next
 
-1. The project lead's verdict on the exploration prototype (phase 1, step 2).
-2. The open questions in the [combined design](design/proposals/exploration-options/combined-design.md#9-open-questions),
-   before it is written into [world and exploration](design/world-and-exploration.md) (phase 1, step 3).
+1. **The Station loop and UI**, the first piece of phase 3: what the player does
+   at home with what an expedition brings, and Station screens to match.
+2. **The cloud layer**, later: the optional, gated enhancements on top of the
+   standalone kit.
 
 Task tracking lives in GitHub issues, grouped by milestone per phase and labelled
 by area.
