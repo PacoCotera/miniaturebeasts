@@ -2,6 +2,8 @@
 
 **Proposal** from game design with the genome engineer, 2026-10-07, for a discussion with the owner before genes, traits, names and art are designed per species (**Decided** 10-07: species design starts with taxonomy). **Decided** marks owner decisions restated here; everything else is **Proposal**. It builds on the [species frames](species-frames.md) and the approved [research loop](research-loop.md). The examples are generated, not drawn: [taxonomy.py](taxonomy/taxonomy.py) makes them by the rules in §3 and builds each one through the species-frame method and the workbench's own resolver, 200 random individuals per species. Run `python3 design/proposals/taxonomy/taxonomy.py --check`; its output is [examples.json](taxonomy/examples.json) and the [plan census](taxonomy/plans.json).
 
+**Decided by the owner on 10-07, folded in:** 16 species in V1, shown as a grid of 16 on the Station, with seasonal drops about every three months; the first 16 as different from each other as possible (fliers, swimmers, mammal-like, insect-like, slugs, sentient plants); hidden silhouettes for clans and species not yet met; Compare on any living mibi; the clean-room naming stands (the "combination of words" was for the product name).
+
 **One word first.** The website and the breeding design already use *family* for a mibi's kin: "One species. Endless families", the genealogy tree (**Decided** 10-06, homepage). The owner asked that individuals and families never be confused (09-24). So the level between plan and species is called a **clan** here and on screen; *family* keeps meaning parents and children. Decision 5. And the frames' file names *hopper*, *puffcap* and *glowtail* belong to other franchises' creatures, so here the three species are **zacatín**, **copolí** and **ocotín** (§5, the clean room).
 
 ## 1. What a species is, in this game
@@ -23,9 +25,9 @@ The owner: *"What if, rather than a fixed allocation for the data structure, you
 | Zacatín | 114 · 5 | 59 (wings, tail, ears, fur, fins, radial and second-region parts…) | 50 · 5 | 2 · 0 (cream belly, three leaves: both locked, Pip as approved) | **57 · 5** | 4 |
 | Copolí | 114 · 20 | 67 (legs, snout, crown, ears, tail…) | 27 · 20 | 3 · 2 (cap on top, its colour, its spots) | **50 · 22** | 4 + sealed |
 | Ocotín | 114 · 38 | 46 (wings, ears, fur, fins…) | 30 · 38 | 3 · 2 (glow brightness, glow length, the tail-tip bulb) | **71 · 40** | 7 + Glow |
-| Example A | 114 · 21 | 57 | 36 · 21 | none yet | **57 · 21** | 4 |
-| Example B | 114 · 30 | 50 | 34 · 30 | none yet | **64 · 30** | 6 + sealed |
-| Example C | 114 · 35 | 51 | 28 · 35 | none yet | **63 · 35** | 6 + sealed |
+| Example A (Lanolí) | 114 · 21 | 57 | 36 · 21 | none yet | **57 · 21** | 4 |
+| Example B (Remolí) | 114 · 30 | 50 | 34 · 30 | none yet | **64 · 30** | 6 + sealed |
+| Example C (Petalú) | 114 · 35 | 51 | 28 · 35 | none yet | **63 · 35** | 6 + sealed |
 
 The frame's size is how many parts a body has, so it doesn't grow in a straight line (a legless copolí has fewer parts than a zacatín). What grows with the player is the **open genome**: 5, 22, 40 pairs, and the stamp, the chapter arcs and the field guide follow it. The Library's frame plate shows only parts the species has, so a copolí's page has no legs section at all.
 
@@ -44,9 +46,9 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 
 | Level | What fixes it | In the catalogue (catalogue6) | V1 | Over time |
 | --- | --- | --- | --- | --- |
-| **Body plan** | The top switches: **segments** (1, 2 or 3 in a row, or a fan), **symmetry** (bilateral, radial), **limbs** (none; feelers in 1–3 groups of 1–2 links; 4 or 6 legs; with or without flaps), **covering** (skin, scales, fur). Always a head with eyes: a pet has a face | **510 plans**: 170 skeletons × 3 coverings. All 510 build at the default proportions ([census](taxonomy/plans.json)), so viability is a species matter (rule 6) | **4** | One more per release; each needs a parts library and an animation set (§7) |
-| **Clan** | A plan plus a **signature**: an **anchor colour** (1 of 10 body pigments, plus a second pigment on bilateral plans), a **covering finish** (fur length and sweep, scale size), a **defining feature** (snout, crown round or pointed, ears round or pointed, tail: 36 sets) | 10 anchors × 36 features × 1–4 finishes: **360 to 1,440 per plan**, six times that on bilateral plans with the second pigment | **6** | Two or three per release |
-| **Species** | A clan member with its own frame: every other part fixed by its seed, its open traits by tier, its pool (the anchor and 1–3 neighbours on the colour wheel), a sealed chapter and its find | Each of about 50 drawn parts is fixed at one of 2–3 values or opened: **beyond 10^20 per clan**, so never the limit | **12** | 6 to 10 per release |
+| **Body plan** | The top switches: **segments** (1, 2 or 3 in a row, or a fan), **symmetry** (bilateral, radial), **limbs** (none; feelers in 1–3 groups of 1–2 links; 4 or 6 legs; with or without flaps), **covering** (skin, scales, fur). Always a head with eyes: a pet has a face | **510 plans**: 170 skeletons × 3 coverings. All 510 build at the default proportions ([census](taxonomy/plans.json)), so viability is a species matter (rule 6) | **16 plans**, 14 skeletons, 7 body rigs, 3 coverings | One new plan at most per drop; each needs its rig or limb set (§7) |
+| **Clan** | A plan plus a **signature**: an **anchor colour** (1 of 10 body pigments, plus a second pigment on bilateral plans), a **covering finish** (fur length and sweep, scale size), a **defining feature** (snout, crown round or pointed, ears round or pointed, tail: 36 sets) | 10 anchors × 36 features × 1–4 finishes: **360 to 1,440 per plan**, six times that on bilateral plans with the second pigment | **16**, one per species | One or two per drop |
+| **Species** | A clan member with its own frame: every other part fixed by its seed, its open traits by tier, its pool (the anchor and 1–3 neighbours on the colour wheel), a sealed chapter and its find | Each of about 50 drawn parts is fixed at one of 2–3 values or opened: **beyond 10^20 per clan**, so never the limit | **16** (**Decided**: a grid of 16) | 4 per seasonal drop |
 | **Individual** | Its two copies at every open part | Zacatín 243 genotypes; copolí 2.3×10^10; ocotín 4.8×10^20 | | |
 
 **How a new species is generated, by rule.**
@@ -64,20 +66,45 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 - **Rarity is the tier.** Starters are common where a new player starts, with no partner needed (**Decided**: a first-time player reaches all starter content). Mid species turn up in fewer cells. Late species sit behind the gates the map already has: the narrow hole (a digger), fast water (a swimmer, which V1 finally gives it), the deep "?" (a tier 2 Probe), Night (a glowing partner). So one species opens the way to the next.
 - **Finds.** A sealed chapter is read only with its find, brought back from an expedition (the copolí's crystal, species-frames §3).
 
-**The three frames, placed, and three generated examples.**
+**The first 16** (**Decided**: 16, as different as possible; the choice below is the proposal). Every plan is one of the 510 that build ([examples.json](taxonomy/examples.json) `roster`, checked by the script); no two share a plan, and only two pairs share a skeleton, with a different covering. Tier sets rarity; gates are the map's own.
 
-| Species | Plan | Clan (signature) | Tier | Open traits (sealed) | Pod |
-| --- | --- | --- | --- | --- | --- |
-| Zacatín | round walker, B1·L4, skin | Trebola (charcoal; leaf crest and snout) | starter | 5 | medium, squat, dots |
-| Copolí | bobber, R1·flaps, fur | Bonetia (coral; a cap of flaps) | early | 12 (Ways) | large, tall, segments |
-| Ocotín | long walker, B2·L4, scales | Fanalia (lagoon; a long tail that glows) | mid | 23 | small, squat, plates |
-| Example A, by rule (named *Orejolo* below) | round walker, B1·L4, fur | Algodina (periwinkle; long round ears) | early | 10 | medium, squat, soft ribs |
-| Example B, by rule (*Remolí*) | swimmer, B3·fins, scales | Aletia (cobalt; a back fin and a tail) | mid | 19 (Ways: a vybronic crystal) | large, squat, plates |
-| Example C, by rule (*Petalú*) | flutterer, B3·L6·flaps, skin | Volanta (marigold; round feelers, wide flaps) | late | 21 (Stamina: a storm-glass shard) | large, tall, dots |
+| # | Species | Plan | Clan | Moves | Covering | Habitat | Tier · gate |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Zacatín (frame *hopper*) | B1·L4 | Trebola | hops | skin | meadow, pond edge | starter |
+| 2 | Lanolí (Example A) | B1·L4 | Algodina | grazes, trots | fur | meadow | starter |
+| 3 | Copolí (frame *puffcap*) | R1·flaps | Bonetia | waddles | fur | wood, meadow, pond | early · Ways sealed (crystal) |
+| 4 | Orejolo | B2·L4 | Felpina | prowls | fur | wood, meadow | early |
+| 5 | Puntilú | B2·feelers | Zancola | tiptoes on many feelers | skin | wood | early |
+| 6 | Musguín | B3·none | Limacela | slides (a slug) | skin | pond edge, wood; out in fog banks | early |
+| 7 | Ocotín (frame *glowtail*) | B2·L4 | Fanalia | scurries, digs, glows | scales | wood, rock field | mid · opens narrow holes, Night |
+| 8 | Tambolo | R1·rays | Erizola | wobbles on many short legs | fur | rock field | mid |
+| 9 | Charquín | R1·feelers | Flotela | drifts, trailing feelers | skin | pond | mid |
+| 10 | Petalú (Example C) | B3·L6·flaps | Volanta | flutters (insect-like) | skin | meadow | mid |
+| 11 | Cavito | B3·L6 | Caparela | crawls, digs (beetle-like) | scales | rock field, cave | mid · Deep ground |
+| 12 | Remolí (Example B) | B3·fins | Aletia | swims | scales | pond, fast water | mid · opens fast water |
+| 13 | Brisú | B1·L4·flaps | Penacha | glides (bat-like) | fur | wood, rock field | late · Night |
+| 14 | Arroyín | Bfan2·flaps | Ondela | glides underwater | skin | beyond fast water | late · needs a swimmer |
+| 15 | Hojarín | Rfan2·rays | Brotela | walks on its roots (a plant) | skin | wood | late · sealed chapter |
+| 16 | Nenufí | Rfan3·flaps | Lirela | floats, opens its petals (a plant) | skin | pond | late · the deep "?" (tier 2) |
 
-Only the clan, tier and seed were chosen; [examples.json](taxonomy/examples.json) has every open trait, pool, glyph and name brief. **A, simple:** Colour (periwinkle, cobalt, plum, lagoon), Second colour, Markings, Fluff, Legs, Feet, Pace, Stride, Strength, Thrift; 2.2×10^12 genotypes. **B, the V1 swimmer** that opens the fast-water gate: 19 traits in seven chapters with Ways sealed; its first seed failed the check (big eyes on its small head), so Eyes was locked for the species. **C, complex, a later plan:** 21 traits, everything its plan can show once the check locked Eyes and Head, with Stamina sealed; 1.3×10^19 genotypes. All three built 200 of 200 individuals. C's workbench brief: "three linked softly squared, ovoid body regions and one smooth head, two eyes, two rounded head projections, six jointed legs with rounded ends and two flat flaps".
+**Art cost.** Variety costs rigs, not species: the 16 need **16 plans** on **14 skeletons**, built from **7 body rigs** (one, two and three regions in a row; radial; a bilateral fan; two radial fans), **3 limb sets** (legs and rays, feelers, flaps) and the **3 coverings** the catalogue has. **Build order:** first **Zacatín, Lanolí, Copolí, Ocotín, Orejolo** (three rigs, three coverings, all from frames that already build), so the Station has a living collection early and the first find, digger and Night partner exist; then Remolí, Petalú, Cavito, Puntilú (catalogue-ready, new rigs); then Tambolo, Charquín, Brisú, Arroyín; last Musguín, Hojarín, Nenufí, which need the most new loci.
 
-![The taxonomy: plans, clans, species and individuals, with the V1 slice](taxonomy/taxonomy.svg)
+**What the catalogue lacks for the new kinds** (counts are new switches · new loci; what two clans need goes to the trunk, the rest are clan branches, §2):
+
+| Kind | Species | Has today | Missing | New |
+| --- | --- | --- | --- | --- |
+| Fliers | Petalú, Brisú | flaps (span, chord, sweep), flap stroke and timing | flight itself (a behaviour consumer), flap markings, translucent flaps (the transparency draft) | 0 · 2 |
+| Swimmers | Remolí, Arroyín, Charquín | body wave, flaps as fins, fin switch, span and steering (carried, not drawn) | consumers for the 3 fin records; translucency for the drifter | 0 · 0 |
+| Insect-like | Petalú, Cavito, Puntilú | six legs, three regions, feelers | antennae (the crown stands in), wing cases (scales stand in) | 2 · 4 |
+| Slug | Musguín | legless body with body wave, skin | eye stalks (the crown stands in), a foot skirt, sheen (surface texture has no consumer) | 1 · 2 |
+| Sentient plants | Hojarín, Nenufí | radial fans, rays as roots, flaps as petals | leaves on branches, petals as a part, a leaf covering, a root foot, feeding on light (the uptake draft), no sentience locus | 3 · 7 |
+| **Total** | | | plus consumers for 4 carried records and 2 drafts; every kind of movement still needs its behaviour layer | **6 · 15** |
+
+**Seasonal drops** (**Decided**: about every three months). A drop is **4 species**: two cousins in existing clans (they reuse rigs and make clans readable), one new clan on an existing plan, and at most one new plan (one new rig or limb set). It ships as one signed content pack, the same for every kit: frames, names with their clearance rows, pools, habitats, pod and stamp parameters, and the art parts the art director signed off. The Station takes it over its Wi-Fi; a kit kept offline keeps its roster and catches up later. New species arrive at the next world turn, in their habitats, away from where the player just was (**Decided** arrival guard); saved mibis never change. The grid shows 16 a page, a new page about a year.
+
+**Generated by rule:** Examples A, B and C are frames generated for Lanolí, Remolí and Petalú from clan, tier and seed only (10, 19 and 21 open traits; B's and C's first seeds failed the check and Eyes, then Head, were locked); all built 200 of 200.
+
+![The taxonomy: plans, clans, species and individuals, with the three frames and three generated examples](taxonomy/taxonomy.svg)
 
 *Each box is read off the frame below it. Dashed: later members of a clan, made by the same rule. Numbers from taxonomy.py and the species frames.*
 
@@ -92,9 +119,13 @@ Only the clan, tier and seed were chosen; [examples.json](taxonomy/examples.json
 
 **What crosses and what doesn't.** Within a species, every heritable copy crosses, looks and doings alike, and sleeping looks can wake in a child. Across species, nothing does, even within a clan: a clan is a resemblance, never a breeding group. Locked parts never cross, and knowing a look never puts it into a pod (**Decided**). The Cross screen lists only adults of the same species, and the Library never draws a lineage line between two species, so the clan's likeness can't read as a promise. The species border on the stamp is the rule made visible: same border, may cross; same clan half only, cousins.
 
+**Not yet met** (**Decided**, owner 10-07): the Library shows clans and species the player hasn't met as hidden silhouettes in their places on the shelf, so the size of the world shows without giving it away.
+
+**Compare, on any living mibi** (owner 10-07: cousins differ by their expressions, and a living mibi can be compared with siblings, relatives and other species). A brief, not a screen: from a mibi, pick **siblings** (same two parents), **relatives** (along its lineage), **any member of its species**, or **any other species**. Chapters and traits line up through the shared vocabulary (§6): the same trait shows both pictures side by side and the differences pulse; a trait the other species doesn't have reads **not in this species** (absent under §2), an unread one **not read yet**, a sealed one **sealed**. Doings such as pace and curiosity compare once read. It is free and changes nothing. It extends research-loop §8's Compare row from pods to living mibis and across species, and the Library's species pages compare on trunk traits. Two of the owner's examples have no locus yet: eye colour (§6) and intelligence (Ways holds only curiosity and nerve).
+
 ## 5. Naming
 
-**A clean room** (owner, 10-07). Taxonomy, names, descriptions and art come from our own rules and vocabulary (§3, §6), never from or in the style of another franchise's bestiary; no other game's creature list is used as a source, a prompt or a reference. The three frames were filed as *hopper*, *puffcap* and *glowtail*: those names are withdrawn, because a Glowtail is an ARK creature, Puffcaps are a Legends of Runeterra card, and Hopper is an enemy or creature in Metroid, Drawn to Life and The Elder Scrolls. They stay only as file ids until the frames are renamed; this document calls the three species **zacatín**, **copolí** and **ocotín**.
+**A clean room** (owner, 10-07; the clean-room system stands, and "combination of words" was meant for the product name). Taxonomy, names, descriptions and art come from our own rules and vocabulary (§3, §6), never from or in the style of another franchise's bestiary. The frames' *hopper*, *puffcap* and *glowtail* are withdrawn (an enemy or creature in Metroid, Drawn to Life and The Elder Scrolls; a Legends of Runeterra card; an ARK creature) and stay only as file ids; the renames to confirm are **zacatín**, **copolí** and **ocotín**.
 
 - **The pattern to avoid:** two English words, a look plus a body part (glow+tail, puff+cap, flame+wing). It is the stock pattern of Pokémon, ARK, Runeterra and others, so it collides most.
 - **The pattern we use: one name for both markets**, from a **root** (a Spanish or English word for a locked fact, often a regional or botanical cue) and a **playful ending** (-ín, -í, -ú, -ito, -olo). Two or three syllables, in sounds a child says in both languages (no *ñ*, *ll* or *th*; a Spanish *j*, as in *Orejolo*, is said as in *jalapeño*); written with its accent, *Zacatin* where accents can't go. *Zacatín*: *zacate*, the meadow grass it hops through. *Copolí*: *copo*, a tuft of fluff. *Ocotín*: *ocote*, the resinous pine Mexicans light as a torch, for the glow.
@@ -102,31 +133,28 @@ Only the clan, tier and seed were chosen; [examples.json](taxonomy/examples.json
 - **Individuals:** the owner names a pet. A new mibi starts with a short name from a bilingual list (Coco, Mora, Kiwi, Nube, Moss, Fig; the name screen flags Momo and Pipo), drawn from its creation, never from its genome; Pip stays the reference art's name. A wild mibi is "a zacatín". The short code (`G7F · CD0 · 3H2`, **Decided**) is the lookup.
 - **Rules.** (1) **No gene leaks:** a root names only what every member has, never an open trait's look, and no colour unless it is locked. (2) **No collisions:** unique; no species name inside another; at least three letters apart; a clan never shares a species' root. (3) **False friends**, checked by speakers from Mexico, the US and Canada (*hocicón* is "loudmouth" in Mexico, *zancudo* "mosquito", *bicho* rude in Puerto Rico), and nothing close to "pocket" (**Decided**). (4) **Clearance, a Working rule:** every candidate is searched on the web before a person sees it, with "*name* creature", "*name* monster", "*name* game", "*name* Pokémon", "*name* species", "*name* toy" and "*name* brand", and is rejected if it is, or sounds like, an existing creature, character, item, card or brand in any game, franchise, book or toy line. The search, its result and the verdict are recorded per name. (5) The namer proposes five per species, a person picks from those that cleared, and a shipped name never changes.
 
-**Twenty generated names, each searched** on 2026-10-07 with two queries: **A** "*name*" creature OR monster OR game OR character OR toy; **B** "*name*" Pokémon OR brand OR species OR mascot. One name serves both markets, so each row is both the English and the Spanish check.
+**The 16 species and their clans, each name searched** on 2026-10-07 with two queries: **A** "*name*" creature OR monster OR game OR character OR toy; **B** "*name*" Pokémon OR brand OR species OR mascot. One name serves both markets, so each row is the English and the Spanish check.
 
-| Name | Clan | Root: what it says | Searches | Result | Verdict |
-| --- | --- | --- | --- | --- | --- |
-| Zacatín | Trebola | *zacate*, meadow grass: hops through it (frame *hopper*) | A, B | near Zacian (Pokémon), Zacama (Magic): different words | cleared |
-| Hojarín | Trebola | *hoja*, leaf: the leaf crest | A, B | none | cleared |
-| Charquín | Trebola | *charco*, puddle: its pond-edge habitat | A, B | none | cleared |
-| Orejolo | Algodina | *oreja*, ear: the clan's long round ears | A, B | none | cleared |
-| Lanolí | Algodina | *lana*, wool: its woolly fur | A, B | none (Wooloo, Pokémon, offered as near) | cleared |
-| Copolí | Bonetia | *copo*, tuft: fluff under its cap (frame *puffcap*) | A, B | none | cleared |
-| Tambolo | Bonetia | *tambalear*, to wobble: its waddle | A, B | Tambaloslos, a Visayan folk creature: different, public folklore | cleared |
-| Cascabú | Bonetia | *cascabel*, little bell: a bell-swept cap | A, B | none | cleared |
-| Ocotín | Fanalia | *ocote*, the pine lit as a torch: its glow (frame *glowtail*) | A, B | none | cleared |
-| Cavito | Fanalia | *cavar*, to dig: wedge feet, its ability | A, B | none (Caviramus, a real pterosaur figure) | cleared |
-| Solerín | Fanalia | *sol*, sun: basks on warm stones | A, B | none (Solosis offered as near) | cleared |
-| Escobín | Penacha | *escoba*, broom: sweeps its furred tail | A, B | none | cleared |
-| Sigilín | Penacha | *sigilo*, stealth: creeps up quietly | A, B | none (Sigil, a Persona enemy type, offered as near) | cleared |
-| Nenufí | Aletia | *nenúfar*, water lily: lives among lilies | A, B | none | cleared |
-| Remolí | Aletia | *remolino*, whirl: turns in fast water | A, B | none | cleared |
-| Arroyín | Aletia | *arroyo*, brook: swims the brooks | A, B | none | cleared |
-| Petalú | Volanta | *pétalo*, petal: petal-shaped flaps | A, B | none (Petal Guy, Mario; Petilil offered as near) | cleared |
-| Brisú | Volanta | *brisa*, breeze: flutters on it | A, B | none | cleared |
-| Puntilú | Zancola | *de puntillas*, on tiptoe: six fine feelers | A, B | none | cleared |
-| Musguín | Zancola | *musgo*, moss: eats moss | A, B | none | cleared |
-| Trebola, Algodina, Bonetia, Fanalia, Penacha, Aletia, Volanta, Zancola (clans) | | *trébol*, *algodón*, *bonete*, *fanal*, *penacho*, *aleta*, *volar*, *zanco* | A, B each | none | cleared |
+| Species | Root: what it says | Result (A, B) | Clan | Root | Result (A, B) | Verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| Zacatín | *zacate*, meadow grass it hops through | near Zacian (Pokémon), Zacama (Magic): different words | Trebola | *trébol*, the leaf crest | none | cleared |
+| Lanolí | *lana*, wool | none (Wooloo offered as near) | Algodina | *algodón*, cotton fur | none | cleared |
+| Copolí | *copo*, a tuft under its cap | none | Bonetia | *bonete*, the cap | none | cleared |
+| Orejolo | *oreja*, its pointed ears | none | Felpina | *felpa*, plush | none (Felyne, Monster Hunter, offered as near) | cleared |
+| Puntilú | *de puntillas*, on tiptoe | none | Zancola | *zanco*, stilt | none | cleared |
+| Musguín | *musgo*, the moss it eats | none | Limacela | *limaco*, slug | none | cleared |
+| Ocotín | *ocote*, the pine lit as a torch: its glow | none | Fanalia | *fanal*, lantern | none | cleared |
+| Tambolo | *tambalear*, to wobble | Tambaloslos, a Visayan folk creature: different, public folklore | Erizola | *erizo*, urchin | none | cleared |
+| Charquín | *charco*, the pond it drifts in | none | Flotela | *flotar*, to float | none (Flotzo, Kirby, offered as near) | cleared |
+| Petalú | *pétalo*, petal-shaped flaps | none (Petal Guy, Petilil offered as near) | Volanta | *volar*, to fly | none | cleared |
+| Cavito | *cavar*, to dig | none | Caparela | *caparazón*, shell | none (Capchara, a capsule-toy line, offered as near) | cleared |
+| Remolí | *remolino*, whirl in fast water | none | Aletia | *aleta*, fin | none | cleared |
+| Brisú | *brisa*, the breeze it glides on | none | Penacha | *penacho*, its plumed crest | none | cleared |
+| Arroyín | *arroyo*, brook | none | Ondela | *onda*, wave | none (Ondre, a plush, offered as near) | cleared |
+| Hojarín | *hoja*, leaf | none | Brotela | *brote*, sprout | none | cleared |
+| Nenufí | *nenúfar*, water lily | none | Lirela | *lirio*, lily | none | cleared |
+
+Cleared spares for the next drop: Escobín, Sigilín, Solerín.
 
 **Rejected or not recommended**, with the same searches (and the [name screen](name-screen.md) for the first draft):
 
@@ -136,10 +164,11 @@ Only the clan, tier and seed were chosen; [examples.json](taxonomy/examples.json
 | hopper | an enemy or creature in Metroid, Drawn to Life, The Elder Scrolls (the name screen calls it a plain word; our rule rejects existing game creatures) | rejected |
 | Bellcap, Tunneler, Splasher (first draft) | Dragon Quest item; Fallout and Bionicle creatures; a game title (name screen) | rejected |
 | Pompilú · Campanú · Orelú · Peluchín · Tulín · Flechú · Gorrela | near Pompompurin (Sanrio) · Campanilla and Campanella · Oruro, a Toho figure · a Pokémon game character's Spanish name · a Zelda character · Fletchling (Pokémon) · Gorellina capsule toys | rejected |
+| Corazela · Babela · Raizola · Florela (clans) | Corazon Marikit (Monster High) · Babylla (Godzilla game) · Raizo (anime) · Floette, Floragato (Pokémon) | rejected |
 | Pomcap (name screen's candidate) | sounds like Pombon (Pokémon, 2026) and Pombomb (Cassette Beasts) | rejected |
 | Gleamtip, Wicktail, Tuftbonnet (name screen's candidates) | A, B: no creature, item or brand | search-clear, not recommended: the look-plus-part pattern |
 
-Eight of the thirty-nine names searched here failed (three more cleared but use the avoided pattern), so the namer always offers spares.
+Twelve of the fifty-one names searched failed (three more cleared but use the avoided pattern), so the namer always offers spares.
 
 **Two more words to move, from the name screen.** The chapter called *Nature* in the frames is Pokémon's per-individual stat modifier, the same idea in the same genre: this proposal calls it **Ways** ("born with its ways"; a search found no game mechanic of that name), with *Temper* as the alternative; decision 5. The research docs' *misty seed* (the faint picture of a hidden look) is an exact Pokémon item; the research docs should say **sleeping bud** (searched: no item) or the name screen's *hush seed*.
 
@@ -165,7 +194,7 @@ The other 24 loci are older records no construction draws yet (body length, join
 
 A brief, not art. Every item is mastered by the art director once and assembled by rule; a species is an assembly, never a drawing (**Decided**: no per-creature art, engineers do not do art).
 
-- **Creature renderer** (Miniature Lives, **Decided**: HiBit at 280×300 on the Companion, the matched richer treatment at 300×310 on the Station, plus the 48 px creature in the world). **Per body plan**, a parts library of trunk parts on one rig, and **per clan** its branch parts (the glow, the cap on top, the belly field): the body regions in three forms (egg, barrel, pear) and two sections (round, rounded square; radial round); heads in three sizes; the face set (eyes by size and spacing, snout, crown round or pointed by height, ears round or pointed by length); limbs (legs by drop and girth, three feet, feelers of one or two links, flaps by span, chord and sweep); the tail by length, width and curl. **Shared by all plans:** the three coverings as materials (fur by length and sweep, scales by size and extent, skin), the marking masks, the 16 pigments ramped per the UI kit. **Per plan, an animation set** from its state machine: idle, move (hop, waddle, scurry, swim, flutter), the four bubbles (! ? fruit …), eat, settle, flee, sleep, shed; and four life stages that keep identity, with a calm, dignified elder (**Decided** 10-07).
+- **Creature renderer** (Miniature Lives, **Decided**: HiBit at 280×300 on the Companion, the matched richer treatment at 300×310 on the Station, plus the 48 px creature in the world). For the first 16: **7 body rigs**, **3 limb sets** and **3 coverings** (§3), and **per clan** its branch parts (the glow, the cap on top, the belly field, later leaves and petals): the body regions in three forms (egg, barrel, pear) and two sections (round, rounded square; radial round); heads in three sizes; the face set (eyes by size and spacing, snout, crown round or pointed by height, ears round or pointed by length); limbs (legs by drop and girth, three feet, feelers of one or two links, flaps by span, chord and sweep); the tail by length, width and curl. **Shared by all plans:** the three coverings as materials (fur by length and sweep, scales by size and extent, skin), the marking masks, the 16 pigments ramped per the UI kit. **Per plan, an animation set** from its state machine: idle, move (hop, waddle, scurry, swim, flutter), the four bubbles (! ? fruit …), eat, settle, flee, sleep, shed; and four life stages that keep identity, with a calm, dignified elder (**Decided** 10-07).
 - **Pod renderer, per clan** (**Decided**: one renderer, species parameters): the shell pattern comes from the plan (segments for radial, soft ribs for fur, plates for scales, smooth dots for skin) and the **anchor tint from the clan**; the second tint, size, proportion and glyph from the species; the dust of its place per pod.
 - **Stamp border families** (**Decided**: the stamp, its species border and glyph): the border spells the species number, so its first half (the clan) repeats across a clan like a stamp series, and its second half (the member) completes the species. The glyph's two top rows are the clan's feature. The stamp's builders own the encoding; this is the brief.
 - **Tome page template, per clan** (the Library as a botanical tome, **Decided** vibe): a clan plate (the feature part drawn large, the anchor colour, the plan's silhouette, the genus); then a page per species: the pressed type specimen, the name and binomial, its places as stamps, the chapter pages with the vocabulary's pictures and a dotted "more?", lineage as a branch, wishes. Shelf spines in the clan's anchor colour.
@@ -175,21 +204,24 @@ A brief, not art. Every item is mastered by the art director once and assembled 
 - **The catalogue and the frame registry** (if decision 1 is taken): loci split into trunk and clan branches; a frame lists the trunk loci it has and its branch, and drops absent ones instead of locking them; the codec packs only those. The first branch loci are the pending gaps: emission, top cap sheet, belly field.
 - **`creatures-and-genomics.md`:** "Open: how many species there are" becomes the four levels and their rules, with V1's numbers once decided; naming rules join Identity, with the clean room and the name clearance as **Working rules**. Its Identity section still describes the retired ring; it should say the stamp (**Decided** 10-07).
 - **`species-frames.md` and the frame schema:** a `taxonomy` header (plan code, clan, species number as clan · member, name, binomial, clearance record, diet, habitat, ability, state machine); the glyph rule (clan rows over species rows); the pod colour pair as the clan anchor plus one pool neighbour (the three frames already fit: charcoal, coral, lagoon). The files' names *hopper*, *puffcap* and *glowtail* are replaced (§5). Temperament shows as **Ways**, not Nature (§5), if its decision 4 is taken.
-- **`research-loop.md` §6:** pods share a shell pattern and anchor tint per clan.
+- **`research-loop.md`:** §6, pods share a shell pattern and anchor tint per clan; §8's Compare row covers living mibis and other species (§4); the *misty seed* becomes the *sleeping bud* (§5).
+- **Station screens:** the 16-species grid (**Decided**) and the Library's hidden silhouettes (**Decided**) in `station-screens.md` and the style guide; drops add a page.
 - **The genome stamp:** the 12-bit species field read as clan (7 bits, 128 clans) and member (5 bits, 32 species); the prototype's species 11, 12, 13 become 1·1, 2·1, 3·1. Proposed to the stamp's builders; nothing under `prototypes/` changes here.
-- **`world-and-exploration.md`:** habitats and diets per species by rule; the swimmer gate gets its species (the Aletia); Night has its glowing partner.
+- **`world-and-exploration.md`:** habitats and diets per species by rule; the swimmer gate gets its species (Remolí); Night has its glowing partner (Ocotín); Deep ground and the deep "?" get Cavito and Nenufí.
 - **`design/style-guide/station-screens.md`, Library:** the shelf groups by clan, a clan plate over its species.
 - **The website** keeps "families" for kin; "clan" never appears there until the game uses it.
 
 ## 9. Decisions for the owner
 
-1. **A genome that grows: the trunk-and-branch pan-genome** (§2). A species carries the trunk loci its body has plus its clan's branch; absent parts have no locus, so the zacatín's genome is 57 pairs with 5 open and the ocotín's 71 with 40 open, and the stamp, chapters and Library page grow with it. *Recommended*, over one fixed 114-pair genome for every species.
-2. **Four levels, each read off the frame, relatedness made visible:** body plan → clan → species → individual. Plans and clans classify a frame and never pick its anatomy; only a species breeds. Species number = clan · member (a clan half on the stamp border), glyph = clan rows over species rows, pod = the plan's pattern and the clan's anchor tint. *Recommended.*
-3. **One generated roster for every kit.** Species are generated by rule from seeds, checked, named by the LLM within the brief, signed off by the art director and shipped as data, the same in every kit. The world seed decides where each species lives, never which ones exist. *Recommended* over species generated per world, which would break trades, consent sampling, the website's pages and the cloud exchange, and couldn't pass art sign-off.
-4. **V1: 4 plans, 6 clans, 12 species**, two per clan so the clan reads: round walkers (Trebola, Algodina), bobbers (Bonetia), long walkers (Fanalia, Penacha), swimmers (Aletia). Three starters, the rest early to late behind the existing gates. *Recommended.* The art cost scales with plans, not species: four parts libraries and three coverings cover twelve species, and a new species every two to four expeditions keeps the pull without drowning the player.
-5. **Names from a clean room.** The level is called **clan** on screen (family stays kin, as on the website). One name per species for both markets, a root for a locked fact plus a playful ending, never the look-plus-part compound; every candidate passes the web clearance (a **Working rule**) before anyone picks it; the three frames become **zacatín**, **copolí** and **ocotín**; the temperament chapter is called **Ways**, not Nature; a playful binomial on the tome page only. *Recommended.*
+Already decided by the owner on 10-07, one line each: **16 species in V1** as a Station grid, with **seasonal drops** about every three months; the first 16 **as different as possible**; **hidden silhouettes** for what isn't met yet; **Compare** on living mibis; the **clean-room naming** stands.
+
+1. **A genome that grows: the trunk-and-branch pan-genome** (§2). Absent parts have no locus; the zacatín's genome is 57 pairs with 5 open and the ocotín's 71 with 40, and the stamp, chapters and Library page grow with it. *Recommended*, over one fixed 114-pair genome.
+2. **Four levels read off the frame, relatedness made visible:** body plan → clan → species → individual; only a species breeds. Species number = clan · member (a clan half on the stamp border), glyph = clan rows over species rows, pod = the plan's pattern and the clan's tint. *Recommended.*
+3. **One generated roster for every kit**, shipped in seasonal packs; the world seed places species, never chooses them. *Recommended* over species per world, which would break trades, consent, the website and the cloud exchange, and couldn't pass art sign-off.
+4. **The first 16 as listed in §3**, one clan each, on 16 plans, 7 body rigs, 3 limb sets and 3 coverings; built in the order Zacatín, Lanolí, Copolí, Ocotín, Orejolo first; drops of 4 (two cousins, one new clan, at most one new plan); the 6 switches and 15 loci for fliers, swimmers, insects, slugs and plants added in build order. *Recommended.*
+5. **The names:** confirm **zacatín**, **copolí** and **ocotín** and the 16 species and 16 clan names of §5, all cleared; the temperament chapter called **Ways**, not Nature; the binomial on the tome page only. *Recommended.*
 
 **Three questions to open the discussion.**
-- Is the range you described (bear, cat, cow, firefly) a promise for V1, or a direction for later releases? It decides how many plans V1 pays for.
-- Should the Library show clans and species the player hasn't met yet as silhouettes, which tells them how big the world is, or only what they have found?
-- How close should cousins look? Same face and colour with a different body, or only the quiet cues of border, pod and palette?
+- Do drops need the Station's Wi-Fi, or should a kit kept offline also get them some other way (a card, the Caddy)?
+- Should a new season's species turn up only in its season at first, as a reason to go out, or stay for good from the day it arrives?
+- Is intelligence a trait you want players to breed for in V1? It needs a cognition locus the catalogue doesn't have (Ways holds curiosity and nerve).

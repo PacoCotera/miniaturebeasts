@@ -418,5 +418,157 @@
     "no-consumer": 18
    }
   }
+ },
+ "roster": {
+  "species": [
+   {
+    "name": "Zacatín",
+    "clan": "Trebola",
+    "plan": "one|serial|bilateral|contact|zero|one|two|off|skin",
+    "body": "bilateral serial one",
+    "limbs": "contact",
+    "flaps": "off",
+    "covering": "skin"
+   },
+   {
+    "name": "Lanolí",
+    "clan": "Algodina",
+    "plan": "one|serial|bilateral|contact|zero|one|two|off|fur",
+    "body": "bilateral serial one",
+    "limbs": "contact",
+    "flaps": "off",
+    "covering": "fur"
+   },
+   {
+    "name": "Orejolo",
+    "clan": "Felpina",
+    "plan": "two|serial|bilateral|contact|zero|one|two|off|fur",
+    "body": "bilateral serial two",
+    "limbs": "contact",
+    "flaps": "off",
+    "covering": "fur"
+   },
+   {
+    "name": "Ocotín",
+    "clan": "Fanalia",
+    "plan": "two|serial|bilateral|contact|zero|one|two|off|scales",
+    "body": "bilateral serial two",
+    "limbs": "contact",
+    "flaps": "off",
+    "covering": "scales"
+   },
+   {
+    "name": "Copolí",
+    "clan": "Bonetia",
+    "plan": "one|serial|radial|none|zero|one|two|on|fur",
+    "body": "radial serial one",
+    "limbs": "none",
+    "flaps": "on",
+    "covering": "fur"
+   },
+   {
+    "name": "Tambolo",
+    "clan": "Erizola",
+    "plan": "one|serial|radial|contact|zero|one|two|off|fur",
+    "body": "radial serial one",
+    "limbs": "contact",
+    "flaps": "off",
+    "covering": "fur"
+   },
+   {
+    "name": "Charquín",
+    "clan": "Flotela",
+    "plan": "one|serial|radial|free|three|two|two|off|skin",
+    "body": "radial serial one",
+    "limbs": "free",
+    "flaps": "off",
+    "covering": "skin"
+   },
+   {
+    "name": "Remolí",
+    "clan": "Aletia",
+    "plan": "three|serial|bilateral|none|zero|one|two|on|scales",
+    "body": "bilateral serial three",
+    "limbs": "none",
+    "flaps": "on",
+    "covering": "scales"
+   },
+   {
+    "name": "Arroyín",
+    "clan": "Ondela",
+    "plan": "two|fan|bilateral|none|zero|one|two|on|skin",
+    "body": "bilateral fan two",
+    "limbs": "none",
+    "flaps": "on",
+    "covering": "skin"
+   },
+   {
+    "name": "Petalú",
+    "clan": "Volanta",
+    "plan": "three|serial|bilateral|contact|zero|one|three|on|skin",
+    "body": "bilateral serial three",
+    "limbs": "contact",
+    "flaps": "on",
+    "covering": "skin"
+   },
+   {
+    "name": "Cavito",
+    "clan": "Caparela",
+    "plan": "three|serial|bilateral|contact|zero|one|three|off|scales",
+    "body": "bilateral serial three",
+    "limbs": "contact",
+    "flaps": "off",
+    "covering": "scales"
+   },
+   {
+    "name": "Brisú",
+    "clan": "Penacha",
+    "plan": "one|serial|bilateral|contact|zero|one|two|on|fur",
+    "body": "bilateral serial one",
+    "limbs": "contact",
+    "flaps": "on",
+    "covering": "fur"
+   },
+   {
+    "name": "Puntilú",
+    "clan": "Zancola",
+    "plan": "two|serial|bilateral|free|three|two|two|off|skin",
+    "body": "bilateral serial two",
+    "limbs": "free",
+    "flaps": "off",
+    "covering": "skin"
+   },
+   {
+    "name": "Musguín",
+    "clan": "Limacela",
+    "plan": "three|serial|bilateral|none|zero|one|two|off|skin",
+    "body": "bilateral serial three",
+    "limbs": "none",
+    "flaps": "off",
+    "covering": "skin"
+   },
+   {
+    "name": "Hojarín",
+    "clan": "Brotela",
+    "plan": "two|fan|radial|contact|zero|one|two|off|skin",
+    "body": "radial fan two",
+    "limbs": "contact",
+    "flaps": "off",
+    "covering": "skin"
+   },
+   {
+    "name": "Nenufí",
+    "clan": "Lirela",
+    "plan": "three|fan|radial|none|zero|one|two|on|skin",
+    "body": "radial fan three",
+    "limbs": "none",
+    "flaps": "on",
+    "covering": "skin"
+   }
+  ],
+  "plans": 16,
+  "skeletons": 14,
+  "bodyRigs": 7,
+  "coverings": 3
  }
 }
