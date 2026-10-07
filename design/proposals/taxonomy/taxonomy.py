@@ -144,26 +144,27 @@ TIERS = {"starter": (5, 6), "early": (7, 10), "mid": (12, 18), "late": (24, 34)}
 FINDS = {"temperament": "a vybronic crystal", "stamina": "a storm-glass shard", "movement": "a tide pearl"}
 
 # --- level 3: species, generated. Only the family, tier, seed and the find are chosen; the rest is rule.
-# --- the V1 roster (owner 10-07: 16 species, as different as possible). Plan keys as in plans.json:
-# segments|layout|symmetry|limbs|feeler groups|feeler links|leg pairs|flaps|covering. Example A to C below
-# are generated frames for Lanudín, Remolí and Petalú.
+# --- the V1 roster (owner 10-07): 16 species, very different, more big animals, at most two insect-like.
+# Placeholder codes: names are the copywriter's (taxonomy section 5). Plan keys as in plans.json:
+# segments|layout|symmetry|limbs|feeler groups|feeler links|leg pairs|flaps|covering, plus the size class.
+# Example A is a generated frame on the S07 plan; C on the S12 plan; B shows the method on a fish plan that was cut.
 ROSTER = [
-    ("Brinquín", "Trebola", "one|serial|bilateral|contact|zero|one|two|off|skin"),
-    ("Lanudín", "Algodina", "one|serial|bilateral|contact|zero|one|two|off|fur"),
-    ("Orejolo", "Penacha", "two|serial|bilateral|contact|zero|one|two|off|fur"),
-    ("Farolín", "Fanalia", "two|serial|bilateral|contact|zero|one|two|off|scales"),
-    ("Copolí", "Sombrela", "one|serial|radial|none|zero|one|two|on|fur"),
-    ("Bambolín", "Borlela", "one|serial|radial|contact|zero|one|two|off|fur"),
-    ("Charquín", "Flotela", "one|serial|radial|free|three|two|two|off|skin"),
-    ("Remolí", "Aletia", "three|serial|bilateral|none|zero|one|two|on|scales"),
-    ("Arroyín", "Ondela", "two|fan|bilateral|none|zero|one|two|on|skin"),
-    ("Petalú", "Volanta", "three|serial|bilateral|contact|zero|one|three|on|skin"),
-    ("Cavito", "Escarabela", "three|serial|bilateral|contact|zero|one|three|off|scales"),
-    ("Brisú", "Planela", "one|serial|bilateral|contact|zero|one|two|on|fur"),
-    ("Puntilú", "Hormiguela", "two|serial|bilateral|free|three|two|two|off|skin"),
-    ("Musguín", "Brumela", "three|serial|bilateral|none|zero|one|two|off|skin"),
-    ("Hojarín", "Verdela", "two|fan|radial|contact|zero|one|two|off|skin"),
-    ("Relampín", "Centela", "three|fan|bilateral|none|zero|one|two|off|skin"),
+    ("S01", "C01", "one|serial|bilateral|contact|zero|one|two|off|skin", "medium"),      # frame hopper
+    ("S02", "C02", "one|serial|radial|none|zero|one|two|on|fur", "large"),               # frame puffcap
+    ("S03", "C03", "two|serial|bilateral|contact|zero|one|two|off|scales", "small"),     # frame glowtail
+    ("S04", "C04", "two|serial|bilateral|contact|zero|one|two|off|fur", "medium"),       # cat-like
+    ("S05", "C05", "two|serial|bilateral|contact|zero|one|two|off|fur", "medium"),       # fox-like
+    ("S06", "C06", "two|serial|bilateral|contact|zero|one|two|off|fur", "medium"),       # raccoon-like
+    ("S07", "C07", "one|serial|bilateral|contact|zero|one|two|off|fur", "large"),        # badger- or bear-like
+    ("S08", "C08", "two|serial|bilateral|contact|zero|one|two|off|fur", "large"),        # goat- or deer-like
+    ("S09", "C09", "two|serial|bilateral|contact|zero|one|two|on|fur", "large"),         # big bird-like flier
+    ("S10", "C10", "three|serial|bilateral|contact|zero|one|two|off|fur", "medium"),     # otter-like swimmer
+    ("S11", "C11", "one|serial|bilateral|contact|zero|one|two|off|scales", "large"),     # turtle-like
+    ("S12", "C12", "three|serial|bilateral|contact|zero|one|three|on|skin", "small"),    # insect flutterer
+    ("S13", "C13", "three|serial|bilateral|contact|zero|one|three|off|scales", "small"), # beetle-like crawler
+    ("S14", "C14", "three|serial|bilateral|none|zero|one|two|off|skin", "small"),        # slug
+    ("S15", "C15", "two|fan|radial|contact|zero|one|two|off|skin", "medium"),            # walking plant
+    ("S16", "C16", "three|fan|bilateral|none|zero|one|two|off|skin", "medium"),          # lightning wisp
 ]
 
 
@@ -171,15 +172,18 @@ def roster_check(plans):
     """Every roster plan is one of the census's buildable plans; count what the art must master."""
     built = set(plans["plans"])
     rows = []
-    for name, clan, key in ROSTER:
-        assert key in built, f"{name}: plan {key} is not buildable"
+    for code, clan, key, size in ROSTER:
+        assert key in built, f"{code}: plan {key} is not buildable"
         seg, layout, sym, limbs, groups, links, pairs, flaps, cover = key.split("|")
-        rows.append({"name": name, "clan": clan, "plan": key,
+        rows.append({"species": code, "clan": clan, "plan": key, "size": size,
                      "body": f"{sym} {layout} {seg}", "limbs": limbs, "flaps": flaps, "covering": cover})
-    assert len({r["name"] for r in rows}) == len({r["clan"] for r in rows}) == len({r["plan"] for r in rows}) == 16
+    assert len({r["species"] for r in rows}) == len({r["clan"] for r in rows}) == 16
+    limb_sets = {r["limbs"] for r in rows if r["limbs"] != "none"} | ({"flaps"} if any(r["flaps"] == "on" for r in rows) else set())
     return {"species": rows, "plans": len({r["plan"] for r in rows}),
             "skeletons": len({r["plan"].rsplit("|", 1)[0] for r in rows}),
-            "bodyRigs": len({r["body"] for r in rows}), "coverings": len({r["covering"] for r in rows})}
+            "bodyRigs": len({r["body"] for r in rows}), "limbSets": len(limb_sets),
+            "coverings": len({r["covering"] for r in rows}),
+            "sizes": {s: sum(r["size"] == s for r in rows) for s in ("small", "medium", "large")}}
 
 
 EXAMPLES = [
@@ -380,12 +384,12 @@ INK, MUTED, BG = "#2e2e2e", "#6f6a5e", "#f7f4ec"
 
 def figure(examples, plans):
     rows = [  # plan, family, species (name, open traits, sealed, status)
-        ("round-walker", "trebola", [("brinquín", 5, "", "frame"), ("2nd member", None, "", "")]),
-        ("round-walker", "algodina", [("lanudín (A)", None, "", "gen")]),
-        ("bobber", "bonetia", [("copolí", 12, "Nature", "frame"), ("2nd member", None, "", "")]),
-        ("long-walker", "fanalia", [("farolín", 23, "", "frame"), ("2nd member", None, "", "")]),
-        ("swimmer", "aletia", [("remolí (B)", None, "", "gen")]),
-        ("flutterer", "volanta", [("petalú (C)", None, "", "gen")]),
+        ("round-walker", "trebola", [("S01 (hopper)", 5, "", "frame"), ("2nd member", None, "", "")]),
+        ("round-walker", "algodina", [("A, S07 plan", None, "", "gen")]),
+        ("bobber", "bonetia", [("S02 (puffcap)", 12, "Nature", "frame"), ("2nd member", None, "", "")]),
+        ("long-walker", "fanalia", [("S03 (glowtail)", 23, "", "frame"), ("2nd member", None, "", "")]),
+        ("swimmer", "aletia", [("B, a cut plan", None, "", "gen")]),
+        ("flutterer", "volanta", [("C, S12 plan", None, "", "gen")]),
     ]
     gen = {e["family"]: e for e in examples}
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 H" width="1000" height="H" font-family="system-ui, sans-serif">',
@@ -415,7 +419,7 @@ def figure(examples, plans):
         hexes = {"charcoal": "#3b3a40", "coral": "#f0775e", "lagoon": "#269fa5", "periwinkle": "#8b93e0", "cobalt": "#3c63c8", "marigold": "#e8b83f"}
         out.append(f'<rect x="284" y="{y}" width="250" height="{h - 6}" rx="6" fill="#fff" stroke="#d8d1c2"/>'
                    f'<rect x="294" y="{y + 10}" width="14" height="14" rx="3" fill="{hexes[f["anchor"]]}"/>'
-                   f'<text x="316" y="{y + 22}" class="t" style="font-weight:600">{ {"bonetia": "sombrela"}.get(fam, fam)}</text>'
+                   f'<text x="316" y="{y + 22}" class="t" style="font-weight:600">{ {"trebola": "C01", "bonetia": "C02", "fanalia": "C03", "algodina": "C07 type", "aletia": "cut", "volanta": "C12 type"}.get(fam, fam)}</text>'
                    f'<text x="294" y="{y + 40}" class="s">{escape(f["covering"])} · {escape(f["feature"])}</text>')
         for j, (name, n, sealed, kind) in enumerate(species):
             sy = y + j * 30
@@ -432,7 +436,7 @@ def figure(examples, plans):
             out.append(f'<text x="570" y="{sy + 17}" class="t"{"" if kind else f" style=\"fill:{MUTED}\""}>{escape(label)}</text>'
                        f'<text x="650" y="{sy + 17}" class="s">{escape(detail)}</text>')
             if kind:
-                g = e["genotypes"] if e else {"brinquín": 243, "copolí": 23245229340, "farolín": 480302832950397187200}.get(name)  # from the frames
+                g = e["genotypes"] if e else {"S01 (hopper)": 243, "S02 (puffcap)": 23245229340, "S03 (glowtail)": 480302832950397187200}.get(name)  # from the frames
                 if g:
                     out.append(f'<line x1="820" y1="{sy + 13}" x2="840" y2="{sy + 13}" stroke="{MUTED}"/>'
                                f'<text x="846" y="{sy + 17}" class="s">{fmt(g)} genotypes</text>')
@@ -442,7 +446,7 @@ def figure(examples, plans):
     for line in [
         "Breeding stays inside one species box. A clan is a resemblance (face part, anchor colour, pod pattern, stamp border half), never a breeding group.",
         f"Catalogue6: {plans['built']} of {plans['tried']} plans build ({plans['skeletonsBuilt']} skeletons × 3 coverings); 360 to 1,440 clan signatures per plan.",
-        "Brinquín, copolí and farolín are the species-frames files hopper, puffcap and glowtail; A to C are generated here (examples.json). V1 has 16 species, §3.",
+        "S01 to S03 are the species-frames files hopper, puffcap and glowtail (working ids); A to C are generated here (examples.json). V1 roster: §3.",
         "Generated by taxonomy.py through the species-frame method and the workbench resolver; every species built 200 random individuals.",
     ]:
         out.append(f'<text x="24" y="{y}" class="s">{escape(line)}</text>')
@@ -467,7 +471,7 @@ def main():
         plans_path.write_text(json.dumps(census(cat, defaults), indent=1) + "\n")
     plans = json.loads(plans_path.read_text())
     roster = roster_check(plans)
-    print(f"roster: {roster['plans']} plans, {roster['skeletons']} skeletons, {roster['bodyRigs']} body rigs, {roster['coverings']} coverings")
+    print(f"roster: {roster['plans']} plans, {roster['skeletons']} skeletons, {roster['bodyRigs']} body rigs, {roster['limbSets']} limb sets, {roster['coverings']} coverings, {roster['sizes']}")
     out = []
     for ex in EXAMPLES:
         rejected = []
