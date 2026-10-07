@@ -166,7 +166,7 @@ A storm is a band that moves across the map. The bolts in the bottom line show h
 - **Warned strikes** aim at stones (or open ground near you, never your own tile). The tile lights up one action before. A struck stone holds a charge: +2 Energy, or +3 at the storm's peak.
 - **Stray strikes** can hit the Probe on any action you spend in the open under rain. Each hit takes one Shield bar.
 - **Coming in the next build:** never two hits within six actions; the first hit of each storm pass is always a warned strike on a stone; and a storm passes over a place in at most 20 actions.
-- **Shelter.** Under a tree canopy, an overhang, in a cave or inside a fog bank, no stray strike can reach you. On the map, wood cells count as shelter.
+- **Shelter.** Overhang, cave, lit outpost. There no stray strike can reach you. Trees are **not** shelter: standing under a canopy (or in a wood cell on the map) gives no protection. Inside a fog bank the storm is calm, so no strikes there either.
 - **Patching.** On the Probe screen, 3 Energy patches one Shield bar. Press ✓ twice: the first press gets it ready.
 
 **When the Shield breaks** (0 bars), the expedition ends where you are and nothing goes home. The pods you carried fall at random spots in that place, and the cell gets a **skull** on the overview; go back down into it later to clear the skull and pick the pods up. The Energy, Data and Essence you were carrying are lost. Pins, the land you uncovered and what you learned stay. A broken Probe is mended for free.
@@ -262,4 +262,4 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 
 **Gains**: storm stone +2 (+3 at the peak) · warm stone +1 · dew +1 Essence · pressed fruit +2 Essence · tuft +1 Essence · a creature moment +1 Data (+2 the first time).
 
-**Odds**: stray strike per action in the open under rain: 2 bolts 1 in 20, 3 bolts 1 in 10, never two hits within six actions, and the first hit of a pass is a warned strike. None in shelter, beside a lit outpost or in a fog bank. Shield: 3 bars (tier 1), 4 bars (tier 2). A break sends nothing home: the pods fall where it broke (skull on the map) and carried materials are lost.
+**Odds**: stray strike per action in the open under rain: 2 bolts 1 in 20, 3 bolts 1 in 10, never two hits within six actions, and the first hit of a pass is a warned strike. None under an overhang, in a cave, beside a lit outpost or in a fog bank; trees give no protection. In play the screen says only "stray strikes can hit you in the open" (strong) and "strikes more likely" (peak); the exact odds are here and on the Probe screen. Shield: 3 bars (tier 1), 4 bars (tier 2). A break sends nothing home: the pods fall where it broke (skull on the map) and carried materials are lost.
