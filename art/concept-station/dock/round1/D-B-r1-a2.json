@@ -1,0 +1,98 @@
+{
+  "id": "arrival-fresh",
+  "direction": "B",
+  "round": 1,
+  "attempt": 2,
+  "tag": "D-B-r1-a2",
+  "model": "gemini-3.1-flash-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station HOME screen during DOCK AND ARRIVAL, a flat screen design that fills the whole 16:9 canvas edge to edge (the outer 2 percent at left and right is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first.\nSTYLE: exactly the approved Station Home screen supplied as Image 1: the same chrome, module column, vivarium, light and smooth type, so this reads as the same device a moment later. One key light from the upper left, clean painted light, crisp edges, no noise or dither. The vivarium is the only warm light; the chrome is cool; the bay's inner beam is cool blue-white. Labels are one small engraved word, low contrast, read second. No wood, no felt, no lamp fixture.\nLAYOUT, as the supplied Home screen and template: top bar, the bevelled vivarium window on the left two thirds, the column of four slate modules on the right third, bottom line. THE MOMENT: the Companion has docked and the player has opened the bay. SAMPLE BAY module: door open, a cool blue-white beam inside, two slate-and-teal crates with orange seal tags, the left one open with its tag broken, the right one still sealed with a small place stamp; a short slate rail curves from the bay down to the POD RACK, one small amber-brown seed-pod travelling along it, another just seated, so the rack shows exactly six wells in one row with four pods (green, blue, violet, amber-brown) and two empty. INCUBATION module unchanged: a glass dome with a glowing green embryo and a ring of five leaves, two bright. PROBE DOCK module: the Companion handheld from the kit render seated upright in the cradle, screen dark, about 110 px tall, orange Confirm visible, the module lamp green, three Shield plates beside it, two lit cream and one dark. A slim slate RIBBON crosses the top edge of the stage over the vivarium's bezel. In the VIVARIUM, the same habitat as the Home screen in warm daylight: Pip, exactly the supplied rich Pip, at the centre on moss inside a thin cream ring, head turned toward the bay at the right, its small plate under it; the glowtail at the left and the puffcap mibi at the right also looking toward the bay; the frosted-glass nest at the lower right now holds Dot, a second hopper of Pip's species and colours, slightly smaller, curled asleep.\nTEXT, exactly these and nothing else: top bar left \"Home  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\", drawn slightly brighter as if ticking; top bar right \"Companion docked · 2 crates\". A slim slate ribbon across the top of the stage reads \"Expedition 4 home · 2 pods\". On the small plate under Pip \"Pip\" and \"hopper · adult\". Module words, engraved and quiet: \"Sample bay\", \"Pod rack\", \"Incubation\", \"Probe dock\". Bottom line: orange \"✓ Look at the new pods\" at left, grey \"the room\" in the middle, grey \"arrival playing\" at right.\nConstraints: nothing of the field: no map, no landscape, no extra counters; no tables, title bars, bullet lists, progress bars, boxed buttons or digits on the bench; no logos; no creatures other than Pip, the glowtail, the puffcap and Dot asleep; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Station Home screen: this is the same screen a moment later; keep everything of it that the prompt does not change. Image 2 is the kit render: take only the Companion handheld from it, to sit in the dock. Image 3 is the accepted rich Pip; keep Pip exactly, and draw Dot as the same species asleep. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+      "role": "approved Station Home concept: the screen this moment plays on; keep its chrome, modules, vivarium, light and type",
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+    },
+    {
+      "path": "art/concept-homepage/hero-kit.png",
+      "role": "the kit render: take the Companion handheld from it (warm stone shell, charcoal bumpers, portrait screen, cross pad, teal Call, dark Back, orange Confirm) to seat in the Probe dock; nothing else from it",
+      "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: identity to keep exact; Dot is the same species, drawn asleep and slightly smaller",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "path": "art/concept-station/dock/layout/dock-layout-template.png",
+      "role": "layout truth only: flat boxes at 1024x600 (Home's layout plus the ribbon, the open bay, the rail to the rack, the Companion seated in the dock, Dot in the nest); not style",
+      "sha256": "9301a639b70511f7a717a4101c2dcbd840632c3a541034f8a620bcedd95f0b05"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T07:08:33Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/D-B-r1-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "f6785bf026ff22f2447787eefce072bb30a444e59187adda3af1d7f7781dd7b4"
+    },
+    "png": {
+      "file": "D-B-r1-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "1979dcc552b51493f7481c2b732f540d9c95569155a67edd9e83f0d1447d183c"
+    },
+    "screen": {
+      "file": "D-B-r1-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "e15ea46e0be2d179db2ebcfd21d20458f2698ea4648c68f2c4daf2e1df962590",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 317.5,
+    "usage": {
+      "promptTokenCount": 2078,
+      "candidatesTokenCount": 2415,
+      "totalTokenCount": 4493,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1046
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1032
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1680
+        }
+      ],
+      "serviceTier": "standard"
+    }
+  }
+}

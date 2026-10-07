@@ -1,0 +1,94 @@
+{
+  "id": "pane-bank",
+  "direction": "B",
+  "round": 1,
+  "attempt": 2,
+  "tag": "P-B-r1-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station PODS screen concept, a flat screen design that fills the whole 16:9 canvas edge to edge (the outer 2 percent at left and right is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words, nothing smaller than 14 px type.\nSTYLE: exactly the approved Station look of the supplied Home screen: a hardware research instrument, deep blue-teal ground, graphite and slate chrome with fine bevels and hairline rules, small round status lamps, enamel, brushed metal and glass; one key light from the upper left, clean painted light with soft cast shadows, crisp edges, no noise, grain or dither; smooth sans-serif type (like Inter), cream on dark, small and quiet. The pod on its nest is the one warm, bright thing on the screen; everything else is cool and calm. No wood, no felt, no shelves, no lamp fixture drawn. Labels are one small engraved word, low contrast, read second: the object leads.\nLAYOUT: a thin graphite top bar (40 px) and bottom line (38 px). At the left a slim slate RACK COLUMN (160 px wide): six round wells in a vertical row, three holding smooth seed-pods (green, blue, violet), three empty, the top well lifted with a thin cream focus ring; at its foot a small return GATE, a slate hatch with an engraved leaf mark. Across the upper stage a straight BANK OF FOUR GLASS PANES set into one brushed-metal housing, like the gauge bank of a precision instrument: each pane a tall rounded rectangle about 170x160 with a hairline bevel, an engraved emblem above it (a swirl, a crown, a drop, a paw), a small lamp beside it and one quiet word under it. States left to right: (1) MARKINGS, clear: a close warm sculpted drawing of a plain charcoal flank, with a small misty pearl seed on the pane's sill holding a ghost of pale cream islands; (2) CROWN: frosted pale blue-white with one small four-point star glinting, nothing behind the frost; (3) COLOUR: frosted, nothing behind it; (4) GAIT: frosted, two small joined rings engraved on its frame. Below the bank, centred, a glass SPECIMEN CHAMBER: a low bell jar on a machined slate base holding the pod: a sealed plum-sized seed-pod, warm green ribbed shell with an embossed three-leaf mark, its top faintly translucent so a hopper's squat silhouette shows inside, resting on a padded cream nest; a cool beam from above-left pools warm on it, the brightest thing on screen. A small enamel name plate on the base. At the right of the base the FINGERPRINT WHORL, a round 96 px glyph of four petals of nested ink ridges, only the first lit in charcoal with a tiny cream dot at its base, a tiny leaf at the centre.\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". On a small plate under the nest \"Hopper pod\" large and \"rock field · a hopper felt safe\" small. One small engraved word under each viewport: \"markings\", \"crown\", \"colour\", \"gait\". Under the first viewport a small line \"shows plain · hides pale\". Bottom line: orange \"✓ Study crown · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"Hopper pod · identified\" in the middle, grey \"crown glints · something new\" at right.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; frosted panes show frost only, never a blurred creature behind; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no creature outside the window drawing and the faint silhouette in the shell; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Station Home screen: match its chrome, module materials, light and type exactly so the two screens read as one device; do not copy its layout. Image 2 is the approved pod in its cradle under a beam: the anchor for the pod and nest. Image 3 is the accepted rich Pip, the hopper whose traits the windows describe.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+      "role": "approved Station Home concept: the device's chrome, modules, light and type that Pods must match; not layout",
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+    },
+    {
+      "path": "art/concept-homepage/station-research-pod.png",
+      "role": "approved pod in its cradle under a beam: the anchor for the specimen stage; its icons and type are not specs",
+      "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip, the hopper: the species whose traits the markings window draws (plain charcoal flank; pale islands as the hidden look)",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T07:04:38Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/P-B-r1-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "71836e4a7471d1783df4d2a89fbc90b1313b647f7951126a0c781c2bd8974b0b"
+    },
+    "png": {
+      "file": "P-B-r1-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "a10123af668997541171c01e21c8bb4db507564d9e12ba7226684854a5e388a6"
+    },
+    "screen": {
+      "file": "P-B-r1-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "95851eb5aed67f510c8e510e683909d0ad5a89ff4753ed06a480ba8a6e334372",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 27.9,
+    "usage": {
+      "promptTokenCount": 1836,
+      "candidatesTokenCount": 1781,
+      "totalTokenCount": 3956,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1062
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 774
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 339,
+      "serviceTier": "standard"
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": "arrival-edit",
+  "direction": "A",
+  "round": 1,
+  "attempt": 1,
+  "tag": "D-A-r1-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the layout, the slate bezel and module column, the vivarium's plants, rocks, pool, burrow, moss and light, Pip exactly as drawn with its ring and plate, the glowtail, the puffcap, the Incubation module, the bottom line's layout, every status lamp.\nFOUR CHANGES ONLY: (1) The SAMPLE BAY module: its door is open and a cool blue-white beam lights the inside; the left crate's lid is open with its orange seal tag broken, the right crate still sealed with its tag; a short slate rail runs from the bay's lower-left corner down to the POD RACK, and one small amber-brown seed-pod travels along it mid-way while another has just seated in the rack's fourth well, so the rack reads four pods (green, blue, violet, amber-brown) and two empty wells, exactly six wells in one row. (2) The PROBE DOCK module: the Companion handheld from Image 2 sits upright in the cradle, screen dark, about 110 px tall, its orange Confirm visible; the module's lamp is green; the three Shield plates beside it show two lit cream and one dark. (3) The frosted-glass nest in the vivarium's lower right now holds Dot, a second hopper of exactly Pip's species and colours, slightly smaller, curled asleep, eyes closed. (4) Replace the top bar's right text with \"Companion docked · 2 crates\", draw the three counters slightly brighter, and add a slim slate ribbon across the top edge of the stage, over the vivarium's top bezel, reading \"Expedition 4 home · 2 pods\" in cream; the bottom line reads orange \"✓ Look at the new pods\", grey \"the room\", grey \"arrival playing\".\nTEXT, exactly these and nothing else: top bar left \"Home  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\", drawn slightly brighter as if ticking; top bar right \"Companion docked · 2 crates\". A slim slate ribbon across the top of the stage reads \"Expedition 4 home · 2 pods\". On the small plate under Pip \"Pip\" and \"hopper · adult\". Module words, engraved and quiet: \"Sample bay\", \"Pod rack\", \"Incubation\", \"Probe dock\". Bottom line: orange \"✓ Look at the new pods\" at left, grey \"the room\" in the middle, grey \"arrival playing\" at right.\nConstraints: nothing of the field: no map, no landscape, no extra counters; no tables, title bars, bullet lists, progress bars, boxed buttons or digits on the bench; no logos; no creatures other than Pip, the glowtail, the puffcap and Dot asleep; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the kit render: take only the Companion handheld from it. Image 3 is the accepted rich Pip, already in Image 1; keep it, and draw Dot as the same species asleep.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round3/A-r3-a1-canvas.png",
+      "role": "edit target: the approved Home screen",
+      "sha256": "5f6c764fc53e1431b592b53671a5a5f52a8b99793e70e73f0641a479a2bad15d"
+    },
+    {
+      "path": "art/concept-homepage/hero-kit.png",
+      "role": "the kit render: take only the Companion handheld from it to seat in the dock",
+      "sha256": "2b801c483bdbbe2cac67b80902ca4979e0329a08073c029ac2737e1c172193e2"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: keep Pip unchanged; Dot is the same species asleep",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T07:06:56Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/D-A-r1-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "f54d171029d8e22e3b49359581558b6509d9babe151685adfb7d459eeb6d8359"
+    },
+    "png": {
+      "file": "D-A-r1-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "20428c4a8b6c5c0ac7f065edbafc055ca4eb21de8fc858978617c984396e3417"
+    },
+    "screen": {
+      "file": "D-A-r1-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "1c49f6d41fe44e762147f0282e87a750acb3273308ff434bf7f07c7739737883",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 26.8,
+    "usage": {
+      "promptTokenCount": 1522,
+      "candidatesTokenCount": 1417,
+      "totalTokenCount": 3289,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 748
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 774
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 350,
+      "serviceTier": "standard"
+    }
+  }
+}
