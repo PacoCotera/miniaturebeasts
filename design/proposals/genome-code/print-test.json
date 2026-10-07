@@ -1,0 +1,245 @@
+{
+ "N": 30,
+ "stamp": [
+  {
+   "species": "Hopper",
+   "cells": "binary",
+   "N": 17,
+   "mm": 20,
+   "px": 9,
+   "cellMm": 1.1764705882352942,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "Hopper",
+   "cells": "dot",
+   "N": 17,
+   "mm": 20,
+   "px": 9,
+   "cellMm": 1.1764705882352942,
+   "cellErrorRate": 0.0027210884353741495,
+   "stampsWithAnyError": 0.13333333333333333
+  },
+  {
+   "species": "Hopper",
+   "cells": "binary",
+   "N": 17,
+   "mm": 20,
+   "px": 6,
+   "cellMm": 1.1764705882352942,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "Hopper",
+   "cells": "dot",
+   "N": 17,
+   "mm": 20,
+   "px": 6,
+   "cellMm": 1.1764705882352942,
+   "cellErrorRate": 0.003061224489795918,
+   "stampsWithAnyError": 0.16666666666666666
+  },
+  {
+   "species": "Hopper",
+   "cells": "binary",
+   "N": 17,
+   "mm": 16,
+   "px": 6,
+   "cellMm": 0.9411764705882353,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "Hopper",
+   "cells": "dot",
+   "N": 17,
+   "mm": 16,
+   "px": 6,
+   "cellMm": 0.9411764705882353,
+   "cellErrorRate": 0.04693877551020408,
+   "stampsWithAnyError": 1
+  },
+  {
+   "species": "Hopper",
+   "cells": "binary",
+   "N": 17,
+   "mm": 12,
+   "px": 6,
+   "cellMm": 0.7058823529411765,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "Hopper",
+   "cells": "dot",
+   "N": 17,
+   "mm": 12,
+   "px": 6,
+   "cellMm": 0.7058823529411765,
+   "cellErrorRate": 0.15,
+   "stampsWithAnyError": 1
+  },
+  {
+   "species": "Glowtail",
+   "cells": "binary",
+   "N": 21,
+   "mm": 20,
+   "px": 9,
+   "cellMm": 0.9523809523809523,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "Glowtail",
+   "cells": "dot",
+   "N": 21,
+   "mm": 20,
+   "px": 9,
+   "cellMm": 0.9523809523809523,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "Glowtail",
+   "cells": "binary",
+   "N": 21,
+   "mm": 20,
+   "px": 6,
+   "cellMm": 0.9523809523809523,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "Glowtail",
+   "cells": "dot",
+   "N": 21,
+   "mm": 20,
+   "px": 6,
+   "cellMm": 0.9523809523809523,
+   "cellErrorRate": 0.0078125,
+   "stampsWithAnyError": 0.8
+  },
+  {
+   "species": "Glowtail",
+   "cells": "binary",
+   "N": 21,
+   "mm": 16,
+   "px": 6,
+   "cellMm": 0.7619047619047619,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "Glowtail",
+   "cells": "dot",
+   "N": 21,
+   "mm": 16,
+   "px": 6,
+   "cellMm": 0.7619047619047619,
+   "cellErrorRate": 0.03940972222222222,
+   "stampsWithAnyError": 0.9666666666666667
+  },
+  {
+   "species": "Glowtail",
+   "cells": "binary",
+   "N": 21,
+   "mm": 12,
+   "px": 6,
+   "cellMm": 0.5714285714285714,
+   "cellErrorRate": 0.00017361111111111112,
+   "stampsWithAnyError": 0.03333333333333333
+  },
+  {
+   "species": "Glowtail",
+   "cells": "dot",
+   "N": 21,
+   "mm": 12,
+   "px": 6,
+   "cellMm": 0.5714285714285714,
+   "cellErrorRate": 0.22152777777777777,
+   "stampsWithAnyError": 1
+  },
+  {
+   "species": "future species, 150 open loci",
+   "cells": "binary",
+   "N": 29,
+   "mm": 20,
+   "px": 9,
+   "cellMm": 0.6896551724137931,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "future species, 150 open loci",
+   "cells": "dot",
+   "N": 29,
+   "mm": 20,
+   "px": 9,
+   "cellMm": 0.6896551724137931,
+   "cellErrorRate": 0.03309002433090024,
+   "stampsWithAnyError": 1
+  },
+  {
+   "species": "future species, 150 open loci",
+   "cells": "binary",
+   "N": 29,
+   "mm": 20,
+   "px": 6,
+   "cellMm": 0.6896551724137931,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "future species, 150 open loci",
+   "cells": "dot",
+   "N": 29,
+   "mm": 20,
+   "px": 6,
+   "cellMm": 0.6896551724137931,
+   "cellErrorRate": 0.12372262773722628,
+   "stampsWithAnyError": 1
+  },
+  {
+   "species": "future species, 150 open loci",
+   "cells": "binary",
+   "N": 29,
+   "mm": 16,
+   "px": 6,
+   "cellMm": 0.5517241379310345,
+   "cellErrorRate": 0,
+   "stampsWithAnyError": 0
+  },
+  {
+   "species": "future species, 150 open loci",
+   "cells": "dot",
+   "N": 29,
+   "mm": 16,
+   "px": 6,
+   "cellMm": 0.5517241379310345,
+   "cellErrorRate": 0.22262773722627738,
+   "stampsWithAnyError": 1
+  },
+  {
+   "species": "future species, 150 open loci",
+   "cells": "binary",
+   "N": 29,
+   "mm": 12,
+   "px": 6,
+   "cellMm": 0.41379310344827586,
+   "cellErrorRate": 0.027128953771289537,
+   "stampsWithAnyError": 1
+  },
+  {
+   "species": "future species, 150 open loci",
+   "cells": "dot",
+   "N": 29,
+   "mm": 12,
+   "px": 6,
+   "cellMm": 0.41379310344827586,
+   "cellErrorRate": 0.3260340632603406,
+   "stampsWithAnyError": 1
+  }
+ ]
+}
