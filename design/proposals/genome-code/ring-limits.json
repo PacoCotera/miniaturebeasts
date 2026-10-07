@@ -1,0 +1,365 @@
+{
+ "N": 60,
+ "rows": [
+  {
+   "name": "Hopper",
+   "open": 5,
+   "bitsPerTrack": 5,
+   "chapters": 4,
+   "slots": 44,
+   "spoke300": [
+    4.830198704894307,
+    7.775441817634739
+   ],
+   "spoke20mmDots": [
+    2.5761059759436304,
+    4.146902302738528
+   ],
+   "cells": {
+    "300 clean": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "300 all": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 9px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 6px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "25mm 6px": null,
+    "30mm 6px": null,
+    "40mm 6px": null
+   }
+  },
+  {
+   "name": "Puffcap",
+   "open": 20,
+   "bitsPerTrack": 24,
+   "chapters": 4,
+   "slots": 44,
+   "spoke300": [
+    4.830198704894307,
+    7.775441817634739
+   ],
+   "spoke20mmDots": [
+    2.5761059759436304,
+    4.146902302738528
+   ],
+   "cells": {
+    "300 clean": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "300 all": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 9px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 6px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "25mm 6px": null,
+    "30mm 6px": null,
+    "40mm 6px": null
+   }
+  },
+  {
+   "name": "Glowtail",
+   "open": 38,
+   "bitsPerTrack": 48,
+   "chapters": 7,
+   "slots": 57,
+   "spoke300": [
+    3.72857443886578,
+    6.002095438174185
+   ],
+   "spoke20mmDots": [
+    1.9885730340617498,
+    3.201117567026232
+   ],
+   "cells": {
+    "300 clean": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "300 all": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 9px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 6px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "25mm 6px": null,
+    "30mm 6px": null,
+    "40mm 6px": null
+   }
+  },
+  {
+   "name": "future species, 60 open loci",
+   "open": 60,
+   "bitsPerTrack": 78,
+   "chapters": 8,
+   "slots": 88,
+   "spoke300": [
+    2.4150993524471533,
+    3.8877209088173696
+   ],
+   "spoke20mmDots": [
+    1.2880529879718152,
+    2.073451151369264
+   ],
+   "cells": {
+    "300 clean": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "300 all": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 9px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 6px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "25mm 6px": null,
+    "30mm 6px": null,
+    "40mm 6px": null
+   }
+  },
+  {
+   "name": "future species, 80 open loci",
+   "open": 80,
+   "bitsPerTrack": 105,
+   "chapters": 8,
+   "slots": 115,
+   "spoke300": [
+    1.8480760262204303,
+    2.974951651964596
+   ],
+   "spoke20mmDots": [
+    0.9856405473175629,
+    1.5866408810477846
+   ],
+   "cells": {
+    "300 clean": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "300 all": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 9px": {
+     "n": 60,
+     "ok": 28,
+     "fa": 0,
+     "errors": {
+      "check failed": 32
+     }
+    },
+    "20mm 6px": {
+     "n": 60,
+     "ok": 8,
+     "fa": 0,
+     "errors": {
+      "check failed": 52
+     }
+    },
+    "25mm 6px": null,
+    "30mm 6px": null,
+    "40mm 6px": null
+   }
+  },
+  {
+   "name": "future species, 100 open loci",
+   "open": 100,
+   "bitsPerTrack": 130,
+   "chapters": 8,
+   "slots": 140,
+   "spoke300": [
+    1.5180624501096391,
+    2.4437102855423465
+   ],
+   "spoke20mmDots": [
+    0.809633306725141,
+    1.3033121522892517
+   ],
+   "cells": {
+    "300 clean": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "300 all": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "20mm 9px": {
+     "n": 60,
+     "ok": 55,
+     "fa": 0,
+     "errors": {
+      "check failed": 5
+     }
+    },
+    "20mm 6px": {
+     "n": 60,
+     "ok": 0,
+     "fa": 0,
+     "errors": {
+      "unknown species # v#": 60
+     }
+    },
+    "25mm 6px": {
+     "n": 60,
+     "ok": 13,
+     "fa": 0,
+     "errors": {
+      "check failed": 47
+     }
+    },
+    "30mm 6px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "40mm 6px": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    }
+   }
+  },
+  {
+   "name": "future species, 150 open loci",
+   "open": 150,
+   "bitsPerTrack": 190,
+   "chapters": 8,
+   "slots": 200,
+   "spoke300": [
+    1.0626437150767474,
+    1.7105971998796425
+   ],
+   "spoke20mmDots": [
+    0.5667433147075986,
+    0.9123185066024762
+   ],
+   "cells": {
+    "300 clean": {
+     "n": 60,
+     "ok": 60,
+     "fa": 0,
+     "errors": {}
+    },
+    "300 all": {
+     "n": 60,
+     "ok": 54,
+     "fa": 0,
+     "errors": {
+      "check failed": 6
+     }
+    },
+    "20mm 9px": {
+     "n": 60,
+     "ok": 0,
+     "fa": 0,
+     "errors": {
+      "unknown species # v#": 60
+     }
+    },
+    "20mm 6px": {
+     "n": 60,
+     "ok": 0,
+     "fa": 0,
+     "errors": {
+      "unknown species # v#": 60
+     }
+    },
+    "25mm 6px": {
+     "n": 60,
+     "ok": 0,
+     "fa": 0,
+     "errors": {
+      "unknown species # v#": 60
+     }
+    },
+    "30mm 6px": {
+     "n": 60,
+     "ok": 3,
+     "fa": 0,
+     "errors": {
+      "unknown species # v#": 57
+     }
+    },
+    "40mm 6px": {
+     "n": 60,
+     "ok": 51,
+     "fa": 0,
+     "errors": {
+      "check failed": 9
+     }
+    }
+   }
+  }
+ ]
+}
