@@ -11,6 +11,7 @@ export const SCREEN = [
   { id: "clean", label: "Clean render" },
   { id: "rot", label: "Rotation (any angle)", rot: true },
   { id: "persp", label: "Perspective 15° (+ rotation)", rot: true, tilt: 15 },
+  { id: "persp35", label: "Perspective 35°, close (rim radius / distance 0.25)", rot: true, tilt: 35, rOverD: 0.25 },
   { id: "blur", label: "Blur σ 1.5 px at 300 px (scaled)", blur: "scaled" },
   { id: "blurabs", label: "Blur σ 1.5 px at every size", blur: 1.5 },
   { id: "jpeg", label: "JPEG quality 60", jpeg: 60 },
@@ -25,7 +26,7 @@ export const SCREEN = [
 export const STRESS = [
   ...[2, 2.5, 3, 3.5, 4].map((b) => ({ id: `blur${b}`, label: `Blur σ ${b} px at 200 px`, blur: b })),
   ...[40, 25, 15].map((q) => ({ id: `jpeg${q}`, label: `JPEG quality ${q}`, jpeg: q })),
-  ...[25, 35, 45].map((t) => ({ id: `tilt${t}`, label: `Perspective ${t}°`, rot: true, tilt: t })),
+  ...[25, 45].map((t) => ({ id: `tilt${t}`, label: `Perspective ${t}°`, rot: true, tilt: t })),
   ...[0.05, 0.1].map((n) => ({ id: `noise${n}`, label: `Noise σ ${n * 255 | 0}/255`, noise: n })),
   { id: "dim", label: "Lighting 100% → 15%", light: true, low: 0.15 },
 ];
@@ -66,7 +67,7 @@ export function runScreen(i, D, seed = 1, conds = SCREEN, { keep = false } = {})
       const H = cameraH({
         srcC: src.width / 2, srcR: D, outR: D / 2,
         cx: W / 2 + (rand() - 0.5) * 0.1 * D, cy: W / 2 + (rand() - 0.5) * 0.1 * D,
-        tilt: c.tilt ?? 0, axis: rand() * 360, rot: rand() * 360,
+        tilt: c.tilt ?? 0, axis: rand() * 360, rot: rand() * 360, rOverD: c.rOverD ?? 0.15,
       });
       img = warp(src, H, W, W, { ss: 3, bg: [251, 248, 240] });
     } else img = flat;

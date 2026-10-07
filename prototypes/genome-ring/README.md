@@ -33,6 +33,7 @@ The **Pip proof genome** (`examples/pip.json`, `Cc Rr Pp Mm Ee`: 5 spokes and 12
 | Clean render | 100% | 100% | 100% |
 | Rotation (any angle) | 100% | 100% | 100% |
 | Perspective 15° (+ rotation) | 100% | 100% | 100% |
+| Perspective 35°, seen close (rim radius ÷ distance 0.25) | 100% | 100% | 100% |
 | Blur σ 1.5 px at 300 px (scaled with size: 1.0 px at 200, 0.6 px at 120) | 100% | 100% | 100% |
 | Blur σ 1.5 px at every size (harsher than the target) | 100% | 100% | 25% |
 | JPEG quality 60 (4:2:0) | 100% | 100% | 100% |
@@ -43,7 +44,7 @@ The **Pip proof genome** (`examples/pip.json`, `Cc Rr Pp Mm Ee`: 5 spokes and 12
 | **All together:** rotation, perspective 15°, blur, lighting, monochrome, noise and JPEG 60 | **100%** | **100%** | **100%** |
 | Caddy print at 203 dpi, photographed: **20 mm / 30 mm** | | **100% / 100%** | |
 
-The run made 5,100 decodes with **0 false accepts**: the check never passed on a wrong genome. A decode takes 33–47 ms in Node and 47–71 ms per 1280×720 camera frame in Chromium.
+The run made 5,360 decodes with **0 false accepts**: the check never passed on a wrong genome. A decode takes 58–80 ms in Node and about 70 ms per camera frame in Chromium.
 
 ![Distortions at 200 px, all decoded](img/distortions-200.png)
 *At 200 px, left to right then down: perspective 15°, blur σ 1.5 px, JPEG 60, uneven lighting, monochrome, and all distortions together. All of them decode.*
@@ -76,7 +77,7 @@ The print pipeline:
   - at 120 px with σ 1.5 px blur, all 52 were;
   - at 12 mm and 9 px/mm, where printer dots run out, the wrong spokes were 22 inner and 30 outer.
 - **The header never failed first.** It is repeated, at the largest radius, and read by vote.
-- **The timing fails last**, and only well beyond the targets: at blur σ ≥ 3.5 px at 200 px, and at about 45° of tilt (97.5% at 45°; 100% up to 35°).
+- **The timing fails last**, and only well beyond the targets: at blur σ ≥ 3.5 px at 200 px, and not at 45° of tilt, which reads 100%.
 - JPEG down to quality 15, noise σ 25/255 and lighting down to 15% all decoded 100%.
 - **What the tests do not model:** glare on glossy thermal paper, fading, curled paper, motion blur, and real phone autofocus. The phone sheet is the test for those.
 
@@ -91,18 +92,30 @@ The print pipeline:
 2. Open [`tests/scan.html`](tests/scan.html) on the phone. It is a single page with no dependencies and the decoder built in (`node tools/build-scan.mjs` rebuilds it).
    - **Live camera** needs https or localhost. After merge, the Sandbox workflow (`.github/workflows/site.yml`) copies `prototypes/*` to `sandbox/genome-ring/tests/scan.html` on the published site.
    - **Photo or file** works from any address, including a copy of the file on the phone.
-3. Hold the phone 10–15 cm above one ring. A green circle marks each ring decoded. The card shows the decoded code against the printed one, both rings redrawn, and a table per chapter of both copies of every part, decoded against printed.
+3. Hold the phone flat above one ring, 10–15 cm away, so the ring fills about half the frame. A green outline marks each ring decoded; amber marks a ring seen but not verified.
+   - The page shows **only verified reads**. Until the check passes it says "no read yet" and what to try, and never shows a guessed species.
+   - **Save this frame** downloads the frame the decoder saw, as a PNG, for a failing case to be sent back. The card shows the decoded code against the printed one, both rings redrawn, and a table per chapter of both copies of every part, decoded against printed.
 
 ![Scan page decoding ring #4 from a fake camera](img/scan-page.png)
 
-Scanning shows a genome and never grants anything. The page decodes on the device, uploads nothing, and the CRC is an error check, not a signature. `tests/scan-check.mjs` is optional and needs Playwright: it drives this page in headless Chromium with a fake camera. Rings #4 (20 mm colour) and #11 (20 mm Caddy) both matched, at 47–71 ms per 1280×720 frame.
+Scanning shows a genome and never grants anything. The page decodes on the device, uploads nothing, and the CRC is an error check, not a signature. `tests/scan-check.mjs` is optional and needs Playwright: it drives this page in headless Chromium with a fake camera. Rings #1 (40 mm colour), #4 (20 mm colour) and #11 (20 mm Caddy) all matched.
+
+**The owner's first scan of ring #1 (2026-10-07) failed** for two reasons:
+- **His sheet was the CRC-8 print** (its codes end in a 2-digit check, e.g. `S7v1-7F-17-15324D`), but the page was already on the 40-bit CRC-16 header. Those prints can never verify on this page and must be reprinted. The sheet now states its format, and the page says which codes it reads. His photo, even as a screenshot of a screenshot, decodes with all 7 chapters and the check verified on the CRC-8 decoder that matches that sheet.
+- **The page printed the unverified header guess** ("unknown species 23", "1031") in its status line. That is fixed.
+
+`tests/phone-large.mjs` reproduces his conditions on the current format: ring #1 at 640–1000 px in a phone frame, a warm cast, glare, defocus, barrel distortion, and 30–35° tilt seen close. It found and fixed two more faults:
+- a glare spot could pass for the notch (the notch is now found by contrast against the rim, not by brightness);
+- the fit could lock onto the wrong centre under steep, close tilt (the decoder now searches for the circle's projected centre inside the rim ellipse before refining).
+
+Every variant now decodes.
 
 ## Recommendation for §7
 
 **§7 meets the targets at 20 mm: 100% at both camera distances.** Items 1 and 2 have been adopted; the rest stay recommendations:
 
 1. **Adopted: the reader's marks are in §7.** These are the rim, the timing circle with one tick per slot, the 3-slot notch, and the header repeated around the dash ring.
-2. **Adopted: the check is now a CRC-16, and the header is 40 bits.** A fully read ring puts 162 bits under the check, which is beyond the 119 bits where the earlier CRC-8/0x2F still caught every 2-bit error. Measured: 35 of the 13,041 possible 2-wrong-spoke patterns passed the CRC-8 (0.27%). The CRC-16 catches every 1–3 wrong spokes at any length up to 32,751 bits. The rerun gave the same success rates, with 0 false accepts in 5,100 decodes.
+2. **Adopted: the check is now a CRC-16, and the header is 40 bits.** A fully read ring puts 162 bits under the check, which is beyond the 119 bits where the earlier CRC-8/0x2F still caught every 2-bit error. Measured: 35 of the 13,041 possible 2-wrong-spoke patterns passed the CRC-8 (0.27%). The CRC-16 catches every 1–3 wrong spokes at any length up to 32,751 bits. The rerun gave the same success rates, with 0 false accepts.
    - The CRC-16 also makes soft correction safe. This is not built yet. Near the limits, most failed reads had at most 2 wrong spokes, all among the 6 least confident: 15 of 24 at 14 mm and 6 px/mm, 11 of 23 at 12 mm and 9 px/mm. Trying the 22 flips of those spokes would lift those cells from about 20% to about 70% and 60%, at a false-accept risk of 22 in 65,536 per misread.
 3. **Keep the bar width (55% of the slot) and the bar encoding** (long/short against the bar's own base).
    - Wider bars (70%) survive printer dots better: 12 mm at 9 px/mm goes from 23% to 100%.
@@ -120,4 +133,5 @@ Scanning shows a genome and never grants anything. The page decodes on the devic
 | `src/` | `frames` (species frames), `codec` (bit packing, header, CRC-16, slot plan), `geometry` (layout → marks), `render` (SVG and rasterizer), `decode` (browser-safe), `png` (Node) |
 | `tests/run.mjs`, `cases.mjs`, `distort.mjs` | The robustness matrix, its conditions, and the distortions (homography camera, blur, lighting, mono, noise, JPEG through ImageMagick) |
 | `tests/scan.html`, `scan-check.mjs`, `print-manifest.json` | The phone scan page, its headless check, and the sheet's expected genomes |
+| `tests/phone-large.mjs` | The owner's failing case, recreated: large and close ring #1, warm light, glare, defocus, barrel distortion, steep tilt |
 | `tools/` | Catalogue snapshot, print sheet (PDF writer with no dependencies, plus `pdftoppm` for the PNG), scan-page bundler, README images |

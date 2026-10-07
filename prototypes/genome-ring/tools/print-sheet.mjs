@@ -92,7 +92,7 @@ let y = PAGE[1] - M;
 text(M, y - 14, 15, "Genome ring print test", true);
 text(M, y - 30, 8.5, "Miniature Beasts · prototypes/genome-ring · print on A4 at 100% (actual size, no fit-to-page), on white paper.");
 text(M, y - 41, 8.5, "Scan: open tests/scan.html on a phone, hold it 10-15 cm above one ring, and compare the decoded genome with the code under the ring.");
-text(M, y - 52, 8.5, "Code = species v version - read mask - check - payload tag. A ring shows a genome; scanning never grants anything.");
+text(M, y - 52, 8.5, "Code = species v version - read mask - CRC-16 check (4 hex digits) - payload tag. A ring shows a genome; scanning never grants anything.");
 y -= 66;
 let k = 0;
 for (const [label, row] of ROWS) {
