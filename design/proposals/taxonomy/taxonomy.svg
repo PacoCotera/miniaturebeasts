@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 516" width="1000" height="516" font-family="system-ui, sans-serif">
+<style>text{fill:#2e2e2e}.h{font-size:15px;font-weight:600}.l{font-size:13px;font-weight:600}.t{font-size:12px}.s{font-size:11px;fill:#6f6a5e}</style>
+<rect width="100%" height="100%" fill="#f7f4ec"/>
+<text x="24" y="26" class="h">The generative taxonomy: each level is read off the locked frame, never picked before it (Proposal)</text>
+<text x="24" y="56" class="l">Body plan</text>
+<text x="24" y="72" class="s">segments · symmetry · limbs · covering</text>
+<text x="24" y="86" class="s">510 build in the catalogue</text>
+<text x="284" y="56" class="l">Clan</text>
+<text x="284" y="72" class="s">plan + anchor colour + covering finish</text>
+<text x="284" y="86" class="s">+ a defining feature (and its branch loci)</text>
+<text x="560" y="56" class="l">Species</text>
+<text x="560" y="72" class="s">own frame: fixed parts, open chapters,</text>
+<text x="560" y="86" class="s">colour pool, sealed chapter and its find</text>
+<text x="840" y="56" class="l">Individuals</text>
+<text x="840" y="72" class="s">copies at the open parts</text>
+<rect x="24" y="104" width="220" height="64" rx="6" fill="#e9e3d6"/><text x="34" y="124" class="t" style="font-weight:600">round walkers</text><text x="34" y="140" class="s">B1·L4 · walk, hop</text>
+<line x1="244" y1="122" x2="284" y2="122" stroke="#6f6a5e"/>
+<rect x="284" y="104" width="250" height="64" rx="6" fill="#fff" stroke="#d8d1c2"/><rect x="294" y="114" width="14" height="14" rx="3" fill="#3b3a40"/><text x="316" y="126" class="t" style="font-weight:600">trebola</text><text x="294" y="144" class="s">skin · leaf crest and snout</text>
+<line x1="534" y1="122" x2="560" y2="118" stroke="#6f6a5e"/><rect x="560" y="104" width="260" height="26" rx="5" fill="#fff" stroke="#d8d1c2"/>
+<text x="570" y="121" class="t">zacatín</text><text x="650" y="121" class="s">5 traits</text>
+<line x1="820" y1="117" x2="840" y2="117" stroke="#6f6a5e"/><text x="846" y="121" class="s">243 genotypes</text>
+<line x1="534" y1="122" x2="560" y2="148" stroke="#6f6a5e"/><rect x="560" y="134" width="260" height="26" rx="5" fill="#f7f4ec" stroke="#d8d1c2" stroke-dasharray="4 3"/>
+<text x="570" y="151" class="t" style="fill:#6f6a5e">a later member, same rule</text><text x="650" y="151" class="s"></text>
+<line x1="134" y1="158" x2="134" y2="182" stroke="#6f6a5e" stroke-dasharray="3 3"/>
+<line x1="244" y1="192" x2="284" y2="192" stroke="#6f6a5e"/>
+<rect x="284" y="174" width="250" height="34" rx="6" fill="#fff" stroke="#d8d1c2"/><rect x="294" y="184" width="14" height="14" rx="3" fill="#8b93e0"/><text x="316" y="196" class="t" style="font-weight:600">algodina</text><text x="294" y="214" class="s">fur · long round ears</text>
+<line x1="534" y1="192" x2="560" y2="188" stroke="#6f6a5e"/><rect x="560" y="174" width="260" height="26" rx="5" fill="#fff" stroke="#d8d1c2"/>
+<text x="570" y="191" class="t">example A</text><text x="650" y="191" class="s">10 traits</text>
+<line x1="820" y1="187" x2="840" y2="187" stroke="#6f6a5e"/><text x="846" y="191" class="s">2.2×10^12 genotypes</text>
+<rect x="24" y="214" width="220" height="64" rx="6" fill="#e9e3d6"/><text x="34" y="234" class="t" style="font-weight:600">bobbers</text><text x="34" y="250" class="s">R1·flaps · waddle, bob</text>
+<line x1="244" y1="232" x2="284" y2="232" stroke="#6f6a5e"/>
+<rect x="284" y="214" width="250" height="64" rx="6" fill="#fff" stroke="#d8d1c2"/><rect x="294" y="224" width="14" height="14" rx="3" fill="#f0775e"/><text x="316" y="236" class="t" style="font-weight:600">bonetia</text><text x="294" y="254" class="s">fur · a cap of three flaps</text>
+<line x1="534" y1="232" x2="560" y2="228" stroke="#6f6a5e"/><rect x="560" y="214" width="260" height="26" rx="5" fill="#fff" stroke="#d8d1c2"/>
+<text x="570" y="231" class="t">copolí</text><text x="650" y="231" class="s">12 traits · Ways sealed</text>
+<line x1="820" y1="227" x2="840" y2="227" stroke="#6f6a5e"/><text x="846" y="231" class="s">2.3×10^10 genotypes</text>
+<line x1="534" y1="232" x2="560" y2="258" stroke="#6f6a5e"/><rect x="560" y="244" width="260" height="26" rx="5" fill="#f7f4ec" stroke="#d8d1c2" stroke-dasharray="4 3"/>
+<text x="570" y="261" class="t" style="fill:#6f6a5e">a later member, same rule</text><text x="650" y="261" class="s"></text>
+<rect x="24" y="284" width="220" height="64" rx="6" fill="#e9e3d6"/><text x="34" y="304" class="t" style="font-weight:600">long walkers</text><text x="34" y="320" class="s">B2·L4 · scurry, weave</text>
+<line x1="244" y1="302" x2="284" y2="302" stroke="#6f6a5e"/>
+<rect x="284" y="284" width="250" height="64" rx="6" fill="#fff" stroke="#d8d1c2"/><rect x="294" y="294" width="14" height="14" rx="3" fill="#269fa5"/><text x="316" y="306" class="t" style="font-weight:600">fanalia</text><text x="294" y="324" class="s">scales · a long tail that glows</text>
+<line x1="534" y1="302" x2="560" y2="298" stroke="#6f6a5e"/><rect x="560" y="284" width="260" height="26" rx="5" fill="#fff" stroke="#d8d1c2"/>
+<text x="570" y="301" class="t">ocotín</text><text x="650" y="301" class="s">23 traits</text>
+<line x1="820" y1="297" x2="840" y2="297" stroke="#6f6a5e"/><text x="846" y="301" class="s">4.8×10^20 genotypes</text>
+<line x1="534" y1="302" x2="560" y2="328" stroke="#6f6a5e"/><rect x="560" y="314" width="260" height="26" rx="5" fill="#f7f4ec" stroke="#d8d1c2" stroke-dasharray="4 3"/>
+<text x="570" y="331" class="t" style="fill:#6f6a5e">a later member, same rule</text><text x="650" y="331" class="s"></text>
+<rect x="24" y="354" width="220" height="34" rx="6" fill="#e9e3d6"/><text x="34" y="374" class="t" style="font-weight:600">swimmers</text><text x="34" y="390" class="s">B3·fins · swim, glide, wriggle ashore</text>
+<line x1="244" y1="372" x2="284" y2="372" stroke="#6f6a5e"/>
+<rect x="284" y="354" width="250" height="34" rx="6" fill="#fff" stroke="#d8d1c2"/><rect x="294" y="364" width="14" height="14" rx="3" fill="#3c63c8"/><text x="316" y="376" class="t" style="font-weight:600">aletia</text><text x="294" y="394" class="s">scales · a back fin and a tail</text>
+<line x1="534" y1="372" x2="560" y2="368" stroke="#6f6a5e"/><rect x="560" y="354" width="260" height="26" rx="5" fill="#fff" stroke="#d8d1c2"/>
+<text x="570" y="371" class="t">example B</text><text x="650" y="371" class="s">19 traits · Ways sealed</text>
+<line x1="820" y1="367" x2="840" y2="367" stroke="#6f6a5e"/><text x="846" y="371" class="s">8.2×10^14 genotypes</text>
+<rect x="24" y="394" width="220" height="34" rx="6" fill="#e9e3d6"/><text x="34" y="414" class="t" style="font-weight:600">flutterers</text><text x="34" y="430" class="s">B3·L6·flaps · walk, flutter, hover</text>
+<line x1="244" y1="412" x2="284" y2="412" stroke="#6f6a5e"/>
+<rect x="284" y="394" width="250" height="34" rx="6" fill="#fff" stroke="#d8d1c2"/><rect x="294" y="404" width="14" height="14" rx="3" fill="#e8b83f"/><text x="316" y="416" class="t" style="font-weight:600">volanta</text><text x="294" y="434" class="s">skin · two round feelers and wide flaps</text>
+<line x1="534" y1="412" x2="560" y2="408" stroke="#6f6a5e"/><rect x="560" y="394" width="260" height="26" rx="5" fill="#fff" stroke="#d8d1c2"/>
+<text x="570" y="411" class="t">example C</text><text x="650" y="411" class="s">21 traits · Stamina sealed</text>
+<line x1="820" y1="407" x2="840" y2="407" stroke="#6f6a5e"/><text x="846" y="411" class="s">1.3×10^19 genotypes</text>
+<text x="24" y="448" class="s">Breeding stays inside one species box. A clan is a resemblance (face part, anchor colour, pod pattern, stamp border half), never a breeding group.</text>
+<text x="24" y="464" class="s">Catalogue6: 510 of 510 plans build (170 skeletons × 3 coverings); 360 to 1,440 clan signatures per plan.</text>
+<text x="24" y="480" class="s">Zacatín, copolí and ocotín are the species-frames files hopper, puffcap and glowtail; examples A to C are generated here (examples.json).</text>
+<text x="24" y="496" class="s">Generated by taxonomy.py through the species-frame method and the workbench resolver; every species built 200 random individuals.</text>
+</svg>
