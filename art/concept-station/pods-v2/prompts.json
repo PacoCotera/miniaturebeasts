@@ -1,0 +1,1210 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Generated candidates for the research bench's Pod list and Read screen in art/concept-station/pods/brief-pods-v2.md, with the real styled genome stamp placed after generation; concept art awaiting the owner's choice.",
+  "brief": "art/concept-station/pods/brief-pods-v2.md",
+  "tool": {
+    "name": "Gemini API",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+    "auth": "API key from the environment; not recorded",
+    "models": {
+      "gemini-3-pro-image": "Gemini 3 Pro Image: final candidates and refinements",
+      "gemini-3.1-flash-image": "Gemini 3.1 Flash Image: layout round"
+    },
+    "modelChoice": "Pro for the dark-lab candidates and the light-lab variant (exact strings, a faithful flank, a clean empty square for the stamp); one Flash dark-lab attempt as a layout check. Round 2 edits on Pro.",
+    "generationConfig": {
+      "responseModalities": [
+        "IMAGE"
+      ],
+      "imageConfig": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      }
+    },
+    "output": "image/jpeg 2752x1536 (16:9 at 2K), kept byte-exact in raw/ for kept candidates; LANCZOS to 1536x864 as the canvas PNG; the screen PNG is the centred 1024:600 band resampled to 1024x600. The stamp is placed afterwards (placed/), and the placed 1024x600 screen is what the decoder reads.",
+    "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the preamble, then the prompt verbatim as the last text part.",
+    "budget": "At most 20 generations for this screen; 10 used (round 1: 4, round 2: 2, round 3: 4), 1 on gemini-3.1-flash-image and 9 on gemini-3-pro-image. No call failed; none was retried."
+  },
+  "plan": {
+    "references": {
+      "art/concept-station/pods/round2/P-D-r2-a2-1024x600.png": "the owner's quality bar for the room's vibe (materials, light, quietness); its viewports, wells and glyph are not copied",
+      "art/concept-station/round3/A-r3-a1-1024x600.png": "approved Home: same device (type, counters, bottom line, light direction)",
+      "art/miniature-lives/assets/rich-plain-300x310.png": "accepted rich Pip, the hopper: the flank on the page and the silhouette in the cap",
+      "art/concept-homepage/station-research-pod.png": "approved pod in its cradle under a beam: material anchor",
+      "art/concept-station/pods-v2/layout/pods-v2-layout-template.png": "layout truth only: the brief's boxes with exact progress rings and the empty stamp square",
+      "art/concept-station/pods-v2/layout/stamp-hopper-bench-300.png": "the real styled stamp (hopper frame, Trebola family, bench paper) placed after generation, never sent to the generator"
+    },
+    "directions": {
+      "D pod-list-read": "The brief's layout in the dark modern-lab treatment the owner approved as the bar.",
+      "L pod-list-read-light": "The same layout in the light lab variant, for the owner's dark-or-light question."
+    },
+    "rounds": "Round 1: three dark (Pro, Pro, Flash) and one light (Pro). Round 2: two-change edits of the pick (six wells, charcoal flank). Round 3 only for a near-pass one change would fix."
+  },
+  "recommended": {
+    "tag": "PV-D-r3-a4",
+    "screen": "placed/PV-D-r3-a4-stamped-1024x600.png",
+    "generated": "round3/PV-D-r3-a4-1024x600.png",
+    "stamp": "layout/stamp-hopper-bench-300.png",
+    "decode": "decode/PV-D-r3-a4-stamped.json"
+  },
+  "calls": [
+    {
+      "id": "pod-list-read",
+      "direction": "D",
+      "round": 1,
+      "attempt": 1,
+      "tag": "PV-D-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's POD LIST AND READ screen, a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument: deep dark blue-teal glass and anodised graphite with thin lit edges, a floating glass stage plate, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The pod on its nest under the beam is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar (40 px) and bottom line (38 px). LEFT, the POD LIST: a slim dark-glass column (160 px) with exactly SIX round wells in one vertical column (count them: six), the gate at its foot (a small dark hatch with an etched leaf mark). Each occupied well shows a small seed-pod with a thin PROGRESS RING around it: well 1, the current pod, lifted inside a warm cream focus ring, holds a medium squat charcoal pod with cream dots; its ring has four arcs, the first (a fifth of the circle) drawn solid cream and the other three as hairlines, with a tiny four-point star on the second, larger arc; well 2 holds a tall coral pod with marigold seams and a ring of four hairline arcs with a small notch on the last; well 3 holds a grey sealed pod with a plain empty ring; wells 4, 5 and 6 are empty dark rings. No digits on any ring. ABOVE THE STAGE, four small machined TABS on a shallow arc (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each; the first tab (Coat) is focused: its lamp lit, a hairline running down to the page; the second tab (Face) wears a small four-point star; the other two are plain. LEFT OF CENTRE, the OPEN PAGE: a deep pane of dark glass with a lit inner edge, lit warm from inside, holding ONE trait picture (about 150x110): a close, warm, sculpted drawing of the hopper's flank, smooth charcoal with the soft boundary of its cream belly along the lower edge, no face; on the picture's sill rests a small misty pearl bud with a ghost of pale cream patches inside it; under the picture a small plate with its line. CENTRE, the SPECIMEN on a floating glass stage: a medium, squat seed-pod (body wider than tall, a low cap and a short stem), a smooth charcoal shell with small cream dots, a cream seam and cap; on the cap a small lit three-leaf glyph with a fine crack line across it (the seal, broken); a little grey dust at its base; resting on a moulded frosted-glass cradle; a cool beam from the upper left pools warm on it, the brightest thing on screen; a small plate on the cradle's front. RIGHT, the STAGE PLATE: a dark glass plate with a brushed rim, and on it one completely EMPTY, flat, pale square label about 300 px wide, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On a small plate under the trait picture: \"shows plain · hides pale\". On the small plate on the nest's front: \"identified\" and under it smaller \"rock field · expedition 4\". Bottom line: orange \"✓ Read Face · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"identified · rock field\" in the middle, grey \"Face glints · something new\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the stage plate's pale square stays completely empty and flat (the real genome stamp is placed there later); progress rings carry no digits; frosted panes show frost only; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper's flank in the trait picture (charcoal with a cream belly edge, never a cow, horse or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the owner's quality bar for the room's vibe: take its materials, light and quietness; do not copy its viewports, wells or glyph. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted rich Pip, the hopper whose flank the page shows and whose silhouette shows in the shell. Image 4 is the approved pod in its cradle, the material anchor for the specimen. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods/round2/P-D-r2-a2-1024x600.png",
+          "role": "the owner's quality bar for this room's vibe: dark glass, lit edges, viewports, the pod on its nest under the beam, the quiet labels; its viewports, five wells and thumbprint glyph are NOT to be copied, the layout below replaces them",
+          "sha256": "158f833b9071df84606bc2473b3aa047cd45cb0efcfa1ca88d72880d56498942"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip, the hopper: the flank to draw inside the trait picture (charcoal with cream belly edge) and the squat silhouette in the pod's cap",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/concept-homepage/station-research-pod.png",
+          "role": "approved pod in its cradle under a beam: the material anchor for the pod and nest; its icons and type are not specs",
+          "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+        },
+        {
+          "path": "art/concept-station/pods-v2/layout/pods-v2-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 with the exact progress rings in the list (arcs by trait count, a star, a notch), the four tabs on an arc, the open page with one trait picture, the pod on its nest, the name plate, and the stage plate's empty pale square where the stamp will be placed; not style",
+          "sha256": "65524b2bff02a549b966d0825d06544b6091b8d6895a4de5168777e741b34041"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:28:37Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/PV-D-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "41ae8fdbe2160da8fb465958fba3ed80c2790e45c4baf4d52a2eef9527e18b46"
+        },
+        "png": {
+          "file": "round1/PV-D-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "c1ed8ab6c370beccbd7b8f98b8b9ea9ca130fd341c69197618fda6479e0d2a4a"
+        },
+        "screen": {
+          "file": "round1/PV-D-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "ae9f89c1e293d17d4002fbad267b930cedb7b08e744ce26fac2342029804aa88",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 25.4,
+        "usage": {
+          "promptTokenCount": 2828,
+          "candidatesTokenCount": 1889,
+          "totalTokenCount": 4992,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1538
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 275,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as reference (layout right, pale square clean, charcoal flank with the bud; five wells; tab words doubled; both edge strings clipped)"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    },
+    {
+      "id": "pod-list-read",
+      "direction": "D",
+      "round": 1,
+      "attempt": 2,
+      "tag": "PV-D-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's POD LIST AND READ screen, a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument: deep dark blue-teal glass and anodised graphite with thin lit edges, a floating glass stage plate, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The pod on its nest under the beam is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar (40 px) and bottom line (38 px). LEFT, the POD LIST: a slim dark-glass column (160 px) with exactly SIX round wells in one vertical column (count them: six), the gate at its foot (a small dark hatch with an etched leaf mark). Each occupied well shows a small seed-pod with a thin PROGRESS RING around it: well 1, the current pod, lifted inside a warm cream focus ring, holds a medium squat charcoal pod with cream dots; its ring has four arcs, the first (a fifth of the circle) drawn solid cream and the other three as hairlines, with a tiny four-point star on the second, larger arc; well 2 holds a tall coral pod with marigold seams and a ring of four hairline arcs with a small notch on the last; well 3 holds a grey sealed pod with a plain empty ring; wells 4, 5 and 6 are empty dark rings. No digits on any ring. ABOVE THE STAGE, four small machined TABS on a shallow arc (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each; the first tab (Coat) is focused: its lamp lit, a hairline running down to the page; the second tab (Face) wears a small four-point star; the other two are plain. LEFT OF CENTRE, the OPEN PAGE: a deep pane of dark glass with a lit inner edge, lit warm from inside, holding ONE trait picture (about 150x110): a close, warm, sculpted drawing of the hopper's flank, smooth charcoal with the soft boundary of its cream belly along the lower edge, no face; on the picture's sill rests a small misty pearl bud with a ghost of pale cream patches inside it; under the picture a small plate with its line. CENTRE, the SPECIMEN on a floating glass stage: a medium, squat seed-pod (body wider than tall, a low cap and a short stem), a smooth charcoal shell with small cream dots, a cream seam and cap; on the cap a small lit three-leaf glyph with a fine crack line across it (the seal, broken); a little grey dust at its base; resting on a moulded frosted-glass cradle; a cool beam from the upper left pools warm on it, the brightest thing on screen; a small plate on the cradle's front. RIGHT, the STAGE PLATE: a dark glass plate with a brushed rim, and on it one completely EMPTY, flat, pale square label about 300 px wide, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On a small plate under the trait picture: \"shows plain · hides pale\". On the small plate on the nest's front: \"identified\" and under it smaller \"rock field · expedition 4\". Bottom line: orange \"✓ Read Face · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"identified · rock field\" in the middle, grey \"Face glints · something new\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the stage plate's pale square stays completely empty and flat (the real genome stamp is placed there later); progress rings carry no digits; frosted panes show frost only; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper's flank in the trait picture (charcoal with a cream belly edge, never a cow, horse or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the owner's quality bar for the room's vibe: take its materials, light and quietness; do not copy its viewports, wells or glyph. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted rich Pip, the hopper whose flank the page shows and whose silhouette shows in the shell. Image 4 is the approved pod in its cradle, the material anchor for the specimen. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods/round2/P-D-r2-a2-1024x600.png",
+          "role": "the owner's quality bar for this room's vibe: dark glass, lit edges, viewports, the pod on its nest under the beam, the quiet labels; its viewports, five wells and thumbprint glyph are NOT to be copied, the layout below replaces them",
+          "sha256": "158f833b9071df84606bc2473b3aa047cd45cb0efcfa1ca88d72880d56498942"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip, the hopper: the flank to draw inside the trait picture (charcoal with cream belly edge) and the squat silhouette in the pod's cap",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/concept-homepage/station-research-pod.png",
+          "role": "approved pod in its cradle under a beam: the material anchor for the pod and nest; its icons and type are not specs",
+          "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+        },
+        {
+          "path": "art/concept-station/pods-v2/layout/pods-v2-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 with the exact progress rings in the list (arcs by trait count, a star, a notch), the four tabs on an arc, the open page with one trait picture, the pod on its nest, the name plate, and the stage plate's empty pale square where the stamp will be placed; not style",
+          "sha256": "65524b2bff02a549b966d0825d06544b6091b8d6895a4de5168777e741b34041"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:29:08Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/PV-D-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "2a71e602926d8cebfd626f2e110a98ececc9c68ce5a7356b91f7c3fedb207407"
+        },
+        "png": {
+          "file": "round1/PV-D-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "27d96f1911c739d542dbdaa558f2844e569023e4ccc5ce4b64b86aedeefd5336"
+        },
+        "screen": {
+          "file": "round1/PV-D-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "49ab6afea84734dc55c333035529161e88a5a74650aaa77a9f576d3dfa05638a",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 27.6,
+        "usage": {
+          "promptTokenCount": 2828,
+          "candidatesTokenCount": 2017,
+          "totalTokenCount": 5302,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1538
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 457,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: round 1 pick and edit target for round 2 (the strongest lab vibe, tabs with lamps and the star, the pod with its glyph, crack and dust, a round stage plate with a clean pale square; five wells; the flank drawn as a brown hide)"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    },
+    {
+      "id": "pod-list-read",
+      "direction": "D",
+      "round": 1,
+      "attempt": 3,
+      "tag": "PV-D-r1-a3",
+      "model": "gemini-3.1-flash-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's POD LIST AND READ screen, a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument: deep dark blue-teal glass and anodised graphite with thin lit edges, a floating glass stage plate, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The pod on its nest under the beam is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar (40 px) and bottom line (38 px). LEFT, the POD LIST: a slim dark-glass column (160 px) with exactly SIX round wells in one vertical column (count them: six), the gate at its foot (a small dark hatch with an etched leaf mark). Each occupied well shows a small seed-pod with a thin PROGRESS RING around it: well 1, the current pod, lifted inside a warm cream focus ring, holds a medium squat charcoal pod with cream dots; its ring has four arcs, the first (a fifth of the circle) drawn solid cream and the other three as hairlines, with a tiny four-point star on the second, larger arc; well 2 holds a tall coral pod with marigold seams and a ring of four hairline arcs with a small notch on the last; well 3 holds a grey sealed pod with a plain empty ring; wells 4, 5 and 6 are empty dark rings. No digits on any ring. ABOVE THE STAGE, four small machined TABS on a shallow arc (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each; the first tab (Coat) is focused: its lamp lit, a hairline running down to the page; the second tab (Face) wears a small four-point star; the other two are plain. LEFT OF CENTRE, the OPEN PAGE: a deep pane of dark glass with a lit inner edge, lit warm from inside, holding ONE trait picture (about 150x110): a close, warm, sculpted drawing of the hopper's flank, smooth charcoal with the soft boundary of its cream belly along the lower edge, no face; on the picture's sill rests a small misty pearl bud with a ghost of pale cream patches inside it; under the picture a small plate with its line. CENTRE, the SPECIMEN on a floating glass stage: a medium, squat seed-pod (body wider than tall, a low cap and a short stem), a smooth charcoal shell with small cream dots, a cream seam and cap; on the cap a small lit three-leaf glyph with a fine crack line across it (the seal, broken); a little grey dust at its base; resting on a moulded frosted-glass cradle; a cool beam from the upper left pools warm on it, the brightest thing on screen; a small plate on the cradle's front. RIGHT, the STAGE PLATE: a dark glass plate with a brushed rim, and on it one completely EMPTY, flat, pale square label about 300 px wide, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On a small plate under the trait picture: \"shows plain · hides pale\". On the small plate on the nest's front: \"identified\" and under it smaller \"rock field · expedition 4\". Bottom line: orange \"✓ Read Face · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"identified · rock field\" in the middle, grey \"Face glints · something new\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the stage plate's pale square stays completely empty and flat (the real genome stamp is placed there later); progress rings carry no digits; frosted panes show frost only; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper's flank in the trait picture (charcoal with a cream belly edge, never a cow, horse or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the owner's quality bar for the room's vibe: take its materials, light and quietness; do not copy its viewports, wells or glyph. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted rich Pip, the hopper whose flank the page shows and whose silhouette shows in the shell. Image 4 is the approved pod in its cradle, the material anchor for the specimen. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods/round2/P-D-r2-a2-1024x600.png",
+          "role": "the owner's quality bar for this room's vibe: dark glass, lit edges, viewports, the pod on its nest under the beam, the quiet labels; its viewports, five wells and thumbprint glyph are NOT to be copied, the layout below replaces them",
+          "sha256": "158f833b9071df84606bc2473b3aa047cd45cb0efcfa1ca88d72880d56498942"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip, the hopper: the flank to draw inside the trait picture (charcoal with cream belly edge) and the squat silhouette in the pod's cap",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/concept-homepage/station-research-pod.png",
+          "role": "approved pod in its cradle under a beam: the material anchor for the pod and nest; its icons and type are not specs",
+          "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+        },
+        {
+          "path": "art/concept-station/pods-v2/layout/pods-v2-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 with the exact progress rings in the list (arcs by trait count, a star, a notch), the four tabs on an arc, the open page with one trait picture, the pod on its nest, the name plate, and the stage plate's empty pale square where the stamp will be placed; not style",
+          "sha256": "65524b2bff02a549b966d0825d06544b6091b8d6895a4de5168777e741b34041"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:29:41Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "089c5d2404aa779100bbd854b3c57166f2c4eebab25f840aea99213a9dd7235e",
+          "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "round1/PV-D-r1-a3-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "831df3709903825fcb3df8a00d225f3ea5f3d16a35f898d364bcc5813b54900e"
+        },
+        "screen": {
+          "file": "round1/PV-D-r1-a3-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "8d355a15b9155dce3c6a108380162a751b2675fc777d3f7f9be88188beb9e208",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 14.9,
+        "usage": {
+          "promptTokenCount": 2828,
+          "candidatesTokenCount": 2624,
+          "totalTokenCount": 5452,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1538
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1680
+            }
+          ],
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (five wells; brown flank; the left string clipped; a Flash layout check only)"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    },
+    {
+      "id": "pod-list-read-light",
+      "direction": "L",
+      "round": 1,
+      "attempt": 1,
+      "tag": "PV-L-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's POD LIST AND READ screen, a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges. Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first.\nVIBE: a MODERN DIGITAL LAB in its light variant: pale frosted white glass and light brushed aluminium bench surfaces, faint hairline rules, soft cool shadows; the top bar and bottom line stay the device's dark graphite strips as on the supplied Home screen, so it reads as the same device; the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, light from the upper left, crisp, no noise. The pod on its nest under the beam is the one warm, bright thing. Labels are one small etched word, low contrast, read second; captions sit on small plates. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar (40 px) and bottom line (38 px). LEFT, the POD LIST: a slim dark-glass column (160 px) with exactly SIX round wells in one vertical column (count them: six), the gate at its foot (a small dark hatch with an etched leaf mark). Each occupied well shows a small seed-pod with a thin PROGRESS RING around it: well 1, the current pod, lifted inside a warm cream focus ring, holds a medium squat charcoal pod with cream dots; its ring has four arcs, the first (a fifth of the circle) drawn solid cream and the other three as hairlines, with a tiny four-point star on the second, larger arc; well 2 holds a tall coral pod with marigold seams and a ring of four hairline arcs with a small notch on the last; well 3 holds a grey sealed pod with a plain empty ring; wells 4, 5 and 6 are empty dark rings. No digits on any ring. ABOVE THE STAGE, four small machined TABS on a shallow arc (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each; the first tab (Coat) is focused: its lamp lit, a hairline running down to the page; the second tab (Face) wears a small four-point star; the other two are plain. LEFT OF CENTRE, the OPEN PAGE: a deep pane of dark glass with a lit inner edge, lit warm from inside, holding ONE trait picture (about 150x110): a close, warm, sculpted drawing of the hopper's flank, smooth charcoal with the soft boundary of its cream belly along the lower edge, no face; on the picture's sill rests a small misty pearl bud with a ghost of pale cream patches inside it; under the picture a small plate with its line. CENTRE, the SPECIMEN on a floating glass stage: a medium, squat seed-pod (body wider than tall, a low cap and a short stem), a smooth charcoal shell with small cream dots, a cream seam and cap; on the cap a small lit three-leaf glyph with a fine crack line across it (the seal, broken); a little grey dust at its base; resting on a moulded frosted-glass cradle; a cool beam from the upper left pools warm on it, the brightest thing on screen; a small plate on the cradle's front. RIGHT, the STAGE PLATE: a dark glass plate with a brushed rim, and on it one completely EMPTY, flat, pale square label about 300 px wide, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On a small plate under the trait picture: \"shows plain · hides pale\". On the small plate on the nest's front: \"identified\" and under it smaller \"rock field · expedition 4\". Bottom line: orange \"✓ Read Face · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"identified · rock field\" in the middle, grey \"Face glints · something new\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the stage plate's pale square stays completely empty and flat (the real genome stamp is placed there later); progress rings carry no digits; frosted panes show frost only; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper's flank in the trait picture (charcoal with a cream belly edge, never a cow, horse or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the owner's quality bar for the room's vibe: take its materials, light and quietness; do not copy its viewports, wells or glyph. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted rich Pip, the hopper whose flank the page shows and whose silhouette shows in the shell. Image 4 is the approved pod in its cradle, the material anchor for the specimen. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods/round2/P-D-r2-a2-1024x600.png",
+          "role": "the owner's quality bar for this room's vibe: dark glass, lit edges, viewports, the pod on its nest under the beam, the quiet labels; its viewports, five wells and thumbprint glyph are NOT to be copied, the layout below replaces them",
+          "sha256": "158f833b9071df84606bc2473b3aa047cd45cb0efcfa1ca88d72880d56498942"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip, the hopper: the flank to draw inside the trait picture (charcoal with cream belly edge) and the squat silhouette in the pod's cap",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/concept-homepage/station-research-pod.png",
+          "role": "approved pod in its cradle under a beam: the material anchor for the pod and nest; its icons and type are not specs",
+          "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+        },
+        {
+          "path": "art/concept-station/pods-v2/layout/pods-v2-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 with the exact progress rings in the list (arcs by trait count, a star, a notch), the four tabs on an arc, the open page with one trait picture, the pod on its nest, the name plate, and the stage plate's empty pale square where the stamp will be placed; not style",
+          "sha256": "65524b2bff02a549b966d0825d06544b6091b8d6895a4de5168777e741b34041"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:30:00Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "17c24170da1d47bfb73d69b630529d196ea0654f116a5d20a61a7be38d044cd7",
+          "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "round1/PV-L-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "e4db68758826aa4dedc640ca1d0ff920281e0915506aa9aea90e99ceced011be"
+        },
+        "screen": {
+          "file": "round1/PV-L-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "c00fcf9dfd92d44a1de09d193e3c6d163a2238498f12f508d9638453b7eb3960",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 26.0,
+        "usage": {
+          "promptTokenCount": 2762,
+          "candidatesTokenCount": 1787,
+          "totalTokenCount": 4967,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1472
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 418,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (light lab: the pods became beetles in the list and on the stage; chrome handsome but the specimen is wrong)"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    },
+    {
+      "id": "pod-list-read",
+      "direction": "D",
+      "round": 2,
+      "attempt": 1,
+      "tag": "PV-D-r2-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, the research bench's Pod list and Read screen, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the dark glass ground, the four tabs with their lamps and star, the pod on its cradle with its plate and the beam, the round stage plate with its empty pale square, the top bar and bottom line and all their text.\nTWO CHANGES ONLY: (1) The pod list column at the left currently shows five round wells; redraw the column with exactly SIX wells in one evenly spaced vertical column between the top of the column and the gate at its foot, each the same size as now: the top three keep their pods and rings exactly as they are (the charcoal pod with its cream focus ring and starred progress ring, the coral pod with its hairline ring and notch, the grey sealed pod with its empty ring); the lower three are empty dark rings. Count them: six. (2) Inside the open page at the left, replace the brown-and-cream hide drawing with a close, warm, sculpted drawing of the creature in Image 2's flank: smooth CHARCOAL (near-black, slightly blue) skin with the soft boundary of its cream belly running along the lower edge, lit from the upper left, no face; keep the pearl bud on the sill and the plate under the picture.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing else; the pale square on the stage plate stays completely empty.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip; the page's picture is a close view of its flank.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods-v2/round1/PV-D-r1-a2-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "27d96f1911c739d542dbdaa558f2844e569023e4ccc5ce4b64b86aedeefd5336"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip: the charcoal flank with its cream belly edge that the page must show",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:31:45Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "5e2e81a202196cea88307ae64dbfa3285caf436bceaccd34a4e120c2d2884d5b",
+          "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "round2/PV-D-r2-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "26853affcbb5ac9f79fc7c565875403bd28bd36516e08ca8ba624bfdd1beb4ce"
+        },
+        "screen": {
+          "file": "round2/PV-D-r2-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "79ed854946bda4ad42a57608b24b0493aa82911ca3106fdbedd65ad606e2ba27",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 143.7,
+        "usage": {
+          "promptTokenCount": 928,
+          "candidatesTokenCount": 3755,
+          "totalTokenCount": 4812,
+          "cachedContentTokenCount": 284,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 412
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "cacheTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 126
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 158
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 129,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected as a no-op (the two-change edit returned the screen unchanged: five wells, brown flank)"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    },
+    {
+      "id": "pod-list-read",
+      "direction": "D",
+      "round": 2,
+      "attempt": 2,
+      "tag": "PV-D-r2-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, the research bench's Pod list and Read screen, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the dark glass ground, the four tabs with their lamps and star, the pod on its cradle with its plate and the beam, the round stage plate with its empty pale square, the top bar and bottom line and all their text.\nTWO CHANGES ONLY: (1) The pod list column at the left currently shows five round wells; redraw the column with exactly SIX wells in one evenly spaced vertical column between the top of the column and the gate at its foot, each the same size as now: the top three keep their pods and rings exactly as they are (the charcoal pod with its cream focus ring and starred progress ring, the coral pod with its hairline ring and notch, the grey sealed pod with its empty ring); the lower three are empty dark rings. Count them: six. (2) Inside the open page at the left, replace the brown-and-cream hide drawing with a close, warm, sculpted drawing of the creature in Image 2's flank: smooth CHARCOAL (near-black, slightly blue) skin with the soft boundary of its cream belly running along the lower edge, lit from the upper left, no face; keep the pearl bud on the sill and the plate under the picture.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing else; the pale square on the stage plate stays completely empty.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip; the page's picture is a close view of its flank.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods-v2/round1/PV-D-r1-a2-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "27d96f1911c739d542dbdaa558f2844e569023e4ccc5ce4b64b86aedeefd5336"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip: the charcoal flank with its cream belly edge that the page must show",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:34:13Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "6d1075a3f7f0ad93f9d9f7bdf6cbbee009b2bf8baf6f9998ccdca8c76fc9b79d",
+          "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "round2/PV-D-r2-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "a3495093259ea30eb888985d9988b859ec260d4204c0cc0286a755f1303f7d8b"
+        },
+        "screen": {
+          "file": "round2/PV-D-r2-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "2c7210f84c1b0dd28817503d7a9c970d0b0591b65e49ea7f2aebe10540dc5c91",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 20.0,
+        "usage": {
+          "promptTokenCount": 928,
+          "candidatesTokenCount": 1370,
+          "totalTokenCount": 2525,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 412
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 227,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (the same edit drifted into a theatre stage with spotlights, a globe, invented tabs and garbled text)"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    },
+    {
+      "id": "pod-list-read",
+      "direction": "D",
+      "round": 3,
+      "attempt": 1,
+      "tag": "PV-D-r3-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's POD LIST AND READ screen, a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument: deep dark blue-teal glass and anodised graphite with thin lit edges, a floating glass stage plate, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The pod on its nest under the beam is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar (40 px) and bottom line (38 px). LEFT, the POD LIST: a slim dark-glass column (160 px) holding SIX round wells of equal size stacked in one vertical column, numbered from the top: well 1, well 2, well 3, well 4, well 5, well 6, each 56 px across with 16 px between them, and below well 6 the gate (a small dark hatch with an etched leaf mark). There are six wells, not five: three occupied and three empty. Each occupied well shows a small seed-pod with a thin PROGRESS RING around it: well 1, the current pod, lifted inside a warm cream focus ring, holds a medium squat charcoal pod with cream dots; its ring has four arcs, the first (a fifth of the circle) drawn solid cream and the other three as hairlines, with a tiny four-point star on the second, larger arc; well 2 holds a tall coral pod with marigold seams and a ring of four hairline arcs with a small notch on the last; well 3 holds a grey sealed pod with a plain empty ring; wells 4, 5 and 6 are three empty dark rings, one under the other. No digits on any ring. ABOVE THE STAGE, four small machined TABS on a shallow arc (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each; the first tab (Coat) is focused: its lamp lit, a hairline running down to the page; the second tab (Face) wears a small four-point star; the other two are plain. LEFT OF CENTRE, the OPEN PAGE: a deep pane of dark glass with a lit inner edge, lit warm from inside, holding ONE trait picture (about 150x110): a close, warm, sculpted drawing of the flank of the creature in Image 3: smooth CHARCOAL skin, near-black with a cool blue cast, not brown, with the soft boundary of its cream belly running along the lower edge, no face; on the picture's sill rests a small misty pearl bud with a ghost of pale cream patches inside it; under the picture a small plate with its line. CENTRE, the SPECIMEN on a floating glass stage: a medium, squat seed-pod (body wider than tall, a low cap and a short stem), a smooth charcoal shell with small cream dots, a cream seam and cap; on the cap a small lit three-leaf glyph with a fine crack line across it (the seal, broken); a little grey dust at its base; resting on a moulded frosted-glass cradle; a cool beam from the upper left pools warm on it, the brightest thing on screen; a small plate on the cradle's front. RIGHT, the STAGE PLATE: a dark glass plate with a brushed rim, and on it one completely EMPTY, flat, pale square label about 300 px wide, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On a small plate under the trait picture: \"shows plain · hides pale\". On the small plate on the nest's front: \"identified\" and under it smaller \"rock field · expedition 4\". Bottom line: orange \"✓ Read Face · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"identified · rock field\" in the middle, grey \"Face glints · something new\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the stage plate's pale square stays completely empty and flat (the real genome stamp is placed there later); progress rings carry no digits; frosted panes show frost only; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper's flank in the trait picture (charcoal with a cream belly edge, never a cow, horse or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the owner's quality bar for the room's vibe: take its materials, light and quietness; do not copy its viewports, wells or glyph. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted rich Pip, the hopper whose flank the page shows and whose silhouette shows in the shell. Image 4 is the approved pod in its cradle, the material anchor for the specimen. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods/round2/P-D-r2-a2-1024x600.png",
+          "role": "the owner's quality bar for this room's vibe: dark glass, lit edges, viewports, the pod on its nest under the beam, the quiet labels; its viewports, five wells and thumbprint glyph are NOT to be copied, the layout below replaces them",
+          "sha256": "158f833b9071df84606bc2473b3aa047cd45cb0efcfa1ca88d72880d56498942"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip, the hopper: the flank to draw inside the trait picture (charcoal with cream belly edge) and the squat silhouette in the pod's cap",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/concept-homepage/station-research-pod.png",
+          "role": "approved pod in its cradle under a beam: the material anchor for the pod and nest; its icons and type are not specs",
+          "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+        },
+        {
+          "path": "art/concept-station/pods-v2/layout/pods-v2-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 with the exact progress rings in the list (arcs by trait count, a star, a notch), the four tabs on an arc, the open page with one trait picture, the pod on its nest, the name plate, and the stage plate's empty pale square where the stamp will be placed; not style",
+          "sha256": "65524b2bff02a549b966d0825d06544b6091b8d6895a4de5168777e741b34041"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:35:30Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/PV-D-r3-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "1ade6242436204091d6f2fc569bc0a76eedb5c1d9c71ea26b1a336c9ca6fa132"
+        },
+        "png": {
+          "file": "round3/PV-D-r3-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "afd65058faedec9d68b88908407fff8bd26293794ac04ed1e16467ac0ce1c7f1"
+        },
+        "screen": {
+          "file": "round3/PV-D-r3-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "e87e7f166c4085def060b4ddb1fd4970e1cd9ec3f363cf9dbd862bacaedb05cf",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 25.0,
+        "usage": {
+          "promptTokenCount": 2912,
+          "candidatesTokenCount": 1772,
+          "totalTokenCount": 5286,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1622
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 602,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: round 3 near-pass (six wells at last, charcoal flank, tabs with emblems, a clean pale square) spoiled by leaked numerals 1 to 6 beside the wells and two measurement captions from the prompt; edit target for the clean-up pass"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    },
+    {
+      "id": "pod-list-read",
+      "direction": "D",
+      "round": 3,
+      "attempt": 2,
+      "tag": "PV-D-r3-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's POD LIST AND READ screen, a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument: deep dark blue-teal glass and anodised graphite with thin lit edges, a floating glass stage plate, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The pod on its nest under the beam is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar (40 px) and bottom line (38 px). LEFT, the POD LIST: a slim dark-glass column (160 px) holding SIX round wells of equal size stacked in one vertical column, numbered from the top: well 1, well 2, well 3, well 4, well 5, well 6, each 56 px across with 16 px between them, and below well 6 the gate (a small dark hatch with an etched leaf mark). There are six wells, not five: three occupied and three empty. Each occupied well shows a small seed-pod with a thin PROGRESS RING around it: well 1, the current pod, lifted inside a warm cream focus ring, holds a medium squat charcoal pod with cream dots; its ring has four arcs, the first (a fifth of the circle) drawn solid cream and the other three as hairlines, with a tiny four-point star on the second, larger arc; well 2 holds a tall coral pod with marigold seams and a ring of four hairline arcs with a small notch on the last; well 3 holds a grey sealed pod with a plain empty ring; wells 4, 5 and 6 are three empty dark rings, one under the other. No digits on any ring. ABOVE THE STAGE, four small machined TABS on a shallow arc (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each; the first tab (Coat) is focused: its lamp lit, a hairline running down to the page; the second tab (Face) wears a small four-point star; the other two are plain. LEFT OF CENTRE, the OPEN PAGE: a deep pane of dark glass with a lit inner edge, lit warm from inside, holding ONE trait picture (about 150x110): a close, warm, sculpted drawing of the flank of the creature in Image 3: smooth CHARCOAL skin, near-black with a cool blue cast, not brown, with the soft boundary of its cream belly running along the lower edge, no face; on the picture's sill rests a small misty pearl bud with a ghost of pale cream patches inside it; under the picture a small plate with its line. CENTRE, the SPECIMEN on a floating glass stage: a medium, squat seed-pod (body wider than tall, a low cap and a short stem), a smooth charcoal shell with small cream dots, a cream seam and cap; on the cap a small lit three-leaf glyph with a fine crack line across it (the seal, broken); a little grey dust at its base; resting on a moulded frosted-glass cradle; a cool beam from the upper left pools warm on it, the brightest thing on screen; a small plate on the cradle's front. RIGHT, the STAGE PLATE: a dark glass plate with a brushed rim, and on it one completely EMPTY, flat, pale square label about 300 px wide, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On a small plate under the trait picture: \"shows plain · hides pale\". On the small plate on the nest's front: \"identified\" and under it smaller \"rock field · expedition 4\". Bottom line: orange \"✓ Read Face · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"identified · rock field\" in the middle, grey \"Face glints · something new\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the stage plate's pale square stays completely empty and flat (the real genome stamp is placed there later); progress rings carry no digits; frosted panes show frost only; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper's flank in the trait picture (charcoal with a cream belly edge, never a cow, horse or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the owner's quality bar for the room's vibe: take its materials, light and quietness; do not copy its viewports, wells or glyph. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted rich Pip, the hopper whose flank the page shows and whose silhouette shows in the shell. Image 4 is the approved pod in its cradle, the material anchor for the specimen. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods/round2/P-D-r2-a2-1024x600.png",
+          "role": "the owner's quality bar for this room's vibe: dark glass, lit edges, viewports, the pod on its nest under the beam, the quiet labels; its viewports, five wells and thumbprint glyph are NOT to be copied, the layout below replaces them",
+          "sha256": "158f833b9071df84606bc2473b3aa047cd45cb0efcfa1ca88d72880d56498942"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip, the hopper: the flank to draw inside the trait picture (charcoal with cream belly edge) and the squat silhouette in the pod's cap",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/concept-homepage/station-research-pod.png",
+          "role": "approved pod in its cradle under a beam: the material anchor for the pod and nest; its icons and type are not specs",
+          "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+        },
+        {
+          "path": "art/concept-station/pods-v2/layout/pods-v2-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 with the exact progress rings in the list (arcs by trait count, a star, a notch), the four tabs on an arc, the open page with one trait picture, the pod on its nest, the name plate, and the stage plate's empty pale square where the stamp will be placed; not style",
+          "sha256": "65524b2bff02a549b966d0825d06544b6091b8d6895a4de5168777e741b34041"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:36:00Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "cb7d040154935ce75b7f83402afa36aa535758b16bb0ae9ca446ca72446c3ed5",
+          "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "round3/PV-D-r3-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "69420d88840cacce1b24d54e2570e95d9e3d652d79d58d1ccc97b10c7351d545"
+        },
+        "screen": {
+          "file": "round3/PV-D-r3-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "e7fef1b84900dbfbd97219bde80ed5c5dda18797345eb06f8190f2913e694586",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 24.3,
+        "usage": {
+          "promptTokenCount": 2912,
+          "candidatesTokenCount": 1821,
+          "totalTokenCount": 5072,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1622
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 339,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (six wells and a charcoal flank, but leaked numerals and tab subtitles, and the bottom line broke into two rows)"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    },
+    {
+      "id": "pod-list-read",
+      "direction": "D",
+      "round": 3,
+      "attempt": 3,
+      "tag": "PV-D-r3-a3",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the pod list, the tabs, the pod on its cradle, the stage plate with its empty pale square, the top bar and bottom line and all their text.\nONE CHANGE ONLY: inside the open page at the left, repaint the picture so the flank is the creature in Image 2: smooth CHARCOAL skin, near-black with a cool blue cast, with the soft boundary of its cream belly along the lower edge, lit from the upper left, no face; keep the picture's frame, the pearl bud on the sill and the plate under it exactly where they are.\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On a small plate under the trait picture: \"shows plain · hides pale\". On the small plate on the nest's front: \"identified\" and under it smaller \"rock field · expedition 4\". Bottom line: orange \"✓ Read Face · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"identified · rock field\" in the middle, grey \"Face glints · something new\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the stage plate's pale square stays completely empty and flat (the real genome stamp is placed there later); progress rings carry no digits; frosted panes show frost only; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper's flank in the trait picture (charcoal with a cream belly edge, never a cow, horse or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip; the page's picture is a close view of its flank.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods-v2/round1/PV-D-r1-a2-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "27d96f1911c739d542dbdaa558f2844e569023e4ccc5ce4b64b86aedeefd5336"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "accepted rich Pip: the charcoal flank with its cream belly edge",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:36:29Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/PV-D-r3-a3.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "2435333a3557f56584894e2773e473a51e1522a8d43e4ad3d904b9665c5b4a29"
+        },
+        "png": {
+          "file": "round3/PV-D-r3-a3-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "3ce0fe48333b78fc63577eb7aaacabe3bbb8b317a2b228d27bd3ef4f48e0cf83"
+        },
+        "screen": {
+          "file": "round3/PV-D-r3-a3-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "7f5e7d8ab04f639f049576afb98441e44ba65745c91d88bb5acb83cb50814f2d",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 20.6,
+        "usage": {
+          "promptTokenCount": 1034,
+          "candidatesTokenCount": 1379,
+          "totalTokenCount": 2675,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 518
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 262,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: the one-change flank edit of the round 1 pick held exactly (charcoal flank with cream edge, everything else preserved); five wells remain"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    },
+    {
+      "id": "pod-list-read",
+      "direction": "D",
+      "round": 3,
+      "attempt": 4,
+      "tag": "PV-D-r3-a4",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the six wells and their pods and rings, the gate, the four tabs, the page with its picture, bud and plate, the pod on its cradle with its plate, the stage plate with its empty pale square, the top bar and the bottom line.\nONE CHANGE ONLY: remove every small stray numeral and measurement caption: the six small digits beside the wells in the left column, the small caption and rule under the page (the one reading like a size), and the small caption under the pale square on the stage plate; fill each spot with the surrounding dark glass so nothing remains there. Everything else stays exactly as it is.\nKeep every existing word of the top bar, the tabs, the two plates and the bottom line exactly; add no text.\nConstraints: change nothing else.",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the screen to edit; only the stray numerals and captions are removed.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods-v2/round3/PV-D-r3-a1-canvas.png",
+          "role": "edit target: the round 3 near-pass with six wells",
+          "sha256": "afd65058faedec9d68b88908407fff8bd26293794ac04ed1e16467ac0ce1c7f1"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T22:37:38Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/PV-D-r3-a4.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "674610d2b46091a1d750fefbb3af44b2caac4efc9ee2d7b6fffae8610499004d"
+        },
+        "png": {
+          "file": "round3/PV-D-r3-a4-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "fa2c8b606bf5f3056957323c11f96f17a3785e86c091603059a7e63d7eedb571"
+        },
+        "screen": {
+          "file": "round3/PV-D-r3-a4-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 20.8,
+        "usage": {
+          "promptTokenCount": 509,
+          "candidatesTokenCount": 1333,
+          "totalTokenCount": 1996,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 251
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 154,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: recommended candidate (one-change clean-up of a1 held: six wells, charcoal flank, tabs, pod, clean square; the trait line's plate came back empty)"
+      },
+      "promptSource": "art/concept-station/pods-v2/prompts.json plan (art director), from brief-pods-v2.md"
+    }
+  ],
+  "placements": [
+    {
+      "screen": "round1/PV-D-r1-a1-canvas.png",
+      "stamp": "layout/stamp-hopper-bench-300.png",
+      "detectedSquare": [
+        1156,
+        298,
+        1422,
+        584
+      ],
+      "pasted": {
+        "x": 1159,
+        "y": 311,
+        "side": 260
+      },
+      "outputs": {
+        "canvas": "placed/PV-D-r1-a1-stamped-canvas.png",
+        "screen": "placed/PV-D-r1-a1-stamped-1024x600.png"
+      },
+      "decodes": true,
+      "code": null
+    },
+    {
+      "screen": "round1/PV-D-r1-a2-canvas.png",
+      "stamp": "layout/stamp-hopper-bench-300.png",
+      "detectedSquare": [
+        1124,
+        312,
+        1380,
+        570
+      ],
+      "pasted": {
+        "x": 1127,
+        "y": 316,
+        "side": 250
+      },
+      "outputs": {
+        "canvas": "placed/PV-D-r1-a2-stamped-canvas.png",
+        "screen": "placed/PV-D-r1-a2-stamped-1024x600.png"
+      },
+      "decodes": true,
+      "code": null
+    },
+    {
+      "screen": "round1/PV-D-r1-a3-canvas.png",
+      "stamp": "layout/stamp-hopper-bench-300.png",
+      "detectedSquare": [
+        1178,
+        286,
+        1466,
+        576
+      ],
+      "pasted": {
+        "x": 1181,
+        "y": 290,
+        "side": 282
+      },
+      "outputs": {
+        "canvas": "placed/PV-D-r1-a3-stamped-canvas.png",
+        "screen": "placed/PV-D-r1-a3-stamped-1024x600.png"
+      },
+      "decodes": true,
+      "code": null
+    },
+    {
+      "screen": "round3/PV-D-r3-a1-canvas.png",
+      "stamp": "layout/stamp-hopper-bench-300.png",
+      "detectedSquare": [
+        1224,
+        340,
+        1438,
+        558
+      ],
+      "pasted": {
+        "x": 1227,
+        "y": 345,
+        "side": 209
+      },
+      "outputs": {
+        "canvas": "placed/PV-D-r3-a1-stamped-canvas.png",
+        "screen": "placed/PV-D-r3-a1-stamped-1024x600.png"
+      },
+      "decodes": true,
+      "code": null
+    },
+    {
+      "screen": "round3/PV-D-r3-a2-canvas.png",
+      "stamp": "layout/stamp-hopper-bench-300.png",
+      "detectedSquare": [
+        1200,
+        330,
+        1404,
+        574
+      ],
+      "pasted": {
+        "x": 1203,
+        "y": 353,
+        "side": 199
+      },
+      "outputs": {
+        "canvas": "placed/PV-D-r3-a2-stamped-canvas.png",
+        "screen": "placed/PV-D-r3-a2-stamped-1024x600.png"
+      },
+      "decodes": true,
+      "code": null
+    },
+    {
+      "screen": "round3/PV-D-r3-a3-canvas.png",
+      "stamp": "layout/stamp-hopper-bench-300.png",
+      "detectedSquare": [
+        1124,
+        312,
+        1380,
+        572
+      ],
+      "pasted": {
+        "x": 1127,
+        "y": 317,
+        "side": 250
+      },
+      "outputs": {
+        "canvas": "placed/PV-D-r3-a3-stamped-canvas.png",
+        "screen": "placed/PV-D-r3-a3-stamped-1024x600.png"
+      },
+      "decodes": true,
+      "code": null
+    },
+    {
+      "screen": "round3/PV-D-r3-a4-canvas.png",
+      "stamp": "layout/stamp-hopper-bench-300.png",
+      "detectedSquare": [
+        1224,
+        340,
+        1438,
+        558
+      ],
+      "pasted": {
+        "x": 1227,
+        "y": 345,
+        "side": 209
+      },
+      "outputs": {
+        "canvas": "placed/PV-D-r3-a4-stamped-canvas.png",
+        "screen": "placed/PV-D-r3-a4-stamped-1024x600.png"
+      },
+      "decodes": true,
+      "code": null
+    }
+  ]
+}

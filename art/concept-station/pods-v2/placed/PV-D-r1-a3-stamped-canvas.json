@@ -1,0 +1,19 @@
+{
+  "screen": "round1/PV-D-r1-a3-canvas.png",
+  "stamp": "layout/stamp-hopper-bench-300.png",
+  "detectedSquare": [
+    1178,
+    286,
+    1466,
+    576
+  ],
+  "pasted": {
+    "x": 1181,
+    "y": 290,
+    "side": 282
+  },
+  "outputs": {
+    "canvas": "placed/PV-D-r1-a3-stamped-canvas.png",
+    "screen": "placed/PV-D-r1-a3-stamped-1024x600.png"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": "pod-list-read",
+  "direction": "D",
+  "round": 2,
+  "attempt": 1,
+  "tag": "PV-D-r2-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, the research bench's Pod list and Read screen, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the dark glass ground, the four tabs with their lamps and star, the pod on its cradle with its plate and the beam, the round stage plate with its empty pale square, the top bar and bottom line and all their text.\nTWO CHANGES ONLY: (1) The pod list column at the left currently shows five round wells; redraw the column with exactly SIX wells in one evenly spaced vertical column between the top of the column and the gate at its foot, each the same size as now: the top three keep their pods and rings exactly as they are (the charcoal pod with its cream focus ring and starred progress ring, the coral pod with its hairline ring and notch, the grey sealed pod with its empty ring); the lower three are empty dark rings. Count them: six. (2) Inside the open page at the left, replace the brown-and-cream hide drawing with a close, warm, sculpted drawing of the creature in Image 2's flank: smooth CHARCOAL (near-black, slightly blue) skin with the soft boundary of its cream belly running along the lower edge, lit from the upper left, no face; keep the pearl bud on the sill and the plate under the picture.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing else; the pale square on the stage plate stays completely empty.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip; the page's picture is a close view of its flank.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/pods-v2/round1/PV-D-r1-a2-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "27d96f1911c739d542dbdaa558f2844e569023e4ccc5ce4b64b86aedeefd5336"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: the charcoal flank with its cream belly edge that the page must show",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T22:31:45Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "5e2e81a202196cea88307ae64dbfa3285caf436bceaccd34a4e120c2d2884d5b",
+      "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "PV-D-r2-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "26853affcbb5ac9f79fc7c565875403bd28bd36516e08ca8ba624bfdd1beb4ce"
+    },
+    "screen": {
+      "file": "PV-D-r2-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "79ed854946bda4ad42a57608b24b0493aa82911ca3106fdbedd65ad606e2ba27",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 143.7,
+    "usage": {
+      "promptTokenCount": 928,
+      "candidatesTokenCount": 3755,
+      "totalTokenCount": 4812,
+      "cachedContentTokenCount": 284,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 412
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "cacheTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 126
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 158
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 129,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected as a no-op (the two-change edit returned the screen unchanged: five wells, brown flank)"
+  }
+}

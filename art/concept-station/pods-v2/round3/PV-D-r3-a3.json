@@ -1,0 +1,90 @@
+{
+  "id": "pod-list-read",
+  "direction": "D",
+  "round": 3,
+  "attempt": 3,
+  "tag": "PV-D-r3-a3",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the pod list, the tabs, the pod on its cradle, the stage plate with its empty pale square, the top bar and bottom line and all their text.\nONE CHANGE ONLY: inside the open page at the left, repaint the picture so the flank is the creature in Image 2: smooth CHARCOAL skin, near-black with a cool blue cast, with the soft boundary of its cream belly along the lower edge, lit from the upper left, no face; keep the picture's frame, the pearl bud on the sill and the plate under it exactly where they are.\nTEXT, exactly these and nothing else: top bar left \"Pods  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On a small plate under the trait picture: \"shows plain · hides pale\". On the small plate on the nest's front: \"identified\" and under it smaller \"rock field · expedition 4\". Bottom line: orange \"✓ Read Face · 2\" with a small blue diamond and grey \"← Home\" at left, grey \"identified · rock field\" in the middle, grey \"Face glints · something new\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the stage plate's pale square stays completely empty and flat (the real genome stamp is placed there later); progress rings carry no digits; frosted panes show frost only; no tables, title bars, bullet lists, progress bars or boxed buttons; no logos; no other animal than the hopper's flank in the trait picture (charcoal with a cream belly edge, never a cow, horse or deer); no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip; the page's picture is a close view of its flank.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/pods-v2/round1/PV-D-r1-a2-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "27d96f1911c739d542dbdaa558f2844e569023e4ccc5ce4b64b86aedeefd5336"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: the charcoal flank with its cream belly edge",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T22:36:29Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "round3/raw/PV-D-r3-a3.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "2435333a3557f56584894e2773e473a51e1522a8d43e4ad3d904b9665c5b4a29"
+    },
+    "png": {
+      "file": "PV-D-r3-a3-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "3ce0fe48333b78fc63577eb7aaacabe3bbb8b317a2b228d27bd3ef4f48e0cf83"
+    },
+    "screen": {
+      "file": "PV-D-r3-a3-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "7f5e7d8ab04f639f049576afb98441e44ba65745c91d88bb5acb83cb50814f2d",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 20.6,
+    "usage": {
+      "promptTokenCount": 1034,
+      "candidatesTokenCount": 1379,
+      "totalTokenCount": 2675,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 518
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 262,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept: the one-change flank edit of the round 1 pick held exactly (charcoal flank with cream edge, everything else preserved); five wells remain"
+  }
+}

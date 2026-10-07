@@ -1,0 +1,91 @@
+{
+  "id": "pod-list-read",
+  "direction": "D",
+  "round": 2,
+  "attempt": 2,
+  "tag": "PV-D-r2-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, the research bench's Pod list and Read screen, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the dark glass ground, the four tabs with their lamps and star, the pod on its cradle with its plate and the beam, the round stage plate with its empty pale square, the top bar and bottom line and all their text.\nTWO CHANGES ONLY: (1) The pod list column at the left currently shows five round wells; redraw the column with exactly SIX wells in one evenly spaced vertical column between the top of the column and the gate at its foot, each the same size as now: the top three keep their pods and rings exactly as they are (the charcoal pod with its cream focus ring and starred progress ring, the coral pod with its hairline ring and notch, the grey sealed pod with its empty ring); the lower three are empty dark rings. Count them: six. (2) Inside the open page at the left, replace the brown-and-cream hide drawing with a close, warm, sculpted drawing of the creature in Image 2's flank: smooth CHARCOAL (near-black, slightly blue) skin with the soft boundary of its cream belly running along the lower edge, lit from the upper left, no face; keep the pearl bud on the sill and the plate under the picture.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing else; the pale square on the stage plate stays completely empty.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip; the page's picture is a close view of its flank.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/pods-v2/round1/PV-D-r1-a2-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "27d96f1911c739d542dbdaa558f2844e569023e4ccc5ce4b64b86aedeefd5336"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: the charcoal flank with its cream belly edge that the page must show",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T22:34:13Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "6d1075a3f7f0ad93f9d9f7bdf6cbbee009b2bf8baf6f9998ccdca8c76fc9b79d",
+      "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "PV-D-r2-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "a3495093259ea30eb888985d9988b859ec260d4204c0cc0286a755f1303f7d8b"
+    },
+    "screen": {
+      "file": "PV-D-r2-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "2c7210f84c1b0dd28817503d7a9c970d0b0591b65e49ea7f2aebe10540dc5c91",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 20.0,
+    "usage": {
+      "promptTokenCount": 928,
+      "candidatesTokenCount": 1370,
+      "totalTokenCount": 2525,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 412
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 227,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected (the same edit drifted into a theatre stage with spotlights, a globe, invented tabs and garbled text)"
+  }
+}
