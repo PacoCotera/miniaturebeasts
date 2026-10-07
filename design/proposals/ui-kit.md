@@ -8,14 +8,7 @@ light, expressive eyes, saturated playful colour) to every screen, and takes the
 Every sample and mock-up here is drawn pixel by pixel by script inside the palettes below:
 nothing is scaled, filtered or generated.
 
-| File in [ui-kit/](ui-kit/) | What |
-| --- | --- |
-| `audit-current.png` | The current place, reach map, Station Home and Pods at 1× |
-| `companion-place-storm.png`, `companion-reach.png` | Companion mock-ups, 450×600 at 1× |
-| `station-home.png`, `station-trait-windows.png` | Station mock-ups, 1024×600 at 1× |
-| `companion-2x.png`, `station-2x.png` | The same four at 2× |
-| `samples-1x.png`, `samples-3x.png` | Tiles, motion frames, pawn, species, icons, outpost and beacon |
-| `palette-type-2x.png`, `components-2x.png` | Palettes, storm table, type specimen; HUD, lines, panels, signs |
+Every picture below is in [ui-kit/](ui-kit/); the 1× files are pixel-exact, the 2× ones are for reading on a desktop.
 
 ## 1. Audit: why the current screens read as rudimentary
 
@@ -23,6 +16,10 @@ Judged at 1× against the approved concept art (companion-storm, companion-map-h
 station-research-hands, companion-resident-home). Common cause: everything is drawn at run
 time as flat fills, with no light model, no outline rule, no colour ramps, a stand-in font
 and no layout grid; the Station upscales Companion art instead of having its own.
+
+![The current place, reach map, Station Home and Pods at 1×](ui-kit/audit-current.png)
+
+*What ships today, at 1×: place, reach map, Station Home, Station Pods.*
 
 **Companion place.**
 - *Tiles:* one mid green covers about 80% of the view; grass is scattered 1 px noise with no
@@ -131,6 +128,14 @@ licence, and Silkscreen (OFL) has no true lowercase, so neither is proposed.
 - *Outpost:* flame big, medium and small for 3, 2 and 1 turns, then a dark door.
 - *Beacon:* a dark lamp, or a lit lamp with two-frame sparks.
 
+![Palettes, storm table and type specimen at 2×](ui-kit/palette-type-2x.png)
+
+*The 48 Companion colours as ramps, the Station's 96, the DARK/LIGHT/veil/fade tables, and the Mibi 7×9 specimen.*
+
+![Components at 2×: HUD, bottom line, message box, menu, cards, bubbles, tags, focus, signs](ui-kit/components-2x.png)
+
+*The components, shown at 2×.*
+
 **Icons (16 px)**: Energy (bolt), Data (gem), Essence (drop), Shield, Pod, World turn,
 Call, Storm, Fog bank, Pin, Battery, Radio; states: warm stone found (hollow bolt), Shield
 gone, pod slot free, bond. Each is a distinct silhouette, so they survive four-gray and paper.
@@ -167,21 +172,44 @@ The same part-based construction renders the Station's richer creatures at 2.5�
 Station ramps and dithered bands (the vivarium mock-up), not upscales. It also points to the
 genome-to-sprite pipeline: parts and markings are parameters, and art never changes genes.
 
+![Tiles, motion frames, pawn, species, icons, outpost and beacon at 3×](ui-kit/samples-3x.png)
+
+*The sample sheet at 3×. The pixel-exact sheet is [samples-1x.png](ui-kit/samples-1x.png).*
+
 ## 4. Mock-ups
 
 - **Companion place in a storm:** storm light through DARK, rain, a charged stone with crackle,
   a warned strike as a yellow outline, a lit outpost with puffcaps sheltering beside it, a
   tree that is not shelter, the partner on its ring with its tag, a curious glowtail, the
   veil's dithered edge, the message box, the HUD and the bottom line.
+
+  <img src="ui-kit/companion-place-storm.png" width="450" alt="Companion place in a storm, 450×600 at 1×">
+
+  *Companion place in a storm, 450×600 at 1×.*
+
 - **Companion reach view:** 5×5 cells of 78 px cut from real tiles, seen cells faded,
   unsurveyed quarters dotted, lavender fog, the storm band, the Probe's dotted range, flag,
   beacon, outpost, pod, bolt, pin, tracks, a gated cave, the whole-map inset.
+
+  <img src="ui-kit/companion-reach.png" width="450" alt="Companion reach view, 450×600 at 1×">
+
+  *Companion reach view at 1×. Both Companion screens side by side at 2×: [companion-2x.png](ui-kit/companion-2x.png).*
+
 - **Station Home:** a lit glass vivarium with residents at Station size, focus on one
   resident; the bench as objects: bay door with the Companion mark, six felt cups with a glint,
   incubator dome with its leaf timer, the empty Probe cradle.
+
+  ![Station Home, 1024×600 at 1×](ui-kit/station-home.png)
+
+  *Station Home at 1×.*
+
 - **Station trait windows (Pods):** the tray column and garden gate; four windows (shows and
   hides with a misty seed, glint, frosted, shutter with what opens it); the pod under its
   lamp, the fingerprint whorl, `✓ Study ears · 2 ◆`.
+
+  ![Station Pods with trait windows, 1024×600 at 1×](ui-kit/station-trait-windows.png)
+
+  *Station Pods at 1×. Both Station screens at 2×: [station-2x.png](ui-kit/station-2x.png).*
 
 ## 5. Production plan
 
