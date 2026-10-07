@@ -51,7 +51,7 @@ The well count has now resisted every edit across three Station screens (Home, P
 
 ![PV-D-r3-a4 with the real stamp placed, 1024×600](placed/PV-D-r3-a4-stamped-1024x600.png)
 
-*PV-D-r3-a4 at 1024×600, 1×, with the real hopper stamp (Trebola family, bench paper) placed on the stage plate. The decoder reads the stamp from this very image: `S11v1-0F-8898-7EC96C`. Concept art, generated; not a build capture, not accepted.*
+*PV-D-r3-a4 at 1024×600, 1×, with the real hopper stamp (C01 family, bench paper) placed on the stage plate. The decoder reads the stamp from this very image: `S11v1-0F-8898-7EC96C`. Concept art, generated; not a build capture, not accepted.*
 
 Checklist from brief-pods-v2.md (section 11), judged on the placed screen:
 
@@ -83,3 +83,13 @@ What it still lacks: the trait line on its plate; progress-ring arcs sized by tr
 1. **Stamp on a round plate or a square label?** The generator keeps putting the stamp's pale square inside a round stage plate at about 180 px; the brief asked for 300 px on a glass plate. The small stamp still decodes. Keep the round plate and the smaller stamp, or enlarge the stamp to the brief's 300 px and lose the plate?
 2. **Pod list: shells or rings?** On every candidate the progress ring reads as a frame around the shell; the owner's "the centre fills at Identify" is barely visible behind a pod. Should the ring sit beside the shell (a small ring and a small pod) rather than around it?
 3. **Dark lab confirmed for the bench?** Every pass this round came from the dark glass treatment; the one light-lab attempt failed on the specimen, not the chrome. Is dark the bench, so the Create and Incubator screens follow it?
+
+## Owner decisions (2026-10-07)
+
+Recorded in the [style guide's Pods section](../../../design/style-guide/station-screens.md#pods); the reference is this round's PV-D-r3-a4.
+
+1. **The stamp sits on a square label of about 220 px, no round plate.** Neither the brief's 300 px glass plate nor the generator's 145 px square inside a round plate: a flat square label at 220 px on the stage. The placed stamp decodes at both tested sizes, so 220 px is safe.
+2. **The progress ring sits around the pod's shell and carries chapters only.** "Identified" is shown by the pod's seal (broken, glyph lit), not by a filled centre behind the shell, so the ring's arcs are all it has to say.
+3. **The dark glass lab is the bench.** Create and Incubator follow this treatment; the light-lab variant is closed.
+
+No new generation for Pods now. The painted master carries the two known gaps of the recommended candidate: progress-ring arcs sized by trait count, and the read result with its caption ("shows plain · hides pale") on its plate.

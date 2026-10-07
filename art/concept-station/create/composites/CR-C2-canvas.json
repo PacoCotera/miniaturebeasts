@@ -1,0 +1,30 @@
+{
+  "base": "composites/CR-C1-canvas.png",
+  "pastes": [
+    {
+      "source": "round5/CR-D-r5-a1-canvas.png",
+      "screenRect": [
+        516,
+        44,
+        626,
+        134
+      ],
+      "canvasRect": [
+        773,
+        63,
+        931,
+        193
+      ]
+    }
+  ],
+  "outputs": {
+    "canvas": "composites/CR-C2-canvas.png",
+    "screen": "composites/CR-C2-1024x600.png",
+    "bandRect": [
+      30,
+      0,
+      1505,
+      864
+    ]
+  }
+}

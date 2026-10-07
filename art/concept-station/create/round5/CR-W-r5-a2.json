@@ -1,0 +1,84 @@
+{
+  "id": "create-wont-build",
+  "direction": "W",
+  "round": 5,
+  "attempt": 2,
+  "tag": "CR-W-r5-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the tabs and their words, the three panes' pictures and their plates and the cream focus ring with its notches, the pod on its cradle with its plate, the glass chamber with the frosted-headed creature, its base and plate, the dome and the pale label at the right.\nONE CHANGE ONLY: the tiny tag at the upper right corner of the middle pane of the roll currently reads \"changed\" on a pale tag; make it a small red tag reading \"clash\" in white, with a tiny white warning triangle before the word, the same size and in the same place as the current tag.\nConstraints: preserve every other pixel of the screen; no other new text, no digits beyond those already on screen, nothing drawn on the pale label.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/create/composites/CR-C1-canvas.png",
+      "role": "edit target: the current composite pick",
+      "sha256": "240ed8ec50f39f9ee1ae82865533e3c04528a4fa55bf7b4894b99bf29b75b397"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T23:52:28Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/CR-W-r5-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "9bd7be134fde7df8d4eaae9aa8b2afafab84455ff2146eef480152dc4b190f3d"
+    },
+    "png": {
+      "file": "CR-W-r5-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "035a3f8db8abce1ab216ab43f4772bc0a8044a30837b67a5c666a0e9577211b1"
+    },
+    "screen": {
+      "file": "CR-W-r5-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "422eceb1694a6b2bbd157686ae11e1e891f8c0a372ca6f6246dc57cd77fce36a",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 21.0,
+    "usage": {
+      "promptTokenCount": 495,
+      "candidatesTokenCount": 1236,
+      "totalTokenCount": 1928,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 237
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 197,
+      "serviceTier": "standard"
+    }
+  }
+}
