@@ -61,7 +61,7 @@ export function ringGeometry(genome, { mono = false } = {}) {
   // timing circle with the notch gap, and one tick per non-notch slot
   marks.push({ k: "arc", r0: L.ref[0], r1: L.ref[1], a0: slotAngle(NOTCH_SLOTS - 0.5, S), a1: slotAngle(S - 0.5, S), fill: P.ink });
   for (let k = NOTCH_SLOTS; k < S; k++) arc(L.ticks[0], L.ticks[1], slotAngle(k, S), pitch * L.tickDuty, P.ink);
-  // header dashes on every non-notch slot, the 32 header bits repeated
+  // header dashes on every non-notch slot, the 40 header bits repeated
   for (let k = NOTCH_SLOTS; k < S; k++) {
     const b = bits.header[(k - NOTCH_SLOTS) % HEADER_BITS];
     const a = slotAngle(k, S);
