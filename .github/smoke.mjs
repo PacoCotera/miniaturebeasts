@@ -2,7 +2,7 @@
 import { createRequire } from 'node:module';
 const require = createRequire(process.env.PW_DIR ? process.env.PW_DIR + '/' : import.meta.url);
 const { chromium } = require('playwright');
-const pages = ['/', '/sandbox/exploration/'];
+const pages = ['/', '/sandbox/exploration/', '/sandbox/station/'];
 const browser = await chromium.launch();
 let failed = false;
 for (const path of pages) {
@@ -10,11 +10,14 @@ for (const path of pages) {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
   page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push(m.text()); });
-  await page.goto('http://127.0.0.1:8000' + path, { waitUntil: 'load' });
+  await page.goto('http://127.0.0.1:' + (process.env.PORT || 8000) + path, { waitUntil: 'load' });
   await page.waitForTimeout(500);
   if (path.includes('exploration')) {
     await page.keyboard.press('Enter'); await page.waitForTimeout(200);
     await page.keyboard.press('ArrowRight'); await page.waitForTimeout(200);
+  }
+  if (path.includes('station')) {
+    for (const k of ['KeyR', 'ArrowRight', 'Enter', 'KeyL', 'KeyB', 'KeyD', 'KeyH']) { await page.keyboard.press(k); await page.waitForTimeout(150); }
   }
   const text = (await page.textContent('body')) || '';
   if (path === '/' && !/build/.test(text)) errors.push('home: build stamp missing');

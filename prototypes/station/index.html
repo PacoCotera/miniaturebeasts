@@ -1,0 +1,1836 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Station Field Test</title>
+<meta name="description" content="Miniature Beasts Station stand-in v2: a simulated 1024×600 Station screen sharing its save with the Companion page. Dock, open the bay, identify, study, shape a founder, incubate and meet the mibi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap">
+<style>
+/* ===== Surround tokens (light / dark). The device screen never uses these. ===== */
+:root{
+  color-scheme: light dark;
+  --bg:#ece6d8; --bg-2:#e3dccb; --ink:#28302c; --muted:#565d57; --panel:#f7f3ea;
+  --line:#d3cab6; --accent:#b84a0c; --focus:#e8641b; --chip:#efe8d8;
+  --font-ui: "Fredoka", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191b1a; --bg-2:#202321; --ink:#ebe5d8; --muted:#a9a599; --panel:#222624;
+    --line:#383c39; --accent:#ff9150; --focus:#ff8a3d; --chip:#2b2f2c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191b1a; --bg-2:#202321; --ink:#ebe5d8; --muted:#a9a599; --panel:#222624;
+  --line:#383c39; --accent:#ff9150; --focus:#ff8a3d; --chip:#2b2f2c;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background: var(--bg);
+  background-image: radial-gradient(1400px 800px at 40% 10%, var(--bg-2), var(--bg));
+  color: var(--ink); font: 15px/1.5 var(--font-body);
+  min-height: 100vh; overflow-x: hidden;
+}
+.page{display:flex; flex-wrap:wrap; gap:28px 40px; justify-content:center; align-items:flex-start; padding:16px 16px 32px; max-width:1900px; margin:0 auto}
+.device-col{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 1 auto; max-width:100%}
+.stamp{font: 500 13px/1.2 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center}
+
+/* ===== The Station: a two-thumb landscape handheld (keeps its own look in both themes) ===== */
+.fit{position:relative}
+.station{
+  --sage-1:#b9c6b0; --sage-2:#a1b097; --sage-3:#8a9a80; --key-ink:#f6f1e6;
+  position:absolute; left:0; top:0; transform-origin:0 0; width:1400px; height:790px; border-radius:70px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .3 0 0 0 0 .22 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(170deg, var(--sage-1) 0%, var(--sage-2) 55%, var(--sage-3) 100%);
+  box-shadow: inset 0 3px 0 rgba(255,255,255,.5), inset 0 -8px 16px rgba(30,45,30,.25), 0 2px 0 #6f7d66, 0 22px 50px rgba(15,20,12,.35), 0 5px 12px rgba(15,20,12,.25);
+  user-select:none; -webkit-user-select:none; touch-action:none; -webkit-tap-highlight-color:transparent;
+}
+.grip{position:absolute; top:120px; width:120px; height:520px; border-radius:60px; background:linear-gradient(180deg, rgba(40,52,38,.16), rgba(40,52,38,.05)); pointer-events:none}
+.grip.l{left:26px} .grip.r{right:26px}
+.st-brand{position:absolute; left:0; right:0; top:10px; text-align:center; font:600 13px/1 var(--font-ui); letter-spacing:.3em; color:#55624f; text-shadow:0 1px 0 rgba(255,255,255,.45)}
+.st-brand span{font-weight:400; letter-spacing:.2em; margin-left:.6em; padding-left:.6em; border-left:2px solid #d06a2c}
+.st-bezel{position:absolute; left:176px; top:32px; width:1048px; height:624px; border-radius:22px; background:linear-gradient(180deg,#25292a,#181a1b); padding:12px; box-shadow: inset 0 2px 5px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.45)}
+.st-bezel canvas{display:block; width:1024px; height:600px; pointer-events:none; background:#121a16; image-rendering:crisp-edges; image-rendering:pixelated}
+.k{appearance:none; border:none; padding:0; margin:0; cursor:pointer; position:absolute; outline:none; touch-action:none; -webkit-tap-highlight-color:transparent}
+.k:focus-visible{outline:3px solid #ffd166; outline-offset:3px}
+.pad{position:absolute; left:28px; top:300px; width:132px; height:132px}
+.pad::before{content:""; position:absolute; inset:-10px; border-radius:50%; background:radial-gradient(circle, rgba(40,50,35,.25), rgba(40,50,35,0) 70%)}
+.pad .hub{position:absolute; left:44px; top:44px; width:44px; height:44px; background:#2f3236}
+.pad .k{width:44px; height:44px; background:linear-gradient(180deg,#3a3d42,#2f3236); box-shadow:0 3px 0 #17181a, inset 0 1px 0 rgba(255,255,255,.12); display:grid; place-items:center}
+.pad .k svg{width:16px; height:16px; fill:#9a9ea6}
+.pad .up{left:44px; top:0; border-radius:8px 8px 0 0} .pad .down{left:44px; top:88px; border-radius:0 0 8px 8px}
+.pad .left{left:0; top:44px; border-radius:8px 0 0 8px} .pad .right{left:88px; top:44px; border-radius:0 8px 8px 0}
+.pad .k.is-down{transform:translateY(2px); box-shadow:0 1px 0 #17181a, inset 0 2px 3px rgba(0,0,0,.5)}
+.mid{position:absolute; left:0; right:0; top:680px; display:flex; justify-content:center; gap:26px}
+.mid .k{position:relative; width:128px; height:46px; border-radius:23px; color:var(--key-ink); font:600 13px/1 var(--font-ui); letter-spacing:.14em; text-transform:uppercase; box-shadow:0 4px 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.3)}
+.mid .k.is-down{transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.35), inset 0 2px 4px rgba(0,0,0,.35)}
+.k.home{background:linear-gradient(180deg,#f0a548,#d47f22)} .k.research{background:linear-gradient(180deg,#36b4a3,#1d8a7c)}
+.k.library{background:linear-gradient(180deg,#9a74e0,#6f4cba)} .k.habitat{background:linear-gradient(180deg,#78b85a,#4f8c37)}
+.k.back{left:1236px; top:398px; width:64px; height:64px; border-radius:50%; background:radial-gradient(circle at 40% 30%,#5d6167,#3a3d42); box-shadow:0 4px 0 #1d1f22, inset 0 1px 0 rgba(255,255,255,.15); display:grid; place-items:center}
+.k.back svg{width:24px; height:24px; stroke:#e9e6df; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.k.confirm{left:1270px; top:270px; width:96px; height:96px; border-radius:50%; background:radial-gradient(circle at 40% 30%,#ff8a45,#f0661a 55%,#c94f0d); box-shadow:0 5px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35); display:grid; place-items:center}
+.k.confirm svg{width:40px; height:40px; stroke:#fff8ef; fill:none; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round}
+.k.back.is-down{transform:translateY(3px); box-shadow:0 1px 0 #1d1f22, inset 0 2px 4px rgba(0,0,0,.5)}
+.k.confirm.is-down{transform:translateY(4px); box-shadow:0 1px 0 #8c3608, inset 0 2px 5px rgba(0,0,0,.35)}
+.eng{position:absolute; font:600 11px/1 var(--font-ui); letter-spacing:.18em; color:#55624f; text-shadow:0 1px 0 rgba(255,255,255,.45); pointer-events:none}
+.speaker{position:absolute; top:520px; display:grid; grid-template-columns:repeat(3,7px); gap:7px}
+.speaker i{width:7px; height:7px; border-radius:50%; background:#6f7d66; box-shadow:inset 0 1px 1px rgba(0,0,0,.4)}
+
+/* ===== The Caddy beside it (prototype only: one key, Dock / Lift) ===== */
+.caddy-row{display:flex; align-items:center; gap:18px; flex-wrap:wrap; justify-content:center}
+.caddy{position:relative; width:340px; max-width:100%; height:112px; border-radius:22px; background:linear-gradient(170deg,#d9d3c4,#bdb5a3); box-shadow:inset 0 2px 0 rgba(255,255,255,.55), 0 10px 22px rgba(20,16,10,.25), 0 2px 0 #8f846f}
+.caddy .paper{position:absolute; left:14px; top:16px; width:150px; height:80px; border-radius:6px; background:#e8e6dc; box-shadow:inset 0 1px 3px rgba(0,0,0,.35); font:500 12px/1.35 var(--font-ui); color:#3b3a36; padding:8px 10px; overflow:hidden}
+.caddy .slot{position:absolute; left:176px; top:22px; width:76px; height:68px; border-radius:12px; background:linear-gradient(180deg,#9f9785,#8a826f); box-shadow:inset 0 2px 5px rgba(0,0,0,.4)}
+.caddy .slot .comp{position:absolute; left:18px; top:-26px; width:40px; height:64px; border-radius:9px; background:linear-gradient(160deg,#ddd4c1,#b3a790); box-shadow:0 3px 6px rgba(0,0,0,.35); transition:top .25s, opacity .25s}
+.caddy .slot .comp::after{content:""; position:absolute; left:6px; top:7px; width:28px; height:34px; border-radius:4px; background:#1a1c1f}
+.caddy.lifted .slot .comp{top:-70px; opacity:0}
+.caddy .k.dock{left:266px; top:26px; width:60px; height:60px; border-radius:50%; background:radial-gradient(circle at 40% 30%,#6c7480,#454b54); box-shadow:0 4px 0 #24282d, inset 0 1px 0 rgba(255,255,255,.2); color:#eef0f2; font:600 11px/1.1 var(--font-ui); letter-spacing:.08em}
+.caddy .k.dock.is-down{transform:translateY(3px); box-shadow:0 1px 0 #24282d}
+.caddy-note{font:500 13px/1.4 var(--font-ui); color:var(--muted); max-width:300px}
+
+/* ===== Debug strip (not part of play) ===== */
+.debug{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; font:500 13px/1.3 var(--font-ui); color:var(--muted)}
+.btn{font:500 13px/1 var(--font-ui); background:var(--chip); color:var(--ink); border:1px solid var(--line); border-bottom-width:2px; border-radius:8px; padding:8px 11px; cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn-danger{color:#a6420c; border-color:#a6420c}
+#genomes{width:min(1000px,100%); font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 12px; white-space:pre-wrap; color:var(--ink); max-height:260px; overflow:auto}
+#genomes[hidden]{display:none}
+.reset-ask{display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:8px 12px; border:1px solid var(--line); border-radius:8px; background:var(--chip)}
+.reset-ask[hidden]{display:none}
+
+/* ===== Side panel ===== */
+.panel{flex:0 1 420px; max-width:440px; color:var(--ink)}
+.panel h1{font:600 22px/1.15 var(--font-ui); margin:0 0 4px}
+.panel .lede{margin:0 0 14px; color:var(--muted); font-size:14px}
+.panel details{border-top:1px solid var(--line); padding:10px 0}
+.panel summary{cursor:pointer; font:500 15px/1.4 var(--font-ui); list-style:none; display:flex; align-items:center; gap:8px; border-radius:6px}
+.panel summary::-webkit-details-marker{display:none}
+.panel summary::before{content:""; width:7px; height:7px; border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(-45deg); transition:transform .15s}
+.panel details[open] summary::before{transform:rotate(45deg)}
+.panel summary:focus-visible, .panel a:focus-visible, .btn:focus-visible{outline:3px solid var(--focus); outline-offset:3px}
+.panel ul, .panel ol{margin:8px 0 2px; padding-left:20px; font-size:14px}
+.panel li{margin:5px 0}
+.panel a{color:var(--accent)}
+.panel .pair{border-top:1px solid var(--line); padding:12px 0 4px; font:500 15px/1.4 var(--font-ui)}
+kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var(--line); border-bottom-width:2px; border-radius:5px; padding:2px 5px; white-space:nowrap}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} }
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="device-col">
+    <div class="fit" id="fit">
+      <div class="station" id="station" aria-label="Station device">
+        <div class="grip l"></div><div class="grip r"></div>
+        <div class="st-brand">MINIATURE BEASTS<span>STATION</span></div>
+        <div class="st-bezel"><canvas id="screen" width="1024" height="600" role="img" aria-label="Station screen"></canvas></div>
+        <div class="pad">
+          <div class="hub"></div>
+          <button class="k up" data-key="up" aria-label="Up"><svg viewBox="0 0 16 16"><path d="M8 3l5 7H3z"/></svg></button>
+          <button class="k left" data-key="left" aria-label="Left"><svg viewBox="0 0 16 16"><path d="M3 8l7-5v10z"/></svg></button>
+          <button class="k right" data-key="right" aria-label="Right"><svg viewBox="0 0 16 16"><path d="M13 8L6 3v10z"/></svg></button>
+          <button class="k down" data-key="down" aria-label="Down"><svg viewBox="0 0 16 16"><path d="M8 13L3 6h10z"/></svg></button>
+        </div>
+        <div class="speaker" style="left:62px"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="speaker" style="left:1290px"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="mid">
+          <button class="k home" data-key="home" aria-label="Home">Home</button>
+          <button class="k research" data-key="research" aria-label="Research">Research</button>
+          <button class="k library" data-key="library" aria-label="Library">Library</button>
+          <button class="k habitat" data-key="habitat" aria-label="Habitat">Habitat</button>
+        </div>
+        <button class="k back" data-key="back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
+        <button class="k confirm" data-key="confirm" aria-label="Confirm"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        <span class="eng" style="left:1262px;top:472px">←</span>
+        <span class="eng" style="left:1282px;top:378px">CONFIRM</span>
+      </div>
+    </div>
+    <div class="caddy-row">
+      <div class="caddy" id="caddy" aria-label="Caddy (prototype)">
+        <div class="paper" id="caddyPaper">Caddy</div>
+        <div class="slot"><div class="comp" title="Companion"></div></div>
+        <button class="k dock" data-key="dock" id="dockKey" aria-label="Dock or lift the Companion">DOCK</button>
+      </div>
+      <div class="caddy-note" id="caddyNote">The Caddy is not a Station key: <kbd>D</kbd> or its round key docks or lifts the Companion.</div>
+    </div>
+    <div class="debug" aria-label="Debug strip (not part of play)">
+      <span>Debug:</span>
+      <button class="btn" id="dbgMats" type="button">+5 of each material</button>
+      <button class="btn" id="dbgInc" type="button">Finish incubation</button>
+      <button class="btn" id="dbgGen" type="button" aria-pressed="false">Show genomes</button>
+      <button class="btn btn-danger" id="dbgReset" type="button">Reset game</button>
+      <span class="reset-ask" id="resetAsk" hidden role="alertdialog"><span>Erase the shared save (both pages)?</span>
+        <button class="btn btn-danger" id="resetYes" type="button">Erase and start fresh</button><button class="btn" id="resetNo" type="button">Keep playing</button></span>
+    </div>
+    <pre id="genomes" hidden></pre>
+    <div class="stamp" id="stamp">build …</div>
+  </div>
+
+  <aside class="panel" aria-label="Playtest notes">
+    <h1>Station Field Test</h1>
+    <p class="lede">The Station stand-in v2: a simulated 1024×600 Station screen. It shares one save with the Companion page in this browser.</p>
+    <div class="pair">Explore on the <a href="../exploration/">Companion page</a>, Head home, then dock here.</div>
+    <details id="howTo">
+      <summary>How to play</summary>
+      <ul>
+        <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or the pad: move the focus ring between things in the picture. On Create, <kbd>↑</kbd><kbd>↓</kbd> roll a window.</li>
+        <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange key: <b>Confirm</b>. It does exactly what the bottom line names after ✓, with its price.</li>
+        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key: back one view. On Home, "← Rest" lets the vivarium fill the screen.</li>
+        <li>The four middle keys switch views and never spend: <kbd>H</kbd> Home, <kbd>R</kbd> Research (the pods), <kbd>L</kbd> Library, <kbd>B</kbd> Habitat.</li>
+        <li><kbd>D</kbd> or the Caddy's key: <b>Dock</b> or <b>Lift</b> the Companion (prototype only; it is not a Station key).</li>
+        <li>After 30 seconds without a press the vivarium plays alone. The first press only wakes the screen.</li>
+      </ul>
+    </details>
+    <details id="whatTry">
+      <summary>What to try</summary>
+      <ol>
+        <li>On the <a href="../exploration/">Companion page</a>, explore and <b>Head home</b>: the hold is sealed into a crate in the Companion's bay (three at most), and the world turns.</li>
+        <li>Here, press <kbd>D</kbd> to dock. The crates slide into the bay door; ✓ <b>Open the bay</b> plays one arrival per crate.</li>
+        <li><kbd>R</kbd> Research: ✓ Identify a pod (1 Energy; the first ever is free). Its trait windows rise, frosted.</li>
+        <li>↑ to a window, ✓ <b>Study</b> it (2 Data): it shows a picture, and a misty seed when the pod hides another look. Its petal on the fingerprint lights.</li>
+        <li>✓ <b>Shape a founder</b>: ↑↓ rolls a studied window through what this pod carries (+2 Data per change). ✓ <b>Grow it</b> (2 Energy + 4 Essence).</li>
+        <li>The incubator's leaves fill, one per minute. When the dome glows, ✓ <b>Open</b> and meet the mibi.</li>
+        <li><kbd>B</kbd> Habitat: go to the door and ✓ <b>Take it with you</b>. The Companion page picks it up while docked. Press <kbd>D</kbd> to lift the Companion before its next expedition.</li>
+      </ol>
+    </details>
+  </aside>
+</main>
+<script>
+"use strict";
+/* =====================================================================
+   Miniature Beasts · Station Field Test (Station stand-in v2)
+   An honest simulation of the Station panel: everything is drawn into an
+   offscreen 1024×600 frame at 1:1 device pixels, from the fixed palette below
+   (the Companion's 48 colours plus room, wood, lamp, glass and frost tones),
+   with indexed sprites and the shared 5×7 bitmap font. The Station's richer
+   treatment draws the same token shapes at 2–9× with a shading pass.
+   The save is shared with the Companion page (same localStorage key). The
+   Station owns `st`; everything else belongs to the Companion and is read here.
+   Sections: 0 palette · 1 constants & species · 2 RNG · 3 genomes · 4 save
+   5 rules · 6 graphics core · 7 art · 8 screens · 9 input · 10 page
+   ===================================================================== */
+
+// ===================== 0. Screen palette =====================
+const PALETTE = [
+  ['void', '#0c0a12'], ['ink', '#1a1725'], ['night', '#29253a'], ['slate', '#3d3954'], ['stone', '#5d5974'], ['mist', '#8d8aa6'],
+  ['fog', '#c6c4d8'], ['bone', '#f1ebdf'], ['white', '#ffffff'],
+  ['paper', '#f5e6c4'], ['sand', '#e6c98c'], ['clay', '#bf9157'], ['bark', '#7d5435'], ['soil', '#4b3023'],
+  ['pine', '#173b2d'], ['forest', '#23623c'], ['leaf', '#329245'], ['grass', '#5cbb4c'], ['sprout', '#98d85c'], ['lime', '#d4f281'],
+  ['deep', '#142650'], ['sea', '#1e5196'], ['river', '#3084d8'], ['sky', '#5bb9f3'], ['ice', '#a9e6ff'],
+  ['tealD', '#0f4c50'], ['teal', '#1f9d8f'], ['aqua', '#45d8be'], ['mint', '#adf6e0'],
+  ['plumD', '#3c1e6c'], ['plum', '#6f41c6'], ['lilac', '#a87bf3'], ['lavender', '#dbc0ff'],
+  ['wine', '#6b1e33'], ['red', '#c93440'], ['coral', '#ff5f57'], ['peach', '#ffa67c'], ['blush', '#ffd4bf'],
+  ['rust', '#a6420c'], ['orange', '#f2671b'], ['amber', '#ffa83f'],
+  ['gold', '#d89b14'], ['yellow', '#ffd441'], ['cream', '#fff4a6'],
+  ['magenta', '#c3387e'], ['pink', '#ff80c0'],
+  ['rock', '#847fa8'], ['rockL', '#bab6d4'],
+  // the Station's room: an evening room, deep moss, warm wood, lamp light, glass and frost
+  ['moss0', '#101814'], ['moss1', '#18241d'], ['moss2', '#223228'], ['moss3', '#2e4334'], ['moss4', '#425c47'], ['moss5', '#5d7a5f'],
+  ['wood0', '#2a1a12'], ['wood1', '#43291b'], ['wood2', '#65412a'], ['wood3', '#8c5c37'], ['wood4', '#b4834f'],
+  ['lamp', '#ffe6ad'], ['lampD', '#d8b56f'],
+  ['glass', '#d6ece5'], ['glassD', '#93b9ad'],
+  ['frost', '#eaeff6'], ['frostD', '#cbd5e2'], ['frostS', '#a9b5c8'],
+  ['felt', '#7d3e37'], ['feltD', '#552824'], ['creamT', '#f4ead0'],
+];
+const DARK_OF = { void: 'void', ink: 'void', night: 'ink', slate: 'night', stone: 'slate', mist: 'stone', fog: 'mist', bone: 'fog', white: 'bone',
+  paper: 'sand', sand: 'clay', clay: 'bark', bark: 'soil', soil: 'ink', pine: 'ink', forest: 'pine', leaf: 'forest', grass: 'leaf', sprout: 'grass', lime: 'sprout',
+  deep: 'ink', sea: 'deep', river: 'sea', sky: 'river', ice: 'sky', tealD: 'ink', teal: 'tealD', aqua: 'teal', mint: 'aqua',
+  plumD: 'ink', plum: 'plumD', lilac: 'plum', lavender: 'lilac', wine: 'night', red: 'wine', coral: 'red', peach: 'coral', blush: 'peach',
+  rust: 'soil', orange: 'rust', amber: 'orange', gold: 'bark', yellow: 'gold', cream: 'yellow', magenta: 'wine', pink: 'magenta', rock: 'stone', rockL: 'rock',
+  moss0: 'void', moss1: 'moss0', moss2: 'moss1', moss3: 'moss2', moss4: 'moss3', moss5: 'moss4',
+  wood0: 'void', wood1: 'wood0', wood2: 'wood1', wood3: 'wood2', wood4: 'wood3', lamp: 'lampD', lampD: 'wood3',
+  glass: 'glassD', glassD: 'moss4', frost: 'frostD', frostD: 'frostS', frostS: 'stone', felt: 'feltD', feltD: 'wood0', creamT: 'sand' };
+const LIGHT_OF = { void: 'ink', ink: 'night', night: 'slate', slate: 'stone', stone: 'mist', mist: 'fog', fog: 'bone', bone: 'white', white: 'white',
+  paper: 'bone', sand: 'paper', clay: 'sand', bark: 'clay', soil: 'bark', pine: 'forest', forest: 'leaf', leaf: 'grass', grass: 'sprout', sprout: 'lime', lime: 'cream',
+  deep: 'sea', sea: 'river', river: 'sky', sky: 'ice', ice: 'white', tealD: 'teal', teal: 'aqua', aqua: 'mint', mint: 'white',
+  plumD: 'plum', plum: 'lilac', lilac: 'lavender', lavender: 'white', wine: 'red', red: 'coral', coral: 'peach', peach: 'blush', blush: 'bone',
+  rust: 'orange', orange: 'amber', amber: 'cream', gold: 'yellow', yellow: 'cream', cream: 'white', magenta: 'pink', pink: 'blush', rock: 'rockL', rockL: 'fog',
+  moss0: 'moss1', moss1: 'moss2', moss2: 'moss3', moss3: 'moss4', moss4: 'moss5', moss5: 'glassD',
+  wood0: 'wood1', wood1: 'wood2', wood2: 'wood3', wood3: 'wood4', wood4: 'sand', lamp: 'white', lampD: 'lamp',
+  glass: 'white', glassD: 'glass', frost: 'white', frostD: 'frost', frostS: 'frostD', felt: 'coral', feltD: 'felt', creamT: 'white' };
+
+// ===================== 1. Constants and species =====================
+const SW = 1024, SH = 600, TOP_H = 40, LINE_H = 38, STAGE_Y = TOP_H, STAGE_H = SH - TOP_H - LINE_H;   // stage 1024×522
+const SAVE_KEY = 'mb-save-v8', SAVE_V = 8, V7_KEY = 'mb-exploration-v7';
+const OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6', V7_KEY];
+// Station prices (station-loop.md §4; "to tune").
+const PRICE = { identify: 1, study: 2, growE: 2, growS: 4, change: 2, mend: 1, tier2E: 12, tier2D: 4, wild: 1 };
+const TRAY = 6, ROOM = 4, BAY = 3;   // six pod cups, four places in the vivarium (plus the one with you), three crates in the bay
+const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
+const JUVENILE_TURNS = 2, ELDER_TURNS = 6;
+const IDLE_MS = 30000, STUDY_MS = 2000, ID_MS = 1800, ARRIVE_MS = 3000, HATCH_MS = 2600;
+const MIBI_NAMES = ['Dot', 'Moss', 'Bean', 'Fig', 'Nib', 'Tuft', 'Pebble', 'Wren', 'Pip', 'Sorrel', 'Burr', 'Quill'];
+const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
+const PLACE_WORD = { meadow: 'meadow', pond: 'pond edge', rock: 'rock field', wood: 'wood', cave: 'cave' };
+const HOW_WORD = { shake: 'shook itself dry', calm: 'felt safe', curl: 'curled up from the rain', meal: 'had a full meal', slab: 'under a slab', ground: 'from the ground', deep: 'from the deep', cave: 'in the cave' };
+const HOW_ACT = ['shake', 'calm', 'curl', 'meal'];
+// Placeholder species for the stand-in (station-loop.md §9): made-up but consistent trait windows, pending phase 2.
+// Each window: an emblem and a word; variants listed most-dominant first (what shows is the earlier of the two copies);
+// mode 'choose' rolls at creation, 'family' is inherited-only (the bounded trial's movement, as a family mark),
+// lock 'tier2' keeps the window shut (a shutter) until the Probe is tier 2. Weights pick a pod's copies.
+const SPECIES = [
+  { name: 'Hopper', plural: 'hoppers', size: 3, sizeWord: 'medium', abText: 'calms wary creatures', habit: 'shakes dry · long hops',
+    col: { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' },
+    win: [
+      { id: 'markings', word: 'markings', emb: 'swirl', mode: 'choose', w: [5, 3, 2], v: [{ n: 'plain', s: 'plain', hue: 'lavender' }, { n: 'a saddle', s: 'saddle', hue: 'plum' }, { n: 'pale patches', s: 'pale', hue: 'bone' }] },
+      { id: 'ears', word: 'ears', emb: 'crown', mode: 'choose', w: [5, 3, 2], v: [{ n: 'long ears', s: 'long', hue: 'pink' }, { n: 'short ears', s: 'short', hue: 'peach' }, { n: 'lop ears', s: 'lop', hue: 'magenta' }] },
+      { id: 'gait', word: 'gait', emb: 'paw', mode: 'family', w: [6, 4], v: [{ n: 'a springy hop', s: 'hop', hue: 'sky' }, { n: 'a long bound', s: 'bound', hue: 'river' }] },
+    ] },
+  { name: 'Glowtail', plural: 'glowtails', size: 2, sizeWord: 'small', abText: 'digs narrow burrows', habit: 'digs burrows · glows at dusk',
+    col: { body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' },
+    win: [
+      { id: 'markings', word: 'markings', emb: 'swirl', mode: 'choose', w: [4, 4, 2], v: [{ n: 'stripes', s: 'stripes', hue: 'tealD' }, { n: 'spots', s: 'spots', hue: 'lilac' }, { n: 'plain', s: 'plain', hue: 'mint' }] },
+      { id: 'crown', word: 'crown', emb: 'crown', mode: 'choose', w: [6, 4], v: [{ n: 'a low crown', s: 'low', hue: 'sand' }, { n: 'a tall crown', s: 'tall', hue: 'gold' }] },
+      { id: 'colour', word: 'colour', emb: 'drop', mode: 'choose', w: [5, 3, 2], v: [{ n: 'teal', s: 'teal', hue: 'aqua' }, { n: 'gold', s: 'gold', hue: 'yellow' }, { n: 'violet', s: 'violet', hue: 'lilac' }] },
+      { id: 'gait', word: 'gait', emb: 'paw', mode: 'family', w: [6, 4], v: [{ n: 'a scurry', s: 'scurry', hue: 'sky' }, { n: 'a low glide', s: 'glide', hue: 'river' }] },
+    ] },
+  { name: 'Puffcap', plural: 'puffcaps', size: 4, sizeWord: 'large', abText: 'sniffs out buried pods', habit: 'eats fruit · sheds when full',
+    col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' },
+    win: [
+      { id: 'spots', word: 'spots', emb: 'swirl', mode: 'choose', w: [5, 3, 2], v: [{ n: 'white spots', s: 'spots', hue: 'bone' }, { n: 'rings', s: 'rings', hue: 'cream' }, { n: 'a bare cap', s: 'bare', hue: 'orange' }] },
+      { id: 'cap', word: 'cap', emb: 'crown', mode: 'choose', w: [5, 3, 2], v: [{ n: 'a wide cap', s: 'wide', hue: 'amber' }, { n: 'a tall cap', s: 'tall', hue: 'gold' }, { n: 'a frilled cap', s: 'frilled', hue: 'rust' }] },
+      { id: 'colour', word: 'colour', emb: 'drop', mode: 'choose', lock: 'tier2', w: [5, 3, 2], v: [{ n: 'amber', s: 'amber', hue: 'amber' }, { n: 'rose', s: 'rose', hue: 'pink' }, { n: 'sky blue', s: 'blue', hue: 'sky' }] },
+      { id: 'gait', word: 'gait', emb: 'paw', mode: 'family', w: [6, 4], v: [{ n: 'a waddle', s: 'waddle', hue: 'sky' }, { n: 'a roll', s: 'roll', hue: 'river' }] },
+    ] },
+];
+const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const NUM_WORD = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+const numWord = n => NUM_WORD[n] || String(n);
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const plural = (n, w, p) => n + ' ' + (n === 1 ? w : (p || w + 's'));
+
+// ===================== 2. Seeded RNG (the same hash as the Companion) =====================
+function hash() {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < arguments.length; i++) {
+    const v = arguments[i];
+    if (typeof v === 'string') { for (let j = 0; j < v.length; j++) { h ^= v.charCodeAt(j); h = Math.imul(h, 16777619); } }
+    else { const n = Math.floor(v) | 0; for (let k = 0; k < 4; k++) { h ^= (n >>> (k * 8)) & 255; h = Math.imul(h, 16777619); } }
+    h ^= 0x5bd1e995; h = Math.imul(h, 16777619);
+  }
+  h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16;
+  return h >>> 0;
+}
+function mulberry32(a) {
+  return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+
+// ===================== 3. Genomes, codes, what shows and hides =====================
+// A pod's genome is seeded by its genome seed (gs, set on the Companion when the pod is first taken):
+// two copies per window, each an index into the window's variants. What shows is the more dominant
+// (lower index) copy; the other, when different, is carried hidden.
+function pickW(R, w) { let t = 0; for (const x of w) t += x; let r = R() * t; for (let i = 0; i < w.length; i++) { r -= w[i]; if (r < 0) return i; } return w.length - 1; }
+function podGenome(gs, sp) { const R = mulberry32(hash(gs, 'genome', sp)); return SPECIES[sp].win.map(w => [pickW(R, w.w), pickW(R, w.w)]); }
+const shows = pair => Math.min(pair[0], pair[1]);
+const hides = pair => pair[0] === pair[1] ? -1 : Math.max(pair[0], pair[1]);
+// The short code: 40 bits (species, two copies per window, and 22 bits standing for the rest of the genome the
+// stand-in doesn't model) as eight base-32 characters, plus a check character. Shown grouped in threes.
+const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+function genomeCode(sp, al, gs) {
+  const bits = []; const push = (v, n) => { for (let i = n - 1; i >= 0; i--) bits.push((v >>> i) & 1); };
+  push(sp, 2); for (let w = 0; w < 4; w++) { const p = al[w] || [0, 0]; push(p[0], 2); push(p[1], 2); }
+  push(hash(gs, 'rest') & 0x3fffff, 22);
+  let out = '', sum = 0;
+  for (let i = 0; i < 8; i++) { let v = 0; for (let b = 0; b < 5; b++) v = v * 2 + bits[i * 5 + b]; out += B32[v]; sum += (i + 1) * v; }
+  return out + B32[sum % 32];
+}
+const codeText = c => c.slice(0, 3) + ' · ' + c.slice(3, 6) + ' · ' + c.slice(6, 9);
+function lookOf(sp, al) { return al.map(shows); }
+// Incubation minutes (station-loop.md §1, decided): body 2/3/4 + 1 per window beyond three + 1 per window changed; the first mibi ever takes 1.
+function growMinutes(sp, changes, first) { return first ? 1 : SPECIES[sp].size + Math.max(0, SPECIES[sp].win.length - 3) + changes; }
+
+// ===================== 4. The shared save =====================
+// One key for both pages. The Companion owns every top-level field except `st`; the Station owns `st` and only
+// reads the rest. Each page re-reads the stored save before writing and keeps the other page's part as stored.
+// `wid` names the world: a New world on the Companion starts a fresh Station too.
+let SV = null, ST = null;
+function freshSt(wid, turn) {
+  return { wid: wid == null ? null : wid, at: Date.now(), turn: turn || 0, e: 0, d: 0, s: 0, tray: [], waiting: [], accepted: [], known: [], met: [],
+    seen: {}, studiedW: {}, mibis: [], nextMibi: 1, nameN: 0, inc: null, dock: { docked: false, at: Date.now() }, withReq: null, probe: null,
+    mendFull: true, freeId: false, returned: [], firstMibi: true, log: [] };
+}
+// v7 → v8 (both pages carry the same structural migration): the Companion's Station store becomes the Station's
+// part; mibis move to the Station; the bay starts empty; genomes are filled in on the Station page.
+function migrate7(o) {
+  const wid = 'w' + (o.seed >>> 0).toString(36), st = freshSt(wid, o.turn), H = o.home || { e: 0, d: 0, s: 0, pods: [] };
+  st.e = H.e | 0; st.d = H.d | 0; st.s = H.s | 0; st.known = (o.known || []).slice(); st.met = st.known.slice();
+  (H.pods || []).forEach((p, i) => { const pod = { id: 'v7-' + i, sp: p.sp, g: p.g, how: p.how, gs: hash(o.seed, 'gs7', i, p.sp), n: p.n || 0, idd: p.idd ? 1 : 0, st: [] };
+    (st.tray.length < TRAY ? st.tray : st.waiting).push(pod); });
+  st.mibis = (o.mibis || []).map(m => ({ id: m.id, name: m.name, sp: m.sp, gs: hash(o.seed, 'mibi7', m.id), born: m.born || 0, from: { n: m.from || 0, g: '', how: '' }, mem: m.mem || null, outings: 0, notches: 0, bonded: false }));
+  st.nextMibi = st.mibis.reduce((a, m) => Math.max(a, m.id), 0) + 1; st.nameN = st.mibis.length;
+  st.freeId = (o.found || []).includes('freeid'); st.firstMibi = !st.mibis.length;
+  const s = Object.assign({}, o); delete s.home; delete s.report;
+  s.v = SAVE_V; s.wid = wid; s.bay = []; s.hold = null; s.st = st;
+  if (s.phase === 'station') s.phase = 'setup';
+  return s;
+}
+function readStored() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw) { const o = JSON.parse(raw); if (o && o.v === SAVE_V) return o; }
+    const old = localStorage.getItem(V7_KEY);
+    if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { const m = migrate7(o); localStorage.setItem(SAVE_KEY, JSON.stringify(m)); localStorage.removeItem(V7_KEY); return m; } }
+  } catch (e) { }
+  return null;
+}
+// Fill in what an older or migrated record lacks (genomes, codes, window knowledge).
+function normSt(st) {
+  for (const k of ['tray', 'waiting', 'accepted', 'known', 'met', 'mibis', 'returned', 'log']) if (!Array.isArray(st[k])) st[k] = [];
+  st.seen = st.seen || {}; st.studiedW = st.studiedW || {}; st.dock = st.dock || { docked: false, at: Date.now() };
+  for (const p of st.tray.concat(st.waiting)) { if (!p.al) p.al = podGenome(p.gs, p.sp); if (!Array.isArray(p.st)) p.st = []; }
+  for (const m of st.mibis) { if (!m.al) m.al = podGenome(m.gs, m.sp); if (!m.code) m.code = genomeCode(m.sp, m.al, m.gs);
+    if (!Array.isArray(m.known)) m.known = SPECIES[m.sp].win.map(() => 'grown'); if (!Array.isArray(m.hid)) m.hid = []; if (!m.from) m.from = { n: 0, g: '', how: '' }; }
+  return st;
+}
+function load() {
+  const o = readStored();
+  if (!o) { SV = { v: SAVE_V, wid: null, st: freshSt(null, 0) }; ST = SV.st; return; }
+  SV = o;
+  if (!SV.st || SV.st.wid !== SV.wid) SV.st = freshSt(SV.wid, SV.turn || 0);   // a new world on the Companion: a fresh Station
+  ST = normSt(SV.st);
+}
+function save() {
+  if (window.__stResetting) return;
+  try {
+    const cur = readStored();
+    if (cur && cur.wid === ST.wid) { SV = cur; }          // keep the Companion's part as stored
+    else if (cur && cur.wid !== ST.wid) { SV = cur; ST = SV.st = freshSt(cur.wid, cur.turn || 0); }
+    SV.st = ST; normSt(ST); ST.at = Date.now();
+    localStorage.setItem(SAVE_KEY, JSON.stringify(SV));
+  } catch (e) { /* storage unavailable: keep playing in memory */ }
+  onChanged();
+}
+// What the Station can know about the Companion (read-only).
+const cp = () => SV || {};
+const hasWorld = () => !!(SV && SV.wid && typeof SV.seed === 'number');
+const docked = () => !!(ST.dock && ST.dock.docked);
+const onExpedition = () => !!(SV && SV.exp);
+const bayCrates = () => (SV && Array.isArray(SV.bay) ? SV.bay : []).filter(c => !ST.accepted.includes(c.id));
+const withId = () => SV && SV.with != null ? SV.with : null;
+const mibiById = id => ST.mibis.find(m => m.id === id) || null;
+const withMibi = () => mibiById(withId());
+const residents = () => ST.mibis.filter(m => m.id !== withId());
+function mibiStage(m) { const age = ST.turn - (m.born || 0); return age < JUVENILE_TURNS ? 'juvenile' : age >= JUVENILE_TURNS + ELDER_TURNS ? 'elder' : 'adult'; }
+const tierNow = () => (ST.probe && ST.probe.tier) || (SV && SV.tier) || 1;
+function logEv(t) { ST.log.push('T' + (ST.turn + 1) + ' · ' + t); if (ST.log.length > 40) ST.log.splice(0, ST.log.length - 40); }
+
+// ===================== 5. Rules: dock, arrivals, pods, studies, creation, incubation, residents, Probe =====================
+// FX: presentation-only events the renderer reads. UI: where the focus is on each screen (not saved).
+const FX = { msg: '', msgAt: -1e9, lockUntil: 0, arr: null, id: null, study: null, stamp: null, hatch: null, moment: null, crateIn: -1e9, mend: null, wake: 0 };
+let NOW = 0;
+const UI = { screen: 'home', prev: [], home: { f: 'room' }, pods: { f: 'pod', cur: null, anchor: null, wi: 0, cmp: null, wildArm: 0 },
+  create: null, inc: {}, lib: { sp: 0, f: 'shelf', li: 0 }, hab: { id: null, f: 'stage', bondArm: 0 }, bench: { f: 0, arm: 0 },
+  report: null, meet: null, lastInput: 0, idle: false };
+function msg(t) { FX.msg = t; FX.msgAt = NOW; }
+function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + ms); }
+const canPay = (e, d, s) => ST.e >= (e || 0) && ST.d >= (d || 0) && ST.s >= (s || 0);
+function shortText(e, d, s) {
+  const p = []; if (e > ST.e) p.push((e - ST.e) + ' ⚡'); if (d > ST.d) p.push((d - ST.d) + ' ◆'); if (s > ST.s) p.push((s - ST.s) + ' ❀');
+  return 'needs ' + p.join(' ') + ' more';
+}
+const priceText = (e, d, s) => [e ? e + ' ⚡' : '', s ? s + ' ❀' : '', d ? d + ' ◆' : ''].filter(Boolean).join(' ');
+const spWord = sp => SPECIES[sp].name.toLowerCase();
+const podById = id => ST.tray.find(p => p.id === id) || null;
+const podName = p => p.idd ? spWord(p.sp) + ' pod' : 'unknown pod';
+function podOrigin(p) { return (PLACE_WORD[p.g] || p.g || 'somewhere') + (p.how && HOW_WORD[p.how] ? ' · ' + (HOW_ACT.includes(p.how) ? (p.idd ? 'a ' + spWord(p.sp) + ' ' : 'a creature ') : '') + HOW_WORD[p.how] : '') + (p.n ? ' · expedition ' + p.n : ''); }
+function fillCups() { while (ST.tray.length < TRAY && ST.waiting.length) { const p = ST.waiting.shift(); p.landAt = Date.now(); ST.tray.push(p); } }
+// The effective "with you" mibi: the Companion's slot, or the Station's pending choice once docked.
+function effWithId() { const r = ST.withReq; if (r && docked() && r.seq > ((SV && SV.withSeen) || 0)) return r.id; return withId(); }
+function pendingWith() { const r = ST.withReq; return r && r.seq > ((SV && SV.withSeen) || 0) && r.id !== withId() ? mibiById(r.id) : null; }
+const atHome = () => ST.mibis.filter(m => m.id !== effWithId());
+
+// ---- Dock and lift (the Caddy's one key, prototype only) ----
+function probeNow() {   // the Probe as the Station knows it: its own record if the Companion hasn't read it yet, else the Companion's
+  const c = cp(), tier = Math.max(c.tier || 1, ST.probe ? ST.probe.tier : 1), smax = TIER[tier].shield;
+  if (ST.probe && ST.probe.seq > (c.probeSeen || 0)) return { shield: ST.probe.shield, smax, tier };
+  return { shield: c.shield == null ? smax : clamp(c.shield, 0, smax), smax, tier };
+}
+function payMend() {
+  let paid = 0; while (ST.probe.shield < ST.probe.smax && ST.e >= PRICE.mend) { ST.e -= PRICE.mend; ST.probe.shield++; paid++; }
+  if (paid) { ST.probe.seq++; logEv('Mended ' + plural(paid, 'plate') + ' · −' + paid + ' Energy'); }
+  return paid;
+}
+function dockKey() {
+  if (!hasWorld()) { msg('No Companion world yet · open the Companion page first'); return; }
+  if (docked()) { ST.dock = { docked: false, at: Date.now() }; logEv('Companion lifted'); msg('Lifted · the Companion can set out'); save(); return; }
+  if (onExpedition()) { msg('The Companion is out on an expedition · Head home on it first'); return; }
+  ST.dock = { docked: true, at: Date.now() };
+  // the Probe rests in its cradle: a break is mended free, and the Station always mends to two plates
+  const pr = probeNow(), broke = pr.shield <= 0, floor = Math.min(2, pr.smax);
+  let sh = pr.shield, free = 0; if (broke) { free = pr.smax; sh = pr.smax; } else if (sh < floor) { free = floor - sh; sh = floor; }
+  ST.probe = { shield: sh, smax: pr.smax, tier: pr.tier, seq: (ST.probe ? ST.probe.seq : 0) + 1 };
+  const paid = ST.mendFull ? payMend() : 0;
+  FX.mend = { free, paid, broke, at: NOW };
+  // memories, outings and skill notches come home with the Companion
+  for (const m of cp().mibis || []) { const q = mibiById(m.id); if (q) { if (m.mem) q.mem = m.mem; q.outings = Math.max(q.outings || 0, m.outings || 0); q.notches = Math.max(q.notches || 0, m.notches || 0); q.places = m.places || q.places; } }
+  const n = bayCrates().length; FX.crateIn = NOW;
+  logEv('Companion docked' + (n ? ' · ' + plural(n, 'crate') : ''));
+  msg(n ? 'Docked · ' + plural(n, 'sealed crate') + ' in the bay' : broke ? 'Docked · the Probe is mended free' : 'Docked · the bay is empty');
+  save();
+}
+// ---- Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept) ----
+function openBay() {
+  const cs = bayCrates(); if (!docked() || !cs.length) return;
+  const plays = [];
+  for (const c of cs) {
+    ST.accepted.push(c.id); if (ST.accepted.length > 60) ST.accepted.splice(0, ST.accepted.length - 60);
+    ST.e += c.e | 0; ST.d += c.d | 0; ST.s += c.s | 0;
+    const ids = [];
+    for (const q of c.pods || []) {
+      if (!SPECIES[q.sp]) continue;   // a malformed record never breaks the bay
+      const pod = { id: c.id + ':' + q.id, sp: q.sp, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k, n: c.n, idd: 0, st: [], fresh: 1 };
+      pod.al = podGenome(pod.gs, pod.sp);
+      if (ST.tray.length < TRAY) ST.tray.push(pod); else ST.waiting.push(pod);   // no free cup: it waits sealed in the bay
+      ids.push(pod.id);
+    }
+    for (const sp of c.met || []) if (!ST.met.includes(sp)) ST.met.push(sp);
+    const before = ST.turn; ST.turn = Math.max(ST.turn, c.turn | 0);
+    const paid = ST.mendFull && ST.probe ? payMend() : 0;
+    plays.push({ c, ids, paid, turnFrom: before, turnTo: ST.turn });
+    logEv('Crate ' + c.n + ' opened · ' + plural((c.pods || []).length, 'pod') + ' · +' + (c.e | 0) + ' Energy +' + (c.d | 0) + ' Data +' + (c.s | 0) + ' Essence');
+  }
+  if (ST.inc && !incReady()) { ST.inc.early = true; logEv('New cargo · the embryo finishes early'); }   // the build scope's rule (see README)
+  FX.arr = { plays, at: NOW }; lockInput(plays.length * ARRIVE_MS + 200);
+  UI.report = { plays, at: NOW + plays.length * ARRIVE_MS, mend: FX.mend };
+  save();
+}
+const arriving = () => !!(FX.arr && NOW - FX.arr.at < FX.arr.plays.length * ARRIVE_MS);
+// ---- Pods: identify, study, compare, return ----
+function identify(p) {
+  if (!p || p.idd) return;
+  const free = !ST.freeId;
+  if (!free && ST.e < PRICE.identify) { msg((ST.known.includes(p.sp) ? 'Logging' : 'Identifying') + ' costs 1 ⚡ · ' + shortText(1, 0, 0)); return; }
+  if (free) ST.freeId = true; else ST.e -= PRICE.identify;
+  const newSp = !ST.known.includes(p.sp); if (newSp) ST.known.push(p.sp); if (!ST.met.includes(p.sp)) ST.met.push(p.sp);
+  p.idd = 1; p.fresh = 0; p.newSp = newSp ? 1 : 0;
+  FX.id = { id: p.id, at: NOW, newSp, free }; lockInput(newSp ? ID_MS : 700);
+  logEv((newSp ? 'New species · ' : 'Logged · ') + spWord(p.sp) + (free ? ' (free)' : ' · −1 Energy'));
+  save();
+}
+function seenAdd(sp, w, v) { const k = sp + ':' + w, a = ST.seen[k] || (ST.seen[k] = []); if (v >= 0 && !a.includes(v)) a.push(v); }
+function studyBlock(p, w) {
+  const W = SPECIES[p.sp].win[w];
+  if (!p.idd) return 'identify it first';
+  if (p.st[w]) return null;
+  if (W.lock === 'tier2' && tierNow() < 2) return 'opens with Probe tier 2';
+  if (ST.d < PRICE.study) return shortText(0, PRICE.study, 0);
+  return '';
+}
+function study(p, w) {
+  const b = studyBlock(p, w); if (b) { msg('Study ' + SPECIES[p.sp].win[w].word + ' · ' + b); return; } if (b === null) return;
+  ST.d -= PRICE.study; p.st[w] = 1; ST.studiedW[p.sp + ':' + w] = 1;
+  const pr = p.al[w]; seenAdd(p.sp, w, shows(pr)); seenAdd(p.sp, w, hides(pr));
+  FX.study = { id: p.id, w, at: NOW }; lockInput(STUDY_MS);
+  logEv('Studied ' + spWord(p.sp) + ' ' + SPECIES[p.sp].win[w].word + ' · −2 Data');
+  save();
+}
+// A glint: this window of a species has been studied on some pod, this pod's copy of it isn't studied, and this pod
+// carries a look not yet seen in that species. It says "new here", never what.
+function glint(p, w) { if (!p.idd || p.st[w] || !ST.studiedW[p.sp + ':' + w]) return false; const seen = ST.seen[p.sp + ':' + w] || []; return p.al[w].some(v => !seen.includes(v)); }
+const podGlints = p => SPECIES[p.sp].win.some((_, w) => glint(p, w));
+function returnPod(p) {
+  ST.tray = ST.tray.filter(q => q !== p); ST.s += PRICE.wild;
+  ST.returned.push({ id: p.id, sp: p.sp, g: p.g, k: p.k || null }); if (ST.returned.length > 30) ST.returned.shift();
+  logEv('Returned a ' + podName(p) + ' to the wild · +1 Essence'); fillCups();
+  msg('Back to the ' + (PLACE_WORD[p.g] || 'wild') + ' · +1 ❀ · the Companion learns at the next dock'); save();
+}
+// ---- Create: the founder from one pod. Choosable, studied windows roll only among what this pod carries. ----
+function rollOptions(p, w) {
+  const pr = p.al[w], s = shows(pr), h = hides(pr); if (h < 0) return [pr.slice()];
+  return [pr.slice(), [h, h], [s, s]];   // as the pod is → the hidden one through and through → the shown one through and through
+}
+const samePair = (a, b) => Math.min(a[0], a[1]) === Math.min(b[0], b[1]) && Math.max(a[0], a[1]) === Math.max(b[0], b[1]);
+function canRoll(p, w) { const W = SPECIES[p.sp].win[w]; return !!p.st[w] && W.mode === 'choose' && !(W.lock === 'tier2' && tierNow() < 2) && hides(p.al[w]) >= 0; }
+function changedWins(cr) { const p = podById(cr.podId); return p ? cr.al.map((pr, w) => samePair(pr, p.al[w]) ? -1 : w).filter(w => w >= 0) : []; }
+function growCost(cr) { return { e: PRICE.growE, s: PRICE.growS, d: PRICE.change * changedWins(cr).length }; }
+function openCreate(p) { UI.create = { podId: p.id, al: p.al.map(x => x.slice()), f: 0 }; goScreen('create'); }
+function growBlock(cr) { const c = growCost(cr); if (ST.inc) return 'the incubator is busy'; if (!canPay(c.e, c.d, c.s)) return shortText(c.e, c.d, c.s); return ''; }
+function grow(cr) {
+  const p = podById(cr.podId); if (!p) return; const b = growBlock(cr); if (b) { msg('Grow it · ' + b); return; }
+  const c = growCost(cr), ch = changedWins(cr);
+  ST.e -= c.e; ST.s -= c.s; ST.d -= c.d;
+  const al = cr.al.map(x => x.slice()), code = genomeCode(p.sp, al, p.gs);
+  const known = SPECIES[p.sp].win.map((_, w) => p.st[w] || ch.includes(w) ? 'studied' : null);
+  const m = { sp: p.sp, gs: p.gs, al, code, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, known, hid: known.map(k => !!k), changed: ch, outings: 0, notches: 0, bonded: false, mem: null };
+  for (const w of ch) { seenAdd(p.sp, w, shows(al[w])); }
+  const first = !!ST.firstMibi; ST.firstMibi = false;
+  ST.inc = { m, start: Date.now(), mins: growMinutes(p.sp, ch.length, first), early: false, g: p.g };
+  ST.tray = ST.tray.filter(q => q !== p); fillCups();
+  FX.stamp = { at: NOW, code }; lockInput(1500);
+  logEv('Grew a ' + spWord(p.sp) + ' founder · ' + code + ' · ' + plural(ST.inc.mins, 'minute') + (ch.length ? ' · ' + plural(ch.length, 'change') : ''));
+  UI.create = null; UI.pods.cur = null;
+  save(); goScreen('incubator', true);
+}
+// ---- The incubator: real minutes; the surprises clear as it grows ----
+function incProgress() { const I = ST.inc; if (!I) return 0; if (I.early) return 1; return clamp((Date.now() - I.start) / (I.mins * 60000), 0, 1); }
+const incReady = () => !!ST.inc && incProgress() >= 1;
+function incKnown(w) { const I = ST.inc; if (!I) return null; if (I.m.known[w]) return I.m.known[w];
+  const unk = I.m.known.map((k, i) => k ? -1 : i).filter(i => i >= 0), k = unk.indexOf(w); return incProgress() >= (k + 1) / (unk.length + 1) ? 'grown' : null; }
+function openInc() {
+  if (!incReady()) return;
+  if (atHome().length >= ROOM) { msg('The vivarium is full · take a mibi with you first'); return; }
+  const m = ST.inc.m; m.id = ST.nextMibi++;
+  m.name = MIBI_NAMES[ST.nameN % MIBI_NAMES.length] + (ST.nameN >= MIBI_NAMES.length ? ' ' + (Math.floor(ST.nameN / MIBI_NAMES.length) + 1) : ''); ST.nameN++;
+  m.born = ST.turn; m.known = m.known.map(k => k || 'grown');
+  SPECIES[m.sp].win.forEach((_, w) => seenAdd(m.sp, w, shows(m.al[w])));
+  ST.mibis.push(m); ST.inc = null;
+  FX.hatch = { id: m.id, at: NOW }; lockInput(HATCH_MS); UI.meet = m.id;
+  logEv('Opened · ' + m.name + ' · ' + spWord(m.sp) + ' · juvenile');
+  save();
+}
+// ---- Residents ----
+function takeWith(m) {
+  if (!m || m.id === effWithId()) return;
+  const prev = mibiById(effWithId());
+  ST.withReq = { id: m.id, seq: (ST.withReq ? ST.withReq.seq : 0) + 1 };
+  logEv(m.name + ' chosen to go with you');
+  msg(docked() ? m.name + ' goes into the Companion' + (prev ? ' · ' + prev.name + ' comes home' : '') : m.name + ' goes with you at the next dock');
+  save();
+}
+const bondOffered = m => !!m && !m.bonded && (m.outings || 0) >= 1;
+function bond(m) { m.bonded = true; logEv('Bonded with ' + m.name); msg(m.name + ' and you are bonded · a small heart'); save(); }
+// ---- Probe bench ----
+function mendPlate() {
+  const pr = ST.probe; if (!docked() || !pr) return;
+  if (pr.shield >= pr.smax) return; if (ST.e < PRICE.mend) { msg('Mend a plate · ' + shortText(1, 0, 0)); return; }
+  ST.e -= PRICE.mend; pr.shield++; pr.seq++; logEv('Mended a plate · −1 Energy'); FX.mend = { free: 0, paid: 1, at: NOW }; save();
+}
+const tier2Ready = () => docked() && !!ST.probe && ST.probe.tier < 2 && canPay(PRICE.tier2E, PRICE.tier2D, 0);
+function installTier2() {
+  if (!tier2Ready()) return; ST.e -= PRICE.tier2E; ST.d -= PRICE.tier2D;
+  ST.probe = { shield: TIER[2].shield, smax: TIER[2].shield, tier: 2, seq: ST.probe.seq + 1 };
+  logEv('Probe tier 2 installed'); msg('Probe tier 2 · reaches further, carries 3 pods, reads the deep'); save();
+}
+// ---- What most needs the player (the bottom line's right part; ✓ on the room does it) ----
+function need() {
+  const cs = bayCrates();
+  if (docked() && cs.length) return { text: plural(cs.length, 'crate') + ' in the bay', act: 'bay', label: 'Open the bay · ' + plural(cs.length, 'crate') };
+  if (incReady()) return { text: 'the embryo is ready', act: 'inc', label: 'Open the incubator' };
+  if (UI.meet != null && mibiById(UI.meet)) { const m = mibiById(UI.meet); return { text: 'meet ' + m.name, act: 'meet', label: 'Meet ' + m.name }; }
+  const fresh = ST.tray.filter(p => !p.idd);
+  if (fresh.length) return { text: fresh.length === 1 ? 'a new pod waits' : plural(fresh.length, 'new pod') + ' wait', act: 'pods', label: 'Look at the new pod' + (fresh.length > 1 ? 's' : '') };
+  if (ST.waiting.length) return { text: plural(ST.waiting.length, 'pod') + ' wait sealed · free a cup', act: 'pods', label: 'Look at the pods' };
+  const idd = ST.tray.filter(p => p.idd);
+  if (idd.length && !ST.inc) { const p = idd[0]; const c = { e: PRICE.growE, s: PRICE.growS };
+    return { text: 'a ' + spWord(p.sp) + ' pod waits' + (canPay(c.e, 0, c.s) ? '' : ' · ' + shortText(c.e, 0, c.s).replace('needs ', 'needs ').replace(' more', '')), act: 'pods', label: 'Look at the pods' }; }
+  const b = ST.mibis.find(bondOffered); if (b) return { text: b.name + ' could bond', act: 'hab', id: b.id, label: 'Visit ' + b.name };
+  if (ST.inc) return { text: 'an embryo is growing', act: 'inc', label: 'Look at the incubator' };
+  if (!hasWorld()) return { text: 'open the Companion page', act: null };
+  return { text: '', act: null };
+}
+
+// ===================== 6. Pixel graphics core =====================
+// Everything draws only palette colours at integer device pixels. Art is built once into indexed buffers
+// (like a sprite atlas baked into flash) and blitted 1:1. The Station draws larger and smoother than the
+// Companion, never blurred or scaled by the browser.
+const C = {}; PALETTE.forEach(([n], i) => { C[n] = i; });
+const HEX = PALETTE.map(p => p[1]);
+const RGB = HEX.map(h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
+const DARK = PALETTE.map(([n]) => C[DARK_OF[n]]);
+const LIGHT = PALETTE.map(([n]) => C[LIGHT_OF[n]]);
+const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
+const lite = (c, n) => { for (let i = 0; i < (n || 1); i++) c = LIGHT[c]; return c; };
+const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+const bay = (x, y) => BAYER[(y & 3) * 4 + (x & 3)];
+// Indexed pixel buffer: -1 is transparent.
+class PB {
+  constructor(w, h) { this.w = w; this.h = h; this.p = new Int16Array(w * h).fill(-1); this.cv = null; }
+  set(x, y, c) { x = Math.floor(x); y = Math.floor(y); if (c >= 0 && x >= 0 && y >= 0 && x < this.w && y < this.h) this.p[y * this.w + x] = c; }
+  get(x, y) { return (x < 0 || y < 0 || x >= this.w || y >= this.h) ? -1 : this.p[y * this.w + x]; }
+  rect(x, y, w, h, c) { x = Math.round(x); y = Math.round(y); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) this.set(x + i, y + j, c); return this; }
+  // Filled ellipse tested at pixel centres. o: { sh: [light, dark], rot, clip(x,y), chk, dith: [col, level] }
+  ell(cx, cy, rx, ry, c, o) {
+    o = o || {}; const ca = Math.cos(o.rot || 0), sa = Math.sin(o.rot || 0), R = Math.max(rx, ry) + 1;
+    for (let y = Math.floor(cy - R); y <= Math.ceil(cy + R); y++) for (let x = Math.floor(cx - R); x <= Math.ceil(cx + R); x++) {
+      const px = x + .5 - cx, py = y + .5 - cy, nx = (px * ca + py * sa) / rx, ny = (-px * sa + py * ca) / ry;
+      if (nx * nx + ny * ny > 1) continue; if (o.clip && !o.clip(x, y)) continue; if (o.chk && (x + y) % 2) continue;
+      let col = c;
+      if (o.sh) { const ux = px / rx, uy = py / ry;
+        if ((ux + .38) ** 2 + (uy + .45) ** 2 < .16) col = o.sh[0]; else if (ux * .45 + uy * .9 > .58) col = o.sh[1]; }
+      if (o.dith && bay(x, y) < o.dith[1]) col = o.dith[0];
+      this.set(x, y, col);
+    }
+    return this;
+  }
+  // An ellipse outline th pixels thick (rings, ridges, glass rims).
+  ring(cx, cy, rx, ry, c, th, rot, clip) {
+    th = th || 1; const ca = Math.cos(rot || 0), sa = Math.sin(rot || 0), R = Math.max(rx, ry) + 1;
+    for (let y = Math.floor(cy - R); y <= Math.ceil(cy + R); y++) for (let x = Math.floor(cx - R); x <= Math.ceil(cx + R); x++) {
+      const px = x + .5 - cx, py = y + .5 - cy, nx = (px * ca + py * sa), ny = (-px * sa + py * ca);
+      const d = Math.hypot(nx / rx, ny / ry); if (d > 1) continue; const din = Math.hypot(nx / Math.max(.1, rx - th), ny / Math.max(.1, ry - th)); if (din <= 1) continue;
+      if (clip && !clip(x, y)) continue; this.set(x, y, c); }
+    return this;
+  }
+  poly(pts, c) {
+    let y0 = 1e9, y1 = -1e9; for (const [, y] of pts) { y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+    for (let y = Math.floor(y0); y <= Math.ceil(y1); y++) {
+      const yc = y + .5, xs = [];
+      for (let i = 0; i < pts.length; i++) { const [ax, ay] = pts[i], [bx, by] = pts[(i + 1) % pts.length];
+        if ((ay <= yc && by > yc) || (by <= yc && ay > yc)) xs.push(ax + (yc - ay) / (by - ay) * (bx - ax)); }
+      xs.sort((a, b) => a - b);
+      for (let k = 0; k + 1 < xs.length; k += 2) for (let x = Math.ceil(xs[k] - .5); x <= Math.floor(xs[k + 1] - .5); x++) this.set(x, y, c);
+    }
+    return this;
+  }
+  line(x0, y0, x1, y1, c, th) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let e = dx + dy;
+    for (;;) { if (th) this.rect(x0 - (th >> 1), y0 - (th >> 1), th, th, c); else this.set(x0, y0, c); if (x0 === x1 && y0 === y1) break; const e2 = 2 * e; if (e2 >= dy) { e += dy; x0 += sx; } if (e2 <= dx) { e += dx; y0 += sy; } }
+    return this;
+  }
+  // Selective outline: transparent pixels touching the shape take a darker shade of what they touch.
+  outline(fn) {
+    const src = this.p.slice(), w = this.w, h = this.h;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      if (src[y * w + x] >= 0) continue; let n = -1;
+      if (y + 1 < h && src[(y + 1) * w + x] >= 0) n = src[(y + 1) * w + x];
+      else if (y > 0 && src[(y - 1) * w + x] >= 0) n = src[(y - 1) * w + x];
+      else if (x > 0 && src[y * w + x - 1] >= 0) n = src[y * w + x - 1];
+      else if (x + 1 < w && src[y * w + x + 1] >= 0) n = src[y * w + x + 1];
+      if (n >= 0) this.p[y * w + x] = fn ? fn(n) : shade(n, 2);
+    }
+    return this;
+  }
+  // The Station's richer pass: a rim of light up and left, a dithered core shadow down and right, read from the
+  // silhouette itself, so every shape looks sculpted under the room's lamp. d scales with the drawing size.
+  rich(d) {
+    d = Math.max(1, d | 0); const src = this.p.slice(), w = this.w, h = this.h, at = (x, y) => (x < 0 || y < 0 || x >= w || y >= h) ? -1 : src[y * w + x];
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const c = src[y * w + x]; if (c < 0) continue;
+      if (at(x - d, y - d) < 0 && at(x - 1, y - 1) >= 0 || at(x - 1, y - d * 2) < 0 && d > 1 && bay(x, y) < 6) this.p[y * w + x] = LIGHT[c];
+      else if (at(x + d * 2, y + d * 2) < 0) this.p[y * w + x] = at(x + d, y + d) < 0 || bay(x, y) < 9 ? DARK[c] : c; }
+    return this;
+  }
+  blit(o, ox, oy) { for (let y = 0; y < o.h; y++) for (let x = 0; x < o.w; x++) { const c = o.p[y * o.w + x]; if (c >= 0) this.set(ox + x, oy + y, c); } return this; }
+  map(fn) { for (let i = 0; i < this.p.length; i++) if (this.p[i] >= 0) this.p[i] = fn(this.p[i], i % this.w, (i / this.w) | 0); return this; }
+  canvas() {
+    if (this.cv) return this.cv;
+    const cv = document.createElement('canvas'); cv.width = this.w; cv.height = this.h;
+    const g = cv.getContext('2d'), id = g.createImageData(this.w, this.h);
+    for (let i = 0; i < this.p.length; i++) { const c = this.p[i]; if (c < 0) continue; const rgb = RGB[c], o = i * 4; id.data[o] = rgb[0]; id.data[o + 1] = rgb[1]; id.data[o + 2] = rgb[2]; id.data[o + 3] = 255; }
+    g.putImageData(id, 0, 0); this.cv = cv; return cv;
+  }
+}
+const ART = new Map();
+function art(key, build) { let pb = ART.get(key); if (!pb) { pb = build(); ART.set(key, pb); } return pb; }
+function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) o.p[y * pb.w + x] = pb.p[y * pb.w + pb.w - 1 - x]; return o; }
+function upPB(src, k) { const pb = new PB(src.w * k, src.h * k); for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) { const c = src.p[y * src.w + x]; if (c < 0) continue; pb.rect(x * k, y * k, k, k, c); } return pb; }
+function cropPB(src, x0, y0, w, h, bg) { const pb = new PB(w, h); if (bg != null) pb.rect(0, 0, w, h, bg); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const c = src.get(x0 + x, y0 + y); if (c >= 0) pb.p[y * w + x] = c; } return pb; }
+
+// ---------- Bitmap font: the Companion's 5×7 caps with 2-row descenders, at 2× and 3× ----------
+const GLYPHS = {
+  A: '.###.|#...#|#...#|#####|#...#|#...#|#...#', B: '####.|#...#|#...#|####.|#...#|#...#|####.', C: '.###.|#...#|#....|#....|#....|#...#|.###.',
+  D: '####.|#...#|#...#|#...#|#...#|#...#|####.', E: '#####|#....|#....|####.|#....|#....|#####', F: '#####|#....|#....|####.|#....|#....|#....',
+  G: '.###.|#...#|#....|#.###|#...#|#...#|.####', H: '#...#|#...#|#...#|#####|#...#|#...#|#...#', I: '###|.#.|.#.|.#.|.#.|.#.|###',
+  J: '..##|...#|...#|...#|#..#|#..#|.##.', K: '#...#|#..#.|#.#..|##...|#.#..|#..#.|#...#', L: '#...|#...|#...|#...|#...|#...|####',
+  M: '#...#|##.##|#.#.#|#.#.#|#...#|#...#|#...#', N: '#...#|##..#|#.#.#|#..##|#...#|#...#|#...#', O: '.###.|#...#|#...#|#...#|#...#|#...#|.###.',
+  P: '####.|#...#|#...#|####.|#....|#....|#....', Q: '.###.|#...#|#...#|#...#|#.#.#|#..#.|.##.#', R: '####.|#...#|#...#|####.|#.#..|#..#.|#...#',
+  S: '.###.|#...#|#....|.###.|....#|#...#|.###.', T: '#####|..#..|..#..|..#..|..#..|..#..|..#..', U: '#...#|#...#|#...#|#...#|#...#|#...#|.###.',
+  V: '#...#|#...#|#...#|#...#|.#.#.|.#.#.|..#..', W: '#...#|#...#|#...#|#.#.#|#.#.#|##.##|#...#', X: '#...#|#...#|.#.#.|..#..|.#.#.|#...#|#...#',
+  Y: '#...#|#...#|.#.#.|..#..|..#..|..#..|..#..', Z: '#####|....#|...#.|..#..|.#...|#....|#####',
+  a: '....|....|.##.|...#|.###|#..#|.###', b: '#...|#...|###.|#..#|#..#|#..#|###.', c: '....|....|.###|#...|#...|#...|.###',
+  d: '...#|...#|.###|#..#|#..#|#..#|.###', e: '....|....|.##.|#..#|####|#...|.###', f: '.##|#..|###|#..|#..|#..|#..',
+  g: '....|....|.###|#..#|#..#|#..#|.###|...#|.##.', h: '#...|#...|###.|#..#|#..#|#..#|#..#', i: '#|.|#|#|#|#|#',
+  j: '..#|...|..#|..#|..#|..#|..#|#.#|.#.', k: '#...|#...|#..#|#.#.|##..|#.#.|#..#', l: '#.|#.|#.|#.|#.|#.|.#',
+  m: '.....|.....|##.#.|#.#.#|#.#.#|#.#.#|#.#.#', n: '....|....|###.|#..#|#..#|#..#|#..#', o: '....|....|.##.|#..#|#..#|#..#|.##.',
+  p: '....|....|###.|#..#|#..#|#..#|###.|#...|#...', q: '....|....|.###|#..#|#..#|#..#|.###|...#|...#', r: '....|....|#.##|##..|#...|#...|#...',
+  s: '....|....|.###|#...|.##.|...#|###.', t: '.#..|.#..|###.|.#..|.#..|.#..|..##', u: '....|....|#..#|#..#|#..#|#..#|.###',
+  v: '.....|.....|#...#|#...#|.#.#.|.#.#.|..#..', w: '.....|.....|#...#|#.#.#|#.#.#|#.#.#|.#.#.', x: '....|....|#..#|#..#|.##.|#..#|#..#',
+  y: '....|....|#..#|#..#|#..#|#..#|.###|...#|.##.', z: '....|....|####|...#|.##.|#...|####',
+  0: '.##.|#..#|#..#|#..#|#..#|#..#|.##.', 1: '.#.|##.|.#.|.#.|.#.|.#.|###', 2: '.##.|#..#|...#|..#.|.#..|#...|####',
+  3: '###.|...#|...#|.##.|...#|...#|###.', 4: '#..#|#..#|#..#|####|...#|...#|...#', 5: '####|#...|###.|...#|...#|#..#|.##.',
+  6: '.##.|#...|#...|###.|#..#|#..#|.##.', 7: '####|...#|..#.|.#..|.#..|.#..|.#..', 8: '.##.|#..#|#..#|.##.|#..#|#..#|.##.',
+  9: '.##.|#..#|#..#|.###|...#|...#|.##.',
+  ' ': '...|...|...|...|...|...|...', '.': '.|.|.|.|.|.|#', ',': '.|.|.|.|.|#|#|#', '!': '#|#|#|#|#|.|#', '?': '.##.|#..#|...#|..#.|.#..|....|.#..',
+  ':': '.|.|.|#|.|.|#', ';': '.|.|.|#|.|.|#|#', '·': '.|.|.|.|#|.|.', '-': '...|...|...|...|###|...|...', '−': '....|....|....|....|####|....|....', '+': '...|...|.#.|.#.|###|.#.|.#.',
+  "'": '#|#|.|.|.|.|.', '"': '#.#|#.#|...|...|...|...|...', '(': '.#|#.|#.|#.|#.|#.|.#', ')': '#.|.#|.#|.#|.#|.#|#.', '/': '..#|..#|.#.|.#.|.#.|#..|#..',
+  '…': '.....|.....|.....|.....|.....|.....|#.#.#', '→': '......|......|...#..|....#.|######|....#.|...#..', '←': '......|......|..#...|.#....|######|.#....|..#...',
+  '▶': '#....|##...|###..|####.|###..|##...|#....', '◀': '....#|...##|..###|.####|..###|...##|....#',
+  '×': '.....|.....|#...#|.#.#.|..#..|.#.#.|#...#', '✓': '......#|.....##|....##.|##.##..|.###...|..#....|.......', '%': '##..#|##.#.|...#.|..#..|.#...|.#.##|#..##', '#': '.#.#.|#####|.#.#.|.#.#.|.#.#.|#####|.#.#.',
+  '⚡': '.......|.......|.......|.......|.......|.......|.......', '◆': '.......|.......|.......|.......|.......|.......|.......', '❀': '.......|.......|.......|.......|.......|.......|.......', '★': '.......|.......|.......|.......|.......|.......|.......',
+  '▲': '.......|...#...|..###..|.#####.|#######|.......|.......', '▼': '.......|#######|.#####.|..###..|...#...|.......|.......', '♥': '.......|.##.##.|#######|#######|.#####.|..###..|...#...',
+};
+const GLYPH_ALIAS = { '’': "'", '‘': "'", '“': '"', '”': '"', '–': '-', '—': '-' };
+const FONT = {};
+for (const ch in GLYPHS) { const rows = GLYPHS[ch].split('|'); FONT[ch] = { w: rows[0].length, rows }; }
+function glyphOf(ch) { return FONT[ch] || FONT[GLYPH_ALIAS[ch]] || FONT['?']; }
+const ICON_GLYPH = { '⚡': 'energy', '◆': 'data', '❀': 'essence', '★': 'star' };   // drawn as the material icons, 7 columns wide
+function glyphCanvas(ch, col, s) {
+  return art('gl' + ch + ':' + col + ':' + s, () => { const gl = glyphOf(ch), pb = new PB(gl.w * s, 9 * s);
+    gl.rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === '#') pb.rect(x * s, y * s, s, s, col); }); return pb; }).canvas();
+}
+function textW(str, s) { s = s || 2; let w = 0; for (const ch of str) w += (glyphOf(ch).w + 1) * s; return Math.max(0, w - s); }
+function wrapText(str, maxW, s) { const words = str.split(' '), lines = []; let cur = '';
+  for (const w of words) { const t = cur ? cur + ' ' + w : w; if (textW(t, s) <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } } if (cur) lines.push(cur); return lines; }
+function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (str.length > 1 && textW(str + '…', s) > maxW) str = str.slice(0, -1); return str + '…'; }
+
+// ---------- The frame: 1024×600 offscreen at 1:1 device pixels ----------
+const scr = document.createElement('canvas'); scr.width = SW; scr.height = SH;
+const g = scr.getContext('2d'); g.imageSmoothingEnabled = false;
+const vis = document.getElementById('screen'), vctx = vis.getContext('2d'); vctx.imageSmoothingEnabled = false;
+const RM = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+const motion = () => !RM.matches;
+const R = (x, y, w, h, c) => { g.fillStyle = HEX[c]; g.fillRect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); };
+const blit = (pb, x, y) => g.drawImage(pb.canvas(), Math.round(x), Math.round(y));
+function text(str, x, y, col, s, align) {
+  s = s || 2; x = Math.round(x); y = Math.round(y); const w = textW(str, s);
+  if (align === 'center') x -= Math.round(w / 2); else if (align === 'right') x -= w;
+  for (const ch of str) { const gl = glyphOf(ch); if (ICON_GLYPH[ch]) { const ic = ICON[ICON_GLYPH[ch]](); g.drawImage(ic.canvas(), x + Math.round((gl.w * s - 14) / 2), y + Math.round((7 * s - 14) / 2)); }
+    else if (ch !== ' ') g.drawImage(glyphCanvas(ch, col, s), x, y); x += (gl.w + 1) * s; }
+  return w;
+}
+// A panel with cut corners (no title bars, no boxed buttons: used for plates, cards and the ribbon).
+function panel(x, y, w, h, fill, border) {
+  if (border != null) { R(x + 2, y, w - 4, h, border); R(x + 1, y + 1, w - 2, h - 2, border); R(x, y + 2, w, h - 4, border); x++; y++; w -= 2; h -= 2; }
+  R(x + 2, y, w - 4, h, fill); R(x + 1, y + 1, w - 2, h - 2, fill); R(x, y + 2, w, h - 4, fill);
+}
+function ditherArt(col, level) { return art('dith' + col + ':' + level, () => { const pb = new PB(64, 64); for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) if (bay(x, y) < level) pb.set(x, y, C[col]); return pb; }); }
+function ditherFill(x, y, w, h, col, level) {
+  if (level <= 0) return; if (level >= 16) { R(x, y, w, h, C[col]); return; }
+  const cv = ditherArt(col, level).canvas();
+  g.save(); g.beginPath(); g.rect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); g.clip();
+  for (let ty = Math.floor(y / 64) * 64; ty < y + h; ty += 64) for (let tx = Math.floor(x / 64) * 64; tx < x + w; tx += 64) g.drawImage(cv, tx, ty);
+  g.restore();
+}
+// The warm focus ring: a 3 px amber ring with cut corners around the focused thing, lifted 2 px.
+function focusRing(x, y, w, h) {
+  const pulse = motion() ? Math.floor(NOW / 500) % 2 : 0, c = pulse ? C.amber : C.orange;
+  R(x + 4, y - 3, w - 8, 3, c); R(x + 4, y + h, w - 8, 3, c); R(x - 3, y + 4, 3, h - 8, c); R(x + w, y + 4, 3, h - 8, c);
+  R(x, y - 1, 4, 2, c); R(x - 1, y, 2, 4, c); R(x + w - 4, y - 1, 4, 2, c); R(x + w - 1, y, 2, 4, c);
+  R(x, y + h - 1, 4, 2, c); R(x - 1, y + h - 4, 2, 4, c); R(x + w - 4, y + h - 1, 4, 2, c); R(x + w - 1, y + h - 4, 2, 4, c);
+}
+
+// ===================== 7. Art =====================
+// ---------- Mibis: the Companion's token shapes, drawn at 2–9× with a variant overlay per trait window ----------
+// look: the variant that shows per window, or −1 when unknown. An unknown window draws the species' reference look
+// (variant 0, or a neutral colour) under frost, so the picture never reveals what hasn't been found (draw only what is known).
+const NEUTRAL = { body: 'frostD', light: 'frost', shade: 'frostS', dark: 'stone' };
+const GLOW_COL = [{ body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' }, { body: 'yellow', light: 'cream', shade: 'gold', dark: 'bark' }, { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' }];
+const CAP_COL = [{ c: 'amber', l: 'cream', d: 'orange', rim: 'rust' }, { c: 'pink', l: 'blush', d: 'magenta', rim: 'wine' }, { c: 'sky', l: 'ice', d: 'river', rim: 'sea' }];
+const CAP_NEUTRAL = { c: 'frostD', l: 'frost', d: 'frostS', rim: 'stone' };
+// Which part of the body each window is, in token units (for the frost over unknown windows).
+const REGION = [
+  [(x, y) => ((x - 15) / 9.5) ** 2 + ((y - 21) / 7.6) ** 2 <= 1, (x, y) => y < 16.5 && x > 4 && x < 24, (x, y) => y > 26.6],
+  [(x, y) => ((x - 16) / 10) ** 2 + ((y - 23) / 5.6) ** 2 <= 1, (x, y) => x > 19.4 && y < 15.2, null, (x, y) => y > 26.2],
+  [(x, y) => y < 16.8, (x, y) => y < 16.8, null, (x, y) => y > 26.6],
+];
+function buildMibi(sp, look, pose, fr, s) {
+  const pb = new PB(32 * s, 32 * s), V = w => look[w] == null || look[w] < 0 ? 0 : look[w];
+  const E = (x, y, rx, ry, c, o) => pb.ell(x * s, y * s, rx * s, ry * s, C[c], o ? Object.assign({}, o, o.sh ? { sh: o.sh.map(n => C[n]) } : {}, o.clipU ? { clip: (px, py) => o.clipU((px + .5) / s, (py + .5) / s) } : {}) : o);
+  const Pp = (pts, c) => pb.poly(pts.map(([x, y]) => [x * s, y * s]), C[c]);
+  const eye = (x, y, dark) => { if (pose === 'nap') { E(x, y + .6, 1.2, .35, dark); return; } E(x, y, 1.05, 1.3, dark); E(x - .35, y - .45, .4, .4, 'white'); };
+  if (sp === 0) { // hopper: long ears, round body, puff tail
+    const k = SPECIES[0].col, ears = V(1), mk = V(0), gait = V(2);
+    const base = { idle: -.32, alert: -.08, nap: -1.3, eat: -.4 }[pose] ?? -.32, nap = pose === 'nap';
+    const by = nap ? 22.4 : 21, brx = nap ? 9.6 : 9, bry = nap ? 6.4 : 7.2;
+    const len = ears === 1 ? 4.2 : ears === 2 ? 5.4 : 6.5, ery = ears === 1 ? 4.4 : ears === 2 ? 6.2 : 7.2;
+    const a1 = ears === 2 ? -2.05 : base - .12, a2 = ears === 2 ? -1.75 : base + .1;
+    const at = (bx, byy, a) => [bx + Math.sin(a) * len, byy - Math.cos(a) * len];
+    const [e1x, e1y] = at(12, by - 5, a1), [e2x, e2y] = at(16, by - 6, a2);
+    E(e1x, e1y, 2.5, ery, k.shade, { rot: a1 });
+    E(e2x, e2y, 2.6, ery, k.body, { rot: a2, sh: [k.light, k.shade] }); E(e2x, e2y + .5, 1.1, ery - 2.2, 'pink', { rot: a2 });
+    E(6, by + 1, 2.7, 2.7, 'bone', { sh: ['white', 'fog'] });
+    E(15, by, brx, bry, k.body, { sh: [k.light, k.shade] });
+    const inBody = (x, y) => ((x - 15) / brx) ** 2 + ((y - by) / bry) ** 2 <= 1;
+    if (mk === 1) E(15, by, brx, bry, k.shade, { clipU: (x, y) => inBody(x, y) && Math.abs(x - 13.4) < 2.7 && y < by + 2.4 });
+    if (mk === 2) for (const [x, y, rx, ry] of [[10.6, by - 1, 3.1, 2.3], [17.6, by - 3.6, 2.6, 1.9], [13.6, by + 2.8, 2.1, 1.5]]) E(x, y, rx, ry, 'bone', { clipU: inBody });
+    E(17, by + 3, 4.6, 2.8, k.light);
+    if (gait === 1) { E(8.6, 28.3, 3.9, 1.5, k.shade); E(19.5, 28.3, 2.3, 1.2, k.shade); } else { E(10, 28.2, 2.6, 1.3, k.shade); E(19, 28.2, 2.6, 1.3, k.shade); }
+    const ey = pose === 'eat' ? by - 2 : by - 4;
+    eye(20, ey + 1.4, 'void'); E(22, ey + 4.5, .9, .5, 'pink'); E(24.4, ey + 2.5, .5, .5, 'pink');
+    if (pose === 'eat') E(23.8, ey + 5.6, .9, fr ? .5 : .9, 'plumD');
+  } else if (sp === 1) { // glowtail: low body, tail ending in a glowing bulb
+    const k = look[2] == null || look[2] < 0 ? NEUTRAL : GLOW_COL[V(2)], mk = V(0), crown = V(1), gait = V(3), nap = pose === 'nap';
+    const up = pose === 'alert' ? -1 : nap ? 1 : 0, glide = gait === 1, brx = glide ? 9.8 : 8.5, bry = glide ? 4.4 : 5, bcy = nap ? 24 : 23;
+    for (let t = 0; t <= 1.001; t += .06) { const x = (1 - t) ** 2 * 10 + 2 * (1 - t) * t * 2 + t * t * 4, y = (1 - t) ** 2 * 22 + 2 * (1 - t) * t * 22 + t * t * (nap ? 16 : 12); E(x, y, 1.8, 1.8, k.body); }
+    E(4, nap ? 14 : 10, 3.4, 3.4, 'yellow', { sh: ['cream', 'gold'] });
+    E(16, bcy, brx, bry, k.body, { sh: [k.light, k.shade] });
+    const inBody = (x, y) => ((x - 16) / brx) ** 2 + ((y - bcy) / bry) ** 2 <= 1;
+    if (mk === 0) for (const xs of [12.4, 15.4, 18.4]) E(16, bcy, brx, bry, k.shade, { clipU: (x, y) => inBody(x, y) && Math.abs(x - xs) < .85 && y < bcy + 1.6 });
+    if (mk === 1) for (const [x, y, r] of [[12.2, bcy - 1, 1.1], [15.8, bcy - 2.4, 1.2], [19, bcy - .2, 1], [13.8, bcy + 1.6, .9]]) E(x, y, r, r * .9, k.shade, { clipU: inBody });
+    if (crown === 1) { Pp([[20, 15 + up], [20.8, 4.6 + up], [23.4, 14 + up]], k.body); Pp([[24, 14 + up], [27.2, 4.2 + up], [27.9, 14 + up]], k.body); E(23.6, 11 + up, 1, 2.2, k.light); }
+    else { Pp([[20, 15 + up], [21.5, 9 + up], [23.5, 14 + up]], k.body); Pp([[24, 14 + up], [26.5, 8.5 + up], [27.5, 14 + up]], k.body); }
+    E(23.5, 18 + up, 5.2, 4.7, k.body, { sh: [k.light, k.shade] });
+    eye(25.8, 17.8 + up, k.dark); E(28.4, 19.6 + up, .55, .55, k.dark);
+    if (glide) { E(11, 27.4, 2.1, .9, k.shade); E(21, 27.4, 2.1, .9, k.shade); } else { E(12, 27.6, 1.4, 1.2, k.shade); E(20, 27.6, 1.4, 1.2, k.shade); }
+  } else { // puffcap: round body under a cap
+    const k = SPECIES[2].col, cc = look[2] == null || look[2] < 0 ? CAP_NEUTRAL : CAP_COL[V(2)], spots = V(0), capV = V(1), roll = V(3) === 1, nap = pose === 'nap';
+    const dy = nap ? 1 : 0, big = pose === 'eat' && fr;
+    E(16, 22 + dy, 7.6, 6.8, k.body, { sh: [k.light, k.shade] });
+    const capClip = (x, y) => y < 16.5 + dy;
+    if (capV === 1) { E(16, 13.6 + dy, 9, 9.6, cc.c, { sh: [cc.l, cc.d], clipU: capClip }); E(16, 16.3 + dy, 8, .7, cc.rim); }
+    else { E(16, 15.5 + dy, 11.5, 7, cc.c, { sh: [cc.l, cc.d], clipU: capClip }); E(16, 16.3 + dy, 10.2, .7, cc.rim);
+      if (capV === 2) for (let i = 0; i < 7; i++) E(5.8 + i * 3.4, 16.9 + dy, 1.7, 1.25, cc.c, { sh: [cc.l, cc.d] }); }
+    const pos = capV === 1 ? [[12, 10, 1.6, 1.4], [17, 7, 2, 1.6], [20.6, 12, 1.4, 1.2]] : [[10.5, 11.5, 1.7, 1.4], [17, 9.5, 2.1, 1.6], [22.5, 12.5, 1.5, 1.2]];
+    if (spots === 0) for (const [x, y, rx, ry] of pos) E(x, y + dy, rx, ry, 'bone');
+    if (spots === 1) for (const [x, y, rx, ry] of pos) { E(x, y + dy, rx * 1.1, ry * 1.1, 'bone'); E(x, y + dy, rx * .55, ry * .55, cc.c); }
+    eye(16.8, 19.8 + dy, k.dark); eye(20.8, 19.8 + dy, k.dark);
+    E(15, 23.4 + dy, big ? 1.5 : 1, big ? 1 : .55, 'pink');
+    if (roll) { E(13, 28.4, 3.4, 1, k.shade); E(19, 28.4, 3.4, 1, k.shade); } else { E(12, 28.2, 2.4, 1.3, k.shade); E(20, 28.2, 2.4, 1.3, k.shade); }
+  }
+  pb.rich(Math.round(s / 3));
+  // frost over what isn't known yet
+  REGION[sp].forEach((rf, w) => { if (!rf || !(look[w] == null || look[w] < 0)) return;
+    pb.map((c, x, y) => rf((x + .5) / s, (y + .5) / s) ? (bay(x >> 1, y >> 1) < 7 ? C.frost : bay(x >> 1, y >> 1) < 14 ? C.frostD : C.frostS) : c); });
+  pb.outline();
+  return pb;
+}
+function mibiArt(sp, look, pose, fr, s, flip) {
+  const key = 'mb' + sp + ':' + look.join(',') + ':' + pose + (fr ? 1 : 0) + 's' + s;
+  const pb = art(key, () => buildMibi(sp, look, pose, fr, s));
+  return flip ? art(key + 'f', () => flipPB(pb)) : pb;
+}
+const fullLook = m => lookOf(m.sp, m.al);
+// A mibi's look as the Station knows it (a resident: every window grown or studied).
+function knownLook(m) { return m.al.map((pr, w) => m.known && m.known[w] ? shows(pr) : -1); }
+const silArt = (sp, s, col) => art('sil' + sp + ':' + s + ':' + col, () => { const a = buildMibi(sp, SPECIES[sp].win.map(() => 0), 'idle', 0, s), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C[col]; return pb; });
+
+// ---------- Trait windows: a picture of one part of this pod's mibi ----------
+const CROP = [   // [centre x, centre y, scale] per window, token units
+  [[14.5, 21, 7], [14, 11.5, 6], [14.5, 27, 7]],
+  [[16, 22.5, 7], [23.5, 12, 6], [17, 19, 5], [16, 26, 7]],
+  [[16, 12.5, 6], [16, 13, 5], [16, 14, 5], [16, 25.5, 6]],
+];
+const PIC_W = 150, PIC_H = 110;
+// otherLook: what else of this mibi is known (other windows −1 stay under frost in the picture).
+function windowPic(sp, w, v, otherLook) {
+  const look = otherLook.map((x, i) => i === w ? v : x), [cx, cy, s] = CROP[sp][w];
+  return art('pic' + sp + ':' + w + ':' + look.join(','), () => {
+    const m = buildMibi(sp, look, 'idle', 0, s), pb = new PB(PIC_W, PIC_H);
+    for (let y = 0; y < PIC_H; y++) for (let x = 0; x < PIC_W; x++) pb.p[y * PIC_W + x] = y > PIC_H - 30 && bay(x, y) < (y - (PIC_H - 30)) / 2 ? C.sand : C.creamT;
+    pb.blit(m, Math.round(PIC_W / 2 - cx * s), Math.round(PIC_H / 2 - cy * s));
+    if (SPECIES[sp].win[w].id === 'gait') {   // a gait shows as the way it moves: a dotted trail behind the feet
+      const pts = { hop: [[8, 70], [22, 52], [36, 70]], bound: [[4, 74], [26, 44], [48, 74]], scurry: [[6, 84], [14, 82], [22, 84], [30, 82], [38, 84]], glide: [[4, 86], [44, 86]], waddle: [[6, 80], [14, 86], [22, 80], [30, 86]], roll: [[20, 60], [32, 70], [20, 80], [8, 70]] };
+      const key = ['hop', 'bound', 'scurry', 'glide', 'waddle', 'roll'][sp * 2 + v] || 'hop';
+      const P = pts[key]; for (let i = 0; i + 1 < P.length; i++) { const [ax, ay] = P[i], [bx, by] = P[i + 1]; for (let t = 0; t <= 1; t += .12) pb.rect(Math.round(ax + (bx - ax) * t), Math.round(ay + (by - ay) * t), 3, 3, C.mist); }
+    }
+    return pb; });
+}
+function ghostPic(sp, w, v, otherLook) {   // what hides, inside a misty seed (40×52)
+  return art('ghost' + sp + ':' + w + ':' + v + ':' + otherLook.join(','), () => {
+    const src = windowPic(sp, w, v, otherLook), pb = new PB(40, 52);
+    pb.ell(20, 26, 19.5, 25.5, C.frostS); pb.ell(20, 26, 18, 24, C.frost);
+    for (let y = 0; y < 34; y++) for (let x = 0; x < 30; x++) { const c = src.get(Math.floor(x * PIC_W / 30), Math.floor(y * PIC_H / 34)); const px = x + 5, py = y + 10;
+      if (((px - 20) / 18) ** 2 + ((py - 26) / 24) ** 2 <= .92 && c >= 0 && c !== C.creamT && c !== C.sand) pb.set(px, py, bay(px, py) < 5 ? C.frost : c); }
+    pb.ring(20, 26, 19.5, 25.5, C.stone, 1); pb.set(14, 10, C.white); pb.set(13, 11, C.white); return pb; });
+}
+// The frame: a wooden arched pane, 170×150, picture area 150×120 at (10, 10).
+const WIN_W = 170, WIN_H = 150;
+const archIn = (x, y) => { const r = 34; if (y >= 10 + r) return x >= 10 && x < 160 && y < 130; const cy = 10 + r; if (x < 10 + r) return Math.hypot(x + .5 - (10 + r), y + .5 - cy) <= r; if (x >= 160 - r) return Math.hypot(x + .5 - (160 - r), y + .5 - cy) <= r; return y >= 10; };
+const archOut = (x, y) => { const r = 42; if (y >= r) return x >= 0 && x < WIN_W && y < 138; if (x < r) return Math.hypot(x + .5 - r, y + .5 - r) <= r; if (x >= WIN_W - r) return Math.hypot(x + .5 - (WIN_W - r), y + .5 - r) <= r; return true; };
+function frameArt() { return art('frame', () => { const pb = new PB(WIN_W, WIN_H);
+  for (let y = 0; y < WIN_H; y++) for (let x = 0; x < WIN_W; x++) { if (!archOut(x, y) || archIn(x, y)) continue; const edge = !archOut(x - 2, y - 2) ? C.wood4 : !archOut(x + 2, y + 2) ? C.wood1 : archIn(x + 2, y + 2) ? C.wood1 : C.wood3; pb.set(x, y, bay(x, y) < 2 && edge === C.wood3 ? C.wood2 : edge); }
+  pb.rect(0, 136, WIN_W, 12, C.wood3); pb.rect(0, 136, WIN_W, 2, C.wood4); pb.rect(0, 146, WIN_W, 2, C.wood1);   // the sill
+  return pb; }); }
+function frostArt() { return art('frost', () => { const pb = new PB(WIN_W, WIN_H);
+  for (let y = 0; y < WIN_H; y++) for (let x = 0; x < WIN_W; x++) if (archIn(x, y)) { const streak = ((x + y * 2) % 23) < 2 && bay(x, y) < 10, low = y > 96 && bay(x, y) < (y - 96) / 3;
+    pb.set(x, y, streak ? C.white : low ? C.frostD : bay(x, y) < 3 ? C.frostD : C.frost); }
+  return pb; }); }
+function framedPic(key, pic) { return art('fp' + key, () => { const pb = new PB(WIN_W, WIN_H);
+  for (let y = 0; y < WIN_H; y++) for (let x = 0; x < WIN_W; x++) if (archIn(x, y)) { const c = pic.get(x - 10, y - 20); pb.set(x, y, c >= 0 ? c : C.creamT); }
+  return pb; }); }
+function shutterArt() { return art('shutter', () => { const pb = new PB(WIN_W, WIN_H);
+  for (let y = 0; y < WIN_H; y++) for (let x = 0; x < WIN_W; x++) if (archIn(x, y)) { const r = (y - 10) % 14; pb.set(x, y, r < 2 ? C.wood1 : r < 4 ? C.wood4 : C.wood3); }
+  pb.ell(85, 70, 26, 26, C.ink); pb.ell(85, 70, 24, 24, C.sky); pb.ell(85, 70, 19, 19, C.paper); pb.ell(85, 70, 12, 12, C.sky); pb.ell(85, 70, 8, 8, C.paper); pb.line(85, 70, 101, 56, C.sea, 3);
+  pb.rect(100, 76, 16, 18, C.orange); pb.rect(104, 79, 8, 3, C.bone); pb.rect(109, 82, 3, 3, C.bone); pb.rect(104, 85, 8, 3, C.bone); pb.rect(104, 88, 3, 3, C.bone); pb.rect(104, 91, 8, 2, C.bone);   // "2"
+  return pb; }); }
+// Emblems on the frame: swirl (markings), crown, drop (colour), paw (gait).
+function emblemArt(kind) { return art('emb' + kind, () => { const pb = new PB(16, 16), c = C.lamp;
+  if (kind === 'swirl') { for (let a = 0; a < 12; a += .15) { const r = 1 + a * .55; pb.set(8 + Math.cos(a) * r, 8 + Math.sin(a) * r, c); } }
+  else if (kind === 'crown') pb.poly([[1, 13], [2, 4], [5, 9], [8, 2], [11, 9], [14, 4], [15, 13]], c);
+  else if (kind === 'drop') { pb.poly([[8, 1], [13, 9], [3, 9]], c); pb.ell(8, 10, 5, 5, c); }
+  else { pb.ell(8, 11, 4.4, 3.4, c); pb.ell(2.5, 5.5, 1.6, 1.8, c); pb.ell(6, 2.5, 1.6, 1.8, c); pb.ell(10, 2.5, 1.6, 1.8, c); pb.ell(13.5, 5.5, 1.6, 1.8, c); }
+  pb.outline(() => C.wood0); return pb; }); }
+const famArt = () => art('fam', () => { const pb = new PB(26, 16); pb.ring(8, 8, 7, 7, C.lamp, 2); pb.ring(17, 8, 7, 7, C.lamp, 2); pb.outline(() => C.wood0); return pb; });
+const starArt = big => art('star' + big, () => { const r = big ? 9 : 5, pb = new PB(r * 2 + 1, r * 2 + 1);
+  pb.poly([[r, 0], [r + r * .28, r - r * .28], [r * 2, r], [r + r * .28, r + r * .28], [r, r * 2], [r - r * .28, r + r * .28], [0, r], [r - r * .28, r - r * .28]], C.cream); pb.ell(r + .5, r + .5, r * .3, r * .3, C.white); pb.outline(() => C.gold); return pb; });
+const baseArt = () => art('base', () => { const pb = new PB(70, 10); pb.rect(2, 0, 66, 7, C.wood3); pb.rect(2, 0, 66, 2, C.wood4); pb.rect(0, 7, 70, 3, C.wood1); return pb; });
+
+// ---------- The fingerprint whorl: one petal per window, ridges from the code, plain until studied ----------
+function whorlArt(sp, al, gs, lit, hid, size) {
+  const code = genomeCode(sp, al, gs), n = SPECIES[sp].win.length;
+  const key = 'wh' + size + ':' + code + ':' + lit.map(x => x ? 1 : 0).join('') + hid.map(x => x ? 1 : 0).join('');
+  return art(key, () => {
+    const pb = new PB(size, size), c = size / 2, Rr = size / 2 - 1, h = hash(code, 'whorl'), th = Math.max(1, Math.round(size / 60));
+    pb.ell(c, c, Rr, Rr, C.wood2); pb.ell(c, c, Rr - th - 1, Rr - th - 1, C.paper);
+    const twist = ((h >>> 24) % 7 - 3) * .07;
+    for (let i = 0; i < n; i++) {
+      const a = -3 * Math.PI / 4 + i * 2 * Math.PI / n, px = c + Math.cos(a) * Rr * .5, py = c + Math.sin(a) * Rr * .5, rx = Rr * .43, ry = Rr * (n === 3 ? .32 : .27);
+      const W = SPECIES[sp].win[i], hue = C[W.v[shows(al[i])].hue];
+      pb.ell(px, py, rx, ry, lit[i] ? hue : C.bone, { rot: a, sh: lit[i] ? [lite(hue), shade(hue)] : null });
+      const k = 3 + ((h >>> (i * 4)) % 5);
+      if (size >= 60) for (let j = 1; j <= k; j++) { const f = j / (k + 1); pb.ring(px + Math.cos(a) * rx * (1 - f) * .25, py + Math.sin(a) * rx * (1 - f) * .25, rx * f, ry * f, lit[i] ? shade(hue) : C.clay, 1, a + twist * j); }
+      pb.ring(px, py, rx, ry, C.wood1, th, a);
+      if (hid[i]) { const hv = hides(al[i]), r = Math.max(2, size / 26), sx = c + Math.cos(a) * Rr * .17, sy = c + Math.sin(a) * Rr * .17;
+        pb.ell(sx, sy, r, r, hv >= 0 ? C[W.v[hv].hue] : C.wood1); pb.ring(sx, sy, r, r, C.wood0, 1); }
+    }
+    const cc = C[SPECIES[sp].col.body]; pb.ell(c, c, Rr * .14, Rr * .14, cc); pb.ring(c, c, Rr * .14, Rr * .14, C.wood1, 1);
+    pb.set(c - Rr * .04, c - Rr * .05, C.white);
+    return pb; });
+}
+const podLit = p => SPECIES[p.sp].win.map((_, w) => !!p.st[w]);
+const podHid = p => SPECIES[p.sp].win.map((_, w) => !!p.st[w]);
+
+// ---------- Pods, cups, crates ----------
+function podArt(shell, s, sp, idd) {
+  return art('pod' + shell + s + ':' + sp + ':' + (idd ? 1 : 0), () => {
+    const pb = new PB(16 * s, 20 * s), c = C[shell], P = (x, y, w, h, col) => pb.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), col);
+    if (idd && s >= 3) {   // identified: the shell turns translucent and the species shows inside
+      pb.ell(8 * s, 10.5 * s, 5.8 * s, 7.8 * s, c, { dith: [C.glass, 9] });
+      const sil = silArt(sp, Math.max(1, Math.round(s / 3)), SPECIES[sp].col.shade);
+      pb.blit(sil, Math.round(8 * s - sil.w / 2), Math.round(11 * s - sil.h / 2));
+      pb.ell(8 * s, 10.5 * s, 5.8 * s, 7.8 * s, C.white, { clip: (x, y) => ((x + .5 - 6 * s) / (1.4 * s)) ** 2 + ((y + .5 - 6 * s) / (2.4 * s)) ** 2 < 1 && bay(x, y) < 6 });
+    } else {
+      pb.ell(8 * s, 10.5 * s, 5.8 * s, 7.8 * s, c, { sh: [lite(c), shade(c)] });
+      for (let i = -4; i <= 4; i++) P(8 + i, 12 + (Math.abs(i) > 3 ? 0 : 1), 1, 1, shade(c));
+      P(5, 6, 1, 2, C.white);
+      if (sp === 0) { P(7, 4, 1, 3, C.plum); P(10, 4, 1, 3, C.plum); } else if (sp === 1) { P(7, 3, 3, 3, C.gold); P(8, 4, 1, 1, C.cream); } else if (sp === 2) { P(6, 8, 2, 1, C.red); P(9, 5, 2, 1, C.red); P(11, 9, 1, 2, C.red); }
+      if (s >= 3) pb.rich(Math.round(s / 3));
+    }
+    pb.outline(() => C.ink); return pb; });
+}
+const shellOf = p => POD_SHELL[p.g] || 'bone';
+function cupArt(sel) { return art('cup' + sel, () => { const pb = new PB(52, 24); pb.ell(26, 14, 25, 9.5, C.feltD); pb.ell(26, 12, 23, 7.5, sel ? C.felt : C.feltD, { sh: [C.felt, C.wood0] }); pb.ell(26, 11, 17, 4.5, C.wood0); return pb; }); }
+function crateArt(shell, n) { return art('crate' + shell + n, () => { const pb = new PB(96, 70);
+  pb.rect(2, 6, 92, 62, C.wood3); for (let y = 6; y < 68; y += 12) pb.rect(2, y, 92, 1, C.wood2); pb.rect(2, 6, 92, 3, C.wood4); pb.rect(2, 64, 92, 4, C.wood1);
+  pb.rect(8, 6, 6, 62, C.wood2); pb.rect(82, 6, 6, 62, C.wood2);
+  pb.ell(48, 30, 15, 15, C[shell], { sh: [lite(C[shell]), shade(C[shell])] }); pb.ring(48, 30, 15, 15, C.wood1, 2);
+  for (let i = 0; i < n; i++) pb.ell(30 + i * 18 + (3 - n) * 9, 54, 4.5, 5.5, C.paper);
+  pb.ell(80, 14, 6, 6, C.red, { sh: [C.coral, C.wine] });   // the seal
+  pb.outline(() => C.wood0); return pb; }); }
+// ---------- Bench objects ----------
+function probeArt(s) { return art('probe' + s, () => { const pb = new PB(28 * s, 28 * s), E = (x, y, r, c) => pb.ell(x * s, y * s, r * s, r * s, C[c]);
+  E(14, 14, 13, 'sky'); E(14, 14, 11, 'paper'); E(14, 14, 7, 'sky'); E(14, 14, 5, 'paper'); pb.line(14 * s, 14 * s, 23 * s, 6 * s, C.sea, Math.max(1, s * 2)); pb.rect(18 * s, 17 * s, 3 * s, 3 * s, C.orange);
+  pb.rich(s); pb.outline(() => C.ink); return pb; }); }
+function leafArt(f, big) { const n = Math.round(f * 8); return art('leaf' + n + big, () => { const L = big ? 36 : 14, W = big ? 16 : 6, pb = new PB(W + 2, L + 2), cx = (W + 2) / 2, cy = (L + 2) / 2;
+  pb.ell(cx, cy, W / 2, L / 2, C.moss3); pb.ell(cx, cy, W / 2, L / 2, C.leaf, { clip: (x, y) => y >= (L + 2) * (1 - n / 8), sh: [C.sprout, C.forest] });
+  pb.line(cx, 2, cx, L, n >= 8 ? C.forest : C.moss1); pb.outline(() => C.moss0); return pb; }); }
+function domeArt(w, h, glow, part) { return art('dome' + w + 'x' + h + glow + (part || ''), () => { const pb = new PB(w, h), cx = w / 2;
+  if (part !== 'base') { pb.ell(cx, h * .58, w * .46, h * .56, glow ? C.lamp : C.moss2, { clip: (x, y) => y < h * .82, dith: [glow ? C.cream : C.moss3, 5] });
+    pb.ring(cx, h * .58, w * .46, h * .56, C.glassD, 2, 0, (x, y) => y < h * .82); pb.ring(cx, h * .58, w * .4, h * .5, C.glass, 1, 0, (x, y) => y < h * .4 && x < cx); }
+  if (part !== 'glass') { pb.rect(w * .04, h * .8, w * .92, h * .12, C.wood3); pb.rect(w * .04, h * .8, w * .92, 3, C.wood4); pb.rect(w * .08, h * .92, w * .84, h * .07, C.wood1); }
+  return pb; }); }
+// The embryo by growth: a seed, a bud, then the shape of the species, glowing.
+function embryoArt(sp, stage, look) { return art('emb' + sp + stage + look.join(','), () => {
+  if (stage < 2) { const pb = new PB(70, 70); pb.ell(35, 40, stage ? 22 : 13, stage ? 24 : 15, C.cream, { dith: [C.lamp, 6] }); pb.ell(35, 40, stage ? 15 : 8, stage ? 17 : 10, C.amber, { sh: [C.yellow, C.orange] });
+    if (stage) { pb.ell(41, 22, 4, 9, C.sprout, { rot: .5 }); pb.ell(29, 24, 3, 7, C.sprout, { rot: -.6 }); } pb.outline(() => C.gold); return pb; }
+  const m = buildMibi(sp, look, 'nap', 0, 3), pb = new PB(m.w + 8, m.h + 8); pb.ell(pb.w / 2, pb.h / 2 + 8, pb.w / 2 - 2, pb.h / 3, C.cream, { dith: [C.lamp, 8] }); pb.blit(m, 4, 4); return pb; }); }
+
+// ---------- The vivarium: a lit glass terrarium (built once per size) ----------
+function vivArt(w, h) { return art('viv' + w + 'x' + h, () => {
+  const pb = new PB(w, h), gy = Math.round(h * .62);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const lamp = Math.hypot((x - w * .45) / (w * .55), (y - h * .05) / (h * .7)), wave = gy + Math.round(Math.sin(x / 47) * 6 + Math.sin(x / 13) * 2);
+    let c;
+    if (y < wave) c = ramp(['moss2', 'moss3', 'moss4'], 1.2 - lamp, x, y);
+    else { const d = y - wave; c = d < 3 ? C.grass : d < 7 ? (bay(x, y) < 8 ? C.grass : C.leaf) : d < 30 ? (bay(x, y) < 5 ? C.leaf : C.forest) : bay(x, y) < 7 ? C.soil : C.bark; }
+    pb.p[y * w + x] = c;
+  }
+  // far plants on the back wall, rocks, a water dish and a burrow
+  const R2 = mulberry32(hash('viv', w, h));
+  for (let i = 0; i < Math.round(w / 40); i++) { const x = R2() * w, ht = 40 + R2() * 90; for (let j = 0; j < 5; j++) pb.ell(x + (R2() - .5) * 18, gy - ht * (j / 5) - 6, 5 + R2() * 4, 12 + R2() * 6, j % 2 ? C.moss5 : C.moss4, { rot: (R2() - .5) * .8 }); }
+  for (let i = 0; i < Math.round(w / 90); i++) { const x = 40 + R2() * (w - 80), y = gy + 18 + R2() * (h - gy - 50); pb.ell(x, y, 18 + R2() * 14, 9 + R2() * 6, C.rock, { sh: [C.rockL, C.stone] }); }
+  pb.ell(w * .78, gy + 40, 46, 13, C.stone); pb.ell(w * .78, gy + 38, 40, 9, C.sky, { sh: [C.ice, C.river] });
+  pb.ell(w * .14, gy + 6, 34, 18, C.soil, { clip: (x, y) => y < gy + 10 }); pb.ell(w * .14, gy + 8, 22, 12, C.void, { clip: (x, y) => y < gy + 10 });
+  for (let i = 0; i < Math.round(w / 22); i++) { const x = R2() * w, y = gy + 4 + R2() * (h - gy - 10); for (let j = 0; j < 3; j++) pb.line(x, y, x + (j - 1) * 3, y - 6 - R2() * 6, C.sprout); }
+  // the glass: a rim and two highlights
+  for (let x = 0; x < w; x++) { pb.set(x, 0, C.glassD); pb.set(x, 1, C.glass); pb.set(x, h - 1, C.wood1); pb.set(x, h - 2, C.wood2); }
+  for (let y = 0; y < h; y++) { pb.set(0, y, C.glassD); pb.set(w - 1, y, C.glassD); pb.set(1, y, C.glass); }
+  for (let y = 12; y < h * .5; y++) { pb.set(18 + y * .15, y, C.glass); if (y % 3) pb.set(24 + y * .15, y, C.glass); }
+  return pb; }); }
+
+// ===================== 8. Screens =====================
+// ---------- The frame: top bar (40), stage (522), bottom line (38) ----------
+const ICON = {
+  energy: () => art('i-energy', () => { const pb = new PB(14, 14); pb.poly([[7, 0], [13.5, 7], [7, 14], [.5, 7]], C.amber); pb.poly([[7, 0], [13.5, 7], [7, 7]], C.yellow); pb.poly([[.5, 7], [7, 14], [7, 7]], C.orange); return pb; }),
+  data: () => art('i-data', () => { const pb = new PB(14, 14); pb.rect(1, 1, 12, 12, C.sky); pb.rect(0, 2, 14, 10, C.sky); pb.rect(2, 0, 10, 14, C.sky); pb.rect(3, 4, 8, 2, C.white); pb.rect(3, 8, 5, 2, C.white); pb.rect(2, 12, 10, 2, C.river); return pb; }),
+  essence: () => art('i-ess', () => { const pb = new PB(14, 14); pb.ell(7, 7, 6.6, 6.6, C.grass, { sh: [C.lime, C.leaf] }); pb.rect(4, 3, 2, 2, C.white); return pb; }),
+  star: () => starArt(false),
+  comp: () => art('i-comp', () => { const pb = new PB(14, 20); pb.rect(1, 0, 12, 20, C.sand); pb.rect(3, 2, 8, 9, C.ink); pb.ell(9.5, 15, 2, 2, C.orange); pb.ell(4.5, 15, 1.6, 1.6, C.teal); pb.outline(() => C.wood1); return pb; }),
+  heart: (full) => art('i-heart' + full, () => { const pb = new PB(30, 28); const c = full ? C.coral : C.moss3; pb.ell(9, 9, 7.5, 7.5, c); pb.ell(21, 9, 7.5, 7.5, c); pb.poly([[2, 11], [28, 11], [15, 26]], c);
+    if (full) { pb.ell(8, 7, 2.5, 2.5, C.blush); } pb.outline(() => full ? C.wine : C.lampD); return pb; }),
+};
+const up2 = (k, f) => art('u2' + k, () => upPB(f(), 2));
+const CNT = {};
+function drawCounter(x, y, key, icon, value) {
+  const st = CNT[key] || (CNT[key] = { v: value, last: 0, fl: -1e9 });
+  if (value < st.v || !motion()) { if (value > st.v) st.fl = NOW; st.v = value; }
+  else if (value > st.v && NOW - st.last >= 70) { st.v++; st.last = NOW; st.fl = NOW; }
+  blit(up2(icon, ICON[icon]), x, y);
+  const s = String(st.v), fl = NOW - st.fl < 240;
+  if (fl) panel(x + 32, y - 2, textW(s, 3) + 8, 28, C.amber);
+  text(s, x + 36, y + 3, fl ? C.ink : C.creamT, 3);
+  return x + 36 + textW(s, 3) + 22;
+}
+const hm = t => { const d = new Date(t); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+function compState() {
+  if (!hasWorld()) return 'no Companion yet';
+  const w = mibiById(withId()), n = bayCrates().length;
+  if (docked()) return 'Companion docked' + (n ? ' · ' + plural(n, 'crate') + ' in the bay' : '') + (w && !n ? ' · with ' + w.name : '');
+  return 'Companion away · since ' + hm(ST.dock.at) + (w ? ' · with ' + w.name : '');
+}
+let turnShown = null, turnFlash = -1e9;
+function shownTurn() { const a = FX.arr; if (a && arriving()) { const i = Math.floor((NOW - a.at) / ARRIVE_MS), p = a.plays[i]; return (NOW - a.at) % ARRIVE_MS > ARRIVE_MS * .55 ? p.turnTo : p.turnFrom; } return ST.turn; }
+function drawTop(title) {
+  R(0, 0, SW, TOP_H, C.moss1); R(0, TOP_H - 1, SW, 1, C.moss0);
+  const tw = text(title, 16, 9, C.creamT, 3), t = shownTurn();
+  if (turnShown !== t) { if (turnShown != null) turnFlash = NOW; turnShown = t; }
+  const fl = NOW - turnFlash < 1000 && Math.floor((NOW - turnFlash) / 160) % 2 === 0, lbl = 'T' + (t + 1);
+  if (fl) panel(16 + tw + 10, 8, textW(lbl, 2) + 12, 24, C.amber);
+  text(lbl, 16 + tw + 16, 13, fl ? C.ink : C.lampD, 2);
+  let x = Math.max(236, 16 + tw + 30 + textW(lbl, 2) + 24); x = drawCounter(x, 6, 'e', 'energy', ST.e); x = drawCounter(x, 6, 'd', 'data', ST.d); drawCounter(x, 6, 's', 'essence', ST.s);
+  text(clipText(compState(), 450, 2), SW - 16, 13, docked() ? C.mint : C.fog, 2, 'right');
+}
+// The bottom line: ✓ action · price · ← where | the subject | what needs you. Read-only focus leaves ✓ empty.
+function drawLine(o) {
+  const y = SH - LINE_H, ty = y + 12; R(0, y, SW, LINE_H, C.moss1); R(0, y, SW, 1, C.moss0);
+  let x = 16;
+  if (o.ok) { x += text('✓', x, ty, C.orange) + 8; x += text(o.ok, x, ty, o.dim ? C.moss5 : C.creamT); if (o.price) { x += text(' · ', x, ty, C.moss4); x += text(o.price, x, ty, o.dim ? C.moss5 : C.lamp); } }
+  if (o.back) { if (o.ok) x += text(' · ', x, ty, C.moss4); x += text('← ', x, ty, C.fog); x += text(o.back, x, ty, C.fog); }
+  const nd = o.need != null ? o.need : need().text, nw = nd ? textW(nd, 2) : 0;
+  const mx = x + 18, avail = SW - 16 - (nw ? nw + 34 : 0) - mx;
+  if (o.subject && avail > 40) { R(x + 8, y + 9, 1, 20, C.moss3); text(clipText(o.subject, avail, 2), mx, ty, C.mist); }
+  if (nd) { R(SW - 16 - nw - 16, y + 9, 1, 20, C.moss3); text(nd, SW - 16, ty, C.amber, 2, 'right'); }
+}
+function drawMsg() {
+  if (!FX.msg || NOW - FX.msgAt > 4000) return;
+  const lines = wrapText(FX.msg, 600, 2), w = Math.min(640, Math.max(...lines.map(l => textW(l, 2))) + 40), h = 16 + lines.length * 22, x = Math.round((SW - w) / 2), y = SH - LINE_H - h - 12;
+  panel(x, y + 3, w, h, C.moss0); panel(x, y, w, h, C.wood1, C.lampD);
+  lines.forEach((l, i) => text(l, SW / 2, y + 10 + i * 22, C.creamT, 2, 'center'));
+}
+// A dithered ramp: t in [0, 1] across a list of colours, with the 4×4 Bayer pattern between steps (no hard rings).
+function ramp(cols, t, x, y) { const f = clamp(t, 0, .999) * (cols.length - 1), i = Math.floor(f); return C[cols[bay(x, y) < (f - i) * 16 ? i + 1 : i]]; }
+function stageBg() {   // an evening room: deep moss, lit softly from above the middle
+  blit(art('stagebg', () => { const pb = new PB(SW, STAGE_H);
+    for (let y = 0; y < STAGE_H; y++) for (let x = 0; x < SW; x++) { const d = Math.hypot((x - SW * .5) / (SW * .62), (y - STAGE_H * .3) / (STAGE_H * .95)); pb.p[y * SW + x] = ramp(['moss1', 'moss2'], 1.15 - d, x, y); }
+    return pb; }), 0, STAGE_Y);
+}
+function lampPool(cx, cy, rx, ry) { blit(art('pool' + rx + 'x' + ry, () => { const pb = new PB(rx * 2, ry * 2);
+  for (let y = 0; y < ry * 2; y++) for (let x = 0; x < rx * 2; x++) { const d = Math.hypot((x - rx) / rx, (y - ry) / ry); if (d > 1) continue; const c = ramp(['moss1', 'moss2', 'moss3'], (1 - d) * 1.1, x, y); if (c !== C.moss1) pb.set(x, y, c); }
+  return pb; }), cx - rx, cy - ry); }
+// Spatial focus: the pad moves the ring to the nearest thing that way.
+function navSpatial(targets, curId, dir) {
+  const cur = targets.find(t => t.id === curId); if (!cur) return targets.length ? targets[0].id : curId;
+  const cx = cur.x + cur.w / 2, cy = cur.y + cur.h / 2, [dx, dy] = DIRS[dir]; let best = null, bd = 1e9;
+  for (const t of targets) { if (t === cur || t.nofocus) continue; const vx = t.x + t.w / 2 - cx, vy = t.y + t.h / 2 - cy, along = vx * dx + vy * dy; if (along <= 6) continue;
+    const d = along + Math.abs(vx * dy + vy * dx) * 2.2; if (d < bd) { bd = d; best = t; } }
+  return best ? best.id : curId;
+}
+const tgt = (id, x, y, w, h) => ({ id, x, y, w, h });
+
+// ---------- Residents living in the vivarium (presentation only; positions are not saved) ----------
+const RES = new Map();
+function resOf(m) { let r = RES.get(m.id); if (!r) { const R2 = mulberry32(hash('res', m.id, Date.now() & 0xffff)); r = { u: .1 + R2() * .8, v: .15 + R2() * .7, tu: 0, tv: 0, face: R2() < .5 ? 1 : -1, st: 'idle', until: 0, R2, alertUntil: 0 }; r.tu = r.u; r.tv = r.v; RES.set(m.id, r); } return r; }
+let lastStep = 0;
+function stepResidents() {
+  const dt = Math.min(.1, (NOW - lastStep) / 1000); lastStep = NOW; if (!motion()) return;
+  const list = atHome();
+  for (const m of list) { const r = resOf(m), sp = m.sp;
+    if (NOW > r.until) { const x = r.R2(), napW = sp === 1 ? .3 : .15, eatW = sp === 1 ? 0 : .15;
+      if (x < .5) { r.st = 'walk'; r.tu = .06 + r.R2() * .88; r.tv = .1 + r.R2() * .8; r.until = NOW + 6000; }
+      else if (x < .5 + napW) { r.st = 'nap'; r.until = NOW + 5000 + r.R2() * 5000; }
+      else if (x < .5 + napW + eatW) { r.st = 'eat'; r.until = NOW + 2500; }
+      else { r.st = 'idle'; r.until = NOW + 2000 + r.R2() * 3000; } }
+    if (r.st === 'walk') { const sp2 = [.06, .08, .035][sp] * dt, du = r.tu - r.u, dv = r.tv - r.v, d = Math.hypot(du, dv);
+      if (d < .01) { r.st = 'idle'; r.until = NOW + 1500 + r.R2() * 2500; } else { r.u += du / d * Math.min(d, sp2); r.v += dv / d * Math.min(d, sp2) * .7; if (Math.abs(du) > .005) r.face = du > 0 ? 1 : -1; } }
+    for (const o of list) if (o !== m) { const q = resOf(o); if (Math.hypot(q.u - r.u, (q.v - r.v) * .6) < .09 && r.st !== 'nap' && NOW > r.alertUntil + 4000) { r.alertUntil = NOW + 900; r.face = q.u > r.u ? 1 : -1; } }
+  }
+}
+// Draw the residents inside a vivarium placed at (vx, vy) of size w×h. Returns their boxes (for focus).
+function drawResidents(vx, vy, w, h, big) {
+  const gy = Math.round(h * .62), boxes = [], list = atHome().map(m => ({ m, r: resOf(m) })).sort((a, b) => a.r.v - b.r.v);
+  for (const { m, r } of list) {
+    const st = mibiStage(m), s = (st === 'juvenile' ? 2 : 3) + (big ? 1 : 0), size = 32 * s;
+    const x = Math.round(vx + 20 + r.u * (w - 40 - size)), y = Math.round(vy + gy - size * .75 + r.v * (h - gy - size * .3 - 10));
+    const alert = NOW < r.alertUntil, walking = r.st === 'walk' && motion(), fr = walking ? Math.floor(NOW / 220) % 2 : Math.floor(NOW / 700) % 2;
+    const pose = alert ? 'alert' : r.st === 'nap' ? 'nap' : r.st === 'eat' ? 'eat' : 'idle', bob = walking && m.sp === 0 ? -Math.round(Math.abs(Math.sin(NOW / 140)) * 6) : walking ? -(fr * 2) : 0;
+    blit(art('shadow' + s, () => { const pb = new PB(size, 10); pb.ell(size / 2, 5, size * .36, 4, C.moss0, { chk: 1 }); return pb; }), x, y + size * .86);
+    blit(mibiArt(m.sp, knownLook(m), pose, pose === 'nap' ? 0 : fr, s, r.face < 0), x, y + bob);
+    if (m.bonded) blit(art('minih', () => { const pb = new PB(9, 8); pb.ell(2.5, 2.5, 2.3, 2.3, C.coral); pb.ell(6.5, 2.5, 2.3, 2.3, C.coral); pb.poly([[0, 3], [9, 3], [4.5, 8]], C.coral); return pb; }), x + size / 2 - 4, y - 10 + bob);
+    if (r.st === 'nap' && motion()) { const z = Math.floor(NOW / 600) % 3; text('z', x + size * .7 + z * 4, y + size * .2 - z * 8, C.fog, 2); }
+    boxes.push({ m, x, y, w: size, h: size });
+  }
+  return boxes;
+}
+
+// ---------- Home: the vivarium and the bench ----------
+const VIV = { x: 14, y: 50, w: 636, h: 500 }, BENCH = { bay: [664, 50, 346, 118], tray: [664, 178, 346, 92], inc: [664, 280, 168, 170], cradle: [842, 280, 168, 170] };
+let homeBoxes = [];
+function homeTargets() {
+  const t = [];
+  for (const b of homeBoxes) t.push(tgt('r:' + b.m.id, b.x, b.y, b.w, b.h));
+  for (const k in BENCH) t.push(tgt(k, ...BENCH[k]));
+  return t;
+}
+function bedSpot() { return { x: VIV.x + VIV.w - 170, y: VIV.y + VIV.h - 70 }; }
+function drawBed(bx, by) {   // the with-you bed: empty with a small Companion mark while the mibi is in the Companion
+  const w = mibiById(effWithId());
+  blit(art('bed', () => { const pb = new PB(150, 44); pb.ell(75, 26, 74, 17, C.feltD); pb.ell(75, 22, 70, 14, C.felt, { sh: [C.coral, C.feltD] }); pb.ell(75, 22, 52, 8, C.feltD); pb.outline(() => C.wood0); return pb; }), bx, by);
+  if (w) { blit(ICON.comp(), bx + 68, by + 4); text(clipText(w.name + ' · with you', 160, 2), bx + 75, by - 20, C.fog, 2, 'center'); }
+}
+function drawTray(x, y, w, focusCup, hideIds) {   // six cups in a row (the bench)
+  const step = Math.floor(w / TRAY);
+  for (let i = 0; i < TRAY; i++) { const cx = x + i * step + (step - 52) / 2, p = ST.tray[i]; blit(cupArt(false), cx, y + 40);
+    if (p && !(hideIds && hideIds.has(p.id))) { blit(podArt(shellOf(p), 2, p.sp, 0), cx + 10, y + 4); if (podGlints(p)) blit(starArt(false), cx + 36, y + 2); } }
+}
+function drawIncSmall(x, y) {
+  const I = ST.inc, ready = incReady(); blit(domeArt(120, 120, ready), x + 24, y + 22);
+  if (I) { const p = incProgress(), stage = p < .34 ? 0 : p < .67 ? 1 : 2; const e = embryoArt(I.m.sp, stage, incLook()); const sc = stage === 2 ? .7 : 1;
+    if (stage === 2) blit(art('embS' + I.m.sp + incLook().join(','), () => { const src = embryoArt(I.m.sp, 2, incLook()), pb = new PB(Math.round(src.w * .6), Math.round(src.h * .6)); for (let yy = 0; yy < pb.h; yy++) for (let xx = 0; xx < pb.w; xx++) { const c = src.get(Math.floor(xx / .6), Math.floor(yy / .6)); if (c >= 0) pb.p[yy * pb.w + xx] = c; } return pb; }), x + 84 - Math.round(e.w * .3), y + 60);
+    else blit(e, x + 84 - e.w / 2, y + 52);
+    const n = I.mins; for (let i = 0; i < n; i++) { const f = clamp(p * n - i, 0, 1); blit(leafArt(f, false), x + 14 + i * Math.floor(130 / Math.max(1, n)), y + 146); } }
+}
+function drawCradle(x, y) {
+  const pr = docked() && ST.probe ? ST.probe : null;
+  blit(art('cradle', () => { const pb = new PB(140, 40); pb.ell(70, 22, 68, 16, C.wood2); pb.ell(70, 18, 60, 11, C.wood1); pb.outline(() => C.wood0); return pb; }), x + 14, y + 96);
+  if (pr) blit(probeArt(3), x + 42, y + 18);
+  else { blit(art('probeghost', () => { const a = probeArt(3), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0 && bay(i % a.w, (i / a.w) | 0) < 5) pb.p[i] = C.moss4; return pb; }), x + 42, y + 18); }
+  const n = pr ? pr.smax : TIER[tierNow()].shield, sh = pr ? pr.shield : -1, fl = FX.mend && NOW - FX.mend.at < 1600 && Math.floor((NOW - FX.mend.at) / 200) % 2 === 0;
+  for (let i = 0; i < n; i++) { const px = x + 84 - n * 15 + i * 30; if (sh < 0) { R(px, y + 140, 26, 12, C.moss3); } else if (i < sh) { R(px, y + 140, 26, 12, fl ? C.cream : C.bone); R(px, y + 149, 26, 3, C.fog); } else { R(px, y + 140, 26, 12, C.slate); R(px + 2, y + 142, 22, 8, C.ink); } }
+}
+function incLook() { const I = ST.inc; return I ? I.m.al.map((pr, w) => incKnown(w) ? shows(pr) : -1) : []; }
+function drawHome() {
+  stageBg(); drawTop('Home');
+  // the vivarium
+  blit(vivArt(VIV.w, VIV.h), VIV.x, VIV.y);
+  const bed = bedSpot(); drawBed(bed.x, bed.y);
+  homeBoxes = drawResidents(VIV.x, VIV.y, VIV.w, VIV.h, false);
+  if (!ST.mibis.length) { text('The vivarium waits for its first mibi', VIV.x + VIV.w / 2, VIV.y + 150, C.moss5, 2, 'center'); }
+  // the bench, as objects under a warm lamp
+  lampPool(836, 300, 190, 260);
+  const [bx, by] = BENCH.bay; drawBay(bx, by);
+  const [tx, ty] = BENCH.tray; blit(art('felt', () => { const pb = new PB(346, 20); pb.rect(0, 4, 346, 14, C.feltD); pb.rect(0, 4, 346, 3, C.felt); return pb; }), tx, ty + 66);
+  drawTray(tx, ty, 346, null, arrivalHidden());
+  drawArrivingPods();
+  const [ix, iy] = BENCH.inc; drawIncSmall(ix, iy);
+  const [cx, cy] = BENCH.cradle; drawCradle(cx, cy);
+  drawStatusStrip(664, 462);
+  drawArrivalRibbon();
+  if (!arriving() && UI.report && NOW > UI.report.at) drawReport();
+  // focus
+  const f = UI.home.f;
+  if (f !== 'room') { const t = homeTargets().find(q => q.id === f); if (t) focusRing(t.x - 4, t.y - 4, t.w + 8, t.h + 8); else UI.home.f = 'room'; }
+}
+function drawBay(x, y) {   // the bay door: closed, or open with one sealed crate per consignment
+  blit(art('baydoor', () => { const pb = new PB(346, 118); pb.rect(0, 8, 346, 110, C.wood1); pb.rect(4, 12, 338, 102, C.wood0); for (let i = 0; i < 8; i++) pb.rect(4, 12 + i * 13, 338, 1, C.wood1); pb.rect(0, 8, 346, 3, C.wood3); pb.outline(() => C.void); return pb; }), x, y);
+  const cs = docked() ? bayCrates() : [], a = FX.arr && arriving() ? FX.arr : null;
+  if (!cs.length && !a) { text(docked() ? 'the bay is empty' : 'closed · crates land here', x + 173, y + 58, C.wood3, 2, 'center'); return; }
+  const list = a ? a.plays.map(p => p.c) : cs, i0 = a ? Math.floor((NOW - a.at) / ARRIVE_MS) : -1;
+  list.slice(0, BAY).forEach((c, i) => {
+    const slide = motion() ? clamp((NOW - FX.crateIn - i * 250) / 500, 0, 1) : 1, cx = x + 14 + i * 110, cy = y + 30 - Math.round((1 - slide) * 30);
+    if (a && i < i0) { text('opened', cx + 48, cy + 32, C.wood3, 2, 'center'); return; }
+    const sh = (c.pods && c.pods[0] && POD_SHELL[c.pods[0].g]) || 'sand'; blit(crateArt(sh, Math.min(3, (c.pods || []).length)), cx, cy + 6);
+    if (a && i === i0) { const k = ((NOW - a.at) % ARRIVE_MS) / ARRIVE_MS; if (k > .25) R(cx + 72, cy + 12, 16, 16, C.wood3); if (k > .25 && k < .45) for (let j = 0; j < 6; j++) R(cx + 80 + Math.cos(j) * k * 60, cy + 20 + Math.sin(j) * k * 40, 3, 3, C.red); }
+  });
+}
+function arrivalHidden() { const a = FX.arr; if (!a || !arriving()) return null; const i = Math.floor((NOW - a.at) / ARRIVE_MS), k = ((NOW - a.at) % ARRIVE_MS) / ARRIVE_MS, set = new Set();
+  a.plays.forEach((p, j) => { if (j > i || (j === i && k < .9)) for (const id of p.ids) set.add(id); }); return set; }
+function drawArrivingPods() {
+  const a = FX.arr; if (!a || !arriving()) return; const i = Math.floor((NOW - a.at) / ARRIVE_MS), k = ((NOW - a.at) % ARRIVE_MS) / ARRIVE_MS, p = a.plays[i]; if (!p || k < .4 || k >= .9) return;
+  const step = Math.floor(346 / TRAY);
+  p.ids.forEach((id, j) => { const pod = ST.tray.find(q => q.id === id); if (!pod) return; const ci = ST.tray.indexOf(pod), f = clamp((k - .4 - j * .08) / .35, 0, 1);
+    const sx = BENCH.bay[0] + 60 + i * 110, sy = BENCH.bay[1] + 50, ex = BENCH.tray[0] + ci * step + (step - 52) / 2 + 10, ey = BENCH.tray[1] + 4;
+    blit(podArt(shellOf(pod), 2, pod.sp, 0), sx + (ex - sx) * f, sy + (ey - sy) * f - Math.sin(f * Math.PI) * 30); });
+}
+function drawArrivalRibbon() {
+  const a = FX.arr; if (!a || !arriving()) return; const i = Math.floor((NOW - a.at) / ARRIVE_MS), c = a.plays[i].c;
+  const t = 'Expedition ' + c.n + ' home · ' + plural((c.pods || []).length, 'pod') + (c.of ? ' · explored ' + c.explored + ' of ' + c.of : '');
+  const w = textW(t, 2) + 48, x = VIV.x + (VIV.w - w) / 2, y = VIV.y + 26;
+  panel(x, y + 3, w, 36, C.moss0); panel(x, y, w, 36, C.lamp, C.wood2); text(t, x + w / 2, y + 11, C.wood0, 2, 'center');
+}
+function drawReport() {   // after the arrivals: what came, the mend, and the world-turn lines; it stays until the next press
+  const r = UI.report, tot = { e: 0, d: 0, s: 0, pods: 0 }; for (const p of r.plays) { tot.e += p.c.e | 0; tot.d += p.c.d | 0; tot.s += p.c.s | 0; tot.pods += (p.c.pods || []).length; }
+  const lines = r.plays.map(p => 'Expedition ' + p.c.n + ' home · ' + plural((p.c.pods || []).length, 'pod') + (p.c.of ? ' · explored ' + p.c.explored + ' of ' + p.c.of : ''));
+  const paid = r.plays.reduce((a, p) => a + p.paid, 0) + (r.mend ? r.mend.paid : 0), free = r.mend ? r.mend.free : 0, pr = ST.probe;
+  const mend = pr ? (r.mend && r.mend.broke ? 'The Probe is mended free' : free || paid ? 'Shield back to ' + plural(pr.shield, 'plate') + (free ? ' · ' + free + ' free' : '') + (paid ? ' · ' + paid + ' ⚡' : '') : 'Shield ' + pr.shield + ' of ' + pr.smax) : '';
+  const world = (r.plays[r.plays.length - 1].c.lines || []).slice(0, 3);
+  const x = VIV.x + 40, w = VIV.w - 80, h = 64 + lines.length * 24 + (mend ? 26 : 0) + (world.length ? 30 + world.length * 22 : 0), y = VIV.y + 20;
+  panel(x, y + 4, w, h, C.moss0); panel(x, y, w, h, C.paper, C.wood2);
+  let yy = y + 14; for (const l of lines) { text(clipText(l, w - 40, 2), x + 20, yy, C.wood0); yy += 24; }
+  let xx = x + 20; for (const [ic, v] of [['energy', tot.e], ['data', tot.d], ['essence', tot.s]]) { blit(ICON[ic](), xx, yy + 2); xx += 18 + text('+' + v, xx + 18, yy, C.wood2, 2) + 18; }
+  yy += 28; if (mend) { text(mend, x + 20, yy, C.wood2); yy += 26; }
+  if (world.length) { text('Meanwhile, the world turned · T' + (ST.turn + 1), x + 20, yy, C.bark); yy += 26; for (const l of world) { R(x + 24, yy + 6, 4, 4, C.orange); text(clipText(l, w - 60, 2), x + 36, yy, C.wood0); yy += 22; } }
+}
+function drawStatusStrip(x, y) {   // a few words beside icons: nothing here is a table or a log
+  const rows = [];
+  const w = mibiById(effWithId()); rows.push([w ? 'comp' : null, w ? w.name + ' is with you' : 'no mibi with you']);
+  rows.push([null, ST.tray.length ? plural(ST.tray.length, 'pod') + ' in the tray' + (ST.waiting.length ? ' · ' + ST.waiting.length + ' sealed' : '') : 'the tray is empty']);
+  rows.push([null, ST.inc ? (incReady() ? 'the embryo is ready' : 'an embryo is growing') : atHome().length + ' of ' + ROOM + ' places taken']);
+  rows.forEach(([ic, t], i) => { if (ic) blit(ICON[ic](), x + 4, y + i * 28); else R(x + 8, y + 7 + i * 28, 6, 6, C.moss4); text(clipText(t, 320, 2), x + 26, y + 3 + i * 28, C.fog); });
+}
+// ---------- Idle: the vivarium plays alone ----------
+function drawIdle() {
+  blit(vivArt(SW, SH - LINE_H), 0, 0);
+  drawResidents(0, 0, SW, SH - LINE_H, true);
+  const w = mibiById(effWithId()), parts = [];
+  parts.push(docked() ? 'Companion docked' : 'Companion away'); if (w) parts.push('with ' + w.name);
+  if (docked() && bayCrates().length) parts.push(plural(bayCrates().length, 'crate') + ' in the bay');
+  if (ST.inc) parts.push(incReady() ? 'an embryo is ready to open' : 'an embryo is growing');
+  R(0, SH - LINE_H, SW, LINE_H, C.moss0); text(parts.join(' · '), SW / 2, SH - LINE_H + 12, C.fog, 2, 'center');
+}
+
+// ---------- The trait window, drawn in its states ----------
+function winPos(n, top) { top = top == null ? 50 : top; return n === 3 ? [[295, top + 8], [485, top], [675, top + 8]] : [[200, top + 12], [390, top], [580, top], [770, top + 12]]; }
+// o: { sp, w, kind: 'frost'|'pic'|'shutter', pic, ghost, base, glint, family, roll, changed, wipe, label, sub, labelCol }
+function drawWin(x, y, o) {
+  if (o.kind === 'shutter') blit(shutterArt(), x, y);
+  else if (o.kind === 'pic') blit(framedPic(o.picKey, o.pic), x, y);
+  else blit(frostArt(), x, y);
+  if (o.wipe != null && o.wipe < 1) {   // the frost wipes away top-down over two seconds
+    const cut = Math.round(10 + o.wipe * 122); g.save(); g.beginPath(); g.rect(x, y + cut, WIN_W, WIN_H - cut); g.clip(); blit(frostArt(), x, y); g.restore();
+    R(x + 12, y + cut, WIN_W - 24, 2, C.white); }
+  blit(frameArt(), x, y);
+  const W = SPECIES[o.sp].win[o.w]; blit(emblemArt(W.emb), x + WIN_W / 2 - 8, y - 4);
+  if (W.mode === 'family') blit(famArt(), x + 6, y + 134);
+  if (o.base) blit(baseArt(), x + 50, y + 124);
+  if (o.ghost) blit(o.ghost, x + 124, y + 88);
+  if (o.glint) { const tw = motion() ? Math.floor(NOW / 300) % 3 : 0; blit(starArt(tw !== 1), x + 128 - (tw !== 1 ? 9 : 5), y + 26 - (tw !== 1 ? 9 : 5)); }
+  if (o.roll) { text('▲', x - 18, y + 46, o.roll === 2 ? C.amber : C.lampD, 2); text('▼', x - 18, y + 80, o.roll === 2 ? C.amber : C.lampD, 2); }
+  if (o.changed) { panel(x + 88, y + 14, 74, 24, C.lamp, C.wood1); text('changed', x + 125, y + 19, C.wood0, 2, 'center'); }
+  if (o.label) text(clipText(o.label, 200, 2), x + WIN_W / 2, y + 156, o.labelCol != null ? o.labelCol : C.fog, 2, 'center');
+  if (o.sub) text(clipText(o.sub, 200, 2), x + WIN_W / 2, y + 178, C.mist, 2, 'center');
+}
+// What a window of a pod (or founder, or mibi) shows: its picture, with a seed for what hides or a base when nothing does.
+function otherLookOf(sp, al, knownFn) { return al.map((pr, w) => knownFn(w) ? shows(pr) : -1); }
+function winState(sp, al, w, known, hidKnown, extra) {
+  const W = SPECIES[sp].win[w], other = otherLookOf(sp, al, i => i !== w && known(i));
+  if (!known(w)) { if (W.lock === 'tier2' && tierNow() < 2) return Object.assign({ sp, w, kind: 'shutter', label: W.word, sub: 'tier 2 opens it' }, extra);
+    return Object.assign({ sp, w, kind: 'frost', label: W.word + (W.mode === 'family' ? ' · family' : ''), sub: '' }, extra); }
+  const pr = al[w], s = shows(pr), h = hides(pr), pic = windowPic(sp, w, s, other);
+  const o = { sp, w, kind: 'pic', pic, picKey: sp + ':' + w + ':' + s + ':' + other.join(','), label: W.v[s].n };
+  if (hidKnown(w)) { if (h >= 0) { o.ghost = ghostPic(sp, w, h, other); o.label = 'shows ' + W.v[s].n; o.sub = 'hides ' + W.v[h].n; } else { o.base = true; o.sub = 'through and through'; } }
+  if (W.mode === 'family' && !o.sub) o.sub = 'only through families';
+  return Object.assign(o, extra);
+}
+
+// ---------- Pods (Research key): the tray, the cradle, identify, study, compare, return ----------
+const TRAYCOL = { x: 22, y: 54, step: 68 };
+function podsTargets() {
+  const t = [], P = UI.pods, p = podById(P.cur);
+  if (P.cmp) return [tgt('cmp', 0, 0, 1, 1)];
+  if (p && p.idd) winPos(SPECIES[p.sp].win.length).forEach(([x, y], w) => t.push(tgt('w' + w, x, y, WIN_W, WIN_H)));
+  if (p) t.push(tgt('pod', 488, 292, 144, 150));
+  ST.tray.forEach((q, i) => t.push(tgt('c' + i, TRAYCOL.x - 6, TRAYCOL.y + i * TRAYCOL.step - 4, 64, 66)));
+  if (p) t.push(tgt('gate', 16, 470, 76, 74));
+  return t;
+}
+function podsEnsure() {   // keep the cradle and the focus valid
+  const P = UI.pods;
+  if (!podById(P.cur)) P.cur = ST.tray.length ? (ST.tray.find(q => !q.idd) || ST.tray[0]).id : null;
+  const ids = podsTargets().map(t => t.id); if (!ids.includes(P.f)) P.f = P.cur ? 'pod' : ids[0] || 'pod';
+}
+function gateArt() { return art('gate', () => { const pb = new PB(76, 70); pb.rect(4, 8, 68, 58, C.moss3); for (let i = 0; i < 6; i++) pb.rect(10 + i * 11, 8, 4, 58, C.wood3); pb.rect(4, 18, 68, 4, C.wood2); pb.rect(4, 50, 68, 4, C.wood2);
+  pb.ell(38, 8, 34, 8, C.wood3, { clip: (x, y) => y < 9 }); for (let i = 0; i < 9; i++) pb.ell(6 + i * 8, 64, 4, 5, C.leaf, { sh: [C.sprout, C.forest] }); pb.outline(() => C.wood0); return pb; }); }
+function drawPodBig(p, cx, topY, s) {   // the pod under the lamp; identification clears the shell top-down
+  const a = FX.id && FX.id.id === p.id ? NOW - FX.id.at : 1e9, dur = FX.id && FX.id.newSp ? ID_MS : 700, w = 16 * s, h = 20 * s, x = cx - w / 2;
+  if (p.idd && a < dur && motion()) { blit(podArt(shellOf(p), s, p.sp, 0), x, topY); const cut = Math.round(h * a / dur); g.save(); g.beginPath(); g.rect(x - 2, topY - 2, w + 4, cut + 2); g.clip(); blit(podArt(shellOf(p), s, p.sp, 1), x, topY); g.restore(); R(x + 4, topY + cut, w - 8, 2, C.white); }
+  else blit(podArt(shellOf(p), s, p.sp, p.idd), x, topY);
+}
+function drawPods() {
+  stageBg(); drawTop('Pods'); podsEnsure();
+  const P = UI.pods, p = podById(P.cur);
+  if (P.cmp) { drawCompare(); return; }
+  // the tray column and the garden gate
+  panel(12, 46, 104, 506, C.moss1); 
+  ST.tray.forEach((q, i) => { const y = TRAYCOL.y + i * TRAYCOL.step; blit(cupArt(q.id === P.cur), TRAYCOL.x, y + 38); blit(podArt(shellOf(q), 2, q.sp, 0), TRAYCOL.x + 10, y + 2); if (podGlints(q)) blit(starArt(false), TRAYCOL.x + 38, y); if (!q.idd) R(TRAYCOL.x + 58, y + 18, 6, 6, C.amber); });
+  for (let i = ST.tray.length; i < TRAY; i++) { const y = TRAYCOL.y + i * TRAYCOL.step; blit(cupArt(false), TRAYCOL.x, y + 38); }
+  if (ST.waiting.length) text(ST.waiting.length + ' sealed', 64, 452, C.lampD, 2, 'center');
+  blit(gateArt(), 16, 472);
+  if (!p) { text('The tray is empty', 560, 250, C.fog, 3, 'center'); text(docked() ? 'Open the bay at Home to bring pods in' : 'Dock the Companion to bring its crates home', 560, 296, C.mist, 2, 'center'); drawPodsFocus(); return; }
+  // the pod in its padded cradle under a lamp
+  lampPool(560, 380, 230, 150);
+  blit(art('podcradle', () => { const pb = new PB(200, 50); pb.ell(100, 28, 98, 20, C.feltD); pb.ell(100, 24, 88, 15, C.felt, { sh: [C.coral, C.feltD] }); pb.outline(() => C.wood0); return pb; }), 460, 404);
+  drawPodBig(p, 560, 300, 6);
+  const idA = FX.id && FX.id.id === p.id ? NOW - FX.id.at : 1e9;
+  if (p.idd && p.newSp && idA < 6000 && idA > (motion() ? ID_MS * .7 : 0)) { panel(284, 340, 186, 40, C.lamp, C.rust); text('New species', 377, 346, C.rust, 3, 'center'); }
+  text(clipText(p.idd ? cap(spWord(p.sp)) + (p.newSp && idA < 6000 ? '' : '') : 'Unknown pod', 400, 3), 560, 462, C.creamT, 3, 'center');
+  text(clipText(podOrigin(p), 520, 2), 560, 494, C.mist, 2, 'center');
+  if (p.idd) {
+    const n = SPECIES[p.sp].win.length, pos = winPos(n), st = FX.study && FX.study.id === p.id ? FX.study : null;
+    pos.forEach(([x, y], w) => { const wipe = st && st.w === w && motion() ? clamp((NOW - st.at) / STUDY_MS, 0, 1) : null;
+      drawWin(x, y, winState(p.sp, p.al, w, i => !!p.st[i], i => !!p.st[i], { glint: glint(p, w), wipe })); });
+    blit(whorlArt(p.sp, p.al, p.gs, podLit(p), podHid(p), 96), 760, 330);
+  } else text('identify it to see its windows', 560, 150, C.moss5, 2, 'center');
+  drawPodsFocus();
+}
+function drawPodsFocus() { const t = podsTargets().find(q => q.id === UI.pods.f); if (t) focusRing(t.x - 3, t.y - 3, t.w + 6, t.h + 6); }
+function drawCompare() {
+  const c = UI.pods.cmp, A = podById(c.a), B = podById(c.b); if (!A || !B) { UI.pods.cmp = null; return; }
+  text('Side by side', 512, 52, C.fog, 2, 'center');
+  [[A, 70], [B, 318]].forEach(([p, top]) => {
+    blit(podArt(shellOf(p), 3, p.sp, 1), 40, top + 30); text(clipText(PLACE_WORD[p.g] || '', 120, 2), 64, top + 100, C.mist, 2, 'center');
+    winPos(SPECIES[p.sp].win.length, top).forEach(([x, y], w) => drawWin(x, y, winState(p.sp, p.al, w, i => !!p.st[i], i => !!p.st[i], { label: null, sub: null })));
+  });
+  const pul = motion() ? Math.floor(NOW / 400) % 2 : 1;
+  winPos(SPECIES[A.sp].win.length, 70).forEach(([x, y], w) => { if (A.st[w] && B.st[w] && !samePair(A.al[w], B.al[w]) && pul) { focusRing(x - 4, y - 4, WIN_W + 8, WIN_H + 8); focusRing(x - 4, y + 244, WIN_W + 8, WIN_H + 8); } });
+}
+function podsLine() {
+  const P = UI.pods, p = podById(P.cur), f = P.f;
+  if (P.cmp) { const A = podById(P.cmp.a); const d = A ? SPECIES[A.sp].win.filter((_, w) => { const B = podById(P.cmp.b); return B && A.st[w] && B.st[w] && !samePair(A.al[w], B.al[w]); }).length : 0;
+    return { back: 'Pods', subject: 'two ' + (A ? spWord(A.sp) : '') + ' pods', need: d ? plural(d, 'window') + ' differ' : 'no studied window differs' }; }
+  if (!p) return { back: 'Home', subject: 'the tray is empty' };
+  const subj = podName(p) + ' · ' + (PLACE_WORD[p.g] || '');
+  if (f === 'pod') { if (!p.idd) { const free = !ST.freeId; return { ok: (ST.known.includes(p.sp) ? 'Identify' : 'Identify'), price: free ? 'free' : '1 ⚡', dim: !free && ST.e < 1, back: 'Home', subject: subj }; }
+    return { ok: 'Shape a founder', back: 'Home', subject: subj, need: podGlints(p) ? '★ something new here' : null }; }
+  if (f[0] === 'w') { const w = +f.slice(1), W = SPECIES[p.sp].win[w];
+    if (!p.st[w]) { const b = studyBlock(p, w); if (b === 'opens with Probe tier 2') return { back: 'Home', subject: W.word + ' · opens with Probe tier 2' };
+      return { ok: 'Study ' + W.word, price: b ? b : '2 ◆', dim: !!b, back: 'Home', subject: subj, need: glint(p, w) ? '★ something new here' : null }; }
+    const pr = p.al[w], h = hides(pr); return { ok: 'Shape a founder', back: 'Home', subject: 'shows ' + W.v[shows(pr)].n + (h >= 0 ? ' · hides ' + W.v[h].n : ' · through and through') }; }
+  if (f[0] === 'c') { const q = ST.tray[+f.slice(1)]; if (!q) return { back: 'Home' }; const A = podById(P.anchor);
+    if (A && A !== q && A.idd && q.idd && A.sp === q.sp) return { ok: 'Compare', price: 'free', back: 'Home', subject: podName(q) + ' · ' + (PLACE_WORD[q.g] || '') };
+    return { ok: 'Look at this pod', back: 'Home', subject: podName(q) + ' · ' + podOrigin(q) }; }
+  if (f === 'gate') return { ok: P.wildArm ? 'Again: return it' : 'Return to the wild', price: '+1 ❀', back: 'Home', subject: podName(p) + ' · back to the ' + (PLACE_WORD[p.g] || 'wild') };
+  return { back: 'Home' };
+}
+function podsAct(k) {
+  const P = UI.pods; podsEnsure(); const p = podById(P.cur);
+  if (P.cmp) { if (k === 'back') { P.cmp = null; } return; }
+  if (k in DIRS) { const was = P.f; P.f = navSpatial(podsTargets(), P.f, k); P.wildArm = 0;
+    if (P.f[0] === 'c') { if (was[0] !== 'c') P.anchor = P.cur; P.cur = ST.tray[+P.f.slice(1)].id; }   // looking is free: the cup's pod comes into the cradle
+    else if (was[0] === 'c') P.anchor = null;
+    return; }
+  if (k === 'back') { goScreen('home'); return; }
+  if (k !== 'confirm' || !p) return;
+  const f = P.f;
+  if (f === 'pod') { if (!p.idd) identify(p); else openCreate(p); }
+  else if (f[0] === 'w') { const w = +f.slice(1); if (!p.st[w]) study(p, w); else { openCreate(p); UI.create.f = w; } }
+  else if (f[0] === 'c') { const q = ST.tray[+f.slice(1)], A = podById(P.anchor);
+    if (A && q && A !== q && A.idd && q.idd && A.sp === q.sp) { P.cmp = { a: A.id, b: q.id }; P.cur = A.id; }
+    else { P.cur = q.id; P.anchor = null; P.f = 'pod'; } }
+  else if (f === 'gate') { if (!P.wildArm) { P.wildArm = 1; msg('Return the ' + podName(p) + ' to the ' + (PLACE_WORD[p.g] || 'wild') + '? ✓ again'); } else { P.wildArm = 0; returnPod(p); P.cur = null; P.f = 'pod'; podsEnsure(); } }
+}
+
+// ---------- Create: the founder large, its windows, the cost. This screen is the review. ----------
+function createPod() { return UI.create ? podById(UI.create.podId) : null; }
+function founderLook(cr, p) { const ch = changedWins(cr); return cr.al.map((pr, w) => p.st[w] || ch.includes(w) ? shows(pr) : -1); }
+function drawCreate() {
+  stageBg(); drawTop('Create');
+  const cr = UI.create, p = createPod(); if (!p) { goScreen('pods'); return; }
+  const n = SPECIES[p.sp].win.length, ch = changedWins(cr), known = w => !!p.st[w] || ch.includes(w);
+  winPos(n).forEach(([x, y], w) => drawWin(x, y, winState(p.sp, cr.al, w, known, known, { roll: canRoll(p, w) ? (cr.f === w ? 2 : 1) : 0, changed: ch.includes(w),
+    ...(known(w) ? {} : { label: SPECIES[p.sp].win[w].word, sub: 'a surprise' }) })));
+  const fw = winPos(n)[cr.f]; if (fw) focusRing(fw[0] - 4, fw[1] - 4, WIN_W + 8, WIN_H + 8);
+  lampPool(512, 430, 230, 130);
+  const fr = motion() ? Math.floor(NOW / 600) % 2 : 0;
+  blit(art('fshadow', () => { const pb = new PB(220, 20); pb.ell(110, 10, 108, 9, C.moss0, { chk: 1 }); return pb; }), 402, 532);
+  blit(mibiArt(p.sp, founderLook(cr, p), 'idle', fr, 8), 384, 290);
+  // from the pod (left), the empty incubator and the whorl (right)
+  blit(podArt(shellOf(p), 4, p.sp, 1), 92, 300); text('from the pod', 124, 396, C.fog, 2, 'center');
+  wrapText(podOrigin(p), 236, 2).slice(0, 3).forEach((l, i) => text(l, 130, 420 + i * 22, C.mist, 2, 'center'));
+  blit(domeArt(120, 120, false), 836, 270); if (ST.inc) text('busy', 896, 330, C.amber, 2, 'center');
+  const lit = SPECIES[p.sp].win.map((_, w) => known(w));
+  blit(whorlArt(p.sp, cr.al, p.gs, lit, lit, 96), 848, 410);
+  // the stamp at Grow: the whorl presses onto the shell and the code appears
+  if (FX.stamp && NOW - FX.stamp.at < 1500) { const k = (NOW - FX.stamp.at) / 1500; panel(362, 240, 300, 60, C.lamp, C.wood2); text(codeText(FX.stamp.code), 512, 258, C.wood0, 3, 'center'); }
+}
+function createLine() {
+  const cr = UI.create, p = createPod(); if (!p) return {};
+  const c = growCost(cr), b = growBlock(cr), ch = changedWins(cr);
+  const looks = SPECIES[p.sp].win.map((W, w) => p.st[w] || ch.includes(w) ? W.v[shows(cr.al[w])].n : null).filter(Boolean);
+  const mins = growMinutes(p.sp, ch.length, !!ST.firstMibi);
+  return { ok: 'Grow it', price: b ? b : priceText(c.e, c.d, c.s), dim: !!b, back: 'Pods', subject: spWord(p.sp) + (looks.length ? ' · ' + looks.join(', ') : ' · all a surprise'), need: 'grows in ' + plural(mins, 'leaf', 'leaves') };
+}
+function createAct(k) {
+  const cr = UI.create, p = createPod(); if (!p) return; const n = SPECIES[p.sp].win.length;
+  if (k === 'left' || k === 'right') cr.f = clamp(cr.f + (k === 'right' ? 1 : -1), 0, n - 1);
+  else if (k === 'up' || k === 'down') { const w = cr.f; if (!canRoll(p, w)) { msg(!p.st[w] ? 'Study it first to choose' : SPECIES[p.sp].win[w].mode === 'family' ? 'Only through families' : 'This pod carries one look here'); return; }
+    const opts = rollOptions(p, w), i = opts.findIndex(o => o[0] === cr.al[w][0] && o[1] === cr.al[w][1]); cr.al[w] = opts[(Math.max(0, i) + (k === 'down' ? 1 : opts.length - 1)) % opts.length].slice(); }
+  else if (k === 'confirm') grow(cr);
+  else if (k === 'back') { UI.create = null; goScreen('pods'); }
+}
+
+// ---------- The incubator: the dome, the embryo, a ring of leaves (one per minute) ----------
+function drawIncubator() {
+  stageBg(); drawTop('Incubator');
+  const I = ST.inc, h = FX.hatch && NOW - FX.hatch.at < HATCH_MS ? FX.hatch : null;
+  lampPool(512, 380, 260, 170);
+  if (h) { drawHatch(h); return; }
+  if (!I) { blit(domeArt(260, 260, false), 382, 250); text('The incubator is empty', 512, 120, C.fog, 3, 'center'); text('Shape a founder from a pod at Research', 512, 166, C.mist, 2, 'center'); return; }
+  const n = SPECIES[I.m.sp].win.length, pr = incProgress(), ready = pr >= 1;
+  winPos(n).forEach(([x, y], w) => { const k = incKnown(w); drawWin(x, y, winState(I.m.sp, I.m.al, w, i => !!incKnown(i), i => I.m.known[i] === 'studied',
+    k === 'studied' ? (I.m.changed.includes(w) ? { label: 'chosen · ' + SPECIES[I.m.sp].win[w].v[shows(I.m.al[w])].n } : {}) : k ? { label: SPECIES[I.m.sp].win[w].word, sub: 'cleared as it grew' } : { label: SPECIES[I.m.sp].win[w].word, sub: 'still misty' })); });
+  blit(domeArt(260, 260, ready), 382, 250);
+  const stage = pr < .34 ? 0 : pr < .67 ? 1 : 2, e = art('embBig' + I.m.sp + stage + incLook().join(','), () => upPB(embryoArt(I.m.sp, stage, incLook()), 2)), bob = motion() ? Math.round(Math.sin(NOW / 500) * 2) : 0;
+  blit(e, 512 - e.w / 2, 410 - e.h / 2 + bob - (stage === 2 ? 10 : 0));
+  // one leaf per minute, filling smoothly over its minute
+  for (let i = 0; i < I.mins; i++) { const a = -Math.PI + (i + .5) * Math.PI / I.mins, f = clamp(pr * I.mins - i, 0, 1), lf = leafArt(f, true);
+    blit(lf, 512 + Math.cos(a) * 172 - lf.w / 2, 400 + Math.sin(a) * 150 - lf.h / 2); }
+  panel(392, 516, 240, 42, C.wood2, C.wood1); blit(whorlArt(I.m.sp, I.m.al, I.m.gs, I.m.al.map((_, w) => !!incKnown(w)), I.m.known.map(k => k === 'studied'), 40), 398, 517);
+  text(codeText(I.m.code), 448, 529, C.lamp, 2);
+  if (ready && motion() && Math.floor(NOW / 400) % 2) focusRing(378, 246, 268, 268);
+}
+function drawHatch(h) {
+  const m = mibiById(h.id); if (!m) return; const k = clamp((NOW - h.at) / HATCH_MS, 0, 1);
+  const lift = Math.round(Math.min(1, k * 2) * 200); blit(domeArt(260, 260, true, 'base'), 382, 250); if (k < .5) blit(domeArt(260, 260, true, 'glass'), 382, 250 - lift);
+  const s = 6, look = knownLook(m), sz = 32 * s, x = 512 - sz / 2 + Math.round(Math.max(0, k - .5) * 2 * 120), y = 262;
+  blit(mibiArt(m.sp, look, k < .4 ? 'nap' : 'alert', 0, s), x, y);
+  if (k > .45) { const t = m.name + ' · ' + spWord(m.sp) + ' · juvenile', w = textW(t, 3) + 40; panel(512 - w / 2, 92, w, 48, C.lamp, C.wood2); text(t, 512, 103, C.wood0, 3, 'center'); }
+}
+function incLine() {
+  const I = ST.inc; if (FX.hatch && NOW - FX.hatch.at < HATCH_MS) return { back: 'Home', subject: 'a new mibi' };
+  if (!I) return { back: 'Home', subject: 'the incubator is empty' };
+  if (incReady()) return { ok: 'Open', back: 'Home', subject: spWord(I.m.sp) + ' embryo · ready' + (atHome().length >= ROOM ? ' · the vivarium is full' : '') };
+  return { back: 'Home', subject: spWord(I.m.sp) + ' embryo · growing', need: 'surprises clear as it grows' };
+}
+function incAct(k) { if (k === 'back') goScreen('home'); else if (k === 'confirm' && incReady()) { openInc(); } }
+
+// ---------- Library (Library key): the shelf of species; a page with its sticker book and lineage ----------
+const SHELF_N = 7;
+function libLineage(sp) { return ST.mibis.filter(m => m.sp === sp); }
+function libTargets() {
+  const L = UI.lib, t = []; for (let i = 0; i < 3; i++) t.push(tgt('s' + i, 16 + i * 144, 50, 132, 96));
+  libLineage(L.sp).slice(0, 4).forEach((m, i) => t.push(tgt('m' + i, 708, 196 + i * 88, 300, 80)));
+  return t;
+}
+function drawLibrary() {
+  stageBg(); drawTop('Library');
+  const L = UI.lib, sp = L.sp, known = ST.known.includes(sp), met = ST.met.includes(sp) || known;
+  for (let i = 0; i < SHELF_N; i++) { const x = 16 + i * 144, y = 50;
+    if (i < 3 && (ST.known.includes(i) || ST.met.includes(i))) { const k = ST.known.includes(i); panel(x, y, 132, 96, k ? C.paper : C.moss2, i === sp ? C.lamp : C.wood2);
+      if (k) blit(mibiArt(i, SPECIES[i].win.map(() => 0), 'idle', 0, 2), x + 34, y + 4); else blit(silArt(i, 2, 'moss4'), x + 34, y + 4);
+      text(k ? SPECIES[i].name : 'met', x + 66, y + 72, k ? C.wood0 : C.moss5, 2, 'center'); }
+    else { for (let k = 0; k < 132; k += 8) { R(x + k, y, 4, 2, C.moss3); R(x + k, y + 94, 4, 2, C.moss3); } for (let k = 0; k < 96; k += 8) { R(x, y + k, 2, 4, C.moss3); R(x + 130, y + k, 2, 4, C.moss3); } }
+  }
+  text('more exist', 16 + 6 * 144 + 66, 140, C.moss4, 2, 'center');
+  // the page
+  panel(16, 162, 270, 388, met ? C.paper : C.moss2, C.wood2);
+  if (known) { blit(mibiArt(sp, SPECIES[sp].win.map(() => 0), 'idle', Math.floor(NOW / 700) % 2, 5), 71, 172);
+    text(SPECIES[sp].name, 151, 340, C.wood0, 3, 'center'); text(SPECIES[sp].habit, 151, 374, C.bark, 2, 'center');
+    const places = [...new Set(ST.mibis.filter(m => m.sp === sp).map(m => m.from.g).concat(ST.tray.filter(p => p.idd && p.sp === sp).map(p => p.g)).filter(Boolean))];
+    places.slice(0, 4).forEach((g2, i) => { const px = 32 + (i % 2) * 124, py = 410 + Math.floor(i / 2) * 44; panel(px, py, 116, 36, C[POD_SHELL[g2] || 'sand'], C.wood1); text(clipText(PLACE_WORD[g2] || g2, 104, 2), px + 58, py + 10, C.wood0, 2, 'center'); });
+    if (!places.length) text('places show here', 151, 420, C.clay, 2, 'center'); }
+  else if (met) { blit(silArt(sp, 5, 'moss4'), 71, 172); text('Not identified yet', 151, 350, C.fog, 2, 'center'); text('identify one of its pods', 151, 376, C.mist, 2, 'center'); }
+  else { text('Not met yet', 151, 340, C.moss5, 2, 'center'); }
+  // the sticker book: one pocket per window, every look found so far, and a dotted "more?"
+  if (known) { const W = SPECIES[sp].win, n = W.length;
+    W.forEach((win, w) => { const px = 300 + (w % 2) * 200, py = 162 + Math.floor(w / 2) * (n > 2 ? 196 : 196), ph = 186;
+      panel(px, py, 190, ph, C.paper, C.wood2); text(win.word, px + 14, py + 12, C.wood0, 2); if (win.mode === 'family') blit(famArt(), px + 150, py + 8);
+      const seen = ST.seen[sp + ':' + w] || [], items = seen.concat([-1]);
+      items.slice(0, 4).forEach((v, i) => { const cx = px + 18 + (i % 2) * 86, cy = py + 40 + Math.floor(i / 2) * 72;
+        if (v < 0) { for (let a = 0; a < 6.28; a += .25) R(cx + 32 + Math.cos(a) * 26, cy + 26 + Math.sin(a) * 26, 3, 3, C.clay); text('more?', cx + 32, cy + 20, C.clay, 2, 'center'); return; }
+        const pic = windowPic(sp, w, v, W.map((_, i2) => i2 === w ? v : 0));
+        blit(art('stk' + sp + w + v, () => { const pb = new PB(56, 56); for (let y = 0; y < 56; y++) for (let x = 0; x < 56; x++) if ((x - 27.5) ** 2 + (y - 27.5) ** 2 <= 27 * 27) { const c = pic.get(Math.floor(47 + x * 1), Math.floor(27 + y * 1)); pb.set(x, y, c >= 0 ? c : C.creamT); } pb.ring(28, 28, 28, 28, C.wood2, 2); return pb; }), cx + 4, cy - 2);
+        text(clipText(win.v[v].s, 86, 2), cx + 32, cy + 56, C.bark, 2, 'center'); }); });
+  }
+  // lineage: each pod → its mibi, with its whorl, code and skill notches
+  panel(698, 162, 312, 388, C.moss1, C.wood2); text('lineage', 714, 172, C.fog, 2);
+  const lin = libLineage(sp); if (!lin.length) text(known ? 'no ' + SPECIES[sp].plural + ' raised yet' : '', 854, 260, C.moss5, 2, 'center');
+  lin.slice(0, 4).forEach((m, i) => { const y = 196 + i * 88;
+    blit(podArt(POD_SHELL[m.from.g] || 'bone', 2, m.sp, 0), 714, y + 18); R(752, y + 38, 18, 2, C.moss5);
+    panel(774, y, 230, 80, C.paper, C.wood2); blit(whorlArt(m.sp, m.al, m.gs, m.known.map(Boolean), m.hid || [], 40), 778, y + 20); blit(mibiArt(m.sp, knownLook(m), 'idle', 0, 2), 816, y + 6);
+    text(clipText(m.name, 120, 2), 880, y + 8, C.wood0, 2); text(m.code.slice(0, 3) + '·' + m.code.slice(3, 6) + '·' + m.code.slice(6), 880, y + 30, C.bark, 2);
+    for (let k = 0; k < 3; k++) { const on = k < (m.notches || 0); R(880 + k * 16, y + 58, 10, 10, on ? C.orange : C.sand); }
+    text('skill', 934, y + 56, C.clay, 2); });
+  if (lin.length > 4) text('+' + (lin.length - 4) + ' more', 854, 540, C.mist, 2, 'center');
+  const t = libTargets().find(q => q.id === (L.f === 'shelf' ? 's' + sp : 'm' + L.li)); if (t) focusRing(t.x - 3, t.y - 3, t.w + 6, t.h + 6);
+}
+function libLine() {
+  const L = UI.lib, sp = L.sp, m = L.f === 'list' ? libLineage(sp)[L.li] : null;
+  if (m) return { ok: 'Visit ' + m.name, back: 'Shelf', subject: m.name + ' · ' + spWord(sp) + (m.from.g ? ' · from the ' + (PLACE_WORD[m.from.g] || m.from.g) : '') };
+  return { back: 'Home', subject: ST.known.includes(sp) ? SPECIES[sp].name + ' · ' + plural(libLineage(sp).length, 'mibi') : ST.met.includes(sp) ? 'a species met, not identified' : 'an empty slot' };
+}
+function libAct(k) {
+  const L = UI.lib, lin = libLineage(L.sp);
+  if (L.f === 'shelf') { if (k === 'left' || k === 'right') L.sp = clamp(L.sp + (k === 'right' ? 1 : -1), 0, 2); else if (k === 'down' && lin.length) { L.f = 'list'; L.li = 0; } else if (k === 'back') goScreen('home'); }
+  else { if (k === 'up') { if (L.li > 0) L.li--; else L.f = 'shelf'; } else if (k === 'down') L.li = Math.min(L.li + 1, Math.min(4, lin.length) - 1);
+    else if (k === 'back') L.f = 'shelf'; else if (k === 'confirm' && lin[L.li]) { UI.hab.id = lin[L.li].id; UI.hab.f = 'stage'; UI.hab.from = 'library'; goScreen('habitat', true); } }
+}
+
+// ---------- Habitat (Habitat key): one resident large, its card, the with-you door, the bond heart ----------
+function habList() { return ST.mibis.slice(); }
+function habShown() { const l = habList(); return l.find(m => m.id === UI.hab.id) || l.find(m => m.id !== effWithId()) || l[0] || null; }
+function habTargets() {
+  const t = [tgt('stage', 30, 66, 576, 360), tgt('door', 636, 306, 186, 136), tgt('heart', 832, 306, 178, 136)];
+  habList().forEach((m, i) => t.push(tgt('s' + m.id, 24 + i * 140, 456, 128, 92)));
+  return t;
+}
+function drawHabitat() {
+  stageBg(); drawTop('Habitat');
+  const m = habShown(), H = UI.hab;
+  if (!m) { blit(vivArt(600, 380), 20, 56); text('No mibis yet', 320, 200, C.fog, 3, 'center'); text('Shape a founder from a pod at Research', 320, 246, C.mist, 2, 'center'); return; }
+  H.id = m.id; if (UI.meet === m.id) UI.meet = null;   // met
+  // its corner of the vivarium, the resident large
+  blit(art('habviv', () => cropPB(vivArt(SW, SH - LINE_H), 200, 120, 600, 380)), 20, 56);
+  const isW = m.id === effWithId(), mo = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < 1800 ? NOW - FX.moment.at : -1;
+  const fr = motion() ? Math.floor(NOW / 650) % 2 : 0, st = mibiStage(m), s = st === 'juvenile' ? 7 : 8, sz = 32 * s;
+  let x = 320 - sz / 2, y = 420 - sz;
+  if (mo >= 0 && m.sp === 0) { x += 14; }
+  if (mo >= 0 && m.sp === 1) blit(art('halo', () => { const pb = new PB(340, 240); pb.ell(170, 120, 168, 118, C.cream, { chk: 1 }); return pb; }), 150, 170);
+  blit(art('hshadow' + s, () => { const pb = new PB(sz, 16); pb.ell(sz / 2, 8, sz * .36, 7, C.moss0, { chk: 1 }); return pb; }), x, y + sz * .86);
+  blit(mibiArt(m.sp, knownLook(m), mo >= 0 ? 'alert' : 'idle', mo >= 0 ? 0 : fr, s), x, y - (mo >= 0 && m.sp === 0 ? Math.round(Math.abs(Math.sin(mo / 150)) * 20) : 0));
+  if (mo >= 0 && m.sp === 2) for (let i = 0; i < 12; i++) { const a = i / 12 * 6.28, r = 90 + Math.min(1, mo / 1200) * 80; R(320 + Math.cos(a) * r * 1.2 - 5, 290 + Math.sin(a) * r * .8 - 5, 10, 10, C.fog); }
+  if (mo >= 0 && m.sp === 1) for (const [sx, sy] of [[120, 120], [500, 150], [150, 360], [480, 330]]) blit(starArt(true), sx, sy);
+  if (isW) { panel(36, 70, 250, 34, C.lamp, C.wood2); text('in the Companion with you', 161, 80, C.wood0, 2, 'center'); }
+  // the card
+  panel(636, 50, 374, 246, C.paper, C.wood2);
+  text(clipText(m.name, 220, 3), 654, 62, C.wood0, 3); if (m.bonded) blit(ICON.heart(true), 654 + textW(clipText(m.name, 220, 3), 3) + 10, 60);
+  text(spWord(m.sp) + ' · ' + st, 654, 98, C.bark, 2); text(SPECIES[m.sp].abText, 654, 120, C.bark, 2);
+  text(clipText(m.mem ? 'remembers the ' + m.mem : m.from.g ? 'from the ' + (PLACE_WORD[m.from.g] || m.from.g) : 'hasn’t been out yet', 236, 2), 654, 142, C.clay, 2);
+  text(codeText(m.code), 654, 164, C.wood2, 2);
+  blit(whorlArt(m.sp, m.al, m.gs, m.known.map(Boolean), m.hid || [], 96), 902, 58);
+  SPECIES[m.sp].win.forEach((W, w) => { const px = 650 + w * 88, py = 184, v = m.known[w] ? shows(m.al[w]) : -1;
+    panel(px, py, 80, 72, C.wood3, C.wood1);
+    if (v >= 0) { const pic = windowPic(m.sp, w, v, knownLook(m)); blit(art('mini' + m.sp + w + v + knownLook(m).join(','), () => cropPB(pic, 37, 25, 74, 62)), px + 3, py + 5); }
+    else blit(art('minifrost', () => cropPB(frostArt(), 40, 40, 74, 62)), px + 3, py + 5);
+    text(clipText(W.word, 84, 2), px + 40, py + 78 - 2, C.bark, 2, 'center'); });
+  // the with-you door and the bond heart
+  const wm = mibiById(effWithId()), pend = pendingWith();
+  panel(636, 306, 186, 136, C.wood2, C.wood1); panel(650, 316, 70, 112, C.wood0, C.wood3);
+  if (wm) blit(mibiArt(wm.sp, knownLook(wm), 'nap', 0, 2), 653, 352); else blit(ICON.comp(), 678, 360);
+  text('with you', 772, 330, C.lamp, 2, 'center'); text(clipText(wm ? wm.name : 'no one', 90, 2), 772, 356, C.creamT, 2, 'center');
+  if (pend && !docked()) wrapText(pend.name + ' next dock', 96, 2).forEach((l, i) => text(l, 772, 384 + i * 20, C.amber, 2, 'center'));
+  panel(832, 306, 178, 136, C.wood2, C.wood1);
+  blit(ICON.heart(!!m.bonded), 906, 330);
+  text(m.bonded ? 'bonded' : bondOffered(m) ? 'bond · offered' : 'bond', 921, 372, m.bonded ? C.coral : C.lamp, 2, 'center');
+  if (!m.bonded && !bondOffered(m)) ['offered after', 'a first outing'].forEach((l, i) => text(l, 921, 396 + i * 20, C.lampD, 2, 'center'));
+  // the strip of residents
+  panel(16, 450, 994, 104, C.moss1, C.moss3);
+  habList().forEach((q, i) => { const sx = 24 + i * 140; panel(sx, 456, 128, 92, q.id === m.id ? C.moss3 : C.moss2, C.wood2); blit(mibiArt(q.sp, knownLook(q), 'idle', 0, 2), sx + 32, 456); text(clipText(q.name, 120, 2), sx + 64, 526, q.id === effWithId() ? C.amber : C.fog, 2, 'center'); });
+  for (let i = habList().length; i < ROOM + 1 && i < 7; i++) { const sx = 24 + i * 140; for (let k = 0; k < 128; k += 8) { R(sx + k, 456, 4, 2, C.moss4); R(sx + k, 546, 4, 2, C.moss4); } text('free', sx + 64, 496, C.moss4, 2, 'center'); }
+  const t = habTargets().find(q => q.id === H.f); if (t) focusRing(t.x - 3, t.y - 3, t.w + 6, t.h + 6); else H.f = 'stage';
+}
+function habLine() {
+  const m = habShown(), H = UI.hab, back = H.from === 'library' ? 'Library' : 'Home'; if (!m) return { back, subject: 'no mibis yet' };
+  const isW = m.id === effWithId(), subj = m.name + ' · ' + spWord(m.sp) + ' · ' + mibiStage(m);
+  if (H.f === 'stage' || H.f[0] === 's' && H.f !== 'stage') return { ok: 'Spend time with ' + m.name, back, subject: subj, need: isW ? m.name + ' is with you' : null };
+  if (H.f === 'door') { if (isW) return { back, subject: m.name + ' is with you' + (docked() ? '' : ' · away') };
+    return { ok: 'Take ' + m.name + ' with you', price: docked() ? 'now' : 'at the next dock', back, subject: subj }; }
+  if (H.f === 'heart') { if (m.bonded) return { back, subject: m.name + ' is bonded' }; if (!bondOffered(m)) return { back, subject: 'bond is offered after a first outing' };
+    return { ok: H.bondArm ? 'Again: bond with ' + m.name : 'Bond with ' + m.name, back, subject: 'a small heart · no meters' }; }
+  return { back };
+}
+function habAct(k) {
+  const H = UI.hab, m = habShown(); if (k !== 'confirm') H.bondArm = 0;
+  if (k === 'back') { const from = H.from; H.from = null; goScreen(from === 'library' ? 'library' : 'home'); return; }
+  if (k in DIRS) { const f = navSpatial(habTargets(), H.f, k); H.f = f; if (f[0] === 's' && f !== 'stage') H.id = +f.slice(1); return; }
+  if (k !== 'confirm' || !m) return;
+  if (H.f === 'stage' || (H.f[0] === 's' && H.f !== 'stage')) { FX.moment = { id: m.id, at: NOW }; lockInput(300);
+    msg([m.name + ' leans on the glass', m.name + ' glows softly', m.name + ' puffs'][m.sp] + ' · ' + (m.mem ? 'it remembers the ' + m.mem : m.from.g ? 'it came from the ' + (PLACE_WORD[m.from.g] || m.from.g) : 'it hasn’t been out yet')); }
+  else if (H.f === 'door') { if (m.id !== effWithId()) takeWith(m); }
+  else if (H.f === 'heart' && bondOffered(m)) { if (!H.bondArm) { H.bondArm = 1; msg('Bond with ' + m.name + '? A deliberate choice · ✓ again'); } else { H.bondArm = 0; bond(m); } }
+}
+
+// ---------- The Probe bench (from Home's cradle): mend, the standing choice, tier 2 ----------
+function benchTargets() { return [tgt('plate', 120, 380, 300, 60), tgt('switch', 520, 120, 420, 90), tgt('slot', 520, 260, 420, 160)]; }
+function drawBench() {
+  stageBg(); drawTop('Probe bench');
+  const pr = docked() ? ST.probe : null, B = UI.bench;
+  lampPool(270, 300, 230, 200);
+  blit(art('cradleBig', () => { const pb = new PB(340, 80); pb.ell(170, 44, 168, 34, C.wood2); pb.ell(170, 36, 150, 24, C.wood1); pb.outline(() => C.wood0); return pb; }), 100, 300);
+  if (pr) blit(probeArt(7), 172, 120); else { text('The Probe is away', 270, 220, C.fog, 3, 'center'); text('with the Companion', 270, 260, C.mist, 2, 'center'); }
+  const n = pr ? pr.smax : TIER[tierNow()].shield, sh = pr ? pr.shield : -1;
+  for (let i = 0; i < n; i++) { const px = 270 - n * 37 + i * 74; if (sh < 0) R(px, 392, 64, 36, C.moss3); else if (i < sh) { R(px, 392, 64, 36, C.bone); R(px, 420, 64, 8, C.fog); } else { R(px, 392, 64, 36, C.slate); R(px + 3, 395, 58, 30, C.ink); } }
+  text(pr ? 'tier ' + pr.tier + ' · ' + pr.shield + ' of ' + pr.smax + ' plates' : 'last seen tier ' + tierNow(), 270, 448, C.fog, 2, 'center');
+  // the standing choice
+  panel(520, 120, 420, 90, C.wood2, C.wood1);
+  R(548, 150, 70, 30, C.wood0); R(ST.mendFull ? 584 : 552, 152, 32, 26, ST.mendFull ? C.leaf : C.stone);
+  text('Mend fully on docking', 640, 140, C.creamT, 2); text(ST.mendFull ? 'on · 1 ⚡ a plate' : 'off · only the free plates', 640, 166, C.lampD, 2);
+  // the tier 2 slot: lit only when affordable
+  const lit = tier2Ready(), has2 = pr && pr.tier >= 2;
+  panel(520, 260, 420, 160, lit ? C.lamp : C.wood1, C.wood2);
+  if (has2) { text('Tier 2 installed', 730, 300, C.lampD, 3, 'center'); text('reaches 4 cells · 3 pods · 4 plates', 730, 344, C.lampD, 2, 'center'); }
+  else { text('Tier 2 slot', 730, 286, lit ? C.wood0 : C.wood3, 3, 'center');
+    text('reaches 4 cells · 3 pods · reads the deep', 730, 326, lit ? C.wood1 : C.wood3, 2, 'center');
+    text(priceText(PRICE.tier2E, PRICE.tier2D, 0) + (lit ? '' : pr ? ' · ' + shortText(PRICE.tier2E, PRICE.tier2D, 0) : ' · dock first'), 730, 360, lit ? C.rust : C.wood3, 2, 'center');
+    if (B.arm) text('armed · ✓ again installs', 730, 392, C.rust, 2, 'center'); }
+  const t = benchTargets()[B.f]; if (t) focusRing(t.x - 3, t.y - 3, t.w + 6, t.h + 6);
+}
+function benchLine() {
+  const B = UI.bench, pr = docked() ? ST.probe : null;
+  if (B.f === 0) { if (!pr) return { back: 'Home', subject: 'the Probe is away with the Companion' }; if (pr.shield >= pr.smax) return { back: 'Home', subject: 'Probe · tier ' + pr.tier + ' · whole' };
+    return { ok: 'Mend a plate', price: ST.e >= 1 ? '1 ⚡' : shortText(1, 0, 0), dim: ST.e < 1, back: 'Home', subject: 'Probe · tier ' + pr.tier, need: plural(pr.smax - pr.shield, 'plate') + ' to mend' }; }
+  if (B.f === 1) return { ok: 'Switch ' + (ST.mendFull ? 'off' : 'on'), price: 'free', back: 'Home', subject: 'mend fully on docking · ' + (ST.mendFull ? 'on' : 'off') };
+  if (pr && pr.tier >= 2) return { back: 'Home', subject: 'tier 2 installed' };
+  if (!tier2Ready()) return { back: 'Home', subject: 'tier 2 · ' + priceText(PRICE.tier2E, PRICE.tier2D, 0) + (pr ? '' : ' · dock first') };
+  return { ok: B.arm ? 'Again: install tier 2' : 'Arm tier 2', price: priceText(PRICE.tier2E, PRICE.tier2D, 0), back: 'Home', subject: 'the tier 2 slot is lit' };
+}
+function benchAct(k) {
+  const B = UI.bench; if (k !== 'confirm') B.arm = 0;
+  if (k === 'back') { goScreen('home'); return; }
+  if (k in DIRS) { const ids = benchTargets().map(t => t.id), cur = ids[B.f]; B.f = ids.indexOf(navSpatial(benchTargets(), cur, k)); return; }
+  if (k !== 'confirm') return;
+  if (B.f === 0) mendPlate();
+  else if (B.f === 1) { ST.mendFull = !ST.mendFull; save(); }
+  else if (tier2Ready()) { if (!B.arm) { B.arm = 1; msg('Tier 2 · 12 ⚡ 4 ◆ · ✓ again to install'); } else { B.arm = 0; installTier2(); } }
+}
+
+// ---------- Home: bottom line and presses ----------
+function homeLine() {
+  const f = UI.home.f, nd = need();
+  if (arriving()) return { subject: 'the bay opens · one crate at a time', need: '' };
+  if (f === 'room') return { ok: nd.act ? nd.label : '', back: 'Rest', subject: 'the room', need: nd.text };
+  if (f.startsWith('r:')) { const m = mibiById(+f.slice(2)); return m ? { ok: 'Look at ' + m.name, back: 'Rest', subject: m.name + ' · ' + spWord(m.sp) + ' · ' + mibiStage(m), need: nd.text } : { back: 'Rest' }; }
+  if (f === 'bay') { const n = bayCrates().length; if (docked() && n) return { ok: 'Open the bay', price: plural(n, 'crate'), back: 'Rest', subject: plural(n, 'sealed crate') };
+    return { back: 'Rest', subject: docked() ? 'the bay is empty' : 'the bay door · closed while the Companion is away', need: nd.text }; }
+  if (f === 'tray') return { ok: 'Look at the pods', back: 'Rest', subject: ST.tray.length ? plural(ST.tray.length, 'pod') + ' in the tray' : 'the tray is empty', need: nd.text };
+  if (f === 'inc') return { ok: incReady() ? 'Open the incubator' : 'Look at the incubator', back: 'Rest', subject: ST.inc ? spWord(ST.inc.m.sp) + ' embryo · ' + (incReady() ? 'ready' : 'growing') : 'the incubator is empty', need: nd.text };
+  if (f === 'cradle') { const pr = docked() && ST.probe; return { ok: 'Open the Probe bench', back: 'Rest', subject: pr ? 'Probe · ' + pr.shield + ' of ' + pr.smax + ' plates' : 'the Probe is away', need: nd.text }; }
+  return { back: 'Rest' };
+}
+function doNeed(nd) {
+  if (nd.act === 'bay') openBay();
+  else if (nd.act === 'inc') goScreen('incubator');
+  else if (nd.act === 'meet') { UI.hab.id = UI.meet; UI.hab.f = 'stage'; UI.meet = null; goScreen('habitat'); }
+  else if (nd.act === 'pods') { const p = ST.tray.find(q => !q.idd) || ST.tray[0]; if (p) UI.pods.cur = p.id; UI.pods.f = 'pod'; goScreen('pods'); }
+  else if (nd.act === 'hab') { UI.hab.id = nd.id; UI.hab.f = 'heart'; goScreen('habitat'); }
+}
+function homeAct(k) {
+  const H = UI.home;
+  if (k in DIRS) { const t = homeTargets(); if (H.f === 'room') { const c = tgt('room', 480, 280, 64, 40); H.f = navSpatial(t.concat([c]), 'room', k); if (H.f === 'room') H.f = t[0] ? t[0].id : 'room'; } else H.f = navSpatial(t, H.f, k); return; }
+  if (k === 'back') { if (H.f !== 'room') H.f = 'room'; else { UI.idle = true; FX.restAt = NOW; } return; }
+  if (k !== 'confirm') return;
+  const f = H.f;
+  if (f === 'room') doNeed(need());
+  else if (f.startsWith('r:')) { UI.hab.id = +f.slice(2); UI.hab.f = 'stage'; if (UI.meet === UI.hab.id) UI.meet = null; goScreen('habitat'); }
+  else if (f === 'bay') { if (docked() && bayCrates().length) openBay(); else msg(docked() ? 'The bay is empty' : 'Dock the Companion to open its crates'); }
+  else if (f === 'tray') { UI.pods.f = 'pod'; goScreen('pods'); }
+  else if (f === 'inc') goScreen('incubator');
+  else if (f === 'cradle') { UI.bench.f = 0; goScreen('bench'); }
+}
+
+// ---------- Dispatch ----------
+const SCREENS = {
+  home: { draw: drawHome, line: homeLine, act: homeAct },
+  pods: { draw: drawPods, line: podsLine, act: podsAct },
+  create: { draw: drawCreate, line: createLine, act: createAct },
+  incubator: { draw: drawIncubator, line: incLine, act: incAct },
+  library: { draw: drawLibrary, line: libLine, act: libAct },
+  habitat: { draw: drawHabitat, line: habLine, act: habAct },
+  bench: { draw: drawBench, line: benchLine, act: benchAct },
+};
+function goScreen(name) {
+  if (UI.screen !== name) FX.transAt = NOW;
+  UI.screen = name; UI.pods.wildArm = 0; UI.hab.bondArm = 0; UI.bench.arm = 0; UI.pods.cmp = null;
+  if (name === 'pods') podsEnsure();
+  if (name === 'habitat' && UI.meet != null && UI.hab.id === UI.meet) UI.meet = null;
+  if (name !== 'create') UI.create = null;
+}
+function lineFor() { return UI.idle ? {} : SCREENS[UI.screen].line(); }
+function render() {
+  stepResidents();
+  if (UI.idle) drawIdle();
+  else { SCREENS[UI.screen].draw(); drawLine(lineFor()); drawMsg(); }
+  const ta = NOW - (FX.transAt || -1e9); if (ta >= 0 && ta < 180 && motion()) ditherFill(0, STAGE_Y, SW, STAGE_H, 'moss0', 16 - Math.floor(ta / 180 * 16));
+  vctx.drawImage(scr, 0, 0);
+}
+let errN = 0;
+function frame(t) {
+  NOW = t;
+  if (!UI.idle && NOW - UI.lastInput > IDLE_MS && !arriving() && NOW > FX.lockUntil) UI.idle = true;   // the vivarium plays alone
+  try { render(); } catch (e) { if (errN++ < 3) console.error(e); }
+  updateCaddy();
+  requestAnimationFrame(frame);
+}
+
+// ===================== 9. Input: the Station's keys =====================
+// Pad, Home/Research/Library/Habitat, ← and ✓, plus the Caddy's Dock/Lift key (prototype only).
+function act(k) {
+  NOW = performance.now(); UI.lastInput = NOW;
+  if (UI.idle) { UI.idle = false; FX.wake = NOW; return; }   // the first press only wakes it (waking never rewards)
+  if (NOW < FX.lockUntil) return;                               // presses during a reveal or an arrival are consumed, not queued
+  if (k !== 'back' || UI.screen !== 'home') FX.msg = '';
+  if (UI.report && !arriving() && UI.screen === 'home') UI.report = null;
+  if (k === 'dock') { dockKey(); return; }
+  const views = { home: 'home', research: 'pods', library: 'library', habitat: 'habitat' };
+  if (views[k]) { if (k === 'habitat') UI.hab.from = null;
+    if (k === 'library') { UI.lib.f = 'shelf'; if (!ST.known.includes(UI.lib.sp)) { const s0 = ST.known[0] != null ? ST.known[0] : ST.met[0]; if (s0 != null) UI.lib.sp = s0; } }
+    goScreen(views[k]); return; }
+  SCREENS[UI.screen].act(k);
+}
+const stationEl = document.getElementById('station');
+function bindKeys(root) {
+  root.querySelectorAll('.k').forEach(btn => { const k = btn.dataset.key;
+    btn.addEventListener('pointerdown', e => { e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch (_) { } btn.classList.add('is-down'); act(k); });
+    const up = () => btn.classList.remove('is-down'); btn.addEventListener('pointerup', up); btn.addEventListener('pointercancel', up); btn.addEventListener('lostpointercapture', up);
+    btn.addEventListener('click', e => e.preventDefault()); });
+}
+bindKeys(stationEl); bindKeys(document.getElementById('caddy'));
+stationEl.addEventListener('contextmenu', e => e.preventDefault());
+['touchstart', 'touchmove', 'gesturestart', 'dblclick'].forEach(type => stationEl.addEventListener(type, e => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
+const KEYMAP = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', Enter: 'confirm', NumpadEnter: 'confirm', Space: 'confirm', Escape: 'back', Backspace: 'back',
+  KeyH: 'home', KeyR: 'research', KeyL: 'library', KeyB: 'habitat', KeyD: 'dock' };
+window.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = KEYMAP[e.code] || ({ ' ': 'confirm', Enter: 'confirm', Escape: 'back' })[e.key]; if (!k) return;
+  const inPanel = e.target && e.target.closest && (e.target.closest('.panel') || e.target.closest('.debug'));
+  if (inPanel && (k === 'confirm' || k === 'back')) return;
+  e.preventDefault(); if (e.repeat) return;
+  const b = document.querySelector(`.k[data-key="${k}"]`); if (b) b.classList.add('is-down');
+  act(k);
+});
+window.addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (!k) return; const b = document.querySelector(`.k[data-key="${k}"]`); if (b) b.classList.remove('is-down'); });
+window.addEventListener('blur', () => document.querySelectorAll('.k.is-down').forEach(b => b.classList.remove('is-down')));
+
+// ===================== 10. Page: fit, the Caddy, debug strip, sharing the save, boot =====================
+const fitEl = document.getElementById('fit');
+function fit() {
+  const W = 1400, H = 790, vw = document.documentElement.clientWidth, vh = window.innerHeight, dpr = window.devicePixelRatio || 1;
+  const desktop = vw >= 900 && window.matchMedia && matchMedia('(pointer: fine)').matches;
+  let s = Math.min(1, (vw - 32) / W); if (!desktop) s = Math.min(s, (vh - 40) / H); s = Math.max(.2, s);
+  const k = Math.floor(s * dpr + 1e-6); if (k >= 1 && k / dpr >= s * .85) s = k / dpr;
+  fitEl.style.width = (W * s) + 'px'; fitEl.style.height = (H * s) + 'px'; stationEl.style.transform = `scale(${s})`;
+}
+window.addEventListener('resize', fit);
+const caddyEl = document.getElementById('caddy'), dockKeyEl = document.getElementById('dockKey'), caddyPaper = document.getElementById('caddyPaper');
+let caddyKey = '';
+function updateCaddy() {
+  const d = docked(), key = d + ':' + bayCrates().length + ':' + hasWorld() + ':' + (ST.dock && ST.dock.at); if (key === caddyKey) return; caddyKey = key;
+  caddyEl.classList.toggle('lifted', !d); dockKeyEl.textContent = d ? 'LIFT' : 'DOCK';
+  caddyPaper.textContent = !hasWorld() ? 'Caddy · no Companion world yet' : d ? 'Caddy · Companion docked' + (bayCrates().length ? ' · ' + plural(bayCrates().length, 'crate') + ' sealed' : '') : 'Caddy · Companion lifted at ' + hm(ST.dock.at);
+}
+// The other page wrote the save: take its part (the Companion's), keep ours. A new world or a reset starts a fresh Station.
+window.addEventListener('storage', e => {
+  if (e.key !== SAVE_KEY && e.key !== null) return;
+  const cur = readStored();
+  if (!cur) { SV = { v: SAVE_V, wid: null, st: freshSt(null, 0) }; ST = SV.st; RES.clear(); goScreen('home'); onChanged(); return; }
+  if (cur.wid !== ST.wid) { SV = cur; SV.st = freshSt(cur.wid, cur.turn || 0); ST = SV.st; RES.clear(); goScreen('home'); save(); return; }
+  const st = ST; SV = cur; SV.st = st; onChanged();
+});
+// Debug strip (not part of play)
+const genEl = document.getElementById('genomes'), genBtn = document.getElementById('dbgGen');
+function genomesText() {
+  const L = []; const fmt = (sp, al) => SPECIES[sp].win.map((W, w) => W.word + ' ' + W.v[al[w][0]].n + '/' + W.v[al[w][1]].n).join(' · ');
+  L.push('Station T' + (ST.turn + 1) + ' · ' + ST.e + ' Energy, ' + ST.d + ' Data, ' + ST.s + ' Essence · ' + (docked() ? 'docked' : 'lifted') + ' · accepted ' + ST.accepted.length);
+  L.push(''); L.push('Tray:'); for (const p of ST.tray) L.push('  ' + p.id + ' ' + SPECIES[p.sp].name + (p.idd ? '' : ' (unidentified)') + ' · ' + fmt(p.sp, p.al) + ' · pod code ' + genomeCode(p.sp, p.al, p.gs));
+  if (ST.waiting.length) L.push('  sealed, waiting for a cup: ' + ST.waiting.length);
+  if (ST.inc) L.push('Incubator: ' + SPECIES[ST.inc.m.sp].name + ' ' + ST.inc.m.code + ' · ' + ST.inc.mins + ' min · ' + Math.round(incProgress() * 100) + '%');
+  L.push(''); L.push('Mibis:'); for (const m of ST.mibis) L.push('  ' + m.id + ' ' + m.name + ' · ' + SPECIES[m.sp].name + ' · ' + mibiStage(m) + ' · ' + codeText(m.code) + ' · ' + fmt(m.sp, m.al) + (m.id === effWithId() ? ' · with you' : '') + (m.bonded ? ' · bonded' : ''));
+  L.push(''); L.push('Recent:'); for (const s of ST.log.slice(-10)) L.push('  ' + s);
+  return L.join('\n');
+}
+function onChanged() { if (genEl && !genEl.hidden) genEl.textContent = genomesText(); }
+document.getElementById('dbgMats').addEventListener('click', e => { ST.e += 5; ST.d += 5; ST.s += 5; save(); e.currentTarget.blur(); });
+document.getElementById('dbgInc').addEventListener('click', e => { finishIncubation(); e.currentTarget.blur(); });
+function finishIncubation() { if (ST.inc) { ST.inc.start = Date.now() - ST.inc.mins * 60000 - 1; save(); } }
+genBtn.addEventListener('click', e => { const on = genBtn.getAttribute('aria-pressed') !== 'true'; genBtn.setAttribute('aria-pressed', on); genEl.hidden = !on; genBtn.textContent = on ? 'Hide genomes' : 'Show genomes'; onChanged(); e.currentTarget.blur(); });
+{ const btn = document.getElementById('dbgReset'), ask = document.getElementById('resetAsk'), yes = document.getElementById('resetYes'), no = document.getElementById('resetNo');
+  btn.addEventListener('click', () => { ask.hidden = false; yes.focus(); });
+  no.addEventListener('click', () => { ask.hidden = true; no.blur(); });
+  yes.addEventListener('click', () => { window.__stResetting = true; try { for (const k of [SAVE_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { } location.reload(); }); }
+const stampEl = document.getElementById('stamp');
+fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('no build'); return r.json(); }).then(j => {
+  const short = j.short || String(j.commit || '').slice(0, 7); const d = new Date(j.built);
+  let t = ''; if (!isNaN(d)) t = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
+  stampEl.textContent = short ? 'build ' + short + (t ? ' · ' + t : '') : 'local build';
+}).catch(() => { stampEl.textContent = 'local build'; });
+
+// ---- Boot ----
+load();
+for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
+UI.lastInput = performance.now();
+fit();
+requestAnimationFrame(frame);
+// Test hooks (not part of play).
+window.__st = { get SV() { return SV; }, get ST() { return ST; }, get UI() { return UI; }, act: k => { FX.lockUntil = 0; act(k); }, press: act, lineFor, need, dockKey, openBay,
+  skip: ms => { if (ST.inc) { ST.inc.start -= ms == null ? ST.inc.mins * 60000 : ms; save(); } }, finishIncubation, capture: () => scr.toDataURL('image/png'),
+  get msg() { return FX.msg; }, genomeCode, podGenome, incProgress, unlock: () => { FX.lockUntil = 0; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
+  offPalette: () => { const d = g.getImageData(0, 0, SW, SH).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)); let bad = 0; for (let i = 0; i < d.length; i += 4) if (!ok.has((d[i] << 16) | (d[i + 1] << 8) | d[i + 2])) bad++; return bad; } };
+</script>
+</body>
+</html>
