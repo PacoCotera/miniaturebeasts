@@ -5,6 +5,10 @@ Everything in this folder is a **generated candidate** for the shots in
 yet, nothing is placed on the page, and every image is concept art: caption it so
 ("Concept art"; "Concept screen, not from the build"), never as a capture.
 
+![Contact sheet](contact-sheet.png)
+
+*Contact sheet of the generated candidates (concept art, not accepted).*
+
 [`prompts.json`](prompts.json) holds every call: the brief's prompt verbatim, the
 reference images and their roles, the model, the sizes, the result and its hashes.
 [`manifest.json`](manifest.json) lists every file with dimensions and SHA-256, the
@@ -32,6 +36,15 @@ templates drawn with PIL (the Companion screen block with its HUD and bottom-lin
 strips; the Station band with its header strip) and two crops (the K1 card Pip and
 the pass B e-paper panel). They are inputs, not candidates.
 
+<table>
+<tr>
+<td align="center" valign="top"><img src="layout/companion-screen-block.png" width="150" alt="Input: flat Companion screen block template"><br><em>Input: flat Companion screen block template</em></td>
+<td align="center" valign="top"><img src="layout/station-screen-band.png" width="150" alt="Input: flat Station band template"><br><em>Input: flat Station band template</em></td>
+<td align="center" valign="top"><img src="layout/caddy-card-pip-crop.png" width="200" alt="Input: K1 card Pip crop"><br><em>Input: K1 card Pip crop</em></td>
+<td align="center" valign="top"><img src="layout/epaper-panel-passB.png" width="300" alt="Input: pass B e-paper panel crop"><br><em>Input: pass B e-paper panel crop</em></td>
+</tr>
+</table>
+
 **Third batch.** After the homepage spec added S2, C3 and the V1–V7 Pip-species
 variants to the brief, a third run with a hard budget of 11 calls (9 shots and at
 most 2 retries) used all 11: 8 on Flash, 3 on Pro. Order: V1–V7 one attempt each
@@ -51,42 +64,60 @@ checklist, so no retry was made. The new file is `pip-life-stages.png` (keyed as
 before); the first one is kept as `pip-life-stages-v1.png`. The L1 cell of
 `contact-sheet.png` was re-pasted; `tree-preview.png` does not include L1.
 
-![Contact sheet](contact-sheet.png)
-
 ## The candidates
 
-| Shot | File | Kept attempt | Model |
-| --- | --- | --- | --- |
-| H1 `hero-kit` | `hero-kit.png` 1536×1024 | pass A attempt 3, pass B attempt 2, pass C attempt 2 | A: pro, B: flash, C: pro |
-| C1 `companion-map-hands` | `companion-map-hands.png` 1536×1024 | attempt 2 | flash |
-| C2 `companion-storm` | `companion-storm.png` 1024×1536 | attempt 2 | flash |
-| K1 `caddy-print` | `caddy-print.png` 1536×1024 | attempt 1 | pro |
-| S1 `station-research-pod` | `station-research-pod.png` 1024×600 (crop of `-canvas.png`) | attempt 1 | pro |
-| P1 `partner-patch` | `partner-patch.png` 900×1200, `-450x600.png` (crops of `-canvas.png`) | attempt 2 | flash |
-| L1 `pip-life-stages` | `pip-life-stages.png` 1536×1024 RGBA (`-v1.png` is the superseded first one) | attempt 3 (edit of attempt 1) | pro |
-| D1 `companion-resident-home` | `companion-resident-home.png` 900×1200, `-450x600.png` (crops of `-canvas.png`) | attempt 2 | flash |
-| D2 `station-known-forms` | `station-known-forms.png` 1024×600 (crop of `-canvas.png`) | attempt 1 | pro |
-| E1 `caddy-summary-epaper` | `caddy-summary-epaper.png` 1600×479 (scaled and padded from `-canvas.png`) | attempt 2 | pro |
-| S2 `station-research-hands` | `station-research-hands.png` 1536×1024 | attempt 2 | pro |
-| C3 `companion-partner-hands` | `companion-partner-hands.png` 1536×1024 | attempt 1 | flash |
-| V1 Rust | `v1-rust.png` 1024×1024, `v1-rust-512.png` RGBA | attempt 1 | flash |
-| V2 Sable | `v2-sable.png` 1024×1024, `v2-sable-512.png` RGBA | attempt 1 (only one; fails) | flash |
-| V3 Bramble | `v3-bramble.png` 1024×1024, `v3-bramble-512.png` RGBA | attempt 1 | flash |
-| V4 Ember | `v4-ember.png` 1024×1024, `v4-ember-512.png` RGBA | attempt 2 | flash |
-| V5 Thistle | `v5-thistle.png` 1024×1024, `v5-thistle-512.png` RGBA | attempt 1 | flash |
-| V6 Moss | `v6-moss.png` 1024×1024, `v6-moss-512.png` RGBA | attempt 1 | flash |
-| V7 Dapple | `v7-dapple.png` 1024×1024, `v7-dapple-512.png` RGBA | attempt 1 | flash |
+| Preview | Shot | File | Kept attempt | Model |
+| --- | --- | --- | --- | --- |
+| <img src="hero-kit.png" width="160" alt="hero-kit.png"> | H1 `hero-kit` | `hero-kit.png` 1536×1024 | pass A attempt 3, pass B attempt 2, pass C attempt 2 | A: pro, B: flash, C: pro |
+| <img src="companion-map-hands.png" width="160" alt="companion-map-hands.png"> | C1 `companion-map-hands` | `companion-map-hands.png` 1536×1024 | attempt 2 | flash |
+| <img src="companion-storm.png" width="160" alt="companion-storm.png"> | C2 `companion-storm` | `companion-storm.png` 1024×1536 | attempt 2 | flash |
+| <img src="caddy-print.png" width="160" alt="caddy-print.png"> | K1 `caddy-print` | `caddy-print.png` 1536×1024 | attempt 1 | pro |
+| <img src="station-research-pod.png" width="160" alt="station-research-pod.png"> | S1 `station-research-pod` | `station-research-pod.png` 1024×600 (crop of `-canvas.png`) | attempt 1 | pro |
+| <img src="partner-patch.png" width="160" alt="partner-patch.png"> | P1 `partner-patch` | `partner-patch.png` 900×1200, `-450x600.png` (crops of `-canvas.png`) | attempt 2 | flash |
+| <img src="pip-life-stages.png" width="160" alt="pip-life-stages.png"> | L1 `pip-life-stages` | `pip-life-stages.png` 1536×1024 RGBA (`-v1.png` is the superseded first one) | attempt 3 (edit of attempt 1) | pro |
+| <img src="companion-resident-home.png" width="160" alt="companion-resident-home.png"> | D1 `companion-resident-home` | `companion-resident-home.png` 900×1200, `-450x600.png` (crops of `-canvas.png`) | attempt 2 | flash |
+| <img src="station-known-forms.png" width="160" alt="station-known-forms.png"> | D2 `station-known-forms` | `station-known-forms.png` 1024×600 (crop of `-canvas.png`) | attempt 1 | pro |
+| <img src="caddy-summary-epaper.png" width="160" alt="caddy-summary-epaper.png"> | E1 `caddy-summary-epaper` | `caddy-summary-epaper.png` 1600×479 (scaled and padded from `-canvas.png`) | attempt 2 | pro |
+| <img src="station-research-hands.png" width="160" alt="station-research-hands.png"> | S2 `station-research-hands` | `station-research-hands.png` 1536×1024 | attempt 2 | pro |
+| <img src="companion-partner-hands.png" width="160" alt="companion-partner-hands.png"> | C3 `companion-partner-hands` | `companion-partner-hands.png` 1536×1024 | attempt 1 | flash |
+| <img src="v1-rust.png" width="160" alt="v1-rust.png"> | V1 Rust | `v1-rust.png` 1024×1024, `v1-rust-512.png` RGBA | attempt 1 | flash |
+| <img src="v2-sable.png" width="160" alt="v2-sable.png"> | V2 Sable | `v2-sable.png` 1024×1024, `v2-sable-512.png` RGBA | attempt 1 (only one; fails) | flash |
+| <img src="v3-bramble.png" width="160" alt="v3-bramble.png"> | V3 Bramble | `v3-bramble.png` 1024×1024, `v3-bramble-512.png` RGBA | attempt 1 | flash |
+| <img src="v4-ember.png" width="160" alt="v4-ember.png"> | V4 Ember | `v4-ember.png` 1024×1024, `v4-ember-512.png` RGBA | attempt 2 | flash |
+| <img src="v5-thistle.png" width="160" alt="v5-thistle.png"> | V5 Thistle | `v5-thistle.png` 1024×1024, `v5-thistle-512.png` RGBA | attempt 1 | flash |
+| <img src="v6-moss.png" width="160" alt="v6-moss.png"> | V6 Moss | `v6-moss.png` 1024×1024, `v6-moss-512.png` RGBA | attempt 1 | flash |
+| <img src="v7-dapple.png" width="160" alt="v7-dapple.png"> | V7 Dapple | `v7-dapple.png` 1024×1024, `v7-dapple-512.png` RGBA | attempt 1 | flash |
 
 `hero-kit-passA.png` is the pass A result (four-button Companion, new screen) that
 pass B edited, and `hero-kit-passB.png` is the pass B result that pass C edited;
 both are kept because C1, C2, K1 and E1 were generated against the pass B result,
 so the device reference chain is on record.
 
+<table>
+<tr>
+<td align="center" valign="top"><img src="hero-kit-passA.png" width="440" alt="hero-kit-passA"><br><em>hero-kit-passA.png: pass A result (four-button Companion, new screen). Superseded by pass B; kept as reference.</em></td>
+<td align="center" valign="top"><img src="hero-kit-passB.png" width="440" alt="hero-kit-passB"><br><em>hero-kit-passB.png: pass B result. Superseded by pass C; kept as the reference for C1, C2, K1 and E1.</em></td>
+</tr>
+</table>
+
 ## Checklist results per candidate
 
 Judged at the size the page shows each image and, for screens, at 1×.
 
 ### H1 `hero-kit`
+
+![H1 hero-kit](hero-kit.png)
+
+*H1 hero-kit: pass C, attempt 2 (pro). Candidate, not accepted; three strings drift ("Excence", "Exsence", "Happer pod").*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="rejected/hero-kit-passA-attempt1.png" width="215" alt="Rejected: pass A attempt 1"><br><em>Rejected: pass A attempt 1 (bottom line leaked, teal pad)</em></td>
+<td align="center" valign="top"><img src="rejected/hero-kit-passA-attempt2.png" width="215" alt="Rejected: pass A attempt 2"><br><em>Rejected: pass A attempt 2 (no Back button)</em></td>
+<td align="center" valign="top"><img src="rejected/hero-kit-passB-attempt1.png" width="215" alt="Rejected: pass B attempt 1"><br><em>Rejected: pass B attempt 1 (header line dropped, "call Pip" garbled)</em></td>
+<td align="center" valign="top"><img src="rejected/hero-kit-passC-attempt1.png" width="215" alt="Rejected: pass C attempt 1"><br><em>Rejected: pass C attempt 1 (PRINT garbled to "PUINT")</em></td>
+</tr>
+</table>
 - Pass: Call sits directly above Back, both left of a visibly larger Confirm; Call is
   teal and ringed; the pad is on the left; speaker holes between; no extra controls.
   Shell labels CALL, BACK, CONFIRM are present, though CALL sits under the pad.
@@ -117,6 +148,16 @@ Judged at the size the page shows each image and, for screens, at 1×.
   dropped the Station's "MINIATURE BEASTS" header line and garbled "call Pip".
 
 ### C1 `companion-map-hands`
+
+![C1 companion-map-hands: attempt 2 (flash)](companion-map-hands.png)
+
+*C1 companion-map-hands: attempt 2 (flash). Candidate, not accepted.*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="rejected/companion-map-hands-attempt1.png" width="450" alt="Rejected: attempt 1"><br><em>Rejected: attempt 1 (no buttons on the Companion; its map is kept as a screen reference)</em></td>
+</tr>
+</table>
 - Pass: buttons follow rule 3 and the thumbs rest on the pad and on Confirm.
 - Partial: seen cells (muted) and visited cells (white dots) read; **no cleared cell
   with a tick** is drawn. The dotted range square encloses 3×3 cells, not 5×5. All
@@ -131,6 +172,13 @@ Judged at the size the page shows each image and, for screens, at 1×.
   a screen reference.
 
 ### C2 `companion-storm`
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="companion-storm.png" width="420" alt="C2 companion-storm: attempt 2"><br><em>C2 companion-storm: attempt 2 (flash). Candidate, not accepted.</em></td>
+<td align="center" valign="top"><img src="rejected/companion-storm-attempt1.png" width="420" alt="Rejected: attempt 1"><br><em>Rejected: attempt 1 (shield does not read 2 of 3, bottom line wraps)</em></td>
+</tr>
+</table>
 - Pass: HUD reads as Shield 2 of 3, a filled pod outline and an empty one, a tiny
   Pip face, two storm bolts, "⚡5" and a teal "))) call" at the right.
 - Pass: the charged stone, the warned tile (yellow outline with a bolt) and the
@@ -144,6 +192,16 @@ Judged at the size the page shows each image and, for screens, at 1×.
   as 2 of 3 and its bottom line wraps onto two lines.
 
 ### K1 `caddy-print`
+
+![K1 caddy-print: attempt 1 (pro)](caddy-print.png)
+
+*K1 caddy-print: attempt 1 (pro). Candidate, not accepted.*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="rejected/caddy-print-attempt2.png" width="450" alt="Rejected: attempt 2"><br><em>Rejected: attempt 2 (re-rendered the whole kit, card floats with two marks)</em></td>
+</tr>
+</table>
 - Pass: the printed Pip has the same silhouette, crown and plain coat as the screen
   Pip, in black dithered print on white only.
 - Pass: the card says only "Pip" and "PIP-001" with a thin rule.
@@ -158,6 +216,17 @@ Judged at the size the page shows each image and, for screens, at 1×.
   mid-air with two Dirty Pawz Press marks.
 
 ### S1 `station-research-pod`
+
+![S1 station-research-pod: 1024×600 crop, attempt 1 (pro)](station-research-pod.png)
+
+*S1 station-research-pod: 1024×600 crop, attempt 1 (pro). Candidate, not accepted.*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="station-research-pod-canvas.png" width="440" alt="station-research-pod-canvas"><br><em>station-research-pod-canvas.png: the generated canvas the crop was cut from</em></td>
+<td align="center" valign="top"><img src="rejected/station-research-pod-attempt2.png" width="440" alt="Rejected: attempt 2"><br><em>Rejected: attempt 2 (olive pod in a bowl cradle, Pip in a tile)</em></td>
+</tr>
+</table>
 - Pass: the sealed pod is the subject, in a padded cradle under a warm pool of light,
   with the three-leaf mark; nothing inside is shown.
 - Pass: "Hopper pod", amber "Needs 2 more Essence", "Hopper · known" and the counts
@@ -171,6 +240,19 @@ Judged at the size the page shows each image and, for screens, at 1×.
   one follows the prompt's pod colour, cradle and spot light more closely.
 
 ### P1 `partner-patch`
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="partner-patch-450x600.png" width="450" alt="P1 partner-patch-450x600"><br><em>P1 partner-patch-450x600.png at 1×: attempt 2 (flash). Candidate, not accepted.</em></td>
+<td align="center" valign="top"><img src="partner-patch-canvas.png" width="380" alt="partner-patch-canvas"><br><em>partner-patch-canvas.png: the canvas as generated, with the HUD and bottom line on the margin</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="rejected/partner-patch-attempt1.png" width="300" alt="Rejected: attempt 1"><br><em>Rejected: attempt 1 (screen filled the whole canvas, no 3:4 block to crop)</em></td>
+</tr>
+</table>
 - Pass: Pip reads as the HiBit Pip at 450×600, 1× (`partner-patch-450x600.png`).
 - Pass: the Call ring around the pawn, the glinting soil and Pip beside the pawn
   read as one moment; Pip looks up at the pawn.
@@ -185,6 +267,16 @@ Judged at the size the page shows each image and, for screens, at 1×.
   crop), drew the dew cups as large bowls and its HUD's Pip face as a white blob.
 
 ### L1 `pip-life-stages`
+
+![L1 pip-life-stages: attempt 3, the elder redone (pro)](pip-life-stages.png)
+
+*L1 pip-life-stages: attempt 3, the elder redone (pro). Candidate, not accepted.*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="pip-life-stages-v1.png" width="450" alt="pip-life-stages-v1"><br><em>pip-life-stages-v1.png: attempt 1. Superseded; rejected by the owner (elder drooping, half-lidded)</em></td>
+</tr>
+</table>
 Fourth batch: `pip-life-stages.png` is attempt 3, a Pro edit of attempt 1 that changed
 only the elder; attempt 1 is kept as `pip-life-stages-v1.png`.
 - Pass: coat, cream belly, orange eyes and three crown lobes are the same in all
@@ -208,6 +300,19 @@ only the elder; attempt 1 is kept as `pip-life-stages-v1.png`.
   drooping leaves and half-lidded eyes. Attempt 2 was refused by the spending cap.
 
 ### D1 `companion-resident-home`
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="companion-resident-home-450x600.png" width="450" alt="D1 companion-resident-home-450x600"><br><em>D1 companion-resident-home-450x600.png at 1×: attempt 2 (flash). Candidate, not accepted.</em></td>
+<td align="center" valign="top"><img src="companion-resident-home-canvas.png" width="380" alt="companion-resident-home-canvas"><br><em>companion-resident-home-canvas.png: the canvas as generated, with the HUD and bottom line on the margin</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="rejected/companion-resident-home-attempt1.png" width="300" alt="Rejected: attempt 1"><br><em>Rejected: attempt 1 (no layout template; bottom line wrapped to two lines)</em></td>
+</tr>
+</table>
 - Pass: Pip reads as the HiBit Pip at 450×600, 1× (`companion-resident-home-450x600.png`):
   plain coat, cream belly, orange eyes with cream rings, tiny smile, three leaves.
   The crown leaves are drawn larger than the source's and the backdrop is a soft
@@ -227,6 +332,16 @@ only the elder; attempt 1 is kept as `pip-life-stages-v1.png`.
   "home" and "← Menu" on a second row.
 
 ### D2 `station-known-forms`
+
+![D2 station-known-forms: 1024×600 crop, attempt 1 (pro)](station-known-forms.png)
+
+*D2 station-known-forms: 1024×600 crop, attempt 1 (pro). Candidate, not accepted.*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="station-known-forms-canvas.png" width="450" alt="station-known-forms-canvas"><br><em>station-known-forms-canvas.png: the generated canvas the crop was cut from</em></td>
+</tr>
+</table>
 - Pass: both figures share silhouette, cream belly, orange eyes with cream rings and
   exactly three leaves; the only difference is the cream islands on the right one's
   back and flanks. No horns, tails or colour changes.
@@ -242,6 +357,17 @@ only the elder; attempt 1 is kept as `pip-life-stages-v1.png`.
 - One attempt (pro); it passed, so no second attempt was made.
 
 ### E1 `caddy-summary-epaper`
+
+![E1 caddy-summary-epaper: scaled and padded from the canvas, attempt 2 (pro)](caddy-summary-epaper.png)
+
+*E1 caddy-summary-epaper: scaled and padded from the canvas, attempt 2 (pro). Candidate, not accepted.*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="caddy-summary-epaper-canvas.png" width="440" alt="caddy-summary-epaper-canvas"><br><em>caddy-summary-epaper-canvas.png: the generated canvas</em></td>
+<td align="center" valign="top"><img src="rejected/caddy-summary-epaper-attempt1.png" width="440" alt="Rejected: attempt 1"><br><em>Rejected: attempt 1 (blurred photograph of the dock, not a flat screen)</em></td>
+</tr>
+</table>
 - Pass: four greys to the eye (white, light grey, dark grey, black) with ordered
   dither for shading; no hue. Measured on the raw JPEG, one percent of pixels carry
   faint chroma noise and the edges are anti-aliased, so it is not a literal
@@ -259,6 +385,16 @@ only the elder; attempt 1 is kept as `pip-life-stages-v1.png`.
   returned a blurred photograph of the dock with a card, not a flat screen.
 
 ### S2 `station-research-hands`
+
+![S2 station-research-hands: attempt 2 (pro)](station-research-hands.png)
+
+*S2 station-research-hands: attempt 2 (pro). Candidate, not accepted; corner bumpers drift to orange.*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="rejected/station-research-hands-attempt1.png" width="450" alt="Rejected: attempt 1"><br><em>Rejected: attempt 1 (two round Back buttons)</em></td>
+</tr>
+</table>
 - Pass: the Station is the H1 Station: sage shell, screws, the cross at left, the
   four square HOME / RESEARCH / LIBRARY / HABITAT buttons with their small lights,
   one round dark Back with `←`, one larger orange Confirm with `✓`, MINIATURE
@@ -276,6 +412,10 @@ only the elder; attempt 1 is kept as `pip-life-stages-v1.png`.
   in the page, so the retry went here.
 
 ### C3 `companion-partner-hands`
+
+![C3 companion-partner-hands: attempt 1 (flash)](companion-partner-hands.png)
+
+*C3 companion-partner-hands: attempt 1 (flash). Candidate, not accepted.*
 - Pass: the HUD (three shield bars, two pod outlines, tiny Pip face, "⚡3", teal
   "))) call") and the bottom line ("✓ Dig here", "meadow", "← Wait · Leave") are
   inside the screen block, top and bottom, nothing on the bezel; the P1 problem is
@@ -292,6 +432,33 @@ only the elder; attempt 1 is kept as `pip-life-stages-v1.png`.
 - One attempt (flash); it passed, so no retry.
 
 ### V1–V7 Pip-species variants
+
+![tree-preview](tree-preview.png)
+
+*tree-preview.png: V1–V7 tiled beside the accepted Pip at the tree's two sizes (160 px and 76 px).*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="v1-rust-512.png" width="250" alt="V1 Rust: v1-rust-512"><br><em>V1 Rust: v1-rust-512.png. Pip species variant, candidate.</em></td>
+<td align="center" valign="top"><img src="v2-sable-512.png" width="250" alt="V2 Sable: v2-sable-512"><br><em>V2 Sable: v2-sable-512.png. Pip species variant, fails its checklist (no leaf crown).</em></td>
+<td align="center" valign="top"><img src="v3-bramble-512.png" width="250" alt="V3 Bramble: v3-bramble-512"><br><em>V3 Bramble: v3-bramble-512.png. Pip species variant, candidate.</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="v4-ember-512.png" width="250" alt="V4 Ember: v4-ember-512"><br><em>V4 Ember: v4-ember-512.png. Pip species variant, candidate.</em></td>
+<td align="center" valign="top"><img src="v5-thistle-512.png" width="250" alt="V5 Thistle: v5-thistle-512"><br><em>V5 Thistle: v5-thistle-512.png. Pip species variant, candidate.</em></td>
+<td align="center" valign="top"><img src="v6-moss-512.png" width="250" alt="V6 Moss: v6-moss-512"><br><em>V6 Moss: v6-moss-512.png. Pip species variant, candidate.</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="v7-dapple-512.png" width="250" alt="V7 Dapple: v7-dapple-512"><br><em>V7 Dapple: v7-dapple-512.png. Pip species variant, candidate.</em></td>
+<td align="center" valign="top"><img src="rejected/v4-ember-attempt1.png" width="250" alt="Rejected: V4 Ember attempt 1"><br><em>Rejected: V4 Ember attempt 1 (lost the leaves, felted not sculpted)</em></td>
+</tr>
+</table>
 Judged on `tree-preview.png` at 160 px and 76 px and on the `-512.png` portraits.
 Common to all seven: same three-quarter pose facing viewer-left, same upper-left
 light, same sculpted ceramic treatment, cream belly, orange eyes with cream rings,

@@ -8,6 +8,8 @@ The Miniature Beasts kit makes a field discovery portable, gives research room a
 
 ![Sage Lab, stone Companion and shared Caddy appearance](combined-family-materials.png)
 
+*combined-family-materials.png: sage Station, stone Companion and shared Caddy. The current family reference; screen artwork illustrative.*
+
 The reference uses related matte sage/stone shells, charcoal protection, restrained orange controls, recessed Caddy identity and a grey OK key. [Its exact prompt](combined-family-materials-prompt.txt) preserves the source. Station is a home handheld research/world device; the combined Companion carries Probe, Cargo and Companions; Caddy provides charging, printing and a quiet summary. Screen artwork and depicted species remain illustrative.
 
 The handheld direction favors a substantial rugged body and two-thumb use, with serial operation possible using either hand. Playing while supported in the Caddy needs clear control and finger approaches. A prominent useful display, accessible workspace controls, protection and straightforward assembly matter more than reproducing a generated silhouette. Current simulated controls are in [experience](../../specs/experience.md); older knobs, Inspect keys and separate-Probe studies cannot add controls to that mapping.
@@ -41,18 +43,119 @@ Its front display origin is (25.05,18)mm. Control-center reservations are naviga
 
 The rear mirrors X and marks a 185×160mm allocation boundary inside a 15mm perimeter allowance. Projected display/control backs occupy unknown depths; the area is not an empty board budget. Print at Actual size, verify the 100mm bar, and tile the 265×300mm pages on smaller paper. This is an inert proportion check, not a fabrication template. [Ergonomics and printer examples](ergonomics.md) retains the other measured study assumptions.
 
+<table>
+<tr>
+<td align="center" valign="top"><a href="contour-sizing-front.svg"><img src="contour-sizing-front.svg" width="440" alt="Front"></a><br><em>Front (contour-sizing-front.svg): paper sizing trial, 215×190mm body. Provisional.</em></td>
+<td align="center" valign="top"><a href="contour-sizing-rear.svg"><img src="contour-sizing-rear.svg" width="440" alt="Rear"></a><br><em>Rear (contour-sizing-rear.svg): mirrored, with the 185×160mm allocation boundary. Provisional.</em></td>
+</tr>
+</table>
+
 ## Source studies by question
 
-| Question | Original source and inputs |
-| --- | --- |
-| How do family materials and Caddy controls relate? | [Materials](combined-family-materials.png), [recessed identity](combined-family-caddy-v3.png), [control group](combined-family-caddy-v2.png), [branded family](combined-family-branded.png), [sage study](combined-family-sage.png); adjacent `*-prompt.txt` files retain exact inputs |
-| How can one portable support three modes? | [Combined Companion](combined-companion.png), [two-device family](combined-family.png), [briefs](combined-system-prompts.txt) |
-| How might handheld and station forms differ? | [Contour](architecture-a-contour.png), [Yoke](architecture-b-yoke.png), [Keel](architecture-c-keel.png), [briefs](architecture-prompts.txt), [earlier comparison](handheld-home-directions-v2.png) |
-| What does rugged construction look like? | [Rugged Contour](contour-rugged-study.png), [prompt](contour-rugged-prompt.txt), [home/station study](contour-home-habitat.png), [inputs](contour-home-habitat-prompts.txt) |
-| How do control arrangements affect reach? | [Instrument board](instrument-pitch-v1.png), [control family](control-family-v2.png), [workspace row](workspace-row-v1.png), [whole-face geometry](ergonomics.md) |
-| What visual character could an enclosure have? | [Six directions](enclosure-divergence-v1.png), [five directions](five-enclosure-directions.png) |
-| What did integrated-printer cases explore? | [Allocation](single-body-allocation-v1.png), [vertical keys](c-vertical-keys-v1.png), [screen prominence](screen-first-v2.png), [muted pad](prototype-a-muted-pad.png), [recline](prototype-a-reclined-grooves.png) |
-| Which packaging image is unreliable? | [Printer cutaway](printer-tap-packaging.png): no manufacturer-derived path, common dimensional model or demonstrated service geometry |
+**How do family materials and Caddy controls relate?**
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="combined-family-materials.png"><img src="combined-family-materials.png" width="290" alt="Materials"></a><br><em>Materials (combined-family-materials.png). Current family reference.</em></td>
+<td align="center" valign="top"><a href="combined-family-caddy-v3.png"><img src="combined-family-caddy-v3.png" width="290" alt="Recessed identity"></a><br><em>Recessed identity (combined-family-caddy-v3.png). Source study.</em></td>
+<td align="center" valign="top"><a href="combined-family-caddy-v2.png"><img src="combined-family-caddy-v2.png" width="290" alt="Control group"></a><br><em>Control group (combined-family-caddy-v2.png). Source study.</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="combined-family-branded.png"><img src="combined-family-branded.png" width="290" alt="Branded family"></a><br><em>Branded family (combined-family-branded.png). Source study.</em></td>
+<td align="center" valign="top"><a href="combined-family-sage.png"><img src="combined-family-sage.png" width="290" alt="Sage study"></a><br><em>Sage study (combined-family-sage.png). Source study.</em></td>
+</tr>
+</table>
+
+Adjacent `*-prompt.txt` files retain exact inputs.
+
+**How can one portable support three modes?**
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="combined-companion.png"><img src="combined-companion.png" width="440" alt="Combined Companion"></a><br><em>Combined Companion (combined-companion.png). Source study.</em></td>
+<td align="center" valign="top"><a href="combined-family.png"><img src="combined-family.png" width="440" alt="Two-device family"></a><br><em>Two-device family (combined-family.png). Source study.</em></td>
+</tr>
+</table>
+
+[Briefs](combined-system-prompts.txt).
+
+**How might handheld and station forms differ?**
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="architecture-a-contour.png"><img src="architecture-a-contour.png" width="440" alt="Contour"></a><br><em>Contour (architecture-a-contour.png). Source study.</em></td>
+<td align="center" valign="top"><a href="architecture-b-yoke.png"><img src="architecture-b-yoke.png" width="440" alt="Yoke"></a><br><em>Yoke (architecture-b-yoke.png). Source study.</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="architecture-c-keel.png"><img src="architecture-c-keel.png" width="440" alt="Keel"></a><br><em>Keel (architecture-c-keel.png). Source study.</em></td>
+<td align="center" valign="top"><a href="handheld-home-directions-v2.png"><img src="handheld-home-directions-v2.png" width="440" alt="Earlier comparison"></a><br><em>Earlier comparison (handheld-home-directions-v2.png). Earlier study.</em></td>
+</tr>
+</table>
+
+[Briefs](architecture-prompts.txt).
+
+**What does rugged construction look like?**
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="contour-rugged-study.png"><img src="contour-rugged-study.png" width="440" alt="Rugged Contour"></a><br><em>Rugged Contour (contour-rugged-study.png). Source study.</em></td>
+<td align="center" valign="top"><a href="contour-home-habitat.png"><img src="contour-home-habitat.png" width="440" alt="Home/station study"></a><br><em>Home/station study (contour-home-habitat.png). Source study.</em></td>
+</tr>
+</table>
+
+[Prompt](contour-rugged-prompt.txt) and [inputs](contour-home-habitat-prompts.txt).
+
+**How do control arrangements affect reach?**
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="instrument-pitch-v1.png"><img src="instrument-pitch-v1.png" width="290" alt="Instrument board"></a><br><em>Instrument board (instrument-pitch-v1.png). Source study.</em></td>
+<td align="center" valign="top"><a href="control-family-v2.png"><img src="control-family-v2.png" width="290" alt="Control family"></a><br><em>Control family (control-family-v2.png). Source study.</em></td>
+<td align="center" valign="top"><a href="workspace-row-v1.png"><img src="workspace-row-v1.png" width="290" alt="Workspace row"></a><br><em>Workspace row (workspace-row-v1.png). Source study.</em></td>
+</tr>
+</table>
+
+[Whole-face geometry](ergonomics.md).
+
+**What visual character could an enclosure have?**
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="enclosure-divergence-v1.png"><img src="enclosure-divergence-v1.png" width="440" alt="Six directions"></a><br><em>Six directions (enclosure-divergence-v1.png). Source study.</em></td>
+<td align="center" valign="top"><a href="five-enclosure-directions.png"><img src="five-enclosure-directions.png" width="440" alt="Five directions"></a><br><em>Five directions (five-enclosure-directions.png). Source study.</em></td>
+</tr>
+</table>
+
+**What did integrated-printer cases explore?**
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="single-body-allocation-v1.png"><img src="single-body-allocation-v1.png" width="290" alt="Allocation"></a><br><em>Allocation (single-body-allocation-v1.png). Scoped source study; superseded product allocation.</em></td>
+<td align="center" valign="top"><a href="c-vertical-keys-v1.png"><img src="c-vertical-keys-v1.png" width="290" alt="Vertical keys"></a><br><em>Vertical keys (c-vertical-keys-v1.png). Scoped source study; superseded.</em></td>
+<td align="center" valign="top"><a href="screen-first-v2.png"><img src="screen-first-v2.png" width="290" alt="Screen prominence"></a><br><em>Screen prominence (screen-first-v2.png). Scoped source study; superseded.</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="prototype-a-muted-pad.png"><img src="prototype-a-muted-pad.png" width="290" alt="Muted pad"></a><br><em>Muted pad (prototype-a-muted-pad.png). Scoped source study; appearance exploration only.</em></td>
+<td align="center" valign="top"><a href="prototype-a-reclined-grooves.png"><img src="prototype-a-reclined-grooves.png" width="290" alt="Recline"></a><br><em>Recline (prototype-a-reclined-grooves.png). Scoped source study; superseded.</em></td>
+</tr>
+</table>
+
+**Which packaging image is unreliable?**
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="printer-tap-packaging.png"><img src="printer-tap-packaging.png" width="600" alt="Printer cutaway"></a><br><em>Printer cutaway (printer-tap-packaging.png). Unreliable: no manufacturer-derived path, common dimensional model or demonstrated service geometry.</em></td>
+</tr>
+</table>
 
 Integrated-printer cases, separate Probe, living-scene Caddy and previous control layouts are scoped source studies. The current handheld-plus-Caddy responsibilities supersede their product allocation. Preserve the images and exact inputs without copying their obsolete arrangements into current rules.
 

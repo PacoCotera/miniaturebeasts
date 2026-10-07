@@ -9,7 +9,24 @@ text (Arial Black / Helvetica, weight 900, tight tracking). See
 The sheet was rendered in headless Chromium without Arial Black installed, so the
 lockup type there is a fallback heavy sans; the real face sets slightly wider.
 
+![Logo contact sheet](contact-sheet.png)
+
+*contact-sheet.png: the three proposals at 256, 64 and 16 px, 1-bit, embossed, reversed and as lockups. Proposals, none chosen yet.*
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="A-monogram.svg" width="250" alt="A, monogram (A-monogram.svg). Proposal; kept as a secondary badge idea."><br><em>A, monogram (A-monogram.svg). Proposal; kept as a secondary badge idea.</em></td>
+<td align="center" valign="top"><img src="B-seedpod.svg" width="250" alt="B, seed-pod (B-seedpod.svg). Proposal; on-story but least distinctive."><br><em>B, seed-pod (B-seedpod.svg). Proposal; on-story but least distinctive.</em></td>
+<td align="center" valign="top"><img src="C-silhouette.svg" width="250" alt="C, mibi silhouette (C-silhouette.svg). Proposal; recommended as the primary mark."><br><em>C, mibi silhouette (C-silhouette.svg). Proposal; recommended as the primary mark.</em></td>
+</tr>
+</table>
+
 ## A. Monogram (`A-monogram.svg`)
+
+<img src="A-monogram-lockup.svg" width="600" alt="Lockup A (A-monogram-lockup.svg)">
+
+*Lockup A (A-monogram-lockup.svg): mark with "MINIATURE BEASTS" as live text. Proposal.*
+
 A "B" lying on its back: its stem is the base and its two bowls rise as the humps
 of an "M". One counter stays a letter, the other becomes a round eye, so the
 initials wake up as a small creature.
@@ -19,6 +36,11 @@ initials wake up as a small creature.
   slot counter is fine. Squarer than the rest of the house style.
 
 ## B. Seed-pod (`B-seedpod.svg`)
+
+<img src="B-seedpod-lockup.svg" width="600" alt="Lockup B (B-seedpod-lockup.svg)">
+
+*Lockup B (B-seedpod-lockup.svg): mark with "MINIATURE BEASTS" as live text. Proposal.*
+
 A plump, sealed pod sprouting three rounded leaves; a round highlight gives volume.
 - **Says:** the game's core promise: you bring home a pod and something grows
   out of it. Echoes the pod icon already used on the device screens.
@@ -28,6 +50,11 @@ A plump, sealed pod sprouting three rounded leaves; a round highlight gives volu
   16 px the leaves merge into a crown.
 
 ## C. Mibi silhouette (`C-silhouette.svg`)
+
+<img src="C-silhouette-lockup.svg" width="600" alt="Lockup C (C-silhouette-lockup.svg)">
+
+*Lockup C (C-silhouette-lockup.svg): mark with "MINIATURE BEASTS" as live text. Proposal, recommended.*
+
 An abstract creature in profile: soft loaf body, big round eye, stubby feet, a
 tail nub and one sprout leaf. No ears, horns or species features.
 - **Says:** "small creature you look after", instantly; rounded and tactile like

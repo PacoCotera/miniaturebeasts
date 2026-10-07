@@ -6,12 +6,26 @@
 `offPalette`. Seed 7: expedition 1 after 32 actions (quarters, a pin, the storm)
 and expedition 2's start map (signs). Today: `map0-mid.png`, `map0-start.png`.
 
+<table>
+<tr>
+<td align="center" valign="top"><img src="overview-scale/map0-mid.png" width="450" alt="Today, mid-expedition"><br><em>Today (26 px cells), mid-expedition, seed 7 after 32 actions. Baseline.</em></td>
+<td align="center" valign="top"><img src="overview-scale/map0-start.png" width="450" alt="Today, start map"><br><em>Today (26 px cells), expedition 2 start map. Baseline.</em></td>
+</tr>
+</table>
+
 ## A. 2× scrolling map (52 px cells)
 
 `mapA-mid.png`, `mapA-start.png`. 8×10 whole cells plus a sliver each side. The
 camera follows the pawn (the cursor on the start map), clamped so the reach stays
 fully in view, by whole cells with a 140 ms slide; past the world's edge a 1-cell
 void margin shows (`mapA-mid.png`, right).
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="overview-scale/mapA-mid.png" width="450" alt="Option A mid-expedition"><br><em>A, 2× scrolling map, mid-expedition (<code>mapA-mid.png</code>). Alternative, not the recommendation.</em></td>
+<td align="center" valign="top"><img src="overview-scale/mapA-start.png" width="450" alt="Option A start map"><br><em>A, 2× scrolling map, start map (<code>mapA-start.png</code>). Alternative, not the recommendation.</em></td>
+</tr>
+</table>
 
 - **Whole map:** never on screen in an expedition (the camera is tied to the
   reach). On the start map the cursor scrolls it: up to 15 presses across.
@@ -30,6 +44,19 @@ seen cells, night for fog, reach in amber, the pawn blinking, pins, depots and
 skulls as dots, the storm's mist edges). On the start map the view previews the 5×5 you would get around the
 cursor. ← opens the whole map at 26 px as its own screen (today's drawing
 unchanged, "← reach view" to return).
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="overview-scale/mapB-mid.png" width="450" alt="Option B mid-expedition"><br><em>B, reach view at 3×, mid-expedition (<code>mapB-mid.png</code>). Recommended.</em></td>
+<td align="center" valign="top"><img src="overview-scale/mapB-start.png" width="450" alt="Option B start map"><br><em>B, reach view at 3×, start map (<code>mapB-start.png</code>). Recommended.</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="overview-scale/mapB-full.png" width="450" alt="Option B whole map"><br><em>B, the whole map at 26 px, opened with ← (<code>mapB-full.png</code>). Recommended.</em></td>
+</tr>
+</table>
 
 - **Whole map:** 1 press, 1 back. The view never scrolls; only the pawn moves.
 - **Controls:** ← no longer opens the menu on the map. Send home goes from 2

@@ -66,6 +66,10 @@ concept and what plays today.
 - **Shows:** the same tabletop render, lighting and devices. The Companion gains its
   fourth button and today's screen chrome; the Station and Caddy lose obsolete words.
 
+<img src="../v1/website/dist/assets/family-concept-v2.png" width="600" alt="family-concept-v2.png">
+
+*family-concept-v2.png: the current hero render (three-button Companion, old chrome) that H1 edits. Source reference, to be replaced.*
+
 Pass A prompt:
 ```
 Use case: precise-object-edit. Asset type: retained 1536x1024 Miniature Beasts hardware family concept render. Edit ONLY the right-hand portrait Companion; preserve every other pixel of the image: sage Station, warm stone Caddy, printer card, tabletop, window light, plants, MINIATURE BEASTS title, camera, perspective and materials.
@@ -145,6 +149,10 @@ Constraints: no tables, letters, percentages, DNA helices, lab glassware, progre
 - Pip matches the accepted rich Pip (`rich-plain-300x310.png`) without changes.
 - No tables or lab-report look; it reads as a game screen.
 
+<img src="miniature-lives/assets/rich-plain-300x310.png" width="300" alt="rich-plain-300x310.png at 1×">
+
+*rich-plain-300x310.png at 1×: the accepted rich Pip that S1 and D2 must match.*
+
 ### K1 `caddy-print`: a card comes out
 - **Goes:** Devices section, 03 / Caddy card, beside the summary display.
 - **Format:** 3:2, 1536×1024, opaque.
@@ -206,6 +214,13 @@ Constraints: no added horns, tails, whiskers, beards, markings, grey hair, wrink
   meadow-green home backdrop, in the accepted pose of `companion-resident.png`. The HUD is
   the designed Companion's, with its far right left clear for battery and connectivity.
 
+<table>
+<tr>
+<td align="center" valign="top"><img src="miniature-lives/exports/companion-resident.png" width="450" alt="companion-resident.png"><br><em>companion-resident.png: the accepted HiBit pose D1 must match (450×600, 1×).</em></td>
+<td align="center" valign="top"><img src="../v1/website/dist/assets/companion-hibit.png" width="450" alt="companion-hibit.png"><br><em>companion-hibit.png: the Companion image D1 replaces (450×600, 1×). Source reference, to be replaced.</em></td>
+</tr>
+</table>
+
 ```
 Use case: stylized-concept. Asset type: Miniature Beasts Companion screen concept, 1024x1536 canvas; the screen is a centred 900x1200 block (450x600 logical pixels at exactly 2x) on a plain dark margin. Flat screen, not a device photograph. Everything, including the HUD and bottom line, must be INSIDE the block.
 DESIGN AT LOW RESOLUTION FIRST: deliberate contemporary HiBit pixel art on a 450x600 grid, crisp stepped edges, broad coherent pixel clusters, rounded volume, restrained highlights. No painted-then-pixelated look, no dither spray, no blur. Match the supplied HiBit Pip exactly in identity and pixel craft.
@@ -226,6 +241,13 @@ Constraints: saturated playful colour; no other creatures; no speech bubbles, he
 - **Shows:** the designed Station screen: Pip (plain) left and, right, the same Pip with cream
   pale markings, clearly a hypothetical form of the same species, on one calm teal-blue stage.
 
+<table>
+<tr>
+<td align="center" valign="top"><img src="../v1/website/dist/assets/station-rich.png" width="440" alt="station-rich.png"><br><em>station-rich.png: the Station image D2 replaces (1024×600). Source reference, to be replaced.</em></td>
+<td align="center" valign="top"><img src="miniature-lives/exports/lab-known-comparison.png" width="440" alt="lab-known-comparison.png"><br><em>lab-known-comparison.png: the richer layout D2 follows (1024×600).</em></td>
+</tr>
+</table>
+
 ```
 Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, 1536x1024 canvas; the screen occupies a centred 1536x900 band with plain dark margins above and below for cropping to 1024x600. Flat screen design, not a device photograph. Header bar INSIDE the band. Design at 1024x600 first: large shapes, no fine print.
 STYLE: the matched richer Miniature Lives treatment, as the supplied rich Pip and lab-known-comparison: softly sculpted ceramic/resin volumes, directional light from upper left, calm deep teal-blue backdrop, generous space. Not pixel art.
@@ -238,11 +260,19 @@ Constraints: no tables, letters, genotype labels, percentages, DNA helices, glas
 - Header counts 4, 5, 2 and the four quoted strings read at 1024x600; no genotype letters.
 - It reads as a designed game screen, not a lab report.
 
+<img src="miniature-lives/assets/rich-plain-300x310.png" width="300" alt="rich-plain-300x310.png at 1×">
+
+*rich-plain-300x310.png at 1×: the plain Pip D2 must match.*
+
 ### E1 `caddy-summary-epaper`: the four-grey world summary
 - **Goes:** Devices section, 03 / Caddy, replacing `website/assets/caddy-summary.webp`
   (from `caddy-summary.png`).
 - **Format:** generate 3:1 or nearest, resample to 1600x479, opaque. Flat screen, not a photograph.
 - **Shows:** the e-paper summary exactly as in H1 pass B: a resident, the waiting pod, three counts.
+
+<img src="../v1/website/dist/assets/caddy-summary.png" width="800" alt="caddy-summary.png">
+
+*caddy-summary.png: the Caddy summary E1 replaces. Source reference, to be replaced.*
 
 ```
 Use case: stylized-concept. Asset type: Miniature Beasts Caddy e-paper summary screen concept, flat 1600x479 landscape, opaque. Exactly FOUR greys and nothing else: white, light grey, dark grey, black. No colour, no gradients; any shading is ordered dither in those four greys, crisp like e-paper.
@@ -280,6 +310,10 @@ Use case: stylized-concept product render, 1536x1024, an edit of the supplied ha
   treatment. Input: `art/miniature-lives/assets/rich-plain-source.png` (pose, light,
   body plan). Rule 6 is relaxed for these only: they are other individuals of Pip's
   species, not Pip, and differ only in the listed traits.
+<img src="miniature-lives/assets/rich-plain-source.png" width="300" alt="rich-plain-source.png">
+
+*rich-plain-source.png: the input for V1–V7 (pose, light, body plan).*
+
 ```
 Use case: stylized-concept character portrait, 1024x1024, flat cream #f5f2e9 background. ONE adult individual of the supplied creature's species, same body plan, same three-quarter pose facing viewer-left, same upper-left light, same sculpted ceramic/resin treatment, small contact shadow. Base: broad squat quadruped, cream belly, orange eyes with cream rings, tiny smile. DIFFERENCES FROM THE SUPPLIED INDIVIDUAL, and nothing else: {TRAITS}. No text, no props, no scenery, no other creatures.
 ```
@@ -327,6 +361,30 @@ prompt):
   line in `design/proposals/companion-controls.md` §2.
 - Not references: `art/references/branded-family.png` and older concept renders (old
   names, knobs, separate Probe).
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="../v1/website/dist/assets/family-concept-v2.png" width="420" alt="Devices"><br><em>Devices: family-concept-v2.png (shell, materials, light)</em></td>
+<td align="center" valign="top"><img src="miniature-lives/exports/companion-resident.png" width="225" alt="HiBit Pip"><br><em>HiBit Pip: companion-resident.png</em></td>
+<td align="center" valign="top"><img src="miniature-lives/assets/hibit-plain-source.png" width="245" alt="HiBit Pip"><br><em>HiBit Pip: hibit-plain-source.png (identity and pixel craft)</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="miniature-lives/assets/rich-plain-source.png" width="245" alt="Rich Pip"><br><em>Rich Pip: rich-plain-source.png</em></td>
+<td align="center" valign="top"><img src="miniature-lives/exports/lab-known-comparison.png" width="340" alt="Rich Pip"><br><em>Rich Pip: lab-known-comparison.png</em></td>
+<td align="center" valign="top"><img src="visual-directions/02-miniature-lives.png" width="260" alt="02-miniature-lives.png (material only)"><br><em>02-miniature-lives.png (material only)</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="../website/assets/prototype-map.webp" width="261" alt="Layout truth, not style"><br><em>Layout truth, not style: prototype-map.webp</em></td>
+<td align="center" valign="top"><img src="../website/assets/prototype-storm.webp" width="261" alt="Layout truth, not style"><br><em>Layout truth, not style: prototype-storm.webp</em></td>
+<td align="center" valign="top"><img src="references/branded-family.png" width="400" alt="Not a reference"><br><em>Not a reference: branded-family.png</em></td>
+</tr>
+</table>
 
 **Order:** H1 first (it fixes the four-button Companion for every later device shot),
 then C1, C2, K1, then the screens D1, D2, E1, S1 and P1, then L1. Judge each at the size the page

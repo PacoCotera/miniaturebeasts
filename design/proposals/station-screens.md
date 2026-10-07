@@ -42,17 +42,45 @@ Prototype only: a depicted Caddy beside the Station on the page has one key, **D
 
 **Home** ([01](station-screens/01-home.svg)). Vivarium on the left two thirds: a lit glass terrarium where residents keep their species' routines; Dot's bed shows the mibi with you (empty with a small Companion mark while away). Bench on the right third, drawn as objects: bay door, pod tray (six cups, shells in place colours), incubator (dome, leaves), Probe cradle (Shield plates). Pad: focus rests on **the room**; the pad moves the ring to a resident or a bench object. ✓ on the room does the one thing that most needs the player, which the right of the bottom line names (Open the bay, Look at the new pods, Open the incubator); ✓ on a thing opens it. ←: Rest. Line: `✓ Look at Bean · ← Rest | Bean · puffcap · adult | a puffcap pod waits · needs 2 ❀`.
 
+![Home wireframe: vivarium on the left, bench objects on the right (layout only)](station-screens/01-home.svg)
+
+*Home wireframe: vivarium on the left, bench objects on the right (layout only).*
+
 **Dock and arrival** ([02](station-screens/02-dock-arrival.svg)). Dock only shows: the top bar says docked and one sealed crate per consignment slides into the bay door, each wearing its place stamp and pod outlines (the bay holds three, **Decided**). Docking alone accepts nothing (devices working rule). ✓ on the room: `✓ Open the bay · 2 crates`. Then one arrival per crate, in order, about 3 s each: the seal breaks, pods roll into cups, counters tick, the cradle shows the free mend, a ribbon reads "Expedition 4 home · 2 pods · explored 9 of 21", and the clock jumps to the turn the Companion brings. Presses during it are consumed; focus stays on the room; then `✓ Look at the new pods`. Each consignment is accepted once; a reload never reopens one. Lift: "Companion away · since …"; the Station draws nothing of the field.
+
+![Dock and arrival wireframe: crates in the bay, then one arrival per crate (layout only)](station-screens/02-dock-arrival.svg)
+
+*Dock and arrival wireframe: crates in the bay, then one arrival per crate (layout only).*
 
 **Pods** ([03](station-screens/03-pods.svg), Research key). Tray column on the left (six cups and a garden gate); the pod in a padded cradle under a lamp; after Identify, four trait windows rise in an arc above it; the fingerprint whorl sits on the cradle plate, its petals in the windows' order. Pad: ◀▶ along the windows, ▼ to the pod, ◀ to the tray, ▲▼ along the cups (focusing a cup brings its pod into the cradle: looking is free). ✓ by focus: unidentified pod `Identify · 1 ⚡` (first ever free; the shell clears top-down to the species' silhouette, a "New species" stamp); identified pod or a studied window `Shape a founder` (opens Create, spends nothing); frosted window `Study crown · 2 ◆`; a cup of the same species `Compare` (it slides in beside, windows aligned, differing windows pulse, free); gate `Return to the wild · +1 ❀`, then ✓ again. ←: Home.
 
+![Pods wireframe: tray, pod in its cradle, four trait windows and the fingerprint plate (layout only)](station-screens/03-pods.svg)
+
+*Pods wireframe: tray, pod in its cradle, four trait windows and the fingerprint plate (layout only).*
+
 **Create** ([05](station-screens/05-create.svg)). The same arc of windows; the founder large in the centre, misty wherever a window is frosted; the opened pod on the left; the empty incubator and the whorl on the right. Pad: ◀▶ between windows; ▲▼ rolls a studied, choosable window through what this pod carries (as the pod is → the hidden one through and through → the shown one through and through, **Decided:** nothing the pod lacks); the founder and the whorl's petal redraw, a "changed" ribbon marks the window, and the bottom line's price updates. This screen is the review: founder, changes, surprises and cost are all visible. ✓ `Grow it · 2 ⚡ 4 ❀ 2 ◆`: the whorl stamps the shell, the code appears under it, and the pod glides into the incubator. ←: Pods, nothing spent.
+
+![Create wireframe: the founder at centre, windows in an arc, the cost in the bottom line (layout only)](station-screens/05-create.svg)
+
+*Create wireframe: the founder at centre, windows in an arc, the cost in the bottom line (layout only).*
 
 **Incubator** ([06](station-screens/06-incubator.svg), from Grow or Home's bench). The glass dome with the embryo glowing as it grows (seed → bud → shape); a ring of leaves around it is the timer, **one leaf per minute** of the decided rule (5 leaves = 5 minutes; the first mibi ever, one leaf), each filling smoothly over its minute. Above, the misty windows clear one by one while it grows: the surprises arrive during the wait. The plate under the dome carries the fingerprint and code. Read-only while growing (✓ empty); ready, the dome glows: `✓ Open` (**Decided:** deliberate). The juvenile steps out into the vivarium: "Fig · glowtail · juvenile". ←: Home; it keeps growing on the bench, and when away the idle view shows it.
 
+![Incubator wireframe: glass dome with the ring of leaves as the timer (layout only)](station-screens/06-incubator.svg)
+
+*Incubator wireframe: glass dome with the ring of leaves as the timer (layout only).*
+
 **Library** ([07](station-screens/07-library.svg)). A shelf across the top: known species as bright cards, met ones as silhouettes, dashed empty slots that admit more exist. Below, the focused species' page: its portrait with one line of habits and its places as stamps; a **sticker book**, one pocket per window, every look found so far as a picture, with one dotted "more?" sticker (knowledge, never material, **Decided**); and **lineage** as a branch: each pod → its mibi with whorl and code. Pad: ◀▶ along the shelf (the page follows), ▼ into the page, spatial within. ✓ on a mibi: `Visit Fig` (Habitat); elsewhere read-only. ←: shelf, then Home.
 
+![Library wireframe: shelf of species, sticker book and lineage (layout only)](station-screens/07-library.svg)
+
+*Library wireframe: shelf of species, sticker book and lineage (layout only).*
+
 **Habitat** ([08](station-screens/08-habitat.svg)). The focused resident large in its corner of the vivarium; at right its card: name, stage and species, ability, a memory line, its whorl as a seal with the code, and its windows as the Library knows them. Under the card, the **with-you door** (the mibi in the Companion, or "away") and the **bond heart**. A strip of residents along the bottom with an empty place. Pad: ◀▶ along the strip (the stage swaps), ▲ or ▶ to the door and heart. ✓: on the resident `Spend time with Fig` (a species moment, no reward); on the door `Take Fig with you` (swaps at the dock; not during an expedition, **Decided**); on the heart, once offered after a first walk or expedition, `Bond with Fig`, then ✓ again (a small heart, no meters, **Decided**). ←: Home.
+
+![Habitat wireframe: resident large, card at right, strip of residents below (layout only)](station-screens/08-habitat.svg)
+
+*Habitat wireframe: resident large, card at right, strip of residents below (layout only).*
 
 **Probe bench** (from Home's cradle). The Probe large in its cradle, Shield as plates, a switch and a slot:
 
@@ -76,6 +104,10 @@ A small arched pane in a wooden frame (about 170×160, picture area 150×110), o
 4. **Through and through:** no seed; a small solid base under the picture.
 5. **Family mark:** two joined rings on the frame: opens like the others, never rolls at creation ("only through families").
 6. **Shutter:** closed slats with a picture of what opens it (a crystal, Probe tier 2), never a bare "?".
+
+![Trait window states and the fingerprint wireframe](station-screens/04-trait-window-and-fingerprint.svg)
+
+*Trait window states and the fingerprint glyph wireframe (layout only).*
 
 A child sees a picture of the trait that shows, a misty seed holding what hides, and a star on pods worth a look. No letters, no ratios, no loci. On Create a choosable window gets ▲▼ notches and rolls through its three pictures; a window studied once stays open on that pod forever (**Decided**).
 

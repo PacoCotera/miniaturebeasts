@@ -8,6 +8,13 @@ The editable [215×230mm template](compact-whole-face.svg) and [PNG](compact-who
 
 Origin is upper-left. A 164.90×124.27mm H-module envelope sits at(25.05,10). The manufacturer's 164.90×106.96mm glass rectangle is distinct from the board and active pixels; its placement is illustrative, rather than a mounting definition. Source: [manufacturer H Rev4.1 drawing](https://www.waveshare.com/img/devkit/LCD/7HP/Exterior-Size.jpg).
 
+<table>
+<tr>
+<td align="center" valign="top"><a href="compact-whole-face.svg"><img src="compact-whole-face.svg" width="440" alt="Editable template"></a><br><em>Editable template (compact-whole-face.svg): 215×230mm developed flat face, display and controls at 1 mm scale. Study, not current Station.</em></td>
+<td align="center" valign="top"><a href="compact-whole-face.png"><img src="compact-whole-face.png" width="440" alt="PNG"></a><br><em>PNG (compact-whole-face.png): the same whole-face layout. Study, not current Station.</em></td>
+</tr>
+</table>
+
 | Control reservation | Position, mm | Paper size |
 | --- | --- | --- |
 | Workspace keys | top-left(12,158),(38,158),(12,184),(38,184) | 20mm square,26mm pitch |
@@ -36,5 +43,12 @@ A rear loading hatch and a fixed front presentation pad have different jobs. Rel
 A possible reader needs its own unquantified electronics/antenna reservation, clear of moving paper, roll change and service. Nearby motors and cutter metal are real constraints. No reader technology, detection range, RF spacing or board envelope is established. Presentation can identify a device and offer a next step; it cannot prove successful receipt, ownership or charging.
 
 The [generated cutaway](printer-tap-packaging.png) lacks manufacturer-derived geometry and a shared dimensional model, so it is unsuitable as packaging evidence. The [muted-pad exterior](prototype-a-muted-pad.png) is appearance exploration only. Current printing belongs to the shared Caddy, so these earlier integrated-case allocations do not define the handheld.
+
+<table>
+<tr>
+<td align="center" valign="top"><a href="printer-tap-packaging.png"><img src="printer-tap-packaging.png" width="440" alt="Generated cutaway"></a><br><em>Generated cutaway (printer-tap-packaging.png). Unreliable: no manufacturer-derived geometry or shared dimensional model.</em></td>
+<td align="center" valign="top"><a href="prototype-a-muted-pad.png"><img src="prototype-a-muted-pad.png" width="440" alt="Muted-pad exterior"></a><br><em>Muted-pad exterior (prototype-a-muted-pad.png). Appearance exploration only.</em></td>
+</tr>
+</table>
 
 A credible mechanical study needs matching side/rear/section views, mounting, paper route, roll reach, connectors and jam service from one model. Where dimensions remain unknown, retain an envelope study and say what is unresolved. Physical parts and handling are necessary before claiming access, safety, comfort or reliable operation.

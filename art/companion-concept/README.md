@@ -10,12 +10,25 @@ Original bytes, dimensions and hashes remain in the [manifest](manifest.json). T
 
 ![Field-partner concept](field-partner-concept.png)
 
+*field-partner-concept.png: the original field-partner concept (1536×1024). Original reference, bytes unchanged; concept art, not a screen.*
+
 | Original craft reference | Retained native comparison |
 | --- | --- |
 | [Probe study](probe-study.png) | [Gathering](../three-device-playability-audit/connected-gathering-empty.png) |
 | [Cargo study](cargo-study.png) | [Cargo](../three-device-playability-audit/connected-companion-cargo.png) |
 | [Lab arrival study](lab-arrival-study.png) | [Lab acceptance](../three-device-playability-audit/connected-lab-accepted.png) |
 | Field partner above | [Delayed accepted Cargo](../three-device-playability-audit/delayed-offline-cargo-after-accept.png) |
+
+<table>
+<tr>
+<td align="center" valign="top"><img src="probe-study.png" width="450" alt="Probe study"><br><em>probe-study.png: Probe study (450×600, 1×). Original craft reference.</em></td>
+<td align="center" valign="top"><img src="cargo-study.png" width="450" alt="Cargo study"><br><em>cargo-study.png: Cargo study (450×600, 1×). Original craft reference.</em></td>
+</tr>
+</table>
+
+![Lab arrival study](lab-arrival-study.png)
+
+*lab-arrival-study.png: Lab arrival study (1024×600). Original craft reference.*
 
 The field-partner concept gives its critter, pose and landscape emotional weight. Foreground objects, distant terrain and ruins suggest a place worth investigating. Probe should make a situation readable; Cargo should make actual items distinguishable; Companions should make a saved individual recognizable.
 
