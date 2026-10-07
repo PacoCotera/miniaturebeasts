@@ -1,0 +1,1520 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Generated candidates for the research bench's Create screen (the review where a founder is shaped) in art/concept-station/create/brief-create.md, with the real styled genome stamp placed after generation; concept art awaiting the owner's choice.",
+  "brief": "art/concept-station/create/brief-create.md",
+  "tool": {
+    "name": "Gemini API",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+    "auth": "API key from the environment; not recorded",
+    "models": {
+      "gemini-3-pro-image": "Gemini 3 Pro Image: final candidates and refinements",
+      "gemini-3.1-flash-image": "Gemini 3.1 Flash Image: layout round"
+    },
+    "modelChoice": "Pro throughout: exact strings, a faithful creature and a clean empty label for the stamp need it; every round after the first is a one-change edit of the current pick (edits of two or more regions drift, as round 2 showed again).",
+    "generationConfig": {
+      "responseModalities": [
+        "IMAGE"
+      ],
+      "imageConfig": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      }
+    },
+    "output": "image/jpeg 2752x1536 (16:9 at 2K), kept byte-exact in raw/ for kept candidates; LANCZOS to 1536x864 as the canvas PNG; the screen PNG is the centred 1024:600 band resampled to 1024x600. The stamp is placed afterwards (placed/), and the placed 1024x600 screen is what the decoder reads.",
+    "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the preamble, then the prompt verbatim as the last text part.",
+    "budget": "At most 20 generations for this screen; 13 used (round 1: 3 fresh, round 2: 2 edits and 1 fresh, round 3: 2 edits, round 4: 2 edits, round 5: 3 edits), all on gemini-3-pro-image. No call failed; none was retried."
+  },
+  "plan": {
+    "references": {
+      "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png": "the decided Pods screen of the same bench, before its stamp was placed: materials, light, tabs, pod, type",
+      "art/concept-station/round3/A-r3-a1-1024x600.png": "approved Home: same device (type, counters, bottom line, light direction)",
+      "art/miniature-lives/assets/rich-plain-300x310.png": "accepted rich Pip, plain: the flank in the roll's outer panes",
+      "art/miniature-lives/assets/rich-marked-300x310.png": "accepted rich Pip with pale patches: the founder and the roll's middle pane",
+      "art/concept-station/create/layout/create-layout-template.png": "layout truth only: the brief's boxes at 1024x600 with the empty stamp label",
+      "art/concept-station/create/layout/stamp-s01-create-bench-300.png": "the real styled stamp for this state (S01, C01 family, Coat and Movement read, Markings shaped to pale; bench paper), placed after generation, never sent to the generator"
+    },
+    "directions": {
+      "D create-review": "The brief's layout in the decided dark-lab treatment; one direction only, since the bench is decided."
+    },
+    "rounds": "Round 1: three fresh (Pro). Round 2: one-region and three-region edits of the pick, plus one fresh with a corrected creature description. Round 3: one-change frost edits. Round 4: one-change edits for the tab words and the label size, composited by rectangle. Round 5: the companion frame (a shape that won't build)."
+  },
+  "recommended": {
+    "tag": "CR-C2",
+    "screen": "placed/CR-C2-stamped-1024x600.png",
+    "composite": "composites/CR-C2-1024x600.png",
+    "companion": "placed/CR-C3-stamped-1024x600.png",
+    "stamp": "layout/stamp-s01-create-bench-300.png",
+    "decode": "decode/CR-C2-stamped.json"
+  },
+  "calls": [
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 1,
+      "attempt": 1,
+      "tag": "CR-D-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's CREATE screen (the review where a founder is shaped before it grows), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument, exactly the room of the supplied Pods screen: deep dark blue-teal glass and anodised graphite with thin lit edges, floating glass, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home and Pods screens: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The founder in its chamber is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar and bottom line. ABOVE THE STAGE, four small machined TABS on a shallow arc centred on the screen (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each: the Coat tab is focused, its lamp lit and a hairline running down to the roll; the Face tab and the Stamina tab are faint hairline outlines, unread; the Movement tab is full weight and its emblem is two small joined rings. UNDER THE TABS, THE ROLL: three small dark-glass panes in one row, each a close, warm, sculpted drawing of the flank of the creature in Image 3, smooth charcoal skin with a cool blue cast and the soft boundary of its cream belly along the lower edge, no face: the left pane plain, with a small misty pearl bud resting on its sill; the middle pane the same flank carrying soft cream pale patches, as in Image 4; the right pane plain, standing on a small solid base. Under each pane a small plate with its words. The middle pane is the chosen one: lifted inside a warm cream focus ring, with a small pale ▲ notch just above it and a ▼ notch just below it, and a tiny tag at its upper right corner. LEFT, the POD on a small moulded frosted-glass cradle: a medium, squat seed-pod (body wider than tall, a low cap, a short stem) with a smooth charcoal shell and small cream dots, a cream seam and cap, a small lit three-leaf glyph on the cap with a fine crack line across it, a little grey dust at its base; under the cradle a small plate. CENTRE, LOW, the FOUNDER CHAMBER: a clear glass specimen case on a machined graphite base with a lit inner edge, open to the viewer, and standing inside it, large, the creature of Image 4 exactly: the round charcoal body with its cream belly, soft cream pale patches on its back and flanks, four short legs, in clean sculpted light with one warm key light from the upper left, the brightest and warmest thing on screen; its WHOLE HEAD is hidden under a soft, dense, cool blue-white frost cloud where the head would be, nothing visible behind it, while the body and legs are crisp. A small plate on the base's front. RIGHT, the EMPTY INCUBATION CHAMBER: a small glass dome on a machined base, dark and unlit inside, a dim ring of small leaf marks around its base, one etched word under it. Below the dome, the STAMP LABEL: one completely EMPTY, flat, pale square label about a fifth of the screen's width, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Create  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the three small plates under the roll's panes: \"as the pod is\", \"only pale\", \"only plain\". On the tiny tag at the chosen pane's corner: \"changed\". On the plate under the pod: \"identified\" and under it smaller \"rock field · expedition 4\". On the plate on the founder chamber's base: \"founder\". Under the empty dome, one etched word: \"chamber\". Bottom line: orange \"✓ Grow it · 2\" with a small yellow bolt, \"4\" with a small green drop, \"1\" with a small blue diamond, then grey \"← Pods\" at left; grey \"founder · rock field\" in the middle; grey \"Face and Stamina stay a surprise\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the pale square label stays completely empty and flat (the real genome stamp is placed there later); the frost over the founder's head hides it completely, no eyes, no silhouette of a face behind it; no tables, title bars, bullet lists, progress bars, sliders or boxed buttons; no logos; no other animal than the creature in Images 3 and 4 (charcoal with a cream belly, never a cow, horse, cat or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the decided Pods screen of this same room: take its materials, light, tabs, pod, type and quietness; its list, page and stage plate are not on this screen. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted creature, plain. Image 4 is the same creature wearing cream pale patches: the founder in the chamber is this creature, with its head hidden under frost. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png",
+          "role": "the decided Pods screen of the same bench: take its materials, light, tabs, pod and cradle, type and quietness exactly; its list, page and stage plate are NOT on this screen, the layout below replaces them",
+          "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "the accepted creature, plain: the charcoal flank with its cream belly edge for the roll's first and third panes",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-marked-300x310.png",
+          "role": "the accepted creature with cream pale patches: the founder in the chamber is this creature exactly, its head to be hidden under frost; also the roll's middle pane",
+          "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+        },
+        {
+          "path": "art/concept-station/create/layout/create-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the four tabs on an arc, the roll of three panes with the chosen middle pane, the pod at the left, the founder chamber low in the centre with the frosted head region, the empty dome and the empty pale square label at the right; not style",
+          "sha256": "0c058dd7408e9db8ea367202544a72256598ca464b508cbe97fd4df1b3ed627d"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:41:53Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/CR-D-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "913946b5157bd225c886d4fb2ef7c68ca9d855a687a34a4f49347ded063606e3"
+        },
+        "png": {
+          "file": "round1/CR-D-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "fd837340b8e68a9ea6df60aa497c7ce519e800c913355700f2f28825f7433aa2"
+        },
+        "screen": {
+          "file": "round1/CR-D-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "c595ff9b273a88a2934e6ff2bed0f515c57656733f2dafd5c16e7531117e0a75",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 26.5,
+        "usage": {
+          "promptTokenCount": 2905,
+          "candidatesTokenCount": 1854,
+          "totalTokenCount": 5190,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1615
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 431,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: round 1 pick and edit target (the device right: tabs with lamps, the roll with its ring, notches and tag, the pod, the chamber, the dome; the founder a long-snouted canid, the frost a cloud, the tab words doubled, the label small with a pointer, left and right strings clipped, the bottom line's counters misdrawn)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 1,
+      "attempt": 2,
+      "tag": "CR-D-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's CREATE screen (the review where a founder is shaped before it grows), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument, exactly the room of the supplied Pods screen: deep dark blue-teal glass and anodised graphite with thin lit edges, floating glass, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home and Pods screens: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The founder in its chamber is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar and bottom line. ABOVE THE STAGE, four small machined TABS on a shallow arc centred on the screen (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each: the Coat tab is focused, its lamp lit and a hairline running down to the roll; the Face tab and the Stamina tab are faint hairline outlines, unread; the Movement tab is full weight and its emblem is two small joined rings. UNDER THE TABS, THE ROLL: three small dark-glass panes in one row, each a close, warm, sculpted drawing of the flank of the creature in Image 3, smooth charcoal skin with a cool blue cast and the soft boundary of its cream belly along the lower edge, no face: the left pane plain, with a small misty pearl bud resting on its sill; the middle pane the same flank carrying soft cream pale patches, as in Image 4; the right pane plain, standing on a small solid base. Under each pane a small plate with its words. The middle pane is the chosen one: lifted inside a warm cream focus ring, with a small pale ▲ notch just above it and a ▼ notch just below it, and a tiny tag at its upper right corner. LEFT, the POD on a small moulded frosted-glass cradle: a medium, squat seed-pod (body wider than tall, a low cap, a short stem) with a smooth charcoal shell and small cream dots, a cream seam and cap, a small lit three-leaf glyph on the cap with a fine crack line across it, a little grey dust at its base; under the cradle a small plate. CENTRE, LOW, the FOUNDER CHAMBER: a clear glass specimen case on a machined graphite base with a lit inner edge, open to the viewer, and standing inside it, large, the creature of Image 4 exactly: the round charcoal body with its cream belly, soft cream pale patches on its back and flanks, four short legs, in clean sculpted light with one warm key light from the upper left, the brightest and warmest thing on screen; its WHOLE HEAD is hidden under a soft, dense, cool blue-white frost cloud where the head would be, nothing visible behind it, while the body and legs are crisp. A small plate on the base's front. RIGHT, the EMPTY INCUBATION CHAMBER: a small glass dome on a machined base, dark and unlit inside, a dim ring of small leaf marks around its base, one etched word under it. Below the dome, the STAMP LABEL: one completely EMPTY, flat, pale square label about a fifth of the screen's width, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Create  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the three small plates under the roll's panes: \"as the pod is\", \"only pale\", \"only plain\". On the tiny tag at the chosen pane's corner: \"changed\". On the plate under the pod: \"identified\" and under it smaller \"rock field · expedition 4\". On the plate on the founder chamber's base: \"founder\". Under the empty dome, one etched word: \"chamber\". Bottom line: orange \"✓ Grow it · 2\" with a small yellow bolt, \"4\" with a small green drop, \"1\" with a small blue diamond, then grey \"← Pods\" at left; grey \"founder · rock field\" in the middle; grey \"Face and Stamina stay a surprise\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the pale square label stays completely empty and flat (the real genome stamp is placed there later); the frost over the founder's head hides it completely, no eyes, no silhouette of a face behind it; no tables, title bars, bullet lists, progress bars, sliders or boxed buttons; no logos; no other animal than the creature in Images 3 and 4 (charcoal with a cream belly, never a cow, horse, cat or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the decided Pods screen of this same room: take its materials, light, tabs, pod, type and quietness; its list, page and stage plate are not on this screen. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted creature, plain. Image 4 is the same creature wearing cream pale patches: the founder in the chamber is this creature, with its head hidden under frost. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png",
+          "role": "the decided Pods screen of the same bench: take its materials, light, tabs, pod and cradle, type and quietness exactly; its list, page and stage plate are NOT on this screen, the layout below replaces them",
+          "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "the accepted creature, plain: the charcoal flank with its cream belly edge for the roll's first and third panes",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-marked-300x310.png",
+          "role": "the accepted creature with cream pale patches: the founder in the chamber is this creature exactly, its head to be hidden under frost; also the roll's middle pane",
+          "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+        },
+        {
+          "path": "art/concept-station/create/layout/create-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the four tabs on an arc, the roll of three panes with the chosen middle pane, the pod at the left, the founder chamber low in the centre with the frosted head region, the empty dome and the empty pale square label at the right; not style",
+          "sha256": "0c058dd7408e9db8ea367202544a72256598ca464b508cbe97fd4df1b3ed627d"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:42:24Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/CR-D-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "ec3c5dc83af273a926dc96a931f34ad800cf58ad84512e4f6ce4c395b8291783"
+        },
+        "png": {
+          "file": "round1/CR-D-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "94870318ae9e4c1ba4e83f966fd1d8421b5829baa7b0b212ba852712811a4660"
+        },
+        "screen": {
+          "file": "round1/CR-D-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "74eb7adc4de74f43741191631fe66f91bf26f135b6c491debbed81770f4fb7ad",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 28.6,
+        "usage": {
+          "promptTokenCount": 2905,
+          "candidatesTokenCount": 1997,
+          "totalTokenCount": 5455,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1615
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 553,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (tabs reordered with Coat second; a hippo-like founder; the roll's panes a whale-like blob; a tall pear pod; left string clipped)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 1,
+      "attempt": 3,
+      "tag": "CR-D-r1-a3",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's CREATE screen (the review where a founder is shaped before it grows), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument, exactly the room of the supplied Pods screen: deep dark blue-teal glass and anodised graphite with thin lit edges, floating glass, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home and Pods screens: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The founder in its chamber is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar and bottom line. ABOVE THE STAGE, four small machined TABS on a shallow arc centred on the screen (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each: the Coat tab is focused, its lamp lit and a hairline running down to the roll; the Face tab and the Stamina tab are faint hairline outlines, unread; the Movement tab is full weight and its emblem is two small joined rings. UNDER THE TABS, THE ROLL: three small dark-glass panes in one row, each a close, warm, sculpted drawing of the flank of the creature in Image 3, smooth charcoal skin with a cool blue cast and the soft boundary of its cream belly along the lower edge, no face: the left pane plain, with a small misty pearl bud resting on its sill; the middle pane the same flank carrying soft cream pale patches, as in Image 4; the right pane plain, standing on a small solid base. Under each pane a small plate with its words. The middle pane is the chosen one: lifted inside a warm cream focus ring, with a small pale ▲ notch just above it and a ▼ notch just below it, and a tiny tag at its upper right corner. LEFT, the POD on a small moulded frosted-glass cradle: a medium, squat seed-pod (body wider than tall, a low cap, a short stem) with a smooth charcoal shell and small cream dots, a cream seam and cap, a small lit three-leaf glyph on the cap with a fine crack line across it, a little grey dust at its base; under the cradle a small plate. CENTRE, LOW, the FOUNDER CHAMBER: a clear glass specimen case on a machined graphite base with a lit inner edge, open to the viewer, and standing inside it, large, the creature of Image 4 exactly: the round charcoal body with its cream belly, soft cream pale patches on its back and flanks, four short legs, in clean sculpted light with one warm key light from the upper left, the brightest and warmest thing on screen; its WHOLE HEAD is hidden under a soft, dense, cool blue-white frost cloud where the head would be, nothing visible behind it, while the body and legs are crisp. A small plate on the base's front. RIGHT, the EMPTY INCUBATION CHAMBER: a small glass dome on a machined base, dark and unlit inside, a dim ring of small leaf marks around its base, one etched word under it. Below the dome, the STAMP LABEL: one completely EMPTY, flat, pale square label about a fifth of the screen's width, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Create  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the three small plates under the roll's panes: \"as the pod is\", \"only pale\", \"only plain\". On the tiny tag at the chosen pane's corner: \"changed\". On the plate under the pod: \"identified\" and under it smaller \"rock field · expedition 4\". On the plate on the founder chamber's base: \"founder\". Under the empty dome, one etched word: \"chamber\". Bottom line: orange \"✓ Grow it · 2\" with a small yellow bolt, \"4\" with a small green drop, \"1\" with a small blue diamond, then grey \"← Pods\" at left; grey \"founder · rock field\" in the middle; grey \"Face and Stamina stay a surprise\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the pale square label stays completely empty and flat (the real genome stamp is placed there later); the frost over the founder's head hides it completely, no eyes, no silhouette of a face behind it; no tables, title bars, bullet lists, progress bars, sliders or boxed buttons; no logos; no other animal than the creature in Images 3 and 4 (charcoal with a cream belly, never a cow, horse, cat or deer); no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the decided Pods screen of this same room: take its materials, light, tabs, pod, type and quietness; its list, page and stage plate are not on this screen. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted creature, plain. Image 4 is the same creature wearing cream pale patches: the founder in the chamber is this creature, with its head hidden under frost. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png",
+          "role": "the decided Pods screen of the same bench: take its materials, light, tabs, pod and cradle, type and quietness exactly; its list, page and stage plate are NOT on this screen, the layout below replaces them",
+          "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "the accepted creature, plain: the charcoal flank with its cream belly edge for the roll's first and third panes",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-marked-300x310.png",
+          "role": "the accepted creature with cream pale patches: the founder in the chamber is this creature exactly, its head to be hidden under frost; also the roll's middle pane",
+          "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+        },
+        {
+          "path": "art/concept-station/create/layout/create-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the four tabs on an arc, the roll of three panes with the chosen middle pane, the pod at the left, the founder chamber low in the centre with the frosted head region, the empty dome and the empty pale square label at the right; not style",
+          "sha256": "0c058dd7408e9db8ea367202544a72256598ca464b508cbe97fd4df1b3ed627d"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:42:58Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/CR-D-r1-a3.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "81f2aacc4f71161106aa1686904522a6631702c8e1539d4da095df5b2f671cd0"
+        },
+        "png": {
+          "file": "round1/CR-D-r1-a3-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "ceaf4eb072422f604e99d77772a1c550ca924e0dab7b8dcd40faf7c934923699"
+        },
+        "screen": {
+          "file": "round1/CR-D-r1-a3-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "5b6602d17e81bdb9171db901c1dcda4cad1dcbecac13d14ed2dcd48a6b126f73",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 27.9,
+        "usage": {
+          "promptTokenCount": 2905,
+          "candidatesTokenCount": 1741,
+          "totalTokenCount": 4965,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1615
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 319,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (a lighter cyan treatment; leaked title THE ROLL and tab subtitles; EMPTY written in the label; a canid founder; the pod cracked open)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 2,
+      "attempt": 1,
+      "tag": "CR-D-r2-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber itself with its base and plate, the dome and the pale label at the right.\nONE CHANGE ONLY: replace the animal standing inside the glass chamber with the creature of Image 2, exactly as drawn there: a round, plump, squat frog-hare with a charcoal body, a cream belly and soft cream pale patches, sitting up and facing three-quarter to the viewer in the same pose as Image 2, scaled to fill the chamber's height, lit by one warm key light from the upper left, the brightest and warmest thing on screen. Its whole head is hidden behind a patch of frosted glass on the chamber's front pane: an opaque, cool blue-white frosted region like rime on a cold window, with nothing visible behind it, not a cloud. The body and legs below the frost are crisp and sharp.\nTEXT, exactly these and nothing else: top bar left \"Create  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each, once: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the three small plates under the roll's panes: \"as the pod is\", \"only pale\", \"only plain\". On the tiny tag at the chosen pane's corner: \"changed\". On the plate under the pod: \"identified\" and under it smaller \"rock field · expedition 4\". On the plate on the founder chamber's base: \"founder\". Under the empty dome, one etched word: \"chamber\". Bottom line: orange \"✓ Grow it · 2\" with a small yellow bolt, \"4\" with a small green drop, \"1\" with a small blue diamond, then grey \"← Pods\" at left; grey \"founder · rock field\" in the middle; grey \"Face and Stamina stay a surprise\" at right. No species name anywhere, no other words, no titles, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the pale square label is a plain flat square with nothing on it and no pointer (the real genome stamp is placed there later); the frost over the founder's head is frosted glass, never a cloud, and hides the head completely; no tables, title bars, bullet lists, progress bars, sliders or boxed buttons; no logos; the only animal on screen is the creature of Images 3 and 4, a round plump frog-hare with a cream belly, never a dog, wolf, cat, hippo, cow or any long-snouted animal; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted creature with its pale patches; the founder in the chamber is this creature exactly, in this pose.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/round1/CR-D-r1-a1-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "fd837340b8e68a9ea6df60aa497c7ce519e800c913355700f2f28825f7433aa2"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-marked-300x310.png",
+          "role": "the accepted creature with cream pale patches: the founder is this creature exactly, in this pose",
+          "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:45:12Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/CR-D-r2-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "09a6b79040fb04444d6103639b9a0da34cde54a857db08ec525098913e0ecc70"
+        },
+        "png": {
+          "file": "round2/CR-D-r2-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "995d64cfabf55a8747d6d1a49b8e7e429d8e37a7ae8e51c3c0100f407ba0ce9a"
+        },
+        "screen": {
+          "file": "round2/CR-D-r2-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "988518bd614e2e49e137b69f1bd7706d12e163e16b4f43137c23f03fcf2f00ac",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 22.9,
+        "usage": {
+          "promptTokenCount": 1239,
+          "candidatesTokenCount": 1484,
+          "totalTokenCount": 2991,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 723
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 268,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: round 2 pick and edit target (one-region edit held: a plump squat founder with pale patches; the head still drawn with eyes under a cloud)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 2,
+      "attempt": 2,
+      "tag": "CR-D-r2-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the three plates and the tag under and beside the roll, the pod on its cradle with its plate, the glass chamber itself with its base and plate, the dome at the right.\nTHREE CHANGES ONLY. First, replace the animal standing inside the glass chamber with the creature of Image 2, exactly as drawn there: a round, plump, squat frog-hare with a charcoal body, a cream belly and soft cream pale patches, sitting up and facing three-quarter to the viewer in the same pose as Image 2, scaled to fill the chamber's height, lit by one warm key light from the upper left; its whole head is hidden behind a patch of frosted glass on the chamber's front pane, an opaque cool blue-white frosted region like rime on a cold window with nothing visible behind it, not a cloud; the body and legs below are crisp. Second, inside the three roll panes, repaint the pictures so each is a close view of the flank of this same creature (Image 3 plain, Image 2 with the patches): smooth charcoal skin with a cool blue cast and the soft boundary of its cream belly, no face, no snout, no tail; keep the pearl bud on the left pane's sill, the pale patches in the middle pane and the small solid base under the right pane. Third, make the pale label under the dome at the right a plain, flat, empty pale square with straight edges and no pointer or tail, about a fifth of the screen's width, nothing drawn on it.\nTEXT, exactly these and nothing else: top bar left \"Create  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each, once: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the three small plates under the roll's panes: \"as the pod is\", \"only pale\", \"only plain\". On the tiny tag at the chosen pane's corner: \"changed\". On the plate under the pod: \"identified\" and under it smaller \"rock field · expedition 4\". On the plate on the founder chamber's base: \"founder\". Under the empty dome, one etched word: \"chamber\". Bottom line: orange \"✓ Grow it · 2\" with a small yellow bolt, \"4\" with a small green drop, \"1\" with a small blue diamond, then grey \"← Pods\" at left; grey \"founder · rock field\" in the middle; grey \"Face and Stamina stay a surprise\" at right. No species name anywhere, no other words, no titles, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the pale square label is a plain flat square with nothing on it and no pointer (the real genome stamp is placed there later); the frost over the founder's head is frosted glass, never a cloud, and hides the head completely; no tables, title bars, bullet lists, progress bars, sliders or boxed buttons; no logos; the only animal on screen is the creature of Images 3 and 4, a round plump frog-hare with a cream belly, never a dog, wolf, cat, hippo, cow or any long-snouted animal; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted creature with its pale patches: the founder in the chamber is this creature exactly, in this pose. Image 3 is the same creature plain, for the flank in the roll's outer panes.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/round1/CR-D-r1-a1-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "fd837340b8e68a9ea6df60aa497c7ce519e800c913355700f2f28825f7433aa2"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-marked-300x310.png",
+          "role": "the accepted creature with cream pale patches: the founder is this creature exactly, in this pose; its flank is the middle pane",
+          "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "the same creature plain: its flank is the left and right panes",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:45:39Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/CR-D-r2-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "18bb5822f4fa4781fa7db39b553e8e244e16ceb6ec597bcddece573cad9f3e7d"
+        },
+        "png": {
+          "file": "round2/CR-D-r2-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "38d72d618e5db974a7618681c2f1a5fdaa9c97eba894515ccabcaf71a3d81bc4"
+        },
+        "screen": {
+          "file": "round2/CR-D-r2-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "f4eaf66736623036eb63a05101c0a63b0c3a29074a59ce1a3bae0ea89ffd18a0",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 21.5,
+        "usage": {
+          "promptTokenCount": 1665,
+          "candidatesTokenCount": 1353,
+          "totalTokenCount": 3330,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 891
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 312,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (the three-region edit drifted into another game's screen: garbled text, a rabbit, invented counters)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 2,
+      "attempt": 3,
+      "tag": "CR-D-r2-a3",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's CREATE screen (the review where a founder is shaped before it grows), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument, exactly the room of the supplied Pods screen: deep dark blue-teal glass and anodised graphite with thin lit edges, floating glass, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home and Pods screens: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The founder in its chamber is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second, written ONCE (never on the tab and again under it); any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar and bottom line. ABOVE THE STAGE, four small machined TABS on a shallow arc centred on the screen (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, and ONE quiet word under each tab (no word on the tab itself): the Coat tab is focused, its lamp lit and a hairline running down to the roll; the Face tab and the Stamina tab are faint hairline outlines, unread; the Movement tab is full weight and its emblem is two small joined rings. UNDER THE TABS, THE ROLL: three small dark-glass panes in one row, each a close, warm, sculpted drawing of the FLANK of the creature in Image 3 (its side, between the shoulder and the hip): smooth charcoal skin with a cool blue cast and the soft boundary of its cream belly along the lower edge, no face, no snout, no tail: the left pane plain, with a small misty pearl bud resting on its sill; the middle pane the same flank carrying soft cream pale patches, as in Image 4; the right pane plain, standing on a small solid base. Under each pane a small plate with its words. The middle pane is the chosen one: lifted inside a warm cream focus ring, with a small pale ▲ notch just above it and a ▼ notch just below it, and a tiny tag at its upper right corner. LEFT, the POD on a small moulded frosted-glass cradle: a medium, squat seed-pod (body wider than tall, a low cap, a short stem) with a smooth charcoal shell and small cream dots, a cream seam and cap, a small lit three-leaf glyph on the cap with a fine crack line across it, a little grey dust at its base; under the cradle a small plate. CENTRE, LOW, the FOUNDER CHAMBER: a clear glass specimen case on a machined graphite base with a lit inner edge, and sitting inside it, large, the creature of Image 4 exactly as drawn there: a round, plump, squat frog-hare with a charcoal body, a cream belly and soft cream pale patches, sitting up and facing three-quarter to the viewer in the very pose of Image 4, scaled to fill the case's height, in clean sculpted light with one warm key light from the upper left, the brightest and warmest thing on screen. Its WHOLE HEAD is hidden behind a patch of frosted glass on the case's front pane: an opaque, cool blue-white frosted region like rime on a cold window, with nothing visible behind it (not a cloud); the body and legs below are crisp. A small plate on the base's front. RIGHT, the EMPTY INCUBATION CHAMBER: a small glass dome on a machined base, dark and unlit inside, a dim ring of small leaf marks around its base, one etched word under it. Below the dome, the STAMP LABEL: one completely EMPTY, flat, pale square label with straight edges, about a fifth of the screen's width, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Create  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each, once: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the three small plates under the roll's panes: \"as the pod is\", \"only pale\", \"only plain\". On the tiny tag at the chosen pane's corner: \"changed\". On the plate under the pod: \"identified\" and under it smaller \"rock field · expedition 4\". On the plate on the founder chamber's base: \"founder\". Under the empty dome, one etched word: \"chamber\". Bottom line: orange \"✓ Grow it · 2\" with a small yellow bolt, \"4\" with a small green drop, \"1\" with a small blue diamond, then grey \"← Pods\" at left; grey \"founder · rock field\" in the middle; grey \"Face and Stamina stay a surprise\" at right. No species name anywhere, no other words, no titles, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the pale square label is a plain flat square with nothing on it and no pointer (the real genome stamp is placed there later); the frost over the founder's head is frosted glass, never a cloud, and hides the head completely; no tables, title bars, bullet lists, progress bars, sliders or boxed buttons; no logos; the only animal on screen is the creature of Images 3 and 4, a round plump frog-hare with a cream belly, never a dog, wolf, cat, hippo, cow or any long-snouted animal; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the decided Pods screen of this same room: take its materials, light, tabs, pod, type and quietness; its list, page and stage plate are not on this screen. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted creature, plain: a round plump frog-hare. Image 4 is the same creature wearing cream pale patches, in the pose the founder keeps; its head is to be hidden behind frosted glass. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png",
+          "role": "the decided Pods screen of the same bench: take its materials, light, tabs, pod and cradle, type and quietness exactly; its list, page and stage plate are NOT on this screen, the layout below replaces them",
+          "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "the accepted creature, plain: a round plump frog-hare, charcoal with a cream belly, sitting up and facing three-quarter to the viewer; its flank is the roll's first and third panes",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-marked-300x310.png",
+          "role": "the same creature with cream pale patches: the founder in the chamber is this creature exactly, in this very pose, its head hidden behind frosted glass; also the roll's middle pane",
+          "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+        },
+        {
+          "path": "art/concept-station/create/layout/create-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the four tabs on an arc, the roll of three panes with the chosen middle pane, the pod at the left, the founder chamber low in the centre with the frosted head region, the empty dome and the empty pale square label at the right; not style",
+          "sha256": "0c058dd7408e9db8ea367202544a72256598ca464b508cbe97fd4df1b3ed627d"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:46:05Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/CR-D-r2-a3.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "60675a28d6a23f94a1733186ef776e2461a4fb7c74a090db67908ba56052281b"
+        },
+        "png": {
+          "file": "round2/CR-D-r2-a3-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "751e0f1d19974a505f6178ab5c75e90d4f09642c595b113d11266112477e218e"
+        },
+        "screen": {
+          "file": "round2/CR-D-r2-a3-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "552c05f68e722a5638328fdb65db98656806f6b6a75a248e7599b75749b8ac2f",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 28.5,
+        "usage": {
+          "promptTokenCount": 3049,
+          "candidatesTokenCount": 1828,
+          "totalTokenCount": 5214,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1759
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1290
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 337,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (fresh with the corrected creature: a rabbit, whole-body miniatures in the roll, leaked tab subtitles; its frosted-glass head worked and guided round 3)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 3,
+      "attempt": 1,
+      "tag": "CR-D-r3-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber with its base and plate, the creature's body and legs, the dome and the pale label at the right.\nONE CHANGE ONLY: remove the blue cloud above the creature inside the glass chamber, and instead hide the creature's whole head behind FROSTED GLASS: paint an opaque patch of cool blue-white frost onto the chamber's front pane exactly over the head, from the top of the head down to the neck and across both ears or crest, like thick rime on a cold window with soft feathered edges, so that no eye, no mouth, no ear and no outline of the face can be seen through it; the frost is flat on the glass, not a cloud, not smoke. The body and legs below the frost stay exactly as they are, crisp and warmly lit.\nConstraints: preserve every other pixel of the screen; no new text, no digits, no cloud, no eyes or face visible through the frost.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/round2/CR-D-r2-a1-canvas.png",
+          "role": "edit target: the round 2 pick",
+          "sha256": "995d64cfabf55a8747d6d1a49b8e7e429d8e37a7ae8e51c3c0100f407ba0ce9a"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:47:29Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/CR-D-r3-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "b146fda8d81b3d5116bfc6aa071e320e0ef85576fb8e034a7aef3259a91e346a"
+        },
+        "png": {
+          "file": "round3/CR-D-r3-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "63b3c2899e5fd5fdda714939d43e29ea3fc61ca5a538ba31d6f3d25252a1ef58"
+        },
+        "screen": {
+          "file": "round3/CR-D-r3-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "55fa55f4918aa01cd3d777ba2d7f6b559f4238baec9d61ca87244f5f8bbd450b",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 20.5,
+        "usage": {
+          "promptTokenCount": 561,
+          "candidatesTokenCount": 1307,
+          "totalTokenCount": 2042,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 303
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 174,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as reference (the frost spread over the whole chamber: beautiful, but the body must stay crisp)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 3,
+      "attempt": 2,
+      "tag": "CR-D-r3-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber with its base and plate, the creature's body and legs, the dome and the pale label at the right.\nONE CHANGE ONLY: inside the glass chamber, delete the blue cloud and cover the creature's entire head with a dense, opaque, pale blue-white frost, as if that part of the creature were sculpted from frosted ice: a smooth, matte, rounded frosted mass in the shape of the head's rough volume, with no eyes, no mouth, no markings and no detail of any kind on or inside it, blending softly into the dark body at the neck. The body and legs below stay exactly as they are, crisp and warmly lit. Nothing else moves.\nConstraints: preserve every other pixel of the screen; no new text, no digits, no cloud, no eyes or face visible through the frost.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/round2/CR-D-r2-a1-canvas.png",
+          "role": "edit target: the round 2 pick",
+          "sha256": "995d64cfabf55a8747d6d1a49b8e7e429d8e37a7ae8e51c3c0100f407ba0ce9a"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:47:54Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/CR-D-r3-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "06c780895c0ba74dee8314fa4a6cf785a367b45dcedc21b8d63c34337eb93707"
+        },
+        "png": {
+          "file": "round3/CR-D-r3-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "996b2cb7c3b3a7dc7d47212f1dce7e4d92ec4c9d86f71bc5cf5b003810bcd1c2"
+        },
+        "screen": {
+          "file": "round3/CR-D-r3-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "71f0c591fd93ef39751e6a26edfdc281a548dfae0a790601b544fdbbd0264af8",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 23.3,
+        "usage": {
+          "promptTokenCount": 538,
+          "candidatesTokenCount": 1317,
+          "totalTokenCount": 2084,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 280
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 229,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: round 3 pick and the base of the composites (the head a smooth frosted mass with no eyes, the body crisp, nothing else moved)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 4,
+      "attempt": 1,
+      "tag": "CR-D-r4-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber with the frosted-headed creature, its base and plate, the dome and the pale label at the right.\nONE CHANGE ONLY: on the four tabs along the arc at the top of the stage, remove the word printed inside each tab face (the tab faces become plain dark bevelled tabs with only their small emblem and lamp), and keep the four small etched words that already sit under the tabs exactly as they are, so each word appears once. The Coat tab keeps its lit lamp and its hairline down to the roll; the Movement tab keeps its two joined rings.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/round3/CR-D-r3-a2-canvas.png",
+          "role": "edit target: the round 3 pick",
+          "sha256": "996b2cb7c3b3a7dc7d47212f1dce7e4d92ec4c9d86f71bc5cf5b003810bcd1c2"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:49:19Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round4/raw/CR-D-r4-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "11ec13d620362bd3099f9c07d331a23d696d535132e2623b8d0125092192059c"
+        },
+        "png": {
+          "file": "round4/CR-D-r4-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "d32e3ce359c760c34c2476aad24f919e147eba845a6f34143ee401a72fab4edd"
+        },
+        "screen": {
+          "file": "round4/CR-D-r4-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "5700703760aabb0de456ddd8e14c6a1d87876f4339e503c734e23674ae9bd140",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 20.4,
+        "usage": {
+          "promptTokenCount": 504,
+          "candidatesTokenCount": 1319,
+          "totalTokenCount": 1997,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 246
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 174,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept, composited (tab words removed from Coat, Face and Stamina; Movement kept its word; region x 236-800, y 44-134)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 4,
+      "attempt": 2,
+      "tag": "CR-D-r4-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber with the frosted-headed creature, its base and plate.\nONE CHANGE ONLY, in the right column under the glass dome: replace the small pale label (the one with a pointer on its top edge) with a plain, flat, completely empty pale square label about twice as wide, with straight edges and slightly rounded corners and no pointer or tail, centred under the dome and resting just above the bottom line, with nothing drawn on it at all; the dome and its base above may move up a little to make room, but keep the dome, its dim ring of leaf marks and its \"chamber\" plate intact.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/round3/CR-D-r3-a2-canvas.png",
+          "role": "edit target: the round 3 pick",
+          "sha256": "996b2cb7c3b3a7dc7d47212f1dce7e4d92ec4c9d86f71bc5cf5b003810bcd1c2"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:49:44Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round4/raw/CR-D-r4-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "dcdae6722547cb1a0b10be6632a64352c193132ebf9f3099c0597529ae232d12"
+        },
+        "png": {
+          "file": "round4/CR-D-r4-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "f08d3a0b98b29796f31683f8e8da95a623fb8aa423a3d8ae4b425625b1d2119e"
+        },
+        "screen": {
+          "file": "round4/CR-D-r4-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "bec84981b54ffa2b6370ceaf15f3d6c928e0fc93a90307c856fc99e799d5bcfa",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 22.6,
+        "usage": {
+          "promptTokenCount": 521,
+          "candidatesTokenCount": 1284,
+          "totalTokenCount": 1996,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 263
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 191,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept, composited (the label about twice as wide, the dome moved up; the pointer stayed; region x 780-1024, y 44-560)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-review",
+      "direction": "D",
+      "round": 5,
+      "attempt": 1,
+      "tag": "CR-D-r5-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the other three tabs and all four words under the tabs, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber with the frosted-headed creature, its base and plate, the dome and the pale label at the right.\nONE CHANGE ONLY: on the third tab along the arc at the top (the one with the two joined rings), remove the word printed inside the tab face so the face shows only its two joined rings, like the other three plain tab faces; keep the small etched word that already sits under it exactly as it is.\nConstraints: preserve every other pixel of the screen; no other new text, no digits beyond those already on screen, nothing drawn on the pale label.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/composites/CR-C1-canvas.png",
+          "role": "edit target: the current composite pick",
+          "sha256": "240ed8ec50f39f9ee1ae82865533e3c04528a4fa55bf7b4894b99bf29b75b397"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:51:39Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round5/raw/CR-D-r5-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "7a5ae8fff22a78c22477e58ce312e71307280ab85dba266b7e254136657849a6"
+        },
+        "png": {
+          "file": "round5/CR-D-r5-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "45d7e1a51e9b55e0acfcbfefd6064233f92d7c77fae44b0e714e0293cbd19a3c"
+        },
+        "screen": {
+          "file": "round5/CR-D-r5-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "3b0e179deb2a325767cd4c0d7e5fdee74f9fb2c237bc617d04b7f05fce947ccf",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 21.0,
+        "usage": {
+          "promptTokenCount": 493,
+          "candidatesTokenCount": 1264,
+          "totalTokenCount": 1935,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 235
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 178,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept, composited (the Movement word removed from its tab face; region x 516-626, y 44-134)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-wont-build",
+      "direction": "W",
+      "round": 5,
+      "attempt": 1,
+      "tag": "CR-W-r5-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar, the tabs and their words, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber with the frosted-headed creature, its base and plate, the dome and the pale label at the right.\nONE CHANGE ONLY, in the bottom line (the thin graphite strip along the bottom edge): replace its left part, currently the orange check mark and \"Grow it · 2\" with the bolt, drop and diamond counters and \"← Pods\", with plain grey text and no check mark: \"won't build · ← Pods\", in the same small smooth sans-serif; and replace its right part, currently \"Face and Stamina stay a surprise\", with grey \"the clash is marked\". The middle part \"founder · rock field\" stays exactly as it is.\nConstraints: preserve every other pixel of the screen; no other new text, no digits beyond those already on screen, nothing drawn on the pale label.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/composites/CR-C1-canvas.png",
+          "role": "edit target: the current composite pick",
+          "sha256": "240ed8ec50f39f9ee1ae82865533e3c04528a4fa55bf7b4894b99bf29b75b397"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:52:05Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round5/raw/CR-W-r5-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "6ed0b884fdb6d9831873ecc4dec5ca9797bcf16ab450898571466a11ece86ddc"
+        },
+        "png": {
+          "file": "round5/CR-W-r5-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "d8582a9aa00c0cb42943a6428b406ee4c53d65c33e00e22881dd94997f5fe627"
+        },
+        "screen": {
+          "file": "round5/CR-W-r5-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "a8e2108eeb44e8265897a9592bce952fbd8a777b0866f6d9ee074b028d2a1f6c",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 19.1,
+        "usage": {
+          "promptTokenCount": 533,
+          "candidatesTokenCount": 1277,
+          "totalTokenCount": 1982,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 275
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 172,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept, composited into the won't-build frame (the bottom line: grey, no check mark; region y 558-600)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    },
+    {
+      "id": "create-wont-build",
+      "direction": "W",
+      "round": 5,
+      "attempt": 2,
+      "tag": "CR-W-r5-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the tabs and their words, the three panes' pictures and their plates and the cream focus ring with its notches, the pod on its cradle with its plate, the glass chamber with the frosted-headed creature, its base and plate, the dome and the pale label at the right.\nONE CHANGE ONLY: the tiny tag at the upper right corner of the middle pane of the roll currently reads \"changed\" on a pale tag; make it a small red tag reading \"clash\" in white, with a tiny white warning triangle before the word, the same size and in the same place as the current tag.\nConstraints: preserve every other pixel of the screen; no other new text, no digits beyond those already on screen, nothing drawn on the pale label.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/composites/CR-C1-canvas.png",
+          "role": "edit target: the current composite pick",
+          "sha256": "240ed8ec50f39f9ee1ae82865533e3c04528a4fa55bf7b4894b99bf29b75b397"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-07T23:52:28Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round5/raw/CR-W-r5-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "9bd7be134fde7df8d4eaae9aa8b2afafab84455ff2146eef480152dc4b190f3d"
+        },
+        "png": {
+          "file": "round5/CR-W-r5-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "035a3f8db8abce1ab216ab43f4772bc0a8044a30837b67a5c666a0e9577211b1"
+        },
+        "screen": {
+          "file": "round5/CR-W-r5-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "422eceb1694a6b2bbd157686ae11e1e891f8c0a372ca6f6246dc57cd77fce36a",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 21.0,
+        "usage": {
+          "promptTokenCount": 495,
+          "candidatesTokenCount": 1236,
+          "totalTokenCount": 1928,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 237
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 197,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept, composited into the won't-build frame (the red clash tag with its triangle; region x 536-604, y 146-174)"
+      },
+      "promptSource": "art/concept-station/create/prompts.json plan (art director), from brief-create.md"
+    }
+  ],
+  "composites": [
+    {
+      "base": "round3/CR-D-r3-a2-canvas.png",
+      "pastes": [
+        {
+          "source": "round4/CR-D-r4-a1-canvas.png",
+          "screenRect": [
+            236,
+            44,
+            800,
+            134
+          ],
+          "canvasRect": [
+            370,
+            63,
+            1182,
+            193
+          ]
+        },
+        {
+          "source": "round4/CR-D-r4-a2-canvas.png",
+          "screenRect": [
+            780,
+            44,
+            1024,
+            560
+          ],
+          "canvasRect": [
+            1153,
+            63,
+            1505,
+            806
+          ]
+        }
+      ],
+      "outputs": {
+        "canvas": "composites/CR-C1-canvas.png",
+        "screen": "composites/CR-C1-1024x600.png",
+        "bandRect": [
+          30,
+          0,
+          1505,
+          864
+        ]
+      },
+      "tag": "CR-C1"
+    },
+    {
+      "base": "composites/CR-C1-canvas.png",
+      "pastes": [
+        {
+          "source": "round5/CR-D-r5-a1-canvas.png",
+          "screenRect": [
+            516,
+            44,
+            626,
+            134
+          ],
+          "canvasRect": [
+            773,
+            63,
+            931,
+            193
+          ]
+        }
+      ],
+      "outputs": {
+        "canvas": "composites/CR-C2-canvas.png",
+        "screen": "composites/CR-C2-1024x600.png",
+        "bandRect": [
+          30,
+          0,
+          1505,
+          864
+        ]
+      },
+      "tag": "CR-C2"
+    },
+    {
+      "base": "composites/CR-C2-canvas.png",
+      "pastes": [
+        {
+          "source": "round5/CR-W-r5-a1-canvas.png",
+          "screenRect": [
+            0,
+            558,
+            1024,
+            600
+          ],
+          "canvasRect": [
+            30,
+            804,
+            1505,
+            864
+          ]
+        },
+        {
+          "source": "round5/CR-W-r5-a2-canvas.png",
+          "screenRect": [
+            536,
+            146,
+            604,
+            174
+          ],
+          "canvasRect": [
+            802,
+            210,
+            900,
+            251
+          ]
+        }
+      ],
+      "outputs": {
+        "canvas": "composites/CR-C3-canvas.png",
+        "screen": "composites/CR-C3-1024x600.png",
+        "bandRect": [
+          30,
+          0,
+          1505,
+          864
+        ]
+      },
+      "tag": "CR-C3"
+    }
+  ],
+  "placements": [
+    {
+      "tag": "CR-C1",
+      "screen": "composites/CR-C1-canvas.png",
+      "stamp": "layout/stamp-s01-create-bench-300.png",
+      "detectedSquare": [
+        1186,
+        537,
+        1449,
+        782
+      ],
+      "pasted": {
+        "x": 1197,
+        "y": 539,
+        "side": 240
+      },
+      "outputs": {
+        "canvas": "placed/CR-C1-stamped-canvas.png",
+        "screen": "placed/CR-C1-stamped-1024x600.png"
+      },
+      "decode": {
+        "ok": true,
+        "code": "S11v1-05-CF57-6F5406",
+        "read": [
+          "Coat",
+          "Movement"
+        ],
+        "unread": [
+          "Face",
+          "Stamina"
+        ]
+      }
+    },
+    {
+      "tag": "CR-C2",
+      "screen": "composites/CR-C2-canvas.png",
+      "stamp": "layout/stamp-s01-create-bench-300.png",
+      "detectedSquare": [
+        1186,
+        537,
+        1449,
+        782
+      ],
+      "pasted": {
+        "x": 1197,
+        "y": 539,
+        "side": 240
+      },
+      "outputs": {
+        "canvas": "placed/CR-C2-stamped-canvas.png",
+        "screen": "placed/CR-C2-stamped-1024x600.png"
+      },
+      "decode": {
+        "ok": true,
+        "code": "S11v1-05-CF57-6F5406",
+        "read": [
+          "Coat",
+          "Movement"
+        ],
+        "unread": [
+          "Face",
+          "Stamina"
+        ]
+      }
+    },
+    {
+      "tag": "CR-C3",
+      "screen": "composites/CR-C3-canvas.png",
+      "stamp": "layout/stamp-s01-create-bench-300.png",
+      "detectedSquare": [
+        1186,
+        537,
+        1449,
+        782
+      ],
+      "pasted": {
+        "x": 1197,
+        "y": 539,
+        "side": 240
+      },
+      "outputs": {
+        "canvas": "placed/CR-C3-stamped-canvas.png",
+        "screen": "placed/CR-C3-stamped-1024x600.png"
+      },
+      "decode": {
+        "ok": true,
+        "code": "S11v1-05-CF57-6F5406",
+        "read": [
+          "Coat",
+          "Movement"
+        ],
+        "unread": [
+          "Face",
+          "Stamina"
+        ]
+      }
+    },
+    {
+      "tag": "CR-D-r2-a1",
+      "screen": "art/concept-station/create/round2/CR-D-r2-a1-canvas.png",
+      "stamp": "art/concept-station/create/layout/stamp-s01-create-bench-300.png",
+      "detectedSquare": [
+        1242,
+        596,
+        1392,
+        750
+      ],
+      "pasted": {
+        "x": 1244,
+        "y": 600,
+        "side": 147
+      },
+      "outputs": {
+        "canvas": "art/concept-station/create/placed/CR-D-r2-a1-stamped-canvas.png",
+        "screen": "art/concept-station/create/placed/CR-D-r2-a1-stamped-1024x600.png"
+      },
+      "decode": {
+        "ok": true,
+        "code": "S11v1-05-CF57-6F5406",
+        "read": [
+          "Coat",
+          "Movement"
+        ],
+        "unread": [
+          "Face",
+          "Stamina"
+        ]
+      }
+    }
+  ],
+  "stampNote": "The placed stamp is the real styled face for this screen's state: S01, C01 family, Coat and Movement read, Face and Stamina unread, Markings shaped to pale patches (layout/genome-s01-create.json), round perforations, bench paper. It is placed after generation and decoded from the finished 1024x600 screen; the generator never draws a cell."
+}
