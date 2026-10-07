@@ -1,0 +1,207 @@
+{
+ "schema": "mb-frame-registry/1",
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 7,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "species": [
+  {
+   "id": "zacatin",
+   "name": "Zacatín",
+   "clan": "trebola",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "tier": "starter",
+   "file": "species-zacatin.json",
+   "open": 5,
+   "traits": 5,
+   "carried": 48
+  },
+  {
+   "id": "lanoli",
+   "name": "Lanolí",
+   "clan": "algodina",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "tier": "starter",
+   "file": "species-lanoli.json",
+   "open": 7,
+   "traits": 5,
+   "carried": 42
+  },
+  {
+   "id": "copoli",
+   "name": "Copolí",
+   "clan": "bonetia",
+   "plan": "R1·flaps",
+   "rig": "R1",
+   "tier": "early",
+   "file": "species-copoli.json",
+   "open": 21,
+   "traits": 13,
+   "carried": 42
+  },
+  {
+   "id": "orejolo",
+   "name": "Orejolo",
+   "clan": "felpina",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "early",
+   "file": "species-orejolo.json",
+   "open": 10,
+   "traits": 7,
+   "carried": 53
+  },
+  {
+   "id": "puntilu",
+   "name": "Puntilú",
+   "clan": "zancola",
+   "plan": "B2·feelers",
+   "rig": "B2",
+   "tier": "early",
+   "file": "species-puntilu.json",
+   "open": 15,
+   "traits": 10,
+   "carried": 39
+  },
+  {
+   "id": "musguin",
+   "name": "Musguín",
+   "clan": "limacela",
+   "plan": "B3",
+   "rig": "B3",
+   "tier": "early",
+   "file": "species-musguin.json",
+   "open": 16,
+   "traits": 10,
+   "carried": 35
+  },
+  {
+   "id": "ocotin",
+   "name": "Ocotín",
+   "clan": "fanalia",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "mid",
+   "file": "species-ocotin.json",
+   "open": 40,
+   "traits": 25,
+   "carried": 62
+  },
+  {
+   "id": "tambolo",
+   "name": "Tambolo",
+   "clan": "erizola",
+   "plan": "R1·rays",
+   "rig": "R1",
+   "tier": "mid",
+   "file": "species-tambolo.json",
+   "open": 21,
+   "traits": 13,
+   "carried": 33
+  },
+  {
+   "id": "charquin",
+   "name": "Charquín",
+   "clan": "flotela",
+   "plan": "R1·feelers",
+   "rig": "R1",
+   "tier": "mid",
+   "file": "species-charquin.json",
+   "open": 26,
+   "traits": 18,
+   "carried": 30
+  },
+  {
+   "id": "petalu",
+   "name": "Petalú",
+   "clan": "volanta",
+   "plan": "B3·L6·flaps",
+   "rig": "B3",
+   "tier": "mid",
+   "file": "species-petalu.json",
+   "open": 21,
+   "traits": 15,
+   "carried": 49
+  },
+  {
+   "id": "cavito",
+   "name": "Cavito",
+   "clan": "caparela",
+   "plan": "B3·L6",
+   "rig": "B3",
+   "tier": "mid",
+   "file": "species-cavito.json",
+   "open": 23,
+   "traits": 16,
+   "carried": 47
+  },
+  {
+   "id": "remoli",
+   "name": "Remolí",
+   "clan": "aletia",
+   "plan": "B3·fins",
+   "rig": "B3",
+   "tier": "mid",
+   "file": "species-remoli.json",
+   "open": 28,
+   "traits": 19,
+   "carried": 53
+  },
+  {
+   "id": "brisu",
+   "name": "Brisú",
+   "clan": "penacha",
+   "plan": "B1·L4·flaps",
+   "rig": "B1",
+   "tier": "late",
+   "file": "species-brisu.json",
+   "open": 43,
+   "traits": 27,
+   "carried": 52
+  },
+  {
+   "id": "arroyin",
+   "name": "Arroyín",
+   "clan": "ondela",
+   "plan": "Bfan2·fins",
+   "rig": "Bfan",
+   "tier": "late",
+   "file": "species-arroyin.json",
+   "open": 36,
+   "traits": 26,
+   "carried": 45
+  },
+  {
+   "id": "hojarin",
+   "name": "Hojarín",
+   "clan": "brotela",
+   "plan": "Rfan2·rays",
+   "rig": "Rfan2",
+   "tier": "late",
+   "file": "species-hojarin.json",
+   "open": 31,
+   "traits": 21,
+   "carried": 39
+  },
+  {
+   "id": "nenufi",
+   "name": "Nenufí",
+   "clan": "lirela",
+   "plan": "Rfan3·flaps",
+   "rig": "Rfan3",
+   "tier": "late",
+   "file": "species-nenufi.json",
+   "open": 31,
+   "traits": 22,
+   "carried": 38
+  }
+ ]
+}
