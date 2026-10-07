@@ -146,24 +146,24 @@ FINDS = {"temperament": "a vybronic crystal", "stamina": "a storm-glass shard", 
 # --- level 3: species, generated. Only the family, tier, seed and the find are chosen; the rest is rule.
 # --- the V1 roster (owner 10-07: 16 species, as different as possible). Plan keys as in plans.json:
 # segments|layout|symmetry|limbs|feeler groups|feeler links|leg pairs|flaps|covering. Example A to C below
-# are generated frames for Lanolí, Remolí and Petalú.
+# are generated frames for Lanudín, Remolí and Petalú.
 ROSTER = [
-    ("Zacatín", "Trebola", "one|serial|bilateral|contact|zero|one|two|off|skin"),
-    ("Lanolí", "Algodina", "one|serial|bilateral|contact|zero|one|two|off|fur"),
-    ("Orejolo", "Felpina", "two|serial|bilateral|contact|zero|one|two|off|fur"),
-    ("Ocotín", "Fanalia", "two|serial|bilateral|contact|zero|one|two|off|scales"),
-    ("Copolí", "Bonetia", "one|serial|radial|none|zero|one|two|on|fur"),
-    ("Tambolo", "Erizola", "one|serial|radial|contact|zero|one|two|off|fur"),
+    ("Brinquín", "Trebola", "one|serial|bilateral|contact|zero|one|two|off|skin"),
+    ("Lanudín", "Algodina", "one|serial|bilateral|contact|zero|one|two|off|fur"),
+    ("Orejolo", "Penacha", "two|serial|bilateral|contact|zero|one|two|off|fur"),
+    ("Farolín", "Fanalia", "two|serial|bilateral|contact|zero|one|two|off|scales"),
+    ("Copolí", "Sombrela", "one|serial|radial|none|zero|one|two|on|fur"),
+    ("Bambolín", "Borlela", "one|serial|radial|contact|zero|one|two|off|fur"),
     ("Charquín", "Flotela", "one|serial|radial|free|three|two|two|off|skin"),
     ("Remolí", "Aletia", "three|serial|bilateral|none|zero|one|two|on|scales"),
     ("Arroyín", "Ondela", "two|fan|bilateral|none|zero|one|two|on|skin"),
     ("Petalú", "Volanta", "three|serial|bilateral|contact|zero|one|three|on|skin"),
-    ("Cavito", "Caparela", "three|serial|bilateral|contact|zero|one|three|off|scales"),
-    ("Brisú", "Penacha", "one|serial|bilateral|contact|zero|one|two|on|fur"),
-    ("Puntilú", "Zancola", "two|serial|bilateral|free|three|two|two|off|skin"),
-    ("Musguín", "Limacela", "three|serial|bilateral|none|zero|one|two|off|skin"),
-    ("Hojarín", "Brotela", "two|fan|radial|contact|zero|one|two|off|skin"),
-    ("Nenufí", "Lirela", "three|fan|radial|none|zero|one|two|on|skin"),
+    ("Cavito", "Escarabela", "three|serial|bilateral|contact|zero|one|three|off|scales"),
+    ("Brisú", "Planela", "one|serial|bilateral|contact|zero|one|two|on|fur"),
+    ("Puntilú", "Hormiguela", "two|serial|bilateral|free|three|two|two|off|skin"),
+    ("Musguín", "Brumela", "three|serial|bilateral|none|zero|one|two|off|skin"),
+    ("Hojarín", "Verdela", "two|fan|radial|contact|zero|one|two|off|skin"),
+    ("Relampín", "Centela", "three|fan|bilateral|none|zero|one|two|off|skin"),
 ]
 
 
@@ -380,10 +380,10 @@ INK, MUTED, BG = "#2e2e2e", "#6f6a5e", "#f7f4ec"
 
 def figure(examples, plans):
     rows = [  # plan, family, species (name, open traits, sealed, status)
-        ("round-walker", "trebola", [("zacatín", 5, "", "frame"), ("2nd member", None, "", "")]),
-        ("round-walker", "algodina", [("lanolí (A)", None, "", "gen")]),
+        ("round-walker", "trebola", [("brinquín", 5, "", "frame"), ("2nd member", None, "", "")]),
+        ("round-walker", "algodina", [("lanudín (A)", None, "", "gen")]),
         ("bobber", "bonetia", [("copolí", 12, "Nature", "frame"), ("2nd member", None, "", "")]),
-        ("long-walker", "fanalia", [("ocotín", 23, "", "frame"), ("2nd member", None, "", "")]),
+        ("long-walker", "fanalia", [("farolín", 23, "", "frame"), ("2nd member", None, "", "")]),
         ("swimmer", "aletia", [("remolí (B)", None, "", "gen")]),
         ("flutterer", "volanta", [("petalú (C)", None, "", "gen")]),
     ]
@@ -415,7 +415,7 @@ def figure(examples, plans):
         hexes = {"charcoal": "#3b3a40", "coral": "#f0775e", "lagoon": "#269fa5", "periwinkle": "#8b93e0", "cobalt": "#3c63c8", "marigold": "#e8b83f"}
         out.append(f'<rect x="284" y="{y}" width="250" height="{h - 6}" rx="6" fill="#fff" stroke="#d8d1c2"/>'
                    f'<rect x="294" y="{y + 10}" width="14" height="14" rx="3" fill="{hexes[f["anchor"]]}"/>'
-                   f'<text x="316" y="{y + 22}" class="t" style="font-weight:600">{fam}</text>'
+                   f'<text x="316" y="{y + 22}" class="t" style="font-weight:600">{ {"bonetia": "sombrela"}.get(fam, fam)}</text>'
                    f'<text x="294" y="{y + 40}" class="s">{escape(f["covering"])} · {escape(f["feature"])}</text>')
         for j, (name, n, sealed, kind) in enumerate(species):
             sy = y + j * 30
@@ -432,7 +432,7 @@ def figure(examples, plans):
             out.append(f'<text x="570" y="{sy + 17}" class="t"{"" if kind else f" style=\"fill:{MUTED}\""}>{escape(label)}</text>'
                        f'<text x="650" y="{sy + 17}" class="s">{escape(detail)}</text>')
             if kind:
-                g = e["genotypes"] if e else {"zacatín": 243, "copolí": 23245229340, "ocotín": 480302832950397187200}.get(name)  # from the frames
+                g = e["genotypes"] if e else {"brinquín": 243, "copolí": 23245229340, "farolín": 480302832950397187200}.get(name)  # from the frames
                 if g:
                     out.append(f'<line x1="820" y1="{sy + 13}" x2="840" y2="{sy + 13}" stroke="{MUTED}"/>'
                                f'<text x="846" y="{sy + 17}" class="s">{fmt(g)} genotypes</text>')
@@ -442,7 +442,7 @@ def figure(examples, plans):
     for line in [
         "Breeding stays inside one species box. A clan is a resemblance (face part, anchor colour, pod pattern, stamp border half), never a breeding group.",
         f"Catalogue6: {plans['built']} of {plans['tried']} plans build ({plans['skeletonsBuilt']} skeletons × 3 coverings); 360 to 1,440 clan signatures per plan.",
-        "Zacatín, copolí and ocotín are the species-frames files hopper, puffcap and glowtail; A to C are generated here (examples.json). V1 has 16 species, §3.",
+        "Brinquín, copolí and farolín are the species-frames files hopper, puffcap and glowtail; A to C are generated here (examples.json). V1 has 16 species, §3.",
         "Generated by taxonomy.py through the species-frame method and the workbench resolver; every species built 200 random individuals.",
     ]:
         out.append(f'<text x="24" y="{y}" class="s">{escape(line)}</text>')
