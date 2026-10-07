@@ -1,0 +1,22 @@
+{
+  "request": {
+    "prompt": "lush green meadow grass ground texture seen from directly above, short tufts, a few tiny flowers, soft top-left light",
+    "prompt_style": "rd_tile__single_tile",
+    "width": 32,
+    "height": 32,
+    "num_images": 1,
+    "seed": 3001,
+    "tile_x": true,
+    "tile_y": true
+  },
+  "images": {},
+  "task_id": "a082bd4d-8681-4f60-84e8-24d18719fe35",
+  "seconds": 6.5,
+  "status": "failed",
+  "error": {
+    "status_code": 502,
+    "code": "inference_failed",
+    "message": "Unable to run inference.",
+    "request_id": "a082bd4d-8681-4f60-84e8-24d18719fe35"
+  }
+}

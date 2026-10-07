@@ -1,0 +1,32 @@
+{
+  "request": {
+    "prompt": "lush green meadow grass ground texture seen from directly above, short tufts, a few tiny flowers, soft top-left light",
+    "prompt_style": "rd_tile__single_tile",
+    "width": 32,
+    "height": 32,
+    "num_images": 4,
+    "seed": 3001,
+    "input_palette": "<base64 of companion-palette-48.png>",
+    "tile_x": true,
+    "tile_y": true
+  },
+  "images": {
+    "input_palette": {
+      "file": "companion-palette-48.png",
+      "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6",
+      "size": [
+        48,
+        1
+      ]
+    }
+  },
+  "task_id": "30681e85-9918-40d8-bae2-ac744041d7f9",
+  "seconds": 6.5,
+  "status": "failed",
+  "error": {
+    "status_code": 502,
+    "code": "inference_failed",
+    "message": "Unable to run inference.",
+    "request_id": "30681e85-9918-40d8-bae2-ac744041d7f9"
+  }
+}

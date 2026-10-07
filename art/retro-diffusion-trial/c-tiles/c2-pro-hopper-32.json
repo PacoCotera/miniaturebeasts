@@ -1,0 +1,63 @@
+{
+  "request": {
+    "prompt": "a small cute purple rabbit-like pet creature with long ears, a cream belly and big expressive orange eyes, sitting still, rounded soft body, light from the top left, on a plain white background",
+    "prompt_style": "rd_pro__default",
+    "width": 32,
+    "height": 32,
+    "num_images": 4,
+    "seed": 3002,
+    "input_palette": "<base64 of companion-palette-48.png>",
+    "remove_bg": true,
+    "reference_images": [
+      "<base64 of station-home-hopper.png>",
+      "<base64 of hibit-plain-280x300.png>"
+    ]
+  },
+  "images": {
+    "input_palette": {
+      "file": "companion-palette-48.png",
+      "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6",
+      "size": [
+        48,
+        1
+      ]
+    },
+    "reference_images": [
+      {
+        "file": "station-home-hopper.png",
+        "sha256": "fad9fa062a7f99b7577f7bf7b55fe112fb26b76c49394e5d6c8e15d1e359ff10",
+        "size": [
+          120,
+          120
+        ]
+      },
+      {
+        "file": "hibit-plain-280x300.png",
+        "sha256": "5a0b11b9bf101de01e827ecbacb9dd02791481e08e71a1730683025f1711060c",
+        "size": [
+          280,
+          300
+        ]
+      }
+    ]
+  },
+  "task_id": "fa214909-1346-452c-88bd-af2c6d3af6c1",
+  "seconds": 41.6,
+  "status": "succeeded",
+  "outputs": [
+    "c2-pro-hopper-32-1.png",
+    "c2-pro-hopper-32-2.png",
+    "c2-pro-hopper-32-3.png",
+    "c2-pro-hopper-32-4.png"
+  ],
+  "response": {
+    "created_at": 1791349405,
+    "credit_cost": 4,
+    "balance_cost": 0.72,
+    "model": "rd_pro",
+    "remaining_credits": 0,
+    "remaining_balance": 8.58,
+    "request_id": "fa214909-1346-452c-88bd-af2c6d3af6c1",
+    "outputs_retained_until": 1791435764
+  }
+}

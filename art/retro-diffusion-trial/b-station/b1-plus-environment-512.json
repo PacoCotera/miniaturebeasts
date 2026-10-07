@@ -1,0 +1,29 @@
+{
+  "request": {
+    "prompt": "a cosy lit glass vivarium terrarium seen from the front, warm lamp light from the top left, moss floor and mossy mounds, a shallow water dish, a small purple rabbit-like creature with big orange eyes and a small red-capped mushroom creature with eyes, rounded cute shapes, saturated playful colours, dark evening room behind the glass",
+    "prompt_style": "rd_plus__environment",
+    "width": 512,
+    "height": 304,
+    "num_images": 2,
+    "seed": 2001
+  },
+  "images": {},
+  "task_id": "adc3f4cd-8b1c-4ed4-a9a0-cb0531dcfd63",
+  "seconds": 19.4,
+  "status": "succeeded",
+  "outputs": [
+    "b1-plus-environment-512-1.png",
+    "b1-plus-environment-512-2.png"
+  ],
+  "response": {
+    "created_at": 1791349380,
+    "credit_cost": 18,
+    "balance_cost": 0.12,
+    "model": "rd_plus",
+    "remaining_credits": 0,
+    "remaining_balance": 9.54,
+    "request_id": "adc3f4cd-8b1c-4ed4-a9a0-cb0531dcfd63",
+    "outputs_retained_until": 1791435764,
+    "output_url_expires_at": 1791350280
+  }
+}

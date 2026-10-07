@@ -1,0 +1,37 @@
+{
+  "request": {
+    "prompt": "lush green meadow grass ground texture seen from directly above, short tufts, a few tiny flowers, soft top-left light",
+    "prompt_style": "rd_tile__single_tile",
+    "width": 32,
+    "height": 32,
+    "num_images": 1,
+    "seed": 3001,
+    "input_palette": "<base64 of companion-palette-48.png>"
+  },
+  "images": {
+    "input_palette": {
+      "file": "companion-palette-48.png",
+      "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6",
+      "size": [
+        48,
+        1
+      ]
+    }
+  },
+  "task_id": "c960c374-6f3a-4baa-88ba-754d68c96e5c",
+  "seconds": 9.7,
+  "status": "succeeded",
+  "outputs": [
+    "c1b-single-tile-palette-noseamless.png"
+  ],
+  "response": {
+    "created_at": 1791349463,
+    "credit_cost": 2,
+    "balance_cost": 0.06,
+    "model": "rd_fast",
+    "remaining_credits": 0,
+    "remaining_balance": 8.4,
+    "request_id": "c960c374-6f3a-4baa-88ba-754d68c96e5c",
+    "outputs_retained_until": 1791435857
+  }
+}

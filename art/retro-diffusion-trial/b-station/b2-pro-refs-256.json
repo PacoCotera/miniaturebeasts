@@ -1,0 +1,60 @@
+{
+  "request": {
+    "prompt": "a cosy lit glass vivarium terrarium seen from the front, warm lamp light from the top left, moss floor and mossy mounds, a shallow water dish, a small purple rabbit-like creature with big orange eyes and a small red-capped mushroom creature with eyes, rounded sculpted bodies with soft tactile materials, saturated playful colours, dark evening room behind the glass",
+    "prompt_style": "rd_pro__default",
+    "width": 256,
+    "height": 152,
+    "num_images": 2,
+    "seed": 2002,
+    "reference_images": [
+      "<base64 of hibit-plain-280x300.png>",
+      "<base64 of rich-plain-300x310.png>",
+      "<base64 of station-home-vivarium.png>"
+    ]
+  },
+  "images": {
+    "reference_images": [
+      {
+        "file": "hibit-plain-280x300.png",
+        "sha256": "5a0b11b9bf101de01e827ecbacb9dd02791481e08e71a1730683025f1711060c",
+        "size": [
+          280,
+          300
+        ]
+      },
+      {
+        "file": "rich-plain-300x310.png",
+        "sha256": "9568e573c96a6063e5b28f674da13ba9f3a4fd2f9fc4fae05adc64cebedf5939",
+        "size": [
+          300,
+          310
+        ]
+      },
+      {
+        "file": "station-home-vivarium.png",
+        "sha256": "e87b72568ac544bdd2e83a02019102162fddb896210ab1d307719c4f96cdb3ea",
+        "size": [
+          648,
+          496
+        ]
+      }
+    ]
+  },
+  "task_id": "931606b8-9c71-4fa6-9cab-2dd138ed1b28",
+  "seconds": 45.4,
+  "status": "succeeded",
+  "outputs": [
+    "b2-pro-refs-256-1.png",
+    "b2-pro-refs-256-2.png"
+  ],
+  "response": {
+    "created_at": 1791349408,
+    "credit_cost": 2,
+    "balance_cost": 0.36,
+    "model": "rd_pro",
+    "remaining_credits": 0,
+    "remaining_balance": 8.22,
+    "request_id": "931606b8-9c71-4fa6-9cab-2dd138ed1b28",
+    "outputs_retained_until": 1791435764
+  }
+}

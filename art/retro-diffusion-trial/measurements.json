@@ -1,0 +1,377 @@
+[
+ {
+  "file": "a-weather/a1-plus-lowres-palette-1.png",
+  "size": [
+   128,
+   128
+  ],
+  "mode": "RGB",
+  "opaque_px": 16384,
+  "unique_colours": 18,
+  "off_palette_px": 741,
+  "off_palette_pct": 4.5,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 18,
+  "quantised": null
+ },
+ {
+  "file": "a-weather/a1-plus-lowres-palette-2.png",
+  "size": [
+   128,
+   128
+  ],
+  "mode": "RGB",
+  "opaque_px": 16384,
+  "unique_colours": 14,
+  "off_palette_px": 328,
+  "off_palette_pct": 2.0,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 14,
+  "quantised": null
+ },
+ {
+  "file": "a-weather/a1-plus-lowres-palette-3.png",
+  "size": [
+   128,
+   128
+  ],
+  "mode": "RGB",
+  "opaque_px": 16384,
+  "unique_colours": 28,
+  "off_palette_px": 16384,
+  "off_palette_pct": 100.0,
+  "max_channel_distance": 48,
+  "unique_after_quantise": 12,
+  "quantised": "a-weather/a1-plus-lowres-palette-3-quantised.png"
+ },
+ {
+  "file": "a-weather/a1-plus-lowres-palette-4.png",
+  "size": [
+   128,
+   128
+  ],
+  "mode": "RGB",
+  "opaque_px": 16384,
+  "unique_colours": 24,
+  "off_palette_px": 16384,
+  "off_palette_pct": 100.0,
+  "max_channel_distance": 36,
+  "unique_after_quantise": 12,
+  "quantised": "a-weather/a1-plus-lowres-palette-4-quantised.png"
+ },
+ {
+  "file": "a-weather/a2-pro-topdown-ref-palette-1.png",
+  "size": [
+   128,
+   128
+  ],
+  "mode": "RGB",
+  "opaque_px": 16384,
+  "unique_colours": 11,
+  "off_palette_px": 2244,
+  "off_palette_pct": 13.7,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 11,
+  "quantised": null
+ },
+ {
+  "file": "a-weather/a2-pro-topdown-ref-palette-2.png",
+  "size": [
+   128,
+   128
+  ],
+  "mode": "RGB",
+  "opaque_px": 16384,
+  "unique_colours": 32,
+  "off_palette_px": 2032,
+  "off_palette_pct": 12.4,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 32,
+  "quantised": null
+ },
+ {
+  "file": "a-weather/a3-pro-cumulus-nobg-1.png",
+  "size": [
+   64,
+   64
+  ],
+  "mode": "RGBA",
+  "opaque_px": 1127,
+  "unique_colours": 6,
+  "off_palette_px": 0,
+  "off_palette_pct": 0.0,
+  "max_channel_distance": 0,
+  "unique_after_quantise": 6,
+  "quantised": null
+ },
+ {
+  "file": "a-weather/a3-pro-cumulus-nobg-2.png",
+  "size": [
+   64,
+   64
+  ],
+  "mode": "RGBA",
+  "opaque_px": 1268,
+  "unique_colours": 9,
+  "off_palette_px": 0,
+  "off_palette_pct": 0.0,
+  "max_channel_distance": 0,
+  "unique_after_quantise": 9,
+  "quantised": null
+ },
+ {
+  "file": "a-weather/a4-pro-bank-opening-1.png",
+  "size": [
+   128,
+   96
+  ],
+  "mode": "RGB",
+  "opaque_px": 12288,
+  "unique_colours": 20,
+  "off_palette_px": 231,
+  "off_palette_pct": 1.9,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 20,
+  "quantised": null
+ },
+ {
+  "file": "a-weather/a4-pro-bank-opening-2.png",
+  "size": [
+   128,
+   96
+  ],
+  "mode": "RGB",
+  "opaque_px": 12288,
+  "unique_colours": 21,
+  "off_palette_px": 315,
+  "off_palette_pct": 2.6,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 21,
+  "quantised": null
+ },
+ {
+  "file": "b-station/b1-plus-environment-512-1.png",
+  "size": [
+   512,
+   304
+  ],
+  "mode": "RGB",
+  "opaque_px": 155648,
+  "unique_colours": 37,
+  "off_palette_px": 155648,
+  "off_palette_pct": 100.0,
+  "max_channel_distance": 69,
+  "unique_after_quantise": 28,
+  "quantised": "b-station/b1-plus-environment-512-1-quantised.png"
+ },
+ {
+  "file": "b-station/b1-plus-environment-512-2.png",
+  "size": [
+   512,
+   304
+  ],
+  "mode": "RGB",
+  "opaque_px": 155648,
+  "unique_colours": 36,
+  "off_palette_px": 155648,
+  "off_palette_pct": 100.0,
+  "max_channel_distance": 54,
+  "unique_after_quantise": 26,
+  "quantised": "b-station/b1-plus-environment-512-2-quantised.png"
+ },
+ {
+  "file": "b-station/b2-pro-refs-256-1.png",
+  "size": [
+   256,
+   152
+  ],
+  "mode": "RGB",
+  "opaque_px": 38912,
+  "unique_colours": 43,
+  "off_palette_px": 38912,
+  "off_palette_pct": 100.0,
+  "max_channel_distance": 58,
+  "unique_after_quantise": 23,
+  "quantised": "b-station/b2-pro-refs-256-1-quantised.png"
+ },
+ {
+  "file": "b-station/b2-pro-refs-256-2.png",
+  "size": [
+   256,
+   152
+  ],
+  "mode": "RGB",
+  "opaque_px": 38912,
+  "unique_colours": 42,
+  "off_palette_px": 38912,
+  "off_palette_pct": 100.0,
+  "max_channel_distance": 61,
+  "unique_after_quantise": 20,
+  "quantised": "b-station/b2-pro-refs-256-2-quantised.png"
+ },
+ {
+  "file": "b-station/b3-plus-environment-img2img.png",
+  "size": [
+   512,
+   392
+  ],
+  "mode": "RGB",
+  "opaque_px": 200704,
+  "unique_colours": 33,
+  "off_palette_px": 200704,
+  "off_palette_pct": 100.0,
+  "max_channel_distance": 44,
+  "unique_after_quantise": 25,
+  "quantised": "b-station/b3-plus-environment-img2img-quantised.png"
+ },
+ {
+  "file": "c-tiles/c1b-single-tile-palette-noseamless.png",
+  "size": [
+   32,
+   32
+  ],
+  "mode": "RGB",
+  "opaque_px": 1024,
+  "unique_colours": 6,
+  "off_palette_px": 494,
+  "off_palette_pct": 48.2,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 6,
+  "quantised": null
+ },
+ {
+  "file": "c-tiles/c2-pro-hopper-32-1.png",
+  "size": [
+   32,
+   32
+  ],
+  "mode": "RGBA",
+  "opaque_px": 452,
+  "unique_colours": 24,
+  "off_palette_px": 41,
+  "off_palette_pct": 9.1,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 24,
+  "quantised": null
+ },
+ {
+  "file": "c-tiles/c2-pro-hopper-32-2.png",
+  "size": [
+   32,
+   32
+  ],
+  "mode": "RGBA",
+  "opaque_px": 520,
+  "unique_colours": 25,
+  "off_palette_px": 73,
+  "off_palette_pct": 14.0,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 25,
+  "quantised": null
+ },
+ {
+  "file": "c-tiles/c2-pro-hopper-32-3.png",
+  "size": [
+   32,
+   32
+  ],
+  "mode": "RGBA",
+  "opaque_px": 479,
+  "unique_colours": 22,
+  "off_palette_px": 34,
+  "off_palette_pct": 7.1,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 22,
+  "quantised": null
+ },
+ {
+  "file": "c-tiles/c2-pro-hopper-32-4.png",
+  "size": [
+   32,
+   32
+  ],
+  "mode": "RGBA",
+  "opaque_px": 515,
+  "unique_colours": 24,
+  "off_palette_px": 36,
+  "off_palette_pct": 7.0,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 24,
+  "quantised": null
+ },
+ {
+  "file": "c-tiles/c3-plus-lowres-seamless-palette-1.png",
+  "size": [
+   32,
+   32
+  ],
+  "mode": "RGB",
+  "opaque_px": 1024,
+  "unique_colours": 10,
+  "off_palette_px": 89,
+  "off_palette_pct": 8.7,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 10,
+  "quantised": null
+ },
+ {
+  "file": "c-tiles/c3-plus-lowres-seamless-palette-2.png",
+  "size": [
+   32,
+   32
+  ],
+  "mode": "RGB",
+  "opaque_px": 1024,
+  "unique_colours": 11,
+  "off_palette_px": 250,
+  "off_palette_pct": 24.4,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 11,
+  "quantised": null
+ },
+ {
+  "file": "c-tiles/c4-wang-tileset-32.png",
+  "size": [
+   128,
+   160
+  ],
+  "mode": "RGBA",
+  "opaque_px": 20480,
+  "unique_colours": 33,
+  "off_palette_px": 20480,
+  "off_palette_pct": 100.0,
+  "max_channel_distance": 48,
+  "unique_after_quantise": 5,
+  "quantised": "c-tiles/c4-wang-tileset-32-quantised.png"
+ },
+ {
+  "file": "c-tiles/c5-anim-input-hopper-48.png",
+  "size": [
+   48,
+   48
+  ],
+  "mode": "RGBA",
+  "opaque_px": 479,
+  "unique_colours": 22,
+  "off_palette_px": 34,
+  "off_palette_pct": 7.1,
+  "max_channel_distance": 1,
+  "unique_after_quantise": 22,
+  "quantised": null
+ },
+ {
+  "file": "c-tiles/c5-idle-animation-hopper.png",
+  "size": [
+   192,
+   96
+  ],
+  "mode": "RGBA",
+  "opaque_px": 3722,
+  "unique_colours": 14,
+  "off_palette_px": 260,
+  "off_palette_pct": 7.0,
+  "max_channel_distance": 2,
+  "unique_after_quantise": 14,
+  "quantised": "c-tiles/c5-idle-animation-hopper-quantised.png"
+ }
+]

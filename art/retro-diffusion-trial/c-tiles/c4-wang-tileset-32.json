@@ -1,0 +1,37 @@
+{
+  "request": {
+    "prompt": "lush green meadow grass with tiny flowers meeting bare brown soil, top-down, soft top-left light",
+    "prompt_style": "rd_tile__tileset",
+    "width": 32,
+    "height": 32,
+    "num_images": 1,
+    "seed": 3004,
+    "input_palette": "<base64 of companion-palette-48.png>"
+  },
+  "images": {
+    "input_palette": {
+      "file": "companion-palette-48.png",
+      "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6",
+      "size": [
+        48,
+        1
+      ]
+    }
+  },
+  "task_id": "ce4ec16b-6550-43fa-89c7-83b11628d559",
+  "seconds": 28.7,
+  "status": "succeeded",
+  "outputs": [
+    "c4-wang-tileset-32.png"
+  ],
+  "response": {
+    "created_at": 1791349528,
+    "credit_cost": 10,
+    "balance_cost": 0.1,
+    "model": "rd_fast",
+    "remaining_credits": 0,
+    "remaining_balance": 8.3,
+    "request_id": "ce4ec16b-6550-43fa-89c7-83b11628d559",
+    "outputs_retained_until": 1791435900
+  }
+}

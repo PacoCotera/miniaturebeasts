@@ -1,0 +1,41 @@
+{
+  "request": {
+    "prompt": "top-down map weather overlay: a soft lavender-grey cloud bank with rounded volume and a brighter lit rim around a round pocket of green meadow in the centre, light from the top left, flat clean shading in few colours",
+    "prompt_style": "rd_plus__low_res",
+    "width": 128,
+    "height": 128,
+    "num_images": 2,
+    "seed": 1001,
+    "input_palette": "<base64 of companion-palette-48.png>",
+    "return_pre_palette": true
+  },
+  "images": {
+    "input_palette": {
+      "file": "companion-palette-48.png",
+      "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6",
+      "size": [
+        48,
+        1
+      ]
+    }
+  },
+  "task_id": "2be7b53d-ffaf-4a98-8303-29cff5693dcf",
+  "seconds": 0.5,
+  "status": "succeeded",
+  "outputs": [
+    "a1-plus-lowres-palette-1.png",
+    "a1-plus-lowres-palette-2.png",
+    "a1-plus-lowres-palette-3.png",
+    "a1-plus-lowres-palette-4.png"
+  ],
+  "response": {
+    "created_at": 1791349309,
+    "credit_cost": 4,
+    "balance_cost": 0.12,
+    "model": "rd_plus",
+    "remaining_credits": 0,
+    "remaining_balance": 10.38,
+    "request_id": "2be7b53d-ffaf-4a98-8303-29cff5693dcf",
+    "outputs_retained_until": 1791435698
+  }
+}

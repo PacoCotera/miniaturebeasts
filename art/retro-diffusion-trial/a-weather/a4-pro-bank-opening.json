@@ -1,0 +1,51 @@
+{
+  "request": {
+    "prompt": "top-down map seen from directly above: thick lavender-grey cloud cover fills the frame, with rounded cumulus volume, lit from the top left, a darker shaded underside on each lobe; in the lower right the clouds open to reveal a pocket of green meadow, and the cloud edge around the opening is lit with a thin bright rim; flat clean shading in few colours",
+    "prompt_style": "rd_pro__topdown",
+    "width": 128,
+    "height": 96,
+    "num_images": 2,
+    "seed": 1004,
+    "input_palette": "<base64 of companion-palette-48.png>",
+    "reference_images": [
+      "<base64 of a2-pro-topdown-ref-palette-1.png>"
+    ]
+  },
+  "images": {
+    "input_palette": {
+      "file": "companion-palette-48.png",
+      "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6",
+      "size": [
+        48,
+        1
+      ]
+    },
+    "reference_images": [
+      {
+        "file": "a2-pro-topdown-ref-palette-1.png",
+        "sha256": "4db2ebfad0895834ea5281775891cc961a8009cc965e620450a9568092fd2527",
+        "size": [
+          128,
+          128
+        ]
+      }
+    ]
+  },
+  "task_id": "f5f1ea8c-c104-4452-861b-290e7a20af05",
+  "seconds": 104.8,
+  "status": "succeeded",
+  "outputs": [
+    "a4-pro-bank-opening-1.png",
+    "a4-pro-bank-opening-2.png"
+  ],
+  "response": {
+    "created_at": 1791349604,
+    "credit_cost": 2,
+    "balance_cost": 0.36,
+    "model": "rd_pro",
+    "remaining_credits": 0,
+    "remaining_balance": 7.82,
+    "request_id": "f5f1ea8c-c104-4452-861b-290e7a20af05",
+    "outputs_retained_until": 1791435900
+  }
+}

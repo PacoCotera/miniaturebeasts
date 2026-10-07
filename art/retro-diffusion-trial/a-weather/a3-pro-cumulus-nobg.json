@@ -1,0 +1,52 @@
+{
+  "request": {
+    "prompt": "a single small rounded cumulus cloud seen from above, lavender-grey with a lighter top-left highlight and a darker shaded underside, on a plain black background",
+    "prompt_style": "rd_pro__topdown",
+    "width": 64,
+    "height": 64,
+    "num_images": 2,
+    "seed": 1003,
+    "input_palette": "<base64 of companion-palette-48.png>",
+    "remove_bg": true,
+    "reference_images": [
+      "<base64 of map-hands-clouds-256.png>"
+    ]
+  },
+  "images": {
+    "input_palette": {
+      "file": "companion-palette-48.png",
+      "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6",
+      "size": [
+        48,
+        1
+      ]
+    },
+    "reference_images": [
+      {
+        "file": "map-hands-clouds-256.png",
+        "sha256": "aa8563ecd29bc007dca8d2a279d04b93a6f6d376c58758f0786b9efc56e80b0d",
+        "size": [
+          256,
+          276
+        ]
+      }
+    ]
+  },
+  "task_id": "0fc96edc-face-461c-b03d-ca07ff8d0bb1",
+  "seconds": 19.7,
+  "status": "succeeded",
+  "outputs": [
+    "a3-pro-cumulus-nobg-1.png",
+    "a3-pro-cumulus-nobg-2.png"
+  ],
+  "response": {
+    "created_at": 1791349332,
+    "credit_cost": 2,
+    "balance_cost": 0.36,
+    "model": "rd_pro",
+    "remaining_credits": 0,
+    "remaining_balance": 10.02,
+    "request_id": "0fc96edc-face-461c-b03d-ca07ff8d0bb1",
+    "outputs_retained_until": 1791435698
+  }
+}

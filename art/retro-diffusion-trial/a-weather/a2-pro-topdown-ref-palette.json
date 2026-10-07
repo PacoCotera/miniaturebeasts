@@ -1,0 +1,52 @@
+{
+  "request": {
+    "prompt": "top-down map weather overlay: a soft lavender-grey cloud bank with rounded volume and a brighter lit rim around a round pocket of green meadow in the centre, light from the top left, flat clean shading in few colours",
+    "prompt_style": "rd_pro__topdown",
+    "width": 128,
+    "height": 128,
+    "num_images": 2,
+    "seed": 1002,
+    "input_palette": "<base64 of companion-palette-48.png>",
+    "return_pre_palette": true,
+    "reference_images": [
+      "<base64 of map-hands-clouds-256.png>"
+    ]
+  },
+  "images": {
+    "input_palette": {
+      "file": "companion-palette-48.png",
+      "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6",
+      "size": [
+        48,
+        1
+      ]
+    },
+    "reference_images": [
+      {
+        "file": "map-hands-clouds-256.png",
+        "sha256": "aa8563ecd29bc007dca8d2a279d04b93a6f6d376c58758f0786b9efc56e80b0d",
+        "size": [
+          256,
+          276
+        ]
+      }
+    ]
+  },
+  "task_id": "9e378a3e-c922-4df2-8235-4e7dcf3d2372",
+  "seconds": 42.4,
+  "status": "succeeded",
+  "outputs": [
+    "a2-pro-topdown-ref-palette-1.png",
+    "a2-pro-topdown-ref-palette-2.png"
+  ],
+  "response": {
+    "created_at": 1791349353,
+    "credit_cost": 2,
+    "balance_cost": 0.36,
+    "model": "rd_pro",
+    "remaining_credits": 0,
+    "remaining_balance": 9.66,
+    "request_id": "9e378a3e-c922-4df2-8235-4e7dcf3d2372",
+    "outputs_retained_until": 1791435698
+  }
+}

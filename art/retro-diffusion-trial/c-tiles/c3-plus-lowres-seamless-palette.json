@@ -1,0 +1,40 @@
+{
+  "request": {
+    "prompt": "seamless repeating texture of lush green meadow grass seen from directly above, short tufts and a few tiny flowers, soft top-left light, flat clean shading",
+    "prompt_style": "rd_plus__low_res",
+    "width": 32,
+    "height": 32,
+    "num_images": 2,
+    "seed": 3003,
+    "input_palette": "<base64 of companion-palette-48.png>",
+    "tile_x": true,
+    "tile_y": true
+  },
+  "images": {
+    "input_palette": {
+      "file": "companion-palette-48.png",
+      "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6",
+      "size": [
+        48,
+        1
+      ]
+    }
+  },
+  "task_id": "b1694028-fe7b-4d28-b56b-4305da036af1",
+  "seconds": 22.5,
+  "status": "succeeded",
+  "outputs": [
+    "c3-plus-lowres-seamless-palette-1.png",
+    "c3-plus-lowres-seamless-palette-2.png"
+  ],
+  "response": {
+    "created_at": 1791349521,
+    "credit_cost": 4,
+    "balance_cost": 0.12,
+    "model": "rd_plus",
+    "remaining_credits": 0,
+    "remaining_balance": 8.18,
+    "request_id": "b1694028-fe7b-4d28-b56b-4305da036af1",
+    "outputs_retained_until": 1791435900
+  }
+}
