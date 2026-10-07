@@ -110,7 +110,13 @@ export function buildBody(resolved) {
   envelopes.delete(head.id);
   const headCenter = head.center;
   connect(root, head, headDir, join, v, push, envOf, L, "neck");
-  if (v["modules.muzzleAndJaw"]) {
+  if (v["beak.enabled"]) {
+    const len = (v["growth.beak-length-ratio"] ?? 0.8) * headR[0];
+    const rt = rootOn(head, headCenter, unit([-1, 0, -0.25]), 0.12 * headR[0], envOf(head));
+    const beak = newNode("beak", "beak", head.id, "second"); beak.part = "beak";
+    segment(beak, rt.inner, add(rt.surface, add(mul(rt.direction, len), [0, 0, -0.1 * len])), 0.42 * Math.min(headR[1], headR[2]), 0.05 * headR[1]);
+    push(beak, head, rt.witness);
+  } else if (v["modules.muzzleAndJaw"]) {
     const mR = [v["muzzle.rxOverHeadRx"] * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], 0.45 * headR[2]];
     const mC = add(headCenter, [-headR[0] + 0.15 * headR[0] - 0.5 * mR[0], 0, -0.38 * headR[2]]);
     const muzzle = newNode("muzzle", "muzzle", head.id, "body"); muzzle.center = mC; ellipsoid(muzzle, mR); muzzle.part = "muzzle";
@@ -146,11 +152,27 @@ export function buildBody(resolved) {
       }
     }
   }
+  if (v["horns.enabled"]) for (const side of [-1, 1]) {
+    const curl = v["growth.horn-curl"] ?? 0.6, length = 0.95 * headR[2], baseR = 0.14 * Math.min(headR[1], headR[2]);
+    const dir = unit([0.25, side * 0.45, 0.85]);
+    const rt = rootOn(head, headCenter, dir, 0.5 * baseR, envOf(head));
+    const horn = newNode(`horn-${side < 0 ? "L" : "R"}`, "horn", head.id, "second"); horn.part = "horn";
+    const frame = [unit([0.35, side * 0.3, 0.9]), [0, side, 0], unit([-0.9, 0, 0.35])]; // up and back, curling forward
+    sweep(horn, rt.inner, frame, length, baseR, -curl, 6, 0.2);
+    push(horn, head, add(rt.inner, mul(horn.stations[0].tangent, 0.12 * baseR)));
+    if (v["anatomy.horn-branching"] === "antler") {
+      const mid = horn.stations[2];
+      const tine = newNode(`horn-${side < 0 ? "L" : "R"}-tine`, "horn", horn.id, "second"); tine.part = "horn";
+      segment(tine, sub(mid.center, mul(mid.tangent, 0.2 * mid.radius)), add(mid.center, add(mul(unit([-0.6, side * 0.5, 0.6]), 0.45 * length), [0, 0, 0])), 0.8 * mid.radius, 0.2 * mid.radius);
+      push(tine, horn, mid.center);
+    }
+  }
   if (v["ears.enabled"]) for (const side of [-1, 1]) {
     const length = v["ears.lengthOverHeadRz"] * headR[2], width = 0.55 * length;
+    const drooping = v["anatomy.ear-tilt"] === "drooping";
     const dir = unit([0, side * 0.62, 0.78]);
     const rt = rootOn(head, headCenter, dir, 0.08 * length, envOf(head));
-    const upAxis = unit([-0.15, side * 0.35, 1]);
+    const upAxis = drooping ? unit([-0.1, side * 0.95, -0.4]) : unit([-0.15, side * 0.35, 1]);
     const across = unit(cross(upAxis, [-1, 0, 0]));
     const pointed = v["ears.form"] === "pointed";
     const outline = pointed ? [[-0.12, 0], [-0.5, 0.38], [-0.36, 0.75], [0, 1], [0.36, 0.75], [0.5, 0.38], [0.12, 0]] : [[-0.12, 0], [-0.5, 0.32], [-0.48, 0.73], [-0.24, 0.96], [0.24, 0.96], [0.48, 0.73], [0.5, 0.32], [0.12, 0]];
@@ -200,7 +222,10 @@ export function buildBody(resolved) {
         const u = Math.max(-0.75, Math.min(0.75, station.u + stationShift));
         const rt = rootOn(owner, worldPoint(owner, [u * owner.radii[0], 0, 0.1 * owner.radii[2]]), localVector(owner.frame, [0, side, 0]), 0.5 * radius, envOf(owner));
         let joint, end;
-        if (plan.posture === "splayed") {
+        if (plan.posture === "upright") {
+          joint = add(rt.surface, [0.02 * L, side * 0.25 * spread, -0.55 * drop]);
+          end = add(rt.surface, [-0.05 * L, side * 0.35 * spread, -1.1 * drop]);
+        } else if (plan.posture === "splayed") {
           const s = Math.max(spread, 0.45 * L);
           joint = add(rt.surface, [0.05 * L * (g - 1), side * 0.6 * s, 0.35 * drop]);
           end = add(joint, [0.08 * L * (g - 1), side * 0.55 * s, -1.25 * drop]);
@@ -300,7 +325,7 @@ export function buildBody(resolved) {
         sheet(caudal, [add(back, [0, 0, 0.35 * last.radii[2]]), add(back, [0, 0, -0.35 * last.radii[2]]), add(back, [0.9 * finSpan, 0, -0.8 * finSpan]), add(back, [0.9 * finSpan, 0, 0.8 * finSpan])], [0, 1, 0], thickness);
         push(caudal, last, rt.inner);
       }
-    } else if (plan.flapSet === "cap" && !v["petals.enabled"]) {
+    } else if (plan.flapSet === "cap") {
       const hub = regions.at(-1);
       if (v["cap.enabled"]) {
         const cap = newNode("cap", "cap-sheet", hub.id, "cap"); cap.part = "cap";
@@ -317,20 +342,6 @@ export function buildBody(resolved) {
         sheet(flap, [add(rootP, mul(across, -0.5 * chord)), add(rootP, mul(across, 0.5 * chord)), add(outer, mul(across, 0.3 * chord)), add(outer, mul(across, -0.3 * chord))], [0, 0, 1], thickness);
         push(flap, hub, rt.inner);
       }
-    }
-  }
-  if (v["petals.enabled"]) {
-    const hub = root, n = v["growth.petal-count"], len = v["growth.petal-length-ratio"] * hub.radii[0];
-    for (let i = 0; i < n; i++) {
-      const a = Math.PI / n + (i * 2 * Math.PI) / n;
-      const out = [Math.cos(a), Math.sin(a), 0], across = [-Math.sin(a), Math.cos(a), 0];
-      const rt = rootOn(hub, hub.center, add(out, [0, 0, 0.9]), 0.05 * L, envOf(hub));
-      const rootP = rt.surface;
-      const outer = add(rootP, add(mul(out, 0.75 * len), [0, 0, 0.6 * len]));
-      const w = 0.7 * len;
-      const petal = newNode(`petal-${i}`, "thin-surface", hub.id, "cap"); petal.part = "petal";
-      sheet(petal, [add(rootP, mul(across, -0.25 * w)), add(rootP, mul(across, 0.25 * w)), add(outer, mul(across, 0.5 * w)), add(add(outer, mul(out, 0.3 * len)), [0, 0, 0.3 * len]), add(outer, mul(across, -0.5 * w))], unit(add(mul(out, -0.6), [0, 0, 1])), 0.015 * L);
-      push(petal, hub, rt.inner);
     }
   }
   if (v["leaves.enabled"]) for (const region of regions) {
@@ -362,13 +373,23 @@ export function buildBody(resolved) {
       push(c, owner);
     }
   }
+  if (v["shell.enabled"]) {
+    const xs = serialRegions.flatMap((r) => [r.center[0] - r.radii[0], r.center[0] + r.radii[0]]);
+    const minX = Math.min(...xs), maxX = Math.max(...xs);
+    const dome = v["growth.shell-dome-ratio"] ?? 0.8;
+    const shell = newNode("shell", "shell", root.id, "shell"); shell.part = "shell";
+    shell.center = [(minX + maxX) / 2 + 0.05 * L, 0, root.center[2] + 0.2 * root.radii[2]];
+    ellipsoid(shell, [(maxX - minX) / 2 + 0.05 * L, 1.15 * Math.max(...serialRegions.map((r) => r.radii[1])), dome * root.radii[2]], 2);
+    push(shell, root);
+  }
   if (v["skirt.enabled"]) {
     const over = v["growth.foot-skirt-width-ratio"];
     const xs = serialRegions.flatMap((r) => [r.center[0] - r.radii[0], r.center[0] + r.radii[0]]);
     const minX = Math.min(...xs), maxX = Math.max(...xs);
     const width = Math.max(...serialRegions.map((r) => r.radii[1])) * (1 + over);
     const skirt = newNode("foot-skirt", "foot-skirt", root.id, "second"); skirt.part = "skirt";
-    skirt.center = [(minX + maxX) / 2, 0, -0.72 * root.radii[2]];
+    const underside = Math.min(...serialRegions.map((r) => r.center[2] - 0.9 * r.radii[2]));
+    skirt.center = [(minX + maxX) / 2, 0, underside + 0.08 * root.radii[2]];
     ringSolid(skirt, [(maxX - minX) / 2 + 0.1 * L, width, 0.16 * root.radii[2]], "barrel", 2);
     const under = serialRegions.reduce((a, b) => (Math.abs(a.center[0] - skirt.center[0]) < Math.abs(b.center[0] - skirt.center[0]) ? a : b));
     const lo = Math.max(under.center[2] - 0.9 * under.radii[2], skirt.center[2] - 0.9 * skirt.radii[2]), hi = Math.min(under.center[2] + 0.9 * under.radii[2], skirt.center[2] + 0.9 * skirt.radii[2]);
@@ -410,23 +431,23 @@ export function buildBody(resolved) {
   for (const node of nodes) for (const p of node.mesh.vertices) for (let i = 0; i < 3; i++) { bounds.min[i] = Math.min(bounds.min[i], p[i]); bounds.max[i] = Math.max(bounds.max[i], p[i]); }
   const slots = {
     body: bodyPalette, second: secondPalette, eyeRim: [EYE_RIM], pupil: [PUPIL],
-    cap: v["cap.enabled"] ? v["appearance.cap-palette"] ?? bodyPalette : v["petals.enabled"] ? bodyPalette.map(tint) : null,
-    emission: v["tailBulb.enabled"] ? ["#ffd166"] : null, leaf: v["leaves.enabled"] ? ["#5aa65c"] : null,
+    cap: v["cap.enabled"] ? v["appearance.cap-palette"] ?? bodyPalette : null,
+    emission: v["tailBulb.enabled"] || v["charged.enabled"] ? ["#ffd166"] : null, leaf: v["leaves.enabled"] ? ["#5aa65c"] : null,
+    shell: v["shell.enabled"] ? secondPalette : null, mask: v["mask.enabled"] ? secondPalette : null,
     belly: v["belly.enabled"] ? secondPalette : null,
   };
-  const covering = { kind: v["covering.furEnabled"] ? "fur" : v["covering.kind"] === "scales" ? "scales" : "skin", furLength: v["fur.lengthOverMinTransverseRadius"] ?? null, furFlow: v["fur.tangentAngleRadians"] ?? null, scaleExtent: v["covering.localExtent"] ?? null, scaleSize: v["covering.localScaleLength"] ?? null, leafy: v["appearance.leaf-covering"] === "leafy", sheen: v["appearance.sheen"] ?? 0, texture: v["appearance.surface-texture"] ?? "smooth" };
+  const covering = { kind: v["feathers.enabled"] ? "feathers" : v["covering.furEnabled"] ? "fur" : v["covering.kind"] === "scales" ? "scales" : "skin", featherLength: v["appearance.feather-length"] ?? null, furReach: v["appearance.fur-reach"] ?? "body", charged: !!v["charged.enabled"], phase: v["physiology.phase"] ?? 0, emission: v["appearance.emission-brightness"] ?? 0, furLength: v["fur.lengthOverMinTransverseRadius"] ?? null, furFlow: v["fur.tangentAngleRadians"] ?? null, scaleExtent: v["covering.localExtent"] ?? null, scaleSize: v["covering.localScaleLength"] ?? null, leafy: v["appearance.leaf-covering"] === "leafy", sheen: v["appearance.sheen"] ?? 0, texture: v["appearance.surface-texture"] ?? "smooth" };
   const markings = v["markings.enabled"] ? { layout: v["markings.layout"], extent: v["markings.extent"], scale: v["markings.scale"], orientation: v["markings.orientation"], contrast: v["markings.contrast"] } : null;
   const flapMarking = plan.flapSet && v["appearance.flap-marking"] && v["appearance.flap-marking"] !== "plain" ? v["appearance.flap-marking"] : null;
   const capSpots = !!v["cap.enabled"] && v["appearance.cap-spots"] === "spots";
-  return { status: "constructed", plan: { key: plan.key, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, states: plan.states }, nodes, edges, bounds, slots, covering, markings, flapMarking, capSpots, belly: !!v["belly.enabled"], L };
+  const mask = v["mask.enabled"] ? v["appearance.face-mask-shape"] ?? "band" : null;
+  const tailRings = v["tailRings.enabled"] ? v["growth.tail-ring-count"] ?? 1 : 0;
+  const shellPlates = !!v["shell.enabled"] && v["appearance.shell-plates"] === "plated";
+  if (v["charged.enabled"]) for (const node of nodes) if (node.role === "primary-region" || node.role === "region-connector" || node.role === "typed-head") node.opacity = 1 - (v["physiology.phase"] ?? 0.4);
+  return { status: "constructed", plan: { key: plan.key, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, states: plan.states }, nodes, edges, bounds, slots, covering, markings, flapMarking, capSpots, mask, tailRings, shellPlates, belly: !!v["belly.enabled"], L };
 }
 
 // --- helpers ----------------------------------------------------------------------------------------
-// A pale tint of a pigment (petals read against their hub); deterministic, not a new pigment gene.
-function tint(hex) {
-  const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).map((x) => Math.round(x + (255 - x) * 0.5));
-  return "#" + c.map((x) => x.toString(16).padStart(2, "0")).join("");
-}
 function extentAlong(node, worldDir, envOf) {
   const dir = unit(worldDir);
   return envOf(node).rayHit(node.center, dir).t;
@@ -454,8 +475,8 @@ function terminal(id, last, end, v, L, push, contactPoints, azimuth) {
   const form = v["terminal.form"] ?? "rounded";
   const tr = [(v["terminal.rxOverCoreRx"] ?? 0.18) * L, 0.73 * (v["terminal.rxOverCoreRx"] ?? 0.18) * L, (v["terminal.rzOverCoreRx"] ?? 0.1) * L];
   const frame = azimuth === null ? IDENTITY : rotateFrameZ(IDENTITY, azimuth);
-  if (v["rootFoot.enabled"]) {
-    const spread = v["growth.root-spread-ratio"] * tr[0];
+  if (form === "root") {
+    const spread = 1.2 * tr[0];
     for (let i = 0; i < 4; i++) {
       const a = (i * 2 * Math.PI) / 4 + Math.PI / 4;
       const tip = add(end, localVector(frame, [spread * Math.cos(a), spread * Math.sin(a) * 0.8, -1.3 * tr[2]]));
@@ -469,6 +490,8 @@ function terminal(id, last, end, v, L, push, contactPoints, azimuth) {
   const center = add(end, localVector(frame, [-0.2 * tr[0], 0, -0.25 * tr[2]]));
   const foot = newNode(id, "contact-terminal", last.id, "second"); foot.part = last.part; foot.frame = frame; foot.center = center;
   if (form === "pad") ringSolid(foot, [tr[0], 1.15 * tr[1], tr[2]], "blunt-pad", 4);
+  else if (form === "hoof") ringSolid(foot, [0.75 * tr[0], 0.85 * tr[1], 1.4 * tr[2]], "blunt-pad", 4);
+  else if (form === "webbed") ringSolid(foot, [1.15 * tr[0], 1.7 * tr[1], 0.55 * tr[2]], "blunt-pad", 4);
   else if (form === "wedge") {
     foot.radii = tr; foot.shape = { kind: "wedge" };
     const corners = [-1, 1].flatMap((lx) => [-1, 1].flatMap((y) => [-1, 1].map((z) => worldPoint(foot, [lx * tr[0], y * tr[1] * (lx === 1 ? 0.6 : 1), z * tr[2] * (lx === 1 ? 0.3 : 1)]))));

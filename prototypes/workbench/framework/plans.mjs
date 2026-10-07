@@ -11,7 +11,7 @@
 export const PLAN_FIELDS = ["segments", "layout", "symmetry", "limbs", "groups", "links", "pairs", "flaps", "covering"];
 const DEPTH = { one: 1, two: 2, three: 3 };
 const GROUPS = { zero: 0, one: 1, two: 2, three: 3 };
-const PAIRS = { two: 2, three: 3 };
+const PAIRS = { one: 1, two: 2, three: 3 };
 const LINKS = { one: 1, two: 2 };
 
 export function parsePlanKey(key) {
@@ -67,7 +67,7 @@ export function planFacts(key, extras = {}) {
   const rig = rigOf(p);
   const stations = limbStations(p, depth);
   const limbSet = limbs === "contact" ? (radial ? "rays" : "legs") : limbs === "free" ? "feelers" : null;
-  const posture = limbSet === "legs" ? (pairs === 3 ? "splayed" : "plantigrade") : limbSet === "rays" ? "rooted" : limbSet === "feelers" ? (radial ? "trailing" : "stilts") : null;
+  const posture = limbSet === "legs" ? (pairs === 3 ? "splayed" : pairs === 1 ? "upright" : "plantigrade") : limbSet === "rays" ? "rooted" : limbSet === "feelers" ? (radial ? "trailing" : "stilts") : null;
   const ground = limbSet === "legs" || limbSet === "rays" ? "feet" : limbSet === "feelers" && !radial ? "feeler tips" : fins ? "afloat" : "belly";
   const flapSet = p.flaps !== "on" ? null : fins ? "fins" : radial ? "cap" : "wings";
   const flapRegion = p.flaps === "on" ? (depth === 3 ? 1 : 0) : null;
@@ -89,6 +89,7 @@ export function limbStations(p, depth) {
   if (limbs === "contact") {
     const pairs = PAIRS[p.pairs];
     if (p.symmetry === "radial") return [{ region: 0, u: 0, rays: 3 * pairs }];
+    if (pairs === 1) return [{ region: Math.min(1, depth - 1), u: depth === 1 ? 0.15 : -0.1 }]; // one pair under the body's middle (a bird)
     if (p.layout === "fan") return pairs === 2 ? [{ region: 0, u: -0.3 }, { region: 0, u: 0.5 }] : [{ region: 0, u: -0.5 }, { region: 0, u: 0 }, { region: 0, u: 0.5 }];
     if (depth === 1) return pairs === 2 ? [{ region: 0, u: -0.55 }, { region: 0, u: 0.55 }] : [{ region: 0, u: -0.62 }, { region: 0, u: 0 }, { region: 0, u: 0.62 }];
     if (depth === 2) return pairs === 2 ? [{ region: 0, u: 0.1 }, { region: 1, u: 0.1 }] : [{ region: 0, u: -0.45 }, { region: 0, u: 0.5 }, { region: 1, u: 0.2 }];

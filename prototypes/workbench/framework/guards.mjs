@@ -83,6 +83,9 @@ function newGuard(locus, v) {
   if (owner === "head") return [v["modules.typedHead"], "typed head owner"];
   if (owner === "flaps") return [v["modules.wingPair"], "thin-surface owner"];
   if (owner === "contact") return [v["appendage.role"] === "contact-chain", "contact terminal owner"];
+  if (owner === "tail") return [!!v["tail.enabled"], "axial tail"];
+  if (owner === "ears") return [!!v["ears.enabled"], "head-owned ears"];
+  if (owner === "fur") return [!!v["covering.furEnabled"], "fur field"];
   const sw = SWITCH_TARGETS[owner];
   if (!sw) throw new Error(`${locus.id}: unknown owner ${owner}`);
   return [!!v[sw], `${owner} on`];
@@ -94,8 +97,10 @@ export const SWITCH_TARGETS = {
   "anatomy.exterior-eye-presence": "modules.exteriorEyePair", "anatomy.auricular-presence": "ears.enabled",
   "anatomy.axial-tail-presence": "tail.enabled", "appearance.marking-switch": "markings.enabled",
   "anatomy.antenna-presence": "antennae.enabled", "anatomy.leaf-presence": "leaves.enabled",
-  "anatomy.root-foot-presence": "rootFoot.enabled", "anatomy.foot-skirt-presence": "skirt.enabled",
-  "anatomy.wing-case-presence": "wingCases.enabled", "anatomy.petal-presence": "petals.enabled",
+  "anatomy.foot-skirt-presence": "skirt.enabled", "anatomy.wing-case-presence": "wingCases.enabled",
+  "appearance.face-mask": "mask.enabled", "appearance.tail-rings": "tailRings.enabled", "anatomy.horn-presence": "horns.enabled",
+  "anatomy.beak-presence": "beak.enabled", "appearance.feather-presence": "feathers.enabled", "anatomy.shell-presence": "shell.enabled",
+  "physiology.charged-body": "charged.enabled",
   "anatomy.tail-tip-bulb": "tailBulb.enabled", "anatomy.top-cap-sheet": "cap.enabled", "appearance.belly-field": "belly.enabled",
 };
 
