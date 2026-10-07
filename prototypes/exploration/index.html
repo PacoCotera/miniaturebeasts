@@ -342,7 +342,7 @@ const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', c
 const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
 const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'needs a digger', water: 'fast water', deep: 'deep ?' };
-const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'Lit beacon · you lit it, it burns for good', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: DEPOT_NAME[0].toUpperCase() + DEPOT_NAME.slice(1) + ' · lit, it lets you send home, mend and shelter for 3 world turns',
+const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'A beacon: light it for 1 Energy to reveal the land around', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: 'An ' + DEPOT_NAME + ': light it for 1 Energy to send home, mend and shelter there',
   pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow hole · a digging partner can open it', water: 'Fast water · needs a swimmer', deep: 'Deep ? · a tier 2 Probe can read it' };
 
 // ===================== 2. Seeded RNG and noise =====================
@@ -2605,8 +2605,13 @@ const ICON = {
   data: () => art('i-data', () => { const pb = new PB(14, 14); pb.rect(1, 1, 12, 12, C.sky); pb.rect(0, 2, 14, 10, C.sky); pb.rect(2, 0, 10, 14, C.sky); pb.rect(3, 4, 8, 2, C.white); pb.rect(3, 8, 5, 2, C.white); pb.rect(2, 12, 10, 2, C.river); pb.rect(0, 11, 1, 1, C.river); pb.rect(13, 11, 1, 1, C.river); return pb; }),
   essence: () => art('i-ess', () => { const pb = new PB(14, 14); pb.ell(7, 7, 6.6, 6.6, C.grass, { sh: [C.lime, C.leaf] }); pb.rect(4, 3, 2, 2, C.white); return pb; }),
   // The same bolt with its inside left open (the ground shows through): a found warm stone.
-  beacon: (fr) => art('i-beacon' + (fr ? 1 : 0), () => { const pb = new PB(10, 14); pb.rect(3, 6, 4, 8, C.rock); pb.rect(3, 6, 1, 8, C.rockL); pb.rect(1, 5, 8, 1, C.soil); pb.rect(1, 0, 8, 1, C.soil);
-    pb.rect(2, 1, 6, 4, C.wine); pb.ell(5, 3 - (fr ? .5 : 0), 1.8, 2 + (fr ? .4 : 0), C.amber); pb.set(5, 3, C.cream); pb.outline(); return pb; }),
+  // A beacon: a tall stone post with a lamp cage on top; the cage dark until lit, then a flame (2 frames).
+  beacon: (lit, fr) => art('i-beacon' + (lit ? 1 : 0) + (lit && fr ? 1 : 0), () => { const pb = new PB(12, 22), t = lit && fr ? 1 : 0;
+    pb.rect(2, 20, 8, 2, C.rock); pb.rect(4, 8, 4, 12, C.rock); pb.rect(4, 8, 1, 12, C.rockL); pb.rect(7, 8, 1, 12, C.stone);   // footing and post
+    pb.rect(1, 7, 10, 1, C.soil); pb.rect(1, 1, 10, 1, C.soil); pb.rect(2, 0, 8, 1, C.bark);                                      // cage floor and roof
+    pb.rect(2, 2, 8, 5, lit ? C.wine : C.night); if (lit) { pb.ell(6, 4.6 - t * .4, 2.4, 2.4 + t * .4, C.orange); pb.ell(6, 5, 1.4, 1.6, C.yellow); pb.set(6 - t, 5, C.cream); }
+    for (const x of [1, 6, 10]) pb.rect(x, 2, 1, 5, C.soil);                                                                   // bars
+    pb.outline(); return pb; }),
   boltHollow: () => art('i-boltH', () => { const a = new PB(14, 17); a.poly([[9, 0], [0, 10], [6, 10], [3, 17], [14, 6], [8, 6], [12, 0]], C.yellow); const pb = new PB(14, 17);   // a little fatter than the bolt, so the open inside reads
     const inA = (x, y) => a.get(x, y) >= 0;
     for (let y = 0; y < 17; y++) for (let x = 0; x < 14; x++) if (inA(x, y)) pb.set(x, y, inA(x - 1, y) && inA(x + 1, y) && inA(x, y - 1) && inA(x, y + 1) ? C.ink : C.yellow);   // a yellow rim, dark inside
@@ -2621,8 +2626,13 @@ const ICON = {
   pin: () => art('i-pin', () => { const pb = new PB(16, 22); pb.rect(2, 1, 2, 20, C.bone); pb.poly([[4, 1], [15, 5.5], [4, 10]], C.orange); pb.poly([[4, 6], [15, 5.5], [4, 10]], C.rust); pb.ell(3, 20, 3, 1.5, C.slate); pb.outline(() => C.void); return pb; }),
   flag: () => art('i-flag', () => { const pb = new PB(13, 20); pb.rect(1, 1, 2, 19, C.bone); pb.poly([[3, 1], [12, 4.5], [3, 8]], C.orange); pb.rect(3, 2, 6, 1, C.amber); pb.outline(); return pb; }),
   skull: () => art('i-skull', () => { const pb = new PB(14, 14); pb.ell(7, 6, 6, 5.5, C.bone); pb.rect(4, 10, 6, 3, C.bone); pb.ell(4.5, 6, 1.6, 1.8, C.void); pb.ell(9.5, 6, 1.6, 1.8, C.void); pb.rect(6, 9, 2, 1, C.void); pb.rect(5, 12, 1, 1, C.void); pb.rect(8, 12, 1, 1, C.void); pb.outline(); return pb; }),
-  depot: (lit) => art('i-depot' + (lit | 0), () => { const L = lit | 0, pb = new PB(16, 20); pb.rect(1, 13, 9, 6, C.bark); pb.poly([[0, 13], [5.5, 9], [11, 13]], C.rust); pb.rect(4, 15, 3, 4, C.soil); pb.rect(12, 6, 1, 13, C.stone); pb.rect(11, 5, 3, 2, L ? C.amber : C.night);
-    if (L) { const h = [0, 2, 4, 6][L]; pb.rect(12, 5 - h, 1, h, C.orange); if (L > 1) { pb.rect(11, 5 - h + 2, 3, h - 2, C.orange); pb.rect(12, 5 - h + 1, 1, h - 2, C.yellow); } if (L > 2) pb.set(12, 5 - h + 1, C.cream); }
+  // An outpost: a hut with a lamp post beside it; the lamp dark until lit, then a flame whose size is the light left.
+  depot: (lit, fr) => art('i-depot' + (lit | 0) + (lit && fr ? 1 : 0), () => { const L = lit | 0, t = L && fr ? 1 : 0, pb = new PB(20, 22);
+    pb.rect(1, 13, 11, 8, C.bark); pb.rect(1, 13, 11, 1, C.clay); pb.poly([[-0.5, 13.5], [6.5, 7], [13.5, 13.5]], C.rust); pb.poly([[6.5, 7], [13.5, 13.5], [10.5, 13.5]], C.wine);   // hut and roof
+    pb.rect(5, 16, 3, 5, C.soil); pb.rect(2, 15, 2, 2, L ? C.amber : C.night);                                                 // door and window
+    pb.rect(15, 8, 2, 13, C.stone); pb.rect(15, 8, 1, 13, C.rockL); pb.rect(13, 20, 6, 1, C.rock);                              // the lamp post
+    pb.rect(13, 7, 6, 1, C.soil); pb.rect(13, 3, 6, 1, C.soil); pb.rect(14, 4, 4, 3, L ? C.amber : C.night); pb.rect(13, 4, 1, 3, C.soil); pb.rect(18, 4, 1, 3, C.soil);   // lamp cage
+    if (L) { const h = [0, 2, 3, 4][L] + t; pb.ell(16, 3.2 - h / 2, [0, 1, 1.5, 2][L] + .3, h / 2 + .3, C.orange); if (L > 1) pb.ell(16, 3.4 - h / 3, .9, h / 3, C.yellow); if (L > 2) pb.set(16, 1 - t, C.cream); }
     pb.outline(); return pb; }),
   start: () => art('i-start', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 5.4, 5.4, C.bone, { clip: (x, y) => Math.hypot(x + .5 - 5.5, y + .5 - 5.5) > 3.8 }); return pb; }),
   arrow: (dir) => art('i-arr' + dir, () => { const pb = new PB(9, 13); pb.poly([[0, 0], [9, 6.5], [0, 13]], C.yellow); pb.outline(() => C.rust); return dir < 0 ? flipPB(pb) : pb; }),
@@ -2910,7 +2920,7 @@ function mapSigns() {
   if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);
   for (const k in (S.skulls || {})) add(+k, 'skull', 11);   // where the Probe broke; the pods lie there until you come back
   for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) add(c, 'depot', 10, { lit: outpostLeft(String(c), f) }); }
-  for (const k in S.cells) { if (k[0] === 'c') continue; const c = +k; if (S.revealed[c] && layout(k).feats.some(f => f.kind === 'j' && fs(k, f.id).up)) add(c, 'beacon', 10); }   // a lit beacon, for good   // a gated cell shows its gate
+  for (let c = 0; c < MW * MH; c++) { if (!S.revealed[c] || !passable(c) || !(S.visited[c] || S.cells[c])) continue; const k = String(c), j = layout(k).feats.find(f => f.kind === 'j'); if (!j) continue; if (fs(k, j.id).up) add(c, 'beacon', 10, { lit: 1 }); else if (S.visited[c] && unveiled(k, j.x, j.y)) add(c, 'beacon', 9, { lit: 0 }); }   // a lit beacon, for good   // a gated cell shows its gate
   // Energy the Probe has found stays marked until drawn, surveyed or not: solid bolt for storm charge, hollow for warm
   if (S.exp) for (const c of S.exp.reach) { const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
     if (S.visited[c] && passable(c) && leftItems(c).some(i => i.k === 'pod' && !i.cave)) add(c, 'pod', 9); }   // a pod you saw and left behind
@@ -2935,9 +2945,9 @@ function drawSign(kind, s, px, py, fr) {
   else if (kind === 'burrow') blit(ICON.burrow(0), px + 5, py + 6);
   else if (kind === 'water') blit(ICON.wave(), px + 5, py + 7);
   else if (kind === 'pin') blit(ICON.pin(), px + 5, py - 2);
-  else if (kind === 'beacon') blit(ICON.beacon(fr), px + 1, py + 1);
+  else if (kind === 'beacon') blit(ICON.beacon(s.lit, fr), px + 1, py + 1);
   else if (kind === 'skull') blit(ICON.skull(), px + 11, py + 11);
-  else if (kind === 'depot') blit(ICON.depot(s.lit), px + 9, py + 5);
+  else if (kind === 'depot') blit(ICON.depot(s.lit, fr), px + 6, py + 3);
 }
 // The reach view: in an expedition the map shows only the Probe's reach, drawn at its own scale (not a blow-up
 // of the 26 px map): 78 px cells at tier 1 (5×5), 48 px at tier 2 (9×9). Each cell shows its land as a patch of
@@ -2975,8 +2985,8 @@ function signSprite(kind, s, fr, big) {
     case 'pin': return ICON.pin();
     case 'flag': return ICON.flag();
     case 'skull': return sc('skull', ICON.skull());
-    case 'depot': return sc('depot' + (s.lit | 0), ICON.depot(s.lit));
-    case 'beacon': return sc('beacon' + fr, ICON.beacon(fr));
+    case 'depot': return sc('depot' + (s.lit | 0) + (s.lit && fr ? 1 : 0), ICON.depot(s.lit, fr));
+    case 'beacon': return sc('beacon' + (s.lit ? 1 : 0) + (s.lit && fr ? 1 : 0), ICON.beacon(s.lit, fr));
     case 'burrow': return sc('burrow', ICON.burrow(0));
     case 'water': return sc('wave', ICON.wave());
     case 'deep': return BADGE();
@@ -3654,9 +3664,9 @@ function drawProbe(t) {
     [(x, y) => blit(ICON.boltHollow(), x - 7, y - 8), 'Hollow bolt', 'warm stone found, +1'],
     [(x, y) => { blit(ICON.bolt(), x - 13, y - 8); blit(ICON.bolt(), x, y - 8); }, 'Storm', 'open: ' + Math.round(STRAY.strong * 100) + '%, peak ' + Math.round(STRAY.peak * 100) + '%'],
     [(x, y) => blit(ICON.pin(), x - 5, y - 10), 'Pin', 'your mark · 1 Energy'],
-    [(x, y) => blit(ICON.beacon(0), x - 5, y - 7), 'Beacon', 'lit: shows the land'],
+    [(x, y) => { blit(ICON.beacon(0), x - 13, y - 8); blit(ICON.beacon(1, 0), x + 1, y - 8); }, 'Beacon', 'dark, lit: shows the land'],
     [(x, y) => blit(ICON.flag(), x - 6, y - 10), 'Flag', 'your start: send home'],
-    [(x, y) => blit(ICON.depot(1), x - 7, y - 8), cap(DEPOT_NAME), 'lit: send, mend, shelter'],
+    [(x, y) => blit(ICON.depot(3, 0), x - 10, y - 8), cap(DEPOT_NAME), 'lit: send, mend, shelter'],
     [(x, y) => blit(ICON.skull(), x - 7, y - 7), 'Skull', 'lost pods lie here'],
     [(x, y) => { blit(ICON.burrow(0), x - 14, y - 7); blit(BADGE(), x + 2, y - 9); }, 'Gate', 'a partner or tier 2'],
     [(x, y) => ditherFill(x - 16, y - 11, 32, 22, 'fog', 8), 'Fog bank', 'calm · 4 tiles of sight'],
@@ -3886,7 +3896,8 @@ function placeReason(c) {
   return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
 }
 const SIGN_ORDER = ['skull', 'depot', 'b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'deep'];
-function signWords(c) { const k = signsAt(c); return SIGN_ORDER.filter(s => k.includes(s)).map(s => SIGN_NAME[s]); }
+function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.list : [];
+  return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? DEPOT_NAME + (q.lit ? ' · lit ' + q.lit + ' turn' + (q.lit === 1 ? '' : 's') : ' (dark)') : q.kind === 'beacon' ? 'beacon' + (q.lit ? ' (lit)' : ' (unlit)') : SIGN_NAME[q.kind]); }
 function landWord(c) {
   if (G.land[c] === L.WATER) return G.ford[c] ? 'shallows' : nextToIsland(c) ? 'fast water' : 'wide water';
   return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : ''); }
@@ -3912,9 +3923,11 @@ function noteHud() {
   if (fogNear()) fxOnce('hudfog', 'Bottom line: the fog bank drifts ' + (ex.fog.dx > 0 ? '▶ east' : '◀ west'), 1);
 }
 function noteSigns() {
+  if (S.phase === 'patch' && S.exp && S.exp.patch && S.exp.patch.key[0] !== 'c') { const P = S.exp.patch;   // the hut or the beacon in sight in a place
+    for (const f of layout(P.key).feats) if ((f.kind === 'h' || f.kind === 'j') && unveiled(P.key, f.x, f.y) && cheb(f, P) <= 6) fxOnce('sign:' + (f.kind === 'h' ? 'depot' : 'beacon'), SIGN_HELP[f.kind === 'h' ? 'depot' : 'beacon'], 3); }
   if (S.phase !== 'map' || !S.exp) return; const a = aheadCell();
   const kinds = new Set(signsAt(S.exp.pos).concat(a >= 0 && S.revealed[a] && inRange(a) ? signsAt(a) : []));
-  for (const k of SIGN_ORDER) if (kinds.has(k)) fxOnce('sign:' + k, SIGN_HELP[k], 1);
+  for (const k of SIGN_ORDER) if (kinds.has(k)) fxOnce('sign:' + k, SIGN_HELP[k], k === 'depot' || k === 'beacon' ? 3 : 1);
   // the storm's arrow at the band's leading edge, the first time it is on the map
   if (S.exp.storm) { const st = S.exp.storm, lead = st.dir > 0 ? st.x + st.w : st.x; if (lead > 0 && lead < MW) fxOnce('stormdir', (st.dir > 0 ? '▶' : '◀') + ' · the yellow arrow · the storm moves this way', 2); }
   // the fog bank, the first time it is next to you
