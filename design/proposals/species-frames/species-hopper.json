@@ -1,0 +1,2274 @@
+{
+ "schema": "mb-species-frame/1",
+ "species": {
+  "id": "hopper",
+  "name": "Hopper",
+  "plural": "hoppers",
+  "order": 1,
+  "summary": "The starter: Pip as in the approved art. Exactly the five open traits of the Pip proof."
+ },
+ "catalogue": {
+  "id": "genomic-compositional-source-experiment",
+  "version": 6,
+  "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+  "pairs": 114,
+  "drafts": 6
+ },
+ "glyph": [
+  "#.#.#",
+  ".###.",
+  "#####",
+  "#####",
+  "#.#.#"
+ ],
+ "pod": {
+  "sizeClass": "medium",
+  "proportion": "squat",
+  "heightToLength": 0.61,
+  "shellPattern": "smooth dots",
+  "colourPair": [
+   {
+    "pigment": "charcoal",
+    "hex": "#465459"
+   },
+   {
+    "pigment": "cream",
+    "hex": "#dfd2ae"
+   }
+  ]
+ },
+ "chapters": [
+  {
+   "id": "coat",
+   "name": "Coat",
+   "sealed": false,
+   "traits": [
+    {
+     "id": "markings",
+     "name": "Markings",
+     "loci": [
+      "appearance.marking-switch"
+     ],
+     "looks": [
+      "plain",
+      "pale patches"
+     ],
+     "nature": "look",
+     "shapeable": true
+    }
+   ]
+  },
+  {
+   "id": "face",
+   "name": "Face",
+   "sealed": false,
+   "traits": [
+    {
+     "id": "crown",
+     "name": "Crown",
+     "loci": [
+      "anatomy.crown-presence"
+     ],
+     "looks": [
+      "bare head",
+      "leaf crest"
+     ],
+     "nature": "look",
+     "shapeable": true
+    },
+    {
+     "id": "eye-rings",
+     "name": "Eye rings",
+     "loci": [
+      "growth.exterior-eye-size-ratio"
+     ],
+     "looks": [
+      "thin rings",
+      "between",
+      "wide pale rings"
+     ],
+     "nature": "look",
+     "shapeable": true
+    }
+   ]
+  },
+  {
+   "id": "movement",
+   "name": "Movement",
+   "sealed": false,
+   "traits": [
+    {
+     "id": "drive",
+     "name": "Drive",
+     "loci": [
+      "movement.cycle-rate"
+     ],
+     "looks": [
+      "steady",
+      "between",
+      "bursts"
+     ],
+     "nature": "doing",
+     "shapeable": false
+    }
+   ]
+  },
+  {
+   "id": "stamina",
+   "name": "Stamina",
+   "sealed": false,
+   "traits": [
+    {
+     "id": "efficiency",
+     "name": "Efficiency",
+     "loci": [
+      "energy.action-efficiency"
+     ],
+     "looks": [
+      "thrifty",
+      "between",
+      "ordinary"
+     ],
+     "nature": "doing",
+     "shapeable": false
+    }
+   ]
+  }
+ ],
+ "counts": {
+  "locked": 109,
+  "lockedBy": {
+   "switch": 23,
+   "owner-off": 39,
+   "fixed": 34,
+   "no-consumer": 13
+  },
+  "heritableLook": 3,
+  "heritableDoing": 2,
+  "sleeping": 0,
+  "sealed": 0,
+  "byChapter": {
+   "Coat": {
+    "loci": 1,
+    "traits": 1
+   },
+   "Face": {
+    "loci": 2,
+    "traits": 2
+   },
+   "Movement": {
+    "loci": 1,
+    "traits": 1
+   },
+   "Stamina": {
+    "loci": 1,
+    "traits": 1
+   }
+  },
+  "traits": 5,
+  "fieldGuideLooks": 13,
+  "ringBitsPerTrack": 5,
+  "total": 114
+ },
+ "notYet": {
+  "domains": [
+   "maintenance-protection",
+   "affinities-exposure",
+   "reproduction",
+   "fantastic-physiology"
+  ],
+  "drafts": [
+   "development.volume-network",
+   "appearance.transparency",
+   "movement.burst-recruitment",
+   "energy.recovery-profile",
+   "energy.uptake-profile",
+   "energy.rest-response"
+  ],
+  "pending": [
+   {
+    "trait": "cream belly",
+    "why": "no belly field: ordered colour fields are local, never an inferred underside"
+   },
+   {
+    "trait": "orange eyes",
+    "why": "eye rim and pupil are fixed inks"
+   },
+   {
+    "trait": "a third crest leaf",
+    "why": "the crown is a pair of head-rooted surfaces"
+   }
+  ]
+ },
+ "typeSpecimen": {
+  "genome": "every open part switch on, other open parts at the first allele of the species pool",
+  "brief": "A creature with one barrel-shaped body region and one smooth head, one projecting muzzle, two eyes, two pointed head projections and four jointed legs with pad-shaped ends. Its body has charcoal smooth skin; its smooth jointed legs have cream local colour fields. Its body carries five patches."
+ },
+ "viability": {
+  "sampled": 200,
+  "constructed": 200,
+  "rule": "random copies from the species pools at every open locus; built by the workbench resolver"
+ },
+ "loci": [
+  {
+   "id": "development.axial-repeat",
+   "family": "development-longevity",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "single",
+    "single"
+   ],
+   "looks": [
+    "1"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "development.symmetry",
+   "family": "development-longevity",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "bilateral",
+    "bilateral"
+   ],
+   "looks": [
+    "bilateral"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "development.attachment-repeat",
+   "family": "development-longevity",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "multiple",
+    "multiple"
+   ],
+   "looks": [
+    "3"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "development.articulated-chain",
+   "family": "development-longevity",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "linked",
+    "linked"
+   ],
+   "looks": [
+    "2"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "development.membrane-rooting",
+   "family": "development-longevity",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "off",
+    "off"
+   ],
+   "looks": [
+    "off"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "development.fin-rooting",
+   "family": "development-longevity",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "off",
+    "off"
+   ],
+   "looks": [
+    "off"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "development.axial-deformation",
+   "family": "development-longevity",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "off",
+    "off"
+   ],
+   "looks": [
+    "off"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "structure.body-length",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "structure.body-width",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "structure.body-height",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "structure.body-taper",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "structure.axial-spacing",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'axial', off here"
+  },
+  {
+   "id": "structure.attachment-position",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'rooted', on"
+  },
+  {
+   "id": "structure.proximal-length",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'articulated', on"
+  },
+  {
+   "id": "structure.distal-length",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'two-link', on"
+  },
+  {
+   "id": "structure.joint-range",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'articulated', on"
+  },
+  {
+   "id": "structure.contact-width",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'articulated', on"
+  },
+  {
+   "id": "structure.membrane-span",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'membrane', off here"
+  },
+  {
+   "id": "structure.membrane-flexibility",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'membrane', off here"
+  },
+  {
+   "id": "structure.fin-span",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'fin', off here"
+  },
+  {
+   "id": "structure.material-density",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "appearance.body-palette",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "charcoal",
+    "charcoal"
+   ],
+   "looks": [
+    "charcoal"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.underside-palette",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "cream",
+    "cream"
+   ],
+   "looks": [
+    "cream"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.marking-switch",
+   "family": "appearance",
+   "switch": true,
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "coat",
+   "trait": "markings",
+   "shapeable": true,
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "looks": [
+    "off",
+    "on"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.marking-layout",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "patches",
+    "patches"
+   ],
+   "looks": [
+    "patches"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.marking-extent",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.marking-scale",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.marking-orientation",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.marking-contrast",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.surface-texture",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "smooth",
+    "smooth"
+   ],
+   "looks": [
+    "smooth"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "movement.contact-phase",
+   "family": "mechanics-movement",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer); owner is catalogue applicability 'articulated', on"
+  },
+  {
+   "id": "movement.cycle-rate",
+   "family": "mechanics-movement",
+   "switch": false,
+   "kind": "heritable-doing",
+   "nature": "doing",
+   "chapter": "movement",
+   "trait": "drive",
+   "shapeable": false,
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "looks": [
+    "low",
+    "between low and high",
+    "high"
+   ],
+   "guard": "no consumer yet (behaviour layer)"
+  },
+  {
+   "id": "movement.stride-preference",
+   "family": "mechanics-movement",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer); owner is catalogue applicability 'articulated', on"
+  },
+  {
+   "id": "movement.turn-control",
+   "family": "mechanics-movement",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer)"
+  },
+  {
+   "id": "movement.axial-amplitude",
+   "family": "mechanics-movement",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer); owner is catalogue applicability 'axial-actuator', off here"
+  },
+  {
+   "id": "movement.axial-phase",
+   "family": "mechanics-movement",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer); owner is catalogue applicability 'axial-actuator', off here"
+  },
+  {
+   "id": "movement.membrane-stroke",
+   "family": "mechanics-movement",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer); owner is catalogue applicability 'membrane', off here"
+  },
+  {
+   "id": "movement.membrane-coordination",
+   "family": "mechanics-movement",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer); owner is catalogue applicability 'membrane', off here"
+  },
+  {
+   "id": "movement.fin-steering",
+   "family": "mechanics-movement",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer); owner is catalogue applicability 'fin', off here"
+  },
+  {
+   "id": "energy.actuator-capacity",
+   "family": "energy-nutrition",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer)"
+  },
+  {
+   "id": "energy.reserve-capacity",
+   "family": "energy-nutrition",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet (behaviour layer)"
+  },
+  {
+   "id": "energy.action-efficiency",
+   "family": "energy-nutrition",
+   "switch": false,
+   "kind": "heritable-doing",
+   "nature": "doing",
+   "chapter": "stamina",
+   "trait": "efficiency",
+   "shapeable": false,
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "looks": [
+    "low",
+    "between low and high",
+    "high"
+   ],
+   "guard": "no consumer yet (behaviour layer)"
+  },
+  {
+   "id": "structure.ocular-pair",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "paired",
+    "paired"
+   ],
+   "looks": [
+    "paired"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "structure.ocular-placement",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'ocular', on"
+  },
+  {
+   "id": "structure.ocular-size",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "no-consumer",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'ocular', on"
+  },
+  {
+   "id": "appearance.covering-kind",
+   "family": "appearance",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "skin",
+    "skin"
+   ],
+   "looks": [
+    "skin"
+   ],
+   "guard": "no consumer yet in the current construction"
+  },
+  {
+   "id": "appearance.covering-extent",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'scales', off here"
+  },
+  {
+   "id": "appearance.covering-scale",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'scales', off here"
+  },
+  {
+   "id": "development.regional-growth",
+   "family": "development-longevity",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "even",
+    "even"
+   ],
+   "looks": [
+    "even"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'axial', off here"
+  },
+  {
+   "id": "structure.join-neck-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "no consumer yet in the current construction; owner is catalogue applicability 'axial', off here"
+  },
+  {
+   "id": "anatomy.posterior-presence",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "off",
+    "off"
+   ],
+   "looks": [
+    "off"
+   ],
+   "guard": "Carried and resolved; inactive because there is no old posterior consumer is replaced by explicitly composed primary regions."
+  },
+  {
+   "id": "anatomy.muzzle-presence",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "on",
+    "on"
+   ],
+   "looks": [
+    "on"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "anatomy.crown-presence",
+   "family": "structure",
+   "switch": true,
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "face",
+   "trait": "crown",
+   "shapeable": true,
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "looks": [
+    "off",
+    "on"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "anatomy.wing-presence",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "off",
+    "off"
+   ],
+   "looks": [
+    "off"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "anatomy.exterior-eye-presence",
+   "family": "sensing-signaling",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "on",
+    "on"
+   ],
+   "looks": [
+    "on"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "anatomy.support-pair-count",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "two",
+    "two"
+   ],
+   "looks": [
+    "2"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "anatomy.crown-form",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "pointed",
+    "pointed"
+   ],
+   "looks": [
+    "pointed"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.core-half-length",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "medium",
+    "medium"
+   ],
+   "looks": [
+    "medium"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.core-width-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.core-depth-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.head-length-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "large",
+    "large"
+   ],
+   "looks": [
+    "large"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.head-width-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.head-depth-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.head-lift-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.muzzle-projection-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.muzzle-width-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.support-drop-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.support-splay-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.support-radius-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "stout",
+    "stout"
+   ],
+   "looks": [
+    "stout"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.terminal-length-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "broad",
+    "broad"
+   ],
+   "looks": [
+    "broad"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.terminal-depth-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.posterior-length-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "Carried and resolved; inactive because there is no no old posterior owner."
+  },
+  {
+   "id": "growth.posterior-width-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "Carried and resolved; inactive because there is no no old posterior owner."
+  },
+  {
+   "id": "growth.exterior-eye-size-ratio",
+   "family": "appearance",
+   "switch": false,
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "face",
+   "trait": "eye-rings",
+   "shapeable": true,
+   "alleles": [
+    "small",
+    "large"
+   ],
+   "looks": [
+    "small",
+    "between small and large",
+    "large"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.exterior-eye-spacing-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "wide",
+    "wide"
+   ],
+   "looks": [
+    "wide"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.crown-height-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.wing-span-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "Carried and resolved; inactive because there is no independent thin-surface owner."
+  },
+  {
+   "id": "growth.wing-chord-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "narrow",
+    "narrow"
+   ],
+   "looks": [
+    "narrow"
+   ],
+   "guard": "Carried and resolved; inactive because there is no independent thin-surface owner."
+  },
+  {
+   "id": "growth.wing-sweep-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "Carried and resolved; inactive because there is no independent thin-surface owner."
+  },
+  {
+   "id": "appearance.anatomical-covering",
+   "family": "appearance",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "skin",
+    "skin"
+   ],
+   "looks": [
+    "smooth-skin"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.anatomical-covering-extent",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "Carried and resolved; inactive because there is no owned scale field without fur override."
+  },
+  {
+   "id": "appearance.anatomical-scale-size",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "coarse",
+    "coarse"
+   ],
+   "looks": [
+    "coarse"
+   ],
+   "guard": "Carried and resolved; inactive because there is no owned scale field without fur override."
+  },
+  {
+   "id": "organization.region-depth",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "one",
+    "one"
+   ],
+   "looks": [
+    "1"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "organization.region-layout",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "serial",
+    "serial"
+   ],
+   "looks": [
+    "serial"
+   ],
+   "guard": "Carried and resolved; inactive because there is no more than one region depth."
+  },
+  {
+   "id": "organization.body-symmetry",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "bilateral",
+    "bilateral"
+   ],
+   "looks": [
+    "bilateral"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "organization.region-join",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "broad",
+    "broad"
+   ],
+   "looks": [
+    "broad"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "organization.head-module",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "head",
+    "head"
+   ],
+   "looks": [
+    "on"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "organization.appendage-role",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "contact",
+    "contact"
+   ],
+   "looks": [
+    "contact-chain"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "organization.appendage-groups",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "zero",
+    "zero"
+   ],
+   "looks": [
+    "0"
+   ],
+   "guard": "Carried and resolved; inactive because there is no free or radial contact groups."
+  },
+  {
+   "id": "organization.free-link-count",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "one",
+    "one"
+   ],
+   "looks": [
+    "1"
+   ],
+   "guard": "Carried and resolved; inactive because there is no enabled free-chain groups."
+  },
+  {
+   "id": "growth.region-bend",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "up",
+    "up"
+   ],
+   "looks": [
+    "up"
+   ],
+   "guard": "Carried and resolved; inactive because there is no bilateral serial child regions."
+  },
+  {
+   "id": "growth.region-taper",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "strong",
+    "strong"
+   ],
+   "looks": [
+    "strong"
+   ],
+   "guard": "Carried and resolved; inactive because there is no child region owner."
+  },
+  {
+   "id": "growth.branch-angle",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "wide",
+    "wide"
+   ],
+   "looks": [
+    "wide"
+   ],
+   "guard": "Carried and resolved; inactive because there is no bilateral fan child regions."
+  },
+  {
+   "id": "growth.join-throat-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "thin",
+    "thin"
+   ],
+   "looks": [
+    "thin"
+   ],
+   "guard": "Carried and resolved; inactive because there is no narrow connection owner."
+  },
+  {
+   "id": "growth.free-proximal-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "long",
+    "long"
+   ],
+   "looks": [
+    "long"
+   ],
+   "guard": "Carried and resolved; inactive because there is no free/radial chain owner."
+  },
+  {
+   "id": "growth.free-distal-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "Carried and resolved; inactive because there is no two-link free/radial chain owner."
+  },
+  {
+   "id": "growth.free-radius-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "fine",
+    "fine"
+   ],
+   "looks": [
+    "fine"
+   ],
+   "guard": "Carried and resolved; inactive because there is no free-chain owner."
+  },
+  {
+   "id": "growth.radial-cross-radius",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "broad",
+    "broad"
+   ],
+   "looks": [
+    "broad"
+   ],
+   "guard": "Carried and resolved; inactive because there is no radial primary section."
+  },
+  {
+   "id": "anatomy.region-cross-exponent",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "round",
+    "round"
+   ],
+   "looks": [
+    "round"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "anatomy.region-longitudinal-form",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "barrel",
+    "barrel"
+   ],
+   "looks": [
+    "barrel"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "anatomy.contact-terminal-form",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "pad",
+    "pad"
+   ],
+   "looks": [
+    "pad"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.fur-presence",
+   "family": "appearance",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "off",
+    "off"
+   ],
+   "looks": [
+    "off"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "appearance.fur-length",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "Carried and resolved; inactive because there is no enabled whole-primary fur field."
+  },
+  {
+   "id": "appearance.fur-flow",
+   "family": "appearance",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "axial",
+    "axial"
+   ],
+   "looks": [
+    "axial"
+   ],
+   "guard": "Carried and resolved; inactive because there is no enabled whole-primary fur field."
+  },
+  {
+   "id": "anatomy.auricular-presence",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "off",
+    "off"
+   ],
+   "looks": [
+    "off"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "anatomy.auricular-form",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "rounded",
+    "rounded"
+   ],
+   "looks": [
+    "rounded"
+   ],
+   "guard": "Carried and resolved; inactive because there is no enabled head-owned ears."
+  },
+  {
+   "id": "growth.auricular-length-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "Carried and resolved; inactive because there is no enabled head-owned ears."
+  },
+  {
+   "id": "anatomy.axial-tail-presence",
+   "family": "structure",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "off",
+    "off"
+   ],
+   "looks": [
+    "off"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "growth.axial-tail-length-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "Carried and resolved; inactive because there is no enabled axial tail."
+  },
+  {
+   "id": "growth.axial-tail-width-ratio",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "fine",
+    "fine"
+   ],
+   "looks": [
+    "fine"
+   ],
+   "guard": "Carried and resolved; inactive because there is no enabled axial tail."
+  },
+  {
+   "id": "growth.axial-tail-bend",
+   "family": "structure",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "owner-off",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "down",
+    "down"
+   ],
+   "looks": [
+    "down"
+   ],
+   "guard": "Carried and resolved; inactive because there is no enabled axial tail."
+  },
+  {
+   "id": "cognition.innate-profile-presence",
+   "family": "cognition-tendencies",
+   "switch": true,
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "on",
+    "on"
+   ],
+   "looks": [
+    "on"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "cognition.exploration-tendency",
+   "family": "cognition-tendencies",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "seeking",
+    "seeking"
+   ],
+   "looks": [
+    "seeking"
+   ],
+   "guard": "drawn by the current construction"
+  },
+  {
+   "id": "cognition.arousal-threshold",
+   "family": "cognition-tendencies",
+   "switch": false,
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "drawn by the current construction"
+  }
+ ]
+}

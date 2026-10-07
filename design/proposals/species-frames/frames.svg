@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 356" width="1000" height="356" font-family="system-ui, sans-serif">
+<style>.bg{fill:#f7f4ec}text{fill:#2e2e2e}.h{font-size:15px;font-weight:600}.t{font-size:12px}.s{font-size:11px;fill:#6f6a5e}</style>
+<rect width="100%" height="100%" class="bg"/>
+<text x="30" y="26" class="h">Three species frames on the 114 paired loci of the authoring catalogue (Proposal)</text>
+<defs><pattern id="z-switch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#77736a" stroke-width="2.4"/></pattern><pattern id="z-owner-off" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#b9b4a8" stroke-width="2.4"/></pattern><pattern id="z-fixed" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#d3cdbf" stroke-width="2.4"/></pattern><pattern id="z-no-consumer" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#e6e1d6" stroke-width="2.4"/></pattern><pattern id="z-coat" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#c0558a" stroke-width="2.4"/></pattern><pattern id="z-face" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#d08a2a" stroke-width="2.4"/></pattern><pattern id="z-shape" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#4f8f5b" stroke-width="2.4"/></pattern><pattern id="z-legs-tail" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#2f8f9a" stroke-width="2.4"/></pattern><pattern id="z-movement" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#4a6fc0" stroke-width="2.4"/></pattern><pattern id="z-stamina" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#8a5cc0" stroke-width="2.4"/></pattern><pattern id="z-temperament" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f7f4ec"/><line x1="0" y1="0" x2="0" y2="5" stroke="#a0624a" stroke-width="2.4"/></pattern></defs>
+<rect x="30" y="56" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="56" width="6" height="6" fill="#2e2e2e"/>
+<rect x="58" y="56" width="6" height="6" fill="#2e2e2e"/>
+<rect x="37" y="63" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="63" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="63" width="6" height="6" fill="#2e2e2e"/>
+<rect x="30" y="70" width="6" height="6" fill="#2e2e2e"/>
+<rect x="37" y="70" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="70" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="70" width="6" height="6" fill="#2e2e2e"/>
+<rect x="58" y="70" width="6" height="6" fill="#2e2e2e"/>
+<rect x="30" y="77" width="6" height="6" fill="#2e2e2e"/>
+<rect x="37" y="77" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="77" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="77" width="6" height="6" fill="#2e2e2e"/>
+<rect x="58" y="77" width="6" height="6" fill="#2e2e2e"/>
+<rect x="30" y="84" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="84" width="6" height="6" fill="#2e2e2e"/>
+<rect x="58" y="84" width="6" height="6" fill="#2e2e2e"/>
+<rect x="30" y="96" width="16" height="10" fill="#465459"/>
+<rect x="48" y="96" width="16" height="10" fill="#dfd2ae"/>
+<text x="70" y="70" class="t" style="font-weight:600">Hopper</text>
+<rect x="120.0" y="52" width="165.6" height="30" fill="#77736a" stroke="#f7f4ec"/>
+<text x="202.8" y="72" class="t" text-anchor="middle" style="fill:#fff">23</text>
+<rect x="285.6" y="52" width="280.8" height="30" fill="#b9b4a8" stroke="#f7f4ec"/>
+<text x="426.0" y="72" class="t" text-anchor="middle" style="fill:#fff">39</text>
+<rect x="566.4" y="52" width="244.8" height="30" fill="#d3cdbf" stroke="#f7f4ec"/>
+<text x="688.8" y="72" class="t" text-anchor="middle" style="fill:#2e2e2e">34</text>
+<rect x="811.2" y="52" width="93.6" height="30" fill="#e6e1d6" stroke="#f7f4ec"/>
+<text x="858.0" y="72" class="t" text-anchor="middle" style="fill:#2e2e2e">13</text>
+<rect x="904.8" y="52" width="7.2" height="30" fill="#c0558a" stroke="#f7f4ec"/>
+<rect x="912.0" y="52" width="14.4" height="30" fill="#d08a2a" stroke="#f7f4ec"/>
+<rect x="926.4" y="52" width="7.2" height="30" fill="#4a6fc0" stroke="#f7f4ec"/>
+<rect x="933.6" y="52" width="7.2" height="30" fill="#8a5cc0" stroke="#f7f4ec"/>
+<text x="120" y="98" class="s">locked 109 · heritable 5 in 5 traits: Coat 1 · Face 2 · Movement 1 · Stamina 1 · pod medium, squat, smooth dots</text>
+<rect x="37" y="130" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="130" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="130" width="6" height="6" fill="#2e2e2e"/>
+<rect x="30" y="137" width="6" height="6" fill="#2e2e2e"/>
+<rect x="37" y="137" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="137" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="137" width="6" height="6" fill="#2e2e2e"/>
+<rect x="58" y="137" width="6" height="6" fill="#2e2e2e"/>
+<rect x="30" y="144" width="6" height="6" fill="#2e2e2e"/>
+<rect x="37" y="144" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="144" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="144" width="6" height="6" fill="#2e2e2e"/>
+<rect x="58" y="144" width="6" height="6" fill="#2e2e2e"/>
+<rect x="37" y="151" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="151" width="6" height="6" fill="#2e2e2e"/>
+<rect x="37" y="158" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="158" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="158" width="6" height="6" fill="#2e2e2e"/>
+<rect x="30" y="170" width="16" height="10" fill="#e98268"/>
+<rect x="48" y="170" width="16" height="10" fill="#e8b83f"/>
+<text x="70" y="144" class="t" style="font-weight:600">Puffcap</text>
+<rect x="120.0" y="126" width="158.4" height="30" fill="#77736a" stroke="#f7f4ec"/>
+<text x="199.2" y="146" class="t" text-anchor="middle" style="fill:#fff">22</text>
+<rect x="278.4" y="126" width="360.0" height="30" fill="#b9b4a8" stroke="#f7f4ec"/>
+<text x="458.4" y="146" class="t" text-anchor="middle" style="fill:#fff">50</text>
+<rect x="638.4" y="126" width="86.4" height="30" fill="#d3cdbf" stroke="#f7f4ec"/>
+<text x="681.6" y="146" class="t" text-anchor="middle" style="fill:#2e2e2e">12</text>
+<rect x="724.8" y="126" width="72.0" height="30" fill="#e6e1d6" stroke="#f7f4ec"/>
+<text x="760.8" y="146" class="t" text-anchor="middle" style="fill:#2e2e2e">10</text>
+<rect x="796.8" y="126" width="28.8" height="30" fill="#c0558a" stroke="#f7f4ec"/>
+<text x="811.2" y="146" class="t" text-anchor="middle" style="fill:#fff">4</text>
+<rect x="825.6" y="126" width="36.0" height="30" fill="url(#z-coat)" stroke="#f7f4ec"/>
+<text x="843.6" y="146" class="t" text-anchor="middle" style="fill:#2e2e2e">5</text>
+<rect x="861.6" y="126" width="36.0" height="30" fill="#4f8f5b" stroke="#f7f4ec"/>
+<text x="879.6" y="146" class="t" text-anchor="middle" style="fill:#fff">5</text>
+<rect x="897.6" y="126" width="28.8" height="30" fill="#4a6fc0" stroke="#f7f4ec"/>
+<text x="912.0" y="146" class="t" text-anchor="middle" style="fill:#fff">4</text>
+<rect x="926.4" y="126" width="14.4" height="30" fill="url(#z-temperament)" stroke="#2e2e2e" stroke-width="2"/>
+<text x="120" y="172" class="s">locked 94 · heritable 20 in 12 traits: Coat 3 · Shape 4 · Movement 3 · Temperament 2 (sealed: Temperament) · pod large, tall, segments</text>
+<rect x="44" y="204" width="6" height="6" fill="#2e2e2e"/>
+<rect x="37" y="211" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="211" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="211" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="218" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="225" width="6" height="6" fill="#2e2e2e"/>
+<rect x="30" y="232" width="6" height="6" fill="#2e2e2e"/>
+<rect x="37" y="232" width="6" height="6" fill="#2e2e2e"/>
+<rect x="44" y="232" width="6" height="6" fill="#2e2e2e"/>
+<rect x="51" y="232" width="6" height="6" fill="#2e2e2e"/>
+<rect x="58" y="232" width="6" height="6" fill="#2e2e2e"/>
+<rect x="30" y="244" width="16" height="10" fill="#269fa5"/>
+<rect x="48" y="244" width="16" height="10" fill="#e8b83f"/>
+<text x="70" y="218" class="t" style="font-weight:600">Glowtail</text>
+<rect x="120.0" y="200" width="180.0" height="30" fill="#77736a" stroke="#f7f4ec"/>
+<text x="210.0" y="220" class="t" text-anchor="middle" style="fill:#fff">25</text>
+<rect x="300.0" y="200" width="165.6" height="30" fill="#b9b4a8" stroke="#f7f4ec"/>
+<text x="382.8" y="220" class="t" text-anchor="middle" style="fill:#fff">23</text>
+<rect x="465.6" y="200" width="72.0" height="30" fill="#d3cdbf" stroke="#f7f4ec"/>
+<text x="501.6" y="220" class="t" text-anchor="middle" style="fill:#2e2e2e">10</text>
+<rect x="537.6" y="200" width="129.6" height="30" fill="#e6e1d6" stroke="#f7f4ec"/>
+<text x="602.4" y="220" class="t" text-anchor="middle" style="fill:#2e2e2e">18</text>
+<rect x="667.2" y="200" width="36.0" height="30" fill="#c0558a" stroke="#f7f4ec"/>
+<text x="685.2" y="220" class="t" text-anchor="middle" style="fill:#fff">5</text>
+<rect x="703.2" y="200" width="36.0" height="30" fill="url(#z-coat)" stroke="#f7f4ec"/>
+<text x="721.2" y="220" class="t" text-anchor="middle" style="fill:#2e2e2e">5</text>
+<rect x="739.2" y="200" width="36.0" height="30" fill="#d08a2a" stroke="#f7f4ec"/>
+<text x="757.2" y="220" class="t" text-anchor="middle" style="fill:#fff">5</text>
+<rect x="775.2" y="200" width="28.8" height="30" fill="#4f8f5b" stroke="#f7f4ec"/>
+<text x="789.6" y="220" class="t" text-anchor="middle" style="fill:#fff">4</text>
+<rect x="804.0" y="200" width="57.6" height="30" fill="#2f8f9a" stroke="#f7f4ec"/>
+<text x="832.8" y="220" class="t" text-anchor="middle" style="fill:#fff">8</text>
+<rect x="861.6" y="200" width="43.2" height="30" fill="#4a6fc0" stroke="#f7f4ec"/>
+<text x="883.2" y="220" class="t" text-anchor="middle" style="fill:#fff">6</text>
+<rect x="904.8" y="200" width="21.6" height="30" fill="#8a5cc0" stroke="#f7f4ec"/>
+<text x="915.6" y="220" class="t" text-anchor="middle" style="fill:#fff">3</text>
+<rect x="926.4" y="200" width="14.4" height="30" fill="#a0624a" stroke="#f7f4ec"/>
+<text x="120" y="246" class="s">locked 76 · heritable 38 in 23 traits: Coat 4 · Face 3 · Shape 3 · Legs &amp; tail 4 · Movement 4 · Stamina 3 · Temperament 2 · pod small, squat, plates</text>
+<rect x="120" y="274" width="12" height="12" fill="#77736a"/><text x="136" y="284" class="s">plan switches</text>
+<rect x="270" y="274" width="12" height="12" fill="#b9b4a8"/><text x="286" y="284" class="s">switched off here</text>
+<rect x="420" y="274" width="12" height="12" fill="#d3cdbf"/><text x="436" y="284" class="s">fixed by the species</text>
+<rect x="570" y="274" width="12" height="12" fill="#e6e1d6"/><text x="586" y="284" class="s">carried, not drawn yet</text>
+<rect x="120" y="294" width="12" height="12" fill="#c0558a"/><text x="136" y="304" class="s">Coat</text>
+<rect x="215" y="294" width="12" height="12" fill="#d08a2a"/><text x="231" y="304" class="s">Face</text>
+<rect x="310" y="294" width="12" height="12" fill="#4f8f5b"/><text x="326" y="304" class="s">Shape</text>
+<rect x="405" y="294" width="12" height="12" fill="#2f8f9a"/><text x="421" y="304" class="s">Legs &amp; tail</text>
+<rect x="500" y="294" width="12" height="12" fill="#4a6fc0"/><text x="516" y="304" class="s">Movement</text>
+<rect x="595" y="294" width="12" height="12" fill="#8a5cc0"/><text x="611" y="304" class="s">Stamina</text>
+<rect x="690" y="294" width="12" height="12" fill="#a0624a"/><text x="706" y="304" class="s">Temperament</text>
+<rect x="785" y="294" width="12" height="12" fill="url(#z-coat)"/><text x="801" y="304" class="s">sleeping</text>
+<rect x="865" y="294" width="12" height="12" fill="url(#z-temperament)" stroke="#2e2e2e" stroke-width="2"/><text x="881" y="304" class="s">sealed</text>
+<text x="30" y="324" class="s">Not in the bars: 6 draft loci and four domains with no loci yet (maintenance, affinities, reproduction, fantastic physiology), shown as "not yet".</text>
+<text x="30" y="340" class="s">At left: the draft 5×5 glyph and the pod colour pair. Generated by frames.py from the workbench resolver.</text>
+</svg>
