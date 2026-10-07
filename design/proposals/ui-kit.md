@@ -206,13 +206,28 @@ genome-to-sprite pipeline: parts and markings are parameters, and art never chan
   *Left: the approved concept companion-map-hands (generated), its screen scaled to 450×600.
   Right: the kit's reach view at 1×, drawn in the 48 colours.*
 
-- **Station Home:** a lit glass vivarium with residents at Station size, focus on one
-  resident; the bench as objects: bay door with the Companion mark, six felt cups with a glint,
-  incubator dome with its leaf timer, the empty Probe cradle.
+- **Station Home:** a field research instrument with one living specimen window. The chrome
+  is cool and dark, with thin rules, corner ticks, status lamps and readouts. Inside the window
+  is the only warm, lively part: a deep teal-blue ground with a soft dithered vignette, plants
+  and hanging stems at the sides, and moss along the base. The residents are drawn in the
+  Miniature Lives treatment at Station size: the focused hopper is about 230 px tall, with
+  rounded volume, dithered bands, top-left light, big catch-lit eyes and an outline in each
+  part's darkest shade. A young glowtail and a puffcap are beside it. An instrument light casts
+  a soft cone on the focused hopper, framed by a lamp-cream bracket. Under it is a label: the
+  name at 4× and "hopper · adult" at 2×. The equipment column has four modules, each with a
+  lamp and a state readout: the bay (two sealed crates, "2 crates"), the pod rack ("4/6"), the
+  incubator (a dome and its leaf timer, "growing") and the Probe dock (Shield plates,
+  "docked"). The header carries the turn, a Companion lamp and the counters at the top right;
+  the bottom line is the kit's.
 
   ![Station Home, 1024×600 at 1×](ui-kit/station-home.png)
 
   *Station Home at 1×.*
+
+  ![The approved Station concept beside the kit's Station Home](ui-kit/station-home-vs-concept.png)
+
+  *Left: the approved concept station-research-hands (generated), its screen cropped and scaled
+  to 1024×600. Right: the kit's Station Home at 1×, drawn in the 96 Station colours.*
 
 - **Station trait windows (Pods):** the tray column and garden gate; four windows (shows and
   hides with a misty seed, glint, frosted, shutter with what opens it); the pod under its
