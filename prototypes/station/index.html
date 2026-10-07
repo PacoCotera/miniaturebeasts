@@ -183,7 +183,7 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
         <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key: back one view. On Home, "← Rest" lets the vivarium fill the screen.</li>
         <li>The four middle keys switch views and never spend: <kbd>H</kbd> Home, <kbd>R</kbd> Research (the pods), <kbd>L</kbd> Library, <kbd>B</kbd> Habitat.</li>
         <li><kbd>D</kbd> or the Caddy's key: <b>Dock</b> or <b>Lift</b> the Companion (prototype only; it is not a Station key).</li>
-        <li>After 30 seconds without a press the vivarium plays alone. The first press only wakes the screen.</li>
+        <li>After a minute without a press the vivarium plays alone. The first press only wakes the screen.</li>
       </ul>
     </details>
     <details id="whatTry">
@@ -263,7 +263,7 @@ const PRICE = { identify: 1, study: 2, growE: 2, growS: 4, change: 2, mend: 1, t
 const TRAY = 6, ROOM = 4, BAY = 3;   // six pod cups, four places in the vivarium (plus the one with you), three crates in the bay
 const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
 const JUVENILE_TURNS = 2, ELDER_TURNS = 6;
-const IDLE_MS = 30000, STUDY_MS = 2000, ID_MS = 1800, ARRIVE_MS = 3000, HATCH_MS = 2600;
+const IDLE_MS = 60000, STUDY_MS = 2000, ID_MS = 1800, ARRIVE_MS = 3000, HATCH_MS = 2600;
 const MIBI_NAMES = ['Dot', 'Moss', 'Bean', 'Fig', 'Nib', 'Tuft', 'Pebble', 'Wren', 'Pip', 'Sorrel', 'Burr', 'Quill'];
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
 const PLACE_WORD = { meadow: 'meadow', pond: 'pond edge', rock: 'rock field', wood: 'wood', cave: 'cave' };
@@ -411,7 +411,6 @@ function save() {
 const cp = () => SV || {};
 const hasWorld = () => !!(SV && SV.wid && typeof SV.seed === 'number');
 const docked = () => !!(ST.dock && ST.dock.docked);
-const onExpedition = () => !!(SV && SV.exp);
 const bayCrates = () => (SV && Array.isArray(SV.bay) ? SV.bay : []).filter(c => !ST.accepted.includes(c.id));
 const withId = () => SV && SV.with != null ? SV.with : null;
 const mibiById = id => ST.mibis.find(m => m.id === id) || null;
@@ -446,7 +445,8 @@ function effWithId() { const r = ST.withReq; if (r && docked() && r.seq > ((SV &
 function pendingWith() { const r = ST.withReq; return r && r.seq > ((SV && SV.withSeen) || 0) && r.id !== withId() ? mibiById(r.id) : null; }
 const atHome = () => ST.mibis.filter(m => m.id !== effWithId());
 
-// ---- Dock and lift (the Caddy's one key, prototype only) ----
+// ---- Dock and lift (the Caddy's one key, prototype only). Docking is a physical act and always works: it brings the
+// sealed crates and the Probe; the Station never reads whether the Companion is mid-expedition (that simply continues after Lift). ----
 function probeNow() {   // the Probe as the Station knows it: its own record if the Companion hasn't read it yet, else the Companion's
   const c = cp(), tier = Math.max(c.tier || 1, ST.probe ? ST.probe.tier : 1), smax = TIER[tier].shield;
   if (ST.probe && ST.probe.seq > (c.probeSeen || 0)) return { shield: ST.probe.shield, smax, tier };
@@ -460,7 +460,6 @@ function payMend() {
 function dockKey() {
   if (!hasWorld()) { msg('No Companion world yet · open the Companion page first'); return; }
   if (docked()) { ST.dock = { docked: false, at: Date.now() }; logEv('Companion lifted'); msg('Lifted · the Companion can set out'); save(); return; }
-  if (onExpedition()) { msg('The Companion is out on an expedition · Head home on it first'); return; }
   ST.dock = { docked: true, at: Date.now() };
   // the Probe rests in its cradle: a break is mended free, and the Station always mends to two plates
   const pr = probeNow(), broke = pr.shield <= 0, floor = Math.min(2, pr.smax);

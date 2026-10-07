@@ -843,6 +843,7 @@ function newWorld(seed) {
 function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
 function save() {
   if (window.__mbResetting) return;   // a reset is reloading: nothing may write the save back
+  if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
   if (S.st) syncStation();
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep playing in memory */ }
@@ -888,6 +889,7 @@ function syncStation() {
     if (!q) { q = { id: m.id, name: m.name, sp: m.sp, born: m.born || 0, from: m.from ? m.from.n : 0 }; S.mibis.push(q); logEv(m.name + ' (' + SPECIES[m.sp].name + ') is home at the Station'); }
     q.name = m.name; q.born = m.born || 0; q.bonded = !!m.bonded; }
   if (st.probe && st.probe.seq > (S.probeSeen || 0)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
+    if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax);   // docked mid-expedition: the cradle mends it; the expedition continues after Lift
     if (S.tier > was) fxMsg('Probe tier 2 · reaches further, carries 3 pods', 3); }
   if (st.withReq && st.withReq.seq > (S.withSeen || 0)) { S.withSeen = st.withReq.seq; const m = mibiById(st.withReq.id);
     if (m && S.with !== m.id && !S.exp) { const prev = withMibi(); S.with = m.id; fxMsg((prev ? prev.name + ' goes home · ' : '') + m.name + ' is with you', 3); logEv(m.name + ' is with you (from the Station)'); } }
