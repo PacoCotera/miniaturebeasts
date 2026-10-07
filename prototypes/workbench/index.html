@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Genome Workbench</title>
+<meta name="description" content="Miniature Beasts stage-0 workbench: load the catalogue and the frame registry, edit a species frame by chapter and trait, see its structural sketch at Companion and Station scale, roll and cross individuals, compare expressions and record verdicts, export frames and sketches.">
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#ece6d8; --bg-2:#e3dccb; --ink:#28302c; --muted:#5c635d; --panel:#f7f3ea; --panel-2:#f0ebdf;
+  --line:#d3cab6; --accent:#b84a0c; --focus:#e8641b; --chip:#efe8d8; --ok:#3f7d4a; --warn:#b8322c; --sel:#fff2e3;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191b1a; --bg-2:#202321; --ink:#ebe5d8; --muted:#a9a599; --panel:#222624; --panel-2:#1d201e;
+    --line:#383c39; --accent:#ff9150; --focus:#ff8a3d; --chip:#2b2f2c; --ok:#7fc48b; --warn:#ff7b73; --sel:#33302a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191b1a; --bg-2:#202321; --ink:#ebe5d8; --muted:#a9a599; --panel:#222624; --panel-2:#1d201e;
+  --line:#383c39; --accent:#ff9150; --focus:#ff8a3d; --chip:#2b2f2c; --ok:#7fc48b; --warn:#ff7b73; --sel:#33302a;
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--bg); color:var(--ink); font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; min-height:100vh}
+button, select, input{font:inherit; color:inherit}
+button{background:var(--chip); border:1px solid var(--line); border-radius:7px; padding:4px 10px; cursor:pointer}
+button:hover{border-color:var(--accent)} button:focus-visible, select:focus-visible, input:focus-visible, .trait:focus-visible, .cell:focus-visible{outline:2px solid var(--focus); outline-offset:1px}
+button.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+button.small{padding:1px 7px; font-size:12px}
+select, input[type=text], input[type=number]{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:3px 6px}
+input[type=number]{width:64px}
+.top{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5}
+.top h1{font-size:16px; margin:0 12px 0 0; font-weight:600}
+.top .group{display:inline-flex; gap:6px; align-items:center}
+.top .status{color:var(--muted); font-size:13px; margin-left:auto}
+.main{display:grid; grid-template-columns: minmax(340px, 420px) minmax(520px, 1fr); gap:16px; padding:16px; align-items:start}
+@media (max-width: 900px){ .main{grid-template-columns:1fr} }
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px}
+.panel h2{font-size:14px; margin:0 0 8px; font-weight:600; display:flex; align-items:center; gap:8px}
+.panel h2 .hint{font-weight:400; color:var(--muted); font-size:12px}
+.frame-head{font-size:13px; color:var(--muted); margin-bottom:8px; line-height:1.5}
+.frame-head b{color:var(--ink)}
+.chapter{border-top:1px solid var(--line); padding:6px 0}
+.chapter > .chead{display:flex; align-items:center; gap:8px; font-weight:600; font-size:13px; cursor:pointer}
+.chapter > .chead .sealed{color:var(--warn); font-weight:400; font-size:12px}
+.trait{display:grid; grid-template-columns: 1fr auto; gap:2px 8px; padding:4px 6px; border-radius:6px; margin:2px 0; cursor:pointer}
+.trait:hover{background:var(--panel-2)} .trait.selected{background:var(--sel); outline:1px solid var(--accent)}
+.trait .tname{font-weight:500} .trait .tmeta{color:var(--muted); font-size:12px}
+.trait .state{font-size:11px; padding:0 6px; border-radius:9px; background:var(--chip); border:1px solid var(--line); white-space:nowrap}
+.trait .state.open{color:var(--ok)} .trait .state.sleeping{color:var(--muted)} .trait .state.sealed{color:var(--warn)} .trait .state.locked{color:var(--muted)}
+.loci{grid-column:1 / -1; font-size:12px; border-left:2px solid var(--line); margin:4px 0 2px 6px; padding-left:8px}
+.locus{display:flex; flex-wrap:wrap; gap:4px 8px; align-items:center; padding:2px 0}
+.locus code{font-family:var(--mono); font-size:11px; color:var(--muted)}
+.locus label{display:inline-flex; gap:3px; align-items:center; padding:0 4px; border-radius:5px; background:var(--chip); border:1px solid var(--line)}
+.locus label.off{opacity:.5}
+.verdict{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:4px; align-items:center; font-size:12px; color:var(--muted)}
+.verdict button.on{background:var(--accent); color:#fff; border-color:var(--accent)}
+.sketch{display:grid; grid-template-columns: auto 1fr; gap:12px; align-items:start}
+.sketch canvas{image-rendering:pixelated; background:#f6f3ec; border:1px solid var(--line); border-radius:4px; display:block}
+.views{display:flex; flex-wrap:wrap; gap:8px}
+.views figure{margin:0; text-align:center; font-size:11px; color:var(--muted)}
+.passes{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0}
+.passes button.on{background:var(--accent); color:#fff; border-color:var(--accent)}
+.caption{font-size:12px; color:var(--muted); margin-top:6px}
+.strip{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+.cell{border:1px solid var(--line); border-radius:6px; padding:4px; background:var(--panel-2); cursor:pointer; text-align:center; font-size:11px; color:var(--muted)}
+.cell.selected{outline:2px solid var(--accent)} .cell.parent{outline:2px dashed var(--ok)}
+.cell canvas{display:block; image-rendering:pixelated; background:#f6f3ec; border-radius:3px}
+.cell.rejected{outline:2px solid var(--warn)}
+.compare{display:grid; gap:8px; overflow-x:auto}
+.compare .col{display:flex; flex-direction:column; gap:6px; align-items:center; font-size:12px}
+.compare .col .look{font-weight:600}
+.compare .pair{display:flex; gap:4px; align-items:flex-end}
+.muted{color:var(--muted)} .ok{color:var(--ok)} .warn{color:var(--warn)}
+details summary{cursor:pointer; font-size:13px; color:var(--muted)}
+.locked-list{columns:2; column-gap:12px; font-size:12px}
+.locked-list .locus{break-inside:avoid}
+.log{font-family:var(--mono); font-size:11px; color:var(--muted); white-space:pre-wrap; max-height:120px; overflow:auto}
+.keys{font-size:12px; color:var(--muted); margin-top:8px}
+kbd{font-family:var(--mono); font-size:11px; border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:0 4px; background:var(--chip)}
+dialog{border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--ink); padding:16px; max-width:480px}
+dialog label{display:block; margin:8px 0}
+.row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Genome Workbench</h1>
+  <span class="group"><label for="species">Species</label> <select id="species"></select> <button id="new-species">New species…</button></span>
+  <span class="group"><button id="roll">Roll <input id="roll-n" type="number" min="1" max="48" value="8"></button> <button id="cross" disabled>Cross</button> <button id="compare">Compare…</button> <button id="check">Check frame</button></span>
+  <span class="group"><button id="export-frame">Export frame</button> <button id="export-sketch">Export sketches</button> <button id="export-set">Reference set</button></span>
+  <span class="status" id="status">loading the catalogue…</span>
+</header>
+<main class="main">
+  <section class="panel" id="editor">
+    <h2>Frame <span class="hint">plan · clan · chapters · traits; loci on demand</span></h2>
+    <div class="frame-head" id="frame-head"></div>
+    <div id="chapters"></div>
+    <details id="locked-details"><summary>Locked parts (fixed by the species)</summary><div class="locked-list" id="locked"></div></details>
+    <details><summary>Absent parts (no locus for this species)</summary><div class="locked-list muted" id="absent"></div></details>
+    <div class="keys"><kbd>↑</kbd><kbd>↓</kbd> trait · <kbd>L</kbd> lock/open · <kbd>O</kbd> loci · <kbd>R</kbd> roll · <kbd>C</kbd> cross · <kbd>X</kbd> compare · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> verdict · <kbd>[</kbd><kbd>]</kbd> individual · <kbd>E</kbd> export frame</div>
+  </section>
+  <section>
+    <div class="panel">
+      <h2>Structural sketch <span class="hint" id="sketch-hint"></span></h2>
+      <div class="passes" id="passes"></div>
+      <div class="sketch">
+        <canvas id="main-view" width="300" height="310"></canvas>
+        <div>
+          <div class="views" id="views"></div>
+          <div class="caption" id="caption"></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px">
+      <h2>Individuals <span class="hint">click to select, shift-click to pick two parents; the type specimen is first</span></h2>
+      <div class="strip" id="strip"></div>
+    </div>
+    <div class="panel" style="margin-top:12px" id="compare-panel" hidden>
+      <h2>Compare expressions <span class="hint" id="compare-hint"></span></h2>
+      <div class="compare" id="compare-grid"></div>
+    </div>
+    <div class="panel" style="margin-top:12px"><h2>Log</h2><div class="log" id="log"></div></div>
+  </section>
+</main>
+<dialog id="new-dialog">
+  <form method="dialog">
+    <h2 style="margin-top:0">New species by rule</h2>
+    <label>Clan <select id="new-clan"></select></label>
+    <label>Tier <select id="new-tier"><option>starter</option><option>early</option><option selected>mid</option><option>late</option></select></label>
+    <label>Seed <input id="new-seed" type="number" value="1" min="1"></label>
+    <label>Sealed chapter <select id="new-sealed"><option value="">none</option><option value="character">Character</option><option value="stamina">Stamina</option><option value="movement">Movement</option></select></label>
+    <div class="row"><button value="cancel">Cancel</button> <button value="ok" class="primary">Generate</button></div>
+  </form>
+</dialog>
+<script type="module" src="app/main.mjs"></script>
+</body>
+</html>

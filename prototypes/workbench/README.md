@@ -58,4 +58,18 @@ node sketch/cli.mjs --species S06 --seed 7     # a random individual
 node sketch/cli.mjs --all                      # every species' type specimen: 16 sets, about ten seconds
 ```
 
-Milestones 3 and 4 (the page, the full README with screenshots) follow.
+## Milestone 3: the page
+
+`index.html` (served at `/sandbox/workbench/` by the site workflow; the app is `app/main.mjs`, loaded as a module, with no inline script and no dependency). It loads the catalogue and the frame registry and works at the level a designer thinks in:
+
+- **Frame:** plan (segments, layout, symmetry, limbs, pairs, flaps, covering; neck, body wave, fins, afloat), clan signature (anchor and second pigment), the counts; "New species…" generates a frame by rule from a clan, a tier and a seed.
+- **Chapters and traits:** every open trait with its state (open, sleeping, sealed), nature, shapeable or breeding-only and its looks; Lock, Seal, and the loci underneath on demand (pool narrowing per allele, the current individual's two copies). Locked parts (change the fixed value, or Open one as a new trait) and absent parts (Add part gives the clan a part it never had) sit in two collapsed lists.
+- **The sketch re-renders at once:** three-quarter at Station scale, front, side and top at Companion scale, the 48 px tile at 3×; passes shaded, slots, index, silhouette and one per marking field.
+- **Individuals:** roll N random individuals, shift-click two as parents and Cross; every individual is validated against the frame and the contract, and a rejected one is marked, never repaired.
+- **Compare expressions:** same frame, one trait changed, N individuals: one column per look, the 48 px tile beside the Station view; a verdict per trait ("reads at 48 px", "reads only on the Station", "invisible: make it a doing") is written into the frame; "invisible" also makes the trait breeding-only, with the reason recorded as its override.
+- **Check frame** runs 200 random individuals; **Export frame** downloads the species JSON (`mb-species-frame/2`); **Export sketches** and **Reference set** download a zip in the cache format (PNGs, `manifest.json` with SHA-256 per output, `genome.json`, and `index.json` for a set); the Node CLI writes the same under `out/` (`node sketch/cli.mjs --species S04 --set 8`). Edits persist in the browser's local storage until discarded.
+- Keyboard: arrows move between traits, L locks, O shows loci, R rolls, C crosses, X compares, 1–3 record a verdict, [ ] step through individuals, E exports the frame.
+
+`node tools/screenshot.mjs` serves the prototypes as the site workflow does, runs the journey headless, fails on any page error and writes the screenshots in `img/`.
+
+Milestone 4 (the full README) follows.

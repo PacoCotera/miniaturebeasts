@@ -373,3 +373,33 @@ export function genomeDigest(genome) {
   for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 0x01000193) >>> 0;
   return `${genome.species}-${h.toString(16).padStart(8, "0")}`;
 }
+
+// --- editing ---------------------------------------------------------------------------------------
+// A frame back into an explicit spec the editor can change and rebuild (every locked locus fixed,
+// every open trait with its pools), so edits stay at the level of plan, clan, chapters and traits.
+export function specFromFrame(frame) {
+  const locked = Object.fromEntries(frame.loci.filter((l) => l.kind === "locked").map((l) => [l.id, l.copies[0]]));
+  const openSwitches = frame.loci.filter((l) => l.kind !== "locked" && l.switch).map((l) => l.id);
+  return {
+    id: frame.species.id, name: frame.species.name, plural: frame.species.plural, order: frame.species.order, summary: frame.species.summary,
+    clan: frame.taxonomy.clan, tier: frame.taxonomy.tier, seed: frame.taxonomy.seed ?? 1,
+    taxonomy: { ...frame.taxonomy }, plan: { key: frame.plan.key, extras: { ...frame.plan.extras } },
+    anchor: frame.signature.anchor, second: frame.signature.second, feature: frame.signature.feature,
+    features: { ...frame.signature.features }, finish: { ...frame.signature.finish }, fixed: locked, openSwitches,
+    open: frame.chapters.flatMap((ch) => ch.traits.map((t) => ({ chapter: ch.id, id: t.id, name: t.name, loci: [...t.loci], looks: [...t.looks], pool: Object.fromEntries(t.loci.map((id) => [id, [...frame.pools[id]]])), shapeable: t.shapeable, override: t.override ?? null, verdict: t.verdict ?? null }))),
+    sealed: { ...frame.sealed }, glyph: frame.glyph, pod: frame.pod ? { second: frame.pod.colourPair[1].pigment } : null, pending: frame.notYet?.pending ?? [],
+  };
+}
+// The chapter a locus belongs to when a designer opens it from the locked list.
+export function chapterFor(id) {
+  const locus = LOCI.get(id);
+  if (id.startsWith("appearance.emission")) return "glow";
+  if (locus.family === "fantastic-physiology") return "charge";
+  if (locus.family === "appearance") return "coat";
+  if (locus.family === "mechanics-movement") return "movement";
+  if (locus.family === "energy-nutrition") return "stamina";
+  if (locus.family === "cognition-tendencies") return "character";
+  if (/head-|eye-|muzzle-|crown|antenna|auricular|ear-|horn|beak|feather-crest|crest-leaf/.test(id)) return "face";
+  if (/support-|terminal|tail|free-|root-/.test(id)) return "legs-tail";
+  return "shape";
+}
