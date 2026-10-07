@@ -160,21 +160,6 @@
      "verdict": null
     },
     {
-     "id": "sheen",
-     "name": "Sheen",
-     "loci": [
-      "appearance.sheen"
-     ],
-     "looks": [
-      "matte",
-      "between",
-      "glossy"
-     ],
-     "nature": "look",
-     "shapeable": true,
-     "verdict": null
-    },
-    {
      "id": "flap-markings",
      "name": "Flap markings",
      "loci": [
@@ -189,25 +174,20 @@
      "nature": "look",
      "shapeable": true,
      "verdict": null
-    }
-   ]
-  },
-  {
-   "id": "face",
-   "name": "Face",
-   "sealed": false,
-   "traits": [
+    },
     {
-     "id": "eyes",
-     "name": "Eyes",
+     "id": "second-colour",
+     "name": "Second colour",
      "loci": [
-      "growth.exterior-eye-size-ratio",
-      "growth.exterior-eye-spacing-ratio"
+      "appearance.underside-palette"
      ],
      "looks": [
-      "small, close",
-      "between",
-      "big, wide"
+      "butter",
+      "butter and peach",
+      "butter and cream",
+      "peach",
+      "peach and cream",
+      "cream"
      ],
      "nature": "look",
      "shapeable": true,
@@ -221,32 +201,15 @@
    "sealed": false,
    "traits": [
     {
-     "id": "body",
-     "name": "Body",
+     "id": "hind-body",
+     "name": "Hind body",
      "loci": [
-      "anatomy.region-longitudinal-form"
+      "growth.region-taper"
      ],
      "looks": [
-      "egg",
-      "barrel",
-      "pear"
-     ],
-     "nature": "look",
-     "shapeable": true,
-     "verdict": null
-    },
-    {
-     "id": "flaps",
-     "name": "Flaps",
-     "loci": [
-      "growth.wing-span-ratio",
-      "growth.wing-chord-ratio",
-      "growth.wing-sweep-ratio"
-     ],
-     "looks": [
-      "small, straight",
+      "small",
       "between",
-      "wide, swept"
+      "full"
      ],
      "nature": "look",
      "shapeable": true,
@@ -260,16 +223,15 @@
    "sealed": false,
    "traits": [
     {
-     "id": "stride",
-     "name": "Stride",
+     "id": "turning",
+     "name": "Turning",
      "loci": [
-      "movement.stride-preference",
-      "movement.contact-phase"
+      "movement.turn-control"
      ],
      "looks": [
-      "short steps",
+      "wide turns",
       "between",
-      "long steps"
+      "tight turns"
      ],
      "nature": "doing",
      "shapeable": false,
@@ -359,20 +321,25 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "coat",
+   "trait": "second-colour",
+   "shapeable": true,
+   "alleles": [
     "butter",
-    "butter"
+    "peach",
+    "cream"
    ],
    "looks": [
-    "butter"
+    "butter",
+    "butter and peach",
+    "butter and cream",
+    "peach",
+    "peach and cream",
+    "cream"
    ],
-   "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
-   "nature": "look"
+   "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)"
   },
   {
    "id": "appearance.surface-texture",
@@ -386,11 +353,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "smooth",
-    "smooth"
+    "ridged",
+    "ridged"
    ],
    "looks": [
-    "smooth"
+    "fine-ridged"
    ],
    "guard": "sketch: fine ridges as a surface grain",
    "nature": "look"
@@ -401,21 +368,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "behaviour: carried, weighed by the state machine",
-   "kind": "heritable-doing",
-   "nature": "doing",
-   "chapter": "movement",
-   "trait": "stride",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
    "shapeable": false,
-   "alleles": [
+   "copies": [
     "low",
-    "high"
+    "low"
    ],
    "looks": [
-    "low",
-    "between low and high",
-    "high"
+    "low"
    ],
-   "guard": "behaviour: carried, weighed by the state machine"
+   "guard": "behaviour: carried, weighed by the state machine",
+   "nature": "doing"
   },
   {
    "id": "movement.cycle-rate",
@@ -444,28 +410,6 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "behaviour: carried, weighed by the state machine",
-   "kind": "heritable-doing",
-   "nature": "doing",
-   "chapter": "movement",
-   "trait": "stride",
-   "shapeable": false,
-   "alleles": [
-    "low",
-    "high"
-   ],
-   "looks": [
-    "low",
-    "between low and high",
-    "high"
-   ],
-   "guard": "behaviour: carried, weighed by the state machine"
-  },
-  {
-   "id": "movement.turn-control",
-   "family": "mechanics-movement",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "behaviour: carried, weighed by the state machine",
    "kind": "locked",
    "lockReason": "fixed",
    "chapter": null,
@@ -480,6 +424,28 @@
    ],
    "guard": "behaviour: carried, weighed by the state machine",
    "nature": "doing"
+  },
+  {
+   "id": "movement.turn-control",
+   "family": "mechanics-movement",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "behaviour: carried, weighed by the state machine",
+   "kind": "heritable-doing",
+   "nature": "doing",
+   "chapter": "movement",
+   "trait": "turning",
+   "shapeable": false,
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "looks": [
+    "low",
+    "between low and high",
+    "high"
+   ],
+   "guard": "behaviour: carried, weighed by the state machine"
   },
   {
    "id": "movement.membrane-stroke",
@@ -514,11 +480,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "low",
-    "low"
+    "high",
+    "high"
    ],
    "looks": [
-    "low"
+    "high"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
    "nature": "doing"
@@ -557,11 +523,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "low",
+    "low"
    ],
    "looks": [
-    "high"
+    "low"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
    "nature": "doing"
@@ -578,11 +544,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "low",
+    "low"
    ],
    "looks": [
-    "high"
+    "low"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
    "nature": "doing"
@@ -599,11 +565,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "even",
-    "even"
+    "central",
+    "central"
    ],
    "looks": [
-    "even"
+    "central"
    ],
    "guard": "rig: the mass hierarchy (even, central, anterior) scales the regions",
    "nature": "look"
@@ -620,11 +586,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "low",
-    "low"
+    "high",
+    "high"
    ],
    "looks": [
-    "low"
+    "high"
    ],
    "guard": "rig: neck length between head and body on a narrow join",
    "nature": "look"
@@ -683,11 +649,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "low",
-    "low"
+    "high",
+    "high"
    ],
    "looks": [
-    "low"
+    "high"
    ],
    "guard": "rig: core.ryOverRx",
    "nature": "look"
@@ -704,11 +670,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "low",
+    "low"
    ],
    "looks": [
-    "high"
+    "low"
    ],
    "guard": "rig: core.rzOverRx",
    "nature": "look"
@@ -746,11 +712,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "low",
-    "low"
+    "high",
+    "high"
    ],
    "looks": [
-    "low"
+    "high"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "nature": "look"
@@ -767,11 +733,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "low",
+    "low"
    ],
    "looks": [
-    "high"
+    "low"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "nature": "look"
@@ -809,11 +775,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
-    "short"
+    "medium",
+    "medium"
    ],
    "looks": [
-    "short"
+    "medium"
    ],
    "guard": "rig: support.rootToEndDropOverCoreRx",
    "nature": "look"
@@ -830,11 +796,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "low",
+    "low"
    ],
    "looks": [
-    "high"
+    "low"
    ],
    "guard": "rig: support.outwardEndOffsetOverCoreRx",
    "nature": "look"
@@ -872,11 +838,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "narrow",
-    "narrow"
+    "broad",
+    "broad"
    ],
    "looks": [
-    "narrow"
+    "broad"
    ],
    "guard": "rig: terminal.rxOverCoreRx",
    "nature": "look"
@@ -893,11 +859,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "low",
-    "low"
+    "high",
+    "high"
    ],
    "looks": [
-    "low"
+    "high"
    ],
    "guard": "rig: terminal.rzOverCoreRx",
    "nature": "look"
@@ -908,21 +874,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: eye.radiusOverHeadMinYZ",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "face",
-   "trait": "eyes",
-   "shapeable": true,
-   "alleles": [
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
     "small",
-    "large"
+    "small"
    ],
    "looks": [
-    "small",
-    "between small and large",
-    "large"
+    "small"
    ],
-   "guard": "rig: eye.radiusOverHeadMinYZ"
+   "guard": "rig: eye.radiusOverHeadMinYZ",
+   "nature": "look"
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -930,21 +895,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: eye.anchorYOverHeadRy",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "face",
-   "trait": "eyes",
-   "shapeable": true,
-   "alleles": [
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
     "close",
-    "wide"
+    "close"
    ],
    "looks": [
-    "close",
-    "between close and wide",
-    "wide"
+    "close"
    ],
-   "guard": "rig: eye.anchorYOverHeadRy"
+   "guard": "rig: eye.anchorYOverHeadRy",
+   "nature": "look"
   },
   {
    "id": "growth.wing-span-ratio",
@@ -952,21 +916,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: wing.outwardSpanOverCoreRx",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "shape",
-   "trait": "flaps",
-   "shapeable": true,
-   "alleles": [
-    "short",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "long",
     "long"
    ],
    "looks": [
-    "short",
-    "between short and long",
     "long"
    ],
-   "guard": "rig: wing.outwardSpanOverCoreRx"
+   "guard": "rig: wing.outwardSpanOverCoreRx",
+   "nature": "look"
   },
   {
    "id": "growth.wing-chord-ratio",
@@ -974,21 +937,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: wing.longitudinalChordOverCoreRx",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "shape",
-   "trait": "flaps",
-   "shapeable": true,
-   "alleles": [
-    "narrow",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "wide",
     "wide"
    ],
    "looks": [
-    "narrow",
-    "between narrow and wide",
     "wide"
    ],
-   "guard": "rig: wing.longitudinalChordOverCoreRx"
+   "guard": "rig: wing.longitudinalChordOverCoreRx",
+   "nature": "look"
   },
   {
    "id": "growth.wing-sweep-ratio",
@@ -996,21 +958,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: wing.posteriorSweepOverSpan",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "shape",
-   "trait": "flaps",
-   "shapeable": true,
-   "alleles": [
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
     "low",
-    "high"
+    "low"
    ],
    "looks": [
-    "low",
-    "between low and high",
-    "high"
+    "low"
    ],
-   "guard": "rig: wing.posteriorSweepOverSpan"
+   "guard": "rig: wing.posteriorSweepOverSpan",
+   "nature": "look"
   },
   {
    "id": "growth.region-bend",
@@ -1024,11 +985,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "up",
-    "up"
+    "down",
+    "down"
    ],
    "looks": [
-    "up"
+    "down"
    ],
    "guard": "rig: region.bendRadians",
    "nature": "look"
@@ -1039,20 +1000,21 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: region.childScale",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "gentle",
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "shape",
+   "trait": "hind-body",
+   "shapeable": true,
+   "alleles": [
+    "strong",
     "gentle"
    ],
    "looks": [
+    "strong",
+    "between strong and gentle",
     "gentle"
    ],
-   "guard": "rig: region.childScale",
-   "nature": "look"
+   "guard": "rig: region.childScale"
   },
   {
    "id": "growth.join-throat-ratio",
@@ -1066,11 +1028,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "thin",
-    "thin"
+    "broad",
+    "broad"
    ],
    "looks": [
-    "thin"
+    "broad"
    ],
    "guard": "rig: region.connectorRadiusRatio",
    "nature": "look"
@@ -1102,22 +1064,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: region.longitudinalForm",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "shape",
-   "trait": "body",
-   "shapeable": true,
-   "alleles": [
-    "ovoid",
-    "barrel",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "tapered",
     "tapered"
    ],
    "looks": [
-    "ovoid",
-    "barrel",
     "tapered"
    ],
-   "guard": "rig: region.longitudinalForm"
+   "guard": "rig: region.longitudinalForm",
+   "nature": "look"
   },
   {
    "id": "anatomy.contact-terminal-form",
@@ -1131,11 +1091,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "pad",
-    "pad"
+    "rounded",
+    "rounded"
    ],
    "looks": [
-    "pad"
+    "rounded"
    ],
    "guard": "rig: terminal.form",
    "nature": "look"
@@ -1173,11 +1133,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "low",
+    "low"
    ],
    "looks": [
-    "high"
+    "low"
    ],
    "guard": "rig: innate.arousalThreshold",
    "nature": "doing"
@@ -1297,21 +1257,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "sketch: specular highlight strength (surface texture's first consumer)",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "coat",
-   "trait": "sheen",
-   "shapeable": true,
-   "alleles": [
-    "matte",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "glossy",
     "glossy"
    ],
    "looks": [
-    "matte",
-    "between matte and glossy",
     "glossy"
    ],
-   "guard": "sketch: specular highlight strength (surface texture's first consumer)"
+   "guard": "sketch: specular highlight strength (surface texture's first consumer)",
+   "nature": "look"
   },
   {
    "id": "appearance.emission-brightness",
@@ -1711,32 +1670,28 @@
   "trunk": 49,
   "branch": 0,
   "absent": 87,
-  "locked": 36,
+  "locked": 42,
   "lockedBy": {
    "switch": 2,
-   "fixed": 34
+   "fixed": 40
   },
-  "heritableLook": 10,
-  "heritableDoing": 3,
+  "heritableLook": 5,
+  "heritableDoing": 2,
   "sleeping": 0,
   "sealed": 0,
-  "open": 13,
-  "traits": 9,
+  "open": 7,
+  "traits": 7,
   "byChapter": {
    "Coat": {
     "loci": 4,
     "traits": 4
    },
-   "Face": {
-    "loci": 2,
+   "Shape": {
+    "loci": 1,
     "traits": 1
    },
-   "Shape": {
-    "loci": 4,
-    "traits": 2
-   },
    "Movement": {
-    "loci": 2,
+    "loci": 1,
     "traits": 1
    },
    "Stamina": {
@@ -1744,8 +1699,8 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 47,
-  "stampBitsPerCopy": 18
+  "fieldGuideLooks": 32,
+  "stampBitsPerCopy": 13
  },
  "notYet": {
   "domains": [
@@ -1785,12 +1740,12 @@
      "butter"
     ],
     "appearance.surface-texture": [
-     "smooth",
-     "smooth"
+     "ridged",
+     "ridged"
     ],
     "movement.contact-phase": [
      "low",
-     "high"
+     "low"
     ],
     "movement.cycle-rate": [
      "high",
@@ -1798,39 +1753,39 @@
     ],
     "movement.stride-preference": [
      "low",
-     "high"
+     "low"
     ],
     "movement.turn-control": [
      "low",
-     "low"
+     "high"
     ],
     "movement.membrane-stroke": [
      "high",
      "high"
     ],
     "movement.membrane-coordination": [
-     "low",
-     "low"
+     "high",
+     "high"
     ],
     "energy.actuator-capacity": [
      "low",
      "high"
     ],
     "energy.reserve-capacity": [
-     "high",
-     "high"
-    ],
-    "energy.action-efficiency": [
-     "high",
-     "high"
-    ],
-    "development.regional-growth": [
-     "even",
-     "even"
-    ],
-    "structure.join-neck-ratio": [
      "low",
      "low"
+    ],
+    "energy.action-efficiency": [
+     "low",
+     "low"
+    ],
+    "development.regional-growth": [
+     "central",
+     "central"
+    ],
+    "structure.join-neck-ratio": [
+     "high",
+     "high"
     ],
     "anatomy.exterior-eye-presence": [
      "on",
@@ -1841,100 +1796,100 @@
      "small"
     ],
     "growth.core-width-ratio": [
-     "low",
-     "low"
-    ],
-    "growth.core-depth-ratio": [
      "high",
      "high"
+    ],
+    "growth.core-depth-ratio": [
+     "low",
+     "low"
     ],
     "growth.head-length-ratio": [
      "large",
      "large"
     ],
     "growth.head-width-ratio": [
-     "low",
-     "low"
-    ],
-    "growth.head-depth-ratio": [
      "high",
      "high"
+    ],
+    "growth.head-depth-ratio": [
+     "low",
+     "low"
     ],
     "growth.head-lift-ratio": [
      "high",
      "high"
     ],
     "growth.support-drop-ratio": [
-     "short",
-     "short"
+     "medium",
+     "medium"
     ],
     "growth.support-splay-ratio": [
-     "high",
-     "high"
+     "low",
+     "low"
     ],
     "growth.support-radius-ratio": [
      "fine",
      "fine"
     ],
     "growth.terminal-length-ratio": [
-     "narrow",
-     "narrow"
+     "broad",
+     "broad"
     ],
     "growth.terminal-depth-ratio": [
-     "low",
-     "low"
+     "high",
+     "high"
     ],
     "growth.exterior-eye-size-ratio": [
      "small",
-     "large"
+     "small"
     ],
     "growth.exterior-eye-spacing-ratio": [
      "close",
-     "wide"
+     "close"
     ],
     "growth.wing-span-ratio": [
-     "short",
+     "long",
      "long"
     ],
     "growth.wing-chord-ratio": [
-     "narrow",
+     "wide",
      "wide"
     ],
     "growth.wing-sweep-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.region-bend": [
-     "up",
-     "up"
+     "down",
+     "down"
     ],
     "growth.region-taper": [
-     "gentle",
+     "strong",
      "gentle"
     ],
     "growth.join-throat-ratio": [
-     "thin",
-     "thin"
+     "broad",
+     "broad"
     ],
     "anatomy.region-cross-exponent": [
      "round",
      "round"
     ],
     "anatomy.region-longitudinal-form": [
-     "ovoid",
-     "ovoid"
+     "tapered",
+     "tapered"
     ],
     "anatomy.contact-terminal-form": [
-     "pad",
-     "pad"
+     "rounded",
+     "rounded"
     ],
     "cognition.exploration-tendency": [
      "reserved",
      "reserved"
     ],
     "cognition.arousal-threshold": [
-     "high",
-     "high"
+     "low",
+     "low"
     ],
     "anatomy.antenna-presence": [
      "on",
@@ -1957,7 +1912,7 @@
      "clear"
     ],
     "appearance.sheen": [
-     "matte",
+     "glossy",
      "glossy"
     ],
     "appearance.emission-brightness": [
@@ -1977,20 +1932,20 @@
   "brief": "S12: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 2 flaps; skin; splayed, neck head.",
   "bounds": {
    "min": [
-    -0.885971510882891,
-    -0.6145563608345039,
-    -0.10113750000000005
+    -0.9867000454727111,
+    -0.6529321802057275,
+    0
    ],
    "max": [
-    1.9073016559163272,
-    0.6145563608345039,
-    1.1290850831164714
+    1.5155295606778252,
+    0.6529321802057276,
+    1.7844093317863343
    ]
   },
   "counts": {
    "nodes": 45,
    "edges": 44,
-   "vertices": 2029
+   "vertices": 1921
   }
  },
  "viability": {
@@ -2010,49 +1965,25 @@
    "opaque",
    "clear"
   ],
-  "appearance.sheen": [
-   "matte",
-   "glossy"
-  ],
-  "growth.exterior-eye-size-ratio": [
-   "small",
-   "large"
-  ],
-  "growth.exterior-eye-spacing-ratio": [
-   "close",
-   "wide"
-  ],
-  "anatomy.region-longitudinal-form": [
-   "ovoid",
-   "barrel",
-   "tapered"
-  ],
-  "movement.stride-preference": [
-   "low",
-   "high"
-  ],
-  "movement.contact-phase": [
-   "low",
-   "high"
-  ],
-  "energy.actuator-capacity": [
-   "low",
-   "high"
-  ],
   "appearance.flap-marking": [
    "plain",
    "spots",
    "bars"
   ],
-  "growth.wing-span-ratio": [
-   "short",
-   "long"
+  "appearance.underside-palette": [
+   "butter",
+   "peach",
+   "cream"
   ],
-  "growth.wing-chord-ratio": [
-   "narrow",
-   "wide"
+  "growth.region-taper": [
+   "strong",
+   "gentle"
   ],
-  "growth.wing-sweep-ratio": [
+  "movement.turn-control": [
+   "low",
+   "high"
+  ],
+  "energy.actuator-capacity": [
    "low",
    "high"
   ]
@@ -2062,19 +1993,19 @@
    "low",
    "low"
   ],
-  "appearance.underside-palette": [
-   "butter",
-   "butter"
-  ],
   "appearance.surface-texture": [
-   "smooth",
-   "smooth"
+   "ridged",
+   "ridged"
+  ],
+  "movement.contact-phase": [
+   "low",
+   "low"
   ],
   "movement.cycle-rate": [
    "high",
    "high"
   ],
-  "movement.turn-control": [
+  "movement.stride-preference": [
    "low",
    "low"
   ],
@@ -2083,24 +2014,24 @@
    "high"
   ],
   "movement.membrane-coordination": [
-   "low",
-   "low"
+   "high",
+   "high"
   ],
   "energy.reserve-capacity": [
-   "high",
-   "high"
-  ],
-  "energy.action-efficiency": [
-   "high",
-   "high"
-  ],
-  "development.regional-growth": [
-   "even",
-   "even"
-  ],
-  "structure.join-neck-ratio": [
    "low",
    "low"
+  ],
+  "energy.action-efficiency": [
+   "low",
+   "low"
+  ],
+  "development.regional-growth": [
+   "central",
+   "central"
+  ],
+  "structure.join-neck-ratio": [
+   "high",
+   "high"
   ],
   "anatomy.exterior-eye-presence": [
    "on",
@@ -2111,76 +2042,96 @@
    "small"
   ],
   "growth.core-width-ratio": [
-   "low",
-   "low"
-  ],
-  "growth.core-depth-ratio": [
    "high",
    "high"
+  ],
+  "growth.core-depth-ratio": [
+   "low",
+   "low"
   ],
   "growth.head-length-ratio": [
    "large",
    "large"
   ],
   "growth.head-width-ratio": [
-   "low",
-   "low"
-  ],
-  "growth.head-depth-ratio": [
    "high",
    "high"
+  ],
+  "growth.head-depth-ratio": [
+   "low",
+   "low"
   ],
   "growth.head-lift-ratio": [
    "high",
    "high"
   ],
   "growth.support-drop-ratio": [
-   "short",
-   "short"
+   "medium",
+   "medium"
   ],
   "growth.support-splay-ratio": [
-   "high",
-   "high"
+   "low",
+   "low"
   ],
   "growth.support-radius-ratio": [
    "fine",
    "fine"
   ],
   "growth.terminal-length-ratio": [
-   "narrow",
-   "narrow"
+   "broad",
+   "broad"
   ],
   "growth.terminal-depth-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.exterior-eye-size-ratio": [
+   "small",
+   "small"
+  ],
+  "growth.exterior-eye-spacing-ratio": [
+   "close",
+   "close"
+  ],
+  "growth.wing-span-ratio": [
+   "long",
+   "long"
+  ],
+  "growth.wing-chord-ratio": [
+   "wide",
+   "wide"
+  ],
+  "growth.wing-sweep-ratio": [
    "low",
    "low"
   ],
   "growth.region-bend": [
-   "up",
-   "up"
-  ],
-  "growth.region-taper": [
-   "gentle",
-   "gentle"
+   "down",
+   "down"
   ],
   "growth.join-throat-ratio": [
-   "thin",
-   "thin"
+   "broad",
+   "broad"
   ],
   "anatomy.region-cross-exponent": [
    "round",
    "round"
   ],
+  "anatomy.region-longitudinal-form": [
+   "tapered",
+   "tapered"
+  ],
   "anatomy.contact-terminal-form": [
-   "pad",
-   "pad"
+   "rounded",
+   "rounded"
   ],
   "cognition.exploration-tendency": [
    "reserved",
    "reserved"
   ],
   "cognition.arousal-threshold": [
-   "high",
-   "high"
+   "low",
+   "low"
   ],
   "anatomy.antenna-presence": [
    "on",
@@ -2193,6 +2144,10 @@
   "anatomy.antenna-form": [
    "feather",
    "feather"
+  ],
+  "appearance.sheen": [
+   "glossy",
+   "glossy"
   ],
   "appearance.emission-brightness": [
    "bright",

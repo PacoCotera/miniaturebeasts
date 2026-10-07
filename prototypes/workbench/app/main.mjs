@@ -8,7 +8,7 @@ import { parsePlanKey, planKeyOf, planFacts } from "../framework/plans.mjs";
 import { buildFrame, buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, checkGenome, specFromFrame, chapterFor, rng, RING, CHAPTER_NAMES, FINDS, genomeDigest } from "../framework/species.mjs";
 import { CLANS, specOf, SPECIES } from "../framework/roster.mjs";
 import { render, fitCamera, markingFields } from "../framework/raster.mjs";
-import { sketchIndividual, manifest, speciesCameras, SKETCHER_VERSION } from "../sketch/sketch.mjs";
+import { sketchIndividual, manifest, speciesCameras, registryCameras, SKETCHER_VERSION } from "../sketch/sketch.mjs";
 import { encodePNG, zip, sha256, download } from "./zip.mjs";
 
 const $ = (id) => document.getElementById(id);
@@ -22,7 +22,7 @@ const VERDICTS = [["reads", "reads at 48 px"], ["station", "reads only on the St
 const STORE_KEY = "mb-workbench/specs/1";
 
 const state = {
-  registry: [], specs: {}, edited: {}, frame: null, spec: null, cameras: null,
+  registry: [], specs: {}, edited: {}, frame: null, spec: null, cameras: null, registryCameras: null,
   individuals: [], current: 0, parents: [], pass: "shaded", selectedTrait: null, showLoci: {}, compare: null,
 };
 const log = (line, cls = "") => { const n = $("log"); n.prepend(el("div", { class: cls }, `${new Date().toLocaleTimeString()}  ${line}`)); while (n.children.length > 60) n.lastChild.remove(); };
@@ -41,6 +41,7 @@ async function load() {
   const sel = $("species");
   sel.replaceChildren(...Object.keys(state.specs).map((id) => el("option", { value: id }, `${id}${state.edited[id] ? " (edited)" : ""}`)));
   for (const [id, clan] of Object.entries(CLANS)) $("new-clan").append(el("option", { value: id }, `${id}: ${clan.resembles} (${planFacts(clan.plan, clan.extras).code})`));
+  state.registryCameras = registryCameras(frames);
   status(`catalogue ${CATALOGUE.id}@${CATALOGUE.version} · ${CATALOGUE.loci.length} loci · ${frames.length} frames`);
   selectSpecies(frames[0].species.id);
 }
@@ -61,12 +62,12 @@ function rebuild({ quiet = false, samples = 0 } = {}) {
   try {
     const frame = buildFrame(state.spec, { samples });
     state.frame = frame;
-    state.cameras = speciesCameras(frame);
+    state.cameras = $("shared-scale").checked && state.registryCameras ? state.registryCameras : speciesCameras(frame);
     if (!quiet) log(`${frame.species.id}: frame rebuilt, ${frame.counts.carried} carried, ${frame.counts.open} open in ${frame.counts.traits} traits${samples ? `, ${frame.viability.constructed}/${samples} random individuals build` : ""}`);
     return true;
   } catch (e) {
     log(`${state.spec.id}: ${e.message}`, "warn");
-    if (e.frame) { state.frame = e.frame; state.cameras = speciesCameras(e.frame); }
+    if (e.frame) { state.frame = e.frame; state.cameras = $("shared-scale").checked && state.registryCameras ? state.registryCameras : speciesCameras(e.frame); }
     return false;
   }
 }
@@ -342,6 +343,7 @@ async function exportSketches(individuals, { setName = null } = {}) {
 
 // --- wiring -------------------------------------------------------------------------------------------
 $("species").addEventListener("change", (e) => selectSpecies(e.target.value));
+$("shared-scale").addEventListener("change", () => { state.cameras = $("shared-scale").checked ? state.registryCameras : speciesCameras(state.frame); renderAll(); });
 $("roll").addEventListener("click", roll);
 $("cross").addEventListener("click", cross);
 $("compare").addEventListener("click", startCompare);

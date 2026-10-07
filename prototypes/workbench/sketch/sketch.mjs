@@ -6,7 +6,7 @@
 // the same place in the frame. A body that overflows that frame is clipped and flagged in the
 // manifest, never rescaled.
 import { buildIndividual, typeSpecimen, genomeDigest, brief } from "../framework/species.mjs";
-import { render, fitCamera, SCALES, VIEWS, markingFields, slotLegend } from "../framework/raster.mjs";
+import { render, fitCamera, resolveCamera, SCALES, VIEWS, markingFields, slotLegend } from "../framework/raster.mjs";
 
 export const SKETCHER_VERSION = "mb-sketch/1";
 export const TURNAROUND = ["front", "side", "three-quarter", "top"];
@@ -25,10 +25,31 @@ export function speciesCameras(frame) {
   return cameras;
 }
 
+// One camera rig for the whole registry: fitted to the union of every species' type specimen, so
+// size classes show (a small S03 is small beside a large S07) and every species sits on the same
+// ground line. The page and the CLI use this by default; speciesCameras is the per-species fit.
+export function registryCameras(frames) {
+  const specimens = frames.map((f) => buildIndividual(f, typeSpecimen(f)).scene);
+  const cameras = {};
+  for (const view of Object.keys(VIEWS)) {
+    cameras[view] = {};
+    for (const [name, size] of Object.entries(SIZES)) {
+      // The 48 px token fills its tile for every species (the field keeps one tile size); the
+      // Companion and Station subjects share the scale that fits the longest body, each body
+      // centred in its own frame, so size classes show.
+      if (name === "tile") { cameras[view][name] = { view, scale: null, center: null, size, margin: 0.04, fixed: true, shared: true }; continue; }
+      const scale = Math.min(...specimens.map((s) => fitCamera(s, view, size, MARGIN).scale));
+      cameras[view][name] = { view, scale, center: null, size, fixed: true, shared: true };
+    }
+  }
+  return cameras;
+}
+
 // Does this body fit the fixed camera? (Checked on the mesh bounds; a clipped sketch is flagged.)
 function clipped(scene, camera) {
   const view = VIEWS[camera.view];
   const [W, H] = camera.size;
+  camera = resolveCamera(scene, camera);
   for (const node of scene.nodes) for (const p of node.mesh.vertices) {
     const x = W / 2 + (p[0] * view.right[0] + p[1] * view.right[1] + p[2] * view.right[2] - camera.center[0]) * camera.scale;
     const y = H / 2 - (p[0] * view.up[0] + p[1] * view.up[1] + p[2] * view.up[2] - camera.center[1]) * camera.scale;

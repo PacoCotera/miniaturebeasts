@@ -44,7 +44,7 @@ The owner's verdict on the v1 workbench: a good idea, badly implemented; keep th
 | **Limb rooting.** v1 rooted every chain, flap and the head on `region-root`; later regions were legless children | `plans.mjs` gives every plan limb stations per region (fore legs on the front region, hind on the back, one pair per region on six legs, wings on the thorax, rays round a hub); `rig.mjs` roots each limb on its own region's facets |
 | **Founder sampling.** v1 drew 114 loci independently and kept the first of up to 1,024 draws that built; a third were legless, half of the legged ones six-legged | A body is built from a frame: the plan picks the rig and limb sets, the clan fixes its parts, the species fixes the rest by seed and opens traits by tier; individuals vary only at the open loci. Nothing is drawn to be rejected |
 | **Guards that rejected.** Unsupported parts rejected the draw | A plan carries what its owners allow and nothing else is drawn into a narrower survivor set; a body that cannot be built is reported with its reason (`validate.mjs`) and never repaired |
-| **Equal beads.** Equal lengths and symmetric bulges | A mass hierarchy (`development.regional-growth`, an old record with its first consumer) and the posterior taper scale the regions; a neck (narrow join, `structure.join-neck-ratio`) or a fused head; a ground pose so every view is framed the same |
+| **Equal beads.** Equal lengths and symmetric bulges | A mass hierarchy (`development.regional-growth`, an old record with its first consumer) and the posterior taper scale the regions; girth, a chest, a neck (narrow join, `structure.join-neck-ratio`) or a fused head; a ground pose so every view is framed the same (see The volume rig) |
 | **Radial plans.** v1 rotated radial frames round the length axis | Radial plans are symmetric about the up axis: a dome with its face in front, rays or feelers round it, a cap on top, fan arms in the horizontal plane. A framework change, stated in the contract notes of `rig.mjs` |
 | **The pan-genome.** v1 carried all 114 pairs in every creature, most inactive | A species carries the trunk loci whose owner its plan has, plus its clan's branch; everything else is absent, not switched off (taxonomy §2, decided). S01 carries 48 pairs, S09 61; plan switches are frame facts |
 | **The editor.** An eleven-layer tree of 114 pairs, copy by copy, with a refresh step | Frame → chapter → trait, loci underneath on demand; every change re-renders at once |
@@ -76,7 +76,7 @@ Everything in the brief fitted the catalogue as records with owners and consumer
 
 - **Views:** front, side, three-quarter (lit from the top left), top. **Sizes:** the 48 px tile, the Companion subject at 280×300, the Station at 300×310 and a larger 600×620.
 - **Passes:** `shaded` (flat fills by pigment slot with one light, markings as a lighter field), `slots` (every pigment slot as a flat colour, both halves of a split slot; the legend is in the manifest), `index` (one flat colour per part), `markings-<field>` (one black-and-white mask per marking field: coat, flaps, cap, mask, rings, shell, belly), `silhouette` (black on white at tile, Companion and Station sizes).
-- **One camera rig per species:** fitted once to the type specimen and reused for every individual; an individual that overflows is clipped and flagged, never rescaled.
+- **One camera rig for the registry:** the Companion and Station subjects share the scale that fits the longest type specimen, each body centred in its own frame; the 48 px token fills its tile. An individual that overflows a fixed frame is clipped and flagged, never rescaled. `speciesCameras` is the per-species fit.
 - **Same genome, same bytes:** integer-exact rasterization, no anti-aliasing; flap translucency and a charged body's phase are an ordered dither. `--verify` renders twice and compares every PNG's SHA-256.
 - **The manifest** follows art-pipeline.md §3: level, id, version, the genome and its digest, frame version, catalogue pin, sketcher version and sketch hash, slot legend, marking fields, states, one entry per output with its SHA-256; prompt, references, model, critique and sign-off are empty slots for later stages. A reference set (`--set N`, or the page's Reference set button) adds `index.json`.
 
@@ -107,46 +107,61 @@ Every plan's default body, rendered as a 48 px silhouette, must differ from ever
 
 | Species | Plan | Rig | Built | Own-plan nearest | Mean distance to own specimen |
 | --- | --- | --- | ---: | ---: | ---: |
-| S01 | B1·L4 | B1 | 200/200 | 76% | 0.08 |
-| S02 | R1·flaps | R1 | 200/200 | 100% | 0.15 |
-| S03 | B2·L4 | B2 | 200/200 | 35% | 0.41 |
-| S04 | B2·L4 | B2 | 200/200 | 84% | 0.29 |
-| S05 | B2·L4 | B2 | 200/200 | 76% | 0.49 |
-| S06 | B2·L4 | B2 | 200/200 | 85% | 0.27 |
-| S07 | B1·L4 | B1 | 200/200 | 97% | 0.24 |
-| S08 | B2·L4 | B2 | 200/200 | 45% | 0.36 |
-| S09 | B2·L4·flaps | B2 | 200/200 | 78% | 0.41 |
-| S10 | B3·L4 | B3 | 200/200 | 97% | 0.36 |
-| S11 | B1·L4 | B1 | 200/200 | 61% | 0.36 |
-| S12 | B3·L6·flaps | B3 | 200/200 | 100% | 0.11 |
-| S13 | B3·L6 | B3 | 200/200 | 93% | 0.36 |
-| S14 | B3 | B3 | 200/200 | 100% | 0.13 |
-| S15 | Rfan2·rays | Rfan2 | 200/200 | 94% | 0.30 |
-| S16 | Bfan3 | Bfan | 200/200 | 100% | 0.21 |
+| S01 | B1·L4 | B1 | 200/200 | 100% | 0.06 |
+| S02 | R1·flaps | R1 | 200/200 | 100% | 0.14 |
+| S03 | B2·L4 | B2 | 200/200 | 46% | 0.37 |
+| S04 | B2·L4 | B2 | 200/200 | 100% | 0.23 |
+| S05 | B2·L4 | B2 | 200/200 | 97% | 0.22 |
+| S06 | B2·L4 | B2 | 200/200 | 69% | 0.34 |
+| S07 | B1·L4 | B1 | 200/200 | 89% | 0.27 |
+| S08 | B2·L4 | B2 | 200/200 | 86% | 0.30 |
+| S09 | B2·L4·flaps | B2 | 200/200 | 77% | 0.36 |
+| S10 | B3·L4 | B3 | 200/200 | 56% | 0.39 |
+| S11 | B1·L4 | B1 | 200/200 | 91% | 0.23 |
+| S12 | B3·L6·flaps | B3 | 200/200 | 100% | 0.14 |
+| S13 | B3·L6 | B3 | 200/200 | 100% | 0.18 |
+| S14 | B3 | B3 | 200/200 | 70% | 0.28 |
+| S15 | Rfan2·rays | Rfan2 | 200/200 | 85% | 0.30 |
+| S16 | Bfan3 | Bfan | 200/200 | 98% | 0.19 |
 
 Shape distance between type specimens; `*` marks a pair on the same plan, which the gate does not cover.
 
 | | S01 | S02 | S03 | S04 | S05 | S06 | S07 | S08 | S09 | S10 | S11 | S12 | S13 | S14 | S15 | S16 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **S01** | · | 0.47 | 0.68 | 0.68 | 0.79 | 0.61 | 0.53 | 0.61 | 0.70 | 0.74 | 0.58 | 0.74 | 0.74 | 0.59 | 0.53 | 0.67 |
-| **S02** | 0.47 | · | 0.76 | 0.73 | 0.83 | 0.73 | 0.41 | 0.71 | 0.77 | 0.78 | 0.58 | 0.74 | 0.77 | 0.63 | 0.46 | 0.75 |
-| **S03** | 0.68 | 0.76 | · | 0.53 | 0.60 | 0.43 | 0.69 | 0.49 | 0.43 | 0.76 | 0.70 | 0.80 | 0.81 | 0.59 | 0.67 | 0.51 |
-| **S04** | 0.68 | 0.73 | 0.53 | · | *0.56 | *0.64 | 0.61 | *0.27 | 0.52 | 0.74 | 0.53 | 0.76 | 0.65 | 0.61 | 0.59 | 0.61 |
-| **S05** | 0.79 | 0.83 | 0.60 | *0.56 | · | *0.73 | 0.77 | *0.61 | 0.56 | 0.83 | 0.74 | 0.86 | 0.77 | 0.69 | 0.75 | 0.73 |
-| **S06** | 0.61 | 0.73 | 0.43 | *0.64 | *0.73 | · | 0.70 | *0.59 | 0.51 | 0.68 | 0.73 | 0.72 | 0.87 | 0.53 | 0.63 | 0.49 |
-| **S07** | 0.53 | 0.41 | 0.69 | 0.61 | 0.77 | 0.70 | · | 0.60 | 0.71 | 0.80 | 0.39 | 0.78 | 0.67 | 0.61 | 0.51 | 0.72 |
-| **S08** | 0.61 | 0.71 | 0.49 | *0.27 | *0.61 | *0.59 | 0.60 | · | 0.53 | 0.73 | 0.55 | 0.72 | 0.69 | 0.58 | 0.57 | 0.57 |
-| **S09** | 0.70 | 0.77 | 0.43 | 0.52 | 0.56 | 0.51 | 0.71 | 0.53 | · | 0.75 | 0.70 | 0.81 | 0.78 | 0.59 | 0.68 | 0.58 |
-| **S10** | 0.74 | 0.78 | 0.76 | 0.74 | 0.83 | 0.68 | 0.80 | 0.73 | 0.75 | · | 0.80 | 0.51 | 0.89 | 0.60 | 0.71 | 0.72 |
-| **S11** | 0.58 | 0.58 | 0.70 | 0.53 | 0.74 | 0.73 | 0.39 | 0.55 | 0.70 | 0.80 | · | 0.79 | 0.61 | 0.69 | 0.54 | 0.73 |
-| **S12** | 0.74 | 0.74 | 0.80 | 0.76 | 0.86 | 0.72 | 0.78 | 0.72 | 0.81 | 0.51 | 0.79 | · | 0.87 | 0.58 | 0.71 | 0.75 |
-| **S13** | 0.74 | 0.77 | 0.81 | 0.65 | 0.77 | 0.87 | 0.67 | 0.69 | 0.78 | 0.89 | 0.61 | 0.87 | · | 0.81 | 0.70 | 0.85 |
-| **S14** | 0.59 | 0.63 | 0.59 | 0.61 | 0.69 | 0.53 | 0.61 | 0.58 | 0.59 | 0.60 | 0.69 | 0.58 | 0.81 | · | 0.54 | 0.63 |
-| **S15** | 0.53 | 0.46 | 0.67 | 0.59 | 0.75 | 0.63 | 0.51 | 0.57 | 0.68 | 0.71 | 0.54 | 0.71 | 0.70 | 0.54 | · | 0.67 |
-| **S16** | 0.67 | 0.75 | 0.51 | 0.61 | 0.73 | 0.49 | 0.72 | 0.57 | 0.58 | 0.72 | 0.73 | 0.75 | 0.85 | 0.63 | 0.67 | · |
+| **S01** | · | 0.37 | 0.65 | 0.81 | 0.57 | 0.63 | 0.46 | 0.58 | 0.64 | 0.71 | 0.46 | 0.69 | 0.59 | 0.60 | 0.40 | 0.64 |
+| **S02** | 0.37 | · | 0.67 | 0.82 | 0.58 | 0.66 | 0.34 | 0.63 | 0.62 | 0.76 | 0.52 | 0.73 | 0.62 | 0.60 | 0.42 | 0.68 |
+| **S03** | 0.65 | 0.67 | · | 0.60 | 0.47 | 0.36 | 0.69 | 0.58 | 0.49 | 0.47 | 0.60 | 0.70 | 0.50 | 0.51 | 0.58 | 0.44 |
+| **S04** | 0.81 | 0.82 | 0.60 | · | *0.69 | *0.59 | 0.79 | *0.73 | 0.66 | 0.65 | 0.72 | 0.79 | 0.70 | 0.71 | 0.76 | 0.64 |
+| **S05** | 0.57 | 0.58 | 0.47 | *0.69 | · | *0.46 | 0.53 | *0.40 | 0.42 | 0.64 | 0.47 | 0.64 | 0.43 | 0.59 | 0.50 | 0.50 |
+| **S06** | 0.63 | 0.66 | 0.36 | *0.59 | *0.46 | · | 0.65 | *0.54 | 0.51 | 0.56 | 0.57 | 0.71 | 0.50 | 0.60 | 0.62 | 0.55 |
+| **S07** | 0.46 | 0.34 | 0.69 | 0.79 | 0.53 | 0.65 | · | 0.52 | 0.58 | 0.79 | 0.49 | 0.69 | 0.62 | 0.69 | 0.55 | 0.73 |
+| **S08** | 0.58 | 0.63 | 0.58 | *0.73 | *0.40 | *0.54 | 0.52 | · | 0.51 | 0.72 | 0.50 | 0.62 | 0.53 | 0.73 | 0.60 | 0.68 |
+| **S09** | 0.64 | 0.62 | 0.49 | 0.66 | 0.42 | 0.51 | 0.58 | 0.51 | · | 0.64 | 0.59 | 0.65 | 0.50 | 0.71 | 0.58 | 0.59 |
+| **S10** | 0.71 | 0.76 | 0.47 | 0.65 | 0.64 | 0.56 | 0.79 | 0.72 | 0.64 | · | 0.72 | 0.80 | 0.60 | 0.53 | 0.68 | 0.47 |
+| **S11** | 0.46 | 0.52 | 0.60 | 0.72 | 0.47 | 0.57 | 0.49 | 0.50 | 0.59 | 0.72 | · | 0.61 | 0.53 | 0.62 | 0.54 | 0.61 |
+| **S12** | 0.69 | 0.73 | 0.70 | 0.79 | 0.64 | 0.71 | 0.69 | 0.62 | 0.65 | 0.80 | 0.61 | · | 0.61 | 0.82 | 0.70 | 0.76 |
+| **S13** | 0.59 | 0.62 | 0.50 | 0.70 | 0.43 | 0.50 | 0.62 | 0.53 | 0.50 | 0.60 | 0.53 | 0.61 | · | 0.59 | 0.56 | 0.51 |
+| **S14** | 0.60 | 0.60 | 0.51 | 0.71 | 0.59 | 0.60 | 0.69 | 0.73 | 0.71 | 0.53 | 0.62 | 0.82 | 0.59 | · | 0.52 | 0.39 |
+| **S15** | 0.40 | 0.42 | 0.58 | 0.76 | 0.50 | 0.62 | 0.55 | 0.60 | 0.58 | 0.68 | 0.54 | 0.70 | 0.56 | 0.52 | · | 0.56 |
+| **S16** | 0.64 | 0.68 | 0.44 | 0.64 | 0.50 | 0.55 | 0.73 | 0.68 | 0.59 | 0.47 | 0.61 | 0.76 | 0.51 | 0.39 | 0.56 | · |
 
-Closest pair of plans: S07 and S11 at 0.39 (a stout one-region furred walker and a one-region scaled walker with a shell). Closest species on one plan: S04 and S08 at 0.27 (the cat and the goat differ by ears, horns, hooves and the tail). No pair of plans is below the margin, so no plan collapses into another's silhouette family. `framework/census.md` and `census.json` are the current run.
+Closest pair of plans: S02 and S07 at 0.34. No pair of plans below the margin. Species sharing a plan are not gated; the closest are S05 and S08 at 0.40. No plan collapses into another's silhouette family. `framework/census.md` and `census.json` are the current run.
+
+## The volume rig
+
+The first bodies read as logs with stick legs (the programme lead's review of milestones 1–4). The rig now draws real volumes, as versioned expression conventions in `rig.mjs`:
+
+- body regions 1.35 times as girthy as v1's ratios, a chest on a walker's leading region, the mass hierarchy and taper on top;
+- a head 1.15 times v1's ratio, with muzzle or beak, ears (upright or drooping), crest, horns and eyes placed as parts;
+- legs 1.6 times as thick, rooted low on the flank and under the body, fore knees bent forward and hind knees back, paws, pads, wedges, hooves, webbed and root feet 1.35 times v1's;
+- tails thicker, bushy where fur reaches the tail; fins, flaps, rays and fans as before, wings held up in a V so they read in every view;
+- the covering as a silhouette modifier: fur and feathers push the surface out by their inherited length with a scalloped edge on body and tail, and reach the tail and ears when fur reach says so; scales and skin leave the outline alone;
+- one registry-wide scale for the Companion and Station subjects (the longest type specimen fits; every body is centred in its own frame), so size classes show; the 48 px token fills its tile for every species, as the field keeps one tile size. The page's "registry scale" box toggles this; `--fit-species` on the CLI.
+
+![Six type specimens: S04 the cat, S05 the fox, S07 the bear, S09 the bird, S11 the turtle, S14 the slug](img/six-specimens.png)
+
+*Six type specimens at one shared Station scale (300×310) with, beside each, the 48 px tile at 4×, at 1× and as the silhouette; three-quarter view above, side view below. This is the figure to judge: does a cat read as a cat at 48 px?*
 
 ## What this does not claim
 
-The sketch stops at form and slots: diagram-like volumes, flat fields, no craft. S09 stays on its roster plan (four legs and wings) until a one-pair plan is added to `plans.json`; the one-pair allele is in the catalogue and the rig draws it. Feathers, the leaf mantle and sheen are labels and slot facts for the masters, not drawn materials. Behaviour loci are carried and weighed nowhere yet; the state machine's states come from the plan, its transitions do not exist. Nothing here is art, and nothing here changes a gene.
+The sketch stops at form and slots: smooth volumes, flat fields, no craft. S09 stays on its roster plan (four legs and wings) until a one-pair plan is added to `plans.json`; the one-pair allele is in the catalogue and the rig draws it. Feathers, the leaf mantle and sheen are labels and slot facts for the masters, not drawn materials. Behaviour loci are carried and weighed nowhere yet; the state machine's states come from the plan, its transitions do not exist. Nothing here is art, and nothing here changes a gene.

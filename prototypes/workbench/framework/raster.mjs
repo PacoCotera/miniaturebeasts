@@ -56,9 +56,26 @@ function markingAt(markings, u, vAngle) {
   return false;
 }
 
+// A camera with `center: null` keeps its scale and centres each body in its own frame.
+export function cameraCenter(scene, camera) {
+  if (camera.center) return camera.center;
+  const view = VIEWS[camera.view];
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const node of scene.nodes) for (const p of node.mesh.vertices) {
+    const x = dot(p, view.right), y = dot(p, view.up);
+    if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y;
+  }
+  return [(minX + maxX) / 2, (minY + maxY) / 2];
+}
+// A camera with `scale: null` fits each body to its frame (the 48 px token fills its tile).
+export function resolveCamera(scene, camera) {
+  if (camera.scale === null || camera.scale === undefined) return { ...fitCamera(scene, camera.view, camera.size, camera.margin ?? 0.04), fixed: camera.fixed, shared: camera.shared };
+  return { ...camera, center: cameraCenter(scene, camera) };
+}
 export function render(scene, camera, pass = "shaded", options = {}) {
   const [W, H] = camera.size;
   const view = VIEWS[camera.view];
+  camera = resolveCamera(scene, camera);
   const rgb = new Uint8ClampedArray(W * H * 4);
   const depth = new Float32Array(W * H).fill(-Infinity);
   const index = new Uint16Array(W * H);

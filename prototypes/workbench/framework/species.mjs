@@ -134,7 +134,9 @@ export function buildFrame(spec, options = {}) {
   // Open traits: authored, or by tier from what the plan can show.
   let open = spec.open;
   if (!open) {
-    const applicable = VOCAB.map((t) => vocabTrait(t[1])).filter((t) => t.loci.every((id) => carriedIds.includes(id)) && t.id !== "size" && !(spec.lockTraits ?? []).includes(t.id) && !(spec.neverOpen ?? []).includes(t.id));
+    // Only traits the plan can show, never the size class, never a locus the clan's signature fixes.
+    const signature = new Set(Object.keys(spec.finish ?? {}));
+    const applicable = VOCAB.map((t) => vocabTrait(t[1])).filter((t) => t.loci.every((id) => carriedIds.includes(id) && !signature.has(id)) && t.id !== "size" && !(spec.lockTraits ?? []).includes(t.id) && !(spec.neverOpen ?? []).includes(t.id));
     const [lo, hi] = TIERS[spec.tier];
     const n = Math.min(applicable.length, lo + Math.floor(r() * (hi - lo + 1)));
     const looks = applicable.filter((t) => !["movement", "stamina", "character", "glow", "charge"].includes(t.chapter));

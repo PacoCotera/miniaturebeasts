@@ -55,8 +55,8 @@
    "rig": "B2",
    "tier": "starter",
    "file": "species-S04.json",
-   "open": 13,
-   "traits": 7,
+   "open": 8,
+   "traits": 5,
    "carried": 61
   },
   {
@@ -67,8 +67,8 @@
    "rig": "B2",
    "tier": "early",
    "file": "species-S05.json",
-   "open": 17,
-   "traits": 11,
+   "open": 13,
+   "traits": 9,
    "carried": 55
   },
   {
@@ -79,8 +79,8 @@
    "rig": "B2",
    "tier": "early",
    "file": "species-S06.json",
-   "open": 16,
-   "traits": 12,
+   "open": 15,
+   "traits": 10,
    "carried": 57
   },
   {
@@ -103,8 +103,8 @@
    "rig": "B2",
    "tier": "mid",
    "file": "species-S08.json",
-   "open": 27,
-   "traits": 14,
+   "open": 22,
+   "traits": 15,
    "carried": 56
   },
   {
@@ -115,8 +115,8 @@
    "rig": "B2",
    "tier": "late",
    "file": "species-S09.json",
-   "open": 44,
-   "traits": 29,
+   "open": 36,
+   "traits": 27,
    "carried": 61
   },
   {
@@ -127,8 +127,8 @@
    "rig": "B3",
    "tier": "mid",
    "file": "species-S10.json",
-   "open": 23,
-   "traits": 15,
+   "open": 19,
+   "traits": 14,
    "carried": 54
   },
   {
@@ -139,8 +139,8 @@
    "rig": "B1",
    "tier": "late",
    "file": "species-S11.json",
-   "open": 34,
-   "traits": 22,
+   "open": 26,
+   "traits": 19,
    "carried": 43
   },
   {
@@ -151,8 +151,8 @@
    "rig": "B3",
    "tier": "early",
    "file": "species-S12.json",
-   "open": 13,
-   "traits": 9,
+   "open": 7,
+   "traits": 7,
    "carried": 49
   },
   {
@@ -163,7 +163,7 @@
    "rig": "B3",
    "tier": "mid",
    "file": "species-S13.json",
-   "open": 20,
+   "open": 18,
    "traits": 12,
    "carried": 47
   },
@@ -175,8 +175,8 @@
    "rig": "B3",
    "tier": "early",
    "file": "species-S14.json",
-   "open": 12,
-   "traits": 8,
+   "open": 11,
+   "traits": 9,
    "carried": 35
   },
   {
@@ -187,8 +187,8 @@
    "rig": "Rfan2",
    "tier": "late",
    "file": "species-S15.json",
-   "open": 30,
-   "traits": 20,
+   "open": 26,
+   "traits": 18,
    "carried": 39
   },
   {
@@ -199,8 +199,8 @@
    "rig": "Bfan",
    "tier": "late",
    "file": "species-S16.json",
-   "open": 27,
-   "traits": 21,
+   "open": 24,
+   "traits": 18,
    "carried": 35
   }
  ]

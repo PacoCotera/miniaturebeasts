@@ -62,10 +62,11 @@ export function longitudinalWeight(form, t) {
 const STATIONS = [-1, -0.82, -0.6, -0.35, 0, 0.35, 0.6, 0.82, 1];
 
 // A ring solid: `radii` = [along the frame's first axis, second, third]; form and cross exponent as v1.
-export function ringSolid(node, radii, form, crossExponent = 2) {
+// `bulge` swells the front of the solid (t = -1) and thins the back: a chest on a walker.
+export function ringSolid(node, radii, form, crossExponent = 2, bulge = 0) {
   if (radii.some((r) => !Number.isFinite(r) || r <= 0)) throw new Error(`invalid radii on ${node.id}`);
   node.radii = radii;
-  node.shape = { kind: "ring", form, crossExponent };
+  node.shape = { kind: "ring", form, crossExponent, bulge };
   const stations = [...STATIONS];
   if (form === "tapered" && !stations.includes(TAPER_MAX_AT)) stations.push(TAPER_MAX_AT);
   stations.sort((a, b) => a - b);
@@ -73,7 +74,7 @@ export function ringSolid(node, radii, form, crossExponent = 2) {
   const point = (t, sector) => {
     const s = sector % 12, angle = (s * 2 * Math.PI) / 12;
     const cs = s === 3 || s === 9 ? 0 : Math.cos(angle), sn = s === 0 || s === 6 ? 0 : Math.sin(angle);
-    const w = longitudinalWeight(form, t);
+    const w = longitudinalWeight(form, t) * (1 + bulge * (0.5 - 0.5 * t));
     return worldPoint(node, [t * radii[0], radii[1] * w * signedPower(cs), radii[2] * w * signedPower(sn)]);
   };
   for (let i = 0; i < stations.length - 1; i++) {
@@ -251,4 +252,29 @@ export function surfaceAlong(node, localDir) {
   const w = node.radii;
   const k = 1 / Math.sqrt((d[0] / w[0]) ** 2 + (d[1] / w[1]) ** 2 + (d[2] / w[2]) ** 2);
   return worldPoint(node, mul(d, k * 0.98));
+}
+
+// A covering as a silhouette modifier: push every vertex out along its surface normal by `depth`;
+// with `scallop`, alternate vertices go a little further and a little less, so fluff reads as a
+// soft, broken edge rather than a bigger smooth solid. Only ever enlarges, so attachment witnesses
+// stay inside. Applied to solids (ellipsoids, ring solids, sweeps), never to thin sheets.
+export function inflate(node, depth, scallop = 0) {
+  if (!node.radii || node.shape?.kind === "sheet" || node.shape?.kind === "pyramid" || node.shape?.kind === "wedge") return;
+  const [rx, ry, rz] = node.radii;
+  node.mesh.vertices = node.mesh.vertices.map((p, i) => {
+    let n;
+    if (node.shape?.kind === "sweep") {
+      let best = null;
+      for (const st of node.stations) { const d = norm(sub(p, st.center)); if (!best || d < best.d) best = { d, c: st.center }; }
+      n = sub(p, best.c);
+    } else {
+      const l = localPoint(node, p);
+      n = localVector(node.frame, [l[0] / (rx * rx), l[1] / (ry * ry), l[2] / (rz * rz)]);
+    }
+    if (norm(n) < 1e-9) return p;
+    const k = depth * (scallop ? (i % 2 ? 1 + scallop : 1 - scallop) : 1);
+    return add(p, mul(unit(n), k));
+  });
+  node.radii = [rx + depth, ry + depth, rz + depth];
+  node.inflated = (node.inflated ?? 0) + depth;
 }
