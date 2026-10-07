@@ -1,6 +1,6 @@
 # Miniature Beasts: Play Manual
 
-How to play the exploration game on your Companion. This manual follows the current build. Where a rule is about to change, it says ****.
+How to play the exploration game on your Companion. This manual follows the current build of the exploration prototype.
 
 ## 1. What you are doing
 
@@ -23,11 +23,13 @@ Your **mibis** are the creatures you hatch. One of them is always **with you** i
 
 ### The bottom line
 
-The bottom line always has three parts:
+The bottom line has three sections, left to right, with a thin divider between them:
 
-- **Left: ✓ what Confirm does now**, for example "✓ Take the pod" or "✓ Wait". If a screen has nothing to do, this part is empty.
-- **Middle: where you are**, the place and how much of it is surveyed ("rock field · surveyed 2/4 · 3 to take: fruit · dew · tuft"; on a narrow line the list is cut, never the count), then the **conditions**: one to three bolts for a storm, with ◀ or ▶ for the way it moves, and a small fog patch with its own ◀ or ▶ when a fog bank is within two cells.
-- **Right: ← what the ← key opens**, named by the menu's top entry: "← Leave" in a place ("← Climb out" in the cave), "← Send home" on the map, and "← close" on screens. Wait is not here: ✓ waits when you face nothing, and Wait is lower in the menu.
+`✓ Wait · ← Leave` | `meadow · surveyed 2/4` | `⚡⚡◀`
+
+- **The two actions, together on the left.** First **✓ what Confirm does now** ("✓ Take the pod", "✓ Go down", or "✓ Wait" when you face nothing), at most 24 letters. Then **← what the ← key opens**, named by the menu's top entry: "← Leave" in a place ("← Climb out" in the cave), "← Send home" on the map, "← close" on screens. If a screen has nothing for ✓ to do, only ← shows.
+- **Where you are**, in the middle: the place and how much of it is surveyed ("rock field · surveyed 2/4 · 3 to take: fruit · dew · tuft"), and on the map also the cell you face ("Ahead: meadow · outpost (dark)"). When space is short this section shrinks first: the list is cut, never the actions.
+- **Conditions**, on the right, only when there are any: one to three bolts for a storm with ◀ or ▶ for the way it moves, and a small fog patch with its own ◀ or ▶ when a fog bank is within two cells.
 
 ### The header (left to right)
 
@@ -36,7 +38,10 @@ The bottom line always has three parts:
 - **Pods**: one outline per pod you can carry, filled with the pod's shell when you take one.
 - **Partner**: the mibi with you on a teal ring, with its name if there is room.
 - **The three counters**: Energy, Data and Essence. They count up with a flash when you gain something, even when it happens out of sight.
+- **The turn clock**: a small sun and "T1", "T2"…, the world turn. It starts at T1 on your first expedition and flashes when the world turns.
 - **Battery and radio**: the Companion's own power and connection.
+
+There is no Call label in the header; the Call button has no word on it either. After a hit, a small "Shield 2/3" note shows under the header for a few actions.
 
 ## 3. The map
 
@@ -49,7 +54,7 @@ The world map is a grid of cells. Each cell is a place you can go down into. The
 - **Visited** (full colour): you have been inside. It is drawn in four **quarters**: dotted while a quarter is still mostly veiled, lightly dotted when it is almost done, whole once surveyed.
 - **Explored**: you went inside and used Call there at least once. Its dot in the reach grid fills.
 
-**The five signs.** Each one explains itself the first time you see it.
+**The signs.** Each one explains itself the first time you see it.
 
 | Sign | Means |
 | --- | --- |
@@ -58,10 +63,14 @@ The world map is a grid of cells. Each cell is a place you can go down into. The
 | Bolt | A stone here holds Energy. **Filled**: storm charge. **Hollow**: a warm stone you found with Call. |
 | Pin | Your own mark. |
 | Gate | A way you cannot pass yet: a narrow hole (needs a digging partner), fast water (needs a swimmer), or a deep "?" (needs a tier 2 Probe). |
+| Hut with a lamp post | An **outpost**. The lamp is dark until you light it; lit, its flame is big, medium or small for the world turns left. |
+| Tall post with a lamp cage | A **beacon**: a dark cage until you light it, then a flame for good. |
+| Flag | Your **start**. |
+| Skull | Where the Probe broke; the pods it carried lie there. |
 
-A pod you saw and left behind shows the pod sign, and a lit **beacon** keeps its flame on the map for good. Your **start** shows a flag, a found **outpost** a small hut (its lamp lit once you light it), and a **skull** marks where the Probe broke. The map draws no trail. Signs on surveyed cells and inside a fog bank are hidden, except gates, pins, pods and Energy.
+A pod you saw and left behind shows the pod sign. Outposts and beacons look the same on the map, in the reach view and in the place itself. The bottom line names them on your cell or the one ahead: "outpost (dark)", "outpost · lit 2 turns", "beacon (unlit)", "beacon (lit)". The first time you see each, the message box says what it is for: "An outpost: light it for 1 Energy to send home, mend and shelter there" and "A beacon: light it for 1 Energy to reveal the land around". The map draws no trail. Signs on surveyed cells and inside a fog bank are hidden, except gates, pins, pods and Energy.
 
-**Outposts.** About six huts with a mast lamp stand across the world, never two close together. Find one by walking or Call, then **light it for 1 Energy**; it stays lit for three world turns (this expedition and the next two). Its flame shrinks each world turn (big, medium, small), then it goes dark; relight it for 1 Energy (✓ twice). The light never changes during an expedition. While lit, an outpost lets you **send home** from its cell (that ends the expedition, as at the start), **mend the Shield** for 1 Energy a bar (✓ twice), and gives **shelter**: no stray strikes while you stand within 3 tiles of it. It reveals no land.
+**Outposts.** About six huts with a lamp post stand across the world, never two close together. Find one by walking or Call, then **light it for 1 Energy**; it stays lit for three world turns (this expedition and the next two). Its flame shrinks each world turn (big, medium, small), then it goes dark; relight it for 1 Energy (✓ twice). The light never changes during an expedition. While lit, an outpost lets you **send home** from its cell (that ends the expedition, as at the start), **mend the Shield** for 1 Energy a bar (✓ twice), and gives **shelter**: no stray strikes while you stand within 3 tiles of it. It reveals no land and stores nothing: what you carry goes home only when you send it.
 
 **Pins.** On the map, Call pins the cell you stand on for 1 Energy. Call on your own pin removes it, and if you placed it this expedition you get the Energy back. Gates pin themselves for free.
 
@@ -72,7 +81,7 @@ A pod you saw and left behind shows the pod sign, and a lit **beacon** keeps its
 | Tier 1 | 2 cells (a 5×5 square) | 2 | 3 bars |
 | Tier 2 | 4 cells (a 9×9 square) | 3 | 4 bars, and it can read the deep "?" |
 
-**Starting anywhere seen.** Before each expedition, choose its kind (**Weather**, or **Deep ground** with a digging partner) and pick where to start. The very first time you choose a glint; after that, any cell you have seen. The choice screen also shows your partner and a small map of your world with your last start. Placing your Probe reveals the cells around it. A Deep ground expedition starts at the burrow under the cliff.
+**Starting anywhere seen.** Before each expedition, choose its kind (**Weather**: charge stones, pods in the rain; or **Deep ground**: caves and burrow pods, with a digging partner) and pick where to start. The very first time you choose a glint; after that, any cell you have seen. The choice screen's header shows "Expedition N", the turn clock and the battery; under it a strip reads "World · turn 1 · Probe tier 1 · Shield 3/3". Below the two expedition cards are your partner's card (✓ on it opens Mibis) and a small map of your world with your last start and "Explored N of 320 cells". ← opens a short menu: Mibis, Full map, New world. Placing your Probe reveals the cells around it. A Deep ground expedition starts at the burrow under the cliff.
 
 **Walking off a place's edge** puts you on the next map cell in that direction. Press ✓ and you go down into it from that side. A held walk stops at the edge first; tap again to step off.
 
@@ -111,7 +120,16 @@ A place has four quarters. A quarter is **surveyed** when every tile in it is un
 
 ### Wait
 
-Wait lets one action pass. You find it on ✓ when you face nothing in a place, and in the menu after Leave and Send home (the menu stays open, so ✓ waits again). A pale band sweeps down the screen and the line tells you what changed: "The storm edges east · two hoppers wander", "Dew gathers in a cup", or "Nothing is moving here". Waiting is how you keep still for a settling creature, let a storm pass, or let an eater find your fruit. The menu (← key) holds Leave this place, Send home, Wait, Probe (your Shield and patching), Cargo (what you carry and how much is explored), and Mibis. Between expeditions the last entry is New world.
+Wait lets one action pass. You find it on ✓ when you face nothing in a place, and in the menu (the menu stays open, so ✓ waits again). A pale band sweeps down the screen and the line tells you what changed: "The storm edges east · two hoppers wander", "Dew gathers in a cup", or "Nothing is moving here". Waiting is how you keep still for a settling creature, let a storm pass, or let an eater find your fruit. The menu (← key), top to bottom:
+
+| Where | Menu |
+| --- | --- |
+| In a place | Leave this place (Climb out in the cave) · Send home · Wait · Probe · Cargo · Mibis |
+| On the map | Send home · Wait · Full map (or Reach view) · Probe · Cargo · Mibis |
+| At home, after the Station | Next expedition · Probe · Cargo · Mibis · New world |
+| On the expedition choice | Mibis · Full map · New world |
+
+Probe shows your Shield, patching and the map legend; Cargo shows what you carry and how much is explored. Send home is greyed away from the flag and lit outposts.
 
 ### Pods and the hold
 
@@ -157,17 +175,19 @@ Creatures sometimes leave things behind. A **hopper** shaking itself dry after r
 
 A storm is a band that moves across the map. The bolts in the bottom line show how strong it is where you are:
 
-| Bolts | Storm | Stray strike chance, each action in the open |
+| Bolts | Storm | In the open |
 | --- | --- | --- |
-| 1 | Coming, no rain yet | none |
-| 2 | Strong rain | about 1 in 20 |
-| 3 | The peak | about 1 in 10 |
+| 1 | Coming, no rain yet | no strikes |
+| 2 | Strong rain | "Strong storm · stray strikes can hit you in the open · shelter under an overhang or in a cave" |
+| 3 | The peak | "Storm peak · strikes more likely · get under an overhang, into a cave or leave" |
+
+The exact odds are in the quick reference and on the Probe screen's legend.
 
 - **Warned strikes** aim at stones (or open ground near you, never your own tile). The tile lights up one action before. A struck stone holds a charge: +2 Energy, or +3 at the storm's peak.
 - **Stray strikes** can hit the Probe on any action you spend in the open under rain. Each hit takes one Shield bar.
-- **Coming in the next build:** never two hits within six actions; the first hit of each storm pass is always a warned strike on a stone; and a storm passes over a place in at most 20 actions.
+- Never two hits within six actions, and the first hit of each storm pass over you is always a warned strike. Overhead the band crawls: a pass of rain lasts about 15 to 20 actions.
 - **Shelter.** Overhang, cave, lit outpost. There no stray strike can reach you. Trees are **not** shelter: standing under a canopy (or in a wood cell on the map) gives no protection. Inside a fog bank the storm is calm, so no strikes there either.
-- **Patching.** On the Probe screen, 3 Energy patches one Shield bar. Press ✓ twice: the first press gets it ready.
+- **Patching.** On the Probe screen, 3 Energy patches one Shield bar. Press ✓ twice: the first press gets it ready. A lit outpost mends a bar for 1 Energy.
 
 **When the Shield breaks** (0 bars), the expedition ends where you are and nothing goes home. The pods you carried fall at random spots in that place, and the cell gets a **skull** on the overview; go back down into it later to clear the skull and pick the pods up. The Energy, Data and Essence you were carrying are lost. Pins, the land you uncovered and what you learned stay. A broken Probe is mended for free.
 
@@ -180,9 +200,14 @@ A fog bank is a soft, pale cloud that drifts over the map. Inside it:
 - dew cups fill again every few actions: a good time for Essence;
 - no stray strikes; signs and the map sweep stop; Call reaches only 6 tiles.
 
-### Warm stones and the world turn
+### Stones
 
-Each time the world turns, the sun warms 3 to 5 stones in your Probe's reach. A **warm stone** gives +1 Energy, once per turn. It has a glowing ring at its foot and is never shown by the map: only Call finds it. Once found, the map marks it with a hollow bolt.
+A stone in a place is in one of these states:
+
+- **Plain**: grey, nothing to take.
+- **Warm**: an amber ring around it and an amber dot on top. Each time the world turns, the sun warms 3 to 5 stones in your Probe's reach (never in a place you entered on the last expedition). A warm stone gives +1 Energy, once per turn. The map never shows it: only Call finds it, and then the map marks it with a hollow bolt.
+- **Charged**: a blue-white crackle with a small bolt above; a storm struck it. +2 Energy, or +3 at the peak. The map marks it with a filled bolt.
+- **About to be struck**: a yellow outline on the tile; lightning lands there next action.
 
 ## 7. Materials
 
@@ -190,18 +215,18 @@ You can carry up to 20 of each. Essence never turns into Energy.
 
 | Material | Where it comes from | What it buys |
 | --- | --- | --- |
-| **Energy** | Storm-charged stones (+2, or +3 at the peak) and warm stones (+1) | Pins (1), lighting a beacon (1), Shield patches (3 a bar), identifying a pod (1), hatching (2), mending the Shield at home (1 a bar), the tier 2 Probe (12) |
+| **Energy** | Storm-charged stones (+2, or +3 at the peak) and warm stones (+1) | Pins (1), lighting a beacon (1), lighting or relighting an outpost (1), mending at an outpost (1 a bar), Shield patches (3 a bar), identifying a pod (1), hatching (2), mending the Shield at home (1 a bar), the tier 2 Probe (12) |
 | **Data** | Creature moments you cause (+1, or +2 for a first) | Station studies (2 each) and the tier 2 Probe (4) |
 | **Essence** | Dew (+1), pressing fruit (+2), tufts of fur (+1) | Hatching a mibi (4) |
 
 ## 8. Going home
 
 An expedition ends when you choose **Send home** or when the Shield breaks. **Send home works only on your start cell (the flag on the map) or on a lit outpost.** Anywhere else Send home is greyed in the menu and the line says how far the nearest one is ("Start · about 2 cells"); "Hold full" and "Everything in reach is explored" say "head back to the start". Cargo shows a **preview** first: how much you explored, which pods the Station will identify or hatch, and what mending the Shield will cost.
-1. **The Station mends the Shield** at 1 Energy for each missing bar, as many bars as your stored Energy covers. A broken Probe is mended for free. **Coming in the next build:** the Station always mends to at least two bars.
+1. **The Station mends the Shield**: up to two bars for free, then 1 Energy for each further missing bar, as many as your stored Energy covers. A broken Probe is mended in full for free.
 2. **It identifies each pod** (your very first pod is free).
 3. **It hatches** one pod of a species you don't raise yet, if you can pay. A pod you can't afford waits at the Station and says what is missing ("costs 2 Energy + 4 Essence · short 2 Essence").
 4. **It stores** your materials for later and offers the tier 2 Probe when you can afford it.
-5. **The world turns.** Creatures move, storms leave charge, new pods and warm stones appear. New things arrive away from where you just were: never in a place you entered on the expedition that just ended. (This holds for warm stones now and for everything else in the next build.) A place that changed is veiled again where it changed; a place that didn't stays surveyed.
+5. **The world turns** and the clock in the top bar moves on (T1 → T2). Creatures move, storms leave charge, new pods and warm stones appear. New things arrive away from where you just were: new pods more than 4 cells from the cells you walked, warm stones never in a place you entered. Lit outposts lose one turn of light. A place that changed is veiled again where it changed; a place that didn't stays surveyed.
 
 | At the Station | Price |
 | --- | --- |
@@ -258,8 +283,10 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 
 **Stones**: plain grey · warm: an amber ring around it and an amber dot on top · charged: a blue-white crackle with a small bolt above · a yellow tile outline: lightning strikes there next.
 
-**Clock**: "T7" in the top bar is the world turn; it flashes when the world turns.
+**Clock**: "T7" in the top bar is the world turn, counted from T1 (your first expedition); it flashes when the world turns.
+
+**Shelter** from stray strikes: overhang, cave, lit outpost (within 3 tiles). Not trees, not wood cells on the map. A fog bank is calm: no strikes inside.
 
 **Gains**: storm stone +2 (+3 at the peak) · warm stone +1 · dew +1 Essence · pressed fruit +2 Essence · tuft +1 Essence · a creature moment +1 Data (+2 the first time).
 
-**Odds**: stray strike per action in the open under rain: 2 bolts 1 in 20, 3 bolts 1 in 10, never two hits within six actions, and the first hit of a pass is a warned strike. None under an overhang, in a cave, beside a lit outpost or in a fog bank; trees give no protection. In play the screen says only "stray strikes can hit you in the open" (strong) and "strikes more likely" (peak); the exact odds are here and on the Probe screen. Shield: 3 bars (tier 1), 4 bars (tier 2). A break sends nothing home: the pods fall where it broke (skull on the map) and carried materials are lost.
+**Odds**: stray strike per action in the open under rain: 2 bolts 1 in 20 (5%), 3 bolts 1 in 10 (10%), never two hits within six actions, and the first hit of a pass is a warned strike. None under an overhang, in a cave, beside a lit outpost or in a fog bank; trees give no protection. In play the screen says only "stray strikes can hit you in the open" (strong) and "strikes more likely" (peak); the exact odds are here and on the Probe screen. Shield: 3 bars (tier 1), 4 bars (tier 2). A break sends nothing home: the pods fall where it broke (skull on the map) and carried materials are lost.
