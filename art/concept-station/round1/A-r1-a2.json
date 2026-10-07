@@ -1,0 +1,109 @@
+{
+  "id": "instrument-window",
+  "direction": "A",
+  "round": 1,
+  "attempt": 2,
+  "tag": "A-r1-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station HOME screen concept, a flat screen design that fills the whole 16:9 canvas edge to edge (the outer 2 percent at left and right is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands, no table. Design at 1024x600 first: large shapes, few words, nothing smaller than 14 px type.\nSTYLE: the approved Station look: softly sculpted volumes, one key light from the upper left, clean three or four step shading, crisp edges, generous space, no noise, grain or texture spray. The Station is a hardware research instrument, not a room or a cottage. Its chrome is cool and precise: matte dark slate and teal-grey panels, thin engraved rules, small round status lamps, engraved labels, readouts drawn as objects. The vivarium is the only warm, saturated, lively element. Full resolution: smooth volumes and real highlights; pixels may be hinted at the edges but no visible pixel grid.\nLAYOUT, as the supplied wireframe: a thin dark top bar (40 px) and a thin dark bottom line (38 px). Between them, on the left two thirds, one large VIVARIUM WINDOW: a glass pane in a bevelled slate frame with a soft edge highlight and small corner ticks. Inside it a lit terrarium: deep moss and teal shadow at the edges, ferns and hanging stems, a small pool, moss along the base. An instrument lamp from the top of the window casts a warm cone onto the focused resident, Pip, sitting on moss at centre, about 300 px tall, exactly the supplied Pip, framed by four thin cream corner brackets. In the shade at the left a small glowtail (a teal, lizard-like mibi with a softly glowing tail tip); at the right a small puffcap (a round mushroom-capped mibi, red cap with cream spots). Lower right of the window a small empty felt bed with a tiny grey Companion-shaped mark on it. On the right third, a vertical slate BENCH COLUMN of four instrument modules, each a drawn object with a small engraved label and one round status lamp at its top right: (1) SAMPLE BAY: a dark hatch holding two sealed wooden crates with small place stamps, one slot empty; (2) POD TRAY: six round cups in a row, three holding smooth seed-pods (one green, one blue, one violet), three empty; (3) INCUBATOR: a glass dome on a plate with a small embryo glowing green inside, and a ring of five leaf shapes around the plate, two of them filled bright; (4) PROBE DOCK: an empty cradle with three small Shield plates beside it, two lit and one dark.\nTEXT, exactly these and nothing else, cream type on dark: top bar left \"Home  T5\"; top bar centre three small icons with counts, an amber energy crystal \"9\", a blue data chip \"4\", a green essence droplet \"6\"; top bar right \"Companion away · with Dot\". Under the focused resident \"Pip\" large and \"hopper · adult\" small. Bottom line: orange \"✓ Look at Pip\" at left, grey \"Pip · hopper · adult\" in the middle, grey \"a puffcap pod waits · needs 2\" with a small green droplet at right.\nConstraints: no tables, no panels with title bars, no bullet lists, no digits as timers or counts on the bench, no percentages, graphs, DNA helices, letters for genes or progress bars; no logos or wordmarks; no other creatures than the three residents; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted rich Pip: the focused resident's identity and sculpted treatment (charcoal body, cream belly, orange eyes with cream rings, three green leaf crown lobes, plain coat, three-quarter pose). Image 2 is the approved Station concept: take its light model, cleanliness and clean stepped shading, not its layout or content. Image 3 is the approved flat Station screen: take its header grammar (small icons with counts: blue data chip, amber energy crystal, green essence droplet) and its type colours (cream on dark, amber for a need), not its layout. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+  "imageInputs": [
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: identity and sculpted treatment for the focused resident",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "path": "art/concept-homepage/station-research-hands.png",
+      "role": "approved Station concept: light model, cleanliness, clean shading; not layout",
+      "sha256": "9e7d644208f978d10e0335ababe7a8c561a25aa126d000919b8aee11ecfecd6a"
+    },
+    {
+      "path": "art/concept-homepage/station-research-pod.png",
+      "role": "approved flat Station screen: header icon grammar and type colours; not layout",
+      "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+    },
+    {
+      "path": "art/concept-station/layout/home-wireframe.png",
+      "role": "layout truth only: boxes and labels at 1024x600, not style",
+      "sha256": "34587d9e5203b42bb389601e9948cb6077b88f31e77d4b8502b9455dedc50605"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T05:23:36Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/A-r1-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "26b2890d68c48cbbcb14df27b97586ce7fd873ee488a46177bcf5f911ea19cdf"
+    },
+    "png": {
+      "file": "A-r1-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "5409b0a66166233545ae1e126e57ef8106109da3ed2916fd1a1ad7c200e1860e"
+    },
+    "screen": {
+      "file": "A-r1-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "af5007f695c43fe388981ce353bb545b207fe5e49d2ed0feac7b290be38a4065",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "reason": "the whole canvas is the screen; dark chrome defeats margin detection; 2 percent bleed trimmed at each side"
+      },
+      "resample": "LANCZOS",
+      "supersedes": {
+        "cropRect": {
+          "x": 65,
+          "y": 0,
+          "width": 2621,
+          "height": 1536
+        },
+        "detection": "centered"
+      }
+    },
+    "finishReason": "STOP",
+    "seconds": 27.0,
+    "usage": {
+      "promptTokenCount": 2053,
+      "candidatesTokenCount": 1795,
+      "totalTokenCount": 4159,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1021
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1032
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 311,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept as reference (vivarium light and type; Pip pose wrong)"
+  }
+}

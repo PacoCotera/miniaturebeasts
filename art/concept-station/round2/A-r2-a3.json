@@ -1,0 +1,100 @@
+{
+  "id": "instrument-window",
+  "direction": "A",
+  "round": 2,
+  "attempt": 3,
+  "tag": "A-r2-a3",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station HOME screen concept, a flat screen design that fills the whole 16:9 canvas edge to edge (the outer 2 percent at left and right is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words, nothing smaller than 14 px type.\nSTYLE: the approved Station look: softly sculpted volumes, one key light from the upper left, clean painted light with soft cast shadows and correct form shading, crisp edges, generous space, no noise, grain, dither or texture spray. The Station is a hardware research instrument holding one living window; never a room, a cottage or a desk. Instrument: deep blue-teal ground, graphite and slate chrome, enamel, brushed metal, glass and frosted panes, hairline rules, fine bevels, corner ticks, small round status lamps, cream readouts of three words or fewer. Living window: warm daylight from the top left, greens, warm earth, water, the creatures' own colours; it is the ONLY warm light on the screen. No wood, no felt, no shelves, no bench lamp anywhere.\nLAYOUT, as the supplied composition reference and wireframe: a thin top bar (40 px) and bottom line (38 px) in graphite. Between them, on the left two thirds, one large VIVARIUM WINDOW: glass in a thin bevelled slate bezel with corner ticks and a soft edge highlight; nothing overlaps it. Inside: a lit glass habitat in warm daylight from the top left, ferns, moss, a few stones, a small pool and a burrow mouth, deep cool shadow at the back. The focused resident, Pip, sits on moss at the centre, about 300 px tall, exactly the supplied Pip (squat charcoal body, cream belly, orange eyes with cream rings, three green leaf crown lobes, three-quarter pose), the brightest thing on screen, a thin warm cream ring resting on the moss around its feet. In the shade at the left a small glowtail (a teal, gecko-like mibi with a softly glowing tail tip). At the right a small puffcap (a round-bodied mibi wearing a red mushroom cap with cream spots, cream face, two dark eyes, stubby feet). Lower right of the window a shallow moulded frosted-glass nest, empty, with a tiny grey Companion-shaped mark inside. On the right third, one column of four stacked slate MODULES with 8 px gaps, each a drawn object with one small engraved readout and one round status lamp at its top right: SAMPLE BAY: a dark hatch behind a half-open enamel door holding two sealed slate-and-teal crates with small orange seal tags, one slot empty. POD RACK: six round wells in one row, three holding smooth seed-pods (green, blue, violet), three empty. INCUBATION: a glass dome on a machined base with a small embryo glowing green inside and a ring of five leaf shapes around the base, two filled bright. PROBE DOCK: an empty cradle with three small rounded Shield plates beside it, two lit cream, one dark; its lamp amber because the Companion is away.\nTEXT, exactly these and nothing else, cream type on dark: top bar left \"Home  T5\"; top bar centre three small icons with counts, a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the focused resident \"Pip\" large and \"hopper · adult\" small. Module readouts, small engraved: \"Sample bay\", \"Pod rack\", \"Incubation\", \"Probe dock\". Bottom line: orange \"✓ Look at Pip\" at left, grey \"Pip · hopper · adult\" in the middle, grey \"a puffcap pod waits · needs 2\" with a small green drop at right.\nConstraints: no tables, no panels with title bars, no bullet lists, no digits on the bench, no percentages, graphs, DNA helices, letters for genes or progress bars; no logos or wordmarks; no other creatures than the three residents; no people; no lamp fixture drawn inside or above the window.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted rich Pip: the focused resident's identity, pose and sculpted treatment; reproduce it faithfully, squat and three-quarter, not sitting upright. Image 2 is a round 1 screen: take its vivarium depth, plants, light quality and its crisp type; do not copy its Pip pose, its wooden crates, its lamp or its brackets. Image 3 is the approved Station concept: take its light model and cleanliness, not its layout. Image 4 is layout truth only.",
+  "imageInputs": [
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: identity and sculpted treatment for the focused resident",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "path": "art/concept-station/round1/A-r1-a2-canvas.png",
+      "role": "vivarium atmosphere and type reference from round 1: its plants, depth, light and crisp type; its Pip pose, wooden crates, lamp and brackets are wrong",
+      "sha256": "5409b0a66166233545ae1e126e57ef8106109da3ed2916fd1a1ad7c200e1860e"
+    },
+    {
+      "path": "art/concept-homepage/station-research-hands.png",
+      "role": "approved Station concept: light model, cleanliness, clean shading; not layout",
+      "sha256": "9e7d644208f978d10e0335ababe7a8c561a25aa126d000919b8aee11ecfecd6a"
+    },
+    {
+      "path": "art/concept-station/layout/home-wireframe.png",
+      "role": "layout truth only: boxes and labels at 1024x600, not style",
+      "sha256": "34587d9e5203b42bb389601e9948cb6077b88f31e77d4b8502b9455dedc50605"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T05:29:53Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/A-r2-a3.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "a675ce133104c6c5bdd9ffae8221124d7dbc4c98647f1968afd9102d9e351052"
+    },
+    "png": {
+      "file": "A-r2-a3-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "e57a88b2ac769850412c7444693d7b1aaa0fec4166b65fec9a940c1ceb38e381"
+    },
+    "screen": {
+      "file": "A-r2-a3-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "688d0c5be2dff4d8850413b70401fb2a5bd5ae08289b17152ce1fe62f014950b",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 27.8,
+    "usage": {
+      "promptTokenCount": 2143,
+      "candidatesTokenCount": 1897,
+      "totalTokenCount": 4463,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1111
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1032
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 423,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept: round 2 near-pass and edit target for round 3 (Pip toad-like; junk digits in readout boxes; eight wells)"
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "id": "bench-above",
+  "direction": "B",
+  "round": 1,
+  "attempt": 2,
+  "tag": "B-r1-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station HOME screen concept, a flat screen design that fills the whole 16:9 canvas edge to edge (the outer 2 percent at left and right is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands, no table. Design at 1024x600 first: large shapes, few words, nothing smaller than 14 px type.\nSTYLE: the approved Station look: softly sculpted volumes, one key light from the upper left, clean three or four step shading, crisp edges, generous space, no noise, grain or texture spray. The Station is a hardware research instrument, not a room or a cottage. Its chrome is cool and precise: matte dark slate and teal-grey panels, thin engraved rules, small round status lamps, engraved labels, readouts drawn as objects. The vivarium is the only warm, saturated, lively element. Full resolution: smooth volumes and real highlights; pixels may be hinted at the edges but no visible pixel grid.\nLAYOUT: a thin dark top bar (40 px) and a thin dark bottom line (38 px) as flat instrument chrome. Between them the stage is a RESEARCH BENCH SEEN FROM ABOVE at a steep three-quarter angle: a cool brushed slate and teal-grey bench surface with thin engraved alignment rules and a few small round status lamps set into it. On the left two thirds sits a glass TERRARIUM BOX, its lid off, seen slightly from above so we look down into it: deep moss, ferns, a small pool, a warm instrument lamp on a slim arm over it casting a pool of light on the focused resident, Pip, about 300 px tall, exactly the supplied Pip, with four thin cream corner brackets floating over the glass around it. In the shade at the left a small glowtail (a teal lizard-like mibi with a softly glowing tail tip); at the right a small puffcap (a round mushroom-capped mibi, red cap with cream spots). A small empty felt bed in the box's lower right with a tiny grey Companion-shaped mark. On the right third, standing on the bench as physical instruments, top to bottom: a SAMPLE BAY, a low slate hatch with two sealed wooden crates inside wearing small place stamps and one empty slot; a POD TRAY, a slate rack with six round cups, three holding smooth seed-pods (green, blue, violet), three empty; an INCUBATOR, a glass dome on a round plate with a small embryo glowing green inside and five leaf shapes around the plate, two filled bright; a PROBE DOCK, an empty cradle with three small Shield plates, two lit and one dark. Each instrument has a small engraved label and one status lamp. Cool materials everywhere except inside the terrarium.\nTEXT, exactly these and nothing else, cream type on dark: top bar left \"Home  T5\"; top bar centre three small icons with counts, an amber energy crystal \"9\", a blue data chip \"4\", a green essence droplet \"6\"; top bar right \"Companion away · with Dot\". Under the focused resident \"Pip\" large and \"hopper · adult\" small. Bottom line: orange \"✓ Look at Pip\" at left, grey \"Pip · hopper · adult\" in the middle, grey \"a puffcap pod waits · needs 2\" with a small green droplet at right.\nConstraints: no tables, no panels with title bars, no bullet lists, no digits as timers or counts on the bench, no percentages, graphs, DNA helices, letters for genes or progress bars; no logos or wordmarks; no other creatures than the three residents; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted rich Pip: the focused resident's identity and sculpted treatment (charcoal body, cream belly, orange eyes with cream rings, three green leaf crown lobes, plain coat, three-quarter pose). Image 2 is the approved Station concept: take its light model, cleanliness and clean stepped shading, not its layout or content. Image 3 is the approved flat Station screen: take its header grammar (small icons with counts: blue data chip, amber energy crystal, green essence droplet) and its type colours (cream on dark, amber for a need), not its layout.",
+  "imageInputs": [
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: identity and sculpted treatment for the focused resident",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "path": "art/concept-homepage/station-research-hands.png",
+      "role": "approved Station concept: light model, cleanliness, clean shading; not layout",
+      "sha256": "9e7d644208f978d10e0335ababe7a8c561a25aa126d000919b8aee11ecfecd6a"
+    },
+    {
+      "path": "art/concept-homepage/station-research-pod.png",
+      "role": "approved flat Station screen: header icon grammar and type colours; not layout",
+      "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T05:24:48Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "93799a86748638aecadbe19dee102ab618a86f3e629f742ffb5c91d1a5ea3c3c",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "B-r1-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "5085834a749ec21010b4934c8d2ce129970635668593b026254709f0680e95ea"
+    },
+    "screen": {
+      "file": "B-r1-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "d998882ebc1cf026b009f9b950c1d0278d5ca0037e9ff7fd19eaf27168a86133",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "reason": "the whole canvas is the screen; dark chrome defeats margin detection; 2 percent bleed trimmed at each side"
+      },
+      "resample": "LANCZOS",
+      "supersedes": {
+        "cropRect": {
+          "x": 63,
+          "y": 0,
+          "width": 2621,
+          "height": 1536
+        },
+        "detection": "auto"
+      }
+    },
+    "finishReason": "STOP",
+    "seconds": 27.9,
+    "usage": {
+      "promptTokenCount": 1741,
+      "candidatesTokenCount": 1884,
+      "totalTokenCount": 3909,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 967
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 774
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 284,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected (lamp-lit bench, the guide forbids it; Pip pose wrong)"
+  }
+}

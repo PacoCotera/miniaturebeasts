@@ -1,0 +1,91 @@
+{
+  "id": "instrument-window",
+  "direction": "A",
+  "round": 3,
+  "attempt": 2,
+  "tag": "A-r3-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the layout, the slate bezel and module column, the top bar and bottom line and all their text, the vivarium's ferns, rocks, pool, burrow, moss, light and depth, the glowtail, the puffcap, the frosted nest, the cream ring, the name label \"Pip\" and \"hopper · adult\", the crates, the dome and leaves, the Probe dock and its plates, every status lamp.\nTHREE CHANGES ONLY: (1) Replace the creature inside the cream ring with Pip exactly as in Image 2: a squat, round-bodied four-legged mibi standing on four short legs with cream toes, charcoal body, cream belly and chin, big orange eyes with cream rings, a tiny smile, three green leaf crown lobes on top of its head, three-quarter pose facing viewer-left, about the same height as the current creature; same sculpted, softly lit treatment as the rest of the vivarium. It is not a frog or a toad: four legs, a rounded back, a short blunt muzzle. (2) In the four module headers, remove the small readout boxes that show digits or dots (\"0.00\", \"....\", \"300\" and the empty one), leaving the engraved label and the status lamp only. (3) The pod rack shows exactly six round wells in one row: three holding the green, blue and violet seed-pods, three empty.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing else; same camera, same palette, same clean painted light; no new objects, labels, icons or creatures.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip, the exact creature to put inside the cream ring in place of the current one.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round2/A-r2-a3-canvas.png",
+      "role": "edit target: the round 2 near-pass",
+      "sha256": "e57a88b2ac769850412c7444693d7b1aaa0fec4166b65fec9a940c1ceb38e381"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: the creature to paint inside the ring, exactly",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T05:32:29Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "b2e5f2bb7704f4882b403f3e4ac1c280988e6e9bd83901a233f3319557b6bd69",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "A-r3-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "7b4e04d24bf7394cbf9b51d2fbebdf4993004584cfd449fe96ccc1735297490f"
+    },
+    "screen": {
+      "file": "A-r3-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "5234ec29a618a344304726ad51632413187b557f32b54b8058e1e91baed0dedc",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 24.6,
+    "usage": {
+      "promptTokenCount": 973,
+      "candidatesTokenCount": 1374,
+      "totalTokenCount": 2600,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 457
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 253,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected (the same edit drifted: flat cartoon, empty modules, a '10/300' readout, chrome lost)"
+  }
+}

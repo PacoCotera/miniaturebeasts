@@ -1,0 +1,91 @@
+{
+  "id": "instrument-window",
+  "direction": "A",
+  "round": 2,
+  "attempt": 1,
+  "tag": "A-r2-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve everything not named below: the layout, the slate chrome, the top bar and bottom line and all their text, the vivarium's plants, moss, pool and the glowtail, Pip exactly as drawn, the name label. Keep the clean painted light and the crisp edges.\nCHANGES, and nothing else: (1) Remove the lamp fixture at the top of the window and its cone; light the vivarium instead with warm daylight falling from the top left, Pip still the brightest thing, a soft cast shadow under it. (2) Replace the four cream corner brackets with one thin warm cream ring resting on the moss around Pip's feet, an ellipse seen in perspective. (3) The red-and-cream mushroom at the right is a creature, a puffcap: give it a small round cream body under the cap, two dark eyes and stubby feet, sitting on the moss. (4) The felt bed becomes a shallow moulded frosted-glass nest with a soft inner glow and a tiny grey Companion-shaped mark inside. (5) In the SAMPLE BAY the two wooden crates become sealed slate-and-teal crates with a small orange seal tag each; the third slot stays empty and dark. (6) The POD TRAY shows exactly six round wells in one row: three with smooth seed-pods (green, blue, violet), three empty; its label reads \"Pod rack\". (7) The INCUBATOR label reads \"Incubation\"; keep the dome, the glowing embryo and the five leaves, two bright. (8) The PROBE DOCK shows an empty cradle and, beside it, three small Shield plates as rounded shields, two lit cream and one dark. (9) The top bar icons become a yellow lightning bolt before the 9, a blue diamond before the 4, a green drop before the 6. (10) Each module label is a small engraved readout, not a title bar.\nTEXT, exactly these and nothing else, cream type on dark: top bar left \"Home  T5\"; top bar centre three small icons with counts, a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the focused resident \"Pip\" large and \"hopper · adult\" small. Module readouts, small engraved: \"Sample bay\", \"Pod rack\", \"Incubation\", \"Probe dock\". Bottom line: orange \"✓ Look at Pip\" at left, grey \"Pip · hopper · adult\" in the middle, grey \"a puffcap pod waits · needs 2\" with a small green drop at right.\nConstraints: no tables, no panels with title bars, no bullet lists, no digits on the bench, no percentages, graphs, DNA helices, letters for genes or progress bars; no logos or wordmarks; no other creatures than the three residents; no people; no lamp fixture drawn inside or above the window.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip: Pip in Image 1 already matches it; keep Pip unchanged.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round1/A-r1-a1-canvas.png",
+      "role": "edit target: round 1 screen to refine",
+      "sha256": "59857f28c1fa4769ac5a8205884e3b0b6a453767ce21945eb2037bf4215028f2"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: identity to keep unchanged",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T05:28:45Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "218729743a4b27e7b8791ef4e6e882562f940c03504ee75b8a41be4733e31c59",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "A-r2-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "628da980a081dfee7a895d8299306bda6d3ef5b13d31a9cb5979f9b2115e8c70"
+    },
+    "screen": {
+      "file": "A-r2-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "c3b7325f75b1d7274497b2ff034df1078226e15280cfadabdd98380e7c9e8a79",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 26.7,
+    "usage": {
+      "promptTokenCount": 1233,
+      "candidatesTokenCount": 1492,
+      "totalTokenCount": 3086,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 717
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 361,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected (ten-change edit drifted: Pip became a rodent, layout reflowed, top bar strings lost; materials right)"
+  }
+}

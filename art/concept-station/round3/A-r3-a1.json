@@ -1,0 +1,90 @@
+{
+  "id": "instrument-window",
+  "direction": "A",
+  "round": 3,
+  "attempt": 1,
+  "tag": "A-r3-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station HOME screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the layout, the slate bezel and module column, the top bar and bottom line and all their text, the vivarium's ferns, rocks, pool, burrow, moss, light and depth, the glowtail, the puffcap, the frosted nest, the cream ring, the name label \"Pip\" and \"hopper · adult\", the crates, the dome and leaves, the Probe dock and its plates, every status lamp.\nTHREE CHANGES ONLY: (1) Replace the creature inside the cream ring with Pip exactly as in Image 2: a squat, round-bodied four-legged mibi standing on four short legs with cream toes, charcoal body, cream belly and chin, big orange eyes with cream rings, a tiny smile, three green leaf crown lobes on top of its head, three-quarter pose facing viewer-left, about the same height as the current creature; same sculpted, softly lit treatment as the rest of the vivarium. It is not a frog or a toad: four legs, a rounded back, a short blunt muzzle. (2) In the four module headers, remove the small readout boxes that show digits or dots (\"0.00\", \"....\", \"300\" and the empty one), leaving the engraved label and the status lamp only. (3) The pod rack shows exactly six round wells in one row: three holding the green, blue and violet seed-pods, three empty.\nText stays exactly as it is in Image 1; add no text.\nConstraints: change nothing else; same camera, same palette, same clean painted light; no new objects, labels, icons or creatures.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted rich Pip, the exact creature to put inside the cream ring in place of the current one.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round2/A-r2-a3-canvas.png",
+      "role": "edit target: the round 2 near-pass",
+      "sha256": "e57a88b2ac769850412c7444693d7b1aaa0fec4166b65fec9a940c1ceb38e381"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: the creature to paint inside the ring, exactly",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T05:32:02Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/A-r3-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "248a819b4b0fe3d0309fa8e9a7b33999723b690d8f7a7a1b72d5702268a925c1"
+    },
+    "png": {
+      "file": "A-r3-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "5f6c764fc53e1431b592b53671a5a5f52a8b99793e70e73f0641a479a2bad15d"
+    },
+    "screen": {
+      "file": "A-r3-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 23.1,
+    "usage": {
+      "promptTokenCount": 973,
+      "candidatesTokenCount": 1417,
+      "totalTokenCount": 2614,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 457
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 224,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept: recommended candidate (rich Pip in place, digits removed; eight wells remain)"
+  }
+}

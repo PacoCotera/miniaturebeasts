@@ -1,0 +1,105 @@
+{
+  "id": "two-pane",
+  "direction": "C",
+  "round": 1,
+  "attempt": 2,
+  "tag": "C-r1-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station HOME screen concept, a flat screen design that fills the whole 16:9 canvas edge to edge (the outer 2 percent at left and right is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands, no table. Design at 1024x600 first: large shapes, few words, nothing smaller than 14 px type.\nSTYLE: the approved Station look: softly sculpted volumes, one key light from the upper left, clean three or four step shading, crisp edges, generous space, no noise, grain or texture spray. The Station is a hardware research instrument, not a room or a cottage. Its chrome is cool and precise: matte dark slate and teal-grey panels, thin engraved rules, small round status lamps, engraved labels, readouts drawn as objects. The vivarium is the only warm, saturated, lively element. Full resolution: smooth volumes and real highlights; pixels may be hinted at the edges but no visible pixel grid.\nLAYOUT: a thin dark top bar (40 px) and a thin dark bottom line (38 px). Between them TWO PANES divided by one thin engraved vertical rule. LEFT PANE, about 55 percent of the width: the vivarium as a deep glass specimen window filling the pane; the focused resident, Pip, large, about 340 px tall, exactly the supplied Pip, under a warm instrument lamp cone, standing on moss with ferns and a small pool behind; four thin cream corner brackets around Pip; under Pip the name. Small in the shade: a glowtail (teal lizard-like mibi, glowing tail tip) at the left edge, a puffcap (round red-capped mibi with cream spots) at the right edge, and a small empty felt bed with a tiny grey Companion-shaped mark. RIGHT PANE, about 45 percent: a cool slate INSTRUMENT READOUT in four rows, each row one drawn object on a slate plate, larger than usual, with one engraved label and one round status lamp: a SAMPLE BAY hatch with two sealed wooden crates wearing small place stamps and one empty slot; a POD TRAY of six round cups, three holding smooth seed-pods (green, blue, violet), three empty; an INCUBATOR glass dome with a small embryo glowing green inside and five leaf shapes around its plate, two filled bright; a PROBE DOCK, an empty cradle with three Shield plates, two lit and one dark.\nTEXT, exactly these and nothing else, cream type on dark: top bar left \"Home  T5\"; top bar centre three small icons with counts, an amber energy crystal \"9\", a blue data chip \"4\", a green essence droplet \"6\"; top bar right \"Companion away · with Dot\". Under the focused resident \"Pip\" large and \"hopper · adult\" small. Bottom line: orange \"✓ Look at Pip\" at left, grey \"Pip · hopper · adult\" in the middle, grey \"a puffcap pod waits · needs 2\" with a small green droplet at right.\nConstraints: no tables, no panels with title bars, no bullet lists, no digits as timers or counts on the bench, no percentages, graphs, DNA helices, letters for genes or progress bars; no logos or wordmarks; no other creatures than the three residents; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted rich Pip: the focused resident's identity and sculpted treatment (charcoal body, cream belly, orange eyes with cream rings, three green leaf crown lobes, plain coat, three-quarter pose). Image 2 is the approved Station concept: take its light model, cleanliness and clean stepped shading, not its layout or content. Image 3 is the approved flat Station screen: take its header grammar (small icons with counts: blue data chip, amber energy crystal, green essence droplet) and its type colours (cream on dark, amber for a need), not its layout.",
+  "imageInputs": [
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "accepted rich Pip: identity and sculpted treatment for the focused resident",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "path": "art/concept-homepage/station-research-hands.png",
+      "role": "approved Station concept: light model, cleanliness, clean shading; not layout",
+      "sha256": "9e7d644208f978d10e0335ababe7a8c561a25aa126d000919b8aee11ecfecd6a"
+    },
+    {
+      "path": "art/concept-homepage/station-research-pod.png",
+      "role": "approved flat Station screen: header icon grammar and type colours; not layout",
+      "sha256": "596bdabb9224b0155276ffaf37eeb1baf429e4a2dff58e6dae6881b2a76a2110"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T05:25:40Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "1e5d45e00b5a9b50fa55d4fe00f0f70b285d8e54153e854846760d2b7fadca30",
+      "note": "Original JPEG not stored to limit repository size (rejected candidate); the PNGs are LANCZOS resamples of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "C-r1-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "28baedce18f7a1fe47fda622af79e19513bd7b26a320d80853a036ccda66fbeb"
+    },
+    "screen": {
+      "file": "C-r1-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "3fe6b84cf8a1c121bf52a64d3112c12cceb2ea44dbdefc55f19a2baa7e356332",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "reason": "the whole canvas is the screen; dark chrome defeats margin detection; 2 percent bleed trimmed at each side"
+      },
+      "resample": "LANCZOS",
+      "supersedes": {
+        "cropRect": {
+          "x": 1693,
+          "y": 265,
+          "width": 1034,
+          "height": 606
+        },
+        "detection": "auto"
+      }
+    },
+    "finishReason": "STOP",
+    "seconds": 26.8,
+    "usage": {
+      "promptTokenCount": 1677,
+      "candidatesTokenCount": 1822,
+      "totalTokenCount": 3923,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 903
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 774
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 424,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected (Pip pose wrong; eight wells; boxed Confirm; direction not chosen)"
+  }
+}
