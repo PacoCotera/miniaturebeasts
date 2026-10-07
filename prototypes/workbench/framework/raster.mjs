@@ -92,31 +92,32 @@ export function render(scene, camera, pass = "shaded", options = {}) {
         let slot = node.slot;
         let pigment = palette.length === 1 ? palette[0] : meanU < 0.5 ? palette[0] : palette[1];
         let slotKey = palette.length === 1 ? slot : `${slot}-${meanU < 0.5 ? 1 : 2}`;
-        let marked = false;
+        let marked = false, field = null;
+        const mark = (name) => { if (!options.field || options.field === name) { marked = true; field = name; } };
         if (region) {
           const lp = localPoint(node, centre);
           const vAngle = (Math.atan2(lp[2] / node.radii[2], lp[1] / node.radii[1]) / (2 * Math.PI) + 1) % 1;
-          if (scene.belly && scene.slots.belly && lp[2] < -0.35 * node.radii[2] && !node.up) { slot = "belly"; pigment = scene.slots.belly[0]; slotKey = "belly"; }
-          if (scene.markings && markingAt(scene.markings, meanU, vAngle)) marked = true;
+          if (scene.belly && scene.slots.belly && lp[2] < -0.35 * node.radii[2] && !node.up) { slot = "belly"; pigment = scene.slots.belly[0]; slotKey = "belly"; if (pass === "markings") mark("belly"); }
+          if (scene.markings && markingAt(scene.markings, meanU, vAngle)) mark("coat");
         }
         if (node.role === "thin-surface" && scene.flapMarking && node.part === "flap") {
           const spots = scene.flapMarking !== "bars", bars = scene.flapMarking !== "spots";
-          if ((spots && Math.abs(meanU - 0.6) < 0.12) || (bars && Math.abs(meanU - 0.35) < 0.06)) marked = true;
+          if ((spots && Math.abs(meanU - 0.6) < 0.12) || (bars && Math.abs(meanU - 0.35) < 0.06)) mark("flaps");
         }
         if (node.part === "head" && scene.mask && scene.slots.mask) {
           const lp = localPoint(node, centre);
           const inMask = scene.mask === "band" ? lp[0] < -0.25 * node.radii[0] && Math.abs(lp[2]) < 0.45 * node.radii[2] : lp[0] < -0.3 * node.radii[0] && Math.abs(lp[1]) < 0.22 * node.radii[1];
-          if (inMask) { slot = "mask"; pigment = scene.slots.mask[0]; slotKey = "mask"; }
+          if (inMask) { slot = "mask"; pigment = scene.slots.mask[0]; slotKey = "mask"; if (pass === "markings") mark("mask"); }
         }
         if (node.part === "tail" && scene.tailRings && node.role === "axial-tail") {
           const n = scene.tailRings;
           const ring = n === 1 ? meanU > 0.78 : Array.from({ length: n }, (_, k) => (k + 1) / (n + 1)).some((c) => Math.abs(meanU - c) < 0.5 / (n + 1) * 0.45);
-          if (ring) { slot = "second"; pigment = scene.slots.second[0]; slotKey = "ring"; }
+          if (ring) { slot = "second"; pigment = scene.slots.second[0]; slotKey = "ring"; if (pass === "markings") mark("rings"); }
         }
-        if (node.part === "shell" && scene.shellPlates) { const lp = localPoint(node, centre); if ((Math.floor((lp[0] / node.radii[0] + 1) * 3) + Math.floor((lp[1] / node.radii[1] + 1) * 3)) % 2 === 0) marked = true; }
-        if (node.part === "cap" && scene.capSpots) { const lp = localPoint(node, centre); if (Math.abs(((lp[0] / node.radii[0]) * 3) % 1 - 0.5) < 0.2 && Math.abs(((lp[1] / node.radii[1]) * 3 + 0.5) % 1 - 0.5) < 0.2) marked = true; }
+        if (node.part === "shell" && scene.shellPlates) { const lp = localPoint(node, centre); if ((Math.floor((lp[0] / node.radii[0] + 1) * 3) + Math.floor((lp[1] / node.radii[1] + 1) * 3)) % 2 === 0) mark("shell"); }
+        if (node.part === "cap" && scene.capSpots) { const lp = localPoint(node, centre); if (Math.abs(((lp[0] / node.radii[0]) * 3) % 1 - 0.5) < 0.2 && Math.abs(((lp[1] / node.radii[1]) * 3 + 0.5) % 1 - 0.5) < 0.2) mark("cap"); }
         if (pass === "slots") colour = slotColours[slot] ? slotColours[slot].map((c, i) => (slotKey.endsWith("-2") ? Math.round(c * 0.7) : c)) : [128, 128, 128];
-        else if (pass === "markings") colour = marked ? [255, 255, 255] : [0, 0, 0];
+        else if (pass === "markings") colour = marked && (!options.field || field === options.field) ? [255, 255, 255] : [0, 0, 0];
         else {
           const base = node.ink ? hex(node.ink) : hex(pigment);
           const lambert = Math.max(0, dot(n, LIGHT));
@@ -170,6 +171,25 @@ function fillPolygon(poly, colour, facing, opacity, rgb, depth, index, nodeId, W
       }
     }
   }
+}
+
+// The marking fields a body carries, each rendered as its own mask by render(..., "markings", { field }).
+export function markingFields(scene) {
+  const fields = [];
+  if (scene.markings) fields.push("coat");
+  if (scene.flapMarking) fields.push("flaps");
+  if (scene.capSpots) fields.push("cap");
+  if (scene.mask) fields.push("mask");
+  if (scene.tailRings) fields.push("rings");
+  if (scene.shellPlates) fields.push("shell");
+  if (scene.belly) fields.push("belly");
+  return fields;
+}
+// The pigment slots a body carries, with the flat colours the slot map uses for them.
+export function slotLegend(scene) {
+  const names = Object.keys(scene.slots).filter((k) => scene.slots[k]);
+  const flat = [[220, 80, 60], [60, 140, 220], [240, 230, 200], [40, 40, 50], [230, 150, 60], [255, 240, 120], [90, 180, 90], [200, 120, 200]];
+  return names.map((name, i) => ({ slot: name, pigments: scene.slots[name], flat: flat[i % 8], secondHalf: scene.slots[name].length > 1 ? flat[i % 8].map((c) => Math.round(c * 0.7)) : null }));
 }
 
 // Silhouette as a bit mask (1 = body), fitted and centred in a square of `n` pixels.

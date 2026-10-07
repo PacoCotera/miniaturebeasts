@@ -41,4 +41,21 @@ See [framework/census.md](framework/census.md) for the current table.
 
 ![The 16 type specimens as 48 px silhouettes, three-quarter over side](img/silhouettes-48.png)
 
-Milestones 2 to 4 (the sketch renderer, the page, the full README) follow.
+## Milestone 2: the structural sketch
+
+`sketch/sketch.mjs` renders one body deterministically to the views and passes stage 2 consumes; `sketch/cli.mjs` writes them under `out/sketch/<species>/<individual>/` with a manifest.
+
+- **Views:** front, side, three-quarter (lit from the top left), top.
+- **Sizes:** the 48 px tile, the Companion subject at 280×300, the Station at 300×310 and a larger 600×620.
+- **Passes per view and size:** `shaded` (flat fills by pigment slot with one light, markings as a lighter field), `slots` (every pigment slot as a flat colour, both halves of a split slot; the legend is in the manifest), `index` (one flat colour per part: region, head, leg-0, tail…), `markings-<field>` (one black-and-white mask per marking field the body carries: coat, flaps, cap, mask, rings, shell, belly), `silhouette` (black on white at the tile, Companion and Station sizes).
+- **One camera rig per species:** cameras are fitted once to the species' type specimen and reused for every individual, so individuals keep their relative size; an individual that overflows is clipped and flagged in the manifest, never rescaled.
+- **Same genome, same bytes:** the rasterizer is integer-exact (no anti-aliasing; flap translucency and a charged body's phase are an ordered dither); `--verify` renders twice and compares every PNG's SHA-256, and `tests/sketch.test.mjs` does the same in process.
+- **The manifest** (`manifest.json`) follows art-pipeline.md §3: level, id, version, the genome and its digest, frame version, catalogue pin, sketcher version and sketch hash, slot legend, marking fields, states, one entry per output with its SHA-256; prompt, references, model, critique and sign-off are empty slots for stage 2 onwards. `genome.json` sits beside it.
+
+```sh
+node sketch/cli.mjs --species S03 --verify     # the type specimen, rendered twice and compared
+node sketch/cli.mjs --species S06 --seed 7     # a random individual
+node sketch/cli.mjs --all                      # every species' type specimen: 16 sets, about ten seconds
+```
+
+Milestones 3 and 4 (the page, the full README with screenshots) follow.
