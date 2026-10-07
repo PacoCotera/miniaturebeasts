@@ -22,12 +22,25 @@
 
 Wireframes give layout only. Their material notes (wood, felt, a bench lamp) give way to the instrument above.
 
+## Four rooms, four vibes
+
+One device, four functions, and each communicates its own mood. Type, counters, the bottom line and the light direction are shared; the materials and the feeling are not.
+
+| Room | Screens | Vibe |
+| --- | --- | --- |
+| **Overview** | Home's frame, Dock and arrival | Industrial, plasticky: it mimics the hardware in the hand |
+| **Research bench** | Pods, Create, Incubator, Probe bench | A modern digital lab: glass, light or deep panes, precise readouts, the instrument lamp |
+| **Vivarium** | Home's living window, Habitat, idle | A place you want to put your pets and see them cozy and happy |
+| **Library** | Library | A botanical tome: paper, plates, pressed specimens, a hand that catalogues |
+
 <table><tr><td valign="top"><img src="../../art/concept-homepage/station-research-hands.png" width="480" alt="Station research concept"><br><em>station-research-hands: the quality bar. Approved concept, generated. Keep the light and shading; carry far more.</em></td>
 <td valign="top"><img src="../../art/concept-homepage/station-known-forms.png" width="420" alt="Station known forms concept"><br><em>station-known-forms: rich creatures at Station size. Approved concept, generated.</em></td></tr></table>
 
 ---
 
 ## Home
+
+**Vibe.** Overview: the frame is the hardware, industrial and plasticky; the window is the vivarium, cozy and alive.
 
 **Purpose.** The always-on view: the collection alive, the equipment's state. **Reads first:** the residents, then whatever needs you (the bottom line's right part).
 
@@ -56,6 +69,8 @@ Wireframes give layout only. Their material notes (wood, felt, a bench lamp) giv
 
 ## Dock and arrival
 
+**Vibe.** Overview: hardware, the Companion seated in the dock, crates and a bay door.
+
 **Purpose.** Cargo arrives when the Companion docks and the player opens the bay. **Reads first:** how many crates are in the bay, then the ribbon.
 
 - **Instrument.** The sample bay leads: docked, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks, pods travel along a rail into the rack's wells, the counters tick, the Probe dock shows the free mend, a ribbon reads "Expedition 4 home · 2 pods · explored 9 of 21", the world turn jumps.
@@ -82,6 +97,8 @@ Wireframes give layout only. Their material notes (wood, felt, a bench lamp) giv
 ---
 
 ## Pods
+
+**Vibe.** Research bench: a modern digital lab.
 
 **Purpose.** Identify a pod, study its trait windows, compare, return. **Reads first:** the pod and its name.
 
@@ -116,6 +133,8 @@ Wireframes give layout only. Their material notes (wood, felt, a bench lamp) giv
 
 ## Create (the review)
 
+**Vibe.** Research bench: a modern digital lab.
+
 **Purpose.** Shape a founder and see its cost. **Reads first:** the founder.
 
 - **Living window.** The founder large in a specimen chamber at the centre, at 300×310 or larger, rich treatment. Wherever a window is frosted, that part stays misty: a cool frost over the body, never a guess.
@@ -141,6 +160,8 @@ Wireframes give layout only. Their material notes (wood, felt, a bench lamp) giv
 ---
 
 ## Incubator
+
+**Vibe.** Research bench: a modern digital lab, with the chamber's glow as the one warm thing.
 
 **Purpose.** Watch the embryo grow and open it. **Reads first:** the embryo, then how many leaves remain.
 
@@ -168,6 +189,8 @@ Wireframes give layout only. Their material notes (wood, felt, a bench lamp) giv
 
 ## Library
 
+**Vibe.** Library: a botanical tome.
+
 **Purpose.** Species, the looks found so far, and lineage. **Reads first:** the focused species' portrait and name.
 
 - **Living window.** The species portrait: one resident of that species in rich treatment, doing its habit (dig, glow, puff).
@@ -194,6 +217,8 @@ Wireframes give layout only. Their material notes (wood, felt, a bench lamp) giv
 
 ## Habitat
 
+**Vibe.** Vivarium: cozy, warm, the pet happy at home.
+
 **Purpose.** One resident up close: spend time, take it with you, bond. **Reads first:** the resident.
 
 - **Living window.** The resident large (300×310 or larger) in its corner of the vivarium, rich treatment, doing its species moment on Spend time.
@@ -219,6 +244,8 @@ Wireframes give layout only. Their material notes (wood, felt, a bench lamp) giv
 ---
 
 ## Probe bench
+
+**Vibe.** Research bench: a modern digital lab, the Probe on a service cradle.
 
 **Purpose.** Mend and upgrade the Probe. **Reads first:** the Shield plates.
 
@@ -251,6 +278,8 @@ No wireframe; the layout reference is the sketch in the [Station screens proposa
 ---
 
 ## Idle
+
+**Vibe.** Vivarium: the pets at ease, nothing asking for you.
 
 **Purpose.** The Station at rest, always on. **Reads first:** the residents.
 
