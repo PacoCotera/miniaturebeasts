@@ -1,0 +1,954 @@
+// Copied from prototypes/genome-ring/src/catalogue-data.mjs (generated there from the real catalogue). Do not edit.
+export const CATALOGUE = {
+ "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#INNATE_CATALOGUE",
+ "id": "genomic-compositional-source-experiment",
+ "version": 6,
+ "digest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+ "drafts": [
+  "development.volume-network",
+  "appearance.transparency",
+  "movement.burst-recruitment",
+  "energy.recovery-profile",
+  "energy.uptake-profile",
+  "energy.rest-response"
+ ],
+ "loci": [
+  {
+   "id": "development.axial-repeat",
+   "alleles": [
+    "single",
+    "chain"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "development.symmetry",
+   "alleles": [
+    "bilateral",
+    "radial"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "development.attachment-repeat",
+   "alleles": [
+    "none",
+    "multiple"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "development.articulated-chain",
+   "alleles": [
+    "unlinked",
+    "linked"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "development.membrane-rooting",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "development.fin-rooting",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "development.axial-deformation",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "structure.body-length",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.body-width",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.body-height",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.body-taper",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.axial-spacing",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.attachment-position",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.proximal-length",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.distal-length",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.joint-range",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.contact-width",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.membrane-span",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.membrane-flexibility",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.fin-span",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.material-density",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.body-palette",
+   "alleles": [
+    "charcoal",
+    "russet",
+    "jade",
+    "lagoon",
+    "cobalt",
+    "periwinkle",
+    "plum",
+    "raspberry",
+    "coral",
+    "marigold"
+   ],
+   "operator": "partition-map"
+  },
+  {
+   "id": "appearance.underside-palette",
+   "alleles": [
+    "cream",
+    "slate",
+    "milk-mint",
+    "ice",
+    "butter",
+    "peach"
+   ],
+   "operator": "partition-map"
+  },
+  {
+   "id": "appearance.marking-switch",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "recessive-enable"
+  },
+  {
+   "id": "appearance.marking-layout",
+   "alleles": [
+    "bands",
+    "patches"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "appearance.marking-extent",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.marking-scale",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.marking-orientation",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.marking-contrast",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.surface-texture",
+   "alleles": [
+    "smooth",
+    "ridged"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "movement.contact-phase",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "movement.cycle-rate",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "movement.stride-preference",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "movement.turn-control",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "movement.axial-amplitude",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "movement.axial-phase",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "movement.membrane-stroke",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "movement.membrane-coordination",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "movement.fin-steering",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "energy.actuator-capacity",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "energy.reserve-capacity",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "energy.action-efficiency",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.ocular-pair",
+   "alleles": [
+    "absent",
+    "paired"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "structure.ocular-placement",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "structure.ocular-size",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.covering-kind",
+   "alleles": [
+    "skin",
+    "scales"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "appearance.covering-extent",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.covering-scale",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "development.regional-growth",
+   "alleles": [
+    "even",
+    "central",
+    "anterior"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "structure.join-neck-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "anatomy.posterior-presence",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "anatomy.muzzle-presence",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "anatomy.crown-presence",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "anatomy.wing-presence",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "anatomy.exterior-eye-presence",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "anatomy.support-pair-count",
+   "alleles": [
+    "two",
+    "three"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "anatomy.crown-form",
+   "alleles": [
+    "rounded",
+    "pointed"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "growth.core-half-length",
+   "alleles": [
+    "small",
+    "medium",
+    "large"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.core-width-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.core-depth-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.head-length-ratio",
+   "alleles": [
+    "small",
+    "medium",
+    "large"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.head-width-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.head-depth-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.head-lift-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.muzzle-projection-ratio",
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.muzzle-width-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.support-drop-ratio",
+   "alleles": [
+    "short",
+    "medium",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.support-splay-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.support-radius-ratio",
+   "alleles": [
+    "fine",
+    "slender",
+    "stout"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.terminal-length-ratio",
+   "alleles": [
+    "small",
+    "narrow",
+    "broad"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.terminal-depth-ratio",
+   "alleles": [
+    "small",
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.posterior-length-ratio",
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.posterior-width-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.exterior-eye-size-ratio",
+   "alleles": [
+    "small",
+    "large"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.exterior-eye-spacing-ratio",
+   "alleles": [
+    "close",
+    "wide"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.crown-height-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.wing-span-ratio",
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.wing-chord-ratio",
+   "alleles": [
+    "narrow",
+    "wide"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.wing-sweep-ratio",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.anatomical-covering",
+   "alleles": [
+    "skin",
+    "scales"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "appearance.anatomical-covering-extent",
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.anatomical-scale-size",
+   "alleles": [
+    "fine",
+    "coarse"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "organization.region-depth",
+   "alleles": [
+    "one",
+    "two",
+    "three"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "organization.region-layout",
+   "alleles": [
+    "serial",
+    "fan"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "organization.body-symmetry",
+   "alleles": [
+    "bilateral",
+    "radial"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "organization.region-join",
+   "alleles": [
+    "broad",
+    "narrow"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "organization.head-module",
+   "alleles": [
+    "plain",
+    "head"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "organization.appendage-role",
+   "alleles": [
+    "none",
+    "free",
+    "contact"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "organization.appendage-groups",
+   "alleles": [
+    "zero",
+    "one",
+    "two",
+    "three"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "organization.free-link-count",
+   "alleles": [
+    "one",
+    "two"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "growth.region-bend",
+   "alleles": [
+    "down",
+    "up"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.region-taper",
+   "alleles": [
+    "strong",
+    "gentle"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.branch-angle",
+   "alleles": [
+    "close",
+    "wide"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.join-throat-ratio",
+   "alleles": [
+    "thin",
+    "broad"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.free-proximal-ratio",
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.free-distal-ratio",
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.free-radius-ratio",
+   "alleles": [
+    "fine",
+    "thick"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.radial-cross-radius",
+   "alleles": [
+    "slender",
+    "broad"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "anatomy.region-cross-exponent",
+   "alleles": [
+    "round",
+    "rounded-square"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "anatomy.region-longitudinal-form",
+   "alleles": [
+    "ovoid",
+    "barrel",
+    "tapered"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "anatomy.contact-terminal-form",
+   "alleles": [
+    "rounded",
+    "pad",
+    "wedge"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "appearance.fur-presence",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "appearance.fur-length",
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "appearance.fur-flow",
+   "alleles": [
+    "axial",
+    "oblique"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "anatomy.auricular-presence",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "anatomy.auricular-form",
+   "alleles": [
+    "rounded",
+    "pointed"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "growth.auricular-length-ratio",
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "anatomy.axial-tail-presence",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "growth.axial-tail-length-ratio",
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.axial-tail-width-ratio",
+   "alleles": [
+    "fine",
+    "broad"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "growth.axial-tail-bend",
+   "alleles": [
+    "down",
+    "up"
+   ],
+   "operator": "copy-mean"
+  },
+  {
+   "id": "cognition.innate-profile-presence",
+   "alleles": [
+    "off",
+    "on"
+   ],
+   "operator": "dominant-enable"
+  },
+  {
+   "id": "cognition.exploration-tendency",
+   "alleles": [
+    "reserved",
+    "seeking"
+   ],
+   "operator": "pair-map"
+  },
+  {
+   "id": "cognition.arousal-threshold",
+   "alleles": [
+    "low",
+    "high"
+   ],
+   "operator": "copy-mean"
+  }
+ ]
+};

@@ -1,0 +1,1522 @@
+{
+ "N": 50,
+ "NS": 30,
+ "table": {
+  "screen|hopper|clean|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3271
+  },
+  "screen|hopper|rot|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3105
+  },
+  "screen|hopper|persp15|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2753
+  },
+  "screen|hopper|persp35|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2553
+  },
+  "screen|hopper|persp45|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2375
+  },
+  "screen|hopper|blur|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2603
+  },
+  "screen|hopper|jpeg|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2817
+  },
+  "screen|hopper|light|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2549
+  },
+  "screen|hopper|mono|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2283
+  },
+  "screen|hopper|glare|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2553
+  },
+  "screen|hopper|warm|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2357
+  },
+  "screen|hopper|inkjet|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2699
+  },
+  "screen|hopper|all|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2949
+  },
+  "screen|hopper|owner|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3350
+  },
+  "screen|hopper|clean|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1383
+  },
+  "screen|hopper|rot|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1503
+  },
+  "screen|hopper|persp15|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1413
+  },
+  "screen|hopper|persp35|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1455
+  },
+  "screen|hopper|persp45|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1443
+  },
+  "screen|hopper|blur|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1451
+  },
+  "screen|hopper|jpeg|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1601
+  },
+  "screen|hopper|light|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1447
+  },
+  "screen|hopper|mono|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1206
+  },
+  "screen|hopper|glare|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1147
+  },
+  "screen|hopper|warm|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1177
+  },
+  "screen|hopper|inkjet|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1731
+  },
+  "screen|hopper|all|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1693
+  },
+  "screen|hopper|owner|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1587
+  },
+  "screen|hopper|clean|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1167
+  },
+  "screen|hopper|rot|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1136
+  },
+  "screen|hopper|persp15|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 982
+  },
+  "screen|hopper|persp35|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1011
+  },
+  "screen|hopper|persp45|120": {
+   "n": 50,
+   "ok": 49,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 1
+   },
+   "ms": 970
+  },
+  "screen|hopper|blur|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1168
+  },
+  "screen|hopper|jpeg|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1299
+  },
+  "screen|hopper|light|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1090
+  },
+  "screen|hopper|mono|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 910
+  },
+  "screen|hopper|glare|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 983
+  },
+  "screen|hopper|warm|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 924
+  },
+  "screen|hopper|inkjet|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1240
+  },
+  "screen|hopper|all|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1356
+  },
+  "screen|hopper|owner|120": {
+   "n": 50,
+   "ok": 49,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 1
+   },
+   "ms": 1319
+  },
+  "print|hopper|16|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1769
+  },
+  "print|hopper|16|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1292
+  },
+  "print|hopper|20|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2004
+  },
+  "print|hopper|20|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1485
+  },
+  "print|hopper|30|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2354
+  },
+  "print|hopper|30|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1821
+  },
+  "trio|hopper": {
+   "n": 25,
+   "ok": 25,
+   "fa": 0,
+   "errors": {},
+   "ms": 0
+  },
+  "sweepD|hopper|clean|100": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 638
+  },
+  "sweepD|hopper|all|100": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 706
+  },
+  "sweepD|hopper|clean|80": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 711
+  },
+  "sweepD|hopper|all|80": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 727
+  },
+  "sweepD|hopper|clean|64": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 495
+  },
+  "sweepD|hopper|all|64": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 556
+  },
+  "sweepMM|hopper|10|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 938
+  },
+  "sweepMM|hopper|10|6": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 905
+  },
+  "sweepMM|hopper|12|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1061
+  },
+  "sweepMM|hopper|12|6": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 629
+  },
+  "sweepMM|hopper|14|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 974
+  },
+  "sweepMM|hopper|14|6": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 745
+  },
+  "stress|hopper|blur2.5|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 824
+  },
+  "stress|hopper|blur3|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 872
+  },
+  "stress|hopper|blur4|200": {
+   "n": 30,
+   "ok": 0,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 30
+   },
+   "ms": 1113
+  },
+  "stress|hopper|jpeg25|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1177
+  },
+  "stress|hopper|jpeg15|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1131
+  },
+  "stress|hopper|tilt55|200": {
+   "n": 30,
+   "ok": 26,
+   "fa": 0,
+   "errors": {
+    "no read: no stamp found": 4
+   },
+   "ms": 589
+  },
+  "stress|hopper|tilt65|200": {
+   "n": 30,
+   "ok": 27,
+   "fa": 0,
+   "errors": {
+    "no read: no stamp found": 3
+   },
+   "ms": 609
+  },
+  "stress|hopper|noise|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 824
+  },
+  "stress|hopper|dim|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 689
+  },
+  "screen|glowtail|clean|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2006
+  },
+  "screen|glowtail|rot|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2216
+  },
+  "screen|glowtail|persp15|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2059
+  },
+  "screen|glowtail|persp35|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2057
+  },
+  "screen|glowtail|persp45|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1927
+  },
+  "screen|glowtail|blur|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2345
+  },
+  "screen|glowtail|jpeg|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2449
+  },
+  "screen|glowtail|light|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1987
+  },
+  "screen|glowtail|mono|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1824
+  },
+  "screen|glowtail|glare|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1857
+  },
+  "screen|glowtail|warm|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1909
+  },
+  "screen|glowtail|inkjet|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2410
+  },
+  "screen|glowtail|all|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2490
+  },
+  "screen|glowtail|owner|300": {
+   "n": 50,
+   "ok": 49,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 1
+   },
+   "ms": 2496
+  },
+  "screen|glowtail|clean|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1393
+  },
+  "screen|glowtail|rot|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1634
+  },
+  "screen|glowtail|persp15|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1536
+  },
+  "screen|glowtail|persp35|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1357
+  },
+  "screen|glowtail|persp45|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1495
+  },
+  "screen|glowtail|blur|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1626
+  },
+  "screen|glowtail|jpeg|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1861
+  },
+  "screen|glowtail|light|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1363
+  },
+  "screen|glowtail|mono|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1170
+  },
+  "screen|glowtail|glare|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1250
+  },
+  "screen|glowtail|warm|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1033
+  },
+  "screen|glowtail|inkjet|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1760
+  },
+  "screen|glowtail|all|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1816
+  },
+  "screen|glowtail|owner|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1726
+  },
+  "screen|glowtail|clean|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1076
+  },
+  "screen|glowtail|rot|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1048
+  },
+  "screen|glowtail|persp15|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1186
+  },
+  "screen|glowtail|persp35|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1240
+  },
+  "screen|glowtail|persp45|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1119
+  },
+  "screen|glowtail|blur|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1159
+  },
+  "screen|glowtail|jpeg|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1300
+  },
+  "screen|glowtail|light|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1100
+  },
+  "screen|glowtail|mono|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 913
+  },
+  "screen|glowtail|glare|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 996
+  },
+  "screen|glowtail|warm|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 958
+  },
+  "screen|glowtail|inkjet|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1063
+  },
+  "screen|glowtail|all|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1286
+  },
+  "screen|glowtail|owner|120": {
+   "n": 50,
+   "ok": 49,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 1
+   },
+   "ms": 1197
+  },
+  "print|glowtail|16|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1796
+  },
+  "print|glowtail|16|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1287
+  },
+  "print|glowtail|20|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1993
+  },
+  "print|glowtail|20|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1555
+  },
+  "print|glowtail|30|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2641
+  },
+  "print|glowtail|30|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2057
+  },
+  "trio|glowtail": {
+   "n": 25,
+   "ok": 25,
+   "fa": 0,
+   "errors": {},
+   "ms": 0
+  },
+  "sweepD|glowtail|clean|100": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 843
+  },
+  "sweepD|glowtail|all|100": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 839
+  },
+  "sweepD|glowtail|clean|80": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 823
+  },
+  "sweepD|glowtail|all|80": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 754
+  },
+  "sweepD|glowtail|clean|64": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 746
+  },
+  "sweepD|glowtail|all|64": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 683
+  },
+  "sweepMM|glowtail|10|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 786
+  },
+  "sweepMM|glowtail|10|6": {
+   "n": 30,
+   "ok": 20,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 10
+   },
+   "ms": 659
+  },
+  "sweepMM|glowtail|12|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1117
+  },
+  "sweepMM|glowtail|12|6": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 709
+  },
+  "sweepMM|glowtail|14|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 980
+  },
+  "sweepMM|glowtail|14|6": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 942
+  },
+  "stress|glowtail|blur2.5|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1058
+  },
+  "stress|glowtail|blur3|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1110
+  },
+  "stress|glowtail|blur4|200": {
+   "n": 30,
+   "ok": 0,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 30
+   },
+   "ms": 1176
+  },
+  "stress|glowtail|jpeg25|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1271
+  },
+  "stress|glowtail|jpeg15|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1127
+  },
+  "stress|glowtail|tilt55|200": {
+   "n": 30,
+   "ok": 29,
+   "fa": 0,
+   "errors": {
+    "no read: no stamp found": 1
+   },
+   "ms": 792
+  },
+  "stress|glowtail|tilt65|200": {
+   "n": 30,
+   "ok": 24,
+   "fa": 0,
+   "errors": {
+    "no read: no stamp found": 6
+   },
+   "ms": 590
+  },
+  "stress|glowtail|noise|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 975
+  },
+  "stress|glowtail|dim|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 750
+  },
+  "screen|future150|clean|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2454
+  },
+  "screen|future150|rot|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2942
+  },
+  "screen|future150|persp15|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2862
+  },
+  "screen|future150|persp35|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2552
+  },
+  "screen|future150|persp45|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2550
+  },
+  "screen|future150|blur|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2679
+  },
+  "screen|future150|jpeg|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2816
+  },
+  "screen|future150|light|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2557
+  },
+  "screen|future150|mono|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2087
+  },
+  "screen|future150|glare|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2276
+  },
+  "screen|future150|warm|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2135
+  },
+  "screen|future150|inkjet|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3052
+  },
+  "screen|future150|all|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2690
+  },
+  "screen|future150|owner|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2983
+  },
+  "screen|future150|clean|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1946
+  },
+  "screen|future150|rot|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2119
+  },
+  "screen|future150|persp15|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2093
+  },
+  "screen|future150|persp35|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2182
+  },
+  "screen|future150|persp45|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2230
+  },
+  "screen|future150|blur|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2227
+  },
+  "screen|future150|jpeg|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2778
+  },
+  "screen|future150|light|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2003
+  },
+  "screen|future150|mono|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1883
+  },
+  "screen|future150|glare|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1819
+  },
+  "screen|future150|warm|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1568
+  },
+  "screen|future150|inkjet|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2148
+  },
+  "screen|future150|all|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2376
+  },
+  "screen|future150|owner|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2643
+  },
+  "screen|future150|clean|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1627
+  },
+  "screen|future150|rot|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1306
+  },
+  "screen|future150|persp15|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1434
+  },
+  "screen|future150|persp35|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1426
+  },
+  "screen|future150|persp45|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1540
+  },
+  "screen|future150|blur|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1533
+  },
+  "screen|future150|jpeg|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1902
+  },
+  "screen|future150|light|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1503
+  },
+  "screen|future150|mono|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1268
+  },
+  "screen|future150|glare|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1178
+  },
+  "screen|future150|warm|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1062
+  },
+  "screen|future150|inkjet|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1548
+  },
+  "screen|future150|all|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2058
+  },
+  "screen|future150|owner|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1838
+  },
+  "print|future150|16|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2427
+  },
+  "print|future150|16|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2027
+  },
+  "print|future150|20|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2790
+  },
+  "print|future150|20|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2241
+  },
+  "print|future150|30|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3363
+  },
+  "print|future150|30|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2767
+  },
+  "trio|future150": {
+   "n": 25,
+   "ok": 25,
+   "fa": 0,
+   "errors": {},
+   "ms": 0
+  },
+  "sweepD|future150|clean|100": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1296
+  },
+  "sweepD|future150|all|100": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1177
+  },
+  "sweepD|future150|clean|80": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1178
+  },
+  "sweepD|future150|all|80": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1105
+  },
+  "sweepD|future150|clean|64": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1133
+  },
+  "sweepD|future150|all|64": {
+   "n": 30,
+   "ok": 9,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 21
+   },
+   "ms": 1158
+  },
+  "sweepMM|future150|10|9": {
+   "n": 30,
+   "ok": 0,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 29,
+    "no read: grid not found": 1
+   },
+   "ms": 1298
+  },
+  "sweepMM|future150|10|6": {
+   "n": 30,
+   "ok": 0,
+   "fa": 0,
+   "errors": {
+    "no read: grid not found": 30
+   },
+   "ms": 529
+  },
+  "sweepMM|future150|12|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1469
+  },
+  "sweepMM|future150|12|6": {
+   "n": 30,
+   "ok": 0,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 26,
+    "no read: grid not found": 4
+   },
+   "ms": 1180
+  },
+  "sweepMM|future150|14|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1428
+  },
+  "sweepMM|future150|14|6": {
+   "n": 30,
+   "ok": 0,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 30
+   },
+   "ms": 1206
+  },
+  "stress|future150|blur2.5|200": {
+   "n": 30,
+   "ok": 2,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 28
+   },
+   "ms": 1150
+  },
+  "stress|future150|blur3|200": {
+   "n": 30,
+   "ok": 0,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 30
+   },
+   "ms": 1165
+  },
+  "stress|future150|blur4|200": {
+   "n": 30,
+   "ok": 0,
+   "fa": 0,
+   "errors": {
+    "no read: grid not found": 30
+   },
+   "ms": 943
+  },
+  "stress|future150|jpeg25|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1629
+  },
+  "stress|future150|jpeg15|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1570
+  },
+  "stress|future150|tilt55|200": {
+   "n": 30,
+   "ok": 25,
+   "fa": 0,
+   "errors": {
+    "no read: no stamp found": 4,
+    "no read: frame not found": 1
+   },
+   "ms": 747
+  },
+  "stress|future150|tilt65|200": {
+   "n": 30,
+   "ok": 18,
+   "fa": 0,
+   "errors": {
+    "no read: no stamp found": 11,
+    "no read: frame not found": 1
+   },
+   "ms": 546
+  },
+  "stress|future150|noise|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1027
+  },
+  "stress|future150|dim|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 788
+  }
+ }
+}
