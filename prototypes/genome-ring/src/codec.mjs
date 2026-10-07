@@ -3,24 +3,25 @@
 // the species' pinned frame (shared-catalogue mode: the ring never carries the
 // catalogue, only the species number and version that pin it).
 //
-// Header (32 bits, the outer dashes): species 12 | version 4 | read mask 8 | CRC-8.
+// Header (40 bits, the outer dashes): species 12 | version 4 | read mask 8 | CRC-16.
 // The CRC covers the 24 header bits and every shown payload bit (inner track,
 // then outer track, read chapters only), so a misread spoke fails the check.
 import { frameFor } from "./frames.mjs";
 
 export const NOTCH_SLOTS = 3; // empty slots at 12 o'clock
-export const MIN_SLOTS = 36; // enough dash slots for one full header copy
-export const HEADER_BITS = 32;
+export const MIN_SLOTS = 44; // enough dash slots for one full header copy
+export const HEADER_BITS = 40;
 
-// CRC-8/AUTOSAR polynomial 0x2F (Hamming distance 4 up to 119 data bits), bitwise.
-export function crc8(bits) {
-  let c = 0xff;
+// CRC-16/CCITT-FALSE (poly 0x1021, init 0xFFFF), bitwise. Hamming distance 4
+// up to 32,751 data bits: every 1-3 wrong spokes in any ring is caught.
+export function crc16(bits) {
+  let c = 0xffff;
   for (const b of bits) {
-    const top = ((c >> 7) & 1) ^ (b & 1);
-    c = (c << 1) & 0xff;
-    if (top) c ^= 0x2f;
+    const top = ((c >> 15) & 1) ^ (b & 1);
+    c = (c << 1) & 0xffff;
+    if (top) c ^= 0x1021;
   }
-  return c ^ 0xff;
+  return c;
 }
 
 const toBits = (v, n) => Array.from({ length: n }, (_, i) => (v >> (n - 1 - i)) & 1);
@@ -76,8 +77,8 @@ export function genomeToBits(frame, genome) {
     }
   }
   const head24 = [...toBits(frame.species, 12), ...toBits(frame.version, 4), ...toBits(mask, 8)];
-  const crc = crc8([...head24, ...tracks[0].filter((b) => b !== null), ...tracks[1].filter((b) => b !== null)]);
-  return { mask, crc, header: [...head24, ...toBits(crc, 8)], inner: tracks[0], outer: tracks[1] };
+  const crc = crc16([...head24, ...tracks[0].filter((b) => b !== null), ...tracks[1].filter((b) => b !== null)]);
+  return { mask, crc, header: [...head24, ...toBits(crc, 16)], inner: tracks[0], outer: tracks[1] };
 }
 
 export function parseHeader(bits) {
@@ -85,7 +86,7 @@ export function parseHeader(bits) {
     species: fromBits(bits.slice(0, 12)),
     version: fromBits(bits.slice(12, 16)),
     mask: fromBits(bits.slice(16, 24)),
-    crc: fromBits(bits.slice(24, 32)),
+    crc: fromBits(bits.slice(24, 40)),
   };
 }
 
@@ -97,7 +98,7 @@ export function bitsToGenome(header, inner, outer) {
   if (h.mask >> frame.chapters.length) return { ok: false, error: "read mask names a missing chapter", header: h };
   const shown = [];
   for (const t of [inner, outer]) for (const b of t) if (b !== null) shown.push(b);
-  if (crc8([...header.slice(0, 24), ...shown]) !== h.crc) return { ok: false, error: "check failed", header: h };
+  if (crc16([...header.slice(0, 24), ...shown]) !== h.crc) return { ok: false, error: "check failed", header: h };
   const copies = {};
   let s = 0;
   for (const [ci, ch] of frame.chapters.entries()) {
@@ -130,7 +131,7 @@ export function ringCode(frame, genome) {
   let h = 0x811c9dc5; // FNV-1a over the shown bits, for a human-comparable tag
   for (const b of [...inner, ...outer]) if (b !== null) h = Math.imul(h ^ b, 0x01000193) >>> 0;
   const hex = (v, n) => v.toString(16).toUpperCase().padStart(n, "0");
-  return `S${frame.species}v${frame.version}-${hex(mask, 2)}-${hex(crc, 2)}-${hex(h >>> 8, 6)}`;
+  return `S${frame.species}v${frame.version}-${hex(mask, 2)}-${hex(crc, 4)}-${hex(h >>> 8, 6)}`;
 }
 
 // Deterministic PRNG (mulberry32) for test genomes.

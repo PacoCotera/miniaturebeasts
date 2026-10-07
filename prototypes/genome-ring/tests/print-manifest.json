@@ -3,7 +3,7 @@
   "n": 1,
   "mm": 40,
   "kind": "colour",
-  "code": "S7v1-7F-17-15324D",
+  "code": "S7v1-7F-D3D3-15324D",
   "genome": {
    "species": 7,
    "version": 1,
@@ -252,7 +252,7 @@
   "n": 2,
   "mm": 30,
   "kind": "colour",
-  "code": "S7v1-77-A0-EA0C9D",
+  "code": "S7v1-77-3158-EA0C9D",
   "genome": {
    "species": 7,
    "version": 1,
@@ -500,7 +500,7 @@
   "n": 3,
   "mm": 25,
   "kind": "colour",
-  "code": "S7v1-75-F1-E39A19",
+  "code": "S7v1-75-2A22-E39A19",
   "genome": {
    "species": 7,
    "version": 1,
@@ -747,7 +747,7 @@
   "n": 4,
   "mm": 20,
   "kind": "colour",
-  "code": "S7v1-6D-E5-3BE185",
+  "code": "S7v1-6D-ABE8-3BE185",
   "genome": {
    "species": 7,
    "version": 1,
@@ -994,7 +994,7 @@
   "n": 5,
   "mm": 18,
   "kind": "colour",
-  "code": "S7v1-7F-FE-B187B5",
+  "code": "S7v1-7F-008A-B187B5",
   "genome": {
    "species": 7,
    "version": 1,
@@ -1243,7 +1243,7 @@
   "n": 6,
   "mm": 16,
   "kind": "colour",
-  "code": "S7v1-3E-15-226BD9",
+  "code": "S7v1-3E-093D-226BD9",
   "genome": {
    "species": 7,
    "version": 1,
@@ -1490,7 +1490,7 @@
   "n": 7,
   "mm": 14,
   "kind": "colour",
-  "code": "S7v1-76-75-54EFD8",
+  "code": "S7v1-76-0D28-54EFD8",
   "genome": {
    "species": 7,
    "version": 1,
@@ -1737,7 +1737,7 @@
   "n": 8,
   "mm": 12,
   "kind": "colour",
-  "code": "S7v1-3B-B7-FA6C93",
+  "code": "S7v1-3B-D8CC-FA6C93",
   "genome": {
    "species": 7,
    "version": 1,
@@ -1984,7 +1984,7 @@
   "n": 9,
   "mm": 30,
   "kind": "caddy",
-  "code": "S7v1-5A-DF-234DD5",
+  "code": "S7v1-5A-8D49-234DD5",
   "genome": {
    "species": 7,
    "version": 1,
@@ -2230,7 +2230,7 @@
   "n": 10,
   "mm": 25,
   "kind": "caddy",
-  "code": "S7v1-6F-5D-C44398",
+  "code": "S7v1-6F-983A-C44398",
   "genome": {
    "species": 7,
    "version": 1,
@@ -2478,7 +2478,7 @@
   "n": 11,
   "mm": 20,
   "kind": "caddy",
-  "code": "S7v1-23-D4-C4351E",
+  "code": "S7v1-23-347A-C4351E",
   "genome": {
    "species": 7,
    "version": 1,
@@ -2723,7 +2723,7 @@
   "n": 12,
   "mm": 16,
   "kind": "caddy",
-  "code": "S7v1-77-76-06C079",
+  "code": "S7v1-77-0E53-06C079",
   "genome": {
    "species": 7,
    "version": 1,
@@ -2971,7 +2971,7 @@
   "n": 13,
   "mm": 14,
   "kind": "caddy",
-  "code": "S7v1-4E-AD-C1E695",
+  "code": "S7v1-4E-B891-C1E695",
   "genome": {
    "species": 7,
    "version": 1,
@@ -3217,7 +3217,7 @@
   "n": 14,
   "mm": 12,
   "kind": "caddy",
-  "code": "S7v1-7F-2A-27FE84",
+  "code": "S7v1-7F-2240-27FE84",
   "genome": {
    "species": 7,
    "version": 1,
@@ -3466,7 +3466,7 @@
   "n": 15,
   "mm": 20,
   "kind": "colour",
-  "code": "S1v1-0F-F8-2FEC61",
+  "code": "S1v1-0F-5109-2FEC61",
   "genome": {
    "species": 1,
    "version": 1,
@@ -3498,7 +3498,7 @@
   "n": 16,
   "mm": 20,
   "kind": "caddy",
-  "code": "S1v1-0F-F8-2FEC61",
+  "code": "S1v1-0F-5109-2FEC61",
   "genome": {
    "species": 1,
    "version": 1,

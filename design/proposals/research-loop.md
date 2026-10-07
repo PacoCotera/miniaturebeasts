@@ -57,7 +57,7 @@ A genome is not one field to research. It has five kinds of part:
 **Fully researched**, at three levels:
 - **Pod:** every chapter that is not sealed has been read. A sealed chapter keeps a notch in the ring until it is opened.
 - **Individual:** a founder inherits its pod's reads, and a shaped trait is known by definition. Incubation clears the rest, so every mibi you grow is fully known. A **bred child** is known only where the Station can be sure, which is where both parents' copies were the same. Everywhere else it shows "one of these" until that chapter is read. That makes reading children a real job, and it teaches heredity without a lesson.
-- **Species:** the Library's **field guide** is complete when every look the species can carry has been seen in a read pod or a mibi. The worked frame has 124 looks across its 57 parts, and the field guide shows them as pictures per trait with a dotted "more?". Seeing every look of a species is a long-term goal. Spotting wonders, the combined traits the owner wants (**Open:** their rules), comes later.
+- **Species:** the Library's **field guide** is complete when every look the species can carry has been seen in a read pod or a mibi. The worked frame has 133 looks across its 57 parts, counted from the catalogue's alleles (the earlier 124 was an estimate), and the field guide shows them as pictures per trait with a dotted "more?". Seeing every look of a species is a long-term goal. Spotting wonders, the combined traits the owner wants (**Open:** their rules), comes later.
 
 **The progress ring on the pod list.** Around each pod in the list, the centre fills when the pod is identified (the frame is known), then one arc per chapter, sized by its trait count, fills when that chapter is read. A star on an arc is the glint (**Decided**, now per chapter): this pod holds a look the species has not shown yet in that chapter. A notch marks a sealed arc. Progress = traits read ÷ traits in chapters that are not sealed. It is shown only as the ring, with no digits (`design/proposals/station-screens.md`, "numbers only where they are prices").
 
@@ -125,7 +125,12 @@ This is a brief for the art director: the art director draws the renderer's mast
 - **Two coloured tracks:** one spoke per heritable part. The inner track holds one copy (from the mother, or the pod's first copy) and the outer track holds the other. A long or short bar marks which look; a part with 3 or more looks takes 2 to 4 spokes.
 - **Sectors:** one per chapter, clockwise from the notch.
 - **Outer dashes:** species number, version and a check.
-- **Payload:** the worked frame needs 69 marks per track. That is 138 heritable bits and 32 header bits: the codec's own packing (one bit per two-look copy) against the species' pinned definition (`v1/prototype/generator-workbench/codec-contract.md`).
+- **Payload:** the worked frame needs 69 marks per track. That is 138 heritable bits and 40 header bits: the codec's own packing (one bit per two-look copy) against the species' pinned definition (`v1/prototype/generator-workbench/codec-contract.md`).
+- **Reader marks** (tested in `prototypes/genome-ring/`):
+  - a solid **rim** around the dashes, which finds the ring and sets its outer radius;
+  - a solid **timing circle** between the tracks, with **one tick per slot**, which corrects perspective and finds every spoke;
+  - a **notch** of 3 empty slots at 12 o'clock, which sets where the ring starts and its direction;
+  - a **40-bit header** (species 12, version 4, read mask 8, **CRC-16**), repeated around the outer dashes and read by vote. The CRC covers the header and every spoke shown.
 - **Size:** a 300 px Station ring gives about 8 px a spoke, and the Caddy can print the same ring if its paper allows about 300 dots (printer **Open**).
 - **The short code stays** (`G7F · CD0 · 3H2`, **Decided**) as the mibi's name, a lookup and not the genome (`art-template.md`).
 

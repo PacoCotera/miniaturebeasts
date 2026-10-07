@@ -8,18 +8,18 @@ This prototype tests whether the genome ring in [research-loop.md §7](../../des
 
 ## The ring as built
 
-The species frame is the worked hopper-like frame on the **real catalogue**: `INNATE_CATALOGUE` v6 in `v1/prototype/generator-workbench/innate-profile-package.mjs`, with 114 validated pairs and 6 drafts. `tools/extract-catalogue.mjs` takes a snapshot of it in `src/catalogue-data.mjs`, which pins it with digest `0cdfdf47…`. `src/frames.mjs` splits the frame as §3–4 require: 57 locked loci and 57 heritable loci in 7 chapters and 24 traits (Coat 11/5, Face 13/5, Shape 11/4, Legs & tail 9/3, Movement 8/3, Stamina 3/2, Temperament 2/2). The split reproduces §7's payload: **69 spokes per track, 62 grey marks and a 32-bit header**. One count differs. These 57 parts carry 133 looks by allele count, where §4 says 124. The chapter assignment is my reconstruction, because the sketch's generator is not in the repo.
+The species frame is the worked hopper-like frame on the **real catalogue**: `INNATE_CATALOGUE` v6 in `v1/prototype/generator-workbench/innate-profile-package.mjs`, with 114 validated pairs and 6 drafts. `tools/extract-catalogue.mjs` takes a snapshot of it in `src/catalogue-data.mjs`, which pins it with digest `0cdfdf47…`. `src/frames.mjs` splits the frame as §3–4 require: 57 locked loci and 57 heritable loci in 7 chapters and 24 traits (Coat 11/5, Face 13/5, Shape 11/4, Legs & tail 9/3, Movement 8/3, Stamina 3/2, Temperament 2/2). The split reproduces §7's payload: **69 spokes per track, 62 grey marks and a 40-bit header**. These 57 parts carry 133 looks by allele count; §4 now uses 133 (its earlier 124 was an estimate). The chapter assignment is my reconstruction, because the sketch's generator is not in the repo.
 
 - **Centre:** a 5×5 glyph derived from the species number.
 - **Grey band:** the locked frame, one mark per bit (62). It is the same for every member, and the decoder does not need it.
 - **Tracks:** the inner track (blue) holds copy 1 and the outer track (red) holds copy 2. Each heritable part has one spoke per bit, packed MSB-first as in the codec contract: two looks take 1 spoke, 3–4 looks take 2, belly colour (6 looks) takes 3 and colour (10 looks) takes 4. A long bar is 1 and a short bar is 0.
 - **Sectors:** one per chapter, clockwise from the notch, with one empty slot between chapters.
-- **Outer dashes:** a 32-bit header made of species 12 bits, version 4, read mask 8 and a CRC-8 (poly 0x2F). The CRC covers the header and every bit the ring shows. The header repeats around the ring (2.3 copies) and is read by vote.
-- **Added for the reader** (the §7 sketch does not show these):
+- **Outer dashes:** a 40-bit header made of species 12 bits, version 4, read mask 8 and a CRC-16 (CCITT, poly 0x1021). The CRC covers the header and every bit the ring shows. The header repeats around the ring (1.9 copies on the worked frame) and is read by vote.
+- **Reader marks** (now in §7 as "Reader marks"):
   - a solid **rim**, used as finder and outer reference;
   - a solid **timing circle** between the tracks, with **one tick per slot**, used for perspective and slot timing;
   - a **notch** of 3 empty slots at 12 o'clock;
-  - at least 36 slots. The worked frame uses 78.
+  - at least 44 slots, so one full header fits. The worked frame uses 78.
 - Every mark is read long-or-short against its own base, never against a fixed threshold. That makes the reading independent of ink, colour and lighting, and a 3-tap Viterbi absorbs blur.
 
 The **Pip proof genome** (`examples/pip.json`, `Cc Rr Pp Mm Ee`: 5 spokes and 12 grey marks) is a second species frame. It decodes too ([`img/pip-300.png`](img/pip-300.png)).
@@ -99,12 +99,11 @@ Scanning shows a genome and never grants anything. The page decodes on the devic
 
 ## Recommendation for §7
 
-**§7 as written meets the targets at 20 mm: 100% at both camera distances, with no change.** Nothing has to change for the 20 mm Caddy print. These are recommendations for the proposal, not changes made to it:
+**§7 meets the targets at 20 mm: 100% at both camera distances.** Items 1 and 2 have been adopted; the rest stay recommendations:
 
-1. **Write the reader's marks into §7.** Add a solid rim, a solid timing circle between the tracks with one tick per slot, a notch of 3 empty slots, a header repeated around the dash ring, and at least 36 slots. The tests depend on all of these.
-2. **Make the check a CRC-16 (a 40-bit header) instead of the CRC-8.** A fully read ring puts 162 bits under the check, which is beyond the 119 bits where CRC-8/0x2F still catches every 2-bit error. Measured: 35 of the 13,041 possible 2-wrong-spoke patterns pass a CRC-8 (0.27%). Odd counts are always caught.
-   - A 40-bit header still fits 1.9 times into the 75 dash slots.
-   - A CRC-16 also makes soft correction safe. Near the limits, most failed reads had at most 2 wrong spokes, all among the 6 least confident: 15 of 24 at 14 mm and 6 px/mm, 11 of 23 at 12 mm and 9 px/mm. Trying the 22 flips of those spokes would lift those cells from about 20% to about 70% and 60%. The false-accept risk would be 22 in 65,536 per misread; with CRC-8 it would be 22 in 256, which is too high.
+1. **Adopted: the reader's marks are in §7.** These are the rim, the timing circle with one tick per slot, the 3-slot notch, and the header repeated around the dash ring.
+2. **Adopted: the check is now a CRC-16, and the header is 40 bits.** A fully read ring puts 162 bits under the check, which is beyond the 119 bits where the earlier CRC-8/0x2F still caught every 2-bit error. Measured: 35 of the 13,041 possible 2-wrong-spoke patterns passed the CRC-8 (0.27%). The CRC-16 catches every 1–3 wrong spokes at any length up to 32,751 bits. The rerun gave the same success rates, with 0 false accepts in 5,100 decodes.
+   - The CRC-16 also makes soft correction safe. This is not built yet. Near the limits, most failed reads had at most 2 wrong spokes, all among the 6 least confident: 15 of 24 at 14 mm and 6 px/mm, 11 of 23 at 12 mm and 9 px/mm. Trying the 22 flips of those spokes would lift those cells from about 20% to about 70% and 60%, at a false-accept risk of 22 in 65,536 per misread.
 3. **Keep the bar width (55% of the slot) and the bar encoding** (long/short against the bar's own base).
    - Wider bars (70%) survive printer dots better: 12 mm at 9 px/mm goes from 23% to 100%.
    - They lose more to coarse camera sampling: 16 mm at 6 px/mm goes from 87% to 53% (30 genomes each).
@@ -118,7 +117,7 @@ Scanning shows a genome and never grants anything. The page decodes on the devic
 | --- | --- |
 | `encode.mjs` | `node encode.mjs examples/hopper.json --size 300 --out ring` → `ring.svg` and `ring.png`. Add `--mm 20 --dpi 203` for the monochrome print, or `--random <seed>` for a random genome. The output is deterministic, byte for byte |
 | `decode.mjs` | `node decode.mjs photo.jpg [--all] [--expect genome.json]` → species, version, read and unread chapters, both copies per shown locus, the check, and ring position. Formats other than PNG go through ImageMagick if it is installed |
-| `src/` | `frames` (species frames), `codec` (bit packing, header, CRC-8, slot plan), `geometry` (layout → marks), `render` (SVG and rasterizer), `decode` (browser-safe), `png` (Node) |
+| `src/` | `frames` (species frames), `codec` (bit packing, header, CRC-16, slot plan), `geometry` (layout → marks), `render` (SVG and rasterizer), `decode` (browser-safe), `png` (Node) |
 | `tests/run.mjs`, `cases.mjs`, `distort.mjs` | The robustness matrix, its conditions, and the distortions (homography camera, blur, lighting, mono, noise, JPEG through ImageMagick) |
 | `tests/scan.html`, `scan-check.mjs`, `print-manifest.json` | The phone scan page, its headless check, and the sheet's expected genomes |
 | `tools/` | Catalogue snapshot, print sheet (PDF writer with no dependencies, plus `pdftoppm` for the PNG), scan-page bundler, README images |

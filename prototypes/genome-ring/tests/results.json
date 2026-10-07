@@ -7,182 +7,182 @@
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4994
+   "ms": 4819
   },
   "screen|rot|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 5259
+   "ms": 5197
   },
   "screen|persp|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 5054
+   "ms": 5303
   },
   "screen|blur|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4720
+   "ms": 4570
   },
   "screen|blurabs|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4717
+   "ms": 4374
   },
   "screen|jpeg|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4561
+   "ms": 4511
   },
   "screen|light|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4007
+   "ms": 4150
   },
   "screen|mono|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3971
+   "ms": 4378
   },
   "screen|geo|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 5056
+   "ms": 4905
   },
   "screen|photo|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4801
+   "ms": 4558
   },
   "screen|all|300": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4917
+   "ms": 5205
   },
   "screen|clean|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 2847
+   "ms": 2921
   },
   "screen|rot|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3252
+   "ms": 3334
   },
   "screen|persp|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3518
+   "ms": 3613
   },
   "screen|blur|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3632
+   "ms": 3432
   },
   "screen|blurabs|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3658
+   "ms": 3952
   },
   "screen|jpeg|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3407
+   "ms": 3348
   },
   "screen|light|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3313
+   "ms": 3252
   },
   "screen|mono|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3360
+   "ms": 3219
   },
   "screen|geo|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4008
+   "ms": 3940
   },
   "screen|photo|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4015
+   "ms": 3828
   },
   "screen|all|200": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4694
+   "ms": 4397
   },
   "screen|clean|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 2889
+   "ms": 2979
   },
   "screen|rot|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 2637
+   "ms": 2665
   },
   "screen|persp|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3164
+   "ms": 2978
   },
   "screen|blur|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3136
+   "ms": 2993
   },
   "screen|blurabs|120": {
    "n": 100,
@@ -191,84 +191,84 @@
    "errors": {
     "check failed": 75
    },
-   "ms": 6037
+   "ms": 5848
   },
   "screen|jpeg|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 2789
+   "ms": 2803
   },
   "screen|light|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 2842
+   "ms": 2661
   },
   "screen|mono|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 2910
+   "ms": 2736
   },
   "screen|geo|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3365
+   "ms": 3216
   },
   "screen|photo|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 2838
+   "ms": 2862
   },
   "screen|all|120": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 3568
+   "ms": 3611
   },
   "print|20|203|9": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4126
+   "ms": 4047
   },
   "print|30|203|9": {
    "n": 100,
    "ok": 100,
    "fa": 0,
    "errors": {},
-   "ms": 4731
+   "ms": 5179
   },
   "sweepD|clean|100": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1146
+   "ms": 1160
   },
   "sweepD|all|100": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1825
+   "ms": 1355
   },
   "sweepD|clean|90": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1243
+   "ms": 1244
   },
   "sweepD|all|90": {
    "n": 40,
@@ -277,14 +277,14 @@
    "errors": {
     "check failed": 1
    },
-   "ms": 1402
+   "ms": 1472
   },
   "sweepD|clean|80": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1268
+   "ms": 1105
   },
   "sweepD|all|80": {
    "n": 40,
@@ -293,14 +293,14 @@
    "errors": {
     "check failed": 4
    },
-   "ms": 1412
+   "ms": 1390
   },
   "sweepD|clean|70": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1148
+   "ms": 1184
   },
   "sweepD|all|70": {
    "n": 40,
@@ -309,7 +309,7 @@
    "errors": {
     "check failed": 8
    },
-   "ms": 1741
+   "ms": 1763
   },
   "sweepD|clean|60": {
    "n": 40,
@@ -318,16 +318,16 @@
    "errors": {
     "check failed": 17
    },
-   "ms": 1625
+   "ms": 1368
   },
   "sweepD|all|60": {
    "n": 40,
-   "ok": 9,
+   "ok": 8,
    "fa": 0,
    "errors": {
-    "check failed": 31
+    "check failed": 32
    },
-   "ms": 2361
+   "ms": 2204
   },
   "sweepMM|10|203|9": {
    "n": 40,
@@ -336,7 +336,7 @@
    "errors": {
     "check failed": 38
    },
-   "ms": 2334
+   "ms": 2063
   },
   "sweepMM|10|203|6": {
    "n": 40,
@@ -345,7 +345,7 @@
    "errors": {
     "unknown species # v#": 40
    },
-   "ms": 1600
+   "ms": 1484
   },
   "sweepMM|12|203|9": {
    "n": 40,
@@ -354,17 +354,17 @@
    "errors": {
     "check failed": 31
    },
-   "ms": 2909
+   "ms": 2756
   },
   "sweepMM|12|203|6": {
    "n": 40,
    "ok": 0,
    "fa": 0,
    "errors": {
-    "unknown species # v#": 30,
-    "check failed": 10
+    "check failed": 25,
+    "unknown species # v#": 15
    },
-   "ms": 1733
+   "ms": 1642
   },
   "sweepMM|14|203|9": {
    "n": 40,
@@ -373,7 +373,7 @@
    "errors": {
     "check failed": 2
    },
-   "ms": 1817
+   "ms": 1621
   },
   "sweepMM|14|203|6": {
    "n": 40,
@@ -382,14 +382,14 @@
    "errors": {
     "check failed": 31
    },
-   "ms": 2044
+   "ms": 1984
   },
   "sweepMM|16|203|9": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1566
+   "ms": 1593
   },
   "sweepMM|16|203|6": {
    "n": 40,
@@ -398,14 +398,14 @@
    "errors": {
     "check failed": 8
    },
-   "ms": 1630
+   "ms": 1764
   },
   "sweepMM|18|203|9": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1620
+   "ms": 1697
   },
   "sweepMM|18|203|6": {
    "n": 40,
@@ -414,28 +414,28 @@
    "errors": {
     "check failed": 3
    },
-   "ms": 1783
+   "ms": 1723
   },
   "sweepMM|20|203|9": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1717
+   "ms": 1695
   },
   "sweepMM|20|203|6": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1269
+   "ms": 1479
   },
   "stress|blur2|200": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1263
+   "ms": 1191
   },
   "stress|blur2.5|200": {
    "n": 40,
@@ -444,26 +444,26 @@
    "errors": {
     "check failed": 14
    },
-   "ms": 1712
+   "ms": 1714
   },
   "stress|blur3|200": {
    "n": 40,
    "ok": 3,
    "fa": 0,
    "errors": {
-    "check failed": 36,
-    "impossible look on appearance.body-palette": 1
+    "check failed": 37
    },
-   "ms": 2708
+   "ms": 2784
   },
   "stress|blur3.5|200": {
    "n": 40,
    "ok": 0,
    "fa": 0,
    "errors": {
-    "unknown species # v#": 40
+    "check failed": 39,
+    "unknown species # v#": 1
    },
-   "ms": 1470
+   "ms": 1750
   },
   "stress|blur4|200": {
    "n": 40,
@@ -472,42 +472,42 @@
    "errors": {
     "unknown species # v#": 40
    },
-   "ms": 1539
+   "ms": 1629
   },
   "stress|jpeg40|200": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1392
+   "ms": 1413
   },
   "stress|jpeg25|200": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1458
+   "ms": 1530
   },
   "stress|jpeg15|200": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1369
+   "ms": 1341
   },
   "stress|tilt25|200": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1423
+   "ms": 1365
   },
   "stress|tilt35|200": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1481
+   "ms": 1398
   },
   "stress|tilt45|200": {
    "n": 40,
@@ -516,28 +516,28 @@
    "errors": {
     "slot count # does not match species (#)": 1
    },
-   "ms": 1547
+   "ms": 1407
   },
   "stress|noise0.05|200": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1254
+   "ms": 1196
   },
   "stress|noise0.1|200": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1182
+   "ms": 1077
   },
   "stress|dim|200": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1088
+   "ms": 1026
   },
   "sweepDPI|20|100|9": {
    "n": 40,
@@ -546,28 +546,28 @@
    "errors": {
     "check failed": 25
    },
-   "ms": 2367
+   "ms": 2472
   },
   "sweepDPI|20|125|9": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1751
+   "ms": 1872
   },
   "sweepDPI|20|150|9": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1610
+   "ms": 1464
   },
   "sweepDPI|20|300|9": {
    "n": 40,
    "ok": 40,
    "fa": 0,
    "errors": {},
-   "ms": 1689
+   "ms": 1509
   }
  }
 }
