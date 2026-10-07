@@ -1,0 +1,422 @@
+{
+ "schema": "mb-taxonomy-examples/1",
+ "examples": [
+  {
+   "id": "algodina-a",
+   "family": "algodina",
+   "speciesNumber": 129,
+   "tier": "early",
+   "seed": 1,
+   "lockedByCheck": [],
+   "attemptsRejected": [],
+   "plan": "B1·L4 · fur",
+   "traits": 10,
+   "chapters": {
+    "Coat": 4,
+    "Legs & tail": 2,
+    "Movement": 2,
+    "Stamina": 2
+   },
+   "sealedChapter": null,
+   "opensWith": null,
+   "openTraits": [
+    "Colour",
+    "Second colour",
+    "Markings",
+    "Fluff",
+    "Legs",
+    "Feet",
+    "Pace",
+    "Stride",
+    "Strength",
+    "Thrift"
+   ],
+   "locked": 93,
+   "lookTraits": 6,
+   "fieldGuideLooks": 84,
+   "genotypes": 2231542016640,
+   "colourPool": [
+    "periwinkle",
+    "cobalt",
+    "plum",
+    "lagoon"
+   ],
+   "pod": {
+    "sizeClass": "medium",
+    "proportion": "squat",
+    "heightToLength": 0.74,
+    "shellPattern": "soft ribs",
+    "colourPair": [
+     {
+      "pigment": "periwinkle",
+      "hex": "#8b7dd8"
+     },
+     {
+      "pigment": "cobalt",
+      "hex": "#4d7ed4"
+     }
+    ]
+   },
+   "glyph": [
+    "#...#",
+    "##.##",
+    "#...#",
+    "..#..",
+    "#...#"
+   ],
+   "viability": {
+    "sampled": 200,
+    "constructed": 200,
+    "rule": "random copies from the species pools at every open locus; built by the workbench resolver"
+   },
+   "nameBrief": {
+    "plan": "round walkers (B1·L4, fur)",
+    "feature": "long round ears",
+    "gait": "walk, hop",
+    "size": "medium",
+    "diet": "fruit",
+    "familyColour": "periwinkle",
+    "forbidden": [
+     "Colour",
+     "Feet",
+     "Fluff",
+     "Legs",
+     "Markings",
+     "Pace",
+     "Second colour",
+     "Strength",
+     "Stride",
+     "Thrift"
+    ]
+   },
+   "brief": "A creature with one tapered body region and one smooth head, one projecting muzzle, two eyes, two rounded smooth ears and four jointed legs with rounded ends. Its body has periwinkle fur; its smooth jointed legs have cream local colour fields. Its body carries two bands."
+  },
+  {
+   "id": "aletia-a",
+   "family": "aletia",
+   "speciesNumber": 161,
+   "tier": "mid",
+   "seed": 1,
+   "lockedByCheck": [
+    "eyes"
+   ],
+   "attemptsRejected": [
+    {
+     "seed": 1,
+     "locked": [],
+     "why": "('aletia-a', 'all-on', [{'code': 'compositional-input', 'path': 'input', 'message': 'Disconnected volume eye--1-rim'}])"
+    }
+   ],
+   "plan": "B3·fins · scales",
+   "traits": 19,
+   "chapters": {
+    "Coat": 3,
+    "Face": 2,
+    "Shape": 5,
+    "Legs & tail": 2,
+    "Movement": 4,
+    "Stamina": 1,
+    "Temperament": 2
+   },
+   "sealedChapter": "Temperament",
+   "opensWith": "a vybronic crystal",
+   "openTraits": [
+    "Colour",
+    "Second colour",
+    "Markings",
+    "Snout",
+    "Crown",
+    "Body",
+    "Hind body",
+    "Back line",
+    "Waist",
+    "Flaps",
+    "Tail",
+    "Tail curl",
+    "Pace",
+    "Turning",
+    "Weave",
+    "Flap",
+    "Strength",
+    "Curiosity",
+    "Nerve"
+   ],
+   "locked": 84,
+   "lookTraits": 12,
+   "fieldGuideLooks": 92,
+   "genotypes": 823564528378596,
+   "colourPool": [
+    "cobalt",
+    "lagoon"
+   ],
+   "pod": {
+    "sizeClass": "large",
+    "proportion": "squat",
+    "heightToLength": 0.62,
+    "shellPattern": "plates",
+    "colourPair": [
+     {
+      "pigment": "cobalt",
+      "hex": "#4d7ed4"
+     },
+     {
+      "pigment": "lagoon",
+      "hex": "#269fa5"
+     }
+    ]
+   },
+   "glyph": [
+    "..#..",
+    ".###.",
+    "##.##",
+    ".#.#.",
+    "#...#"
+   ],
+   "viability": {
+    "sampled": 200,
+    "constructed": 200,
+    "rule": "random copies from the species pools at every open locus; built by the workbench resolver"
+   },
+   "nameBrief": {
+    "plan": "swimmers (B3·fins, scales)",
+    "feature": "a back fin and a tail",
+    "gait": "swim, glide, wriggle ashore",
+    "size": "large",
+    "diet": "fruit",
+    "familyColour": "cobalt",
+    "forbidden": [
+     "Back line",
+     "Body",
+     "Colour",
+     "Crown",
+     "Curiosity",
+     "Flap",
+     "Flaps",
+     "Hind body",
+     "Markings",
+     "Nerve",
+     "Pace",
+     "Second colour",
+     "Snout",
+     "Strength",
+     "Tail",
+     "Tail curl",
+     "Turning",
+     "Waist",
+     "Weave"
+    ]
+   },
+   "brief": "A creature with three linked ovoid body regions and one smooth head, one projecting muzzle, two eyes, two pointed head projections, one smooth tapered tail and two flat flaps. Each body region has cobalt partially scaled skin; its smooth flat flaps have ice local colour fields. Each body region carries two bands."
+  },
+  {
+   "id": "volanta-a",
+   "family": "volanta",
+   "speciesNumber": 193,
+   "tier": "late",
+   "seed": 1,
+   "lockedByCheck": [
+    "eyes",
+    "head"
+   ],
+   "attemptsRejected": [
+    {
+     "seed": 1,
+     "locked": [],
+     "why": "('volanta-a', 'sample-6', [{'code': 'compositional-input', 'path': 'input', 'message': 'Disconnected volume eye--1-rim'}])"
+    },
+    {
+     "seed": 1,
+     "locked": [
+      "eyes"
+     ],
+     "why": "('volanta-a', 'sample-6', [{'code': 'compositional-input', 'path': 'input', 'message': 'Disconnected volume eye--1-rim'}])"
+    }
+   ],
+   "plan": "B3·L6·flaps · skin",
+   "traits": 21,
+   "chapters": {
+    "Coat": 3,
+    "Face": 1,
+    "Shape": 6,
+    "Legs & tail": 2,
+    "Movement": 4,
+    "Stamina": 3,
+    "Temperament": 2
+   },
+   "sealedChapter": "Stamina",
+   "opensWith": "a storm-glass shard",
+   "openTraits": [
+    "Colour",
+    "Second colour",
+    "Markings",
+    "Crown",
+    "Build",
+    "Body",
+    "Hind body",
+    "Back line",
+    "Waist",
+    "Flaps",
+    "Legs",
+    "Feet",
+    "Pace",
+    "Turning",
+    "Stride",
+    "Flap",
+    "Strength",
+    "Reserve",
+    "Thrift",
+    "Curiosity",
+    "Nerve"
+   ],
+   "locked": 79,
+   "lookTraits": 12,
+   "fieldGuideLooks": 122,
+   "genotypes": 12808075545343924992,
+   "colourPool": [
+    "marigold",
+    "coral",
+    "charcoal"
+   ],
+   "pod": {
+    "sizeClass": "large",
+    "proportion": "tall",
+    "heightToLength": 0.77,
+    "shellPattern": "smooth dots",
+    "colourPair": [
+     {
+      "pigment": "marigold",
+      "hex": "#e8b83f"
+     },
+     {
+      "pigment": "coral",
+      "hex": "#e98268"
+     }
+    ]
+   },
+   "glyph": [
+    "#...#",
+    ".#.#.",
+    "#####",
+    "..#..",
+    ".###."
+   ],
+   "viability": {
+    "sampled": 200,
+    "constructed": 200,
+    "rule": "random copies from the species pools at every open locus; built by the workbench resolver"
+   },
+   "nameBrief": {
+    "plan": "flutterers (B3·L6·flaps, skin)",
+    "feature": "two round feelers and wide flaps",
+    "gait": "walk, flutter, hover",
+    "size": "large",
+    "diet": "fruit",
+    "familyColour": "marigold",
+    "forbidden": [
+     "Back line",
+     "Body",
+     "Build",
+     "Colour",
+     "Crown",
+     "Curiosity",
+     "Feet",
+     "Flap",
+     "Flaps",
+     "Hind body",
+     "Legs",
+     "Markings",
+     "Nerve",
+     "Pace",
+     "Reserve",
+     "Second colour",
+     "Strength",
+     "Stride",
+     "Thrift",
+     "Turning",
+     "Waist"
+    ]
+   },
+   "brief": "A creature with three linked softly squared, ovoid body regions and one smooth head, two eyes, two rounded head projections, six jointed legs with rounded ends and two flat flaps. Each body region has marigold smooth skin; its smooth jointed legs and flat flaps have butter local colour fields. Each body region carries two bands."
+  }
+ ],
+ "panGenome": {
+  "hopper": {
+   "trunkLocked": 50,
+   "trunkOpen": 5,
+   "branch": 2,
+   "branchOpen": 0,
+   "genome": 57,
+   "open": 5,
+   "absent": {
+    "owner-off": 39,
+    "presence-off": 7,
+    "no-consumer": 13
+   }
+  },
+  "puffcap": {
+   "trunkLocked": 27,
+   "trunkOpen": 20,
+   "branch": 3,
+   "branchOpen": 2,
+   "genome": 50,
+   "open": 22,
+   "absent": {
+    "owner-off": 50,
+    "presence-off": 7,
+    "no-consumer": 10
+   }
+  },
+  "glowtail": {
+   "trunkLocked": 30,
+   "trunkOpen": 38,
+   "branch": 3,
+   "branchOpen": 2,
+   "genome": 71,
+   "open": 40,
+   "absent": {
+    "owner-off": 23,
+    "presence-off": 5,
+    "no-consumer": 18
+   }
+  },
+  "algodina-a": {
+   "trunkLocked": 36,
+   "trunkOpen": 21,
+   "branch": 0,
+   "branchOpen": 0,
+   "genome": 57,
+   "open": 21,
+   "absent": {
+    "owner-off": 38,
+    "presence-off": 6,
+    "no-consumer": 13
+   }
+  },
+  "aletia-a": {
+   "trunkLocked": 34,
+   "trunkOpen": 30,
+   "branch": 0,
+   "branchOpen": 0,
+   "genome": 64,
+   "open": 30,
+   "absent": {
+    "owner-off": 30,
+    "presence-off": 5,
+    "no-consumer": 15
+   }
+  },
+  "volanta-a": {
+   "trunkLocked": 28,
+   "trunkOpen": 35,
+   "branch": 0,
+   "branchOpen": 0,
+   "genome": 63,
+   "open": 35,
+   "absent": {
+    "owner-off": 27,
+    "presence-off": 6,
+    "no-consumer": 18
+   }
+  }
+ }
+}
