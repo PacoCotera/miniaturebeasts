@@ -31,7 +31,7 @@
       "art/miniature-lives/assets/rich-plain-300x310.png": "accepted rich Pip, the hopper: the flank on the page and the silhouette in the cap",
       "art/concept-homepage/station-research-pod.png": "approved pod in its cradle under a beam: material anchor",
       "art/concept-station/pods-v2/layout/pods-v2-layout-template.png": "layout truth only: the brief's boxes with exact progress rings and the empty stamp square",
-      "art/concept-station/pods-v2/layout/stamp-hopper-bench-300.png": "the real styled stamp (hopper frame, Trebola family, bench paper) placed after generation, never sent to the generator"
+      "art/concept-station/pods-v2/layout/stamp-hopper-bench-300.png": "the real styled stamp (hopper frame, C01 family (the hopper frame's clan), bench paper) placed after generation, never sent to the generator"
     },
     "directions": {
       "D pod-list-read": "The brief's layout in the dark modern-lab treatment the owner approved as the bar.",
@@ -1206,5 +1206,6 @@
       "decodes": true,
       "code": null
     }
-  ]
+  ],
+  "stampNote": "The placed stamp is the C01 family with round perforations (owner decision 2026-10-07); re-placed and re-decoded after the decision."
 }
