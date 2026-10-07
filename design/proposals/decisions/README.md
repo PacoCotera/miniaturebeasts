@@ -37,3 +37,5 @@ lilac token in both. Files: [32 px](tile-size-32.png), [48 px](tile-size-48.png)
   and more walking and scrolling is needed. Every sheet costs about 2.25 times the pixels to
   author; the place grid, view and veil code change; and the Station and Companion sprites
   come closer in size.
+
+**Decided 2026-10-07:** 48 px tiles; the smooth face (Inter) on the Station.

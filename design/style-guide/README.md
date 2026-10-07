@@ -34,7 +34,8 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 - **A research instrument:** cool chrome, hairline rules, corner ticks, status lamps, few-word readouts, and equipment: sample bay, pod rack, incubation chamber, Probe dock.
 - **One living window per screen,** warm and lively: the only warm light on the screen. Everything outside it is cool and calm.
 - **Never a cottage:** no wooden benches, felt, shelves, lamp-lit rooms or evening greens. Glass, enamel, brushed metal, frosted panes.
-- **HiBit is allowed:** pixels may be indicated in creature and world art. How much is an owner decision (below).
+- **HiBit is allowed:** a fine pixel grain on creatures and world; chrome and type crisp.
+- **Type:** a smooth face, Inter (OFL), anti-aliased, with tabular figures. The Companion keeps the bitmap face; the two devices share colour roles, not a typeface.
 - **Carry more** than the concept: keep its quality, fill the screen with the instrument and its life.
 
 ## Creatures on both devices
@@ -43,7 +44,7 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 <td valign="top"><img src="../../art/miniature-lives/assets/rich-plain-300x310.png" width="300" alt="Rich Pip"><br><em>Richer treatment, 300×310 at 1×. Accepted.</em></td>
 <td valign="top"><img src="../../art/concept-homepage/pip-life-stages.png" width="360" alt="Pip life stages"><br><em>Juvenile, adult, elder. Approved concept, generated; the elder reads calm, not sad.</em></td></tr></table>
 
-- Subject area: 280×300 on the Companion, 300×310 or larger on the Station. In the field, tokens keep the same parts at tile size.
+- Subject area: 280×300 on the Companion, 300×310 or larger on the Station. In the field, tokens keep the same parts at tile size (48 px).
 - Same anatomy, pose language and light on both devices; only inherited traits differ between individuals.
 - Draw only what is known. Unknown parts stay frosted, never guessed. Art never changes genes.
 - Age reads from proportion and bearing. Elders are calm and dignified: eyes open, leaves held up.
@@ -54,7 +55,7 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 | --- | --- | --- |
 | Name, display | 3× | 4× (28 px caps) |
 | Title | 3× (21 px caps) | 3× |
-| Body, HUD, bottom line | 2× (14 px caps), cream on ink | 2× minimum; 3× body if decision 2 goes bitmap |
+| Body, HUD, bottom line | 2× (14 px caps), cream on ink | Inter 16 px body and readouts, 20 px titles, 28 px names |
 | Context | mist (N5) | mist on chrome |
 | Confirm's verb · Call · ticking counter | orange O3 · teal T3 · yellow Y2 flash | the same hues |
 | Warning | red R1 on paper | red, with a shape |
@@ -87,9 +88,9 @@ Screen: ________  Device: Companion 450×600 | Station 1024×600  Piece: _______
 [ ] Provenance recorded; signed off by the art director
 ```
 
-## Decisions for the owner
+## Decided
 
-1. **The hopper's canonical design:** Pip as in the approved art (charcoal, cream belly, orange eyes, three-leaf crest), or the kit's lilac long-eared token. Recommended: Pip.
-2. **Station type:** the Mibi 7×9 bitmap face at 3× for body (one voice across devices), or a smooth face drawn to match it.
-3. **Pixel indication on the Station:** none (painted, like the concepts); a fine grain on creatures and world only; or everything on a 2 px grid. Recommended: a fine grain on creatures and world, chrome and type crisp.
-4. **Companion tile size:** 32 px (about 14 across) or 48 px (about 9 across), judged on a phone at true size.
+1. **The hopper** is Pip as in the approved art: charcoal, cream belly, orange eyes, three-leaf crest. The lilac long-eared token is retired.
+2. **Station type** is a smooth face, Inter, anti-aliased.
+3. **Pixel indication on the Station:** a fine grain on creatures and world; chrome and type crisp.
+4. **Companion tile size:** 48 px, about 9 across and 11 down; the camera keeps the pawn in the middle third.

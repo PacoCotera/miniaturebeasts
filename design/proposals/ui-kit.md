@@ -257,15 +257,10 @@ genome-to-sprite pipeline: parts and markings are parameters, and art never chan
   screen; (5) Station Home; (6) Pods, Create, Incubator; (7) Library, Habitat; (8) Caddy
   four-gray and print versions of the same sprites.
 
-## 6. Decisions for the owner
+## 6. Decided
 
-1. **Adopt this kit** (ramped palettes, one light, the outline rule, the components) as the
-   art standard for the rebuild. (Recommended.)
-2. **Companion frame 32 / 532 / 36** instead of 26 / 540 / 34, so text at 2× has room.
-   (Recommended.)
-3. **Type: the custom Mibi 7×9**, 2× minimum on the Companion; alternative m5x7 (CC0, same
-   metrics). (Recommended: custom.)
-4. **Tools:** approve Aseprite and a one-month trial of one pixel-generation service.
-5. **Pixel scale on the 2.41" panel:** 32 px tiles are about 2.6 mm there. Judge these
-   mock-ups on a phone at that size before freezing 32 px. The alternative is 48 px tiles,
-   about 9 across.
+Adopted as the art standard (ramped palettes, one light, the outline rule, the components,
+the 32/532/36 frame, the Mibi 7×9 face on the Companion). The weather was redone against the
+map-hands concept and accepted for the mock-up. The Station Home mock-up here is **rejected**
+and superseded by the [style guide](../style-guide/station-screens.md) and the art-directed
+candidates in `art/concept-station/`. Tile size is **48 px**. The hopper is **Pip**.
