@@ -859,7 +859,8 @@ function migrate7(o) {
   st.mibis = (o.mibis || []).map(m => ({ id: m.id, name: m.name, sp: m.sp, gs: hash(o.seed, 'mibi7', m.id), born: m.born || 0, from: { n: m.from || 0, g: '', how: '' }, mem: m.mem || null, outings: 0, notches: 0, bonded: false }));
   st.nextMibi = st.mibis.reduce((a, m) => Math.max(a, m.id), 0) + 1; st.nameN = st.mibis.length; st.freeId = (o.found || []).includes('freeid'); st.firstMibi = !st.mibis.length;
   const s = Object.assign({}, o); delete s.home; delete s.report;
-  s.v = SAVE_V; s.wid = wid; s.bay = []; s.hold = null; s.walkTurn = -1; s.withSeen = 0; s.probeSeen = 0; s.retSeen = []; s.st = st;
+  s.v = SAVE_V; s.wid = wid; s.bay = []; s.hold = null; s.walkTurn = -1; s.withSeen = 0; s.probeSeen = 0; s.retSeen = []; s.dockSeen = 0; s.st = st;
+  if (s.exp && s.exp.cargo) s.exp.cargo.pods.forEach((p, i) => { if (p.gs == null) p.gs = hash(o.seed, 'gs7c', String(p.id), i, p.sp); });   // pods in flight get their own genomes
   if (s.phase === 'station') s.phase = 'setup';
   return s;
 }
@@ -883,7 +884,9 @@ function syncStation() {
   const acc = st.accepted || [], gone = S.bay.filter(c => acc.includes(c.id));
   if (gone.length) { S.bay = S.bay.filter(c => !acc.includes(c.id)); const n = gone.reduce((a, c) => a + (c.pods || []).length, 0);
     fxMsg('The Station has them · ' + (n ? n + ' pod' + (n === 1 ? '' : 's') : 'the supplies'), 3); logEv('Transferred ' + gone.length + ' crate' + (gone.length === 1 ? '' : 's') + ' at the dock'); }
-  if (!isDocked()) return;
+  // what the dock carries applies once per dock (st.dockN), even if this page only reads the save after the Companion was lifted
+  if (!isDocked() && !((st.dockN || 0) > (S.dockSeen || 0))) return;
+  S.dockSeen = Math.max(S.dockSeen || 0, st.dockN || 0);
   for (const sp of st.known || []) if (!S.known.includes(sp)) S.known.push(sp);
   for (const m of st.mibis || []) { let q = S.mibis.find(x => x.id === m.id);
     if (!q) { q = { id: m.id, name: m.name, sp: m.sp, born: m.born || 0, from: m.from ? m.from.n : 0 }; S.mibis.push(q); logEv(m.name + ' (' + SPECIES[m.sp].name + ') is home at the Station'); }
@@ -891,8 +894,8 @@ function syncStation() {
   if (st.probe && st.probe.seq > (S.probeSeen || 0)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
     if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax);   // docked mid-expedition: the cradle mends it; the expedition continues after Lift
     if (S.tier > was) fxMsg('Probe tier 2 · reaches further, carries 3 pods', 3); }
-  if (st.withReq && st.withReq.seq > (S.withSeen || 0)) { S.withSeen = st.withReq.seq; const m = mibiById(st.withReq.id);
-    if (m && S.with !== m.id && !S.exp) { const prev = withMibi(); S.with = m.id; fxMsg((prev ? prev.name + ' goes home · ' : '') + m.name + ' is with you', 3); logEv(m.name + ' is with you (from the Station)'); } }
+  if (st.withReq && st.withReq.seq > (S.withSeen || 0) && !S.exp) { S.withSeen = st.withReq.seq; const m = mibiById(st.withReq.id);   // mid-expedition the request waits
+    if (m && S.with !== m.id) { const prev = withMibi(); S.with = m.id; fxMsg((prev ? prev.name + ' goes home · ' : '') + m.name + ' is with you', 3); logEv(m.name + ' is with you (from the Station)'); } }
   for (const r of st.returned || []) { if (S.retSeen.includes(r.id)) continue; S.retSeen.push(r.id); if (S.retSeen.length > 60) S.retSeen.shift();
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
     S.pods.push({ id: 'r' + (S.nextId++), k: key, x: -1, y: -1, sp: r.sp, h: 1, bur: 1, g: r.g, how: 'ground' }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }
@@ -2075,7 +2078,7 @@ function needText(e, s, d, full) {
   return (full ? 'costs ' + full + ' · ' : '') + 'short ' + parts.join(' + ');
 }
 const holdEmpty = h => !h || (!h.e && !h.d && !h.s && !(h.pods && h.pods.length));
-const exploredAny = ex => (ex.stats.calls || 0) > 0 || reachCounts().surveyed > 0;   // explored = visited and Called in
+const exploredAny = ex => (ex.stats.calls || 0) > 0;   // explored this expedition = a Call in some place (earlier trips don't count)
 function bayLine() { const n = S.bay.length; return n ? n + ' consignment' + (n === 1 ? '' : 's') + ' sealed · dock to transfer' : ''; }
 // The Cargo screen's preview of what Head home will do.
 function sealPreview() {
@@ -2119,8 +2122,8 @@ function endExpedition(reason) {
     hits: ex.stats.hits, done: ex.saidDone || 0, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length,
     warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
-  if (!broke && !explored) {   // nothing explored: nothing sealed, nothing turns, and the finds stay in the hold
-    rep.waited = true; S.hold = holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Headed home · nothing explored · the world waits');
+  if (!explored) {   // nothing explored: nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
+    rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Headed home · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   rep.lines = worldTurn(pending);   // the world turns once per Head home, on the Companion
@@ -2128,7 +2131,7 @@ function endExpedition(reason) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n, n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: rep.lines.slice() };
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: rep.lines.slice() };
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Headed home · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;

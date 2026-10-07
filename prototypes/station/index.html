@@ -367,7 +367,8 @@ function migrate7(o) {
   st.nextMibi = st.mibis.reduce((a, m) => Math.max(a, m.id), 0) + 1; st.nameN = st.mibis.length;
   st.freeId = (o.found || []).includes('freeid'); st.firstMibi = !st.mibis.length;
   const s = Object.assign({}, o); delete s.home; delete s.report;
-  s.v = SAVE_V; s.wid = wid; s.bay = []; s.hold = null; s.st = st;
+  s.v = SAVE_V; s.wid = wid; s.bay = []; s.hold = null; s.walkTurn = -1; s.withSeen = 0; s.probeSeen = 0; s.retSeen = []; s.dockSeen = 0; s.st = st;
+  if (s.exp && s.exp.cargo) s.exp.cargo.pods.forEach((p, i) => { if (p.gs == null) p.gs = hash(o.seed, 'gs7c', String(p.id), i, p.sp); });   // pods in flight get their own genomes
   if (s.phase === 'station') s.phase = 'setup';
   return s;
 }
@@ -460,7 +461,8 @@ function payMend() {
 function dockKey() {
   if (!hasWorld()) { msg('No Companion world yet · open the Companion page first'); return; }
   if (docked()) { ST.dock = { docked: false, at: Date.now() }; logEv('Companion lifted'); msg('Lifted · the Companion can set out'); save(); return; }
-  ST.dock = { docked: true, at: Date.now() };
+  ST.dock = { docked: true, at: Date.now() }; ST.dockN = (ST.dockN || 0) + 1;   // each dock is one transfer the Companion applies once
+  ST.turn = Math.max(ST.turn, cp().turn || 0);   // the clock catches up with the Companion's, crates or not
   // the Probe rests in its cradle: a break is mended free, and the Station always mends to two plates
   const pr = probeNow(), broke = pr.shield <= 0, floor = Math.min(2, pr.smax);
   let sh = pr.shield, free = 0; if (broke) { free = pr.smax; sh = pr.smax; } else if (sh < floor) { free = floor - sh; sh = floor; }
@@ -495,7 +497,6 @@ function openBay() {
     plays.push({ c, ids, paid, turnFrom: before, turnTo: ST.turn });
     logEv('Crate ' + c.n + ' opened · ' + plural((c.pods || []).length, 'pod') + ' · +' + (c.e | 0) + ' Energy +' + (c.d | 0) + ' Data +' + (c.s | 0) + ' Essence');
   }
-  if (ST.inc && !incReady()) { ST.inc.early = true; logEv('New cargo · the embryo finishes early'); }   // the build scope's rule (see README)
   FX.arr = { plays, at: NOW }; lockInput(plays.length * ARRIVE_MS + 200);
   UI.report = { plays, at: NOW + plays.length * ARRIVE_MS, mend: FX.mend };
   save();
@@ -1731,11 +1732,11 @@ function frame(t) {
 // Pad, Home/Research/Library/Habitat, ← and ✓, plus the Caddy's Dock/Lift key (prototype only).
 function act(k) {
   NOW = performance.now(); UI.lastInput = NOW;
+  if (k === 'dock') { if (UI.idle) { UI.idle = false; FX.wake = NOW; } dockKey(); return; }   // the Caddy is not a Station key: docking always works
   if (UI.idle) { UI.idle = false; FX.wake = NOW; return; }   // the first press only wakes it (waking never rewards)
   if (NOW < FX.lockUntil) return;                               // presses during a reveal or an arrival are consumed, not queued
   if (k !== 'back' || UI.screen !== 'home') FX.msg = '';
   if (UI.report && !arriving() && UI.screen === 'home') UI.report = null;
-  if (k === 'dock') { dockKey(); return; }
   const views = { home: 'home', research: 'pods', library: 'library', habitat: 'habitat' };
   if (views[k]) { if (k === 'habitat') UI.hab.from = null;
     if (k === 'library') { UI.lib.f = 'shelf'; if (!ST.known.includes(UI.lib.sp)) { const s0 = ST.known[0] != null ? ST.known[0] : ST.met[0]; if (s0 != null) UI.lib.sp = s0; } }
