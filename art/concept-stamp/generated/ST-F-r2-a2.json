@@ -1,0 +1,58 @@
+{
+  "id": "tome-plate-fanalia",
+  "direction": "F",
+  "round": 2,
+  "attempt": 2,
+  "tag": "ST-F-r2-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts illustration for a botanical-tome page in the game's Library. Flat artwork filling a 1:1 canvas, painted with clean light from the upper left, soft shadows, crisp edges, no noise. No creature, no person, no text, no letters, no logos.\nA PRESSED-SPECIMEN PLATE from a botanical tome, second attempt for a lantern clan: an aged cream paper page with a deckled edge; at each of the four corners of the page a single small engraved lantern with a soft marigold glow and a sprig of hatching, in deep umber ink; along the very top and bottom edges of the page a thin single engraved rule with a tiny lantern at its centre; a faint warm glow in one outer corner. The centre of the page, two thirds of it, stays bare cream paper with no frame around it. Colours: cream paper, umber ink, a hint of marigold and lagoon teal. Quiet, exact, a herbarium feel.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of cream paper covering about 66 percent of the width and height; nothing is drawn inside it and nothing rectangular is drawn around it: NO inner frame line, NO border of small shapes around the square; the only decoration sits at the four corners of the page and along the page's outer edge, far from the square. Nothing looks like a QR code, a barcode or a grid.",
+  "preamble": "No reference images: the motif is described in the prompt.",
+  "imageInputs": [],
+  "requested": {
+    "aspectRatio": "1:1",
+    "imageSize": "2K"
+  },
+  "targetSize": "1024x1024",
+  "screenCrop": "none",
+  "time": "2026-10-07T22:28:19Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "generated/raw/ST-F-r2-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2048,
+      "height": 2048,
+      "sha256": "34629662a5173c107f63babd1e6cab23e4ced04d1ec2999d30d1acd100b39479"
+    },
+    "png": {
+      "file": "ST-F-r2-a2-canvas.png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "a7c2ecd4fbc402b79ed97c23787d65dd1f74b73084575db7539303d9805437ad"
+    },
+    "finishReason": "STOP",
+    "seconds": 21.1,
+    "usage": {
+      "promptTokenCount": 339,
+      "candidatesTokenCount": 1396,
+      "totalTokenCount": 2069,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 339
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 334,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept as alternative (the same scheme on an open book page; decodes with the default search)"
+  }
+}
