@@ -6,7 +6,9 @@ import { stampGeometry, rasterize, imageSize } from "../src/stamp.mjs";
 import { decode } from "../src/decode.mjs";
 import { blank, cameraH, warp, gaussianBlur, lighting, monochrome, noise, jpeg, dotGain } from "./distort.mjs";
 
-export const SPECIES = ["hopper", "glowtail", "future150"];
+export const SPECIES = ["hopper", "glowtail", "glowtail-pm", "future150"];
+// "glowtail-pm": a glowtail carrying a 64-bit postmark
+export const frameOf = (sp) => byName(sp.replace(/-pm$/, ""));
 
 // Screen conditions at side D px (blur "scaled" = 1.5 px at 300 px)
 export const SCREEN = [
@@ -36,7 +38,11 @@ export function individual(frame, seed, { read } = {}) {
   const readList = read ?? (rr() < 0.35 ? open.filter(() => rr() < 0.6) : open);
   return { species: frame.species, version: frame.version, read: readList, copies };
 }
-export const genomeFor = (sp, i, seed = 1) => individual(byName(sp), seed * 100003 + i * 7 + sp.length);
+export function genomeFor(sp, i, seed = 1) {
+  const g = individual(frameOf(sp), seed * 100003 + i * 7 + sp.length);
+  if (sp.endsWith("-pm")) { const r = rng(seed * 31 + i); g.postmark = Array.from({ length: 16 }, () => Math.floor(r() * 16).toString(16)).join(""); }
+  return g;
+}
 
 export function trio(frame, seed) {
   const open = frame.chapters.filter((c) => !c.sealed).map((c) => c.name);
@@ -74,12 +80,12 @@ function inkjet(img, cellPx, rand) {
 }
 
 function finish(sp, expected, img) {
-  const frame = byName(sp);
+  const frame = frameOf(sp);
   const t = Date.now();
   const r = decode(img);
   const ms = Date.now() - t;
   const got = r.ok ? r.stamps[0].genome : null;
-  const good = r.ok && sameGenome(frame, expected, got);
+  const good = r.ok && sameGenome(frame, expected, got) && (got.postmark ?? null) === (expected.postmark ?? null);
   return { ok: good, falseAccept: r.ok && !good, ms, error: good ? null : r.error, corrected: r.ok ? r.stamps[0].corrected : null, decoded: got };
 }
 
@@ -103,6 +109,7 @@ export function runScreen(sp, i, D, seed = 1, conds = SCREEN, { keep = false } =
   let src = null;
   const out = {};
   conds.forEach((c, ci) => {
+    if (c.skip) return; // keeps the random stream of the conditions after it
     const rand = rng(seed * 7919 + i * 131 + ci * 17 + D + sp.length);
     let img;
     if (c.rot || c.tilt) {
@@ -150,7 +157,7 @@ export function runPrint(sp, i, { mm, dpi = 203, pxPerMm = 9, seed = 1, keep = f
 // at every locus the child's copy-1 cells equal one of the mother's two copies'
 // cells and its copy-2 cells one of the father's.
 export function runTrio(sp, i, { mm = 20, pxPerMm = 9, seed = 7 } = {}) {
-  const frame = byName(sp);
+  const frame = frameOf(sp);
   const t = trio(frame, seed * 1000 + i);
   const dec = {};
   for (const who of ["mother", "father", "child"]) {

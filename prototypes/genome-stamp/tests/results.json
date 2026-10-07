@@ -7,340 +7,341 @@
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 3271
+   "ms": 2731
   },
   "screen|hopper|rot|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 3105
+   "ms": 2604
   },
   "screen|hopper|persp15|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2753
+   "ms": 2520
   },
   "screen|hopper|persp35|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2553
+   "ms": 2539
   },
   "screen|hopper|persp45|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2375
+   "ms": 2259
   },
   "screen|hopper|blur|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2603
+   "ms": 2557
   },
   "screen|hopper|jpeg|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2817
+   "ms": 3095
   },
   "screen|hopper|light|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2549
+   "ms": 2564
   },
   "screen|hopper|mono|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2283
+   "ms": 2363
   },
   "screen|hopper|glare|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2553
+   "ms": 2119
   },
   "screen|hopper|warm|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2357
+   "ms": 2240
   },
   "screen|hopper|inkjet|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2699
+   "ms": 2462
   },
   "screen|hopper|all|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2949
+   "ms": 3078
   },
   "screen|hopper|owner|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 3350
+   "ms": 3254
   },
   "screen|hopper|clean|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1383
+   "ms": 1472
   },
   "screen|hopper|rot|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1503
+   "ms": 1553
   },
   "screen|hopper|persp15|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1413
+   "ms": 1742
   },
   "screen|hopper|persp35|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1455
+   "ms": 1732
   },
   "screen|hopper|persp45|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1443
+   "ms": 1553
   },
   "screen|hopper|blur|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1451
+   "ms": 1766
   },
   "screen|hopper|jpeg|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1601
+   "ms": 1954
   },
   "screen|hopper|light|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1447
+   "ms": 1726
   },
   "screen|hopper|mono|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1206
+   "ms": 1578
   },
   "screen|hopper|glare|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1147
+   "ms": 1586
   },
   "screen|hopper|warm|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1177
+   "ms": 1362
   },
   "screen|hopper|inkjet|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1731
+   "ms": 1951
   },
   "screen|hopper|all|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1693
+   "ms": 2108
   },
   "screen|hopper|owner|200": {
    "n": 50,
-   "ok": 50,
+   "ok": 46,
    "fa": 0,
-   "errors": {},
-   "ms": 1587
+   "errors": {
+    "no read: too many cells unreadable": 3,
+    "no read: frame not found": 1
+   },
+   "ms": 2132
   },
   "screen|hopper|clean|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1167
+   "ms": 952
   },
   "screen|hopper|rot|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1136
+   "ms": 1138
   },
   "screen|hopper|persp15|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 982
+   "ms": 1212
   },
   "screen|hopper|persp35|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1011
+   "ms": 1214
   },
   "screen|hopper|persp45|120": {
    "n": 50,
-   "ok": 49,
+   "ok": 50,
    "fa": 0,
-   "errors": {
-    "no read: too many cells unreadable": 1
-   },
-   "ms": 970
+   "errors": {},
+   "ms": 1150
   },
   "screen|hopper|blur|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1168
+   "ms": 1182
   },
   "screen|hopper|jpeg|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1299
+   "ms": 1426
   },
   "screen|hopper|light|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1090
+   "ms": 1282
   },
   "screen|hopper|mono|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 910
+   "ms": 1138
   },
   "screen|hopper|glare|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 983
+   "ms": 1080
   },
   "screen|hopper|warm|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 924
+   "ms": 898
   },
   "screen|hopper|inkjet|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1240
+   "ms": 1289
   },
   "screen|hopper|all|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1356
+   "ms": 1450
   },
   "screen|hopper|owner|120": {
    "n": 50,
-   "ok": 49,
+   "ok": 48,
    "fa": 0,
    "errors": {
-    "no read: too many cells unreadable": 1
+    "no read: too many cells unreadable": 2
    },
-   "ms": 1319
+   "ms": 1506
   },
   "print|hopper|16|9": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1769
+   "ms": 1621
   },
   "print|hopper|16|6": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1292
+   "ms": 1139
   },
   "print|hopper|20|9": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2004
+   "ms": 2261
   },
   "print|hopper|20|6": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1485
+   "ms": 1497
   },
   "print|hopper|30|9": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2354
+   "ms": 3331
   },
   "print|hopper|30|6": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1821
+   "ms": 1958
   },
   "trio|hopper": {
    "n": 25,
@@ -354,153 +355,159 @@
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 638
+   "ms": 595
   },
   "sweepD|hopper|all|100": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 706
+   "ms": 804
   },
   "sweepD|hopper|clean|80": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 711
+   "ms": 599
   },
   "sweepD|hopper|all|80": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 727
+   "ms": 606
   },
   "sweepD|hopper|clean|64": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 495
+   "ms": 566
   },
   "sweepD|hopper|all|64": {
    "n": 30,
-   "ok": 30,
+   "ok": 29,
    "fa": 0,
-   "errors": {},
-   "ms": 556
+   "errors": {
+    "no read: no stamp found": 1
+   },
+   "ms": 560
   },
   "sweepMM|hopper|10|9": {
    "n": 30,
-   "ok": 30,
+   "ok": 29,
    "fa": 0,
-   "errors": {},
-   "ms": 938
+   "errors": {
+    "no read: no stamp found": 1
+   },
+   "ms": 751
   },
   "sweepMM|hopper|10|6": {
    "n": 30,
-   "ok": 30,
+   "ok": 29,
    "fa": 0,
-   "errors": {},
-   "ms": 905
+   "errors": {
+    "no read: no stamp found": 1
+   },
+   "ms": 610
   },
   "sweepMM|hopper|12|9": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1061
+   "ms": 808
   },
   "sweepMM|hopper|12|6": {
    "n": 30,
-   "ok": 30,
+   "ok": 28,
    "fa": 0,
-   "errors": {},
-   "ms": 629
+   "errors": {
+    "no read: no stamp found": 2
+   },
+   "ms": 611
   },
   "sweepMM|hopper|14|9": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 974
+   "ms": 857
   },
   "sweepMM|hopper|14|6": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 745
+   "ms": 740
   },
   "stress|hopper|blur2.5|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 824
+   "ms": 1005
   },
   "stress|hopper|blur3|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 872
+   "ms": 1075
   },
   "stress|hopper|blur4|200": {
    "n": 30,
-   "ok": 0,
+   "ok": 30,
    "fa": 0,
-   "errors": {
-    "no read: too many cells unreadable": 30
-   },
-   "ms": 1113
+   "errors": {},
+   "ms": 1142
   },
   "stress|hopper|jpeg25|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1177
+   "ms": 1293
   },
   "stress|hopper|jpeg15|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1131
+   "ms": 1337
   },
   "stress|hopper|tilt55|200": {
    "n": 30,
-   "ok": 26,
+   "ok": 25,
    "fa": 0,
    "errors": {
-    "no read: no stamp found": 4
+    "no read: no stamp found": 5
    },
-   "ms": 589
+   "ms": 593
   },
   "stress|hopper|tilt65|200": {
    "n": 30,
-   "ok": 27,
+   "ok": 28,
    "fa": 0,
    "errors": {
-    "no read: no stamp found": 3
+    "no read: no stamp found": 2
    },
-   "ms": 609
+   "ms": 614
   },
   "stress|hopper|noise|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 824
+   "ms": 1025
   },
   "stress|hopper|dim|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 689
+   "ms": 969
   },
   "screen|glowtail|clean|300": {
    "n": 50,
@@ -514,282 +521,280 @@
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2216
+   "ms": 2555
   },
   "screen|glowtail|persp15|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2059
+   "ms": 2469
   },
   "screen|glowtail|persp35|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2057
+   "ms": 2679
   },
   "screen|glowtail|persp45|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1927
+   "ms": 2397
   },
   "screen|glowtail|blur|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2345
+   "ms": 2897
   },
   "screen|glowtail|jpeg|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2449
+   "ms": 3421
   },
   "screen|glowtail|light|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1987
+   "ms": 2683
   },
   "screen|glowtail|mono|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1824
+   "ms": 2719
   },
   "screen|glowtail|glare|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1857
+   "ms": 2463
   },
   "screen|glowtail|warm|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1909
+   "ms": 2529
   },
   "screen|glowtail|inkjet|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2410
+   "ms": 2959
   },
   "screen|glowtail|all|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2490
+   "ms": 3135
   },
   "screen|glowtail|owner|300": {
    "n": 50,
-   "ok": 49,
+   "ok": 50,
    "fa": 0,
-   "errors": {
-    "no read: too many cells unreadable": 1
-   },
-   "ms": 2496
+   "errors": {},
+   "ms": 3603
   },
   "screen|glowtail|clean|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1393
+   "ms": 1719
   },
   "screen|glowtail|rot|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1634
+   "ms": 1630
   },
   "screen|glowtail|persp15|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1536
+   "ms": 2075
   },
   "screen|glowtail|persp35|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1357
+   "ms": 1954
   },
   "screen|glowtail|persp45|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1495
+   "ms": 1800
   },
   "screen|glowtail|blur|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1626
+   "ms": 1941
   },
   "screen|glowtail|jpeg|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1861
+   "ms": 2162
   },
   "screen|glowtail|light|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1363
+   "ms": 1776
   },
   "screen|glowtail|mono|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1170
+   "ms": 1685
   },
   "screen|glowtail|glare|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1250
+   "ms": 1493
   },
   "screen|glowtail|warm|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1033
+   "ms": 1425
   },
   "screen|glowtail|inkjet|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1760
+   "ms": 2056
   },
   "screen|glowtail|all|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1816
+   "ms": 2305
   },
   "screen|glowtail|owner|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1726
+   "ms": 2244
   },
   "screen|glowtail|clean|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1076
+   "ms": 1373
   },
   "screen|glowtail|rot|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1048
+   "ms": 1210
   },
   "screen|glowtail|persp15|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1186
+   "ms": 1332
   },
   "screen|glowtail|persp35|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1240
+   "ms": 1271
   },
   "screen|glowtail|persp45|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1119
+   "ms": 1330
   },
   "screen|glowtail|blur|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1159
+   "ms": 1372
   },
   "screen|glowtail|jpeg|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1300
+   "ms": 1499
   },
   "screen|glowtail|light|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1100
+   "ms": 1196
   },
   "screen|glowtail|mono|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 913
+   "ms": 1157
   },
   "screen|glowtail|glare|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 996
+   "ms": 1258
   },
   "screen|glowtail|warm|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 958
+   "ms": 1191
   },
   "screen|glowtail|inkjet|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1063
+   "ms": 1498
   },
   "screen|glowtail|all|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1286
+   "ms": 1632
   },
   "screen|glowtail|owner|120": {
    "n": 50,
@@ -798,49 +803,49 @@
    "errors": {
     "no read: too many cells unreadable": 1
    },
-   "ms": 1197
+   "ms": 1876
   },
   "print|glowtail|16|9": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1796
+   "ms": 2071
   },
   "print|glowtail|16|6": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1287
+   "ms": 1593
   },
   "print|glowtail|20|9": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1993
+   "ms": 2322
   },
   "print|glowtail|20|6": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1555
+   "ms": 1863
   },
   "print|glowtail|30|9": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2641
+   "ms": 3273
   },
   "print|glowtail|30|6": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2057
+   "ms": 2462
   },
   "trio|glowtail": {
    "n": 25,
@@ -854,123 +859,121 @@
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 843
+   "ms": 901
   },
   "sweepD|glowtail|all|100": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 839
+   "ms": 929
   },
   "sweepD|glowtail|clean|80": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 823
+   "ms": 846
   },
   "sweepD|glowtail|all|80": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 754
+   "ms": 729
   },
   "sweepD|glowtail|clean|64": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 746
+   "ms": 711
   },
   "sweepD|glowtail|all|64": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 683
+   "ms": 817
   },
   "sweepMM|glowtail|10|9": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 786
+   "ms": 1004
   },
   "sweepMM|glowtail|10|6": {
    "n": 30,
-   "ok": 20,
+   "ok": 30,
    "fa": 0,
-   "errors": {
-    "no read: too many cells unreadable": 10
-   },
-   "ms": 659
+   "errors": {},
+   "ms": 1034
   },
   "sweepMM|glowtail|12|9": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1117
+   "ms": 1025
   },
   "sweepMM|glowtail|12|6": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 709
+   "ms": 760
   },
   "sweepMM|glowtail|14|9": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 980
+   "ms": 1247
   },
   "sweepMM|glowtail|14|6": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 942
+   "ms": 887
   },
   "stress|glowtail|blur2.5|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1058
+   "ms": 1106
   },
   "stress|glowtail|blur3|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1110
+   "ms": 1146
   },
   "stress|glowtail|blur4|200": {
    "n": 30,
-   "ok": 0,
+   "ok": 4,
    "fa": 0,
    "errors": {
-    "no read: too many cells unreadable": 30
+    "no read: too many cells unreadable": 26
    },
-   "ms": 1176
+   "ms": 7725
   },
   "stress|glowtail|jpeg25|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1271
+   "ms": 1486
   },
   "stress|glowtail|jpeg15|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1127
+   "ms": 1377
   },
   "stress|glowtail|tilt55|200": {
    "n": 30,
@@ -979,7 +982,7 @@
    "errors": {
     "no read: no stamp found": 1
    },
-   "ms": 792
+   "ms": 795
   },
   "stress|glowtail|tilt65|200": {
    "n": 30,
@@ -988,357 +991,858 @@
    "errors": {
     "no read: no stamp found": 6
    },
-   "ms": 590
+   "ms": 661
   },
   "stress|glowtail|noise|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 975
+   "ms": 1384
   },
   "stress|glowtail|dim|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 750
+   "ms": 1130
   },
-  "screen|future150|clean|300": {
+  "screen|glowtail-pm|clean|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2454
+   "ms": 2368
   },
-  "screen|future150|rot|300": {
+  "screen|glowtail-pm|rot|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2942
+   "ms": 2526
   },
-  "screen|future150|persp15|300": {
+  "screen|glowtail-pm|persp15|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2862
+   "ms": 2743
   },
-  "screen|future150|persp35|300": {
+  "screen|glowtail-pm|persp35|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2552
+   "ms": 2612
   },
-  "screen|future150|persp45|300": {
+  "screen|glowtail-pm|persp45|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2550
+   "ms": 2561
   },
-  "screen|future150|blur|300": {
+  "screen|glowtail-pm|blur|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2679
+   "ms": 2898
   },
-  "screen|future150|jpeg|300": {
+  "screen|glowtail-pm|jpeg|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2816
+   "ms": 3135
   },
-  "screen|future150|light|300": {
+  "screen|glowtail-pm|light|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2557
+   "ms": 2663
   },
-  "screen|future150|mono|300": {
-   "n": 50,
-   "ok": 50,
-   "fa": 0,
-   "errors": {},
-   "ms": 2087
-  },
-  "screen|future150|glare|300": {
-   "n": 50,
-   "ok": 50,
-   "fa": 0,
-   "errors": {},
-   "ms": 2276
-  },
-  "screen|future150|warm|300": {
-   "n": 50,
-   "ok": 50,
-   "fa": 0,
-   "errors": {},
-   "ms": 2135
-  },
-  "screen|future150|inkjet|300": {
-   "n": 50,
-   "ok": 50,
-   "fa": 0,
-   "errors": {},
-   "ms": 3052
-  },
-  "screen|future150|all|300": {
+  "screen|glowtail-pm|mono|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
    "ms": 2690
   },
+  "screen|glowtail-pm|glare|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2446
+  },
+  "screen|glowtail-pm|warm|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2124
+  },
+  "screen|glowtail-pm|inkjet|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3379
+  },
+  "screen|glowtail-pm|all|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3763
+  },
+  "screen|glowtail-pm|owner|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3854
+  },
+  "screen|glowtail-pm|clean|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1986
+  },
+  "screen|glowtail-pm|rot|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2067
+  },
+  "screen|glowtail-pm|persp15|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2210
+  },
+  "screen|glowtail-pm|persp35|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1892
+  },
+  "screen|glowtail-pm|persp45|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2297
+  },
+  "screen|glowtail-pm|blur|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2532
+  },
+  "screen|glowtail-pm|jpeg|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2419
+  },
+  "screen|glowtail-pm|light|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2087
+  },
+  "screen|glowtail-pm|mono|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1957
+  },
+  "screen|glowtail-pm|glare|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2207
+  },
+  "screen|glowtail-pm|warm|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1929
+  },
+  "screen|glowtail-pm|inkjet|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2286
+  },
+  "screen|glowtail-pm|all|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2472
+  },
+  "screen|glowtail-pm|owner|200": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2314
+  },
+  "screen|glowtail-pm|clean|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1576
+  },
+  "screen|glowtail-pm|rot|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1551
+  },
+  "screen|glowtail-pm|persp15|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1567
+  },
+  "screen|glowtail-pm|persp35|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1786
+  },
+  "screen|glowtail-pm|persp45|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1780
+  },
+  "screen|glowtail-pm|blur|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1689
+  },
+  "screen|glowtail-pm|jpeg|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1934
+  },
+  "screen|glowtail-pm|light|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1570
+  },
+  "screen|glowtail-pm|mono|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1491
+  },
+  "screen|glowtail-pm|glare|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1560
+  },
+  "screen|glowtail-pm|warm|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1573
+  },
+  "screen|glowtail-pm|inkjet|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1624
+  },
+  "screen|glowtail-pm|all|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1858
+  },
+  "screen|glowtail-pm|owner|120": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 1910
+  },
+  "print|glowtail-pm|16|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2410
+  },
+  "print|glowtail-pm|16|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2171
+  },
+  "print|glowtail-pm|20|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2614
+  },
+  "print|glowtail-pm|20|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2016
+  },
+  "print|glowtail-pm|30|9": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3413
+  },
+  "print|glowtail-pm|30|6": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2595
+  },
+  "trio|glowtail-pm": {
+   "n": 25,
+   "ok": 25,
+   "fa": 0,
+   "errors": {},
+   "ms": 0
+  },
+  "sweepD|glowtail-pm|clean|100": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 974
+  },
+  "sweepD|glowtail-pm|all|100": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1078
+  },
+  "sweepD|glowtail-pm|clean|80": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1172
+  },
+  "sweepD|glowtail-pm|all|80": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 985
+  },
+  "sweepD|glowtail-pm|clean|64": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1110
+  },
+  "sweepD|glowtail-pm|all|64": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 871
+  },
+  "sweepMM|glowtail-pm|10|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1336
+  },
+  "sweepMM|glowtail-pm|10|6": {
+   "n": 30,
+   "ok": 20,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 10
+   },
+   "ms": 7684
+  },
+  "sweepMM|glowtail-pm|12|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1248
+  },
+  "sweepMM|glowtail-pm|12|6": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1081
+  },
+  "sweepMM|glowtail-pm|14|9": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1351
+  },
+  "sweepMM|glowtail-pm|14|6": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1243
+  },
+  "stress|glowtail-pm|blur2.5|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1204
+  },
+  "stress|glowtail-pm|blur3|200": {
+   "n": 30,
+   "ok": 29,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 1
+   },
+   "ms": 2029
+  },
+  "stress|glowtail-pm|blur4|200": {
+   "n": 30,
+   "ok": 0,
+   "fa": 0,
+   "errors": {
+    "no read: too many cells unreadable": 30
+   },
+   "ms": 16525
+  },
+  "stress|glowtail-pm|jpeg25|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1374
+  },
+  "stress|glowtail-pm|jpeg15|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1506
+  },
+  "stress|glowtail-pm|tilt55|200": {
+   "n": 30,
+   "ok": 22,
+   "fa": 0,
+   "errors": {
+    "no read: no stamp found": 7,
+    "no read: frame not found": 1
+   },
+   "ms": 901
+  },
+  "stress|glowtail-pm|tilt65|200": {
+   "n": 30,
+   "ok": 28,
+   "fa": 0,
+   "errors": {
+    "no read: no stamp found": 2
+   },
+   "ms": 1072
+  },
+  "stress|glowtail-pm|noise|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1445
+  },
+  "stress|glowtail-pm|dim|200": {
+   "n": 30,
+   "ok": 30,
+   "fa": 0,
+   "errors": {},
+   "ms": 1322
+  },
+  "screen|future150|clean|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3082
+  },
+  "screen|future150|rot|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3403
+  },
+  "screen|future150|persp15|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3376
+  },
+  "screen|future150|persp35|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3127
+  },
+  "screen|future150|persp45|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3432
+  },
+  "screen|future150|blur|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3983
+  },
+  "screen|future150|jpeg|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3961
+  },
+  "screen|future150|light|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3220
+  },
+  "screen|future150|mono|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3235
+  },
+  "screen|future150|glare|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3241
+  },
+  "screen|future150|warm|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 2791
+  },
+  "screen|future150|inkjet|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 3826
+  },
+  "screen|future150|all|300": {
+   "n": 50,
+   "ok": 50,
+   "fa": 0,
+   "errors": {},
+   "ms": 4071
+  },
   "screen|future150|owner|300": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2983
+   "ms": 4130
   },
   "screen|future150|clean|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1946
+   "ms": 2320
   },
   "screen|future150|rot|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2119
+   "ms": 2620
   },
   "screen|future150|persp15|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2093
+   "ms": 2734
   },
   "screen|future150|persp35|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2182
+   "ms": 2748
   },
   "screen|future150|persp45|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2230
+   "ms": 2412
   },
   "screen|future150|blur|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2227
+   "ms": 2904
   },
   "screen|future150|jpeg|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2778
+   "ms": 3355
   },
   "screen|future150|light|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2003
+   "ms": 2745
   },
   "screen|future150|mono|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1883
+   "ms": 2283
   },
   "screen|future150|glare|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1819
+   "ms": 2253
   },
   "screen|future150|warm|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1568
+   "ms": 2356
   },
   "screen|future150|inkjet|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2148
+   "ms": 3038
   },
   "screen|future150|all|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2376
+   "ms": 2948
   },
   "screen|future150|owner|200": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2643
+   "ms": 3091
   },
   "screen|future150|clean|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1627
+   "ms": 2454
   },
   "screen|future150|rot|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1306
+   "ms": 2096
   },
   "screen|future150|persp15|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1434
+   "ms": 1953
   },
   "screen|future150|persp35|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1426
+   "ms": 2118
   },
   "screen|future150|persp45|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1540
+   "ms": 1934
   },
   "screen|future150|blur|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1533
+   "ms": 2092
   },
   "screen|future150|jpeg|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1902
+   "ms": 2440
   },
   "screen|future150|light|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1503
+   "ms": 2269
   },
   "screen|future150|mono|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1268
+   "ms": 1954
   },
   "screen|future150|glare|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1178
+   "ms": 1762
   },
   "screen|future150|warm|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1062
+   "ms": 1750
   },
   "screen|future150|inkjet|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1548
+   "ms": 1954
   },
   "screen|future150|all|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2058
+   "ms": 2081
   },
   "screen|future150|owner|120": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 1838
+   "ms": 2328
   },
   "print|future150|16|9": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2427
+   "ms": 2598
   },
   "print|future150|16|6": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2027
+   "ms": 2739
   },
   "print|future150|20|9": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2790
+   "ms": 3312
   },
   "print|future150|20|6": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2241
+   "ms": 2900
   },
   "print|future150|30|9": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 3363
+   "ms": 4476
   },
   "print|future150|30|6": {
    "n": 50,
    "ok": 50,
    "fa": 0,
    "errors": {},
-   "ms": 2767
+   "ms": 3584
   },
   "trio|future150": {
    "n": 25,
@@ -1352,54 +1856,54 @@
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1296
+   "ms": 1361
   },
   "sweepD|future150|all|100": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1177
+   "ms": 1360
   },
   "sweepD|future150|clean|80": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1178
+   "ms": 1318
   },
   "sweepD|future150|all|80": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1105
+   "ms": 1186
   },
   "sweepD|future150|clean|64": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1133
+   "ms": 1066
   },
   "sweepD|future150|all|64": {
    "n": 30,
-   "ok": 9,
+   "ok": 22,
    "fa": 0,
    "errors": {
-    "no read: too many cells unreadable": 21
+    "no read: too many cells unreadable": 8
    },
-   "ms": 1158
+   "ms": 12719
   },
   "sweepMM|future150|10|9": {
    "n": 30,
-   "ok": 0,
+   "ok": 1,
    "fa": 0,
    "errors": {
-    "no read: too many cells unreadable": 29,
+    "no read: too many cells unreadable": 28,
     "no read: grid not found": 1
    },
-   "ms": 1298
+   "ms": 39774
   },
   "sweepMM|future150|10|6": {
    "n": 30,
@@ -1408,31 +1912,31 @@
    "errors": {
     "no read: grid not found": 30
    },
-   "ms": 529
+   "ms": 453
   },
   "sweepMM|future150|12|9": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1469
+   "ms": 1448
   },
   "sweepMM|future150|12|6": {
    "n": 30,
    "ok": 0,
    "fa": 0,
    "errors": {
-    "no read: too many cells unreadable": 26,
-    "no read: grid not found": 4
+    "no read: grid not found": 8,
+    "no read: too many cells unreadable": 22
    },
-   "ms": 1180
+   "ms": 29216
   },
   "sweepMM|future150|14|9": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1428
+   "ms": 1463
   },
   "sweepMM|future150|14|6": {
    "n": 30,
@@ -1441,16 +1945,16 @@
    "errors": {
     "no read: too many cells unreadable": 30
    },
-   "ms": 1206
+   "ms": 41581
   },
   "stress|future150|blur2.5|200": {
    "n": 30,
-   "ok": 2,
+   "ok": 15,
    "fa": 0,
    "errors": {
-    "no read: too many cells unreadable": 28
+    "no read: too many cells unreadable": 15
    },
-   "ms": 1150
+   "ms": 22070
   },
   "stress|future150|blur3|200": {
    "n": 30,
@@ -1459,7 +1963,7 @@
    "errors": {
     "no read: too many cells unreadable": 30
    },
-   "ms": 1165
+   "ms": 40632
   },
   "stress|future150|blur4|200": {
    "n": 30,
@@ -1468,31 +1972,30 @@
    "errors": {
     "no read: grid not found": 30
    },
-   "ms": 943
+   "ms": 831
   },
   "stress|future150|jpeg25|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1629
+   "ms": 1601
   },
   "stress|future150|jpeg15|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1570
+   "ms": 1639
   },
   "stress|future150|tilt55|200": {
    "n": 30,
    "ok": 25,
    "fa": 0,
    "errors": {
-    "no read: no stamp found": 4,
-    "no read: frame not found": 1
+    "no read: no stamp found": 5
    },
-   "ms": 747
+   "ms": 829
   },
   "stress|future150|tilt65|200": {
    "n": 30,
@@ -1502,21 +2005,21 @@
     "no read: no stamp found": 11,
     "no read: frame not found": 1
    },
-   "ms": 546
+   "ms": 759
   },
   "stress|future150|noise|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 1027
+   "ms": 1488
   },
   "stress|future150|dim|200": {
    "n": 30,
    "ok": 30,
    "fa": 0,
    "errors": {},
-   "ms": 788
+   "ms": 1209
   }
  }
 }

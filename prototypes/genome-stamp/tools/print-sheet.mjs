@@ -16,15 +16,16 @@ const PT = 72 / 25.4, PAGE = [595.28, 841.89];
 const open = (f) => f.chapters.filter((c) => !c.sealed).map((c) => c.name);
 const G = byName("glowtail"), F = byName("future150"), Hp = byName("hopper");
 const fam = trio(G, 77);
+const pm = (g, hex) => ({ ...g, postmark: hex });
 const ROWS = [
-  ["Colour, vector (print at 100%)", [[30, "colour", individual(G, 9001, { read: open(G) })], [20, "colour", individual(G, 9002, { read: open(G) })], [16, "colour", individual(G, 9003, { read: open(G) })], [20, "colour", individual(Hp, 9004, { read: open(Hp) })]]],
-  ["Colour: 150 open loci (37 x 37 cells), and a glowtail with two chapters unread", [[30, "colour", individual(F, 9011, { read: open(F) })], [20, "colour", individual(F, 9012, { read: open(F) })], [16, "colour", individual(F, 9013, { read: open(F) })], [20, "colour", individual(G, 9014, { read: open(G).filter((n) => !["Legs & tail", "Temperament"].includes(n)) })]]],
-  ["Caddy simulation: monochrome dots at 203 dpi (58 mm thermal printer, assumed 8 dots/mm)", [[30, "caddy", individual(G, 9021, { read: open(G) })], [20, "caddy", individual(G, 9022, { read: open(G) })], [16, "caddy", individual(G, 9023, { read: open(G) })], [20, "caddy", individual(F, 9024, { read: open(F) })]]],
-  ["A family, colour, 20 mm: mother, child, father (the child's cell pairs take one copy from each); and a 16 mm Caddy hopper", [[20, "colour", fam.mother, "mother"], [20, "colour", fam.child, "child"], [20, "colour", fam.father, "father"], [16, "caddy", individual(Hp, 9031, { read: open(Hp) })]]],
+  ["Growth, colour, 20 mm: hopper (5 loci), glowtail (38), glowtail with a postmark, 150 loci", [[20, "colour", individual(Hp, 9001, { read: open(Hp) })], [20, "colour", individual(G, 9002, { read: open(G) })], [20, "colour", pm(individual(G, 9003, { read: open(G) }), "5eed0f00d1e5a1ad")], [20, "colour", individual(F, 9004, { read: open(F) })]]],
+  ["Colour, other sizes; and a glowtail with two chapters unread", [[30, "colour", individual(G, 9011, { read: open(G) })], [16, "colour", individual(Hp, 9012, { read: open(Hp) })], [16, "colour", individual(F, 9013, { read: open(F) })], [20, "colour", individual(G, 9014, { read: open(G).filter((n) => !["Legs & tail", "Temperament"].includes(n)) })]]],
+  ["Caddy simulation: monochrome dots at 203 dpi (58 mm thermal printer, assumed 8 dots/mm)", [[20, "caddy", individual(Hp, 9021, { read: open(Hp) })], [20, "caddy", individual(G, 9022, { read: open(G) })], [20, "caddy", individual(F, 9023, { read: open(F) })], [16, "caddy", individual(Hp, 9024, { read: open(Hp) })]]],
+  ["A family, colour, 20 mm: mother, child, father (the child's cell pairs take one copy from each); and a 16 mm Caddy glowtail", [[20, "colour", fam.mother, "mother"], [20, "colour", fam.child, "child"], [20, "colour", fam.father, "father"], [16, "caddy", individual(G, 9031, { read: open(G) })]]],
 ];
 const stamps = [];
 let n = 0;
-for (const [, row] of ROWS) for (const [mm, kind, genome, role] of row) { n++; const fr = frameFor(genome.species, genome.version); stamps.push({ n, mm, kind, role: role ?? null, cells: sizeFor(fr).N, species: fr.name, genome, code: stampCode(fr, genome) }); }
+for (const [, row] of ROWS) for (const [mm, kind, genome, role] of row) { n++; const fr = frameFor(genome.species, genome.version); stamps.push({ n, mm, kind, role: role ?? (genome.postmark ? "postmark" : null), cells: sizeFor(fr, { postmark: !!genome.postmark }).N, species: fr.name, genome, code: stampCode(fr, genome) }); }
 
 const ops = [], images = [];
 const num = (v) => (Math.round(v * 1000) / 1000).toString();

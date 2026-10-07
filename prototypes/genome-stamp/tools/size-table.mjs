@@ -1,15 +1,16 @@
-// The size series: cells, codeword, parity, capacity, and cell size at 20 mm.
-//   node tools/size-table.mjs
+// The size series: cells, codeword, parity, room for mask + genome, cell size,
+// and which species land on each size.   node tools/size-table.mjs
 import { SIZES, layout, sizeFor } from "../src/codec.mjs";
-import { synthetic } from "../src/frames.mjs";
+import { FRAMES_LIST } from "../src/frames.mjs";
 
-const rows = ["| Cells | Codeword bytes (parity, corrects) | Open loci it holds (glowtail allele mix, all read) | Cell at 20 mm | Dots per cell at 203 dpi, 20 mm | Px per cell at 300 px |", "| --- | --- | --- | --- | --- | --- |"];
-const fitsAt = (n) => sizeFor(synthetic(n, 900 + n, "probe", ["#####", "#####", "#####", "#####", "#####"]))?.N;
-let n = 1;
+const lands = {};
+for (const f of FRAMES_LIST) for (const postmark of [false, true]) {
+  const N = sizeFor(f, { postmark })?.N;
+  if (N) (lands[N] ??= []).push(`${f.name.replace(/^Future, /, "")}${postmark ? " + postmark" : ""}`);
+}
+const rows = ["| Cells | Codeword bytes (parity; corrects) | Bits for read mask + genome: plain / postmarked | Cell at 20 mm | Dots per cell, 20 mm at 203 dpi | Px per cell at 300 px | Lands here |", "| --- | --- | --- | --- | --- | --- | --- |"];
 for (const N of SIZES) {
-  const L = layout(N, null);
-  if (!L) { rows.push(`| ${N}×${N} | too small for the 110-bit header with the 64-bit postmark | – | ${(20 / N).toFixed(2)} mm | ${((20 / 25.4) * 203 / N).toFixed(1)} | ${(300 / N).toFixed(1)} |`); continue; }
-  while (fitsAt(n + 1) && fitsAt(n + 1) <= N) n++;
-  rows.push(`| ${N}×${N} | ${L.B} (${L.p}, ${L.p / 2} bytes) | up to ${fitsAt(n) === N || fitsAt(n) < N ? n : "–"} | ${(20 / N).toFixed(2)} mm | ${((20 / 25.4) * 203 / N).toFixed(1)} | ${(300 / N).toFixed(1)} |`);
+  const L = layout(N, null), P = layout(N, null, { postmark: true });
+  rows.push(`| ${N}×${N} | ${L.B} (${L.p}; ${L.p / 2}) | ${L.msgCells.length - L.H} / ${P ? P.msgCells.length - P.H : "–"} | ${(20 / N).toFixed(2)} mm | ${((20 / 25.4) * 203 / N).toFixed(1)} | ${(300 / N).toFixed(1)} | ${(lands[N] ?? []).join("; ") || "–"} |`);
 }
 console.log(rows.join("\n"));
