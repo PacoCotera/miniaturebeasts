@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="system-ui, sans-serif">
+<style>
+.bg{fill:#f7f4ec}.bar{fill:#e4dfd0}.b{fill:none;stroke:#2e2e2e;stroke-width:1.5}.f{fill:#fffdf7;stroke:#2e2e2e;stroke-width:1.5}
+.m{fill:#e9e9ef;stroke:#8a8a99;stroke-width:1.5}.d{fill:none;stroke:#2e2e2e;stroke-width:1.2;stroke-dasharray:4 4}
+.sep{stroke:#9a9484;stroke-width:1}.fill{fill:#cfc8b4;stroke:#2e2e2e;stroke-width:1.5}
+text{fill:#2e2e2e}.h{font-size:20px;font-weight:600}.t{font-size:15px}.s{font-size:12px;fill:#6f6a5e}.n{font-size:12px;fill:#b0651a;font-style:italic}
+</style>
+<rect width="1024" height="600" class="bg"/>
+<rect width="1024" height="40" class="bar"/>
+<text x="16" y="27" class="h">Incubator</text><text x="124" y="27" class="t">T7</text>
+<text x="512" y="27" class="t" text-anchor="middle">⚡ 10    ◆ 3    ❀ 9</text>
+<text x="1008" y="27" class="t" text-anchor="end">Companion away · since 17:20 · with Dot</text>
+<!-- windows arc, clearing as it grows -->
+<path d="M200 230 V140 A85 70 0 0 1 370 140 V230 Z" class="f"/>
+<circle cx="250" cy="170" r="7" class="b"/><circle cx="290" cy="195" r="7" class="b"/><circle cx="325" cy="160" r="7" class="b"/>
+<text x="285" y="252" class="t" text-anchor="middle">spots · chosen</text>
+<path d="M400 210 V120 A85 70 0 0 1 570 120 V210 Z" class="f"/>
+<path d="M440 180 l15 -40 l15 30 l15 -40 l15 30 l15 -30 l10 50" class="b"/>
+<text x="485" y="236" class="t" text-anchor="middle">tall crown · cleared</text>
+<path d="M600 210 V120 A85 70 0 0 1 770 120 V210 Z" class="m"/><path d="M600 210 V160 H770 V210 Z" class="f"/>
+<text x="685" y="236" class="t" text-anchor="middle">colour · clearing</text>
+<path d="M800 230 V140 A85 70 0 0 1 970 140 V230 Z" class="m"/>
+<text x="885" y="252" class="t" text-anchor="middle">gait · still misty</text>
+<!-- dome + leaf ring -->
+<circle cx="512" cy="410" r="112" class="f"/>
+<path d="M480 420 q10 -50 50 -40 q30 10 20 46 q-20 30 -50 18 q-24 -8 -20 -24 z" class="b"/>
+<text x="512" y="490" class="s" text-anchor="middle">embryo glows, grows: seed → bud → shape</text>
+<g class="fill">
+<ellipse cx="512" cy="272" rx="10" ry="18"/>
+<ellipse cx="512" cy="272" rx="10" ry="18" transform="rotate(72 512 410)"/>
+<ellipse cx="512" cy="272" rx="10" ry="18" transform="rotate(144 512 410)"/>
+</g>
+<ellipse cx="512" cy="272" rx="10" ry="18" transform="rotate(216 512 410)" class="b"/>
+<ellipse cx="512" cy="272" rx="10" ry="18" transform="rotate(288 512 410)" class="b"/>
+<text x="692" y="300" class="n">one leaf per minute:</text>
+<text x="692" y="314" class="n">5 leaves = 5 minutes</text>
+<text x="692" y="328" class="n">(base by body + extra windows</text>
+<text x="692" y="342" class="n">+ changed windows; first mibi: 1)</text>
+<text x="692" y="356" class="n">a leaf fills smoothly over its minute</text>
+<!-- plate with fingerprint and code -->
+<rect x="412" y="528" width="200" height="28" rx="8" class="fill"/>
+<circle cx="440" cy="542" r="11" class="b"/><text x="526" y="547" class="s" text-anchor="middle">G7F · CD0 · 3H2</text>
+<text x="16" y="300" class="n">read-only while growing:</text>
+<text x="16" y="314" class="n">✓ part of the line is empty</text>
+<text x="16" y="342" class="n">ready: the dome glows,</text>
+<text x="16" y="356" class="n">all leaves lit, "✓ Open"</text>
+<text x="16" y="370" class="n">(also from Home's bench)</text>
+<!-- bottom line -->
+<rect y="562" width="1024" height="38" class="bar"/>
+<text x="16" y="587" class="t">← Home</text>
+<line x1="236" y1="570" x2="236" y2="592" class="sep"/>
+<text x="252" y="587" class="t">glowtail embryo · growing</text>
+<line x1="610" y1="570" x2="610" y2="592" class="sep"/>
+<text x="1008" y="587" class="t" text-anchor="end">surprises clear as it grows</text>
+</svg>

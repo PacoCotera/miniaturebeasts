@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="system-ui, sans-serif">
+<style>
+.bg{fill:#f7f4ec}.bar{fill:#e4dfd0}.b{fill:none;stroke:#2e2e2e;stroke-width:1.5}.f{fill:#fffdf7;stroke:#2e2e2e;stroke-width:1.5}
+.m{fill:#e9e9ef;stroke:#8a8a99;stroke-width:1.5}.k{fill:none;stroke:#c9781e;stroke-width:3.5}
+.d{fill:none;stroke:#2e2e2e;stroke-width:1.2;stroke-dasharray:4 4}.sep{stroke:#9a9484;stroke-width:1}.fill{fill:#cfc8b4;stroke:#2e2e2e;stroke-width:1.5}
+text{fill:#2e2e2e}.h{font-size:20px;font-weight:600}.t{font-size:15px}.s{font-size:12px;fill:#6f6a5e}.n{font-size:12px;fill:#b0651a;font-style:italic}
+</style>
+<rect width="1024" height="600" class="bg"/>
+<rect width="1024" height="40" class="bar"/>
+<text x="16" y="27" class="h">Habitat</text><text x="104" y="27" class="t">T7</text>
+<text x="512" y="27" class="t" text-anchor="middle">⚡ 10    ◆ 3    ❀ 9</text>
+<text x="1008" y="27" class="t" text-anchor="end">Companion docked</text>
+<!-- resident large in its corner of the vivarium -->
+<rect x="16" y="52" width="604" height="396" rx="20" class="f"/>
+<text x="32" y="74" class="s">Fig's corner of the vivarium · rich treatment, rich Pip size ~300×310</text>
+<path d="M30 400 C 160 370, 360 420, 606 390" class="d"/>
+<rect x="166" y="96" width="304" height="316" rx="16" class="d"/>
+<path d="M210 360 q30 -140 140 -130 q80 10 90 90 q-10 60 -110 64 q-90 4 -120 -24 z" class="f"/><path d="M200 370 q30 -160 160 -150 q90 12 98 104 q-12 70 -124 72 q-100 4 -134 -26 z" class="k"/>
+<circle cx="250" cy="300" r="9" class="b"/><circle cx="300" cy="280" r="9" class="b"/><circle cx="350" cy="320" r="9" class="b"/>
+<text x="318" y="436" class="n">✓ Spend time: a species moment (Fig glows, digs) · no reward</text>
+<!-- card -->
+<rect x="636" y="52" width="372" height="236" rx="16" class="f"/>
+<text x="656" y="84" class="h">Fig</text>
+<text x="656" y="106" class="t">glowtail · juvenile</text>
+<text x="656" y="126" class="t">digs burrows</text>
+<text x="656" y="146" class="s">remembers the rock field</text>
+<circle cx="958" cy="96" r="34" class="b"/><text x="958" y="144" class="s" text-anchor="middle">G7F·CD0·3H2</text>
+<path d="M656 240 V196 A32 26 0 0 1 720 196 V240 Z" class="f"/><path d="M736 240 V196 A32 26 0 0 1 800 196 V240 Z" class="f"/>
+<path d="M816 240 V196 A32 26 0 0 1 880 196 V240 Z" class="f"/><path d="M896 240 V196 A32 26 0 0 1 960 196 V240 Z" class="f"/>
+<text x="656" y="268" class="s">its windows, as the Library knows them</text>
+<!-- with you door and bond heart -->
+<rect x="636" y="300" width="230" height="148" rx="16" class="f"/>
+<path d="M666 430 V350 A40 34 0 0 1 746 350 V430 Z" class="b"/>
+<circle cx="706" cy="390" r="22" class="fill"/>
+<text x="806" y="380" class="t" text-anchor="middle">with you</text><text x="806" y="400" class="s" text-anchor="middle">Dot</text>
+<text x="806" y="420" class="s" text-anchor="middle">(in the Companion)</text>
+<rect x="878" y="300" width="130" height="148" rx="16" class="f"/>
+<path d="M943 400 l-30 -30 a17 17 0 0 1 30 -18 a17 17 0 0 1 30 18 z" class="d"/>
+<text x="943" y="424" class="s" text-anchor="middle">bond · offered after</text><text x="943" y="438" class="s" text-anchor="middle">a first walk</text>
+<!-- residents strip -->
+<rect x="16" y="460" width="992" height="90" rx="14" class="d"/>
+<rect x="40" y="468" width="110" height="74" rx="10" class="fill"/><text x="95" y="535" class="s" text-anchor="middle">Fig</text>
+<rect x="170" y="468" width="110" height="74" rx="10" class="f"/><text x="225" y="535" class="s" text-anchor="middle">Moss</text>
+<rect x="300" y="468" width="110" height="74" rx="10" class="f"/><text x="355" y="535" class="s" text-anchor="middle">Bean</text>
+<rect x="430" y="468" width="110" height="74" rx="10" class="f"/><text x="485" y="535" class="s" text-anchor="middle">Ash</text>
+<rect x="560" y="468" width="110" height="74" rx="10" class="d"/><text x="615" y="510" class="s" text-anchor="middle">an empty place</text>
+<text x="700" y="500" class="n">pad: ◀▶ residents (the stage swaps, free)</text>
+<text x="700" y="516" class="n">▲ / ▶ to the door and heart</text>
+<text x="700" y="532" class="n">door: ✓ Take Fig with you (at the dock)</text>
+<!-- bottom line -->
+<rect y="562" width="1024" height="38" class="bar"/>
+<text x="16" y="587" class="t">✓ Spend time with Fig  ·  ← Home</text>
+<line x1="290" y1="570" x2="290" y2="592" class="sep"/>
+<text x="306" y="587" class="t">Fig · glowtail · juvenile</text>
+<line x1="610" y1="570" x2="610" y2="592" class="sep"/>
+<text x="1008" y="587" class="t" text-anchor="end">Dot is with you</text>
+</svg>

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="system-ui, sans-serif">
+<style>
+.bg{fill:#f7f4ec}.bar{fill:#e4dfd0}.b{fill:none;stroke:#2e2e2e;stroke-width:1.5}.f{fill:#fffdf7;stroke:#2e2e2e;stroke-width:1.5}
+.m{fill:#e9e9ef;stroke:#8a8a99;stroke-width:1.5;stroke-dasharray:5 4}.k{fill:none;stroke:#c9781e;stroke-width:3.5}
+.d{fill:none;stroke:#2e2e2e;stroke-width:1.2;stroke-dasharray:4 4}.sep{stroke:#9a9484;stroke-width:1}.fill{fill:#cfc8b4;stroke:#2e2e2e;stroke-width:1.5}
+text{fill:#2e2e2e}.h{font-size:20px;font-weight:600}.t{font-size:15px}.s{font-size:12px;fill:#6f6a5e}.n{font-size:12px;fill:#b0651a;font-style:italic}
+</style>
+<rect width="1024" height="600" class="bg"/>
+<!-- top bar -->
+<rect width="1024" height="40" class="bar"/>
+<text x="16" y="27" class="h">Home</text><text x="88" y="27" class="t">T5</text>
+<text x="512" y="27" class="t" text-anchor="middle">⚡ 9    ◆ 4    ❀ 6</text>
+<text x="1008" y="27" class="t" text-anchor="end">Companion away · since 16:05 · with Dot</text>
+<!-- vivarium -->
+<rect x="16" y="52" width="640" height="498" rx="22" class="f"/>
+<text x="34" y="76" class="s">VIVARIUM · lit glass terrarium, plants, water, a burrow · rich Miniature Lives art</text>
+<path d="M30 470 C 160 430, 300 490, 440 450 S 600 440, 642 460" class="d"/>
+<ellipse cx="150" cy="420" rx="70" ry="42" class="b"/><text x="150" y="425" class="t" text-anchor="middle">Moss · naps</text>
+<ellipse cx="350" cy="350" rx="78" ry="50" class="b"/><ellipse cx="350" cy="350" rx="92" ry="64" class="k"/>
+<text x="350" y="355" class="t" text-anchor="middle">Bean · digs</text>
+<ellipse cx="520" cy="230" rx="62" ry="40" class="b"/><text x="520" y="235" class="t" text-anchor="middle">Fig · wanders</text>
+<rect x="420" y="480" width="210" height="52" rx="16" class="d"/>
+<text x="525" y="503" class="t" text-anchor="middle">Dot's bed · with you</text>
+<text x="525" y="521" class="s" text-anchor="middle">(empty, small Companion mark)</text>
+<!-- bench -->
+<text x="672" y="68" class="s">BENCH · objects under a warm lamp, not panels</text>
+<rect x="672" y="80" width="336" height="90" rx="14" class="f"/>
+<text x="690" y="104" class="t">bay door</text><text x="690" y="124" class="s">closed · sealed crates land here when docked</text>
+<rect x="672" y="182" width="336" height="104" rx="14" class="f"/>
+<text x="690" y="204" class="t">pod tray</text>
+<circle cx="712" cy="248" r="18" class="fill"/><circle cx="764" cy="248" r="18" class="fill"/><circle cx="816" cy="248" r="18" class="b"/>
+<circle cx="868" cy="248" r="18" class="b"/><circle cx="920" cy="248" r="18" class="b"/><circle cx="972" cy="248" r="18" class="b"/>
+<text x="712" y="280" class="s" text-anchor="middle">shell colour = place</text>
+<rect x="672" y="298" width="160" height="170" rx="14" class="f"/>
+<text x="752" y="320" class="t" text-anchor="middle">incubator</text>
+<circle cx="752" cy="388" r="44" class="b"/><path d="M738 392 q14 -26 28 0 q-14 14 -28 0" class="b"/>
+<text x="752" y="456" class="s" text-anchor="middle">embryo glows · leaves fill</text>
+<rect x="848" y="298" width="160" height="170" rx="14" class="f"/>
+<text x="928" y="320" class="t" text-anchor="middle">Probe cradle</text>
+<rect x="890" y="340" width="76" height="70" rx="12" class="b"/>
+<rect x="884" y="420" width="26" height="12" class="fill"/><rect x="915" y="420" width="26" height="12" class="fill"/><rect x="946" y="420" width="26" height="12" class="b"/>
+<text x="928" y="456" class="s" text-anchor="middle">Shield plates · tier 1</text>
+<text x="672" y="494" class="n">pad: the ring walks residents and bench objects</text>
+<text x="672" y="512" class="n">resting focus = the room: ✓ does what needs you</text>
+<text x="672" y="530" class="n">✓ on a thing opens it (Habitat, Pods, incubator, bench)</text>
+<!-- bottom line -->
+<rect y="562" width="1024" height="38" class="bar"/>
+<text x="16" y="587" class="t">✓ Look at Bean  ·  ← Rest</text>
+<line x1="236" y1="570" x2="236" y2="592" class="sep"/>
+<text x="252" y="587" class="t">Bean · puffcap · adult</text>
+<line x1="610" y1="570" x2="610" y2="592" class="sep"/>
+<text x="1008" y="587" class="t" text-anchor="end">a puffcap pod waits · needs 2 ❀</text>
+</svg>

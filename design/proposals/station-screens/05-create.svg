@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="system-ui, sans-serif">
+<style>
+.bg{fill:#f7f4ec}.bar{fill:#e4dfd0}.b{fill:none;stroke:#2e2e2e;stroke-width:1.5}.f{fill:#fffdf7;stroke:#2e2e2e;stroke-width:1.5}
+.m{fill:#e9e9ef;stroke:#8a8a99;stroke-width:1.5}.k{fill:none;stroke:#c9781e;stroke-width:3.5}
+.d{fill:none;stroke:#2e2e2e;stroke-width:1.2;stroke-dasharray:4 4}.sep{stroke:#9a9484;stroke-width:1}.fill{fill:#cfc8b4;stroke:#2e2e2e;stroke-width:1.5}
+text{fill:#2e2e2e}.h{font-size:20px;font-weight:600}.t{font-size:15px}.s{font-size:12px;fill:#6f6a5e}.n{font-size:12px;fill:#b0651a;font-style:italic}
+</style>
+<rect width="1024" height="600" class="bg"/>
+<rect width="1024" height="40" class="bar"/>
+<text x="16" y="27" class="h">Create</text><text x="96" y="27" class="t">T7</text>
+<text x="512" y="27" class="t" text-anchor="middle">⚡ 12    ◆ 3    ❀ 13</text>
+<text x="1008" y="27" class="t" text-anchor="end">Companion docked</text>
+<!-- windows arc, same places as Pods -->
+<path d="M200 230 V140 A85 70 0 0 1 370 140 V230 Z" class="f"/><path d="M194 236 V138 A91 76 0 0 1 376 138 V236 Z" class="k"/>
+<circle cx="250" cy="170" r="7" class="b"/><circle cx="290" cy="195" r="7" class="b"/><circle cx="325" cy="160" r="7" class="b"/>
+<rect x="250" y="210" width="70" height="12" rx="4" class="fill"/>
+<rect x="318" y="96" width="64" height="20" rx="4" class="fill"/><text x="350" y="111" class="s" text-anchor="middle">changed</text>
+<text x="182" y="170" class="t">▲</text><text x="182" y="210" class="t">▼</text>
+<text x="285" y="252" class="t" text-anchor="middle">spots through and through</text>
+<path d="M400 210 V120 A85 70 0 0 1 570 120 V210 Z" class="m"/><text x="485" y="236" class="t" text-anchor="middle">crown · a surprise</text>
+<path d="M600 210 V120 A85 70 0 0 1 770 120 V210 Z" class="m"/><text x="685" y="236" class="t" text-anchor="middle">colour · a surprise</text>
+<path d="M800 230 V140 A85 70 0 0 1 970 140 V230 Z" class="m"/>
+<circle cx="822" cy="130" r="9" class="b"/><circle cx="836" cy="130" r="9" class="b"/>
+<text x="885" y="252" class="t" text-anchor="middle">gait · family</text>
+<!-- left: opened pod -->
+<rect x="16" y="280" width="170" height="270" rx="14" class="f"/>
+<path d="M50 420 q50 -90 100 0" class="b"/><path d="M50 440 q50 60 100 0" class="b"/>
+<text x="101" y="490" class="t" text-anchor="middle">from the pod</text>
+<text x="101" y="508" class="s" text-anchor="middle">rock field · expedition 4</text>
+<!-- founder large -->
+<rect x="362" y="262" width="300" height="290" rx="20" class="d"/>
+<text x="512" y="282" class="s" text-anchor="middle">founder · rich treatment ~300×290</text>
+<path d="M420 470 q30 -120 120 -110 q70 10 80 80 q-10 60 -100 64 q-80 4 -100 -34 z" class="f"/>
+<circle cx="560" cy="330" r="34" class="f"/>
+<circle cx="470" cy="430" r="8" class="b"/><circle cx="510" cy="410" r="8" class="b"/><circle cx="540" cy="450" r="8" class="b"/><circle cx="590" cy="420" r="8" class="b"/>
+<ellipse cx="560" cy="300" rx="34" ry="14" class="m"/><text x="610" y="296" class="s">misty crown</text>
+<ellipse cx="500" cy="480" rx="60" ry="14" class="m"/><text x="420" y="520" class="s">misty: colour, gait</text>
+<!-- right: incubator waiting + fingerprint -->
+<rect x="838" y="280" width="170" height="270" rx="14" class="f"/>
+<circle cx="923" cy="360" r="50" class="b"/><text x="923" y="365" class="s" text-anchor="middle">empty</text>
+<text x="923" y="428" class="t" text-anchor="middle">incubator</text>
+<circle cx="923" cy="486" r="30" class="b"/><text x="923" y="534" class="s" text-anchor="middle">whorl: petals flip</text>
+<text x="16" y="268" class="n">this screen is the review</text>
+<text x="686" y="300" class="n">on ✓ the whorl</text><text x="686" y="314" class="n">stamps the shell,</text><text x="686" y="328" class="n">the code appears,</text><text x="686" y="342" class="n">the pod glides</text><text x="686" y="356" class="n">into the incubator</text>
+<!-- bottom line -->
+<rect y="562" width="1024" height="38" class="bar"/>
+<text x="16" y="587" class="t">✓ Grow it · 2 ⚡ 4 ❀ 2 ◆  ·  ← Pods</text>
+<line x1="300" y1="570" x2="300" y2="592" class="sep"/>
+<text x="316" y="587" class="t">spotted glowtail</text>
+<line x1="610" y1="570" x2="610" y2="592" class="sep"/>
+<text x="1008" y="587" class="t" text-anchor="end">grows in 5 leaves</text>
+</svg>

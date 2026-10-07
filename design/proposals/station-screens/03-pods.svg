@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="system-ui, sans-serif">
+<style>
+.bg{fill:#f7f4ec}.bar{fill:#e4dfd0}.b{fill:none;stroke:#2e2e2e;stroke-width:1.5}.f{fill:#fffdf7;stroke:#2e2e2e;stroke-width:1.5}
+.m{fill:#e9e9ef;stroke:#8a8a99;stroke-width:1.5}.k{fill:none;stroke:#c9781e;stroke-width:3.5}
+.d{fill:none;stroke:#2e2e2e;stroke-width:1.2;stroke-dasharray:4 4}.sep{stroke:#9a9484;stroke-width:1}.fill{fill:#cfc8b4;stroke:#2e2e2e;stroke-width:1.5}
+.seed{fill:#eef0f6;stroke:#6b6f8a;stroke-width:1.5;stroke-dasharray:3 2}
+text{fill:#2e2e2e}.h{font-size:20px;font-weight:600}.t{font-size:15px}.s{font-size:12px;fill:#6f6a5e}.n{font-size:12px;fill:#b0651a;font-style:italic}
+</style>
+<rect width="1024" height="600" class="bg"/>
+<rect width="1024" height="40" class="bar"/>
+<text x="16" y="27" class="h">Pods</text><text x="80" y="27" class="t">T7</text>
+<text x="512" y="27" class="t" text-anchor="middle">⚡ 12    ◆ 5    ❀ 13</text>
+<text x="1008" y="27" class="t" text-anchor="end">Companion docked</text>
+<!-- tray column -->
+<rect x="16" y="52" width="88" height="498" rx="14" class="f"/>
+<circle cx="60" cy="94" r="26" class="fill"/><path d="M90 94 l10 -6 v12 z" class="b"/>
+<circle cx="60" cy="160" r="26" class="fill"/><text x="82" y="146" class="t">✦</text>
+<circle cx="60" cy="226" r="26" class="fill"/>
+<circle cx="60" cy="292" r="26" class="b"/><text x="60" y="297" class="s" text-anchor="middle">?</text>
+<circle cx="60" cy="358" r="26" class="d"/><circle cx="60" cy="424" r="26" class="d"/>
+<rect x="30" y="468" width="60" height="64" rx="8" class="b"/><path d="M40 532 v-44 M50 532 v-44 M60 532 v-44 M70 532 v-44 M80 532 v-44" class="b"/>
+<text x="60" y="546" class="s" text-anchor="middle">gate</text>
+<text x="112" y="150" class="n">glint on a cup:</text><text x="112" y="164" class="n">worth a look</text>
+<text x="112" y="300" class="n">unidentified</text>
+<text x="112" y="500" class="n">return to</text><text x="112" y="514" class="n">the wild +1 ❀</text>
+<!-- windows arc -->
+<path d="M200 230 V140 A85 70 0 0 1 370 140 V230 Z" class="f"/>
+<path d="M226 120 q60 -30 118 0 M216 160 q70 -30 138 0 M214 200 q70 -30 140 0" class="b"/>
+<path d="M326 190 q14 -26 28 0 q0 22 -14 28 q-14 -6 -14 -28 z" class="seed"/>
+<circle cx="336" cy="200" r="3" class="b"/><circle cx="345" cy="206" r="3" class="b"/><circle cx="338" cy="212" r="3" class="b"/>
+<text x="285" y="250" class="t" text-anchor="middle">shows stripes · hides spots</text>
+<path d="M400 210 V120 A85 70 0 0 1 570 120 V210 Z" class="m"/><path d="M394 216 V118 A91 76 0 0 1 576 118 V216 Z" class="k"/>
+<text x="548" y="128" class="h">✦</text><text x="485" y="172" class="s" text-anchor="middle">frosted</text>
+<text x="485" y="236" class="t" text-anchor="middle">crown</text>
+<path d="M600 210 V120 A85 70 0 0 1 770 120 V210 Z" class="m"/><text x="685" y="172" class="s" text-anchor="middle">frosted</text>
+<text x="685" y="236" class="t" text-anchor="middle">colour</text>
+<path d="M800 230 V140 A85 70 0 0 1 970 140 V230 Z" class="m"/><text x="885" y="192" class="s" text-anchor="middle">frosted</text>
+<circle cx="822" cy="130" r="9" class="b"/><circle cx="836" cy="130" r="9" class="b"/>
+<text x="885" y="250" class="t" text-anchor="middle">gait · family mark</text>
+<!-- pod in cradle -->
+<ellipse cx="585" cy="420" rx="230" ry="130" class="d"/>
+<text x="360" y="292" class="n">lamp pool</text>
+<ellipse cx="585" cy="400" rx="96" ry="118" class="f"/>
+<path d="M530 420 q20 -60 70 -50 q40 10 40 50 q-20 40 -60 36 q-40 -2 -50 -36 z" class="b"/>
+<path d="M560 400 l12 26 M580 396 l12 26 M600 398 l10 24" class="b"/>
+<ellipse cx="595" cy="372" rx="26" ry="14" class="m"/>
+<text x="585" y="300" class="s" text-anchor="middle">translucent shell</text>
+<ellipse cx="585" cy="528" rx="150" ry="18" class="fill"/>
+<text x="585" y="533" class="s" text-anchor="middle">padded cradle</text>
+<!-- fingerprint whorl on the cradle plate -->
+<circle cx="860" cy="430" r="58" class="f"/>
+<ellipse cx="836" cy="406" rx="16" ry="26" transform="rotate(-45 836 406)" class="fill"/>
+<ellipse cx="884" cy="406" rx="16" ry="26" transform="rotate(45 884 406)" class="b"/>
+<ellipse cx="836" cy="454" rx="16" ry="26" transform="rotate(45 836 454)" class="b"/>
+<ellipse cx="884" cy="454" rx="16" ry="26" transform="rotate(-45 884 454)" class="b"/>
+<circle cx="860" cy="430" r="8" class="fill"/>
+<text x="860" y="506" class="s" text-anchor="middle">fingerprint: markings petal lit</text>
+<text x="860" y="520" class="s" text-anchor="middle">others plain ridges</text>
+<rect x="700" y="290" width="150" height="40" rx="6" transform="rotate(-6 775 310)" class="b"/>
+<text x="775" y="315" class="t" text-anchor="middle" transform="rotate(-6 775 310)">New species</text>
+<text x="700" y="350" class="s">rock field · a glowtail felt safe · expedition 4</text>
+<text x="112" y="420" class="n">pad: ◀▶ windows · ▼ pod · ◀ tray</text>
+<!-- bottom line -->
+<rect y="562" width="1024" height="38" class="bar"/>
+<text x="16" y="587" class="t">✓ Study crown · 2 ◆  ·  ← Home</text>
+<line x1="270" y1="570" x2="270" y2="592" class="sep"/>
+<text x="286" y="587" class="t">glowtail pod · rock field</text>
+<line x1="610" y1="570" x2="610" y2="592" class="sep"/>
+<text x="1008" y="587" class="t" text-anchor="end">✦ something new here</text>
+</svg>
