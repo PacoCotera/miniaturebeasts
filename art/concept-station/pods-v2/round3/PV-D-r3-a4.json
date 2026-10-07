@@ -1,0 +1,85 @@
+{
+  "id": "pod-list-read",
+  "direction": "D",
+  "round": 3,
+  "attempt": 4,
+  "tag": "PV-D-r3-a4",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the six wells and their pods and rings, the gate, the four tabs, the page with its picture, bud and plate, the pod on its cradle with its plate, the stage plate with its empty pale square, the top bar and the bottom line.\nONE CHANGE ONLY: remove every small stray numeral and measurement caption: the six small digits beside the wells in the left column, the small caption and rule under the page (the one reading like a size), and the small caption under the pale square on the stage plate; fill each spot with the surrounding dark glass so nothing remains there. Everything else stays exactly as it is.\nKeep every existing word of the top bar, the tabs, the two plates and the bottom line exactly; add no text.\nConstraints: change nothing else.",
+  "preamble": "Reference image follows; its role is stated. Image 1 is the screen to edit; only the stray numerals and captions are removed.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/pods-v2/round3/PV-D-r3-a1-canvas.png",
+      "role": "edit target: the round 3 near-pass with six wells",
+      "sha256": "afd65058faedec9d68b88908407fff8bd26293794ac04ed1e16467ac0ce1c7f1"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T22:37:38Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "round3/raw/PV-D-r3-a4.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "674610d2b46091a1d750fefbb3af44b2caac4efc9ee2d7b6fffae8610499004d"
+    },
+    "png": {
+      "file": "PV-D-r3-a4-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "fa2c8b606bf5f3056957323c11f96f17a3785e86c091603059a7e63d7eedb571"
+    },
+    "screen": {
+      "file": "PV-D-r3-a4-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 20.8,
+    "usage": {
+      "promptTokenCount": 509,
+      "candidatesTokenCount": 1333,
+      "totalTokenCount": 1996,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 251
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 154,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept: recommended candidate (one-change clean-up of a1 held: six wells, charcoal flank, tabs, pod, clean square; the trait line's plate came back empty)"
+  }
+}
