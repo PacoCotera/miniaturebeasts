@@ -7,14 +7,21 @@ has one home; the documents link to each other instead of repeating.
 | --- | --- |
 | [Play manual](play-manual.md) | The rules of the current exploration build, written for players |
 | [The game](game.md) | What the player does, the core loop, design principles and every mechanic's current status |
-| [World and exploration](world-and-exploration.md) | The open map: requirements, constraints and the design work still to do |
+| [World and exploration](world-and-exploration.md) | The decided exploration design: the world, expeditions, the survey, weather, materials, creatures, partners and gates, and what is still open |
 | [Creatures and genomics](creatures-and-genomics.md) | Species, genomes, inheritance, research, creating a mibi, breeding |
-| [Interaction](interaction.md) | How the devices are operated, screen rules and accessibility |
+| [Interaction](interaction.md) | How the devices are operated (the Companion's four buttons, bottom line, HUD and menu), screen rules and accessibility |
 | [Art direction](art-direction.md) | The accepted Miniature Lives look, its rules and the art still to make |
 | [Devices](devices.md) | Companion, Station and Caddy: roles, reference hardware, evidence, open choices |
 | [Architecture](architecture.md) | Where state lives, transfers between devices, recovery, sharing and rights |
 
 The plan for building all of this is the [roadmap](../ROADMAP.md).
+
+## Proposals
+
+The [proposals](proposals/) folder holds design proposals as they were put to the
+project lead, with a header saying what was decided. Once a proposal's decided
+parts are written into the documents above, it is history: the documents are the
+current design, and a proposal is read only for why something was chosen.
 
 ## How to read the status marks
 
