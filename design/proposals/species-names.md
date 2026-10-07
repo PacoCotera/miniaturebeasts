@@ -1,6 +1,6 @@
 # Species and clan names
 
-**Proposal** from the copywriter, 2026-10-07, for the owner. It names the sixteen species and sixteen clans of [taxonomy](taxonomy.md) §3 (codes S01–S16, C01–C16). It follows the §5 rules of that document, the 10-07 naming decisions (English experience; invented, Latin, Greek or less-heard roots; no Spanish diminutives; clean room) and the method of the [name screen](name-screen.md). This second pass swaps every name that carried a caution. Nothing here is picked yet, and the codes stay in the frames until the owner chooses.
+**Proposal** from the copywriter, 2026-10-07, for the owner. It names the sixteen species and sixteen clans of [taxonomy](taxonomy.md) §3 (codes S01–S16, C01–C16). It follows the §5 rules of that document, the 10-07 naming decisions (English experience; invented, Latin, Greek or less-heard roots; no Spanish diminutives; clean room) and the method of the [name screen](name-screen.md). The second and third passes swap every name that carried a caution or collided in search. Nothing here is picked yet, and the codes stay in the frames until the owner chooses.
 
 ## The voice
 
@@ -13,7 +13,7 @@ The tome is written by a field naturalist for a child and the parent reading wit
 - **Banned.** The endings -ín, -ito, -y and -ie are banned, along with their sounds. So is anything that reads as a drug, a brand or a Pokémon.
 - **Both languages.** Every name was read for its Mexican Spanish meaning and slang (the last column of the clearance table).
 
-**Shared open endings: resolved, kept.** Three species end in an open -a (Loika, Untuva, Igara) and two in -o (Pesko, Kilpo). Their first syllables differ (LOY, OON, ih; PES, KIL), their last syllables differ (-ka, -va, -ra; -ko, -po), and Igara alone is stressed on its second syllable. That meets "distinct by eye and ear", so they stay. The clans share the -a on purpose: it is the genus form. Two pairs come close without being confusable: Pesko and Peplos share *Pe-* but not a syllable, and Lathreta and Thyreka share a middle *-re-* but open on LATH and THIGH.
+**Shared open endings: resolved, kept.** Three species end in an open -a (Loika, Untuva, Igara) and two in -o (Pesko, Kilpo). Their first syllables differ (LOY, OON, ih; PES, KIL), their last syllables differ (-ka, -va, -ra; -ko, -po), and Igara alone is stressed on its second syllable. That meets "distinct by eye and ear", so they stay. The clans share the -a on purpose: it is the genus form. Two pairs come close without being confusable: Pesko and Peplos share *Pe-* but not a syllable, Lathreta and Thyreka share a middle *-re-* but open on LATH and THIGH, and Skapana and Kapnis share *-ap-* but open on SKAP and KAP and differ in length.
 
 ## The 16 species
 
@@ -43,8 +43,8 @@ The tome is written by a field naturalist for a child and the parent reading wit
 | Code | Name | Say it | Root · Greek | Meaning | What every member shares |
 | --- | --- | --- | --- | --- | --- |
 | C01 | **Lophessa** | lo-FESS-ah | *lophos* | crest | The leaf crest of the garden-pond hoppers |
-| C02 | **Skiada** | SKEE-ah-dah | *skias, skiados* | canopy, sunshade | The cap of flaps |
-| C03 | **Augera** | OW-geh-rah | *augē* | bright light, gleam | The glowing tail: small lights of wood and rock |
+| C02 | **Kausida** | KOW-sih-dah | *kausia* | the broad-brimmed sun hat | The cap of flaps |
+| C03 | **Stilbera** | STIL-beh-rah | *stilbē* | a gleam, a glitter | The glowing tail: small lights of wood and rock |
 | C04 | **Lathreta** | LATH-reh-tah | *lathra* | secretly, unseen | Quiet hunters of the grass |
 | C05 | **Dasyla** | DASS-ih-lah | *dasys* | shaggy, bushy | Bushy tails and tall ears: clever wanderers |
 | C06 | **Prosopa** | PROSS-oh-pah | *prosōpon* | face, mask | The face mask of the masked tinkerers |
@@ -55,7 +55,7 @@ The tome is written by a field naturalist for a child and the parent reading wit
 | C11 | **Thyreka** | THIGH-reh-kah | *thyreos* | the great door-shaped shield | The shell of the slow keepers of the pond |
 | C12 | **Graptoma** | GRAP-toh-mah | *graptos* | painted, marked | Patterned flaps |
 | C13 | **Lepidos** | LEP-ih-doss | *lepis, lepidos* | scale, flake | Scaled plates and wing cases |
-| C14 | **Omichlis** | oh-MIK-liss | *omichlē* | mist, fog | Eye stalks, a sheen and a love of fog |
+| C14 | **Kapnis** | KAP-niss | *kapnos* | smoke, haze | Eye stalks, a sheen and a love of fog and haze |
 | C15 | **Phyllaxa** | fil-LAX-ah | *phyllon* | leaf | Leaves and roots: the walking green |
 | C16 | **Brontelas** | BRON-teh-lass | *brontē* | thunder | A body of charge, born in the storm |
 
@@ -63,10 +63,11 @@ The tome is written by a field naturalist for a child and the parent reading wit
 
 **Method.** The search tool's titles and summaries were read for any existing creature, character, item, card, brand or product, and for common nouns or surnames that would swamp a search. **6** means the six searches were run one by one: the name in quotes with creature, monster, game, Pokémon, character, brand. **1** means one broad search (the name with creature, character, game and brand). **The bar:** an exact or near match to a creature, character, game or item is rejected; so is an exact match to a notable brand, or any adult, drug or alcohol association. A small local business, or a near miss to a brand in an unrelated class, is recorded and kept (question 1). This is a web screen, not legal clearance (name screen §7).
 
-**State.** About 400 searches were run over two rounds, and the per-round search limit stopped the second.
+**State.** About 520 searches were run over three rounds. **All 32 final names have the full six.** The third round finished the ten open clans. Seven passed. Three collided and were swapped for new candidates that passed all six:
 
-- **All 16 species have the full six.** So do six clans: Lathreta, Prosopa, Kolymba, Thyreka, Lepidos and Brontelas.
-- **Ten clans are not finished.** Lophessa has three of six (creature, monster, game). Skiada, Augera, Dasyla, Skapana, Kremnion, Aithria, Graptoma, Omichlis and Phyllaxa have one broad search each. They need 57 more searches before anyone picks.
+- Skiada became Kausida (Skiada is near Skiadrum, the Fairy Tail shadow dragon).
+- Augera became Stilbera (Augera is said like Aughra of The Dark Crystal and sits next to the Augerino folk creature).
+- Omichlis became Kapnis (Omichlis is one letter from the Hive Omichlisk, a published fan-art creature).
 
 | Name | Searches | Finding | Verdict | Mexican Spanish reading |
 | --- | --- | --- | --- | --- |
@@ -86,24 +87,24 @@ The tome is written by a field naturalist for a child and the parent reading wit
 | Usvel | 6 | None | clear | No meaning. Fine |
 | Lehten | 6 | None. Near the Finnish surnames Lehtonen and Lehtinen | clear | No meaning. Fine |
 | Blikur | 6 | None | clear | No meaning. Fine |
-| Lophessa | 3 + 1 | None. Near the genera Lopaphus and Lophoceps and the game Loplight | clear so far | No meaning. Fine |
-| Skiada | 1 | None. Skiadas is a Greek village | clear so far | No meaning. Fine |
-| Augera | 1 | None. Near the genera Augustaea and Augustea | clear so far | A faint echo of *agüero*, omen. Fine |
+| Lophessa | 6 | None. Near the genera Lopaphus and Lophoceps, the game Loplight and, by eye, Lopunny | clear | No meaning. Fine |
+| Kausida | 6 | None. *Kausida* is an obscure Sanskrit adjective (of a loan); Kausika is an epic name; Kaudi is a shell game | clear | Faintly *causa*. Fine |
+| Stilbera | 6 | None. Near the genera Stilbosis and Stilifer and, by eye, Stilgar (Dune) | clear | Echoes *estilo*. Fine |
 | Lathreta | 6 | None. Near Lathrecista (a dragonfly genus), Lathraea (a plant genus) and Legretta (Tales of the Abyss) | clear | Heard as *la treta*, the ruse. Apt for stealthy hunters |
-| Dasyla | 1 | None. Near Dasylirion (sotol) and Dasylabris | clear so far | No meaning. Fine |
+| Dasyla | 6 | None. Near Dasylirion (sotol), Dasylagon (a wasp genus) and Dasila Selobar, a background figure in The Elder Scrolls Online | clear | No meaning. Fine |
 | Prosopa | 6 | No creature. The Prosopa Greek TV awards ended in 2009. Prosopis (mesquite) is near | clear | Echoes *prosa*. Fine |
-| Skapana | 1 | None. Skapanir is a Danheim album | clear so far | Echoes *escapar*. Fine |
-| Kremnion | 1 | None. Kremnica (Slovakia) | clear so far | Echoes *crema*. Fine |
-| Aithria | 1 | None. Aitheri (homebrew D&D), Atharia (an unreleased game) | clear so far | No meaning. Fine |
+| Skapana | 6 | None. Skapanir is a Danheim album; Skapi was a pipe maker | clear | Echoes *escapar*. Fine |
+| Kremnion | 6 | None. Kremnica (Slovakia); near Kremling (Donkey Kong) by eye only | clear | Echoes *crema*. Fine |
+| Aithria | 6 | None. Aitheri (homebrew D&D) and several small indie games called Aetheria, said differently | clear | No meaning. Fine |
 | Kolymba | 6 | None. Kolymbia is a resort on Rhodes. Kolumno (a puzzle game) is near | clear | Faintly *Colombia*. Fine |
 | Thyreka | 6 | None. Near Thyria (a game), Thyra (Gauntlet) and, by eye, thyroid tablets (Thryza) | clear | Said ti-REH-ka. No meaning. Fine |
-| Graptoma | 1 | None. Near Graptomyza (a fly genus) | clear so far | No meaning. Fine |
+| Graptoma | 6 | None. Graptolites (fossils), Graptomyza (a fly genus); Grapploct (a Pokémon) by eye only | clear | No meaning. Fine |
 | Lepidos | 6 | None. Near Lepideon (a fan-made Pokémon) and Lepidi (homebrew) | clear | *Lépido*, an old word for witty. Fine |
-| Omichlis | 1 | None. Ophalimis (a fan-made Monster Hunter wyvern) | clear so far | No meaning. Fine |
-| Phyllaxa | 1 | None. Near the genera Phyllomya and Phyllalia | clear so far | No meaning. Fine |
+| Kapnis | 6 | None. Kapnisis is a Greek surname; Kapre and Kappa (folklore) by eye only | clear | No meaning. Fine |
+| Phyllaxa | 6 | None. Near Phylloxera and Phyllophaga (insects), Phylax (an Atari enemy) and Phyllali (Leafeon's French name, said differently) | clear | No meaning. Fine |
 | Brontelas | 6 | None. Brontal, a cough syrup, is the only near name | clear | Ends in *telas*, cloths. Fine |
-| *Swapped this round (the owner's cautions)* | 1–2 | Krisel (a surname), Kauris (a dictionary plural), Nebla (search engines correct it to *nebula*), Elvar (Elvarg, RuneScape), Sigelos (an old genus synonym), Phrakta (said aloud, it starts like "frak") | withdrawn | |
-| *Rejected this round* | 1–6 | Namio (adult art in results), Arrano (a Spanish wine label), Sustrai (Emerald Sustrai, RWBY), Ludio (ludio.gg), Leimu (an Iittala lamp line), Nephelix (Nephelym, an adult game; Nepheli Loux), Ostraka (the Ainigmata Ostraka items, Assassin's Creed Odyssey), Sarvik (a folk-tale figure), Kekel (Chuchel), Aspidas (Aspids, Hollow Knight), Lucir (a monster-game creature), Elytros (Elytra, Elder Scrolls), Kranidos (Cranidos in French), Vorden (Vördr, Northgard), Blysen (Bysen), Tholiska (Tholian, as with Tholan), Chelyka (Chelka, The Witch and the Hundred Knight 2), Umbo (Umbro), Kipen (Kipine; looks like Kilpo) | rejected | |
+| *Swapped in round two (the owner's cautions)* | 1–2 | Krisel (a surname), Kauris (a dictionary plural), Nebla (search engines correct it to *nebula*), Elvar (Elvarg, RuneScape), Sigelos (an old genus synonym), Phrakta (said aloud, it starts like "frak") | withdrawn | |
+| *Rejected in rounds two and three* | 1–6 | Namio (adult art in results), Arrano (a Spanish wine label), Sustrai (Emerald Sustrai, RWBY), Ludio (ludio.gg), Leimu (an Iittala lamp line), Nephelix (Nephelym, an adult game; Nepheli Loux), Ostraka (the Ainigmata Ostraka items, Assassin's Creed Odyssey), Skiada (Skiadrum, Fairy Tail), Augera (Aughra, The Dark Crystal; Augerino), Omichlis (Hive Omichlisk, fan art), Phengara (Pingara, Kubera; reads like Gengar), Kalyda (Kalydo, a game platform; Kalyba, The Priory of the Orange Tree), Kalyptis (Calyptis, a moth genus; Kalyptos, a Gnostic figure), Atmis (Atmos, One Piece; Dolby Atmos), Sarvik (a folk-tale figure), Kekel (Chuchel), Aspidas (Aspids, Hollow Knight), Lucir (a monster-game creature), Elytros (Elytra, Elder Scrolls), Kranidos (Cranidos in French), Vorden (Vördr, Northgard), Blysen (Bysen), Tholiska (Tholian, as with Tholan), Chelyka (Chelka, The Witch and the Hundred Knight 2), Umbo (Umbro), Kipen (Kipine; looks like Kilpo) | rejected | |
 | *Withdrawn for sound or meaning* | 1 | Facis (heard as "feces"), Siopeta (four syllables when said) | withdrawn | |
 | *Rejected in round one: existing creature, character or item* | 1–6 | Ailur, Tacet, Sarvel, Ludra, Viren, Selas, Fulgen, Eisel, Aetos, Kuntur, Lokina, Orygma, Keraunos, Keraunex | rejected | |
 | *Rejected in round one: brand or product* | 1–6 | Lempa, Lucet, Sagax, Kaivo, Laino, Nitor, Astrel, Pratel, Lasai, Sopor, Mollen, Prestera | rejected | |
