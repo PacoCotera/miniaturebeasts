@@ -6,38 +6,38 @@
 <rect x="212.824" y="71.647" width="16.235" height="33.882" rx="5.294" fill="#e8e4f2"/>
 <rect x="230.471" y="71.647" width="16.235" height="33.882" rx="5.294" fill="#dfeeea"/>
 <rect x="70.941" y="70.941" width="88.235" height="88.235" rx="10.588" fill="#eef1e4"/>
-<rect x="22.885" y="22.885" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 26.824 26.824)"/>
-<rect x="58.179" y="22.885" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 62.118 26.824)"/>
-<rect x="93.473" y="22.885" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 97.412 26.824)"/>
-<rect x="128.767" y="22.885" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 132.706 26.824)"/>
-<rect x="164.061" y="22.885" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 168 26.824)"/>
-<rect x="199.355" y="22.885" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 203.294 26.824)"/>
-<rect x="234.649" y="22.885" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 238.588 26.824)"/>
-<rect x="269.944" y="22.885" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 273.882 26.824)"/>
-<rect x="305.238" y="22.885" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 309.176 26.824)"/>
-<rect x="305.238" y="58.179" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 309.176 62.118)"/>
-<rect x="305.238" y="93.473" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 309.176 97.412)"/>
-<rect x="305.238" y="128.767" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 309.176 132.706)"/>
-<rect x="305.238" y="164.061" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 309.176 168)"/>
-<rect x="305.238" y="199.355" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 309.176 203.294)"/>
-<rect x="305.238" y="234.649" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 309.176 238.588)"/>
-<rect x="305.238" y="269.944" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 309.176 273.882)"/>
-<rect x="305.238" y="305.238" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 309.176 309.176)"/>
-<rect x="269.944" y="305.238" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 273.882 309.176)"/>
-<rect x="234.649" y="305.238" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 238.588 309.176)"/>
-<rect x="199.355" y="305.238" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 203.294 309.176)"/>
-<rect x="164.061" y="305.238" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 168 309.176)"/>
-<rect x="128.767" y="305.238" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 132.706 309.176)"/>
-<rect x="93.473" y="305.238" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 97.412 309.176)"/>
-<rect x="58.179" y="305.238" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 62.118 309.176)"/>
-<rect x="22.885" y="305.238" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 26.824 309.176)"/>
-<rect x="22.885" y="269.944" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 26.824 273.882)"/>
-<rect x="22.885" y="234.649" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 26.824 238.588)"/>
-<rect x="22.885" y="199.355" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 26.824 203.294)"/>
-<rect x="22.885" y="164.061" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 26.824 168)"/>
-<rect x="22.885" y="128.767" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 26.824 132.706)"/>
-<rect x="22.885" y="93.473" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 26.824 97.412)"/>
-<rect x="22.885" y="58.179" width="7.878" height="7.878" rx="1.641" fill="#2e3a2b" transform="rotate(45 26.824 62.118)"/>
+<circle cx="26.824" cy="26.824" r="5.294" fill="#2e3a2b"/>
+<circle cx="62.118" cy="26.824" r="5.294" fill="#2e3a2b"/>
+<circle cx="97.412" cy="26.824" r="5.294" fill="#2e3a2b"/>
+<circle cx="132.706" cy="26.824" r="5.294" fill="#2e3a2b"/>
+<circle cx="168" cy="26.824" r="5.294" fill="#2e3a2b"/>
+<circle cx="203.294" cy="26.824" r="5.294" fill="#2e3a2b"/>
+<circle cx="238.588" cy="26.824" r="5.294" fill="#2e3a2b"/>
+<circle cx="273.882" cy="26.824" r="5.294" fill="#2e3a2b"/>
+<circle cx="309.176" cy="26.824" r="5.294" fill="#2e3a2b"/>
+<circle cx="309.176" cy="62.118" r="5.294" fill="#2e3a2b"/>
+<circle cx="309.176" cy="97.412" r="5.294" fill="#2e3a2b"/>
+<circle cx="309.176" cy="132.706" r="5.294" fill="#2e3a2b"/>
+<circle cx="309.176" cy="168" r="5.294" fill="#2e3a2b"/>
+<circle cx="309.176" cy="203.294" r="5.294" fill="#2e3a2b"/>
+<circle cx="309.176" cy="238.588" r="5.294" fill="#2e3a2b"/>
+<circle cx="309.176" cy="273.882" r="5.294" fill="#2e3a2b"/>
+<circle cx="309.176" cy="309.176" r="5.294" fill="#2e3a2b"/>
+<circle cx="273.882" cy="309.176" r="5.294" fill="#2e3a2b"/>
+<circle cx="238.588" cy="309.176" r="5.294" fill="#2e3a2b"/>
+<circle cx="203.294" cy="309.176" r="5.294" fill="#2e3a2b"/>
+<circle cx="168" cy="309.176" r="5.294" fill="#2e3a2b"/>
+<circle cx="132.706" cy="309.176" r="5.294" fill="#2e3a2b"/>
+<circle cx="97.412" cy="309.176" r="5.294" fill="#2e3a2b"/>
+<circle cx="62.118" cy="309.176" r="5.294" fill="#2e3a2b"/>
+<circle cx="26.824" cy="309.176" r="5.294" fill="#2e3a2b"/>
+<circle cx="26.824" cy="273.882" r="5.294" fill="#2e3a2b"/>
+<circle cx="26.824" cy="238.588" r="5.294" fill="#2e3a2b"/>
+<circle cx="26.824" cy="203.294" r="5.294" fill="#2e3a2b"/>
+<circle cx="26.824" cy="168" r="5.294" fill="#2e3a2b"/>
+<circle cx="26.824" cy="132.706" r="5.294" fill="#2e3a2b"/>
+<circle cx="26.824" cy="97.412" r="5.294" fill="#2e3a2b"/>
+<circle cx="26.824" cy="62.118" r="5.294" fill="#2e3a2b"/>
 <rect x="35.647" y="35.647" width="264.706" height="17.647" rx="0" fill="#2e3a2b"/>
 <rect x="35.647" y="282.706" width="264.706" height="17.647" rx="0" fill="#2e3a2b"/>
 <rect x="35.647" y="53.294" width="17.647" height="229.412" rx="0" fill="#2e3a2b"/>

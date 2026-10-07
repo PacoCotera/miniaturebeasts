@@ -22,20 +22,21 @@
     },
     "output": "image/jpeg 2048x2048 (1:1 at 2K), kept byte-exact in raw/ for kept candidates; LANCZOS to 1024x1024 as the canvas PNG. Composites of the real stamp into a generated plate are recorded under 'composites'.",
     "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the preamble, then the prompt verbatim as the last text part.",
-    "budget": "At most 16 generations for this task; 9 used (round 1: 7, round 2: 2), all on gemini-3-pro-image. No call failed; none was retried. The stamp faces are not generated."
+    "budget": "At most 16 generations for this task; 9 used (round 1: 7, round 2: 2), all on gemini-3-pro-image. No call failed; none was retried. The stamp faces are not generated; the owner's decisions were applied in code without new generation."
   },
   "plan": {
     "references": {
-      "art/miniature-lives/assets/rich-plain-300x310.png": "clan reference only for the Trebola plate's leaf motif; the creature is not drawn",
+      "art/miniature-lives/assets/rich-plain-300x310.png": "clan reference only for the C01 plate's leaf motif; the creature is not drawn",
       "art/concept-stamp/renders/*.png": "the real styled stamp faces, attached to the two style references as the thing to illustrate"
     },
     "directions": {
-      "T tome-plate-trebola": "A herbarium plate with an engraved trefoil-leaf border in moss ink and an empty centre square for the stamp.",
-      "F tome-plate-fanalia": "A herbarium plate with an engraved lantern border in umber ink and an empty centre square.",
+      "T tome-plate-c01": "A herbarium plate with an engraved trefoil-leaf border in moss ink and an empty centre square for the stamp (the hopper frame's clan, C01).",
+      "F tome-plate-c03": "A herbarium plate with an engraved lantern motif in umber ink and an empty centre square (the glowtail frame's clan, C03); round 1 as a border, round 2 at the corners only.",
       "C caddy-strip": "A photograph of blank 58 mm thermal paper on a table, for the Caddy label composite.",
       "R style-ref": "Illustrations of the real stamp face on the tome page and on the lab's glass plate: references for the eye, never decoded."
     },
-    "rounds": "One round of seven; a second only if a plate's centre is not clean enough to carry the stamp."
+    "rounds": "One round of seven; a second only if a plate's centre is not clean enough to carry the stamp.",
+    "ownerDecisions": "2026-10-07: round perforations in every clan; the border cells alone carry the clan; copy hues lagoon and brick; no glint or amber on the stamp; flair, not ornament, reproducible in print; clans keyed by taxonomy codes C01 to C16."
   },
   "recommended": null,
   "calls": [
@@ -615,6 +616,12 @@
   ],
   "styledFaces": {
     "tool": "tools/style-stamp.mjs + tools/render-svg.cjs",
+    "families": {
+      "c01": "leaf-tipped border cells, moss ink (the hopper frame's clan)",
+      "c03": "cut-corner lantern border cells, umber ink (the glowtail frame's clan)",
+      "neutral": "plain graphite, for a species without a clan"
+    },
+    "perforation": "round in every clan",
     "note": "encoder cells styled in code within prototypes/genome-stamp/README.md's art-director allowances; every face decoded, see decode/"
   },
   "composites": [
@@ -649,7 +656,7 @@
       "frac": 0.42,
       "decodesDefault": false,
       "decodesAll": true,
-      "note": "reads only with --all (12 candidates); rejected as a plate"
+      "note": "reads only with --all; rejected as a plate"
     },
     {
       "file": "composites/glowtail-on-ST-F-r2-a1.png",

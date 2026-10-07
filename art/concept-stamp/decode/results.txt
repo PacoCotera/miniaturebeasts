@@ -1,14 +1,22 @@
-hopper-trebola-tome-300.png: "ok": true "code": "S11v1-0F-8898-7EC96C"
-hopper-trebola-bench-300.png: "ok": true "code": "S11v1-0F-8898-7EC96C"
-glowtail-fanalia-tome-300.png: "ok": true "code": "S13v1-7F-82F9-08AA9F"
-glowtail-fanalia-bench-300.png: "ok": true "code": "S13v1-7F-82F9-08AA9F"
-glowtail-two-unread-fanalia-tome-300.png: "ok": true "code": "S13v1-37-FAC1-07667D"
-glowtail-two-unread-fanalia-bench-300.png: "ok": true "code": "S13v1-37-FAC1-07667D"
+hopper-c01-tome-300.png: "ok": true "code": "S11v1-0F-8898-7EC96C"
+hopper-c01-bench-300.png: "ok": true "code": "S11v1-0F-8898-7EC96C"
+glowtail-c03-tome-300.png: "ok": true "code": "S13v1-7F-82F9-08AA9F"
+glowtail-c03-bench-300.png: "ok": true "code": "S13v1-7F-82F9-08AA9F"
+glowtail-two-unread-c03-tome-300.png: "ok": true "code": "S13v1-37-FAC1-07667D"
+glowtail-two-unread-c03-bench-300.png: "ok": true "code": "S13v1-37-FAC1-07667D"
 future150-neutral-tome-300.png: "ok": true "code": "S22v1-FF-20AC-66DBCD"
 future150-neutral-bench-300.png: "ok": true "code": "S22v1-FF-20AC-66DBCD"
-hopper-20mm.png: "ok": true "code": "S11v1-0F-8898-7EC96C"
-hopper-label-58mm.png: "ok": true "code": "S11v1-0F-8898-7EC96C"
-glowtail-20mm.png: "ok": true "code": "S13v1-7F-82F9-08AA9F"
-glowtail-label-58mm.png: "ok": true "code": "S13v1-7F-82F9-08AA9F"
-future150-20mm.png: "ok": true "code": "S22v1-FF-20AC-66DBCD"
-future150-label-58mm.png: "ok": true "code": "S22v1-FF-20AC-66DBCD"
+hopper-c01-bench-120.png: "ok": true
+glowtail-c03-bench-120.png: "ok": true
+future150-neutral-bench-120.png: "ok": true
+hopper-20mm.png: "ok": true
+hopper-label-58mm.png: "ok": true
+glowtail-20mm.png: "ok": true
+glowtail-label-58mm.png: "ok": true
+future150-20mm.png: "ok": true
+future150-label-58mm.png: "ok": true
+hopper on ST-T-r1-a1: "ok": true
+hopper on ST-T-r1-a2: "ok": true
+future150 on ST-T-r1-a2: "ok": true
+glowtail on ST-F-r2-a1: "ok": true
+glowtail on ST-F-r2-a2: "ok": true

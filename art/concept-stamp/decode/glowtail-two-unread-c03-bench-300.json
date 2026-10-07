@@ -1,18 +1,19 @@
 {
  "ok": true,
- "code": "S13v1-7F-82F9-08AA9F",
+ "code": "S13v1-37-FAC1-07667D",
  "species": 13,
  "version": 1,
  "read": [
   "Coat",
   "Face",
   "Shape",
-  "Legs & tail",
   "Movement",
-  "Stamina",
+  "Stamina"
+ ],
+ "unread": [
+  "Legs & tail",
   "Temperament"
  ],
- "unread": [],
  "copies": {
   "appearance.body-palette": [
    "jade",
@@ -90,38 +91,6 @@
    "down",
    "up"
   ],
-  "growth.support-drop-ratio": [
-   "long",
-   "medium"
-  ],
-  "growth.support-radius-ratio": [
-   "stout",
-   "stout"
-  ],
-  "anatomy.contact-terminal-form": [
-   "pad",
-   "pad"
-  ],
-  "growth.terminal-length-ratio": [
-   "small",
-   "broad"
-  ],
-  "growth.terminal-depth-ratio": [
-   "small",
-   "high"
-  ],
-  "growth.axial-tail-length-ratio": [
-   "long",
-   "short"
-  ],
-  "growth.axial-tail-width-ratio": [
-   "fine",
-   "fine"
-  ],
-  "growth.axial-tail-bend": [
-   "up",
-   "up"
-  ],
   "movement.cycle-rate": [
    "high",
    "high"
@@ -157,17 +126,9 @@
   "energy.action-efficiency": [
    "low",
    "low"
-  ],
-  "cognition.exploration-tendency": [
-   "reserved",
-   "seeking"
-  ],
-  "cognition.arousal-threshold": [
-   "low",
-   "high"
   ]
  },
- "crc": 33529,
+ "crc": 64193,
  "postmark": "none",
  "stamp": {
   "cells": 25,
@@ -194,4 +155,4 @@
   ]
  }
 }
-1 stamp(s), 97 ms
+1 stamp(s), 122 ms

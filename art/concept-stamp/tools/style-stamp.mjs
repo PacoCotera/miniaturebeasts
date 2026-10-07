@@ -2,7 +2,10 @@
 // Styled genome stamp: the encoder's cells, re-dressed within the prototype's "For the art
 // director" allowances. Nothing moves; only paper, dot shape, cell ink shape, tints and hues change.
 //
-//   node style-stamp.mjs <genome.json> --family trebola|fanalia|neutral --paper tome|bench --size 300 --out name
+//   node style-stamp.mjs <genome.json> --family c01|c03|neutral --paper tome|bench --size 300 --out name
+// Owner decisions (2026-10-07): perforations are round in every clan; the border cells alone carry the clan
+// family; copy hues lagoon and brick; no glint or amber on the stamp, ever; flair, not ornament. Clans are
+// keyed by the taxonomy's codes (C01 is the hopper frame's clan, C03 the glowtail frame's).
 //   -> name.svg (and name.png when --png is given, rasterized with the prototype's own rasterizer
 //      for the shapes it knows; rounded shapes go through Chromium in render-svg.cjs)
 import { readFileSync, writeFileSync } from "node:fs";
@@ -15,11 +18,11 @@ const opt = (k, d) => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i
 const file = args.find((a, i) => !a.startsWith("--") && !args[i - 1]?.startsWith("--"));
 if (!file) { console.error("usage: node style-stamp.mjs <genome.json> [--family trebola|fanalia|neutral] [--paper tome|bench] [--size 300] [--out name]"); process.exit(2); }
 
-// One family per clan: the border cells' ink and shape, the perforation's shape, the frame's ink.
+// One family per clan: the border cells' ink and shape, and the frame's ink. Perforations are round everywhere.
 export const FAMILIES = {
-  trebola: { ink: "#2e3a2b", frame: "#2e3a2b", border: { shape: "leaf", rx: 0.34 }, dot: "leaf", glyph: "#243020", halo: "#eef1e4" },
-  fanalia: { ink: "#3b2a1c", frame: "#3b2a1c", border: { shape: "lantern", cut: 0.22 }, dot: "circle", glyph: "#2d2015", halo: "#f4ecdf" },
-  neutral: { ink: "#2b2a27", frame: "#2b2a27", border: { shape: "square", rx: 0.1 }, dot: "circle", glyph: "#1f1e1c", halo: "#efede8" },
+  c01: { ink: "#2e3a2b", frame: "#2e3a2b", border: { shape: "leaf", rx: 0.34 }, glyph: "#243020", halo: "#eef1e4" },
+  c03: { ink: "#3b2a1c", frame: "#3b2a1c", border: { shape: "lantern", cut: 0.22 }, glyph: "#2d2015", halo: "#f4ecdf" },
+  neutral: { ink: "#2b2a27", frame: "#2b2a27", border: { shape: "square", rx: 0.1 }, glyph: "#1f1e1c", halo: "#efede8" },
 };
 export const PAPER = { tome: "#f6efe0", bench: "#eef0f2", print: "#ffffff" };
 // Copy hues, pale for zero. Both grey dark (luma ~ 0.28 and 0.33).
@@ -61,12 +64,8 @@ export function styledGeometry(genome, { family = "neutral", paper = "tome" } = 
   // at 17x17 the glyph touches the data, so the halo is clipped to the 5x5; from 21 up it may use the gutter
   if (L.glyph.g > 5) marks.push({ k: "circle", cx: L.glyph.c0 + 2.5, cy: L.glyph.r0 + 2.5, r: 3.0, fill: F.halo });
   else rect(L.glyph.c0, L.glyph.r0, L.glyph.c0 + 5, L.glyph.r0 + 5, F.halo, 0.6);
-  // ring 0: perforation, a solid centred mark about 0.6 cell across, on every other cell
-  for (const [r, c] of ringCells(N, 0)) if ((r + c) % 2 === 0) {
-    if (F.dot === "leaf") marks.push({ k: "diamond", cx: c + 0.5, cy: r + 0.5, r: 0.31, fill: F.ink });
-    else if (paper === "bench") marks.push({ k: "pinhole", cx: c + 0.5, cy: r + 0.5, r: 0.3, fill: F.ink });
-    else marks.push({ k: "circle", cx: c + 0.5, cy: r + 0.5, r: 0.3, fill: F.ink });
-  }
+  // ring 0: perforation, a round solid dot about 0.6 cell across on every other cell, in every clan
+  for (const [r, c] of ringCells(N, 0)) if ((r + c) % 2 === 0) marks.push({ k: "circle", cx: c + 0.5, cy: r + 0.5, r: 0.3, fill: F.ink });
   // ring 1: the one solid frame line, unchanged
   rect(1, 1, N - 1, 2, F.frame); rect(1, N - 2, N - 1, N - 1, F.frame); rect(1, 2, 2, N - 2, F.frame); rect(N - 2, 2, N - 1, N - 2, F.frame);
   // ring 2: the species border, one engraved family per clan
@@ -96,8 +95,6 @@ export function toStyledSVG(geom, side = 300) {
   for (const m of geom.marks) {
     if (m.k === "rect") out.push(`<rect x="${X(m.x0)}" y="${X(m.y0)}" width="${S(m.x1 - m.x0)}" height="${S(m.y1 - m.y0)}" rx="${S(m.rx || 0)}" fill="${m.fill}"/>`);
     else if (m.k === "circle") out.push(`<circle cx="${X(m.cx)}" cy="${X(m.cy)}" r="${S(m.r)}" fill="${m.fill}"/>`);
-    else if (m.k === "pinhole") out.push(`<circle cx="${X(m.cx)}" cy="${X(m.cy)}" r="${S(m.r)}" fill="${m.fill}"/><circle cx="${X(m.cx - m.r * 0.25)}" cy="${X(m.cy - m.r * 0.25)}" r="${S(m.r * 0.22)}" fill="${geom.plate}" opacity="0.55"/>`);
-    else if (m.k === "diamond") out.push(`<rect x="${X(m.cx - m.r * 0.72)}" y="${X(m.cy - m.r * 0.72)}" width="${S(m.r * 1.44)}" height="${S(m.r * 1.44)}" rx="${S(m.r * 0.3)}" fill="${m.fill}" transform="rotate(45 ${X(m.cx)} ${X(m.cy)})"/>`);
     else if (m.k === "poly") out.push(`<polygon points="${m.pts.map(([x, y]) => `${X(x)},${X(y)}`).join(" ")}" fill="${m.fill}"/>`);
     else if (m.k === "leaf") {
       const w = m.x1 - m.x0, h = m.y1 - m.y0, rx = 0.34 * w;
