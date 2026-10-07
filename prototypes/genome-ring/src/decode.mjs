@@ -306,6 +306,39 @@ function fitHomography(e, rimPts, refImgPts, REF_RHO) {
   return { H, rms: Math.sqrt(cost / obs.length) };
 }
 
+// Projective map of the unit disc onto itself taking 0 to p (a Lorentz boost
+// in homogeneous coordinates; it preserves x² + y² = w²).
+function boost(px, py) {
+  const b = Math.hypot(px, py);
+  if (b < 1e-9) return [1, 0, 0, 0, 1, 0, 0, 0, 1];
+  const nx = px / b, ny = py / b, g = 1 / Math.sqrt(1 - b * b);
+  return [1 + (g - 1) * nx * nx, (g - 1) * nx * ny, g * b * nx, (g - 1) * nx * ny, 1 + (g - 1) * ny * ny, g * b * ny, g * b * nx, g * b * ny, g];
+}
+const mul3 = (A, B) => { const C = new Array(9).fill(0); for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) for (let k = 0; k < 3; k++) C[i * 3 + j] += A[i * 3 + k] * B[k * 3 + j]; return C; };
+
+function searchCentre(S, A) {
+  const rc = (LAYOUT.ref[0] + LAYOUT.ref[1]) / 2, gin = (LAYOUT.inner.ext[1] + LAYOUT.ref[0]) / 2, gout = (LAYOUT.ticks[1] + LAYOUT.outer.base[0]) / 2;
+  const na = 180, trig = Array.from({ length: na }, (_, i) => [Math.sin((TAU * i) / na), -Math.cos((TAU * i) / na)]);
+  const score = (px, py) => {
+    const H = mul3(A, boost(px, py));
+    let s = 0;
+    for (const [c, d] of trig) s += (S(...apply(H, gin * c, gin * d)) + S(...apply(H, gout * c, gout * d))) / 2 - S(...apply(H, rc * c, rc * d));
+    return s / na;
+  };
+  let best = [0, 0], bs = score(0, 0);
+  for (const [step, span] of [[0.04, 0.44], [0.01, 0.04], [0.0025, 0.01]]) {
+    const [bx, by] = best;
+    for (let y = -span; y <= span + 1e-9; y += step)
+      for (let x = -span; x <= span + 1e-9; x += step) {
+        const px = bx + x, py = by + y;
+        if (Math.hypot(px, py) > 0.45) continue;
+        const v = score(px, py);
+        if (v > bs) { bs = v; best = [px, py]; }
+      }
+  }
+  return mul3(A, boost(...best));
+}
+
 // ---------- reading ----------
 function zoneSampler(S, H, Rpx) {
   // mean luminance over the inner part of a radial zone, across a small angle
@@ -370,22 +403,33 @@ function findSlots(S, H, n) {
   const Sl = best.m, pitch = TAU / Sl;
   // tick centres at angle a where Sl*a = -phase (mod 2π)
   const tick0 = ((((-best.phase / Sl) % pitch) + pitch) % pitch);
-  // notch: the brightest stretch of the timing circle; its centre is the
-  // midpoint of the two edges where the circle's ink comes back
-  const Rf = profile(S, H, LAYOUT.ref[0] + 0.004, LAYOUT.ref[1] - 0.004, n);
+  // notch: the stretch with no timing circle and no dashes. Ink is measured
+  // as contrast against the white gaps beside it and the rim's black at the
+  // same angle, so a glare spot (bright, low contrast) is not taken for it.
+  const P = (r0, r1) => profile(S, H, r0, r1, n);
+  const Rf = P(LAYOUT.ref[0] + 0.004, LAYOUT.ref[1] - 0.004);
+  const Db = P(LAYOUT.dash.base[0] + 0.01, LAYOUT.dash.base[1] - 0.01);
+  const g1 = P(LAYOUT.inner.ext[1] + 0.004, LAYOUT.ref[0] - 0.004);
+  const g2 = P(LAYOUT.dash.base[1] + 0.004, LAYOUT.rim[0] - 0.004);
+  const Bk = P(LAYOUT.rim[0] + 0.01, LAYOUT.rim[1] - 0.01);
+  const sc = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    const w = Math.max(g1[i], g2[i]), den = Math.max(0.04, w - Bk[i]);
+    sc[i] = Math.max(0, (w - Rf[i]) / den) + Math.max(0, (w - Db[i]) / den);
+  }
   const win = Math.max(1, Math.round(n / Sl));
-  let bi = 0, bv = -1e9;
+  let bi = 0, bv = 1e9;
   for (let i = 0; i < n; i++) {
     let v = 0;
-    for (let k = -win; k <= win; k++) v += Rf[(i + k + n) % n];
-    if (v > bv) { bv = v; bi = i; }
+    for (let k = -win; k <= win; k++) v += sc[(i + k + n) % n];
+    if (v < bv) { bv = v; bi = i; }
   }
-  const sorted = Float64Array.from(Rf).sort();
-  const ink = sorted[Math.floor(n * 0.3)], gap = bv / (2 * win + 1), mid = (ink + gap) / 2;
+  const sorted = Float64Array.from(sc).sort();
+  const ringLevel = sorted[Math.floor(n * 0.6)], gapLevel = bv / (2 * win + 1), mid = (ringLevel + gapLevel) / 2;
   const lim = Math.round((2.5 * n) / Sl);
   let l = 0, r = 0;
-  while (l < lim && Rf[(bi - l - 1 + n) % n] > mid) l++;
-  while (r < lim && Rf[(bi + r + 1) % n] > mid) r++;
+  while (l < lim && sc[(bi - l - 1 + n) % n] < mid) l++;
+  while (r < lim && sc[(bi + r + 1) % n] < mid) r++;
   const notchA = (TAU * (bi + (r - l) / 2)) / n;
   // snap the notch centre to the tick grid
   const j = Math.round((notchA - tick0) / pitch);
@@ -500,7 +544,7 @@ function readZone(zs, angles, pitch, zone, present, known) {
 function decodeAt(S, H, Rpx, dir) {
   const n = Rpx > 200 ? 4096 : 2048;
   const { Sl, rot } = findSlots(S, H, n);
-  if (Sl < MIN_SLOTS) return { ok: false, error: `too few timing marks (${Sl})` };
+  if (Sl < MIN_SLOTS) return { ok: false, stage: "timing", error: "no read: timing marks not found" };
   const pitch = TAU / Sl;
   const angles = refineAngles(S, H, Sl, rot, dir, Rpx);
   const zs = zoneSampler(S, H, Rpx);
@@ -508,41 +552,65 @@ function decodeAt(S, H, Rpx, dir) {
   const present = angles.map((_, k) => k >= NOTCH_SLOTS);
   const known = angles.map((_, k) => (k < NOTCH_SLOTS ? 0 : null));
   const dash = readZone(zs, angles, pitch, LAYOUT.dash, present, known);
-  const header = [];
+  // Soft vote per header bit over its copies, then try the most likely
+  // headers in turn (the voted one, then flips of up to 3 weakest bits). Only
+  // a header whose CRC-16 verifies with the payload is ever returned.
+  const soft = [];
   for (let j = 0; j < HEADER_BITS; j++) {
-    let soft = 0, votes = 0, cnt = 0;
-    for (let k = NOTCH_SLOTS + j; k < Sl; k += HEADER_BITS) {
-      votes += dash.x[k]; cnt++;
-      soft += (dash.x[k] ? 1 : -1) * Math.min(3, dash.margin[k]);
-    }
-    header.push(cnt === 0 ? 0 : 2 * votes > cnt ? 1 : 2 * votes < cnt ? 0 : soft > 0 ? 1 : 0);
+    let s = 0;
+    for (let k = NOTCH_SLOTS + j; k < Sl; k += HEADER_BITS) s += (dash.x[k] ? 1 : -1) * Math.min(3, dash.margin[k]);
+    soft.push(s);
   }
-  const h = parseHeader(header);
-  const frame = frameFor(h.species, h.version);
-  if (!frame) return { ok: false, error: `unknown species ${h.species} v${h.version}`, Sl, header: h };
-  const plan = slotLayout(frame);
-  if (plan.S !== Sl) return { ok: false, error: `slot count ${Sl} does not match species (${plan.S})`, Sl, header: h };
-  const readCh = (ci) => (h.mask >> ci) & 1;
-  const pres = plan.slots.map((s) => s.type === "spoke" && !!readCh(s.chapter));
-  const kn = plan.slots.map((s) => (s.type === "spoke" && readCh(s.chapter) ? null : 0));
-  const tracks = [LAYOUT.inner, LAYOUT.outer].map((zone) => readZone(zs, angles, pitch, zone, pres, kn));
-  const bits = tracks.map((tr) => {
-    const out = new Array(frame.spokesPerTrack).fill(null);
-    plan.slots.forEach((s, k) => { if (s.type === "spoke" && readCh(s.chapter)) out[s.spoke] = tr.x[k]; });
-    return out;
-  });
-  const bitMargins = tracks.map((tr) => {
-    const out = new Array(frame.spokesPerTrack).fill(null);
-    plan.slots.forEach((s, k) => { if (s.type === "spoke" && readCh(s.chapter)) out[s.spoke] = tr.margin[k]; });
-    return out;
-  });
-  const res = bitsToGenome(header, bits[0], bits[1]);
-  const margins = [...tracks.flatMap((tr) => tr.margin), ...dash.margin].filter(Number.isFinite);
+  const voted = soft.map((v) => (v > 0 ? 1 : 0));
+  const weak = soft.map((v, j) => [Math.abs(v), j]).sort((x, y) => x[0] - y[0]).filter(([m]) => m < 1.5).slice(0, 3).map(([, j]) => j);
+  const cands = [];
+  for (let m = 0; m < 1 << weak.length; m++) {
+    const hb = voted.slice();
+    let cost = 0;
+    weak.forEach((j, q) => { if ((m >> q) & 1) { hb[j] ^= 1; cost += Math.abs(soft[j]); } });
+    cands.push({ hb, cost });
+  }
+  cands.sort((x, y) => x.cost - y.cost);
+  const trackCache = new Map();
+  let stage = "header", detail = null;
+  for (const { hb } of cands) {
+    const h = parseHeader(hb);
+    const frame = frameFor(h.species, h.version);
+    if (!frame) { detail ??= `header unverified (species ${h.species} v${h.version} unknown)`; continue; }
+    const plan = slotLayout(frame);
+    if (plan.S !== Sl) { detail ??= `slot count ${Sl} != ${plan.S}`; continue; }
+    stage = "check";
+    const key = `${h.species}.${h.version}.${h.mask}`;
+    if (!trackCache.has(key)) {
+      const readCh = (ci) => (h.mask >> ci) & 1;
+      const pres = plan.slots.map((sl) => sl.type === "spoke" && !!readCh(sl.chapter));
+      const kn = plan.slots.map((sl) => (sl.type === "spoke" && readCh(sl.chapter) ? null : 0));
+      const tracks = [LAYOUT.inner, LAYOUT.outer].map((zone) => readZone(zs, angles, pitch, zone, pres, kn));
+      const pick = (arr) => {
+        const out = new Array(frame.spokesPerTrack).fill(null);
+        plan.slots.forEach((sl, k) => { if (sl.type === "spoke" && readCh(sl.chapter)) out[sl.spoke] = arr[k]; });
+        return out;
+      };
+      trackCache.set(key, { tracks, bits: tracks.map((tr) => pick(tr.x)), margins: tracks.map((tr) => pick(tr.margin)) });
+    }
+    const { tracks, bits, margins: bitMargins } = trackCache.get(key);
+    const res = bitsToGenome(hb, bits[0], bits[1]);
+    if (!res.ok) { detail ??= res.error; continue; }
+    const margins = [...tracks.flatMap((tr) => tr.margin), ...dash.margin].filter(Number.isFinite);
+    return {
+      ...res, Sl, dir,
+      minMargin: margins.length ? Math.min(...margins) : 0,
+      headerFlips: hb.reduce((c, b, j) => c + (b !== voted[j] ? 1 : 0), 0),
+      isi: tracks.map((tr) => tr.model),
+      bits: { header: hb, inner: bits[0], outer: bits[1], margins: bitMargins },
+    };
+  }
+  // no verified read: report the stage only (never an unverified species)
+  const first = trackCache.values().next().value;
   return {
-    ...res, Sl, dir,
-    minMargin: margins.length ? Math.min(...margins) : 0,
-    isi: tracks.map((tr) => tr.model),
-    bits: { header, inner: bits[0], outer: bits[1], margins: bitMargins },
+    ok: false, stage, Sl, dir, detail,
+    error: stage === "header" ? "no read: header not verified" : "no read: check failed",
+    ...(first ? { bits: { header: voted, inner: first.bits[0], outer: first.bits[1], margins: first.margins } } : {}),
   };
 }
 
@@ -583,12 +651,23 @@ export function decode(img, options = {}) {
     }
     if (!e) { tried.push({ error: "no rim" }); continue; }
     const rimPts = refineRim(sampler(g), e.H, Rpx);
-    let Hh = e.H;
-    for (let it = 0; it < 5; it++) {
-      const win = it < 3 ? REF_WIDE : REF_NARROW;
+    // Under tilt the circle's centre does not project to the ellipse's centre.
+    // Every homography that maps the unit circle onto the rim ellipse is the
+    // ellipse's affine map times a "boost" that moves the centre to some p
+    // inside the disc; search p for the one that lands the timing circle on ink.
+    let Hh = searchCentre(sampler(g), e.H);
+    // iterate the fit until the centre stops moving: strong tilt seen from
+    // close up (rim radius / distance about 0.25) needs several passes
+    let wide = 0;
+    for (let it = 0; it < 14; it++) {
+      const win = wide < 99 ? REF_WIDE : REF_NARROW;
       const ref = refPoints(sampler(g), Hh, Rpx, win).map(({ a, rho }) => apply(Hh, rho * Math.sin(a), -rho * Math.cos(a)));
       if (ref.length < 40) break;
+      const before = apply(Hh, 0, 0);
       Hh = fitHomography(e, rimPts, ref, expectedRho(win)).H;
+      const after = apply(Hh, 0, 0), moved = Math.hypot(after[0] - before[0], after[1] - before[1]);
+      if (wide === 99) { if (moved < 0.02 * Math.max(1, Rpx / 100)) break; }
+      else if (moved < 0.05 * Math.max(1, Rpx / 100) || ++wide >= 10) wide = 99;
     }
     const Hs = toS(Hh);
     let r = decodeAt(S, Hs, Rpx / f2, 1);
