@@ -1,0 +1,59 @@
+{
+  "id": "tome-plate-fanalia",
+  "direction": "F",
+  "round": 1,
+  "attempt": 1,
+  "tag": "ST-F-r1-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts illustration for a botanical-tome page in the game's Library. Flat artwork filling a 1:1 canvas, painted with clean light from the upper left, soft shadows, crisp edges, no noise. No creature, no person, no text, no letters, no logos.\nA PRESSED-SPECIMEN PLATE from a botanical tome: an aged cream paper page with a deckled edge, and on it a rectangular engraved frame in fine deep-umber ink whose border motif is a repeating small lantern shape with a tiny glowing bulb (an old naturalist's engraving of lanterns, small and exact, with a soft marigold glow inked as fine hatching), with a tiny engraved corner ornament at each of its four corners; the frame encloses the empty central square with a generous paper margin inside the frame line; beneath the frame a thin engraved rule and nothing else; a faint warm glow at one outer corner of the page. Colours: cream paper, umber ink, a hint of marigold and lagoon teal. Quiet, exact, a herbarium feel.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+  "preamble": "No reference images: the motif is described in the prompt.",
+  "imageInputs": [],
+  "requested": {
+    "aspectRatio": "1:1",
+    "imageSize": "2K"
+  },
+  "targetSize": "1024x1024",
+  "screenCrop": "none",
+  "time": "2026-10-07T22:19:59Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": null,
+      "stored": false,
+      "mimeType": "image/jpeg",
+      "width": 2048,
+      "height": 2048,
+      "sha256": "4c614704d09c1ced3c752ee4f78dc380d6ac3ec2c0e6d412509125aed926e1c5",
+      "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
+    },
+    "png": {
+      "file": "ST-F-r1-a1-canvas.png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "c522b9f65dd9dd1e7dfa9097a947535cf82f20610c04035ed0677daf11f8bdb6"
+    },
+    "finishReason": "STOP",
+    "seconds": 22.4,
+    "usage": {
+      "promptTokenCount": 326,
+      "candidatesTokenCount": 1418,
+      "totalTokenCount": 2299,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 326
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 555,
+      "serviceTier": "standard"
+    },
+    "disposition": "rejected as a plate (lantern border on an open book; its inner square is too tight: the glowtail composite at a safe quiet margin does not decode, 'grid not found'; the blue-grey table is also off the tome's vibe)"
+  }
+}

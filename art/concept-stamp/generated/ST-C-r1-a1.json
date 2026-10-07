@@ -1,0 +1,58 @@
+{
+  "id": "caddy-strip",
+  "direction": "C",
+  "round": 1,
+  "attempt": 1,
+  "tag": "ST-C-r1-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept product photograph. Asset type: Miniature Beasts, a close photograph of a short strip of white thermal receipt paper, 58 mm wide, lying on a warm wooden table in soft daylight, slightly curled at one end, torn straight at the other, shallow depth of field. No device, no hands, no text on the paper.\nThe strip is blank white thermal paper; its left third is an untouched flat white area where a small printed square will be placed later; nothing is printed anywhere. Warm, calm, matte paper, a faint thermal sheen.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+  "preamble": "No reference images.",
+  "imageInputs": [],
+  "requested": {
+    "aspectRatio": "1:1",
+    "imageSize": "2K"
+  },
+  "targetSize": "1024x1024",
+  "screenCrop": "none",
+  "time": "2026-10-07T22:20:47Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "generated/raw/ST-C-r1-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2048,
+      "height": 2048,
+      "sha256": "7ffa6b7c35efad0e795e13fe89a31f0a7a810411e47b451bb7b3abfe67e7ef0b"
+    },
+    "png": {
+      "file": "ST-C-r1-a1-canvas.png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "81aa5d431c95473c56c202b3b76ce23e094d1b1be365c0b75f9999a7373be779"
+    },
+    "finishReason": "STOP",
+    "seconds": 19.3,
+    "usage": {
+      "promptTokenCount": 208,
+      "candidatesTokenCount": 1287,
+      "totalTokenCount": 1771,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 208
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 276,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept: Caddy strip photo, the left third flat as asked; the warped label composite decodes"
+  }
+}

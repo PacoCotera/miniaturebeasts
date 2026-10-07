@@ -1,0 +1,58 @@
+{
+  "id": "tome-plate-fanalia",
+  "direction": "F",
+  "round": 1,
+  "attempt": 2,
+  "tag": "ST-F-r1-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts illustration for a botanical-tome page in the game's Library. Flat artwork filling a 1:1 canvas, painted with clean light from the upper left, soft shadows, crisp edges, no noise. No creature, no person, no text, no letters, no logos.\nA PRESSED-SPECIMEN PLATE from a botanical tome: an aged cream paper page with a deckled edge, and on it a rectangular engraved frame in fine deep-umber ink whose border motif is a repeating small lantern shape with a tiny glowing bulb (an old naturalist's engraving of lanterns, small and exact, with a soft marigold glow inked as fine hatching), with a tiny engraved corner ornament at each of its four corners; the frame encloses the empty central square with a generous paper margin inside the frame line; beneath the frame a thin engraved rule and nothing else; a faint warm glow at one outer corner of the page. Colours: cream paper, umber ink, a hint of marigold and lagoon teal. Quiet, exact, a herbarium feel.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+  "preamble": "No reference images: the motif is described in the prompt.",
+  "imageInputs": [],
+  "requested": {
+    "aspectRatio": "1:1",
+    "imageSize": "2K"
+  },
+  "targetSize": "1024x1024",
+  "screenCrop": "none",
+  "time": "2026-10-07T22:20:24Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "generated/raw/ST-F-r1-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2048,
+      "height": 2048,
+      "sha256": "5837b1031966087b5c33176837841d6b7a76eb8e97bdb6f4042ef709547d4236"
+    },
+    "png": {
+      "file": "ST-F-r1-a2-canvas.png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "bbb0f4e7f987aef40fdae0f24c46ec0e4d81d0722af3cbb47fc22df446f6a70e"
+    },
+    "finishReason": "STOP",
+    "seconds": 20.1,
+    "usage": {
+      "promptTokenCount": 326,
+      "candidatesTokenCount": 1376,
+      "totalTokenCount": 1927,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 326
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 225,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept: recommended Fanalia tome plate (lantern border with marigold glow, flat deckled page, a rule beneath)"
+  }
+}

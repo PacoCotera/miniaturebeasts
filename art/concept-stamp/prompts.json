@@ -1,0 +1,545 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Generated surroundings for the styled genome stamp (tome plates per clan, a Caddy paper strip, two style references); the stamp faces themselves are encoder cells styled in code, never generated. Concept art awaiting the owner's choice.",
+  "brief": "art/concept-stamp/brief-stamp.md",
+  "tool": {
+    "name": "Gemini API",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+    "auth": "API key from the environment; not recorded",
+    "models": {
+      "gemini-3-pro-image": "Gemini 3 Pro Image: final candidates and refinements",
+      "gemini-3.1-flash-image": "Gemini 3.1 Flash Image: layout round"
+    },
+    "modelChoice": "Pro for every call: engraved plates need fine, exact line work, and the references must reproduce the real stamp face's layout and hues.",
+    "generationConfig": {
+      "responseModalities": [
+        "IMAGE"
+      ],
+      "imageConfig": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      }
+    },
+    "output": "image/jpeg 2048x2048 (1:1 at 2K), kept byte-exact in raw/ for kept candidates; LANCZOS to 1024x1024 as the canvas PNG. Composites of the real stamp into a generated plate are recorded under 'composites'.",
+    "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the preamble, then the prompt verbatim as the last text part.",
+    "budget": "At most 16 generations for this task; 7 used, all on gemini-3-pro-image, one round. No call failed; none was retried. The stamp faces are not generated."
+  },
+  "plan": {
+    "references": {
+      "art/miniature-lives/assets/rich-plain-300x310.png": "clan reference only for the Trebola plate's leaf motif; the creature is not drawn",
+      "art/concept-stamp/renders/*.png": "the real styled stamp faces, attached to the two style references as the thing to illustrate"
+    },
+    "directions": {
+      "T tome-plate-trebola": "A herbarium plate with an engraved trefoil-leaf border in moss ink and an empty centre square for the stamp.",
+      "F tome-plate-fanalia": "A herbarium plate with an engraved lantern border in umber ink and an empty centre square.",
+      "C caddy-strip": "A photograph of blank 58 mm thermal paper on a table, for the Caddy label composite.",
+      "R style-ref": "Illustrations of the real stamp face on the tome page and on the lab's glass plate: references for the eye, never decoded."
+    },
+    "rounds": "One round of seven; a second only if a plate's centre is not clean enough to carry the stamp."
+  },
+  "recommended": null,
+  "calls": [
+    {
+      "id": "caddy-strip",
+      "direction": "C",
+      "round": 1,
+      "attempt": 1,
+      "tag": "ST-C-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept product photograph. Asset type: Miniature Beasts, a close photograph of a short strip of white thermal receipt paper, 58 mm wide, lying on a warm wooden table in soft daylight, slightly curled at one end, torn straight at the other, shallow depth of field. No device, no hands, no text on the paper.\nThe strip is blank white thermal paper; its left third is an untouched flat white area where a small printed square will be placed later; nothing is printed anywhere. Warm, calm, matte paper, a faint thermal sheen.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+      "preamble": "No reference images.",
+      "imageInputs": [],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "screenCrop": "none",
+      "time": "2026-10-07T22:20:47Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "generated/raw/ST-C-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "7ffa6b7c35efad0e795e13fe89a31f0a7a810411e47b451bb7b3abfe67e7ef0b"
+        },
+        "png": {
+          "file": "generated/ST-C-r1-a1-canvas.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "81aa5d431c95473c56c202b3b76ce23e094d1b1be365c0b75f9999a7373be779"
+        },
+        "finishReason": "STOP",
+        "seconds": 19.3,
+        "usage": {
+          "promptTokenCount": 208,
+          "candidatesTokenCount": 1287,
+          "totalTokenCount": 1771,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 208
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 276,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: Caddy strip photo, the left third flat as asked; the warped label composite decodes"
+      },
+      "promptSource": "art/concept-stamp/prompts.json plan (art director), from brief-stamp.md"
+    },
+    {
+      "id": "tome-plate-fanalia",
+      "direction": "F",
+      "round": 1,
+      "attempt": 1,
+      "tag": "ST-F-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts illustration for a botanical-tome page in the game's Library. Flat artwork filling a 1:1 canvas, painted with clean light from the upper left, soft shadows, crisp edges, no noise. No creature, no person, no text, no letters, no logos.\nA PRESSED-SPECIMEN PLATE from a botanical tome: an aged cream paper page with a deckled edge, and on it a rectangular engraved frame in fine deep-umber ink whose border motif is a repeating small lantern shape with a tiny glowing bulb (an old naturalist's engraving of lanterns, small and exact, with a soft marigold glow inked as fine hatching), with a tiny engraved corner ornament at each of its four corners; the frame encloses the empty central square with a generous paper margin inside the frame line; beneath the frame a thin engraved rule and nothing else; a faint warm glow at one outer corner of the page. Colours: cream paper, umber ink, a hint of marigold and lagoon teal. Quiet, exact, a herbarium feel.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+      "preamble": "No reference images: the motif is described in the prompt.",
+      "imageInputs": [],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "screenCrop": "none",
+      "time": "2026-10-07T22:19:59Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": null,
+          "stored": false,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "4c614704d09c1ced3c752ee4f78dc380d6ac3ec2c0e6d412509125aed926e1c5",
+          "note": "Original JPEG not stored (rejected); the PNG is a LANCZOS resample of it and its SHA-256 is recorded."
+        },
+        "png": {
+          "file": "generated/ST-F-r1-a1-canvas.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "c522b9f65dd9dd1e7dfa9097a947535cf82f20610c04035ed0677daf11f8bdb6"
+        },
+        "finishReason": "STOP",
+        "seconds": 22.4,
+        "usage": {
+          "promptTokenCount": 326,
+          "candidatesTokenCount": 1418,
+          "totalTokenCount": 2299,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 326
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 555,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected as a plate (lantern border on an open book; its inner square is too tight: the glowtail composite at a safe quiet margin does not decode, 'grid not found'; the blue-grey table is also off the tome's vibe)"
+      },
+      "promptSource": "art/concept-stamp/prompts.json plan (art director), from brief-stamp.md"
+    },
+    {
+      "id": "tome-plate-fanalia",
+      "direction": "F",
+      "round": 1,
+      "attempt": 2,
+      "tag": "ST-F-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts illustration for a botanical-tome page in the game's Library. Flat artwork filling a 1:1 canvas, painted with clean light from the upper left, soft shadows, crisp edges, no noise. No creature, no person, no text, no letters, no logos.\nA PRESSED-SPECIMEN PLATE from a botanical tome: an aged cream paper page with a deckled edge, and on it a rectangular engraved frame in fine deep-umber ink whose border motif is a repeating small lantern shape with a tiny glowing bulb (an old naturalist's engraving of lanterns, small and exact, with a soft marigold glow inked as fine hatching), with a tiny engraved corner ornament at each of its four corners; the frame encloses the empty central square with a generous paper margin inside the frame line; beneath the frame a thin engraved rule and nothing else; a faint warm glow at one outer corner of the page. Colours: cream paper, umber ink, a hint of marigold and lagoon teal. Quiet, exact, a herbarium feel.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+      "preamble": "No reference images: the motif is described in the prompt.",
+      "imageInputs": [],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "screenCrop": "none",
+      "time": "2026-10-07T22:20:24Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "generated/raw/ST-F-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "5837b1031966087b5c33176837841d6b7a76eb8e97bdb6f4042ef709547d4236"
+        },
+        "png": {
+          "file": "generated/ST-F-r1-a2-canvas.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "bbb0f4e7f987aef40fdae0f24c46ec0e4d81d0722af3cbb47fc22df446f6a70e"
+        },
+        "finishReason": "STOP",
+        "seconds": 20.1,
+        "usage": {
+          "promptTokenCount": 326,
+          "candidatesTokenCount": 1376,
+          "totalTokenCount": 1927,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 326
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 225,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: recommended Fanalia tome plate (lantern border with marigold glow, flat deckled page, a rule beneath)"
+      },
+      "promptSource": "art/concept-stamp/prompts.json plan (art director), from brief-stamp.md"
+    },
+    {
+      "id": "style-ref",
+      "direction": "R",
+      "round": 1,
+      "attempt": 1,
+      "tag": "ST-R-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept, a STYLE REFERENCE only (it will never be decoded). Asset type: Miniature Beasts, an illustration of a small square postage-stamp-like genome stamp as it appears on a botanical-tome page: a square stamp with a perforated edge of round dots, one solid dark frame line, an engraved border of small dark cells inside it, a small square pictogram in the top-left corner, and inside, neat rows of small rounded coloured cells in two hues (a deep lagoon blue and a brick red) with pale cells between, grouped in soft tinted rectangles, over cream paper. Painted with clean light from the upper left, crisp, exact, like a fine old stamp engraved and then printed in colour.\nShow the stamp at an angle on the page, with a pressed-leaf plate frame around it in moss ink. No text, no letters, no QR code.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the real stamp face, rendered exactly; illustrate it as a stamp on a page, keeping its layout, hues and shapes.",
+      "imageInputs": [
+        {
+          "path": "art/concept-stamp/renders/hopper-trebola-tome-300.png",
+          "role": "the real stamp face: take its layout, colours and shapes as the thing to illustrate; it is the authority for what the stamp contains",
+          "sha256": "848abd296fc67b0b7cbe8777d00180a74445f178ec0e436017d906069767e5be"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "screenCrop": "none",
+      "time": "2026-10-07T22:21:08Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "generated/raw/ST-R-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "5383f412085d73026208e51c48596d85e75d428ae1d619c97779422da87b768e"
+        },
+        "png": {
+          "file": "generated/ST-R-r1-a1-canvas.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "ba46e8224879336af4ed9722a0ade1cf47e9695125e79b178f41c972f81df197"
+        },
+        "finishReason": "STOP",
+        "seconds": 19.7,
+        "usage": {
+          "promptTokenCount": 596,
+          "candidatesTokenCount": 1292,
+          "totalTokenCount": 2135,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 338
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 247,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as a style reference only, never decoded (the stamp illustrated on the tome page among engraved leaves)"
+      },
+      "promptSource": "art/concept-stamp/prompts.json plan (art director), from brief-stamp.md"
+    },
+    {
+      "id": "style-ref",
+      "direction": "R",
+      "round": 1,
+      "attempt": 2,
+      "tag": "ST-R-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept, a STYLE REFERENCE only (it will never be decoded). Asset type: Miniature Beasts, an illustration of a small square genome stamp on the glass stage plate of a modern digital laboratory instrument: a light label with a perforated edge of round dots, one solid dark frame line, an engraved border of small dark cells, a small square pictogram top-left, and neat rows of small rounded coloured cells in two hues (deep lagoon blue and brick red) with pale cells between, in soft tinted rectangles, over a cool pale plate, lying on dark glass with a lit edge, one cool beam from the upper left.\nThe stamp seen slightly from above on the dark glass plate, nothing else on the plate. No text, no letters, no QR code.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+      "preamble": "Reference image follows; its role is stated. Image 1 is the real stamp face, rendered exactly; illustrate it as a label on the lab's glass plate, keeping its layout, hues and shapes.",
+      "imageInputs": [
+        {
+          "path": "art/concept-stamp/renders/glowtail-fanalia-tome-300.png",
+          "role": "the real stamp face: take its layout, colours and shapes as the thing to illustrate; it is the authority for what the stamp contains",
+          "sha256": "dbb595de08fd91dfed423fc985614e8d760576d75b60125e86b20c245f494061"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "screenCrop": "none",
+      "time": "2026-10-07T22:21:29Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "generated/raw/ST-R-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "e458f76587f687f2608e71f0274391623da9ffe7b69ca261ee48c1ff9b51afe7"
+        },
+        "png": {
+          "file": "generated/ST-R-r1-a2-canvas.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "807da292ca9920d6005151389ee2d6bf5f3fcca1d9ae2caae581f18e802ba12d"
+        },
+        "finishReason": "STOP",
+        "seconds": 19.1,
+        "usage": {
+          "promptTokenCount": 575,
+          "candidatesTokenCount": 1340,
+          "totalTokenCount": 2100,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 317
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 185,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as a style reference only, never decoded (the stamp as a label on the lab's glass plate)"
+      },
+      "promptSource": "art/concept-stamp/prompts.json plan (art director), from brief-stamp.md"
+    },
+    {
+      "id": "tome-plate-trebola",
+      "direction": "T",
+      "round": 1,
+      "attempt": 1,
+      "tag": "ST-T-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts illustration for a botanical-tome page in the game's Library. Flat artwork filling a 1:1 canvas, painted with clean light from the upper left, soft shadows, crisp edges, no noise. No creature, no person, no text, no letters, no logos.\nA PRESSED-SPECIMEN PLATE from a botanical tome: an aged cream paper page with a deckled edge, and on it a rectangular engraved frame in fine dark-moss ink whose border motif is a repeating three-leaf clover sprig (trefoil leaves, small, botanical, like an old herbarium plate border), with a tiny engraved corner ornament at each of its four corners; the frame encloses the empty central square with a generous paper margin inside the frame line; beneath the frame a thin engraved rule and nothing else; a faint pressed leaf shadow in one outer corner of the page. Colours: cream paper, moss-dark ink, a hint of faded green. Quiet, exact, a herbarium feel.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+      "preamble": "Reference image follows; its role is stated. Image 1 shows the clan's defining feature, a three-leaf crest; take only the leaf shape for the engraved border motif. Do not draw the creature.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "clan reference only: the three-leaf crest of this clan is the border motif's source; do not draw the creature",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "screenCrop": "none",
+      "time": "2026-10-07T22:19:14Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "generated/raw/ST-T-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "add10973461f7f6bd7b5121247066f9c833573f79b121dc9a99f8bd16bfe40c7"
+        },
+        "png": {
+          "file": "generated/ST-T-r1-a1-canvas.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "c4321748449b49f3e9c4e7a3748605cf854a5924e3379689d8ff1c18bd5e0568"
+        },
+        "finishReason": "STOP",
+        "seconds": 20.9,
+        "usage": {
+          "promptTokenCount": 633,
+          "candidatesTokenCount": 1415,
+          "totalTokenCount": 2263,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 375
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 215,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: recommended Trebola tome plate (trefoil border, aged paper, a pressed leaf; its inner square carries the hopper stamp at 50 percent)"
+      },
+      "promptSource": "art/concept-stamp/prompts.json plan (art director), from brief-stamp.md"
+    },
+    {
+      "id": "tome-plate-trebola",
+      "direction": "T",
+      "round": 1,
+      "attempt": 2,
+      "tag": "ST-T-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts illustration for a botanical-tome page in the game's Library. Flat artwork filling a 1:1 canvas, painted with clean light from the upper left, soft shadows, crisp edges, no noise. No creature, no person, no text, no letters, no logos.\nA PRESSED-SPECIMEN PLATE from a botanical tome: an aged cream paper page with a deckled edge, and on it a rectangular engraved frame in fine dark-moss ink whose border motif is a repeating three-leaf clover sprig (trefoil leaves, small, botanical, like an old herbarium plate border), with a tiny engraved corner ornament at each of its four corners; the frame encloses the empty central square with a generous paper margin inside the frame line; beneath the frame a thin engraved rule and nothing else; a faint pressed leaf shadow in one outer corner of the page. Colours: cream paper, moss-dark ink, a hint of faded green. Quiet, exact, a herbarium feel.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+      "preamble": "Reference image follows; its role is stated. Image 1 shows the clan's defining feature, a three-leaf crest; take only the leaf shape for the engraved border motif. Do not draw the creature.",
+      "imageInputs": [
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "clan reference only: the three-leaf crest of this clan is the border motif's source; do not draw the creature",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "1:1",
+        "imageSize": "2K"
+      },
+      "targetSize": "1024x1024",
+      "screenCrop": "none",
+      "time": "2026-10-07T22:19:36Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "generated/raw/ST-T-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "sha256": "a2ad6adcc0018e7ba65c6f54035dbda86ab1ff0f2ab967451aba489f1f6a4c5b"
+        },
+        "png": {
+          "file": "generated/ST-T-r1-a2-canvas.png",
+          "width": 1024,
+          "height": 1024,
+          "sha256": "f66668b03ca7c83af90870bdc7fee75516e5640a1ad0978150c12436db8407e9"
+        },
+        "finishReason": "STOP",
+        "seconds": 21.7,
+        "usage": {
+          "promptTokenCount": 633,
+          "candidatesTokenCount": 1355,
+          "totalTokenCount": 2264,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 375
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 276,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as alternative (lighter trefoil border, a rule under the frame; also carries the 150-loci stamp in the README)"
+      },
+      "promptSource": "art/concept-stamp/prompts.json plan (art director), from brief-stamp.md"
+    }
+  ],
+  "styledFaces": {
+    "tool": "tools/style-stamp.mjs + tools/render-svg.cjs",
+    "note": "encoder cells styled in code within prototypes/genome-stamp/README.md's art-director allowances; every face decoded, see decode/"
+  },
+  "composites": [
+    {
+      "file": "composites/hopper-on-ST-T-r1-a1.png",
+      "plate": "ST-T-r1-a1",
+      "stamp": "renders/hopper-trebola-tome-x2.png",
+      "frac": 0.5,
+      "decodes": true
+    },
+    {
+      "file": "composites/hopper-on-ST-T-r1-a2.png",
+      "plate": "ST-T-r1-a2",
+      "stamp": "renders/hopper-trebola-tome-x2.png",
+      "frac": 0.5,
+      "decodes": true
+    },
+    {
+      "file": "composites/future150-on-ST-T-r1-a2.png",
+      "plate": "ST-T-r1-a2",
+      "stamp": "renders/future150-neutral-tome-x2.png",
+      "frac": 0.5,
+      "decodes": true
+    },
+    {
+      "file": "composites/glowtail-on-ST-F-r1-a2.png",
+      "plate": "ST-F-r1-a2",
+      "stamp": "renders/glowtail-fanalia-tome-x2.png",
+      "frac": 0.42,
+      "decodes": true
+    },
+    {
+      "file": "composites/rejected-glowtail-on-ST-F-r1-a1.png",
+      "plate": "ST-F-r1-a1",
+      "stamp": "renders/glowtail-fanalia-tome-x2.png",
+      "frac": 0.42,
+      "decodes": false,
+      "error": "no read: grid not found"
+    },
+    {
+      "file": "composites/glowtail-label-on-strip.png",
+      "plate": "ST-C-r1-a1",
+      "stamp": "caddy/glowtail-label-58mm.png (perspective warp)",
+      "decodes": true
+    }
+  ]
+}

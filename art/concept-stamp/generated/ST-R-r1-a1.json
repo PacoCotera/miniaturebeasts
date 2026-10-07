@@ -1,0 +1,68 @@
+{
+  "id": "style-ref",
+  "direction": "R",
+  "round": 1,
+  "attempt": 1,
+  "tag": "ST-R-r1-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept, a STYLE REFERENCE only (it will never be decoded). Asset type: Miniature Beasts, an illustration of a small square postage-stamp-like genome stamp as it appears on a botanical-tome page: a square stamp with a perforated edge of round dots, one solid dark frame line, an engraved border of small dark cells inside it, a small square pictogram in the top-left corner, and inside, neat rows of small rounded coloured cells in two hues (a deep lagoon blue and a brick red) with pale cells between, grouped in soft tinted rectangles, over cream paper. Painted with clean light from the upper left, crisp, exact, like a fine old stamp engraved and then printed in colour.\nShow the stamp at an angle on the page, with a pressed-leaf plate frame around it in moss ink. No text, no letters, no QR code.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+  "preamble": "Reference image follows; its role is stated. Image 1 is the real stamp face, rendered exactly; illustrate it as a stamp on a page, keeping its layout, hues and shapes.",
+  "imageInputs": [
+    {
+      "path": "art/concept-stamp/renders/hopper-trebola-tome-300.png",
+      "role": "the real stamp face: take its layout, colours and shapes as the thing to illustrate; it is the authority for what the stamp contains",
+      "sha256": "848abd296fc67b0b7cbe8777d00180a74445f178ec0e436017d906069767e5be"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "1:1",
+    "imageSize": "2K"
+  },
+  "targetSize": "1024x1024",
+  "screenCrop": "none",
+  "time": "2026-10-07T22:21:08Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "generated/raw/ST-R-r1-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2048,
+      "height": 2048,
+      "sha256": "5383f412085d73026208e51c48596d85e75d428ae1d619c97779422da87b768e"
+    },
+    "png": {
+      "file": "ST-R-r1-a1-canvas.png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "ba46e8224879336af4ed9722a0ade1cf47e9695125e79b178f41c972f81df197"
+    },
+    "finishReason": "STOP",
+    "seconds": 19.7,
+    "usage": {
+      "promptTokenCount": 596,
+      "candidatesTokenCount": 1292,
+      "totalTokenCount": 2135,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 338
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 247,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept as a style reference only, never decoded (the stamp illustrated on the tome page among engraved leaves)"
+  }
+}
