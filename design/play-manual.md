@@ -248,6 +248,8 @@ Expeditions start only when the Companion is **lifted** from its dock. On the St
 
 ### At the Station
 
+This section follows the Station page as built. The next Station build reads a pod a **chapter** at a time instead of window by window, and draws its fingerprint as the **genome ring**; this section changes with that build ([research loop](proposals/research-loop.md)).
+
 The lamp on Home's bench rests the screen (the vivarium plays alone); any press wakes it and acts. The Station's four middle keys switch views and never spend: **Home** (the vivarium and the bench), **Research** (the pods), **Library** and **Habitat**. The pad moves a warm ring between things in the picture; ✓ does what the bottom line names, with its price; ← goes back.
 1. **Identify** a pod (1 Energy; your very first pod is free). Its shell turns clear and shows the species inside. A new species gets a "New species" stamp. Then its **trait windows** rise, frosted: one for each thing about this kind of mibi (its markings, its ears or crown, its colour, its gait).
 2. **Study** a window (2 Data; the first study of each species is free). The frost wipes away and shows that part of this pod's mibi. If the pod also carries a look that doesn't show, a **misty seed** sits on the sill with a ghost of it ("shows stripes · hides spots"). If it carries nothing else, a small solid base sits there instead ("through and through"). A window with two rings is passed on **only through families**. A window with shutters needs something first (the puffcap's colour opens with a tier 2 Probe). A window you studied stays open for good.

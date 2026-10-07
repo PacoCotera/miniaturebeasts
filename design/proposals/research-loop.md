@@ -1,5 +1,7 @@
 # The research loop
 
+**Decided 2026-10-07:** approved in full, all five decisions in §11 as recommended; written into the [Station loop](station-loop.md), the [Station screens](station-screens.md), the [Station style guide](../style-guide/station-screens.md), [creatures and genomics](../creatures-and-genomics.md) and [the game](../game.md). The genome ring's printability and scanability are still to be tested, and its art may be refined.
+
 **Proposal** from game design, 2026-10-07, for discussion before any more Station screens. It replaces the "trait window" unit of the [Station loop](station-loop.md) with one that scales to the real genome, and sets what each step of the loop must let the player see and do. **Decided** marks owner decisions restated here; everything unmarked is **Proposal**. Numbers are illustrations unless marked. Sources are cited by path so the lineage of each idea can be checked.
 
 **The owner's five points, answered:**
