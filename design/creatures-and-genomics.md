@@ -84,6 +84,17 @@ versus lets vary. An earlier suggestion of 32 classes is not a roster.
 **Decided:** a mibi's identity, heredity, source and version history and finished
 appearance persist across devices and on paper.
 
+**Decided:** the genome's fingerprint is the **genome ring**, a round code that
+stores the real genome. The species glyph sits at its centre; a grey band holds
+the locked parts, the same for every member of the species; two coloured tracks
+hold **both copies** of every heritable part, one spoke each; one sector per
+chapter. Unread parts show as hairlines, so the ring fills as research does. A
+child holds one of each parent's two marks at every spoke, so families line up.
+The short code (`G7F · CD0 · 3H2`) is the mibi's name and a lookup, not the
+genome. Scanning a ring **shows and never grants**: a forged ring can show a mibi
+but never makes one. Printability and scanability are still to be tested. Layout
+and payload: [research loop](proposals/research-loop.md) §7.
+
 **Working rules:** each individual keeps:
 - its species and rule versions;
 - its complete birth genome;
@@ -107,6 +118,22 @@ creature remains and the failure is shown; art can never change a gene.
 - Research must help players see and pursue useful possibilities visually. It must
   not become a checklist of hundreds of loci, and must not drown players in
   near-identical samples and repeated studies.
+- **Five kinds of part.** *Locked* parts are the species frame: learned once per
+  species at its first identification, never read sample by sample, shaped or
+  crossed. *Heritable looks* differ between individuals, are read per sample and
+  can be shaped at creation once read. *Heritable doings* (movement, stamina,
+  temperament) are read per sample and change only by breeding. *Sleeping* parts
+  are heritable copies switched off in this individual; they can wake in a child.
+  *Sealed* parts are a heritable chapter that needs a find to read. "Looks
+  shapeable, doings by breeding" is the default; each species may override it.
+- **Chapters are navigation, not chromosomes.** Research is read a chapter at a
+  time (Coat, Face, Movement…): a page of a few traits, each one picture, with
+  loci under the hood. One read gives both copies of every trait in one chapter
+  of one sample. More genome makes fuller chapters, never more buttons. The
+  prices, the glint and the worked numbers are in the
+  [research loop](proposals/research-loop.md) §4.
+- A grown founder is fully known: incubation reveals what was not read. A bred
+  child is known only where both parents' copies were the same.
 
 **Working rules:**
 
@@ -115,13 +142,10 @@ creature remains and the failure is shown; art can never change a gene.
   something, a second study of it is unnecessary.
 - One known copy never reveals the hidden other copy.
 
-**Proposal:** an irregular "genome field" picture where known regions open up
-within their neighborhood (see `art/references/genome-field/`).
-
 **Open:**
-- how identification works and what it costs;
-- which studies exist and what they cost;
-- what a repeat sample of a known species is worth.
+- each species' frame: its chapters, traits and sealed chapters;
+- the rules for wonders, the combined traits a species can show;
+- the Data income that pays for reads (about 3 per expedition is assumed).
 
 ## Creating a mibi
 
@@ -134,20 +158,26 @@ within their neighborhood (see `art/references/genome-field/`).
   Everything else keeps the sample's values.
 - Creation commits one individual. Incubation and opening introduce that same
   individual, never a reroll.
-- In the bounded trial, pale is configurable after research, while movement and
-  effort stay inherited-only. This is a trial for one species and must not be
-  generalized.
+- The default for every species: heritable looks are shapeable once read, and
+  doings change only by breeding. Each species may override it. Pip's bounded
+  trial (pale configurable, movement and effort inherited-only) follows it.
+- Shaping rolls each read look among three pictures drawn from the sample's own
+  two copies: as the sample is, or either copy alone.
 
 **Working rules:** one sample makes one founder. A founder has no parents: the
 sample is its origin, not a parent. Before committing, the player reviews the
 source, changes, known consequences, what remains unknown, and the cost.
 
-**Open:** which traits are configurable for each species.
+**Open:** which species override the default, and how.
 
 ## Breeding
 
 **Decided:** same species only. Every delivered offspring is viable and appealing,
-with real parents and real inherited copies.
+with real parents and real inherited copies. A minimal cross of two adults is in
+the first Station build: its forecast shows four seed pictures per trait, never
+odds as numbers. A **wish** pins a dream mibi made from looks the player has seen;
+it guides which pods and pairs to pursue and, as knowledge, never puts a variant
+into anything.
 
 **Working rules:**
 
@@ -159,7 +189,8 @@ with real parents and real inherited copies.
 
 **Open:**
 - what makes two individuals eligible;
-- fertility, cost and how often attempts fail, and how that's shown;
+- fertility and how often attempts fail, and how that's shown (the minimal
+  cross costs as a founder);
 - mutation, lifespan and death.
 
 ## What is built
@@ -195,16 +226,17 @@ Direction already given, with the exact rules **Open**:
   or metabolism.
 - **Behavior.** Each species' behavior works like a state machine, and an
   individual's traits weight the transitions.
-- **Short code.** A genome packs into a short code that can drive fingerprint
-  art, sharing and QR codes.
+
+**Decided:** pods come from one renderer with species parameters (size,
+proportion, shell pattern, colour pair, glyph), so pods of a species match and a
+shell never shows an individual's genes.
 
 ## Open questions, in order of impact
 
 1. What a species is, and the starting roster.
-2. Which traits players can steer at creation, versus only through breeding.
+2. Each species' frame: its chapters and traits, and where it overrides the
+   default of looks shapeable, doings by breeding.
 3. Breeding eligibility and viability, and how a refusal or failure is shown.
-4. How identification works and what it costs.
-5. What makes a repeat sample worth having.
-6. How the research picture works without becoming a labelled diagram.
-7. Which inherited abilities matter for exploring with a partner.
-8. Mutation, lifespan and death.
+4. Data income enough to pay for reads.
+5. Which inherited abilities matter for exploring with a partner.
+6. Mutation, lifespan and death.
