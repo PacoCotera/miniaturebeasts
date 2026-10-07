@@ -3570,7 +3570,7 @@ function drawSetup(t) {
   const strip = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier + ' · Shield ' + Math.max(0, shN) + '/' + tierOf().shield + (S.bay.length ? ' · ' + S.bay.length + ' sealed' : '');
   text(clipText(strip, 420, 2), SCR_W / 2, 34, hurt ? C.amber : C.mist, 2, 'center');
   if (isDocked()) { panel(70, 506, 310, 26, C.ink, C.mint); text('Docked · lift at the Station', SCR_W / 2, 511, C.mint, 2, 'center'); }
-  else if (S.bay.length) { panel(40, 506, 370, 26, C.ink, C.amber); text(clipText(bayLine(), 350, 2), SCR_W / 2, 511, C.amber, 2, 'center'); }
+  else if (S.bay.length) { const n = S.bay.length; panel(70, 488, 310, 48, C.ink, C.amber); text(n + ' consignment' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 494, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 514, C.amber, 2, 'center'); }
   const sel = S.ui.sel, dig = digPartner(), digHome = !dig && mibiWith('dig'), deepOk = !!dig;
   // Weather: a storm cloud with a flickering bolt
   card(20, 58, 410, 84, sel === 0, true);
@@ -3967,7 +3967,7 @@ function lineFor() {
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
       if (it.id === 'send' && it.far) return L1('Head home', sendHint(), 'close', true);
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what goes home'] : '', 'close'); }
-    case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', '', 'close') : L1('', '', 'close');   // read-only: one way out
+    case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', 'cheaper at the dock', 'close') : L1('', '', 'close');   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('Head home', 'ends the expedition · seals the hold', 'close') : L1('', 'Head home: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
     case 'mibis': { const m = rosterList()[S.ui.rSel], w = withMibi(), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu'; if (!m) return L1(S.exp ? '' : 'Next expedition', '', bk);
       if (m === w) return L1('Visit ' + m.name, 'with you', bk);

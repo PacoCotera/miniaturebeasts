@@ -180,10 +180,10 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
       <ul>
         <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or the pad: move the focus ring between things in the picture. On Create, <kbd>↑</kbd><kbd>↓</kbd> roll a window.</li>
         <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange key: <b>Confirm</b>. It does exactly what the bottom line names after ✓, with its price.</li>
-        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key: back one view. On Home, "← Rest" lets the vivarium fill the screen.</li>
+        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key: back one view (on Home it only says so). The lamp on Home's bench rests the screen: the vivarium fills it.</li>
         <li>The four middle keys switch views and never spend: <kbd>H</kbd> Home, <kbd>R</kbd> Research (the pods), <kbd>L</kbd> Library, <kbd>B</kbd> Habitat.</li>
         <li><kbd>D</kbd> or the Caddy's key: <b>Dock</b> or <b>Lift</b> the Companion (prototype only; it is not a Station key).</li>
-        <li>After a minute without a press the vivarium plays alone. The first press only wakes the screen.</li>
+        <li>After a minute without a press the vivarium plays alone. Any press wakes it and does what it says.</li>
       </ul>
     </details>
     <details id="whatTry">
@@ -192,10 +192,9 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
         <li>On the <a href="../exploration/">Companion page</a>, explore and <b>Head home</b>: the hold is sealed into a crate in the Companion's bay (three at most), and the world turns.</li>
         <li>Here, press <kbd>D</kbd> to dock. The crates slide into the bay door; ✓ <b>Open the bay</b> plays one arrival per crate.</li>
         <li><kbd>R</kbd> Research: ✓ Identify a pod (1 Energy; the first ever is free). Its trait windows rise, frosted.</li>
-        <li>↑ to a window, ✓ <b>Study</b> it (2 Data): it shows a picture, and a misty seed when the pod hides another look. Its petal on the fingerprint lights.</li>
-        <li>✓ <b>Shape a founder</b>: ↑↓ rolls a studied window through what this pod carries (+2 Data per change). ✓ <b>Grow it</b> (2 Energy + 4 Essence).</li>
-        <li>The incubator's leaves fill, one per minute. When the dome glows, ✓ <b>Open</b> and meet the mibi.</li>
-        <li><kbd>B</kbd> Habitat: go to the door and ✓ <b>Take it with you</b>. The Companion page picks it up while docked. Press <kbd>D</kbd> to lift the Companion before its next expedition.</li>
+        <li>↑ to a window, ✓ <b>Study</b> it (2 Data; the first study of each species is free): it shows a picture, and a misty seed when the pod hides another look. Its petal on the fingerprint lights.</li>
+        <li>✓ <b>Shape a founder</b>: ↑↓ rolls a studied window through what this pod carries (+2 Data per change). ✓ <b>Grow it</b> (2 Energy + 4 Essence; your first founder costs 2 Energy only).</li>
+        <li>The incubator's leaves fill, one per minute. When the dome glows, ✓ <b>Open</b>: you meet the mibi in Habitat, and ✓ <b>takes it with you</b>. The Companion page picks it up from the dock. Press <kbd>D</kbd> to lift the Companion before its next expedition.</li>
       </ol>
     </details>
   </aside>
@@ -520,15 +519,17 @@ function studyBlock(p, w) {
   if (!p.idd) return 'identify it first';
   if (p.st[w]) return null;
   if (W.lock === 'tier2' && tierNow() < 2) return 'opens with Probe tier 2';
-  if (ST.d < PRICE.study) return shortText(0, PRICE.study, 0);
+  if (!freeStudy(p.sp) && ST.d < PRICE.study) return shortText(0, PRICE.study, 0);
   return '';
 }
+// The first study of each species is free, as the first identification is (playtest r7: Data was too scarce to discover).
+const freeStudy = sp => !(ST.studyPaid || {})[sp];
 function study(p, w) {
   const b = studyBlock(p, w); if (b) { msg('Study ' + SPECIES[p.sp].win[w].word + ' · ' + b); return; } if (b === null) return;
-  ST.d -= PRICE.study; p.st[w] = 1; ST.studiedW[p.sp + ':' + w] = 1;
+  const free = freeStudy(p.sp); if (!free) ST.d -= PRICE.study; (ST.studyPaid = ST.studyPaid || {})[p.sp] = 1; p.st[w] = 1; ST.studiedW[p.sp + ':' + w] = 1;
   const pr = p.al[w]; seenAdd(p.sp, w, shows(pr)); seenAdd(p.sp, w, hides(pr));
   FX.study = { id: p.id, w, at: NOW }; lockInput(STUDY_MS);
-  logEv('Studied ' + spWord(p.sp) + ' ' + SPECIES[p.sp].win[w].word + ' · −2 Data');
+  logEv('Studied ' + spWord(p.sp) + ' ' + SPECIES[p.sp].win[w].word + (free ? ' · free (first ' + spWord(p.sp) + ' study)' : ' · −2 Data'));
   save();
 }
 // A glint: this window of a species has been studied on some pod, this pod's copy of it isn't studied, and this pod
@@ -549,7 +550,8 @@ function rollOptions(p, w) {
 const samePair = (a, b) => Math.min(a[0], a[1]) === Math.min(b[0], b[1]) && Math.max(a[0], a[1]) === Math.max(b[0], b[1]);
 function canRoll(p, w) { const W = SPECIES[p.sp].win[w]; return !!p.st[w] && W.mode === 'choose' && !(W.lock === 'tier2' && tierNow() < 2) && hides(p.al[w]) >= 0; }
 function changedWins(cr) { const p = podById(cr.podId); return p ? cr.al.map((pr, w) => samePair(pr, p.al[w]) ? -1 : w).filter(w => w >= 0) : []; }
-function growCost(cr) { return { e: PRICE.growE, s: PRICE.growS, d: PRICE.change * changedWins(cr).length }; }
+// The first founder ever costs 2 Energy only (no Essence), so the first dock can always end in a mibi.
+function growCost(cr) { return { e: PRICE.growE, s: ST.firstMibi ? 0 : PRICE.growS, d: PRICE.change * changedWins(cr).length }; }
 function openCreate(p) { UI.create = { podId: p.id, al: p.al.map(x => x.slice()), f: 0 }; goScreen('create'); }
 function growBlock(cr) { const c = growCost(cr); if (ST.inc) return 'the incubator is busy'; if (!canPay(c.e, c.d, c.s)) return shortText(c.e, c.d, c.s); return ''; }
 function grow(cr) {
@@ -581,7 +583,7 @@ function openInc() {
   m.born = ST.turn; m.known = m.known.map(k => k || 'grown');
   SPECIES[m.sp].win.forEach((_, w) => seenAdd(m.sp, w, shows(m.al[w])));
   ST.mibis.push(m); ST.inc = null;
-  FX.hatch = { id: m.id, at: NOW }; lockInput(HATCH_MS); UI.meet = m.id;
+  FX.hatch = { id: m.id, at: NOW, go: true }; lockInput(HATCH_MS); UI.meet = m.id;
   logEv('Opened · ' + m.name + ' · ' + spWord(m.sp) + ' · juvenile');
   save();
 }
@@ -1160,7 +1162,10 @@ function drawResidents(vx, vy, w, h, big) {
 }
 
 // ---------- Home: the vivarium and the bench ----------
-const VIV = { x: 14, y: 50, w: 636, h: 500 }, BENCH = { bay: [664, 50, 346, 118], tray: [664, 178, 346, 92], inc: [664, 280, 168, 170], cradle: [842, 280, 168, 170] };
+const VIV = { x: 14, y: 50, w: 636, h: 500 }, BENCH = { bay: [664, 50, 346, 118], tray: [664, 178, 346, 92], inc: [664, 280, 168, 170], cradle: [842, 280, 168, 170], lamp: [956, 460, 54, 84] };
+// The reading lamp on the bench: ✓ on it rests the screen (the vivarium plays alone). Rest is never on ←.
+const lampArt = () => art('lamp', () => { const pb = new PB(40, 72); pb.poly([[6, 30], [34, 30], [28, 10], [12, 10]], C.amber); pb.poly([[12, 10], [28, 10], [26, 4], [14, 4]], C.gold);
+  pb.rect(18, 30, 4, 32, C.wood2); pb.ell(20, 66, 14, 5, C.wood3); pb.ell(20, 33, 9, 3, C.cream); pb.rich(1); pb.outline(() => C.wood0); return pb; });
 let homeBoxes = [];
 function homeTargets() {
   const t = [];
@@ -1172,7 +1177,7 @@ function bedSpot() { return { x: VIV.x + VIV.w - 170, y: VIV.y + VIV.h - 70 }; }
 function drawBed(bx, by) {   // the with-you bed: empty with a small Companion mark while the mibi is in the Companion
   const w = mibiById(effWithId());
   blit(art('bed', () => { const pb = new PB(150, 44); pb.ell(75, 26, 74, 17, C.feltD); pb.ell(75, 22, 70, 14, C.felt, { sh: [C.coral, C.feltD] }); pb.ell(75, 22, 52, 8, C.feltD); pb.outline(() => C.wood0); return pb; }), bx, by);
-  if (w) { blit(ICON.comp(), bx + 68, by + 4); text(clipText(w.name + ' · with you', 160, 2), bx + 75, by - 20, C.fog, 2, 'center'); }
+  if (w) { blit(ICON.comp(), bx + 68, by + 4); text(clipText(w.name + (docked() ? ' is with you' : ' is out with you'), 240, 2), bx + 75, by - 20, C.fog, 2, 'center'); }
 }
 function drawTray(x, y, w, focusCup, hideIds) {   // six cups in a row (the bench)
   const step = Math.floor(w / TRAY);
@@ -1201,7 +1206,8 @@ function drawHome() {
   blit(vivArt(VIV.w, VIV.h), VIV.x, VIV.y);
   const bed = bedSpot(); drawBed(bed.x, bed.y);
   homeBoxes = drawResidents(VIV.x, VIV.y, VIV.w, VIV.h, false);
-  if (!ST.mibis.length) { text('The vivarium waits for its first mibi', VIV.x + VIV.w / 2, VIV.y + 150, C.moss5, 2, 'center'); }
+  if (!ST.mibis.length) text('The vivarium waits for its first mibi', VIV.x + VIV.w / 2, VIV.y + 150, C.moss5, 2, 'center');
+  else if (!atHome().length) { const w = mibiById(effWithId()); if (w) text(w.name + (docked() ? ' is with you in the Companion' : ' is out with you'), VIV.x + VIV.w / 2, VIV.y + 150, C.fog, 2, 'center'); }
   // the bench, as objects under a warm lamp
   lampPool(836, 300, 190, 260);
   const [bx, by] = BENCH.bay; drawBay(bx, by);
@@ -1210,7 +1216,7 @@ function drawHome() {
   drawArrivingPods();
   const [ix, iy] = BENCH.inc; drawIncSmall(ix, iy);
   const [cx, cy] = BENCH.cradle; drawCradle(cx, cy);
-  drawStatusStrip(664, 462);
+  drawStatusStrip(664, 462); blit(lampArt(), 963, 466); text('rest', 983, 538, C.moss5, 2, 'center');
   drawArrivalRibbon();
   if (!arriving() && UI.report && NOW > UI.report.at) drawReport();
   // focus
@@ -1262,12 +1268,14 @@ function drawStatusStrip(x, y) {   // a few words beside icons: nothing here is 
   const w = mibiById(effWithId()); rows.push([w ? 'comp' : null, w ? w.name + ' is with you' : 'no mibi with you']);
   rows.push([null, ST.tray.length ? plural(ST.tray.length, 'pod') + ' in the tray' + (ST.waiting.length ? ' · ' + ST.waiting.length + ' sealed' : '') : 'the tray is empty']);
   rows.push([null, ST.inc ? (incReady() ? 'the embryo is ready' : 'an embryo is growing') : atHome().length + ' of ' + ROOM + ' places taken']);
-  rows.forEach(([ic, t], i) => { if (ic) blit(ICON[ic](), x + 4, y + i * 28); else R(x + 8, y + 7 + i * 28, 6, 6, C.moss4); text(clipText(t, 320, 2), x + 26, y + 3 + i * 28, C.fog); });
+  rows.forEach(([ic, t], i) => { if (ic) blit(ICON[ic](), x + 4, y + i * 28); else R(x + 8, y + 7 + i * 28, 6, 6, C.moss4); text(clipText(t, 262, 2), x + 26, y + 3 + i * 28, C.fog); });
 }
 // ---------- Idle: the vivarium plays alone ----------
 function drawIdle() {
   blit(vivArt(SW, SH - LINE_H), 0, 0);
+  drawBed(SW - 220, SH - LINE_H - 76);
   drawResidents(0, 0, SW, SH - LINE_H, true);
+  { const w = mibiById(effWithId()); if (w && !atHome().length) text(w.name + (docked() ? ' is with you in the Companion' : ' is out with you'), SW / 2, 160, C.fog, 3, 'center'); }
   const w = mibiById(effWithId()), parts = [];
   parts.push(docked() ? 'Companion docked' : 'Companion away'); if (w) parts.push('with ' + w.name);
   if (docked() && bayCrates().length) parts.push(plural(bayCrates().length, 'crate') + ' in the bay');
@@ -1292,7 +1300,8 @@ function drawWin(x, y, o) {
   if (o.ghost) blit(o.ghost, x + 124, y + 88);
   if (o.glint) { const tw = motion() ? Math.floor(NOW / 300) % 3 : 0; blit(starArt(tw !== 1), x + 128 - (tw !== 1 ? 9 : 5), y + 26 - (tw !== 1 ? 9 : 5)); }
   if (o.roll) { text('▲', x - 18, y + 46, o.roll === 2 ? C.amber : C.lampD, 2); text('▼', x - 18, y + 80, o.roll === 2 ? C.amber : C.lampD, 2); }
-  if (o.changed) { panel(x + 88, y + 14, 74, 24, C.lamp, C.wood1); text('changed', x + 125, y + 19, C.wood0, 2, 'center'); }
+  if (o.changed) { panel(x + 64, y + 14, 98, 24, C.lamp, C.wood1); text('changed +2◆', x + 113, y + 19, C.wood0, 2, 'center'); }
+  else if (o.roll) { panel(x + 92, y + 14, 70, 24, C.wood1, C.lampD); text('+2◆', x + 127, y + 19, C.lamp, 2, 'center'); }
   if (o.label) text(clipText(o.label, 200, 2), x + WIN_W / 2, y + 156, o.labelCol != null ? o.labelCol : C.fog, 2, 'center');
   if (o.sub) text(clipText(o.sub, 200, 2), x + WIN_W / 2, y + 178, C.mist, 2, 'center');
 }
@@ -1380,18 +1389,30 @@ function podsLine() {
     return { ok: 'Shape a founder', back: 'Home', subject: subj, need: podGlints(p) ? '★ something new here' : null }; }
   if (f[0] === 'w') { const w = +f.slice(1), W = SPECIES[p.sp].win[w];
     if (!p.st[w]) { const b = studyBlock(p, w); if (b === 'opens with Probe tier 2') return { back: 'Home', subject: W.word + ' · opens with Probe tier 2' };
-      return { ok: 'Study ' + W.word, price: b ? b : '2 ◆', dim: !!b, back: 'Home', subject: subj, need: glint(p, w) ? '★ something new here' : null }; }
+      return { ok: 'Study ' + W.word, price: b ? b : freeStudy(p.sp) ? 'free · first ' + spWord(p.sp) + ' study' : '2 ◆', dim: !!b, back: 'Home', subject: subj, need: glint(p, w) ? '★ something new here' : null }; }
     const pr = p.al[w], h = hides(pr); return { ok: 'Shape a founder', back: 'Home', subject: 'shows ' + W.v[shows(pr)].n + (h >= 0 ? ' · hides ' + W.v[h].n : ' · through and through') }; }
   if (f[0] === 'c') { const q = ST.tray[+f.slice(1)]; if (!q) return { back: 'Home' }; const A = podById(P.anchor);
-    if (A && A !== q && A.idd && q.idd && A.sp === q.sp) return { ok: 'Compare', price: 'free', back: 'Home', subject: podName(q) + ' · ' + (PLACE_WORD[q.g] || '') };
-    return { ok: 'Look at this pod', back: 'Home', subject: podName(q) + ' · ' + podOrigin(q) }; }
-  if (f === 'gate') return { ok: P.wildArm ? 'Again: return it' : 'Return to the wild', price: '+1 ❀', back: 'Home', subject: podName(p) + ' · back to the ' + (PLACE_WORD[p.g] || 'wild') };
+    if (A && A !== q && A.idd && q.idd && A.sp === q.sp) return { ok: 'Compare', price: 'free', back: 'Home', subject: 'cup ' + (+f.slice(1) + 1) + ' of ' + TRAY + ' · ' + podName(q) + ' · ' + (PLACE_WORD[q.g] || '') };
+    return { ok: 'Look at this pod', back: 'Home', subject: 'cup ' + (+f.slice(1) + 1) + ' of ' + TRAY + ' · ' + podName(q) + ' · ' + podOrigin(q) }; }
+  if (f === 'gate') return { ok: P.wildArm ? 'Again: return it' : 'Return to the wild', price: '+1 ❀', back: 'Home', subject: 'the garden gate · ' + podName(p) + ' back to the ' + (PLACE_WORD[p.g] || 'wild') };
   return { back: 'Home' };
+}
+// A fixed focus order (playtest r7: the spatial ring was hard to predict here): the tray goes cup by cup, top to
+// bottom, then the garden gate; → from the tray goes to the pod, ← from the pod back to its cup; ↑ from the pod to
+// the windows, which step ◀ ▶ among themselves; ↓ from a window back to the pod.
+function podsNav(P, k) {
+  const p = podById(P.cur), f = P.f, order = ST.tray.map((_, i) => 'c' + i).concat(p ? ['gate'] : []), n = p && p.idd ? SPECIES[p.sp].win.length : 0;
+  if (f[0] === 'c' || f === 'gate') { const i = order.indexOf(f);
+    if (k === 'up' || k === 'down') return order[clamp(i + (k === 'down' ? 1 : -1), 0, order.length - 1)] || f;
+    return k === 'right' && p ? 'pod' : f; }
+  if (f === 'pod') { if (k === 'left') { const i = ST.tray.indexOf(p); return i >= 0 ? 'c' + i : order[0] || f; } if (k === 'up' && n) return 'w' + clamp(P.wi || 0, 0, n - 1); return f; }
+  if (f[0] === 'w') { const w = +f.slice(1); if (k === 'left') return 'w' + Math.max(0, w - 1); if (k === 'right') return 'w' + Math.min(n - 1, w + 1); if (k === 'down') { P.wi = w; return 'pod'; } return f; }
+  return f;
 }
 function podsAct(k) {
   const P = UI.pods; podsEnsure(); const p = podById(P.cur);
   if (P.cmp) { if (k === 'back') { P.cmp = null; } return; }
-  if (k in DIRS) { const was = P.f; P.f = navSpatial(podsTargets(), P.f, k); P.wildArm = 0;
+  if (k in DIRS) { const was = P.f; P.f = podsNav(P, k); P.wildArm = 0;
     if (P.f[0] === 'c') { if (was[0] !== 'c') P.anchor = P.cur; P.cur = ST.tray[+P.f.slice(1)].id; }   // looking is free: the cup's pod comes into the cradle
     else if (was[0] === 'c') P.anchor = null;
     return; }
@@ -1414,7 +1435,7 @@ function drawCreate() {
   const cr = UI.create, p = createPod(); if (!p) { goScreen('pods'); return; }
   const n = SPECIES[p.sp].win.length, ch = changedWins(cr), known = w => !!p.st[w] || ch.includes(w);
   winPos(n).forEach(([x, y], w) => drawWin(x, y, winState(p.sp, cr.al, w, known, known, { roll: canRoll(p, w) ? (cr.f === w ? 2 : 1) : 0, changed: ch.includes(w),
-    ...(known(w) ? {} : { label: SPECIES[p.sp].win[w].word, sub: 'a surprise' }) })));
+    ...(known(w) ? {} : { label: SPECIES[p.sp].win[w].word + (SPECIES[p.sp].win[w].mode === 'family' ? ' · family' : ''), sub: '' }) })));
   const fw = winPos(n)[cr.f]; if (fw) focusRing(fw[0] - 4, fw[1] - 4, WIN_W + 8, WIN_H + 8);
   lampPool(512, 430, 230, 130);
   const fr = motion() ? Math.floor(NOW / 600) % 2 : 0;
@@ -1434,7 +1455,9 @@ function createLine() {
   const c = growCost(cr), b = growBlock(cr), ch = changedWins(cr);
   const looks = SPECIES[p.sp].win.map((W, w) => p.st[w] || ch.includes(w) ? W.v[shows(cr.al[w])].n : null).filter(Boolean);
   const mins = growMinutes(p.sp, ch.length, !!ST.firstMibi);
-  return { ok: 'Grow it', price: b ? b : priceText(c.e, c.d, c.s), dim: !!b, back: 'Pods', subject: spWord(p.sp) + (looks.length ? ' · ' + looks.join(', ') : ' · all a surprise'), need: 'grows in ' + plural(mins, 'leaf', 'leaves') };
+  const studied = SPECIES[p.sp].win.filter((_, w) => p.st[w]).length, W = SPECIES[p.sp].win[cr.f];
+  const need = studied <= 1 ? 'Study more windows to shape more' : canRoll(p, cr.f) ? '▲▼ ' + W.word + ' · +2 ◆ a change' : 'grows in ' + plural(mins, 'leaf', 'leaves');
+  return { ok: 'Grow it', price: b ? b : (ST.firstMibi ? 'first founder: ' : '') + priceText(c.e, c.d, c.s), dim: !!b, back: 'Pods', subject: spWord(p.sp) + (looks.length ? ' · ' + looks.join(', ') : ''), need };
 }
 function createAct(k) {
   const cr = UI.create, p = createPod(); if (!p) return; const n = SPECIES[p.sp].win.length;
@@ -1566,7 +1589,8 @@ function drawHabitat() {
   blit(mibiArt(m.sp, knownLook(m), mo >= 0 ? 'alert' : 'idle', mo >= 0 ? 0 : fr, s), x, y - (mo >= 0 && m.sp === 0 ? Math.round(Math.abs(Math.sin(mo / 150)) * 20) : 0));
   if (mo >= 0 && m.sp === 2) for (let i = 0; i < 12; i++) { const a = i / 12 * 6.28, r = 90 + Math.min(1, mo / 1200) * 80; R(320 + Math.cos(a) * r * 1.2 - 5, 290 + Math.sin(a) * r * .8 - 5, 10, 10, C.fog); }
   if (mo >= 0 && m.sp === 1) for (const [sx, sy] of [[120, 120], [500, 150], [150, 360], [480, 330]]) blit(starArt(true), sx, sy);
-  if (isW) { panel(36, 70, 250, 34, C.lamp, C.wood2); text('in the Companion with you', 161, 80, C.wood0, 2, 'center'); }
+  if (FX.meetId === m.id || (FX.meetAt && NOW - FX.meetAt < 8000 && FX.hatch && FX.hatch.id === m.id)) { FX.meetId = m.id; const t = 'Meet ' + m.name + ' · new'; panel(36, 70, textW(t, 3) + 32, 44, C.lamp, C.rust); text(t, 52, 79, C.wood0, 3); }
+  else if (isW) { panel(36, 70, 250, 34, C.lamp, C.wood2); text('in the Companion with you', 161, 80, C.wood0, 2, 'center'); }
   // the card
   panel(636, 50, 374, 246, C.paper, C.wood2);
   text(clipText(m.name, 220, 3), 654, 62, C.wood0, 3); if (m.bonded) blit(ICON.heart(true), 654 + textW(clipText(m.name, 220, 3), 3) + 10, 60);
@@ -1630,7 +1654,7 @@ function drawBench() {
   // the standing choice
   panel(520, 120, 420, 90, C.wood2, C.wood1);
   R(548, 150, 70, 30, C.wood0); R(ST.mendFull ? 584 : 552, 152, 32, 26, ST.mendFull ? C.leaf : C.stone);
-  text('Mend fully on docking', 640, 140, C.creamT, 2); text(ST.mendFull ? 'on · 1 ⚡ a plate' : 'off · only the free plates', 640, 166, C.lampD, 2);
+  text('Mend fully on docking', 640, 140, C.creamT, 2); text(ST.mendFull ? 'on · 1 ⚡ a plate · cheaper at the dock' : 'off · only the free plates', 640, 166, C.lampD, 2);
   // the tier 2 slot: lit only when affordable
   const lit = tier2Ready(), has2 = pr && pr.tier >= 2;
   panel(520, 260, 420, 160, lit ? C.lamp : C.wood1, C.wood2);
@@ -1644,7 +1668,7 @@ function drawBench() {
 function benchLine() {
   const B = UI.bench, pr = docked() ? ST.probe : null;
   if (B.f === 0) { if (!pr) return { back: 'Home', subject: 'the Probe is away with the Companion' }; if (pr.shield >= pr.smax) return { back: 'Home', subject: 'Probe · tier ' + pr.tier + ' · whole' };
-    return { ok: 'Mend a plate', price: ST.e >= 1 ? '1 ⚡' : shortText(1, 0, 0), dim: ST.e < 1, back: 'Home', subject: 'Probe · tier ' + pr.tier, need: plural(pr.smax - pr.shield, 'plate') + ' to mend' }; }
+    return { ok: 'Mend a plate', price: ST.e >= 1 ? '1 ⚡' : shortText(1, 0, 0), dim: ST.e < 1, back: 'Home', subject: 'cheaper at the dock than a field patch (3 ⚡)', need: plural(pr.smax - pr.shield, 'plate') + ' to mend' }; }
   if (B.f === 1) return { ok: 'Switch ' + (ST.mendFull ? 'off' : 'on'), price: 'free', back: 'Home', subject: 'mend fully on docking · ' + (ST.mendFull ? 'on' : 'off') };
   if (pr && pr.tier >= 2) return { back: 'Home', subject: 'tier 2 installed' };
   if (!tier2Ready()) return { back: 'Home', subject: 'tier 2 · ' + priceText(PRICE.tier2E, PRICE.tier2D, 0) + (pr ? '' : ' · dock first') };
@@ -1664,14 +1688,15 @@ function benchAct(k) {
 function homeLine() {
   const f = UI.home.f, nd = need();
   if (arriving()) return { subject: 'the bay opens · one crate at a time', need: '' };
-  if (f === 'room') return { ok: nd.act ? nd.label : '', back: 'Rest', subject: 'the room', need: nd.text };
-  if (f.startsWith('r:')) { const m = mibiById(+f.slice(2)); return m ? { ok: 'Look at ' + m.name, back: 'Rest', subject: m.name + ' · ' + spWord(m.sp) + ' · ' + mibiStage(m), need: nd.text } : { back: 'Rest' }; }
-  if (f === 'bay') { const n = bayCrates().length; if (docked() && n) return { ok: 'Open the bay', price: plural(n, 'crate'), back: 'Rest', subject: plural(n, 'sealed crate') };
-    return { back: 'Rest', subject: docked() ? 'the bay is empty' : 'the bay door · closed while the Companion is away', need: nd.text }; }
-  if (f === 'tray') return { ok: 'Look at the pods', back: 'Rest', subject: ST.tray.length ? plural(ST.tray.length, 'pod') + ' in the tray' : 'the tray is empty', need: nd.text };
-  if (f === 'inc') return { ok: incReady() ? 'Open the incubator' : 'Look at the incubator', back: 'Rest', subject: ST.inc ? spWord(ST.inc.m.sp) + ' embryo · ' + (incReady() ? 'ready' : 'growing') : 'the incubator is empty', need: nd.text };
-  if (f === 'cradle') { const pr = docked() && ST.probe; return { ok: 'Open the Probe bench', back: 'Rest', subject: pr ? 'Probe · ' + pr.shield + ' of ' + pr.smax + ' plates' : 'the Probe is away', need: nd.text }; }
-  return { back: 'Rest' };
+  if (f === 'room') return { ok: nd.act ? nd.label : '', back: '', subject: 'the room', need: nd.text };
+  if (f === 'lamp') return { ok: 'Rest', back: 'room', subject: 'the lamp · the vivarium plays alone', need: nd.text };
+  if (f.startsWith('r:')) { const m = mibiById(+f.slice(2)); return m ? { ok: 'Look at ' + m.name, back: 'room', subject: m.name + ' · ' + spWord(m.sp) + ' · ' + mibiStage(m), need: nd.text } : { back: 'room' }; }
+  if (f === 'bay') { const n = bayCrates().length; if (docked() && n) return { ok: 'Open the bay', price: plural(n, 'crate'), back: 'room', subject: plural(n, 'sealed crate') };
+    return { back: 'room', subject: docked() ? 'the bay is empty' : 'the bay door · closed while the Companion is away', need: nd.text }; }
+  if (f === 'tray') return { ok: 'Look at the pods', back: 'room', subject: ST.tray.length ? plural(ST.tray.length, 'pod') + ' in the tray' : 'the tray is empty', need: nd.text };
+  if (f === 'inc') return { ok: incReady() ? 'Open the incubator' : 'Look at the incubator', back: 'room', subject: ST.inc ? spWord(ST.inc.m.sp) + ' embryo · ' + (incReady() ? 'ready' : 'growing') : 'the incubator is empty', need: nd.text };
+  if (f === 'cradle') { const pr = docked() && ST.probe; return { ok: 'Open the Probe bench', back: 'room', subject: pr ? 'Probe · ' + pr.shield + ' of ' + pr.smax + ' plates' : 'the Probe is away', need: nd.text }; }
+  return { back: 'room' };
 }
 function doNeed(nd) {
   if (nd.act === 'bay') openBay();
@@ -1683,7 +1708,7 @@ function doNeed(nd) {
 function homeAct(k) {
   const H = UI.home;
   if (k in DIRS) { const t = homeTargets(); if (H.f === 'room') { const c = tgt('room', 480, 280, 64, 40); H.f = navSpatial(t.concat([c]), 'room', k); if (H.f === 'room') H.f = t[0] ? t[0].id : 'room'; } else H.f = navSpatial(t, H.f, k); return; }
-  if (k === 'back') { if (H.f !== 'room') H.f = 'room'; else { UI.idle = true; FX.restAt = NOW; } return; }
+  if (k === 'back') { if (H.f !== 'room') H.f = 'room'; else msg('Home is the top view · the lamp on the bench rests the screen'); return; }
   if (k !== 'confirm') return;
   const f = H.f;
   if (f === 'room') doNeed(need());
@@ -1692,6 +1717,7 @@ function homeAct(k) {
   else if (f === 'tray') { UI.pods.f = 'pod'; goScreen('pods'); }
   else if (f === 'inc') goScreen('incubator');
   else if (f === 'cradle') { UI.bench.f = 0; goScreen('bench'); }
+  else if (f === 'lamp') { UI.idle = true; FX.restAt = NOW; H.f = 'room'; }
 }
 
 // ---------- Dispatch ----------
@@ -1710,6 +1736,7 @@ function goScreen(name) {
   if (name === 'pods') podsEnsure();
   if (name === 'habitat' && UI.meet != null && UI.hab.id === UI.meet) UI.meet = null;
   if (name !== 'create') UI.create = null;
+  if (name !== 'habitat') FX.meetId = null;
 }
 function lineFor() { return UI.idle ? {} : SCREENS[UI.screen].line(); }
 function render() {
@@ -1722,6 +1749,7 @@ function render() {
 let errN = 0;
 function frame(t) {
   NOW = t;
+  if (FX.hatch && FX.hatch.go && NOW - FX.hatch.at >= HATCH_MS) { FX.hatch.go = false; FX.meetAt = NOW; UI.hab.id = FX.hatch.id; UI.hab.f = 'door'; UI.hab.from = null; goScreen('habitat'); }   // meet the mibi
   if (!UI.idle && NOW - UI.lastInput > IDLE_MS && !arriving() && NOW > FX.lockUntil) UI.idle = true;   // the vivarium plays alone
   try { render(); } catch (e) { if (errN++ < 3) console.error(e); }
   updateCaddy();
@@ -1732,8 +1760,8 @@ function frame(t) {
 // Pad, Home/Research/Library/Habitat, ← and ✓, plus the Caddy's Dock/Lift key (prototype only).
 function act(k) {
   NOW = performance.now(); UI.lastInput = NOW;
-  if (k === 'dock') { if (UI.idle) { UI.idle = false; FX.wake = NOW; } dockKey(); return; }   // the Caddy is not a Station key: docking always works
-  if (UI.idle) { UI.idle = false; FX.wake = NOW; return; }   // the first press only wakes it (waking never rewards)
+  if (UI.idle) { UI.idle = false; FX.wake = NOW; }   // a press wakes the screen and still does what it says (playtest r7: wake-only presses felt swallowed)
+  if (k === 'dock') { dockKey(); return; }   // the Caddy is not a Station key: docking always works
   if (NOW < FX.lockUntil) return;                               // presses during a reveal or an arrival are consumed, not queued
   if (k !== 'back' || UI.screen !== 'home') FX.msg = '';
   if (UI.report && !arriving() && UI.screen === 'home') UI.report = null;
