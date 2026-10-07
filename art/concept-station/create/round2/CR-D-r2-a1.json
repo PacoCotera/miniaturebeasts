@@ -1,0 +1,89 @@
+{
+  "id": "create-review",
+  "direction": "D",
+  "round": 2,
+  "attempt": 1,
+  "tag": "CR-D-r2-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber itself with its base and plate, the dome and the pale label at the right.\nONE CHANGE ONLY: replace the animal standing inside the glass chamber with the creature of Image 2, exactly as drawn there: a round, plump, squat frog-hare with a charcoal body, a cream belly and soft cream pale patches, sitting up and facing three-quarter to the viewer in the same pose as Image 2, scaled to fill the chamber's height, lit by one warm key light from the upper left, the brightest and warmest thing on screen. Its whole head is hidden behind a patch of frosted glass on the chamber's front pane: an opaque, cool blue-white frosted region like rime on a cold window, with nothing visible behind it, not a cloud. The body and legs below the frost are crisp and sharp.\nTEXT, exactly these and nothing else: top bar left \"Create  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each, once: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the three small plates under the roll's panes: \"as the pod is\", \"only pale\", \"only plain\". On the tiny tag at the chosen pane's corner: \"changed\". On the plate under the pod: \"identified\" and under it smaller \"rock field · expedition 4\". On the plate on the founder chamber's base: \"founder\". Under the empty dome, one etched word: \"chamber\". Bottom line: orange \"✓ Grow it · 2\" with a small yellow bolt, \"4\" with a small green drop, \"1\" with a small blue diamond, then grey \"← Pods\" at left; grey \"founder · rock field\" in the middle; grey \"Face and Stamina stay a surprise\" at right. No species name anywhere, no other words, no titles, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the pale square label is a plain flat square with nothing on it and no pointer (the real genome stamp is placed there later); the frost over the founder's head is frosted glass, never a cloud, and hides the head completely; no tables, title bars, bullet lists, progress bars, sliders or boxed buttons; no logos; the only animal on screen is the creature of Images 3 and 4, a round plump frog-hare with a cream belly, never a dog, wolf, cat, hippo, cow or any long-snouted animal; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted creature with its pale patches; the founder in the chamber is this creature exactly, in this pose.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/create/round1/CR-D-r1-a1-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "fd837340b8e68a9ea6df60aa497c7ce519e800c913355700f2f28825f7433aa2"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-marked-300x310.png",
+      "role": "the accepted creature with cream pale patches: the founder is this creature exactly, in this pose",
+      "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T23:45:12Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/CR-D-r2-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "09a6b79040fb04444d6103639b9a0da34cde54a857db08ec525098913e0ecc70"
+    },
+    "png": {
+      "file": "CR-D-r2-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "995d64cfabf55a8747d6d1a49b8e7e429d8e37a7ae8e51c3c0100f407ba0ce9a"
+    },
+    "screen": {
+      "file": "CR-D-r2-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "988518bd614e2e49e137b69f1bd7706d12e163e16b4f43137c23f03fcf2f00ac",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 22.9,
+    "usage": {
+      "promptTokenCount": 1239,
+      "candidatesTokenCount": 1484,
+      "totalTokenCount": 2991,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 723
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 268,
+      "serviceTier": "standard"
+    }
+  }
+}

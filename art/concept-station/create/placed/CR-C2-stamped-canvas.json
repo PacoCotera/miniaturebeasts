@@ -1,0 +1,19 @@
+{
+  "screen": "composites/CR-C2-canvas.png",
+  "stamp": "layout/stamp-s01-create-bench-300.png",
+  "detectedSquare": [
+    1186,
+    537,
+    1449,
+    782
+  ],
+  "pasted": {
+    "x": 1197,
+    "y": 539,
+    "side": 240
+  },
+  "outputs": {
+    "canvas": "placed/CR-C2-stamped-canvas.png",
+    "screen": "placed/CR-C2-stamped-1024x600.png"
+  }
+}

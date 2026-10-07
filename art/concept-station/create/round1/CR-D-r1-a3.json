@@ -1,0 +1,104 @@
+{
+  "id": "create-review",
+  "direction": "D",
+  "round": 1,
+  "attempt": 3,
+  "tag": "CR-D-r1-a3",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's CREATE screen (the review where a founder is shaped before it grows), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument, exactly the room of the supplied Pods screen: deep dark blue-teal glass and anodised graphite with thin lit edges, floating glass, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied Home and Pods screens: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The founder in its chamber is the one warm, bright thing; everything else is cool. Labels are one small engraved or etched word, low contrast, read second; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn.\nLAYOUT, as the template: a thin graphite top bar and bottom line. ABOVE THE STAGE, four small machined TABS on a shallow arc centred on the screen (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, one quiet word under each: the Coat tab is focused, its lamp lit and a hairline running down to the roll; the Face tab and the Stamina tab are faint hairline outlines, unread; the Movement tab is full weight and its emblem is two small joined rings. UNDER THE TABS, THE ROLL: three small dark-glass panes in one row, each a close, warm, sculpted drawing of the flank of the creature in Image 3, smooth charcoal skin with a cool blue cast and the soft boundary of its cream belly along the lower edge, no face: the left pane plain, with a small misty pearl bud resting on its sill; the middle pane the same flank carrying soft cream pale patches, as in Image 4; the right pane plain, standing on a small solid base. Under each pane a small plate with its words. The middle pane is the chosen one: lifted inside a warm cream focus ring, with a small pale ▲ notch just above it and a ▼ notch just below it, and a tiny tag at its upper right corner. LEFT, the POD on a small moulded frosted-glass cradle: a medium, squat seed-pod (body wider than tall, a low cap, a short stem) with a smooth charcoal shell and small cream dots, a cream seam and cap, a small lit three-leaf glyph on the cap with a fine crack line across it, a little grey dust at its base; under the cradle a small plate. CENTRE, LOW, the FOUNDER CHAMBER: a clear glass specimen case on a machined graphite base with a lit inner edge, open to the viewer, and standing inside it, large, the creature of Image 4 exactly: the round charcoal body with its cream belly, soft cream pale patches on its back and flanks, four short legs, in clean sculpted light with one warm key light from the upper left, the brightest and warmest thing on screen; its WHOLE HEAD is hidden under a soft, dense, cool blue-white frost cloud where the head would be, nothing visible behind it, while the body and legs are crisp. A small plate on the base's front. RIGHT, the EMPTY INCUBATION CHAMBER: a small glass dome on a machined base, dark and unlit inside, a dim ring of small leaf marks around its base, one etched word under it. Below the dome, the STAMP LABEL: one completely EMPTY, flat, pale square label about a fifth of the screen's width, nothing drawn on it at all (the genome stamp is placed there later).\nTEXT, exactly these and nothing else: top bar left \"Create  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the three small plates under the roll's panes: \"as the pod is\", \"only pale\", \"only plain\". On the tiny tag at the chosen pane's corner: \"changed\". On the plate under the pod: \"identified\" and under it smaller \"rock field · expedition 4\". On the plate on the founder chamber's base: \"founder\". Under the empty dome, one etched word: \"chamber\". Bottom line: orange \"✓ Grow it · 2\" with a small yellow bolt, \"4\" with a small green drop, \"1\" with a small blue diamond, then grey \"← Pods\" at left; grey \"founder · rock field\" in the middle; grey \"Face and Stamina stay a surprise\" at right. No species name anywhere, no other words, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the pale square label stays completely empty and flat (the real genome stamp is placed there later); the frost over the founder's head hides it completely, no eyes, no silhouette of a face behind it; no tables, title bars, bullet lists, progress bars, sliders or boxed buttons; no logos; no other animal than the creature in Images 3 and 4 (charcoal with a cream belly, never a cow, horse, cat or deer); no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the decided Pods screen of this same room: take its materials, light, tabs, pod, type and quietness; its list, page and stage plate are not on this screen. Image 2 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 3 is the accepted creature, plain. Image 4 is the same creature wearing cream pale patches: the founder in the chamber is this creature, with its head hidden under frost. Image 5 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png",
+      "role": "the decided Pods screen of the same bench: take its materials, light, tabs, pod and cradle, type and quietness exactly; its list, page and stage plate are NOT on this screen, the layout below replaces them",
+      "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3"
+    },
+    {
+      "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+      "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only",
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "the accepted creature, plain: the charcoal flank with its cream belly edge for the roll's first and third panes",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-marked-300x310.png",
+      "role": "the accepted creature with cream pale patches: the founder in the chamber is this creature exactly, its head to be hidden under frost; also the roll's middle pane",
+      "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+    },
+    {
+      "path": "art/concept-station/create/layout/create-layout-template.png",
+      "role": "layout truth only: flat boxes at 1024x600 showing the four tabs on an arc, the roll of three panes with the chosen middle pane, the pod at the left, the founder chamber low in the centre with the frosted head region, the empty dome and the empty pale square label at the right; not style",
+      "sha256": "0c058dd7408e9db8ea367202544a72256598ca464b508cbe97fd4df1b3ed627d"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T23:42:58Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/CR-D-r1-a3.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "81f2aacc4f71161106aa1686904522a6631702c8e1539d4da095df5b2f671cd0"
+    },
+    "png": {
+      "file": "CR-D-r1-a3-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "ceaf4eb072422f604e99d77772a1c550ca924e0dab7b8dcd40faf7c934923699"
+    },
+    "screen": {
+      "file": "CR-D-r1-a3-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "5b6602d17e81bdb9171db901c1dcda4cad1dcbecac13d14ed2dcd48a6b126f73",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 27.9,
+    "usage": {
+      "promptTokenCount": 2905,
+      "candidatesTokenCount": 1741,
+      "totalTokenCount": 4965,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1615
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1290
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 319,
+      "serviceTier": "standard"
+    }
+  }
+}

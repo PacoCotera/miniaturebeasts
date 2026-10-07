@@ -1,0 +1,19 @@
+{
+  "screen": "art/concept-station/create/round2/CR-D-r2-a1-canvas.png",
+  "stamp": "art/concept-station/create/layout/stamp-s01-create-bench-300.png",
+  "detectedSquare": [
+    1242,
+    596,
+    1392,
+    750
+  ],
+  "pasted": {
+    "x": 1244,
+    "y": 600,
+    "side": 147
+  },
+  "outputs": {
+    "canvas": "art/concept-station/create/placed/CR-D-r2-a1-stamped-canvas.png",
+    "screen": "art/concept-station/create/placed/CR-D-r2-a1-stamped-1024x600.png"
+  }
+}

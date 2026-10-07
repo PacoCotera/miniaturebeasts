@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="600" viewBox="0 0 1024 600" font-family="sans-serif" font-size="12" fill="none" stroke="#999">
+<rect width="1024" height="600" fill="#141c22" stroke="none"/>
+<rect width="1024" height="40" stroke="#777"/><rect y="562" width="1024" height="38" stroke="#777"/>
+<text x="16" y="26" fill="#ddd" stroke="none">Create  T5</text><text x="446" y="26" fill="#ddd" stroke="none">⚡ 9  ◆ 4  ❀ 6</text><text x="820" y="26" fill="#ddd" stroke="none">Companion away · with Dot</text>
+<!-- chapter arc -->
+<rect x="284" y="72" width="72" height="36" stroke="#eda"/><rect x="412" y="56" width="72" height="36" stroke="#8bb" stroke-dasharray="3 3"/><rect x="540" y="56" width="72" height="36" stroke="#8bb"/><rect x="668" y="72" width="72" height="36" stroke="#8bb" stroke-dasharray="3 3"/>
+<text x="306" y="124" fill="#eda" stroke="none">Coat</text><text x="436" y="108" fill="#8bb" stroke="none">Face</text><text x="548" y="108" fill="#8bb" stroke="none">Movement ∞</text><text x="682" y="124" fill="#8bb" stroke="none">Stamina</text>
+<path d="M320 108 L320 128" stroke="#eda"/>
+<!-- the roll -->
+<rect x="272" y="128" width="120" height="84"/><text x="286" y="174" fill="#bbb" stroke="none">plain · bud</text>
+<rect x="452" y="124" width="120" height="84" stroke="#eda"/><text x="468" y="170" fill="#eda" stroke="none">pale patches</text>
+<text x="506" y="120" fill="#eda" stroke="none">▲</text><text x="506" y="222" fill="#eda" stroke="none">▼</text>
+<rect x="548" y="116" width="40" height="14" stroke="#eda"/><text x="551" y="127" fill="#eda" stroke="none" font-size="10">changed</text>
+<rect x="632" y="128" width="120" height="84"/><text x="652" y="174" fill="#bbb" stroke="none">plain · base</text>
+<rect x="282" y="212" width="100" height="20"/><text x="292" y="226" fill="#bbb" stroke="none">as the pod is</text>
+<rect x="470" y="212" width="84" height="20" stroke="#eda"/><text x="486" y="226" fill="#eda" stroke="none">only pale</text>
+<rect x="648" y="212" width="88" height="20"/><text x="660" y="226" fill="#bbb" stroke="none">only plain</text>
+<!-- left: the pod -->
+<rect x="16" y="120" width="220" height="210" stroke="#8bb"/><ellipse cx="126" cy="230" rx="55" ry="70"/><text x="90" y="236" fill="#999" stroke="none">S01 pod</text>
+<rect x="56" y="340" width="140" height="26" stroke="#8bb"/><text x="94" y="358" fill="#ddd" stroke="none">identified</text>
+<text x="60" y="384" fill="#999" stroke="none">rock field · expedition 4</text>
+<!-- centre: the founder chamber -->
+<rect x="352" y="244" width="320" height="310" stroke="#eda"/>
+<rect x="362" y="254" width="300" height="270" stroke="#eda" stroke-dasharray="4 4"/><text x="430" y="400" fill="#eda" stroke="none">founder 300×310 · pale patches</text>
+<rect x="420" y="254" width="184" height="90" stroke="#9cf"/><text x="452" y="304" fill="#9cf" stroke="none">head frosted (Face unread)</text>
+<rect x="452" y="528" width="120" height="24" stroke="#eda"/><text x="488" y="545" fill="#eda" stroke="none">founder</text>
+<!-- right: the empty chamber and the stamp label -->
+<rect x="788" y="120" width="220" height="180" stroke="#8bb"/><path d="M828 280 A70 70 0 0 1 968 280" /><text x="856" y="250" fill="#999" stroke="none">empty dome · dark</text>
+<text x="872" y="314" fill="#999" stroke="none">chamber</text>
+<rect x="788" y="326" width="220" height="220" fill="#d9dde0" stroke="#d9dde0"/><text x="830" y="440" fill="#889" stroke="none">stamp 220 · placed</text>
+<text x="16" y="586" fill="#f06d1e" stroke="none">✓ Grow it · 2 ⚡ 4 ❀ 1 ◆ · ← Pods</text><text x="452" y="586" fill="#ddd" stroke="none">founder · rock field</text><text x="800" y="586" fill="#bbb" stroke="none">Face and Stamina stay a surprise</text>
+</svg>

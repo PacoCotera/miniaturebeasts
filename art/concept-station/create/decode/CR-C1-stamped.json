@@ -1,0 +1,50 @@
+{
+ "ok": true,
+ "code": "S11v1-05-CF57-6F5406",
+ "species": 11,
+ "version": 1,
+ "read": [
+  "Coat",
+  "Movement"
+ ],
+ "unread": [
+  "Face",
+  "Stamina"
+ ],
+ "copies": {
+  "appearance.marking-switch": [
+   "on",
+   "on"
+  ],
+  "movement.cycle-rate": [
+   "high",
+   "high"
+  ]
+ },
+ "crc": 53079,
+ "postmark": "none",
+ "stamp": {
+  "cells": 17,
+  "correctedBytes": 0,
+  "of": 12,
+  "mirrored": false,
+  "quad": [
+   [
+    827.5,
+    391.6
+   ],
+   [
+    958.4,
+    391.6
+   ],
+   [
+    958.4,
+    522.6
+   ],
+   [
+    827.5,
+    522.6
+   ]
+  ]
+ }
+}

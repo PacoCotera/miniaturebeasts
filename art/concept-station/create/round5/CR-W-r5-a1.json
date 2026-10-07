@@ -1,0 +1,84 @@
+{
+  "id": "create-wont-build",
+  "direction": "W",
+  "round": 5,
+  "attempt": 1,
+  "tag": "CR-W-r5-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar, the tabs and their words, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber with the frosted-headed creature, its base and plate, the dome and the pale label at the right.\nONE CHANGE ONLY, in the bottom line (the thin graphite strip along the bottom edge): replace its left part, currently the orange check mark and \"Grow it · 2\" with the bolt, drop and diamond counters and \"← Pods\", with plain grey text and no check mark: \"won't build · ← Pods\", in the same small smooth sans-serif; and replace its right part, currently \"Face and Stamina stay a surprise\", with grey \"the clash is marked\". The middle part \"founder · rock field\" stays exactly as it is.\nConstraints: preserve every other pixel of the screen; no other new text, no digits beyond those already on screen, nothing drawn on the pale label.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/create/composites/CR-C1-canvas.png",
+      "role": "edit target: the current composite pick",
+      "sha256": "240ed8ec50f39f9ee1ae82865533e3c04528a4fa55bf7b4894b99bf29b75b397"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T23:52:05Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/CR-W-r5-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "6ed0b884fdb6d9831873ecc4dec5ca9797bcf16ab450898571466a11ece86ddc"
+    },
+    "png": {
+      "file": "CR-W-r5-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "d8582a9aa00c0cb42943a6428b406ee4c53d65c33e00e22881dd94997f5fe627"
+    },
+    "screen": {
+      "file": "CR-W-r5-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "a8e2108eeb44e8265897a9592bce952fbd8a777b0866f6d9ee074b028d2a1f6c",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 19.1,
+    "usage": {
+      "promptTokenCount": 533,
+      "candidatesTokenCount": 1277,
+      "totalTokenCount": 1982,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 275
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 172,
+      "serviceTier": "standard"
+    }
+  }
+}

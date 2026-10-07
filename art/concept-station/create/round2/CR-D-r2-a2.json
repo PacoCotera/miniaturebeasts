@@ -1,0 +1,94 @@
+{
+  "id": "create-review",
+  "direction": "D",
+  "round": 2,
+  "attempt": 2,
+  "tag": "CR-D-r2-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the three plates and the tag under and beside the roll, the pod on its cradle with its plate, the glass chamber itself with its base and plate, the dome at the right.\nTHREE CHANGES ONLY. First, replace the animal standing inside the glass chamber with the creature of Image 2, exactly as drawn there: a round, plump, squat frog-hare with a charcoal body, a cream belly and soft cream pale patches, sitting up and facing three-quarter to the viewer in the same pose as Image 2, scaled to fill the chamber's height, lit by one warm key light from the upper left; its whole head is hidden behind a patch of frosted glass on the chamber's front pane, an opaque cool blue-white frosted region like rime on a cold window with nothing visible behind it, not a cloud; the body and legs below are crisp. Second, inside the three roll panes, repaint the pictures so each is a close view of the flank of this same creature (Image 3 plain, Image 2 with the patches): smooth charcoal skin with a cool blue cast and the soft boundary of its cream belly, no face, no snout, no tail; keep the pearl bud on the left pane's sill, the pale patches in the middle pane and the small solid base under the right pane. Third, make the pale label under the dome at the right a plain, flat, empty pale square with straight edges and no pointer or tail, about a fifth of the screen's width, nothing drawn on it.\nTEXT, exactly these and nothing else: top bar left \"Create  T5\"; top bar centre a yellow lightning bolt \"9\", a blue diamond \"4\", a green drop \"6\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each, once: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the three small plates under the roll's panes: \"as the pod is\", \"only pale\", \"only plain\". On the tiny tag at the chosen pane's corner: \"changed\". On the plate under the pod: \"identified\" and under it smaller \"rock field · expedition 4\". On the plate on the founder chamber's base: \"founder\". Under the empty dome, one etched word: \"chamber\". Bottom line: orange \"✓ Grow it · 2\" with a small yellow bolt, \"4\" with a small green drop, \"1\" with a small blue diamond, then grey \"← Pods\" at left; grey \"founder · rock field\" in the middle; grey \"Face and Stamina stay a surprise\" at right. No species name anywhere, no other words, no titles, no digits except those listed.\nConstraints: no letters, ratios, percentages, DNA helices, codes or genes anywhere; the pale square label is a plain flat square with nothing on it and no pointer (the real genome stamp is placed there later); the frost over the founder's head is frosted glass, never a cloud, and hides the head completely; no tables, title bars, bullet lists, progress bars, sliders or boxed buttons; no logos; the only animal on screen is the creature of Images 3 and 4, a round plump frog-hare with a cream belly, never a dog, wolf, cat, hippo, cow or any long-snouted animal; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted creature with its pale patches: the founder in the chamber is this creature exactly, in this pose. Image 3 is the same creature plain, for the flank in the roll's outer panes.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/create/round1/CR-D-r1-a1-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "fd837340b8e68a9ea6df60aa497c7ce519e800c913355700f2f28825f7433aa2"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-marked-300x310.png",
+      "role": "the accepted creature with cream pale patches: the founder is this creature exactly, in this pose; its flank is the middle pane",
+      "sha256": "9eb13809a782973b52e8f0fb9d5fb025dfd527fac6ea6594f70e38543278273f"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "the same creature plain: its flank is the left and right panes",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T23:45:39Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/CR-D-r2-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "18bb5822f4fa4781fa7db39b553e8e244e16ceb6ec597bcddece573cad9f3e7d"
+    },
+    "png": {
+      "file": "CR-D-r2-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "38d72d618e5db974a7618681c2f1a5fdaa9c97eba894515ccabcaf71a3d81bc4"
+    },
+    "screen": {
+      "file": "CR-D-r2-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "f4eaf66736623036eb63a05101c0a63b0c3a29074a59ce1a3bae0ea89ffd18a0",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 21.5,
+    "usage": {
+      "promptTokenCount": 1665,
+      "candidatesTokenCount": 1353,
+      "totalTokenCount": 3330,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 891
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 774
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 312,
+      "serviceTier": "standard"
+    }
+  }
+}

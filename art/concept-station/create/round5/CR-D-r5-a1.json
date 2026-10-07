@@ -1,0 +1,84 @@
+{
+  "id": "create-review",
+  "direction": "D",
+  "round": 5,
+  "attempt": 1,
+  "tag": "CR-D-r5-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the other three tabs and all four words under the tabs, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber with the frosted-headed creature, its base and plate, the dome and the pale label at the right.\nONE CHANGE ONLY: on the third tab along the arc at the top (the one with the two joined rings), remove the word printed inside the tab face so the face shows only its two joined rings, like the other three plain tab faces; keep the small etched word that already sits under it exactly as it is.\nConstraints: preserve every other pixel of the screen; no other new text, no digits beyond those already on screen, nothing drawn on the pale label.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/create/composites/CR-C1-canvas.png",
+      "role": "edit target: the current composite pick",
+      "sha256": "240ed8ec50f39f9ee1ae82865533e3c04528a4fa55bf7b4894b99bf29b75b397"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T23:51:39Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/CR-D-r5-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "7a5ae8fff22a78c22477e58ce312e71307280ab85dba266b7e254136657849a6"
+    },
+    "png": {
+      "file": "CR-D-r5-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "45d7e1a51e9b55e0acfcbfefd6064233f92d7c77fae44b0e714e0293cbd19a3c"
+    },
+    "screen": {
+      "file": "CR-D-r5-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "3b0e179deb2a325767cd4c0d7e5fdee74f9fb2c237bc617d04b7f05fce947ccf",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 21.0,
+    "usage": {
+      "promptTokenCount": 493,
+      "candidatesTokenCount": 1264,
+      "totalTokenCount": 1935,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 235
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 178,
+      "serviceTier": "standard"
+    }
+  }
+}
