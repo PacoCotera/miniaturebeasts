@@ -41,9 +41,9 @@ and no layout grid; the Station upscales Companion art instead of having its own
   most frames are two greens.
 - *Spacing:* no grid; the message box sits over sprites; HUD items 2 px apart.
 
-**Reach map.** Cropping each cell from its place is right. Fog is grey slabs of repeated
-cliff tile; seen cells are dark grey; tracks are white blobs; the inset is an empty box; the
-storm is faint lines. The concept shows a lit island in lavender cloud.
+**Reach map.** Cropping each cell from its place is right. Fog is grey slabs of repeated cliff
+tile; seen cells are dark grey; tracks are white blobs; the inset is an empty box; the storm
+is faint lines. The concept shows a lit island in soft, layered cloud.
 
 **Station Home.** Plants are dark blob columns, the ground a brown box with grey ovals; the
 bench is boxes with labels ("closed · crates land here") and a bullet list; residents are 2–3×
@@ -76,11 +76,12 @@ Characters (pawn, mibis) are never darkened by storm or veil, so they always rea
 | Y yellow (3) | bolts, lamps, glow | `#c8860e #ffd23f #fff2a1` |
 | P, X | pink accent, white speculars | `#ff7fbf #ffffff` |
 
-Shadows shift cool and highlights warm (the green's darkest step leans teal; red falls to
-violet). Tables, all palette lookups: **DARK** (storm light, shade, drop shadows; the
-darkest step of each hue falls into cool neutral, so storms go blue, never brown-grey),
-**LIGHT** (lamp pools, catch-lights), **veil** (DARK plus a 4×4 night dot, 16 px dithered
-edge), **fade** for seen map cells (DARK plus a quarter checker of DARK).
+Shadows shift cool, highlights warm (green's darkest step leans teal; red falls to violet).
+Tables, all palette lookups: **DARK** (storm light, shade, drop shadows; storms go blue, not
+brown-grey), **LIGHT** (lamp pools), **veil** (unsurveyed ground in a place: DARK plus a 4×4 night
+dot, 16 px dithered edge), **mist** (unexplored land: a Bayer screen of fog white, white and pale
+blue, thicker away from the explored island, over ground drained pale), **fade** (seen cells:
+DARK, checker).
 
 **Station palette: 96 colours**: the 48 plus an in-between step for every main ramp (8–11
 steps per hue), the evening room (five deep moss tones), lamp (three warm creams), glass and
@@ -136,9 +137,8 @@ licence, and Silkscreen (OFL) has no true lowercase, so neither is proposed.
 
 *The components, shown at 2×.*
 
-**Icons (16 px)**: Energy (bolt), Data (gem), Essence (drop), Shield, Pod, World turn,
-Call, Storm, Fog bank, Pin, Battery, Radio; states: warm stone found (hollow bolt), Shield
-gone, pod slot free, bond. Each is a distinct silhouette, so they survive four-gray and paper.
+**Icons (16 px)**: Energy, Data, Essence, Shield, Pod, World turn, Call, Storm, Fog bank (hand-
+drawn clouds), Pin, Battery, Radio; states: hollow bolt, Shield gone, free pod slot, bond.
 
 **Animation vocabulary** (first frame is the still state for reduced motion).
 
@@ -160,12 +160,14 @@ gone, pod slot free, bond. Each is a distinct silhouette, so they survive four-g
   wood floor, roots; rock gravel, slab; cave floor, cave mouth; pond; six shore pieces of the
   4-bit corner autotile (the same script yields all 16 corner cases: a lit grass lip and an
   earth bank where land drops to water, shade under it, foam on the lee sides).
-- **Motion frames:** water and shore B, flame, crackle, Call ring, veil edge, warm stone.
 - **The pawn**, 4 facings × 3 frames: hooded orange suit, antenna lamp, pack, lantern;
   the right facing is rebuilt mirrored so the light stays top-left.
 - **Hopper, glowtail, puffcap** at 32 px, idle 2 frames, as juvenile (bigger head and eyes,
   short ears, small cap) and elder. Elders read calm and dignified, never drooping: eyes
   open, frosted ear tips and a chest ruff, a gold-tipped crest, a wide frilled cap with moss.
+- **Motion frames** (water, shore, flame, crackle, Call ring, veil edge, warm stone) and
+  **weather masters**: six hand-drawn cumulus in fair, far and storm tones, three wisps, the
+  mist ramp; clouds drift 1 px per action, rain leans with the storm's heading.
 - **12 HUD icons** and four states; **outpost** in four states, **beacon** in three.
 
 The same part-based construction renders the Station's richer creatures at 2.5–3.6× with
@@ -178,18 +180,18 @@ genome-to-sprite pipeline: parts and markings are parameters, and art never chan
 
 ## 4. Mock-ups
 
-- **Companion place in a storm:** storm light through DARK, rain, a charged stone with crackle,
-  a warned strike as a yellow outline, a lit outpost with puffcaps sheltering beside it, a
-  tree that is not shelter, the partner on its ring with its tag, a curious glowtail, the
-  veil's dithered edge, the message box, the HUD and the bottom line.
+- **Companion place in a storm:** storm light through DARK, slanted rain, a charged stone, a
+  warned strike outline, a lit outpost sheltering puffcaps, a tree that is not shelter, the
+  partner with ring and tag, a curious glowtail, the veil's edge, message box, HUD, line.
 
   <img src="ui-kit/companion-place-storm.png" width="450" alt="Companion place in a storm, 450×600 at 1×">
 
   *Companion place in a storm, 450×600 at 1×.*
 
-- **Companion reach view:** 5×5 cells of 78 px cut from real tiles, seen cells faded,
-  unsurveyed quarters dotted, lavender fog, the storm band, the Probe's dotted range, flag,
-  beacon, outpost, pod, bolt, pin, tracks, a gated cave, the whole-map inset.
+- **Companion reach view:** 78 px cells cut from real tiles, seen cells faded, unsurveyed
+  quarters dotted; mist thickening away from the explored island over faint land, wisps, two
+  layers of cumulus with ground shadows; the storm band as dark cloud shadow, rain leaning
+  east, a lit leading edge; range, flag, beacon, outpost, signs, a gated cave, the inset.
 
   <img src="ui-kit/companion-reach.png" width="450" alt="Companion reach view, 450×600 at 1×">
 
