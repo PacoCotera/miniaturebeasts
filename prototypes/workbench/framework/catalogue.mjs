@@ -1,14 +1,14 @@
 // The genome framework's catalogue, version 7: the v1 authoring catalogue6 (114 validated pairs
 // and six drafts, snapshotted with provenance in catalogue6-data.mjs) plus the records the
-// taxonomy proposal lists as missing (design/proposals/taxonomy.md §3, "What the catalogue
-// lacks for the new kinds": 6 switches · 15 loci) and the three gaps the species frames list
+// taxonomy proposal lists as missing for the V1 roster (design/proposals/taxonomy.md §3, "What the
+// catalogue needs": 11 switches · 25 loci + 6 alleles) and the three gaps the species frames list
 // first (species-frames.md §7: emission, a dorsal cap sheet, a belly field).
 //
-// Scope follows the trunk-and-branch pan-genome (taxonomy §2): a trunk locus can be carried by
-// any body that has its owner; a branch locus exists only in one clan. Absent parts have no
-// locus at all in a species' genome; "switched off" is kept only for part switches a species
-// leaves open (sleeping copies). Plan switches are frame facts: they pick the rig and are
-// never carried per individual (species-frames.md §1, "plan switches are always locked").
+// Scope follows the trunk-and-branch pan-genome (taxonomy §2, decided): a trunk locus can be
+// carried by any body that has its owner; a branch locus exists only in one clan. Absent parts have
+// no locus at all in a species' genome; "switched off" is kept only for part switches a species
+// leaves open (sleeping copies). Plan switches are frame facts: they pick the rig and are never
+// carried per individual (species-frames.md §1, "plan switches are always locked").
 import { CATALOGUE6 } from "./catalogue6-data.mjs";
 
 export const PLAN_SWITCHES = new Set([
@@ -26,62 +26,90 @@ export const PLAN_SWITCHES = new Set([
 export const PART_SWITCHES = new Set([
   "anatomy.muzzle-presence", "anatomy.crown-presence", "anatomy.exterior-eye-presence",
   "anatomy.auricular-presence", "anatomy.axial-tail-presence", "appearance.marking-switch",
-  "anatomy.antenna-presence", "anatomy.leaf-presence", "anatomy.root-foot-presence",
-  "anatomy.foot-skirt-presence", "anatomy.wing-case-presence", "anatomy.petal-presence",
+  "appearance.face-mask", "appearance.tail-rings", "anatomy.horn-presence", "anatomy.beak-presence", "appearance.feather-presence",
+  "anatomy.shell-presence", "anatomy.antenna-presence", "anatomy.wing-case-presence", "anatomy.foot-skirt-presence",
+  "anatomy.leaf-presence", "physiology.charged-body",
   "anatomy.tail-tip-bulb", "anatomy.top-cap-sheet", "appearance.belly-field",
 ]);
-export const DOING_FAMILIES = new Set(["mechanics-movement", "energy-nutrition", "cognition-tendencies"]);
+export const DOING_FAMILIES = new Set(["mechanics-movement", "energy-nutrition", "cognition-tendencies", "fantastic-physiology"]);
 const FAMILY_ALIAS = { Structure: "structure", Appearance: "appearance", "Sensing and signaling": "sensing-signaling" };
 export const canonicalFamily = (id) => FAMILY_ALIAS[id] ?? id;
 
 const mean = (lo, hi) => ({ operator: "copy-mean", alleles: Object.entries({ ...lo, ...hi }).map(([id, value]) => ({ id, label: id, value })) });
 const pairMap = (alleles, map) => ({ operator: "pair-map", alleles: Object.entries(alleles).map(([id, value]) => ({ id, label: id, value })), pairMap: map });
 const enable = () => ({ operator: "dominant-enable", alleles: [{ id: "off", label: "off", value: false }, { id: "on", label: "on", value: true }] });
+// A complete unordered pair map from a dominance order (first wins over later).
+const dominance = (order) => { const map = {}; for (const a of order) for (const b of order) map[[a, b].sort().join("|")] = order.indexOf(a) <= order.indexOf(b) ? a : b; return map; };
 
-// New records. `scope` is trunk or branch (with its clan); `owner` is the switch that must be on
-// (a part switch, a plan fact, or null); `consumer` names what draws or weighs it.
+// New records. `scope` is trunk or branch (with its clan); `owner` is what must be on: a part
+// switch, "head", "flaps", "contact" (contact chains), "tail", "ears", "fur", or null (any body);
+// `consumer` names what draws or weighs it.
 const NEW_LOCI = [
-  // Insect-like (Petalú, Cavito, Puntilú): antennae. Trunk: three clans need them.
+  // Mammal look (S04–S08, S10; trunk): fur on tail and ears, a face mask, tail rings, ear tilt. 2 · 4.
+  { id: "appearance.fur-reach", family: "appearance", label: "Fur reach", scope: "trunk", owner: "fur", consumer: "sketch: the fur material on the tail and the ears too", ...pairMap({ body: "body", tail: "body-and-tail", ears: "body-ears-and-tail" }, dominance(["ears", "tail", "body"])) },
+  { id: "appearance.face-mask", family: "appearance", label: "Face mask", scope: "trunk", owner: "head", consumer: "sketch: a second-pigment field over the eyes", ...enable() },
+  { id: "appearance.face-mask-shape", family: "appearance", label: "Mask shape", scope: "trunk", owner: "appearance.face-mask", consumer: "sketch: a band across the eyes, or stripes down the face", ...pairMap({ band: "band", stripes: "stripes" }, { "band|band": "band", "band|stripes": "band", "stripes|stripes": "stripes" }) },
+  { id: "appearance.tail-rings", family: "appearance", label: "Tail rings", scope: "trunk", owner: "tail", consumer: "sketch: second-pigment rings along the tail", ...enable() },
+  { id: "growth.tail-ring-count", family: "appearance", label: "Ring count", scope: "trunk", owner: "appearance.tail-rings", consumer: "sketch: rings along the tail (one is a pale tip)", ...pairMap({ one: 1, four: 4 }, { "one|one": 1, "four|one": 2, "four|four": 4 }) },
+  { id: "anatomy.ear-tilt", family: "structure", label: "Ear tilt", scope: "trunk", owner: "ears", consumer: "rig: ears upright or drooping", ...pairMap({ upright: "upright", drooping: "drooping" }, { "upright|upright": "upright", "drooping|upright": "upright", "drooping|drooping": "drooping" }) },
+  // Horns (C08 branch): 1 · 2, plus the hoof allele on the terminal form.
+  { id: "anatomy.horn-presence", family: "structure", label: "Horns", scope: "branch", clan: "C08", owner: "head", consumer: "rig: a pair of horns on the head", ...enable() },
+  { id: "growth.horn-curl", family: "structure", label: "Horn curl", scope: "branch", clan: "C08", owner: "anatomy.horn-presence", consumer: "rig: horn bend", ...mean({ straight: 0.2 }, { curled: 1.4 }) },
+  { id: "anatomy.horn-branching", family: "structure", label: "Horn branching", scope: "branch", clan: "C08", owner: "anatomy.horn-presence", consumer: "rig: plain horns or antlers with a tine", ...pairMap({ plain: "plain", antler: "antler" }, { "plain|plain": "plain", "antler|plain": "antler", "antler|antler": "antler" }) },
+  // Big bird (C09 branch): a beak, feathers. 2 · 3, plus the one-pair allele on support-pair-count.
+  { id: "anatomy.beak-presence", family: "structure", label: "Beak", scope: "branch", clan: "C09", owner: "head", consumer: "rig: a wedge beak in place of the muzzle", ...enable() },
+  { id: "growth.beak-length-ratio", family: "structure", label: "Beak length", scope: "branch", clan: "C09", owner: "anatomy.beak-presence", consumer: "rig: beak length over head length", ...mean({ short: 0.5 }, { long: 1.1 }) },
+  { id: "appearance.feather-presence", family: "appearance", label: "Feathers", scope: "branch", clan: "C09", owner: "fur", consumer: "sketch: the fur material drawn as feathers", ...enable() },
+  { id: "appearance.feather-length", family: "appearance", label: "Feather length", scope: "branch", clan: "C09", owner: "appearance.feather-presence", consumer: "sketch: feather length on body and flaps", ...mean({ short: 0.2 }, { long: 0.45 }) },
+  { id: "growth.feather-crest", family: "structure", label: "Feather crest", scope: "branch", clan: "C09", owner: "anatomy.crown-presence", consumer: "rig: the crown drawn as a feather crest, by height", ...mean({ low: 0.6 }, { tall: 1.4 }) },
+  // Shell (C11 branch): 1 · 2.
+  { id: "anatomy.shell-presence", family: "structure", label: "Shell", scope: "branch", clan: "C11", owner: null, consumer: "rig: a domed shell over the body", ...enable() },
+  { id: "growth.shell-dome-ratio", family: "structure", label: "Shell dome", scope: "branch", clan: "C11", owner: "anatomy.shell-presence", consumer: "rig: dome height over body depth", ...mean({ low: 0.6 }, { high: 1.1 }) },
+  { id: "appearance.shell-plates", family: "appearance", label: "Shell plates", scope: "branch", clan: "C11", owner: "anatomy.shell-presence", consumer: "sketch: a plate field on the shell", ...pairMap({ smooth: "smooth", plated: "plated" }, { "smooth|smooth": "smooth", "plated|smooth": "plated", "plated|plated": "plated" }) },
+  // Insect-like (S12, S13; trunk unless one clan): antennae, wing cases, flap markings, translucent flaps. 2 · 6.
   { id: "anatomy.antenna-presence", family: "structure", label: "Antennae", scope: "trunk", owner: "head", consumer: "rig: antenna pair on the head", ...enable() },
   { id: "growth.antenna-length-ratio", family: "structure", label: "Antenna length", scope: "trunk", owner: "anatomy.antenna-presence", consumer: "rig: antenna length over head depth", ...mean({ short: 0.7 }, { long: 1.5 }) },
-  { id: "anatomy.antenna-form", family: "structure", label: "Antenna form", scope: "trunk", owner: "anatomy.antenna-presence", consumer: "rig: thread, club or feather tip", ...pairMap({ thread: "thread", club: "club", feather: "feather" }, { "thread|thread": "thread", "club|thread": "club", "club|club": "club", "feather|thread": "feather", "club|feather": "feather", "feather|feather": "feather" }) },
-  // Slug (Musguín): sheen. Trunk: a surface finish any body can carry; gives surface-texture's draft idea a consumer.
-  { id: "appearance.sheen", family: "appearance", label: "Sheen", scope: "trunk", owner: null, consumer: "sketch: specular highlight strength", ...mean({ matte: 0 }, { glossy: 1 }) },
-  // Fliers (Petalú, Brisú; also the drifters): flap markings and translucent flaps. Trunk.
+  { id: "anatomy.antenna-form", family: "structure", label: "Antenna form", scope: "trunk", owner: "anatomy.antenna-presence", consumer: "rig: thread, club or feather tip", ...pairMap({ thread: "thread", club: "club", feather: "feather" }, dominance(["feather", "club", "thread"])) },
+  { id: "anatomy.wing-case-presence", family: "structure", label: "Wing cases", scope: "branch", clan: "C13", owner: null, consumer: "rig: two hard half-shells over the back", ...enable() },
+  { id: "growth.wing-case-extent", family: "structure", label: "Wing-case extent", scope: "branch", clan: "C13", owner: "anatomy.wing-case-presence", consumer: "rig: how far back the cases reach", ...mean({ short: 0.5 }, { long: 0.9 }) },
+  { id: "anatomy.wing-case-seam", family: "structure", label: "Wing-case seam", scope: "branch", clan: "C13", owner: "anatomy.wing-case-presence", consumer: "rig: cases closed or parted", ...pairMap({ closed: "closed", parted: "parted" }, { "closed|closed": "closed", "closed|parted": "closed", "parted|parted": "parted" }) },
   { id: "appearance.flap-marking", family: "appearance", label: "Flap markings", scope: "trunk", owner: "flaps", consumer: "sketch: marking field on thin surfaces", ...pairMap({ plain: "plain", spots: "spots", bars: "bars" }, { "plain|plain": "plain", "plain|spots": "spots", "spots|spots": "spots", "bars|plain": "bars", "bars|spots": "bars-and-spots", "bars|bars": "bars" }) },
-  { id: "appearance.flap-translucency", family: "appearance", label: "Flap translucency", scope: "trunk", owner: "flaps", consumer: "sketch: thin-surface opacity (closes the transparency draft for flaps)", ...mean({ opaque: 0 }, { clear: 0.6 }) },
-  // Sentient plants (Hojarín, Nenufí): leaves, a leaf covering, feeding on light. Trunk: both plant clans.
-  { id: "anatomy.leaf-presence", family: "structure", label: "Leaves", scope: "trunk", owner: null, consumer: "rig: leaf sheets on every primary region", ...enable() },
-  { id: "growth.leaf-count", family: "structure", label: "Leaf count", scope: "trunk", owner: "anatomy.leaf-presence", consumer: "rig: leaves per region", ...pairMap({ few: 2, many: 4 }, { "few|few": 2, "few|many": 3, "many|many": 4 }) },
-  { id: "growth.leaf-length-ratio", family: "structure", label: "Leaf length", scope: "trunk", owner: "anatomy.leaf-presence", consumer: "rig: leaf length over the owner's cross radius", ...mean({ short: 0.8 }, { long: 1.6 }) },
-  { id: "appearance.leaf-covering", family: "appearance", label: "Leaf covering", scope: "trunk", owner: null, consumer: "sketch: a leafy mantle material on the primary regions", ...pairMap({ bare: "bare", leafy: "leafy" }, { "bare|bare": "bare", "bare|leafy": "leafy", "leafy|leafy": "leafy" }) },
-  { id: "energy.light-feeding", family: "energy-nutrition", label: "Light feeding", scope: "trunk", owner: null, consumer: "behaviour: uptake from light (the uptake draft's first consumer)", ...mean({ low: 0.4 }, { high: 1 }) },
-  // Brotela (Hojarín) branch: a root foot.
-  { id: "anatomy.root-foot-presence", family: "structure", label: "Root foot", scope: "branch", clan: "brotela", owner: "contact", consumer: "rig: contact terminals become root tufts", ...enable() },
-  { id: "growth.root-spread-ratio", family: "structure", label: "Root spread", scope: "branch", clan: "brotela", owner: "anatomy.root-foot-presence", consumer: "rig: tuft spread over terminal length", ...mean({ tight: 0.8 }, { wide: 1.6 }) },
-  // Limacela (Musguín) branch: a foot skirt.
-  { id: "anatomy.foot-skirt-presence", family: "structure", label: "Foot skirt", scope: "branch", clan: "limacela", owner: null, consumer: "rig: a flat skirt under the body", ...enable() },
-  { id: "growth.foot-skirt-width-ratio", family: "structure", label: "Skirt width", scope: "branch", clan: "limacela", owner: "anatomy.foot-skirt-presence", consumer: "rig: skirt overhang over body width", ...mean({ narrow: 0.15 }, { wide: 0.4 }) },
-  // Caparela (Cavito) branch: wing cases.
-  { id: "anatomy.wing-case-presence", family: "structure", label: "Wing cases", scope: "branch", clan: "caparela", owner: null, consumer: "rig: two hard half-shells over the back", ...enable() },
-  { id: "growth.wing-case-extent", family: "structure", label: "Wing-case extent", scope: "branch", clan: "caparela", owner: "anatomy.wing-case-presence", consumer: "rig: how far back the cases reach", ...mean({ short: 0.5 }, { long: 0.9 }) },
-  { id: "anatomy.wing-case-seam", family: "structure", label: "Wing-case seam", scope: "branch", clan: "caparela", owner: "anatomy.wing-case-presence", consumer: "rig: cases closed or parted", ...pairMap({ closed: "closed", parted: "parted" }, { "closed|closed": "closed", "closed|parted": "closed", "parted|parted": "parted" }) },
-  // Lirela (Nenufí) branch: petals as a part.
-  { id: "anatomy.petal-presence", family: "structure", label: "Petals", scope: "branch", clan: "lirela", owner: null, consumer: "rig: a ring of petal sheets round the hub", ...enable() },
-  { id: "growth.petal-count", family: "structure", label: "Petal count", scope: "branch", clan: "lirela", owner: "anatomy.petal-presence", consumer: "rig: petals round the hub", ...pairMap({ five: 5, eight: 8 }, { "five|five": 5, "eight|five": 6, "eight|eight": 8 }) },
-  { id: "growth.petal-length-ratio", family: "structure", label: "Petal length", scope: "branch", clan: "lirela", owner: "anatomy.petal-presence", consumer: "rig: petal length over hub radius", ...mean({ short: 0.7 }, { long: 1.3 }) },
-  // The three gaps the frames list first. Fanalia (Ocotín): the glow is a doing (species-frames §6, decision 1).
-  { id: "appearance.emission-brightness", family: "mechanics-movement", label: "Glow brightness", scope: "branch", clan: "fanalia", owner: "anatomy.axial-tail-presence", consumer: "behaviour: dusk glow strength; sketch: the emission slot's intensity", ...mean({ dim: 0.4 }, { bright: 1 }) },
-  { id: "appearance.emission-length", family: "mechanics-movement", label: "Glow length", scope: "branch", clan: "fanalia", owner: "anatomy.axial-tail-presence", consumer: "behaviour: how long the glow lasts", ...mean({ short: 0.3 }, { long: 1 }) },
-  { id: "anatomy.tail-tip-bulb", family: "structure", label: "Tail-tip bulb", scope: "branch", clan: "fanalia", owner: "anatomy.axial-tail-presence", consumer: "rig: a bulb at the tail tip that carries the emission slot", ...enable() },
-  // Bonetia (Copolí): a single cap sheet on top, with its own colour and spots.
-  { id: "anatomy.top-cap-sheet", family: "structure", label: "Top cap sheet", scope: "branch", clan: "bonetia", owner: "flaps", consumer: "rig: one dorsal sheet replaces the radial flap triple", ...enable() },
-  { id: "appearance.cap-palette", family: "appearance", label: "Cap colour", scope: "branch", clan: "bonetia", owner: "anatomy.top-cap-sheet", consumer: "sketch: the cap's own pigment slot", operator: "partition-map", alleles: [{ id: "coral", label: "coral", value: "#e98268" }, { id: "raspberry", label: "raspberry", value: "#d95688" }, { id: "marigold", label: "marigold", value: "#e8b83f" }, { id: "plum", label: "plum", value: "#a967b8" }], pairMap: null },
-  { id: "appearance.cap-spots", family: "appearance", label: "Cap spots", scope: "branch", clan: "bonetia", owner: "anatomy.top-cap-sheet", consumer: "sketch: a spot field on the cap", ...pairMap({ none: "none", spots: "spots" }, { "none|none": "none", "none|spots": "spots", "spots|spots": "spots" }) },
-  // Trebola (Zacatín): Pip's cream belly and third crest leaf.
-  { id: "appearance.belly-field", family: "appearance", label: "Belly field", scope: "branch", clan: "trebola", owner: null, consumer: "sketch: an underside field in the second pigment", ...enable() },
-  { id: "growth.crest-leaf-count", family: "structure", label: "Crest leaves", scope: "branch", clan: "trebola", owner: "anatomy.crown-presence", consumer: "rig: two or three crest leaves", ...pairMap({ two: 2, three: 3 }, { "two|two": 2, "three|two": 3, "three|three": 3 }) },
+  { id: "appearance.flap-translucency", family: "appearance", label: "Flap translucency", scope: "trunk", owner: "flaps", consumer: "sketch: thin-surface opacity (the transparency draft, validated for flaps)", ...mean({ opaque: 0 }, { clear: 0.6 }) },
+  // Slug (C14 branch): a foot skirt; sheen is trunk, a surface finish any body can carry. 1 · 2.
+  { id: "anatomy.foot-skirt-presence", family: "structure", label: "Foot skirt", scope: "branch", clan: "C14", owner: null, consumer: "rig: a flat skirt under the body", ...enable() },
+  { id: "growth.foot-skirt-width-ratio", family: "structure", label: "Skirt width", scope: "branch", clan: "C14", owner: "anatomy.foot-skirt-presence", consumer: "rig: skirt overhang over body width", ...mean({ narrow: 0.15 }, { wide: 0.4 }) },
+  { id: "appearance.sheen", family: "appearance", label: "Sheen", scope: "trunk", owner: null, consumer: "sketch: specular highlight strength (surface texture's first consumer)", ...mean({ matte: 0 }, { glossy: 1 }) },
+  // Plant (C15 branch): leaves on branches, a leaf covering, feeding on light; the root foot is a terminal allele. 1 · 3 (+ light feeding, the uptake draft's consumer).
+  { id: "anatomy.leaf-presence", family: "structure", label: "Leaves", scope: "branch", clan: "C15", owner: null, consumer: "rig: leaf sheets on every body region", ...enable() },
+  { id: "growth.leaf-count", family: "structure", label: "Leaf count", scope: "branch", clan: "C15", owner: "anatomy.leaf-presence", consumer: "rig: leaves per region", ...pairMap({ few: 2, many: 4 }, { "few|few": 2, "few|many": 3, "many|many": 4 }) },
+  { id: "growth.leaf-length-ratio", family: "structure", label: "Leaf length", scope: "branch", clan: "C15", owner: "anatomy.leaf-presence", consumer: "rig: leaf length over the owner's cross radius", ...mean({ short: 0.8 }, { long: 1.6 }) },
+  { id: "appearance.leaf-covering", family: "appearance", label: "Leaf covering", scope: "branch", clan: "C15", owner: null, consumer: "sketch: a leafy mantle material on the body regions", ...pairMap({ bare: "bare", leafy: "leafy" }, { "bare|bare": "bare", "bare|leafy": "leafy", "leafy|leafy": "leafy" }) },
+  { id: "energy.light-feeding", family: "energy-nutrition", label: "Light feeding", scope: "branch", clan: "C15", owner: null, consumer: "behaviour: uptake from light (the uptake draft's first consumer)", ...mean({ low: 0.4 }, { high: 1 }) },
+  // Lightning (C16 branch): the first fantastic-physiology loci. 1 · 3. Emission is trunk (C03 needs it too).
+  { id: "physiology.charged-body", family: "fantastic-physiology", label: "Charged body", scope: "branch", clan: "C16", owner: null, consumer: "sketch: a translucent body of charge, lit from within", ...enable() },
+  { id: "physiology.charge", family: "fantastic-physiology", label: "Charge", scope: "branch", clan: "C16", owner: "physiology.charged-body", consumer: "behaviour: storm Energy held", ...mean({ low: 0.3 }, { high: 1 }) },
+  { id: "physiology.phase", family: "fantastic-physiology", label: "Phase", scope: "branch", clan: "C16", owner: "physiology.charged-body", consumer: "behaviour and sketch: how see-through, fading by day", ...mean({ solid: 0.2 }, { faint: 0.7 }) },
+  { id: "physiology.pull", family: "fantastic-physiology", label: "Pull", scope: "branch", clan: "C16", owner: "physiology.charged-body", consumer: "behaviour: how strongly it draws a strike", ...mean({ weak: 0.3 }, { strong: 1 }) },
+  { id: "appearance.emission-brightness", family: "mechanics-movement", label: "Glow brightness", scope: "trunk", owner: null, consumer: "behaviour: dusk glow strength; sketch: the emission slot's intensity", ...mean({ dim: 0.4 }, { bright: 1 }) },
+  { id: "appearance.emission-length", family: "mechanics-movement", label: "Glow length", scope: "trunk", owner: null, consumer: "behaviour: how long the glow lasts", ...mean({ short: 0.3 }, { long: 1 }) },
+  // The three gaps the frames list first. C03: a bulb at the tail tip that carries the glow.
+  { id: "anatomy.tail-tip-bulb", family: "structure", label: "Tail-tip bulb", scope: "branch", clan: "C03", owner: "tail", consumer: "rig: a bulb at the tail tip that carries the emission slot", ...enable() },
+  // C02: a single cap sheet on top, with its own colour and spots.
+  { id: "anatomy.top-cap-sheet", family: "structure", label: "Top cap sheet", scope: "branch", clan: "C02", owner: "flaps", consumer: "rig: one dorsal sheet replaces the radial flap triple", ...enable() },
+  { id: "appearance.cap-palette", family: "appearance", label: "Cap colour", scope: "branch", clan: "C02", owner: "anatomy.top-cap-sheet", consumer: "sketch: the cap's own pigment slot", operator: "partition-map", alleles: [{ id: "coral", label: "coral", value: "#e98268" }, { id: "raspberry", label: "raspberry", value: "#d95688" }, { id: "marigold", label: "marigold", value: "#e8b83f" }, { id: "plum", label: "plum", value: "#a967b8" }], pairMap: null },
+  { id: "appearance.cap-spots", family: "appearance", label: "Cap spots", scope: "branch", clan: "C02", owner: "anatomy.top-cap-sheet", consumer: "sketch: a spot field on the cap", ...pairMap({ none: "none", spots: "spots" }, { "none|none": "none", "none|spots": "spots", "spots|spots": "spots" }) },
+  // C01: Pip's cream belly and third crest leaf.
+  { id: "appearance.belly-field", family: "appearance", label: "Belly field", scope: "branch", clan: "C01", owner: null, consumer: "sketch: an underside field in the second pigment", ...enable() },
+  { id: "growth.crest-leaf-count", family: "structure", label: "Crest leaves", scope: "branch", clan: "C01", owner: "anatomy.crown-presence", consumer: "rig: two or three crest leaves", ...pairMap({ two: 2, three: 3 }, { "two|two": 2, "three|two": 3, "three|three": 3 }) },
 ];
+
+// Alleles added to v1 records (taxonomy §3: "+ 6 alleles"). A changed record is a new record
+// version under this catalogue's pin; v1's pin is the parent and its own records stay exact.
+const ADDED_ALLELES = {
+  "anatomy.contact-terminal-form": { alleles: [{ id: "hoof", label: "hoof", value: "hoof" }, { id: "webbed", label: "webbed", value: "webbed" }, { id: "root", label: "root", value: "root" }], pairMap: dominance(["root", "hoof", "webbed", "wedge", "pad", "rounded"]), why: "a hoof foot (C08), a webbed foot (C10), a root foot (C15)" },
+  "anatomy.support-pair-count": { alleles: [{ id: "one", label: "one", value: 1 }], pairMap: { "one|one": 1, "one|two": 2, "one|three": 2, "two|two": 2, "three|two": 3, "three|three": 3 }, why: "one pair of legs for the big bird (C09)" },
+  "growth.core-half-length": { alleles: [{ id: "huge", label: "huge", value: 0.92 }], why: "a fourth size class above large, so bear- and deer-size read bigger than the puffball" },
+};
 
 // v1 records whose consumer lived outside the construction target table (the shared pigments and
 // the marking field, bound through v1's MARKING_TARGETS), plus the older records this framework
@@ -93,7 +121,7 @@ const V1_TARGETS = {
   "appearance.marking-scale": "markings.scale", "appearance.marking-orientation": "markings.orientation", "appearance.marking-contrast": "markings.contrast",
 };
 const NEW_CONSUMERS = {
-  "appearance.body-palette": "sketch: the body pigment slot", "appearance.underside-palette": "sketch: the second pigment slot (chains, flaps, ears, tail, belly)",
+  "appearance.body-palette": "sketch: the body pigment slot", "appearance.underside-palette": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
   "appearance.marking-switch": "sketch: the marking field", "appearance.marking-layout": "sketch: the marking field", "appearance.marking-extent": "sketch: the marking field",
   "appearance.marking-scale": "sketch: the marking field", "appearance.marking-orientation": "sketch: the marking field", "appearance.marking-contrast": "sketch: the marking field",
   "development.regional-growth": "rig: the mass hierarchy (even, central, anterior) scales the regions",
@@ -108,11 +136,13 @@ function v1Locus(l) {
   const family = canonicalFamily(l.family);
   const status = l.status === "validated" ? "validated" : "draft";
   const sw = PLAN_SWITCHES.has(l.id) ? "plan" : PART_SWITCHES.has(l.id) ? "part" : null;
+  const added = ADDED_ALLELES[l.id];
   return {
     ...l, family, status, scope: "trunk", switch: sw, target: l.target ?? V1_TARGETS[l.id] ?? null,
+    ...(added ? { alleles: [...l.alleles, ...added.alleles], pairMap: added.pairMap ?? l.pairMap, version: l.version + 1, addedAlleles: { ids: added.alleles.map((a) => a.id), why: added.why } } : {}),
     nature: DOING_FAMILIES.has(family) ? "doing" : "look",
     consumer: NEW_CONSUMERS[l.id] ?? (l.target ? `rig: ${l.target}` : DOING_FAMILIES.has(family) ? "behaviour: carried, weighed by the state machine" : null),
-    provenance: { catalogue: `${CATALOGUE6.id}@${CATALOGUE6.version}`, digest: CATALOGUE6.foundationDigest, recordVersion: l.version },
+    provenance: { catalogue: `${CATALOGUE6.id}@${CATALOGUE6.version}`, digest: CATALOGUE6.foundationDigest, recordVersion: l.version, ...(added ? { amended: "mb-genome-framework@7 adds alleles; the v1 record stays exact under its own pin" } : {}) },
   };
 }
 function newLocus(l) {
@@ -132,6 +162,7 @@ export const CATALOGUE = {
   context: CATALOGUE6.context,
 };
 for (const l of CATALOGUE.loci) if (CATALOGUE.loci.filter((m) => m.id === l.id).length !== 1) throw new Error(`duplicate locus ${l.id}`);
+for (const l of CATALOGUE.loci) if (l.operator === "pair-map") for (const a of l.alleles) for (const b of l.alleles) if (!Object.hasOwn(l.pairMap, [a.id, b.id].sort().join("|"))) throw new Error(`${l.id}: incomplete pair map at ${a.id}|${b.id}`);
 export const LOCI = new Map(CATALOGUE.loci.map((l) => [l.id, l]));
 export const VALIDATED = CATALOGUE.loci.filter((l) => l.status === "validated");
 export const DRAFTS = CATALOGUE.loci.filter((l) => l.status !== "validated").map((l) => l.id);
@@ -174,19 +205,18 @@ export function resolveCopies(locus, copies) {
 export function looksFor(locus, pool) {
   const pairs = [];
   for (let i = 0; i < pool.length; i++) for (let j = i; j < pool.length; j++) pairs.push([pool[i], pool[j]]);
+  if (locus.operator === "copy-mean") { // one word per distinct mean
+    const seen = new Map();
+    for (const [a, b] of pairs) { const m = resolveCopies(locus, [a, b]); if (!seen.has(m)) seen.set(m, a === b ? a : `between ${a} and ${b}`); }
+    return [...seen.values()];
+  }
   const out = [];
   const push = (s) => { if (!out.includes(s)) out.push(s); };
   for (const [a, b] of pairs) {
     const v = resolveCopies(locus, [a, b]);
     if (locus.operator === "partition-map") push(a === b ? a : `${a} and ${b}`);
-    else if (locus.operator === "copy-mean") push(a === b ? a : `between ${a} and ${b}`);
     else if (locus.operator === "pair-map") push(typeof v === "boolean" ? (v ? "on" : "off") : String(v));
     else push(a === b ? a : [a, b].sort().join("/"));
-  }
-  if (locus.operator === "copy-mean") { // one word per distinct mean
-    const seen = new Map();
-    for (const [a, b] of pairs) { const m = resolveCopies(locus, [a, b]); if (!seen.has(m)) seen.set(m, a === b ? a : `between ${a} and ${b}`); }
-    return [...seen.values()];
   }
   return out;
 }

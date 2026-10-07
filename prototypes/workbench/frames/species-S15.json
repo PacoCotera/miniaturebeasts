@@ -1,29 +1,30 @@
 {
  "schema": "mb-species-frame/2",
  "species": {
-  "id": "charquin",
-  "name": "Charquín",
-  "plural": "charquines",
-  "order": 9,
+  "id": "S15",
+  "name": "S15",
+  "plural": "S15",
+  "order": 15,
   "summary": ""
  },
  "taxonomy": {
-  "name": "Charquín",
-  "root": "charco, the pond it drifts in",
-  "moves": "drifts, trailing feelers",
-  "habitat": "pond",
-  "tier": "mid",
-  "gate": null,
-  "diet": null,
-  "ability": null,
-  "clanNumber": 9,
+  "code": "S15",
+  "resembles": "a walking plant",
+  "moves": "walks on its roots",
+  "habitat": "wood",
+  "gate": "sealed chapter",
+  "diet": "light and dew",
+  "ability": "roots for a turn; a bush grows where it stood",
+  "character": "patient, faintly wise",
+  "clanNumber": 15,
   "member": 1,
-  "speciesNumber": 289,
-  "binomial": "Flotela charquin",
-  "clan": "flotela",
-  "planKey": "one|serial|radial|free|three|two|two|off|skin",
-  "planCode": "R1·feelers",
-  "rig": "R1",
+  "speciesNumber": 481,
+  "size": "medium",
+  "clan": "C15",
+  "planKey": "two|fan|radial|contact|zero|one|two|off|skin",
+  "planCode": "Rfan2·rays",
+  "rig": "Rfan2",
+  "tier": "late",
   "seed": 1,
   "states": [
    "idle",
@@ -31,9 +32,7 @@
    "sleep",
    "eat",
    "flee",
-   "drift",
-   "float",
-   "open"
+   "wobble"
   ],
   "lockedByCheck": [],
   "attemptsRejected": []
@@ -49,59 +48,47 @@
   }
  },
  "plan": {
-  "key": "one|serial|radial|free|three|two|two|off|skin",
+  "key": "two|fan|radial|contact|zero|one|two|off|skin",
   "extras": {
    "join": "broad",
-   "wave": true,
+   "wave": false,
    "fins": false,
-   "float": true
+   "float": false
   },
-  "code": "R1·feelers",
-  "rig": "R1",
-  "limbSet": "feelers",
-  "posture": "trailing",
-  "ground": "belly",
+  "code": "Rfan2·rays",
+  "rig": "Rfan2",
+  "limbSet": "rays",
+  "posture": "rooted",
+  "ground": "feet",
   "head": "fused",
   "flapSet": null,
   "stations": [
    {
     "region": 0,
     "u": 0,
-    "rays": 3,
-    "ring": 0
-   },
-   {
-    "region": 0,
-    "u": 0,
-    "rays": 3,
-    "ring": 1
-   },
-   {
-    "region": 0,
-    "u": 0,
-    "rays": 3,
-    "ring": 2
+    "rays": 6
    }
   ]
  },
  "signature": {
-  "anchor": "periwinkle",
+  "anchor": "jade",
   "second": null,
-  "feature": "nine trailing feelers",
+  "feature": "leaves and roots; the walking green",
   "features": {
-   "anatomy.exterior-eye-presence": "on"
+   "anatomy.exterior-eye-presence": "on",
+   "anatomy.leaf-presence": "on"
   },
   "finish": {
-   "appearance.sheen": "glossy",
-   "growth.free-distal-ratio": "long"
+   "appearance.leaf-covering": "leafy",
+   "anatomy.contact-terminal-form": "root"
   }
  },
  "glyph": [
-  ".###.",
-  "#.#.#",
   ".#.#.",
+  "##.##",
   "#.#.#",
-  "..#.."
+  "..#..",
+  "#.#.#"
  ],
  "pod": {
   "sizeClass": "medium",
@@ -109,12 +96,12 @@
   "shellPattern": "segments",
   "colourPair": [
    {
-    "pigment": "periwinkle",
-    "hex": "#8b7dd8"
+    "pigment": "jade",
+    "hex": "#38a878"
    },
    {
-    "pigment": "cobalt",
-    "hex": "#4d7ed4"
+    "pigment": "russet",
+    "hex": "#ae674d"
    }
   ]
  },
@@ -131,9 +118,16 @@
       "appearance.body-palette"
      ],
      "looks": [
-      "periwinkle",
-      "periwinkle and cobalt",
-      "cobalt"
+      "jade",
+      "jade and russet",
+      "jade and lagoon",
+      "jade and charcoal",
+      "russet",
+      "russet and lagoon",
+      "russet and charcoal",
+      "lagoon",
+      "lagoon and charcoal",
+      "charcoal"
      ],
      "nature": "look",
      "shapeable": true,
@@ -217,15 +211,16 @@
    "sealed": false,
    "traits": [
     {
-     "id": "body",
-     "name": "Body",
+     "id": "leaves",
+     "name": "Leaves",
      "loci": [
-      "anatomy.region-longitudinal-form"
+      "growth.leaf-count",
+      "growth.leaf-length-ratio"
      ],
      "looks": [
-      "egg",
-      "barrel",
-      "pear"
+      "a few short",
+      "between",
+      "many long"
      ],
      "nature": "look",
      "shapeable": true,
@@ -245,6 +240,36 @@
      "nature": "look",
      "shapeable": true,
      "verdict": null
+    },
+    {
+     "id": "hind-body",
+     "name": "Hind body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "nature": "look",
+     "shapeable": true,
+     "verdict": null
+    },
+    {
+     "id": "body",
+     "name": "Body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "nature": "look",
+     "shapeable": true,
+     "verdict": null
     }
    ]
   },
@@ -254,17 +279,34 @@
    "sealed": false,
    "traits": [
     {
-     "id": "feelers",
-     "name": "Feelers",
+     "id": "rays",
+     "name": "Rays",
      "loci": [
       "growth.free-proximal-ratio",
       "growth.free-distal-ratio",
-      "growth.free-radius-ratio"
+      "growth.support-radius-ratio"
      ],
      "looks": [
       "short, fine",
       "between",
-      "long, thick"
+      "long, stout"
+     ],
+     "nature": "look",
+     "shapeable": true,
+     "verdict": null
+    },
+    {
+     "id": "feet",
+     "name": "Feet",
+     "loci": [
+      "anatomy.contact-terminal-form",
+      "growth.terminal-length-ratio",
+      "growth.terminal-depth-ratio"
+     ],
+     "looks": [
+      "round feet",
+      "pads",
+      "digging wedges"
      ],
      "nature": "look",
      "shapeable": true,
@@ -322,45 +364,15 @@
      "nature": "doing",
      "shapeable": false,
      "verdict": null
-    },
-    {
-     "id": "weave",
-     "name": "Weave",
-     "loci": [
-      "movement.axial-amplitude",
-      "movement.axial-phase"
-     ],
-     "looks": [
-      "straight",
-      "between",
-      "big weave"
-     ],
-     "nature": "doing",
-     "shapeable": false,
-     "verdict": null
     }
    ]
   },
   {
    "id": "stamina",
    "name": "Stamina",
-   "sealed": false,
+   "sealed": true,
+   "opensWith": "a storm-glass shard",
    "traits": [
-    {
-     "id": "strength",
-     "name": "Strength",
-     "loci": [
-      "energy.actuator-capacity"
-     ],
-     "looks": [
-      "light",
-      "between",
-      "strong"
-     ],
-     "nature": "doing",
-     "shapeable": false,
-     "verdict": null
-    },
     {
      "id": "light-feeding",
      "name": "Light feeding",
@@ -377,15 +389,15 @@
      "verdict": null
     },
     {
-     "id": "thrift",
-     "name": "Thrift",
+     "id": "strength",
+     "name": "Strength",
      "loci": [
-      "energy.action-efficiency"
+      "energy.actuator-capacity"
      ],
      "looks": [
-      "thrifty",
+      "light",
       "between",
-      "ordinary"
+      "strong"
      ],
      "nature": "doing",
      "shapeable": false,
@@ -405,12 +417,27 @@
      "nature": "doing",
      "shapeable": false,
      "verdict": null
+    },
+    {
+     "id": "thrift",
+     "name": "Thrift",
+     "loci": [
+      "energy.action-efficiency"
+     ],
+     "looks": [
+      "thrifty",
+      "between",
+      "ordinary"
+     ],
+     "nature": "doing",
+     "shapeable": false,
+     "verdict": null
     }
    ]
   },
   {
-   "id": "ways",
-   "name": "Ways",
+   "id": "character",
+   "name": "Character",
    "sealed": false,
    "traits": [
     {
@@ -459,11 +486,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "low",
-    "low"
+    "high",
+    "high"
    ],
    "looks": [
-    "low"
+    "high"
    ],
    "guard": "rig: where along its region a limb pair roots",
    "nature": "look"
@@ -480,13 +507,22 @@
    "trait": "colour",
    "shapeable": true,
    "alleles": [
-    "periwinkle",
-    "cobalt"
+    "jade",
+    "russet",
+    "lagoon",
+    "charcoal"
    ],
    "looks": [
-    "periwinkle",
-    "periwinkle and cobalt",
-    "cobalt"
+    "jade",
+    "jade and russet",
+    "jade and lagoon",
+    "jade and charcoal",
+    "russet",
+    "russet and lagoon",
+    "russet and charcoal",
+    "lagoon",
+    "lagoon and charcoal",
+    "charcoal"
    ],
    "guard": "sketch: the body pigment slot"
   },
@@ -502,11 +538,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "smooth",
-    "smooth"
+    "ridged",
+    "ridged"
    ],
    "looks": [
-    "smooth"
+    "fine-ridged"
    ],
    "guard": "sketch: fine ridges as a surface grain",
    "nature": "look"
@@ -600,56 +636,12 @@
    "guard": "behaviour: carried, weighed by the state machine"
   },
   {
-   "id": "movement.axial-amplitude",
-   "family": "mechanics-movement",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "behaviour: carried, weighed by the state machine",
-   "kind": "heritable-doing",
-   "nature": "doing",
-   "chapter": "movement",
-   "trait": "weave",
-   "shapeable": false,
-   "alleles": [
-    "low",
-    "high"
-   ],
-   "looks": [
-    "low",
-    "between low and high",
-    "high"
-   ],
-   "guard": "behaviour: carried, weighed by the state machine"
-  },
-  {
-   "id": "movement.axial-phase",
-   "family": "mechanics-movement",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "behaviour: carried, weighed by the state machine",
-   "kind": "heritable-doing",
-   "nature": "doing",
-   "chapter": "movement",
-   "trait": "weave",
-   "shapeable": false,
-   "alleles": [
-    "low",
-    "high"
-   ],
-   "looks": [
-    "low",
-    "between low and high",
-    "high"
-   ],
-   "guard": "behaviour: carried, weighed by the state machine"
-  },
-  {
    "id": "energy.actuator-capacity",
    "family": "energy-nutrition",
    "scope": "trunk",
    "switch": false,
    "consumer": "behaviour: carried, weighed by the state machine",
-   "kind": "heritable-doing",
+   "kind": "sealed",
    "nature": "doing",
    "chapter": "stamina",
    "trait": "strength",
@@ -671,7 +663,7 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "behaviour: carried, weighed by the state machine",
-   "kind": "heritable-doing",
+   "kind": "sealed",
    "nature": "doing",
    "chapter": "stamina",
    "trait": "reserve",
@@ -693,7 +685,7 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "behaviour: carried, weighed by the state machine",
-   "kind": "heritable-doing",
+   "kind": "sealed",
    "nature": "doing",
    "chapter": "stamina",
    "trait": "thrift",
@@ -708,6 +700,48 @@
     "high"
    ],
    "guard": "behaviour: carried, weighed by the state machine"
+  },
+  {
+   "id": "development.regional-growth",
+   "family": "development-longevity",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: the mass hierarchy (even, central, anterior) scales the regions",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "even",
+    "even"
+   ],
+   "looks": [
+    "even"
+   ],
+   "guard": "rig: the mass hierarchy (even, central, anterior) scales the regions",
+   "nature": "look"
+  },
+  {
+   "id": "structure.join-neck-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: neck length between head and body on a narrow join",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "low",
+    "low"
+   ],
+   "looks": [
+    "low"
+   ],
+   "guard": "rig: neck length between head and body on a narrow join",
+   "nature": "look"
   },
   {
    "id": "anatomy.exterior-eye-presence",
@@ -844,6 +878,84 @@
    "guard": "rig: head.centerLiftOverCoreRx"
   },
   {
+   "id": "growth.support-radius-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: support.proximalRadiusOverCoreRx",
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "legs-tail",
+   "trait": "rays",
+   "shapeable": true,
+   "alleles": [
+    "fine",
+    "slender",
+    "stout"
+   ],
+   "looks": [
+    "fine",
+    "between fine and slender",
+    "between fine and stout",
+    "slender",
+    "between slender and stout",
+    "stout"
+   ],
+   "guard": "rig: support.proximalRadiusOverCoreRx"
+  },
+  {
+   "id": "growth.terminal-length-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: terminal.rxOverCoreRx",
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "legs-tail",
+   "trait": "feet",
+   "shapeable": true,
+   "alleles": [
+    "small",
+    "narrow",
+    "broad"
+   ],
+   "looks": [
+    "small",
+    "between small and narrow",
+    "between small and broad",
+    "narrow",
+    "between narrow and broad",
+    "broad"
+   ],
+   "guard": "rig: terminal.rxOverCoreRx"
+  },
+  {
+   "id": "growth.terminal-depth-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: terminal.rzOverCoreRx",
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "legs-tail",
+   "trait": "feet",
+   "shapeable": true,
+   "alleles": [
+    "small",
+    "low",
+    "high"
+   ],
+   "looks": [
+    "small",
+    "between small and low",
+    "between small and high",
+    "low",
+    "between low and high",
+    "high"
+   ],
+   "guard": "rig: terminal.rzOverCoreRx"
+  },
+  {
    "id": "growth.exterior-eye-size-ratio",
    "family": "appearance",
    "scope": "trunk",
@@ -888,6 +1000,28 @@
    "guard": "rig: eye.anchorYOverHeadRy"
   },
   {
+   "id": "growth.region-taper",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: region.childScale",
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "shape",
+   "trait": "hind-body",
+   "shapeable": true,
+   "alleles": [
+    "strong",
+    "gentle"
+   ],
+   "looks": [
+    "strong",
+    "between strong and gentle",
+    "gentle"
+   ],
+   "guard": "rig: region.childScale"
+  },
+  {
    "id": "growth.free-proximal-ratio",
    "family": "structure",
    "scope": "trunk",
@@ -896,7 +1030,7 @@
    "kind": "heritable-look",
    "nature": "look",
    "chapter": "legs-tail",
-   "trait": "feelers",
+   "trait": "rays",
    "shapeable": true,
    "alleles": [
     "short",
@@ -918,7 +1052,7 @@
    "kind": "heritable-look",
    "nature": "look",
    "chapter": "legs-tail",
-   "trait": "feelers",
+   "trait": "rays",
    "shapeable": true,
    "alleles": [
     "short",
@@ -930,28 +1064,6 @@
     "long"
    ],
    "guard": "rig: appendage.distalOverAnchorRx"
-  },
-  {
-   "id": "growth.free-radius-ratio",
-   "family": "structure",
-   "scope": "trunk",
-   "switch": false,
-   "consumer": "rig: appendage.freeRadiusOverAnchorRx",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "legs-tail",
-   "trait": "feelers",
-   "shapeable": true,
-   "alleles": [
-    "fine",
-    "thick"
-   ],
-   "looks": [
-    "fine",
-    "between fine and thick",
-    "thick"
-   ],
-   "guard": "rig: appendage.freeRadiusOverAnchorRx"
   },
   {
    "id": "growth.radial-cross-radius",
@@ -999,6 +1111,35 @@
    "guard": "rig: region.longitudinalForm"
   },
   {
+   "id": "anatomy.contact-terminal-form",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: terminal.form",
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "legs-tail",
+   "trait": "feet",
+   "shapeable": true,
+   "alleles": [
+    "rounded",
+    "pad",
+    "wedge",
+    "hoof",
+    "webbed",
+    "root"
+   ],
+   "looks": [
+    "rounded",
+    "pad",
+    "wedge",
+    "hoof",
+    "webbed",
+    "root"
+   ],
+   "guard": "rig: terminal.form"
+  },
+  {
    "id": "cognition.exploration-tendency",
    "family": "cognition-tendencies",
    "scope": "trunk",
@@ -1006,7 +1147,7 @@
    "consumer": "rig: innate.explorationClass",
    "kind": "heritable-doing",
    "nature": "doing",
-   "chapter": "ways",
+   "chapter": "character",
    "trait": "curiosity",
    "shapeable": false,
    "alleles": [
@@ -1028,7 +1169,7 @@
    "consumer": "rig: innate.arousalThreshold",
    "kind": "heritable-doing",
    "nature": "doing",
-   "chapter": "ways",
+   "chapter": "character",
    "trait": "nerve",
    "shapeable": false,
    "alleles": [
@@ -1047,7 +1188,7 @@
    "family": "appearance",
    "scope": "trunk",
    "switch": false,
-   "consumer": "sketch: specular highlight strength",
+   "consumer": "sketch: specular highlight strength (surface texture's first consumer)",
    "kind": "heritable-look",
    "nature": "look",
    "chapter": "coat",
@@ -1062,14 +1203,83 @@
     "between matte and glossy",
     "glossy"
    ],
-   "guard": "sketch: specular highlight strength"
+   "guard": "sketch: specular highlight strength (surface texture's first consumer)"
+  },
+  {
+   "id": "anatomy.leaf-presence",
+   "family": "structure",
+   "scope": "branch",
+   "clan": "C15",
+   "switch": true,
+   "consumer": "rig: leaf sheets on every body region",
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "on",
+    "on"
+   ],
+   "looks": [
+    "on"
+   ],
+   "guard": "rig: leaf sheets on every body region",
+   "nature": "look"
+  },
+  {
+   "id": "growth.leaf-count",
+   "family": "structure",
+   "scope": "branch",
+   "clan": "C15",
+   "switch": false,
+   "consumer": "rig: leaves per region",
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "shape",
+   "trait": "leaves",
+   "shapeable": true,
+   "alleles": [
+    "few",
+    "many"
+   ],
+   "looks": [
+    "2",
+    "3",
+    "4"
+   ],
+   "guard": "rig: leaves per region"
+  },
+  {
+   "id": "growth.leaf-length-ratio",
+   "family": "structure",
+   "scope": "branch",
+   "clan": "C15",
+   "switch": false,
+   "consumer": "rig: leaf length over the owner's cross radius",
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "shape",
+   "trait": "leaves",
+   "shapeable": true,
+   "alleles": [
+    "short",
+    "long"
+   ],
+   "looks": [
+    "short",
+    "between short and long",
+    "long"
+   ],
+   "guard": "rig: leaf length over the owner's cross radius"
   },
   {
    "id": "appearance.leaf-covering",
    "family": "appearance",
-   "scope": "trunk",
+   "scope": "branch",
+   "clan": "C15",
    "switch": false,
-   "consumer": "sketch: a leafy mantle material on the primary regions",
+   "consumer": "sketch: a leafy mantle material on the body regions",
    "kind": "heritable-look",
    "nature": "look",
    "chapter": "coat",
@@ -1083,15 +1293,16 @@
     "bare",
     "leafy"
    ],
-   "guard": "sketch: a leafy mantle material on the primary regions"
+   "guard": "sketch: a leafy mantle material on the body regions"
   },
   {
    "id": "energy.light-feeding",
    "family": "energy-nutrition",
-   "scope": "trunk",
+   "scope": "branch",
+   "clan": "C15",
    "switch": false,
    "consumer": "behaviour: uptake from light (the uptake draft's first consumer)",
-   "kind": "heritable-doing",
+   "kind": "sealed",
    "nature": "doing",
    "chapter": "stamina",
    "trait": "light-feeding",
@@ -1106,6 +1317,48 @@
     "high"
    ],
    "guard": "behaviour: uptake from light (the uptake draft's first consumer)"
+  },
+  {
+   "id": "appearance.emission-brightness",
+   "family": "mechanics-movement",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "bright",
+    "bright"
+   ],
+   "looks": [
+    "bright"
+   ],
+   "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
+   "nature": "doing"
+  },
+  {
+   "id": "appearance.emission-length",
+   "family": "mechanics-movement",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "behaviour: how long the glow lasts",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "short",
+    "short"
+   ],
+   "looks": [
+    "short"
+   ],
+   "guard": "behaviour: how long the glow lasts",
+   "nature": "doing"
   }
  ],
  "absent": [
@@ -1127,7 +1380,7 @@
   },
   {
    "id": "structure.axial-spacing",
-   "why": "absent: no catalogue applicability 'axial'"
+   "why": "absent: carried by v1 but nothing draws or weighs it yet"
   },
   {
    "id": "structure.proximal-length",
@@ -1190,6 +1443,14 @@
    "why": "absent: no marking field"
   },
   {
+   "id": "movement.axial-amplitude",
+   "why": "absent: no catalogue applicability 'axial-actuator'"
+  },
+  {
+   "id": "movement.axial-phase",
+   "why": "absent: no catalogue applicability 'axial-actuator'"
+  },
+  {
    "id": "movement.membrane-stroke",
    "why": "absent: no catalogue applicability 'membrane'"
   },
@@ -1216,14 +1477,6 @@
   {
    "id": "appearance.covering-scale",
    "why": "absent: no catalogue applicability 'scales'"
-  },
-  {
-   "id": "development.regional-growth",
-   "why": "absent: no catalogue applicability 'axial'"
-  },
-  {
-   "id": "structure.join-neck-ratio",
-   "why": "absent: no catalogue applicability 'axial'"
   },
   {
    "id": "anatomy.muzzle-presence",
@@ -1262,18 +1515,6 @@
    "why": "absent: no bilateral contact splay"
   },
   {
-   "id": "growth.support-radius-ratio",
-   "why": "absent: no contact chains"
-  },
-  {
-   "id": "growth.terminal-length-ratio",
-   "why": "absent: no contact terminal owner"
-  },
-  {
-   "id": "growth.terminal-depth-ratio",
-   "why": "absent: no contact terminal owner"
-  },
-  {
    "id": "growth.posterior-length-ratio",
    "why": "absent: no no old posterior owner"
   },
@@ -1310,10 +1551,6 @@
    "why": "absent: no bilateral serial child regions"
   },
   {
-   "id": "growth.region-taper",
-   "why": "absent: no child region owner"
-  },
-  {
    "id": "growth.branch-angle",
    "why": "absent: no bilateral fan child regions"
   },
@@ -1322,12 +1559,12 @@
    "why": "absent: no narrow connection owner"
   },
   {
-   "id": "anatomy.region-cross-exponent",
-   "why": "absent: no bilateral primary cross-section"
+   "id": "growth.free-radius-ratio",
+   "why": "absent: no free-chain owner"
   },
   {
-   "id": "anatomy.contact-terminal-form",
-   "why": "absent: no contact terminal owner"
+   "id": "anatomy.region-cross-exponent",
+   "why": "absent: no bilateral primary cross-section"
   },
   {
    "id": "appearance.fur-length",
@@ -1366,6 +1603,30 @@
    "why": "absent: no axial tail"
   },
   {
+   "id": "appearance.fur-reach",
+   "why": "absent: no fur field"
+  },
+  {
+   "id": "appearance.face-mask",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "appearance.face-mask-shape",
+   "why": "absent: no appearance.face-mask on"
+  },
+  {
+   "id": "appearance.tail-rings",
+   "why": "absent: the plan and clan never have this part"
+  },
+  {
+   "id": "growth.tail-ring-count",
+   "why": "absent: no appearance.tail-rings on"
+  },
+  {
+   "id": "anatomy.ear-tilt",
+   "why": "absent: no head-owned ears"
+  },
+  {
    "id": "anatomy.antenna-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -1386,106 +1647,126 @@
    "why": "absent: no thin-surface owner"
   },
   {
-   "id": "anatomy.leaf-presence",
-   "why": "absent: the plan and clan never have this part"
+   "id": "anatomy.horn-presence",
+   "why": "absent: a C08 branch locus"
   },
   {
-   "id": "growth.leaf-count",
-   "why": "absent: no anatomy.leaf-presence on"
+   "id": "growth.horn-curl",
+   "why": "absent: a C08 branch locus"
   },
   {
-   "id": "growth.leaf-length-ratio",
-   "why": "absent: no anatomy.leaf-presence on"
+   "id": "anatomy.horn-branching",
+   "why": "absent: a C08 branch locus"
   },
   {
-   "id": "anatomy.root-foot-presence",
-   "why": "absent: a brotela branch locus"
+   "id": "anatomy.beak-presence",
+   "why": "absent: a C09 branch locus"
   },
   {
-   "id": "growth.root-spread-ratio",
-   "why": "absent: a brotela branch locus"
+   "id": "growth.beak-length-ratio",
+   "why": "absent: a C09 branch locus"
   },
   {
-   "id": "anatomy.foot-skirt-presence",
-   "why": "absent: a limacela branch locus"
+   "id": "appearance.feather-presence",
+   "why": "absent: a C09 branch locus"
   },
   {
-   "id": "growth.foot-skirt-width-ratio",
-   "why": "absent: a limacela branch locus"
+   "id": "appearance.feather-length",
+   "why": "absent: a C09 branch locus"
+  },
+  {
+   "id": "growth.feather-crest",
+   "why": "absent: a C09 branch locus"
+  },
+  {
+   "id": "anatomy.shell-presence",
+   "why": "absent: a C11 branch locus"
+  },
+  {
+   "id": "growth.shell-dome-ratio",
+   "why": "absent: a C11 branch locus"
+  },
+  {
+   "id": "appearance.shell-plates",
+   "why": "absent: a C11 branch locus"
   },
   {
    "id": "anatomy.wing-case-presence",
-   "why": "absent: a caparela branch locus"
+   "why": "absent: a C13 branch locus"
   },
   {
    "id": "growth.wing-case-extent",
-   "why": "absent: a caparela branch locus"
+   "why": "absent: a C13 branch locus"
   },
   {
    "id": "anatomy.wing-case-seam",
-   "why": "absent: a caparela branch locus"
+   "why": "absent: a C13 branch locus"
   },
   {
-   "id": "anatomy.petal-presence",
-   "why": "absent: a lirela branch locus"
+   "id": "anatomy.foot-skirt-presence",
+   "why": "absent: a C14 branch locus"
   },
   {
-   "id": "growth.petal-count",
-   "why": "absent: a lirela branch locus"
+   "id": "growth.foot-skirt-width-ratio",
+   "why": "absent: a C14 branch locus"
   },
   {
-   "id": "growth.petal-length-ratio",
-   "why": "absent: a lirela branch locus"
+   "id": "physiology.charged-body",
+   "why": "absent: a C16 branch locus"
   },
   {
-   "id": "appearance.emission-brightness",
-   "why": "absent: a fanalia branch locus"
+   "id": "physiology.charge",
+   "why": "absent: a C16 branch locus"
   },
   {
-   "id": "appearance.emission-length",
-   "why": "absent: a fanalia branch locus"
+   "id": "physiology.phase",
+   "why": "absent: a C16 branch locus"
+  },
+  {
+   "id": "physiology.pull",
+   "why": "absent: a C16 branch locus"
   },
   {
    "id": "anatomy.tail-tip-bulb",
-   "why": "absent: a fanalia branch locus"
+   "why": "absent: a C03 branch locus"
   },
   {
    "id": "anatomy.top-cap-sheet",
-   "why": "absent: a bonetia branch locus"
+   "why": "absent: a C02 branch locus"
   },
   {
    "id": "appearance.cap-palette",
-   "why": "absent: a bonetia branch locus"
+   "why": "absent: a C02 branch locus"
   },
   {
    "id": "appearance.cap-spots",
-   "why": "absent: a bonetia branch locus"
+   "why": "absent: a C02 branch locus"
   },
   {
    "id": "appearance.belly-field",
-   "why": "absent: a trebola branch locus"
+   "why": "absent: a C01 branch locus"
   },
   {
    "id": "growth.crest-leaf-count",
-   "why": "absent: a trebola branch locus"
+   "why": "absent: a C01 branch locus"
   }
  ],
  "counts": {
-  "carried": 30,
-  "trunk": 30,
-  "branch": 0,
-  "absent": 90,
-  "locked": 4,
+  "carried": 39,
+  "trunk": 34,
+  "branch": 5,
+  "absent": 97,
+  "locked": 9,
   "lockedBy": {
-   "switch": 1,
-   "fixed": 3
+   "switch": 2,
+   "fixed": 7
   },
-  "heritableLook": 14,
-  "heritableDoing": 12,
+  "heritableLook": 20,
+  "heritableDoing": 6,
   "sleeping": 0,
-  "sealed": 0,
-  "open": 26,
-  "traits": 18,
+  "sealed": 4,
+  "open": 30,
+  "traits": 20,
   "byChapter": {
    "Coat": {
     "loci": 3,
@@ -1496,34 +1777,33 @@
     "traits": 2
    },
    "Shape": {
-    "loci": 2,
-    "traits": 2
+    "loci": 5,
+    "traits": 4
    },
    "Legs & tail": {
-    "loci": 3,
-    "traits": 1
+    "loci": 6,
+    "traits": 2
    },
    "Movement": {
-    "loci": 6,
-    "traits": 4
+    "loci": 4,
+    "traits": 3
    },
    "Stamina": {
     "loci": 4,
     "traits": 4
    },
-   "Ways": {
+   "Character": {
     "loci": 2,
     "traits": 2
    }
   },
-  "fieldGuideLooks": 80,
-  "stampBitsPerCopy": 31
+  "fieldGuideLooks": 111,
+  "stampBitsPerCopy": 40
  },
  "notYet": {
   "domains": [
    "maintenance-protection",
    "affinities-exposure",
-   "development-longevity",
    "reproduction",
    "fantastic-physiology"
   ],
@@ -1542,20 +1822,20 @@
  "typeSpecimen": {
   "genome": {
    "schema": "mb-genome/2",
-   "species": "charquin",
+   "species": "S15",
    "frameVersion": 1,
    "loci": {
     "structure.attachment-position": [
-     "low",
-     "low"
+     "high",
+     "high"
     ],
     "appearance.body-palette": [
-     "periwinkle",
-     "periwinkle"
+     "jade",
+     "jade"
     ],
     "appearance.surface-texture": [
-     "smooth",
-     "smooth"
+     "ridged",
+     "ridged"
     ],
     "movement.contact-phase": [
      "low",
@@ -1573,14 +1853,6 @@
      "low",
      "high"
     ],
-    "movement.axial-amplitude": [
-     "low",
-     "high"
-    ],
-    "movement.axial-phase": [
-     "low",
-     "high"
-    ],
     "energy.actuator-capacity": [
      "low",
      "high"
@@ -1592,6 +1864,14 @@
     "energy.action-efficiency": [
      "low",
      "high"
+    ],
+    "development.regional-growth": [
+     "even",
+     "even"
+    ],
+    "structure.join-neck-ratio": [
+     "low",
+     "low"
     ],
     "anatomy.exterior-eye-presence": [
      "on",
@@ -1617,6 +1897,18 @@
      "low",
      "high"
     ],
+    "growth.support-radius-ratio": [
+     "fine",
+     "stout"
+    ],
+    "growth.terminal-length-ratio": [
+     "small",
+     "broad"
+    ],
+    "growth.terminal-depth-ratio": [
+     "small",
+     "high"
+    ],
     "growth.exterior-eye-size-ratio": [
      "small",
      "large"
@@ -1624,6 +1916,10 @@
     "growth.exterior-eye-spacing-ratio": [
      "close",
      "wide"
+    ],
+    "growth.region-taper": [
+     "strong",
+     "gentle"
     ],
     "growth.free-proximal-ratio": [
      "short",
@@ -1633,10 +1929,6 @@
      "short",
      "long"
     ],
-    "growth.free-radius-ratio": [
-     "fine",
-     "thick"
-    ],
     "growth.radial-cross-radius": [
      "slender",
      "broad"
@@ -1644,6 +1936,10 @@
     "anatomy.region-longitudinal-form": [
      "ovoid",
      "ovoid"
+    ],
+    "anatomy.contact-terminal-form": [
+     "rounded",
+     "rounded"
     ],
     "cognition.exploration-tendency": [
      "reserved",
@@ -1657,6 +1953,18 @@
      "matte",
      "glossy"
     ],
+    "anatomy.leaf-presence": [
+     "on",
+     "on"
+    ],
+    "growth.leaf-count": [
+     "few",
+     "few"
+    ],
+    "growth.leaf-length-ratio": [
+     "short",
+     "long"
+    ],
     "appearance.leaf-covering": [
      "bare",
      "bare"
@@ -1664,6 +1972,14 @@
     "energy.light-feeding": [
      "low",
      "high"
+    ],
+    "appearance.emission-brightness": [
+     "bright",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "short"
     ]
    },
    "origin": {
@@ -1671,23 +1987,23 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "Charquín: 1 body region (R1), a head, 2 eyes, 9 feelers; skin; trailing, fused head.",
+  "brief": "S15: 4 body regions (Rfan2), a head, 2 eyes, 6 rays, 8 flaps; skin; rooted, fused head.",
   "bounds": {
    "min": [
-    -1.2322281406411617,
-    -1.218932539407455,
-    -0.04833339735369557
+    -1.3415675613670537,
+    -1.2121621757719525,
+    0
    ],
    "max": [
-    1.0146244963083155,
-    1.2189325394074546,
-    1.0664
+    1.0194226253394445,
+    1.3631063538272927,
+    1.5557039844878087
    ]
   },
   "counts": {
-   "nodes": 33,
-   "edges": 32,
-   "vertices": 1247
+   "nodes": 41,
+   "edges": 40,
+   "vertices": 1675
   }
  },
  "viability": {
@@ -1698,24 +2014,22 @@
  },
  "pools": {
   "appearance.body-palette": [
-   "periwinkle",
-   "cobalt"
+   "jade",
+   "russet",
+   "lagoon",
+   "charcoal"
   ],
-  "growth.free-proximal-ratio": [
+  "growth.leaf-count": [
+   "few",
+   "many"
+  ],
+  "growth.leaf-length-ratio": [
    "short",
    "long"
   ],
-  "growth.free-distal-ratio": [
-   "short",
-   "long"
-  ],
-  "growth.free-radius-ratio": [
-   "fine",
-   "thick"
-  ],
-  "appearance.sheen": [
-   "matte",
-   "glossy"
+  "growth.radial-cross-radius": [
+   "slender",
+   "broad"
   ],
   "growth.exterior-eye-size-ratio": [
    "small",
@@ -1725,9 +2039,48 @@
    "close",
    "wide"
   ],
+  "appearance.sheen": [
+   "matte",
+   "glossy"
+  ],
+  "growth.region-taper": [
+   "strong",
+   "gentle"
+  ],
   "appearance.leaf-covering": [
    "bare",
    "leafy"
+  ],
+  "growth.free-proximal-ratio": [
+   "short",
+   "long"
+  ],
+  "growth.free-distal-ratio": [
+   "short",
+   "long"
+  ],
+  "growth.support-radius-ratio": [
+   "fine",
+   "slender",
+   "stout"
+  ],
+  "anatomy.contact-terminal-form": [
+   "rounded",
+   "pad",
+   "wedge",
+   "hoof",
+   "webbed",
+   "root"
+  ],
+  "growth.terminal-length-ratio": [
+   "small",
+   "narrow",
+   "broad"
+  ],
+  "growth.terminal-depth-ratio": [
+   "small",
+   "low",
+   "high"
   ],
   "growth.head-length-ratio": [
    "small",
@@ -1751,11 +2104,15 @@
    "barrel",
    "tapered"
   ],
-  "growth.radial-cross-radius": [
-   "slender",
-   "broad"
-  ],
   "movement.turn-control": [
+   "low",
+   "high"
+  ],
+  "energy.light-feeding": [
+   "low",
+   "high"
+  ],
+  "energy.actuator-capacity": [
    "low",
    "high"
   ],
@@ -1767,11 +2124,11 @@
    "low",
    "high"
   ],
-  "energy.actuator-capacity": [
+  "movement.cycle-rate": [
    "low",
    "high"
   ],
-  "movement.cycle-rate": [
+  "energy.reserve-capacity": [
    "low",
    "high"
   ],
@@ -1779,39 +2136,31 @@
    "reserved",
    "seeking"
   ],
-  "cognition.arousal-threshold": [
-   "low",
-   "high"
-  ],
-  "movement.axial-amplitude": [
-   "low",
-   "high"
-  ],
-  "movement.axial-phase": [
-   "low",
-   "high"
-  ],
-  "energy.light-feeding": [
-   "low",
-   "high"
-  ],
   "energy.action-efficiency": [
    "low",
    "high"
   ],
-  "energy.reserve-capacity": [
+  "cognition.arousal-threshold": [
    "low",
    "high"
   ]
  },
  "locked": {
   "structure.attachment-position": [
-   "low",
-   "low"
+   "high",
+   "high"
   ],
   "appearance.surface-texture": [
-   "smooth",
-   "smooth"
+   "ridged",
+   "ridged"
+  ],
+  "development.regional-growth": [
+   "even",
+   "even"
+  ],
+  "structure.join-neck-ratio": [
+   "low",
+   "low"
   ],
   "anatomy.exterior-eye-presence": [
    "on",
@@ -1820,7 +2169,21 @@
   "growth.core-half-length": [
    "medium",
    "medium"
+  ],
+  "anatomy.leaf-presence": [
+   "on",
+   "on"
+  ],
+  "appearance.emission-brightness": [
+   "bright",
+   "bright"
+  ],
+  "appearance.emission-length": [
+   "short",
+   "short"
   ]
  },
- "sealed": {}
+ "sealed": {
+  "stamina": "a storm-glass shard"
+ }
 }

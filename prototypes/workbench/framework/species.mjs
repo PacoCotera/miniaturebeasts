@@ -14,12 +14,12 @@ import { buildBody } from "./rig.mjs";
 import { validateBody } from "./validate.mjs";
 
 export const SCHEMA = "mb-species-frame/2";
-export const RING = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "ways", "glow"];
-export const CHAPTER_NAMES = { coat: "Coat", face: "Face", shape: "Shape", "legs-tail": "Legs & tail", movement: "Movement", stamina: "Stamina", ways: "Ways", glow: "Glow" };
+export const RING = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "character", "glow", "charge"];
+export const CHAPTER_NAMES = { coat: "Coat", face: "Face", shape: "Shape", "legs-tail": "Legs & tail", movement: "Movement", stamina: "Stamina", character: "Character", glow: "Glow", charge: "Charge" };
 export const WHEEL = ["marigold", "coral", "raspberry", "plum", "periwinkle", "cobalt", "lagoon", "jade", "russet", "charcoal"];
 const SECONDS = ["cream", "slate", "milk-mint", "ice", "butter", "peach"];
 export const TIERS = { starter: [5, 6], early: [7, 10], mid: [12, 18], late: [24, 34] };
-export const FINDS = { ways: "a vybronic crystal", stamina: "a storm-glass shard", movement: "a tide pearl", glow: "an ember seed" };
+export const FINDS = { character: "a vybronic crystal", stamina: "a storm-glass shard", movement: "a tide pearl", glow: "an ember seed", charge: "a storm-glass shard" };
 
 // A deterministic stream (mulberry32, as v1 generation and the genome stamp use).
 export function rng(seed) {
@@ -48,12 +48,21 @@ export const VOCAB = [
   ["coat", "cap-colour", "Cap colour", ["appearance.cap-palette"], null],
   ["coat", "cap-spots", "Cap spots", ["appearance.cap-spots"], ["bare", "spots"]],
   ["coat", "leaf-covering", "Leaf covering", ["appearance.leaf-covering"], ["bare", "leafy"]],
+  ["coat", "fur-reach", "Fur reach", ["appearance.fur-reach"], ["body only", "bushy tail", "bushy tail and ears"]],
+  ["coat", "mask", "Mask", ["appearance.face-mask-shape"], ["a band", "stripes"]],
+  ["coat", "rings", "Tail rings", ["growth.tail-ring-count"], ["a pale tip", "two rings", "four rings"]],
+  ["coat", "feathers", "Feathers", ["appearance.feather-length"], ["short", "between", "long"]],
+  ["coat", "shell-plates", "Shell plates", ["appearance.shell-plates"], ["smooth", "plated"]],
   ["face", "eyes", "Eyes", ["growth.exterior-eye-size-ratio", "growth.exterior-eye-spacing-ratio"], ["small, close", "between", "big, wide"]],
   ["face", "snout", "Snout", ["growth.muzzle-projection-ratio", "growth.muzzle-width-ratio"], ["short, narrow", "between", "long, broad"]],
   ["face", "crown", "Crown", ["growth.crown-height-ratio"], ["low", "between", "tall"]],
   ["face", "ears", "Ears", ["anatomy.auricular-form", "growth.auricular-length-ratio"], ["short, round", "between", "long, pointed"]],
   ["face", "head", "Head", ["growth.head-length-ratio", "growth.head-width-ratio", "growth.head-depth-ratio", "growth.head-lift-ratio"], ["small, low", "between", "big, raised"]],
   ["face", "antennae", "Antennae", ["growth.antenna-length-ratio", "anatomy.antenna-form"], ["short threads", "between", "long feathers"]],
+  ["face", "ear-tilt", "Ear tilt", ["anatomy.ear-tilt"], ["upright", "drooping"]],
+  ["face", "horns", "Horns", ["growth.horn-curl", "anatomy.horn-branching"], ["straight", "between", "curled antlers"]],
+  ["face", "beak", "Beak", ["growth.beak-length-ratio"], ["short", "between", "long"]],
+  ["face", "feather-crest", "Crest", ["growth.feather-crest"], ["low", "between", "tall"]],
   ["shape", "size", "Size", ["growth.core-half-length"], ["small", "between", "large"]],
   ["shape", "build", "Build", ["growth.core-width-ratio", "growth.core-depth-ratio"], ["slim", "between", "stout"]],
   ["shape", "roundness", "Roundness", ["growth.radial-cross-radius"], ["flat", "between", "plump"]],
@@ -65,10 +74,9 @@ export const VOCAB = [
   ["shape", "wing-cases", "Wing cases", ["growth.wing-case-extent", "anatomy.wing-case-seam"], ["short, closed", "between", "long, parted"]],
   ["shape", "skirt", "Skirt", ["growth.foot-skirt-width-ratio"], ["narrow", "between", "wide"]],
   ["shape", "leaves", "Leaves", ["growth.leaf-count", "growth.leaf-length-ratio"], ["a few short", "between", "many long"]],
-  ["shape", "petals", "Petals", ["growth.petal-count", "growth.petal-length-ratio"], ["five short", "between", "eight long"]],
+  ["shape", "shell", "Shell", ["growth.shell-dome-ratio"], ["low", "between", "high dome"]],
   ["legs-tail", "legs", "Legs", ["growth.support-drop-ratio", "growth.support-radius-ratio", "growth.support-splay-ratio"], ["short, fine", "between", "long, stout"]],
   ["legs-tail", "feet", "Feet", ["anatomy.contact-terminal-form", "growth.terminal-length-ratio", "growth.terminal-depth-ratio"], ["round feet", "pads", "digging wedges"]],
-  ["legs-tail", "roots", "Roots", ["growth.root-spread-ratio"], ["tight", "between", "spreading"]],
   ["legs-tail", "feelers", "Feelers", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.free-radius-ratio"], ["short, fine", "between", "long, thick"]],
   ["legs-tail", "rays", "Rays", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.support-radius-ratio"], ["short, fine", "between", "long, stout"]],
   ["legs-tail", "tail", "Tail", ["growth.axial-tail-length-ratio", "growth.axial-tail-width-ratio"], ["short, thin", "between", "long, thick"]],
@@ -83,10 +91,13 @@ export const VOCAB = [
   ["stamina", "reserve", "Reserve", ["energy.reserve-capacity"], ["tires soon", "between", "goes long"]],
   ["stamina", "thrift", "Thrift", ["energy.action-efficiency"], ["thrifty", "between", "ordinary"]],
   ["stamina", "light-feeding", "Light feeding", ["energy.light-feeding"], ["shade-happy", "between", "sun-hungry"]],
-  ["ways", "curiosity", "Curiosity", ["cognition.exploration-tendency"], ["reserved", "between", "seeking"]],
-  ["ways", "nerve", "Nerve", ["cognition.arousal-threshold"], ["jumpy", "between", "unflappable"]],
+  ["character", "curiosity", "Curiosity", ["cognition.exploration-tendency"], ["reserved", "between", "seeking"]],
+  ["character", "nerve", "Nerve", ["cognition.arousal-threshold"], ["jumpy", "between", "unflappable"]],
   ["glow", "glow", "Glow", ["appearance.emission-brightness"], ["dim", "between", "bright"]],
   ["glow", "glow-length", "Glow length", ["appearance.emission-length"], ["a flicker", "between", "all evening"]],
+  ["charge", "charge", "Charge", ["physiology.charge"], ["a spark", "between", "a bolt"]],
+  ["charge", "phase", "Phase", ["physiology.phase"], ["solid", "between", "faint"]],
+  ["charge", "pull", "Pull", ["physiology.pull"], ["weak", "between", "strong"]],
 ];
 const vocabTrait = (id) => { const t = VOCAB.find((v) => v[1] === id); if (!t) throw new Error(`vocabulary has no trait ${id}`); return { chapter: t[0], id: t[1], name: t[2], loci: t[3], looks: t[4] }; };
 
@@ -123,11 +134,11 @@ export function buildFrame(spec, options = {}) {
   // Open traits: authored, or by tier from what the plan can show.
   let open = spec.open;
   if (!open) {
-    const applicable = VOCAB.map((t) => vocabTrait(t[1])).filter((t) => t.loci.every((id) => carriedIds.includes(id)) && t.id !== "size" && !(spec.lockTraits ?? []).includes(t.id));
+    const applicable = VOCAB.map((t) => vocabTrait(t[1])).filter((t) => t.loci.every((id) => carriedIds.includes(id)) && t.id !== "size" && !(spec.lockTraits ?? []).includes(t.id) && !(spec.neverOpen ?? []).includes(t.id));
     const [lo, hi] = TIERS[spec.tier];
     const n = Math.min(applicable.length, lo + Math.floor(r() * (hi - lo + 1)));
-    const looks = applicable.filter((t) => !["movement", "stamina", "ways", "glow"].includes(t.chapter));
-    const doings = applicable.filter((t) => ["movement", "stamina", "ways", "glow"].includes(t.chapter));
+    const looks = applicable.filter((t) => !["movement", "stamina", "character", "glow", "charge"].includes(t.chapter));
+    const doings = applicable.filter((t) => ["movement", "stamina", "character", "glow", "charge"].includes(t.chapter));
     const must = spec.tier === "starter" ? [] : looks.filter((t) => t.id === "colour");
     const rest = shuffle(r, looks.filter((t) => !must.includes(t)));
     let chosen = [...must, ...rest.slice(0, Math.max(0, Math.round(n * 0.65) - must.length))];

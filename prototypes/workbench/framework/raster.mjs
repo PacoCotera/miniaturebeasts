@@ -103,6 +103,17 @@ export function render(scene, camera, pass = "shaded", options = {}) {
           const spots = scene.flapMarking !== "bars", bars = scene.flapMarking !== "spots";
           if ((spots && Math.abs(meanU - 0.6) < 0.12) || (bars && Math.abs(meanU - 0.35) < 0.06)) marked = true;
         }
+        if (node.part === "head" && scene.mask && scene.slots.mask) {
+          const lp = localPoint(node, centre);
+          const inMask = scene.mask === "band" ? lp[0] < -0.25 * node.radii[0] && Math.abs(lp[2]) < 0.45 * node.radii[2] : lp[0] < -0.3 * node.radii[0] && Math.abs(lp[1]) < 0.22 * node.radii[1];
+          if (inMask) { slot = "mask"; pigment = scene.slots.mask[0]; slotKey = "mask"; }
+        }
+        if (node.part === "tail" && scene.tailRings && node.role === "axial-tail") {
+          const n = scene.tailRings;
+          const ring = n === 1 ? meanU > 0.78 : Array.from({ length: n }, (_, k) => (k + 1) / (n + 1)).some((c) => Math.abs(meanU - c) < 0.5 / (n + 1) * 0.45);
+          if (ring) { slot = "second"; pigment = scene.slots.second[0]; slotKey = "ring"; }
+        }
+        if (node.part === "shell" && scene.shellPlates) { const lp = localPoint(node, centre); if ((Math.floor((lp[0] / node.radii[0] + 1) * 3) + Math.floor((lp[1] / node.radii[1] + 1) * 3)) % 2 === 0) marked = true; }
         if (node.part === "cap" && scene.capSpots) { const lp = localPoint(node, centre); if (Math.abs(((lp[0] / node.radii[0]) * 3) % 1 - 0.5) < 0.2 && Math.abs(((lp[1] / node.radii[1]) * 3 + 0.5) % 1 - 0.5) < 0.2) marked = true; }
         if (pass === "slots") colour = slotColours[slot] ? slotColours[slot].map((c, i) => (slotKey.endsWith("-2") ? Math.round(c * 0.7) : c)) : [128, 128, 128];
         else if (pass === "markings") colour = marked ? [255, 255, 255] : [0, 0, 0];
@@ -111,6 +122,7 @@ export function render(scene, camera, pass = "shaded", options = {}) {
           const lambert = Math.max(0, dot(n, LIGHT));
           const shade = 0.42 + 0.58 * lambert + (scene.covering?.sheen ?? 0) * 0.35 * Math.pow(Math.max(0, dot(n, unit(add(LIGHT, view.toward)))), 24);
           colour = base.map((c) => Math.min(255, Math.round(c * shade)));
+          if (scene.covering?.charged && node.opacity < 1) colour = colour.map((c, i) => Math.min(255, Math.round(c + ([255, 240, 160][i] - c) * 0.45 * (scene.covering.emission ?? 0.5))));
           if (marked) colour = colour.map((c) => Math.round(c + (232 - c) * (scene.markings?.contrast ?? 0.6)));
         }
       }
