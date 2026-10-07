@@ -3521,30 +3521,55 @@ function card(x, y, w, h, sel, enabled) {
 function weatherIcon(x, y, lit) { blit(ICON.cloud(lit ? 1 : 0), x - 15, y - 14); blit(ICON.bolt(lit ? 'yellow' : 'mist'), x - 2, y); }
 const silhouette = sp => art('sil' + sp, () => { const a = creatureArt(sp, 'idle', 0), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C.slate; return pb; });
 function adults() { return S.mibis.filter(isAdult); }
+// The expedition choice: a status strip, two expedition cards with living icons, the partner as a card, and a
+// world preview (the whole-map inset with the last start flagged).
 function drawSetup(t) {
   viewBg();
-  drawTop('Expedition ' + S.expN, (S.turn ? 'world turn ' + S.turn : 'a new world') + ' · Probe tier ' + S.tier);
-  const shN = S.shield != null ? Math.min(S.shield, tierOf().shield) : tierOf().shield;
-  text(shN < tierOf().shield ? 'Shield ' + shN + '/' + tierOf().shield + ' · mend at the Station, 1 Energy a bar' : 'Choose your expedition', SCR_W / 2, 42, shN < tierOf().shield ? C.amber : C.fog, 2, 'center');
+  drawTop('Expedition ' + S.expN, '');
+  const fr = motion() ? Math.floor(t * 2) % 2 : 0, shN = S.shield != null ? Math.min(S.shield, tierOf().shield) : tierOf().shield, hurt = shN < tierOf().shield;
+  const strip = 'World · turn ' + S.turn + ' · Probe tier ' + S.tier + ' · Shield ' + shN + '/' + tierOf().shield;
+  text(clipText(strip, 420, 2), SCR_W / 2, 34, hurt ? C.amber : C.mist, 2, 'center');
   const sel = S.ui.sel, dig = digPartner(), digHome = !dig && mibiWith('dig'), deepOk = !!(dig || digHome);
-  card(20, 70, 410, 96, sel === 0, true);
-  disc(34, 86, 32, 'sand', 'clay'); weatherIcon(66, 116, true);
-  text('Weather', 116, 90, C.ink, 3); text('A storm is on the way', 116, 128, C.stone);
-  card(20, 184, 410, 96, sel === 1, deepOk);
-  disc(34, 200, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 58, 224);
-  text('Deep ground', 116, 204, deepOk ? C.ink : C.mist, 3); text(dig ? 'Burrows and caves · ' + dig.name + ' digs' : digHome ? 'Take ' + digHome.name + ' along to dig' : 'Needs a digging partner', 116, 242, deepOk ? C.stone : C.fog);
-  text('Partner', 24, 306, C.mist);
+  // Weather: a storm cloud with a flickering bolt
+  card(20, 58, 410, 84, sel === 0, true);
+  disc(32, 68, 32, 'sand', 'clay'); blit(ICON.cloud(1), 49, 82); blit(ICON.bolt(fr ? 'cream' : 'yellow'), 62 + fr, 96);
+  text('Weather', 112, 68, C.ink, 3); text('Charge stones · pods in the rain', 112, 106, C.stone);
+  // Deep ground: the burrow's mouth with a glint
+  card(20, 152, 410, 84, sel === 1, deepOk);
+  disc(32, 162, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 56, 186);
+  if (deepOk && fr) { R(70, 186, 2, 2, C.cream); R(69, 187, 4, 1, C.yellow); }
+  text('Deep ground', 112, 162, deepOk ? C.ink : C.mist, 3);
+  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : digHome ? 'Caves · take ' + digHome.name + ' to dig' : 'Caves · needs a digging partner', 306, 2), 112, 200, deepOk ? C.stone : C.fog);
+  // the partner, as a card
   const w = withMibi(), pm = partnerMibi();
-  if (sel === 2) brackets(14, 324, 422, 116, C.amber);
-  if (w) { panel(20, 330, 410, 104, C.ink, C.slate);
-    blit(creatureArt(w.sp, 'idle', 0, 2), 30, 344); if (pm) blit(RING(), 49, 398);
-    wrapText(partnerRow(), 310, 2).slice(0, 2).forEach((l, i) => text(l, 112, 346 + i * 22, pm ? C.bone : C.amber));
-    const st = mibiStage(w); chip(112, 398, st, pm ? 'orange' : 'teal', 'bone'); text(SPECIES[w.sp].name.toLowerCase(), 112 + textW(st, 2) + 26, 402, C.mist); }
-  else if (S.mibis.length) { text('No one with you', 24, 340, C.bone); text('Choose this row to take ' + S.mibis[0].name, 24, 366, C.mist); }
-  else { const wt = stationPlan(homeCopy()).find(o => o.k === 'wait' && o.p);
-    text('No partner yet', 24, 340, C.bone); wrapText(wt ? 'A pod waits at the Station (' + wt.need + ')' : 'Bring a pod home to hatch one.', 400, 2).slice(0, 2).forEach((l, i) => text(l, 24, 366 + i * 22, C.mist)); }
+  card(20, 246, 410, 92, sel === 2, true);
+  if (w) { const st = mibiStage(w);
+    if (pm) blit(RING(), 46, 316); blit(creatureArt(w.sp, 'idle', fr, 2), 28, 258);
+    text(clipText(w.name, 200, 3), 112, 254, C.ink, 3);
+    let cx = 112; cx += chip(cx, 286, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone') + 6; chip(cx, 286, 'with you', 'orange', 'bone');
+    text(clipText(pm ? SPECIES[pm.sp].abText[0].toUpperCase() + SPECIES[pm.sp].abText.slice(1) : 'Too young for the Probe', 306, 2), 112, 314, pm ? C.stone : C.rust); }
+  else if (S.mibis.length) { emptyPodSmall(52, 292); text('No one with you', 112, 258, C.ink, 3); text(clipText('✓ choose one on Mibis · ' + S.mibis.length + ' at home', 306, 2), 112, 300, C.stone); }
+  else { emptyPodSmall(52, 292); text('No partner yet', 112, 258, C.ink, 3); wrapText('A pod hatched at the Station comes along', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 296 + i * 20, C.stone)); }
+  // the world preview: the whole map small, the last start flagged, and the count
+  const iy = 354, u = 6; drawWorldInset(24, iy, t, u);
+  const all = MW * MH; let seen = 0, done = 0; for (let c = 0; c < all; c++) { if (S.revealed[c]) seen++; if (explored(c)) done++; }
+  text('Your world', 136, iy + 2, C.mist); text('Explored ' + done + ' of ' + all + ' cells', 136, iy + 26, C.bone); text('Seen ' + seen + ' · fog ' + (all - seen), 136, iy + 50, C.fog);
+  if (S.ui.lastPos != null) { blit(ICON.flag(), 136, iy + 76); text('last start', 154, iy + 78, C.fog); }
   const home = S.mibis.filter(q => q !== w).map(q => q.name);
-  if (home.length) text(clipText(home.join(', ') + ' at home', 400, 2), 24, 452, C.fog);
+  if (home.length) text(clipText(home.join(', ') + ' at home', 290, 2), 136, iy + 104, C.mist);
+}
+function emptyPodSmall(cx, cy) { for (let a = 0; a < 6.28; a += .2) R(cx + Math.round(Math.cos(a) * 18), cy + Math.round(Math.sin(a) * 24), 2, 2, C.stone); }
+// The whole world small, between expeditions: fog, seen land faded, visited land in colour, pins, outposts, skulls, the last start.
+function drawWorldInset(x, y, t, u) {
+  ensureMap(); const W = MW * u, H = MH * u, d = Math.max(2, u - 2), o = Math.floor((u - d) / 2);
+  panel(x - 3, y - 3, W + 6, H + 6, C.ink, C.slate);
+  g.drawImage(mapCvFade, 0, 0, MW * CELL, MH * CELL, x, y, W, H);
+  for (let c = 0; c < MW * MH; c++) { const cx = x + (c % MW) * u, cy = y + ((c / MW) | 0) * u;
+    if (!S.revealed[c]) R(cx, cy, u, u, C.night); else if (S.visited[c]) g.drawImage(mapCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, u, u); }
+  for (const pin of S.pins) R(x + (pin.c % MW) * u + o, y + ((pin.c / MW) | 0) * u + o, 2, 2, C.orange);
+  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, outpostLeft(String(c), f) ? C.amber : C.bark); }
+  for (const k in (S.skulls || {})) R(x + (k % MW) * u + o, y + ((k / MW) | 0) * u + o, d, d, C.bone);
+  if (S.ui.lastPos != null && (!motion() || Math.floor(t * 2) % 2 === 0)) { const c = S.ui.lastPos; R(x + (c % MW) * u, y + ((c / MW) | 0) * u, u, u, C.orange); }
 }
 // The partner row reads from the one slot: "Partner: Pip · calms wary creatures", or why there is none.
 function partnerRow() {
@@ -3564,6 +3589,7 @@ function menuItems() {
   if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }].concat(base);
   if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }, { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
   if ((from === 'station' || from === 'active') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
+  if (from === 'setup' && !S.exp) return [{ id: 'mibis', label: 'Mibis' }, { id: 'worldmap', label: 'Full map' }, { id: 'newworld', label: 'New world', sep: 1 }];
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
 }
 function menuIcon(id, x, y) {
@@ -3889,12 +3915,9 @@ function lineFor() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 28 ? ok.slice(0, 27) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2) { const w = withMibi(), n = nextHomeAdult();
-        if (n) return L1('Take ' + n.name + (w ? ' instead' : ''), partnerRow(), 'menu');
-        if (!w && S.mibis.length) return L1('Take ' + S.mibis[0].name, '', 'menu');
-        return L1(w ? w.name + ' is with you' : 'No mibi yet', partnerRow(), 'menu', true); }
+    case 'setup': if (S.ui.sel === 2) return S.mibis.length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
       if (S.ui.sel === 1 && !digPartner()) { const d = mibiWith('dig'); return d ? L1('Take ' + d.name + ' · go deep', 'Deep ground', 'menu') : L1('Needs a digger', 'Deep ground', 'menu', true); }
-      return L1('Choose ' + (S.ui.sel ? 'Deep ground' : 'Weather'), '', 'menu');
+      return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), '', 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
       const wx = S.ui.type !== 'deep' ? ' · dotted band: where the storm starts' : '';   // the dotted band is a preview, not the live storm
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), [base + wx, base + ' · storm preview', base], 'back', !placeValid(c)); }
@@ -3918,16 +3941,17 @@ function lineFor() {
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what goes home'] : '', 'close'); }
     case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', '', 'close') : L1('', '', 'close');   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('Send home', 'ends the expedition', 'close') : L1('', 'Send home: ' + sendHint(), 'close')) : L1('', '', 'close');
-    case 'mibis': { const m = rosterList()[S.ui.rSel], w = withMibi(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');
-      if (m === w) return L1('Visit ' + m.name, 'with you', 'menu');
-      if (S.exp) return L1('Stays home', w ? w.name + ' is with you till home' : '', 'menu', true);
-      return L1('Take ' + m.name, mibiStage(m) + ' · at home', 'menu'); }
+    case 'mibis': { const m = rosterList()[S.ui.rSel], w = withMibi(), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu'; if (!m) return L1(S.exp ? '' : 'Next expedition', '', bk);
+      if (m === w) return L1('Visit ' + m.name, 'with you', bk);
+      if (S.exp) return L1('Stays home', w ? w.name + ' is with you till home' : '', bk, true);
+      return L1('Take ' + m.name, mibiStage(m) + ' · at home', bk); }
     case 'active': { const m = shownMibi(), w = withMibi(), list = rosterList(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');
       const ctx = list.length > 1 ? (list.indexOf(m) + 1) + ' of ' + list.length : '';
       if (m === w) return L1('Spend time with ' + m.name, ctx, 'Mibis');
       if (S.exp) return L1('Stays home', w ? w.name + ' is with you till home' : '', 'Mibis', true);
       return L1('Take ' + m.name, ctx, 'Mibis'); }
     case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
+    case 'worldmap': return L1('', 'the whole map', 'close');
     case 'station': { const pages = stationPages(), page = pages[S.ui.stPage], last = S.ui.stPage >= pages.length - 1;
       if (page === 'upgrade' && !S.report.upgraded) return L1(S.ui.upArm ? 'Confirm: upgrade' : 'Upgrade the Probe', PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 'not now');
       if (!last) return L1(pages[S.ui.stPage + 1] === 'hatch' ? 'Hatch the pod' : 'Continue', '', 'menu');
@@ -3948,6 +3972,7 @@ function render(t) {
     case 'mibis': drawMibis(t); break;
     case 'active': drawActive(t); break;
     case 'newworld': drawNewWorld(); break;
+    case 'worldmap': drawMap('map', t); drawTop('Full map', 'world turn ' + S.turn); break;
     case 'station': drawStation(t); break;
   }
   hitFrame();
@@ -4001,8 +4026,8 @@ function act(k, mode) {
   const isDir = k in DIRS;
   switch (S.phase) {
     case 'setup':
-      if (k === 'up' || k === 'down') S.ui.sel = clamp(S.ui.sel + (k === 'down' ? 1 : -1), 0, S.mibis.length ? 2 : 1);
-      else if (k === 'confirm') { if (S.ui.sel === 2) { const n = nextHomeAdult() || (!withMibi() && S.mibis[0]); if (n) takeMibi(n); else FX.bumpAt = NOW; } else chooseType(); }
+      if (k === 'up' || k === 'down') S.ui.sel = clamp(S.ui.sel + (k === 'down' ? 1 : -1), 0, 2);
+      else if (k === 'confirm') { if (S.ui.sel === 2) { S.phase = 'mibis'; S.ui.rSel = 0; S.ui.rFrom = 'setup'; transition(); } else chooseType(); }
       else if (k === 'back') openMenu();
       break;
     case 'place':
@@ -4034,6 +4059,7 @@ function act(k, mode) {
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
         else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('Send home works from the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; } }
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
+        else if (id === 'worldmap') { S.phase = 'worldmap'; transition(); }
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); }
           else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
@@ -4051,7 +4077,7 @@ function act(k, mode) {
       break;
     case 'mibis': { const list = rosterList(), w = withMibi();
       if ((k === 'up' || k === 'down') && list.length) S.ui.rSel = clamp(S.ui.rSel + (k === 'down' ? 1 : -1), 0, list.length - 1);
-      else if (k === 'back') { if (!S.exp && S.ui.rFrom === 'active') { S.phase = 'active'; openMenu(); } else S.phase = 'menu'; }
+      else if (k === 'back') { if (!S.exp && S.ui.rFrom === 'active') { S.phase = 'active'; openMenu(); } else if (!S.exp && S.ui.rFrom === 'setup') S.phase = 'setup'; else S.phase = 'menu'; }
       else if (k === 'call') callWith();
       else if (k === 'confirm') { const m = list[S.ui.rSel];
         if (!m) { if (!S.exp) { S.phase = 'setup'; S.ui.sel = 0; transition(); } }
@@ -4069,6 +4095,7 @@ function act(k, mode) {
         else if (S.exp) { const w = withMibi(); fxMsg(w ? w.name + ' is with you until you’re home' : 'Partners are chosen before you set out'); FX.bumpAt = NOW; }
         else takeMibi(m); }
       break; }
+    case 'worldmap': if (k === 'back') { S.phase = 'menu'; transition(); } break;
     case 'newworld':
       if (k === 'up' || k === 'down') S.ui.nw = k === 'down' ? 1 : 0;
       else if (k === 'back') S.phase = 'menu';

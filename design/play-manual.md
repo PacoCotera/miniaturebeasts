@@ -72,7 +72,7 @@ A pod you saw and left behind shows the pod sign, and a lit **beacon** keeps its
 | Tier 1 | 2 cells (a 5×5 square) | 2 | 3 bars |
 | Tier 2 | 4 cells (a 9×9 square) | 3 | 4 bars, and it can read the deep "?" |
 
-**Starting anywhere seen.** Before each expedition, choose its kind (**Weather**, or **Deep ground** with a digging partner) and pick where to start. The very first time you choose a glint; after that, any cell you have seen. Placing your Probe reveals the cells around it. A Deep ground expedition starts at the burrow under the cliff.
+**Starting anywhere seen.** Before each expedition, choose its kind (**Weather**, or **Deep ground** with a digging partner) and pick where to start. The very first time you choose a glint; after that, any cell you have seen. The choice screen also shows your partner and a small map of your world with your last start. Placing your Probe reveals the cells around it. A Deep ground expedition starts at the burrow under the cliff.
 
 **Walking off a place's edge** puts you on the next map cell in that direction. Press ✓ and you go down into it from that side. A held walk stops at the edge first; tap again to step off.
 
@@ -225,7 +225,7 @@ Then press ✓ **Done** to see your mibi, and ✓ again to set out.
 
 Exactly one mibi is **with you** in the Companion; the others wait at home. If the mibi with you is grown, it is also your expedition partner. A juvenile with you comes along in the Companion only: "too young for the Probe".
 
-To choose, press ✓ "Take Moss" on the Mibis screen, on Moss's own screen, or on the partner row before an expedition. The other mibi goes home. During an expedition you can't change who is with you.
+To choose, press ✓ "Take Moss" on the Mibis screen, or on Moss's own screen. Before an expedition, ✓ on the partner card opens Mibis. The other mibi goes home. During an expedition you can't change who is with you.
 
 ### The active mibi screen
 
