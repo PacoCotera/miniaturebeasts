@@ -1,14 +1,14 @@
 # Miniature Beasts: Play Manual
 
-How to play the exploration game on your Companion. This manual follows the current build of the exploration prototype.
+How to play the exploration game on your Companion, and what happens at the Station. This manual follows the current builds of the exploration prototype (the Companion page) and the Station stand-in v2 (the Station page), which share one save.
 
 ## 1. What you are doing
 
 You send your **Probe** out on **expeditions**. An expedition starts on one cell of a big, foggy world map. From there you walk the map, go down into the places you find, and look for **pods**: sealed seeds that hold a new mibi. You also gather **Energy**, **Data** and **Essence**, the three materials that make things happen. Each expedition reaches only so far from where it starts, and you choose when to come back.
 
-At home, the **Station** opens what you bring. It finds out which species a pod holds, hatches it, and keeps your materials safe. Then the world turns once: creatures move and have young, storms leave charged stones behind, and new pods appear. Nothing comes back on its own between turns, so every expedition finds a slightly different world.
+When you **Head home**, the Companion seals what it carries into a crate, and the world turns once: creatures move and have young, storms leave charged stones behind, and new pods appear. Nothing comes back on its own between turns, so every expedition finds a slightly different world. Back at home you dock the Companion at the **Station**, which opens the crates. There you find out which species a pod holds, study it, shape a mibi from it, and watch it grow.
 
-Your **mibis** are the creatures you hatch. One of them is always **with you** in the Companion. When it is grown, it comes on expeditions as your **partner** and helps with what it is good at: digging, calming creatures, or sniffing out pods. Some places can only be opened with the right partner.
+Your **mibis** are the creatures you raise at the Station. One of them can be **with you** in the Companion. When it is grown, it comes on expeditions as your **partner** and helps with what it is good at: digging, calming creatures, or sniffing out pods. Some places can only be opened with the right partner.
 
 ## 2. The Companion
 
@@ -18,7 +18,7 @@ Your **mibis** are the creatures you hatch. One of them is always **with you** i
 | --- | --- |
 | **Pad** | Moves. On the map, one tap is one step; hold to keep walking. In a place, a tap is a careful step (creeping); holding walks. In menus, it moves the choice. |
 | **✓ Confirm** (the big one) | Does the thing in front of you: go down into a place, take a pod, shake a bush. Facing nothing in a place, it waits. |
-| **← key** | Opens the menu, or closes the screen you are on. The bottom line names what it opens by the menu's top entry: "← Leave" in a place, "← Send home" on the map. |
+| **← key** | Opens the menu, or closes the screen you are on. The bottom line names what it opens by the menu's top entry: "← Leave" in a place, "← Head home" on the map. |
 | **))) Call** (the teal button above ←, no word on it) | Sends a signal and things answer. In a place it pulses: it lifts the veil and finds things; on the map it drops a pin for 1 Energy; at home your mibi answers. |
 
 ### The bottom line
@@ -27,7 +27,7 @@ The bottom line has three sections, left to right, with a thin divider between t
 
 `✓ Wait · ← Leave` | `meadow · surveyed 2/4` | `⚡⚡◀`
 
-- **The two actions, together on the left.** First **✓ what Confirm does now** ("✓ Take the pod", "✓ Go down", or "✓ Wait" when you face nothing), at most 24 letters. Then **← what the ← key opens**, named by the menu's top entry: "← Leave" in a place ("← Climb out" in the cave), "← Send home" on the map, "← close" on screens. If a screen has nothing for ✓ to do, only ← shows.
+- **The two actions, together on the left.** First **✓ what Confirm does now** ("✓ Take the pod", "✓ Go down", or "✓ Wait" when you face nothing), at most 24 letters. Then **← what the ← key opens**, named by the menu's top entry: "← Leave" in a place ("← Climb out" in the cave), "← Head home" on the map, "← close" on screens. If a screen has nothing for ✓ to do, only ← shows.
 - **Where you are**, in the middle: the place and how much of it is surveyed ("rock field · surveyed 2/4 · 3 to take: fruit · dew · tuft"), and on the map also the cell you face ("Ahead: meadow · outpost (dark)"). When space is short this section shrinks first: the list is cut, never the actions.
 - **Conditions**, on the right, only when there are any: one to three bolts for a storm with ◀ or ▶ for the way it moves, and a small fog patch with its own ◀ or ▶ when a fog bank is within two cells.
 
@@ -68,9 +68,9 @@ The world map is a grid of cells. Each cell is a place you can go down into. The
 | Flag | Your **start**. |
 | Skull | Where the Probe broke; the pods it carried lie there. |
 
-A pod you saw and left behind shows the pod sign. Outposts and beacons look the same on the map, in the reach view and in the place itself. The bottom line names them on your cell or the one ahead: "outpost (dark)", "outpost · lit 2 turns", "beacon (unlit)", "beacon (lit)". The first time you see each, the message box says what it is for: "An outpost: light it for 1 Energy to send home, mend and shelter there" and "A beacon: light it for 1 Energy to reveal the land around". The map draws no trail. Signs on surveyed cells and inside a fog bank are hidden, except gates, pins, pods and Energy.
+A pod you saw and left behind shows the pod sign. Outposts and beacons look the same on the map, in the reach view and in the place itself. The bottom line names them on your cell or the one ahead: "outpost (dark)", "outpost · lit 2 turns", "beacon (unlit)", "beacon (lit)". The first time you see each, the message box says what it is for: "An outpost: light it for 1 Energy to head home, mend and shelter there" and "A beacon: light it for 1 Energy to reveal the land around". The map draws no trail. Signs on surveyed cells and inside a fog bank are hidden, except gates, pins, pods and Energy.
 
-**Outposts.** About six huts with a lamp post stand across the world, never two close together. Find one by walking or Call, then **light it for 1 Energy**; it stays lit for three world turns (this expedition and the next two). Its flame shrinks each world turn (big, medium, small), then it goes dark; relight it for 1 Energy (✓ twice). The light never changes during an expedition. While lit, an outpost lets you **send home** from its cell (that ends the expedition, as at the start), **mend the Shield** for 1 Energy a bar (✓ twice), and gives **shelter**: no stray strikes while you stand within 3 tiles of it. It reveals no land and stores nothing: what you carry goes home only when you send it.
+**Outposts.** About six huts with a lamp post stand across the world, never two close together. Find one by walking or Call, then **light it for 1 Energy**; it stays lit for three world turns (this expedition and the next two). Its flame shrinks each world turn (big, medium, small), then it goes dark; relight it for 1 Energy (✓ twice). The light never changes during an expedition. While lit, an outpost lets you **head home** from its cell (that ends the expedition, as at the start), **mend the Shield** for 1 Energy a bar (✓ twice), and gives **shelter**: no stray strikes while you stand within 3 tiles of it. It reveals no land and stores nothing: what you carry goes home only when you send it.
 
 **Pins.** On the map, Call pins the cell you stand on for 1 Energy. Call on your own pin removes it, and if you placed it this expedition you get the Energy back. Gates pin themselves for free.
 
@@ -124,12 +124,12 @@ Wait lets one action pass. You find it on ✓ when you face nothing in a place, 
 
 | Where | Menu |
 | --- | --- |
-| In a place | Leave this place (Climb out in the cave) · Send home · Wait · Probe · Cargo · Mibis |
-| On the map | Send home · Wait · Full map (or Reach view) · Probe · Cargo · Mibis |
-| At home, after the Station | Next expedition · Probe · Cargo · Mibis · New world |
+| In a place | Leave this place (Climb out in the cave) · Head home · Wait · Probe · Cargo · Mibis |
+| On the map | Head home · Wait · Full map (or Reach view) · Probe · Cargo · Mibis |
+| At home, after Head home | Next expedition · Probe · Cargo · Mibis · New world |
 | On the expedition choice | Mibis · Full map · New world |
 
-Probe shows your Shield, patching and the map legend; Cargo shows what you carry and how much is explored. Send home is greyed away from the flag and lit outposts.
+Probe shows your Shield, patching and the map legend; Cargo shows what you carry, how much is explored and the sealed bay. Head home is greyed away from the flag and lit outposts.
 
 ### Pods and the hold
 
@@ -189,7 +189,7 @@ The exact odds are in the quick reference and on the Probe screen's legend.
 - **Shelter.** Overhang, cave, lit outpost. There no stray strike can reach you. Trees are **not** shelter: standing under a canopy (or in a wood cell on the map) gives no protection. Inside a fog bank the storm is calm, so no strikes there either.
 - **Patching.** On the Probe screen, 3 Energy patches one Shield bar. Press ✓ twice: the first press gets it ready. A lit outpost mends a bar for 1 Energy.
 
-**When the Shield breaks** (0 bars), the expedition ends where you are and nothing goes home. The pods you carried fall at random spots in that place, and the cell gets a **skull** on the overview; go back down into it later to clear the skull and pick the pods up. The Energy, Data and Essence you were carrying are lost. Pins, the land you uncovered and what you learned stay. A broken Probe is mended for free.
+**When the Shield breaks** (0 bars), the expedition ends where you are and nothing is sealed. The pods you carried fall at random spots in that place, and the cell gets a **skull** on the overview; go back down into it later to clear the skull and pick the pods up. The Energy, Data and Essence you were carrying are lost. Pins, the land you uncovered and what you learned stay. A broken Probe can't set out again until you dock it at the Station, which mends it for free.
 
 ### Fog banks
 
@@ -215,46 +215,87 @@ You can carry up to 20 of each. Essence never turns into Energy.
 
 | Material | Where it comes from | What it buys |
 | --- | --- | --- |
-| **Energy** | Storm-charged stones (+2, or +3 at the peak) and warm stones (+1) | Pins (1), lighting a beacon (1), lighting or relighting an outpost (1), mending at an outpost (1 a bar), Shield patches (3 a bar), identifying a pod (1), hatching (2), mending the Shield at home (1 a bar), the tier 2 Probe (12) |
-| **Data** | Creature moments you cause (+1, or +2 for a first) | Station studies (2 each) and the tier 2 Probe (4) |
-| **Essence** | Dew (+1), pressing fruit (+2), tufts of fur (+1) | Hatching a mibi (4) |
+| **Energy** | Storm-charged stones (+2, or +3 at the peak) and warm stones (+1) | Pins (1), lighting a beacon (1), lighting or relighting an outpost (1), mending at an outpost (1 a bar), Shield patches (3 a bar), identifying a pod (1), growing a mibi (2), mending the Shield at the Station (1 a bar), the tier 2 Probe (12) |
+| **Data** | Creature moments you cause (+1, or +2 for a first), and a walk with your mibi (+1, once a world turn) | Studying a window (2), each change when you shape a mibi (2), the tier 2 Probe (4) |
+| **Essence** | Dew (+1), pressing fruit (+2), tufts of fur (+1), returning a pod to the wild (+1) | Growing a mibi (4) |
 
-## 8. Going home
+## 8. Going home: Head home, the sealed bay and the Station
 
-An expedition ends when you choose **Send home** or when the Shield breaks. **Send home works only on your start cell (the flag on the map) or on a lit outpost.** Anywhere else Send home is greyed in the menu and the line says how far the nearest one is ("Start · about 2 cells"); "Hold full" and "Everything in reach is explored" say "head back to the start". Cargo shows a **preview** first: how much you explored, which pods the Station will identify or hatch, and what mending the Shield will cost.
-1. **The Station mends the Shield**: up to two bars for free, then 1 Energy for each further missing bar, as many as your stored Energy covers. A broken Probe is mended in full for free.
-2. **It identifies each pod** (your very first pod is free).
-3. **It hatches** one pod of a species you don't raise yet, if you can pay. A pod you can't afford waits at the Station and says what is missing ("costs 2 Energy + 4 Essence · short 2 Essence").
-4. **It stores** your materials for later and offers the tier 2 Probe when you can afford it.
-5. **The world turns** and the clock in the top bar moves on (T1 → T2). Creatures move, storms leave charge, new pods and warm stones appear. New things arrive away from where you just were: new pods more than 4 cells from the cells you walked, warm stones never in a place you entered. Lit outposts lose one turn of light. A place that changed is veiled again where it changed; a place that didn't stays surveyed.
+An expedition ends when you choose **Head home** or when the Shield breaks. **Head home works only on your start cell (the flag on the map) or on a lit outpost.** Anywhere else Head home is greyed in the menu and the line says how far the nearest one is ("Start · about 2 cells"); "Hold full" and "Everything in reach is explored" say "head back to the start". Cargo shows a **preview** first: how much you explored, what Head home will seal, and the bay.
+
+### Head home seals the hold
+
+Nothing is sent anywhere: the Companion carries everything until it is docked at the Station.
+1. **The hold is sealed** into one **crate** (a consignment) in the Companion's **sealed bay**: every pod and all the Energy, Data and Essence you carried. Each crate keeps its expedition's number. The bay holds **three crates**.
+2. **The world turns** and the clock in the top bar moves on (T1 → T2). Creatures move, storms leave charge, new pods and warm stones appear. New things arrive away from where you just were: new pods more than 4 cells from the cells you walked, warm stones never in a place you entered. Lit outposts lose one turn of light. A place that changed is veiled again where it changed; a place that didn't stays surveyed.
+3. The short **Head home** screen shows the bay, "1 consignment sealed · dock to transfer", the world-turn lines and ✓ **Next expedition**. You may set out again right away: crates ride along safely sealed.
+
+Three things change this:
+- **Nothing explored** (no Call in any place): nothing is sealed and the world does not turn ("Nothing explored · the world waits"). Your finds stay in the hold.
+- **An empty hold**: the world turns, but no crate is made.
+- **The bay is full**: the world turns, but your finds stay in the hold, unsealed ("Bay full · your finds stay in the hold"). They ride along on the next expedition, taking pod places, and a break would lose them. Dock to free the bay.
+
+The counters at home show only what is in the hold, never what is sealed. A crate icon with a number shows how many crates you carry.
+
+**A break** seals nothing: your pods fall where the Probe broke (a skull on the map) and the materials you carried are lost. A broken Probe can't set out until you dock it at the Station, which mends it for free.
+
+### Docking at the Station
+
+Expeditions start only when the Companion is **lifted** from its dock. On the Station page, the Caddy's key (**D**) docks or lifts it; docked, the Companion's Start says "Lift to explore".
+1. **Dock.** The Probe rests in its cradle: a broken Probe is mended in full for free, otherwise the Station always brings it up to **two plates** for free, then mends further plates for **1 Energy each** from its store while "Mend fully on docking" is on (a switch on the Probe bench). The crates appear in the bay door. Docking alone opens nothing.
+2. **✓ Open the bay.** One arrival per crate, in order: the seal breaks, the pods roll into the tray's cups, the counters tick up, and the Station's clock jumps to the turn the Companion brings. Each crate is opened exactly once. A card then shows what came home, the mend, and what changed in the world.
+3. **The tray holds six pods.** Pods that find no free cup wait sealed in the bay and roll in as soon as a cup frees.
+
+### At the Station
+
+The Station's four middle keys switch views and never spend: **Home** (the vivarium and the bench), **Research** (the pods), **Library** and **Habitat**. The pad moves a warm ring between things in the picture; ✓ does what the bottom line names, with its price; ← goes back.
+1. **Identify** a pod (1 Energy; your very first pod is free). Its shell turns clear and shows the species inside. A new species gets a "New species" stamp. Then its **trait windows** rise, frosted: one for each thing about this kind of mibi (its markings, its ears or crown, its colour, its gait).
+2. **Study** a window (2 Data). The frost wipes away and shows that part of this pod's mibi. If the pod also carries a look that doesn't show, a **misty seed** sits on the sill with a ghost of it ("shows stripes · hides spots"). If it carries nothing else, a small solid base sits there instead ("through and through"). A window with two rings is passed on **only through families**. A window with shutters needs something first (the puffcap's colour opens with a tier 2 Probe). A window you studied stays open for good.
+3. **Glints.** Once you have studied a window on one pod of a species, later pods of that species twinkle with a star on each window where they hold a look you haven't seen yet. No star means nothing new there.
+4. **Compare** (free): from the tray, ✓ on a second pod of the same species puts both side by side; windows studied on both that differ pulse.
+5. **Shape a founder** (Create). The new mibi shows large; frosted windows stay a surprise. On a studied window, ↑ ↓ choose among what **this pod** carries: as it is, the hidden look through and through, or the shown look through and through. A pod that shows a look through and through can't give another. Each change costs 2 Data.
+6. **Grow it** (2 Energy + 4 Essence, plus 2 Data per change). The fingerprint stamps the pod, its **code** appears (like `G7F · CD0 · 3H2`), and the pod goes into the incubator.
+7. **The incubator** grows it in **real minutes**, one leaf per minute: a small body 2, medium 3, large 4, plus 1 for each window beyond three and 1 for each change. Your first mibi ever takes 1 minute. The frosted windows clear one by one while it grows. In this build, new cargo arriving finishes it early. When the dome glows, ✓ **Open**: the young mibi steps into the vivarium with its name.
+8. **Return to the wild** (the garden gate beside the tray): ✓, then ✓ again, frees the cup and gives +1 Essence. The pod goes back to where it came from the next time you dock.
+
+**The fingerprint** is a round whorl with one petal per window. Its ridges come from the mibi's genome, so no two look alike; a petal lights in its colours when you study that window. It shows on the pod, at Create, on the incubator, in the Library and in Habitat.
 
 | At the Station | Price |
 | --- | --- |
 | Identify a pod | 1 Energy (first pod ever: free) |
-| Hatch a mibi | 2 Energy + 4 Essence |
-| A study | 2 Data |
-| Mend the Shield | 1 Energy per bar (a broken Probe: free) |
-| Tier 2 Probe | 12 Energy + 4 Data |
+| Study one window | 2 Data |
+| Grow a mibi | 2 Energy + 4 Essence |
+| Change a window when shaping it | +2 Data each |
+| Mend the Shield | 2 plates free at every dock, then 1 Energy a plate (a broken Probe: free) |
+| Tier 2 Probe (Probe bench, two presses) | 12 Energy + 4 Data |
+| Return a pod to the wild | gives +1 Essence |
 
-Then press ✓ **Done** to see your mibi, and ✓ again to set out.
+The vivarium has room for four mibis plus the one with you.
 
 ## 9. Your mibis
 
 ### Life stages
 
-- **Juvenile**: just hatched. It can be with you in the Companion, but it is too young for the Probe. It grows up after 2 world turns.
+- **Juvenile**: just opened. It can be with you in the Companion, but it is too young for the Probe. It grows up after 2 world turns.
 - **Adult**: a full partner, using its ability at full strength.
 - **Elder**: after 6 more world turns. Still a partner: it calms and sniffs twice as far and feels every stray strike coming, but it is slow, and digs in two actions instead of one.
 
 ### The "with you" slot
 
-Exactly one mibi is **with you** in the Companion; the others wait at home. If the mibi with you is grown, it is also your expedition partner. A juvenile with you comes along in the Companion only: "too young for the Probe".
+At most one mibi is **with you** in the Companion; the others live in the Station's vivarium. If the mibi with you is grown, it is also your expedition partner. A juvenile with you comes along in the Companion only: "too young for the Probe".
 
-To choose, press ✓ "Take Moss" on the Mibis screen, or on Moss's own screen. Before an expedition, ✓ on the partner card opens Mibis. The other mibi goes home. During an expedition you can't change who is with you.
+To choose, open **Habitat** on the Station, move to the door and press ✓ **Take Fig with you**. While the Companion is docked it moves at once (the one with you comes home); while it is away it moves at the next dock. While docked you can also swap on the Companion: ✓ "Take Moss" on its Mibis screen. During an expedition you can't change who is with you. A newly opened mibi is never put with you by itself.
 
 ### The active mibi screen
 
-After the Station, the Companion shows the mibi with you, large: its name, stage, species, ability and how it is doing ("with you · joins the Probe"). The pad shows your other mibis. **Call** makes it answer (a juvenile sometimes looks the wrong way first). ✓ **Spend time** shows a little moment with it and what it remembers from its last expedition. Both are free.
+Between expeditions the Companion shows the mibi with you, large: its name, stage, species, ability and how it is doing ("with you · joins the Probe"). The pad shows your other mibis. **Call** makes it answer (a juvenile sometimes looks the wrong way first).
+- ✓ **Walk** with it, once per world turn while the Companion is lifted: a short moment where it does what its species does, and **+1 Data** into the hold.
+- After the walk, ✓ **Spend time** shows a little moment with it and what it remembers from its last expedition. Free.
+
+### Getting better and bonding
+
+- **Skill**: each expedition where your partner's ability really helped (a hopper's calm let a wary creature eat from your hand, a glowtail dug the burrow, a puffcap sniffed out a pod) gives it a **skill notch** when you Head home, three at most. The Library shows them.
+- **Bond**: after a mibi's first expedition or walk with you, its Habitat page offers a **bond**: ✓, then ✓ again. A small heart marks it. Bonding is a choice; nothing else depends on it yet.
 
 ### Partners and what they do
 
@@ -276,10 +317,10 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 | --- | --- | --- | --- | --- |
 | Pad | Step / hold to walk | Tap: creep · hold: walk | Move choice | Other mibis |
 | ✓ | Go down | Act on what you face, or Wait | Choose | Spend time / Take |
-| ← | Send home (menu; only at the flag or a lit outpost) | Leave (menu) | Close | Mibis |
+| ← | Head home (menu; only at the flag or a lit outpost) | Leave (menu) | Close | Mibis |
 | ))) | Pin 1⚡ | Pulse, 11 tiles (1 action) | — | Call Dot: your mibi answers |
 
-**Costs**: light or relight an outpost 1 Energy (lit 3 world turns) · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Energy · hatch 2 Energy + 4 Essence · study 2 Data · mend at home 1 Energy a bar · tier 2 Probe 12 Energy + 4 Data.
+**Costs**: light or relight an outpost 1 Energy (lit 3 world turns) · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Energy · study a window 2 Data · grow a mibi 2 Energy + 4 Essence (+2 Data per change) · mend at the Station 1 Energy a plate beyond two free · tier 2 Probe 12 Energy + 4 Data · return a pod +1 Essence.
 
 **Stones**: plain grey · warm: an amber ring around it and an amber dot on top · charged: a blue-white crackle with a small bolt above · a yellow tile outline: lightning strikes there next.
 
@@ -289,4 +330,4 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 
 **Gains**: storm stone +2 (+3 at the peak) · warm stone +1 · dew +1 Essence · pressed fruit +2 Essence · tuft +1 Essence · a creature moment +1 Data (+2 the first time).
 
-**Odds**: stray strike per action in the open under rain: 2 bolts 1 in 20 (5%), 3 bolts 1 in 10 (10%), never two hits within six actions, and the first hit of a pass is a warned strike. None under an overhang, in a cave, beside a lit outpost or in a fog bank; trees give no protection. In play the screen says only "stray strikes can hit you in the open" (strong) and "strikes more likely" (peak); the exact odds are here and on the Probe screen. Shield: 3 bars (tier 1), 4 bars (tier 2). A break sends nothing home: the pods fall where it broke (skull on the map) and carried materials are lost.
+**Odds**: stray strike per action in the open under rain: 2 bolts 1 in 20 (5%), 3 bolts 1 in 10 (10%), never two hits within six actions, and the first hit of a pass is a warned strike. None under an overhang, in a cave, beside a lit outpost or in a fog bank; trees give no protection. In play the screen says only "stray strikes can hit you in the open" (strong) and "strikes more likely" (peak); the exact odds are here and on the Probe screen. Shield: 3 bars (tier 1), 4 bars (tier 2). A break seals nothing: the pods fall where it broke (skull on the map) and carried materials are lost.
