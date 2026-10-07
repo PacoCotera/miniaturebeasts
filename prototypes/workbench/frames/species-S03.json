@@ -2542,20 +2542,20 @@
   "brief": "S03: 2 body regions (B2), a head, a snout, 2 eyes, a 2-leaf crest, 4 legs, a tail with a glowing bulb; scales, bands; plantigrade, neck head.",
   "bounds": {
    "min": [
-    -1.0699964915452866,
-    -0.5736487137715297,
+    -1.1961151294164125,
+    -0.5219084144277432,
     0
    ],
    "max": [
-    1.3595456790000005,
-    0.5736487137715297,
-    1.0310679140527665
+    1.3516630194715824,
+    0.5219084144277432,
+    1.315744075453293
    ]
   },
   "counts": {
    "nodes": 31,
    "edges": 30,
-   "vertices": 1434
+   "vertices": 1432
   }
  },
  "viability": {

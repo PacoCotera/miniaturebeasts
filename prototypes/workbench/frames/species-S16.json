@@ -117,22 +117,10 @@
      "looks": [
       "periwinkle",
       "periwinkle and cobalt",
-      "cobalt"
-     ],
-     "nature": "look",
-     "shapeable": true,
-     "verdict": null
-    },
-    {
-     "id": "sheen",
-     "name": "Sheen",
-     "loci": [
-      "appearance.sheen"
-     ],
-     "looks": [
-      "matte",
-      "between",
-      "glossy"
+      "periwinkle and plum",
+      "cobalt",
+      "cobalt and plum",
+      "plum"
      ],
      "nature": "look",
      "shapeable": true,
@@ -187,6 +175,21 @@
    "sealed": false,
    "traits": [
     {
+     "id": "body",
+     "name": "Body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "nature": "look",
+     "shapeable": true,
+     "verdict": null
+    },
+    {
      "id": "build",
      "name": "Build",
      "loci": [
@@ -216,36 +219,6 @@
      "nature": "look",
      "shapeable": true,
      "verdict": null
-    },
-    {
-     "id": "body",
-     "name": "Body",
-     "loci": [
-      "anatomy.region-longitudinal-form"
-     ],
-     "looks": [
-      "egg",
-      "barrel",
-      "pear"
-     ],
-     "nature": "look",
-     "shapeable": true,
-     "verdict": null
-    },
-    {
-     "id": "hind-body",
-     "name": "Hind body",
-     "loci": [
-      "growth.region-taper"
-     ],
-     "looks": [
-      "small",
-      "between",
-      "full"
-     ],
-     "nature": "look",
-     "shapeable": true,
-     "verdict": null
     }
    ]
   },
@@ -270,6 +243,21 @@
      "verdict": null
     },
     {
+     "id": "turning",
+     "name": "Turning",
+     "loci": [
+      "movement.turn-control"
+     ],
+     "looks": [
+      "wide turns",
+      "between",
+      "tight turns"
+     ],
+     "nature": "doing",
+     "shapeable": false,
+     "verdict": null
+    },
+    {
      "id": "weave",
      "name": "Weave",
      "loci": [
@@ -284,21 +272,6 @@
      "nature": "doing",
      "shapeable": false,
      "verdict": null
-    },
-    {
-     "id": "turning",
-     "name": "Turning",
-     "loci": [
-      "movement.turn-control"
-     ],
-     "looks": [
-      "wide turns",
-      "between",
-      "tight turns"
-     ],
-     "nature": "doing",
-     "shapeable": false,
-     "verdict": null
     }
    ]
   },
@@ -307,21 +280,6 @@
    "name": "Stamina",
    "sealed": false,
    "traits": [
-    {
-     "id": "reserve",
-     "name": "Reserve",
-     "loci": [
-      "energy.reserve-capacity"
-     ],
-     "looks": [
-      "tires soon",
-      "between",
-      "goes long"
-     ],
-     "nature": "doing",
-     "shapeable": false,
-     "verdict": null
-    },
     {
      "id": "thrift",
      "name": "Thrift",
@@ -351,6 +309,21 @@
      "nature": "doing",
      "shapeable": false,
      "verdict": null
+    },
+    {
+     "id": "reserve",
+     "name": "Reserve",
+     "loci": [
+      "energy.reserve-capacity"
+     ],
+     "looks": [
+      "tires soon",
+      "between",
+      "goes long"
+     ],
+     "nature": "doing",
+     "shapeable": false,
+     "verdict": null
     }
    ]
   },
@@ -359,21 +332,6 @@
    "name": "Character",
    "sealed": false,
    "traits": [
-    {
-     "id": "nerve",
-     "name": "Nerve",
-     "loci": [
-      "cognition.arousal-threshold"
-     ],
-     "looks": [
-      "jumpy",
-      "between",
-      "unflappable"
-     ],
-     "nature": "doing",
-     "shapeable": false,
-     "verdict": null
-    },
     {
      "id": "curiosity",
      "name": "Curiosity",
@@ -384,6 +342,21 @@
       "reserved",
       "between",
       "seeking"
+     ],
+     "nature": "doing",
+     "shapeable": false,
+     "verdict": null
+    },
+    {
+     "id": "nerve",
+     "name": "Nerve",
+     "loci": [
+      "cognition.arousal-threshold"
+     ],
+     "looks": [
+      "jumpy",
+      "between",
+      "unflappable"
      ],
      "nature": "doing",
      "shapeable": false,
@@ -410,21 +383,6 @@
      "nature": "doing",
      "shapeable": false,
      "verdict": null
-    },
-    {
-     "id": "glow",
-     "name": "Glow",
-     "loci": [
-      "appearance.emission-brightness"
-     ],
-     "looks": [
-      "dim",
-      "between",
-      "bright"
-     ],
-     "nature": "doing",
-     "shapeable": false,
-     "verdict": null
     }
    ]
   },
@@ -435,21 +393,6 @@
    "opensWith": "a storm-glass shard",
    "traits": [
     {
-     "id": "pull",
-     "name": "Pull",
-     "loci": [
-      "physiology.pull"
-     ],
-     "looks": [
-      "weak",
-      "between",
-      "strong"
-     ],
-     "nature": "doing",
-     "shapeable": false,
-     "verdict": null
-    },
-    {
      "id": "phase",
      "name": "Phase",
      "loci": [
@@ -459,6 +402,21 @@
       "solid",
       "between",
       "faint"
+     ],
+     "nature": "doing",
+     "shapeable": false,
+     "verdict": null
+    },
+    {
+     "id": "pull",
+     "name": "Pull",
+     "loci": [
+      "physiology.pull"
+     ],
+     "looks": [
+      "weak",
+      "between",
+      "strong"
      ],
      "nature": "doing",
      "shapeable": false,
@@ -496,12 +454,16 @@
    "shapeable": true,
    "alleles": [
     "periwinkle",
-    "cobalt"
+    "cobalt",
+    "plum"
    ],
    "looks": [
     "periwinkle",
     "periwinkle and cobalt",
-    "cobalt"
+    "periwinkle and plum",
+    "cobalt",
+    "cobalt and plum",
+    "plum"
    ],
    "guard": "sketch: the body pigment slot"
   },
@@ -692,11 +654,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "even",
-    "even"
+    "anterior",
+    "anterior"
    ],
    "looks": [
-    "even"
+    "anterior"
    ],
    "guard": "rig: the mass hierarchy (even, central, anterior) scales the regions",
    "nature": "look"
@@ -713,11 +675,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "low",
+    "low"
    ],
    "looks": [
-    "high"
+    "low"
    ],
    "guard": "rig: neck length between head and body on a narrow join",
    "nature": "look"
@@ -950,21 +912,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: region.childScale",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "shape",
-   "trait": "hind-body",
-   "shapeable": true,
-   "alleles": [
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
     "strong",
-    "gentle"
+    "strong"
    ],
    "looks": [
-    "strong",
-    "between strong and gentle",
-    "gentle"
+    "strong"
    ],
-   "guard": "rig: region.childScale"
+   "guard": "rig: region.childScale",
+   "nature": "look"
   },
   {
    "id": "growth.branch-angle",
@@ -1021,11 +982,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "rounded-square",
-    "rounded-square"
+    "round",
+    "round"
    ],
    "looks": [
-    "rounded-square"
+    "round"
    ],
    "guard": "rig: region.crossExponent",
    "nature": "look"
@@ -1103,21 +1064,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "sketch: specular highlight strength (surface texture's first consumer)",
-   "kind": "heritable-look",
-   "nature": "look",
-   "chapter": "coat",
-   "trait": "sheen",
-   "shapeable": true,
-   "alleles": [
-    "matte",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "glossy",
     "glossy"
    ],
    "looks": [
-    "matte",
-    "between matte and glossy",
     "glossy"
    ],
-   "guard": "sketch: specular highlight strength (surface texture's first consumer)"
+   "guard": "sketch: specular highlight strength (surface texture's first consumer)",
+   "nature": "look"
   },
   {
    "id": "physiology.charged-body",
@@ -1216,21 +1176,20 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
-   "kind": "heritable-doing",
-   "nature": "doing",
-   "chapter": "glow",
-   "trait": "glow",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
    "shapeable": false,
-   "alleles": [
-    "dim",
+   "copies": [
+    "bright",
     "bright"
    ],
    "looks": [
-    "dim",
-    "between dim and bright",
     "bright"
    ],
-   "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity"
+   "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
+   "nature": "doing"
   },
   {
    "id": "appearance.emission-length",
@@ -1666,29 +1625,29 @@
   "trunk": 31,
   "branch": 4,
   "absent": 101,
-  "locked": 8,
+  "locked": 11,
   "lockedBy": {
    "switch": 2,
-   "fixed": 6
+   "fixed": 9
   },
-  "heritableLook": 13,
-  "heritableDoing": 11,
+  "heritableLook": 11,
+  "heritableDoing": 10,
   "sleeping": 0,
   "sealed": 3,
-  "open": 27,
-  "traits": 21,
+  "open": 24,
+  "traits": 18,
   "byChapter": {
    "Coat": {
-    "loci": 2,
-    "traits": 2
+    "loci": 1,
+    "traits": 1
    },
    "Face": {
     "loci": 6,
     "traits": 2
    },
    "Shape": {
-    "loci": 5,
-    "traits": 4
+    "loci": 4,
+    "traits": 3
    },
    "Movement": {
     "loci": 4,
@@ -1703,16 +1662,16 @@
     "traits": 2
    },
    "Glow": {
-    "loci": 2,
-    "traits": 2
+    "loci": 1,
+    "traits": 1
    },
    "Charge": {
     "loci": 3,
     "traits": 3
    }
   },
-  "fieldGuideLooks": 84,
-  "stampBitsPerCopy": 32
+  "fieldGuideLooks": 78,
+  "stampBitsPerCopy": 29
  },
  "notYet": {
   "domains": [
@@ -1775,12 +1734,12 @@
      "high"
     ],
     "development.regional-growth": [
-     "even",
-     "even"
+     "anterior",
+     "anterior"
     ],
     "structure.join-neck-ratio": [
-     "high",
-     "high"
+     "low",
+     "low"
     ],
     "anatomy.exterior-eye-presence": [
      "on",
@@ -1824,7 +1783,7 @@
     ],
     "growth.region-taper": [
      "strong",
-     "gentle"
+     "strong"
     ],
     "growth.branch-angle": [
      "close",
@@ -1835,8 +1794,8 @@
      "broad"
     ],
     "anatomy.region-cross-exponent": [
-     "rounded-square",
-     "rounded-square"
+     "round",
+     "round"
     ],
     "anatomy.region-longitudinal-form": [
      "ovoid",
@@ -1851,7 +1810,7 @@
      "high"
     ],
     "appearance.sheen": [
-     "matte",
+     "glossy",
      "glossy"
     ],
     "physiology.charged-body": [
@@ -1871,7 +1830,7 @@
      "strong"
     ],
     "appearance.emission-brightness": [
-     "dim",
+     "bright",
      "bright"
     ],
     "appearance.emission-length": [
@@ -1887,14 +1846,14 @@
   "brief": "S16: 5 body regions (Bfan), a head, 2 eyes; skin; belly, neck head.",
   "bounds": {
    "min": [
-    -1.1357001301361018,
-    -1.2102566593953246,
+    -1.2623084507219529,
+    -0.9635214308261382,
     0
    ],
    "max": [
-    2.1196888046540323,
-    1.2102566593953246,
-    0.9798463278977776
+    1.6846370537784925,
+    0.9635214308261382,
+    1.2241079612080454
    ]
   },
   "counts": {
@@ -1912,11 +1871,8 @@
  "pools": {
   "appearance.body-palette": [
    "periwinkle",
-   "cobalt"
-  ],
-  "appearance.sheen": [
-   "matte",
-   "glossy"
+   "cobalt",
+   "plum"
   ],
   "growth.exterior-eye-size-ratio": [
    "small",
@@ -1926,6 +1882,11 @@
    "close",
    "wide"
   ],
+  "anatomy.region-longitudinal-form": [
+   "ovoid",
+   "barrel",
+   "tapered"
+  ],
   "growth.core-width-ratio": [
    "low",
    "high"
@@ -1933,15 +1894,6 @@
   "growth.core-depth-ratio": [
    "low",
    "high"
-  ],
-  "growth.join-throat-ratio": [
-   "thin",
-   "broad"
-  ],
-  "anatomy.region-longitudinal-form": [
-   "ovoid",
-   "barrel",
-   "tapered"
   ],
   "growth.head-length-ratio": [
    "small",
@@ -1960,43 +1912,43 @@
    "low",
    "high"
   ],
-  "growth.region-taper": [
-   "strong",
-   "gentle"
-  ],
-  "physiology.pull": [
-   "weak",
-   "strong"
-  ],
-  "physiology.phase": [
-   "solid",
-   "faint"
-  ],
-  "cognition.arousal-threshold": [
-   "low",
-   "high"
+  "growth.join-throat-ratio": [
+   "thin",
+   "broad"
   ],
   "cognition.exploration-tendency": [
    "reserved",
    "seeking"
   ],
-  "appearance.emission-length": [
-   "short",
-   "long"
-  ],
-  "physiology.charge": [
+  "cognition.arousal-threshold": [
    "low",
    "high"
   ],
-  "appearance.emission-brightness": [
-   "dim",
-   "bright"
+  "energy.action-efficiency": [
+   "low",
+   "high"
+  ],
+  "physiology.phase": [
+   "solid",
+   "faint"
   ],
   "movement.cycle-rate": [
    "low",
    "high"
   ],
+  "energy.actuator-capacity": [
+   "low",
+   "high"
+  ],
+  "physiology.pull": [
+   "weak",
+   "strong"
+  ],
   "energy.reserve-capacity": [
+   "low",
+   "high"
+  ],
+  "movement.turn-control": [
    "low",
    "high"
   ],
@@ -2008,17 +1960,13 @@
    "low",
    "high"
   ],
-  "energy.action-efficiency": [
+  "physiology.charge": [
    "low",
    "high"
   ],
-  "movement.turn-control": [
-   "low",
-   "high"
-  ],
-  "energy.actuator-capacity": [
-   "low",
-   "high"
+  "appearance.emission-length": [
+   "short",
+   "long"
   ]
  },
  "locked": {
@@ -2027,12 +1975,12 @@
    "smooth"
   ],
   "development.regional-growth": [
-   "even",
-   "even"
+   "anterior",
+   "anterior"
   ],
   "structure.join-neck-ratio": [
-   "high",
-   "high"
+   "low",
+   "low"
   ],
   "anatomy.exterior-eye-presence": [
    "on",
@@ -2042,17 +1990,29 @@
    "medium",
    "medium"
   ],
+  "growth.region-taper": [
+   "strong",
+   "strong"
+  ],
   "growth.branch-angle": [
    "close",
    "close"
   ],
   "anatomy.region-cross-exponent": [
-   "rounded-square",
-   "rounded-square"
+   "round",
+   "round"
+  ],
+  "appearance.sheen": [
+   "glossy",
+   "glossy"
   ],
   "physiology.charged-body": [
    "on",
    "on"
+  ],
+  "appearance.emission-brightness": [
+   "bright",
+   "bright"
   ]
  },
  "sealed": {

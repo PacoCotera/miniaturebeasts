@@ -73,7 +73,9 @@
    "anatomy.exterior-eye-presence": "on",
    "anatomy.top-cap-sheet": "on"
   },
-  "finish": {}
+  "finish": {
+   "appearance.flap-translucency": "opaque"
+  }
  },
  "glyph": [
   ".###.",
@@ -1138,11 +1140,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "clear",
-    "clear"
+    "opaque",
+    "opaque"
    ],
    "looks": [
-    "clear"
+    "opaque"
    ],
    "guard": "sketch: thin-surface opacity (the transparency draft, validated for flaps)",
    "nature": "look"
@@ -1159,11 +1161,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "matte",
-    "matte"
+    "glossy",
+    "glossy"
    ],
    "looks": [
-    "matte"
+    "glossy"
    ],
    "guard": "sketch: specular highlight strength (surface texture's first consumer)",
    "nature": "look"
@@ -1201,11 +1203,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "long",
-    "long"
+    "short",
+    "short"
    ],
    "looks": [
-    "long"
+    "short"
    ],
    "guard": "behaviour: how long the glow lasts",
    "nature": "doing"
@@ -1869,20 +1871,20 @@
      "bars"
     ],
     "appearance.flap-translucency": [
-     "clear",
-     "clear"
+     "opaque",
+     "opaque"
     ],
     "appearance.sheen": [
-     "matte",
-     "matte"
+     "glossy",
+     "glossy"
     ],
     "appearance.emission-brightness": [
      "dim",
      "dim"
     ],
     "appearance.emission-length": [
-     "long",
-     "long"
+     "short",
+     "short"
     ],
     "anatomy.top-cap-sheet": [
      "on",
@@ -1905,14 +1907,14 @@
   "brief": "S02: 1 body region (R1), a head, 2 eyes, a cap on top; fur, bands; belly, fused head.",
   "bounds": {
    "min": [
-    -1.1356627348840869,
-    -0.76,
-    0
+    -1.2440288297174664,
+    -0.8166181,
+    0.024264900000000034
    ],
    "max": [
-    0.76,
-    0.76,
-    1.4181599999999999
+    0.8166181,
+    0.8166181,
+    1.499043
    ]
   },
   "counts": {
@@ -2088,20 +2090,20 @@
    "bars"
   ],
   "appearance.flap-translucency": [
-   "clear",
-   "clear"
+   "opaque",
+   "opaque"
   ],
   "appearance.sheen": [
-   "matte",
-   "matte"
+   "glossy",
+   "glossy"
   ],
   "appearance.emission-brightness": [
    "dim",
    "dim"
   ],
   "appearance.emission-length": [
-   "long",
-   "long"
+   "short",
+   "short"
   ],
   "anatomy.top-cap-sheet": [
    "on",

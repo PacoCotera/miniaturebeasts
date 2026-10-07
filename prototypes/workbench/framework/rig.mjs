@@ -14,7 +14,7 @@
 // both meshes (sharedWitness), as the contract requires. A guard never rejects into a narrower
 // survivor set: anything the plan carries is built; what cannot be built throws, and validate.mjs
 // reports it. Nothing is repaired.
-import { add, sub, mul, unit, norm, dot, cross, IDENTITY, localVector, worldPoint, localPoint, frameAlong, rotateFrameZ, lerp, newNode, ringSolid, ellipsoid, segment, sheet, sweep, surfaceAlong, addFace, envelope, sharedWitness, rootOn, longitudinalWeight } from "./geometry.mjs";
+import { add, sub, mul, unit, norm, dot, cross, IDENTITY, localVector, worldPoint, localPoint, frameAlong, rotateFrameZ, lerp, newNode, ringSolid, ellipsoid, segment, sheet, sweep, surfaceAlong, addFace, envelope, sharedWitness, rootOn, longitudinalWeight, inflate } from "./geometry.mjs";
 
 const EYE_RIM = "#f1eddc", PUPIL = "#273036"; // v1 fixed inks (COMPOSITIONAL_CONTENT.surfaces.fixedEyes)
 
@@ -53,9 +53,14 @@ export function buildBody(resolved) {
 
   // --- primary regions ---------------------------------------------------------------------
   const regions = [];
+  // Volume conventions (versioned expression rules, as the contract calls them): a bilateral body
+  // region is 1.35 times as girthy as v1's ratio (v1's logs were the owner's complaint), a legged
+  // walker's leading region swells into a chest, and the head is 1.15 times v1's ratio.
+  const GIRTH = 1.35, HEAD = 1.15;
+  const legged = plan.limbSet === "legs";
   const baseRadii = radial
     ? [L, L, 2 * (v["region.radialCrossRadiusOverAnchorRx"] ?? 0.45) * L] // a dome: round in plan, height from roundness
-    : [L, (v["core.ryOverRx"] ?? 0.45) * L, (v["core.rzOverRx"] ?? 0.5) * L];
+    : [L, GIRTH * (v["core.ryOverRx"] ?? 0.45) * L, GIRTH * (v["core.rzOverRx"] ?? 0.5) * L];
   const regionRadii = (level) => {
     const taper = depth > 1 ? lerp(1, childScale, level / (depth - 1)) : 1;
     const s = (mass[Math.min(level, mass.length - 1)] ?? 1) * (level === 0 ? 1 : taper);
@@ -68,7 +73,7 @@ export function buildBody(resolved) {
       node.frame = [frame[2], frame[0], frame[1]];
       ringSolid(node, [radii[2], radii[0], radii[1]], form, 2);
       node.frame = frame; node.radii = radii; node.up = true;
-    } else ringSolid(node, radii, form, crossExp);
+    } else ringSolid(node, radii, form, crossExp, legged && id === "region-0" ? 0.16 : 0);
     node.part = id;
     return node;
   }
@@ -98,7 +103,7 @@ export function buildBody(resolved) {
   const serialRegions = regions.filter((r) => !plan.fan || r === root);
 
   // --- head, neck, face ----------------------------------------------------------------------
-  const headR = [v["head.rxOverCoreRx"] * L, v["head.ryOverCoreRx"] * L, v["head.rzOverCoreRx"] * L];
+  const headR = [HEAD * v["head.rxOverCoreRx"] * L, HEAD * v["head.ryOverCoreRx"] * L, HEAD * v["head.rzOverCoreRx"] * L];
   const lift = (v["head.centerLiftOverCoreRx"] ?? 0.5) * L * (radial ? 0.3 : 1);
   const head = newNode("head", "typed-head", null, "body");
   ellipsoid(head, headR);
@@ -215,12 +220,16 @@ export function buildBody(resolved) {
   };
   if (plan.limbSet === "legs") {
     const drop = v["support.rootToEndDropOverCoreRx"] * L, spread = v["support.outwardEndOffsetOverCoreRx"] * L;
-    const radius = v["support.proximalRadiusOverCoreRx"] * L;
+    // Leg girth: 1.6 times v1's ratio, never more than a third of the body's smaller cross radius.
+    const radius = Math.min(1.6 * v["support.proximalRadiusOverCoreRx"] * L, 0.33 * Math.min(root.radii[1], root.radii[2]));
+    const stationCount = plan.stations.length;
     plan.stations.forEach((station, g) => {
       const owner = serialRegions[Math.min(station.region, serialRegions.length - 1)];
+      const front = stationCount === 1 ? false : g < stationCount / 2; // fore legs bend forward at the knee, hind legs back
       for (const side of [-1, 1]) {
         const u = Math.max(-0.75, Math.min(0.75, station.u + stationShift));
-        const rt = rootOn(owner, worldPoint(owner, [u * owner.radii[0], 0, 0.1 * owner.radii[2]]), localVector(owner.frame, [0, side, 0]), 0.5 * radius, envOf(owner));
+        // Legs leave the body low on its flank (-0.3 of the depth), under it rather than beside it.
+        const rt = rootOn(owner, worldPoint(owner, [u * owner.radii[0], 0, -0.3 * owner.radii[2]]), localVector(owner.frame, [0, side, -0.35]), 0.5 * radius, envOf(owner));
         let joint, end;
         if (plan.posture === "upright") {
           joint = add(rt.surface, [0.02 * L, side * 0.25 * spread, -0.55 * drop]);
@@ -230,8 +239,9 @@ export function buildBody(resolved) {
           joint = add(rt.surface, [0.05 * L * (g - 1), side * 0.6 * s, 0.35 * drop]);
           end = add(joint, [0.08 * L * (g - 1), side * 0.55 * s, -1.25 * drop]);
         } else {
-          joint = add(rt.surface, [-0.04 * L, side * 0.6 * spread, -0.5 * drop]);
-          end = add(rt.surface, [-0.1 * L, side * spread, -drop]);
+          const knee = (front ? -0.14 : 0.12) * L;
+          joint = add(rt.surface, [knee, side * (0.35 * spread + 0.15 * radius), -0.5 * drop]);
+          end = add(rt.surface, [front ? -0.06 * L : 0.02 * L, side * (0.6 * spread + 0.2 * radius), -drop]);
         }
         const dist = chain(`leg-${g}-${side < 0 ? "L" : "R"}`, owner, rt, joint, end, radius, `leg-${g}`);
         terminal(`leg-${g}-${side < 0 ? "L" : "R"}-foot`, dist, end, v, L, push, contactPoints, null);
@@ -296,10 +306,10 @@ export function buildBody(resolved) {
     if (plan.flapSet === "wings") for (const side of [-1, 1]) {
       const rt = rootOn(owner, worldPoint(owner, [0.15 * owner.radii[0], 0, 0]), localVector(owner.frame, [0, side * 0.55, 0.83]), 0.05 * L, envOf(owner));
       const rootP = rt.surface;
-      const outer = add(rootP, [swp, side * span, 0.2 * span]);
+      const outer = add(rootP, [swp, side * 0.8 * span, 0.6 * span]); // held up in a V, so wings read in every view
       const corners = [add(rootP, [-0.5 * chord, 0, 0]), add(rootP, [0.5 * chord, 0, 0]), add(outer, [0.3 * chord, 0, 0]), add(outer, [-0.3 * chord, 0, 0])];
       const wing = newNode(`wing-${side < 0 ? "L" : "R"}`, "thin-surface", owner.id, "second"); wing.part = "flap"; wing.opacity = flapOpacity;
-      sheet(wing, corners, [0, 0, 1], thickness);
+      sheet(wing, corners, unit([0, -side * 0.6, 0.8]), thickness);
       push(wing, owner, rt.inner);
     } else if (plan.flapSet === "fins") {
       const finSpan = (v["structure.fin-span"] ?? 0.4) * L + 0.4 * span;
@@ -391,7 +401,7 @@ export function buildBody(resolved) {
     const underside = Math.min(...serialRegions.map((r) => r.center[2] - 0.9 * r.radii[2]));
     skirt.center = [(minX + maxX) / 2, 0, underside + 0.08 * root.radii[2]];
     ringSolid(skirt, [(maxX - minX) / 2 + 0.1 * L, width, 0.16 * root.radii[2]], "barrel", 2);
-    const under = serialRegions.reduce((a, b) => (Math.abs(a.center[0] - skirt.center[0]) < Math.abs(b.center[0] - skirt.center[0]) ? a : b));
+    const under = serialRegions.reduce((a, b) => (a.center[2] - a.radii[2] <= b.center[2] - b.radii[2] ? a : b)); // the region that reaches lowest
     const lo = Math.max(under.center[2] - 0.9 * under.radii[2], skirt.center[2] - 0.9 * skirt.radii[2]), hi = Math.min(under.center[2] + 0.9 * under.radii[2], skirt.center[2] + 0.9 * skirt.radii[2]);
     if (lo > hi) throw new Error("foot-skirt is not connected to the body");
     push(skirt, under, [under.center[0], 0, (lo + hi) / 2]); // inside the region's underside and the skirt's top
@@ -401,11 +411,12 @@ export function buildBody(resolved) {
   // --- tail ------------------------------------------------------------------------------------
   if (v["tail.enabled"]) {
     const owner = plan.fan ? root : serialRegions[plan.tailRegion];
-    const length = v["tail.lengthOverOwnerRx"] * owner.radii[0], baseR = v["tail.baseRadiusOverOwnerCross"] * Math.min(owner.radii[1], owner.radii[2]);
-    const dirW = radial ? unit([1, 0, -0.2]) : owner.frame[0];
+    const bushy = v["covering.furEnabled"] && (v["appearance.fur-reach"] ?? "body") !== "body";
+    const length = v["tail.lengthOverOwnerRx"] * owner.radii[0], baseR = (bushy ? 2.2 : 1.5) * v["tail.baseRadiusOverOwnerCross"] * Math.min(owner.radii[1], owner.radii[2]);
+    const dirW = radial ? unit([1, 0, -0.2]) : unit(add(owner.frame[0], [0, 0, 0.15]));
     const rt = rootOn(owner, owner.center, dirW, 0.3 * baseR, envOf(owner));
     const tail = newNode("tail", "axial-tail", owner.id, "body"); tail.part = "tail";
-    sweep(tail, rt.inner, radial ? IDENTITY : owner.frame, length, baseR, v["tail.bendRadians"], 6, v["tailBulb.enabled"] ? 0.35 : 0.16);
+    sweep(tail, rt.inner, radial ? IDENTITY : frameAlong(dirW), length, baseR, v["tail.bendRadians"], 6, v["tailBulb.enabled"] ? 0.35 : bushy ? 0.5 : 0.22);
     push(tail, owner, add(rt.inner, mul(tail.stations[0].tangent, 0.12 * baseR))); // just inside the first station, still inside the owner
     if (v["tailBulb.enabled"]) {
       const bulb = newNode("tail-bulb", "tail-bulb", tail.id, "emission"); bulb.part = "tail";
@@ -413,6 +424,24 @@ export function buildBody(resolved) {
       const last = tail.stations.at(-1);
       push(bulb, tail, sub(last.center, mul(last.tangent, 0.4 * last.radius))); // inside the last tail station and the bulb
     }
+  }
+
+  // --- the covering as a silhouette modifier -------------------------------------------------------
+  // Fur and feathers push the surface out by their inherited length over the body's smaller cross
+  // radius, with a scalloped edge on the body and tail; fur reach decides whether the tail and the
+  // ears fluff too. Scales and skin leave the silhouette alone (they are surface fields).
+  const coverKind = v["feathers.enabled"] ? "feathers" : v["covering.furEnabled"] ? "fur" : null;
+  if (coverKind) {
+    const unitR = Math.min(root.radii[1], root.radii[2]);
+    const depthOf = coverKind === "feathers" ? 0.45 * (v["appearance.feather-length"] ?? 0.3) * unitR : 0.55 * (v["fur.lengthOverMinTransverseRadius"] ?? 0.2) * unitR;
+    const reach = v["appearance.fur-reach"] ?? (coverKind === "feathers" ? "body-ears-and-tail" : "body");
+    for (const node of nodes) {
+      if (["primary-region", "region-connector"].includes(node.role)) inflate(node, depthOf, 0.3);
+      else if (["typed-head", "muzzle", "lower-jaw"].includes(node.role)) inflate(node, 0.6 * depthOf, 0);
+      else if (node.role === "axial-tail" && reach !== "body") inflate(node, 0.9 * depthOf, 0.35);
+      else if (node.role === "tail-bulb" && reach !== "body") inflate(node, 0.5 * depthOf, 0);
+    }
+    if (reach === "body-ears-and-tail") for (const node of nodes) if (node.role === "auricular-sheet") node.fluffed = true;
   }
 
   // --- ground pose and bounds ---------------------------------------------------------------------
@@ -473,7 +502,8 @@ function connect(parent, child, direction, join, v, push, envOf, L, label = null
 }
 function terminal(id, last, end, v, L, push, contactPoints, azimuth) {
   const form = v["terminal.form"] ?? "rounded";
-  const tr = [(v["terminal.rxOverCoreRx"] ?? 0.18) * L, 0.73 * (v["terminal.rxOverCoreRx"] ?? 0.18) * L, (v["terminal.rzOverCoreRx"] ?? 0.1) * L];
+  const PAW = 1.35; // paws 1.35 times v1's ratio: an end a leg can stand on
+  const tr = [PAW * (v["terminal.rxOverCoreRx"] ?? 0.18) * L, PAW * 0.73 * (v["terminal.rxOverCoreRx"] ?? 0.18) * L, PAW * (v["terminal.rzOverCoreRx"] ?? 0.1) * L];
   const frame = azimuth === null ? IDENTITY : rotateFrameZ(IDENTITY, azimuth);
   if (form === "root") {
     const spread = 1.2 * tr[0];
