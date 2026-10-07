@@ -7,10 +7,10 @@ things move.
 
 ## One kit, one world
 
-**Working rule:** the core game runs on the kit alone. It never needs a phone,
-account, internet connection or online service, including when two nearby kits
-play together. Accepted progress on the kit is real game state, not a draft
-waiting for a server.
+**Decided:** the kit works standalone, out of the box. The core game never needs
+a phone, account, internet connection or online service, including when two
+nearby kits play together. Accepted progress on the kit is real game state, not
+a draft waiting for a server.
 
 **Owners of state** (**Working rule**, partly **Built in v1**):
 
@@ -88,10 +88,12 @@ for scanning.
 
 ## Optional online services
 
-**Proposal:** an optional paid service for global trading and breeding, lineage
-records, certificates and minigames. It would never be needed for core play.
-Cancelling it would never delete local records. Results come back as accepted,
-rejected or unresolved, never last-write-wins. Nothing here is designed or built.
+**Decided:** the cloud experience is a gated, paid, enhanced layer on top of the
+standalone kit: wireless sync for the Companion, a global mibi exchange,
+mini-games, lineage records, printer games and certificates, and more. It is
+never needed for core play. **Working rule:** cancelling it never deletes local
+records, and results come back as accepted, rejected or unresolved, never
+last-write-wins. The service itself is not yet designed or built.
 
 ## Software
 
@@ -108,4 +110,4 @@ and the core game never depends on a remote model call.
 **Open:**
 - where heavy creature generation runs;
 - whether the Companion can render creatures itself;
-- the service design, if online play is built at all.
+- the design of the cloud layer.
