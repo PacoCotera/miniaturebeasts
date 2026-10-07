@@ -42,6 +42,15 @@ background, keyed afterwards to the `-512.png` RGBA portraits the genealogy tree
 uses; `tree-preview.png` tiles them beside the accepted Pip at the tree's two sizes
 (160 px and 76 px) as a species-consistency check.
 
+**Fourth batch.** The owner rejected L1's elder: the drooping leaves and half-lidded
+eyes read as depressing. With a hard budget of 3 calls, one Pro call edited the kept
+L1 raw output (`raw/L1-attempt1.jpg`) with the rich Pip attached as identity, changing
+only the right-hand figure: eyes fully open, three deep-green leaves held up with
+frosted tips, a small moss patch on the back as the only sign of age. It passed its
+checklist, so no retry was made. The new file is `pip-life-stages.png` (keyed as
+before); the first one is kept as `pip-life-stages-v1.png`. The L1 cell of
+`contact-sheet.png` was re-pasted; `tree-preview.png` does not include L1.
+
 ![Contact sheet](contact-sheet.png)
 
 ## The candidates
@@ -54,7 +63,7 @@ uses; `tree-preview.png` tiles them beside the accepted Pip at the tree's two si
 | K1 `caddy-print` | `caddy-print.png` 1536×1024 | attempt 1 | pro |
 | S1 `station-research-pod` | `station-research-pod.png` 1024×600 (crop of `-canvas.png`) | attempt 1 | pro |
 | P1 `partner-patch` | `partner-patch.png` 900×1200, `-450x600.png` (crops of `-canvas.png`) | attempt 2 | flash |
-| L1 `pip-life-stages` | `pip-life-stages.png` 1536×1024 RGBA | attempt 1 (only one) | pro |
+| L1 `pip-life-stages` | `pip-life-stages.png` 1536×1024 RGBA (`-v1.png` is the superseded first one) | attempt 3 (edit of attempt 1) | pro |
 | D1 `companion-resident-home` | `companion-resident-home.png` 900×1200, `-450x600.png` (crops of `-canvas.png`) | attempt 2 | flash |
 | D2 `station-known-forms` | `station-known-forms.png` 1024×600 (crop of `-canvas.png`) | attempt 1 | pro |
 | E1 `caddy-summary-epaper` | `caddy-summary-epaper.png` 1600×479 (scaled and padded from `-canvas.png`) | attempt 2 | pro |
@@ -176,17 +185,27 @@ Judged at the size the page shows each image and, for screens, at 1×.
   crop), drew the dew cups as large bowls and its HUD's Pip face as a white blob.
 
 ### L1 `pip-life-stages`
+Fourth batch: `pip-life-stages.png` is attempt 3, a Pro edit of attempt 1 that changed
+only the elder; attempt 1 is kept as `pip-life-stages-v1.png`.
 - Pass: coat, cream belly, orange eyes and three crown lobes are the same in all
-  three; no added marks, horns or tails.
+  three; no added marks, horns or tails. The elder's only sign of age besides
+  proportion is a small muted-green moss patch on its upper back.
 - Pass: age reads from proportion and bearing: the juvenile is smaller and rounder
-  with larger eyes and bright buds; the elder is heavier and lower-set with
-  half-lidded eyes and broader, drooping, deeper green leaves.
-- Partial: the adult is close to the rich Pip but not an exact copy; the elder's
-  cream muzzle area is a little larger than the others'. The three figures are not
-  confined to equal 512×1024 cells (the adult and elder cross the cell lines).
+  with larger eyes and bright buds; the elder is heavier and lower-set with broader,
+  deeper green leaves held up, their tips lightly frosted.
+- Pass (the owner's note): the elder reads as calm and dignified, not sad. Both eyes
+  are fully open and bright with the adult's cream rings, and it has the same small
+  smile; nothing droops.
+- Pass: the juvenile and adult are the attempt 1 figures. Against the attempt 1 raw
+  output, 0.25 % of pixels in the left third and 0.69 % in the middle third differ by
+  more than 24 levels (JPEG re-encode noise); the elder's third differs by 13.9 %.
+- Partial (carried over): the adult is close to the rich Pip but not an exact copy;
+  the three figures are not confined to equal 512×1024 cells. The elder's crown is
+  drawn larger than the adult's, and the elder is not visibly lower-set than before.
 - Pass: transparent alpha with no halo (keyed from a flat white background; canvas
   corners are alpha 0). This is keyed, not generated, alpha.
-- Only one attempt: the second was refused by the spending cap.
+- Rejected by the owner: attempt 1 (`pip-life-stages-v1.png`), whose elder had
+  drooping leaves and half-lidded eyes. Attempt 2 was refused by the spending cap.
 
 ### D1 `companion-resident-home`
 - Pass: Pip reads as the HiBit Pip at 450×600, 1× (`companion-resident-home-450x600.png`):
@@ -311,7 +330,8 @@ kept as partial alpha; the species reads as one at both sizes.
   and D2 screens are crops of a larger canvas, as recorded in `manifest.json`.
 - Spend: first batch 17 calls (one refused by the cap); second batch 7 calls of the
   8 allowed, 4 on `gemini-3.1-flash-image` and 3 on `gemini-3-pro-image`; third
-  batch 11 calls of the 11 allowed, 8 Flash and 3 Pro.
+  batch 11 calls of the 11 allowed, 8 Flash and 3 Pro; fourth batch (L1 elder redo)
+  1 call of the 3 allowed, on Pro.
 - The variant portraits' alpha is keyed from a flat background, not generated;
   `v2-sable` fails its checklist (no leaf crown) and has only one attempt.
 - Nothing here establishes a runtime, a renderer or hardware behaviour.

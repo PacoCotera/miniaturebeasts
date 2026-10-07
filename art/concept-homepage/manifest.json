@@ -31,7 +31,7 @@
       "gemini-3-pro-image",
       "gemini-3.1-flash-image"
     ],
-    "successfulCalls": 34,
+    "successfulCalls": 35,
     "failedCalls": 1,
     "originalBytes": "raw/ holds the unaltered JPEG the API returned for each kept candidate; rejected attempts are stored only as their PNG resamples.",
     "batches": [
@@ -46,6 +46,10 @@
       {
         "calls": 11,
         "note": "third batch: V1-V7 Pip-species variants, S2, C3; budget 11, used 11 (8 Flash, 3 Pro)"
+      },
+      {
+        "calls": 1,
+        "note": "fourth batch: L1 elder redone as an edit of the kept L1 raw output; budget 3, used 1 (Pro)"
       }
     ],
     "layoutInputs": "layout/ holds the flat layout templates and reference crops sent as image inputs in the second batch; they are inputs, not candidates.",
@@ -88,9 +92,10 @@
       "resample": "BOX (area average) 2:1 to 450x600"
     },
     "pip-life-stages.png": {
-      "from": "raw/L1-attempt1.jpg via the 1536x1024 LANCZOS resample",
+      "from": "raw/L1-attempt3.jpg via the 1536x1024 LANCZOS resample (an edit pass of raw/L1-attempt1.jpg that changed only the elder)",
       "alpha": "The API returns opaque JPEG; the background was requested as flat pure white and keyed: alpha = clamp((distance to white - 10) / 35, 0, 1); colour un-composited from white for partial pixels. Soft contact shadows keep partial alpha.",
-      "evidenceLimit": "Keyed alpha, not generated alpha. Canvas corners are alpha 0; 0.8 percent of pixels are partial."
+      "evidenceLimit": "Keyed alpha, not generated alpha. Canvas corners are alpha 0; 0.8 percent of pixels are partial.",
+      "editDrift": "Against raw/L1-attempt1.jpg, 0.25 percent of pixels in the left third and 0.69 percent in the middle third differ by more than 24 levels (JPEG re-encode); 13.9 percent in the right third (the elder)."
     },
     "all 1536x1024 and 1024x1536 PNGs": {
       "from": "the raw 2K JPEG output (2528x1696 or 1696x2528)",
@@ -340,14 +345,19 @@
     },
     "contact-sheet.png": {
       "from": "every candidate PNG in this folder",
-      "layout": "row 1: the twelve scene shots at 260 px tall; row 2: the seven keyed variant portraits on cream; labels are shot id and file stem"
+      "layout": "row 1: the twelve scene shots at 260 px tall; row 2: the seven keyed variant portraits on cream; labels are shot id and file stem",
+      "note": "fourth batch: the L1 cell was re-pasted from the new pip-life-stages.png; every other cell is unchanged"
+    },
+    "pip-life-stages-v1.png": {
+      "from": "raw/L1-attempt1.jpg via the 1536x1024 LANCZOS resample; the first L1, keyed the same way",
+      "note": "superseded: the owner rejected its elder (drooping leaves, half-lidded eyes); kept for the record, not a page asset"
     }
   },
   "caveats": [
     "Generated images: concept art, to be captioned as such; never a capture from the build.",
     "HiBit screens are generated pixel-style art resampled from a 2K output, not authored native 450x600 masters; the logical pixel grid is not exact.",
     "The API returned opaque JPEG; pip-life-stages.png alpha is keyed from a flat white background (see derivation).",
-    "First batch: second attempts for L1 and all third attempts were blocked by the API monthly spending cap (HTTP 429).",
+    "First batch: second attempts for L1 and all third attempts were blocked by the API monthly spending cap (HTTP 429); L1 got its second successful call in the fourth batch.",
     "Second batch (H1 pass C, D1, D2, E1): 7 of the 8 allowed calls; every shot had at most two attempts.",
     "hero-kit.png (pass C) carries the card fix but the edit drifted two Essence labels and the Station subtitle; see README.",
     "caddy-summary-epaper.png is a JPEG-born e-paper mock: four greys to the eye, with faint JPEG chroma and anti-aliased edges, not a literal four-value image.",
@@ -356,7 +366,8 @@
     "Variant portraits are separate generations, so relative body size (Bramble +20 %, Thistle -15 %, Moss +15 %) is not measurable across files; the page must scale those portraits itself if size is to read.",
     "The variants' background came back as a flat warm cream near (244,237,224), not the requested #f5f2e9; the -512 RGBA files are keyed from the measured colour. The 1024 files keep the flat background as returned.",
     "station-research-hands.png (attempt 2) has orange corner bumpers where H1's Station has charcoal ones; attempt 1 had the right bumpers but two round Back buttons, a physical-control error, so it was rejected.",
-    "tree-preview.png is a check image for species consistency, not a page asset; the homepage composes the tree from the -512 portraits."
+    "tree-preview.png is a check image for species consistency, not a page asset; the homepage composes the tree from the -512 portraits.",
+    "Fourth batch (L1 elder redo): 1 of the 3 allowed calls; pip-life-stages.png is now an edit of the first L1 output with only the elder changed, and the previous file is kept as pip-life-stages-v1.png."
   ],
   "artifacts": [
     {
@@ -445,8 +456,8 @@
       "width": 4789,
       "height": 594,
       "mode": "RGB",
-      "bytes": 2033917,
-      "sha256": "a1682dad3d8ac1afad8c7613dcaf7aa73a51862ffe17186e4cb291a0c87161f3",
+      "bytes": 2037493,
+      "sha256": "157c06b3f9010c88b4733b79a3d717a804573af6dc4901c74da832d804bc74d0",
       "status": "index"
     },
     {
@@ -544,9 +555,18 @@
       "width": 1536,
       "height": 1024,
       "mode": "RGBA",
+      "bytes": 985423,
+      "sha256": "0a18a6648b318da6dd3805d5e1c5316b53603ae48b675518af15ee89e015d562",
+      "status": "candidate"
+    },
+    {
+      "path": "pip-life-stages-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
       "bytes": 949785,
       "sha256": "377852f1bb2ce67d26c769a0c5bce4cd5ec52d6db514b2b54b8407bfb06f220d",
-      "status": "candidate"
+      "status": "superseded (first L1, rejected elder)"
     },
     {
       "path": "raw/C1-attempt2.jpg",
@@ -646,6 +666,15 @@
       "bytes": 1745358,
       "sha256": "7aff3f10e50ec0d66b379a008c099ecd5b1e23567aa4fa7f40599c6ea3b83abf",
       "status": "original (unaltered model output)"
+    },
+    {
+      "path": "raw/L1-attempt3.jpg",
+      "width": 2528,
+      "height": 1696,
+      "mode": "RGB",
+      "bytes": 1675502,
+      "sha256": "713001622dd879642c6885bb685dde831e5ca497a4738af1d365d2e123d8c2b2",
+      "status": "original"
     },
     {
       "path": "raw/P1-attempt2.jpg",

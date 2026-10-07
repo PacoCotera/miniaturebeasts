@@ -1175,7 +1175,7 @@
       "time": "2026-10-06T06:57:03Z",
       "result": {
         "status": "success",
-        "disposition": "kept (only attempt)",
+        "disposition": "superseded by L1-attempt3 (kept as pip-life-stages-v1.png)",
         "original": {
           "file": "raw/L1-attempt1.jpg",
           "stored": true,
@@ -2613,6 +2613,79 @@
           "serviceTier": "standard"
         }
       }
+    },
+    {
+      "id": "pip-life-stages",
+      "shot": "L1",
+      "pass": null,
+      "attempt": 3,
+      "tag": "L1-attempt3",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-figure-edit. Asset type: matched Miniature Lives character source, 1536x1024, three isolated full-body figures of ONE individual, Pip, on a flat pure white background: LEFT juvenile, MIDDLE adult, RIGHT elder. Edit ONLY the RIGHT-hand figure, the elder. Preserve the LEFT and MIDDLE figures exactly as they are, pixel for pixel, with their positions, sizes, baseline, upper-left light, contact shadows and the flat uniform pure white (#FFFFFF) background. No text.\nELDER, right figure: keep its position, size, three-quarter pose facing viewer-left and its heavier, lower-set body, and keep the identity shared by all three: broad squat charcoal quadruped, cream belly, plain dark coat with absolutely no pale islands or bands, smooth sculpted ceramic/resin volume. Change its face and crown so it reads as calm, dignified and kind, never sad, tired or sleepy: both eyes fully OPEN and bright, large orange irises with cream rings exactly like the adult's, a soft kind gaze, and the same tiny curved smile as the adult; no heavy eyelids, no half-closed eyes, no drooping brows, no frown, no downturned mouth, no sagging cheeks. Crown: exactly three broad deep-green leaves, their tips lightly frosted silver, held UP and open above the head like the adult's crown, not drooping and not hanging over the eyes. The only other sign of age: one small soft patch of moss or lichen, muted green, on the upper back; nothing else.\nConstraints: saturated and playful; no added horns, tails, whiskers, beards, markings, grey hair, wrinkles or colour changes; no accessories, canes or props; no halo, glow or scenery; no checkerboard; the background stays one flat pure white everywhere.",
+      "promptSource": "written for the fourth batch from the owner's rejection note; identity lines follow the brief",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the image to edit: the retained three-figure source whose left and middle figures must be preserved. Image 2 is the supplied rich Pip: the elder's eyes, mouth and crown treatment must match its identity. Technical note: this API returns opaque images, so keep the whole background one flat, uniform, pure white (#FFFFFF) with no gradient, vignette, checkerboard or texture; it will be removed afterwards to produce the transparent alpha.",
+      "imageInputs": [
+        {
+          "path": "art/concept-homepage/raw/L1-attempt1.jpg",
+          "role": "edit target: the kept L1 attempt 1 as returned by the API (flat white background)",
+          "sha256": "7aff3f10e50ec0d66b379a008c099ecd5b1e23567aa4fa7f40599c6ea3b83abf"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-source.png",
+          "role": "supplied rich Pip: identity for the elder's eyes, mouth and crown",
+          "sha256": "9ab829158716f6a0adcec5266aa2815438687c5b1cc9bc2df653f91d42e6b455"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "3:2",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x1024",
+      "time": "2026-10-07T01:00:17Z",
+      "result": {
+        "status": "success",
+        "disposition": "kept",
+        "original": {
+          "file": "raw/L1-attempt3.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2528,
+          "height": 1696,
+          "sha256": "713001622dd879642c6885bb685dde831e5ca497a4738af1d365d2e123d8c2b2"
+        },
+        "png": {
+          "file": "pip-life-stages.png (after alpha keying; see manifest derivation)",
+          "width": 1536,
+          "height": 1024,
+          "sha256": "0a18a6648b318da6dd3805d5e1c5316b53603ae48b675518af15ee89e015d562"
+        },
+        "finishReason": "STOP",
+        "seconds": 23.0,
+        "usage": {
+          "promptTokenCount": 1003,
+          "candidatesTokenCount": 1407,
+          "totalTokenCount": 2627,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 487
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 217,
+          "serviceTier": "standard"
+        }
+      }
     }
   ],
   "secondBatch": {
@@ -2637,5 +2710,16 @@
     "rule": "V1-V7 first, one attempt each, one retry only for the worst failed variant (V4); then S2, then C3; one retry for S2",
     "variantInputs": "every variant call attached art/miniature-lives/assets/rich-plain-source.png as the supplied individual; V2 and V7 also attached rich-marked-source.png as the pale-islands reference",
     "keying": "the API returns opaque JPEG; the cream background was requested flat and keyed afterwards to make the -512 RGBA portraits (see manifest derivation)"
+  },
+  "fourthBatch": {
+    "when": "2026-10-07, after the owner rejected the L1 elder (drooping leaves and half-lidded eyes read as depressing)",
+    "budget": "at most 3 image calls",
+    "used": 1,
+    "byModel": {
+      "gemini-3-pro-image": 1,
+      "gemini-3.1-flash-image": 0
+    },
+    "rule": "edit pass on the kept L1 raw output first, changing only the elder; one retry only if the edit failed its checklist",
+    "prompt": "written for this pass from the owner's note, not from the brief (the brief's L1 prompt asks for the half-lidded, drooping elder that was rejected)"
   }
 }
