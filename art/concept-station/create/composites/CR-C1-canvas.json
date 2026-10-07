@@ -1,0 +1,45 @@
+{
+  "base": "round3/CR-D-r3-a2-canvas.png",
+  "pastes": [
+    {
+      "source": "round4/CR-D-r4-a1-canvas.png",
+      "screenRect": [
+        236,
+        44,
+        800,
+        134
+      ],
+      "canvasRect": [
+        370,
+        63,
+        1182,
+        193
+      ]
+    },
+    {
+      "source": "round4/CR-D-r4-a2-canvas.png",
+      "screenRect": [
+        780,
+        44,
+        1024,
+        560
+      ],
+      "canvasRect": [
+        1153,
+        63,
+        1505,
+        806
+      ]
+    }
+  ],
+  "outputs": {
+    "canvas": "composites/CR-C1-canvas.png",
+    "screen": "composites/CR-C1-1024x600.png",
+    "bandRect": [
+      30,
+      0,
+      1505,
+      864
+    ]
+  }
+}

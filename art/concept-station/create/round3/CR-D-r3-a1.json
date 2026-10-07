@@ -1,0 +1,84 @@
+{
+  "id": "create-review",
+  "direction": "D",
+  "round": 3,
+  "attempt": 1,
+  "tag": "CR-D-r3-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs, the roll of three panes with their plates and tag, the pod on its cradle with its plate, the glass chamber with its base and plate, the creature's body and legs, the dome and the pale label at the right.\nONE CHANGE ONLY: remove the blue cloud above the creature inside the glass chamber, and instead hide the creature's whole head behind FROSTED GLASS: paint an opaque patch of cool blue-white frost onto the chamber's front pane exactly over the head, from the top of the head down to the neck and across both ears or crest, like thick rime on a cold window with soft feathered edges, so that no eye, no mouth, no ear and no outline of the face can be seen through it; the frost is flat on the glass, not a cloud, not smoke. The body and legs below the frost stay exactly as they are, crisp and warmly lit.\nConstraints: preserve every other pixel of the screen; no new text, no digits, no cloud, no eyes or face visible through the frost.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/create/round2/CR-D-r2-a1-canvas.png",
+      "role": "edit target: the round 2 pick",
+      "sha256": "995d64cfabf55a8747d6d1a49b8e7e429d8e37a7ae8e51c3c0100f407ba0ce9a"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-07T23:47:29Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/CR-D-r3-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "b146fda8d81b3d5116bfc6aa071e320e0ef85576fb8e034a7aef3259a91e346a"
+    },
+    "png": {
+      "file": "CR-D-r3-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "63b3c2899e5fd5fdda714939d43e29ea3fc61ca5a538ba31d6f3d25252a1ef58"
+    },
+    "screen": {
+      "file": "CR-D-r3-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "55fa55f4918aa01cd3d777ba2d7f6b559f4238baec9d61ca87244f5f8bbd450b",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 20.5,
+    "usage": {
+      "promptTokenCount": 561,
+      "candidatesTokenCount": 1307,
+      "totalTokenCount": 2042,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 303
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 174,
+      "serviceTier": "standard"
+    }
+  }
+}
