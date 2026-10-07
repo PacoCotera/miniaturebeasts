@@ -1,14 +1,15 @@
 // The stamp's codec and cell layout.
 //
-// Grid: N x N square cells, N in a size series. From the outside in:
+// Grid: N x N square cells, N in a size series (17, 21, 25 ...). From the outside in:
 //   ring 0  perforation: a dot on every even cell, the timing marks
 //   ring 1  the frame: solid, the finder edge (one closed square, not QR's three)
 //   ring 2  the species border: Manchester pairs from the species' locked frame,
 //           identical for every member; it names the species and the orientation
-//   inside  the 5x5 species glyph in the top-left corner (plus a gutter);
-//           the read mask, then the chapter blocks (column-filled rectangles of
-//           cell pairs: copy 1 above copy 2, or as many copies as the frame says);
-//           and at the foot the strip: header, CRC-16, Reed–Solomon parity.
+//   inside  the 5x5 species glyph in the top-left corner (a gutter from 21 up);
+//           from the foot up: Reed–Solomon parity, the header (+ postmark when
+//           flagged), the read mask; from the top down: the chapter blocks
+//           (column-filled rectangles of cell pairs: copy 1 above copy 2, or
+//           as many copies as the frame says).
 //
 // One Reed–Solomon codeword (GF(256), ~30% parity) covers header, CRC, mask and
 // every data cell; the CRC-16 runs end to end over header, mask and the shown
@@ -18,9 +19,11 @@ import { rsEncode } from "./rs.mjs";
 
 export const FORMAT = 1;
 export const SIZES = [17, 21, 25, 29, 33, 37, 41, 45, 49];
-export const RESERVED_BITS = 64; // a future signed postmark
-export const HEADER_FIELDS = [["format", 4], ["species", 12], ["version", 10], ["size", 4], ["reserved", RESERVED_BITS]];
-export const HEADER_BITS = HEADER_FIELDS.reduce((s, [, n]) => s + n, 0) + 16; // + CRC-16 = 110
+export const POSTMARK_BITS = 64; // a signed postmark, carried only when present
+// format, species, frame version, size, postmark flag; then the postmark (when
+// the flag is set) and the CRC-16
+export const HEADER_FIELDS = [["format", 4], ["species", 12], ["version", 10], ["size", 4], ["postmark", 1]];
+export const headerBits = (postmark) => HEADER_FIELDS.reduce((s, [, n]) => s + n, 0) + (postmark ? POSTMARK_BITS : 0) + 16; // 47, or 111
 const PARITY_SHARE = 0.15; // parity bytes = 2 * ceil(15% of the codeword): ~30%, corrects ~15% of bytes
 
 // CRC-16/CCITT-FALSE (poly 0x1021, init 0xFFFF), bitwise.
@@ -59,79 +62,78 @@ export function borderPattern(frame, N) {
 }
 
 // Layout of size N for a frame (frame may be null: only the frame-independent
-// parts, enough to read the header).
-export function layout(N, frame) {
+// parts, enough to run Reed–Solomon and read the header). postmark: whether
+// the 64 postmark bits are carried.
+//
+// Every interior cell except the glyph corner is in the codeword. Codeword
+// order runs from the foot upward (bottom row first, left to right): first the
+// Reed–Solomon parity, then the header, then the read mask, then the rest. The
+// chapter blocks are laid from the top down in the cells the foot leaves, so
+// a stamp fills from both ends and its size grows only when they meet.
+export function layout(N, frame, { postmark = false } = {}) {
   const M = N - 6, o = 3;
-  const C = M * M - 36, B = Math.floor(C / 8), p = 2 * Math.ceil(PARITY_SHARE * B), m = B - p;
-  const stripRows = Math.ceil((HEADER_BITS + 8 * p) / M);
-  const hB = M - 6 - stripRows;
-  if (m * 8 < HEADER_BITS || hB < 0) return null;
-  const at = (r, c) => [o + r, o + c];
-  const strip = [];
-  for (let r = M - stripRows; r < M; r++) for (let c = 0; c < M; c++) strip.push(at(r, c));
-  const headerCells = strip.slice(0, HEADER_BITS), parityCells = strip.slice(HEADER_BITS, HEADER_BITS + 8 * p), stripSpare = strip.slice(HEADER_BITS + 8 * p);
-  // data region: band A beside the glyph (6 tall), band B under it; column-filled
-  const bands = [
-    { r0: 0, c0: 6, h: 6, w: M - 6 },
-    { r0: 6, c0: 0, h: hB, w: M },
-  ].filter((b) => b.h > 0 && b.w > 0);
-  const dataCells = [];
-  for (const b of bands) for (let c = 0; c < b.w; c++) for (let r = 0; r < b.h; r++) dataCells.push(at(b.r0 + r, b.c0 + c));
-  // message order: header+CRC, data region, strip spare; the first 8m are in the codeword
-  const msgOrder = [...headerCells, ...dataCells, ...stripSpare];
-  const msgCells = msgOrder.slice(0, 8 * m), unused = msgOrder.slice(8 * m);
-  const unusedSet = new Set(unused.map(([r, c]) => r * N + c));
-  const L = { N, M, p, m, B, stripRows, bands, headerCells, parityCells, msgCells, unused, glyph: { r0: o, c0: o }, fits: true };
+  const g = N >= 21 ? 6 : 5; // the glyph corner: 5x5, plus a gutter from 21 cells up
+  const inGlyph = (r, c) => r < g && c < g;
+  const order = [];
+  for (let r = M - 1; r >= 0; r--) for (let c = 0; c < M; c++) if (!inGlyph(r, c)) order.push([o + r, o + c]);
+  const C = order.length, B = Math.floor(C / 8), p = 2 * Math.ceil(PARITY_SHARE * B), m = B - p;
+  const H = headerBits(postmark);
+  if (8 * m < H) return null;
+  const parityCells = order.slice(0, 8 * p), rest = order.slice(8 * p);
+  const msgCells = rest.slice(0, 8 * m), unused = rest.slice(8 * m);
+  const headerCells = msgCells.slice(0, H);
+  const L = { N, M, p, m, B, H, postmark, glyph: { r0: o, c0: o, g }, parityCells, msgCells, headerCells, unused, fits: true };
   if (!frame) return L;
-  // read mask: the first cells of band A, one per chapter
-  const colsOf = (b) => Array.from({ length: b.w }, (_, c) => Array.from({ length: b.h }, (_, r) => at(b.r0 + r, b.c0 + c)).filter(([rr, cc]) => !unusedSet.has(rr * N + cc)));
-  const columns = bands.map(colsOf);
   const nch = frame.chapters.length;
-  const A = columns[0] ?? [];
-  const maskCols = Math.ceil(nch / 6);
-  if (A.length < maskCols) return { ...L, fits: false };
-  const maskCells = A.slice(0, maskCols).flat().slice(0, nch);
-  const next = [maskCols, 0];
-  // chapters: rectangles of whole columns; bits fill each column top-down, one
-  // vertical run of `copies` cells per bit (copy 1 on top)
+  if (H + nch > msgCells.length) return { ...L, fits: false };
+  const maskCells = msgCells.slice(H, H + nch);
+  const free = new Set(msgCells.slice(H + nch).map(([r, c]) => r * N + c));
+  // bands: beside the glyph (g tall), then under it; columns hold the free cells top-down
+  const bands = [{ r0: 0, c0: g, h: g, w: M - g }, { r0: g, c0: 0, h: M - g, w: M }].filter((b) => b.h > 0 && b.w > 0);
+  const columns = bands.map((b) => Array.from({ length: b.w }, (_, c) => {
+    const col = [];
+    for (let r = 0; r < b.h; r++) { const rc = [o + b.r0 + r, o + b.c0 + c]; if (free.has(rc[0] * N + rc[1])) col.push(rc); else break; }
+    return col;
+  }));
+  const next = bands.map(() => 0);
   const blocks = [];
-  const place = (bandIdx, ch) => {
-    const cols = columns[bandIdx];
-    let ci = next[bandIdx], row = 0;
-    const cellsOf = [];
-    const startCol = ci;
+  // chapters: whole columns; bits fill each column top-down, one vertical run
+  // of `copies` cells per bit (copy 1 on top)
+  const place = (bi, ch) => {
+    const cols = columns[bi];
+    let ci = next[bi], row = 0;
+    const startCol = ci, cellsOf = [];
     for (const l of ch.loci) {
       const runs = [];
       for (let bit = 0; bit < l.bits; bit++) {
+        while (ci < cols.length && row + l.copies > cols[ci].length) { ci++; row = 0; }
         if (ci >= cols.length) return null;
-        if (row + l.copies > cols[ci].length) { ci++; row = 0; if (ci >= cols.length) return null; if (l.copies > cols[ci].length) return null; }
         runs.push(cols[ci].slice(row, row + l.copies));
         row += l.copies;
       }
       cellsOf.push(runs);
     }
-    const endCol = row === 0 ? ci : ci + 1;
-    return { band: bandIdx, colStart: startCol, colEnd: endCol, loci: cellsOf };
+    return { band: bi, colStart: startCol, colEnd: row === 0 ? ci : ci + 1, loci: cellsOf };
   };
   for (const [chi, ch] of frame.chapters.entries()) {
     let blk = null;
-    for (let bi = 0; bi < columns.length && !blk; bi++) {
-      blk = place(bi, ch);
-      if (blk) next[bi] = blk.colEnd;
-    }
+    for (let bi = 0; bi < columns.length && !blk; bi++) { blk = place(bi, ch); if (blk) next[bi] = blk.colEnd; }
     if (!blk) return { ...L, fits: false };
     const b = bands[blk.band];
-    blk.rect = { r0: o + b.r0, c0: o + b.c0 + blk.colStart, r1: o + b.r0 + b.h, c1: o + b.c0 + blk.colEnd };
+    const used = blk.loci.flat(2);
+    blk.rect = { r0: o + b.r0, c0: o + b.c0 + blk.colStart, r1: Math.max(...used.map(([r]) => r)) + 1, c1: o + b.c0 + blk.colEnd };
     blk.chapter = chi;
     blocks.push(blk);
   }
   return { ...L, maskCells, blocks };
 }
 
-export function sizeFor(frame) {
-  for (const N of SIZES) { const L = layout(N, frame); if (L && L.fits) return L; }
+export function sizeFor(frame, { postmark = false } = {}) {
+  for (const N of SIZES) { const L = layout(N, frame, { postmark }); if (L && L.fits) return L; }
   return null;
 }
+// a postmark is 64 bits, given as 16 hex digits
+const postmarkBits = (genome) => (genome.postmark ? [...genome.postmark.padStart(16, "0")].flatMap((h) => toBits(parseInt(h, 16), 4)) : null);
 
 export function readMask(frame, genome) {
   if (typeof genome.readMask === "number") return genome.readMask;
@@ -140,7 +142,7 @@ export function readMask(frame, genome) {
 }
 
 // Genome -> cell values. Returns {L, cells: Map(r*N+c -> {v, kind, copy}), crc}.
-export function encodeCells(frame, genome, L = sizeFor(frame)) {
+export function encodeCells(frame, genome, L = sizeFor(frame, { postmark: !!genome.postmark })) {
   if (!L) throw new Error(`${frame.name}: no stamp size fits`);
   const N = L.N, mask = readMask(frame, genome);
   const nch = frame.chapters.length;
@@ -168,8 +170,8 @@ export function encodeCells(frame, genome, L = sizeFor(frame)) {
     });
   }
   L.maskCells.forEach((rc, i) => set(rc, maskBits[i], "mask"));
-  const sizeIdx = SIZES.indexOf(N);
-  const head = [...toBits(FORMAT, 4), ...toBits(frame.species, 12), ...toBits(frame.version, 10), ...toBits(sizeIdx, 4), ...new Array(RESERVED_BITS).fill(0)];
+  const sizeIdx = SIZES.indexOf(N), pm = postmarkBits(genome);
+  const head = [...toBits(FORMAT, 4), ...toBits(frame.species, 12), ...toBits(frame.version, 10), ...toBits(sizeIdx, 4), pm ? 1 : 0, ...(pm ?? [])];
   const crc = crc16([...head, ...maskBits, ...shown]);
   const header = [...head, ...toBits(crc, 16)];
   L.headerCells.forEach((rc, i) => set(rc, header[i], "header"));
@@ -183,18 +185,19 @@ export function encodeCells(frame, genome, L = sizeFor(frame)) {
 }
 
 // Codeword bits read from cells -> genome (after RS). Verified only.
-export function parseMessage(msgBits, N, frameLookup = frameFor) {
+export function parseMessage(msgBits, N, { postmark = false } = {}, frameLookup = frameFor) {
   const take = (() => { let i = 0; return (n) => { const v = msgBits.slice(i, i + n); i += n; return v; }; })();
   const h = {};
-  for (const [k, n] of HEADER_FIELDS) h[k] = k === "reserved" ? take(n) : fromBits(take(n));
+  for (const [k, n] of HEADER_FIELDS) h[k] = fromBits(take(n));
+  if (h.postmark !== (postmark ? 1 : 0)) return { ok: false, stage: "header", detail: "postmark flag does not match the layout" };
+  const pmBits = postmark ? take(POSTMARK_BITS) : [];
   h.crc = fromBits(take(16));
   if (h.format !== FORMAT) return { ok: false, stage: "header", detail: `format ${h.format}` };
   if (SIZES[h.size] !== N) return { ok: false, stage: "header", detail: "size field does not match the grid" };
   const frame = frameLookup(h.species, h.version);
   if (!frame) return { ok: false, stage: "species", detail: "species not in this reader's registry" };
-  const L = layout(N, frame);
+  const L = layout(N, frame, { postmark });
   if (!L?.fits) return { ok: false, stage: "header", detail: "frame does not fit this size" };
-  // re-read the data cells by position (the message order is known now)
   const index = new Map(L.msgCells.map(([r, c], i) => [r * N + c, i]));
   const bitAt = ([r, c]) => msgBits[index.get(r * N + c)] ?? 0;
   const maskBits = L.maskCells.map(bitAt);
@@ -212,7 +215,7 @@ export function parseMessage(msgBits, N, frameLookup = frameFor) {
       copies[l.id] = vals;
     });
   }
-  const head = msgBits.slice(0, HEADER_BITS - 16);
+  const head = msgBits.slice(0, L.H - 16);
   if (crc16([...head, ...maskBits, ...shown]) !== h.crc) return { ok: false, stage: "check", detail: "CRC-16 failed" };
   const out = {};
   for (const l of frame.heritable) {
@@ -220,15 +223,16 @@ export function parseMessage(msgBits, N, frameLookup = frameFor) {
     if (copies[l.id].some((i) => i >= l.alleles.length)) return { ok: false, stage: "check", detail: "impossible look" };
     out[l.id] = copies[l.id].map((i) => l.alleles[i]);
   }
+  const hex = postmark ? Array.from({ length: 16 }, (_, i) => fromBits(pmBits.slice(4 * i, 4 * i + 4)).toString(16)).join("") : null;
   return {
     ok: true,
     genome: {
       species: frame.species, version: frame.version,
       read: frame.chapters.filter((_, i) => maskBits[i]).map((c) => c.name),
       unread: frame.chapters.filter((_, i) => !maskBits[i]).map((c) => c.name),
-      copies: out,
+      copies: out, ...(hex ? { postmark: hex } : {}),
     },
-    crc: h.crc, postmark: h.reserved.some((b) => b) ? "present, unverified" : "none", frame,
+    crc: h.crc, postmark: hex ? "present, unverified" : "none", frame,
   };
 }
 

@@ -270,7 +270,10 @@ function readGrid(S, H, N) {
     else thr = hi - 0.5 * expect; // a light (or dark) patch: judge against the expected contrast
     t[r * N + c] = (hi - v) / expect;
     bit[r * N + c] = v < thr ? 1 : 0;
-    conf[r * N + c] = Math.abs(v - thr) / expect;
+    // under glare (local white brighter than the paper at the edge) contrast is
+    // crushed, so the decision is weak whatever the margin says
+    const glare = w < 0.995 ? Math.max(0, Math.min(1, (hi - w) / (1 - w))) : 0;
+    conf[r * N + c] = (Math.abs(v - thr) / expect) * (1 - 0.9 * glare);
   }
   return { bit, conf, t };
 }
@@ -278,18 +281,39 @@ function readGrid(S, H, N) {
 const rot = (N, r, c, k) => { for (let i = 0; i < k; i++) [r, c] = [c, N - 1 - r]; return [r, c]; };
 
 function tryOrientation(grid, N, k, mirror) {
-  const at = (r, c) => { let [rr, cc] = rot(N, r, c, k); if (mirror) cc = N - 1 - cc; return grid.bit[rr * N + cc]; };
-  const L = layout(N, null);
-  if (!L) return { ok: false, stage: "timing" };
-  const msg = L.msgCells.map(([r, c]) => at(r, c)), par = L.parityCells.map(([r, c]) => at(r, c));
-  const bytes = [];
-  for (let i = 0; i < msg.length; i += 8) bytes.push(fromBits(msg.slice(i, i + 8)));
-  for (let i = 0; i < par.length; i += 8) bytes.push(fromBits(par.slice(i, i + 8)));
-  const rs = rsDecode(bytes, L.p);
-  if (!rs.ok) return { ok: false, stage: "reed-solomon" };
-  const bits = rs.data.slice(0, L.m).flatMap((b) => toBits(b, 8));
-  const res = parseMessage(bits, N);
-  return { ...res, corrected: rs.corrected, codewordBytes: L.B };
+  const idx = (r, c) => { let [rr, cc] = rot(N, r, c, k); if (mirror) cc = N - 1 - cc; return rr * N + cc; };
+  const at = (r, c) => grid.bit[idx(r, c)], conf = (r, c) => grid.conf[idx(r, c)];
+  // two layouts per size: without and with the 64-bit postmark; RS and the
+  // header's own flag tell which one this is
+  let first = null;
+  for (const postmark of [false, true]) {
+    const L = layout(N, null, { postmark });
+    if (!L) continue;
+    const cellsCw = [...L.msgCells, ...L.parityCells];
+    const bitsCw = cellsCw.map(([r, c]) => at(r, c));
+    const pack = (bits) => { const out = []; for (let i = 0; i < bits.length; i += 8) out.push(fromBits(bits.slice(i, i + 8))); return out; };
+    let rs = rsDecode(pack(bitsCw), L.p);
+    if (!rs.ok) {
+      // Chase: flip up to 4 of the 12 least certain cells and let RS try again;
+      // anything it accepts must still pass the CRC-16 below
+      const K = 12, weak = cellsCw.map(([r, c], i) => [conf(r, c), i]).sort((x, y) => x[0] - y[0]).slice(0, K).map(([, i]) => i);
+      const subsets = [];
+      for (let a = 0; a < K; a++) { subsets.push([a]); for (let b = a + 1; b < K; b++) { subsets.push([a, b]); for (let c = b + 1; c < K; c++) { subsets.push([a, b, c]); for (let d = c + 1; d < K; d++) subsets.push([a, b, c, d]); } } }
+      subsets.sort((x, y) => x.length - y.length);
+      for (const sub of subsets) {
+        const tryBits = bitsCw.slice();
+        for (const q of sub) tryBits[weak[q]] ^= 1;
+        const r2 = rsDecode(pack(tryBits), L.p);
+        if (r2.ok) { const bits = r2.data.slice(0, L.m).flatMap((b) => toBits(b, 8)); const res = parseMessage(bits, N, { postmark }); if (res.ok) { rs = { ...r2, corrected: r2.corrected + sub.length }; break; } }
+      }
+    }
+    if (!rs.ok) { first ??= { ok: false, stage: "reed-solomon" }; continue; }
+    const bits = rs.data.slice(0, L.m).flatMap((b) => toBits(b, 8));
+    const res = parseMessage(bits, N, { postmark });
+    if (res.ok) return { ...res, corrected: rs.corrected, codewordBytes: L.B };
+    if (!first || first.stage === "reed-solomon") first = res;
+  }
+  return first ?? { ok: false, stage: "timing" };
 }
 
 function orientations(grid, N) {
