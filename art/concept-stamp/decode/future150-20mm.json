@@ -1,0 +1,646 @@
+{
+ "ok": true,
+ "code": "S22v1-FF-20AC-66DBCD",
+ "species": 22,
+ "version": 1,
+ "read": [
+  "Coat",
+  "Face",
+  "Shape",
+  "Legs & tail",
+  "Movement",
+  "Stamina",
+  "Nature",
+  "Glow"
+ ],
+ "unread": [],
+ "copies": {
+  "future.coat-1": [
+   "a4",
+   "a3"
+  ],
+  "future.coat-2": [
+   "a3",
+   "a3"
+  ],
+  "future.coat-3": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-4": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-5": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-6": [
+   "a0",
+   "a1"
+  ],
+  "future.coat-7": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-8": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-9": [
+   "a0",
+   "a1"
+  ],
+  "future.coat-10": [
+   "a1",
+   "a0"
+  ],
+  "future.coat-11": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-12": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-13": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-14": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-15": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-16": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-17": [
+   "a0",
+   "a1"
+  ],
+  "future.coat-18": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-19": [
+   "a0",
+   "a1"
+  ],
+  "future.coat-20": [
+   "a2",
+   "a1"
+  ],
+  "future.coat-21": [
+   "a2",
+   "a2"
+  ],
+  "future.coat-22": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-23": [
+   "a0",
+   "a2"
+  ],
+  "future.coat-24": [
+   "a0",
+   "a2"
+  ],
+  "future.coat-25": [
+   "a1",
+   "a0"
+  ],
+  "future.coat-26": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-27": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-28": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-29": [
+   "a1",
+   "a0"
+  ],
+  "future.coat-30": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-31": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-32": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-33": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-34": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-35": [
+   "a1",
+   "a1"
+  ],
+  "future.coat-36": [
+   "a0",
+   "a0"
+  ],
+  "future.coat-37": [
+   "a0",
+   "a1"
+  ],
+  "future.face-1": [
+   "a0",
+   "a1"
+  ],
+  "future.face-2": [
+   "a8",
+   "a0"
+  ],
+  "future.face-3": [
+   "a5",
+   "a3"
+  ],
+  "future.face-4": [
+   "a1",
+   "a0"
+  ],
+  "future.face-5": [
+   "a1",
+   "a1"
+  ],
+  "future.face-6": [
+   "a0",
+   "a1"
+  ],
+  "future.face-7": [
+   "a1",
+   "a1"
+  ],
+  "future.face-8": [
+   "a1",
+   "a0"
+  ],
+  "future.face-9": [
+   "a1",
+   "a1"
+  ],
+  "future.face-10": [
+   "a0",
+   "a0"
+  ],
+  "future.face-11": [
+   "a0",
+   "a0"
+  ],
+  "future.face-12": [
+   "a1",
+   "a1"
+  ],
+  "future.face-13": [
+   "a1",
+   "a0"
+  ],
+  "future.face-14": [
+   "a0",
+   "a0"
+  ],
+  "future.face-15": [
+   "a1",
+   "a1"
+  ],
+  "future.face-16": [
+   "a0",
+   "a0"
+  ],
+  "future.face-17": [
+   "a1",
+   "a1"
+  ],
+  "future.face-18": [
+   "a0",
+   "a1"
+  ],
+  "future.shape-1": [
+   "a1",
+   "a0"
+  ],
+  "future.shape-2": [
+   "a1",
+   "a0"
+  ],
+  "future.shape-3": [
+   "a1",
+   "a1"
+  ],
+  "future.shape-4": [
+   "a0",
+   "a0"
+  ],
+  "future.shape-5": [
+   "a0",
+   "a0"
+  ],
+  "future.shape-6": [
+   "a2",
+   "a1"
+  ],
+  "future.shape-7": [
+   "a0",
+   "a1"
+  ],
+  "future.shape-8": [
+   "a0",
+   "a1"
+  ],
+  "future.shape-9": [
+   "a1",
+   "a1"
+  ],
+  "future.shape-10": [
+   "a1",
+   "a0"
+  ],
+  "future.shape-11": [
+   "a0",
+   "a0"
+  ],
+  "future.shape-12": [
+   "a0",
+   "a0"
+  ],
+  "future.shape-13": [
+   "a0",
+   "a1"
+  ],
+  "future.shape-14": [
+   "a0",
+   "a1"
+  ],
+  "future.shape-15": [
+   "a1",
+   "a0"
+  ],
+  "future.legs-tail-1": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-2": [
+   "a0",
+   "a1"
+  ],
+  "future.legs-tail-3": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-4": [
+   "a0",
+   "a1"
+  ],
+  "future.legs-tail-5": [
+   "a1",
+   "a1"
+  ],
+  "future.legs-tail-6": [
+   "a0",
+   "a1"
+  ],
+  "future.legs-tail-7": [
+   "a5",
+   "a6"
+  ],
+  "future.legs-tail-8": [
+   "a5",
+   "a3"
+  ],
+  "future.legs-tail-9": [
+   "a0",
+   "a1"
+  ],
+  "future.legs-tail-10": [
+   "a1",
+   "a0"
+  ],
+  "future.legs-tail-11": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-12": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-13": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-14": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-15": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-16": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-17": [
+   "a1",
+   "a1"
+  ],
+  "future.legs-tail-18": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-19": [
+   "a0",
+   "a1"
+  ],
+  "future.legs-tail-20": [
+   "a1",
+   "a1"
+  ],
+  "future.legs-tail-21": [
+   "a1",
+   "a0"
+  ],
+  "future.legs-tail-22": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-23": [
+   "a1",
+   "a1"
+  ],
+  "future.legs-tail-24": [
+   "a0",
+   "a1"
+  ],
+  "future.legs-tail-25": [
+   "a0",
+   "a0"
+  ],
+  "future.legs-tail-26": [
+   "a1",
+   "a2"
+  ],
+  "future.legs-tail-27": [
+   "a2",
+   "a0"
+  ],
+  "future.legs-tail-28": [
+   "a2",
+   "a0"
+  ],
+  "future.legs-tail-29": [
+   "a0",
+   "a1"
+  ],
+  "future.movement-1": [
+   "a0",
+   "a0"
+  ],
+  "future.movement-2": [
+   "a0",
+   "a0"
+  ],
+  "future.movement-3": [
+   "a0",
+   "a1"
+  ],
+  "future.movement-4": [
+   "a0",
+   "a0"
+  ],
+  "future.movement-5": [
+   "a1",
+   "a0"
+  ],
+  "future.movement-6": [
+   "a0",
+   "a0"
+  ],
+  "future.movement-7": [
+   "a0",
+   "a0"
+  ],
+  "future.movement-8": [
+   "a0",
+   "a1"
+  ],
+  "future.movement-9": [
+   "a1",
+   "a1"
+  ],
+  "future.movement-10": [
+   "a0",
+   "a0"
+  ],
+  "future.movement-11": [
+   "a0",
+   "a1"
+  ],
+  "future.movement-12": [
+   "a1",
+   "a1"
+  ],
+  "future.movement-13": [
+   "a1",
+   "a0"
+  ],
+  "future.movement-14": [
+   "a1",
+   "a1"
+  ],
+  "future.movement-15": [
+   "a0",
+   "a1"
+  ],
+  "future.movement-16": [
+   "a6",
+   "a5"
+  ],
+  "future.movement-17": [
+   "a0",
+   "a5"
+  ],
+  "future.movement-18": [
+   "a1",
+   "a1"
+  ],
+  "future.movement-19": [
+   "a1",
+   "a1"
+  ],
+  "future.movement-20": [
+   "a1",
+   "a1"
+  ],
+  "future.movement-21": [
+   "a0",
+   "a0"
+  ],
+  "future.movement-22": [
+   "a1",
+   "a1"
+  ],
+  "future.stamina-1": [
+   "a0",
+   "a1"
+  ],
+  "future.stamina-2": [
+   "a1",
+   "a0"
+  ],
+  "future.stamina-3": [
+   "a0",
+   "a1"
+  ],
+  "future.stamina-4": [
+   "a1",
+   "a1"
+  ],
+  "future.stamina-5": [
+   "a1",
+   "a1"
+  ],
+  "future.stamina-6": [
+   "a1",
+   "a0"
+  ],
+  "future.stamina-7": [
+   "a0",
+   "a1"
+  ],
+  "future.stamina-8": [
+   "a0",
+   "a0"
+  ],
+  "future.stamina-9": [
+   "a1",
+   "a0"
+  ],
+  "future.stamina-10": [
+   "a1",
+   "a0"
+  ],
+  "future.stamina-11": [
+   "a0",
+   "a1"
+  ],
+  "future.nature-1": [
+   "a1",
+   "a1"
+  ],
+  "future.nature-2": [
+   "a0",
+   "a1"
+  ],
+  "future.nature-3": [
+   "a0",
+   "a1"
+  ],
+  "future.nature-4": [
+   "a0",
+   "a2"
+  ],
+  "future.nature-5": [
+   "a1",
+   "a1"
+  ],
+  "future.nature-6": [
+   "a1",
+   "a2"
+  ],
+  "future.nature-7": [
+   "a0",
+   "a0"
+  ],
+  "future.glow-1": [
+   "a1",
+   "a1"
+  ],
+  "future.glow-2": [
+   "a1",
+   "a1"
+  ],
+  "future.glow-3": [
+   "a1",
+   "a1"
+  ],
+  "future.glow-4": [
+   "a1",
+   "a0"
+  ],
+  "future.glow-5": [
+   "a0",
+   "a1"
+  ],
+  "future.glow-6": [
+   "a0",
+   "a0"
+  ],
+  "future.glow-7": [
+   "a0",
+   "a0"
+  ],
+  "future.glow-8": [
+   "a1",
+   "a0"
+  ],
+  "future.glow-9": [
+   "a1",
+   "a1"
+  ],
+  "future.glow-10": [
+   "a0",
+   "a1"
+  ],
+  "future.glow-11": [
+   "a0",
+   "a0"
+  ]
+ },
+ "crc": 8364,
+ "postmark": "none",
+ "stamp": {
+  "cells": 37,
+  "correctedBytes": 0,
+  "of": 115,
+  "mirrored": false,
+  "quad": [
+   [
+    8.5,
+    8.5
+   ],
+   [
+    159.5,
+    8.5
+   ],
+   [
+    159.5,
+    159.5
+   ],
+   [
+    8.5,
+    159.5
+   ]
+  ]
+ }
+}
+1 stamp(s), 99 ms

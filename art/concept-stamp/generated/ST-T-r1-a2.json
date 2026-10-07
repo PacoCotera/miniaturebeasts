@@ -1,0 +1,68 @@
+{
+  "id": "tome-plate-trebola",
+  "direction": "T",
+  "round": 1,
+  "attempt": 2,
+  "tag": "ST-T-r1-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts illustration for a botanical-tome page in the game's Library. Flat artwork filling a 1:1 canvas, painted with clean light from the upper left, soft shadows, crisp edges, no noise. No creature, no person, no text, no letters, no logos.\nA PRESSED-SPECIMEN PLATE from a botanical tome: an aged cream paper page with a deckled edge, and on it a rectangular engraved frame in fine dark-moss ink whose border motif is a repeating three-leaf clover sprig (trefoil leaves, small, botanical, like an old herbarium plate border), with a tiny engraved corner ornament at each of its four corners; the frame encloses the empty central square with a generous paper margin inside the frame line; beneath the frame a thin engraved rule and nothing else; a faint pressed leaf shadow in one outer corner of the page. Colours: cream paper, moss-dark ink, a hint of faded green. Quiet, exact, a herbarium feel.\nTEXT: none at all; no letters, numerals or words anywhere.\nConstraints: the centre of the canvas is a perfectly empty, flat, unmarked square of warm cream paper covering about 55 percent of the width and height; nothing is drawn inside it, no texture, no lines, no vignette, no shadow; everything decorative stays outside that square. Nothing looks like a QR code, a barcode or a grid.",
+  "preamble": "Reference image follows; its role is stated. Image 1 shows the clan's defining feature, a three-leaf crest; take only the leaf shape for the engraved border motif. Do not draw the creature.",
+  "imageInputs": [
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "clan reference only: the three-leaf crest of this clan is the border motif's source; do not draw the creature",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "1:1",
+    "imageSize": "2K"
+  },
+  "targetSize": "1024x1024",
+  "screenCrop": "none",
+  "time": "2026-10-07T22:19:36Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "generated/raw/ST-T-r1-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2048,
+      "height": 2048,
+      "sha256": "a2ad6adcc0018e7ba65c6f54035dbda86ab1ff0f2ab967451aba489f1f6a4c5b"
+    },
+    "png": {
+      "file": "ST-T-r1-a2-canvas.png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "f66668b03ca7c83af90870bdc7fee75516e5640a1ad0978150c12436db8407e9"
+    },
+    "finishReason": "STOP",
+    "seconds": 21.7,
+    "usage": {
+      "promptTokenCount": 633,
+      "candidatesTokenCount": 1355,
+      "totalTokenCount": 2264,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 375
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 276,
+      "serviceTier": "standard"
+    },
+    "disposition": "kept as alternative (lighter trefoil border, a rule under the frame; also carries the 150-loci stamp in the README)"
+  }
+}
