@@ -1,0 +1,207 @@
+{
+ "schema": "mb-frame-registry/1",
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 7,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "species": [
+  {
+   "id": "S01",
+   "name": "S01",
+   "clan": "C01",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "tier": "starter",
+   "file": "species-S01.json",
+   "open": 5,
+   "traits": 5,
+   "carried": 48
+  },
+  {
+   "id": "S02",
+   "name": "S02",
+   "clan": "C02",
+   "plan": "R1·flaps",
+   "rig": "R1",
+   "tier": "early",
+   "file": "species-S02.json",
+   "open": 21,
+   "traits": 13,
+   "carried": 43
+  },
+  {
+   "id": "S03",
+   "name": "S03",
+   "clan": "C03",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "mid",
+   "file": "species-S03.json",
+   "open": 40,
+   "traits": 25,
+   "carried": 60
+  },
+  {
+   "id": "S04",
+   "name": "S04",
+   "clan": "C04",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "starter",
+   "file": "species-S04.json",
+   "open": 13,
+   "traits": 7,
+   "carried": 61
+  },
+  {
+   "id": "S05",
+   "name": "S05",
+   "clan": "C05",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "early",
+   "file": "species-S05.json",
+   "open": 17,
+   "traits": 11,
+   "carried": 55
+  },
+  {
+   "id": "S06",
+   "name": "S06",
+   "clan": "C06",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "early",
+   "file": "species-S06.json",
+   "open": 16,
+   "traits": 12,
+   "carried": 57
+  },
+  {
+   "id": "S07",
+   "name": "S07",
+   "clan": "C07",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "tier": "mid",
+   "file": "species-S07.json",
+   "open": 26,
+   "traits": 17,
+   "carried": 46
+  },
+  {
+   "id": "S08",
+   "name": "S08",
+   "clan": "C08",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "mid",
+   "file": "species-S08.json",
+   "open": 27,
+   "traits": 14,
+   "carried": 56
+  },
+  {
+   "id": "S09",
+   "name": "S09",
+   "clan": "C09",
+   "plan": "B2·L4·flaps",
+   "rig": "B2",
+   "tier": "late",
+   "file": "species-S09.json",
+   "open": 44,
+   "traits": 29,
+   "carried": 61
+  },
+  {
+   "id": "S10",
+   "name": "S10",
+   "clan": "C10",
+   "plan": "B3·L4",
+   "rig": "B3",
+   "tier": "mid",
+   "file": "species-S10.json",
+   "open": 23,
+   "traits": 15,
+   "carried": 54
+  },
+  {
+   "id": "S11",
+   "name": "S11",
+   "clan": "C11",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "tier": "late",
+   "file": "species-S11.json",
+   "open": 34,
+   "traits": 22,
+   "carried": 43
+  },
+  {
+   "id": "S12",
+   "name": "S12",
+   "clan": "C12",
+   "plan": "B3·L6·flaps",
+   "rig": "B3",
+   "tier": "early",
+   "file": "species-S12.json",
+   "open": 13,
+   "traits": 9,
+   "carried": 49
+  },
+  {
+   "id": "S13",
+   "name": "S13",
+   "clan": "C13",
+   "plan": "B3·L6",
+   "rig": "B3",
+   "tier": "mid",
+   "file": "species-S13.json",
+   "open": 20,
+   "traits": 12,
+   "carried": 47
+  },
+  {
+   "id": "S14",
+   "name": "S14",
+   "clan": "C14",
+   "plan": "B3",
+   "rig": "B3",
+   "tier": "early",
+   "file": "species-S14.json",
+   "open": 12,
+   "traits": 8,
+   "carried": 35
+  },
+  {
+   "id": "S15",
+   "name": "S15",
+   "clan": "C15",
+   "plan": "Rfan2·rays",
+   "rig": "Rfan2",
+   "tier": "late",
+   "file": "species-S15.json",
+   "open": 30,
+   "traits": 20,
+   "carried": 39
+  },
+  {
+   "id": "S16",
+   "name": "S16",
+   "clan": "C16",
+   "plan": "Bfan3",
+   "rig": "Bfan",
+   "tier": "late",
+   "file": "species-S16.json",
+   "open": 27,
+   "traits": 21,
+   "carried": 35
+  }
+ ]
+}
