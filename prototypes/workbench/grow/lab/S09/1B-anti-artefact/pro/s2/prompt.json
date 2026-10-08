@@ -1,0 +1,287 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "1B-anti-artefact",
+  "name": "Anti-artefact words",
+  "change": "Step 1, anti-artefact words only: the limbs sentence names living anatomy and the artefacts to avoid.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "Step 1, anti-artefact words only: the limbs sentence names living anatomy and the artefacts to avoid.",
+ "costUSD": 0.3307,
+ "step1": {
+  "callId": "4d93f491-3cab-430b-a4c1-3982f48c2a82",
+  "status": "ok",
+  "costUSD": 0.1635,
+  "seconds": 15.6,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.326,
+   "silhouetteIoUInPlace": 0.262,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "neck": {
+     "span": 0.894,
+     "coverage": 0.696
+    },
+    "head": {
+     "span": 0.103,
+     "coverage": 0.0
+    },
+    "beak": {
+     "span": 0.0,
+     "coverage": 0.0
+    },
+    "crown": {
+     "span": 0.0,
+     "coverage": 0.0
+    },
+    "leg-0": {
+     "span": 1.0,
+     "coverage": 0.725
+    },
+    "flap": {
+     "span": 0.673,
+     "coverage": 0.693
+    },
+    "tail": {
+     "span": 0.755,
+     "coverage": 0.837
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.375,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.291,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.287,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.092,
+     "ok": false
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.116,
+     "ok": false
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.389,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.417,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.276,
+     "median": "#e3b963",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@region-1": {
+     "agreement": 1.0,
+     "median": "#2349b0",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.553,
+     "median": "#3f6888",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.914,
+     "median": "#c7964e",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.009,
+     "median": "#3468ce",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (35% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "part of the drawn body is left unpainted (16% of the body inside a 20 px band): a part was dropped or moved",
+    "a part is missing or moved from where the part map puts it: head (painted along 10% of its length), beak (painted along 0% of its length), crown (painted along 0% of its length)",
+    "the proportions are off: the head is smaller than drawn (0.09 of the body against 0.31), the crown is smaller than drawn (0.12 of the body against 0.30)",
+    "a pigment slot is painted in another slot's colour: the body slot on the region-0 (painted #e3b963, the colour of second), the second slot on the flap (painted #3468ce, the colour of body)"
+   ],
+   "outside": 0.349,
+   "missing": 0.165,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.548,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "a46ed848-7793-4eb1-be83-70f2b832f58c",
+  "status": "ok",
+  "costUSD": 0.16719,
+  "seconds": 19.4,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.326,
+   "silhouetteIoUInPlace": 0.263,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "neck": {
+     "span": 0.894,
+     "coverage": 0.699
+    },
+    "head": {
+     "span": 0.103,
+     "coverage": 0.0
+    },
+    "beak": {
+     "span": 0.0,
+     "coverage": 0.0
+    },
+    "crown": {
+     "span": 0.0,
+     "coverage": 0.0
+    },
+    "leg-0": {
+     "span": 1.0,
+     "coverage": 0.695
+    },
+    "flap": {
+     "span": 0.667,
+     "coverage": 0.683
+    },
+    "tail": {
+     "span": 0.725,
+     "coverage": 0.827
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.376,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.291,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.287,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.096,
+     "ok": false
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.128,
+     "ok": false
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.388,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.413,
+     "ok": false
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.286,
+     "median": "#ab8159",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@region-1": {
+     "agreement": 1.0,
+     "median": "#35589c",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.561,
+     "median": "#718192",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.941,
+     "median": "#b3854a",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.054,
+     "median": "#5d95ca",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (34% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "part of the drawn body is left unpainted (16% of the body inside a 20 px band): a part was dropped or moved",
+    "a part is missing or moved from where the part map puts it: head (painted along 10% of its length), beak (painted along 0% of its length), crown (painted along 0% of its length)",
+    "the proportions are off: the head is smaller than drawn (0.10 of the body against 0.31), the crown is smaller than drawn (0.13 of the body against 0.30), the flap is smaller than drawn (0.41 of the body against 0.62)",
+    "a pigment slot is painted in another slot's colour: the body slot on the region-0 (painted #ab8159, the colour of second), the second slot on the flap (painted #5d95ca, the colour of body)"
+   ],
+   "outside": 0.338,
+   "missing": 0.164,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.56,
+   "passed": false,
+   "gated": false
+  }
+ }
+}
