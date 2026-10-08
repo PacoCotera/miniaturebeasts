@@ -1,0 +1,243 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 3,
+ "controlVariant": "lowres",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "b9edb8e4-3d29-4737-aa0a-ea3388f2046c",
+     "status": "ok",
+     "costUSD": 0.09954,
+     "seconds": 8.8,
+     "checks": {
+      "silhouetteIoU": 0.631,
+      "silhouetteIoUInPlace": 0.828,
+      "parts": {
+       "region-0": 0.939,
+       "region-1": 0.573,
+       "neck": 1.0,
+       "head": 0.961,
+       "leg-0": 0.425,
+       "flap": 0.524,
+       "tail": 0.918
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.407,
+        "painted": 0.545,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.206,
+        "painted": 0.32,
+        "ok": false
+       },
+       "head": {
+        "drawn": 0.263,
+        "painted": 0.371,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.416,
+        "painted": 0.451,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.58,
+        "painted": 0.58,
+        "ok": true
+       },
+       "tail": {
+        "drawn": 0.241,
+        "painted": 0.314,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.9,
+        "median": "#4f7c94",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.925,
+        "median": "#509aa1",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 0.977,
+        "median": "#707fb1",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.867,
+        "median": "#c5c4a9",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second#2@leg-0": {
+        "agreement": 0.92,
+        "median": "#d3d4ba",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 1.0,
+        "median": "#dbe0d4",
+        "nearest": "#d9ecf5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: leg-0 (0.42)",
+       "the proportions are off: the neck is larger than drawn (0.32 of the body against 0.21)"
+      ],
+      "outside": 0.003,
+      "missing": 0.008,
+      "bandTolerancePx": 22,
+      "slotAgreement": 0.927,
+      "passed": false
+     },
+     "responseId": "hBPHavKHLOTh_uMPvp6L0Q0"
+    },
+    {
+     "callId": "cdbc07a9-94da-4781-8162-74597242bd0b",
+     "status": "ok",
+     "costUSD": 0.09827,
+     "seconds": 8.7,
+     "checks": {
+      "silhouetteIoU": 0.758,
+      "silhouetteIoUInPlace": 0.858,
+      "parts": {
+       "region-0": 0.98,
+       "region-1": 0.959,
+       "neck": 0.994,
+       "head": 0.958,
+       "leg-0": 0.875,
+       "flap": 0.813,
+       "tail": 0.764
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.407,
+        "painted": 0.502,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.206,
+        "painted": 0.295,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.263,
+        "painted": 0.34,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.416,
+        "painted": 0.455,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.58,
+        "painted": 0.588,
+        "ok": true
+       },
+       "tail": {
+        "drawn": 0.241,
+        "painted": 0.289,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.913,
+        "median": "#2c7f86",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.867,
+        "median": "#8580c5",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 0.999,
+        "median": "#7479b6",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.79,
+        "median": "#aac1cd",
+        "nearest": "#d9ecf5",
+        "ok": true
+       },
+       "second#2@leg-0": {
+        "agreement": 0.835,
+        "median": "#b4cbd6",
+        "nearest": "#d9ecf5",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.955,
+        "median": "#f2dca0",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.004,
+      "missing": 0.0,
+      "bandTolerancePx": 22,
+      "slotAgreement": 0.903,
+      "passed": true
+     },
+     "responseId": "qBPHauizJZqPjMcP3t-G2Q4"
+    }
+   ]
+  }
+ },
+ "species": "S09",
+ "name": "Belatz",
+ "level": "individual",
+ "genomeDigest": "S09-bb2b96cc",
+ "genomeSha256": "e6ce67f233ad191f86d477075c9feaab6d3159b0cc56657ddc8b70280ce33250",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Coat: colour lagoon and periwinkle; fluff long and swept; sheen between; feathers between; fur reach bushy tail and ears; second colour butter and ice. Face: head between; beak short; crest between; crown low; eyes between. Shape: waist thick; back line dipping; hind body small; body pear; build stout. Legs & tail: tail curl straight; tail long, thick. Proportions: a large body, a short beak, a low crest, long legs, broad feet, a thick waist, a dipping back, a long tail, wide flaps, a stout build.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Belatz)",
+  "name": "species/S09/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T03:52:35Z",
+ "outputs": {
+  "station-portrait-600x620.png": "a2c02c9f63df89a471f111bdda757c9d44090589a00881c19db22036ac46bec3",
+  "station-portrait-300x310.png": "9e4228008aac25aba956f463fd800c2d1690d2e5958ee4bc9701f244237cb04c",
+  "companion-280x300.png": "836a96f6ade04219f58fd278665057445a01c2f9d2b0a4050755c7633b5825bb",
+  "token-48.png": "17f45cc76bcd6cdd1524c8fa6166284953f600b5006b9713c9465b4246f31262"
+ },
+ "calls": 2,
+ "costUSD": 0.19781,
+ "seconds": 17.5,
+ "finishedAt": "2026-10-08T03:53:46Z"
+}

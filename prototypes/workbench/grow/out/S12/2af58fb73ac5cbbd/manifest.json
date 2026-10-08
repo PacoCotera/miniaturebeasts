@@ -6,7 +6,7 @@
  "controlVariant": "blurred",
  "views": {
   "portrait": {
-   "status": "painted",
+   "status": "plain",
    "attempts": [
     {
      "callId": "4b6e7b58-3756-445e-8e91-723b21cfaae9",
@@ -14,6 +14,101 @@
      "costUSD": 0.09313,
      "seconds": 10.0,
      "checks": {
+      "silhouetteIoU": 0.757,
+      "silhouetteIoUInPlace": 0.747,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-0": {
+        "span": 0.679,
+        "coverage": 0.835
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.946,
+        "coverage": 0.998
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.291,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.268,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.474,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.752,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.727,
+        "median": "#cf973b",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.956,
+        "median": "#d79c3e",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.135,
+        "median": "#e3b557",
+        "nearest": "#e8b83f",
+        "ok": false
+       },
+       "second@flap": {
+        "agreement": 0.916,
+        "median": "#ead1a3",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #e3b557, the colour of body)"
+      ],
+      "outside": 0.052,
+      "missing": 0.0,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.844,
+      "passed": false
+     },
+     "responseId": "JRHHauG3MPHc_uMPttuywAE",
+     "checksAsRun": {
       "silhouetteIoU": 0.964,
       "silhouetteIoUInPlace": 0.964,
       "parts": {
@@ -80,10 +175,11 @@
       "bandTolerancePx": 20,
       "slotAgreement": 0.986,
       "passed": true
-     },
-     "responseId": "JRHHauG3MPHc_uMPttuywAE"
+     }
     }
-   ]
+   ],
+   "servedBy": null,
+   "rechecked": "2026-10-08T04:17:33Z"
   },
   "side": {
    "status": "painted",
@@ -94,6 +190,88 @@
      "costUSD": 0.0937,
      "seconds": 8.2,
      "checks": {
+      "silhouetteIoU": 0.961,
+      "silhouetteIoUInPlace": 0.972,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 0.988,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.996,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.199,
+        "painted": 0.24,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.197,
+        "painted": 0.234,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.549,
+        "painted": 0.589,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#e7b53f",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 1.0,
+        "median": "#e6b33d",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 1.0,
+        "median": "#fcecb1",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.0,
+      "bandTolerancePx": 20,
+      "slotAgreement": 1.0,
+      "passed": true
+     },
+     "responseId": "NxHHasXrFNzh_uMPlcHO8Ag",
+     "checksAsRun": {
       "silhouetteIoU": 0.961,
       "silhouetteIoUInPlace": 0.972,
       "parts": {
@@ -149,10 +327,11 @@
       "bandTolerancePx": 20,
       "slotAgreement": 1.0,
       "passed": true
-     },
-     "responseId": "NxHHasXrFNzh_uMPlcHO8Ag"
+     }
     }
-   ]
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:17:47Z"
   }
  },
  "species": "S12",
@@ -180,15 +359,17 @@
  },
  "startedAt": "2026-10-08T03:42:29Z",
  "outputs": {
-  "station-portrait-600x620.png": "75d9ce490c4edb069ae2e13df4b71e1fa89c58c86f286d90ec1c6ea87984df8c",
-  "station-portrait-300x310.png": "d56bcc2dfa8b6c158b36498db598f541459eff688ae986e9d15b32d1b36c7d8c",
+  "station-portrait-600x620.png": "7a134a18e19de611e1051e1b12ca047bcb9eb102fc3a9a534187a55be3c2925d",
+  "station-portrait-300x310.png": "98b7dd7d54b0389077aa70167aa7805e299b9e677312451488fd51bbe1cafc65",
   "station-side-600x620.png": "800fdf22d2c5a87a7fdcd40d5089520b607b5ce84d7786844732fde6daaf13fa",
   "station-side-300x310.png": "dcbb25e87783950d457035b86f8d2e2b0beb60de14389ffcce75ece5565e367e",
-  "companion-280x300.png": "6f58c2db4b62ca44173ed82a103dabd726aad5e90ab9b37f28bf3551f4e6f8cc",
-  "token-48.png": "47a15f61351f43e4ea1a1754da4b77fcf78f2cd175ea4f90e365984f9f72bde6"
+  "companion-280x300.png": "6042506ae2de2db5d3d1cdfe5950e21c3f2507ee6b9adf394525e3ad1feb185e",
+  "token-48.png": "31b9bf53c32a5092ea9525f01a5e7bb56c36aff90119c54b5575416579c2e0b0"
  },
  "calls": 2,
  "costUSD": 0.18683,
  "seconds": 18.2,
- "finishedAt": "2026-10-08T03:43:01Z"
+ "finishedAt": "2026-10-08T03:43:01Z",
+ "rechecked": "2026-10-08T04:17:47Z",
+ "checksVersion": "mb-grow-checks/3"
 }

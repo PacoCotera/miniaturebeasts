@@ -17,6 +17,104 @@
       "silhouetteIoU": 0.768,
       "silhouetteIoUInPlace": 0.936,
       "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.844
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.779
+       },
+       "muzzle": {
+        "span": 0.774,
+        "coverage": 0.636
+       },
+       "leg-0": {
+        "span": 0.828,
+        "coverage": 0.833
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.636
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.698,
+        "painted": 0.776,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.415,
+        "painted": 0.456,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.265,
+        "painted": 0.249,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.776,
+        "painted": 0.753,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.346,
+        "painted": 0.394,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.738,
+        "median": "#566164",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.958,
+        "median": "#535c60",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 0.963,
+        "median": "#616e71",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.945,
+        "median": "#c1a781",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.93,
+        "median": "#bfa47d",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.795,
+        "median": "#bca587",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.058,
+      "bandTolerancePx": 17,
+      "slotAgreement": 0.847,
+      "passed": true
+     },
+     "responseId": "kBHHarnVFNKL_uMPqYnB8AE",
+     "checksAsRun": {
+      "silhouetteIoU": 0.768,
+      "silhouetteIoUInPlace": 0.936,
+      "parts": {
        "region-0": 0.844,
        "head": 0.779,
        "muzzle": 0.636,
@@ -94,10 +192,11 @@
       "bandTolerancePx": 17,
       "slotAgreement": 0.847,
       "passed": true
-     },
-     "responseId": "kBHHarnVFNKL_uMPqYnB8AE"
+     }
     }
-   ]
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:09:30Z"
   },
   "side": {
    "status": "plain",
@@ -108,6 +207,96 @@
      "costUSD": 0.09257,
      "seconds": 8.1,
      "checks": {
+      "silhouetteIoU": 0.676,
+      "silhouetteIoUInPlace": 0.875,
+      "parts": {
+       "region-0": {
+        "span": 0.888,
+        "coverage": 0.764
+       },
+       "head": {
+        "span": 0.983,
+        "coverage": 0.782
+       },
+       "muzzle": {
+        "span": 0.579,
+        "coverage": 0.108
+       },
+       "leg-0": {
+        "span": 1.0,
+        "coverage": 0.95
+       },
+       "leg-1": {
+        "span": 0.74,
+        "coverage": 0.638
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.627,
+        "painted": 0.699,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.395,
+        "painted": 0.469,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.283,
+        "painted": 0.348,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.287,
+        "painted": 0.351,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.828,
+        "median": "#5c6667",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.918,
+        "median": "#525c5e",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.055,
+        "median": "#4e5859",
+        "nearest": "#465459",
+        "ok": false
+       },
+       "second@leg-1": {
+        "agreement": 0.018,
+        "median": "#424d4f",
+        "nearest": "#465459",
+        "ok": false
+       },
+       "belly@region-0": {
+        "agreement": 0.517,
+        "median": "#977f6e",
+        "nearest": "#465459",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: muzzle (painted along 58% of its length)",
+       "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #4e5859, the colour of body), the second slot on the leg-1 (painted #424d4f, the colour of body)"
+      ],
+      "outside": 0.022,
+      "missing": 0.1,
+      "bandTolerancePx": 18,
+      "slotAgreement": 0.593,
+      "passed": false
+     },
+     "responseId": "rBHHavTrOLvu-8YP4eCdKA",
+     "checksAsRun": {
       "silhouetteIoU": 0.676,
       "silhouetteIoUInPlace": 0.875,
       "parts": {
@@ -180,8 +369,7 @@
       "bandTolerancePx": 18,
       "slotAgreement": 0.593,
       "passed": false
-     },
-     "responseId": "rBHHavTrOLvu-8YP4eCdKA"
+     }
     },
     {
      "callId": "90f59ab2-809f-46d3-8461-fe07c27b4bfc",
@@ -189,6 +377,96 @@
      "costUSD": 0.0919,
      "seconds": 8.9,
      "checks": {
+      "silhouetteIoU": 0.677,
+      "silhouetteIoUInPlace": 0.883,
+      "parts": {
+       "region-0": {
+        "span": 0.885,
+        "coverage": 0.759
+       },
+       "head": {
+        "span": 0.983,
+        "coverage": 0.773
+       },
+       "muzzle": {
+        "span": 0.589,
+        "coverage": 0.122
+       },
+       "leg-0": {
+        "span": 1.0,
+        "coverage": 0.979
+       },
+       "leg-1": {
+        "span": 0.725,
+        "coverage": 0.634
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.627,
+        "painted": 0.699,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.395,
+        "painted": 0.469,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.283,
+        "painted": 0.348,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.287,
+        "painted": 0.351,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.919,
+        "median": "#546061",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.882,
+        "median": "#545f60",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.868,
+        "median": "#d1ba94",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.808,
+        "median": "#bca480",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.534,
+        "median": "#9c8270",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "part of the drawn body is left unpainted (10% of the body inside a 18 px band): a part was dropped or moved",
+       "a part is missing or moved from where the part map puts it: muzzle (painted along 59% of its length)"
+      ],
+      "outside": 0.019,
+      "missing": 0.1,
+      "bandTolerancePx": 18,
+      "slotAgreement": 0.812,
+      "passed": false
+     },
+     "responseId": "wRHHaseiK_CB_PUPsMW52Ag",
+     "checksAsRun": {
       "silhouetteIoU": 0.677,
       "silhouetteIoUInPlace": 0.883,
       "parts": {
@@ -261,11 +539,12 @@
       "bandTolerancePx": 18,
       "slotAgreement": 0.812,
       "passed": false
-     },
-     "responseId": "wRHHaseiK_CB_PUPsMW52Ag"
+     }
     }
    ],
-   "lastRejected": "raw/side-2.png"
+   "lastRejected": "raw/side-2.png",
+   "servedBy": null,
+   "rechecked": "2026-10-08T04:09:49Z"
   }
  },
  "species": "S01",
@@ -303,5 +582,7 @@
  "calls": 3,
  "costUSD": 0.27515,
  "seconds": 27.5,
- "finishedAt": "2026-10-08T03:45:23Z"
+ "finishedAt": "2026-10-08T03:45:23Z",
+ "rechecked": "2026-10-08T04:09:50Z",
+ "checksVersion": "mb-grow-checks/3"
 }

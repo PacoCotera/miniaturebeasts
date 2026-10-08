@@ -1,0 +1,246 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 3,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "9f222050-3011-4e0d-89be-3e63bfcede83",
+     "step": 1,
+     "status": "ok",
+     "costUSD": 0.10053,
+     "seconds": 15.3,
+     "checks": {
+      "silhouetteIoU": 0.915,
+      "silhouetteIoUInPlace": 0.915,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "neck": 1.0,
+       "head": 0.957,
+       "beak": 0.997,
+       "leg-0": 1.0,
+       "flap": 1.0,
+       "tail": 1.0
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.407,
+        "painted": 0.486,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.222,
+        "painted": 0.301,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.185,
+        "painted": 0.264,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.267,
+        "painted": 0.344,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.419,
+        "painted": 0.458,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.579,
+        "painted": 0.578,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#2e9b9f",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 1.0,
+        "median": "#2b989c",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@neck": {
+        "agreement": 1.0,
+        "median": "#2e9ba0",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.914,
+        "median": "#2e9a9f",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 1.0,
+        "median": "#efd28a",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 1.0,
+        "median": "#fdedb2",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.006,
+      "bandTolerancePx": 21,
+      "slotAgreement": 0.987,
+      "passed": true
+     },
+     "responseId": "4BTHarTpDerK_uMPwfzf6Ak"
+    },
+    {
+     "callId": "f5dd2f2a-9eac-43c5-abde-92c9ed6440ed",
+     "step": 2,
+     "status": "ok",
+     "costUSD": 0.08883,
+     "seconds": 9.8,
+     "checks": {
+      "silhouetteIoU": 0.898,
+      "silhouetteIoUInPlace": 0.907,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "neck": 1.0,
+       "head": 0.998,
+       "beak": 0.991,
+       "leg-0": 0.997,
+       "flap": 0.998,
+       "tail": 1.0
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.407,
+        "painted": 0.486,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.222,
+        "painted": 0.301,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.185,
+        "painted": 0.264,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.267,
+        "painted": 0.344,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.419,
+        "painted": 0.458,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.579,
+        "painted": 0.579,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.998,
+        "median": "#286975",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 1.0,
+        "median": "#2c6f77",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@neck": {
+        "agreement": 1.0,
+        "median": "#2a6f7b",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.906,
+        "median": "#327d86",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.999,
+        "median": "#c5b48a",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 1.0,
+        "median": "#dfc37c",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.0,
+      "bandTolerancePx": 21,
+      "slotAgreement": 0.984,
+      "passed": true,
+      "gated": false
+     },
+     "responseId": "ARXHaqmGDKq__uMP1YXbuAs"
+    }
+   ],
+   "steps": []
+  }
+ },
+ "species": "S09",
+ "name": "Belatz",
+ "level": "individual",
+ "genomeDigest": "S09-584f4353",
+ "genomeSha256": "fea40f7bc5c3d188dbad85b05316064cfb1b65088888a513a2ab322ec18b79ed",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Coat: colour lagoon; fluff between; sheen matte; feathers long; fur reach bushy tail; second colour butter. Face: head between; beak between; crest between; crown between; eyes between. Shape: waist between; back line dipping; hind body small; body pear; build between. Legs & tail: tail curl straight; tail short, thin. Proportions: a large body, long legs, broad feet, a dipping back, a short tail, wide flaps.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Belatz)",
+  "name": "species/S09/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T03:58:22Z",
+ "outputs": {
+  "station-portrait-600x620.png": "f329e55cf009f5d7bdbcdc4bb5b3c33e982cd246593a8eadec2b2102da036406",
+  "station-portrait-300x310.png": "622efb743adf2ec3e054fa4eb947dd274c0952bab7146b46354c7c5abd844152",
+  "companion-280x300.png": "40b38ae758c22a45a879d4a7162ce0398e577dd8c6216603b2bc80b76201c055",
+  "token-48.png": "c165b02e48606645ea69f17587727352af67f86943d7d220b2d6339244233426"
+ },
+ "calls": 2,
+ "costUSD": 0.18936,
+ "seconds": 25.1,
+ "finishedAt": "2026-10-08T03:59:22Z"
+}

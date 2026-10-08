@@ -1,0 +1,123 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 3,
+ "controlVariant": "crisp",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "d6ba222d-2c78-4900-b659-c41876442fcc",
+     "status": "ok",
+     "costUSD": 0.08899,
+     "seconds": 8.9,
+     "checks": {
+      "silhouetteIoU": 0.819,
+      "silhouetteIoUInPlace": 0.852,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 1.0,
+       "antenna": 1.0,
+       "leg-0": 0.994,
+       "leg-1": 0.987,
+       "leg-2": 0.998,
+       "flap": 1.0
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.261,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.238,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.47,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.756,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#ce9436",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.998,
+        "median": "#e0ae44",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.991,
+        "median": "#fae6a7",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.646,
+        "median": "#e6d8b3",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.033,
+      "missing": 0.0,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.783,
+      "passed": true
+     },
+     "responseId": "NhPHapjkBJG639IPz6jk0A4"
+    }
+   ]
+  }
+ },
+ "species": "S12",
+ "name": "Peplos",
+ "level": "species",
+ "genomeDigest": "S12-94f298de",
+ "genomeSha256": "2af58fb73ac5cbbd45f397f78257f06ee8ebb6b61d774a875fa8c73a275d6e33",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. It is the type of its kind, a moth or butterfly: patterned flaps; fliers of the flowers. Coat: colour marigold; translucency between; flap markings plain; second colour butter. Shape: hind body between. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:51:16Z",
+ "outputs": {
+  "station-portrait-600x620.png": "31463301acd8edc2f5272f92186acd16ba6df9a6691d85b3dd0ddca331f678fc",
+  "station-portrait-300x310.png": "a9b88959b08190c75933eb7bf504db6dafe39fa63856e74a8916fdaddb15bf40",
+  "companion-280x300.png": "de8838c789539e23dd86a8aaaa14ea8adc6efd18f7f2cc3fd1e26851c4bd7e9b",
+  "token-48.png": "03cc45bb4f97e1cbb00652a597d76bc36063d8cb65da13216a6dd34db7a3ca58"
+ },
+ "calls": 1,
+ "costUSD": 0.08899,
+ "seconds": 8.9,
+ "finishedAt": "2026-10-08T03:51:50Z"
+}
