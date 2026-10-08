@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Library · Book wireframe, 1024×600, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><pattern id="g40" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e2e2e2" stroke-width="0.6"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444"/><line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="239" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="640.5" y="8.5" width="367" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="400.5" y="570.5" width="223" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="632.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="8.5" y="48.5" width="1007" height="503" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="24.5" y="56.5" width="479" height="487" fill="#f6f1e4" stroke="#8a7a5a" stroke-width="1"/>
+<rect x="520.5" y="56.5" width="479" height="487" fill="#f6f1e4" stroke="#8a7a5a" stroke-width="1"/>
+<rect x="40.5" y="72.5" width="319" height="327" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="48.5" y="80.5" width="303" height="311" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
+<rect x="88.5" y="408.5" width="223" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="48.5" y="456.5" width="303" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="376.5" y="80.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="376.5" y="128.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="424.5" y="80.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="424.5" y="128.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="376.5" y="80.5" width="87" height="87" fill="none" stroke="none"/>
+<rect x="376.5" y="192.5" width="103" height="143" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="536.5" y="64.5" width="111" height="31" rx="6" fill="none" stroke="#d29a00" stroke-width="2.5"/>
+<rect x="656.5" y="64.5" width="39" height="31" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="704.5" y="64.5" width="39" height="31" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="752.5" y="64.5" width="39" height="31" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="800.5" y="64.5" width="39" height="31" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="848.5" y="64.5" width="39" height="31" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="896.5" y="64.5" width="39" height="31" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="536.5" y="112.5" width="247" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="536.5" y="136.5" width="55" height="55" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="600.5" y="136.5" width="55" height="55" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="664.5" y="136.5" width="55" height="55" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="728.5" y="136.5" width="55" height="55" fill="none" stroke="#7a6a50" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="536.5" y="216.5" width="247" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="536.5" y="240.5" width="55" height="55" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="600.5" y="240.5" width="55" height="55" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="664.5" y="240.5" width="55" height="55" fill="none" stroke="#7a6a50" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="536.5" y="320.5" width="247" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="536.5" y="344.5" width="55" height="55" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="600.5" y="344.5" width="55" height="55" fill="none" stroke="#7a6a50" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="536.5" y="424.5" width="247" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="536.5" y="448.5" width="55" height="55" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="600.5" y="448.5" width="55" height="55" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="664.5" y="448.5" width="55" height="55" fill="none" stroke="#7a6a50" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="832.5" y="112.5" width="119" height="119" fill="#e6eef7" stroke="#2f5f8f" stroke-width="1.5"/>
+<rect x="800.5" y="248.5" width="183" height="159" fill="#eef1f3" stroke="#556" stroke-width="1"/>
+<rect x="800.5" y="424.5" width="183" height="111" fill="#eef1f3" stroke="#556" stroke-width="1"/>
+<text x="20" y="21" font-size="11" fill="#222">Screen name 20px · turn 16px</text>
+<text x="388" y="21" font-size="11" fill="#222">Energy · Data · Essence 16px</text>
+<text x="644" y="21" font-size="11" fill="#222">Companion state 16px, right</text>
+<text x="20" y="583" font-size="11" fill="#222">✓ verb · price · ← where</text>
+<text x="404" y="583" font-size="11" fill="#222">subject, centred</text>
+<text x="636" y="583" font-size="11" fill="#222">what needs you, right</text>
+<text x="52" y="93" font-size="11" fill="#222">PORTRAIT / FACE 304×312 (focal)</text>
+<text x="52" y="105" font-size="9" fill="#777">48,80 304×312</text>
+<text x="92" y="421" font-size="11" fill="#222">Name label 28px</text>
+<text x="92" y="433" font-size="9" fill="#777">88,408 224×40</text>
+<text x="52" y="469" font-size="11" fill="#222">habit line 16px</text>
+<text x="376" y="180" font-size="9" fill="#222">places 40</text>
+<text x="376" y="191" font-size="9" fill="#777">376,80 88×88</text>
+<text x="380" y="205" font-size="11" fill="#222">Frame plate 104×144</text>
+<text x="380" y="217" font-size="9" fill="#777">376,192 104×144</text>
+<text x="540" y="77" font-size="11" fill="#222">Coat · focused tab</text>
+<text x="540" y="89" font-size="9" fill="#777">536,64 112×32</text>
+<text x="540" y="125" font-size="11" fill="#222">trait word 16px</text>
+<text x="540" y="229" font-size="11" fill="#222">trait word</text>
+<text x="540" y="333" font-size="11" fill="#222">trait word</text>
+<text x="540" y="437" font-size="11" fill="#222">trait word</text>
+<text x="836" y="125" font-size="11" fill="#222">STAMP label 120</text>
+<text x="836" y="137" font-size="9" fill="#777">832,112 120×120</text>
+<text x="804" y="261" font-size="11" fill="#222">Family tree 184×160</text>
+<text x="804" y="273" font-size="9" fill="#777">800,248 184×160</text>
+<text x="804" y="437" font-size="11" fill="#222">Pinned wish 184×112</text>
+<text x="804" y="449" font-size="9" fill="#777">800,424 184×112</text>
+</svg>
