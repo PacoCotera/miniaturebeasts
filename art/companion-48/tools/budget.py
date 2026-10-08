@@ -5,7 +5,7 @@ src = sys.argv[1]
 PRICES = {"gemini-3-pro-image": (2.0, 120.0), "gemini-3.1-flash-image": (0.5, 60.0)}   # USD per M tokens, standard tier, ai.google.dev pricing 2026-10-08
 calls, total = [], 0.0
 for p in sorted(glob.glob(os.path.join(src, "**", "*.json"), recursive=True)):
-    if os.path.basename(p) == "budget.json": continue
+    if os.path.basename(p) in ("budget.json", "extra-spend.json"): continue
     d = json.load(open(p))
     if d.get("tool") == "retro-diffusion":
         c = (d.get("result") or {}).get("balanceCostUSD")

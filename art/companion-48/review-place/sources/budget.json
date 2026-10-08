@@ -1,6 +1,6 @@
 {
- "successfulCalls": 19,
- "totalUSD": 3.41,
+ "successfulCalls": 20,
+ "totalUSD": 5.57,
  "calls": [
   {
    "tag": "C48-P-r1-a1",
@@ -137,6 +137,12 @@
    "size": "48x48",
    "usd": 0.18,
    "seconds": 41.9
+  },
+  {
+   "tag": "C48-S-r2 first sprite batch (twelve calls, superseded by the second batch; the inputs carried a magenta fringe and the four pawn results never came back to the session; its files were removed)",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "usd": 2.16,
+   "evidence": "Retro Diffusion balance $6.36 before the first batch, $2.04 after the second: 24 calls at $0.18"
   }
  ],
  "pricing": "gemini-3-pro-image standard tier: $2.00/M input, $120/M output tokens (ai.google.dev pricing, 2026-10-08); Retro Diffusion rd_pro: $0.18 per image (balance_cost in the task result)"
