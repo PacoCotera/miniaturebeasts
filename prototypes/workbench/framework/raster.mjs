@@ -153,6 +153,11 @@ export function render(scene, camera, pass = "shaded", options = {}) {
         }
         if (node.part === "shell" && scene.shellPlates) { const lp = localPoint(node, centre); if ((Math.floor((lp[0] / node.radii[0] + 1) * 3) + Math.floor((lp[1] / node.radii[1] + 1) * 3)) % 2 === 0) mark("shell"); }
         if (node.part === "cap" && scene.capSpots) { const lp = localPoint(node, centre); if (Math.abs(((lp[0] / node.radii[0]) * 3) % 1 - 0.5) < 0.2 && Math.abs(((lp[1] / node.radii[1]) * 3 + 0.5) % 1 - 0.5) < 0.2) mark("cap"); }
+        // A coat, flap, cap or shell marking field is the second pigment's area: the slot map labels it
+        // "second" and the key shows it in that pigment, so the key is the authority on colour and the
+        // description's markings agree with it (the art director's review of the v5 lab).
+        const fieldSecond = marked && ["coat", "flaps", "cap", "shell"].includes(field) && scene.slots.second;
+        if (fieldSecond) { slot = "second"; pigment = scene.slots.second[0]; slotKey = "second"; }
         if (pass === "slots") colour = slotColours[slot] ? slotColours[slot].map((c, i) => (slotKey.endsWith("-2") ? Math.round(c * 0.7) : c)) : [128, 128, 128];
         else if (pass === "key") colour = node.ink ? hex(node.ink) : hex(pigment); // the colour key for a painting service: each slot flat in its own pigment, unshaded
         else if (pass === "markings") colour = marked && (!options.field || field === options.field) ? [255, 255, 255] : [0, 0, 0];

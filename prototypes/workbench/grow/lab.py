@@ -66,7 +66,10 @@ def prompt_set():
     description-template.txt (with {description} for the genome's words). Any file missing falls back
     to the lab's own."""
     if not os.path.exists(os.path.join(PROMPT_SET, "variants.json")): return None
-    read = lambda *p: open(os.path.join(PROMPT_SET, *p)).read().strip() if os.path.exists(os.path.join(PROMPT_SET, *p)) else None
+    def read(*p):
+        for root in (PROMPT_SET, PROMPT_SET_FALLBACK):
+            if os.path.exists(os.path.join(root, *p)): return open(os.path.join(root, *p)).read().strip()
+        return None
     variants = json.load(open(os.path.join(PROMPT_SET, "variants.json")))
     # The owner's pick after the Loika sheet: 1B's anti-artefact words with 1G's positive plain-coat paragraph
     # folded in (the lab synthesises it from the two, so the prompter's files stay as written).
@@ -124,6 +127,11 @@ def images_for(d0, legend, sheet, order, drawing=None):
     return [src[k]() for k in order]
 
 
+def cell_dir(sp, vid, mkey, k):
+    """A cell's directory: lab/<species>/<variant>/<model>/s<k> for the v5 set, lab/<species>/<set>/… for later sets."""
+    return os.path.join(LAB, sp, vid, mkey, f"s{k}") if SET_NAME == "prompt-lab" else os.path.join(LAB, sp, SET_NAME, vid, mkey, f"s{k}")
+
+
 def run_set(sp, variant_ids, opt_models, samples, pset):
     """The art prompter's set as written: step 1 variants run both steps (their step 2 is v5's); step 2
     variants take the shared drawing (the first v5 step 1 sample that passes the checks on that model,
@@ -133,18 +141,19 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
     legend = json.load(open(os.path.join(d0, "controls", "legend.json")))
     sheet = species_sheet(sp); sheet["species"] = sp; reference = reference_for(sp, sheet)
     ctrl = {p: os.path.join(d0, "controls", f"{p}.portrait.large.png") for p in ("silhouette", "index", "slots")}
-    variants = pset["variants"]; v5 = next(v for v in variants if v["id"] == "v5")
+    variants = pset["variants"]; v5 = next(v for v in variants if v["id"] in ("v5", "v6") and "step1" in v and "step2" in v)
     fill_fields = {"controls": S.controls_text_two_step(legend, "portrait"), "description": (pset["template"] or "{description}").replace("{description}", legend["description"]["text"]), "species": pset["species"](sp) or "", "artDirection1": pset["art1"] or "", "artDirection2": pset["art2"] or "", "generate": S.STEP1_WORDS, "transfer": S.STEP2_WORDS}
     fill = lambda t: t.format(**fill_fields)
     only_models = [m for m in MODELS if m in (opt_models or MODELS)]
+    base_id = next((v["id"] for v in variants if "step1" in v and "step2" in v), "v5")  # the set's baseline: v5 or v6
     shared = {}  # (model) → the shared step 1 drawing for step 2 variants
     def shared_drawing(mkey):
         if mkey in shared: return shared[mkey]
         best = None
         for k in range(1, samples + 1):
-            pj = os.path.join(LAB, sp, "v5", mkey, f"s{k}", "prompt.json")
+            pj = os.path.join(cell_dir(sp, base_id, mkey, k), "prompt.json")
             if not os.path.exists(pj): continue
-            r = json.load(open(pj)); p = os.path.join(LAB, sp, "v5", mkey, f"s{k}", "step1.png")
+            r = json.load(open(pj)); p = os.path.join(cell_dir(sp, base_id, mkey, k), "step1.png")
             if os.path.exists(p) and (best is None or (r["step1"].get("checks") or {}).get("passed")): best = p
             if (r["step1"].get("checks") or {}).get("passed"): break
         shared[mkey] = Image.open(best).convert("RGB") if best else None
@@ -155,9 +164,9 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
         for mkey in only_models:
             model = MODELS[mkey]
             for k in range(1, samples + 1):
-                out = os.path.join(LAB, sp, v["id"], mkey, f"s{k}"); os.makedirs(out, exist_ok=True)
+                out = cell_dir(sp, v["id"], mkey, k); os.makedirs(out, exist_ok=True)
                 if os.path.exists(os.path.join(out, "prompt.json")) and "--force" not in sys.argv: print(sp, v["id"], mkey, f"s{k}", "done already"); continue
-                common = {"lab": {"species": sp, "variant": v["id"], "name": v["name"], "model": mkey, "sample": k, "set": "v5"}, "controlVariant": "twostep", "species": sp, "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"]}
+                common = {"lab": {"species": sp, "variant": v["id"], "name": v["name"], "model": mkey, "sample": k, "set": SET_NAME}, "controlVariant": "twostep", "species": sp, "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"]}
                 result = {"species": sp, "variant": {k2: v2 for k2, v2 in v.items() if k2 not in ("step1", "step2")}, "model": model, "sample": k, "changed": v.get("change", ""), "costUSD": 0.0}
                 drawing = None
                 if "step1" in v:
@@ -190,12 +199,18 @@ def sheet_set(sp, d0, pset):
     """One sheet per species: a row per variant, Flash and Pro side by side, two samples each
     (drawing then painting), the cost per try and the checks, the variant's change line."""
     variants = pset["variants"]; rows = []
+    if SET_NAME != "prompt-lab":  # the comparison row: the owner's v5 pick, 1B on Pro
+        cells = {}
+        for k in (1, 2):
+            pj = os.path.join(LAB, sp, "1B-anti-artefact", "pro", f"s{k}", "prompt.json")
+            if os.path.exists(pj): cells[("pro", k)] = (json.load(open(pj)), os.path.join(LAB, sp, "1B-anti-artefact", "pro", f"s{k}"))
+        if cells: rows.append(({"id": "v5 1B", "name": "the v5 pick (1B anti-artefact, Pro) for comparison", "change": "The owner's pick from the v5 sheet: 1B's anti-artefact words; Pro."}, cells))
     for v in variants:
         cells = {}
         for mkey in MODELS:
             for k in (1, 2):
-                pj = os.path.join(LAB, sp, v["id"], mkey, f"s{k}", "prompt.json")
-                if os.path.exists(pj): cells[(mkey, k)] = (json.load(open(pj)), os.path.join(LAB, sp, v["id"], mkey, f"s{k}"))
+                pj = os.path.join(cell_dir(sp, v["id"], mkey, k), "prompt.json")
+                if os.path.exists(pj): cells[(mkey, k)] = (json.load(open(pj)), cell_dir(sp, v["id"], mkey, k))
         if cells: rows.append((v, cells))
     if not rows: return
     T = 200, 207; gap = 8; textw = 520; rowh = T[1] + 60; ink = (40, 40, 50)
@@ -204,7 +219,7 @@ def sheet_set(sp, d0, pset):
     sheet = Image.new("RGB", (W, H), (255, 255, 255)); d = ImageDraw.Draw(sheet)
     name = species_sheet(sp)["name"]
     spent = {m: sum(c[0]["costUSD"] for _, cells in rows for (mk, _k), c in cells.items() if mk == m) for m in MODELS}
-    d.text((gap, 6), f"{sp} {name}: the v5 prompt lab (grow/prompt-lab) on the type specimen under the cute envelope, {MODELS['flash']} and {MODELS['pro']}, two samples a cell. Flash ${spent['flash']:.2f}, Pro ${spent['pro']:.2f}. Checks logged, not gated: the eye decides.", fill=ink)
+    d.text((gap, 6), f"{sp} {name}: the {SET_NAME if SET_NAME != 'prompt-lab' else 'v5'} prompt lab (grow/prompt-lab) on the type specimen under the cute envelope, {MODELS['flash']} and {MODELS['pro']}, two samples a cell. Flash ${spent['flash']:.2f}, Pro ${spent['pro']:.2f}. Checks logged, not gated: the eye decides.", fill=ink)
     d.text((gap, 22), "control (shaded, portrait)", fill=ink)
     for i, (t, *_rest) in enumerate(cols): d.text((gap + (i + 1) * (T[0] + gap), 22), t, fill=ink)
     d.text((gap + (len(cols) + 1) * (T[0] + gap), 22), "the variant: its change, the cost per try (Flash / Pro) and the checks", fill=ink)
@@ -231,7 +246,8 @@ def sheet_set(sp, d0, pset):
             d.text((x, y + 13 * line), f"{mkey}: " + " | ".join(f"${c['costUSD']:.3f} ({summ(c)})" for c in cs), fill=(90, 90, 100)); line += 1
         for j, ln in enumerate(textwrap.wrap(v.get("change", ""), 88)[:12]): d.text((x, y + 13 * (line + j)), ln, fill=ink)
     os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
-    sheet.save(os.path.join(HERE, "sheets", f"lab-{sp}.png")); print("sheet", f"lab-{sp}.png", sheet.size)
+    fname = f"lab-{sp}.png" if SET_NAME == "prompt-lab" else f"lab-{sp}-{SET_NAME}.png"
+    sheet.save(os.path.join(HERE, "sheets", fname)); print("sheet", fname, sheet.size)
 
 
 def run(sp, variant_ids, opt_models=None):
