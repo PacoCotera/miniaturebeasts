@@ -1,0 +1,247 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 4,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "7ba841ac-099d-4a17-a326-0761b1a9f899",
+     "step": 1,
+     "status": "ok",
+     "costUSD": 0.09289,
+     "seconds": 16.3,
+     "checks": {
+      "silhouetteIoU": 0.968,
+      "silhouetteIoUInPlace": 0.955,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 0.995,
+        "coverage": 0.994
+       },
+       "muzzle": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "eye": {
+        "span": 0.908,
+        "coverage": 0.888
+       },
+       "leg-0": {
+        "span": 0.793,
+        "coverage": 0.993
+       },
+       "leg-1": {
+        "span": 0.982,
+        "coverage": 0.999
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.73,
+        "painted": 0.812,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.458,
+        "painted": 0.522,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.302,
+        "painted": 0.345,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.658,
+        "painted": 0.688,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.958,
+        "median": "#475558",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.94,
+        "median": "#485558",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.887,
+        "median": "#ddcfa8",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.958,
+        "median": "#decfa8",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.909,
+        "median": "#ddcea7",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.005,
+      "bandTolerancePx": 16,
+      "slotAgreement": 0.942,
+      "passed": true,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "dSLHatyVMN6j_PUPoLax0Qc"
+    },
+    {
+     "callId": "5583530c-3526-4fbc-819f-8ebe35209ac6",
+     "step": 2,
+     "status": "ok",
+     "costUSD": 0.08727,
+     "seconds": 8.7,
+     "checks": {
+      "silhouetteIoU": 0.96,
+      "silhouetteIoUInPlace": 0.965,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "muzzle": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "eye": {
+        "span": 0.908,
+        "coverage": 0.93
+       },
+       "leg-0": {
+        "span": 0.797,
+        "coverage": 0.996
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.99
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.73,
+        "painted": 0.802,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.458,
+        "painted": 0.514,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.302,
+        "painted": 0.341,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.658,
+        "painted": 0.684,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.469,
+        "median": "#394143",
+        "nearest": "#273036",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.607,
+        "median": "#40494b",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.86,
+        "median": "#d2be9d",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.918,
+        "median": "#ceba9a",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.886,
+        "median": "#ddcba7",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.001,
+      "bandTolerancePx": 16,
+      "slotAgreement": 0.664,
+      "passed": true,
+      "gated": false
+     },
+     "responseId": "nSLHavSOIbrM_PUP7-DFkAE"
+    }
+   ],
+   "steps": []
+  }
+ },
+ "species": "S01",
+ "name": "Loika",
+ "level": "individual",
+ "genomeDigest": "S01-34e5c147",
+ "genomeSha256": "69813b3eedb99dfbe1688484b0bc93247c04dd38aea14d67bf24649f0f418da4",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 9,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown bare head; eye rings between. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T04:56:20Z",
+ "outputs": {
+  "station-portrait-600x620.png": "70c2a02c470b385b55971fdf140b21d943b63521e0b638bd54e3cc7ce0269079",
+  "station-portrait-300x310.png": "57b45cee3aea5abb500019b212112f258cc43f4c4360b82ee35615268c45c118",
+  "companion-280x300.png": "cc7466429bc8dc8a3a748240cdca6c2bff08b91e72a48db37a790d0261d57400",
+  "token-48.png": "9353f8aa3cfb20c06d9d6fc9b9837ee4948f64484ed5c4c2129bb580ab209605"
+ },
+ "calls": 2,
+ "costUSD": 0.18016,
+ "seconds": 25.0,
+ "finishedAt": "2026-10-08T04:57:42Z"
+}

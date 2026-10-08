@@ -34796,6 +34796,2859 @@
     "passed": true,
     "gated": false
    }
+  },
+  {
+   "id": "6fd47e02-34bf-4edf-ab15-71e947464534",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-45ff1025",
+   "genomeSha256": "f7a2d788e5827862dad88cc4cf68708f900a69bf626cddd3ed46a8944df26686",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": null,
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "90b1f3faf3daa27f79e98fe43745a65da24078b3d75ea5a87337cc6ed2397d98",
+     "bytes": 34297
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "45961e86e5fcde94c02989b3e91615d20d6bcd88d9334952412e2bef8a20ad99",
+     "bytes": 37663
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:54:27Z",
+   "seconds": 9.2,
+   "httpStatus": 200,
+   "responseId": "BCLHarbsFeTV-8YP4siOmQk",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1384,
+    "candidatesTokenCount": 1638,
+    "totalTokenCount": 3022,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 610
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09897,
+   "output": {
+    "file": "portrait-step1-1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "f4933362dd1e78496d8f26837c9bf10abc92e4f6b62a8f599c0fa044819181c0"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.961,
+    "silhouetteIoUInPlace": 0.96,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 0.992,
+      "coverage": 1.0
+     },
+     "eye": {
+      "span": 1.0,
+      "coverage": 0.914
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 0.999
+     },
+     "leg-0": {
+      "span": 0.827,
+      "coverage": 1.0
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 1.0
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.581,
+      "painted": 0.652,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.364,
+      "painted": 0.44,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.24,
+      "painted": 0.276,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.392,
+      "painted": 0.391,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.524,
+      "painted": 0.556,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.599,
+      "median": "#485256",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.846,
+      "median": "#475256",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 0.903,
+      "median": "#475254",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.471,
+      "median": "#5f6a6d",
+      "nearest": "#465459",
+      "ok": false
+     },
+     "belly@region-0": {
+      "agreement": 0.736,
+      "median": "#c0a882",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.951,
+      "median": "#decfa6",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [
+     "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #5f6a6d, the colour of body)"
+    ],
+    "outside": 0.0,
+    "missing": 0.002,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.711,
+    "passed": false,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "be2b1828-b71b-41b9-9e22-528d305712da",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-654f3487",
+   "genomeSha256": "c5317771247621e011ea9bf7d6cc9ed36a39e44a05c71690894f54b0916fe324",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings thin rings. Proportions: a big head, the head carried high, big eyes, a tall crest, short legs, stout legs, narrow feet.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": null,
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings thin rings. Proportions: a big head, the head carried high, big eyes, a tall crest, short legs, stout legs, narrow feet.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "a6881a9f8865e9248f91bd3fb4c8da1814855d3f7ea148111d5180a938a88f90",
+     "bytes": 33269
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "4d24ae1bcb92b60568203f62f18fb5dbb5ff22fda4bd2df9e94a9e1b5df57944",
+     "bytes": 36864
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:54:27Z",
+   "seconds": 13.5,
+   "httpStatus": 200,
+   "responseId": "BCLHaralGdKL_uMPqYnB8AE",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1358,
+    "candidatesTokenCount": 1568,
+    "totalTokenCount": 2926,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 584
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09476,
+   "output": {
+    "file": "portrait-step1-1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "3edc85d232d79a061a0dc16ae4e7ebc10f871eef68886cec71dd9037e833d458"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.955,
+    "silhouetteIoUInPlace": 0.942,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.999
+     },
+     "muzzle": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "eye": {
+      "span": 0.929,
+      "coverage": 0.841
+     },
+     "crown": {
+      "span": 0.995,
+      "coverage": 0.998
+     },
+     "leg-0": {
+      "span": 0.823,
+      "coverage": 0.998
+     },
+     "leg-1": {
+      "span": 0.991,
+      "coverage": 0.999
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.581,
+      "painted": 0.662,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.364,
+      "painted": 0.447,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.24,
+      "painted": 0.282,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.392,
+      "painted": 0.398,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.524,
+      "painted": 0.555,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.902,
+      "median": "#465457",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.999,
+      "median": "#465456",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 1.0,
+      "median": "#475256",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.682,
+      "median": "#c9b592",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.368,
+      "median": "#bad0ca",
+      "nearest": "#f1eddc",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.755,
+      "median": "#e1cfa7",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.002,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.808,
+    "passed": true,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "f55ab64e-5fc6-48ff-9a4b-6c3886f02316",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-3ac90e8f",
+   "genomeSha256": "b24869689240a6df1043a42bfd1d4d79b72ed729bf3d1d5b31d43d20d4d64f43",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings between. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": null,
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings between. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "34adceb7cda96fa429f8df8462be9b6cfaecf56b29b57dc7c221d3389f504f22",
+     "bytes": 33703
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "7a9167b79e1429629734eaf5a3c5c180784b7290ce9230e2e8e7fc286e4545f4",
+     "bytes": 37322
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:54:27Z",
+   "seconds": 12.7,
+   "httpStatus": 200,
+   "responseId": "BCLHao6nFbqi_uMPrabZ6Ag",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1354,
+    "candidatesTokenCount": 1610,
+    "totalTokenCount": 2964,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 580
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09728,
+   "output": {
+    "file": "portrait-step1-1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "aca52ece72e0347fe48c17d4c3c09dfb14dc863119ae002f38725fc2be57b448"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.962,
+    "silhouetteIoUInPlace": 0.961,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 0.984,
+      "coverage": 1.0
+     },
+     "eye": {
+      "span": 0.975,
+      "coverage": 0.838
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "leg-0": {
+      "span": 0.827,
+      "coverage": 1.0
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 1.0
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.581,
+      "painted": 0.656,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.364,
+      "painted": 0.442,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.24,
+      "painted": 0.275,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.392,
+      "painted": 0.403,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.524,
+      "painted": 0.55,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 1.0,
+      "median": "#475459",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 1.0,
+      "median": "#475458",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 1.0,
+      "median": "#394448",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.997,
+      "median": "#decfa8",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.001,
+      "median": "#465358",
+      "nearest": "#465459",
+      "ok": false
+     },
+     "belly@muzzle": {
+      "agreement": 0.956,
+      "median": "#decfa8",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [
+     "a pigment slot is painted in another slot's colour: the belly slot on the region-0 (painted #465358, the colour of body)"
+    ],
+    "outside": 0.0,
+    "missing": 0.003,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.826,
+    "passed": false,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "3af88242-df28-4141-8d55-aefecf75b63d",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-45ff1025",
+   "genomeSha256": "f7a2d788e5827862dad88cc4cf68708f900a69bf626cddd3ed46a8944df26686",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 2,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": [
+    "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #5f6a6d, the colour of body)"
+   ],
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.\n\nA previous drawing was rejected because a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #5f6a6d, the colour of body). This time keep the parts of image 2 exactly, part for part.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "90b1f3faf3daa27f79e98fe43745a65da24078b3d75ea5a87337cc6ed2397d98",
+     "bytes": 34297
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "45961e86e5fcde94c02989b3e91615d20d6bcd88d9334952412e2bef8a20ad99",
+     "bytes": 37663
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:55:21Z",
+   "seconds": 8.5,
+   "httpStatus": 200,
+   "responseId": "OiLHapbBBKO-39IPoqb1gAo",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1441,
+    "candidatesTokenCount": 1625,
+    "totalTokenCount": 3066,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 667
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09822,
+   "output": {
+    "file": "portrait-step1-2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "401b475ec4d2e05157268562d182c162892ecb0b759fde93d91ee09cd1859978"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.949,
+    "silhouetteIoUInPlace": 0.935,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.997
+     },
+     "muzzle": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "eye": {
+      "span": 1.0,
+      "coverage": 0.812
+     },
+     "crown": {
+      "span": 0.995,
+      "coverage": 0.992
+     },
+     "leg-0": {
+      "span": 0.823,
+      "coverage": 1.0
+     },
+     "leg-1": {
+      "span": 0.991,
+      "coverage": 0.999
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.581,
+      "painted": 0.664,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.364,
+      "painted": 0.447,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.24,
+      "painted": 0.282,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.392,
+      "painted": 0.398,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.524,
+      "painted": 0.557,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.634,
+      "median": "#465457",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.843,
+      "median": "#465457",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 0.024,
+      "median": "#e0d1aa",
+      "nearest": "#dfd2ae",
+      "ok": false
+     },
+     "second@leg-0": {
+      "agreement": 0.169,
+      "median": "#475457",
+      "nearest": "#465459",
+      "ok": false
+     },
+     "belly@region-0": {
+      "agreement": 0.574,
+      "median": "#dfcfa8",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.902,
+      "median": "#e2d0a9",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [
+     "a pigment slot is painted in another slot's colour: the body slot on the crown (painted #e0d1aa, the colour of belly/second), the second slot on the leg-0 (painted #475457, the colour of body)"
+    ],
+    "outside": 0.0,
+    "missing": 0.006,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.551,
+    "passed": false,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "1ede61f3-706e-418e-9645-c21f33cee699",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-3ac90e8f",
+   "genomeSha256": "b24869689240a6df1043a42bfd1d4d79b72ed729bf3d1d5b31d43d20d4d64f43",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 2,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings between. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": [
+    "a pigment slot is painted in another slot's colour: the belly slot on the region-0 (painted #465358, the colour of body)"
+   ],
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings between. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.\n\nA previous drawing was rejected because a pigment slot is painted in another slot's colour: the belly slot on the region-0 (painted #465358, the colour of body). This time keep the parts of image 2 exactly, part for part.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "34adceb7cda96fa429f8df8462be9b6cfaecf56b29b57dc7c221d3389f504f22",
+     "bytes": 33703
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "7a9167b79e1429629734eaf5a3c5c180784b7290ce9230e2e8e7fc286e4545f4",
+     "bytes": 37322
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:55:23Z",
+   "seconds": 10.2,
+   "httpStatus": 200,
+   "responseId": "OyLHaqX6NanxjrEP0bPGiAQ",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1411,
+    "candidatesTokenCount": 1600,
+    "totalTokenCount": 3011,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 637
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09671,
+   "output": {
+    "file": "portrait-step1-2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "16ae28b99f2a8e14644eb2b519c0b63abfab4561b0773f3f69eaae34f35f723a"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.952,
+    "silhouetteIoUInPlace": 0.95,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "eye": {
+      "span": 0.975,
+      "coverage": 0.763
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "leg-0": {
+      "span": 0.823,
+      "coverage": 1.0
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 1.0
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.581,
+      "painted": 0.652,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.364,
+      "painted": 0.44,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.24,
+      "painted": 0.278,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.392,
+      "painted": 0.393,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.524,
+      "painted": 0.548,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.997,
+      "median": "#465457",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.983,
+      "median": "#465455",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 1.0,
+      "median": "#475356",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.858,
+      "median": "#decfa8",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.99,
+      "median": "#dfd0a9",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.865,
+      "median": "#dfcfa9",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.005,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.97,
+    "passed": true,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "f50816c4-7430-47a4-a567-c5f3bd6fbd30",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-654f3487",
+   "genomeSha256": "c5317771247621e011ea9bf7d6cc9ed36a39e44a05c71690894f54b0916fe324",
+   "purpose": "station-portrait-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "artDirection": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.",
+    "transfer": "Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image."
+   },
+   "referenceImage": {
+    "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+    "name": "rich-plain-300x310.png",
+    "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427"
+   },
+   "prompt": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.\n\nImage 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "step1-portrait-600x620.png",
+     "sha256": "6c61f93f8ec26bf48838c907f5e8bdb4d0d8d168b7e431bf507c983290084af8",
+     "bytes": 223292
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:55:23Z",
+   "seconds": 11.9,
+   "httpStatus": 200,
+   "responseId": "OyLHau72N4zw-8YPgfucmQw",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1026,
+    "candidatesTokenCount": 1574,
+    "totalTokenCount": 2600,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 510
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09495,
+   "output": {
+    "file": "portrait-step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "b91265b9dcb520ac2117f30d3e1d8d07b987819a04853caf7c275d2026b23f05"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.946,
+    "silhouetteIoUInPlace": 0.946,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.997
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 0.984,
+      "coverage": 0.897
+     },
+     "eye": {
+      "span": 0.929,
+      "coverage": 0.956
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 0.999
+     },
+     "leg-0": {
+      "span": 0.812,
+      "coverage": 0.999
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 0.988
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.581,
+      "painted": 0.656,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.364,
+      "painted": 0.443,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.24,
+      "painted": 0.276,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.392,
+      "painted": 0.4,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.524,
+      "painted": 0.543,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.936,
+      "median": "#485757",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.994,
+      "median": "#51605f",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 0.928,
+      "median": "#576664",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.941,
+      "median": "#c5ad8b",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.384,
+      "median": "#a5a69d",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.873,
+      "median": "#e1caa3",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.003,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.85,
+    "passed": true,
+    "gated": false
+   }
+  },
+  {
+   "id": "e240abe0-8c95-4b84-89d8-392544a0ddcb",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-449cc221",
+   "genomeSha256": "6086534385f3c84462028cd56532c39db62eb589c880ff7706a21a00cfc38197",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin, patches; plantigrade, fused head. Coat: markings pale patches. Face: crown bare head; eye rings thin rings. Proportions: a big head, the head carried high, big eyes, a tall crest, short legs, stout legs, narrow feet.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": null,
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin, patches; plantigrade, fused head. Coat: markings pale patches. Face: crown bare head; eye rings thin rings. Proportions: a big head, the head carried high, big eyes, a tall crest, short legs, stout legs, narrow feet.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "40e11e2f85b14f367232c5c85c2bacac3570c960bc6980c8ae774cd91afa8a26",
+     "bytes": 26871
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "ed275770bd6cc204d4247b0b6717e93cd49fd8a3c0eca970eb0d6efcb2c98220",
+     "bytes": 30481
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:56:17Z",
+   "seconds": 2.8,
+   "httpStatus": 200,
+   "responseId": "ciLHapaJB5SZ_uMP97SjqAE",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1352,
+    "totalTokenCount": 1352,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 578
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.00068,
+   "status": "no-image",
+   "response": "{\"candidates\": [{\"content\": {}, \"finishReason\": \"NO_IMAGE\", \"index\": 0}], \"usageMetadata\": {\"promptTokenCount\": 1352, \"totalTokenCount\": 1352, \"promptTokensDetails\": [{\"modality\": \"TEXT\", \"tokenCount\": 578}, {\"modality\": \"IMAGE\", \"tokenCount\": 774}], \"serviceTier\": \"standard\"}, \"modelVersion\": \"gemini-3.1-flash-image\", \"responseId\": \"ciLHapaJB5SZ_uMP97SjqAE\"}"
+  },
+  {
+   "id": "b90a2c12-839b-46a2-a0d5-e396ebae5723",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-3ac90e8f",
+   "genomeSha256": "b24869689240a6df1043a42bfd1d4d79b72ed729bf3d1d5b31d43d20d4d64f43",
+   "purpose": "station-portrait-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "artDirection": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.",
+    "transfer": "Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image."
+   },
+   "referenceImage": {
+    "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+    "name": "rich-plain-300x310.png",
+    "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427"
+   },
+   "prompt": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.\n\nImage 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "step1-portrait-600x620.png",
+     "sha256": "6d476914e657b8c1dbf22a6290b5d568d8cf4d88e53b75a894762a1a80e01f6c",
+     "bytes": 242477
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:56:16Z",
+   "seconds": 8.9,
+   "httpStatus": 200,
+   "responseId": "cCLHauDZLqDP_uMPjrXT2Qg",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1026,
+    "candidatesTokenCount": 1577,
+    "totalTokenCount": 2603,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 510
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09513,
+   "output": {
+    "file": "portrait-step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "c6f723ac6b87495a24d82d9ab156fd1e71f18e91a43d3336a81bdc7194a13504"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.96,
+    "silhouetteIoUInPlace": 0.962,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.999
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 0.975,
+      "coverage": 0.999
+     },
+     "eye": {
+      "span": 0.975,
+      "coverage": 0.889
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "leg-0": {
+      "span": 0.812,
+      "coverage": 0.995
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 1.0
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.581,
+      "painted": 0.653,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.364,
+      "painted": 0.441,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.24,
+      "painted": 0.273,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.392,
+      "painted": 0.396,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.524,
+      "painted": 0.541,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 1.0,
+      "median": "#425460",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 1.0,
+      "median": "#425460",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 1.0,
+      "median": "#3b4d54",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.862,
+      "median": "#dccba6",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.968,
+      "median": "#c6b292",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.849,
+      "median": "#ddcba4",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.001,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.97,
+    "passed": true,
+    "gated": false
+   }
+  },
+  {
+   "id": "53c379ce-87ee-4604-bca3-c888dc8a6474",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-449cc221",
+   "genomeSha256": "6086534385f3c84462028cd56532c39db62eb589c880ff7706a21a00cfc38197",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 2,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin, patches; plantigrade, fused head. Coat: markings pale patches. Face: crown bare head; eye rings thin rings. Proportions: a big head, the head carried high, big eyes, a tall crest, short legs, stout legs, narrow feet.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": [
+    "the service returned no image"
+   ],
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin, patches; plantigrade, fused head. Coat: markings pale patches. Face: crown bare head; eye rings thin rings. Proportions: a big head, the head carried high, big eyes, a tall crest, short legs, stout legs, narrow feet.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.\n\nA previous drawing was rejected because the service returned no image. This time keep the parts of image 2 exactly, part for part.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "40e11e2f85b14f367232c5c85c2bacac3570c960bc6980c8ae774cd91afa8a26",
+     "bytes": 26871
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "ed275770bd6cc204d4247b0b6717e93cd49fd8a3c0eca970eb0d6efcb2c98220",
+     "bytes": 30481
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:56:20Z",
+   "seconds": 18.0,
+   "httpStatus": 200,
+   "responseId": "dCLHavi2O8vPjMcP_7rwmA4",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1380,
+    "candidatesTokenCount": 1528,
+    "totalTokenCount": 2908,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 606
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09237,
+   "output": {
+    "file": "portrait-step1-2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "9765daf6779018ccafca7f8614503d48a9b3aef9fec41c7e39d31bf192932427"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.971,
+    "silhouetteIoUInPlace": 0.95,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 0.995,
+      "coverage": 0.999
+     },
+     "muzzle": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "eye": {
+      "span": 0.858,
+      "coverage": 0.915
+     },
+     "leg-0": {
+      "span": 0.797,
+      "coverage": 1.0
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 1.0
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.73,
+      "painted": 0.806,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.458,
+      "painted": 0.521,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.302,
+      "painted": 0.347,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.658,
+      "painted": 0.685,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.916,
+      "median": "#465356",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.997,
+      "median": "#465456",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.753,
+      "median": "#ddcea6",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.983,
+      "median": "#decfa7",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.871,
+      "median": "#decfa7",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.002,
+    "bandTolerancePx": 16,
+    "slotAgreement": 0.924,
+    "passed": true,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "7ba841ac-099d-4a17-a326-0761b1a9f899",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-34e5c147",
+   "genomeSha256": "69813b3eedb99dfbe1688484b0bc93247c04dd38aea14d67bf24649f0f418da4",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown bare head; eye rings between. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": null,
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown bare head; eye rings between. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "5c37ee9a9d3d29b3a0ce90a23bf8f36187a8a5d354df1597fbe0a8571e4f9638",
+     "bytes": 27306
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "10d279b1e48e7d17c335ef0b54cde45e77a4fc2f01bef4dabef559e53c52e894",
+     "bytes": 30954
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:56:21Z",
+   "seconds": 16.3,
+   "httpStatus": 200,
+   "responseId": "dSLHatyVMN6j_PUPoLax0Qc",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1345,
+    "candidatesTokenCount": 1537,
+    "totalTokenCount": 2882,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 571
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09289,
+   "output": {
+    "file": "portrait-step1-1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "c1be2f1aeb6f577cc304d3a155307a6a08a46ed2f321025583722ba0e6a13416"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.968,
+    "silhouetteIoUInPlace": 0.955,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 0.995,
+      "coverage": 0.994
+     },
+     "muzzle": {
+      "span": 1.0,
+      "coverage": 0.999
+     },
+     "eye": {
+      "span": 0.908,
+      "coverage": 0.888
+     },
+     "leg-0": {
+      "span": 0.793,
+      "coverage": 0.993
+     },
+     "leg-1": {
+      "span": 0.982,
+      "coverage": 0.999
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.73,
+      "painted": 0.812,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.458,
+      "painted": 0.522,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.302,
+      "painted": 0.345,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.658,
+      "painted": 0.688,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.958,
+      "median": "#475558",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.94,
+      "median": "#485558",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.887,
+      "median": "#ddcfa8",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.958,
+      "median": "#decfa8",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.909,
+      "median": "#ddcea7",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.005,
+    "bandTolerancePx": 16,
+    "slotAgreement": 0.942,
+    "passed": true,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "5583530c-3526-4fbc-819f-8ebe35209ac6",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-34e5c147",
+   "genomeSha256": "69813b3eedb99dfbe1688484b0bc93247c04dd38aea14d67bf24649f0f418da4",
+   "purpose": "station-portrait-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "artDirection": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.",
+    "transfer": "Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image."
+   },
+   "referenceImage": {
+    "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+    "name": "rich-plain-300x310.png",
+    "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427"
+   },
+   "prompt": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.\n\nImage 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "step1-portrait-600x620.png",
+     "sha256": "02eef12686e08363add8d0b70a83157d5b2c06288afdfebbcdd639552d3d9128",
+     "bytes": 202149
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:57:00Z",
+   "seconds": 8.7,
+   "httpStatus": 200,
+   "responseId": "nSLHavSOIbrM_PUP7-DFkAE",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1026,
+    "candidatesTokenCount": 1446,
+    "totalTokenCount": 2472,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 510
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.08727,
+   "output": {
+    "file": "portrait-step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "3f82d9aae1d8b11834de325edf9d1e5d576db0a6f3dae7c4e480e0b806a9ac48"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.96,
+    "silhouetteIoUInPlace": 0.965,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.999
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "eye": {
+      "span": 0.908,
+      "coverage": 0.93
+     },
+     "leg-0": {
+      "span": 0.797,
+      "coverage": 0.996
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 0.99
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.73,
+      "painted": 0.802,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.458,
+      "painted": 0.514,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.302,
+      "painted": 0.341,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.658,
+      "painted": 0.684,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.469,
+      "median": "#394143",
+      "nearest": "#273036",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.607,
+      "median": "#40494b",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.86,
+      "median": "#d2be9d",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.918,
+      "median": "#ceba9a",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.886,
+      "median": "#ddcba7",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.001,
+    "bandTolerancePx": 16,
+    "slotAgreement": 0.664,
+    "passed": true,
+    "gated": false
+   }
+  },
+  {
+   "id": "522e3248-0673-401b-828e-59c38c740494",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-449cc221",
+   "genomeSha256": "6086534385f3c84462028cd56532c39db62eb589c880ff7706a21a00cfc38197",
+   "purpose": "station-portrait-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "artDirection": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.",
+    "transfer": "Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image."
+   },
+   "referenceImage": {
+    "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+    "name": "rich-plain-300x310.png",
+    "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427"
+   },
+   "prompt": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.\n\nImage 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "step1-portrait-600x620.png",
+     "sha256": "dc87f29914ef36e66341b3f30322f4fe77f889b3c3f9199344777961b6657659",
+     "bytes": 234892
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:57:00Z",
+   "seconds": 10.5,
+   "httpStatus": 200,
+   "responseId": "nSLHaqz7Hc-YjMcPzcfcqQ8",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1026,
+    "candidatesTokenCount": 1527,
+    "totalTokenCount": 2553,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 510
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09213,
+   "output": {
+    "file": "portrait-step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "7840850e9bdd03d5265f007173446d683bc8a2949389895c3309ef12659860c7"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.972,
+    "silhouetteIoUInPlace": 0.973,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.997
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 0.967,
+      "coverage": 0.999
+     },
+     "eye": {
+      "span": 0.858,
+      "coverage": 0.916
+     },
+     "leg-0": {
+      "span": 0.789,
+      "coverage": 0.996
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 0.992
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.73,
+      "painted": 0.804,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.458,
+      "painted": 0.51,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.302,
+      "painted": 0.332,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.658,
+      "painted": 0.678,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.899,
+      "median": "#535658",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.991,
+      "median": "#585c5f",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.109,
+      "median": "#515354",
+      "nearest": "#465459",
+      "ok": false
+     },
+     "belly@region-0": {
+      "agreement": 0.894,
+      "median": "#b39272",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.911,
+      "median": "#dccca8",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [
+     "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #515354, the colour of body)"
+    ],
+    "outside": 0.0,
+    "missing": 0.0,
+    "bandTolerancePx": 16,
+    "slotAgreement": 0.82,
+    "passed": false,
+    "gated": false
+   }
+  },
+  {
+   "id": "e5411b9d-33f7-4156-8fca-090983935f24",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-a9a5bbbd",
+   "genomeSha256": "175f47a0bce0274b6d3189a1a27cb440a3bd54b7cf83bac4dc21c3aad5599e08",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings between. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": null,
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (region-0, head, muzzle, eye, crown, leg-0, leg-1); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings between. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "34adceb7cda96fa429f8df8462be9b6cfaecf56b29b57dc7c221d3389f504f22",
+     "bytes": 33703
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "7a9167b79e1429629734eaf5a3c5c180784b7290ce9230e2e8e7fc286e4545f4",
+     "bytes": 37322
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:57:03Z",
+   "seconds": 10.2,
+   "httpStatus": 200,
+   "responseId": "nyLHavaxOvzh_uMP2emrsQE",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1354,
+    "candidatesTokenCount": 1577,
+    "totalTokenCount": 2931,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 580
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.0953,
+   "output": {
+    "file": "portrait-step1-1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "822a4bb75d2d8c8d2304ba6e6412225cdbc063718e2b6623073ef68711a86875"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.969,
+    "silhouetteIoUInPlace": 0.968,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 0.984,
+      "coverage": 1.0
+     },
+     "eye": {
+      "span": 0.975,
+      "coverage": 0.861
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "leg-0": {
+      "span": 0.823,
+      "coverage": 1.0
+     },
+     "leg-1": {
+      "span": 0.982,
+      "coverage": 1.0
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.581,
+      "painted": 0.656,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.364,
+      "painted": 0.443,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.24,
+      "painted": 0.276,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.392,
+      "painted": 0.4,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.524,
+      "painted": 0.549,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 1.0,
+      "median": "#4a565a",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 1.0,
+      "median": "#4b565a",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 1.0,
+      "median": "#4a5658",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 1.0,
+      "median": "#dccaa2",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 1.0,
+      "median": "#dccba2",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.983,
+      "median": "#dbcaa2",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.003,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.999,
+    "passed": true,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "3063de44-8a52-4052-a2ec-caa2de53c134",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-a9a5bbbd",
+   "genomeSha256": "175f47a0bce0274b6d3189a1a27cb440a3bd54b7cf83bac4dc21c3aad5599e08",
+   "purpose": "station-portrait-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "artDirection": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.",
+    "transfer": "Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image."
+   },
+   "referenceImage": {
+    "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+    "name": "rich-plain-300x310.png",
+    "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427"
+   },
+   "prompt": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.\n\nImage 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "step1-portrait-600x620.png",
+     "sha256": "884a9dd5de6419fb8312ca94976da968ca2ddd597a3a33f77b83dbe51db06c68",
+     "bytes": 217381
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:57:44Z",
+   "seconds": 9.1,
+   "httpStatus": 200,
+   "responseId": "ySLHapz5Aqzf-sAPndqfuAU",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1026,
+    "candidatesTokenCount": 1526,
+    "totalTokenCount": 2552,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 510
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09207,
+   "output": {
+    "file": "portrait-step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "f4a9c32d46aa1dcf40665e20c5ba2f84d3abf49c60f1b017da390b5877ce6537"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.964,
+    "silhouetteIoUInPlace": 0.963,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.999
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 0.984,
+      "coverage": 1.0
+     },
+     "eye": {
+      "span": 0.975,
+      "coverage": 0.891
+     },
+     "crown": {
+      "span": 0.995,
+      "coverage": 1.0
+     },
+     "leg-0": {
+      "span": 0.823,
+      "coverage": 1.0
+     },
+     "leg-1": {
+      "span": 0.972,
+      "coverage": 1.0
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.581,
+      "painted": 0.654,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.364,
+      "painted": 0.442,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.24,
+      "painted": 0.275,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.392,
+      "painted": 0.393,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.524,
+      "painted": 0.548,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 1.0,
+      "median": "#425657",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 1.0,
+      "median": "#4a5d60",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 1.0,
+      "median": "#444b4d",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.998,
+      "median": "#dccaa2",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.998,
+      "median": "#d7c19a",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.944,
+      "median": "#ddcba3",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.001,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.996,
+    "passed": true,
+    "gated": false
+   }
+  },
+  {
+   "id": "b4227857-5906-44f0-9bc4-458cded7405c",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-pip-control",
+   "genomeSha256": "pip-control-e39a79b2ca0143ce830031e628a6b97ffff0432a",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, belly \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, iris \u2192 #e08a2c, crest \u2192 #6f9a3c. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (body); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a short muzzle, big eyes, a tall crest, short legs, stout legs, broad feet, a stout build. The drawing follows the accepted Pip's own silhouette.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": null,
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, belly \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, iris \u2192 #e08a2c, crest \u2192 #6f9a3c. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (body); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a short muzzle, big eyes, a tall crest, short legs, stout legs, broad feet, a stout build. The drawing follows the accepted Pip's own silhouette.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "5f26119a1267c474d4c40b683f270a7eb8d6b0fc8b84c388713fde91bdc0b9ca",
+     "bytes": 108215
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "546d777d8e51321637e539c365c0f227cc235d8c1cb4d0f4c2f93b20de112d48",
+     "bytes": 33842
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:58:19Z",
+   "seconds": 8.3,
+   "httpStatus": 200,
+   "responseId": "7CLHasfcC9zh_uMPlcHO8Ag",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1400,
+    "candidatesTokenCount": 1527,
+    "totalTokenCount": 2927,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 626
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09232,
+   "output": {
+    "file": "portrait-step1-1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "432fb385cd5e0fc223c9d45deebf49a5113060dcf5aba860b273f480bef67dfa"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.966,
+    "silhouetteIoUInPlace": 0.98,
+    "parts": {
+     "body": {
+      "span": 1.0,
+      "coverage": 0.992
+     }
+    },
+    "proportions": {
+     "body": {
+      "drawn": 1.0,
+      "painted": 1.0,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@body": {
+      "agreement": 0.698,
+      "median": "#495759",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "belly@body": {
+      "agreement": 0.974,
+      "median": "#eae0c1",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "pupil@body": {
+      "agreement": 0.176,
+      "median": "#485659",
+      "nearest": "#465459",
+      "ok": false
+     },
+     "crest@body": {
+      "agreement": 0.948,
+      "median": "#6e973c",
+      "nearest": "#6f9a3c",
+      "ok": true
+     }
+    },
+    "reasons": [
+     "a pigment slot is painted in another slot's colour: the pupil slot on the body (painted #485659, the colour of body)"
+    ],
+    "outside": 0.0,
+    "missing": 0.005,
+    "bandTolerancePx": 22,
+    "slotAgreement": 0.474,
+    "passed": false,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "dbb7da6b-e522-4564-ba4d-ebdcdc6f20d9",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-pip-control",
+   "genomeSha256": "pip-control-e39a79b2ca0143ce830031e628a6b97ffff0432a",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 2,
+   "fields": {
+    "controls": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, belly \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, iris \u2192 #e08a2c, crest \u2192 #6f9a3c. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (body); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.",
+    "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a short muzzle, big eyes, a tall crest, short legs, stout legs, broad feet, a stout build. The drawing follows the accepted Pip's own silhouette.",
+    "generate": "DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image."
+   },
+   "reasonsGiven": [
+    "a pigment slot is painted in another slot's colour: the pupil slot on the body (painted #485659, the colour of body)"
+   ],
+   "prompt": "Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: body \u2192 #465459, belly \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, iris \u2192 #e08a2c, crest \u2192 #6f9a3c. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part (body); keep every part where it is, at the same size, facing the same way. The creature stands still, seen from the front quarter, its face toward the viewer's left, as in image 1. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.\n\nThe creature: A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a short muzzle, big eyes, a tall crest, short legs, stout legs, broad feet, a stout build. The drawing follows the accepted Pip's own silhouette.\n\nDESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280\u00d7300 pixel grid and shown at 2\u00d7 within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.\n\nA previous drawing was rejected because a pigment slot is painted in another slot's colour: the pupil slot on the body (painted #485659, the colour of body). This time keep the parts of image 2 exactly, part for part.",
+   "images": [
+    {
+     "name": "key.portrait.large.png:softened",
+     "sha256": "5f26119a1267c474d4c40b683f270a7eb8d6b0fc8b84c388713fde91bdc0b9ca",
+     "bytes": 108215
+    },
+    {
+     "name": "index.portrait.large.png:softened",
+     "sha256": "546d777d8e51321637e539c365c0f227cc235d8c1cb4d0f4c2f93b20de112d48",
+     "bytes": 33842
+    },
+    {
+     "name": "board:02-miniature-lives.png",
+     "sha256": "cbb74339d41fc6b251744824b6f11ce2390424fb05be17b6eb259966ad7bf9d9",
+     "bytes": 2208351
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:58:34Z",
+   "seconds": 8.6,
+   "httpStatus": 200,
+   "responseId": "-yLHasuJBLrM_PUP7-DFkAE",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1455,
+    "candidatesTokenCount": 1728,
+    "totalTokenCount": 3183,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 681
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.10441,
+   "output": {
+    "file": "portrait-step1-2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "27d9cc1cdb4cadf1731e1ff42498a72099b43cb64b392da25e07cc8e4bc17954"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.97,
+    "silhouetteIoUInPlace": 0.976,
+    "parts": {
+     "body": {
+      "span": 1.0,
+      "coverage": 0.991
+     }
+    },
+    "proportions": {
+     "body": {
+      "drawn": 1.0,
+      "painted": 1.0,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@body": {
+      "agreement": 0.791,
+      "median": "#475254",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "belly@body": {
+      "agreement": 0.978,
+      "median": "#decfab",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "pupil@body": {
+      "agreement": 0.469,
+      "median": "#384244",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "crest@body": {
+      "agreement": 0.999,
+      "median": "#70973e",
+      "nearest": "#6f9a3c",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.007,
+    "bandTolerancePx": 22,
+    "slotAgreement": 0.661,
+    "passed": true,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "0fa7dbb0-302a-456e-8e36-27f3ef4fbb82",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-pip-control",
+   "genomeSha256": "pip-control-e39a79b2ca0143ce830031e628a6b97ffff0432a",
+   "purpose": "station-portrait-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "artDirection": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.",
+    "transfer": "Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image."
+   },
+   "referenceImage": {
+    "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+    "name": "rich-plain-300x310.png",
+    "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427"
+   },
+   "prompt": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.\n\nImage 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "step1-portrait-600x620.png",
+     "sha256": "d2decc3ab91283fd5d2150fb317d7579b95deb95ea20069a00d70b6c31dd8a99",
+     "bytes": 293340
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:58:49Z",
+   "seconds": 8.2,
+   "httpStatus": 200,
+   "responseId": "CiPHarG0G_Hc_uMPttuywAE",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1026,
+    "candidatesTokenCount": 1484,
+    "totalTokenCount": 2510,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 510
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.08955,
+   "output": {
+    "file": "portrait-step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "b4e156b951b782ca33a3700c9a9b6210f1044eaf90141c6b1d403708885c7892"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.972,
+    "silhouetteIoUInPlace": 0.982,
+    "parts": {
+     "body": {
+      "span": 1.0,
+      "coverage": 0.993
+     }
+    },
+    "proportions": {
+     "body": {
+      "drawn": 1.0,
+      "painted": 1.0,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@body": {
+      "agreement": 0.825,
+      "median": "#586363",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "belly@body": {
+      "agreement": 0.949,
+      "median": "#d6c7a5",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "pupil@body": {
+      "agreement": 0.546,
+      "median": "#393f42",
+      "nearest": "#273036",
+      "ok": true
+     },
+     "crest@body": {
+      "agreement": 0.996,
+      "median": "#779a4b",
+      "nearest": "#6f9a3c",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.001,
+    "bandTolerancePx": 22,
+    "slotAgreement": 0.703,
+    "passed": true,
+    "gated": false
+   }
   }
  ]
 }
