@@ -1,0 +1,41 @@
+{
+ "id": "C48-W-r7-G-down",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "48x48",
+ "prompt": "a small explorer in an orange hooded parka, a backpack, dark trousers, brown boots, pixel art sprite on a plain white background, with a small face deep inside the hood, a thin ring of fur, goggles resting on the brow on a thin strap, not too much face, seen from the front",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-pawn-studies/inputs/pawn-down-r6-in.png",
+  "sha256": "c01547a0a500bde03ab1c2a7851c26ba89090d9e773e1887e1e97912fecec507",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T21:43:20Z",
+ "checkCost": {
+  "created_at": 1791495800,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 53.080000000000005
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "6567d496-ce12-494d-b87a-41c81fe45f10",
+  "seconds": 41.5,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 52.9,
+  "model": "rd_pro",
+  "file": "C48-W-r7-G-down-rd.png",
+  "sha256": "120f22a4a7f4d84bb4f45116790188555d8013ed96a5ecf80cb5ddfb31baa383"
+ }
+}

@@ -8,7 +8,8 @@ import numpy as np
 from PIL import Image, ImageDraw
 import quant
 P = quant.P; C = P.index
-out = sys.argv[1]; os.makedirs(out, exist_ok=True)
+MAIN = __name__ == "__main__"   # imported by pawn-study.py for its parts
+if MAIN: out = sys.argv[1]; os.makedirs(out, exist_ok=True)
 coat = sys.argv[sys.argv.index("--coat") + 1] if "--coat" in sys.argv else "yellow"
 N = 48; CX = 24; GY = 46
 WIDE = {"coat": 3, "hood": 2} if coat == "glow" else {}
@@ -118,7 +119,17 @@ def pack_back(cv, p):
     cv.put([(CX + 6 + l, GY - 21 + b), (CX + 6 + l, GY - 20 + b), (CX + 6 + l, GY - 19 + b)], "amber")        # a small lantern hung at the side
     cv.put([(CX + 6 + l, GY - 22 + b)], "ink")
 # ---------------------------------------------------------------- side (facing right; left is the mirror)
-def side_frame(p, up_arm=False):
+def side_hood(cv, p, b, l, hy):
+    # the hood: a dome with a peak that trails back; the fur ruff a crescent at the front round the face in profile
+    fy = b + hy
+    cv.part(poly([(CX - 6 + l, GY - 25 + b), (CX + 5 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + fy), (CX + 5 + l, GY - 35 + fy), (CX + 1 + l, GY - 38 + fy), (CX - 4 + l, GY - 39 + fy), (CX - 8 + l, GY - 36 + fy), (CX - 8 + l, GY - 30 + fy)]), "hood")
+    ruff(cv, CX + 0 + l, GY - 34 + fy, CX + 8 + l, GY - 24 + fy, [(CX + 9 + l, GY - 31 + fy), (CX + 9 + l, GY - 27 + fy), (CX + 4 + l, GY - 35 + fy), (CX + 2 + l, GY - 23 + fy)])
+    cv.part(ell(CX + 2 + l, GY - 32 + fy, CX + 7 + l, GY - 25 + fy), "skin", flat=True)
+    cv.put([(CX + 5 + l, GY - 29 + fy), (CX + 5 + l, GY - 28 + fy)], "ink")                                       # the eye
+    cv.put([(CX + 8 + l, GY - 27 + fy), (CX + 8 + l, GY - 26 + fy)], "peach"); cv.put([(CX + 4 + l, GY - 27 + fy)], "coral")   # the nose, the cheek
+    strap(cv, CX - 8 + l, CX + 6 + l, GY - 36 + fy); lens(cv, CX + 2 + l, GY - 36 + fy)                            # the goggles pushed up
+
+def side_frame(p, up_arm=False, hood_fn=None):
     cv = Canvas(); b = p["bob"]; l = p["lean"]; hy = p["hood_dy"]; s = p["stride"]; lf = p["lift"]
     # far leg (darker), far arm, then pack, near leg, torso, near arm, hood
     top = GY - 12 + b + p["crouch"]
@@ -144,14 +155,7 @@ def side_frame(p, up_arm=False):
     else:
         a = p["arm"][0]; x0 = CX - 1 + l + a
         cv.part(rect(x0, GY - 24 + b, x0 + 2, GY - 14 + b), "coat"); cv.part(rect(x0, GY - 13 + b, x0 + 2, GY - 11 + b), "mitt")
-    # the hood: a dome with a peak that trails back; the fur ruff a crescent at the front round the face in profile
-    fy = b + hy
-    cv.part(poly([(CX - 6 + l, GY - 25 + b), (CX + 5 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + fy), (CX + 5 + l, GY - 35 + fy), (CX + 1 + l, GY - 38 + fy), (CX - 4 + l, GY - 39 + fy), (CX - 8 + l, GY - 36 + fy), (CX - 8 + l, GY - 30 + fy)]), "hood")
-    ruff(cv, CX + 0 + l, GY - 34 + fy, CX + 8 + l, GY - 24 + fy, [(CX + 9 + l, GY - 31 + fy), (CX + 9 + l, GY - 27 + fy), (CX + 4 + l, GY - 35 + fy), (CX + 2 + l, GY - 23 + fy)])
-    cv.part(ell(CX + 2 + l, GY - 32 + fy, CX + 7 + l, GY - 25 + fy), "skin", flat=True)
-    cv.put([(CX + 5 + l, GY - 29 + fy), (CX + 5 + l, GY - 28 + fy)], "ink")                                       # the eye
-    cv.put([(CX + 8 + l, GY - 27 + fy), (CX + 8 + l, GY - 26 + fy)], "peach"); cv.put([(CX + 4 + l, GY - 27 + fy)], "coral")   # the nose, the cheek
-    strap(cv, CX - 8 + l, CX + 6 + l, GY - 36 + fy); lens(cv, CX + 2 + l, GY - 36 + fy)                            # the goggles pushed up
+    (hood_fn or side_hood)(cv, p, b, l, hy)
     return cv
 # ---------------------------------------------------------------- poses
 def pose(**k):
@@ -171,8 +175,9 @@ def frame(facing, p, up_arm=False):
     else:
         legs_fb(cv, p); arms_fb(cv, p, up=up_arm); pack_back(cv, p); hood_back(cv, p)
     shadow(cv, 1); return finish(cv)
-for facing in ("down", "up", "left", "right"):
-    for i, p in enumerate(WALK): quant.save_indexed(frame(facing, p), os.path.join(out, f"pawn-{facing}-walk{i + 1}.png"))
-    for i, p in enumerate(CREEP): quant.save_indexed(frame(facing, p), os.path.join(out, f"pawn-{facing}-creep{i + 1}.png"))
-    quant.save_indexed(frame(facing, REACT, up_arm=True), os.path.join(out, f"pawn-{facing}-react.png"))
-print("pawn 4 facings x 7 frames, coat", coat)
+if MAIN:
+    for facing in ("down", "up", "left", "right"):
+        for i, p in enumerate(WALK): quant.save_indexed(frame(facing, p), os.path.join(out, f"pawn-{facing}-walk{i + 1}.png"))
+        for i, p in enumerate(CREEP): quant.save_indexed(frame(facing, p), os.path.join(out, f"pawn-{facing}-creep{i + 1}.png"))
+        quant.save_indexed(frame(facing, REACT, up_arm=True), os.path.join(out, f"pawn-{facing}-react.png"))
+    print("pawn 4 facings x 7 frames, coat", coat)
