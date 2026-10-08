@@ -143,40 +143,47 @@ export function cropPB(src, x0, y0, w, h, bg) { const pb = new PB(w, h); if (bg 
 // Nearest-neighbour scale of a buffer to w×h (close-ups, small residents).
 export function scalePB(src, w, h) { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) pb.p[y * w + x] = src.get(Math.floor((x + 0.5) * src.w / w), Math.floor((y + 0.5) * src.h / h)); return pb; }
 
-// ---------- Type: Inter, anti-aliased, at the style guide's Station sizes (16 px body and readouts, 20 px
-// titles, 28 px names), with tabular figures. The size argument keeps the old scale numbers: 2 body, 3 title, 4 name.
-export const FONT_PX = { 1: 13, 2: 16, 3: 20, 4: 28 };
-export const FONT_FAMILY = '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-export const fontFor = (s) => `${s >= 4 ? 600 : s >= 3 ? 500 : 400} ${FONT_PX[s] || FONT_PX[2]}px ${FONT_FAMILY}`;
+// ---------- The renderer behind the old primitives ----------
+// The Station page draws through prototypes/ui's layered renderer (technical-architecture.md §5). The screens not yet
+// moved to the screen layer keep calling R, blit, text and panel as before; those calls now land on the renderer's
+// immediate primitives (a rectangle, a sprite at its size, a glyph run from the Inter atlas), on the art, painted and
+// type layers (the adapter of T1). Nothing here uses a canvas text API, path, gradient or transform.
+let SC = null;
+export const bindCanvas = (sc) => { SC = sc; };
+export const canvas = () => SC;
+const name = (c) => PALETTE[c][0];
+
+// ---------- Type: Inter from the baked atlases, at the style guide's Station sizes (16 px body and readouts, 20 px
+// titles, 28 px names). The size argument keeps the old scale numbers: 2 body, 3 title, 4 name; 1 (13 px, which the
+// style guide forbids) is set at 16, the nearest face the atlases have.
+export const FONT_PX = { 1: 16, 2: 16, 3: 20, 4: 28 };
 export const ICON_GLYPH = { "⚡": "energy", "◆": "data", "❀": "essence", "★": "star" };   // drawn as the material icons inside text
 let iconsOf = () => null;   // art.mjs registers the material icons (name, px)
 export const setIcons = (fn) => { iconsOf = fn; };
 const iconPx = (s) => Math.round((FONT_PX[s] || 16) * 0.9);
-const measure = new Map();
-function runs(str) { const out = []; let cur = ""; for (const ch of str) { if (ICON_GLYPH[ch]) { if (cur) out.push(cur); out.push({ icon: ICON_GLYPH[ch] }); cur = ""; } else cur += ch; } if (cur) out.push(cur); return out; }
+// Inter has no ✕ (U+2715): the screens not yet moved say × (U+00D7) where they said ✕, which the old canvas drew from a system font.
+const FALLBACK = { "✕": "×" };
+function runs(str) { str = [...str].map((c) => FALLBACK[c] ?? c).join(""); const out = []; let cur = ""; for (const ch of str) { if (ICON_GLYPH[ch]) { if (cur) out.push(cur); out.push({ icon: ICON_GLYPH[ch] }); cur = ""; } else cur += ch; } if (cur) out.push(cur); return out; }
 export function textW(str, s) {
-  s = s || 2; const key = s + ":" + str; let w = measure.get(key); if (w != null) return w;
-  g.font = fontFor(s); w = 0;
-  for (const r of runs(str)) w += typeof r === "string" ? g.measureText(r).width : iconPx(s) + 2;
-  w = Math.round(w); if (measure.size > 4000) measure.clear(); measure.set(key, w); return w;
+  s = s || 2; const px = FONT_PX[s] || 16; let w = 0;
+  for (const r of runs(str)) w += typeof r === "string" ? SC.measure(r, px) : iconPx(s) + 2;
+  return Math.round(w);
 }
 export function wrapText(str, maxW, s) { const words = str.split(" "), lines = []; let cur = "";
   for (const w of words) { const t = cur ? cur + " " + w : w; if (textW(t, s) <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } } if (cur) lines.push(cur); return lines; }
 export function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (str.length > 1 && textW(str + "…", s) > maxW) str = str.slice(0, -1); return str + "…"; }
 
-// ---------- The frame: 1024×600 offscreen at 1:1 device pixels ----------
-export const scr = document.createElement("canvas"); scr.width = SW; scr.height = SH;
-export const g = scr.getContext("2d"); g.imageSmoothingEnabled = false;
-export const R = (x, y, w, h, c) => { g.fillStyle = HEX[c]; g.fillRect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); };
-export const blit = (pb, x, y) => g.drawImage(pb.canvas(), Math.round(x), Math.round(y));
+// ---------- The frame: 1024×600 at 1:1 device pixels ----------
+export const R = (x, y, w, h, c) => SC.fillRect([Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)], name(c));
+export const blit = (pb, x, y) => SC.part(pb.layer || "art", pb.canvas(), 0, 0, pb.w, pb.h, Math.round(x), Math.round(y));
+// A sprite inside a rectangle only (a reveal that shows part of a picture).
+export const blitClip = (pb, x, y, clip) => SC.part(pb.layer || "art", pb.canvas(), 0, 0, pb.w, pb.h, Math.round(x), Math.round(y), clip);
 export function text(str, x, y, col, s, align) {
   s = s || 2; x = Math.round(x); y = Math.round(y); const w = textW(str, s), px = FONT_PX[s] || 16;
   if (align === "center") x -= Math.round(w / 2); else if (align === "right") x -= w;
-  g.font = fontFor(s); g.textBaseline = "alphabetic"; g.textAlign = "left"; g.fillStyle = HEX[col];
-  const base = y + Math.round(px * 0.78);   // the cap top sits at y, as the bitmap face's did
   for (const r of runs(str)) {
-    if (typeof r === "string") { g.fillText(r, x, base); x += Math.round(g.measureText(r).width); }
-    else { const n = iconPx(s), ic = iconsOf(r.icon, n); if (ic) g.drawImage(ic.canvas(), x + 1, base - n + Math.round(n * 0.12)); x += n + 2; }
+    if (typeof r === "string") { x += SC.glyphs({ text: r, px, colour: name(col), rect: [x, y, 0, 0], align: "left", id: "legacy" }, null); }
+    else { const n = iconPx(s), ic = iconsOf(r.icon, n); if (ic) blit(ic, x + 1, y + SC.type.face(px).cap - n + Math.round(n * 0.12)); x += n + 2; }
   }
   return w;
 }
@@ -188,12 +195,10 @@ export function panel(x, y, w, h, fill, border) {
 function ditherArt(col, level) { return art("dith" + col + ":" + level, () => { const pb = new PB(64, 64); for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) if (bay(x, y) < level) pb.set(x, y, C[col]); return pb; }); }
 export function ditherFill(x, y, w, h, col, level) {
   if (level <= 0) return; if (level >= 16) { R(x, y, w, h, C[col]); return; }
-  const cv = ditherArt(col, level).canvas();
-  g.save(); g.beginPath(); g.rect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); g.clip();
-  for (let ty = Math.floor(y / 64) * 64; ty < y + h; ty += 64) for (let tx = Math.floor(x / 64) * 64; tx < x + w; tx += 64) g.drawImage(cv, tx, ty);
-  g.restore();
+  const cv = ditherArt(col, level).canvas(), clip = [Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)];
+  for (let ty = Math.floor(y / 64) * 64; ty < y + h; ty += 64) for (let tx = Math.floor(x / 64) * 64; tx < x + w; tx += 64) SC.part("art", cv, 0, 0, 64, 64, tx, ty, clip);
 }
-// The warm focus ring: a 3 px amber ring with cut corners around the focused thing.
+// The old warm focus ring (the screens not yet moved): a 3 px amber ring with cut corners around the focused thing.
 export function focusRing(x, y, w, h) {
   const pulse = motion() ? Math.floor(clock.now / 500) % 2 : 0, c = pulse ? C.amber : C.orange;
   R(x + 4, y - 3, w - 8, 3, c); R(x + 4, y + h, w - 8, 3, c); R(x - 3, y + 4, 3, h - 8, c); R(x + w, y + 4, 3, h - 8, c);
@@ -202,5 +207,5 @@ export function focusRing(x, y, w, h) {
 }
 // A dithered ramp: t in [0, 1] across a list of colours, with the 4×4 Bayer pattern between steps.
 export function ramp(cols, t, x, y) { const f = clamp(t, 0, 0.999) * (cols.length - 1), i = Math.floor(f); return C[cols[bay(x, y) < (f - i) * 16 ? i + 1 : i]]; }
-// Pixels outside the palette on the frame (0 on every screen; the test hook).
-export function offPalette() { const d = g.getImageData(0, 0, SW, SH).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)); let bad = 0; for (let i = 0; i < d.length; i += 4) if (!ok.has((d[i] << 16) | (d[i + 1] << 8) | d[i + 2])) bad++; return bad; }
+// Pixels outside the palette on the art layer (0 on every screen; the test hook). The type layer is anti-aliased by decision.
+export const offPalette = () => SC.offPalette("art").bad;

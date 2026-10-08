@@ -1,9 +1,12 @@
 // The Station page: boot (the frames fetched from the workbench registry beside the page), the frame
 // loop, the device keys, the Caddy's one key, the shared save's storage event, the developer panel and
 // the test hooks. Rules are in state.mjs, drawing in the screens.
-import { SW, SH, STAGE_Y, STAGE_H, scr, g, RGB, clock, motion, ditherFill, setIcons, offPalette, artSize } from "./gfx.mjs";
+import { SW, SH, STAGE_Y, STAGE_H, clock, motion, ditherFill, setIcons, offPalette, artSize, bindCanvas } from "./gfx.mjs";
+import { bootStationCanvas } from "../../ui/render/browser.mjs";
+import { Scene } from "../../ui/scene.mjs";
+import { makeCtx } from "../../ui/context.mjs";
 import { ICON } from "./art.mjs";
-import { G, FX, UI, IDLE_MS, msg, save, load, loadSettings, storageChanged, goScreen, screenOf, lineFor, need, docked, hasWorld, bayCrates, arriving, onChange, podById, mibiById } from "./game.mjs";
+import { G, FX, UI, TL, SPECS, LAYER, IDLE_MS, msg, save, load, loadSettings, storageChanged, goScreen, screenOf, lineFor, need, docked, hasWorld, bayCrates, arriving, onChange, podById, mibiById } from "./game.mjs";
 import * as S from "./state.mjs";
 import { setFrames, frameOf, frameIds, stampGenome } from "./genome.mjs";
 import "./screens/home.mjs"; import "./screens/pods.mjs"; import "./screens/create.mjs"; import "./screens/incubator.mjs"; import "./screens/cross.mjs"; import "./screens/library.mjs"; import "./screens/habitat.mjs"; import "./screens/bench.mjs";
@@ -15,10 +18,11 @@ import { openBook } from "./screens/library.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
 import { stampArt } from "./art.mjs";
+import { manifest as manifestOf } from "../../ui/assets.mjs";
 
 setIcons((name, px) => ICON[name]?.(px));
 const $ = (id) => document.getElementById(id);
-const vis = $("screen"), vctx = vis.getContext("2d"); vctx.imageSmoothingEnabled = false;
+const vis = $("screen"), vctx = vis.getContext("2d"); vctx.imageSmoothingEnabled = false; vctx.fillStyle = "#121a16"; vctx.fillRect(0, 0, SW, SH);
 const stampEl = $("stamp"), bootEl = $("boot");
 
 // --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
@@ -31,12 +35,19 @@ async function loadFrames() {
 }
 
 // --- render ---
+// Every frame the visible screen is one scene: a screen on the screen layer gives its nodes; a screen not yet moved
+// is one legacy node whose callback draws as before through the renderer's primitives (the adapter of T1).
+const scene = new Scene(SW, SH);
+let SC = null, CTX = null;
+const legacy = (id, draw) => ({ id, kind: "legacy", rect: [0, 0, SW, SH], always: true, draw });
 function render() {
-  stepResidents();
-  if (UI.idle) drawIdle();
-  else { screenOf(UI.screen).draw(); drawLine(lineFor()); drawMsg(); }
-  const ta = clock.now - (FX.transAt || -1e9); if (ta >= 0 && ta < 180 && motion()) ditherFill(0, STAGE_Y, SW, STAGE_H, "moss0", 16 - Math.floor((ta / 180) * 16));
-  vctx.drawImage(scr, 0, 0);
+  stepResidents(); TL.tick(clock.now);
+  const screen = screenOf(UI.screen), nodes = [];
+  if (!UI.idle && screen.nodes) nodes.push(...screen.nodes(CTX));
+  else nodes.push(legacy("legacy", () => { if (UI.idle) drawIdle(); else { screen.draw(); drawLine(lineFor()); drawMsg(); } }));
+  const ta = clock.now - (FX.transAt || -1e9);
+  if (ta >= 0 && ta < 180 && motion()) nodes.push(legacy("trans", () => ditherFill(0, STAGE_Y, SW, STAGE_H, "moss0", 16 - Math.floor((ta / 180) * 16))));
+  scene.set(nodes); SC.paint(scene); SC.composite(vctx);
 }
 let errN = 0;
 function frame(t) {
@@ -56,7 +67,7 @@ export function act(k) {
   clock.now = performance.now(); UI.lastInput = clock.now;
   if (UI.idle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); }   // a press wakes the screen and still does what it says; a landed painting shows from here
   if (k === "dock") { dockKey(); return; }
-  if (clock.now < FX.lockUntil) return;                                  // presses during a reveal or an arrival are consumed
+  if (clock.now < FX.lockUntil || TL.holding()) return;                  // presses during a reveal or an arrival are consumed (the timeline's holds, and the screens not yet moved)
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (UI.report && !arriving() && UI.screen === "home") UI.report = null;
   const views = { home: "home", research: "pods", library: "library", habitat: "habitat" };
@@ -118,10 +129,16 @@ fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw 
 for (const id of ["howTo", "whatTry"]) $(id).open = false;
 fit();
 requestAnimationFrame(frame);
-const bootText = (t) => { vctx.fillStyle = "#121a16"; vctx.fillRect(0, 0, SW, SH); vctx.fillStyle = "#c6c4d8"; vctx.font = "20px system-ui, sans-serif"; vctx.fillText(t, 24, 300); if (bootEl) bootEl.textContent = t; };
+const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the atlases load the screen is blank; the words go to the page
 bootText("loading the species frames…");
-const fontsReady = (document.fonts ? Promise.all(["400 16px Inter", "500 20px Inter", "600 28px Inter"].map((f) => document.fonts.load(f))) : Promise.resolve()).catch(() => null);
-const ready = Promise.all([loadFrames(), fontsReady]).then(([info]) => {
+// The layered renderer: the palette, the type atlases (Inter at 16, 20 and 28 px, baked from the bundled font) and the spec files, all beside the page.
+const bootLayer = async () => {
+  const { canvas, type } = await bootStationCanvas({ base: new URL("../../ui/", import.meta.url) });
+  const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
+  for (const k of ["frame"]) SPECS[k] = await spec(k + ".json");
+  SC = canvas; bindCanvas(SC); CTX = LAYER.ctx = makeCtx(SPECS.frame, type);
+};
+const ready = Promise.all([loadFrames(), bootLayer()]).then(([info]) => {
   loadSettings(); load();
   // a new species identified opens its Library page: the Pods screen asks for it through this hook
   G.openBook = openBook;
@@ -135,8 +152,8 @@ const ready = Promise.all([loadFrames(), fontsReady]).then(([info]) => {
 
 // Test hooks (not part of play).
 window.__st = { ready, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
-  act: (k) => { FX.lockUntil = 0; act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
-  get msg() { return FX.msg; }, capture: () => scr.toDataURL("image/png"), offPalette, artSize, frameOf, frameIds, podById, genomesText,
+  act: (k) => { FX.lockUntil = 0; TL.release(); act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; TL.release(); }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
+  get msg() { return FX.msg; }, capture: () => SC.capture().toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), sceneRegions: () => scene.regions(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },
   grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; }, openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; }, forecastOf: (aId, bId) => S.forecastOf(G.st, podById ? mibiById(aId) : null, mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),

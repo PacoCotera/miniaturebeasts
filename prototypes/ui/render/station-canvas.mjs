@@ -1,26 +1,88 @@
 // The Station's layered canvas renderer: three device-pixel canvases (art, painted, type) the size of the screen,
 // painted from a Scene's dirty rectangles and composited whole onto the page's visible canvas. The art layer holds
-// only palette colours (a rect, an indexed sprite, a pattern, a ring on whole pixels); the painted layer the landed
-// paintings as they came; the type layer Inter through the canvas text API, anti-aliased, with a run log of every
-// string so the type check can read it. A node drawn later erases what it covers on the layers above its own, so the
-// composite reads exactly as one surface painted in order (technical-architecture.md §3, §5.1).
+// only palette colours; the painted layer the landed paintings as they came; the type layer glyphs blitted from the
+// baked atlases (tinted in a palette colour, 4-bit coverage as alpha), with a run log of every string so the type
+// check can read it. A node drawn later erases what it covers on the layers above its own, so the composite reads
+// exactly as one surface painted in order (technical-architecture.md §3, §5.1).
+//
+// The primitive set is closed: fillRect, drawImage at integer pixels with a source rectangle (a sprite, a slice of a
+// nine-slice, a glyph), and clearRect / destination-out to erase. A clip is arithmetic on rectangles, never a canvas
+// path. No gradients, shadows, filters, transforms, global alpha, text API or smoothing exist here.
 import { asset as assetOf, assetEntry } from "../assets.mjs";
 import { rectIntersect, drawnRect } from "../scene.mjs";
 
 const hexRGB = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
 const makeCanvas = (w, h) => { const c = document.createElement("canvas"); c.width = w; c.height = h; return c; };
+const LAYER_ABOVE = { art: ["painted", "type"], painted: ["type"], type: [] };
 
 export class StationCanvas {
-  constructor({ w = 1024, h = 600, palette, family = "Inter", canvases = null } = {}) {
-    this.w = w; this.h = h; this.family = family;
-    this.palette = palette; this.hex = Object.fromEntries(palette.colours); this.ok = new Set(palette.colours.map(([, hx]) => { const [r, g, b] = hexRGB(hx); return (r << 16) | (g << 8) | b; }));
+  // type: a TypeSet (type.mjs); atlases: { <face id>: a canvas holding the atlas coverage }
+  constructor({ w = 1024, h = 600, palette, type, atlases, canvases = null } = {}) {
+    this.w = w; this.h = h; this.type = type; this.atlases = atlases;
+    this.palette = palette; this.hex = Object.fromEntries(palette.colours);
+    this.ok = new Set(palette.colours.map(([, hx]) => { const [r, g, b] = hexRGB(hx); return (r << 16) | (g << 8) | b; }));
     this.layers = {}; this.ctx = {};
     for (const name of ["art", "painted", "type"]) { const c = canvases?.[name] ?? makeCanvas(w, h); this.layers[name] = c; const g = c.getContext("2d", { willReadFrequently: name !== "painted" }); g.imageSmoothingEnabled = false; this.ctx[name] = g; }
-    this.typeLog = []; this.frameLog = []; this.sizeErrors = []; this.missing = []; this.rings = new Map(); this.painted = 0; this.frame = 0;
+    this.tinted = new Map(); this.env = { hex: (n) => this.colour(n), rgb: (n) => hexRGB(this.colour(n)) };
+    this.runs = new Map(); this.frameLog = []; this.sizeErrors = []; this.missing = []; this.painted = 0; this.frame = 0; this.clipNow = null;
   }
   colour(name) { const hx = this.hex[name]; if (!hx) throw new Error("no palette colour named " + name); return hx; }
-  font(px, weight) { return `${weight} ${px}px ${this.family}`; }
-  measure(text, px, weight = 400) { const g = this.ctx.type; g.font = this.font(px, weight); return g.measureText(text).width; }
+  measure(text, px) { return this.type.measure(text, px); }
+
+  // ---- the immediate primitives (nodes call them; so does the legacy adapter) ----
+  // Pixels of `src` (a canvas) at [sx, sy, w, h] to (dx, dy) on a layer, inside the clip; 1:1 and whole pixels.
+  part(layer, src, sx, sy, w, h, dx, dy, clip) {
+    let r = [dx, dy, w, h]; if (clip) r = rectIntersect(r, clip); if (this.clipNow) r = r && rectIntersect(r, this.clipNow); if (!r) return;
+    const ox = r[0] - dx, oy = r[1] - dy;
+    this.ctx[layer].drawImage(src, sx + ox, sy + oy, r[2], r[3], r[0], r[1], r[2], r[3]);
+    for (const up of LAYER_ABOVE[layer]) { const g = this.ctx[up]; g.globalCompositeOperation = "destination-out"; g.drawImage(src, sx + ox, sy + oy, r[2], r[3], r[0], r[1], r[2], r[3]); g.globalCompositeOperation = "source-over"; }
+  }
+  fillRect(rect, colour, clip) {
+    let r = rect.map(Math.round); if (clip) r = rectIntersect(r, clip); if (this.clipNow) r = r && rectIntersect(r, this.clipNow); if (!r) return;
+    const g = this.ctx.art; g.fillStyle = this.colour(colour); g.fillRect(r[0], r[1], r[2], r[3]);
+    this.ctx.painted.clearRect(r[0], r[1], r[2], r[3]); this.ctx.type.clearRect(r[0], r[1], r[2], r[3]);
+  }
+  layerOf(id) { return assetEntry(id)?.policy === "painted" ? "painted" : "art"; }
+  sprite(id, rect, clip) {
+    const a = assetOf(id, this.env), [x, y, w, h] = rect;
+    if (!a) { this.missing.push(id); this.flag(rect); return; }
+    if (a.w !== w || a.h !== h) { this.sizeErrors.push({ asset: id, slot: [w, h], asset_size: [a.w, a.h] }); this.flag(rect); return; }
+    this.part(this.layerOf(id), a.canvas(), 0, 0, w, h, x, y, clip);
+  }
+  // A picture with insets [l, t, r, b]: corners 1:1, edges and middle tiled (a uniform strip tiled is exact; nothing is scaled).
+  nineSlice(id, rect, clip) {
+    const a = assetOf(id, this.env), e = assetEntry(id);
+    if (!a || !e?.slice) { this.missing.push(id); this.flag(rect); return; }
+    const [l, t, r, b] = e.slice, [x, y, w, h] = rect, cv = a.canvas(), layer = this.layerOf(id);
+    if (w < l + r || h < t + b) { this.sizeErrors.push({ asset: id, slot: [w, h], asset_size: [a.w, a.h] }); this.flag(rect); return; }
+    const cols = [[0, l, x, l], [l, a.w - l - r, x + l, w - l - r], [a.w - r, r, x + w - r, r]], rows = [[0, t, y, t], [t, a.h - t - b, y + t, h - t - b], [a.h - b, b, y + h - b, b]];
+    for (const [sy, sh, dy, dh] of rows) for (const [sx, sw, dx, dw] of cols) {
+      if (!sw || !sh || !dw || !dh) continue;
+      for (let ty = 0; ty < dh; ty += sh) for (let tx = 0; tx < dw; tx += sw) this.part(layer, cv, sx, sy, Math.min(sw, dw - tx), Math.min(sh, dh - ty), dx + tx, dy + ty, clip);
+    }
+  }
+  // The atlas of a face tinted in a palette colour (white coverage becomes the colour, alpha kept): cached.
+  tint(face, colour) {
+    const key = face.id + ":" + colour; let cv = this.tinted.get(key); if (cv) return cv;
+    const src = this.atlases[face.id], [W, H] = face.size; cv = makeCanvas(W, H);
+    const g = cv.getContext("2d"), id = g.getImageData(0, 0, W, H), cover = src.getContext("2d").getImageData(0, 0, W, H).data, [R, G, B] = hexRGB(this.colour(colour));
+    for (let i = 0; i < W * H; i++) { id.data[i * 4] = R; id.data[i * 4 + 1] = G; id.data[i * 4 + 2] = B; id.data[i * 4 + 3] = cover[i * 4 + 3]; }
+    g.putImageData(id, 0, 0); this.tinted.set(key, cv); return cv;
+  }
+  // A glyph run: the string laid out from the atlas metrics, the cap top on rect y, x the anchor by align.
+  glyphs(n, clip) {
+    const { glyphs, width, face } = this.type.layout(n.text, n.px), [x, y] = n.rect;
+    const ax = n.align === "center" ? x - Math.round(width / 2) : n.align === "right" ? x - width : x, tin = this.tint(face, n.colour);
+    for (const g of glyphs) this.part("type", tin, g.sx, g.sy, g.w, g.h, ax + g.dx, y + g.dy, clip);
+    const rec = { text: n.text, face: face.id, family: face.family, px: face.px, weight: face.weight, atlas: face.atlas, id: n.id ?? null, frame: this.frame, width };
+    const key = rec.face + "|" + rec.text, seen = this.runs.get(key); if (seen) seen.count++; else this.runs.set(key, { ...rec, count: 1 });   // the log holds each distinct run once, with how many times it was set
+    this.frameLog.push(rec);
+    return width;
+  }
+  // A visible error in development: a magenta hairline where a sprite could not be placed at its size (counted, and 0 in CI).
+  flag(rect) { const [x, y, w, h] = rect, g = this.ctx.art; g.fillStyle = "#ff00ff"; for (const r of [[x, y, w, 1], [x, y + h - 1, w, 1], [x, y, 1, h], [x + w - 1, y, 1, h]]) g.fillRect(r[0], r[1], r[2], r[3]); }
+
+  // ---- the scene ----
   // Paint every dirty rectangle of the scene: clear it on the three layers, draw the nodes that touch it in order.
   paint(scene) {
     this.frame++; this.frameLog = [];
@@ -33,74 +95,30 @@ export class StationCanvas {
     }
     scene.clearDirty(); this.painted += px; return px;
   }
-  // One node inside a rectangle (its clip chain and the dirty rect).
   draw(f, within) {
     const n = f.node, clip = rectIntersect(within, drawnRect(f)); if (!clip) return;
-    const G = (name) => { const g = this.ctx[name]; g.save(); g.beginPath(); g.rect(clip[0], clip[1], clip[2], clip[3]); g.clip(); return g; };
-    const done = (...gs) => { for (const g of gs) g.restore(); };
-    const [x, y, w, h] = n.rect;
-    if (n.kind === "rect") {
-      const g = G("art"); g.fillStyle = this.colour(n.colour); g.fillRect(x, y, w, h); done(g);
-      this.erase(["painted", "type"], clip, (g) => g.fillRect(x, y, w, h));
-    } else if (n.kind === "sprite" || n.kind === "pattern") {
-      const a = assetOf(n.asset), e = assetEntry(n.asset);
-      if (!a) { this.missing.push(n.asset); this.flag(clip, n.rect); return; }
-      if (n.kind === "sprite" && (a.w !== w || a.h !== h)) { this.sizeErrors.push({ asset: n.asset, slot: [w, h], asset_size: [a.w, a.h] }); this.flag(clip, n.rect); return; }
-      const layer = e?.policy === "painted" ? "painted" : "art", cv = a.canvas();
-      const g = G(layer);
-      if (n.kind === "sprite") g.drawImage(cv, x, y);
-      else { const p = g.createPattern(cv, "repeat"); g.fillStyle = p; g.fillRect(x, y, w, h); }
-      done(g);
-      const above = layer === "art" ? ["painted", "type"] : ["type"];
-      this.erase(above, clip, (g) => { if (n.kind === "sprite") g.drawImage(cv, x, y); else { g.fillStyle = g.createPattern(cv, "repeat"); g.fillRect(x, y, w, h); } });
-    } else if (n.kind === "ring") {
-      const cv = this.ringArt(w, h, n.width ?? 2, n.radius ?? 6, n.shape ?? "round", this.colour(n.colour));
-      const g = G("art"); g.drawImage(cv, x, y); done(g);
-      this.erase(["painted", "type"], clip, (g) => g.drawImage(cv, x, y));
-    } else if (n.kind === "text") {
-      const px = n.px, weight = n.weight ?? 400, g = G("type");
-      g.font = this.font(px, weight); g.textBaseline = "alphabetic"; g.textAlign = "left"; g.fillStyle = this.colour(n.colour);
-      const tw = g.measureText(n.text).width, ax = n.align === "center" ? x - Math.round(tw / 2) : n.align === "right" ? x - Math.round(tw) : x;
-      g.fillText(n.text, ax, y + Math.round(px * 0.78));   // the cap top sits on y
-      done(g);
-      const rec = { text: n.text, px, weight, family: this.family, frame: this.frame, id: n.id };
-      this.typeLog.push(rec); this.frameLog.push(rec); if (this.typeLog.length > 4000) this.typeLog.splice(0, 1000);
-    } else if (n.kind === "legacy") {
-      const gs = ["art", "painted", "type"].map(G); try { n.draw(clip); } finally { done(...gs); }
-    }
+    if (n.kind === "rect") this.fillRect(n.rect, n.colour, clip);
+    else if (n.kind === "sprite") this.sprite(n.asset, n.rect, clip);
+    else if (n.kind === "nineSlice") this.nineSlice(n.asset, n.rect, clip);
+    else if (n.kind === "text") this.glyphs(n, clip);
+    else if (n.kind === "legacy") { this.clipNow = clip; try { n.draw(clip); } finally { this.clipNow = null; } }
     // clip: nothing of its own; its children are nodes of the flat list
   }
-  // Erase the footprint a node leaves on the layers above it (what it covers must not show through).
-  erase(layers, clip, paint) { for (const name of layers) { const g = this.ctx[name]; g.save(); g.beginPath(); g.rect(clip[0], clip[1], clip[2], clip[3]); g.clip(); g.globalCompositeOperation = "destination-out"; g.fillStyle = "#000"; paint(g); g.restore(); } }
-  // A visible error in development: a magenta hairline where a sprite could not be placed at its size.
-  flag(clip, rect) { const g = this.ctx.art; g.save(); g.beginPath(); g.rect(clip[0], clip[1], clip[2], clip[3]); g.clip(); g.strokeStyle = "#ff00ff"; g.lineWidth = 1; g.strokeRect(rect[0] + 0.5, rect[1] + 0.5, rect[2] - 1, rect[3] - 1); g.restore(); }
-  // The focus ring on whole pixels: a rounded rectangle (or an ellipse) `width` thick, drawn by pixel-centre tests so
-  // it stays on the palette (no anti-aliased stroke on the art layer). Cached by size, shape and colour.
-  ringArt(w, h, width, radius, shape, hex) {
-    const key = [w, h, width, radius, shape, hex].join(":"); let cv = this.rings.get(key); if (cv) return cv;
-    cv = makeCanvas(w, h); const g = cv.getContext("2d"), id = g.createImageData(w, h), [R, Gc, B] = hexRGB(hex);
-    const inRound = (px, py, x0, y0, x1, y1, r) => { if (px < x0 || py < y0 || px > x1 || py > y1) return false; const cx = px < x0 + r ? x0 + r : px > x1 - r ? x1 - r : px, cy = py < y0 + r ? y0 + r : py > y1 - r ? y1 - r : py; return (px - cx) ** 2 + (py - cy) ** 2 <= r * r; };
-    const inEll = (px, py, x0, y0, x1, y1) => { const rx = (x1 - x0) / 2, ry = (y1 - y0) / 2; if (rx <= 0 || ry <= 0) return false; return ((px - (x0 + rx)) / rx) ** 2 + ((py - (y0 + ry)) / ry) ** 2 <= 1; };
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      const px = x + 0.5, py = y + 0.5;
-      const outer = shape === "ellipse" ? inEll(px, py, 0, 0, w, h) : inRound(px, py, 0, 0, w, h, radius);
-      const inner = shape === "ellipse" ? inEll(px, py, width, width, w - width, h - width) : inRound(px, py, width, width, w - width, h - width, Math.max(0, radius - width));
-      if (outer && !inner) { const o = (y * w + x) * 4; id.data[o] = R; id.data[o + 1] = Gc; id.data[o + 2] = B; id.data[o + 3] = 255; }
-    }
-    g.putImageData(id, 0, 0); this.rings.set(key, cv); return cv;
-  }
-  // The three layers onto a visible context, art under painted under type, on the void.
+  // The three layers onto a visible context, art under painted under type, on the ground colour.
   composite(target, ground = null) {
     if (ground) { target.fillStyle = this.colour(ground); target.fillRect(0, 0, this.w, this.h); } else target.clearRect(0, 0, this.w, this.h);
     for (const name of ["art", "painted", "type"]) target.drawImage(this.layers[name], 0, 0);
   }
   // Pixels of a layer outside the palette (transparent pixels are not counted; `covered` tells how many are opaque).
+  // On the type layer a pixel counts off palette only by its colour, never its alpha: the glyphs are tinted in a palette colour.
   offPalette(layer = "art", rect = null) {
     const [x, y, w, h] = rect || [0, 0, this.w, this.h], d = this.ctx[layer].getImageData(x, y, w, h).data;
     let bad = 0, covered = 0;
     for (let i = 0; i < d.length; i += 4) { if (d[i + 3] === 0) continue; covered++; if (!this.ok.has((d[i] << 16) | (d[i + 1] << 8) | d[i + 2])) bad++; }
     return { bad, covered, total: w * h };
   }
-  // The composite as RGBA (the journey's screen capture, the grain check's input).
+  get typeLog() { return [...this.runs.values()]; }
+  // A layer as RGBA (the checks read it back).
+  layerData(layer) { return this.ctx[layer].getImageData(0, 0, this.w, this.h); }
   capture() { const cv = makeCanvas(this.w, this.h); this.composite(cv.getContext("2d"), null); return cv; }
 }

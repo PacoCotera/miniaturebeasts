@@ -50,7 +50,7 @@ export function nextFocus(graph, targets, curId, dir, resolve = () => null) {
 // The focus state of one screen: the ring's target and the armed press.
 export function createFocus(graph, initial = null) {
   const F = { graph, cur: initial, armed: null };
-  F.move = (targets, dir, resolve) => { F.armed = null; F.cur = nextFocus(graph, targets, F.cur, dir, resolve); return F.cur; };
+  F.move = (targets, dir, resolve) => { F.armed = null; F.cur = nextFocus(F.graph, targets, F.cur, dir, resolve); return F.cur; };   // F.graph may be set after creation (the spec loads at boot)
   F.set = (id) => { if (id !== F.cur) F.armed = null; F.cur = id; return F; };
   // Keep the focus on an existing target; otherwise the fallback (or the first target).
   F.ensure = (targets, fallback) => { if (!targets.some((t) => t.id === F.cur)) { F.armed = null; F.cur = fallback && targets.some((t) => t.id === fallback) ? fallback : targets[0]?.id ?? null; } return F.cur; };

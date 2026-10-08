@@ -54,14 +54,15 @@ mkdirSync(path.join(here, "../img"), { recursive: true });
 const shot = (name) => page.screenshot({ path: path.join(here, `../img/${name}.png`), fullPage: false });
 const fixture = readFileSync(path.join(here, "../tests/fixtures/save-v8-schema1.json"), "utf8");
 const companionBefore = JSON.stringify({ ...JSON.parse(fixture), st: undefined });
+await page.addInitScript(() => { window.__fillTextCalls = 0; for (const f of ["fillText", "strokeText", "measureText"]) { const o = CanvasRenderingContext2D.prototype[f]; CanvasRenderingContext2D.prototype[f] = function (...a) { window.__fillTextCalls++; return o.apply(this, a); }; } });
 await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.removeItem("mb-station-dev"); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
-// Inter comes from the bundled OFL files (prototypes/ui/fonts/inter), three weights loaded; no request leaves the page's origin.
-const fonts = await page.evaluate(() => [...document.fonts].filter((f) => f.family.replace(/"/g, "") === "Inter").map((f) => f.weight + ":" + f.status));
-if (!(fonts.length === 3 && fonts.every((f) => f.endsWith(":loaded")))) { errors.push("Inter is not loaded from the bundled files: " + fonts.join(", ")); console.error("FAIL fonts " + fonts.join(", ")); }
+// The type is baked atlases of Inter (prototypes/ui/fonts/atlas), blitted as glyph runs: no font is loaded by the page, and no request leaves the page's origin.
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
-console.log("fonts: Inter " + fonts.join(", ") + " · external requests " + external.length);
+const fillText = await page.evaluate(() => window.__fillTextCalls);
+if (fillText !== 0) { errors.push("the page called the canvas text API " + fillText + " times"); console.error("FAIL fillText " + fillText); }
+console.log("type: glyph runs from the Inter atlases · text API calls " + fillText + " · external requests " + external.length);
 const st = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.ST)));
 const sv = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.SV)));
 const press = async (k, ms = 120) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(ms); };
@@ -110,8 +111,8 @@ l = await line(); expect(/Read Face/.test(l.ok) && l.price === "2 ◆", "Face co
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.d === d0 - 3, "Face read for 2 Data");
 await shot("page-read");
-// the type is Inter, anti-aliased (the style guide); art and chrome stay on the palette, so off-palette pixels are few
-expect((await page.evaluate(() => window.__st.offPalette())) < 1024 * 600 * 0.08, "art and chrome on the palette; only the type is anti-aliased");
+// the art layer is on the palette exactly; the type is its own layer, anti-aliased by decision
+expect((await page.evaluate(() => window.__st.offPalette())) === 0, "the art layer has 0 off-palette pixels");
 // the drawn stamp decodes to the pod's genome
 const img = await page.evaluate((id) => { const r = window.__st.stampRGBA(id, 200); return { width: r.width, height: r.height, data: Array.from(r.data) }; }, loika.id);
 const sg = await page.evaluate((id) => window.__st.stampGenome(id), loika.id);

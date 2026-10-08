@@ -1,6 +1,7 @@
 // Text as scene nodes: one string of Inter at a Station size, or a run with the material icons inline
 // (⚡ ◆ ❀ are drawn as the 16 px icons, never as glyphs). The component measures through the renderer's
 // context (ctx.measure) so a centred or right-aligned run lands where the spec says.
+import { SIZES } from "../type.mjs";
 export const ICON_GLYPH = { "⚡": "energy", "◆": "data", "❀": "essence" };
 export const iconAsset = (name, px) => `icon:${name}:${px}`;
 
@@ -13,8 +14,8 @@ export function textRun(ctx, id, str, x, y, { px = 16, weight = 400, colour, ali
   const nodes = [], parts = runs(str), total = runWidth(ctx, str, px, weight);
   let cx = align === "center" ? x - Math.round(total / 2) : align === "right" ? x - total : x, i = 0;
   for (const r of parts) {
-    if (typeof r === "string") { const w = Math.round(ctx.measure(r, px, weight)); nodes.push({ id: `${id}.${i++}`, kind: "text", rect: [cx, y, w, Math.round(px * 1.25)], text: r, px, weight, colour, align: "left" }); cx += w; }
-    else { nodes.push({ id: `${id}.${i++}`, kind: "sprite", rect: [cx + 2, y + Math.round(px * 0.78) - iconPx + Math.round(iconPx * 0.12), iconPx, iconPx], asset: iconAsset(r.icon, iconPx) }); cx += iconPx + 4; }
+    if (typeof r === "string") { const w = Math.round(ctx.measure(r, px, weight)); nodes.push({ id: `${id}.${i++}`, kind: "text", rect: [cx, y, w, Math.round(px * 1.25)], text: r, px, weight: SIZES[px], colour, align: "left" }); cx += w; }
+    else { nodes.push({ id: `${id}.${i++}`, kind: "sprite", rect: [cx + 2, y + ctx.cap(px) - iconPx + Math.round(iconPx * 0.12), iconPx, iconPx], asset: iconAsset(r.icon, iconPx) }); cx += iconPx + 4; }
   }
   return { nodes, width: total, end: cx };
 }

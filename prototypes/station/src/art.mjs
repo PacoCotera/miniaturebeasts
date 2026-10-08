@@ -261,7 +261,7 @@ export function mistyArt(frame, genome, mistyTraitIds, w, h) {
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.lamp, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });
 
 // ---------- A landed painting: drawn as it came (the Station may be anti-aliased), its flat ground cleared for a sprite ----------
-class Painted { constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } }
+class Painted { layer = "painted"; constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } }
 const PAINTED = new Map();
 // The ground of a painting cleared by a flood from its corners (the painter's plain ground, the derived sizes' white), so the mibi stands free in the vivarium.
 function clearGround(img, w, h) {

@@ -5,18 +5,19 @@
 // pips. Read: a solid deep-teal fill, a 1 px lit rim, filled pips. Glint: the four-point star 12×12 at the tab's top
 // right. Sealed: the tab drawn shut (slats), an 8×4 notch in its bottom edge, no pips. Focused: the cream ring and
 // the tab lifts 4 px. No status words or prices on a tab.
-// props: { tabs: [{ id, word, emblem (asset id), pips: n, filled: n, state: "unread" | "read" | "sealed", glint, pipMarks?: [{ amber, clash, ring }] }], focused: index, colours, slats (asset id of the slat pattern), star (asset id) }
+// props: { tabs: [{ id, word, emblem (asset id), pips: n, filled: n, state: "unread" | "read" | "sealed", glint, pipMarks?: [{ amber, clash, ring }] }], focused: index, colours, slats (the id prefix of the slat pictures: `<prefix><w>x<h>`), star (asset id) }
 import { railTabs } from "../layout.mjs";
 import { focusRing } from "./focusRing.mjs";
+import { cutOutline } from "./panel.mjs";
 
 export function chapterRail(ctx, id, region, props) {
   const nodes = [], Cc = props.colours, placed = railTabs(region, props.tabs.length, props.focused);
-  nodes.push({ id, kind: "rect", rect: region.rect.slice(), colour: props.ground, region: props.region ?? null });   // the rail's ground: the stage shows through on the stated colour
+  if (props.fillGround) nodes.push({ id, kind: "rect", rect: region.rect.slice(), colour: props.ground, region: props.region ?? null });   // the rail's ground, when the stage has none of its own to show through
   placed.tabs.forEach((r, i) => {
     const t = props.tabs[i], focused = i === props.focused, lift = focused ? ctx.spec.focus.lift.chrome * 2 : 0;   // the spec's 4 px lift
     const [x, y0, w, h] = r, y = y0 - lift, tid = `${id}.${i}`, read = t.state === "read", sealed = t.state === "sealed";
     nodes.push({ id: tid, kind: "rect", rect: [x, y, w, h], colour: read ? Cc.readFill : Cc.unreadFill, region: props.tabRegion ?? null });
-    if (sealed) nodes.push({ id: tid + ".slats", kind: "pattern", rect: [x, y, w, h], asset: props.slats });
+    if (sealed) nodes.push({ id: tid + ".slats", kind: "sprite", rect: [x, y, w, h], asset: `${props.slats}${w}x${h}` });
     const rim = read ? Cc.readRim : Cc.unreadEdge;
     nodes.push({ id: tid + ".et", kind: "rect", rect: [x, y, w, 1], colour: rim }, { id: tid + ".eb", kind: "rect", rect: [x, y + h - 1, w, 1], colour: rim }, { id: tid + ".el", kind: "rect", rect: [x, y, 1, h], colour: rim }, { id: tid + ".er", kind: "rect", rect: [x + w - 1, y, 1, h], colour: rim });
     if (sealed) nodes.push({ id: tid + ".notch", kind: "rect", rect: [x + Math.round(w / 2) - 4, y + h - 4, 8, 4], colour: props.ground });
@@ -29,8 +30,8 @@ export function chapterRail(ctx, id, region, props) {
         const m = t.pipMarks?.[k], px = px0 + k * pitch;
         if (m?.clash) nodes.push({ id: `${tid}.pip.${k}`, kind: "sprite", rect: [px - 1, py - 1, 8, 8], asset: props.clashMark });
         else if (k < t.filled) { nodes.push({ id: `${tid}.pip.${k}`, kind: "rect", rect: [px, py, 6, 6], colour: Cc.pip }); if (m?.amber) nodes.push({ id: `${tid}.pipdot.${k}`, kind: "rect", rect: [px + 2, py + 2, 2, 2], colour: Cc.changed }); }
-        else nodes.push({ id: `${tid}.pip.${k}`, kind: "ring", rect: [px, py, 6, 6], colour: Cc.pipHollow, width: 1, radius: 0, shape: "round" });
-        if (m?.ring) nodes.push({ id: `${tid}.pipring.${k}`, kind: "ring", rect: [px - 2, py - 2, 10, 10], colour: Cc.ring, width: 1, radius: 2, shape: "round" });
+        else nodes.push(...cutOutline(`${tid}.pip.${k}`, [px, py, 6, 6], Cc.pipHollow));
+        if (m?.ring) nodes.push(...cutOutline(`${tid}.pipring.${k}`, [px - 2, py - 2, 10, 10], Cc.ring));
       }
     }
     if (t.glint) nodes.push({ id: tid + ".glint", kind: "sprite", rect: [x + w - 20, y + 4, 12, 12], asset: props.star });

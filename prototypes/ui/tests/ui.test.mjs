@@ -9,11 +9,13 @@ import { Scene, flatten } from "../scene.mjs";
 import { railTabs, pageGrid, messagePlate as placePlate, repeat } from "../layout.mjs";
 import { nextFocus, createFocus, nearest } from "../focus.mjs";
 import { createTimeline } from "../timeline.mjs";
-import { registerAsset, asset, manifest, placeholders, dropAsset } from "../assets.mjs";
+import { registerAsset, asset, manifest, placeholders, dropAsset, assetEntry } from "../assets.mjs";
+import { makeCtx } from "../context.mjs";
+import { loadTypeNode } from "../type-node.mjs";
 import { frame, topBar, bottomLine, messagePlate, focusRing, stampLabel, stampCell, chapterRail, chapterPage, textRun, wrap, clip } from "../components/frame.mjs";
 
 const spec = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8"));
-const ctx = { spec, measure: (t, px) => t.length * px * 0.55 };   // a stand-in: about Inter's average advance
+const type = loadTypeNode(), ctx = makeCtx(spec, type);   // the real atlas metrics, in Node
 
 test("the scene diffs nodes by id and marks only what changed dirty", () => {
   const s = new Scene(100, 100);
@@ -144,8 +146,8 @@ test("the frame components place the spec's regions and set every string in Inte
 });
 
 test("the focus ring is one cream ring 2 px wide, 4 px outside its target, 6 px radius; an ellipse under a creature's feet", () => {
-  const [r] = focusRing("f", [100, 100, 50, 30], spec); assert.deepEqual(r.rect, [96, 96, 58, 38]); assert.equal(r.width, 2); assert.equal(r.radius, 6); assert.equal(r.colour, "cream");
-  const [e] = focusRing("f", [264, 120, 160, 192], spec, { shape: "ellipse" }); assert.deepEqual(e.rect, [256, 300, 176, 24]); assert.equal(e.shape, "ellipse");
+  const [r] = focusRing("f", [100, 100, 50, 30], spec); assert.deepEqual(r.rect, [96, 96, 58, 38]); assert.equal(r.kind, "nineSlice"); assert.match(r.asset, /^ring:round:cream:2:6$/); assert.deepEqual(assetEntry(r.asset).slice, [8, 8, 8, 8]);
+  const [e] = focusRing("f", [264, 120, 160, 192], spec, { shape: "ellipse" }); assert.deepEqual(e.rect, [256, 300, 176, 24]); assert.equal(e.kind, "sprite"); assert.deepEqual([assetEntry(e.asset).w, assetEntry(e.asset).h], [176, 24]);
 });
 
 test("the stamp label is 120×120 with the stamp on whole-pixel cells, centred", () => {
@@ -158,17 +160,17 @@ test("the stamp label is 120×120 with the stamp on whole-pixel cells, centred",
 test("the chapter rail draws emblem, word and pips per tab, no words of status, the focused tab lifted and ringed", () => {
   const colours = { unreadFill: "frostD", unreadEdge: "slate", unreadWord: "ink", readFill: "tealD", readRim: "aqua", readWord: "mint", pip: "aqua", pipHollow: "stone", ring: "cream", changed: "amber" };
   const tabs = [{ id: "coat", word: "Coat", emblem: "emblem:coat:24", pips: 1, filled: 1, state: "read", glint: false }, { id: "face", word: "Face", emblem: "emblem:face:24", pips: 2, filled: 0, state: "unread", glint: true }, { id: "legs-tail", word: "Legs", emblem: "emblem:legs-tail:24", pips: 4, filled: 0, state: "sealed", glint: false }];
-  const r = chapterRail(ctx, "rail", { rect: [176, 48, 832, 56] }, { tabs, focused: 1, colours, ground: "deep", slats: "slats", star: "star:12", region: "rail", tabRegion: "rail.tab" });
+  const r = chapterRail(ctx, "rail", { rect: [176, 48, 832, 56] }, { tabs, focused: 1, colours, ground: "deep", slats: "slats:", star: "star:12", region: "rail", tabRegion: "rail.tab" });
   assert.equal(r.tabs.length, 3); assert.equal(r.overflow, false);
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
   assert.deepEqual(by["rail.0"].rect, [176, 48, 112, 56]); assert.deepEqual(by["rail.1"].rect, [296, 44, 112, 56]);   // the focused tab lifts 4 px
   assert.deepEqual(by["rail.0.emblem"].rect, [220, 52, 24, 24]);   // tab.x + 44, 52
   assert.equal(by["rail.0.word"].text, "Coat"); assert.equal(by["rail.0.word"].px, 16); assert.equal(by["rail.0.word"].rect[1], 76);
   assert.deepEqual(by["rail.0.pip.0"].rect, [229, 96, 6, 6]); assert.equal(by["rail.0.pip.0"].kind, "rect");
-  assert.equal(by["rail.1.pip.0"].kind, "ring"); assert.equal(by["rail.1.pip.1"].rect[0] - by["rail.1.pip.0"].rect[0], 10);
+  assert.ok(by["rail.1.pip.0.t"] && !by["rail.1.pip.0"]); assert.equal(by["rail.1.pip.1.t"].rect[0] - by["rail.1.pip.0.t"].rect[0], 10);   // hollow: an outline of four rectangles
   assert.deepEqual(by["rail.1.glint"].rect, [296 + 92, 44 + 4, 12, 12]);
   assert.ok(by["rail.2.slats"] && by["rail.2.notch"] && !by["rail.2.pip.0"]); assert.deepEqual(by["rail.2.notch"].rect, [416 + 52, 48 + 52, 8, 4]);
-  assert.ok(by["rail.1.focus"] && by["rail.1.focus"].kind === "ring"); assert.deepEqual(by["rail.1.focus"].rect, [292, 40, 120, 64]);
+  assert.ok(by["rail.1.focus"] && by["rail.1.focus"].kind === "nineSlice"); assert.deepEqual(by["rail.1.focus"].rect, [292, 40, 120, 64]);
   const words = r.nodes.filter((n) => n.kind === "text").map((n) => n.text); assert.deepEqual(words, ["Coat", "Face", "Legs"]);   // never "read", "sealed" or a price
   assert.ok(!r.nodes.some((n) => n.kind === "text" && /\d/.test(n.text)));
 });
@@ -177,7 +179,7 @@ test("the chapter page lays the cells on the grid with the marks inside each pic
   const region = { rect: [528, 112, 480, 440], heading: [16, 8], grid: { "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 120] } } };
   const colours = { pane: "night", edge: "slate", heading: "creamT", name: "creamT", line: "fog", lineEmpty: "stone", wipe: "white" };
   const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eye rings", lines: ["shows thin · hides none"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }];
-  const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, frost: (w, h) => `frost:${w}x${h}`, slats: (w, h) => `slats:${w}x${h}`, region: "page", cellRegion: "page.cell" });
+  const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, frost: "frost:", slats: "slats:", region: "page", cellRegion: "page.cell" });
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
   assert.deepEqual(by.page.rect, [528, 112, 480, 440]); assert.deepEqual(by["page.emblem"].rect, [544, 120, 24, 24]); assert.equal(by["page.word"].px, 20);
   assert.deepEqual(by["page.c0.pic"].rect, [544, 160, 216, 120]); assert.deepEqual(by["page.c2.pic"].rect, [544, 360, 216, 120]);
@@ -187,7 +189,7 @@ test("the chapter page lays the cells on the grid with the marks inside each pic
   assert.equal(by["page.c2.frost"].asset, "frost:216x120"); assert.ok(!by["page.c2.l0"] || by["page.c2.l0"].text === "");
   assert.deepEqual(by["page.c0.wipe"].rect, [544, 220, 216, 60]); assert.equal(by["page.c0.name"].rect[1], 160 + 120 + 8);
   assert.ok(r.nodes.filter((n) => n.kind === "text").every((n) => [16, 20].includes(n.px)));
-  assert.equal(chapterPage(ctx, "p2", region, { heading: null, cells: new Array(7).fill(cells[2]), colours, frost: () => "f", slats: () => "s" }).overflow, true);
+  assert.equal(chapterPage(ctx, "p2", region, { heading: null, cells: new Array(7).fill(cells[2]), colours, frost: "f:", slats: "s:" }).overflow, true);
 });
 
 test("text runs draw the material symbols as icons, wrap and clip", () => {

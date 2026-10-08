@@ -3,18 +3,23 @@
 // the renderer reads (FX). Screens import this; the rules live in state.mjs.
 import * as S from "./state.mjs";
 import { clock } from "./gfx.mjs";
+import { createTimeline } from "../../ui/timeline.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, lockUntil: 0, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { f: "pod", cur: null, anchor: null, ci: 0, cmp: null, wildArm: 0 },
   create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", bondArm: 0, wildArm: 0, from: null }, bench: { f: 0, arm: 0 },
   report: null, meet: null, lastInput: 0, idle: false };
+// The timeline: presentation events on its own clock and the input holds of the screens on the layer.
+export const TL = createTimeline();
+// What the screen layer needs from the page's boot: the spec files and the components' context.
+export const SPECS = {}, LAYER = { ctx: null };
 export const IDLE_MS = 60000, READ_MS = 2000, ID_MS = 1800, ARRIVE_MS = 3000;
 
 const listeners = new Set();
 export const onChange = (fn) => listeners.add(fn);
 const changed = () => { for (const fn of listeners) fn(); };
-export function msg(t) { FX.msg = t; FX.msgAt = clock.now; }
+export function msg(t) { FX.msg = t; FX.msgAt = clock.now; TL.play({ kind: "plate", target: "msg", ms: 4000 }); }   // the screens on the layer read the plate's time from the timeline
 export function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, clock.now + ms); }
 export const now = () => clock.now;
 export const st = () => G.st;

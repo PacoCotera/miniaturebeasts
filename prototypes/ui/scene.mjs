@@ -2,19 +2,16 @@
 // frames and diffed by id, so a renderer repaints only the rectangles that changed (technical-architecture.md
 // §5.1, §5.2). The scene holds no pixels and knows no palette: colours are names, pictures are asset ids.
 //
-// A node: { id, kind, rect: [x, y, w, h], layer?, ...by kind }
-//   rect     { colour }                                  art: a filled rectangle in a palette colour
-//   sprite   { asset }                                   art or painted (the asset's policy decides): placed 1:1, never scaled
-//   pattern  { asset }                                   art: the asset tiled over the rectangle (the dither and shade tables)
-//   text     { text, px, weight, colour, align }         type: one string of Inter at 16, 20 or 28 px; x is the anchor by align
-//   ring     { colour, width, radius, shape }            art: the focus ring, a rounded rectangle or an ellipse, drawn on whole pixels
-//   clip     { children }                                every layer: the children drawn inside the rectangle
-//   legacy   { draw }                                    the adapter for screens not yet moved: a draw callback painting the
-//                                                        rectangle with the Station's old primitives (T2 removes it)
-// A node drawn later covers a node drawn earlier on every layer, as if the layers were one surface; the layers exist
-// so the checks can measure them apart (the art layer on the palette, the type layer's run log).
-// `region` on a node names the spec region it draws, for the regions check. `always` marks a node repainted
-// every frame (an adapter, an animation the view cannot key).
+// A node: { id, kind, rect: [x, y, w, h], ...by kind }. The closed set of primitives, and nothing else:
+//   rect       { colour }                         art: a filled rectangle in a palette colour (named, never a value)
+//   sprite     { asset }                          art or painted (the asset's policy decides): placed 1:1, never scaled
+//   nineSlice  { asset }                          art: a picture with edges (the manifest names its slice insets); the corners are placed
+//                                                 1:1 and the edges and middle tiled, so a frame or a ring fits any rectangle without scaling
+//   text       { text, px, weight, colour, align } type: a glyph run set from the Inter atlas at 16, 20 or 28 px; x is the anchor by align
+//   clip       { children }                       every layer: the children drawn inside the rectangle
+//   legacy     { draw }                           the adapter for screens not yet moved: a callback painting the rectangle through the
+//                                                 renderer's immediate primitives (the same rect, sprite and glyph calls; T2 removes it)
+// No canvas paths, gradients, shadows, filters, transforms or global alpha exist in the set; a ring is a nine-slice, a shade a sprite.
 export const LAYERS = ["art", "painted", "type"];
 
 export const rectsTouch = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
@@ -35,7 +32,10 @@ export function flatten(nodes, clip = null, out = []) {
   return out;
 }
 // The rectangle a node can touch, within its clip.
-export const drawnRect = (f) => (f.clip ? rectIntersect(f.clip, f.node.rect) : f.node.rect.slice());
+// A text run's ink reaches past its box (ascenders above the cap line, descenders and accents below), so its drawn rectangle is padded.
+const TEXT_PAD = [2, 6, 2, 8];
+const boxOf = (n) => (n.kind === "text" ? [n.rect[0] - TEXT_PAD[0], n.rect[1] - TEXT_PAD[1], n.rect[2] + TEXT_PAD[0] + TEXT_PAD[2], n.rect[3] + TEXT_PAD[1] + TEXT_PAD[3]] : n.rect);
+export const drawnRect = (f) => (f.clip ? rectIntersect(f.clip, boxOf(f.node)) : boxOf(f.node).slice());
 
 export class Scene {
   constructor(w, h) { this.w = w; this.h = h; this.flat = []; this.keys = new Map(); this.dirty = []; this.frame = 0; this.invalidate(); }
@@ -73,7 +73,7 @@ export class Scene {
   // The nodes touching a rectangle, in draw order.
   nodesIn(rect) { return this.flat.filter((f) => { const r = drawnRect(f); return r && rectsTouch(r, rect); }); }
   // Every node with a region tag: { region, rect }, for the regions check.
-  regions() { return this.flat.filter((f) => f.node.region).map((f) => ({ region: f.node.region, rect: f.node.rect.slice(), id: f.node.id })); }
+  regions() { return this.flat.filter((f) => f.node.region).map((f) => ({ region: f.node.region, rect: f.node.rect.slice(), id: f.node.id, kind: f.node.kind, text: f.node.text ?? null, px: f.node.px ?? null, align: f.node.align ?? null, asset: f.node.asset ?? null })); }
   // Every text node, for the type check without a renderer.
-  texts() { return this.flat.filter((f) => f.node.kind === "text").map((f) => f.node); }
+  texts() { return this.flat.filter((f) => f.node.kind === "text").map((f) => ({ id: f.node.id, text: f.node.text, px: f.node.px, weight: f.node.weight, rect: f.node.rect.slice(), align: f.node.align })); }
 }

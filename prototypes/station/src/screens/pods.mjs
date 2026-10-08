@@ -2,7 +2,7 @@
 // the open page of trait pictures, the stamp on its label; Identify, Read, Compare, Return.
 // A fixed focus order (playtest r7): wells top to bottom, then the hatch; → from a well to the pod,
 // ← back; ↑ from the pod to the chapters, which step ◀ ▶; ↓ from a chapter back to the pod.
-import { SW, C, R, g, blit, text, textW, clipText, wrapText, panel, focusRing, art, PB, clamp, clock, motion } from "../gfx.mjs";
+import { SW, C, R, blit, blitClip, text, textW, clipText, wrapText, panel, focusRing, art, PB, clamp, clock, motion } from "../gfx.mjs";
 import { podArt, ringArt, emblemArt, traitPic, seedPic, frostPic, sealedPic, famArt, baseArt, asleepMark, stampArt, starArt, wellArt, hatchArt } from "../art.mjs";
 import { G, FX, UI, READ_MS, ID_MS, msg, lockInput, save, goScreen, registerScreen, docked, podById } from "../game.mjs";
 import { benchBg, drawTop, beam, DIRS } from "./frame.mjs";
@@ -66,7 +66,7 @@ function drawPodBig(p) {   // the pod under the beam; identification clears the 
   const s = 6, sealed = podArt(shellFrame(p), p.g, s, "sealed"), idd = podArt(podFrame(p), p.g, s, "identified"), x = POD.cx - sealed.w / 2, y = POD.top;
   beam(POD.cx, 44, 260, 300);
   blit(art("podcradle", () => { const pb = new PB(200, 50); pb.ell(100, 28, 98, 20, C.slate); pb.ell(100, 24, 88, 15, C.stone, { sh: [C.mist, C.night] }); pb.outline(() => C.ink); return pb; }), POD.cx - 100, POD.top + sealed.h - 30);
-  if (p.idd && a < dur && motion()) { blit(sealed, x, y); const cut = Math.round(sealed.h * a / dur); g.save(); g.beginPath(); g.rect(x - 2, y - 2, sealed.w + 4, cut + 2); g.clip(); blit(idd, x, y); g.restore(); R(x + 4, y + cut, sealed.w - 8, 2, C.white); }
+  if (p.idd && a < dur && motion()) { blit(sealed, x, y); const cut = Math.round(sealed.h * a / dur); blitClip(idd, x, y, [x - 2, y - 2, sealed.w + 4, cut + 2]); R(x + 4, y + cut, sealed.w - 8, 2, C.white); }
   else blit(p.idd ? idd : sealed, x, y);
   const idA = FX.id && FX.id.id === p.id ? NOW - FX.id.at : 1e9;
   if (p.idd && p.newSp && idA < 6000 && idA > (motion() ? ID_MS * 0.7 : 0)) { panel(POD.cx - 93, POD.top - 40, 186, 40, C.lamp, C.rust); text("New species", POD.cx, POD.top - 34, C.rust, 3, "center"); }
@@ -101,7 +101,7 @@ function drawPage(p, chapter, px = PAGE.x, py = PAGE.y, pw = PAGE.w, ph = PAGE.h
     if (sealed) blit(sealedPic(W, H), x, y);
     else if (!read) blit(frostPic(W, H), x, y);
     else { blit(traitPic(fr, p.genome, t.id, W, H), x, y);
-      if (wipe < 1) { const cut = Math.round(wipe * H); g.save(); g.beginPath(); g.rect(x, y + cut, W, H - cut); g.clip(); blit(frostPic(W, H), x, y); g.restore(); R(x + 6, y + cut, W - 12, 2, C.white); }
+      if (wipe < 1) { const cut = Math.round(wipe * H); blitClip(frostPic(W, H), x, y, [x, y + cut, W, H - cut]); R(x + 6, y + cut, W - 12, 2, C.white); }
       if (state.kind === "hides") blit(seedPic(fr, p.genome, t.id, state.hiddenChoice), x + W - 44, y + H - 56);
       if (state.kind === "blend") { blit(seedPic(fr, p.genome, t.id, 1), x + 2, y + H - 56); blit(seedPic(fr, p.genome, t.id, 2), x + W - 44, y + H - 56); }
       if (state.kind === "only") blit(baseArt(), x + W / 2 - 35, y + H - 12);
