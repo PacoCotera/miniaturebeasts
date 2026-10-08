@@ -89,7 +89,9 @@ On failure, cloud and props are redrawn before any other land starts.
 - **Derived tokens** may lose detail at 48 px. Only Pip's painting exists (decision 2).
 - **Walking:** a place is about 3×3 screens and a reach already takes 538–845 actions. Place size goes to exploration design after Review 1.
 
-## 9. Owner decisions
+## 9. Decided
 
-1. **Reach-view ground.** *Recommended:* crops of the real ground plus map props at the place's features. *Alternatives:* plain crops (wood reads as a blob, close-ups not little scenes); separate cell art (can disagree with the place).
-2. **Review place creatures.** *Recommended:* Pip and wild Loikas, others as labelled placeholders, so Review 1 is not held. *Alternative:* wait for the Tuikis and Untuva species pieces.
+**Decided** (2026-10-08):
+
+1. **Reach-view ground.** Crops of the real ground plus map props at the place's features. Rejected: plain crops (wood reads as a blob, close-ups not little scenes); separate cell art (can disagree with the place).
+2. **Review place creatures.** Pip and wild Loikas, others as labelled placeholders, so Review 1 is not held for the Tuikis and Untuva species pieces.
