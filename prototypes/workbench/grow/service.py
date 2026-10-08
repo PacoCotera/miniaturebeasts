@@ -343,10 +343,10 @@ def template(fields, reasons=None):
     return t + "\n\nOutput one square image."
 
 
-def gemini_call(parts, record):
+def gemini_call(parts, record, model=None):
     key = os.environ.get("GEMINI_API_KEY")
     if not key: raise RuntimeError("GEMINI_API_KEY is not in the environment")
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model or GEMINI_MODEL}:generateContent"
     body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": "1:1", "imageSize": "1K"}}}
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"x-goog-api-key": key, "Content-Type": "application/json"}, method="POST")
     t0 = time.time()
@@ -431,16 +431,17 @@ def soften(path, radius=2):
     return png_bytes(pad_square(Image.open(path).convert("RGB")).filter(ImageFilter.GaussianBlur(radius)))
 
 
-def call_logged(text, imgs, rec_fields, d_raw, raw_name):
+def call_logged(text, imgs, rec_fields, d_raw, raw_name, model=None):
     """One paid call: the text and the images in order; the record logged; returns (record, 600×620 image or None)."""
+    model = model or GEMINI_MODEL
     parts = [{"text": text}] + [{"inline_data": {"mime_type": "image/png", "data": b64(b)}} for _, b in imgs]
-    rec = {"id": str(uuid.uuid4()), "service": "gemini", "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, **rec_fields, "prompt": text,
+    rec = {"id": str(uuid.uuid4()), "service": "gemini", "model": model, "promptVersion": PROMPT_VERSION, **rec_fields, "prompt": text,
            "images": [{"name": n, "sha256": sha_bytes(b), "bytes": len(b)} for n, b in imgs], "generationConfig": {"responseModalities": ["IMAGE"], "aspectRatio": "1:1", "imageSize": "1K"}, "startedAt": now()}
-    status, res = gemini_call(parts, rec)
+    status, res = gemini_call(parts, rec, model)
     if status != 200:
         rec["status"] = "failed"; rec["error"] = res.get("error", res); return rec, None
     rec["responseId"] = res.get("responseId"); rec["modelVersion"] = res.get("modelVersion"); usage = res.get("usageMetadata", {}); rec["usage"] = usage
-    prices = GEMINI_PRICES[GEMINI_MODEL]
+    prices = GEMINI_PRICES[model]
     rec["costUSD"] = round(usage.get("promptTokenCount", 0) / 1e6 * prices["input"] + usage.get("candidatesTokenCount", 0) / 1e6 * prices["output"], 5)
     part = next((p for p in res.get("candidates", [{}])[0].get("content", {}).get("parts", []) if "inlineData" in p), None)
     if not part:
