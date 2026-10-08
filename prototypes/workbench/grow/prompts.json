@@ -58680,6 +58680,907 @@
     "passed": false,
     "gated": false
    }
+  },
+  {
+   "id": "498c6987-33e0-4530-b9ce-8d8fb280c5d4",
+   "service": "gemini",
+   "model": "gemini-3-pro-image",
+   "promptVersion": 4,
+   "lab": {
+    "species": "S09",
+    "variant": "1BG-anti-artefact-plain",
+    "name": "1B's anti-artefact words with 1G's plain-coat paragraph",
+    "model": "pro",
+    "sample": 1,
+    "set": "prompt-lab"
+   },
+   "controlVariant": "twostep",
+   "species": "S09",
+   "genomeDigest": "S09-33855bb1",
+   "genomeSha256": "09e30f12feee02c6816f15b3c7e1ac0115900bb96cc15e303da51b324f9c8c28",
+   "purpose": "lab-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "text": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. Every area keeps the one colour Image 3 gives it, unbroken from edge to edge, shaded only by the light; the pale areas are exactly those of Image 3, no more and no larger.\n\nHiBit pixel art on a 280\u00d7300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living anatomy: each leg has a rounded thigh, a soft joint and a foot shaped as the species notes say, inside its drawn place; wings are feathers or dusted membranes with curved edges and rounded tips, never panels. No stumps, cylinders, posts, blocks, wedges or flat-sided shapes anywhere, no facets or bevels: every edge curves. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Belatz, a big bird of open sky.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nSurface in the drawing: bright, layered feathers: rows of small rounded feather clusters on the breast and back, each row edged with one lighter step, a vivid lit side and a deeper shadow side, never grey; the wings and legs in a clean second colour.\nSurface in the painting: bright, layered feathers, vivid in the light and deepening to a rich, darker tone of the body colour in shadow, never grey: small rounded contour feathers over the breast and back, soft down at the throat, a soft sheen along the wing coverts; the wings are second-colour feathers with lighter edges; the legs are smooth scale; the beak is smooth and horn-like.\nParts: the wings are folded fans of feathers, not boards: rounded coverts at the shoulder, long flight feathers stepping out toward the tip, a soft scalloped trailing edge, all inside the drawn wing. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are bird feet, three spread toes and a small back toe gripping the ground inside the drawn foot, never blocks or wedges. The tail is a fan of long overlapping feathers.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer.",
+    "imageOrder": [
+     "index",
+     "reference",
+     "key"
+    ]
+   },
+   "prompt": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. Every area keeps the one colour Image 3 gives it, unbroken from edge to edge, shaded only by the light; the pale areas are exactly those of Image 3, no more and no larger.\n\nHiBit pixel art on a 280\u00d7300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living anatomy: each leg has a rounded thigh, a soft joint and a foot shaped as the species notes say, inside its drawn place; wings are feathers or dusted membranes with curved edges and rounded tips, never panels. No stumps, cylinders, posts, blocks, wedges or flat-sided shapes anywhere, no facets or bevels: every edge curves. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Belatz, a big bird of open sky.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nSurface in the drawing: bright, layered feathers: rows of small rounded feather clusters on the breast and back, each row edged with one lighter step, a vivid lit side and a deeper shadow side, never grey; the wings and legs in a clean second colour.\nSurface in the painting: bright, layered feathers, vivid in the light and deepening to a rich, darker tone of the body colour in shadow, never grey: small rounded contour feathers over the breast and back, soft down at the throat, a soft sheen along the wing coverts; the wings are second-colour feathers with lighter edges; the legs are smooth scale; the beak is smooth and horn-like.\nParts: the wings are folded fans of feathers, not boards: rounded coverts at the shoulder, long flight feathers stepping out toward the tip, a soft scalloped trailing edge, all inside the drawn wing. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are bird feet, three spread toes and a small back toe gripping the ground inside the drawn foot, never blocks or wedges. The tail is a fan of long overlapping feathers.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer.",
+   "images": [
+    {
+     "name": "index.portrait.large.png",
+     "sha256": "5dd27967069778f3eabc1f243190098eb363e06caa68da38135ec4ccb25def8c",
+     "bytes": 7146
+    },
+    {
+     "name": "reference:portrait-600x620.png",
+     "sha256": "46d173b2d39c6af1342440aa8743c46fab1fe85182133dd64f4d506badc88fd5",
+     "bytes": 293452
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "2bda8bbd2d6c908b7c0f8df3113ed52044e1d96db95f89836a93fe86926f3e84",
+     "bytes": 6310
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T06:09:50Z",
+   "seconds": 18.2,
+   "httpStatus": 200,
+   "responseId": "rjPHasP9Jv-zjMcPg_23uQg",
+   "modelVersion": "gemini-3-pro-image",
+   "usage": {
+    "promptTokenCount": 1784,
+    "candidatesTokenCount": 1359,
+    "totalTokenCount": 3470,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 1010
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "thoughtsTokenCount": 327,
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.16665,
+   "output": {
+    "file": "step1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "163ddfb5f588834c528010d7a5052838a1745aef3409f92f1b7bf3e97978af41"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.324,
+    "silhouetteIoUInPlace": 0.274,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.991
+     },
+     "region-1": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "neck": {
+      "span": 0.851,
+      "coverage": 0.668
+     },
+     "head": {
+      "span": 0.077,
+      "coverage": 0.0
+     },
+     "beak": {
+      "span": 0.0,
+      "coverage": 0.0
+     },
+     "crown": {
+      "span": 0.1,
+      "coverage": 0.049
+     },
+     "leg-0": {
+      "span": 0.898,
+      "coverage": 0.634
+     },
+     "flap": {
+      "span": 0.737,
+      "coverage": 0.874
+     },
+     "tail": {
+      "span": 0.843,
+      "coverage": 0.845
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.299,
+      "painted": 0.407,
+      "ok": true
+     },
+     "region-1": {
+      "drawn": 0.213,
+      "painted": 0.314,
+      "ok": true
+     },
+     "neck": {
+      "drawn": 0.278,
+      "painted": 0.297,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.305,
+      "painted": 0.328,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.295,
+      "painted": 0.201,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.348,
+      "painted": 0.379,
+      "ok": true
+     },
+     "flap": {
+      "drawn": 0.62,
+      "painted": 0.492,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.41,
+      "median": "#c09a7b",
+      "nearest": "#fff0b8",
+      "ok": false
+     },
+     "body@region-1": {
+      "agreement": 0.811,
+      "median": "#064693",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@neck": {
+      "agreement": 0.007,
+      "median": "#f5e597",
+      "nearest": "#fff0b8",
+      "ok": false
+     },
+     "body@crown": {
+      "agreement": 0.677,
+      "median": "#2d8393",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.625,
+      "median": "#b3876c",
+      "nearest": "#fff0b8",
+      "ok": true
+     },
+     "second@flap": {
+      "agreement": 0.449,
+      "median": "#247e9b",
+      "nearest": "#4d7ed4",
+      "ok": false
+     }
+    },
+    "reasons": [
+     "paint lies well outside the drawn body (33% of the body beyond a 20 px band): a part was added, moved or re-laid",
+     "part of the drawn body is left unpainted (17% of the body inside a 20 px band): a part was dropped or moved",
+     "a part is missing or moved from where the part map puts it: head (painted along 8% of its length), beak (painted along 0% of its length), crown (painted along 10% of its length)",
+     "a pigment slot is painted in another slot's colour: the body slot on the region-0 (painted #c09a7b, the colour of second), the body slot on the neck (painted #f5e597, the colour of second), the second slot on the flap (painted #247e9b, the colour of body)"
+    ],
+    "outside": 0.335,
+    "missing": 0.167,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.427,
+    "passed": false,
+    "gated": false
+   }
+  },
+  {
+   "id": "c020da56-7624-43d3-a396-95ee8b8b5e18",
+   "service": "gemini",
+   "model": "gemini-3-pro-image",
+   "promptVersion": 4,
+   "lab": {
+    "species": "S09",
+    "variant": "1BG-anti-artefact-plain",
+    "name": "1B's anti-artefact words with 1G's plain-coat paragraph",
+    "model": "pro",
+    "sample": 1,
+    "set": "prompt-lab"
+   },
+   "controlVariant": "twostep",
+   "species": "S09",
+   "genomeDigest": "S09-33855bb1",
+   "genomeSha256": "09e30f12feee02c6816f15b3c7e1ac0115900bb96cc15e303da51b324f9c8c28",
+   "purpose": "lab-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "text": "Image 1 is this young creature drawn in HiBit. It gives structure, proportion, pose and the place of every colour and marking only. It is never a rendering reference: its pixel steps and flat clusters are not the finish. Image 2 is the species reference: match its material, finish and light, not its shape, feet or wings. Image 3 is the colour key, as labels for where each pigment lies.\n\nPaint the same creature in the rich Miniature Lives finish: smooth, rounded, softly modelled volumes, one key light from the top left, warm highlights, cool shadows, saturated playful colour, never dull. Limbs are living limbs, rounded and jointed, never boxes or unfinished 3D. Feet are planted with weight. Eyes keep their drawn size and read large, wet and lit. Give the surface the species notes name real care.\n\nChange only the rendering. Keep the silhouette, every part and its place, the proportions, the pose, the gaze, each pigment in its area, and only the markings the description names; add nothing.\n\nNot: boxes, blocks, facets, planks, flat boards, clay or plastic sheen, photographic fur noise, glitter, invented markings, extra parts, scene, cast shadow, halo, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Belatz, a big bird of open sky.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nSurface in the drawing: bright, layered feathers: rows of small rounded feather clusters on the breast and back, each row edged with one lighter step, a vivid lit side and a deeper shadow side, never grey; the wings and legs in a clean second colour.\nSurface in the painting: bright, layered feathers, vivid in the light and deepening to a rich, darker tone of the body colour in shadow, never grey: small rounded contour feathers over the breast and back, soft down at the throat, a soft sheen along the wing coverts; the wings are second-colour feathers with lighter edges; the legs are smooth scale; the beak is smooth and horn-like.\nParts: the wings are folded fans of feathers, not boards: rounded coverts at the shoulder, long flight feathers stepping out toward the tip, a soft scalloped trailing edge, all inside the drawn wing. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are bird feet, three spread toes and a small back toe gripping the ground inside the drawn foot, never blocks or wedges. The tail is a fan of long overlapping feathers.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer.",
+    "imageOrder": [
+     "drawing",
+     "reference",
+     "key"
+    ]
+   },
+   "referenceImage": {
+    "what": "the accepted painting of this species' type specimen (the Belatz)",
+    "name": "portrait-600x620.png",
+    "sha256": "46d173b2d39c6af1342440aa8743c46fab1fe85182133dd64f4d506badc88fd5"
+   },
+   "prompt": "Image 1 is this young creature drawn in HiBit. It gives structure, proportion, pose and the place of every colour and marking only. It is never a rendering reference: its pixel steps and flat clusters are not the finish. Image 2 is the species reference: match its material, finish and light, not its shape, feet or wings. Image 3 is the colour key, as labels for where each pigment lies.\n\nPaint the same creature in the rich Miniature Lives finish: smooth, rounded, softly modelled volumes, one key light from the top left, warm highlights, cool shadows, saturated playful colour, never dull. Limbs are living limbs, rounded and jointed, never boxes or unfinished 3D. Feet are planted with weight. Eyes keep their drawn size and read large, wet and lit. Give the surface the species notes name real care.\n\nChange only the rendering. Keep the silhouette, every part and its place, the proportions, the pose, the gaze, each pigment in its area, and only the markings the description names; add nothing.\n\nNot: boxes, blocks, facets, planks, flat boards, clay or plastic sheen, photographic fur noise, glitter, invented markings, extra parts, scene, cast shadow, halo, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Belatz, a big bird of open sky.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nSurface in the drawing: bright, layered feathers: rows of small rounded feather clusters on the breast and back, each row edged with one lighter step, a vivid lit side and a deeper shadow side, never grey; the wings and legs in a clean second colour.\nSurface in the painting: bright, layered feathers, vivid in the light and deepening to a rich, darker tone of the body colour in shadow, never grey: small rounded contour feathers over the breast and back, soft down at the throat, a soft sheen along the wing coverts; the wings are second-colour feathers with lighter edges; the legs are smooth scale; the beak is smooth and horn-like.\nParts: the wings are folded fans of feathers, not boards: rounded coverts at the shoulder, long flight feathers stepping out toward the tip, a soft scalloped trailing edge, all inside the drawn wing. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are bird feet, three spread toes and a small back toe gripping the ground inside the drawn foot, never blocks or wedges. The tail is a fan of long overlapping feathers.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer.",
+   "images": [
+    {
+     "name": "step1-drawing.png",
+     "sha256": "d995bfc123df0f8d7072973fb2a4c1805726654983c32a0752156a8257f5a4c7",
+     "bytes": 342965
+    },
+    {
+     "name": "reference:portrait-600x620.png",
+     "sha256": "46d173b2d39c6af1342440aa8743c46fab1fe85182133dd64f4d506badc88fd5",
+     "bytes": 293452
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "2bda8bbd2d6c908b7c0f8df3113ed52044e1d96db95f89836a93fe86926f3e84",
+     "bytes": 6310
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T06:10:27Z",
+   "seconds": 17.8,
+   "httpStatus": 200,
+   "responseId": "1DPHat-FIJe_39IPhsOE8Qc",
+   "modelVersion": "gemini-3-pro-image",
+   "usage": {
+    "promptTokenCount": 1693,
+    "candidatesTokenCount": 1296,
+    "totalTokenCount": 3250,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 919
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "thoughtsTokenCount": 261,
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.15891,
+   "output": {
+    "file": "step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "73d288921c97367e3d32794052d73da862ab61d2e1d7743ebc1e7a10220bfaf0"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.321,
+    "silhouetteIoUInPlace": 0.274,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.989
+     },
+     "region-1": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "neck": {
+      "span": 0.844,
+      "coverage": 0.658
+     },
+     "head": {
+      "span": 0.065,
+      "coverage": 0.0
+     },
+     "beak": {
+      "span": 0.0,
+      "coverage": 0.0
+     },
+     "crown": {
+      "span": 0.093,
+      "coverage": 0.03
+     },
+     "leg-0": {
+      "span": 0.893,
+      "coverage": 0.59
+     },
+     "flap": {
+      "span": 0.733,
+      "coverage": 0.871
+     },
+     "tail": {
+      "span": 0.843,
+      "coverage": 0.848
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.299,
+      "painted": 0.406,
+      "ok": true
+     },
+     "region-1": {
+      "drawn": 0.213,
+      "painted": 0.314,
+      "ok": true
+     },
+     "neck": {
+      "drawn": 0.278,
+      "painted": 0.295,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.305,
+      "painted": 0.081,
+      "ok": false
+     },
+     "crown": {
+      "drawn": 0.295,
+      "painted": 0.183,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.348,
+      "painted": 0.378,
+      "ok": true
+     },
+     "flap": {
+      "drawn": 0.62,
+      "painted": 0.49,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.396,
+      "median": "#ac8565",
+      "nearest": "#fff0b8",
+      "ok": false
+     },
+     "body@region-1": {
+      "agreement": 0.798,
+      "median": "#3b5981",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@neck": {
+      "agreement": 0.0,
+      "median": "#dfc47c",
+      "nearest": "#fff0b8",
+      "ok": false
+     },
+     "body@crown": {
+      "agreement": 0.0,
+      "median": "#f3e3a3",
+      "nearest": "#fff0b8",
+      "ok": false
+     },
+     "second@leg-0": {
+      "agreement": 0.732,
+      "median": "#a17e5f",
+      "nearest": "#fff0b8",
+      "ok": true
+     },
+     "second@flap": {
+      "agreement": 0.461,
+      "median": "#708d93",
+      "nearest": "#4d7ed4",
+      "ok": true
+     }
+    },
+    "reasons": [
+     "paint lies well outside the drawn body (33% of the body beyond a 20 px band): a part was added, moved or re-laid",
+     "part of the drawn body is left unpainted (17% of the body inside a 20 px band): a part was dropped or moved",
+     "a part is missing or moved from where the part map puts it: head (painted along 6% of its length), beak (painted along 0% of its length), crown (painted along 9% of its length)",
+     "the proportions are off: the head is smaller than drawn (0.08 of the body against 0.31)",
+     "a pigment slot is painted in another slot's colour: the body slot on the region-0 (painted #ac8565, the colour of second), the body slot on the neck (painted #dfc47c, the colour of second), the body slot on the crown (painted #f3e3a3, the colour of second)"
+    ],
+    "outside": 0.326,
+    "missing": 0.167,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.438,
+    "passed": false,
+    "gated": false
+   }
+  },
+  {
+   "id": "0246c991-08b1-47c2-ba9f-6cb5bcd965e2",
+   "service": "gemini",
+   "model": "gemini-3-pro-image",
+   "promptVersion": 4,
+   "lab": {
+    "species": "S09",
+    "variant": "1BG-anti-artefact-plain",
+    "name": "1B's anti-artefact words with 1G's plain-coat paragraph",
+    "model": "pro",
+    "sample": 2,
+    "set": "prompt-lab"
+   },
+   "controlVariant": "twostep",
+   "species": "S09",
+   "genomeDigest": "S09-33855bb1",
+   "genomeSha256": "09e30f12feee02c6816f15b3c7e1ac0115900bb96cc15e303da51b324f9c8c28",
+   "purpose": "lab-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "text": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. Every area keeps the one colour Image 3 gives it, unbroken from edge to edge, shaded only by the light; the pale areas are exactly those of Image 3, no more and no larger.\n\nHiBit pixel art on a 280\u00d7300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living anatomy: each leg has a rounded thigh, a soft joint and a foot shaped as the species notes say, inside its drawn place; wings are feathers or dusted membranes with curved edges and rounded tips, never panels. No stumps, cylinders, posts, blocks, wedges or flat-sided shapes anywhere, no facets or bevels: every edge curves. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Belatz, a big bird of open sky.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nSurface in the drawing: bright, layered feathers: rows of small rounded feather clusters on the breast and back, each row edged with one lighter step, a vivid lit side and a deeper shadow side, never grey; the wings and legs in a clean second colour.\nSurface in the painting: bright, layered feathers, vivid in the light and deepening to a rich, darker tone of the body colour in shadow, never grey: small rounded contour feathers over the breast and back, soft down at the throat, a soft sheen along the wing coverts; the wings are second-colour feathers with lighter edges; the legs are smooth scale; the beak is smooth and horn-like.\nParts: the wings are folded fans of feathers, not boards: rounded coverts at the shoulder, long flight feathers stepping out toward the tip, a soft scalloped trailing edge, all inside the drawn wing. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are bird feet, three spread toes and a small back toe gripping the ground inside the drawn foot, never blocks or wedges. The tail is a fan of long overlapping feathers.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer.",
+    "imageOrder": [
+     "index",
+     "reference",
+     "key"
+    ]
+   },
+   "prompt": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. Every area keeps the one colour Image 3 gives it, unbroken from edge to edge, shaded only by the light; the pale areas are exactly those of Image 3, no more and no larger.\n\nHiBit pixel art on a 280\u00d7300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living anatomy: each leg has a rounded thigh, a soft joint and a foot shaped as the species notes say, inside its drawn place; wings are feathers or dusted membranes with curved edges and rounded tips, never panels. No stumps, cylinders, posts, blocks, wedges or flat-sided shapes anywhere, no facets or bevels: every edge curves. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Belatz, a big bird of open sky.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nSurface in the drawing: bright, layered feathers: rows of small rounded feather clusters on the breast and back, each row edged with one lighter step, a vivid lit side and a deeper shadow side, never grey; the wings and legs in a clean second colour.\nSurface in the painting: bright, layered feathers, vivid in the light and deepening to a rich, darker tone of the body colour in shadow, never grey: small rounded contour feathers over the breast and back, soft down at the throat, a soft sheen along the wing coverts; the wings are second-colour feathers with lighter edges; the legs are smooth scale; the beak is smooth and horn-like.\nParts: the wings are folded fans of feathers, not boards: rounded coverts at the shoulder, long flight feathers stepping out toward the tip, a soft scalloped trailing edge, all inside the drawn wing. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are bird feet, three spread toes and a small back toe gripping the ground inside the drawn foot, never blocks or wedges. The tail is a fan of long overlapping feathers.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer.",
+   "images": [
+    {
+     "name": "index.portrait.large.png",
+     "sha256": "5dd27967069778f3eabc1f243190098eb363e06caa68da38135ec4ccb25def8c",
+     "bytes": 7146
+    },
+    {
+     "name": "reference:portrait-600x620.png",
+     "sha256": "46d173b2d39c6af1342440aa8743c46fab1fe85182133dd64f4d506badc88fd5",
+     "bytes": 293452
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "2bda8bbd2d6c908b7c0f8df3113ed52044e1d96db95f89836a93fe86926f3e84",
+     "bytes": 6310
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T06:11:05Z",
+   "seconds": 17.0,
+   "httpStatus": 200,
+   "responseId": "-jPHar68AdGr_uMPpJW6oQ0",
+   "modelVersion": "gemini-3-pro-image",
+   "usage": {
+    "promptTokenCount": 1784,
+    "candidatesTokenCount": 1392,
+    "totalTokenCount": 3428,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 1010
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "thoughtsTokenCount": 252,
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.17061,
+   "output": {
+    "file": "step1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "97f3e494a86edaa07da1608e32ec58fb068f82d888710ba7f6e26350559dff6d"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.758,
+    "silhouetteIoUInPlace": 0.747,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "region-1": {
+      "span": 1.0,
+      "coverage": 0.999
+     },
+     "neck": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.997
+     },
+     "beak": {
+      "span": 0.974,
+      "coverage": 1.0
+     },
+     "crown": {
+      "span": 0.673,
+      "coverage": 0.187
+     },
+     "leg-0": {
+      "span": 1.0,
+      "coverage": 0.811
+     },
+     "flap": {
+      "span": 0.994,
+      "coverage": 1.0
+     },
+     "tail": {
+      "span": 1.0,
+      "coverage": 1.0
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.299,
+      "painted": 0.35,
+      "ok": true
+     },
+     "region-1": {
+      "drawn": 0.213,
+      "painted": 0.291,
+      "ok": true
+     },
+     "neck": {
+      "drawn": 0.278,
+      "painted": 0.356,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.305,
+      "painted": 0.384,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.295,
+      "painted": 0.26,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.348,
+      "painted": 0.388,
+      "ok": true
+     },
+     "flap": {
+      "drawn": 0.62,
+      "painted": 0.656,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.977,
+      "median": "#224187",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@region-1": {
+      "agreement": 0.817,
+      "median": "#274884",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@neck": {
+      "agreement": 0.991,
+      "median": "#2a57ab",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.896,
+      "median": "#3267b8",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 0.721,
+      "median": "#2a5798",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.723,
+      "median": "#a37b62",
+      "nearest": "#fff0b8",
+      "ok": true
+     },
+     "second@flap": {
+      "agreement": 1.0,
+      "median": "#ecca70",
+      "nearest": "#fff0b8",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.011,
+    "missing": 0.0,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.902,
+    "passed": true,
+    "gated": false
+   }
+  },
+  {
+   "id": "4ce420ba-f19a-4f0e-910b-3257c6eded1b",
+   "service": "gemini",
+   "model": "gemini-3-pro-image",
+   "promptVersion": 4,
+   "lab": {
+    "species": "S09",
+    "variant": "1BG-anti-artefact-plain",
+    "name": "1B's anti-artefact words with 1G's plain-coat paragraph",
+    "model": "pro",
+    "sample": 2,
+    "set": "prompt-lab"
+   },
+   "controlVariant": "twostep",
+   "species": "S09",
+   "genomeDigest": "S09-33855bb1",
+   "genomeSha256": "09e30f12feee02c6816f15b3c7e1ac0115900bb96cc15e303da51b324f9c8c28",
+   "purpose": "lab-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "text": "Image 1 is this young creature drawn in HiBit. It gives structure, proportion, pose and the place of every colour and marking only. It is never a rendering reference: its pixel steps and flat clusters are not the finish. Image 2 is the species reference: match its material, finish and light, not its shape, feet or wings. Image 3 is the colour key, as labels for where each pigment lies.\n\nPaint the same creature in the rich Miniature Lives finish: smooth, rounded, softly modelled volumes, one key light from the top left, warm highlights, cool shadows, saturated playful colour, never dull. Limbs are living limbs, rounded and jointed, never boxes or unfinished 3D. Feet are planted with weight. Eyes keep their drawn size and read large, wet and lit. Give the surface the species notes name real care.\n\nChange only the rendering. Keep the silhouette, every part and its place, the proportions, the pose, the gaze, each pigment in its area, and only the markings the description names; add nothing.\n\nNot: boxes, blocks, facets, planks, flat boards, clay or plastic sheen, photographic fur noise, glitter, invented markings, extra parts, scene, cast shadow, halo, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Belatz, a big bird of open sky.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nSurface in the drawing: bright, layered feathers: rows of small rounded feather clusters on the breast and back, each row edged with one lighter step, a vivid lit side and a deeper shadow side, never grey; the wings and legs in a clean second colour.\nSurface in the painting: bright, layered feathers, vivid in the light and deepening to a rich, darker tone of the body colour in shadow, never grey: small rounded contour feathers over the breast and back, soft down at the throat, a soft sheen along the wing coverts; the wings are second-colour feathers with lighter edges; the legs are smooth scale; the beak is smooth and horn-like.\nParts: the wings are folded fans of feathers, not boards: rounded coverts at the shoulder, long flight feathers stepping out toward the tip, a soft scalloped trailing edge, all inside the drawn wing. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are bird feet, three spread toes and a small back toe gripping the ground inside the drawn foot, never blocks or wedges. The tail is a fan of long overlapping feathers.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer.",
+    "imageOrder": [
+     "drawing",
+     "reference",
+     "key"
+    ]
+   },
+   "referenceImage": {
+    "what": "the accepted painting of this species' type specimen (the Belatz)",
+    "name": "portrait-600x620.png",
+    "sha256": "46d173b2d39c6af1342440aa8743c46fab1fe85182133dd64f4d506badc88fd5"
+   },
+   "prompt": "Image 1 is this young creature drawn in HiBit. It gives structure, proportion, pose and the place of every colour and marking only. It is never a rendering reference: its pixel steps and flat clusters are not the finish. Image 2 is the species reference: match its material, finish and light, not its shape, feet or wings. Image 3 is the colour key, as labels for where each pigment lies.\n\nPaint the same creature in the rich Miniature Lives finish: smooth, rounded, softly modelled volumes, one key light from the top left, warm highlights, cool shadows, saturated playful colour, never dull. Limbs are living limbs, rounded and jointed, never boxes or unfinished 3D. Feet are planted with weight. Eyes keep their drawn size and read large, wet and lit. Give the surface the species notes name real care.\n\nChange only the rendering. Keep the silhouette, every part and its place, the proportions, the pose, the gaze, each pigment in its area, and only the markings the description names; add nothing.\n\nNot: boxes, blocks, facets, planks, flat boards, clay or plastic sheen, photographic fur noise, glitter, invented markings, extra parts, scene, cast shadow, halo, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Belatz, a big bird of open sky.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nSurface in the drawing: bright, layered feathers: rows of small rounded feather clusters on the breast and back, each row edged with one lighter step, a vivid lit side and a deeper shadow side, never grey; the wings and legs in a clean second colour.\nSurface in the painting: bright, layered feathers, vivid in the light and deepening to a rich, darker tone of the body colour in shadow, never grey: small rounded contour feathers over the breast and back, soft down at the throat, a soft sheen along the wing coverts; the wings are second-colour feathers with lighter edges; the legs are smooth scale; the beak is smooth and horn-like.\nParts: the wings are folded fans of feathers, not boards: rounded coverts at the shoulder, long flight feathers stepping out toward the tip, a soft scalloped trailing edge, all inside the drawn wing. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are bird feet, three spread toes and a small back toe gripping the ground inside the drawn foot, never blocks or wedges. The tail is a fan of long overlapping feathers.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer.",
+   "images": [
+    {
+     "name": "step1-drawing.png",
+     "sha256": "284c8e2f1f9bc94cdc3044444e4c606bdd7ddfbc0bf13ab68d5d1577038f6f09",
+     "bytes": 289582
+    },
+    {
+     "name": "reference:portrait-600x620.png",
+     "sha256": "46d173b2d39c6af1342440aa8743c46fab1fe85182133dd64f4d506badc88fd5",
+     "bytes": 293452
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "2bda8bbd2d6c908b7c0f8df3113ed52044e1d96db95f89836a93fe86926f3e84",
+     "bytes": 6310
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T06:11:42Z",
+   "seconds": 18.0,
+   "httpStatus": 200,
+   "responseId": "HjTHaqjhJ92MjrEPh7nDyA8",
+   "modelVersion": "gemini-3-pro-image",
+   "usage": {
+    "promptTokenCount": 1693,
+    "candidatesTokenCount": 1340,
+    "totalTokenCount": 3430,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 919
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "thoughtsTokenCount": 397,
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.16419,
+   "output": {
+    "file": "step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "5efe364746de48720dc2ea4369f2d212fa7779efa3ecc1acd38208385e111a11"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.756,
+    "silhouetteIoUInPlace": 0.745,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "region-1": {
+      "span": 1.0,
+      "coverage": 0.997
+     },
+     "neck": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.996
+     },
+     "beak": {
+      "span": 0.961,
+      "coverage": 1.0
+     },
+     "crown": {
+      "span": 0.647,
+      "coverage": 0.158
+     },
+     "leg-0": {
+      "span": 1.0,
+      "coverage": 0.776
+     },
+     "flap": {
+      "span": 0.987,
+      "coverage": 1.0
+     },
+     "tail": {
+      "span": 0.98,
+      "coverage": 0.996
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.299,
+      "painted": 0.35,
+      "ok": true
+     },
+     "region-1": {
+      "drawn": 0.213,
+      "painted": 0.291,
+      "ok": true
+     },
+     "neck": {
+      "drawn": 0.278,
+      "painted": 0.356,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.305,
+      "painted": 0.383,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.295,
+      "painted": 0.251,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.348,
+      "painted": 0.387,
+      "ok": true
+     },
+     "flap": {
+      "drawn": 0.62,
+      "painted": 0.648,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.977,
+      "median": "#25417a",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@region-1": {
+      "agreement": 0.822,
+      "median": "#315478",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@neck": {
+      "agreement": 0.986,
+      "median": "#325a9b",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.892,
+      "median": "#3e6ba6",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 0.696,
+      "median": "#42679b",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.711,
+      "median": "#8e6a5f",
+      "nearest": "#fff0b8",
+      "ok": true
+     },
+     "second@flap": {
+      "agreement": 1.0,
+      "median": "#d5b165",
+      "nearest": "#fff0b8",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.009,
+    "missing": 0.0,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.9,
+    "passed": true,
+    "gated": false
+   }
   }
  ]
 }
