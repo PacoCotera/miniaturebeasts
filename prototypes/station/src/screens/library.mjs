@@ -32,7 +32,7 @@ function drawBook() {
   paperBg(); drawTop("Library");
   const id = L().sp, fr = frameOf(id); if (!fr) { L().f = "spread"; return; }
   panel(30, 60, 300, 330, C.creamT, C.bark); blit(speciesArt(fr, 260, 270), 50, 70);
-  panel(40, 400, 280, 60, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.wood0, 3, "center"); text(clipText(fr.species.summary || "", 260, 2), 180, 440, C.bark, 2, "center");
+  panel(40, 400, 280, 60, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.wood0, 3, "center"); text(fr.taxonomy?.clan ? "clan " + fr.taxonomy.clan + " · " + S.plural(fr.chapters.length, "chapter") : S.plural(fr.chapters.length, "chapter"), 180, 440, C.bark, 2, "center");
   // the chapters as tabs and the looks found so far
   text("the field guide · looks found so far", 360, 62, C.wood0, 2);
   let y = 90;

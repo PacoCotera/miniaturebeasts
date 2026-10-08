@@ -121,3 +121,9 @@ export function sha256(str) {
   }
   return [h0, h1, h2, h3, h4, h5, h6, h7].map((v) => v.toString(16).padStart(8, "0")).join("");
 }
+
+// A genome checked whole against its frame and built: the problems, or none when the body builds.
+export function genomeProblems(frame, genome) {
+  const p = checkGenome(frame, genome); if (p.length) return p;
+  try { const b = buildIndividual(frame, genome); return b.validation.status === "valid" ? [] : b.validation.problems.slice(); } catch (e) { return [e.message]; }
+}

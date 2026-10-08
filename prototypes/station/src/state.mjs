@@ -4,7 +4,7 @@
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
 // accepted, dockN, known, probe, withReq, returned, and each mibi's id, name, sp, born, from, bonded.
 // Those keep their shape (station-build.md §2.3).
-import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest } from "./genome.mjs";
+import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems } from "./genome.mjs";
 
 export const ST_SCHEMA = 2;
 export const SAVE_KEY = "mb-save-v8", SAVE_V = 8, V7_KEY = "mb-exploration-v7";
@@ -20,7 +20,7 @@ export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock fie
 export const HOW_WORD = { shake: "shook itself dry", calm: "felt safe", curl: "curled up from the rain", meal: "had a full meal", slab: "under a slab", ground: "from the ground", deep: "from the deep", cave: "in the cave" };
 export const HOW_ACT = ["shake", "calm", "curl", "meal"];
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
-export const DEFAULT_SETTINGS = { economy: "loose", topUp: { e: 2, d: 3, s: 2 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrow: { e: 1, d: 0, s: 2 } };
+export const DEFAULT_SETTINGS = { economy: "loose", topUp: { e: 2, d: 3, s: 2 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "1e2s", instantGrow: { e: 1, d: 0, s: 2 } };
 
 export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 export const plural = (n, w, p) => n + " " + (n === 1 ? w : p || w + "s");
@@ -78,8 +78,8 @@ export function migrate(st, now = Date.now()) {
 }
 // What a record may lack after an older write.
 export function normalize(st, now = Date.now()) {
-  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox"]) if (!Array.isArray(st[k])) st[k] = [];
-  for (const k of ["readOnce", "guide", "moments", "wish"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
+  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases"]) if (!Array.isArray(st[k])) st[k] = [];
+  for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
   for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (!m.from) m.from = { n: 0, g: "", how: "" }; }
@@ -109,7 +109,7 @@ export const podById = (st, id) => st.tray.find((p) => p.id === id) || null;
 export function effWithId(st, sv) { const r = st.withReq; if (r && docked(st) && r.seq > ((sv && sv.withSeen) || 0)) return r.id; return withId(sv); }
 export function pendingWith(st, sv) { const r = st.withReq; return r && r.seq > ((sv && sv.withSeen) || 0) && r.id !== withId(sv) ? mibiById(st, r.id) : null; }
 export const atHome = (st, sv) => st.mibis.filter((m) => m.id !== effWithId(st, sv) && !m.released);
-export function mibiStage(st, m) { const age = st.turn - (m.born || 0); return age < JUVENILE_TURNS ? "juvenile" : age >= JUVENILE_TURNS + ELDER_TURNS ? "elder" : "adult"; }
+export function mibiStage(st, m, settings = DEFAULT_SETTINGS) { const age = st.turn - (m.born || 0), j = settings.adultTurns ?? JUVENILE_TURNS; return age < j ? "juvenile" : age >= JUVENILE_TURNS + ELDER_TURNS ? "elder" : "adult"; }
 export const tierNow = (st, sv) => (st.probe && st.probe.tier) || (sv && sv.tier) || 1;
 export const podName = (p) => (p.idd ? spName(p) + " pod" : "unknown pod");
 export function podOrigin(p) { return (PLACE_WORD[p.g] || p.g || "somewhere") + (p.how && HOW_WORD[p.how] ? " · " + (HOW_ACT.includes(p.how) ? (p.idd ? aAn(spName(p)) + " " : "a creature ") : "") + HOW_WORD[p.how] : "") + (p.n ? " · expedition " + p.n : ""); }
@@ -287,6 +287,8 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   const glinting = st.tray.filter((p) => podGlints(st, p));
   if (glinting.length) return { text: glinting.length === 1 ? "a pod glints" : plural(glinting.length, "pod") + " glint", act: "pods", label: "Look at the pods" };
   if (st.waiting.length) return { text: plural(st.waiting.length, "pod") + " wait sealed · free a well", act: "pods", label: "Look at the pods" };
+  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
+  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); return { text: aAn(spName(p)) + " pod could grow" + (canPay(st, c.e, 0, c.s) ? "" : " · " + shortText(st, c.e, 0, c.s).replace(" more", "")), act: "pods", label: "Look at the pods" }; }
   const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
   if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
     return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " · needs " + (cost - st.d) + " ◆" : ""), act: "pods", label: "Look at the pods" }; }
@@ -330,3 +332,114 @@ export function inspectGenome(frame, genome) {
   return frame.loci.map((l) => ({ id: l.id, kind: l.kind, chapter: l.chapter, trait: l.trait, copies: genome.loci[l.id] ?? null }));
 }
 export const stampCodeOf = (p) => { const fr = frameFor(p); return fr && p.genome ? stampCode(fr, p.genome, p.read || []) : null; };
+
+// --- Create: the founder from one pod (research-loop.md §5; station-build.md M2) -------------------------
+// choices: { traitId: 0 | 1 | 2 } — as the pod is, only the first copy, only the second. Only read, shapeable
+// look-traits roll; untouched and unread traits stay as the pod has them.
+export const shapeableTraits = (p) => { const fr = frameFor(p); return fr ? fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits.filter((t) => t.shapeable && t.nature !== "doing")) : []; };
+export function rollOptions(p, traitId) {
+  const fr = frameFor(p), t = traitOf(fr, traitId); if (!t || t.nature === "doing" || !t.shapeable || !p.read.includes(fr.chapters.find((c) => c.traits.includes(t)).id)) return [];
+  const same = t.loci.every((id) => { const c = p.genome.loci[id]; return c && c[0] === c[1]; });
+  if (same) return [{ choice: 0, genome: p.genome, look: traitState(fr, t, p.genome).shows }];
+  return [0, 1, 2].map((choice) => { const genome = choice ? shapeTrait(fr, p.genome, t.id, choice) : p.genome; return { choice, genome, look: traitState(fr, t, genome).shows }; });
+}
+export function founderGenome(p, choices = {}) {
+  const fr = frameFor(p); let g = p.genome;
+  for (const [id, c] of Object.entries(choices)) if (c && traitOf(fr, id)) g = shapeTrait(fr, g, id, c);
+  return g;
+}
+export const changedTraits = (choices = {}) => Object.keys(choices).filter((id) => choices[id]);
+// Traits whose shape won't build: reverting one of them alone makes the body build; when none does, every changed trait.
+export function clashTraits(p, choices = {}, problemsOf = genomeProblems) {
+  const fr = frameFor(p), changed = changedTraits(choices); if (!changed.length) return [];
+  if (!problemsOf(fr, founderGenome(p, choices)).length) return [];
+  const fixers = changed.filter((id) => !problemsOf(fr, founderGenome(p, { ...choices, [id]: 0 })).length);
+  return fixers.length ? fixers : changed;
+}
+export function growCost(st, choices = {}, settings = DEFAULT_SETTINGS) {
+  return { e: price(PRICE.growE, settings), s: st.firstMibi ? 0 : price(PRICE.growS, settings), d: price(PRICE.change, settings) * changedTraits(choices).length };
+}
+export const bayCount = (st, settings = DEFAULT_SETTINGS) => settings.bays || st.bays || BAYS;
+export const housed = (st) => st.mibis.filter((m) => !m.released);
+export const bayFull = (st, settings = DEFAULT_SETTINGS) => housed(st).length >= bayCount(st, settings);
+export const freeBay = (st, settings = DEFAULT_SETTINGS) => { const taken = new Set(housed(st).map((m) => m.bay)); for (let i = 0; i < bayCount(st, settings); i++) if (!taken.has(i)) return i; return -1; };
+// Minutes a bud takes: the first ever five (the dev rule), else twenty plus one per shaped trait.
+export const budMinutes = (st, nChanged, settings = DEFAULT_SETTINGS) => (st.firstMibi && settings.firstBud ? 5 : 20 + nChanged);
+export function growBlock(st, p, choices = {}, settings = DEFAULT_SETTINGS, clash = null) {
+  if (!p || !p.idd) return "identify it first";
+  if (st.bud) return "the incubator is busy";
+  if (bayFull(st, settings)) return "no bay free · return one";
+  const c = clash ?? clashTraits(p, choices); if (c.length) return "this shape won't grow · " + c.map((id) => traitOf(frameFor(p), id)?.name ?? id).join(", ");
+  const cost = growCost(st, choices, settings); if (!canPay(st, cost.e, cost.d, cost.s)) return shortText(st, cost.e, cost.d, cost.s);
+  return "";
+}
+// Grow: one pod becomes one fixed individual; the stamp is pressed; the pod goes into the incubator; the
+// genome joins the outbox for the Caddy service (M3). Validated whole before anything is spent.
+export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const b = growBlock(st, p, choices, settings); if (b) return { ok: false, msg: "Grow it · " + b };
+  const fr = frameFor(p), cost = growCost(st, choices, settings), changed = changedTraits(choices), genome = founderGenome(p, choices), sha = genomeSha(genome);
+  st.e -= cost.e; st.s -= cost.s; st.d -= cost.d;
+  const first = !!st.firstMibi, minutes = budMinutes(st, changed.length, settings);
+  for (const id of changed) { const ch = fr.chapters.find((c) => c.traits.some((t) => t.id === id)); if (ch) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
+  const read = [...p.read]; for (const id of changed) { const ch = fr.chapters.find((c) => c.traits.some((t) => t.id === id)); if (ch && !read.includes(ch.id)) read.push(ch.id); }
+  st.bud = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read, shaped: changed, early: false };
+  st.firstMibi = false;
+  st.tray = st.tray.filter((q) => q !== p); fillWells(st, settings, now);
+  st.outbox.push({ sha, species: fr.species.id, genome, at: now });
+  logEv(st, "Grew " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · −" + priceText(cost.e, cost.d, cost.s));
+  return { ok: true, bud: st.bud, cost };
+}
+// The bud's chapters: a read chapter is known from the start; the rest clear one by one across the wait.
+export function budChapterKnown(st, chapterId, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const B = st.bud; if (!B) return false; if (B.read.includes(chapterId)) return true;
+  const fr = frameOf(B.species), unread = fr.chapters.filter((c) => !B.read.includes(c.id)).map((c) => c.id), k = unread.indexOf(chapterId);
+  return k >= 0 && budProgress(st, settings, now) >= (k + 1) / (unread.length + 1);
+}
+export const instantGrowCost = (settings = DEFAULT_SETTINGS) => ({ e: price(settings.instantGrow?.e ?? 1, settings), d: price(settings.instantGrow?.d ?? 0, settings), s: price(settings.instantGrow?.s ?? 2, settings) });
+export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  if (!st.bud || budReady(st, settings, now)) return { ok: false };
+  const c = instantGrowCost(settings); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Grow now · " + shortText(st, c.e, c.d, c.s) };
+  st.e -= c.e; st.d -= c.d; st.s -= c.s; st.bud.early = true; logEv(st, "Grew the bud now · −" + priceText(c.e, c.d, c.s)); return { ok: true };
+}
+// Open: a press; the juvenile steps out fully known, into a free bay, wearing the placeholder until its painting lands (M3).
+export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  if (!budReady(st, settings, now)) return { ok: false, msg: "The bud is still growing" };
+  const bay = freeBay(st, settings); if (bay < 0) return { ok: false, msg: "No bay free · return a mibi to the wild first" };
+  const B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
+  const name = MIBI_NAMES[st.nameN % MIBI_NAMES.length] + (st.nameN >= MIBI_NAMES.length ? " " + (Math.floor(st.nameN / MIBI_NAMES.length) + 1) : ""); st.nameN++;
+  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read: fr.chapters.map((c) => c.id), parents: B.parents, bay, paint: null, released: false, shaped: B.shaped || [] };
+  for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
+  st.mibis.push(m); st.bud = null;
+  logEv(st, "Opened · " + m.name + " · " + fr.species.name + " · juvenile · bay " + (bay + 1));
+  return { ok: true, mibi: m };
+}
+// Return a mibi to the wild (research-economy.md §6): +2 Essence, a field-guide note, the release handed to the
+// Companion at the next dock. Never a bonded mibi, a juvenile, or the one with you.
+export function returnMibiBlock(st, sv, m) {
+  if (!m || m.released) return "already released";
+  if (m.bonded) return "a bonded mibi stays";
+  if (mibiStage(st, m) === "juvenile") return "not until it is adult";
+  if (m.id === effWithId(st, sv)) return m.name + " is with you";
+  return "";
+}
+export function returnMibi(st, sv, m, settings = DEFAULT_SETTINGS) {
+  const b = returnMibiBlock(st, sv, m); if (b) return { ok: false, msg: "Return " + (m ? m.name : "") + " · " + b };
+  m.released = true; m.releasedAt = st.turn; st.s += PRICE.wildMibi;
+  if (!Array.isArray(st.releases)) st.releases = [];
+  st.releases.push({ id: m.id, name: m.name, sp: m.sp, species: m.species, k: m.from?.k ?? null, g: m.from?.g ?? null, code: m.code, turn: st.turn }); if (st.releases.length > 30) st.releases.shift();
+  const notes = st.guideNotes || (st.guideNotes = {}); (notes[m.species] || (notes[m.species] = [])).push({ name: m.name, code: m.code, g: m.from?.g ?? null, turn: st.turn });
+  logEv(st, "Returned " + m.name + " to the wild · +2 Essence · its place remembers it");
+  return { ok: true, msg: m.name + " goes back to the " + (PLACE_WORD[m.from?.g] || "wild") + " · +2 ❀ · the Companion takes it at the next dock" };
+}
+// Developer skips for M2.
+export function skipBud(st, settings = DEFAULT_SETTINGS, how = "ready") { const B = st.bud; if (!B) return; if (how === "ready") B.early = true; else { B.early = false; B.start = Date.now() - (B.minutes * 60000) / 2; } logEv(st, "Developer: bud " + how); }
+export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS) {
+  const fr = frameOf(species); if (!fr) return { ok: false, msg: "no frame " + species };
+  const made = [];
+  for (let i = 0; i < n; i++) { if (bayFull(st, settings)) break; const gs = (Math.imul((seed >>> 0) + i * 104729, 2654435761) ^ (i * 7)) >>> 0, genome = podGenome(fr, gs), sha = genomeSha(genome), id = st.nextMibi++;
+    const name = MIBI_NAMES[st.nameN % MIBI_NAMES.length] + (st.nameN >= MIBI_NAMES.length ? " " + (Math.floor(st.nameN / MIBI_NAMES.length) + 1) : ""); st.nameN++;
+    const m = { id, name, sp: speciesIndex(species), species, gs, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: "meadow", how: "ground", podId: null }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: fr.chapters.map((c) => c.id), parents: null, bay: freeBay(st, settings), paint: null, released: false, shaped: [] };
+    st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
+  st.firstMibi = false; logEv(st, "Developer: " + plural(made.length, "adult " + fr.species.name) + " · seed " + (seed >>> 0));
+  return { ok: !!made.length, mibis: made, msg: made.length ? made.map((m) => m.name).join(" and ") + " live in the vivarium" : "no bay free" };
+}

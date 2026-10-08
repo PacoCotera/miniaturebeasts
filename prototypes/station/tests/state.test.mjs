@@ -171,7 +171,7 @@ test("need: crates, then new pods, then glints, then unread pods", () => {
   st.e = 5; S.identify(st, st.tray[0], settings);
   assert.match(S.need(st, sv, settings).text, /Loika pod waits/);
   S.skipRead(st, st.tray[0], settings);
-  assert.equal(S.need(st, sv, settings).text, "");
+  assert.match(S.need(st, sv, settings).text, /could grow/);
 });
 
 test("developer seeds go through the same rules: a seeded crate arrives at the dock, a pasted genome is checked whole", () => {
@@ -186,4 +186,65 @@ test("developer seeds go through the same rules: a seeded crate arrives at the d
   const bad = structuredClone(g); bad.loci["appearance.marking-switch"] = ["maybe", "on"];
   assert.equal(S.seedPodFromGenome(st, bad, settings).ok, false);
   assert.equal(speciesIndex("S05"), -1);
+});
+
+// --- M2 Grow ---
+const readPod = (crates = [crate(1, [loikaPod(1, 11)])]) => { const w = stocked(crates); w.st.e = 20; w.st.d = 20; w.st.s = 20; for (const p of w.st.tray) S.skipRead(w.st, p, settings); return w; };
+
+test("Create: a read look-trait rolls among three pictures from the pod's own copies; a doing never; a change costs 1 Data", () => {
+  const { st } = readPod(), p = st.tray[0], fr = frameOf("S01");
+  const sh = S.shapeableTraits(p).map((t) => t.id);
+  assert.ok(sh.includes("markings") && sh.includes("crown") && sh.includes("eye-rings") && !sh.includes("drive") && !sh.includes("efficiency"), sh.join());
+  for (const id of sh) { const o = S.rollOptions(p, id), same = fr.chapters.flatMap((c) => c.traits).find((t) => t.id === id).loci.every((l) => p.genome.loci[l][0] === p.genome.loci[l][1]);
+    assert.equal(o.length, same ? 1 : 3, id); assert.equal(o[0].choice, 0); assert.deepEqual(o[0].genome, p.genome); }
+  assert.deepEqual(S.rollOptions(p, "drive"), []);
+  const choices = { "eye-rings": 1 }, g = S.founderGenome(p, choices);
+  assert.deepEqual(g.loci["growth.exterior-eye-size-ratio"], [p.genome.loci["growth.exterior-eye-size-ratio"][0], p.genome.loci["growth.exterior-eye-size-ratio"][0]]);
+  assert.deepEqual(S.growCost(st, choices, settings), { e: 2, s: 0, d: 1 }, "the first founder: 2 Energy and the change");
+  st.firstMibi = false; assert.deepEqual(S.growCost(st, { "eye-rings": 2, crown: 1 }, settings), { e: 2, s: 4, d: 2 });
+  assert.deepEqual(S.clashTraits(p, choices), [], "a shape the frame's pools allow builds");
+  // the clash mechanism: a validator that rejects whenever the crown is shaped marks the crown alone
+  const rejectsCrown = (frame, genome) => (genome.loci["anatomy.crown-presence"].join() === "off,off" ? ["a crown clash"] : []);
+  const g0 = p.genome.loci["anatomy.crown-presence"], offChoice = g0[0] === "off" ? 1 : g0[1] === "off" ? 2 : 0;
+  if (offChoice) { assert.deepEqual(S.clashTraits(p, { crown: offChoice, "eye-rings": 1 }, rejectsCrown), ["crown"]); assert.match(S.growBlock(st, p, { crown: offChoice }, settings, ["crown"]), /won't grow · Crown/); }
+  assert.deepEqual(S.clashTraits(p, { "eye-rings": 1, crown: 0 }, () => ["always"]), ["eye-rings"], "when no single revert fixes it, every changed trait is marked");
+});
+
+test("Grow: validated and paid once; the first bud ever five minutes, then twenty plus one per shaped trait; the pod leaves the rack; the genome waits in the outbox", () => {
+  const { st } = readPod([crate(1, [loikaPod(1, 11), loikaPod(2, 12)])]);
+  const [a, b] = st.tray;
+  assert.match(S.growBlock(st, { ...a, idd: 0 }, {}, settings), /identify/);
+  const r = S.grow(st, a, { "eye-rings": 1 }, settings, 1000);
+  assert.equal(r.ok, true); assert.equal(st.e, 18); assert.equal(st.s, 20); assert.equal(st.d, 19);
+  assert.equal(st.bud.minutes, 5, "the first bud ever: five minutes"); assert.equal(st.bud.firstEver, true); assert.deepEqual(st.bud.shaped, ["eye-rings"]);
+  assert.equal(st.tray.length, 1); assert.equal(st.outbox.length, 1); assert.equal(st.outbox[0].sha, st.bud.sha); assert.match(st.bud.code, /^[0-9A-Z]{9}$/);
+  assert.match(S.growBlock(st, b, {}, settings), /busy/);
+  assert.equal(S.budProgress(st, settings, 1000 + 2.5 * 60000), 0.5); assert.equal(S.budReady(st, settings, 1000 + 5 * 60000), true);
+  assert.equal(S.budChapterKnown(st, "coat", settings, 1000), true, "a read chapter is known from the start");
+  assert.equal(S.budProgress(st, { ...settings, budScale: 10 }, 1000 + 30000), 1, "the developer's bud scale");
+  assert.equal(S.openBud(st, null, settings, 1000).ok, false, "not before it is ready");
+  const o = S.openBud(st, null, settings, 1000 + 5 * 60000); assert.equal(o.ok, true);
+  const m = o.mibi; assert.equal(m.name, "Dot"); assert.equal(m.bay, 0); assert.deepEqual(m.read, frameOf("S01").chapters.map((c) => c.id)); assert.equal(m.parents, null); assert.equal(m.paint, null); assert.equal(st.bud, null);
+  assert.equal(S.mibiStage(st, m), "juvenile");
+  // the second founder: 2 Energy 4 Essence, twenty-one minutes with one shaped trait, and instant grow for a price
+  const r2 = S.grow(st, b, { markings: 2 }, settings, 2000); assert.equal(r2.ok, true); assert.equal(st.e, 16); assert.equal(st.s, 16); assert.equal(st.bud.minutes, 21);
+  assert.equal(S.budReady(st, settings, 2000 + 60000), false);
+  const ig = S.instantGrow(st, settings, 2000 + 60000); assert.equal(ig.ok, true); assert.equal(st.s, 14); assert.equal(S.budReady(st, settings, 2000 + 60001), true);
+  assert.equal(S.openBud(st, null, settings, 2000 + 60001).mibi.bay, 1);
+});
+
+test("six bays: a full vivarium refuses Grow before payment and Open until one is returned; a returned mibi is released, +2 Essence, never bonded or juvenile or with you", () => {
+  const { st } = readPod([crate(1, Array.from({ length: 6 }, (_, i) => loikaPod(i, 50 + i)))]);
+  assert.equal(S.seedAdults(st, "S01", 9, 6, settings).mibis.length, 6);
+  assert.equal(S.bayFull(st, settings), true);
+  const e0 = st.e; assert.match(S.growBlock(st, st.tray[0], {}, settings), /no bay free/); assert.equal(S.grow(st, st.tray[0], {}, settings).ok, false); assert.equal(st.e, e0, "nothing paid");
+  assert.equal(S.bayFull(st, { ...settings, bays: 8 }), false, "the developer's bays");
+  const m = st.mibis[0], s0 = st.s;
+  m.bonded = true; assert.match(S.returnMibi(st, null, m, settings).msg, /bonded/); m.bonded = false;
+  m.born = st.turn; assert.match(S.returnMibi(st, null, m, settings).msg, /adult/); m.born = st.turn - 2;
+  const sv = { with: m.id }; assert.match(S.returnMibi(st, sv, m, settings).msg, /with you/);
+  const r = S.returnMibi(st, { with: null }, m, settings); assert.equal(r.ok, true); assert.equal(st.s, s0 + 2); assert.equal(m.released, true);
+  assert.equal(S.housed(st).length, 5); assert.equal(S.freeBay(st, settings), m.bay); assert.deepEqual(st.releases.at(-1).id, m.id); assert.equal(st.guideNotes.S01.length, 1);
+  assert.equal(S.grow(st, st.tray[0], {}, settings, 5000).ok, true);
+  assert.equal(S.openBud(st, { with: null }, settings, 5000 + 21 * 60000).mibi.bay, m.bay, "the freed bay is taken");
 });

@@ -74,7 +74,7 @@ function partBox(scene, camera, parts) {
   let nodes = scene.nodes.filter(pick); if (!nodes.length) nodes = scene.nodes;
   let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
   for (const n of nodes) for (const v of n.mesh.vertices) { const x = W / 2 + (dot(v, view.right) - cam.center[0]) * cam.scale, y = H / 2 - (dot(v, view.up) - cam.center[1]) * cam.scale; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-  return { x0, y0, x1, y1, whole: nodes === scene.nodes };
+  return { x0, y0, x1, y1, whole: !parts || nodes.length === scene.nodes.length };
 }
 const PIC_BG = C.creamT;
 export function traitPic(frame, genome, traitId, w = 150, h = 110) {
@@ -239,3 +239,22 @@ export function vivArt(w, h) { return art("viv" + w + "x" + h, () => {
   return pb; }); }
 export const twinkle = () => (motion() ? Math.floor(clock.now / 300) % 3 : 0);
 export { upPB };
+
+// ---------- The founder on Create: the placeholder, misty wherever a chapter is unread ----------
+// Frost covers the parts the unread traits name; a whole-body trait unread frosts the whole body lightly.
+export function mistyArt(frame, genome, mistyTraitIds, w, h) {
+  const key = "mist" + genomeDigest(genome) + ":" + [...mistyTraitIds].sort().join(",") + ":" + w + "x" + h;
+  return art(key, () => {
+    const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p);
+    if (!mistyTraitIds.length) return pb;
+    const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") return pb;
+    const camera = fitCamera(b.scene, "portrait", [w, h], 0.06), boxes = mistyTraitIds.map((id) => partBox(b.scene, camera, partsFor(id)));
+    const whole = boxes.some((bx) => bx.whole);
+    pb.map((c, x, y) => { const inBox = boxes.some((bx) => !bx.whole && x >= bx.x0 - 4 && x <= bx.x1 + 4 && y >= bx.y0 - 4 && y <= bx.y1 + 4);
+      if (inBox) return bay(x >> 1, y >> 1) < 7 ? C.frost : bay(x >> 1, y >> 1) < 14 ? C.frostD : C.frostS;
+      if (whole && bay(x, y) < 4) return C.frostD; return c; });
+    return pb;
+  });
+}
+// The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
+export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.lamp, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });

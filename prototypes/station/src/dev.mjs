@@ -14,7 +14,7 @@ let root = null, out = null;
 export function devOpen() { return !!root && !root.hidden; }
 function note(t) { if (out) out.textContent = t; }
 function select(key, options, fmt = (v) => String(v)) {
-  const s = h("select", { onchange: () => { const v = options.find((o) => String(o) === s.value); saveSettings({ [key]: v }); redraw(); } });
+  const s = h("select", { onchange: () => { const v = options.find((o) => String(o) === s.value); const patch = { [key]: v }; if (key === "instantGrowPreset") patch.instantGrow = { "1e2s": { e: 1, d: 0, s: 2 }, free: { e: 0, d: 0, s: 0 }, "2e4s": { e: 2, d: 0, s: 4 } }[v]; saveSettings(patch); redraw(); } });
   for (const o of options) s.append(opt(String(o), fmt(o), String(G.settings[key]) === String(o)));
   return s;
 }
@@ -33,6 +33,7 @@ export function buildDevPanel(container, hooks) {
     h("button", { class: "btn", type: "button", onclick: () => { S.addMaterials(G.st, 0, 10, 0); save(); note("+10 Data"); } }, "+10 Data"),
     h("button", { class: "btn", type: "button", onclick: () => { S.addMaterials(G.st, 10, 0, 10); save(); note("+10 Energy +10 Essence"); } }, "+10 ⚡ +10 ❀"));
   group("Economy", h("div", { class: "dev-row" }, "Prices ", select("economy", ["loose", "decided", "free"], (v) => ({ loose: "loose (decided + a top-up per crate, the default)", decided: "decided prices", free: "free" })[v])),
+    h("div", { class: "dev-row" }, "Instant grow ", select("instantGrowPreset", ["1e2s", "free", "2e4s"], (v) => ({ "1e2s": "1 ⚡ 2 ❀ (placeholder price)", free: "free", "2e4s": "2 ⚡ 4 ❀" })[v])),
     h("p", { class: "dev-note" }, "Decided: Identify 1 ⚡ (first free) · a chapter 1 ◆ a trait, half rounded up once read on an earlier pod of the species, the first read ever free · return a pod +1 ❀. Loose adds +2 ⚡ +3 ◆ +2 ❀ to every crate opened."), mats);
   // Limits
   group("Limits", h("div", { class: "dev-row" }, "Bays ", select("bays", [6, 8, 10])), h("div", { class: "dev-row" }, "Rack ", select("rack", [6, 4, 8])),
@@ -44,13 +45,15 @@ export function buildDevPanel(container, hooks) {
   group("Seeds", h("div", { class: "dev-row" }, "A crate of pods: ", spSel, " × ", cnt, " seed ", seed,
       h("button", { class: "btn", type: "button", onclick: () => { const r = S.seedCrate(G.st, spSel.value, +cnt.value, +seed.value, Date.now()); save(); note(r.ok ? "Crate " + r.crate.n + " waits in the bay · dock (D) and open it at Home" : r.msg); seed.value = String(+seed.value + 1); } }, "Seed the crate")),
     h("div", { class: "dev-row" }, genomeBox, h("button", { class: "btn", type: "button", onclick: () => { let g2; try { g2 = JSON.parse(genomeBox.value); } catch { note("not JSON"); return; } const r = S.seedPodFromGenome(G.st, g2, G.settings, Date.now()); save(); note(r.ok ? "A pod from the genome is in the rack" : r.msg); } }, "A pod from this genome")),
-    h("p", { class: "dev-note" }, "Two adults, two siblings and a held sitting come with M2, M4 and M6."));
+    h("div", { class: "dev-row" }, h("button", { class: "btn", type: "button", onclick: () => { const r = S.seedAdults(G.st, spSel.value, +seed.value, 2, G.settings); save(); note(r.msg); seed.value = String(+seed.value + 1); } }, "Two unrelated adults"), h("span", { class: "dev-note" }, " of the species above, in free bays (siblings and a held sitting come with M4 and M6)")));
   // Skip to
   const focused = () => podById(UI.pods.cur) || G.st.tray[0] || null;
   group("Skip to", h("div", { class: "dev-row" },
     h("button", { class: "btn", type: "button", onclick: () => { const p = focused(); if (!p) { note("no pod in the rack"); return; } S.skipIdentify(G.st, p); save(); note(p.id + " identified"); } }, "Identified"),
     h("button", { class: "btn", type: "button", onclick: () => { const p = focused(); if (!p) { note("no pod in the rack"); return; } S.skipRead(G.st, p, G.settings); save(); note(p.id + " read whole"); } }, "Read whole"),
-    h("button", { class: "btn", type: "button", onclick: () => { for (const p of G.st.tray) S.skipRead(G.st, p, G.settings); save(); note("every pod read whole"); } }, "Every pod read")),
+    h("button", { class: "btn", type: "button", onclick: () => { for (const p of G.st.tray) S.skipRead(G.st, p, G.settings); save(); note("every pod read whole"); } }, "Every pod read"),
+    h("button", { class: "btn", type: "button", onclick: () => { if (!G.st.bud) { note("no bud growing"); return; } S.skipBud(G.st, G.settings, "mid"); save(); note("the bud is half grown"); } }, "Mid-bud"),
+    h("button", { class: "btn", type: "button", onclick: () => { if (!G.st.bud) { note("no bud growing"); return; } S.skipBud(G.st, G.settings, "ready"); save(); note("the bud is ready to open"); } }, "Ready to open")),
     h("p", { class: "dev-note" }, "The pod under the beam on Pods is the one skipped. Shaped, mid-bud, ready, adults, a full guide and a sitting's crate come with their milestones."));
   // Inspect
   out = h("pre", { class: "dev-out" });

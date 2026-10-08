@@ -6,7 +6,8 @@ import { ICON } from "./art.mjs";
 import { G, FX, UI, IDLE_MS, msg, save, load, loadSettings, storageChanged, goScreen, screenOf, lineFor, need, docked, hasWorld, bayCrates, arriving, onChange, podById } from "./game.mjs";
 import * as S from "./state.mjs";
 import { setFrames, frameOf, frameIds, stampGenome } from "./genome.mjs";
-import "./screens/home.mjs"; import "./screens/pods.mjs"; import "./screens/library.mjs"; import "./screens/habitat.mjs"; import "./screens/bench.mjs";
+import "./screens/home.mjs"; import "./screens/pods.mjs"; import "./screens/create.mjs"; import "./screens/incubator.mjs"; import "./screens/library.mjs"; import "./screens/habitat.mjs"; import "./screens/bench.mjs";
+import { HATCH_MS } from "./screens/incubator.mjs";
 import { drawLine, drawMsg, stepResidents, clearResidents, hm } from "./screens/frame.mjs";
 import { dockKey, openBay } from "./screens/home.mjs";
 import { drawIdle } from "./screens/bench.mjs";
@@ -40,6 +41,7 @@ let errN = 0;
 function frame(t) {
   clock.now = t;
   if (G.ready) {
+    if (FX.hatch && FX.hatch.go && t - FX.hatch.at >= HATCH_MS) { FX.hatch.go = false; UI.hab.id = FX.hatch.id; UI.hab.f = "door"; UI.hab.from = null; goScreen("habitat"); }   // meet the mibi
     if (!UI.idle && t - UI.lastInput > IDLE_MS && !arriving() && t > FX.lockUntil) UI.idle = true;   // the vivarium plays alone
     try { render(); } catch (e) { if (errN++ < 3) console.error(e); }
     updateCaddy();
@@ -134,4 +136,5 @@ window.__st = { ready, get SV() { return G.sv; }, get ST() { return G.st; }, get
   get msg() { return FX.msg; }, capture: () => scr.toDataURL("image/png"), offPalette, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },
+  grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; }, openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; },
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };

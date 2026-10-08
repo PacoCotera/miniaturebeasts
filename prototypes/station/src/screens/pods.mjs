@@ -7,6 +7,7 @@ import { podArt, ringArt, emblemArt, traitPic, seedPic, frostPic, sealedPic, fam
 import { G, FX, UI, READ_MS, ID_MS, msg, lockInput, save, goScreen, registerScreen, docked, podById } from "../game.mjs";
 import { benchBg, drawTop, beam, DIRS } from "./frame.mjs";
 import { podFrame, shellFrame } from "./home.mjs";
+import { openCreate } from "./create.mjs";
 import * as S from "../state.mjs";
 import { traitState, chapterSeal } from "../genome.mjs";
 
@@ -148,7 +149,8 @@ function line() {
   if (!p) return { back: "Home", subject: "the rack is empty" };
   const subj = S.podName(p) + " · " + (S.PLACE_WORD[p.g] || "");
   if (f === "pod") { if (!p.idd) { const cost = S.identifyCost(G.st, G.settings); return { ok: "Identify", price: cost ? cost + " ⚡" : "free", dim: G.st.e < cost, back: "Home", subject: subj }; }
-    return { ok: chaptersOf(p).length ? "Read its chapters" : "", back: "Home", subject: subj, need: S.podGlints(G.st, p) ? "★ something new here" : null }; }
+    if (!p.read.length) return { ok: chaptersOf(p).length ? "Read its chapters" : "", back: "Home", subject: subj, need: S.podGlints(G.st, p) ? "★ something new here" : null };
+    const b = S.growBlock(G.st, p, {}, G.settings, []); return { ok: "Shape a founder", price: b && !/needs/.test(b) ? b : "", dim: !!b && !/needs/.test(b), back: "Home", subject: subj, need: S.podGlints(G.st, p) ? "★ something new here" : null }; }
   if (f.startsWith("ch")) { const ch = chaptersOf(p)[+f.slice(2)]; if (!ch) return { back: "Home" };
     const b = S.readBlock(G.st, p, ch.id, G.settings);
     if (b === null) return { back: "Home", subject: ch.name + " · read · free to look at again", need: S.podGlints(G.st, p) ? "★ something new here" : null };
@@ -185,7 +187,7 @@ function act(k) {
   if (k === "back") { goScreen("home"); return; }
   if (k !== "confirm" || !q) return;
   const f = p.f;
-  if (f === "pod") { if (!q.idd) identify(q); else if (chaptersOf(q).length) { p.f = "ch" + clamp(p.ci || 0, 0, chaptersOf(q).length - 1); } }
+  if (f === "pod") { if (!q.idd) identify(q); else if (q.read.length) openCreate(q); else if (chaptersOf(q).length) { p.f = "ch" + clamp(p.ci || 0, 0, chaptersOf(q).length - 1); } }
   else if (f.startsWith("ch")) { const ch = chaptersOf(q)[+f.slice(2)]; if (ch) { p.ci = +f.slice(2); read(q, ch); } }
   else if (isWell(f)) { const w = G.st.tray[+f.slice(1)], A = podById(p.anchor);
     if (A && w && A !== w && S.canCompare(G.st, A, w)) { p.cmp = { a: A.id, b: w.id, ci: 0 }; p.cur = A.id; }

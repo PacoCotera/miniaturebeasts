@@ -115,11 +115,59 @@ await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.
 const s0 = s.s;
 await press("confirm", 150); await press("confirm", 300);
 s = await st(); expect(s.s === s0 + 1 && !s.tray.some((p) => p.id === tuikis.id) && s.returned.at(-1).id === tuikis.id, "returned for +1 Essence");
+// M2. Create: shape eye rings on the read Loika (+1 Data), Grow: a bud of twenty-one minutes (this world grew Dot already), the genome in the outbox
+await press("research", 200);
+await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika.id);
+l = await line(); expect(l.ok === "Shape a founder", "a read pod offers Create: " + JSON.stringify(l));
+await press("confirm", 300);
+expect((await page.evaluate(() => window.__st.UI.screen)) === "create", "on Create");
+// walk to eye rings and roll it once
+const eyeIndex = await page.evaluate((id) => { const p = window.__st.podById(id), fr = window.__st.frameOf(p.species); return fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits).findIndex((t) => t.id === "eye-rings"); }, loika.id);
+for (let i = 0; i < eyeIndex; i++) await press("right", 80);
+await press("down", 200);
+l = await line(); expect(/1 ◆/.test(l.price) && /2 ⚡ 4 ❀/.test(l.price), "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(l));
+expect(/21 leaves/.test(l.need), "a bud of twenty-one minutes: " + JSON.stringify(l));
+await shot("page-create");
+s = await st(); const e1 = s.e, d1 = s.d, s1 = s.s;
+await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
+s = await st();
+expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "eye-rings", "the bud: 21 minutes, eye rings shaped");
+expect(s.e === e1 - 2 && s.s === s1 - 4 && s.d === d1 - 1, "paid 2 ⚡ 4 ❀ 1 ◆");
+expect(s.outbox.length === 1 && s.outbox[0].sha === s.bud.sha, "the genome waits in the outbox for the Caddy service");
+expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on the Incubator");
+await page.waitForTimeout(1600); await shot("page-incubator");
+l = await line(); expect(l.ok === "Grow now", "instant grow offered while growing: " + JSON.stringify(l));
+// the developer's skip: ready to open; Open: the juvenile steps out fully read, into a bay, its stamp whole
+await page.evaluate(() => window.__st.skipBud("ready"));
+l = await line(); expect(l.ok === "Open", "ready: " + JSON.stringify(l));
+await press("confirm", 300); await shot("page-hatch");
+await page.waitForTimeout(2800); await page.evaluate(() => window.__st.unlock());
+s = await st(); const fig = s.mibis.at(-1);
+expect(!s.bud && s.mibis.length === 2 && fig.name === "Moss" && fig.bay === 1 && fig.read.length === 4 && fig.paint === null, "Moss opened into bay 2, fully read, waiting for its painting");
+expect((await page.evaluate(() => window.__st.UI.screen)) === "habitat", "the meet view on Habitat");
+await page.waitForTimeout(300); await shot("page-meet");
+l = await line(); expect(/Take Moss with you/.test(l.ok), "the door is focused: " + JSON.stringify(l));
+// fill the bays: Grow is refused before payment; return a mibi frees a bay for +2 Essence
+await page.evaluate(() => window.__st.seedAdults("S01", 77, 4));
+s = await st(); expect(s.mibis.filter((m) => !m.released).length === 6, "six bays taken");
+await press("research", 200);
+await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika2.id);
+l = await line(); expect(/no bay free/.test(l.price), "a full vivarium refuses before payment: " + JSON.stringify(l));
+const e2 = (await st()).e; await press("confirm", 200); expect((await st()).e === e2 && !(await st()).bud, "nothing paid, nothing grown");
+await press("habitat", 200);
+const adult = s.mibis.find((m) => m.name !== "Moss" && m.name !== "Dot");
+await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "wild"; }, adult.id);
+l = await line(); expect(/Return .* to the wild/.test(l.ok) && l.price === "+2 ❀", "return offered on an adult: " + JSON.stringify(l));
+const s2 = (await st()).s; await press("confirm", 150); await press("confirm", 300);
+s = await st(); expect(s.s === s2 + 2 && s.mibis.find((m) => m.id === adult.id).released && s.releases.at(-1).id === adult.id, "returned for +2 Essence and released");
+await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "wild"; }, fig.id);
+l = await line(); expect(/not until it is adult/.test(l.subject), "a juvenile stays: " + JSON.stringify(l));
+await press("home", 200);
 // 7. the other screens draw without errors; the save round-trips
 for (const k of ["library", "confirm", "back", "habitat", "home", "left", "confirm", "back"]) await press(k, 150);
 await press("library", 200); await shot("page-library"); await press("habitat", 300); await shot("page-habitat"); await press("home", 200);
 const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("mb-save-v8")));
-expect(stored.st.schema === 2 && stored.st.tray.length === 3 && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
+expect(stored.st.schema === 2 && stored.st.tray.length === 2 && stored.st.mibis.length === 6 && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
 // 8. the CI smoke's presses, from a fresh world with no save
 await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
 
