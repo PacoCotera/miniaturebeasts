@@ -1,0 +1,290 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "v7R-reference-remade",
+  "name": "condition 2: v7 with the reference re-made under v7, on the second individual",
+  "subject": "member-1",
+  "referenceFrom": "v7",
+  "change": "Condition 2: v7 as written, plus the species reference as Image 3 in both steps, the reference being the type specimen's own v7 painting (condition 1, the sample whose step 2 passed, else the first); the subject is the species' second individual, so this tests the mechanism the owner values: a reference in the house rendering painting an individual.",
+  "imageOrder1": [
+   "index",
+   "key",
+   "reference"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key",
+   "reference"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "Condition 2: v7 as written, plus the species reference as Image 3 in both steps, the reference being the type specimen's own v7 painting (condition 1, the sample whose step 2 passed, else the first); the subject is the species' second individual, so this tests the mechanism the owner values: a reference in the house rendering painting an individual.",
+ "costUSD": 0.3366,
+ "subject": {
+  "member": "S01-3ac90e8f",
+  "genomeDigest": "S01-3ac90e8f",
+  "controls": "out/S01/b24869689240a6df"
+ },
+ "reference": {
+  "what": "the type specimen painted by v7 on pro, sample 2 (checks passed)",
+  "name": "S01-v7-pro-s2-step2.png",
+  "path": "lab/S01/v7/v7/pro/s2/step2.png"
+ },
+ "step1": {
+  "callId": "21e98ba9-832c-4261-b049-23974dc2dad9",
+  "status": "ok",
+  "costUSD": 0.17362,
+  "seconds": 17.2,
+  "imageOrder": [
+   "index",
+   "key",
+   "reference"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.839,
+   "silhouetteIoUInPlace": 0.817,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.989
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.997
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "eye": {
+     "span": 0.991,
+     "coverage": 0.923
+    },
+    "crown": {
+     "span": 0.979,
+     "coverage": 0.988
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.99
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.894
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.647,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.436,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.277,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.384,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.604,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.321,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.805,
+     "median": "#505755",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.953,
+     "median": "#4a5054",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.823,
+     "median": "#ddceaa",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.475,
+     "median": "#aaac9e",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.89,
+     "median": "#5a9f59",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.831,
+     "median": "#e6d1a7",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.893,
+     "median": "#e2d1ab",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.044,
+   "missing": 0.001,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.836,
+   "passed": true,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "60e9df15-22e6-40ff-8e59-9404526cbd41",
+  "status": "ok",
+  "costUSD": 0.16294,
+  "seconds": 18.3,
+  "imageOrder": [
+   "drawing",
+   "key",
+   "reference"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.827,
+   "silhouetteIoUInPlace": 0.823,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.988
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.997
+    },
+    "muzzle": {
+     "span": 0.992,
+     "coverage": 0.972
+    },
+    "eye": {
+     "span": 0.991,
+     "coverage": 0.977
+    },
+    "crown": {
+     "span": 0.943,
+     "coverage": 0.933
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 1.0
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.891
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.64,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.431,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.272,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.362,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.604,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.317,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.778,
+     "median": "#505957",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.942,
+     "median": "#495156",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.862,
+     "median": "#d9c9a6",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.474,
+     "median": "#abad9f",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.905,
+     "median": "#5e9a5e",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.873,
+     "median": "#e2cda6",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.892,
+     "median": "#e1cfa7",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.048,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.839,
+   "passed": true,
+   "gated": false
+  }
+ }
+}
