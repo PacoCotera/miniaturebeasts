@@ -43,7 +43,7 @@ class Palette:
         self.dark2 = [self.dark[i] for i in self.dark]
         self.fog = self.mix_lut("bone", .62)
         self.fade = self.mix_lut("stone", .5)
-        self.storm = self.mix_lut("river", .3)   # round 2: a storm over you casts blue (shade greens go teal) without a DARK step
+        self.storm = self.mix_lut("river", .45)   # round 2: a storm casts the ground and stones toward blue without a DARK step; canopies are exempt (compose-still.py)
         for n in ("sand", "clay", "paper", "bone", "white"):   # the bank and the pale things keep their warmth: storms go blue, never brown-grey
             self.storm[self.index[n]] = self.index[n]
 

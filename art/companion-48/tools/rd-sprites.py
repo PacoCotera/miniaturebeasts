@@ -13,7 +13,14 @@ def on_white(rgba, pad=0.08):
     bb = quant.bbox(rgba[..., 3]); x0, y0, x1, y1 = bb; crop = rgba[y0:y1, x0:x1]
     h, w = crop.shape[:2]; p = int(max(w, h) * pad)
     canvas = np.full((h + 2 * p, w + 2 * p, 4), 255, np.uint8)
-    a = crop[..., 3:4] / 255.0
+    # the key leaves a magenta halo and a purple ground shadow: erode the alpha one pixel, then send every
+    # purple-cast pixel (red and blue both above green) to white so the input carries no key colour
+    from PIL import ImageFilter
+    al = np.asarray(Image.fromarray(crop[..., 3]).filter(ImageFilter.MinFilter(3))).astype(int)
+    rgb = crop[..., :3].astype(int)
+    purple = (rgb[..., 0] - rgb[..., 1] > 22) & (rgb[..., 2] - rgb[..., 1] > 22)
+    al = np.where(purple, 0, al)
+    a = (al / 255.0)[..., None]
     canvas[p:p + h, p:p + w, :3] = (crop[..., :3] * a + 255 * (1 - a)).astype(np.uint8)
     return Image.fromarray(canvas[..., :3], "RGB")
 jobs = []

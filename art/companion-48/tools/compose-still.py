@@ -62,7 +62,8 @@ def sprite(group, name, cx, cy, table=None):
     idx = load(group, name); ys, xs = np.where(idx >= 0); fy = ys.max() + 1
     blit(idx, cx - idx.shape[1] // 2, cy - fy, table, VIEW)
 def at(c, r, dx=0, dy=0): return OX + c * TS + TS // 2 + dx, OY + r * TS + TS - 2 + dy
-things = [("props", "tree", at(2, 3, 0, 8), DARK), ("props", "bush", at(4, 1), DARK), ("props", "bush-fruit", at(7, 3), DARK), ("props", "bush-shaken", at(1, 8), DARK),
+FOLIAGE = None if light == "storm" else DARK   # art director, round 2: under the storm the canopies keep the G ramp (no cast); the ground, stones and huts take it
+things = [("props", "tree", at(2, 3, 0, 8), FOLIAGE), ("props", "bush", at(4, 1), FOLIAGE), ("props", "bush-fruit", at(7, 3), FOLIAGE), ("props", "bush-shaken", at(1, 8), FOLIAGE),
           ("props", "stone", at(5, 4), DARK), ("props", "stone-warm1", at(8, 4), DARK), ("props", "stone-charged1", at(3, 10), DARK),
           ("props", "outpost-lit", at(8, 1, 0, 4), DARK), ("props", "pod", at(1, 5), DARK), ("props", "dew-cup", at(5, 8), DARK), ("props", "reeds", at(9, 7, 0, -6), DARK), ("props", "stone-plain2", at(7, 10, 0, -4), DARK),
           ("pawn", "pawn-down-walk2", at(4, 6), None), ("tokens", "loika-idle1", at(2, 6), None), ("tokens", "placeholder-S02", at(1, 10), None)]
