@@ -8,7 +8,7 @@
  "seed": 48,
  "input_image": {
   "file": "review-place/sources/rd-sprites/inputs/pawn-up-in.png",
-  "sha256": "20b259f200789801d4701fc46ed7f38afd5f43b8994e5d39e8c69d588e64bdfc",
+  "sha256": "65f68c937c8f708d307c8f5c5d7a581cb1a742a86dc5998b7f7e0ad4404150fe",
   "strength": 0.5
  },
  "reference_image": null,
@@ -16,9 +16,9 @@
   "file": "palette/palette.png",
   "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
  },
- "time": "2026-10-08T17:49:41Z",
+ "time": "2026-10-08T18:07:11Z",
  "checkCost": {
-  "created_at": 1791481781,
+  "created_at": 1791482831,
   "credit_cost": 0,
   "balance_cost": 0.18,
   "output_images": [],
@@ -26,6 +26,16 @@
   "output_urls": [],
   "model": "check_cost",
   "remaining_credits": 0,
-  "remaining_balance": 6.360000000000006
+  "remaining_balance": 2.580000000000008
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "1c6aa65a-2def-4d5d-a4f8-107833eb81ba",
+  "seconds": 52.0,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 2.4,
+  "model": "rd_pro",
+  "file": "C48-S-r2-pawn-up-rd.png",
+  "sha256": "5b0e3c0ca76ec1de32ec67068f9e8e65ae49a4b70ccdada0866bc7aa5d05471a"
  }
 }

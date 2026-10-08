@@ -8,7 +8,7 @@
  "seed": 48,
  "input_image": {
   "file": "review-place/sources/rd-sprites/inputs/bush-in.png",
-  "sha256": "20ee756d70b5a1c2238d5ece213a9b2872af8732998873fde309cba8b0120f1c",
+  "sha256": "1883765e75b0d60b3258617bde134b19206757e0414f3103b76ad581c4566329",
   "strength": 0.5
  },
  "reference_image": null,
@@ -16,9 +16,9 @@
   "file": "palette/palette.png",
   "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
  },
- "time": "2026-10-08T17:51:08Z",
+ "time": "2026-10-08T18:02:16Z",
  "checkCost": {
-  "created_at": 1791481869,
+  "created_at": 1791482536,
   "credit_cost": 0,
   "balance_cost": 0.18,
   "output_images": [],
@@ -26,16 +26,16 @@
   "output_urls": [],
   "model": "check_cost",
   "remaining_credits": 0,
-  "remaining_balance": 6.180000000000006
+  "remaining_balance": 4.020000000000009
  },
  "result": {
   "status": "succeeded",
-  "task_id": "73e4babe-2400-42a8-a944-59d6d9e98713",
-  "seconds": 31.3,
+  "task_id": "93a11ab1-7a81-4202-baf1-0781943c25a7",
+  "seconds": 31.2,
   "balanceCostUSD": 0.18,
-  "remainingBalanceUSD": 6.0,
+  "remainingBalanceUSD": 3.84,
   "model": "rd_pro",
   "file": "C48-S-r2-bush-rd.png",
-  "sha256": "fd18f2061356aed2369782e65db1504d6df810f531c2f8f5178317c896d95270"
+  "sha256": "e2080af80e2d9c89fe227c8ea29dd46b7ad05bc65ec254cff7a00c9a8e67f44f"
  }
 }

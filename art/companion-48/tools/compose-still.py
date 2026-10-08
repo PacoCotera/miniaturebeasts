@@ -2,7 +2,7 @@
 HUD 32 / view 532 / bottom line 36; the ground and props through the STORM table (round 2: a blue cast, no DARK
 step; --light plain for no table, --light dark for round 1's DARK step), the pawn and the mibis never; rain over
 the view; the message box, the name tag, the key caps and the condition bolts from the ui sheet; the page's
-bitmap font at 2x. usage: python3 -I compose-still.py WORK_DIR OUT.png [--light storm|plain|dark]"""
+bitmap font at 2x. usage: python3 -I compose-still.py WORK_DIR OUT.png [--light storm|cool|plain|dark]"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
@@ -37,7 +37,7 @@ COLS, ROWS, TS = 10, 12, 48; OX, OY = -15, VIEW_Y - 22
 water = [[(c >= 6 and r >= 7 and not (c == 6 and r == 7) and not (c == 6 and r == 11)) for c in range(COLS)] for r in range(ROWS)]
 rng = np.random.RandomState(7)
 land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "flowers2", (0, 7): "tall1", (4, 9): "flowers1", (5, 11): "tall2", (9, 3): "tall1"}
-DARK = {"storm": P.storm, "plain": None, "dark": P.dark}[light]
+DARK = {"storm": P.storm, "cool": P.cool, "plain": None, "dark": P.dark}[light]
 for r in range(ROWS):
     for c in range(COLS):
         if water[r][c]:
@@ -62,8 +62,9 @@ def sprite(group, name, cx, cy, table=None):
     idx = load(group, name); ys, xs = np.where(idx >= 0); fy = ys.max() + 1
     blit(idx, cx - idx.shape[1] // 2, cy - fy, table, VIEW)
 def at(c, r, dx=0, dy=0): return OX + c * TS + TS // 2 + dx, OY + r * TS + TS - 2 + dy
-things = [("props", "tree", at(2, 3, 0, 8), DARK), ("props", "bush", at(4, 1), DARK), ("props", "bush-fruit", at(7, 3), DARK), ("props", "bush-shaken", at(1, 8), DARK),
-          ("props", "stone", at(5, 4), DARK), ("props", "stone-warm1", at(8, 4), DARK), ("props", "stone-charged1", at(3, 10), DARK),
+FOLIAGE = None if light in ("storm", "cool") else DARK   # art director, round 2: under the storm the canopies keep the G ramp and the lit stones their glow (no cast); the ground, water, plain stones and huts take it
+things = [("props", "tree", at(2, 3, 0, 8), FOLIAGE), ("props", "bush", at(4, 1), FOLIAGE), ("props", "bush-fruit", at(7, 3), FOLIAGE), ("props", "bush-shaken", at(1, 8), FOLIAGE),
+          ("props", "stone", at(5, 4), DARK), ("props", "stone-warm1", at(8, 4), FOLIAGE), ("props", "stone-charged1", at(3, 10), FOLIAGE),
           ("props", "outpost-lit", at(8, 1, 0, 4), DARK), ("props", "pod", at(1, 5), DARK), ("props", "dew-cup", at(5, 8), DARK), ("props", "reeds", at(9, 7, 0, -6), DARK), ("props", "stone-plain2", at(7, 10, 0, -4), DARK),
           ("pawn", "pawn-down-walk2", at(4, 6), None), ("tokens", "loika-idle1", at(2, 6), None), ("tokens", "placeholder-S02", at(1, 10), None)]
 blit(load("props", "strike-warn1"), OX + 6 * TS, OY + 5 * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
