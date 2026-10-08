@@ -36,12 +36,14 @@ VIEW = (VIEW_Y, VIEW_Y + VIEW_H)
 COLS, ROWS, TS = 10, 12, 48; OX, OY = -15, VIEW_Y - 22
 water = [[(c >= 6 and r >= 7 and not (c == 6 and r == 7) and not (c == 6 and r == 11)) for c in range(COLS)] for r in range(ROWS)]
 rng = np.random.RandomState(7)
+vrng = np.random.RandomState(31)
+var = [["b" if vrng.rand() < 0.5 else "" for c in range(COLS)] for r in range(ROWS)]   # the water variant of each cell, by a seeded hash
 land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "flowers2", (0, 7): "tall1", (4, 9): "flowers1", (5, 11): "tall2", (9, 3): "tall1"}
 DARK = {"storm": P.storm, "plain": None, "dark": P.dark}[light]
 for r in range(ROWS):
     for c in range(COLS):
         if water[r][c]:
-            t = "deep1" if (c >= 8 and r >= 9) else "water1"
+            t = ("deep1" if (c >= 8 and r >= 9) else "water1") + var[r][c]
         else:
             m = (water[r - 1][c] if r > 0 else False) * 1 + (water[r][c + 1] if c < COLS - 1 else False) * 2 + (water[r + 1][c] if r < ROWS - 1 else False) * 4 + (water[r][c - 1] if c > 0 else False) * 8
             t = f"shore-{m:02d}-1" if m else land.get((c, r), f"grass{1 + rng.randint(4)}")
@@ -51,11 +53,10 @@ for r in range(ROWS):
             for nm, dr, dc, a, b in (("ne", -1, 1, 1, 2), ("se", 1, 1, 2, 4), ("sw", 1, -1, 4, 8), ("nw", -1, -1, 8, 1)):
                 if wat(r + dr, c + dc) and not (m & a) and not (m & b): blit(load("shore", f"shore-diag-{nm}-1"), OX + c * TS, OY + r * TS, DARK, VIEW)
 # the deep water: a soft wavy edge instead of a tile boundary, deep1 drawn over the water where the pond falls away
-deep = load("ground", "deep1")
 for r in range(ROWS):
     for c in range(COLS):
         if not water[r][c] or c < 7 or r < 8: continue
-        tile = np.full((TS, TS), -1, dtype=np.int64)
+        deep = load("ground", "deep1" + var[r][c]); tile = np.full((TS, TS), -1, dtype=np.int64)
         for yy in range(TS):
             for xx in range(TS):
                 gx, gy = c * TS + xx, r * TS + yy

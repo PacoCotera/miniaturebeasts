@@ -1,5 +1,5 @@
 """The art director's hand pass on single pieces, scripted so it can be re-run: thin grass2's repeating motif, redraw the dew
-cup so it reads at 1x, and derive the creep frames from the walk frames as a crouch (shorter body, head forward).
+cup so it reads at 1x, and take the stones from the Retro Diffusion results. (The pawn is drawn by pawn-draw.py.)
 usage: python3 -I hand-pass.py WORK_DIR"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -60,20 +60,6 @@ for y in range(H_):
 for x, y, c in ((10, 10, "ice"), (11, 10, "white"), (9, 11, "ice"), (17, 13, "sky"), (22, 5, "ice"), (26, 8, "white")): pb.set(x, y, C[c])
 idx = pb.p.copy(); idx = quant.outline(idx)
 bb = quant.bbox((idx >= 0) * 255); x0, y0, x1, y1 = bb; save(idx[y0:y1, x0:x1], "props", "dew-cup")
-# ---- creep: the walk frames as a crouch. Rows are cut from the body (below the head) so the figure stands lower, then the
-# upper part is shifted toward the facing; the foot stays at y 46.
-for facing in ("down", "up", "left", "right"):
-    for k in (1, 2, 3):
-        w = load("pawn", f"pawn-{facing}-walk{k}"); bb = quant.bbox((w >= 0) * 255); x0, y0, x1, y1 = bb; fig = w[y0:y1, x0:x1]; h = fig.shape[0]
-        head = int(h * 0.42); keep = list(range(h)); cuts = [head + 3, head + 7, head + 11]
-        rows = [r for r in range(h) if r not in cuts]; fig2 = fig[rows]; h2 = fig2.shape[0]
-        lean = {"left": -1, "right": 1}.get(facing, 0); fig2 = np.pad(fig2, ((0, 0), (4, 4)), constant_values=-1); out = np.full_like(fig2, -1)
-        for r in range(h2):
-            sh = lean * (2 if r < head else (1 if r < head + 8 else 0)); out[r] = np.roll(fig2[r], sh) if sh else fig2[r]
-        if facing in ("down", "up") and k != 2: out = np.roll(out, 1 if k == 1 else -1, axis=1)   # the crouch rocks side to side
-        cell = np.full(w.shape, -1, dtype=w.dtype); fy = 46; cell[fy - h2:fy, x0 - 4:x0 - 4 + out.shape[1]] = out
-        save(cell, "pawn", f"pawn-{facing}-creep{k}")
-print("hand pass: grass2, dew-cup, creep x 12")
 # ---- the stones: the Retro Diffusion results (work/props-rd) taken to the pieces. The art director's hand on each state:
 # plain: a ground shadow; warm: the outer orange halo that the snap left is taken off and the core's glow kept (yellow centre,
 # amber, orange rim) with a warm spill on the ground; charged: the teal specks are removed and a jagged bolt of white with ice
@@ -90,24 +76,43 @@ def shadow(idx, dx=2, h=3):
     return out
 for name in ("stone", "stone-plain2", "stone-warm1", "stone-warm2", "stone-charged1", "stone-charged2", "stone-step"):
     s = quant.quantize(np.asarray(Image.open(os.path.join(work, "props-rd", name + "-rd.png")).convert("RGBA"))); H_, W_ = s.shape
+    if "charged" not in name: s = np.where(np.isin(s, [C["white"], C["bone"], C["paper"], C["cream"]]), C["fog"], s)   # no bright dashes on a plain stone: two of them read as eyes
     sil = s >= 0; rng = np.random.RandomState(abs(hash(name)) % 1000 if False else sum(map(ord, name)))
     if "warm" in name:
-        warm = np.isin(s, [C["rust"], C["orange"], C["amber"], C["gold"], C["yellow"], C["cream"]])
-        # the outer ring: warm pixels within 2 px of the silhouette edge go back to stone
-        edge = np.zeros_like(sil)
-        for y in range(H_):
-            for x in range(W_):
-                if sil[y, x] and any(not (0 <= y + dy < H_ and 0 <= x + dx < W_) or not sil[y + dy, x + dx] for dy in range(-2, 3) for dx in range(-2, 3)): edge[y, x] = True
-        s = np.where(warm & edge, C["rock"], s)
-        # the core's colours by the distance from its centre: yellow, amber, orange, rust
-        ys, xs = np.where(np.isin(s, [C["rust"], C["orange"], C["amber"], C["gold"], C["yellow"], C["cream"]]))
-        if len(xs):
-            cx, cy = np.median(xs), np.median(ys); rr = max(np.hypot(xs - cx, ys - cy).max(), 1)
-            for y, x in zip(ys, xs):
-                d = np.hypot(x - cx, y - cy) / rr; s[y, x] = C["cream"] if d < 0.25 else (C["yellow"] if d < 0.5 else (C["amber"] if d < 0.72 else (C["orange"] if d < 0.9 else C["rust"])))
+        # heat inside rock, not a glow: both frames are the plain stone (stone-plain2) silhouette (any warm pixels would be filled from the
+        # neighbouring rock), and a thin jagged vein drawn across it: frame 1 (warm1) a dim rust vein with a few orange pixels, frame 2
+        # (warm2) the same vein a step brighter with amber and a yellow spark at two points. No halo, no round core, no ground spill.
+        base = quant.quantize(np.asarray(Image.open(os.path.join(work, "props-rd", "stone-plain2-rd.png")).convert("RGBA"))); H_, W_ = base.shape
+        warmset = [C[n] for n in ("rust", "orange", "amber", "gold", "yellow", "cream", "clay", "peach", "coral", "red")]
+        base = np.where(np.isin(base, [C["white"], C["bone"], C["paper"], C["cream"]]), C["fog"], base)
+        rock = np.where(np.isin(base, warmset), -2, base)
+        for _ in range(6):   # fill the removed pixels from the rock beside them
+            for y in range(H_):
+                for x in range(W_):
+                    if rock[y, x] == -2:
+                        nb = [rock[yy, xx] for yy in range(max(y - 1, 0), min(y + 2, H_)) for xx in range(max(x - 1, 0), min(x + 2, W_)) if rock[yy, xx] >= 0]
+                        if nb: rock[y, x] = max(set(nb), key=nb.count)
+        rock = np.where(rock == -2, C["rock"], rock)
+        sil = rock >= 0; ys, xs = np.where(sil); y0, y1, x0, x1 = ys.min(), ys.max(), xs.min(), xs.max()
+        rg = np.random.RandomState(7); pts = [(x0 + (x1 - x0) * 0.30, y0 + 4)]
+        for t in (0.25, 0.5, 0.75, 1.0): pts.append((x0 + (x1 - x0) * (0.30 + 0.45 * t) + rg.randint(-2, 3), y0 + 4 + (y1 - y0 - 8) * t))
+        path = [q for a_, b_ in zip(pts[:-1], pts[1:]) for q in line((int(a_[0]), int(a_[1])), (int(b_[0]), int(b_[1])))]
+        # the vein is a little crooked: a one-pixel jog every few pixels
+        path = [(x + (1 if (i // 4) % 2 else 0), y) for i, (x, y) in enumerate(path)]
+        branch = [q for q in line((path[len(path) // 2][0], path[len(path) // 2][1]), (path[len(path) // 2][0] - 5, path[len(path) // 2][1] + 5))]
+        s = rock.copy()
+        dim = name == "stone-warm1"
+        for i, (x, y) in enumerate(path):
+            if 0 <= y < H_ and 0 <= x < W_ and sil[y, x]: s[y, x] = C["rust"] if (dim or i % 3) else C["orange"]
+        for i, (x, y) in enumerate(path):
+            if 0 <= y < H_ and 0 <= x < W_ and sil[y, x] and i % 5 == 2: s[y, x] = C["orange"] if dim else C["amber"]
+        for i, (x, y) in enumerate(branch):
+            if 0 <= y < H_ and 0 <= x < W_ and sil[y, x] and i > 0: s[y, x] = C["rust"]
+        if not dim:
+            for i in (len(path) // 3, 2 * len(path) // 3):
+                x, y = path[i]
+                if sil[y, x]: s[y, x] = C["yellow"]
         s = shadow(s)
-        yb = np.where(s >= 0)[0].max()   # a warm spill on the ground: two clay pixels either side under the stone
-        xs2 = np.where(s[yb] >= 0)[0]; s[yb, max(xs2.min() - 1, 0)] = C["clay"]; s[yb, min(xs2.max() + 1, s.shape[1] - 1)] = C["clay"]
     elif "charged" in name:
         s = np.where(np.isin(s, [C["tealD"], C["teal"], C["aqua"], C["mint"]]), C["rock"], s)
         ys, xs = np.where(sil); top, bot = ys.min() + 2, ys.max() - 3; mid = (xs.min() + xs.max()) // 2
