@@ -3,10 +3,18 @@
 import { SW, SH, TOP_H, LINE_H, STAGE_Y, STAGE_H, C, R, blit, text, textW, clipText, wrapText, panel, art, PB, ramp, clock, motion } from "../gfx.mjs";
 import { ICON, mibiArt, paintedArt, waitLamp } from "../art.mjs";
 import { landedSet, lampText } from "../caddy.mjs";
-import { G, FX, UI, ARRIVE_MS, need, docked, hasWorld, bayCrates, effWithId, atHome, mibiById, arriving } from "../game.mjs";
+import { G, FX, UI, TL, LAYER, ARRIVE_MS, need, docked, hasWorld, bayCrates, effWithId, atHome, mibiById, arriving } from "../game.mjs";
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
+import { frame as frameNodes } from "../../../ui/components/frame.mjs";
+import { frameView } from "../views/frame.mjs";
 
+// The title of each screen's top bar, and the frame's nodes for a screen: the presenter's counters and flashes, the Companion's state, the screen's bottom line and the message plate while the timeline holds it.
+export const TITLES = { home: "Home", pods: "Pods", create: "Create", incubator: "Incubator", habitat: "Habitat", library: "Library", cross: "Cross", bench: "Probe bench" };
+export const plateText = () => (FX.msg && TL.progress("plate", "msg") != null && TL.progress("plate", "msg") < 1 ? FX.msg : "");
+export function frameFor(ctx, screen, line, { need: needText = need().text, focal = null } = {}) {
+  return frameNodes(ctx, frameView({ title: TITLES[screen], step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { text: compState(), docked: docked() }, line, need: needText, message: plateText(), focal }));
+}
 export const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 export const tgt = (id, x, y, w, h) => ({ id, x, y, w, h });
 // Spatial focus: the pad moves the ring to the nearest thing that way.

@@ -30,10 +30,10 @@ export function tabEndMask(side, part, slant, h, shift) {
   return m;
 }
 // The tab's focus ring (box w + 2 * outside + slant wide, `H` tall, from y `top`): the two slanted lines 4 px outside the tab, the sides leaning
-// with the tab down to its bottom edge (y `bottom`) and dropping straight to the bottom run; a top run, square against the top bar; the bottom
+// with the tab down to its bottom edge (y `slantTo`, 80) and dropping straight to the bottom run (y `bottom`, 84); a top run, square against the top bar; the bottom
 // corners rounded; `width` thick all round.
 export function tabRingMask(w, spec) {
-  const { slant, outside, top, bottom, radiusBottom } = spec.tab, width = spec.width, tabTop = spec.tabTop ?? 40, tabH = spec.tabH ?? 40;
+  const { slant, outside, top, bottom, radiusBottom, slantTo } = spec.tab, width = spec.width, tabTop = spec.tabTop ?? 40, tabH = slantTo - tabTop;
   const W = w + 2 * outside + slant, H = bottom - top, m = new Uint8Array(W * H), lean = (y) => (slant * Math.min(Math.max(y - tabTop, 0), tabH)) / tabH;
   const left = (y) => lean(y), right = (y) => W - slant + lean(y), r = radiusBottom;
   const inside = (px, y, inset, rr) => {

@@ -11,7 +11,7 @@ import * as S from "./state.mjs";
 import { setFrames, frameOf, frameIds, stampGenome } from "./genome.mjs";
 import "./screens/home.mjs"; import "./screens/pods.mjs"; import "./screens/create.mjs"; import "./screens/incubator.mjs"; import "./screens/cross.mjs"; import "./screens/library.mjs"; import "./screens/habitat.mjs"; import "./screens/bench.mjs";
 import { HATCH_MS } from "./screens/incubator.mjs";
-import { drawLine, drawMsg, stepResidents, clearResidents, hm, compState, shownTurn } from "./screens/frame.mjs";
+import { drawLine, drawMsg, stepResidents, clearResidents, hm, frameFor } from "./screens/frame.mjs";
 import { dockKey, openBay } from "./screens/home.mjs";
 import { drawIdle } from "./screens/bench.mjs";
 import { openBook } from "./screens/library.mjs";
@@ -20,10 +20,7 @@ import * as caddy from "./caddy.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
 import { bootFace } from "./face-lvgl.mjs";
-import { frame as frameNodes } from "../../ui/components/frame.mjs";
-import { frameView } from "./views/frame.mjs";
-import { asset as assetOf } from "../../ui/assets.mjs";
-import { manifest as manifestOf, registerAsset } from "../../ui/assets.mjs";
+import { manifest as manifestOf, registerAsset, asset as assetOf, assetEntry } from "../../ui/assets.mjs";
 
 setIcons((name, px) => ICON[name]?.(px));
 const $ = (id) => document.getElementById(id);
@@ -48,13 +45,11 @@ const legacy = (id, draw) => ({ id, kind: "legacy", rect: [0, 0, SW, SH], always
 // ?face=lvgl: the LVGL face (prototypes/face) draws the screen; the JavaScript layer keeps the rules, the views and the timeline (technical-architecture.md §8).
 const FACE_FLAG = new URLSearchParams(location.search).get("face") === "lvgl";
 let FACE = null;
-// L1: the face draws the frame (top bar, bottom line, message plate), the stage's ground and the focus ring; the stage's own content comes with its screen (L2).
-const faceEnv = { rgb: (n) => SC.env.rgb(n), cap: (px) => CTX.cap(px), picture: (id) => { const a = assetOf(id, SC.env); if (!a) return null; const g = a.canvas().getContext("2d"); return { w: a.w, h: a.h, data: g.getImageData(0, 0, a.w, a.h).data }; } };
+// The LVGL face draws the frame, the stage's ground and the focus ring for now; each screen's stage comes over with its screen. A screen on the layer says what the face draws (faceNodes); the others get the frame alone.
+const faceEnv = { rgb: (n) => SC.env.rgb(n), cap: (px) => CTX.cap(px), slice: (id) => assetEntry(id)?.slice ?? null, picture: (id) => { const a = assetOf(id, SC.env); if (!a) return null; const g = a.canvas().getContext("2d"); return { w: a.w, h: a.h, data: g.getImageData(0, 0, a.w, a.h).data }; } };
 function faceNodes() {
-  const screen = screenOf(UI.screen), F = SPECS.frame, msgShown = FX.msg && TL.progress("plate", "msg") != null && TL.progress("plate", "msg") < 1 ? FX.msg : "";
-  const keep = screen.nodes ? [...screen.nodes(CTX).filter((n) => (n.ring && !/^rail/.test(n.id)) || /^(top|line|plate|focus)(\.|$)/.test(n.id)), ...(screen.railNodes ? screen.railNodes(CTX) : [])]
-    : frameNodes(CTX, frameView({ title: UI.screen[0].toUpperCase() + UI.screen.slice(1), step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { text: compState(), docked: docked() }, line: lineFor(), need: need().text, message: msgShown, focal: null }));
-  return [{ id: "stage", kind: "rect", rect: F.regions.stage.rect.slice(), colour: F.colours.stageGround }, ...keep];
+  const screen = screenOf(UI.screen), F = SPECS.frame, stage = { id: "stage", kind: "rect", rect: F.regions.stage.rect.slice(), colour: F.colours.stageGround };
+  return [stage, ...(screen.faceNodes ? screen.faceNodes(CTX) : frameFor(CTX, UI.screen, lineFor()))];
 }
 function render() {
   stepResidents(); TL.tick(clock.now);
@@ -161,7 +156,7 @@ const bootLayer = async () => {
 for (const name of ["energy", "data", "essence", "cross"]) registerAsset({ id: `icon:${name}:16`, w: 16, h: 16, policy: "type", status: "placeholder", until: "the icon set", build: () => ICON[name](16) });
 const faceBoot = FACE_FLAG ? bootFace().then((f) => { FACE = f; }).catch((e) => { console.error("the LVGL face did not load: " + e.message); }) : Promise.resolve();
 const ready = Promise.all([loadFrames(), bootLayer(), faceBoot]).then(([info]) => {
-  if (FACE) CTX = LAYER.ctx = { ...CTX, measure: (t, px) => FACE.measure(t, px) };   // the views lay text out with the widths LVGL's font engine gives
+  if (FACE) { CTX = LAYER.ctx = { ...CTX, measure: (t, px) => FACE.measure(t, px) }; const [r, g, b] = faceEnv.rgb(SPECS.frame.colours.chrome); FACE.setBackground((r << 16) | (g << 8) | b); }   // the views lay text out with the widths LVGL's font engine gives
   loadSettings(); load();
   // a new species identified opens its Library page: the Pods screen asks for it through this hook
   G.openBook = openBook;
@@ -183,7 +178,7 @@ function checkSnapshot() {
 
 // Test hooks (not part of play).
 window.__st = { ready, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
-  say: (t) => msg(t), faceNodes: () => (FACE ? JSON.parse(JSON.stringify(faceNodes())) : null), act: (k) => { FX.lockUntil = 0; TL.release(); act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; TL.release(); }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
+  say: (t) => msg(t), faceNodes: () => (FACE ? JSON.parse(JSON.stringify(faceNodes())) : null), targets: () => screenOf(UI.screen).targets?.() ?? null, act: (k) => { FX.lockUntil = 0; TL.release(); act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; TL.release(); }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
   get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel } : null; }, get msg() { return FX.msg; }, capture: () => (FACE ? vis : SC.capture()).toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), holding: () => TL.holding(), region: (layer, r) => { const d = SC.ctx[layer].getImageData(r[0], r[1], r[2], r[3]); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, sceneRegions: () => scene.regions(), sceneTexts: () => scene.texts(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },

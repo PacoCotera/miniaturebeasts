@@ -89,7 +89,7 @@
 #define LV_USE_ASSERT_MALLOC 0
 #define LV_USE_ASSERT_NULL 0
 #define LV_USE_CHECK_ARG 1
-/* The Station's own fonts (Inter from the converter) arrive at L1; the builtin one is the label's fallback, never displayed. */
-#define LV_FONT_MONTSERRAT_14 1
-#define LV_FONT_DEFAULT LV_FONT_DEFAULT_MONTSERRAT_14
+/* The Station's fonts are Inter at 16, 20 and 28 px (src/fonts, from lv_font_conv); the body size is the default, no built-in font is compiled in. */
+#define LV_FONT_CUSTOM_DECLARE extern const lv_font_t face_inter_16;
+#define LV_FONT_DEFAULT &face_inter_16
 #endif

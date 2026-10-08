@@ -7,12 +7,11 @@
 import { G, FX, UI, TL, SPECS, LAYER, READ_MS, ID_MS, msg, save, goScreen, registerScreen, docked, podById, need, bayCrates } from "../game.mjs";
 import { clock, motion } from "../gfx.mjs";
 import { DIRS } from "../../../ui/focus.mjs";
-import { frame as frameNodes, list, specimen, stampLabel, chapterRail, slantRail, chapterPage, focusRing } from "../../../ui/components/frame.mjs";
+import { list, specimen, stampLabel, chapterRail, slantRail, chapterPage, focusRing } from "../../../ui/components/frame.mjs";
 import { podsView, inWords } from "../views/pods.mjs";
-import { frameView } from "../views/frame.mjs";
 import { registerPictures, iconRequests } from "../pictures.mjs";
 import { frameOf } from "../genome.mjs";
-import { compState, shownTurn } from "./frame.mjs";
+import { frameFor } from "./frame.mjs";
 import { openCreate } from "./create.mjs";
 import * as S from "../state.mjs";
 
@@ -118,20 +117,24 @@ function nodes(ctx) {
     if (v.rail) out.push(...chapterRail(ctx, "rail", R.rail, { ...v.rail, fillGround: false, focused: F.cur && F.cur.startsWith("rail.") ? +F.cur.slice(5) : null, region: "rail", tabRegion: "rail.tab" }).nodes);
     if (v.page) out.push(...chapterPage(ctx, "page", R.page, { ...v.page, region: "page", cellRegion: "page.cell" }).nodes);
     if (v.stamp) out.push(...stampLabel(ctx, "stamp", R.stamp.rect, { stamp: v.stamp.asset, size: v.stamp.size, region: "stamp" }, v.stamp.colours));
-    // the focus ring: one ring per screen, on the focused target; the rail's tabs carry their own (they lift with it)
-    const t = v.targets.find((x) => x.id === F.cur);
-    if (t && t.group !== "rail") out.push(...focusRing("focus", t.rect, SPECS.frame, { shape: t.group === "pod" ? "ellipse" : "round" }));
+    out.push(...ringNodes());
   }
-  // the frame: top bar, bottom line, message plate
-  const fp = frameView({ title: "Pods", step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { text: compState(), docked: docked() }, line: v.line, need: inWords(need().text), message: msgText(), focal: v.box });
-  out.push(...frameNodes(ctx, fp));
+  out.push(...sharedFrame(ctx));
   return out;
 }
-const msgText = () => (FX.msg && TL.progress("plate", "msg") != null && TL.progress("plate", "msg") < 1 ? FX.msg : "");
-
+// The focus ring: one ring per screen, on the focused target; the rail's tabs carry their own (they lift with it).
+function ringNodes() {
+  const v = last, F = P().focus, t = v.mode === "compare" ? null : v.targets.find((x) => x.id === F.cur);
+  return t && t.group !== "rail" ? focusRing("focus", t.rect, SPECS.frame, { shape: t.group === "pod" ? "ellipse" : "round" }) : [];
+}
+// The frame: top bar, bottom line, message plate.
+const sharedFrame = (ctx) => frameFor(ctx, "pods", last.line, { need: inWords(need().text), focal: last.box });
+// What the LVGL face draws of this screen until its stage comes over: the pictures the frame and the ring name, the ring, the frame.
+function faceNodes(ctx) { ensure(); registerPictures([...last.requests, ...iconRequests()], env); return [...ringNodes(), ...railNodes(ctx), ...sharedFrame(ctx)]; }
 // The slanted rail (the face draws this one; the canvas renderer keeps the older rail until it is retired).
 function railNodes(ctx) {
-  ensure(); const v = last, F = P().focus; if (v.mode === "compare" || !v.rail) return [];
-  return slantRail(ctx, "rail", { ...v.rail, focused: F.cur && F.cur.startsWith("rail.") ? +F.cur.slice(5) : null, where: "pods", tabRegion: "rail.tab", star: v.rail.star, clashMark: v.rail.clashMark }).nodes;
+  const v = last, F = P().focus; if (v.mode === "compare" || !v.rail) return [];
+  return slantRail(ctx, "rail", { ...v.rail, focused: F.cur && F.cur.startsWith("rail.") ? +F.cur.slice(5) : null, where: "pods", tabRegion: "rail.tab" }).nodes;
 }
-registerScreen("pods", { nodes, railNodes, line: () => { ensure(); return last.line; }, act, enter: ensure });
+
+registerScreen("pods", { nodes, faceNodes, targets: () => { ensure(); return last.targets; }, line: () => { ensure(); return last.line; }, act, enter: ensure });

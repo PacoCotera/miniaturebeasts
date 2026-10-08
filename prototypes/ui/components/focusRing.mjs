@@ -1,7 +1,7 @@
-// The focus ring (station-layouts.md, "States shared by every screen"): one warm ring in the focus role (#ffe6ad) per screen, 2 px wide,
+// The focus ring (station-layouts.md, "States shared by every screen"): one warm ring in the focus role (warm cream, #ffe6ad) per screen, 2 px wide,
 // 4 px outside its target, with a 6 px corner radius; on a creature, an ellipse on the ground under its feet
 // instead, the box's width plus 16 by 24 px tall. Never a second ring, a list cursor or a side bar.
-// The round ring is a nine-slice picture (corners 1:1, the straight edges tiled) on the canvas renderer, and a border style on the LVGL face (`ring`: colour, width, radius); the ellipse is a sprite at its size.
+// The round ring is a nine-slice picture (corners 1:1, the straight edges tiled); the ellipse is a sprite at its size. Both are pictures from ringMask, on every renderer.
 import { registerAsset } from "../assets.mjs";
 import { ringMask, tabRingMask } from "../rings.mjs";
 
@@ -24,5 +24,5 @@ export function focusRing(id, target, spec, { shape = "round", colour = "focus" 
     const f = spec.focus.feet, ew = w + f.widen, eh = f.height, asset = ringAsset("ellipse", ew, eh, colour, r.width, 0);
     return [{ id, kind: "sprite", rect: [x + Math.round(w / 2) - Math.round(ew / 2), y + h - Math.round(eh / 2), ew, eh], asset, shape: "ellipse" }];
   }
-  return [{ id, kind: "nineSlice", rect: [x - r.outside, y - r.outside, w + 2 * r.outside, h + 2 * r.outside], asset: ringAsset("round", 0, 0, colour, r.width, r.radius), shape: "round", ring: { colour, width: r.width, radius: r.radius } }];
+  return [{ id, kind: "nineSlice", rect: [x - r.outside, y - r.outside, w + 2 * r.outside, h + 2 * r.outside], asset: ringAsset("round", 0, 0, colour, r.width, r.radius), shape: "round" }];
 }
