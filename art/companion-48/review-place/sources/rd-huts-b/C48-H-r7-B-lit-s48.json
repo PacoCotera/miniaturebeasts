@@ -1,0 +1,41 @@
+{
+ "id": "C48-H-r7-B-lit-s48",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "64x58",
+ "prompt": "a small round log cabin shelter with horizontal log walls and a small porch roof over the door, a calm low thatched roof of two bands with no cupola, planted on the ground with a base row of stones meeting the grass, a soft shadow, a hanging lantern, a bundle of sticks against the wall, from above, pixel art sprite on a plain white background with a warm light in the window and the lantern",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-huts-b/inputs/hut-B-painted-in.png",
+  "sha256": "44237da12fc0e23a73f2999e3d2f3eb86c2b5b4f4e49b33811318e5d304b9fdf",
+  "strength": 0.4
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T21:42:04Z",
+ "checkCost": {
+  "created_at": 1791495724,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 53.440000000000005
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "cf31bd03-2b8a-4652-8395-a820796c4cb3",
+  "seconds": 57.5,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 53.26,
+  "model": "rd_pro",
+  "file": "C48-H-r7-B-lit-s48-rd.png",
+  "sha256": "ab18ba22c1fd51adf2a0fc493d3886eb45848eb9ecfb594e5fec2a0d77ad8fb7"
+ }
+}
