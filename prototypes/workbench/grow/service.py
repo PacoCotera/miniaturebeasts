@@ -628,6 +628,8 @@ def grow(species, genome=None, digest=None, force=False, variant="crisp", views=
     portrait_png = None
     for view in views:
         ctrl = {p: os.path.join(d0, "controls", f"{p}.{view}.large.png") for p in ("silhouette", "index", "slots")}
+        for f in (f"step1-{view}-600x620.png", f"step1-{view}-300x310.png"):  # a previous run's drawing must not outlive a run that fails
+            if os.path.exists(os.path.join(d, f)): os.remove(os.path.join(d, f))
         vrec = {"status": None, "attempts": []}
         reasons = None; painted = None
         if variant == "twostep": vrec, painted = two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl)
@@ -701,9 +703,11 @@ def cmd_paint(a):
     variant = a.get("control", "crisp"); assert variant in CONTROL_VARIANTS, f"--control one of {CONTROL_VARIANTS}"
     views = a["views"].split(",") if a.get("views") else VIEWS
     sub = a.get("sub")  # a variant trial kept beside the main outputs, e.g. --control crisp --views portrait --sub crisp
-    # the species' type specimen painting first (the reference image of every other call of that species)
+    # the species' type specimen painting first (the reference image of every other call of that species);
+    # not for variant B on the prompt set, which sends no reference (and would repaint the type specimen
+    # once per forced job otherwise)
     for sp in sorted({j[0] for j in jobs}):
-        if sub is not None or sp == "S01" or (os.path.exists(os.path.join(SPECIES_DIR, sp, "portrait-600x620.png")) and not force): continue
+        if variant == "twostep" or sub is not None or sp == "S01" or (os.path.exists(os.path.join(SPECIES_DIR, sp, "portrait-600x620.png")) and not force): continue
         spec = os.path.join(REF, sp, "type-specimen", "genome.json")
         man = grow(sp, spec, None, force, variant, views); print(sp, "type specimen", {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
         jobs = [j for j in jobs if not (j[0] == sp and j[1] == spec)]

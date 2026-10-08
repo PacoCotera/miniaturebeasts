@@ -28,29 +28,29 @@
    "retries": 28
   }
  },
- "spentAllVersionsUSD": 60.422,
- "calls": 47,
- "callsOk": 47,
- "callUSDMean": 0.1783,
- "callSecondsMean": 21.3,
- "spentUSD": 8.38,
+ "spentAllVersionsUSD": 64.424,
+ "calls": 70,
+ "callsOk": 70,
+ "callUSDMean": 0.1769,
+ "callSecondsMean": 20.9,
+ "spentUSD": 12.382,
  "individuals": 18,
  "bySpecies": {
   "S01": {
    "individuals": 6,
-   "calls": 13,
-   "usdPerIndividual": 0.389,
-   "plainServed": 3,
-   "retries": 4,
-   "firstAttemptPassRate": 0.333
+   "calls": 14,
+   "usdPerIndividual": 0.4162,
+   "plainServed": 1,
+   "retries": 3,
+   "firstAttemptPassRate": 0.5
   },
   "S09": {
    "individuals": 6,
    "calls": 12,
-   "usdPerIndividual": 0.3496,
-   "plainServed": 4,
-   "retries": 4,
-   "firstAttemptPassRate": 0.333
+   "usdPerIndividual": 0.3434,
+   "plainServed": 1,
+   "retries": 1,
+   "firstAttemptPassRate": 0.833
   },
   "S12": {
    "individuals": 6,
@@ -61,16 +61,16 @@
    "firstAttemptPassRate": 0.0
   }
  },
- "callsPerIndividualMean": 2.11,
- "usdPerIndividualMean": 0.3763,
+ "callsPerIndividualMean": 2.17,
+ "usdPerIndividualMean": 0.3833,
  "secondsPerIndividualMean": 45.6,
- "usdPerMibiThreeStages": 1.129,
- "usdPerKitYear40": 45.16,
+ "usdPerMibiThreeStages": 1.15,
+ "usdPerKitYear40": 46.0,
  "views": [
   "portrait"
  ],
- "retries": 14,
- "plainServed": 12,
- "firstAttemptPassRate": 0.222,
- "paintedRate": 0.333
+ "retries": 10,
+ "plainServed": 7,
+ "firstAttemptPassRate": 0.444,
+ "paintedRate": 0.611
 }

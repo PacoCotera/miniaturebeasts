@@ -6,273 +6,271 @@
  "controlVariant": "twostep",
  "views": {
   "portrait": {
-   "status": "plain",
+   "status": "painted",
    "attempts": [
     {
-     "callId": "d0816880-de92-495f-ac4c-98500bec4b9b",
+     "callId": "4eec29e4-35bc-4e54-af45-71ae0c40ceba",
      "step": 1,
      "attempt": 1,
      "status": "ok",
-     "costUSD": 0.17849,
-     "seconds": 21.2,
+     "costUSD": 0.16989,
+     "seconds": 20.2,
      "checks": {
-      "silhouetteIoU": 0.661,
-      "silhouetteIoUInPlace": 0.526,
+      "silhouetteIoU": 0.832,
+      "silhouetteIoUInPlace": 0.824,
       "parts": {
        "region-0": {
         "span": 1.0,
-        "coverage": 0.999
+        "coverage": 0.979
        },
        "head": {
         "span": 1.0,
-        "coverage": 0.727
+        "coverage": 0.996
        },
        "muzzle": {
-        "span": 0.983,
-        "coverage": 0.881
+        "span": 1.0,
+        "coverage": 0.993
        },
        "eye": {
-        "span": 0.879,
-        "coverage": 0.564
+        "span": 0.944,
+        "coverage": 0.961
        },
        "crown": {
-        "span": 0.69,
-        "coverage": 0.483
+        "span": 0.947,
+        "coverage": 0.93
        },
        "leg-0": {
         "span": 0.843,
-        "coverage": 0.676
+        "coverage": 0.983
        },
        "leg-1": {
         "span": 1.0,
-        "coverage": 0.896
+        "coverage": 0.859
        }
       },
       "proportions": {
        "region-0": {
         "drawn": 0.565,
-        "painted": 0.743,
+        "painted": 0.656,
         "ok": true
        },
        "head": {
         "drawn": 0.353,
-        "painted": 0.502,
+        "painted": 0.443,
         "ok": true
        },
        "muzzle": {
         "drawn": 0.234,
-        "painted": 0.313,
+        "painted": 0.282,
         "ok": true
        },
        "crown": {
         "drawn": 0.377,
-        "painted": 0.348,
+        "painted": 0.371,
         "ok": true
        },
        "leg-0": {
         "drawn": 0.526,
-        "painted": 0.659,
+        "painted": 0.614,
         "ok": true
        },
        "leg-1": {
         "drawn": 0.238,
-        "painted": 0.369,
+        "painted": 0.326,
         "ok": true
        }
       },
       "slots": {
        "body@region-0": {
-        "agreement": 0.709,
-        "median": "#525c60",
+        "agreement": 0.93,
+        "median": "#4a555a",
         "nearest": "#465459",
         "ok": true
        },
        "body@head": {
-        "agreement": 0.541,
-        "median": "#536f5e",
+        "agreement": 0.883,
+        "median": "#545d5d",
         "nearest": "#465459",
         "ok": true
        },
        "second@leg-0": {
-        "agreement": 0.504,
-        "median": "#d1af8d",
+        "agreement": 0.796,
+        "median": "#ddcfaa",
         "nearest": "#dfd2ae",
         "ok": true
        },
        "second@leg-1": {
-        "agreement": 0.634,
-        "median": "#c9a17e",
+        "agreement": 0.623,
+        "median": "#dacca8",
         "nearest": "#dfd2ae",
         "ok": true
        },
        "leaf@crown": {
-        "agreement": 0.948,
-        "median": "#619f5c",
+        "agreement": 0.916,
+        "median": "#5ba05d",
         "nearest": "#5aa65c",
         "ok": true
        },
        "belly@region-0": {
-        "agreement": 0.352,
-        "median": "#48565b",
-        "nearest": "#465459",
-        "ok": false
+        "agreement": 0.906,
+        "median": "#dfd0a4",
+        "nearest": "#dfd2ae",
+        "ok": true
        },
        "belly@muzzle": {
-        "agreement": 0.122,
-        "median": "#4d595f",
-        "nearest": "#465459",
-        "ok": false
+        "agreement": 0.891,
+        "median": "#dfd0aa",
+        "nearest": "#dfd2ae",
+        "ok": true
        }
       },
-      "reasons": [
-       "a pigment slot is painted in another slot's colour: the belly slot on the region-0 (painted #48565b, the colour of body), the belly slot on the muzzle (painted #4d595f, the colour of body)"
-      ],
-      "outside": 0.056,
-      "missing": 0.031,
+      "reasons": [],
+      "outside": 0.037,
+      "missing": 0.0,
       "bandTolerancePx": 20,
       "tolerances": {
        "bandMax": 0.18,
        "partMin": 0.5,
        "proportion": 0.25
       },
-      "slotAgreement": 0.572,
-      "passed": false,
+      "slotAgreement": 0.882,
+      "passed": true,
       "proportionTolerance": 0.25
      },
-     "responseId": "TqDHasKjNI_6-8YP5rjvkQk"
+     "responseId": "3KnHapuHNfzh_uMP2emrsQE"
     },
     {
-     "callId": "01f5ef69-fd64-4af0-807f-542eb2889856",
-     "step": 1,
-     "attempt": 2,
+     "callId": "2d5fbab5-df8e-484a-a287-650daa4fc2b7",
+     "step": 2,
      "status": "ok",
-     "costUSD": 0.16834,
-     "seconds": 22.6,
+     "costUSD": 0.17505,
+     "seconds": 20.1,
      "checks": {
-      "silhouetteIoU": 0.647,
-      "silhouetteIoUInPlace": 0.651,
+      "silhouetteIoU": 0.737,
+      "silhouetteIoUInPlace": 0.563,
       "parts": {
        "region-0": {
-        "span": 1.0,
-        "coverage": 0.77
+        "span": 0.989,
+        "coverage": 0.998
        },
        "head": {
         "span": 1.0,
-        "coverage": 0.964
+        "coverage": 0.833
        },
        "muzzle": {
-        "span": 0.871,
-        "coverage": 0.92
+        "span": 1.0,
+        "coverage": 0.934
        },
        "eye": {
         "span": 0.907,
-        "coverage": 0.918
+        "coverage": 0.728
        },
        "crown": {
-        "span": 0.989,
-        "coverage": 0.788
+        "span": 0.85,
+        "coverage": 0.455
        },
        "leg-0": {
-        "span": 0.693,
-        "coverage": 0.613
+        "span": 0.824,
+        "coverage": 0.601
        },
        "leg-1": {
         "span": 1.0,
-        "coverage": 0.484
+        "coverage": 0.712
        }
       },
       "proportions": {
        "region-0": {
         "drawn": 0.565,
-        "painted": 0.642,
-        "ok": true
+        "painted": 0.808,
+        "ok": false
        },
        "head": {
         "drawn": 0.353,
-        "painted": 0.433,
-        "ok": true
+        "painted": 0.549,
+        "ok": false
        },
        "muzzle": {
         "drawn": 0.234,
-        "painted": 0.243,
-        "ok": true
+        "painted": 0.352,
+        "ok": false
        },
        "crown": {
         "drawn": 0.377,
-        "painted": 0.412,
+        "painted": 0.464,
         "ok": true
        },
        "leg-0": {
         "drawn": 0.526,
-        "painted": 0.487,
-        "ok": true
+        "painted": 0.702,
+        "ok": false
        },
        "leg-1": {
         "drawn": 0.238,
-        "painted": 0.282,
-        "ok": true
+        "painted": 0.37,
+        "ok": false
        }
       },
       "slots": {
        "body@region-0": {
-        "agreement": 0.906,
-        "median": "#404952",
+        "agreement": 0.587,
+        "median": "#5d6768",
         "nearest": "#465459",
         "ok": true
        },
        "body@head": {
-        "agreement": 0.732,
-        "median": "#5d6559",
+        "agreement": 0.507,
+        "median": "#7c7e66",
         "nearest": "#465459",
         "ok": true
        },
        "second@leg-0": {
-        "agreement": 0.349,
-        "median": "#86665b",
-        "nearest": "#465459",
-        "ok": true
-       },
-       "second@leg-1": {
-        "agreement": 0.531,
-        "median": "#c59d7f",
+        "agreement": 0.466,
+        "median": "#9d8467",
         "nearest": "#dfd2ae",
         "ok": true
        },
+       "second@leg-1": {
+        "agreement": 0.396,
+        "median": "#6e6d64",
+        "nearest": "#465459",
+        "ok": false
+       },
        "leaf@crown": {
-        "agreement": 0.829,
-        "median": "#5da15e",
+        "agreement": 0.94,
+        "median": "#679858",
         "nearest": "#5aa65c",
         "ok": true
        },
        "belly@region-0": {
-        "agreement": 0.399,
-        "median": "#4a5559",
-        "nearest": "#465459",
-        "ok": false
+        "agreement": 0.617,
+        "median": "#a48a6b",
+        "nearest": "#dfd2ae",
+        "ok": true
        },
        "belly@muzzle": {
-        "agreement": 0.673,
-        "median": "#e1cfa7",
+        "agreement": 0.583,
+        "median": "#ddc29d",
         "nearest": "#dfd2ae",
         "ok": true
        }
       },
       "reasons": [
-       "a pigment slot is painted in another slot's colour: the belly slot on the region-0 (painted #4a5559, the colour of body)"
+       "the proportions are off: the region-0 is larger than drawn (0.81 of the body against 0.56), the head is larger than drawn (0.55 of the body against 0.35), the muzzle is larger than drawn (0.35 of the body against 0.23), the leg-0 is larger than drawn (0.70 of the body against 0.53), the leg-1 is larger than drawn (0.37 of the body against 0.24)",
+       "a pigment slot is painted in another slot's colour: the second colour on the hind legs (painted #6e6d64, the body colour)"
       ],
-      "outside": 0.071,
-      "missing": 0.066,
+      "outside": 0.029,
+      "missing": 0.024,
       "bandTolerancePx": 20,
       "tolerances": {
-       "bandMax": 0.18,
-       "partMin": 0.5,
-       "proportion": 0.25
+       "bandMax": 0.1,
+       "partMin": 0.6,
+       "proportion": 0.15
       },
-      "slotAgreement": 0.677,
+      "slotAgreement": 0.579,
       "passed": false,
-      "proportionTolerance": 0.25
+      "gated": false
      },
-     "responseId": "lqDHaofHF7Ka_uMPlIKM8Qk"
+     "responseId": "DqrHavb6PIDf-sAPztaaiAs"
     }
    ],
    "steps": []
@@ -301,15 +299,15 @@
   "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
   "name": "rich-plain-300x310.png"
  },
- "startedAt": "2026-10-08T13:53:17Z",
+ "startedAt": "2026-10-08T14:34:03Z",
  "outputs": {
-  "station-portrait-600x620.png": "70f30b4c115644299fde5d5d5711276a70f463b8914726f7b6b44f2a5a3170d9",
-  "station-portrait-300x310.png": "91e2e2afa3c6ad8f3425785011a3ccecb46e351f032fc7ab52791999331f8c3e",
-  "companion-280x300.png": "9b964cf9e54e1cd05e24874dcdf722e507df4ab0c599207c47a3a1b7b04619ba",
-  "token-48.png": "1505a8b1e5bf70d54e63ef1c1717df7f0691869ae3c5e39b00d4ac766a094726"
+  "station-portrait-600x620.png": "1b8a888687425bf36f019e68c51db4bc0dd3a6e22c41d4da9e57aa0807024c16",
+  "station-portrait-300x310.png": "f5ac4ccb5ebc55a55a9e5f73c67a7be620e03525c222b6ce1865cd22a7e19af5",
+  "companion-280x300.png": "6314e52ecb78fbc6b913b827038168bca03162fbc1f4bbc4391338293fa5e76d",
+  "token-48.png": "dbe60398199e44cfc85e6ea7b2b31d7613c411d5f004f7072147f9662e19fbba"
  },
  "calls": 2,
- "costUSD": 0.34683,
- "seconds": 43.8,
- "finishedAt": "2026-10-08T13:55:45Z"
+ "costUSD": 0.34494,
+ "seconds": 40.3,
+ "finishedAt": "2026-10-08T14:35:49Z"
 }

@@ -2,13 +2,35 @@
 
 The standard look of every mibi is its Grow painting: the cloud model's Station-size painting over the rig's control passes, derived down to the Companion and the token ([art-pipeline.md](../../../design/proposals/art-pipeline.md) v2, the lead's briefs of 2026-10-08). This is that service, run on the sandbox VM: a genome in, the painted set out, checked, with one named retry, the files laid out by genome hash, every call logged with its cost. Nothing here is accepted art; no painted master or studio screen was touched.
 
-**Spent: $26.51** over four prompt versions, 277 Gemini calls (`gemini-3.1-flash-image`, 1K output, $0.096 a call mean). Every call is in [prompts.json](prompts.json) with its fields, image inputs by name and SHA-256, response id, usage, cost, seconds and the checks it passed or failed. No key material is stored. The current state is **prompt v4**, reported first below; v3's re-run follows; v2 (the three-field prompt with the silhouette gate) and v1 (the stage 1 template) stay in prompts.json by `promptVersion`, and each individual's v2 outputs stay under `out/<species>/<sha>/v2/`.
+**Spent: $64.42** over five prompt versions and the prompt lab ($25.07 of it the lab), `gemini-3.1-flash-image` through prompt v4 and `gemini-3-pro-image` since (1K output; $0.096 a call on Flash, $0.17 on Pro). Every call is in [prompts.json](prompts.json) with its fields, image inputs by name and SHA-256, response id, usage, cost, seconds and the checks it passed or failed. No key material is stored. The current state is **prompt v4**, reported first below; v3's re-run follows; v2 (the three-field prompt with the silhouette gate) and v1 (the stage 1 template) stay in prompts.json by `promptVersion`, and each individual's v2 outputs stay under `out/<species>/<sha>/v2/`.
 
 ## Prompt v8: the service's prompt, the owner's pick after the prompt lab
 
 The v7 consistency test (`sheets/lab-consistency-v7.png`, the prompt lab below) settled the painting prompt: the art director's house rendering, one recipe every species obeys (light, shading, value-only contour, the house eye, two or three surface touches, framing, ground), species words only for what differs, **no species reference image** (the three old references were three asset packs), with the lab's 7D finish line, "a naturalist's study of a small living animal, rendered with the Miniature Lives finish", in place of the vinyl collectible (the owner's warning against toy-like rendering). It is frozen as `prompt-lab/v8/` (README there) and the service reads it (`PROMPT_SET`, `prompt_set()`): variant B's step 1 sends the part map and the colour key, crisp, with the set's step 1 block, the species notes and the description; step 2 sends the drawing and the colour key with the step 2 block, the same notes and description. The model is `gemini-3-pro-image` (the cute-pet bar before cost; `GROW_GEMINI_MODEL` overrides). Prompt v5 in `prompts.json` and the manifests.
 
 Three loader rules sit between the set and the call, said once each: **the plan lines** (`plan_lines`: a winged plan's resting wings are part of the body outline, E9); **the colour placement line** (`colour_placement`: the species notes' fixed "Colour placement:" line is replaced by this individual's own, read from its key crossed with its part map, every cell the slot check gates named with its pigment, so the words never contradict the key; the Loika type specimen's cream coat patches were lost to the notes' "charcoal on the body" before this); and **the framing**: the controls are framed by the prompt's own framing rule (`frameCamera`: the creature spans four fifths of the frame at its larger dimension, centred, its lowest point on a ground line one tenth above the bottom), so the band, part and proportion checks mean what they say again. The resting wing pair of a flat-winged plan (the Peplos) is rendered tucked along the flanks inside the body outline (E9), so the control has nothing to spread; the model still spreads a moth's wings from the word, and the named retry is the answer the service has.
+
+### Results, prompt v8: the validation run (18 individuals, Pro, portrait, one named retry)
+
+`sheets/validation-<species>.png`: the accepted Pip in the first row, then the type specimen and five individuals of S01, S09 and S12, each with its control (framed by the rule), its step 1 drawing, its step 2 painting, the derived Companion and token, and its status, calls, cost and checks. `sheets/validation-<species>-pass1.png` keep the first pass. `costs.json` has the numbers; every call is in `prompts.json` under prompt version 5.
+
+| | painted | step 1 first-attempt pass | calls a mibi | USD a mibi |
+| --- | ---: | ---: | ---: | ---: |
+| pass 1, as launched (18) | 6 of 18 | 0.22 | 2.11 | 0.376 |
+| after pass 2 on the seven served plain of S01 and S09 (18) | 11 of 18 | 0.44 | 2.17 | 0.383 |
+| S01 Loika | 5 of 6 | 0.50 | 2.33 | 0.416 |
+| S09 Belatz | 5 of 6 | 0.83 | 2.00 | 0.343 |
+| S12 Peplos | 1 of 6 | 0.00 | 2.17 | 0.390 |
+
+Prompt v5 spent $12.38 over 70 calls (the three calibration passes on the type specimens, pass 1, pass 2, and eight calls a bug spent repainting the Belatz type specimen once per forced job, since fixed). Three life stages at this rate: $1.15 a mibi.
+
+**What pass 2 changed.** The Belatz's four served plain in pass 1 had all spread or re-coloured the wings; their control still showed the raised wing plane of the bird clan's old rest pose. With the bird clan's wings resting folded (E9, `framework/roster.mjs`), all four painted first time. The Loika's three had drawn a cream hind leg or the belly field in the body's charcoal; with the belly field named in the colour placement line, two of three painted (one on its retry) and one stays plain.
+
+**The faults, by species.**
+- **Peplos:** five of six served plain. The painter redraws the moth as a plump big-headed bug: the thorax at 0.56–0.66 of the body against 0.31 drawn, the head doubled, a leg pair dropped (span 0–0.3), the body colour drifting to the pale second colour on the abdomen. The closed-wings line holds (the wings stay on the flanks since the tucked control); the proportions do not. The type specimen passed only on its retry, and its step 2 painting, which is not gated, shrank and moved the subject (outside 0.21, a part at 0 span), so its Companion is small. The Peplos needs its own round: the rig's thorax and head sizes against what the painter wants to draw, and step 2 gated.
+- **Loika:** the key's cream areas on a charcoal body (the hind legs, the belly field) drawn charcoal is the one fault, on three of six first time; the slot gate catches it and the retry recovers about half.
+- **Belatz:** with the folded control the individuals pass (five of five first time in pass 2). The type specimen fails on its raised tail: the rig points its tail spike up and back, the painter hangs a bird's tail every time (tail span 0 in four pairs of attempts), so it is served plain. A resting tail that hangs is a rule for the envelope, not a prompt word.
+- **Step 2 is not gated.** Two paintings drifted off their drawing (the Peplos type specimen; S09-bd3313fe at outside 0.15, a part at 0): a gated step 2 with one retry would cost one call more on those.
 
 ## What is here
 
