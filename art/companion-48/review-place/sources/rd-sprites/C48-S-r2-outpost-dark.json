@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r2-outpost-dark",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "48x51",
+ "prompt": "a small round thatched shelter built of weathered planks with a closed plank door, from above, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/outpost-dark-in.png",
+  "sha256": "202b397694115f1dffc29c42d8fda7dc0355a260e0707669882248cd0b0c0142",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T20:44:16Z",
+ "checkCost": {
+  "created_at": 1791492256,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 1.140000000000008
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "376dc752-69a2-46ab-8f24-7eeeecaff22f",
+  "seconds": 36.8,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 0.96,
+  "model": "rd_pro",
+  "file": "C48-S-r2-outpost-dark-rd.png",
+  "sha256": "ee63446f7208774ea1047928cf69bf94724094f969b79b8051f44d8bc31a011c"
+ }
+}

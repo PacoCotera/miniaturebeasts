@@ -1,6 +1,6 @@
 {
- "successfulCalls": 24,
- "totalUSD": 6.29,
+ "successfulCalls": 28,
+ "totalUSD": 7.01,
  "calls": [
   {
    "tag": "C48-P-r1-a1",
@@ -34,6 +34,13 @@
    "seconds": 52.0
   },
   {
+   "tag": "C48-S-r2-bush-shaken",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "50x48",
+   "usd": 0.18,
+   "seconds": 31.4
+  },
+  {
    "tag": "C48-S-r2-bush",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x43",
@@ -41,11 +48,25 @@
    "seconds": 31.2
   },
   {
+   "tag": "C48-S-r2-outpost-dark",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x51",
+   "usd": 0.18,
+   "seconds": 36.8
+  },
+  {
+   "tag": "C48-S-r2-outpost-dark2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x51",
+   "usd": 0.18,
+   "seconds": 36.8
+  },
+  {
    "tag": "C48-S-r2-outpost-lit",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x55",
    "usd": 0.18,
-   "seconds": 31.2
+   "seconds": 47.4
   },
   {
    "tag": "C48-S-r2-pawn-down",
@@ -171,6 +192,12 @@
    "tool": "retro-diffusion rd_pro__topdown",
    "usd": 2.16,
    "evidence": "Retro Diffusion balance $6.36 before the first batch, $2.04 after the second: 24 calls at $0.18"
+  },
+  {
+   "tag": "C48-S-r2 outpost-lit, first result (overwritten by the round 5 re-run; its sidecar replaced)",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "usd": 0.18,
+   "evidence": "a sidecar is overwritten when a piece is re-run; the balance check ($6.36 before round 2's batches) accounts for every call"
   }
  ],
  "pricing": "gemini-3-pro-image standard tier: $2.00/M input, $120/M output tokens (ai.google.dev pricing, 2026-10-08); Retro Diffusion rd_pro: $0.18 per image (balance_cost in the task result)"
