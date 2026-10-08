@@ -127,7 +127,7 @@ A child sees a picture of the trait that shows, a misty seed holding what hides,
 The Companion comes home with one consignment; the Station is on Home, focus on the room.
 1. **Dock** (the Caddy key): a crate slides into the bay. `✓ Open the bay · 1 crate`.
 2. **✓** The seal breaks; a pod rolls into a cup; counters tick; the Shield mends to two. `✓ Look at the new pod`.
-3. **✓** Pods, the new pod on its stage: "rock field · a Tuikis felt safe". `✓ Identify · 1 ⚡`.
+3. **✓** Pods, the new pod on its stage: "Found on the rock field, as a Tuikis felt safe.". `✓ Identify · 1 ⚡`.
 4. **✓** The seal breaks: a Tuikis. "New species". The ring draws its grey band; four chapter arcs rise in hairlines.
 5. **▲** Focus on the Coat arc. `✓ Read Coat · 3 ◆`.
 6. **✓** The page turns: stripes with a misty seed holding spots, "shows stripes · hides spots"; only teal; short fur. The Coat sector fills.
