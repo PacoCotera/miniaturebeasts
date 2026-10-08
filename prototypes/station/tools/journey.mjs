@@ -54,6 +54,8 @@ const external = []; page.on("request", (r) => { if (!r.url().startsWith(`http:/
 mkdirSync(path.join(here, "../img"), { recursive: true });
 // Every screenshot point records what the layer checks read (tools/checks.mjs): the layers' palette counts, the type log, the scene's regions.
 const checks = { shots: [], textApiCalls: 0 };   // the text API's calls are summed over the page loads
+// A canvas capture at 1×: the 1024×600 frame itself, as the layers composed it (prototypes/station/img/pods-*.png).
+const frameShot = async (name) => { checks.shots.push({ name, check: await page.evaluate(() => window.__st.check()) }); const url = await page.evaluate(() => window.__st.capture()); writeFileSync(path.join(here, `../img/${name}.png`), Buffer.from(url.split(",")[1], "base64")); };
 const shot = async (name) => { checks.shots.push({ name, check: await page.evaluate(() => window.__st.check()) }); return page.screenshot({ path: path.join(here, `../img/${name}.png`), fullPage: false }); };
 const fixture = readFileSync(path.join(here, "../tests/fixtures/save-v8-schema1.json"), "utf8");
 const companionBefore = JSON.stringify({ ...JSON.parse(fixture), st: undefined });
@@ -143,6 +145,10 @@ const sg = await page.evaluate((id) => window.__st.stampGenome(id), loika.id);
 const dec = decode({ width: img.width, height: img.height, data: new Uint8ClampedArray(img.data) });
 expect(dec.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, dec.stamps[0].genome), "the drawn stamp decodes to the genome");
 expect(dec.stamps.length === 1 && dec.stamps[0].genome.read.join() === "Coat,Face", "the stamp's mask: Coat and Face read");
+// and the stamp as it is on the screen, at the label's size on whole-pixel cells, read back from the art layer's pixels, decodes too
+const lab = await page.evaluate(() => window.__st.region("art", [176, 432, 120, 120]));
+const onScreen = decode({ width: lab.width, height: lab.height, data: new Uint8ClampedArray(lab.data) });
+expect(onScreen.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, onScreen.stamps[0].genome), "the stamp on its 120 label, as drawn on the screen, decodes to the genome");
 // the second Loika: identify (1 Energy), its Face costs 1 (half of two, rounded up)
 await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika2.id);
 await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
@@ -159,6 +165,55 @@ l = await line(); expect(l.ok === "Compare", "compare offered on another Loika p
 await press("confirm", 300); await shot("page-compare");
 l = await line(); expect(/two Loika pods/.test(l.subject), "compare open: " + JSON.stringify(l));
 await press("back", 200);
+// P. Pods on the screen layer: the pod by its size class, the rail as the species has chapters, the page by trait count, the focus
+// graph through the keys, the holds of Identify and a read, Compare, the hatch armed, the empty rack; every point recorded for the checks.
+const focusNow = () => page.evaluate(() => window.__st.UI.pods.focus.cur), curPod = () => page.evaluate(() => window.__st.UI.pods.cur);
+await press("research", 200);
+await page.evaluate(() => { window.__st.seedCrate("S02", 1, 515); window.__st.seedCrate("S09", 1, 909); window.__st.openBay(); }); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
+s = await st(); expect(s.tray.length === 6, "six pods in the wells: " + s.tray.length);
+const untuva = s.tray.find((p) => p.species === "S02"), coatSix = s.tray.find((p) => p.species === "S09"), tuikisPod = s.tray.find((p) => p.species === "S03");
+await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.ci = 0; u.pods.f = "pod"; }, untuva.id);
+await page.waitForTimeout(400);
+l = await line(); expect(l.ok === "Identify" && l.price === "1 ⚡", "an unidentified pod offers Identify: " + JSON.stringify(l));
+await frameShot("pods-unidentified");
+// Identify holds input for its seal: a key pressed meanwhile is consumed; the ring stays on the pod
+await press("confirm", 500); expect(await page.evaluate(() => window.__st.holding()), "Identify holds input"); await frameShot("pods-identifying");
+await page.evaluate(() => window.__st.press("left")); await page.waitForTimeout(100); expect((await focusNow()) === "pod", "a key during the seal is consumed");
+await page.evaluate(() => window.__st.unlock());
+s = await st(); expect(s.tray.find((p) => p.id === untuva.id).idd === 1, "the Untuva is identified");
+// the focus graph through the keys: the pod's well, down the wells to the hatch, back to the pod, up to the last chapter, down again
+const walk = async (keys, want, what) => { for (const k of keys) await press(k, 60); const got = await focusNow(); expect(got === want, what + ": " + got + " not " + want); };
+await walk(["left"], "list." + s.tray.findIndex((p) => p.id === untuva.id), "← from the pod to its well");
+await walk(["right"], "pod", "→ from a well to the pod");
+await walk(["up"], "rail.0", "▲ from the pod to the rail's last chapter looked at");
+await walk(["right", "right"], "rail.2", "▶ steps the chapters"); await walk(["down"], "pod", "▼ from the rail to the pod"); await walk(["up"], "rail.2", "▲ again: the last chapter looked at");
+await walk(["down", "left"], "list." + s.tray.findIndex((p) => p.id === untuva.id), "back to the well");
+for (let i = 0; i < 8; i++) await press("down", 40); await walk([], "list.hatch", "▼ through the wells ends on the hatch, and stops there");
+await press("right", 60); expect((await focusNow()) === "pod", "→ from the hatch to the pod");
+// a sealed chapter (the Untuva's Character): no ✓ cap, 'opens with', the slats on its page; the page's traits unread: frost
+await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.3"; }, untuva.id); await page.waitForTimeout(300);
+l = await line(); expect(!l.ok && /Character · sealed · opens with /.test(l.subject), "a sealed chapter has no ✓ cap: " + JSON.stringify(l)); await frameShot("pods-sealed");
+// the Tuikis: eight chapters, tabs 96 on a 104 pitch; the Coat has four traits (216×120 pictures)
+await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.0"; }, tuikisPod.id); await page.waitForTimeout(300); await frameShot("pods-eight-chapters");
+// the Large pod with six Coat traits (144×112 pictures), read whole by the developer
+await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.0"; }, coatSix.id); await page.waitForTimeout(300); await frameShot("pods-six-traits");
+// reading mid-wipe: a fresh pod's first chapter; input held for the wipe
+await page.evaluate(() => window.__st.seedCrate("S01", 1, 31337)); await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
+s = await st(); expect(s.waiting.length === 1, "the rack is full: the new pod waits for a well");
+await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, coatSix.id);
+// the hatch: the first ✓ arms with a plate, any other key disarms, the second ✓ returns
+l = await line(); expect(l.ok === "Return to the wild" && l.price === "+1 ❀", "the hatch offers the return: " + JSON.stringify(l));
+await press("confirm", 150); l = await line(); expect(l.ok === "Again: return it", "armed: " + JSON.stringify(l)); await frameShot("pods-hatch-armed");
+await press("up", 100); l = await line(); expect(l.ok !== "Again: return it", "any other key disarms the hatch"); await page.evaluate(() => { window.__st.UI.pods.f = "list.hatch"; });
+const sBefore = (await st()).s; await press("confirm", 100); await press("confirm", 300); s = await st();
+expect(s.s === sBefore + 1 && !s.tray.some((p) => p.id === coatSix.id), "the second ✓ returned the pod for +1 Essence");
+// the same for the Untuva, which leaves the rack as it was; the waiting pod (if any) takes the well
+await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, untuva.id); await press("confirm", 100); await press("confirm", 300);
+s = await st(); expect(!s.tray.some((p) => p.id === untuva.id), "the Untuva returned");
+const extra = s.tray.find((p) => p.species === "S01" && !p.idd && p.id !== loika.id && p.id !== loika2.id);
+if (extra) { await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, extra.id); await press("confirm", 700); await page.evaluate(() => window.__st.unlock()); await page.evaluate(() => { window.__st.UI.pods.f = "rail.0"; }); await page.waitForTimeout(150); await press("confirm", 900); expect(await page.evaluate(() => window.__st.holding()), "a read holds input for its wipe"); await frameShot("pods-reading"); await page.evaluate(() => window.__st.unlock());
+  await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, extra.id); await press("confirm", 100); await press("confirm", 300); }
+s = await st(); expect(s.tray.length === 4, "the rack is back to its four pods: " + s.tray.length);
 // 6. return the Tuikis to the wild: +1 Essence, the Companion's record
 const tuikis = s.tray.find((p) => p.species === "S03");
 await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, tuikis.id);

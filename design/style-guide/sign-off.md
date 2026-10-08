@@ -29,14 +29,30 @@ Every art and screen delivery carries its kind's checklist, filled in. Each cell
 
 | Art direction | Capabilities |
 | --- | --- |
-| Reads first what the guide names, within a second (SG checklist) | 1024×600 at native 1× grain; no 2× upscaled chrome or text (SG Station; grain check) |
-| The room's vibe; one warm living window; no wood, felt or lamp-lit bench (SS) | Inter, smooth: 16 px body, 20 titles, 28 names, tabular figures (SG Type; DC A; type check) |
-| Fine grain on creatures and world only; chrome and type crisp (SG Decided 3) | Art layer on the Station palette's 62 colours, 0 off palette (UK §2; SS Palette and layers); off palette only on the painted and type layers and the stamp |
-| Creature areas 300×310 or larger; never upscaled tokens (SS) | Placeholder only where no master exists, registered and labelled, waiting lamp shown (SB §3; PH §0) |
-| All chapters shown, in ring order (SS Chapter rail) | Strings as decided: `✓ verb · price · ← where` \| subject \| what needs you (SS Frame) |
-| No digits where a picture does: ring, leaves, seeds, Library (SS) | Device keys only; one press per spend; arm-then-confirm where decided (PS Keys) |
-| Labels one word; never a text page (SS Pods, Library) | Key row fits a phone in one line and stays pressable (PS page) |
-| Motion from the vocabulary; a still frame reads (SG Motion) | CI green, the journey extended through this screen, screenshots refreshed (SB §5) |
+| Reads first what the guide names, within a second (SG checklist) | 1024×600 at native 1× grain; no 2× upscaled chrome or text (SG Station; grain check) — **yes, for the frame size and the 1× drawing**: the frame is asserted 1024×600 at 25 screenshot points, the chrome is rectangles and sprites placed at integer pixels at their size, the type is blitted from atlases baked at 16, 20 and 28 px; **G2 not measured** (its CI recipe is not built; see failures) |
+| The room's vibe; one warm living window; no wood, felt or lamp-lit bench (SS) | Inter, smooth: 16 px body, 20 titles, 28 names, tabular figures (SG Type; DC A; type check) — **yes**: the type log has every string in Inter at 16, 20 or 28 px from the bundled atlases (hashes matched), no text API call on the page, the figures are Inter's own tabular ones (`1111` and `0000` measure alike at every size); on the screens not yet moved the 13 px strings are set at 16 (see failures) |
+| Fine grain on creatures and world only; chrome and type crisp (SG Decided 3) | Art layer on the Station palette's 62 colours, 0 off palette (UK §2; SS Palette and layers); off palette only on the painted and type layers and the stamp — **0 off palette on the art layer at every screenshot point, against the page's 69 colours; not yet the settled 62** (the palette commit renames and swaps the file; see failures); the stamp is quantised to the same palette |
+| Creature areas 300×310 or larger; never upscaled tokens (SS) | Placeholder only where no master exists, registered and labelled, waiting lamp shown (SB §3; PH §0) — **yes**: every Pods picture is registered in the asset manifest at its size with `status: placeholder` and what it waits for (the count on screen is printed by the checks); no sprite is unregistered or at another size (0 at every point); the waiting lamp is on Habitat, unchanged |
+| All chapters shown, in ring order (SS Chapter rail) | Strings as decided: `✓ verb · price · ← where` \| subject \| what needs you (SS Frame) — **yes on Pods**: the line's three regions at the frame spec's rectangles with hairlines at x 396 and 628 (region check), the verbs, prices and subjects of the layout's §6 table, "something new here" without a star, "· half" on the line only; the other screens' strings are as built |
+| No digits where a picture does: ring, leaves, seeds, Library (SS) | Device keys only; one press per spend; arm-then-confirm where decided (PS Keys) — **yes**: the journey drives Pods through the page's key handler (identify, read, compare, the hatch armed by the first ✓ and disarmed by any other key, the focus walked with the pad); input is held for the seal and the wipe |
+| Labels one word; never a text page (SS Pods, Library) | Key row fits a phone in one line and stays pressable (PS page) — **n/a**: the page's key row is unchanged by this work and was not re-measured |
+| Motion from the vocabulary; a still frame reads (SG Motion) | CI green, the journey extended through this screen, screenshots refreshed (SB §5) — **yes**: the journey runs Pods on the layer through seven new 1× captures (`prototypes/station/img/pods-*.png`), all earlier screenshots refreshed; CI run ‹link› |
+
+### Section 3, Pods on the screen layer (T1): failures and departures, listed by the builder
+
+Not measured: the pixel-grain check G2 per region (its CI recipe is owed, not part of T1's checks); the page's key row on a phone; the Companion page's palette check.
+
+Departures from the layout document, each to be settled by the UI designer or the lead:
+
+- **Derived** (listed under `derived` in `pods.json`, "derived, UI designer to confirm"): Compare's page grid for one and two traits (the document gives three to six; pictures 376×264 and 184×256, Read's scaled to 408 px) and its cell rows; the unread and read tab fills; the place of Compare's 12×12 difference bracket (centred on the picture's top edge).
+- **Motion not built:** the focused thing lifts at once (the pod 4 px, the rail's tab 4 px), not over 200 ms; wells and the hatch do not lift; the page turns at once, not over 200 ms; the glint star does not twinkle (a still frame shows it).
+- **Tabs** for fewer than seven chapters are left-aligned from the rail's x, as the document says ("tab i is at x0 + 120i"); nothing is centred.
+- **Behaviour changed to the document:** ✓ on an identified pod with nothing read moves the ring to the first unread tab (it moved to the last chapter looked at); the bottom line says "something new here" with no star; the tab and list words, the heading readout, "and n more", "n sealed", the aqua bar and the amber square are gone.
+- **The screens not yet moved** (Home, Create, Incubator, Habitat, Library, Cross, Sitting, Idle): drawn through the adapter as before, with this change forced by the atlases: the 13 px strings (Cross, Habitat) are set at 16 px (the decided "✕" stays "✕": Inter has no such glyph, so it is a sprite in the text run, registered with the icons); their text sits on the type layer and their art on the art layer (0 off-palette). They still crop and enlarge trait pictures and draw 16 px emblems until T2.
+- **Type:** the converter carries only the font's legacy kerning pairs (about 250 a face; none between figures, which stay tabular); the Mibi 7×9 atlas waits for the type designer's glyph sheet.
+- **Close-ups** are placeholders rendered by the rig's camera at their size, centred on the part the trait names; the part table is the old one.
+- **The Station palette** is the page's 69 colours until the palette commit renames to the settled 62.
+- **The Node tests of the screen layer** (`prototypes/ui/tests`) are not yet in the site workflow (the approved new checks are the four named; adding them is the lead's call).
 
 ## 4. Companion screen build
 
