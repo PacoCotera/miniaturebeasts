@@ -2,7 +2,7 @@
 
 The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md) (§9 Decided) on one place, the meadow and pond edge in a storm, with every piece it needs at 1× on the 48 ramps of the [signed palette](../palette/README.md). Everything here is **a candidate for the owner's review**: generated sources down-rendered by script, an Aseprite pass for the meadow, scripted chrome and water, Retro Diffusion sprites beside the scripted ones where one was picked, and Pip derived into the Loika token. Nothing is accepted; nothing touches `prototypes/exploration/index.html`.
 
-**State: round 11 ready for the art director.** It answers the owner's five notes on round 1 and their answers on rounds 2 to 8 (below). Rounds 1 to 8 and 10 are frozen in [`round1/`](round1/) to [`round8/`](round8/) and [`round10/`](round10/).
+**State: round 11c ready for the art director.** It answers the owner's five notes on round 1 and their answers on rounds 2 to 8 (below). Rounds 1 to 8 and 10 are frozen in [`round1/`](round1/) to [`round8/`](round8/) and [`round10/`](round10/).
 
 ![Contact sheet at 3×](contact-sheet-3x.png)
 
@@ -28,16 +28,26 @@ The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md)
 
 | Piece | How it was finished |
 | --- | --- |
-| Tree | **Retro Diffusion at final size (136 × 152), from a Gemini painting with the concept's canopy as the reference, then cleaned by code** (palette snap, outline recolour, one component). |
+| Tree | **Retro Diffusion at final size (224 × 232), from a Gemini painting with the concept's canopy as the reference, then cleaned by code** (palette snap, outline recolour, one component). |
 | Charged stone body | **Retro Diffusion at final size (62 × 80), cleaned by code.** |
 | Charged stone crackle (zigzag, six arcs, vein) | **Placed vertex by vertex by hand-written coordinate lists after the concept, rendered by the script (core and flank); not a generator.** |
-| Hut B, whole (explorer scale, 144 × 152) | **Retro Diffusion at final size from a Gemini painting, cleaned by code** (role colours, outline, one component); the four tufts are set by code; assembled in Aseprite (0 pixels differ). |
+| Hut B, whole (explorer scale, 144 × 156) | **Retro Diffusion at final size from a Gemini painting, cleaned by code** (lift, role colours by place, the window's glow read from the service's pixels, outline, one component); the four tufts and the posts' foot shadows are set by code; assembled in Aseprite (0 pixels differ). |
 | Pawn: H's head, torso, pack and every frame the service drew | **Retro Diffusion at 48 px (round 9), cleaned by code**, assembled in Aseprite. |
 | Pawn: legs, boots, raised arms, ruff, sleeve swings, leans | **Pixels set by code** (`pawn_limbs.py`), assembled in Aseprite. |
 | Shades and contact shadows | **Drawn by the still's script** (Bayer-dithered through the ground's shade table). |
 | Ground tufts | **Pixels set by code** on round 8's tiles. |
 
 Where the art director wants a piece hand-finished, it needs a person in Aseprite (the sources are in [`work/hut-b-aseprite/`](work/hut-b-aseprite/), [`work/pawn-aseprite/`](work/pawn-aseprite/)) or a decision that code-set pixels are acceptable for the listed pieces.
+
+### Round 11c: the art director's verdict on 11b (signed: hut base, the stone as lightning, the tree form, the ruffs, sleeve and cycles, the rain shade pool, the proofs)
+
+1. **Hut roof:** redrawn so the roof is at most half the hut's height (43 %: the log wall is the larger part) with **one ring** and calm straw in **two values** (bark and clay), straw-light only in a few short streaks in the top-left quarter. A new Gemini painting with a tall seven-course wall and a low flat roof ([`sources/r11/C48-H-r11-d1`](sources/r11/); two earlier paintings c1, c2 kept the tall cone and were dropped), Retro Diffusion at the final size 144 × 156 (3 seeds at strength 0.5 came back with green walls and a grey rim, 3 more at 0.38 with a ragged fringe, seed 81 kept), cleaned by `tools/hut-r11.py` (a lift of 1.45 for the dark wood, role colours by place: roof above the eave to two straws, wall to wood). Porch, log walls, window kept; the porch roof is the service's, the posts have 1 px foot shadows.
+2. **Hut in rain:** through the storm table in rain, the window colours exempt (it stays lit), so it sits back.
+3. **Hut placement:** at the view's upper-left edge, cut off by the frame (about a third of it), setting and not a subject.
+4. **Tree size:** regenerated at its final size from the same painting ([`sources/r11/C48-T-r11-b1`](sources/r11/)): Retro Diffusion at 224 × 232 (3 seeds, seed 73 kept), cleaned as before; the piece is **211 × 215**, taller than the hut, about 47 % of the view's width; one straight light/dark seam the service left in its top is broken into a 1 px zigzag (`tools/tree-r11.py`). The 114 px sprite was not scaled.
+5. **Clear shade pool:** its outline is taken from the canopy's clumps (the canopy's silhouette thrown to the lower right of the foot and squashed, `canopy_pool()` in `compose-still.py`), the core is solid in the shade table (the value is unchanged, so the four-grey check holds) and the dithered edge band is **8 px in clear** (4 px in rain).
+6. **The flower tile under the pool** is out (the patch is plain grass) and every ground tile under the pool is shaded by the pool itself.
+7. **The warned ring** has a clear tile around it: the group is re-laid (the tree at the centre, the pawn and Loika at its trunk, the ring below them, the stone a tile further down and right) and **the name tag is never drawn over the warned cell**: `compose-still.py` adds it to the clear-zone test (the tag falls below Loika where that is free). The pond moved to the lower left to make room.
 
 ### Round 11b: the art director's verdict on round 11 (signed: hut base, creeps, proofs, canopy value, stone body, light direction and staging, the walks' legs, the front ruff)
 
@@ -342,7 +352,9 @@ Signed, art director, 2026-10-08. The pawn is the owner's pick (study H), built 
 | C48-H-r11-a1 hut painting, round 11 | Pro, 1K | 0.17 |
 | C48-T-r11-b1 tree painting (round 11b) | Pro, 1K | 0.17 |
 | C48-T-r11 tree, 3 seeds at 136×152 (round 11b) | Retro Diffusion rd_pro__topdown | 0.54 |
-| **Total** | | **19.02** |
+| C48-H-r11 c1, c2, d1 hut paintings (round 11c) | Pro, 1K | 0.51 |
+| C48-H-r11 hut, 6 seeds at 144×156, and C48-T-r11 tree, 3 seeds at 224×232 (round 11c): 9 calls | Retro Diffusion rd_pro__topdown | 1.62 |
+| **Total** | | **21.13** |
 
 Re-summed from the sidecars by `tools/budget.py` into [`sources/budget.json`](sources/budget.json) (the superseded batch in [`sources/extra-spend.json`](sources/extra-spend.json)). The service's balance is topped up automatically, so it is not a limit.
 

@@ -37,17 +37,17 @@ def nine(name, x, y, w, h, corner=5):
 VIEW = (VIEW_Y, VIEW_Y + VIEW_H)
 # ---- the place: 10 x 12 tiles, pond at the bottom right, cropped to the view
 COLS, ROWS, TS = 10, 12, 48; OX, OY = -15, VIEW_Y - 22
-water = [[(c >= 8 and r >= 9 and not (c == 8 and r == 9)) for c in range(COLS)] for r in range(ROWS)]   # a small pond in the bottom right corner, out of the group's way
+water = [[(c <= 1 and r >= 9 and not (c == 1 and r == 9)) for c in range(COLS)] for r in range(ROWS)]   # a small pond in the bottom right corner, out of the group's way
 rng = np.random.RandomState(7)
 vrng = np.random.RandomState(31)
 var = [["b" if vrng.rand() < 0.5 else "" for c in range(COLS)] for r in range(ROWS)]   # the water variant of each cell, by a seeded hash
-land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "flowers2", (0, 7): "tall1", (4, 9): "flowers1", (5, 11): "tall2", (9, 3): "tall1"}
+land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "tall1", (0, 7): "tall1", (4, 9): "flowers1", (5, 11): "tall2", (9, 3): "tall1"}
 GT = DARK = P.rain if RAIN else P.clear
 HUTT = P.ground_rain if RAIN else P.ground_clear    # the outpost's patch of grass takes the ground's state; the thatch and wood do not move
 for r in range(ROWS):
     for c in range(COLS):
         if water[r][c]:
-            t = ("deep1" if (c >= 9 and r >= 10) else "water1") + var[r][c]
+            t = ("deep1" if (c <= 0 and r >= 10) else "water1") + var[r][c]
         else:
             m = (water[r - 1][c] if r > 0 else False) * 1 + (water[r][c + 1] if c < COLS - 1 else False) * 2 + (water[r + 1][c] if r < ROWS - 1 else False) * 4 + (water[r][c - 1] if c > 0 else False) * 8
             t = f"shore-{m:02d}-1" if m else land.get((c, r), f"grass{1 + rng.randint(4)}")
@@ -79,12 +79,19 @@ FOLIAGE = None   # art director, round 2: under the storm the canopies keep the 
 # at the trunk's edge in the tree's shade, the warned ring on the tile beyond them, the big charged stone at the lower right of the ring
 CAN = P.canopy_rain if RAIN else None                  # the bushes one green step deeper in rain
 TRT = P.tree_rain if RAIN else None                    # the tree's rain canopy: body pine, clumps forest, leaf only on the clumps' top-left edges
-HUT = (OX + int(2.5 * TS), OY + 4 * TS - 2)                 # the hut at the explorer's scale: 144 px = three whole tiles (tile columns 1 to 3), its foot on the bottom of tile row 3
-TREE = at(5, 4, 0, 8); PAWN = (TREE[0] + 34, TREE[1] + 40); LOIKA = (TREE[0] + 78, TREE[1] + 46); RING = (7, 6); STONE = at(8, 7, -8, 6)
+HUT = (22, 168)                                              # the hut at the explorer's scale (144 px wide), at the view's upper-left edge, partly cut off by the frame: setting, not a subject
+TREE = (240, 304); PAWN = (TREE[0] + 34, TREE[1] + 40); LOIKA = (TREE[0] + 78, TREE[1] + 46); RING = (6, 8); STONE = at(8, 9, 0, 6)
+CAN = P.canopy_rain if RAIN else None                  # the bushes one green step deeper in rain
+TRT = P.tree_rain if RAIN else None                    # the tree's rain canopy: body pine, clumps forest, leaf only on the clumps' top-left edges
+# the hut in rain goes through the storm table so it sits back (the window stays lit; the G ramp of its tufts takes the ground's table); in clear only its tufts move
+_hr = list(P.storm)
+for _n in ("yellow", "cream", "gold", "amber"): _hr[P.index[_n]] = P.index[_n]
+for _n in ("pine", "forest", "leaf", "grass", "sprout", "lime"): _hr[P.index[_n]] = P.ground_rain[P.index[_n]]
+HUTT = _hr if RAIN else P.ground_clear
 things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk2", PAWN, None), ("tokens", "loika-idle1", LOIKA, None), ("props", "tree", TREE, TRT),
           (("huts", f"hut-{hut}-lit", HUT, DARK) if hut else ("props", "outpost-lit", HUT, HUTT)),
-          ("props", "bush", at(7, 1), CAN), ("props", "bush-fruit", at(9, 5), CAN), ("props", "bush-shaken", at(1, 9), CAN),
-          ("props", "dew-cup", at(2, 10), GT), ("props", "reeds", at(7, 10, 0, -6), GT), ("props", "stone-step", at(6, 10, 0, -4), GT)]
+          ("props", "bush", at(8, 1), CAN), ("props", "bush-fruit", at(9, 6), CAN), ("props", "bush-shaken", at(4, 10), CAN),
+          ("props", "dew-cup", at(3, 10), GT), ("props", "reeds", at(2, 10, 0, -6), GT), ("props", "stone-step", at(7, 10, 0, -4), GT)]
 # shades are Bayer-dithered pools through the ground's shade table, never a hard ellipse with a rim: a 4 x 4 ordered dither whose density falls off from the pool's centre.
 # The tree's pool lies under the canopy and to its lower right; the stone and the hut have contact shadows 2 to 3 rows deep to the lower right.
 SH = np.array(P.dark if RAIN else P.shade_clear)
@@ -99,7 +106,26 @@ def pool(cx, cy, rx, ry, band=4.0):
             if e <= 0: continue
             d = 1.0 if e >= band else (0.75 if e >= band * 0.66 else (0.5 if e >= band * 0.33 else 0.25))
             if (d >= 1.0 or d > BAYER[yy_ % 4, xx_ % 4]) and scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
-pool(TREE[0] + 38, TREE[1] + 22, 118, 56)
+def erode(m): e = m.copy(); e[1:] &= m[:-1]; e[:-1] &= m[1:]; e[:, 1:] &= m[:, :-1]; e[:, :-1] &= m[:, 1:]; e[0] = e[-1] = False; e[:, 0] = e[:, -1] = False; return e
+def dilate(m): d = m.copy(); d[1:] |= m[:-1]; d[:-1] |= m[1:]; d[:, 1:] |= m[:, :-1]; d[:, :-1] |= m[:, 1:]; return d
+def canopy_pool(group, name, foot, band, dx=30, dy=26, sq=0.62):
+    """the tree's shade, its outline taken from the canopy's clumps: the canopy's silhouette thrown to the lower right of the foot and squashed (the light is at the top left), the core solid in the
+    shade table and a dithered band `band` px wide at its rim stepping 75, 50, 25 % (Bayer)"""
+    sp = load(group, name); h_, w_ = sp.shape; ys_, xs_ = np.where((sp >= 0)[:int(h_ * 0.82)]); gm = np.zeros((H, W), bool)
+    for sy, sx in zip(ys_, xs_):
+        gx = foot[0] + (sx - w_ // 2) + dx; gy = foot[1] + dy + int((sy - h_ * 0.45) * sq)
+        if 0 <= gx < W and 0 <= gy < H: gm[gy, gx] = True
+    for _ in range(2): gm = dilate(gm)
+    for _ in range(2): gm = erode(gm)
+    depth = np.zeros((H, W), int); cur = gm; k = 0
+    while cur.any() and k < 60: k += 1; depth[cur] = k; cur = erode(cur)
+    for yy_ in range(VIEW[0], VIEW[1]):
+        for xx_ in range(W):
+            e = depth[yy_, xx_]
+            if e <= 0: continue
+            d = 1.0 if e >= band else (0.75 if e >= band * 0.66 else (0.5 if e >= band * 0.33 else 0.25))
+            if (d >= 1.0 or d > BAYER[yy_ % 4, xx_ % 4]) and scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
+canopy_pool("props", "tree", TREE, 4.0 if RAIN else 8.0)
 pool(STONE[0] + 12, STONE[1] - 1, 34, 6.5, 3.0)
 pool(HUT[0] + 16, HUT[1] - 2, 80, 8.0, 3.0)
 blit(load("props", "strike-warn2"), OX + RING[0] * TS, OY + RING[1] * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
@@ -114,8 +140,9 @@ def zone(foot, name, group):
     return (foot[0] - max(24, w_ // 2) - 4, foot[1] - max(48, h_) - 4, foot[0] + max(24, w_ // 2) + 4, foot[1] + 4)
 LZ = zone(LOIKA, "loika-idle1", "tokens"); PZ = zone(PAWN, "pawn-right-walk2", "pawn")
 def hits(r, z): return not (r[2] <= z[0] or r[0] >= z[2] or r[3] <= z[1] or r[1] >= z[3])
+RINGZ = (OX + RING[0] * TS, OY + RING[1] * TS, OX + (RING[0] + 1) * TS, OY + (RING[1] + 1) * TS)      # the warned cell: a tag is never drawn over it or a sign
 MSG = ((W - (font.width("The rain sets in", 2) + 38)) // 2 - 2, VIEW_Y + 6, (W + (font.width("The rain sets in", 2) + 38)) // 2 + 2, VIEW_Y + 42)
-def clear(r): return r[0] >= 6 and r[2] <= 444 and r[1] >= 38 and r[3] <= 558 and not hits(r, LZ) and not hits(r, PZ) and not hits(r, MSG)
+def clear(r): return r[0] >= 6 and r[2] <= 444 and r[1] >= 38 and r[3] <= 558 and not hits(r, LZ) and not hits(r, PZ) and not hits(r, MSG) and not hits(r, RINGZ)
 lcx = LOIKA[0]; cands = [(lcx - tag_w // 2, LZ[3] + 4), (LZ[2] + 4, LOIKA[1] - 24 - TH // 2), (LZ[0] - 4 - tag_w, LOIKA[1] - 24 - TH // 2), (lcx - tag_w // 2, LZ[1] - 4 - TH)]
 for sx in range(-120, 121, 2): cands.append((lcx - tag_w // 2 + sx, LZ[3] + 4))
 tx = ty = None

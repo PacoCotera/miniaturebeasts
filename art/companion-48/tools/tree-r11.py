@@ -33,4 +33,13 @@ for y, x in zip(*np.where(idx >= 0)):
                 if 0 <= ny < H and 0 <= nx < W and idx[ny, nx] >= 0 and not lab[ny, nx]: lab[ny, nx] = n; st.append((ny, nx))
 idx[lab != np.bincount(lab[lab > 0]).argmax()] = -1
 idx = quant.despeckle(idx, 1)
+# the service left one straight vertical light/dark seam down the top of the canopy: where a column has a jump in luminance on many rows, the two columns at the seam are swapped on alternate rows
+# (a 1 px checker at the seam, so the edge is broken, not straight)
+lum_ = np.where(idx >= 0, 0.2126 * P.rgb[np.maximum(idx, 0)][..., 0] + 0.7152 * P.rgb[np.maximum(idx, 0)][..., 1] + 0.0722 * P.rgb[np.maximum(idx, 0)][..., 2], -1)
+cnt = [(int(((np.abs(lum_[:80, x] - lum_[:80, x - 1]) > 30) & (lum_[:80, x] >= 0) & (lum_[:80, x - 1] >= 0)).sum()), x) for x in range(1, idx.shape[1])]
+c_, sx = max(cnt)
+if c_ > 15:
+    for y in range(0, 80):
+        if idx[y, sx] >= 0 and idx[y, sx - 1] >= 0 and abs(lum_[y, sx] - lum_[y, sx - 1]) > 30 and y % 2: idx[y, sx], idx[y, sx - 1] = idx[y, sx - 1], idx[y, sx]
+    print("seam at", sx, "rows", c_)
 x0, y0, x1, y1 = quant.bbox((idx >= 0) * 255); quant.save_indexed(idx[y0:y1, x0:x1], sys.argv[2]); print("tree", idx[y0:y1, x0:x1].shape)
