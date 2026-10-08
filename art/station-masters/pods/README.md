@@ -174,6 +174,17 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-sealed` | 376×264 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-376x264-unread` | 376×264 |  | frost texture at 0.9 alpha under the frame |
 
+## Seventh pass (2026-10-08)
+
+To the art director's verdict on pass 6 (the 33 re-cut pods and shadows, the 8 sealed slats, the portrait frame with its states and the 0.6 name plates are signed and unchanged):
+
+- **Name plate at 20 px (owner):** `plate-name-<w>x24`, 80 to 224 wide in steps of 16, 24 tall, centred on x 712 at y 440; the composites set the name in Inter 20 medium.
+- **`room-cradle-front`:** re-cut along the bowl's own near-rim contour, not a row. The contour was read off the bowl's lit rim edge (from the left wall's top edge at row 19, down the dip's U to row 72 and up to the right wall), so both near side walls from their top edge are in front of the pod, its flanks pass behind them, and the dip's U is the front edge. Inside the dip there is no flat band of bed: five uneven grit tufts (5 to 9 px high, ragged tops) lap the pod's round foot. `room-cradle` is unchanged. *Method note:* the front layer is cut from the cradle's own pixels by that contour and by the tufts' profiles (`tools/build.py`, `cradle`), and checked in the composite with the reference pod in place; it was not painted as a separate assembly with a pod in it.
+- **`room-shelf`:** repainted as the concept's slab: a trapezoid in perspective with a deep top face (about 4 to 1 wide to tall, the far edge shorter than the near), a lit pale-cyan front edge, the bowl's contact shadow on the top face, and about 16 to 20 px of top face in front of the bowl. **Provisional rectangle (568, 368, 288, 72):** it is re-cut when the UI designer's rectangle lands; the composite moves the name and origin down 16 for now.
+- **`page-pane-408x440`:** brought to the stage wall's values (the inside is about 30 percent of its former brightness), thin dark glass inside the lit hairline edge, so the portrait frame is the page's only lit object.
+- **`pod-well-mask-accent`:** the two enclosed pixels at (6,11) and (7,11) are filled; `pod-well-mask-body` is held with it.
+- **Composites:** the emblem slots are empty, only the words and pips show; both composites and the comparison are rebuilt.
+
 ## Sixth pass (2026-10-08)
 
 Re-cut to the layout of `design-pods-relayout` 637fb1e:
