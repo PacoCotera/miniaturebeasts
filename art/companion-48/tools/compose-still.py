@@ -75,24 +75,34 @@ def at(c, r, dx=0, dy=0): return OX + c * TS + TS // 2 + dx, OY + r * TS + TS - 
 FOLIAGE = None   # art director, round 2: under the storm the canopies keep the G ramp, the lit stones their glow and the outpost its wood and thatch (no cast); the ground, water and plain stones take it
 # the staging, after the concept: ONE focal event, the crackling charged stone (its second frame) and the warned strike's ring beside it, with the pawn
 # a tile away facing them along the same row, Loika by the pawn; everything else is background and kept small and to the edges
-FX, FY = 3, 7                                                                                                   # the charged stone's tile; the ring is the next tile, the pawn two tiles on
-things = [("props", "stone-charged2", at(FX, FY), FOLIAGE), ("pawn", "pawn-left-walk2", at(FX + 2, FY), None), ("tokens", "loika-idle1", at(FX + 3, FY, 0, 2), None),
-          ("props", "tree", at(FX + 3, FY - 1, 8, 8), FOLIAGE),
+# the event runs on a DIAGONAL, as the concept's does: the pawn at the lower left facing up and to the right, Loika by the pawn, the warned ring on the tile between, the big charged stone
+# at the upper right of the ring with the tree standing over it all
+CAN = P.canopy_rain if RAIN else None                  # the canopies and bushes one green step deeper in rain
+PAWN, LOIKA, STONE, RING, TREE = at(2, 8), at(3, 8, 0, 4), at(5, 6, 0, 6), (4, 7), at(6, 4, 0, 8)
+things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk2", PAWN, None), ("tokens", "loika-idle1", LOIKA, None), ("props", "tree", TREE, CAN),
           (("huts", f"hut-{hut}-lit", at(1, 2, 0, 6), DARK) if hut else ("props", "outpost-lit", at(1, 2, 0, 8), HUTT)),
-          ("props", "bush", at(4, 1), FOLIAGE), ("props", "bush-fruit", at(9, 5), FOLIAGE), ("props", "bush-shaken", at(0, 9), FOLIAGE),
+          ("props", "bush", at(4, 1), CAN), ("props", "bush-fruit", at(9, 5), CAN), ("props", "bush-shaken", at(0, 9), CAN),
           ("props", "dew-cup", at(1, 10), GT), ("props", "reeds", at(7, 10, 0, -6), GT), ("props", "stone-step", at(6, 10, 0, -4), GT)]
-# the tree's shade: one soft ellipse on the grass (the ground's own colours a step darker, its rim dithered), under the tree and out over the group, so the pawn and
-# Loika stand in it together; drawn before anything stands
-tfx, tfy = at(FX + 3, FY - 1, 8, 8); scx, scy, srx, sry = tfx - 18, tfy + 34, 124, 42
-shade = np.array(P.dark)
-for yy_ in range(max(VIEW[0], scy - sry), min(VIEW[1], scy + sry + 1)):
-    for xx_ in range(max(0, scx - srx), min(W, scx + srx + 1)):
-        rr = ((xx_ - scx) / srx) ** 2 + ((yy_ - scy) / sry) ** 2
-        if rr < 0.8 or (rr < 1.0 and (xx_ + yy_) % 2 == 0): scr[yy_, xx_] = shade[scr[yy_, xx_]] if scr[yy_, xx_] != C["ink"] else scr[yy_, xx_]
-blit(load("props", "strike-warn2"), OX + (FX + 1) * TS, OY + FY * TS, None, VIEW)   # the warned strike lies on its tile, next to the stone, under everything that stands
+# the shade: the tree's own, one soft ellipse on the grass lying from its foot down to the left over the stone, the ring, the pawn and Loika (the ground's colours darker, the rim dithered);
+# and the stone's shadow, a real one (a flat ellipse under and to the right of it, 3 to 6 rows deep). On the clear ground the shade is two ramp steps below the lit grass, out of the coat's grey.
+SH = np.array(P.dark if RAIN else P.shade_clear)
+def darken(test):
+    for yy_ in range(VIEW[0], VIEW[1]):
+        for xx_ in range(0, W):
+            rr = test(xx_, yy_)
+            if rr is None: continue
+            if rr < 0.8 or (rr < 1.0 and (xx_ + yy_) % 2 == 0):
+                if scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
+tcx, tcy = (TREE[0] + PAWN[0]) / 2 + 4, (TREE[1] + PAWN[1]) / 2 - 10; ux, uy = PAWN[0] - TREE[0], PAWN[1] - TREE[1]; L = (ux * ux + uy * uy) ** .5; ux, uy = ux / L, uy / L
+def tree_shade(x, y):
+    dx, dy = x - tcx, y - tcy; al = dx * ux + dy * uy; pe = -dx * uy + dy * ux
+    return (al / (L / 2 + 46)) ** 2 + (pe / 58.0) ** 2
+darken(tree_shade)
+darken(lambda x, y: ((x - (STONE[0] + 14)) / 34.0) ** 2 + ((y - (STONE[1] - 1)) / 6.5) ** 2)
+blit(load("props", "strike-warn2"), OX + RING[0] * TS, OY + RING[1] * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
 for group, name, (cx, cy), table in sorted(things, key=lambda t: t[2][1]): sprite(group, name, cx, cy, table)
 # the name tag over Loika, the message box at the view's top, the rain over all of it
-tag_w = font.width("Loika", 2) + 12; tx, ty = at(FX + 3, FY, 0, 2)[0] - tag_w // 2, at(FX + 3, FY, 0, 2)[1] - 40 - 20
+tag_w = font.width("Loika", 2) + 12; tx, ty = LOIKA[0] - tag_w // 2, LOIKA[1] - 40 - 20
 nine("slice-name-tag", tx, ty, tag_w, 22); font.draw(scr, "Loika", tx + 6, ty + 2, C["amber"], 2)
 rain = load("weather", "rain-left-1")
 for r in range(0, VIEW_H + 96, 96):

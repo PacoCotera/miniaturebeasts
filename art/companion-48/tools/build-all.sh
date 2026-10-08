@@ -5,7 +5,7 @@
 # run once after the builders, not here: it derives pieces from others.
 set -e
 # The outpost (hut B) is made by tools/rd-hut-b.py (Retro Diffusion), tools/hut-b-edit.py (seed 50's own pixels, the listed edits only) and tools/huts-assemble.sh (Aseprite on the VM), and lives in work/props/outpost-*.png.
-# The tree (136 x 160, no disc under it): build-props.py (fit 136 x 160) then tree-big.py; the stones' charged frame 2 has its cage from hand-pass.py (run on a copy: it also thins grass2, which would clash with the tufts, tools/ground-tufts.py, run once).
+# The charged stone (frames 1 and 2, big, with the yellow-white crackle): tools/stone-big.py WORK_DIR (run once after hand-pass.py, which makes the small ones). The grass tufts: tools/ground-tufts.py round8/work/ground work/ground (run once). The tree (136 x 160, no disc under it): build-props.py (fit 136 x 160) then tree-big.py; the stones' charged frame 2 has its cage from hand-pass.py (run on a copy: it also thins grass2, which would clash with the tufts, tools/ground-tufts.py, run once).
 # The pawn (study H, the owner's pick): tools/rd-pawn-h.py (Retro Diffusion img2img from H), tools/pawn-h-pass.py (the hand pass), tools/aseprite-pawn.lua (the VM), see the handover.
 # The pawn studies: tools/pawn-study.py (A to F), tools/rd-pawn-studies.py + tools/pawn-study-snap.py (G, H), tools/pawn-studies-sheet.py (the sheets).
 R=review-place; W=$R/work; P2=$R/round8/work
@@ -55,3 +55,4 @@ python3 -I tools/hut-b-figure.py $R/sources/rd-huts-b $W/hut-b $W/hut-b-process.
 python3 -I tools/hut-b-vs-raw.py $R/sources/rd-huts-b/C48-H-r7-B-lit-s50-rd.png $W/hut-b/hut-B-lit.png $W/hut-b-vs-raw-3x.png
 
 python3 -I tools/pawn-h-figures.py $W $R/sources/rd-pawn-h
+python3 -I tools/pawn-cycles-figure.py $W/pawn $W/pawn-cycles-3x.png
