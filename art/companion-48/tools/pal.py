@@ -49,6 +49,16 @@ class Palette:
         self.storm = self.mix_lut("river", .3)
         for n in ("sand", "clay", "paper", "bone", "white"):   # the bank and the pale things keep their warmth: storms go blue, never brown-grey
             self.storm[self.index[n]] = self.index[n]
+        # round 9: ONE ground tile set (lime) in two light states through tables, like the page's light levels. G ramp: pine forest leaf grass sprout lime.
+        #   rain  = the G ramp a step deeper (the forest-green ground) and every other colour through the storm cast;
+        #   clear = the G ramp warmed a step (the lime ground one step lighter and yellower) and every other colour unchanged.
+        # ground_*: the G ramp alone (for the pieces that carry a patch of grass: the outpost's) with everything else identity.
+        ramp = ["pine", "forest", "leaf", "grass", "sprout", "lime"]
+        deep = {n: ramp[max(0, k - 1)] for k, n in enumerate(ramp)}; warm = {n: ramp[min(5, k + 1)] for k, n in enumerate(ramp)}
+        self.ground_rain = list(range(len(names))); self.ground_clear = list(range(len(names)))
+        for n in ramp: self.ground_rain[self.index[n]] = self.index[deep[n]]; self.ground_clear[self.index[n]] = self.index[warm[n]]
+        self.rain = list(self.storm); self.clear = list(range(len(names)))
+        for n in ramp: self.rain[self.index[n]] = self.index[deep[n]]; self.clear[self.index[n]] = self.index[warm[n]]
 
     def nearest(self, r, g, b):
         d = (self.rgb[:, 0] - r) ** 2 * 3 + (self.rgb[:, 1] - g) ** 2 * 4 + (self.rgb[:, 2] - b) ** 2 * 2

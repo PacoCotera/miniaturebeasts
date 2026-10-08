@@ -1,8 +1,8 @@
-"""The composed 450x600 still: the review place (meadow and pond edge) in a storm, every piece at 1x.
-HUD 32 / view 532 / bottom line 36; the ground and props through the STORM table (round 2: a blue cast, no DARK
-step; --light plain for no table, --light dark for round 1's DARK step), the pawn and the mibis never; rain over
-the view; the message box, the name tag, the key caps and the condition bolts from the ui sheet; the page's
-bitmap font at 2x. usage: python3 -I compose-still.py WORK_DIR OUT.png [--light storm|plain|dark] [--hut A|B|C|D] [--ground forest]"""
+"""The composed 450x600 still: the review place (meadow and pond edge), every piece at 1x, in one of the ground's two light states (round 9: ONE lime tile set, two
+states through tables, P.rain and P.clear in pal.py): --state rain (the default: the forest-green ground with the storm cast, rain over the view) or --state clear
+(the lime ground warmed one step, no rain, the rain over). HUD 32 / view 532 / bottom line 36; the pawn and the mibis never go through a table; the outpost's patch of
+grass takes the ground's state; the message box, the name tag, the key caps and the condition bolts from the ui sheet; the page's bitmap font at 2x.
+usage: python3 -I compose-still.py WORK_DIR OUT.png [--state rain|clear] [--hut A|B|C|D]"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
@@ -10,9 +10,9 @@ from PIL import Image
 import pal, quant, font
 P = quant.P; C = P.index
 work, outp = sys.argv[1], sys.argv[2]
-light = sys.argv[sys.argv.index("--light") + 1] if "--light" in sys.argv else "storm"
-FOREST = "--ground" in sys.argv and sys.argv[sys.argv.index("--ground") + 1] == "forest"   # the candidate: the meadow set a step deeper into forest green, with tufts
-GDIR, SDIR = ("ground-forest", "shore-forest") if FOREST else ("ground", "shore")
+state = sys.argv[sys.argv.index("--state") + 1] if "--state" in sys.argv else "rain"
+RAIN = state == "rain"
+GDIR, SDIR = "ground", "shore"
 hut = sys.argv[sys.argv.index("--hut") + 1] if "--hut" in sys.argv else None   # a hut option (A to D) in place of the outpost
 def load(group, name):
     im = Image.open(os.path.join(work, group, name + ".png")).convert("RGBA"); return quant.quantize(np.asarray(im))
@@ -37,19 +37,17 @@ def nine(name, x, y, w, h, corner=5):
 VIEW = (VIEW_Y, VIEW_Y + VIEW_H)
 # ---- the place: 10 x 12 tiles, pond at the bottom right, cropped to the view
 COLS, ROWS, TS = 10, 12, 48; OX, OY = -15, VIEW_Y - 22
-water = [[(c >= 6 and r >= 7 and not (c == 6 and r == 7) and not (c == 6 and r == 11)) for c in range(COLS)] for r in range(ROWS)]
+water = [[(c >= 8 and r >= 9 and not (c == 8 and r == 9)) for c in range(COLS)] for r in range(ROWS)]   # a small pond in the bottom right corner, out of the group's way
 rng = np.random.RandomState(7)
 vrng = np.random.RandomState(31)
 var = [["b" if vrng.rand() < 0.5 else "" for c in range(COLS)] for r in range(ROWS)]   # the water variant of each cell, by a seeded hash
 land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "flowers2", (0, 7): "tall1", (4, 9): "flowers1", (5, 11): "tall2", (9, 3): "tall1"}
-_ng = list(P.storm)
-for _n in ("pine", "forest", "leaf", "grass", "sprout", "lime"): _ng[P.index[_n]] = P.index[_n]     # the greens keep their colours: the forest ground is not cast toward teal
-DARK = {"storm": P.storm, "plain": None, "dark": P.dark}[light]
-GT = _ng if FOREST else DARK
+GT = DARK = P.rain if RAIN else P.clear
+HUTT = P.ground_rain if RAIN else P.ground_clear    # the outpost's patch of grass takes the ground's state; the thatch and wood do not move
 for r in range(ROWS):
     for c in range(COLS):
         if water[r][c]:
-            t = ("deep1" if (c >= 8 and r >= 9) else "water1") + var[r][c]
+            t = ("deep1" if (c >= 9 and r >= 10) else "water1") + var[r][c]
         else:
             m = (water[r - 1][c] if r > 0 else False) * 1 + (water[r][c + 1] if c < COLS - 1 else False) * 2 + (water[r + 1][c] if r < ROWS - 1 else False) * 4 + (water[r][c - 1] if c > 0 else False) * 8
             t = f"shore-{m:02d}-1" if m else land.get((c, r), f"grass{1 + rng.randint(4)}")
@@ -58,16 +56,6 @@ for r in range(ROWS):
             def wat(rr, cc): return 0 <= rr < ROWS and 0 <= cc < COLS and water[rr][cc]
             for nm, dr, dc, a, b in (("ne", -1, 1, 1, 2), ("se", 1, 1, 2, 4), ("sw", 1, -1, 4, 8), ("nw", -1, -1, 8, 1)):
                 if wat(r + dr, c + dc) and not (m & a) and not (m & b): blit(load(SDIR, f"shore-diag-{nm}-1"), OX + c * TS, OY + r * TS, GT, VIEW)
-# the deep water: a soft wavy edge instead of a tile boundary, deep1 drawn over the water where the pond falls away
-for r in range(ROWS):
-    for c in range(COLS):
-        if not water[r][c] or c < 7 or r < 8: continue
-        deep = load(GDIR, "deep1" + var[r][c]); tile = np.full((TS, TS), -1, dtype=np.int64)
-        for yy in range(TS):
-            for xx in range(TS):
-                gx, gy = c * TS + xx, r * TS + yy
-                if (gx - 7 * TS) + (gy - 8 * TS) + 6 * np.sin(gx / 11.0) + 5 * np.sin(gy / 9.0) > 2.2 * TS: tile[yy, xx] = deep[yy, xx]
-        blit(tile, OX + c * TS, OY + r * TS, DARK, VIEW)
 # ripples: sparse overlay sprites, never part of a tile: one candidate per 3x3 block of tiles from a seeded hash, only where the
 # whole ring lies over water, so none repeats on the tile grid and none sits twice on the same spot
 rrng = np.random.RandomState(48)
@@ -84,25 +72,34 @@ def sprite(group, name, cx, cy, table=None):
     idx = load(group, name); ys, xs = np.where(idx >= 0); fy = ys.max() + 1
     blit(idx, cx - idx.shape[1] // 2, cy - fy, table, VIEW)
 def at(c, r, dx=0, dy=0): return OX + c * TS + TS // 2 + dx, OY + r * TS + TS - 2 + dy
-FOLIAGE = None if light == "storm" else DARK   # art director, round 2: under the storm the canopies keep the G ramp, the lit stones their glow and the outpost its wood and thatch (no cast); the ground, water and plain stones take it
+FOLIAGE = None   # art director, round 2: under the storm the canopies keep the G ramp, the lit stones their glow and the outpost its wood and thatch (no cast); the ground, water and plain stones take it
 # the staging, after the concept: ONE focal event, the crackling charged stone (its second frame) and the warned strike's ring beside it, with the pawn
 # a tile away facing them along the same row, Loika by the pawn; everything else is background and kept small and to the edges
-FX, FY = 2, 6                                                                                                   # the charged stone's tile; the ring is the next tile, the pawn two tiles on
-things = [("props", "stone-charged2", at(FX, FY), FOLIAGE), ("pawn", "pawn-left-walk2", at(FX + 3, FY), None), ("tokens", "loika-idle1", at(FX + 2, FY + 1, 0, 2), None),
-          ("props", "tree", at(7, 3, 0, 8), FOLIAGE),
-          (("huts", f"hut-{hut}-lit", at(1, 2, 0, 6), DARK) if hut else ("props", "outpost-lit", at(1, 2, 0, 8), FOLIAGE)),
-          ("props", "bush", at(4, 1), FOLIAGE), ("props", "bush-fruit", at(9, 5), FOLIAGE), ("props", "bush-shaken", at(1, 9), FOLIAGE),
-          ("props", "dew-cup", at(5, 8), DARK), ("props", "reeds", at(9, 7, 0, -6), DARK), ("props", "stone-step", at(7, 10, 0, -4), DARK)]
+FX, FY = 3, 7                                                                                                   # the charged stone's tile; the ring is the next tile, the pawn two tiles on
+things = [("props", "stone-charged2", at(FX, FY), FOLIAGE), ("pawn", "pawn-left-walk2", at(FX + 2, FY), None), ("tokens", "loika-idle1", at(FX + 3, FY, 0, 2), None),
+          ("props", "tree", at(FX + 3, FY - 1, 8, 8), FOLIAGE),
+          (("huts", f"hut-{hut}-lit", at(1, 2, 0, 6), DARK) if hut else ("props", "outpost-lit", at(1, 2, 0, 8), HUTT)),
+          ("props", "bush", at(4, 1), FOLIAGE), ("props", "bush-fruit", at(9, 5), FOLIAGE), ("props", "bush-shaken", at(0, 9), FOLIAGE),
+          ("props", "dew-cup", at(1, 10), GT), ("props", "reeds", at(7, 10, 0, -6), GT), ("props", "stone-step", at(6, 10, 0, -4), GT)]
+# the tree's shade: one soft ellipse on the grass (the ground's own colours a step darker, its rim dithered), under the tree and out over the group, so the pawn and
+# Loika stand in it together; drawn before anything stands
+tfx, tfy = at(FX + 3, FY - 1, 8, 8); scx, scy, srx, sry = tfx - 18, tfy + 34, 124, 42
+shade = np.array(P.dark)
+for yy_ in range(max(VIEW[0], scy - sry), min(VIEW[1], scy + sry + 1)):
+    for xx_ in range(max(0, scx - srx), min(W, scx + srx + 1)):
+        rr = ((xx_ - scx) / srx) ** 2 + ((yy_ - scy) / sry) ** 2
+        if rr < 0.8 or (rr < 1.0 and (xx_ + yy_) % 2 == 0): scr[yy_, xx_] = shade[scr[yy_, xx_]] if scr[yy_, xx_] != C["ink"] else scr[yy_, xx_]
 blit(load("props", "strike-warn2"), OX + (FX + 1) * TS, OY + FY * TS, None, VIEW)   # the warned strike lies on its tile, next to the stone, under everything that stands
 for group, name, (cx, cy), table in sorted(things, key=lambda t: t[2][1]): sprite(group, name, cx, cy, table)
 # the name tag over Loika, the message box at the view's top, the rain over all of it
-tag_w = font.width("Loika", 2) + 12; tx, ty = at(FX + 2, FY + 1, 0, 2)[0] - tag_w // 2, at(FX + 2, FY + 1, 0, 2)[1] - 40 - 24
+tag_w = font.width("Loika", 2) + 12; tx, ty = at(FX + 3, FY, 0, 2)[0] - tag_w // 2, at(FX + 3, FY, 0, 2)[1] - 40 - 20
 nine("slice-name-tag", tx, ty, tag_w, 22); font.draw(scr, "Loika", tx + 6, ty + 2, C["amber"], 2)
 rain = load("weather", "rain-left-1")
 for r in range(0, VIEW_H + 96, 96):
-    for c in range(0, W + 96, 96): blit(rain, c, VIEW_Y + r, None, VIEW)
-msg = "The rain sets in"; mw = font.width(msg, 2) + 16 + 12 + 10; mx, my = (W - mw) // 2, VIEW_Y + 8
-nine("slice-message-box", mx, my, mw, 32); blit(load("ui", "icon-storm"), mx + 10, my + 8); font.draw(scr, msg, mx + 10 + 12 + 10, my + 7, C["bone"], 2)
+    for c in range(0, W + 96, 96):
+        if RAIN: blit(rain, c, VIEW_Y + r, None, VIEW)
+msg = "The rain sets in" if RAIN else "The rain has passed"; mw = font.width(msg, 2) + 16 + 12 + 10; mx, my = (W - mw) // 2, VIEW_Y + 8
+nine("slice-message-box", mx, my, mw, 32); blit(load("ui", "icon-storm" if RAIN else "icon-essence"), mx + 10, my + 8); font.draw(scr, msg, mx + 10 + 12 + 10, my + 7, C["bone"], 2)
 # ---- HUD: shield plates, pod slots, the partner, then right-aligned counters, world turn, battery, radio
 scr[HUD - 1, :] = C["night"]
 for i in range(3): blit(load("ui", "icon-shield"), 6 + i * 19, 8)
@@ -120,8 +117,9 @@ font.draw(scr, "·", x, ly + 10, C["slate"], 2); x += font.width("·", 2) + 7
 cap = load("ui", "cap-back"); blit(cap, x, ly + 6); x += cap.shape[1] + 3; font.draw(scr, "Station", x, ly + 10, C["fog"], 2); x += font.width("Station", 2)
 x += 8; scr[ly + 8:ly + LINE - 6, x] = C["slate"]; x += 9
 font.draw(scr, "Pond edge", x, ly + 10, C["mist"], 2)
-bolt = load("ui", "icon-storm"); arrow = load("ui", "cond-storm-right"); ww = 2 * 13 + arrow.shape[1]; wx = W - 8 - ww
-scr[ly + 8:ly + LINE - 6, wx - 9] = C["slate"]
-for i in range(2): blit(bolt, wx + i * 13, ly + 9)
-blit(arrow, wx + 26, ly + 9)
+if RAIN:
+    bolt = load("ui", "icon-storm"); arrow = load("ui", "cond-storm-right"); ww = 2 * 13 + arrow.shape[1]; wx = W - 8 - ww
+    scr[ly + 8:ly + LINE - 6, wx - 9] = C["slate"]
+    for i in range(2): blit(bolt, wx + i * 13, ly + 9)
+    blit(arrow, wx + 26, ly + 9)
 quant.save_indexed(scr, outp); print("wrote", outp)
