@@ -49,6 +49,20 @@ class Palette:
         self.storm = self.mix_lut("river", .3)
         for n in ("sand", "clay", "paper", "bone", "white"):   # the bank and the pale things keep their warmth: storms go blue, never brown-grey
             self.storm[self.index[n]] = self.index[n]
+        # round 9: ONE ground tile set (lime) in two light states through tables, like the page's light levels. G ramp: pine forest leaf grass sprout lime.
+        #   rain  = the G ramp two steps deeper (the lime body to forest, luma 82; the tufts to pine) and every other colour through the storm cast;
+        #   clear = the G ramp warmed a step (the lime ground one step lighter and yellower) and every other colour unchanged.
+        # ground_*: the G ramp alone (for the pieces that carry a patch of grass: the outpost's) with everything else identity.
+        ramp = ["pine", "forest", "leaf", "grass", "sprout", "lime"]
+        def step(n, k): return ramp[max(0, min(5, ramp.index(n) + k))]
+        self.ground_rain = list(range(len(names))); self.ground_clear = list(range(len(names))); self.canopy_rain = list(range(len(names))); self.shade_clear = list(range(len(names)))
+        for n in ramp:
+            self.ground_rain[self.index[n]] = self.index[step(n, -2)]       # rain: the body (grass, luma 159) to forest (82), the tufts' leaf and forest to pine
+            self.ground_clear[self.index[n]] = self.index[step(n, 1)]       # clear: warmed one step
+            self.canopy_rain[self.index[n]] = self.index[step(n, -1)]       # the canopies and bushes in rain: one step deeper
+            self.shade_clear[self.index[n]] = self.index[step(n, -2)]       # the shade under the tree on the clear ground: two steps below the lit ground, out of the amber coat's grey
+        self.rain = list(self.storm); self.clear = list(range(len(names)))
+        for n in ramp: self.rain[self.index[n]] = self.ground_rain[self.index[n]]; self.clear[self.index[n]] = self.ground_clear[self.index[n]]
 
     def nearest(self, r, g, b):
         d = (self.rgb[:, 0] - r) ** 2 * 3 + (self.rgb[:, 1] - g) ** 2 * 4 + (self.rgb[:, 2] - b) ** 2 * 2

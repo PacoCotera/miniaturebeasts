@@ -1,6 +1,6 @@
 {
- "successfulCalls": 52,
- "totalUSD": 11.33,
+ "successfulCalls": 77,
+ "totalUSD": 15.83,
  "calls": [
   {
    "tag": "C48-H-r6-a1",
@@ -166,6 +166,181 @@
    "size": "64x58",
    "usd": 0.18,
    "seconds": 41.5
+  },
+  {
+   "tag": "C48-W-r9-down-creep1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 62.5
+  },
+  {
+   "tag": "C48-W-r9-down-creep2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 36.4
+  },
+  {
+   "tag": "C48-W-r9-down-creep3",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 62.1
+  },
+  {
+   "tag": "C48-W-r9-down-react",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 31.1
+  },
+  {
+   "tag": "C48-W-r9-down-walk1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 31.7
+  },
+  {
+   "tag": "C48-W-r9-down-walk3",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 41.6
+  },
+  {
+   "tag": "C48-W-r9-right-creep1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 36.2
+  },
+  {
+   "tag": "C48-W-r9-right-creep2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 36.7
+  },
+  {
+   "tag": "C48-W-r9-right-creep3",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 36.6
+  },
+  {
+   "tag": "C48-W-r9-right-react",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 36.2
+  },
+  {
+   "tag": "C48-W-r9-right-walk2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 41.4
+  },
+  {
+   "tag": "C48-W-r9-right-walk3",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 36.7
+  },
+  {
+   "tag": "C48-W-r9-up-creep1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 41.4
+  },
+  {
+   "tag": "C48-W-r9-up-creep2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 36.3
+  },
+  {
+   "tag": "C48-W-r9-up-creep3",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 176.0
+  },
+  {
+   "tag": "C48-W-r9-up-react",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 56.9
+  },
+  {
+   "tag": "C48-W-r9-up-walk1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 31.3
+  },
+  {
+   "tag": "C48-W-r9-up-walk2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 78.0
+  },
+  {
+   "tag": "C48-W-r9-up-walk3",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 41.6
+  },
+  {
+   "tag": "C48-W-r9-down-creep2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 57.2
+  },
+  {
+   "tag": "C48-W-r9-down-react",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 57.2
+  },
+  {
+   "tag": "C48-W-r9-right-creep1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 31.1
+  },
+  {
+   "tag": "C48-W-r9-up-creep2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 31.1
+  },
+  {
+   "tag": "C48-W-r9-up-react",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 56.9
+  },
+  {
+   "tag": "C48-W-r9-up-walk1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 26.0
   },
   {
    "tag": "C48-W-r7-G-down",
