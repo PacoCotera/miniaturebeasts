@@ -6,11 +6,7 @@
 <title>Station Field Test</title>
 <meta name="description" content="Miniature Beasts Station build (M1 Read): a simulated 1024×600 Station screen on the real species frames, sharing its save with the Companion page. Dock, open the bay, identify a pod, read its chapters, compare and return.">
 <style>
-/* ===== The device's type: Inter, bundled under the OFL (../ui/fonts/inter/LICENSE.txt), never fetched from the
-   network. Three weights at the three Station sizes: 400 at 16 px, 500 at 20, 600 at 28. Tabular figures for all. ===== */
-@font-face{font-family:"Inter"; font-style:normal; font-weight:400; font-display:block; font-feature-settings:"tnum"; src:url("../ui/fonts/inter/Inter-Regular.woff2") format("woff2")}
-@font-face{font-family:"Inter"; font-style:normal; font-weight:500; font-display:block; font-feature-settings:"tnum"; src:url("../ui/fonts/inter/Inter-Medium.woff2") format("woff2")}
-@font-face{font-family:"Inter"; font-style:normal; font-weight:600; font-display:block; font-feature-settings:"tnum"; src:url("../ui/fonts/inter/Inter-SemiBold.woff2") format("woff2")}
+/* ===== The device's type is not a web font: the Station draws Inter from glyph atlases baked from the OFL sources in ../ui/fonts/ (see ../ui/tools/bake-type.mjs); the surround uses the system's fonts. ===== */
 /* ===== Surround tokens (light / dark). The device screen never uses these; the surround uses the system's fonts. ===== */
 :root{
   color-scheme: light dark;
