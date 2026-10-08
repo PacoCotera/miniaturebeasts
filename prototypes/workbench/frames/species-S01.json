@@ -975,7 +975,11 @@
     "between small and large",
     "large"
    ],
-   "guard": "rig: eye.radiusOverHeadMinYZ"
+   "guard": "rig: eye.radiusOverHeadMinYZ",
+   "typical": [
+    "large",
+    "large"
+   ]
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -1450,6 +1454,14 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "growth.auricular-set-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
    "id": "anatomy.antenna-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -1590,7 +1602,7 @@
   "carried": 48,
   "trunk": 46,
   "branch": 2,
-  "absent": 88,
+  "absent": 90,
   "locked": 43,
   "lockedBy": {
    "switch": 3,
@@ -1795,7 +1807,7 @@
      "high"
     ],
     "growth.exterior-eye-size-ratio": [
-     "small",
+     "large",
      "large"
     ],
     "growth.exterior-eye-spacing-ratio": [
@@ -1851,17 +1863,17 @@
     "kind": "type-specimen"
    }
   },
-  "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
+  "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
   "brief": "Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head.",
   "bounds": {
    "min": [
     -1.5190923175031104,
-    -0.7710627143087313,
+    -0.7803596143087312,
     0
    ],
    "max": [
-    0.667368,
-    0.7710627143087312,
+    0.68696,
+    0.7803596143087311,
     1.7460680625307918
    ]
   },

@@ -1013,11 +1013,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "anterior",
-    "anterior"
+    "even",
+    "even"
    ],
    "looks": [
-    "anterior"
+    "even"
    ],
    "guard": "rig: the mass hierarchy (even, central, anterior) scales the regions",
    "nature": "look"
@@ -1034,11 +1034,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "low",
+    "low"
    ],
    "looks": [
-    "high"
+    "low"
    ],
    "guard": "rig: neck length between head and body on a narrow join",
    "nature": "look"
@@ -1168,7 +1168,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: core.ryOverRx"
+   "guard": "rig: core.ryOverRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.core-depth-ratio",
@@ -1190,7 +1194,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: core.rzOverRx"
+   "guard": "rig: core.rzOverRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.head-length-ratio",
@@ -1296,7 +1304,11 @@
     "between short and long",
     "long"
    ],
-   "guard": "rig: muzzle.rxOverHeadRx"
+   "guard": "rig: muzzle.rxOverHeadRx",
+   "typical": [
+    "long",
+    "short"
+   ]
   },
   {
    "id": "growth.muzzle-width-ratio",
@@ -1318,7 +1330,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: muzzle.ryOverHeadRy"
+   "guard": "rig: muzzle.ryOverHeadRy",
+   "typical": [
+    "high",
+    "high"
+   ]
   },
   {
    "id": "growth.support-drop-ratio",
@@ -1344,7 +1360,11 @@
     "between medium and long",
     "long"
    ],
-   "guard": "rig: support.rootToEndDropOverCoreRx"
+   "guard": "rig: support.rootToEndDropOverCoreRx",
+   "typical": [
+    "short",
+    "short"
+   ]
   },
   {
    "id": "growth.support-splay-ratio",
@@ -1391,7 +1411,11 @@
     "between slender and stout",
     "stout"
    ],
-   "guard": "rig: support.proximalRadiusOverCoreRx"
+   "guard": "rig: support.proximalRadiusOverCoreRx",
+   "typical": [
+    "fine",
+    "slender"
+   ]
   },
   {
    "id": "growth.terminal-length-ratio",
@@ -1465,7 +1489,11 @@
     "between small and large",
     "large"
    ],
-   "guard": "rig: eye.radiusOverHeadMinYZ"
+   "guard": "rig: eye.radiusOverHeadMinYZ",
+   "typical": [
+    "small",
+    "small"
+   ]
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -1487,7 +1515,11 @@
     "between close and wide",
     "wide"
    ],
-   "guard": "rig: eye.anchorYOverHeadRy"
+   "guard": "rig: eye.anchorYOverHeadRy",
+   "typical": [
+    "wide",
+    "wide"
+   ]
   },
   {
    "id": "growth.crown-height-ratio",
@@ -1732,7 +1764,11 @@
     "between short and long",
     "long"
    ],
-   "guard": "rig: tail.lengthOverOwnerRx"
+   "guard": "rig: tail.lengthOverOwnerRx",
+   "typical": [
+    "long",
+    "long"
+   ]
   },
   {
    "id": "growth.axial-tail-width-ratio",
@@ -1754,7 +1790,11 @@
     "between fine and broad",
     "broad"
    ],
-   "guard": "rig: tail.baseRadiusOverOwnerCross"
+   "guard": "rig: tail.baseRadiusOverOwnerCross",
+   "typical": [
+    "broad",
+    "broad"
+   ]
   },
   {
    "id": "growth.axial-tail-bend",
@@ -1776,7 +1816,11 @@
     "between down and up",
     "up"
    ],
-   "guard": "rig: tail.bendRadians"
+   "guard": "rig: tail.bendRadians",
+   "typical": [
+    "up",
+    "up"
+   ]
   },
   {
    "id": "cognition.exploration-tendency",
@@ -1834,11 +1878,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "matte",
-    "matte"
+    "glossy",
+    "glossy"
    ],
    "looks": [
-    "matte"
+    "glossy"
    ],
    "guard": "sketch: specular highlight strength (surface texture's first consumer)",
    "nature": "look"
@@ -2076,6 +2120,14 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "growth.auricular-set-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
    "id": "anatomy.antenna-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -2220,7 +2272,7 @@
   "carried": 60,
   "trunk": 59,
   "branch": 1,
-  "absent": 76,
+  "absent": 78,
   "locked": 20,
   "lockedBy": {
    "switch": 5,
@@ -2371,12 +2423,12 @@
      "high"
     ],
     "development.regional-growth": [
-     "anterior",
-     "anterior"
+     "even",
+     "even"
     ],
     "structure.join-neck-ratio": [
-     "high",
-     "high"
+     "low",
+     "low"
     ],
     "anatomy.muzzle-presence": [
      "on",
@@ -2400,11 +2452,11 @@
     ],
     "growth.core-width-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.core-depth-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.head-length-ratio": [
      "medium",
@@ -2423,16 +2475,16 @@
      "low"
     ],
     "growth.muzzle-projection-ratio": [
-     "short",
-     "long"
+     "long",
+     "short"
     ],
     "growth.muzzle-width-ratio": [
-     "low",
+     "high",
      "high"
     ],
     "growth.support-drop-ratio": [
      "short",
-     "long"
+     "short"
     ],
     "growth.support-splay-ratio": [
      "high",
@@ -2440,7 +2492,7 @@
     ],
     "growth.support-radius-ratio": [
      "fine",
-     "stout"
+     "slender"
     ],
     "growth.terminal-length-ratio": [
      "small",
@@ -2452,10 +2504,10 @@
     ],
     "growth.exterior-eye-size-ratio": [
      "small",
-     "large"
+     "small"
     ],
     "growth.exterior-eye-spacing-ratio": [
-     "close",
+     "wide",
      "wide"
     ],
     "growth.crown-height-ratio": [
@@ -2499,15 +2551,15 @@
      "on"
     ],
     "growth.axial-tail-length-ratio": [
-     "short",
+     "long",
      "long"
     ],
     "growth.axial-tail-width-ratio": [
-     "fine",
+     "broad",
      "broad"
     ],
     "growth.axial-tail-bend": [
-     "down",
+     "up",
      "up"
     ],
     "cognition.exploration-tendency": [
@@ -2519,8 +2571,8 @@
      "high"
     ],
     "appearance.sheen": [
-     "matte",
-     "matte"
+     "glossy",
+     "glossy"
     ],
     "appearance.emission-brightness": [
      "dim",
@@ -2539,24 +2591,24 @@
     "kind": "type-specimen"
    }
   },
-  "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
+  "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
   "brief": "Tuikis: 2 body regions (B2), a head, a snout, 2 eyes, a 2-leaf crest, 4 legs, a tail with a glowing bulb; scales, bands; plantigrade, neck head.",
   "bounds": {
    "min": [
-    -1.1961151294164125,
-    -0.5219084144277432,
+    -0.8658885506265219,
+    -0.4300759292837113,
     0
    ],
    "max": [
-    1.3516630194715824,
-    0.5219084144277432,
-    1.315744075453293
+    1.2412802264183385,
+    0.4300759292837113,
+    0.8183955725105271
    ]
   },
   "counts": {
-   "nodes": 31,
-   "edges": 30,
-   "vertices": 1432
+   "nodes": 30,
+   "edges": 29,
+   "vertices": 1445
   }
  },
  "viability": {
@@ -2749,12 +2801,12 @@
    "ridged"
   ],
   "development.regional-growth": [
-   "anterior",
-   "anterior"
+   "even",
+   "even"
   ],
   "structure.join-neck-ratio": [
-   "high",
-   "high"
+   "low",
+   "low"
   ],
   "anatomy.muzzle-presence": [
    "on",
@@ -2813,8 +2865,8 @@
    "on"
   ],
   "appearance.sheen": [
-   "matte",
-   "matte"
+   "glossy",
+   "glossy"
   ],
   "anatomy.tail-tip-bulb": [
    "on",

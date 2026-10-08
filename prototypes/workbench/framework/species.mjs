@@ -170,7 +170,8 @@ export function buildFrame(spec, options = {}) {
     if (!pools[id].every((a) => all.includes(a))) throw new Error(`${spec.id}: pool of ${id} is not in the catalogue`);
   }
   const openIds = Object.keys(pools);
-  // Locked copies, homozygous: fixed, else the clan finish, else by seed (never a plan-free default).
+  // Locked copies: fixed (one allele, homozygous, or a pair when the species' proportion sits between
+  // two alleles), else the clan finish, else by seed (never a plan-free default).
   const locked = {};
   for (const id of carriedIds) {
     if (openIds.includes(id)) continue;
@@ -180,8 +181,16 @@ export function buildFrame(spec, options = {}) {
       else if (id === "appearance.cap-palette") a = spec.anchor in BODY_PIGMENTS ? ["coral", "raspberry", "marigold", "plum"][Math.floor(r() * 4)] : "coral";
       else a = pick(r, alleleIds(id));
     }
-    if (!alleleIds(id).includes(a)) throw new Error(`${spec.id}: ${id} cannot be ${a}`);
-    locked[id] = [a, a];
+    const pair = Array.isArray(a) ? [...a].sort() : [a, a];
+    if (pair.length !== 2 || !pair.every((x) => alleleIds(id).includes(x))) throw new Error(`${spec.id}: ${id} cannot be ${JSON.stringify(a)}`);
+    locked[id] = pair;
+  }
+  // Typical copies of the type specimen at open loci (the species' proportions where the trait is open).
+  const typical = {};
+  for (const [id, pair] of Object.entries(spec.typical ?? {})) {
+    if (!openIds.includes(id)) continue;
+    const p = Array.isArray(pair) ? [...pair].sort() : [pair, pair];
+    if (p.every((x) => pools[id].includes(x))) typical[id] = p;
   }
   const frame = {
     schema: SCHEMA,
@@ -191,7 +200,7 @@ export function buildFrame(spec, options = {}) {
     plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations },
     signature: { anchor: spec.anchor, second: spec.second ?? null, feature: spec.feature, features: switchesOn, finish: spec.finish ?? {} },
     glyph: spec.glyph, pod: null, chapters: [], loci: [], absent, counts: null, notYet: null, typeSpecimen: null, viability: null,
-    _pools: pools, _locked: locked, _traits: traits, _sealed: spec.sealed ?? {},
+    _pools: pools, _locked: locked, _traits: traits, _sealed: spec.sealed ?? {}, _typical: typical,
   };
   finishFrame(frame, spec);
   // Checks (frames.py: every open look is drawn; 200 random individuals build).
@@ -209,7 +218,7 @@ export function buildFrame(spec, options = {}) {
     } catch (e) { failures.push(e.message); }
   }
   frame.viability = { sampled: samples, constructed, failures: [...new Set(failures)].slice(0, 5), rule: "random copies from the species pools at every open locus; built by the rig and validated against the compositional contract" };
-  frame.typeSpecimen = { genome: specimen, rule: "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele", brief: brief(built.scene, frame), bounds: built.scene.bounds, counts: built.validation.counts };
+  frame.typeSpecimen = { genome: specimen, rule: "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele", brief: brief(built.scene, frame), bounds: built.scene.bounds, counts: built.validation.counts };
   if (constructed !== samples) {
     const err = new Error(`${spec.id}: ${samples - constructed} of ${samples} individuals do not build: ${frame.viability.failures.join("; ")}`);
     err.frame = frame;
@@ -221,7 +230,7 @@ export function buildFrame(spec, options = {}) {
 function shuffle(r, list) { const a = [...list]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
 function finishFrame(frame, spec) {
-  const { _pools: pools, _locked: locked, _traits: traits, _sealed: sealed } = frame;
+  const { _pools: pools, _locked: locked, _traits: traits, _sealed: sealed, _typical: typical = {} } = frame;
   const plan = planFacts(frame.plan.key, frame.plan.extras);
   const switchesOn = frame.signature.features;
   // The two probes: every open part switch on, and every one off (sleeping parts).
@@ -248,6 +257,7 @@ function finishFrame(frame, spec) {
       const kind = t.chapter in sealed ? "sealed" : !offNow && !isPartSwitch(id) ? "sleeping" : `heritable-${nature}`;
       row.kind = kind; row.nature = nature; row.chapter = t.chapter; row.trait = t.id; row.shapeable = shapeable; row.alleles = pools[id]; row.looks = looksFor(locus, pools[id]);
       row.guard = kind === "sleeping" ? `asleep in any individual whose ${t.loci.find((x) => isPartSwitch(x)) ?? "owner switch"} is off; drawn when it is on` : locus.consumer;
+      if (typical[id]) row.typical = typical[id];
     } else {
       row.kind = "locked"; row.lockReason = isPartSwitch(id) ? "switch" : "fixed"; row.chapter = null; row.trait = null; row.shapeable = false;
       row.copies = locked[id]; row.looks = looksFor(locus, [locked[id][0]]); row.guard = locus.consumer;
@@ -282,7 +292,7 @@ function finishFrame(frame, spec) {
   const second = spec.pod?.second ?? (pools["appearance.body-palette"] ?? [spec.anchor])[1] ?? spec.second ?? spec.anchor;
   const hexOf = (p) => BODY_PIGMENTS[p] ?? SECOND_PIGMENTS[p] ?? "#888888";
   frame.pod = { sizeClass: size, proportion: null, shellPattern: shell, colourPair: [{ pigment: spec.anchor, hex: hexOf(spec.anchor) }, { pigment: second, hex: hexOf(second) }] };
-  delete frame._pools; delete frame._locked; delete frame._traits; delete frame._sealed;
+  delete frame._pools; delete frame._locked; delete frame._traits; delete frame._sealed; delete frame._typical;
   frame.pools = pools; frame.locked = locked;
   frame.sealed = sealed;
 }
@@ -290,15 +300,17 @@ function finishFrame(frame, spec) {
 // --- individuals ---------------------------------------------------------------------------------
 export const openLoci = (frame) => frame.loci.filter((l) => l.kind !== "locked");
 
-// The type specimen is the plan's default body: every open part switch on, every open numeric
-// locus at the middle of its pool (the mixed pair of its two extremes), every categorical or pigment
-// locus at the first allele of its pool. (frames.py took the first allele everywhere; a species
-// whose numeric pools are all at one end is not its own archetype.)
+// The type specimen is the plan's default body: every open part switch on, every open locus at the
+// species' typical copies where the frame names them (its proportions by kind), else every open
+// numeric locus at the middle of its pool (the mixed pair of its two extremes) and every categorical
+// or pigment locus at the first allele of its pool. (frames.py took the first allele everywhere; a
+// species whose numeric pools are all at one end is not its own archetype.)
 export function typeSpecimen(frame) {
   const loci = {};
   for (const l of frame.loci) {
     if (l.kind === "locked") { loci[l.id] = [...l.copies]; continue; }
     if (l.switch) { loci[l.id] = ["on", "on"]; continue; }
+    if (l.typical) { loci[l.id] = [...l.typical]; continue; }
     const op = LOCI.get(l.id).operator;
     loci[l.id] = op === "copy-mean" && l.alleles.length > 1 ? [l.alleles[0], l.alleles.at(-1)] : [l.alleles[0], l.alleles[0]];
   }
@@ -380,9 +392,11 @@ export function genomeDigest(genome) {
 // A frame back into an explicit spec the editor can change and rebuild (every locked locus fixed,
 // every open trait with its pools), so edits stay at the level of plan, clan, chapters and traits.
 export function specFromFrame(frame) {
-  const locked = Object.fromEntries(frame.loci.filter((l) => l.kind === "locked").map((l) => [l.id, l.copies[0]]));
+  const locked = Object.fromEntries(frame.loci.filter((l) => l.kind === "locked").map((l) => [l.id, l.copies[0] === l.copies[1] ? l.copies[0] : [...l.copies]]));
   const openSwitches = frame.loci.filter((l) => l.kind !== "locked" && l.switch).map((l) => l.id);
+  const typical = Object.fromEntries(frame.loci.filter((l) => l.typical).map((l) => [l.id, [...l.typical]]));
   return {
+    typical,
     id: frame.species.id, name: frame.species.name, plural: frame.species.plural, order: frame.species.order, summary: frame.species.summary,
     clan: frame.taxonomy.clan, tier: frame.taxonomy.tier, seed: frame.taxonomy.seed ?? 1,
     taxonomy: { ...frame.taxonomy }, plan: { key: frame.plan.key, extras: { ...frame.plan.extras } },

@@ -1,0 +1,31 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S04",
+ "name": "Hiljan",
+ "resembles": "a cat",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a level oblong body, a round head with a short muzzle and two pointed ears on the crown, four slim legs with paws, a long thin tail carried up",
+ "shapes": [
+  {"capsule":[34,56,66,54,13,13]},
+  {"ellipse":[80,44,11,11]},
+  {"polygon":[[71,37],[75,24],[80,36]]},
+  {"polygon":[[81,36],[86,25],[89,38]]},
+  {"ellipse":[89,48,5,4]},
+  {"capsule":[64,62,66,90,4]},
+  {"capsule":[70,62,72,90,4]},
+  {"ellipse":[36,62,10,9]},
+  {"capsule":[36,66,34,90,4]},
+  {"capsule":[41,66,42,90,4]},
+  {"ellipse":[34,90,6,3]},
+  {"ellipse":[42,90,6,3]},
+  {"ellipse":[66,90,6,3]},
+  {"ellipse":[72,90,6,3]},
+  {"capsule":[22,52,10,40,3]},
+  {"capsule":[10,40,12,26,2.5]}
+ ]
+}

@@ -61,10 +61,14 @@ export function buildBody(resolved) {
   const baseRadii = radial
     ? [L, L, 2 * (v["region.radialCrossRadiusOverAnchorRx"] ?? 0.45) * L] // a dome: round in plan, height from roundness
     : [L, GIRTH * (v["core.ryOverRx"] ?? 0.45) * L, GIRTH * (v["core.rzOverRx"] ?? 0.5) * L];
+  // A serial body shares the size class's length among its regions (a two-region mammal is one body
+  // with a chest and hindquarters, not two bodies in a row); girth stays over the whole body's L.
+  // v1 gave every region the full L, which is where the log-like, four-to-one bodies came from.
+  const along = radial || plan.fan ? 1 : 1 / depth;
   const regionRadii = (level) => {
     const taper = depth > 1 ? lerp(1, childScale, level / (depth - 1)) : 1;
     const s = (mass[Math.min(level, mass.length - 1)] ?? 1) * (level === 0 ? 1 : taper);
-    return baseRadii.map((r) => r * s);
+    return baseRadii.map((r, i) => r * s * (i === 0 ? along : 1));
   };
   function primary(id, center, radii, frame) {
     const node = newNode(id, "primary-region", null, "body", frame);
@@ -92,7 +96,10 @@ export function buildBody(resolved) {
       const child = primary(`region-${plan.fan ? `${arm}-` : ""}${level}`, [0, 0, 0], radii, frame);
       child.level = level; child.arm = arm;
       const pe = extentAlong(parent, direction, envOf), ce = extentAlong(child, mul(direction, -1), envOf);
-      const gap = join === "broad" ? -0.22 * Math.min(pe, ce) : 0.18 * Math.min(pe, ce);
+      // A narrow join leaves a gap for the connector; a thick waist (join-throat-ratio) closes it, so a
+      // mammal's two regions read as one body with a dip rather than two balls on a stick.
+      const throat = Math.max(0, Math.min(1, ((v["region.connectorRadiusRatio"] ?? 0.5) - 0.3) / 0.45));
+      const gap = join === "broad" ? -0.22 * Math.min(pe, ce) : lerp(0.18, -0.1, throat) * Math.min(pe, ce);
       moveNode(child, add(parent.center, mul(direction, pe + ce + gap)));
       envelopes.delete(child.id);
       connect(parent, child, direction, join, v, push, envOf, L);
@@ -108,9 +115,12 @@ export function buildBody(resolved) {
   const head = newNode("head", "typed-head", null, "body");
   ellipsoid(head, headR);
   head.part = "head";
-  const headDir = unit([-(L + 0.8 * headR[0]), 0, lift]);
+  // Head lift sets the neck's rise (level at a low lift, steeply up at a high one: a deer, a bird); the
+  // neck ratio sets its length over the join's extent, up to about two head lengths.
+  const rise = Math.max(0, Math.min(1, ((v["head.centerLiftOverCoreRx"] ?? 0.5) - 0.5) / 0.22));
+  const headDir = join === "narrow" ? unit([-1, 0, 0.15 + 1.6 * rise * rise]) : unit([-(L + 0.8 * headR[0]), 0, lift]);
   const pe = extentAlong(root, headDir, envOf), he = extentAlong(head, mul(headDir, -1), envOf);
-  const neckLength = join === "narrow" ? (0.3 + 0.5 * ((v["structure.join-neck-ratio"] ?? 0.8) - 0.65) / 0.3) * Math.min(pe, he) : -0.25 * Math.min(pe, he);
+  const neckLength = join === "narrow" ? (0.3 + 1.6 * ((v["structure.join-neck-ratio"] ?? 0.8) - 0.65) / 0.3) * Math.min(pe, he) : -0.25 * Math.min(pe, he);
   moveNode(head, mul(headDir, pe + he + neckLength));
   envelopes.delete(head.id);
   const headCenter = head.center;
@@ -122,9 +132,13 @@ export function buildBody(resolved) {
     segment(beak, rt.inner, add(rt.surface, add(mul(rt.direction, len), [0, 0, -0.1 * len])), 0.42 * Math.min(headR[1], headR[2]), 0.05 * headR[1]);
     push(beak, head, rt.witness);
   } else if (v["modules.muzzleAndJaw"]) {
-    const mR = [v["muzzle.rxOverHeadRx"] * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], 0.45 * headR[2]];
+    // A long muzzle is a tapered snout (thick at the head, fine at the nose); a short one stays a blunt egg.
+    const proj = v["muzzle.rxOverHeadRx"];
+    const mR = [proj * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], (0.45 - 0.08 * Math.max(0, Math.min(1, (proj - 0.58) / 0.66))) * headR[2]];
     const mC = add(headCenter, [-headR[0] + 0.15 * headR[0] - 0.5 * mR[0], 0, -0.38 * headR[2]]);
-    const muzzle = newNode("muzzle", "muzzle", head.id, "body"); muzzle.center = mC; ellipsoid(muzzle, mR); muzzle.part = "muzzle";
+    const muzzle = newNode("muzzle", "muzzle", head.id, "body"); muzzle.center = mC; muzzle.part = "muzzle";
+    if (proj > 0.9) { muzzle.frame = [[-1, 0, 0], [0, -1, 0], [0, 0, 1]]; ringSolid(muzzle, mR, "tapered", 2); } // the frame faces the nose, so the taper thins forward
+    else ellipsoid(muzzle, mR);
     push(muzzle, head);
     const jaw = newNode("jaw", "lower-jaw", muzzle.id, "body"); jaw.center = add(mC, [0.07 * headR[0], 0, -0.3 * headR[2]]); ellipsoid(jaw, [0.88 * mR[0], 0.89 * mR[1], 0.28 * headR[2]]); jaw.part = "muzzle";
     push(jaw, muzzle);
@@ -173,11 +187,14 @@ export function buildBody(resolved) {
     }
   }
   if (v["ears.enabled"]) for (const side of [-1, 1]) {
-    const length = v["ears.lengthOverHeadRz"] * headR[2], width = 0.55 * length;
+    const length = v["ears.lengthOverHeadRz"] * headR[2], width = (v["growth.auricular-width-ratio"] ?? 0.55) * length;
     const drooping = v["anatomy.ear-tilt"] === "drooping";
-    const dir = unit([0, side * 0.62, 0.78]);
+    // Ear set: the root's lateral offset over the head's half width; a side-set ear leans outward.
+    const set = v["growth.auricular-set-ratio"] ?? 0.62;
+    const dir = unit([0, side * set, Math.sqrt(Math.max(0.1, 1 - set * set))]);
     const rt = rootOn(head, headCenter, dir, 0.08 * length, envOf(head));
-    const upAxis = drooping ? unit([-0.1, side * 0.95, -0.4]) : unit([-0.15, side * 0.35, 1]);
+    const lean = 0.15 + 0.6 * Math.max(0, Math.min(1, (set - 0.42) / 0.36));
+    const upAxis = drooping ? unit([-0.1, side * 0.95, -0.4]) : unit([-0.15, side * lean, 1]);
     const across = unit(cross(upAxis, [-1, 0, 0]));
     const pointed = v["ears.form"] === "pointed";
     const outline = pointed ? [[-0.12, 0], [-0.5, 0.38], [-0.36, 0.75], [0, 1], [0.36, 0.75], [0.5, 0.38], [0.12, 0]] : [[-0.12, 0], [-0.5, 0.32], [-0.48, 0.73], [-0.24, 0.96], [0.24, 0.96], [0.48, 0.73], [0.5, 0.32], [0.12, 0]];
@@ -220,8 +237,8 @@ export function buildBody(resolved) {
   };
   if (plan.limbSet === "legs") {
     const drop = v["support.rootToEndDropOverCoreRx"] * L, spread = v["support.outwardEndOffsetOverCoreRx"] * L;
-    // Leg girth: 1.6 times v1's ratio, never more than a third of the body's smaller cross radius.
-    const radius = Math.min(1.6 * v["support.proximalRadiusOverCoreRx"] * L, 0.33 * Math.min(root.radii[1], root.radii[2]));
+    // Leg girth: 1.6 times v1's ratio, never more than half of the body's smaller cross radius.
+    const radius = Math.min(1.6 * v["support.proximalRadiusOverCoreRx"] * L, 0.5 * Math.min(root.radii[1], root.radii[2]));
     const stationCount = plan.stations.length;
     plan.stations.forEach((station, g) => {
       const owner = serialRegions[Math.min(station.region, serialRegions.length - 1)];
@@ -412,11 +429,12 @@ export function buildBody(resolved) {
   if (v["tail.enabled"]) {
     const owner = plan.fan ? root : serialRegions[plan.tailRegion];
     const bushy = v["covering.furEnabled"] && (v["appearance.fur-reach"] ?? "body") !== "body";
-    const length = v["tail.lengthOverOwnerRx"] * owner.radii[0], baseR = (bushy ? 2.2 : 1.5) * v["tail.baseRadiusOverOwnerCross"] * Math.min(owner.radii[1], owner.radii[2]);
+    // Tail length over the body's L (v1's owner region was L long; a shared-length region is not).
+    const length = v["tail.lengthOverOwnerRx"] * L, baseR = (bushy ? 2.2 : 1.9) * v["tail.baseRadiusOverOwnerCross"] * Math.min(owner.radii[1], owner.radii[2]);
     const dirW = radial ? unit([1, 0, -0.2]) : unit(add(owner.frame[0], [0, 0, 0.15]));
     const rt = rootOn(owner, owner.center, dirW, 0.3 * baseR, envOf(owner));
     const tail = newNode("tail", "axial-tail", owner.id, "body"); tail.part = "tail";
-    sweep(tail, rt.inner, radial ? IDENTITY : frameAlong(dirW), length, baseR, v["tail.bendRadians"], 6, v["tailBulb.enabled"] ? 0.35 : bushy ? 0.5 : 0.22);
+    sweep(tail, rt.inner, radial ? IDENTITY : frameAlong(dirW), length, baseR, v["tail.bendRadians"], 6, v["tailBulb.enabled"] ? 0.35 : bushy ? 0.5 : 0.3);
     push(tail, owner, add(rt.inner, mul(tail.stations[0].tangent, 0.12 * baseR))); // just inside the first station, still inside the owner
     if (v["tailBulb.enabled"]) {
       const bulb = newNode("tail-bulb", "tail-bulb", tail.id, "emission"); bulb.part = "tail";
