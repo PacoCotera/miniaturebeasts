@@ -1,0 +1,265 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 3,
+ "controlVariant": "crisp",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "b970521b-76cf-4a94-a1a6-ff9edb047e68",
+     "status": "ok",
+     "costUSD": 0.09898,
+     "seconds": 13.7,
+     "checks": {
+      "silhouetteIoU": 0.927,
+      "silhouetteIoUInPlace": 0.916,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.994
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.994
+       },
+       "muzzle": {
+        "span": 0.991,
+        "coverage": 0.998
+       },
+       "crown": {
+        "span": 1.0,
+        "coverage": 0.892
+       },
+       "leg-0": {
+        "span": 0.923,
+        "coverage": 0.97
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.989
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.598,
+        "painted": 0.693,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.442,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.227,
+        "painted": 0.271,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.29,
+        "painted": 0.345,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.665,
+        "painted": 0.721,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.296,
+        "painted": 0.384,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.634,
+        "median": "#485152",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.958,
+        "median": "#3e4648",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 1.0,
+        "median": "#3d4447",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@crown": {
+        "agreement": 0.989,
+        "median": "#475051",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.901,
+        "median": "#c9b897",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.831,
+        "median": "#baa584",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.645,
+        "median": "#a78863",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.002,
+      "missing": 0.002,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.781,
+      "passed": true
+     },
+     "responseId": "ChPHavKlI7bV-sAPuLzOqA8",
+     "checksAsRun": {
+      "silhouetteIoU": 0.939,
+      "silhouetteIoUInPlace": 0.944,
+      "parts": {
+       "region-0": 0.999,
+       "head": 0.996,
+       "muzzle": 0.997,
+       "crown": 0.919,
+       "leg-0": 1.0,
+       "leg-1": 1.0
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.598,
+        "painted": 0.675,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.431,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.227,
+        "painted": 0.26,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.29,
+        "painted": 0.333,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.665,
+        "painted": 0.699,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.296,
+        "painted": 0.374,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.637,
+        "median": "#485052",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.957,
+        "median": "#3e4648",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 1.0,
+        "median": "#3d4446",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@crown": {
+        "agreement": 0.994,
+        "median": "#464e4f",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.92,
+        "median": "#cab998",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.86,
+        "median": "#bba686",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.654,
+        "median": "#a98b66",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.002,
+      "missing": 0.002,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.79,
+      "passed": true
+     }
+    }
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:21:28Z"
+  }
+ },
+ "species": "S01",
+ "name": "Loika",
+ "level": "species",
+ "genomeDigest": "S01-88baf86f",
+ "genomeSha256": "e1dc797cc75390649eab166f924094f0de7579ac4f9d22470cc022969890144f",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a short muzzle, big eyes, a tall crest, short legs, stout legs, broad feet, a stout build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:50:33Z",
+ "outputs": {
+  "station-portrait-600x620.png": "72390f7f2d1b6b1706d1cd6e10867b5c7c946a3346cb505c2dbfdbbaf82c3ec3",
+  "station-portrait-300x310.png": "f518f3292552703e702ef152e375c1cd5ab49526d7136b2981e1792b45834a7e",
+  "companion-280x300.png": "e6cbee35053b3fb15fb9d9d2bbb788096d422cf49e32abcaa0dea8436eeae5db",
+  "token-48.png": "62673d64296ef61ad1581584e388b7902bfb30beb63b5af8aadd1b08153ea47b"
+ },
+ "calls": 1,
+ "costUSD": 0.09898,
+ "seconds": 13.7,
+ "finishedAt": "2026-10-08T03:51:11Z",
+ "rechecked": "2026-10-08T04:21:28Z",
+ "checksVersion": "mb-grow-checks/3"
+}

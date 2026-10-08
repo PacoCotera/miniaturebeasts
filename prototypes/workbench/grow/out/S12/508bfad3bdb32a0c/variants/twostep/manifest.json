@@ -1,0 +1,407 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 3,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "plain",
+   "attempts": [
+    {
+     "callId": "f8befc9d-b82a-42c6-bcbe-01013e4c8a6b",
+     "step": 1,
+     "status": "ok",
+     "costUSD": 0.09441,
+     "seconds": 10.0,
+     "checks": {
+      "silhouetteIoU": 0.754,
+      "silhouetteIoUInPlace": 0.743,
+      "parts": {
+       "region-0": {
+        "span": 0.982,
+        "coverage": 0.987
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.971
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 0.991
+       },
+       "leg-0": {
+        "span": 0.552,
+        "coverage": 0.39
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.683
+       },
+       "leg-2": {
+        "span": 0.976,
+        "coverage": 0.77
+       },
+       "flap": {
+        "span": 0.954,
+        "coverage": 0.976
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.226,
+        "painted": 0.285,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.265,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.435,
+        "painted": 0.425,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.158,
+        "painted": 0.236,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.752,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.861,
+        "median": "#d65985",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.78,
+        "median": "#d55984",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.317,
+        "median": "#ebe3c7",
+        "nearest": "#f1eddc",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.899,
+        "median": "#fdd1bb",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: leg-0 (painted along 55% of its length)"
+      ],
+      "outside": 0.034,
+      "missing": 0.004,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.866,
+      "passed": false
+     },
+     "responseId": "RxXHapLsFIui1MkP07eL-QM",
+     "checksAsRun": {
+      "silhouetteIoU": 0.754,
+      "silhouetteIoUInPlace": 0.743,
+      "parts": {
+       "region-0": 0.987,
+       "head": 0.971,
+       "antenna": 0.991,
+       "leg-0": 0.39,
+       "leg-1": 0.683,
+       "leg-2": 0.77,
+       "flap": 0.976
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.226,
+        "painted": 0.285,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.265,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.435,
+        "painted": 0.425,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.158,
+        "painted": 0.236,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.752,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.861,
+        "median": "#d65985",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.78,
+        "median": "#d55984",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.317,
+        "median": "#ebe3c7",
+        "nearest": "#f1eddc",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.899,
+        "median": "#fdd1bb",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: leg-0 (0.39)"
+      ],
+      "outside": 0.034,
+      "missing": 0.004,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.866,
+      "passed": false
+     }
+    },
+    {
+     "callId": "a0d86b9c-5c8a-4b42-ae9b-ebed43bdd2d3",
+     "step": 1,
+     "status": "ok",
+     "costUSD": 0.1029,
+     "seconds": 11.9,
+     "checks": {
+      "silhouetteIoU": 0.754,
+      "silhouetteIoUInPlace": 0.743,
+      "parts": {
+       "region-0": {
+        "span": 0.982,
+        "coverage": 0.987
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.971
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 0.991
+       },
+       "leg-0": {
+        "span": 0.552,
+        "coverage": 0.39
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.683
+       },
+       "leg-2": {
+        "span": 0.976,
+        "coverage": 0.77
+       },
+       "flap": {
+        "span": 0.954,
+        "coverage": 0.976
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.226,
+        "painted": 0.285,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.265,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.435,
+        "painted": 0.425,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.158,
+        "painted": 0.236,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.752,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.861,
+        "median": "#d65985",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.78,
+        "median": "#d55984",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.317,
+        "median": "#ebe3c7",
+        "nearest": "#f1eddc",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.899,
+        "median": "#fdd1bb",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: leg-0 (painted along 55% of its length)"
+      ],
+      "outside": 0.034,
+      "missing": 0.004,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.866,
+      "passed": false
+     },
+     "responseId": "ZhXHavObJJnO_uMPitLgsAg",
+     "checksAsRun": {
+      "silhouetteIoU": 0.629,
+      "silhouetteIoUInPlace": 0.706,
+      "parts": {
+       "region-0": 0.941,
+       "head": 0.82,
+       "antenna": 0.063,
+       "leg-0": 0.722,
+       "leg-1": 0.994,
+       "leg-2": 0.896,
+       "flap": 0.788
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.226,
+        "painted": 0.304,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.264,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.435,
+        "painted": 0.478,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.158,
+        "painted": 0.256,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.758,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.852,
+        "median": "#d85485",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.741,
+        "median": "#d75483",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.978,
+        "median": "#dfd0a9",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.732,
+        "median": "#f2dabc",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: antenna (0.06)"
+      ],
+      "outside": 0.037,
+      "missing": 0.021,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.77,
+      "passed": false
+     }
+    }
+   ],
+   "steps": [],
+   "servedBy": null,
+   "rechecked": "2026-10-08T04:35:37Z"
+  }
+ },
+ "species": "S12",
+ "name": "Peplos",
+ "level": "individual",
+ "genomeDigest": "S12-88f97f04",
+ "genomeSha256": "508bfad3bdb32a0c1feb3ea7fd75ed2c67f4843c356530c5b79990a8bdc73537",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Coat: colour raspberry; translucency between; flap markings spots; second colour peach and cream. Shape: hind body small. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Peplos)",
+  "name": "species/S12/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T04:00:01Z",
+ "outputs": {
+  "station-portrait-600x620.png": "7723ad65c180d5f19b9e89537b857dd36d6b1c1b76dbefbe79b4695310818ed0",
+  "station-portrait-300x310.png": "4d8ba560ffdf1a4546619c64411187be83a715e8a710fe6840d93df61f929c36",
+  "companion-280x300.png": "148d3cda3fdd9fb4a389d9897f9cc6b44339f08f142f0412e3f8c444af2eac7b",
+  "token-48.png": "e37b6e6b86779ce75c141e6e35032a9d84e64dfce74e2cd9cf32a765ebb6fba2"
+ },
+ "calls": 2,
+ "costUSD": 0.19731,
+ "seconds": 21.9,
+ "finishedAt": "2026-10-08T04:00:57Z",
+ "rechecked": "2026-10-08T04:35:37Z",
+ "checksVersion": "mb-grow-checks/3"
+}

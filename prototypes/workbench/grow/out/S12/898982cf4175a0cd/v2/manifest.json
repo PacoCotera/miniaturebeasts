@@ -1,0 +1,212 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 2,
+ "species": "S12",
+ "name": "Peplos",
+ "level": "individual",
+ "genomeDigest": "S12-70f7ef63",
+ "genomeSha256": "898982cf4175a0cd546bd532a65072fbf2de94622a676681431be02b484b2b9c",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Coat: colour coral and raspberry; translucency between; flap markings bars; second colour peach. Shape: hind body between. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives) (this species' own type specimen painting is not made yet)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:15:49Z",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "a814dbd1-bb71-4d17-a0ac-b8ad7dbecc30",
+     "status": "ok",
+     "costUSD": 0.09322,
+     "seconds": 7.5,
+     "checks": {
+      "silhouetteIoU": 0.854,
+      "silhouetteIoUInPlace": 0.951,
+      "parts": {
+       "region-0": 0.995,
+       "region-1": 1.0,
+       "head": 0.992,
+       "antenna": 0.889,
+       "leg-0": 0.891,
+       "leg-1": 0.876,
+       "leg-2": 1.0,
+       "flap": 0.989
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.997,
+        "median": "#c25d4c",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.966,
+        "median": "#e48168",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.18,
+        "median": "#d86a89",
+        "nearest": "#d95688",
+        "ok": false
+       },
+       "second@flap": {
+        "agreement": 0.886,
+        "median": "#fbd1b7",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #d86a89, the colour of body)"
+      ],
+      "slotAgreement": 0.87,
+      "passed": false
+     },
+     "responseId": "5QrHav-5NfWu_uMPpaDYyQE"
+    },
+    {
+     "callId": "5247116b-ba11-46c1-aa06-24487803acea",
+     "status": "ok",
+     "costUSD": 0.09697,
+     "seconds": 7.7,
+     "checks": {
+      "silhouetteIoU": 0.898,
+      "silhouetteIoUInPlace": 0.918,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 1.0,
+       "antenna": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 0.886
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#cd5f4d",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 1.0,
+        "median": "#eb7f64",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.584,
+        "median": "#e8d1ac",
+        "nearest": "#ffd7c5",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.564,
+        "median": "#f3dacb",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.699,
+      "passed": true
+     },
+     "responseId": "7wrHaoLxBaOi_uMP9IW84Aw"
+    }
+   ]
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "2a97c6bc-6852-408a-83f2-8f5d3a3d27b7",
+     "status": "ok",
+     "costUSD": 0.09469,
+     "seconds": 10.5,
+     "checks": {
+      "silhouetteIoU": 0.861,
+      "silhouetteIoUInPlace": 0.878,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 0.998,
+       "head": 0.993,
+       "antenna": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 0.993,
+       "flap": 0.993
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#e98169",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.88,
+        "median": "#e6856c",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body#2@region-0": {
+        "agreement": 1.0,
+        "median": "#d0577b",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body#2@head": {
+        "agreement": 1.0,
+        "median": "#bf5170",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.884,
+        "median": "#fadbc7",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.911,
+      "passed": true
+     },
+     "responseId": "-QrHapKODsiS39IPkfHZ0Q4"
+    }
+   ]
+  }
+ },
+ "outputs": {
+  "station-portrait-600x620.png": "562f128ea7c0f34ff4136c19bb78b68ea242b99642b917914519681916667d66",
+  "station-portrait-300x310.png": "0f5f413d3b39e189653a63e0824d460bbb3e83a5a5dc6aebf5df3be0f89451e6",
+  "station-side-600x620.png": "14cdd189f221d159b5ffa23422a492ea6df4e27c4962d12a1876b1bd2968629b",
+  "station-side-300x310.png": "3d2dc8ea5086a5f903a812b75c3eae868225c39ee0585cc25983fa144be4a934",
+  "companion-280x300.png": "69d83990a632e82f7871ec6150ac22d982b8a870b7b72369c235f05613d75eb3",
+  "token-48.png": "7b7d0c24c547824ae1f36089a5b018ef049faf0b8836312a5ba9314ff8b6d415"
+ },
+ "calls": 3,
+ "costUSD": 0.28488,
+ "seconds": 25.7,
+ "finishedAt": "2026-10-08T03:16:21Z"
+}
