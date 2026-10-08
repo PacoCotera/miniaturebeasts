@@ -1,16 +1,16 @@
 # Companion 48 px redraw: handover
 
-State of round 4 on 2026-10-08. Everything below is in this folder; nothing in `prototypes/exploration/index.html` has been touched. Run every script with `python3 -I` from `art/companion-48/`.
+State of round 5 on 2026-10-08. Everything below is in this folder; nothing in `prototypes/exploration/index.html` has been touched. Run every script with `python3 -I` from `art/companion-48/`.
 
 ## Where things are
 
 - `palette/`: the 48 colours (identical to the Companion page's `PALETTE`), the shade (DARK/LIGHT), dither and mix tables, signed. `tools/pal.py` loads it and adds the ramps and the storm table `P.storm` (every colour mixed 30 % toward river, nearest palette colour; sand, clay, paper, bone, white kept). The owner confirmed this light and rejected the teal one (removed).
-- `review-place/`: the one place. `work/` holds every piece as one PNG (`props-scripted/` the scripted stone and stone-warm1 that Retro Diffusion replaced; `props-rd/`, `pawn-rd/` every snapped Retro Diffusion result; `candidates/` the pairs for the contact sheet); `sheets/` the six indexed sheets with JSON atlases (indices 0–47, 48 transparent); `still/` the composed 450×600 stills and the comparison figures; `sources/` the paid sources with sidecars, `budget.json` and `extra-spend.json`; `round1/`, `round2/` and `round3/` frozen copies of the earlier rounds (the previous round's work and still are what the contact sheets and the side-by-side compare against).
+- `review-place/`: the one place. `work/` holds every piece as one PNG (`props-scripted/` the scripted stone and stone-warm1 that Retro Diffusion replaced; `props-rd/`, `pawn-rd/` every snapped Retro Diffusion result; `candidates/` the pairs for the contact sheet); `sheets/` the six indexed sheets with JSON atlases (indices 0–47, 48 transparent); `still/` the composed 450×600 stills and the comparison figures; `sources/` the paid sources with sidecars, `budget.json` and `extra-spend.json`; `round1/` to `round4/` frozen copies of the earlier rounds (the previous round's work and still are what the contact sheets and the side-by-side compare against).
 - `review-place/README.md`: the write-up with the §2 art director's column signed. Update in place: what is true now, no history.
 
 ## Rebuild everything
 
-`sh tools/build-all.sh`: the candidates group, the six `pack.py` calls, the contact sheets at 1× and 3× (round 1 beside round 2 where a piece changed), the still (`--light storm`), `beside.py` against round 2, the mixed meadow laydown, the shore test (`shoregrid.py`), the previews, `check.py` with the four-grey renderings. The pawn is not built by this script: `tools/pawn-draw.py DIR` draws the 28 frames, `tools/aseprite-pawn.lua` assembles and exports them on the VM (below), and the exported frames go to `work/pawn/`. The hand pass (`tools/hand-pass.py`) is run once, after the builders and `rd-snap.py`, not by this script: it thins grass2, redraws the dew cup and takes the stones from `work/props-rd/` to `work/props/` (the warm stones as plain rock with a heat vein). Run `build-ground`, the Aseprite pass, `build-pawn`, `build-props` and `rd-snap` first if a source changes, then `hand-pass.py`, then `build-shore.py`, then this script.
+`sh tools/build-all.sh`: the candidates group, the six `pack.py` calls, the contact sheets at 1× and 3× (round 1 beside round 2 where a piece changed), the still (`--light storm`), `beside.py` against round 2, the mixed meadow laydown, the shore test (`shoregrid.py`), the previews, `check.py` with the four-grey renderings. The pawn is not built by this script: `tools/pawn-draw.py DIR` draws the 28 frames, `tools/aseprite-pawn.lua` assembles and exports them on the VM (below), and the exported frames go to `work/pawn/`. The hand pass (`tools/hand-pass.py`) is run once, after the builders and `rd-snap.py`, not by this script: it thins grass2, redraws the dew cup and takes the stones from `work/props-rd/` to `work/props/` (the warm stones as plain rock with a heat vein); `tools/hand-pass-props.py` does the same for the three bushes and the three outposts (run after `rd-snap.py`). Run `build-ground`, the Aseprite pass, `build-pawn`, `build-props` and `rd-snap` first if a source changes, then `hand-pass.py`, then `build-shore.py`, then this script.
 
 ## Pipeline per group
 
@@ -20,10 +20,10 @@ State of round 4 on 2026-10-08. Everything below is in this folder; nothing in `
 | Water, deep (variants a and b × 2 frames), shallows | scripted | `build-water.py work/ground` | small soft Bayer pools that fade over the outer 8 px (any variant joins any other) and crests; no rings; compose lays the variants by a seeded hash |
 | Ripple overlay sprites | scripted | `build-ripples.py work/ripples` | 3 sizes × 2 frames, in the props sheet; placed by compose-still's seeded hash, one per 3×3 tiles, only over water |
 | Shore set: 16 cardinal masks + 4 diagonal corners, × 2 frames | cut from grass1, sand, shallows, water | `build-shore.py work/ground work/shore`, tested by `shoregrid.py work/shore work/ground work/shore-test` | mask bits N=1 E=2 S=4 W=8, water on that side, rounded land corners; the diagonal corners (`shore-diag-ne/se/sw/nw`) go over a land tile with water on that diagonal and on neither adjacent side; rerun after any ground or water change |
-| Props | Pro-painted sheet `sources/C48-P-r1-a1` | `build-props.py SRC work/props` (LIFT 1.18) | the six stones and `stone-step` in `work/props/` are Retro Diffusion results after the hand pass; the round 2 scripted stones are in `work/props-scripted/` |
+| Props | Pro-painted sheet `sources/C48-P-r1-a1` | `build-props.py SRC work/props` (LIFT 1.18) | the six stones, `stone-step`, the three bushes and the three outposts in `work/props/` are Retro Diffusion results after the hand passes; the earlier scripted versions are in `work/props-scripted/` |
 | Retro Diffusion sprites | painted crops | `rd-sprites.py PROPS_SRC PAWN_SRC OUT [--only a,b] [--run]` then `rd-snap.py OUT work/props-rd work/pawn-rd` | inputs cleaned of the key halo and purple shadow; $0.18 a call; dry run without `--run` |
 | Warned strike, HUD icons, caps, bolts, 9-slices | scripted | `build-ui.py work/ui work/props` | |
-| Pawn | drawn | `pawn-draw.py DIR [--coat yellow]`, then `aseprite-pawn.lua` on the VM | masks and pixel sets, rim-rule shading; 4 facings (left mirrors right) × walk 3, creep 3, react; `build-pawn.py` (the painted-sheet down-render) is no longer used; `pawn-compare.py` makes the concept side-by-side |
+| Pawn | drawn | `pawn-draw.py DIR --coat glow`, then `aseprite-pawn.lua` on the VM | goggles and strap on the hood (no face); coat `glow` = orange with yellow-lit edges and a 3-px shade (`yellow` is round 4's, `amber` fails the four-grey check); masks and pixel sets, rim-rule shading; 4 facings (left mirrors right) × walk 3, creep 3, react; `build-pawn.py` (the painted-sheet down-render) is no longer used; `pawn-compare.py` makes the concept side-by-side |
 | Tokens | the accepted Pip painting | `build-tokens.py` | |
 | Rain tile | scripted | `build-weather.py work/weather` | 10 streaks |
 | Still | the pieces | `compose-still.py work OUT --light storm` (canopies and lit stones exempt from the table; diagonal corners over land tiles; ripples as sprites) then `beside.py` | |
@@ -50,10 +50,11 @@ Keep the script's own output and the tar stream in separate calls. Script parame
 
 ## Spend
 
-`python3 -I tools/budget.py review-place/sources` re-sums every sidecar and `extra-spend.json` into `budget.json`: $6.29 in total: round 2 $4.68 (two water tiles, two sprite batches of twelve), round 3 $0.72 (four stone calls), round 4 nothing. Retro Diffusion balance left: $1.32.
+`python3 -I tools/budget.py review-place/sources` re-sums every sidecar and `extra-spend.json` into `budget.json`: $7.01 in total: round 2 $4.68 (two water tiles, two sprite batches of twelve), round 3 $0.72 (four stone calls), round 4 nothing, round 5 $0.72 (three outposts and the shaken bush). A re-run overwrites the piece's sidecar, so `extra-spend.json` carries the overwritten call. Retro Diffusion balance left: $0.60.
 
 ## What is open
 
-- The owner's verdict on round 4 (the pawn, above all: the yellow coat against the concept's orange, the hooded explorer, the dark face with two eyes; the warm vein; the water variants).
-- Hand pass for the tree, bushes, hut, pod and tokens (the meadow, stones, dew cup, grass2 and the pawn have had one).
-- More water variants if the pool pattern still shows; a tool or lantern in the pawn's hand.
+- The owner's verdict on round 5 (the goggles, the orange-and-yellow coat, the huts and the bushes).
+- The tree, the pod and the tokens have had no hand pass.
+- The pawn's coat margin is one luma unit from a grey edge (Rec. 709); round 4's yellow is the robust alternative.
+- Retro Diffusion balance $0.60 (three calls): the huts came back at about 40 px, smaller than the painted ones.

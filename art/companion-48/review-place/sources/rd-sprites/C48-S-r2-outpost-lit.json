@@ -3,7 +3,7 @@
  "tool": "retro-diffusion",
  "style": "rd_pro__topdown",
  "size": "48x55",
- "prompt": "a small thatched hut with a lit lamp post beside it, from above, pixel art sprite on a plain white background",
+ "prompt": "a small round thatched shelter built of weathered planks with a warm glowing open doorway, from above, pixel art sprite on a plain white background",
  "remove_bg": true,
  "seed": 48,
  "input_image": {
@@ -16,9 +16,9 @@
   "file": "palette/palette.png",
   "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
  },
- "time": "2026-10-08T18:05:26Z",
+ "time": "2026-10-08T20:43:28Z",
  "checkCost": {
-  "created_at": 1791482726,
+  "created_at": 1791492208,
   "credit_cost": 0,
   "balance_cost": 0.18,
   "output_images": [],
@@ -26,16 +26,16 @@
   "output_urls": [],
   "model": "check_cost",
   "remaining_credits": 0,
-  "remaining_balance": 3.1200000000000085
+  "remaining_balance": 1.3200000000000078
  },
  "result": {
   "status": "succeeded",
-  "task_id": "0358d895-66c3-40de-8ff6-b1e136a81cb6",
-  "seconds": 31.2,
+  "task_id": "1974e5b3-3eb3-4fd4-aade-6a5afc7b5c52",
+  "seconds": 47.4,
   "balanceCostUSD": 0.18,
-  "remainingBalanceUSD": 2.94,
+  "remainingBalanceUSD": 1.14,
   "model": "rd_pro",
   "file": "C48-S-r2-outpost-lit-rd.png",
-  "sha256": "3f394ebc027ed374907e8896a9ef10691266b63efe2f417c9abaabd72ceb238c"
+  "sha256": "9a67c0e338f77eb4e942823dc9b10f394faa3b7c4dd833b8e2289029e7adc17a"
  }
 }
