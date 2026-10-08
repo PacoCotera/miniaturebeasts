@@ -753,7 +753,7 @@
    "shapeable": false,
    "copies": [
     "high",
-    "high"
+    "low"
    ],
    "looks": [
     "high"
@@ -774,7 +774,7 @@
    "shapeable": false,
    "copies": [
     "high",
-    "high"
+    "low"
    ],
    "looks": [
     "high"
@@ -806,7 +806,11 @@
     "between medium and large",
     "large"
    ],
-   "guard": "rig: head.rxOverCoreRx"
+   "guard": "rig: head.rxOverCoreRx",
+   "typical": [
+    "small",
+    "small"
+   ]
   },
   {
    "id": "growth.head-width-ratio",
@@ -828,7 +832,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.ryOverCoreRx"
+   "guard": "rig: head.ryOverCoreRx",
+   "typical": [
+    "high",
+    "low"
+   ]
   },
   {
    "id": "growth.head-depth-ratio",
@@ -850,7 +858,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.rzOverCoreRx"
+   "guard": "rig: head.rzOverCoreRx",
+   "typical": [
+    "high",
+    "low"
+   ]
   },
   {
    "id": "growth.head-lift-ratio",
@@ -872,7 +884,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.centerLiftOverCoreRx"
+   "guard": "rig: head.centerLiftOverCoreRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.muzzle-projection-ratio",
@@ -894,7 +910,11 @@
     "between short and long",
     "long"
    ],
-   "guard": "rig: muzzle.rxOverHeadRx"
+   "guard": "rig: muzzle.rxOverHeadRx",
+   "typical": [
+    "long",
+    "short"
+   ]
   },
   {
    "id": "growth.muzzle-width-ratio",
@@ -916,7 +936,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: muzzle.ryOverHeadRy"
+   "guard": "rig: muzzle.ryOverHeadRy",
+   "typical": [
+    "high",
+    "high"
+   ]
   },
   {
    "id": "growth.support-drop-ratio",
@@ -942,7 +966,11 @@
     "between medium and long",
     "long"
    ],
-   "guard": "rig: support.rootToEndDropOverCoreRx"
+   "guard": "rig: support.rootToEndDropOverCoreRx",
+   "typical": [
+    "long",
+    "short"
+   ]
   },
   {
    "id": "growth.support-splay-ratio",
@@ -964,7 +992,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: support.outwardEndOffsetOverCoreRx"
+   "guard": "rig: support.outwardEndOffsetOverCoreRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.support-radius-ratio",
@@ -990,7 +1022,11 @@
     "between slender and stout",
     "stout"
    ],
-   "guard": "rig: support.proximalRadiusOverCoreRx"
+   "guard": "rig: support.proximalRadiusOverCoreRx",
+   "typical": [
+    "stout",
+    "stout"
+   ]
   },
   {
    "id": "growth.terminal-length-ratio",
@@ -1054,7 +1090,11 @@
     "between small and large",
     "large"
    ],
-   "guard": "rig: eye.radiusOverHeadMinYZ"
+   "guard": "rig: eye.radiusOverHeadMinYZ",
+   "typical": [
+    "small",
+    "small"
+   ]
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -1076,7 +1116,11 @@
     "between close and wide",
     "wide"
    ],
-   "guard": "rig: eye.anchorYOverHeadRy"
+   "guard": "rig: eye.anchorYOverHeadRy",
+   "typical": [
+    "wide",
+    "wide"
+   ]
   },
   {
    "id": "anatomy.region-cross-exponent",
@@ -1379,6 +1423,48 @@
     "drooping"
    ],
    "guard": "rig: ears upright or drooping"
+  },
+  {
+   "id": "growth.auricular-set-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: the ear root's lateral offset over the head's half width (side or crown)",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "side",
+    "side"
+   ],
+   "looks": [
+    "side"
+   ],
+   "guard": "rig: the ear root's lateral offset over the head's half width (side or crown)",
+   "nature": "look"
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: ear width over ear length",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "broad",
+    "broad"
+   ],
+   "looks": [
+    "broad"
+   ],
+   "guard": "rig: ear width over ear length",
+   "nature": "look"
   },
   {
    "id": "appearance.sheen",
@@ -1808,14 +1894,14 @@
   }
  ],
  "counts": {
-  "carried": 46,
-  "trunk": 46,
+  "carried": 48,
+  "trunk": 48,
   "branch": 0,
   "absent": 90,
-  "locked": 20,
+  "locked": 22,
   "lockedBy": {
    "switch": 4,
-   "fixed": 16
+   "fixed": 18
   },
   "heritableLook": 19,
   "heritableDoing": 7,
@@ -1940,46 +2026,46 @@
     ],
     "growth.core-width-ratio": [
      "high",
-     "high"
+     "low"
     ],
     "growth.core-depth-ratio": [
      "high",
-     "high"
+     "low"
     ],
     "growth.head-length-ratio": [
      "small",
-     "large"
+     "small"
     ],
     "growth.head-width-ratio": [
-     "low",
-     "high"
+     "high",
+     "low"
     ],
     "growth.head-depth-ratio": [
-     "low",
-     "high"
+     "high",
+     "low"
     ],
     "growth.head-lift-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.muzzle-projection-ratio": [
-     "short",
-     "long"
+     "long",
+     "short"
     ],
     "growth.muzzle-width-ratio": [
-     "low",
+     "high",
      "high"
     ],
     "growth.support-drop-ratio": [
-     "short",
-     "long"
+     "long",
+     "short"
     ],
     "growth.support-splay-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.support-radius-ratio": [
-     "fine",
+     "stout",
      "stout"
     ],
     "growth.terminal-length-ratio": [
@@ -1992,10 +2078,10 @@
     ],
     "growth.exterior-eye-size-ratio": [
      "small",
-     "large"
+     "small"
     ],
     "growth.exterior-eye-spacing-ratio": [
-     "close",
+     "wide",
      "wide"
     ],
     "anatomy.region-cross-exponent": [
@@ -2054,6 +2140,14 @@
      "upright",
      "upright"
     ],
+    "growth.auricular-set-ratio": [
+     "side",
+     "side"
+    ],
+    "growth.auricular-width-ratio": [
+     "broad",
+     "broad"
+    ],
     "appearance.sheen": [
      "matte",
      "glossy"
@@ -2071,24 +2165,24 @@
     "kind": "type-specimen"
    }
   },
-  "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
+  "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
   "brief": "Azkon: 1 body region (B1), a head, a snout, 2 eyes, two ears, 4 legs; fur; plantigrade, fused head.",
   "bounds": {
    "min": [
-    -1.778764161466078,
-    -0.8831295930934812,
+    -1.4502066425371993,
+    -0.6607387732484273,
     0
    ],
    "max": [
-    0.8507817625,
-    0.8831295930934812,
-    1.983669690826595
+    0.8309748325,
+    0.6607387732484273,
+    1.7683623036060718
    ]
   },
   "counts": {
    "nodes": 26,
    "edges": 25,
-   "vertices": 975
+   "vertices": 1006
   }
  },
  "viability": {
@@ -2240,11 +2334,11 @@
   ],
   "growth.core-width-ratio": [
    "high",
-   "high"
+   "low"
   ],
   "growth.core-depth-ratio": [
    "high",
-   "high"
+   "low"
   ],
   "growth.terminal-length-ratio": [
    "broad",
@@ -2281,6 +2375,14 @@
   "appearance.face-mask-shape": [
    "stripes",
    "stripes"
+  ],
+  "growth.auricular-set-ratio": [
+   "side",
+   "side"
+  ],
+  "growth.auricular-width-ratio": [
+   "broad",
+   "broad"
   ],
   "appearance.emission-brightness": [
    "bright",

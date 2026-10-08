@@ -779,7 +779,11 @@
     "between medium and large",
     "large"
    ],
-   "guard": "rig: head.rxOverCoreRx"
+   "guard": "rig: head.rxOverCoreRx",
+   "typical": [
+    "small",
+    "small"
+   ]
   },
   {
    "id": "growth.head-width-ratio",
@@ -801,7 +805,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.ryOverCoreRx"
+   "guard": "rig: head.ryOverCoreRx",
+   "typical": [
+    "high",
+    "low"
+   ]
   },
   {
    "id": "growth.head-depth-ratio",
@@ -823,7 +831,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.rzOverCoreRx"
+   "guard": "rig: head.rzOverCoreRx",
+   "typical": [
+    "high",
+    "low"
+   ]
   },
   {
    "id": "growth.head-lift-ratio",
@@ -845,7 +857,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.centerLiftOverCoreRx"
+   "guard": "rig: head.centerLiftOverCoreRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.support-radius-ratio",
@@ -871,7 +887,11 @@
     "between slender and stout",
     "stout"
    ],
-   "guard": "rig: support.proximalRadiusOverCoreRx"
+   "guard": "rig: support.proximalRadiusOverCoreRx",
+   "typical": [
+    "fine",
+    "slender"
+   ]
   },
   {
    "id": "growth.terminal-length-ratio",
@@ -935,7 +955,11 @@
     "between small and large",
     "large"
    ],
-   "guard": "rig: eye.radiusOverHeadMinYZ"
+   "guard": "rig: eye.radiusOverHeadMinYZ",
+   "typical": [
+    "large",
+    "large"
+   ]
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -957,7 +981,11 @@
     "between close and wide",
     "wide"
    ],
-   "guard": "rig: eye.anchorYOverHeadRy"
+   "guard": "rig: eye.anchorYOverHeadRy",
+   "typical": [
+    "wide",
+    "wide"
+   ]
   },
   {
    "id": "growth.region-taper",
@@ -1579,6 +1607,14 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "growth.auricular-set-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
    "id": "anatomy.antenna-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -1707,7 +1743,7 @@
   "carried": 39,
   "trunk": 34,
   "branch": 5,
-  "absent": 97,
+  "absent": 99,
   "locked": 13,
   "lockedBy": {
    "switch": 2,
@@ -1835,23 +1871,23 @@
     ],
     "growth.head-length-ratio": [
      "small",
-     "large"
+     "small"
     ],
     "growth.head-width-ratio": [
-     "low",
-     "high"
+     "high",
+     "low"
     ],
     "growth.head-depth-ratio": [
-     "low",
-     "high"
+     "high",
+     "low"
     ],
     "growth.head-lift-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.support-radius-ratio": [
      "fine",
-     "stout"
+     "slender"
     ],
     "growth.terminal-length-ratio": [
      "small",
@@ -1862,11 +1898,11 @@
      "small"
     ],
     "growth.exterior-eye-size-ratio": [
-     "small",
+     "large",
      "large"
     ],
     "growth.exterior-eye-spacing-ratio": [
-     "close",
+     "wide",
      "wide"
     ],
     "growth.region-taper": [
@@ -1938,16 +1974,16 @@
     "kind": "type-specimen"
    }
   },
-  "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
+  "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
   "brief": "Lehten: 4 body regions (Rfan2), a head, 2 eyes, 6 rays, 8 flaps; skin; rooted, fused head.",
   "bounds": {
    "min": [
     -1.3144987542907807,
     -1.180517590003432,
-    -0.004528906226751173
+    -0.0029878412845134594
    ],
    "max": [
-    1.031897683341143,
+    1.0302175251228955,
     1.300191975710964,
     1.7215050078525356
    ]

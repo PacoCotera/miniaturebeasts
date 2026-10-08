@@ -1,0 +1,24 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S11",
+ "name": "Kilpo",
+ "resembles": "a turtle",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a domed shell flat underneath, a head out front on a short neck, four short splayed legs, a stub of a tail",
+ "shapes": [
+  {"dome":[50,66,30,20]},
+  {"ellipse":[50,66,30,6]},
+  {"capsule":[76,74,82,74,4]},
+  {"ellipse":[84,74,8,6]},
+  {"capsule":[66,78,72,92,5]},
+  {"capsule":[34,78,28,92,5]},
+  {"capsule":[60,80,62,92,4.5]},
+  {"capsule":[40,80,38,92,4.5]},
+  {"capsule":[20,76,14,80,2]}
+ ]
+}
