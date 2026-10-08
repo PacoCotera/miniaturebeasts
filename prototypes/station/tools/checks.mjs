@@ -45,7 +45,7 @@ for (const s of rec.shots) {
   for (const t of c.texts) if (!(t.rect[2] > 0 && t.rect[3] > 0)) fail(`${s.name}: the text "${t.text}" has no box (${t.rect}), so it would never be painted`);
   const set = new Set(c.typeLog.map((r) => r.text + "|" + r.px));
   for (const t of c.texts) if (!set.has(t.text + "|" + t.px)) fail(`${s.name}: the scene's text "${t.text}" at ${t.px} px is not in the type log`);
-  runsTotal = c.typeLog.length;
+  runsTotal = Math.max(runsTotal, c.typeLog.length);
   console.log(`${s.name.padEnd(24)} art off-palette ${String(c.art.bad).padStart(2)} of ${c.art.covered} px · type runs ${String(c.typeLog.length).padStart(4)} (${bad.length} off-spec) · frame ${c.size.join("×")} · ${c.layered ? "screen layer" : "adapter"}`);
 }
 console.log(`type log: ${runsTotal} runs, every one Inter 16, 20 or 28 px from the bundled atlases (${index.faces.map((f) => f.id).join(", ")}); text API calls on the page: ${rec.textApiCalls}`);

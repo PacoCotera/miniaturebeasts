@@ -50,6 +50,14 @@ jobs:
           set -euo pipefail
           node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
+      - name: Station layer checks
+        # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):
+        # the art layer at exactly 0 off-palette pixels; the type layer's run log (every string Inter at 16, 20 or 28 px
+        # from the bundled atlases, no text API call); every drawn region's box against its spec file; the stamp label
+        # at 120 and the rail's tab count against the frame.
+        run: |
+          set -euo pipefail
+          node prototypes/station/tools/checks.mjs
       - name: Publish the tested bundle as a release
         if: github.ref == 'refs/heads/main'
         env:

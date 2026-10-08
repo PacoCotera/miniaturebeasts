@@ -5,7 +5,7 @@
 // decodes to the pod's genome. Fails on any page error. Screenshots go to img/.
 //   node tools/journey.mjs          (PW_DIR=/path/with/node_modules/playwright when playwright is not local)
 import { createServer } from "node:http";
-import { readFileSync, existsSync, statSync, mkdirSync } from "node:fs";
+import { readFileSync, existsSync, statSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
@@ -52,7 +52,9 @@ page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resourc
 // Nothing is fetched from the network but the page's own files and the Caddy service (the fonts are bundled).
 const external = []; page.on("request", (r) => { if (!r.url().startsWith(`http://127.0.0.1:`)) external.push(r.url()); });
 mkdirSync(path.join(here, "../img"), { recursive: true });
-const shot = (name) => page.screenshot({ path: path.join(here, `../img/${name}.png`), fullPage: false });
+// Every screenshot point records what the layer checks read (tools/checks.mjs): the layers' palette counts, the type log, the scene's regions.
+const checks = { shots: [], textApiCalls: 0 };   // the text API's calls are summed over the page loads
+const shot = async (name) => { checks.shots.push({ name, check: await page.evaluate(() => window.__st.check()) }); return page.screenshot({ path: path.join(here, `../img/${name}.png`), fullPage: false }); };
 const fixture = readFileSync(path.join(here, "../tests/fixtures/save-v8-schema1.json"), "utf8");
 const companionBefore = JSON.stringify({ ...JSON.parse(fixture), st: undefined });
 await page.addInitScript(() => { window.__fillTextCalls = 0; for (const f of ["fillText", "strokeText", "measureText"]) { const o = CanvasRenderingContext2D.prototype[f]; CanvasRenderingContext2D.prototype[f] = function (...a) { window.__fillTextCalls++; return o.apply(this, a); }; } });
@@ -300,6 +302,7 @@ expect(stored.st.schema === 2 && stored.st.tray.length === 1 && stored.st.mibis.
 await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
 
 await assertType("the journey");
+checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
 expect((await st()).tray.length === 0 && !(await sv()).seed, "a fresh world: no save, no pods");
@@ -307,6 +310,11 @@ await page.keyboard.press("KeyD"); await page.waitForTimeout(150);
 expect(/No Companion world yet/.test(await page.evaluate(() => window.__st.msg)), "docking without a world says so");
 for (const k of ["KeyR", "ArrowRight", "Enter", "KeyL", "KeyB", "KeyD", "KeyH"]) { await page.keyboard.press(k); await page.waitForTimeout(150); }
 await page.waitForTimeout(300); await shot("page-fresh");
+checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
+if (checks.textApiCalls !== 0) { errors.push("the page called the canvas text API " + checks.textApiCalls + " times"); console.error("FAIL text API calls " + checks.textApiCalls); }
+const checksFile = process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
+writeFileSync(checksFile, JSON.stringify(checks));
+console.log("recorded " + checks.shots.length + " screenshot points for the layer checks in " + checksFile);
 await assertType("the fresh world"); await browser.close(); server.close(); caddy.stop(); caddyServer.close();
 if (errors.length) { console.error("journey failed:\n" + errors.join("\n")); process.exit(1); }
 console.log("journey ok · screenshots in img/");
