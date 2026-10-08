@@ -427,6 +427,21 @@ def controls_text_two_step(legend, view):
     return t
 
 
+WING_LINE = "The wings stay folded along the body exactly as drawn; never re-laid, lifted or spread."
+
+
+def plan_lines(legend):
+    """The loader's own lines for the plan, said once after the description: the rig's rules the painter
+    must not undo. Winged plans (any flap part): the resting wings fold along the body (envelope E9)."""
+    lines = []
+    if any(p["part"] == "flap" for p in legend["parts"]): lines.append(WING_LINE)
+    return lines
+
+
+def with_plan_lines(legend, description):
+    return " ".join([description] + plan_lines(legend))
+
+
 def soften(path, radius=2):
     return png_bytes(pad_square(Image.open(path).convert("RGB")).filter(ImageFilter.GaussianBlur(radius)))
 
@@ -465,7 +480,7 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
     reasons = None; drawing = None
     for attempt in (1, 2):
         imgs = [(f"key.{view}.large.png:softened", soften(os.path.join(c, f"key.{view}.large.png"))), (f"index.{view}.large.png:softened", soften(os.path.join(c, f"index.{view}.large.png"))), ("board:02-miniature-lives.png", board)]
-        fields = {"controls": controls_text_two_step(legend, view), "description": legend["description"]["text"], "generate": STEP1_WORDS}
+        fields = {"controls": controls_text_two_step(legend, view), "description": with_plan_lines(legend, legend["description"]["text"]), "planLines": plan_lines(legend), "generate": STEP1_WORDS}
         text = fields["controls"] + "\n\nThe creature: " + fields["description"] + "\n\n" + fields["generate"]
         if reasons: text += "\n\nA previous drawing was rejected because " + "; ".join(reasons) + ". This time keep the parts of image 2 exactly, part for part."
         rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step1", "step": 1, "attempt": attempt, "fields": fields, "reasonsGiven": reasons}, os.path.join(d, "raw"), f"{view}-step1-{attempt}.png")

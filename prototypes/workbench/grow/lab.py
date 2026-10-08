@@ -86,9 +86,9 @@ def prompt_set():
 def build_from_set(sp, legend, sheet, variant, pset):
     """A variant of the art prompter's set, its texts used as written."""
     controls = S.controls_text_two_step(legend, "portrait")
-    description = (pset["template"] or "The creature: {description}").replace("{description}", legend["description"]["text"])
+    description = S.with_plan_lines(legend, (pset["template"] or "The creature: {description}").replace("{description}", legend["description"]["text"]))
     species_words = pset["species"](sp) or f"The species: {sheet['signature']}. {sheet['surfaceWords']}"
-    fields = {"controls": controls, "description": description, "species": species_words, "artDirection1": pset["art1"] or "", "artDirection2": pset["art2"] or S.ART_DIRECTION, "generate": S.STEP1_WORDS, "transfer": S.STEP2_WORDS}
+    fields = {"controls": controls, "description": description, "planLines": S.plan_lines(legend), "species": species_words, "artDirection1": pset["art1"] or "", "artDirection2": pset["art2"] or S.ART_DIRECTION, "generate": S.STEP1_WORDS, "transfer": S.STEP2_WORDS}
     fill = lambda t: t.format(**fields) if t else None
     step1 = fill(variant.get("step1")) or "\n\n".join(x for x in [fields["artDirection1"], controls, description, species_words, fields["generate"]] if x)
     step2 = fill(variant.get("step2")) or "\n\n".join(x for x in [fields["artDirection2"], species_words, fields["transfer"]] if x)
@@ -145,7 +145,8 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
     sheet = species_sheet(sp); sheet["species"] = sp; reference = reference_for(sp, sheet)
     ctrl = {p: os.path.join(d0, "controls", f"{p}.portrait.large.png") for p in ("silhouette", "index", "slots")}
     variants = pset["variants"]; v5 = next(v for v in variants if v["id"] in ("v5", "v6") and "step1" in v and "step2" in v)
-    fill_fields = {"controls": S.controls_text_two_step(legend, "portrait"), "description": (pset["template"] or "{description}").replace("{description}", legend["description"]["text"]), "species": pset["species"](sp) or "", "artDirection1": pset["art1"] or "", "artDirection2": pset["art2"] or "", "generate": S.STEP1_WORDS, "transfer": S.STEP2_WORDS}
+    # The description carries the loader's plan lines once (the folded wings of a winged plan, E9), whatever the set's words.
+    fill_fields = {"controls": S.controls_text_two_step(legend, "portrait"), "description": S.with_plan_lines(legend, (pset["template"] or "{description}").replace("{description}", legend["description"]["text"])), "species": pset["species"](sp) or "", "artDirection1": pset["art1"] or "", "artDirection2": pset["art2"] or "", "generate": S.STEP1_WORDS, "transfer": S.STEP2_WORDS}
     fill = lambda t: t.format(**fill_fields)
     only_models = [m for m in MODELS if m in (opt_models or MODELS)]
     base_id = next((v["id"] for v in variants if "step1" in v and "step2" in v), "v5")  # the set's baseline: v5 or v6
@@ -174,7 +175,7 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
                 drawing = None
                 if "step1" in v:
                     text1 = fill(v["step1"]); order1 = v.get("imageOrder1") or ["index", "reference", "key"]
-                    rec1, im1 = S.call_logged(text1, images_for(d0, legend, sheet, order1), {**common, "purpose": "lab-step1", "step": 1, "attempt": 1, "fields": {"text": text1, "imageOrder": order1}}, os.path.join(out, "raw"), "step1.png", model)
+                    rec1, im1 = S.call_logged(text1, images_for(d0, legend, sheet, order1), {**common, "purpose": "lab-step1", "step": 1, "attempt": 1, "fields": {"text": text1, "imageOrder": order1, "planLines": S.plan_lines(legend)}}, os.path.join(out, "raw"), "step1.png", model)
                     result["step1"] = {"callId": rec1["id"], "status": rec1["status"], "costUSD": rec1.get("costUSD"), "seconds": rec1.get("seconds"), "imageOrder": order1}
                     if im1 is not None:
                         rec1["checks"] = {**S.check(im1, ctrl, legend, S.DRAWING_TOL), "gated": False}; result["step1"]["checks"] = rec1["checks"]
@@ -195,7 +196,7 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
                     print(sp, v["id"], mkey, f"s{k}", "step 2", rec2["status"], f"${rec2.get('costUSD', 0) or 0:.3f}", flush=True)
                 result["costUSD"] = round(result["costUSD"], 4)
                 json.dump(result, open(os.path.join(out, "prompt.json"), "w"), indent=1)
-    sheet_set(sp, d0, pset)
+    sheet_set(sp, d0, pset); sheet_consistency(pset)
 
 
 def sheet_set(sp, d0, pset):
@@ -250,6 +251,71 @@ def sheet_set(sp, d0, pset):
         for j, ln in enumerate(textwrap.wrap(v.get("change", ""), 88)[:12]): d.text((x, y + 13 * (line + j)), ln, fill=ink)
     os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
     fname = f"lab-{sp}.png" if SET_NAME == "prompt-lab" else f"lab-{sp}-{SET_NAME}.png"
+    sheet.save(os.path.join(HERE, "sheets", fname)); print("sheet", fname, sheet.size)
+
+
+CONSISTENCY_SPECIES = ["S01", "S09", "S12"]
+
+
+def sheet_consistency(pset, species=CONSISTENCY_SPECIES, mkey="pro"):
+    """The consistency test: the three type specimens on one sheet, a row per variant (the previous set's
+    baseline on top for comparison), the species as column groups, Pro only, two samples each: the two
+    paintings large with their drawings small beside them, so sameness of style is judged across the row.
+    sheets/lab-consistency-<set>.png."""
+    if SET_NAME == "prompt-lab": return
+    variants = [v for v in pset["variants"] if v["id"] != "1BG-anti-artefact-plain"]
+    rows = []  # (variant, {species: {k: (record, dir)}})
+    prev = {"v6": ("v5 1B", "the v5 pick (1B anti-artefact) for comparison", lambda sp, k: os.path.join(LAB, sp, "1B-anti-artefact", mkey, f"s{k}"))}.get(SET_NAME)
+    if prev is None and SET_NAME != "v6": prev = ("v6", "the art director's v6 for comparison", lambda sp, k: os.path.join(LAB, sp, "v6", "v6", mkey, f"s{k}"))
+    def gather(dir_of):
+        cells = {}
+        for sp in species:
+            for k in (1, 2):
+                d = dir_of(sp, k); pj = os.path.join(d, "prompt.json")
+                if os.path.exists(pj): cells.setdefault(sp, {})[k] = (json.load(open(pj)), d)
+        return cells
+    if prev:
+        cells = gather(prev[2])
+        if cells: rows.append(({"id": prev[0], "name": prev[1], "change": ""}, cells))
+    for v in variants:
+        cells = gather(lambda sp, k: cell_dir(sp, v["id"], mkey, k))
+        if cells: rows.append((v, cells))
+    if not rows: return
+    P = 240, 248; D = 120, 124; gap = 8; textw = 480; ink = (40, 40, 50); grey = (150, 150, 160)
+    groupw = 2 * (P[0] + gap) + D[0] + gap; rowh = P[1] + 44
+    W = gap + len(species) * (groupw + gap) + textw; H = 56 + len(rows) * rowh
+    sheet = Image.new("RGB", (W, H), (255, 255, 255)); d = ImageDraw.Draw(sheet)
+    names = {sp: species_sheet(sp)["name"] for sp in species}
+    spent = sum(c[0]["costUSD"] for _, cells in rows for per in cells.values() for c in per.values())
+    d.text((gap, 6), f"The consistency test: the {SET_NAME} prompt set (grow/prompt-lab/{SET_NAME}) on the three type specimens, {MODELS[mkey]} only, two samples a cell; the paintings large, their drawings small. One row, one style? ${spent:.2f} on this sheet. Checks logged, not gated.", fill=ink)
+    for i, sp in enumerate(species):
+        x = gap + i * (groupw + gap)
+        d.text((x, 24), f"{sp} {names[sp]}: s1 painting, s2 painting, the two drawings", fill=ink)
+    d.text((gap + len(species) * (groupw + gap), 24), "the variant: its change, the cost per try and the checks", fill=ink)
+    for r, (v, cells) in enumerate(rows):
+        y = 44 + r * rowh
+        for i, sp in enumerate(species):
+            x = gap + i * (groupw + gap); per = cells.get(sp, {})
+            for k in (1, 2):
+                if k in per:
+                    p = os.path.join(per[k][1], "step2-300x310.png")
+                    if os.path.exists(p): sheet.paste(Image.open(p).convert("RGB").resize(P, Image.LANCZOS), (x, y))
+                    else: d.text((x + 80, y + 115), "no painting", fill=grey)
+                else: d.text((x + 90, y + 115), "not run", fill=grey)
+                x += P[0] + gap
+            for k in (1, 2):
+                if k in per:
+                    p = os.path.join(per[k][1], "step1-300x310.png")
+                    if os.path.exists(p): sheet.paste(Image.open(p).convert("RGB").resize(D, Image.LANCZOS), (x, y + (k - 1) * (D[1] + 0)))
+            def summ(c):
+                c1 = c.get("step1", {}).get("checks") or {}; c2 = c.get("step2", {}).get("checks") or {}
+                return f"s1 {'pass' if c1.get('passed') else 'fail' if c1 else 'shared'}, s2 {'pass' if c2.get('passed') else 'fail' if c2 else '-'}"
+            d.text((x - 2 * (P[0] + gap), y + P[1] + 2), " | ".join(f"s{k} ${per[k][0]['costUSD']:.3f} ({summ(per[k][0])})" for k in (1, 2) if k in per), fill=(90, 90, 100))
+        x = gap + len(species) * (groupw + gap)
+        d.text((x, y), f"{v['id']}  {v['name']}", fill=ink)
+        for j, ln in enumerate(textwrap.wrap(v.get("change", ""), 80)[:17]): d.text((x, y + 16 + 13 * j), ln, fill=ink)
+    os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
+    fname = f"lab-consistency-{SET_NAME}.png"
     sheet.save(os.path.join(HERE, "sheets", fname)); print("sheet", fname, sheet.size)
 
 
@@ -353,6 +419,7 @@ if __name__ == "__main__":
             if pset:
                 idx = json.load(open(os.path.join(S.REF, s, "index.json"))); d0 = S.prepare(s, os.path.join(S.REF, s, idx["members"][0]["dir"], "genome.json"))["dir"]; sheet_set(s, d0, pset)
             else: sheet_for(s)
+        if pset: sheet_consistency(pset)  # the three species on one sheet (later sets)
     else:
         if not sp: print(__doc__); sys.exit(2)
         pset = prompt_set()
