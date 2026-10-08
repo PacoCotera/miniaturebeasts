@@ -21,19 +21,19 @@
   },
   "twostep": {
    "individuals": 18,
-   "calls": 46,
-   "usdPerIndividual": 0.2493,
+   "calls": 43,
+   "usdPerIndividual": 0.2332,
    "firstAttemptPassRate": 0.389,
    "plainServed": 11,
    "retries": 20
   }
  },
- "spentAllVersionsUSD": 22.633,
- "calls": 17,
- "callsOk": 16,
- "callUSDMean": 0.0946,
- "callSecondsMean": 10.8,
- "spentUSD": 1.515,
+ "spentAllVersionsUSD": 26.508,
+ "calls": 57,
+ "callsOk": 56,
+ "callUSDMean": 0.0963,
+ "callSecondsMean": 12.4,
+ "spentUSD": 5.391,
  "individuals": 0,
  "bySpecies": {}
 }

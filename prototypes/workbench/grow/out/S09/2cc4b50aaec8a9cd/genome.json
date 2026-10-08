@@ -1,0 +1,255 @@
+{
+ "schema": "mb-genome/2",
+ "species": "S09",
+ "frameVersion": 2,
+ "loci": {
+  "structure.attachment-position": [
+   "low",
+   "low"
+  ],
+  "appearance.body-palette": [
+   "cobalt",
+   "cobalt"
+  ],
+  "appearance.underside-palette": [
+   "butter",
+   "butter"
+  ],
+  "appearance.surface-texture": [
+   "ridged",
+   "ridged"
+  ],
+  "movement.contact-phase": [
+   "low",
+   "high"
+  ],
+  "movement.cycle-rate": [
+   "low",
+   "high"
+  ],
+  "movement.stride-preference": [
+   "low",
+   "high"
+  ],
+  "movement.turn-control": [
+   "low",
+   "high"
+  ],
+  "movement.membrane-stroke": [
+   "low",
+   "high"
+  ],
+  "movement.membrane-coordination": [
+   "low",
+   "high"
+  ],
+  "energy.actuator-capacity": [
+   "low",
+   "high"
+  ],
+  "energy.reserve-capacity": [
+   "low",
+   "high"
+  ],
+  "energy.action-efficiency": [
+   "low",
+   "high"
+  ],
+  "development.regional-growth": [
+   "central",
+   "central"
+  ],
+  "structure.join-neck-ratio": [
+   "high",
+   "high"
+  ],
+  "anatomy.crown-presence": [
+   "on",
+   "on"
+  ],
+  "anatomy.exterior-eye-presence": [
+   "on",
+   "on"
+  ],
+  "anatomy.crown-form": [
+   "pointed",
+   "pointed"
+  ],
+  "growth.core-half-length": [
+   "large",
+   "large"
+  ],
+  "growth.core-width-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.core-depth-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.head-length-ratio": [
+   "small",
+   "small"
+  ],
+  "growth.head-width-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.head-depth-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.head-lift-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.support-drop-ratio": [
+   "long",
+   "long"
+  ],
+  "growth.support-splay-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.support-radius-ratio": [
+   "fine",
+   "slender"
+  ],
+  "growth.terminal-length-ratio": [
+   "broad",
+   "broad"
+  ],
+  "growth.terminal-depth-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.exterior-eye-size-ratio": [
+   "small",
+   "small"
+  ],
+  "growth.exterior-eye-spacing-ratio": [
+   "close",
+   "close"
+  ],
+  "growth.crown-height-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.wing-span-ratio": [
+   "long",
+   "long"
+  ],
+  "growth.wing-chord-ratio": [
+   "wide",
+   "wide"
+  ],
+  "growth.wing-sweep-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.region-bend": [
+   "down",
+   "down"
+  ],
+  "growth.region-taper": [
+   "strong",
+   "strong"
+  ],
+  "growth.join-throat-ratio": [
+   "thin",
+   "thin"
+  ],
+  "anatomy.region-cross-exponent": [
+   "rounded-square",
+   "rounded-square"
+  ],
+  "anatomy.region-longitudinal-form": [
+   "ovoid",
+   "ovoid"
+  ],
+  "anatomy.contact-terminal-form": [
+   "wedge",
+   "wedge"
+  ],
+  "appearance.fur-length": [
+   "short",
+   "long"
+  ],
+  "appearance.fur-flow": [
+   "axial",
+   "oblique"
+  ],
+  "anatomy.axial-tail-presence": [
+   "on",
+   "on"
+  ],
+  "growth.axial-tail-length-ratio": [
+   "short",
+   "short"
+  ],
+  "growth.axial-tail-width-ratio": [
+   "fine",
+   "fine"
+  ],
+  "growth.axial-tail-bend": [
+   "down",
+   "down"
+  ],
+  "cognition.exploration-tendency": [
+   "reserved",
+   "reserved"
+  ],
+  "cognition.arousal-threshold": [
+   "low",
+   "high"
+  ],
+  "appearance.fur-reach": [
+   "body",
+   "body"
+  ],
+  "anatomy.beak-presence": [
+   "on",
+   "on"
+  ],
+  "growth.beak-length-ratio": [
+   "short",
+   "short"
+  ],
+  "appearance.feather-presence": [
+   "on",
+   "on"
+  ],
+  "appearance.feather-length": [
+   "short",
+   "long"
+  ],
+  "growth.feather-crest": [
+   "low",
+   "low"
+  ],
+  "appearance.flap-marking": [
+   "spots",
+   "spots"
+  ],
+  "appearance.flap-translucency": [
+   "opaque",
+   "opaque"
+  ],
+  "appearance.sheen": [
+   "matte",
+   "glossy"
+  ],
+  "appearance.emission-brightness": [
+   "bright",
+   "bright"
+  ],
+  "appearance.emission-length": [
+   "long",
+   "long"
+  ]
+ },
+ "origin": {
+  "kind": "extreme",
+  "name": "all-low"
+ }
+}

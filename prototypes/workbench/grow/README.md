@@ -2,7 +2,7 @@
 
 The standard look of every mibi is its Grow painting: the cloud model's Station-size painting over the rig's control passes, derived down to the Companion and the token ([art-pipeline.md](../../../design/proposals/art-pipeline.md) v2, the lead's briefs of 2026-10-08). This is that service, run on the sandbox VM: a genome in, the painted set out, checked, with one named retry, the files laid out by genome hash, every call logged with its cost. Nothing here is accepted art; no painted master or studio screen was touched.
 
-**Spent: $21.12** over three prompt versions, 220 Gemini calls (`gemini-3.1-flash-image`, 1K output, $0.096 a call mean). Every call is in [prompts.json](prompts.json) with its fields, image inputs by name and SHA-256, response id, usage, cost, seconds and the checks it passed or failed. No key material is stored. The current state is **prompt v3**, reported below; v2 (the three-field prompt with the silhouette gate) and v1 (the stage 1 template) stay in prompts.json by `promptVersion`, and each individual's v2 outputs stay under `out/<species>/<sha>/v2/`.
+**Spent: $26.51** over four prompt versions, 277 Gemini calls (`gemini-3.1-flash-image`, 1K output, $0.096 a call mean). Every call is in [prompts.json](prompts.json) with its fields, image inputs by name and SHA-256, response id, usage, cost, seconds and the checks it passed or failed. No key material is stored. The current state is **prompt v4**, reported first below; v3's re-run follows; v2 (the three-field prompt with the silhouette gate) and v1 (the stage 1 template) stay in prompts.json by `promptVersion`, and each individual's v2 outputs stay under `out/<species>/<sha>/v2/`.
 
 ## What is here
 
@@ -12,6 +12,28 @@ The standard look of every mibi is its Grow painting: the cloud model's Station-
 - `species/<species>/`: the species' reference painting (its type specimen, painted once with the accepted Pip as its reference) and `reference.json`. The Loika's reference is the accepted Pip itself.
 - `out/<species>/<sha256[:16]>/`: per individual the painted `station-portrait-600x620.png` and `-300x310.png`, `station-side-…`, the derived `companion-280x300.png` and `token-48.png`, `manifest.json` (the genome's hashes, the description, the reference used, per view the attempts with their checks and cost, the served outputs with SHA-256); `v2/` the previous run's outputs; `variants/<trial>/` the control trials and variant B (`step1-portrait-…` the HiBit drawing beside the step 2 painting). `controls/`, `plain/` and the raw 1024² outputs (`raw/`) are not committed: the controls and the placeholder are reproducible from the genome, the raw outputs' SHA-256 are in prompts.json.
 - `sheets/<species>.png`: the owner's sheet, device size at 1×, per individual: the previous run's portrait (v2), **A** the portrait and side (one step, blurred control, structural checks), the derived Companion and token, the shaded control as sent, the crisp and low-res control trials, **B** the two-step portrait (step 2, the rich treatment) and its step 1 HiBit drawing; per row the digest, the cost and per view the status, calls and scores. `sheets/prompt-v1/` keeps the first version's Loika sheet.
+
+## Prompt v4: the cute envelope, tested on the worst cases
+
+The owner's reframing after the v3 re-run: the painter was faithfully painting the wrong structure, and the aim is not a Pip replica but that every genome expression yields a cute pet. So the rig got a **cute envelope** (`framework/envelope.mjs`, eight rules E1–E8 with their reasons, applied as clamps and derived ratios in the rig and as pool bounds in the frames; the workbench README lists them), with Pip's measures as one calibration point for the Loika (catalogue 9: a wide, deep, ovoid body, a huge eye at the head's middle, a stub cream snout, a belly field half the depth, rounded feet, a leaf crest). Variant B is the recipe: crisp controls, step 1 draws only the markings the description names with a drawing's proportion tolerance of 25 %, step 2 transfers the treatment with the species reference (the accepted Pip for the Loika).
+
+**The test** (`grow/extremes.mjs`): every open proportion locus of S01, S09 and S12 rolled to its extremes and the corners (all low, all high, alternating, small head with a big body and the reverse), the controls rendered, the ugliest by my eye painted with B beside the type specimen. S09 has fourteen open proportion loci (43 cases; the twelve ugliest: the low head lift, the long beak, the thin waist, the down-bent back, the narrow body, the deep body, and the six corners); S01 and S12 have one each (eye size; hind-body taper), so their extremes collapse to two distinct genomes apiece. Contact sheets `sheets/extremes-<species>.png`; the painted sheets `sheets/extremes-<species>-B.png` (control, step 1, step 2, the locus values of the case); the Loika's calibrated individuals and the Pip-silhouette experiment `sheets/S01-pip.png`.
+
+| | S09 worst cases (13) | S01 (2) | S12 (3) | S01 calibrated individuals (6) | Pip's own silhouette as the control |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| step 1 passes first attempt | 3 | 1 | 0 | 2 | 0 (then yes) |
+| served painted | 9 of 13 | 1 of 2 | 0 of 3 | 5 of 6 | yes |
+| calls, cost | 32, $3.09 | 4, $0.39 | 6, $0.59 | 13, $1.26 | 3, $0.29 |
+
+Prompt v4 spent $5.39 in 57 calls; all versions $26.51.
+
+What the sheets show:
+
+- **The Loika on the calibrated rig is a pet** (`S01-pip.png`): round body, big eyes, cream snout and belly, leaf crest; beside each the previous B on the old rig is a boxed dog. The step 2 paintings are the closest to Pip of any run. The type specimen itself failed step 1 twice on the slot check (the drawing split the body into a dark cap and a cream body) and is served plain; its five individuals passed.
+- **The experiment** (last row of `S01-pip.png`): with Pip's own HiBit silhouette and pigments as the control, step 1 draws a near-Pip and step 2 paints a Pip-like Loika that passes every check. The painter does what it is given: the structure is the lever, as the owner read.
+- **The bird's worst cases hold** (`extremes-S09-B.png`): under the envelope the small-head and all-low corners keep a head and eyes a pet reads with, and 9 of 13 cases are served as cute birds; the long beak with huge eyes (all-high), the alternating corner, the narrow body and the down-bent back failed step 1 twice, on the slot check (the drawing recolours the wings or the belly) and the band (a re-laid wing). Step 1 passes first attempt only 3 of 13 times: the drawing step is the loose one, the transfer is reliable.
+- **The moth is the envelope's open problem** (`extremes-S12-B.png`): none of its three cases passed step 1; the drawings add coloured blobs and re-lay the flat wing. The envelope says nothing yet about a flat flap pair laid over the back, and the moth's portrait is a board with legs; its token is unreadable for the same reason. A flap rule (a resting wing pair folded along the body, not a flat plane) is the next envelope rule.
+- **Under the envelope, 13 of 16 species still read as their kind** by the parts check; the raccoon, the otter and the turtle sit within 0.03 of their hand-drawn targets, drawn to the old shapes, to be redrawn.
 
 ## The call (prompt v3)
 
