@@ -1,0 +1,117 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 3,
+ "controlVariant": "crisp",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "246ccf94-cfcc-4f46-831b-90a076163fcf",
+     "status": "ok",
+     "costUSD": 0.0933,
+     "seconds": 20.8,
+     "checks": {
+      "silhouetteIoU": 0.964,
+      "silhouetteIoUInPlace": 0.967,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 1.0,
+       "antenna": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 1.0
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.261,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.239,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.471,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.755,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#e17c5d",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.99,
+        "median": "#e58564",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.999,
+        "median": "#fdd9c8",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.001,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.998,
+      "passed": true
+     },
+     "responseId": "ORPHauCIAvPm-sAPlc2ekQs"
+    }
+   ]
+  }
+ },
+ "species": "S12",
+ "name": "Peplos",
+ "level": "individual",
+ "genomeDigest": "S12-0b5843e8",
+ "genomeSha256": "9587cfdd7ad5944492853b31a51d4ecd1ed94a65a0e19a54949c559c6fdf91e8",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Coat: colour marigold and coral; translucency between; flap markings spots; second colour peach and cream. Shape: hind body between. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Peplos)",
+  "name": "species/S12/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T03:51:20Z",
+ "outputs": {
+  "station-portrait-600x620.png": "ed426cdee53ffcc3a2fa75c184b79db86acfe5129d18c4d661e0291ac0cd1a86",
+  "station-portrait-300x310.png": "a9a3076c1b4d3af29acb5876ee3babe9faf9b50e5aa24f855f6966784665f571",
+  "companion-280x300.png": "180c9b2d269869a12aca89b61e4e9459c67a0e303678a1883c66a7858d753e12",
+  "token-48.png": "d90ae34297597a3704b40948451d2e2f6de917df29a47a3525789329f9eb9034"
+ },
+ "calls": 1,
+ "costUSD": 0.0933,
+ "seconds": 20.8,
+ "finishedAt": "2026-10-08T03:51:51Z"
+}
