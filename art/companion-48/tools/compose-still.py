@@ -2,7 +2,7 @@
 HUD 32 / view 532 / bottom line 36; the ground and props through the STORM table (round 2: a blue cast, no DARK
 step; --light plain for no table, --light dark for round 1's DARK step), the pawn and the mibis never; rain over
 the view; the message box, the name tag, the key caps and the condition bolts from the ui sheet; the page's
-bitmap font at 2x. usage: python3 -I compose-still.py WORK_DIR OUT.png [--light storm|plain|dark] [--hut A|B|C|D]"""
+bitmap font at 2x. usage: python3 -I compose-still.py WORK_DIR OUT.png [--light storm|plain|dark] [--hut A|B|C|D] [--ground forest]"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
@@ -11,6 +11,8 @@ import pal, quant, font
 P = quant.P; C = P.index
 work, outp = sys.argv[1], sys.argv[2]
 light = sys.argv[sys.argv.index("--light") + 1] if "--light" in sys.argv else "storm"
+FOREST = "--ground" in sys.argv and sys.argv[sys.argv.index("--ground") + 1] == "forest"   # the candidate: the meadow set a step deeper into forest green, with tufts
+GDIR, SDIR = ("ground-forest", "shore-forest") if FOREST else ("ground", "shore")
 hut = sys.argv[sys.argv.index("--hut") + 1] if "--hut" in sys.argv else None   # a hut option (A to D) in place of the outpost
 def load(group, name):
     im = Image.open(os.path.join(work, group, name + ".png")).convert("RGBA"); return quant.quantize(np.asarray(im))
@@ -40,7 +42,10 @@ rng = np.random.RandomState(7)
 vrng = np.random.RandomState(31)
 var = [["b" if vrng.rand() < 0.5 else "" for c in range(COLS)] for r in range(ROWS)]   # the water variant of each cell, by a seeded hash
 land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "flowers2", (0, 7): "tall1", (4, 9): "flowers1", (5, 11): "tall2", (9, 3): "tall1"}
+_ng = list(P.storm)
+for _n in ("pine", "forest", "leaf", "grass", "sprout", "lime"): _ng[P.index[_n]] = P.index[_n]     # the greens keep their colours: the forest ground is not cast toward teal
 DARK = {"storm": P.storm, "plain": None, "dark": P.dark}[light]
+GT = _ng if FOREST else DARK
 for r in range(ROWS):
     for c in range(COLS):
         if water[r][c]:
@@ -48,16 +53,16 @@ for r in range(ROWS):
         else:
             m = (water[r - 1][c] if r > 0 else False) * 1 + (water[r][c + 1] if c < COLS - 1 else False) * 2 + (water[r + 1][c] if r < ROWS - 1 else False) * 4 + (water[r][c - 1] if c > 0 else False) * 8
             t = f"shore-{m:02d}-1" if m else land.get((c, r), f"grass{1 + rng.randint(4)}")
-        blit(load("ground", t) if not t.startswith("shore") else load("shore", t), OX + c * TS, OY + r * TS, DARK, VIEW)
+        blit(load(GDIR, t) if not t.startswith("shore") else load(SDIR, t), OX + c * TS, OY + r * TS, GT, VIEW)
         if not water[r][c]:   # a land tile with no water on the two sides of a corner but water on that diagonal gets the diagonal corner over it
             def wat(rr, cc): return 0 <= rr < ROWS and 0 <= cc < COLS and water[rr][cc]
             for nm, dr, dc, a, b in (("ne", -1, 1, 1, 2), ("se", 1, 1, 2, 4), ("sw", 1, -1, 4, 8), ("nw", -1, -1, 8, 1)):
-                if wat(r + dr, c + dc) and not (m & a) and not (m & b): blit(load("shore", f"shore-diag-{nm}-1"), OX + c * TS, OY + r * TS, DARK, VIEW)
+                if wat(r + dr, c + dc) and not (m & a) and not (m & b): blit(load(SDIR, f"shore-diag-{nm}-1"), OX + c * TS, OY + r * TS, GT, VIEW)
 # the deep water: a soft wavy edge instead of a tile boundary, deep1 drawn over the water where the pond falls away
 for r in range(ROWS):
     for c in range(COLS):
         if not water[r][c] or c < 7 or r < 8: continue
-        deep = load("ground", "deep1" + var[r][c]); tile = np.full((TS, TS), -1, dtype=np.int64)
+        deep = load(GDIR, "deep1" + var[r][c]); tile = np.full((TS, TS), -1, dtype=np.int64)
         for yy in range(TS):
             for xx in range(TS):
                 gx, gy = c * TS + xx, r * TS + yy
