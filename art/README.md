@@ -17,6 +17,7 @@ holds the assets.
 | `companion-concept/` | Original Companion field-partner concept and early studies | Original reference | <img src="companion-concept/field-partner-concept.png" width="300" alt="field-partner-concept.png"><br><em>field-partner-concept.png: original field-partner concept.</em> |
 | `concept-homepage/` | Generated homepage concept art for [`concept-brief-homepage.md`](concept-brief-homepage.md), with prompts and manifests | Candidates, none accepted | <img src="concept-homepage/hero-kit.png" width="300" alt="hero-kit.png"><br><em>hero-kit.png: H1, the kit render, a candidate.</em> |
 | `logo/` | Three logo and monogram proposals with a contact sheet | Proposals | <img src="logo/contact-sheet.png" width="300" alt="contact-sheet.png"><br><em>contact-sheet.png: logo proposals A, B and C.</em> |
+| `species-marks/` | The sixteen species glyphs redrawn as abstract marks, old beside new at 1×, 3× and 6×, with the sources | Candidate; art director to sign | <img src="species-marks/contact-1x-3x-6x.png" width="300" alt="contact-1x-3x-6x.png"><br><em>contact-1x-3x-6x.png: old glyph beside new mark, per species.</em> |
 
 Original images keep their exact bytes; manifests and
 [`../import-manifest.json`](../import-manifest.json) record hashes. Some READMEs

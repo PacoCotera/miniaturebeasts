@@ -2,7 +2,7 @@
 
 Hand-drawn placeholder pods for the Station's Pods screen and the pod rack's wells: three size classes (160×192, 136×168, 112×144) and the well size (32×40), each with a sealed and an identified state, the species glyphs, the seal band and a still glow stand-in. Plainly placeholders: simple calm volumes, no face, no decoration, no pattern. Every pixel is on the Station's 62-colour palette ([`station.json`](../../../palettes/station.json)), drawn at 1×, with 1 px ramp outlines (never black), clean bands, no anti-aliasing and no Bayer.
 
-**Status: signed by the art director, 2026-10-08.** Corrected and signed in the art director's pass below (the well-size pod redrawn, two pigment ramps corrected); the builder may place these in front of the owner as placeholders.
+**Status: signed by the art director, 2026-10-08; the glyphs sheet and contact sheets were regenerated afterwards for the species marks, which are a candidate awaiting the art director's sign-off (see [`art/species-marks/`](../../../../../art/species-marks/)).** Corrected and signed in the art director's pass below (the well-size pod redrawn, two pigment ramps corrected); the builder may place these in front of the owner as placeholders.
 
 | Image | Caption | Status |
 | --- | --- | --- |

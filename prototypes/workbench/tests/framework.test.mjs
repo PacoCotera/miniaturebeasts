@@ -9,6 +9,7 @@ import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shap
 import { cross, forecast, kinship, identity, relatedness, children, SPREAD } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
+import { GLYPHS } from "../framework/roster.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const framesDir = path.resolve(here, "../frames");
@@ -250,4 +251,23 @@ test("a painting service's controls: the key pass is the pigments flat, and flat
   const flapId = scene.nodes.indexOf(flap) + 1;
   const count = (img) => { let n = 0; for (let i = 0; i < img.index.length; i++) if (img.index[i] === flapId) n++; return n; };
   assert.ok(count(flat) > count(dithered) * 1.3, "the flat flap is solid where the dithered one is holed");
+});
+
+test("the 16 species marks: 5x5, one per species, held by the frames, and distinct in every orientation", () => {
+  const ids = Object.keys(GLYPHS);
+  assert.equal(ids.length, 16);
+  for (const id of ids) {
+    assert.equal(GLYPHS[id].length, 5, id);
+    assert.ok(GLYPHS[id].every((r) => /^[#.]{5}$/.test(r)), id);
+    assert.deepEqual(frameOf(id).glyph, GLYPHS[id], `${id}: the frame holds the roster's mark`);
+    const lit = GLYPHS[id].join("").split("#").length - 1;
+    assert.ok(lit >= 6 && lit <= 16, `${id}: ${lit} lit cells`);
+  }
+  const T = [(y, x) => [y, x], (y, x) => [x, 4 - y], (y, x) => [4 - y, 4 - x], (y, x) => [4 - x, y], (y, x) => [y, 4 - x], (y, x) => [4 - y, x], (y, x) => [x, y], (y, x) => [4 - x, 4 - y]];
+  const lit = (g, f) => { const o = new Set(); g.forEach((r, y) => [...r].forEach((c, x) => { if (c === "#") { const [Y, X] = f(y, x); o.add(Y * 5 + X); } })); return o; };
+  for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) for (const f of T) {
+    const a = lit(GLYPHS[ids[i]], T[0]), b = lit(GLYPHS[ids[j]], f);
+    const diff = [...a].filter((k) => !b.has(k)).length + [...b].filter((k) => !a.has(k)).length;
+    assert.ok(diff >= 5, `${ids[i]} and ${ids[j]} differ in only ${diff} cells in one orientation`);
+  }
 });
