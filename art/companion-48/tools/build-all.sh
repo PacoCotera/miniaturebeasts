@@ -55,3 +55,4 @@ python3 -I tools/hut-b-figure.py $R/sources/rd-huts-b $W/hut-b $W/hut-b-process.
 python3 -I tools/hut-b-vs-raw.py $R/sources/rd-huts-b/C48-H-r7-B-lit-s50-rd.png $W/hut-b/hut-B-lit.png $W/hut-b-vs-raw-3x.png
 
 python3 -I tools/pawn-h-figures.py $W $R/sources/rd-pawn-h
+python3 -I tools/pawn-cycles-figure.py $W/pawn $W/pawn-cycles-3x.png

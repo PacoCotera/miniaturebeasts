@@ -154,6 +154,10 @@ The picks are in [`work/props/`](work/props/) and the sheets; the round 2 script
 
 *Left to right: study H's original front frame, the finished down walk2 (the same frame, put through the pass); H's original profile frame, the finished right walk1, the finished left walk1 (the right mirrored), the finished up walk2, on a meadow green at 3× ([1×](work/pawn-h-vs-original-1x.png)). Candidates.*
 
+![The walk and creep cycles as strips at 3×](work/pawn-cycles-3x.png)
+
+*The cycles, four facings: walk1, walk2, walk3, walk2 (left) and creep1, creep2, creep3, creep2 (right) at 3×. Candidates.*
+
 ![All 28 frames at 3×](work/pawn-h-frames-3x.png)
 
 *The pawn's 28 frames at 3×: four facings (down, right, left, up) × walk 3, creep 3, react ([1×](work/pawn-h-frames-1x.png)). Candidates.*
@@ -169,10 +173,14 @@ The picks are in [`work/props/`](work/props/) and the sheets; the round 2 script
 - the palette snap onto the pawn's ramps (orange, wood and fur, ink and white, yellow, skin, lens blue), despeckled, **outlined by the ramp rule so every frame has one outline weight**;
 - **the trousers one colour set in every facing**: the service drew navy in the front and teal in the profile; they are now a stone grey ramp (stone, slate, night), a little lighter than H's navy so the legs read against the shadow (the one place a frame is not H's exact pixel: the coat, the hood, the face, the pack and the boots are);
 - **the ground shadow one shape** under every frame (the service's own is dropped and an ellipse of the same two rows is set under the feet), the lowest pixel of the figure on **the foot line (y 46)**, a react frame lifted two rows off the ground over its shadow.
-- **The hand-derived poses**, moving H's parts on the palette indices: the down and up **walk1 and walk3** (a foot raised three rows, the arms swung two rows the other way), the down and up **creeps** (three or four rows taken out of the torso and legs so the figure stands lower, a foot raised on creep1 and creep3), the **up react** (the arms raised seven rows and out), the right **creeps** (the same crouch with a forward lean of one or two pixels, from the right walk2 and walk3).
+- **The strides, drawn by hand (round 10, `tools/pawn_limbs.py`)**, after the art director's verdict that every walk and creep cycle failed (the service redraws the character at 0.45 and barely moves at 0.32, so no more service calls for poses; the earlier derivations that slid H's legs up and cut rows out of the torso are gone). H's head, torso and pack stay as **one pixel-locked block** (never resampled); the legs, boots and arms are drawn pixel by pixel on the palette indices, as code-set pixels (not strokes in Aseprite's editor; the frames are assembled there):
+  - **down and up walk1 and walk3** are real contact poses: the body drops a row, one leg is carried to a raised foot with the leg drawn down to it and a boot sprite set at its end (so the boot is attached to the leg), the other planted on the shadow, and the hands stay on their sleeves (each arm is stretched or compressed between the shoulder and the hand, two rows, in opposite senses). The shadow is drawn last under them.
+  - **all creeps** (four facings): the hood is **dropped three rows at the same size** (the whole upper block moves down; no rows are removed) and the legs are drawn short with the knees out, one foot lifted on creep1 and creep3, both wide on creep2.
+  - **right walk2** is a true passing pose (the near leg planted straight, the far leg lifted with the knee forward and the foot under it); **right walk3** is the second contact (near leg forward, far leg back) on walk1's own upper block, so its size and mass are walk1's; **right creep3** likewise; the **right react** keeps H's shadowed face inside the cell (the service's open mouth and swollen hood are out) with both arms drawn raised; the **up react** has real raised arms (the sleeves taken off the back and drawn again). **Left is the right mirrored.** The down react is the service's (it passes).
+  - Every stride is shown as a strip at 3×, walk1 walk2 walk3 walk2 and creep1 creep2 creep3 creep2, per facing, in [`work/pawn-cycles-3x.png`](work/pawn-cycles-3x.png).
 The 28 frames are then assembled in Aseprite on the VM (`tools/aseprite-pawn.lua`: one tagged sprite, [`work/pawn-aseprite/pawn.aseprite`](work/pawn-aseprite/pawn.aseprite), every frame exported back; 0 pixels differ). `sh tools/pawn-h-build.sh` runs the pass, the VM step and the install.
 
-**Four greys, re-read** (Rec. 709 luma, four equal bands) on all 28 frames, after the round 9 coat lightening: 38 % of the pawn's pixels fall in grey 1, 28 % in grey 2, 28 % in grey 3 (the amber body, luma 179) and 6 % in grey 4 (yellow light, face); the orange shade (luma 127) is grey 2. On both grounds see "Four greys, re-read on both grounds" under the still.
+**Four greys, re-read** (Rec. 709 luma, four equal bands) on all 28 frames, after the round 9 coat lightening and the round 10 strides: 34 % of the pawn's pixels fall in grey 1, 29 % in grey 2, 31 % in grey 3 (the amber body, luma 179) and 6 % in grey 4 (yellow light, face); the orange shade (luma 127) is grey 2. On both grounds see "Four greys, re-read on both grounds" under the still.
 
 Limits: the down walk1 and walk3 are hand-derived strides of H's front frame (a raised foot and swung arms), not drawn walking; the creeps and the up react are derived (rows removed, arms raised), so they are stiffer than H; the service's right walk2, walk3, creep2 (derived), react and down react frames are H's character but not pixel-identical in scale (up to 3 rows taller with the arms raised); the right and left react are tall (47 rows with the arms raised and the lift) and touch the top of the cell; the profile has the teal trousers' colour taken out. The pawn in the still is the left facing, walk2 (the mirrored profile).
 
@@ -281,6 +289,7 @@ Signed, art director, 2026-10-08. The pawn is the owner's pick (study H), built 
 | C48-H-r7-B hut B: three lit seeds, two state calls for seed 48, two for seed 50, round 7 | Retro Diffusion rd_pro__topdown 64×58 | 1.26 |
 | C48-W-r7-G, C48-W-r7-H pawn studies, 4 calls, round 7 | Retro Diffusion rd_pro__topdown 48×48 | 0.72 |
 | Round 8: no paid call (hut B at 64 px reuses round 7's seed 50; Pawn I and the forest ground are scripted) | | 0.00 |
+| Round 10: no paid call (the strides are drawn by hand, no more service calls for poses) | | 0.00 |
 | Round 9, hut B and the ground states: no paid call (seed 50's own pixels edited; the tree refit from the painted sheet; the tables scripted) | | 0.00 |
 | C48-W-r9 the pawn from H: 19 calls at 0.45 and 6 repeats at 0.32, 25 calls, round 9 | Retro Diffusion rd_pro__topdown 48×48 | 4.50 |
 | **Total** | | **15.83** |
