@@ -5,15 +5,18 @@ m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
 for n in m:
-    if re.match(r"rail-tab-", n): sign(n, "signed", "pass 4")
+    if re.match(r"rail-tab-fill-", n): sign(n, "new", None, "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict")
+    elif re.match(r"rail-tab-", n): sign(n, "withdrawn", None, "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)")
     elif n in ("room-bench-stage", "room-cradle"): sign(n, "signed", "pass 4", "re-cut to the layout of design-pods-relayout 29b6dc9 (pool on x 632)" if n == "room-bench-stage" else "")
     elif n in ("room-cradle-front", "room-shelf"): sign(n, "signed", "pass 7b", "re-cut for the new rectangle (shelf 488,368,288,72)" if n == "room-shelf" else "")
     elif re.match(r"plate-name-\d+x24$", n): sign(n, "signed", "pass 7b", "the 20 px name on its plate (the 0.6 tone signed in pass 6)")
     elif re.match(r"pod-(large|medium|small)-", n): sign(n, "signed", "pass 6", "layers signed across passes 4 to 7b; the 33 are standing")
-    elif n.startswith("pod-well-"): sign(n, "withdrawn", None, "re-cut to the 32x48 class (pass 8); awaiting verdict")
+    elif n.startswith("pod-well-"): sign(n, "new", None, "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict")
     elif n.startswith("trait-picture-frame-"):
         size = re.search(r"(\d+x\d+)", n).group(1); kind = "sealed" if n.endswith("-sealed") else "unread" if n.endswith("-unread") else "plain"
-        if size in FR: sign(n, "signed", {"plain": "pass 3", "unread": "pass 4", "sealed": "pass 6"}[kind])
+        if size in ("184x304", "184x112", "120x112", "232x312"): sign(n, "withdrawn", None, "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)")
+        elif size == "112x112": sign(n, "new", None, "the find picture frame of a sealed chapter at (224,296); awaiting verdict")
+        elif size in FR: sign(n, "signed", {"plain": "pass 3", "unread": "pass 4", "sealed": "pass 6"}[kind])
         elif size == "232x312": sign(n, "signed", "pass 6", "the portrait frame and its states" + ("" if kind != "plain" else " (the plain frame is not named in the consolidated list; signed with its states in pass 6)"))
         else: sign(n, "new", None, "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict")
     elif n in ("ring-column",): sign(n, "signed", "pass 1")
@@ -27,7 +30,11 @@ for n in m:
     elif n == "room-stamp-case": sign(n, "withdrawn", None, "the old 176x328 size; the case is now 152x152")
     elif n == "room-stamp-case-152x152": sign(n, "new", None, "the case at its new size (design-pods-relayout 29b6dc9); awaiting verdict")
     elif n in ("ring-column-112x522", "ring-hatch-80x56", "page-pane-256x440"): sign(n, "new", None, "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict")
-    elif n == "ring-well-empty": sign(n, "withdrawn", None, "until the new ring masters are signed")
+    elif n == "ring-well-empty": sign(n, "withdrawn", None, "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))")
+    elif n == "ring-well-empty-80x80": sign(n, "new", None, "re-export of the signed ring-well-empty only, padded to 80x80; awaiting verdict")
+    elif n == "page-new-mark-12x12": sign(n, "new", None, "proposed mark; awaiting verdict")
+    elif re.match(r"ring-well-(selected|idle)", n) or n == "glint-star-12x12" or re.match(r"ring-arc-idle-", n): sign(n, "signed", "well rings verdict")
+    elif re.match(r"ring-arc-selected-", n): sign(n, "new", None, "repainted: the band solid and with a channel, cut by angle; awaiting verdict")
     elif re.match(r"ring-well-(selected|idle)|ring-arc-|glint-star", n): sign(n, "new", None, "the well rings from the concept; awaiting verdict")
     else: sign(n, "stand-in" if False else "unclassified", None, "")
 json.dump(S, open("slices/status.json", "w"), indent=1)

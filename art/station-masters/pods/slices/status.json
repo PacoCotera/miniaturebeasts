@@ -27,7 +27,7 @@
  "ring-well-empty": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "until the new ring masters are signed"
+  "note": "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))"
  },
  "ring-hatch": {
   "status": "signed",
@@ -175,19 +175,19 @@
   "note": "layers signed across passes 4 to 7b; the 33 are standing"
  },
  "pod-well-identified": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-sealed": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-band": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-large-shade": {
   "status": "signed",
@@ -295,39 +295,39 @@
   "note": "layers signed across passes 4 to 7b; the 33 are standing"
  },
  "pod-well-shade": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-mask-body": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-mask-accent": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-pattern-dots": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-pattern-stripes": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-pattern-bands": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-shadow": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-large-crack": {
   "status": "signed",
@@ -345,109 +345,109 @@
   "note": "layers signed across passes 4 to 7b; the 33 are standing"
  },
  "pod-well-crack": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "trait-picture-frame-184x304": {
-  "status": "signed",
-  "signed_in": "pass 3",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x304-unread": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x304-sealed": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112": {
-  "status": "signed",
-  "signed_in": "pass 3",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112-unread": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112-sealed": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112": {
-  "status": "signed",
-  "signed_in": "pass 3",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112-unread": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112-sealed": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "rail-tab-unread-full-152x40": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-unread-compact-72x40": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-read-full-152x40": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-read-compact-72x40": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-focused-full-152x40": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-focused-compact-72x40": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-sealed-full-152x40": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-sealed-compact-72x40": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "trait-picture-frame-232x312": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": "the portrait frame and its states (the plain frame is not named in the consolidated list; signed with its states in pass 6)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-232x312-unread": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": "the portrait frame and its states"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-232x312-sealed": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": "the portrait frame and its states"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "plate-name-80x24": {
   "status": "signed",
@@ -640,369 +640,369 @@
   "note": "redrawn in emblems round 4; awaiting verdict"
  },
  "ring-well-selected-80x80": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-well-idle-80x80": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-selected-n4-track": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n4-s0": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n4-s1": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n4-s2": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n4-s3": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-track": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s0": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s1": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s2": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s3": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s4": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-track": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s0": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s1": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s2": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s3": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s4": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s5": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-track": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s0": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s1": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s2": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s3": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s4": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s5": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s6": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-track": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s0": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s1": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s2": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s3": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s4": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s5": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s6": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s7": {
   "status": "new",
   "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-idle-n4-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n4-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n4-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n4-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n4-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n5-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n5-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n5-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n5-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n5-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n5-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n6-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n6-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n6-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n6-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n6-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n6-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n6-s5": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n7-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n7-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n7-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n7-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n7-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n7-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n7-s5": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n7-s6": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n8-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n8-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n8-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n8-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n8-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n8-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n8-s5": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n8-s6": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-arc-idle-n8-s7": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "glint-star-12x12": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
  },
  "ring-column-112x522": {
   "status": "new",
@@ -1098,5 +1098,60 @@
   "status": "new",
   "signed_in": null,
   "note": "the case at its new size (design-pods-relayout 29b6dc9); awaiting verdict"
+ },
+ "ring-well-empty-80x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "re-export of the signed ring-well-empty only, padded to 80x80; awaiting verdict"
+ },
+ "rail-tab-fill-unread-full-152x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-read-full-152x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-open-full-152x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-sealed-full-152x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-unread-compact-72x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-read-compact-72x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-open-compact-72x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-sealed-compact-72x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "trait-picture-frame-112x112": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the find picture frame of a sealed chapter at (224,296); awaiting verdict"
+ },
+ "page-new-mark-12x12": {
+  "status": "new",
+  "signed_in": null,
+  "note": "proposed mark; awaiting verdict"
  }
 }

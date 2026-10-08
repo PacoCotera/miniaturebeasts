@@ -23,8 +23,8 @@ def compose(traits, rail):
         y = 44 + 72 * i; sel = i == 0; st = "selected" if sel else "idle"
         put("ring-well-selected-80x80" if sel else "ring-well-idle-80x80", 24, y)
         if i in lit:
-            n, k = lit[i]; put(f"ring-arc-{st}-n{n}-track", 24, y)
-            for j in range(k): put(f"ring-arc-{st}-n{n}-s{j}", 24, y)
+            n, k = lit[i]; put(f"ring-arc-{st}-n{n}-track", 24, y)       # selected: the open channel over the solid band; idle: the groove
+            for j in range(k): put(f"ring-arc-{st}-n{n}-s{j}", 24, y)    # a read chapter: the solid band (selected) or the dim line (idle)
         if i in pods: put(pods[i], 48, 60 + 72 * i)
     put("glint-star-12x12", 24 + 40 + 30 - 6, 44 + 40 - 30 - 6)
     put("ring-hatch-80x56", 24, 488)
@@ -38,7 +38,7 @@ def compose(traits, rail):
     for k in range(traits): x = 408 - 8 - 12 * (traits - 1 - k) - 16; d.rectangle([x, 128, x + 7, 135], fill=CREAM if k < 2 else None, outline=MIST)
     pic = lambda w, h, box=(180, 166, 372, 430): cand.crop(box).resize((w, h), Image.LANCZOS)
     if traits == 1:
-        cv.alpha_composite(pic(224, 352), (168, 160)); put("trait-picture-frame-224x352", 168, 160); text((168, 516), "Spots", f16, CREAM)
+        cv.alpha_composite(pic(224, 352), (168, 160)); put("trait-picture-frame-224x352", 168, 160); put("page-new-mark-12x12", 168 + 112 - 6, 160 + 8); text((168, 516), "Spots", f16, CREAM)
     else:
         for k, (cx, cy, st) in enumerate(((168, 160, "read"), (288, 160, "read"), (168, 360, "unread"), (288, 360, "sealed"))[:traits]):
             if st == "read": cv.alpha_composite(pic(104, 160, (180, 166, 372, 430) if k == 0 else (200, 250, 372, 400)), (cx, cy)); put("trait-picture-frame-104x160", cx, cy)
@@ -50,7 +50,7 @@ def compose(traits, rail):
     x = 176; ring = None
     for i, (word, st, pips) in enumerate(tabs):
         full = rail == "six" or i == open_i; w = 136 if full else 56
-        put(f"rail-tab-{st}-{'full-152x40' if full else 'compact-72x40'}", x, 40)
+        put(f"rail-tab-fill-{'open' if st == 'focused' else st}-{'full-152x40' if full else 'compact-72x40'}", x, 40)
         if st == "focused": ring = (x, w)
         es = "read" if st in ("read", "focused") else st
         pc = CREAM if st in ("read", "focused") else (150, 168, 184)

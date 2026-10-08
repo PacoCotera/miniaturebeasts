@@ -91,6 +91,7 @@ def listcol():
         sk = k.crop(box); bb = bbox_alpha(sk, 90); cx, cy = (bb[0] + bb[2]) // 2, (bb[1] + bb[3]) // 2; side = int(max(bb[2] - bb[0], bb[3] - bb[1]) * (1.0 if "empty" in nm else 1.12))
         c = sk.crop((cx - side // 2, cy - side // 2, cx + side // 2, cy + side // 2)).resize((64, 64), Image.LANCZOS)
         save(nm, c, [40, 52, 64, 64], "colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow)", "well-rings2")
+        c80 = Image.new("RGBA", (80, 80), (0, 0, 0, 0)); c80.alpha_composite(c, (8, 8)); save("ring-well-empty-80x80", c80, [24, 44, 80, 80], "the signed ring-well-empty re-exported only: padded to 80x80, centred on (40,40) so every well slice shares one origin", "well-rings2")
     im = load("hatch-leaf.jpg"); bg = border_median(im); h = color_to_alpha(im, bg, 0.05); bb = bbox_alpha(h, 60)
     pad = 10; lf = h.crop((bb[0] - pad, bb[1] - pad, bb[2] + pad, bb[3] + pad)); sc = 28 / lf.height; lf = lf.resize((max(1, round(lf.width * sc)), 28), Image.LANCZOS)
     cv = Image.new("RGBA", (112, 56), (0, 0, 0, 0)); cv.alpha_composite(lf, ((112 - lf.width) // 2, 14)); save("ring-hatch", cv, [24, 488, 112, 56], "a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box", "hatch-leaf")
@@ -118,6 +119,28 @@ def tabs():
         save(f"rail-tab-{nm}-full-152x40", shear(full), [None, 40, 152, 40], "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px", "tabs2")
         save(f"rail-tab-{nm}-compact-72x40", shear(nine(full, 56, 40, 20, 8, 20, 8)), [None, 40, 72, 40], "compact hanging tab, slant baked (9-slice of the full one, slant kept)", "tabs2")
 
+def tabfills():
+    """The rail's tabs under the rule of design-pods-relayout 29b6dc9: one fill per state (unread and read share the panel, the open tab is one step lighter
+    in the hairline role, the sealed tab is the panel with horizontal slats in the bar role), no lit rim, no teal, no notch; every edge, the shared slants
+    too, is one pixel of bevel. The slants lean 16 px over the 40 px height; the slice is the tab's width plus the slant. Chrome geometry, set by the tool."""
+    H = 40; SS = 4
+    cols = {"panel": (0x2a, 0x2e, 0x38), "hairline": (0x3c, 0x4b, 0x57), "bar": (0x34, 0x38, 0x3f), "bevel": (0x5a, 0x66, 0x72)}
+    for w, form in ((136, "full-152x40"), (56, "compact-72x40")):
+        W = w + 16
+        yy, xx = np.mgrid[0:H * SS, 0:W * SS].astype(float); x = (xx + 0.5) / SS; y = (yy + 0.5) / SS
+        left = 16 * y / H; right = w + 16 * y / H
+        inside = (x >= left) & (x <= right) & (y <= H)
+        edge = inside & ((x < left + 1.0) | (x > right - 1.0) | (y > H - 1.0) | (y < 1.0 * 0))   # a 1 px bevel on the slants and the bottom; the top meets the bar's rule
+        for state, fillname in (("unread", "panel"), ("read", "panel"), ("open", "hairline"), ("sealed", "panel")):
+            img = np.zeros((H * SS, W * SS, 4)); img[..., 3] = inside * 255
+            for c in range(3): img[..., c] = cols[fillname][c]
+            if state == "sealed":                                              # horizontal slats in the bar role, 2 px on a 4 px pitch
+                slat = (np.floor(y) % 4 < 2) & (y > 3) & (y < H - 4)
+                for c in range(3): img[..., c] = np.where(slat, cols["bar"][c], img[..., c])
+            for c in range(3): img[..., c] = np.where(edge, cols["bevel"][c], img[..., c])
+            a_ = img.reshape(H, SS, W, SS, 4).mean((1, 3)); col = (img[..., :3] * img[..., 3:4]).reshape(H, SS, W, SS, 3).sum((1, 3)) / np.maximum(img[..., 3].reshape(H, SS, W, SS).sum((1, 3)), 1)[..., None]
+            out = np.dstack([col, a_[..., 3]])
+            save(f"rail-tab-fill-{state}-{form}", Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA"), [None, 40, W, H], f"one fill per state ({fillname}{', slats in bar' if state == 'sealed' else ''}), a 1 px bevel on its edges, no lit rim; slant 16 baked", "chrome geometry, supersampled 4x")
 # ---- page panes
 def pages():
     im = load("page-pane.jpg"); W, H = im.size
@@ -132,7 +155,7 @@ def pages():
 # ---- picture frames
 def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
-    sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96), (224, 352), (224, 160), (104, 160), (104, 96), (104, 64)]
+    sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96), (224, 352), (224, 160), (104, 160), (104, 96), (104, 64), (112, 112)]
     s = 1536 / k.width * 0 + 0.19
     fr = dim(load("frost-dark.jpg").convert("RGBA"), 0.7).convert("RGB"); sl = dim(load("slats-frost.jpg").convert("RGBA"), 0.5, 8).convert("RGB")
     frost = fr.resize((int(fr.width * 0.25), int(fr.height * 0.25)), Image.LANCZOS)
@@ -148,6 +171,7 @@ def frames():
         base = np.zeros((h, w, 4), np.uint8); base[..., 0] = 6; base[..., 1] = 14; base[..., 2] = 22; base[..., 3] = (shade * 255).astype(np.uint8)
         L = Image.fromarray(base, "RGBA"); L.alpha_composite(lip)
         save(f"trait-picture-frame-{w}x{h}", L, None, "key magenta lip, 9-slice, with a painted-ramp inner shade", "frame-thin")
+        if (w, h) == (112, 112): continue          # the find picture frame of a sealed chapter is the plain frame only
         # unread: frost over the whole picture
         ft = frost.crop((0, 0, w, h)).convert("RGBA"); ft.putalpha(214); F = ft.copy(); F.alpha_composite(L)
         save(f"trait-picture-frame-{w}x{h}-unread", F, None, "frost texture at 0.9 alpha under the frame", "frost+frame-thin")
@@ -211,7 +235,7 @@ def wellrings():
         a1 = bot[..., 3:4] / 255; a2 = top[..., 3:4] / 255; ao = a2 + a1 * (1 - a2)
         col = np.where(ao > 0, (top[..., :3] * a2 + bot[..., :3] * a1 * (1 - a2)) / np.maximum(ao, 1e-6), 0); return np.concatenate([col, ao * 255], 2)
     def out(arr, name, made): save(name, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [24, 44, 80, 80], made, "procedural, supersampled 8x")
-    for st, line_col, line_alpha, groove_alpha in (("selected", np.array([255.0, 240.0, 206.0]), 1.0, 0.62), ("idle", np.array([190.0, 150.0, 108.0]), 0.55, 0.42)):
+    for st, line_col, line_alpha, groove_alpha in (("idle", np.array([190.0, 150.0, 108.0]), 0.55, 0.42),):
         groove = rgba(cover((rr >= R_ARC - 1.6) & (rr <= R_ARC + 1.6)), np.array([6.0, 12.0, 18.0]), groove_alpha)
         lip = rgba(cover((rr > R_ARC + 1.6) & (rr <= R_ARC + 2.3) & (xx + yy > 0)), np.array([110.0, 140.0, 156.0]), 0.28)
         track = over(lip, groove)
@@ -221,13 +245,46 @@ def wellrings():
             for i in range(n):
                 a0 = i * 360.0 / n + gap / 2; a1 = (i + 1) * 360.0 / n - gap / 2
                 seg = rgba(cover((rr >= R_ARC - 1.0) & (rr <= R_ARC + 1.0) & (th >= a0) & (th <= a1)), line_col, line_alpha)
-                if st == "selected":                       # engraved: the upper-left half of the line is one step lighter
-                    lit = rgba(cover((rr >= R_ARC - 1.0) & (rr <= R_ARC) & (th >= a0) & (th <= a1) & (xx + yy < 0)), np.array([255.0, 250.0, 236.0]), 1.0)
-                    seg = over(lit, seg)
-                out(seg, f"ring-arc-{st}-n{n}-s{i}", f"chapter {i + 1} of {n}: a 2 px {'fine bright engraved' if st == 'selected' else 'dim warm'} line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps")
+                out(seg, f"ring-arc-{st}-n{n}-s{i}", f"chapter {i + 1} of {n}: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps")
+    # ---- selected: the concept's band painted twice (solid; with an engraved channel in its outer half), cut by chapter angle, clockwise from 12 o'clock
+    sel = np.asarray(Image.open("slices/ring-well-selected-80x80.png").convert("RGBA")).astype(float)
+    yy0, xx0 = np.mgrid[0:80, 0:80].astype(float); rx = xx0 + 0.5 - 40; ry = yy0 + 0.5 - 40; r0 = np.hypot(rx, ry); th0 = (np.degrees(np.arctan2(rx, -ry)) + 360) % 360
+    def smooth(x, lo, hi): return np.clip((x - lo) / (hi - lo), 0, 1)
+    band = smooth(r0, 25.5, 26.5) * (1 - smooth(r0, 32.5, 33.5))                      # the band, 7 px, soft at both edges
+    outer = (r0 > 29.5)
+    lip = np.maximum(smooth(r0, 31.7, 32.3) * (1 - smooth(r0, 32.9, 33.5)), smooth(r0, 29.1, 29.7) * (1 - smooth(r0, 30.2, 30.8)))     # two thin ivory lips
+    floor = outer * (1 - lip) * smooth(r0, 29.3, 29.9) * (1 - smooth(r0, 32.5, 33.1))
+    chan = sel.copy()
+    for ch in range(3): chan[..., ch] = np.where(floor > 0.5, 16 + 6 * (r0 > 31) , sel[..., ch] * (1 + 0.10 * lip))
+    chan[..., 3] = sel[..., 3]
+    def tick_mask(n):          # a 1 px dark radial tick at every chapter boundary
+        t = np.zeros_like(r0)
+        for i in range(n):
+            d = np.abs((th0 - i * 360.0 / n + 180) % 360 - 180) * np.pi / 180 * r0     # distance across the tick, in px
+            t = np.maximum(t, 1 - smooth(d, 0.35, 0.9))
+        return t
+    for n in range(4, 9):
+        tk = tick_mask(n)
+        track = chan.copy(); track[..., 3] = sel[..., 3] * band
+        for ch in range(3): track[..., ch] = track[..., ch] * (1 - tk) + np.array([12.0, 18.0, 24.0])[ch] * tk
+        out(track, f"ring-arc-selected-n{n}-track", f"the open channel for {n} chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring")
+        for i in range(n):
+            a0 = i * 360.0 / n; a1 = (i + 1) * 360.0 / n
+            sector = ((th0 >= a0) & (th0 < a1)).astype(float)
+            seg = sel.copy(); seg[..., 3] = sel[..., 3] * band * sector * (1 - tk)
+            out(seg, f"ring-arc-selected-n{n}-s{i}", f"chapter {i + 1} of {n}: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel")
     im = load("spark.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.04); bb = bbox_alpha(k, 40); c = k.crop(bb); side = max(c.size); sq = Image.new("RGBA", (side, side), (0, 0, 0, 0)); sq.paste(c, ((side - c.width) // 2, (side - c.height) // 2))
     save("glint-star-12x12", sq.resize((12, 12), Image.LANCZOS), [None, None, 12, 12], "the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30)", "spark")
 
+def newmark():
+    """The 12x12 mark of a trait new to the field guide, at the picture's top centre: a small bone bead, lit upper left, sand lower right (a proposal; the glint star stays the spark)."""
+    S = 8; yy, xx = np.mgrid[0:12 * S, 0:12 * S].astype(float); x = (xx + 0.5) / S - 6; y = (yy + 0.5) / S - 6; r = np.hypot(x, y)
+    inside = np.clip(5.4 - r, 0, 1) ; lit = np.clip(0.5 - (x + y) / 11.0, 0, 1)
+    col = np.array([196.0, 160.0, 112.0])[None, None, :] * (1 - lit[..., None]) + np.array([255.0, 250.0, 236.0])[None, None, :] * lit[..., None]
+    rim = np.clip(1 - np.abs(r - 5.0) / 0.7, 0, 1) * 0.35                                  # a faint darker rim so the bead holds on a light page
+    col = col * (1 - rim[..., None]) + np.array([80.0, 62.0, 40.0]) * rim[..., None]
+    img = np.dstack([col, inside * 255]).reshape(12, S, 12, S, 4).mean((1, 3))
+    save("page-new-mark-12x12", Image.fromarray(np.clip(img, 0, 255).astype(np.uint8), "RGBA"), [None, None, 12, 12], "PROPOSED: the 'new to the field guide' mark, a 12x12 bone bead lit upper left (the page's newMark region of design-pods-relayout 29b6dc9)", "procedural, supersampled 8x")
 def stampcase():
     """The stamp's case (848,144,176,328): translucent unlit glass over the wall (the wall's seams show through, one step above it),
     a faint diagonal sheen, dim brushed-metal rails top and bottom, a faint left edge, open at the screen's right edge."""
@@ -373,7 +430,7 @@ def pods():
     Bd = B.copy(); Bd[..., 3] = db * 255
     flat = {"identified": crop(L), "sealed": crop(B), "band": crop(Bd)}
     for cls, (w, h) in POD_BOX.items():
-        f = min(w / bw, h / bh); pw, ph = max(1, round(bw * f)), max(1, round(bh * f)); ox, oy = (w - pw) // 2, h - ph
+        f = min(w / bw, h / bh); pw, ph = max(1, round(bw * f)), max(1, round(bh * f)); ox, oy = (w - pw) // 2, ((h - ph) // 2 if cls == "well" else h - ph)
         def put(arr, extra=None):
             im = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA").resize((pw, ph), Image.LANCZOS)
             c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(im, (ox, oy)); return c
@@ -393,15 +450,15 @@ def well_pinholes():
     """Fill the enclosed pixels of the well pod's accent mask (between the cap and the rib); hold the body mask with it."""
     A = np.asarray(Image.open("slices/pod-well-mask-accent.png").convert("RGBA")).copy(); Bd = np.asarray(Image.open("slices/pod-well-mask-body.png").convert("RGBA")).copy()
     al = A[..., 3].astype(int); sil = np.asarray(Image.open("slices/pod-well-shade.png").convert("RGBA"))[..., 3] > 128
-    enc = np.zeros_like(al, bool)           # the two enclosed pixels between the cap and the rib the art director named, at (6,11),(7,11) of the old 32x40 box = (6,19),(7,19) of the 32x48 box
-    for (px, py) in ((6, 19), (7, 19)):
+    enc = np.zeros_like(al, bool)           # the two enclosed pixels between the cap and the rib the art director named, at (6,11),(7,11) of the old 32x40 box = (6,12),(7,12) of the 32x48 box with the pod centred
+    for (px, py) in ((6, 12), (7, 12)):
         if sil[py, px] and al[py, px] < 160: enc[py, px] = True
     print("well pinholes filled at", [tuple(map(int, p[::-1])) for p in np.argwhere(enc)])
     A[enc, 3] = 255; Bd[enc, 3] = 0
     save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 32, 48], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
     save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 32, 48], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars", "stampcase", "stampcase152", "wellrings", "pods", "well_pinholes"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "tabfills", "newmark", "plates", "bars", "stampcase", "stampcase152", "wellrings", "pods", "well_pinholes"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)

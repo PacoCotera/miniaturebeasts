@@ -105,7 +105,7 @@
   "sha256": "6fb8007535b9de1183aedb565f3752c5a9ef437f689ac179f9d0bb083e4a7df7",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "until the new ring masters are signed"
+  "status_note": "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))"
  },
  "ring-hatch": {
   "size": [
@@ -582,10 +582,10 @@
   ],
   "src": "pod-loika",
   "made": "the Loika reference sprite",
-  "sha256": "8ff0e176496bbc89961f4f0bcab9e2eeee0a54854a2e45a127b25e0e56a2261f",
-  "status": "withdrawn",
+  "sha256": "83dacd63a70db27552d20c1ad0eee6469183089db3978d0b1858dab9e30a13c5",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-sealed": {
   "size": [
@@ -600,10 +600,10 @@
   ],
   "src": "pod-band",
   "made": "the Loika reference sprite",
-  "sha256": "271e05d34d473508e2ae80dcf263c108633c3be25fcab2ec2be9f8d207976b1c",
-  "status": "withdrawn",
+  "sha256": "2660c72172035351a6eb4e12a351d1c8745228688da9ba437255b8e29d0fc911",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-band": {
   "size": [
@@ -618,10 +618,10 @@
   ],
   "src": "pod-band",
   "made": "the sealing band as a layer",
-  "sha256": "7c128200d9d95cf7382b0a24c1da616fb54b25e6443393f21db9dac6c2c57f61",
-  "status": "withdrawn",
+  "sha256": "2bfeb19bcf36bebf09ff0280ea559504f143a1c79ce620738dfcbc8f5129d13d",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-large-shade": {
   "size": [
@@ -1014,10 +1014,10 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "748edae2709cca332799034bf859ad616434edb00b1b31d73f1e5b6943d2267a",
-  "status": "withdrawn",
+  "sha256": "9594e280293d5316cb5e68439b6b245e7fa5cfbccd42e0f55dbccfc203e583a4",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-mask-body": {
   "size": [
@@ -1032,10 +1032,10 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, held with the accent mask",
-  "sha256": "b778891c541921180c48e8e97d86cae1bf6700809ebc43115192a64f47c9c886",
-  "status": "withdrawn",
+  "sha256": "42bfbf685c930dd8403b553ef1dec2aa05a603b841e62298eea807b003282c24",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-mask-accent": {
   "size": [
@@ -1050,10 +1050,10 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, enclosed pixels filled",
-  "sha256": "a8ba2f5c50787a40be9c0dc95c8c1ad1b31f404bbce74a35a031676f7e0b6e06",
-  "status": "withdrawn",
+  "sha256": "19db840f9f499472bdf93fde367275eb7b6176f6ba81bc5d67e120c14c0969d5",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-pattern-dots": {
   "size": [
@@ -1068,10 +1068,10 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "dc68f276fc9720d10dc98b60c53064c6df44887133a824bc68b4e9db29f7bbf5",
-  "status": "withdrawn",
+  "sha256": "281c8b3e604946576f25538dbbf5f7bdaf0a5fe4bd2aaface21be42a9e8be416",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-pattern-stripes": {
   "size": [
@@ -1086,10 +1086,10 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "2a7c0de7601522b32f3602d60599a7ed2d49267f3945b59a34984c5fa64c43b7",
-  "status": "withdrawn",
+  "sha256": "c5eaa317b3a40b1ddc3de1481854fceb48f082577c5ca0aba5f3ca3f80a6eee2",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-pattern-bands": {
   "size": [
@@ -1104,10 +1104,10 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "dfc60f78b9dee6e3485973fe93ab0c4d3ccc81dc56daa27e64033bc651e031b2",
-  "status": "withdrawn",
+  "sha256": "b9a31a45789290f99679de040873a68eaebbd7acfd293ebfe0c958ac889e242b",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-shadow": {
   "size": [
@@ -1123,9 +1123,9 @@
   "src": "procedural ramp",
   "made": "contact shadow: centred on x 632 with its middle on the foot line y 392",
   "sha256": "0d294d592904d85f425e2811515d378faa43f80402de3b38c3b7bf65593533ce",
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-large-crack": {
   "size": [
@@ -1194,10 +1194,10 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "0b38ff40f2a614df645a07026d550b4853b51a4bf7c22cb54c58fe24b03e0864",
-  "status": "withdrawn",
+  "sha256": "c20cfa00258b91cbee32f153d03a613cdccf15601e42d506ac3ee1537e94d4b6",
+  "status": "new",
   "signed_in": null,
-  "status_note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "trait-picture-frame-184x304": {
   "size": [
@@ -1208,9 +1208,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "bc87c8f1e67370d0f1f9ee2367abd3c33bc70c61f5009b90fbaaf29ad3a7226e",
-  "status": "signed",
-  "signed_in": "pass 3",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x304-unread": {
   "size": [
@@ -1221,9 +1221,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "cdbd386f38847b5c8c1d6aefd61249d3e4504f4a6d6940288591157ba9b0f8ef",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x304-sealed": {
   "size": [
@@ -1234,9 +1234,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "ebaea936365f2fefea77f027f7e59e6636371f99a4b48f53585ddbc444a10109",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112": {
   "size": [
@@ -1247,9 +1247,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "9f8976fae65bb0f8ec6eba11d8b34ce2176601f44b7499daa81f9c422d38e020",
-  "status": "signed",
-  "signed_in": "pass 3",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112-unread": {
   "size": [
@@ -1260,9 +1260,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "e4ca733db686e5c30092ffac344319c38554177fed25abddca8ac14dfaea7619",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112-sealed": {
   "size": [
@@ -1273,9 +1273,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "d028b791fb01c0ab1c31527f7cfb24d8714ccca796981c9514ce61d139e5b139",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112": {
   "size": [
@@ -1286,9 +1286,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "235b655e4eceee24a09d846efd87ba1e9ee9c0cf51f415764cab94d59405a520",
-  "status": "signed",
-  "signed_in": "pass 3",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112-unread": {
   "size": [
@@ -1299,9 +1299,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "cc0d743509bebe368b9f08dba92dc74d0701d97b28f04f913ec85b1888b5a77d",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112-sealed": {
   "size": [
@@ -1312,9 +1312,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "3834322d8d96c3d1f8b528756a17d428ff36cd26055b3e6fd276b754e9c0cbba",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "rail-tab-unread-full-152x40": {
   "size": [
@@ -1330,9 +1330,9 @@
   "src": "tabs2",
   "made": "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px",
   "sha256": "1fd2f86b4fb4da9bfffe2c7c4a42681c4a057ebafe96f8322597d78452270f8f",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-unread-compact-72x40": {
   "size": [
@@ -1348,9 +1348,9 @@
   "src": "tabs2",
   "made": "compact hanging tab, slant baked (9-slice of the full one, slant kept)",
   "sha256": "60aba3066cfbe9ffffc24f3bf155ad70227f0bedd9a89bd0e53cb55d0eccf7d1",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-read-full-152x40": {
   "size": [
@@ -1366,9 +1366,9 @@
   "src": "tabs2",
   "made": "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px",
   "sha256": "34702dd1ee25488a9ef5b6f8d90245467d58f4f324fcbd7f34ed7184d260ec0b",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-read-compact-72x40": {
   "size": [
@@ -1384,9 +1384,9 @@
   "src": "tabs2",
   "made": "compact hanging tab, slant baked (9-slice of the full one, slant kept)",
   "sha256": "e62bd7f00d8372060725d0cba2dd3d2a335e4ce39762c6b1927c908f1692357f",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-focused-full-152x40": {
   "size": [
@@ -1402,9 +1402,9 @@
   "src": "tabs2",
   "made": "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px",
   "sha256": "d3b688def56294cf66940f0c2e195e8834180c2640d634547a56685f0b6fbf22",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-focused-compact-72x40": {
   "size": [
@@ -1420,9 +1420,9 @@
   "src": "tabs2",
   "made": "compact hanging tab, slant baked (9-slice of the full one, slant kept)",
   "sha256": "e7ac1a3c81060e5b071958a85638a5158b70b1f875ef0706f41ea82bdc76d86c",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-sealed-full-152x40": {
   "size": [
@@ -1438,9 +1438,9 @@
   "src": "tabs2",
   "made": "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px",
   "sha256": "bf686f7a11810e5d2a6f47aed3f89c3924fd56e657a751cd94524d4e5985087a",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "rail-tab-sealed-compact-72x40": {
   "size": [
@@ -1456,9 +1456,9 @@
   "src": "tabs2",
   "made": "compact hanging tab, slant baked (9-slice of the full one, slant kept)",
   "sha256": "f30124a210b76c545b0b85ae4e26c4e19a35aadbccee45c44f54a0ac298b95d1",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "trait-picture-frame-232x312": {
   "size": [
@@ -1474,9 +1474,9 @@
   "src": "frame-deep1",
   "made": "the deep portrait frame: key magenta, resampled whole; the opening is 200x280 at 16 px inset",
   "sha256": "3e15d93df675dd20a18731c181dfe9a7ebbf813fe9179c1e0b011ced1816888e",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": "the portrait frame and its states (the plain frame is not named in the consolidated list; signed with its states in pass 6)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-232x312-unread": {
   "size": [
@@ -1492,9 +1492,9 @@
   "src": "frost-dark+frame-deep1",
   "made": "frost in the opening, under the deep frame",
   "sha256": "19e3ff22fecdb30f6215f974a23c52d312921cd4294a910b6e883cf39df6429d",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": "the portrait frame and its states"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-232x312-sealed": {
   "size": [
@@ -1510,9 +1510,9 @@
   "src": "slats-frost+frame-deep1",
   "made": "translucent glass slats in the opening, under the deep frame",
   "sha256": "47f53375bded70cd5455710829bc32554d26efac07538eb89df8f3662a2cb284",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": "the portrait frame and its states"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "plate-name-80x24": {
   "size": [
@@ -2077,9 +2077,9 @@
   "src": "ring-selected",
   "made": "the selected well's thick warm ivory band (7 px, bone to sand, lit top left) with its soft glow about 4 px outward; colour-to-alpha, scaled so the band's outer diameter is 66, centred in 80x80",
   "sha256": "d9de6aa8bb2e70f6b3c65fab3a7434c951f6c435542962244740813f17684eed",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-well-idle-80x80": {
   "size": [
@@ -2095,9 +2095,9 @@
   "src": "ring-idle",
   "made": "the idle well's thin dark-glass double ring, outer diameter 66, hairlines about 5 px apart; colour-to-alpha, centred in 80x80",
   "sha256": "58323b911f752140d9cee0b9fca872731e532eab86897ed094b799945514d46a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-selected-n4-track": {
   "size": [
@@ -2111,11 +2111,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the unlit groove for 4 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
-  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21",
+  "made": "the open channel for 4 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
+  "sha256": "cd1bda7f6017135cabedcaf462510b801b1993240dbda822f3a6bb3a497318b6",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n4-s0": {
   "size": [
@@ -2129,11 +2129,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "fbc710f139eceb9c5d910d19e0150e5b486785ea7034362a9bbd76724a40dc9d",
+  "made": "chapter 1 of 4: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "99db792b45992cd3e3e5f1a606e93ef4620fc7eaa853d86f280a82e833eb6269",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n4-s1": {
   "size": [
@@ -2147,11 +2147,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "0339819ecb2d8ee94f3a976c1fbbae633ec0dec62cd016c193fcfea2ca744a01",
+  "made": "chapter 2 of 4: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "55a6ac534628f87e103a408ec3d128941b44077b5e986f02a25ace186f62e12f",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n4-s2": {
   "size": [
@@ -2165,11 +2165,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "56316bc1311bf0bd78e6ed02cc5e91b6dfaa99da3fd485d05c3c65112bee3cf9",
+  "made": "chapter 3 of 4: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "bc124ec92b270dc154a3eddd158b2ee97e1cd48e80789107e5a363db75929df0",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n4-s3": {
   "size": [
@@ -2183,11 +2183,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "492f0e82170d597216cfd9ded9d3ffa1e2cc1b688a13f380c27c9ecb96e8b35d",
+  "made": "chapter 4 of 4: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "2638655c9250be70a7b1dba0616d21bd7a777c6dac20e403705d1c05ca566842",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-track": {
   "size": [
@@ -2201,11 +2201,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the unlit groove for 5 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
-  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21",
+  "made": "the open channel for 5 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
+  "sha256": "1257b23bd20a63e767d3a0a179eb8e1823ceabeacfb48f05ba392703af67c34a",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s0": {
   "size": [
@@ -2219,11 +2219,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "00d3a23b1308da7d2ce08d933fd41f1e1913cabbc65511ac679588be664e6620",
+  "made": "chapter 1 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "c003e30f80ae6bc964d829990c40be4f0caea700f5dfad21dc409a96bfe1d87b",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s1": {
   "size": [
@@ -2237,11 +2237,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "e093f0aaa18011b6e19c3e3baf594cc0ae3036c034a0bef1163692c946940047",
+  "made": "chapter 2 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "5b3b1a144429ad64ee3cdd8b479d8b972db944354682a46a8a26fce067586827",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s2": {
   "size": [
@@ -2255,11 +2255,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "44fbe5b625a6eec001ea4f04bada47aa411c80c96ec811bdb86afc4e2745e322",
+  "made": "chapter 3 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "f0593abcefbfad5f45695b3fef6a69ab74a8ba86439cab5aab96c004775cdc29",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s3": {
   "size": [
@@ -2273,11 +2273,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "65ca739cb41d93d2654425779984e917918b6bb69ea17f9f35b2c4a3cf442841",
+  "made": "chapter 4 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "d9297f1154850dc793dd6121c5ac5dbf1c3fc0bc8915c5e4c2ee19141536a224",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n5-s4": {
   "size": [
@@ -2291,11 +2291,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "c2c37b47792cac6a0b20678ab541f87508f49a2c594f99ee3a800a7fae58d281",
+  "made": "chapter 5 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "e25c99f43d7b0385ab82815e7d6a3d35bfe65fe8b8eeffa54c820c701112f7ab",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-track": {
   "size": [
@@ -2309,11 +2309,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the unlit groove for 6 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
-  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21",
+  "made": "the open channel for 6 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
+  "sha256": "4e3881d25879502a1787863d3f7750c019d92f68d5a780ceb452a9ce9d49df06",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s0": {
   "size": [
@@ -2327,11 +2327,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "ce71211b245fa386e46fe9c86b0f7d7d43cae12109f0cf0b58bf85cb24c05c93",
+  "made": "chapter 1 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "5e8067914e4e3011beb6cabc514cea825259e42a2ec4ad2e3be5fa64a25d7eba",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s1": {
   "size": [
@@ -2345,11 +2345,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "ebdddc896cc2e4df1cb03f2e6b28b616e7dbca4477d8e8f1b796f319a9a556b6",
+  "made": "chapter 2 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "470bde97fb959820cc4e2b47aef367816b059bbb00ddb426b9a9342a9a68c4d5",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s2": {
   "size": [
@@ -2363,11 +2363,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "2f0676b7ca58ebcc0e86a11f2004698102277527bdf4d431843d0ecc32c4a2f2",
+  "made": "chapter 3 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "6866bb0003c359e3b5400a57e7e00d621b5a58ef172226d6441afc85e4a6b8f0",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s3": {
   "size": [
@@ -2381,11 +2381,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "cef4988a960487c54770513e4d78f1ed7965229e177e3f6013683b59cf71c9ff",
+  "made": "chapter 4 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "e227b8226d2629c5068015d0d8b8d3c12775d703b5fc484e1b7f126e63e59484",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s4": {
   "size": [
@@ -2399,11 +2399,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "3a684e58d61f869f87307c8a49c6e4b93ce4fb7e7ba673be4c166317c447c4bd",
+  "made": "chapter 5 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "d6cf67df8a653931446b9bce2519865abc46a662d03e2b93bba402a360a7c353",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n6-s5": {
   "size": [
@@ -2417,11 +2417,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 6 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "09396929fc46391c3735e8afb4fe1ca9d514ff7dd40e4d5b438970123835c84f",
+  "made": "chapter 6 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "662859044c70883040a776192ce2795829719f3d23a48279b6999e23e9205342",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-track": {
   "size": [
@@ -2435,11 +2435,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the unlit groove for 7 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
-  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21",
+  "made": "the open channel for 7 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
+  "sha256": "88296562d6bd0bab5fcd0f71eeb94f2a4400cedae3809b4041c99a3fcff9d26c",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s0": {
   "size": [
@@ -2453,11 +2453,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "11d7ace7ef10c0791c244d4750fa087e26bb557a46befa3dacd19230c2cbcdbb",
+  "made": "chapter 1 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "714206f295df435b1ef3db47668451afaf73a634adf6987e2bfc68eb29a687f0",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s1": {
   "size": [
@@ -2471,11 +2471,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "f55e613472925f4f4285fb75745a1500560c36a432d957ea34eabcdccebc40b7",
+  "made": "chapter 2 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "3a6574bb991d6155080571b20b41b270bb2a1ba4e7071e150fd7e9d876b6160d",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s2": {
   "size": [
@@ -2489,11 +2489,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "09f95910336df58860dbb1313bebb1caebe722d0a056e67076ee6b763654f1cc",
+  "made": "chapter 3 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "e817c7b4e3cf5335fe041ab95d3180221ede20d239b2706f44e64b92ab45f5af",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s3": {
   "size": [
@@ -2507,11 +2507,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "5d2ffefe303c6e08c2622404dc019ea3985ded7ab94591686e14e659810570b8",
+  "made": "chapter 4 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "200ef9353fde8360a8c60e995f8d523daca22eb0bad044cb514a87fb0f205588",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s4": {
   "size": [
@@ -2525,11 +2525,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "d0ae32df7ba3f4f8f65d8b63c408c99928b78fef6548824f5170f88dc5a80de2",
+  "made": "chapter 5 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "a674546df0fc28c8fef70d2489a395296db024820f4d984fe0b7f0cd6cbc13e7",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s5": {
   "size": [
@@ -2543,11 +2543,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 6 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "fbbcc2ef26cba44a46794a9402e15d40ba5f99dc9aa701e85f6f2aab89d2ed26",
+  "made": "chapter 6 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "8fb86110b054ba6415439c9fda657633ebebaa1395019779c49e938b602e51c9",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n7-s6": {
   "size": [
@@ -2561,11 +2561,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 7 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "25e4262ebc23ee728ddc647bf228c63725c266a64e8f53cd65f308d13fcfcadb",
+  "made": "chapter 7 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "6a7b71dcee7f1a25a076312a7ee737de97a607766c9ee274f8144d9c07350c9a",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-track": {
   "size": [
@@ -2579,11 +2579,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the unlit groove for 8 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
-  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21",
+  "made": "the open channel for 8 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
+  "sha256": "7575665c4a6a45341e444db142e6efe34c757b8aafc4c3d3df9474a3a37cd93c",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s0": {
   "size": [
@@ -2597,11 +2597,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "4d44343c39c571a16d8d18cc3c161ea396a0280b8856ba0f2ff6840310c317c0",
+  "made": "chapter 1 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "3eb686cc8a1cfa016eb7af3e8f75ba95f5aa0db0a4e8864f54a7082e4ee9cf49",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s1": {
   "size": [
@@ -2615,11 +2615,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "db2cfb4ddc1eafc277a077e09750cb8d7b3dcceb9f8ab7209ca97e034a2c9706",
+  "made": "chapter 2 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "697230991859048b6c3bdb61573fba0362610bc34ca2ab55fb2b27124a4225e7",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s2": {
   "size": [
@@ -2633,11 +2633,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "51cf5616b209569169d5cdfb3430b4b8e08f8e23da0046d8bd4cd895fa24ac84",
+  "made": "chapter 3 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "53ebdf3cd63138fc3380fc54bfcdcad301ea50ebf79d6d457d883df909a7b7f6",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s3": {
   "size": [
@@ -2651,11 +2651,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "1e116ef438cb45ec6a67cc471a998f6f536dae64b4619faa3bd62bc1d0ff261c",
+  "made": "chapter 4 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "8595230e1cf82c8921bc91d5503944f04431c2298c3325d65a648ba23cda1320",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s4": {
   "size": [
@@ -2669,11 +2669,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "d8ca19b34a41d4f9026e3ecc5237f5dac84736de845a2b454bad68a70eb43ff6",
+  "made": "chapter 5 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "8a7e60191ecd7e12584fa3a2c0cef973c0b3b7b17ab87133ff86c7d792b53a61",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s5": {
   "size": [
@@ -2687,11 +2687,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 6 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "812017b51905f5e1b8c4021997657e8e289d573414a3ab9f74ba81b4a1435b52",
+  "made": "chapter 6 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "614dae5970f8de3a43f0e5ca72bf58bf76c463c01992a3347035a4e44eb2adff",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s6": {
   "size": [
@@ -2705,11 +2705,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 7 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "27bf498f7a3caa405f15be00235cbfaabf7953dd3917635f76bfbfebb8dd1752",
+  "made": "chapter 7 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "305abe7af612cb2fdd5b961130986381d283c577a27fe8bfdc163f0324c14127",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-selected-n8-s7": {
   "size": [
@@ -2723,11 +2723,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 8 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
-  "sha256": "4828f68a0c15ff118be601e84b481268d2db60522456cbfe4d27e6c287c74cb9",
+  "made": "chapter 8 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
+  "sha256": "04aea1489b4f2b90fb96120026af16374a25850129a9f33ef2bae730c811a6c2",
   "status": "new",
   "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
  },
  "ring-arc-idle-n4-track": {
   "size": [
@@ -2743,9 +2743,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the unlit groove for 4 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
   "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n4-s0": {
   "size": [
@@ -2761,9 +2761,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "50b6ed428e312010f0dd045c976c4e5b3af89d6160894e741882787769299487",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n4-s1": {
   "size": [
@@ -2779,9 +2779,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "a0db353a94e4867a80139a4a62b6b57b2eace7c0682ee04a9b46e098a0e15d6c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n4-s2": {
   "size": [
@@ -2797,9 +2797,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "d49332d4601961807227c6d868e61846ba190bf4cd319d209f4c0db9af2e2bb6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n4-s3": {
   "size": [
@@ -2815,9 +2815,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "8ad8ca16f73a3b97d85f9a9df7dcd9d5fcb7571f2a82612656a157231e22c0f7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n5-track": {
   "size": [
@@ -2833,9 +2833,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the unlit groove for 5 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
   "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n5-s0": {
   "size": [
@@ -2851,9 +2851,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "fcb068d422d94244574b015bdf1da5b3260eea0fa87049644c57be29676d6b70",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n5-s1": {
   "size": [
@@ -2869,9 +2869,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "f1b8220765a3424e77bf0fe2a94dbe300ee1d1aa1ebe38b6c4f47aee6efdfdc1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n5-s2": {
   "size": [
@@ -2887,9 +2887,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "60a0a58eae7171468d263de81824177a3b8e8e72d2a63f63c973a60818a882f8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n5-s3": {
   "size": [
@@ -2905,9 +2905,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "e2c2719dc120977b0e075c7d2ab16807b17d6983af06449e1c2e8b5e20e2e0d1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n5-s4": {
   "size": [
@@ -2923,9 +2923,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 5 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "effe613df5fd7202e30714c332f2710936d0891e49b1eb08dde572eab3aee4c6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n6-track": {
   "size": [
@@ -2941,9 +2941,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the unlit groove for 6 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
   "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n6-s0": {
   "size": [
@@ -2959,9 +2959,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "a1ee1105f7cd9dea6a4e76badb80daf3b2abe8df391c6d1ed3190262d9d6391e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n6-s1": {
   "size": [
@@ -2977,9 +2977,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "4fea1016823ce5ce2567d12395a3cbcaa4172de6fe424875ceb54df606cea617",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n6-s2": {
   "size": [
@@ -2995,9 +2995,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "6b7a4eba192c73a84e0c00f5c5e5fa38bdce3e2d48aee857dabb7d019f45c763",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n6-s3": {
   "size": [
@@ -3013,9 +3013,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "1098a3d4f6a737fa5e4926f8ba8db7d20511b79947c66b4b465896a39c2bee96",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n6-s4": {
   "size": [
@@ -3031,9 +3031,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 5 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "48d1752c59d3990c387b77ae768376d7d2f16302227b1cc845cd5c96c97341cf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n6-s5": {
   "size": [
@@ -3049,9 +3049,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 6 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "182f8fdbdbbcfc855085662d18edd572c64d63d54d91d19280c9e6c29837aff1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n7-track": {
   "size": [
@@ -3067,9 +3067,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the unlit groove for 7 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
   "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n7-s0": {
   "size": [
@@ -3085,9 +3085,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "f741cc832a26bce17ee4c0df35c5631f1de28b8f4baae7be111489a9161eddcf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n7-s1": {
   "size": [
@@ -3103,9 +3103,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "34c436bf091ac593b04bd95376d9be1d43004ab8431d1ffe372ca7fb4b8c99c7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n7-s2": {
   "size": [
@@ -3121,9 +3121,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "cfcf83eafcf854e2013f484999f054ebf3405d33b06508d0c3a3fa90280f3d01",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n7-s3": {
   "size": [
@@ -3139,9 +3139,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "86dbd19a862c0d8b202745bb7318040e030e913e8d96d664f7515f595e25499d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n7-s4": {
   "size": [
@@ -3157,9 +3157,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 5 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "1f6b740755905ac89a54a2d771f1329d823862c8a1eae5e75ea52c3655e7d53f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n7-s5": {
   "size": [
@@ -3175,9 +3175,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 6 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "961cc8012e50292bdf5621146aa44edbe20d2ac7bfdefc6e9d74ce3d4d20b3e6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n7-s6": {
   "size": [
@@ -3193,9 +3193,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 7 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "ea16f17f35bd4f3cfc40a932453968eb2e0601d47b65f39c2a172c3788033bef",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n8-track": {
   "size": [
@@ -3211,9 +3211,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the unlit groove for 8 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
   "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n8-s0": {
   "size": [
@@ -3229,9 +3229,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "894993823c214db340461c5e3322a53969e1083d6c38d4403428ef4a58037cd9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n8-s1": {
   "size": [
@@ -3247,9 +3247,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "b0935f79c791b20c7aeca967f391c8e98f9e6a3d4f2c8085130b77af45456b95",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n8-s2": {
   "size": [
@@ -3265,9 +3265,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "688c5be0cdbe143c16e7ee066bcc465770330ffa9e6e3c8b195c89405a7c6482",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n8-s3": {
   "size": [
@@ -3283,9 +3283,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "bfc20fe510687e8c177bc2dc0104a61fc3ea8e855d205c0ed789c1b2e62189e5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n8-s4": {
   "size": [
@@ -3301,9 +3301,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 5 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "8d3c8a081ae7cefaa7f3e5da7fde67b20dff202bc0f823b3fc86f79cdc53f0db",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n8-s5": {
   "size": [
@@ -3319,9 +3319,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 6 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "8b6bea6d0e80551099d12e6466f9c30d1354209a90a2efc6f55b40221b60d781",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n8-s6": {
   "size": [
@@ -3337,9 +3337,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 7 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "64c855357c05d15865f4aee92ca37d3d0a75b184f2e593d273e8a0e7a2aa32aa",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-arc-idle-n8-s7": {
   "size": [
@@ -3355,9 +3355,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 8 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
   "sha256": "6cff2127d26d5207ad8f83aec95854d1a208eb5c7294f692a3720e748533a6f0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "glint-star-12x12": {
   "size": [
@@ -3373,9 +3373,9 @@
   "src": "spark",
   "made": "the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30)",
   "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well rings from the concept; awaiting verdict"
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "status_note": ""
  },
  "ring-column-112x522": {
   "size": [
@@ -3643,5 +3643,198 @@
   "status": "new",
   "signed_in": null,
   "status_note": "the case at its new size (design-pods-relayout 29b6dc9); awaiting verdict"
+ },
+ "ring-well-empty-80x80": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   24,
+   44,
+   80,
+   80
+  ],
+  "src": "well-rings2",
+  "made": "the signed ring-well-empty re-exported only: padded to 80x80, centred on (40,40) so every well slice shares one origin",
+  "sha256": "932445e687b4c22fa962799655c5f4b292a2ddf3bbc210bff7ee5a1caef0ae12",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "re-export of the signed ring-well-empty only, padded to 80x80; awaiting verdict"
+ },
+ "rail-tab-fill-unread-full-152x40": {
+  "size": [
+   152,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   152,
+   40
+  ],
+  "src": "chrome geometry, supersampled 4x",
+  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
+  "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-read-full-152x40": {
+  "size": [
+   152,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   152,
+   40
+  ],
+  "src": "chrome geometry, supersampled 4x",
+  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
+  "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-open-full-152x40": {
+  "size": [
+   152,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   152,
+   40
+  ],
+  "src": "chrome geometry, supersampled 4x",
+  "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked",
+  "sha256": "66d692a7d95fa61dc4c78799a685571daa63b7ecedec1fd471a7719518ab97da",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-sealed-full-152x40": {
+  "size": [
+   152,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   152,
+   40
+  ],
+  "src": "chrome geometry, supersampled 4x",
+  "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked",
+  "sha256": "fa6d3290988ca481e815a8fb6030a955221c85c659dc42e2f12fc8738db56cad",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-unread-compact-72x40": {
+  "size": [
+   72,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   72,
+   40
+  ],
+  "src": "chrome geometry, supersampled 4x",
+  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
+  "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-read-compact-72x40": {
+  "size": [
+   72,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   72,
+   40
+  ],
+  "src": "chrome geometry, supersampled 4x",
+  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
+  "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-open-compact-72x40": {
+  "size": [
+   72,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   72,
+   40
+  ],
+  "src": "chrome geometry, supersampled 4x",
+  "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked",
+  "sha256": "c9716f7c35e7f00d7af4617908e44999536eb90aa67e7447ed63535b91425947",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "rail-tab-fill-sealed-compact-72x40": {
+  "size": [
+   72,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   72,
+   40
+  ],
+  "src": "chrome geometry, supersampled 4x",
+  "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked",
+  "sha256": "af0c823e9bd9f97b4d31719243ee92c4e6cfb923ebd23b9336227dd79deae76d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+ },
+ "trait-picture-frame-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "dd28fe01ea86d19fd133c143deaa4a0f3d6d02a7597a522820d4154588b7ee31",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the find picture frame of a sealed chapter at (224,296); awaiting verdict"
+ },
+ "page-new-mark-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": [
+   null,
+   null,
+   12,
+   12
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "PROPOSED: the 'new to the field guide' mark, a 12x12 bone bead lit upper left (the page's newMark region of design-pods-relayout 29b6dc9)",
+  "sha256": "f4c09fed6fab7e108827e7a855625ec7c98ca9c84853f4317453b1d99d41280c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "proposed mark; awaiting verdict"
  }
 }
