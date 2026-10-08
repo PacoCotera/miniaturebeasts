@@ -46486,6 +46486,215 @@
     "passed": true,
     "gated": false
    }
+  },
+  {
+   "id": "85ba078e-d86d-4b95-a368-c362776aa851",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 4,
+   "lab": {
+    "species": "S01",
+    "variant": "v5",
+    "name": "v5 baseline",
+    "model": "flash",
+    "sample": 1,
+    "set": "v5"
+   },
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-45ff1025",
+   "genomeSha256": "f7a2d788e5827862dad88cc4cf68708f900a69bf626cddd3ed46a8944df26686",
+   "purpose": "lab-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "text": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. None named means a plain coat: no pale patches, spots, bands or rings. Only areas Image 3 shows pale are pale.\n\nHiBit pixel art on a 280\u00d7300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living limbs that taper and bend softly inside their drawn place, never boxes, posts or unfinished 3D shapes. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Loika, a round frog-hare.\nColour placement: charcoal on the body, the head and the crest; cream on the belly, the snout and the legs.\nSurface in the drawing: a soft charcoal coat, short and velvety, drawn as two or three broad charcoal clusters with one cool lit rim along the back, over a warm cream belly, snout and lower face that stay clean and bright.\nSurface in the painting: soft charcoal fur, short and dense like velvet, with a gentle sheen across the back and the top of the head, over a warm cream lower face, snout and belly; the cream is smooth and slightly glowing where the light reaches it; the legs are cream and soft like the belly.\nParts: the body is one round, wide mass like a ripe fruit, with the head fused to it and no neck. The snout is short, cream and rounded, with a tiny curved mouth. The crest is three broad leaves with a soft midrib, standing up from the top of the head; they are leaves, not ears. The four legs are short, plump and padded, ending in rounded feet with small toe bumps.\nPosture: it sits square and low on all four feet, its weight settled into its haunches, its head up and a little forward.\nCharacter: gentle and curious, a little shy; a pet you want to pick up.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+    "imageOrder": [
+     "index",
+     "reference",
+     "key"
+    ]
+   },
+   "prompt": "Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.\n\nMarkings: only those the description names, where Image 3 shows them. None named means a plain coat: no pale patches, spots, bands or rings. Only areas Image 3 shows pale are pale.\n\nHiBit pixel art on a 280\u00d7300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living limbs that taper and bend softly inside their drawn place, never boxes, posts or unfinished 3D shapes. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.\n\nKeep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.\n\nNot: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.\n\nSpecies notes: the Loika, a round frog-hare.\nColour placement: charcoal on the body, the head and the crest; cream on the belly, the snout and the legs.\nSurface in the drawing: a soft charcoal coat, short and velvety, drawn as two or three broad charcoal clusters with one cool lit rim along the back, over a warm cream belly, snout and lower face that stay clean and bright.\nSurface in the painting: soft charcoal fur, short and dense like velvet, with a gentle sheen across the back and the top of the head, over a warm cream lower face, snout and belly; the cream is smooth and slightly glowing where the light reaches it; the legs are cream and soft like the belly.\nParts: the body is one round, wide mass like a ripe fruit, with the head fused to it and no neck. The snout is short, cream and rounded, with a tiny curved mouth. The crest is three broad leaves with a soft midrib, standing up from the top of the head; they are leaves, not ears. The four legs are short, plump and padded, ending in rounded feet with small toe bumps.\nPosture: it sits square and low on all four feet, its weight settled into its haunches, its head up and a little forward.\nCharacter: gentle and curious, a little shy; a pet you want to pick up.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+   "images": [
+    {
+     "name": "index.portrait.large.png",
+     "sha256": "5875688432d2654e01f7a3a660b32cea29885efd70050360656f0c3817c536d1",
+     "bytes": 6561
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "da0b86af0b2eceff62a9af2b4a181b6f7cd090f8cecad1162d8c099c1f1b9574",
+     "bytes": 6291
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T05:39:57Z",
+   "seconds": 7.8,
+   "httpStatus": 200,
+   "responseId": "rizHapHcDY2639IP_6Tn8Ac",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1592,
+    "candidatesTokenCount": 1461,
+    "totalTokenCount": 3053,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 818
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.08846,
+   "output": {
+    "file": "step1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "7deb0b411ec9d68ba8f9ea2179a60a344a106837b4dbda33ff8757b31d5d8b29"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.941,
+    "silhouetteIoUInPlace": 0.941,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.956
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "muzzle": {
+      "span": 0.983,
+      "coverage": 0.911
+     },
+     "eye": {
+      "span": 1.0,
+      "coverage": 0.926
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "leg-0": {
+      "span": 0.84,
+      "coverage": 0.895
+     },
+     "leg-1": {
+      "span": 0.992,
+      "coverage": 0.999
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.565,
+      "painted": 0.64,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.352,
+      "painted": 0.431,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.234,
+      "painted": 0.27,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.378,
+      "painted": 0.382,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.528,
+      "painted": 0.557,
+      "ok": true
+     },
+     "leg-1": {
+      "drawn": 0.238,
+      "painted": 0.311,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.504,
+      "median": "#3a4249",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.797,
+      "median": "#475156",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.913,
+      "median": "#deceae",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "second@leg-1": {
+      "agreement": 0.874,
+      "median": "#cbb69e",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "leaf@crown": {
+      "agreement": 0.984,
+      "median": "#5b935b",
+      "nearest": "#5aa65c",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.794,
+      "median": "#e1d1b0",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.848,
+      "median": "#e2d4b1",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.0,
+    "missing": 0.03,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.742,
+    "passed": true,
+    "gated": false
+   }
   }
  ]
 }
