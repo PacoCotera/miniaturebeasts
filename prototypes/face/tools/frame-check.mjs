@@ -63,6 +63,7 @@ for (const x of Rg.separators.x) expect(eq(px(D, x, 580), rgbOf(C.dot)) && eq(px
 expect(eq(px(D, 500, 100), rgbOf(C.stageGround)), "the stage ground is " + C.stageGround);
 // where the ink of each region lies, against the JavaScript renderer's (the engines place glyphs by their own rounding: within 3 px)
 const regions = { title: Rg.title.rect, materials: Rg.materials.rect, companion: Rg.companion.rect, subject: Rg.subject.rect, need: Rg.need.rect, action: Rg.action.rect };
+for (const x of Rg.topRules.x) expect(eq(px(D, x, 20), rgbOf(C.topRule)) && eq(px(D, x - 1, 20), rgbOf(C.chrome)), `a 1 px hairline rule at x ${x} in the top bar`);
 const rows = [];
 for (const [name, r] of Object.entries(regions)) {
   const a = ink(D, r), b = ink(R, r);
@@ -71,7 +72,7 @@ for (const [name, r] of Object.entries(regions)) {
   const left = a[0] - b[0], right = a[0] + a[2] - (b[0] + b[2]), top = a[1] - b[1], bottom = a[1] + a[3] - (b[1] + b[3]);
   rows.push(`${name.padEnd(10)} face ${a.join(",")}  js ${b.join(",")}  edges ${left}/${right} (x)  ${top}/${bottom} (y)`);
   expect(Math.abs(top) <= 2 && Math.abs(bottom) <= 2, `${name}: the ink sits on the same lines (${top}/${bottom})`);
-  const align = name === "subject" || name === "materials" ? Math.abs((a[0] + a[2] / 2) - Rg[name].centre) : name === "need" || name === "companion" ? Math.abs(a[0] + a[2] - (Rg[name].right ?? 1008)) : Math.abs(a[0] - r[0]);
+  const align = name === "subject" || name === "materials" ? Math.abs((a[0] + a[2] / 2) - Rg[name].centre) : name === "need" || name === "companion" ? Math.abs(a[0] + a[2] - Rg[name].right) : name === "title" ? Math.abs(a[0] - Rg.title.text[0]) : Math.abs(a[0] - (Rg.action.rect[0] + Rg.action.capSize[0] + Rg.action.capGap));   // the title after the room's mark, the verb after the cap's room
   expect(align <= 3, `${name}: aligned as the spec says (off by ${align.toFixed(1)})`);
 }
 console.log(rows.join("\n"));
@@ -95,8 +96,8 @@ const round = (await face.evaluate(() => window.__st.targets())).find((t) => t.g
 await face.evaluate((id) => { window.__st.UI.pods.focus.cur = id; }, round.id); await ringCheck("round");
 await face.evaluate(() => { window.__st.UI.pods.focus.cur = "pod"; });
 await shot(face, "l1-pods-frame.png");
-// the ✓ cap on the bottom line is in the tick colour
-{ let n = 0; const tk = rgbOf(C.tick); for (let j = Rg.action.rect[1]; j < Rg.action.rect[1] + Rg.action.rect[3]; j++) for (let i = Rg.action.rect[0]; i < Rg.action.rect[0] + 40; i++) { const q = px(D, i, j); if (Math.abs(q[0] - tk[0]) + Math.abs(q[1] - tk[1]) + Math.abs(q[2] - tk[2]) < 60) n++; } expect(n > 6, `the ✓ is drawn in the tick colour ${C.tick}, anti-aliased (${n} px near it)`); }
+// the verb on the bottom line is in the action's colour (the ✓ cap is a slot until its master lands)
+{ let n = 0; const tk = rgbOf(C.verb); for (let j = Rg.action.rect[1]; j < Rg.action.rect[1] + Rg.action.rect[3]; j++) for (let i = Rg.action.rect[0]; i < Rg.action.rect[0] + 80; i++) { const q = px(D, i, j); if (Math.abs(q[0] - tk[0]) + Math.abs(q[1] - tk[1]) + Math.abs(q[2] - tk[2]) < 60) n++; } expect(n > 6, `the verb is drawn in the action's colour ${C.verb}, anti-aliased (${n} px near it)`); }
 // the message plate: centred on 512, at most 640 wide, its bottom edge at 550, there at 3.5 s and gone at 4.3 s
 const PL = frame.regions.plate, t0 = Date.now(); await face.evaluate(() => window.__st.say("The pod needs a little more Energy before it can be read."));
 const P = await shot(face, "l1-plate.png", 300), plateCol = rgbOf(C.plate), edge = rgbOf(C.plateEdge);

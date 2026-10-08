@@ -109,7 +109,12 @@ The frame (top bar, bottom line, message plate, focus ring) and the slanted chap
 | The rail hangs from the top bar, touching slanted tabs (SS Chapter rail) — **yes**: tabs at y 40, 40 tall, 136 wide up to six, compact 56 with the open tab full for seven to twelve; shared slants are one hairline (the check reads the column at five rows); the run is the sum plus 16; no lift | Closed primitive set — **yes**: rect, sprite, text only; the slanted ends are 16×40 sprites from masks and the ring a sprite; **no new primitive** (a custom-draw triangle was not needed; the rings are a nine-slice and sprites from `ringMask`, as §6 says) |
 | Strings as decided — **yes**: none changed | Type: Inter 16, 20, 28 only, tabular figures — **yes**: three `lv_font_conv` C fonts from the committed TTFs and ranges; the views measure through the face, so centring and clipping use LVGL's widths |
 
-Departures and open items, for the UI designer or the lead:
+Departures and open items, for the UI designer or the lead (the frame's language, from `design-station-frame`: the bar's four zones and the line's three):
+
+- **Marks are empty slots until their masters land**: the room marks (24×24, Home, Research, Library, Habitat), the sun (16×16), the key caps (✓ in orange and mist, ← in stone, 16×16), the Companion's glyph (16×24, solid and outline) and the mibi's face (24×24) are in the manifest as status `empty` at their exact sizes (`components/mark.mjs`, `assets.registerSlot`); nothing is drawn in them and the layout does not move when they fill. Drawn now: the title, the holdings, the lamp, the face's ring, the figure, the hairlines, the notice and its lamp.
+- **Derived, UI designer to confirm** (`frame.json` `derived`): the face's ring while the Companion is away is `stone` (the document says dimmed).
+- **Not built**: the notice's 200 ms slide, the title's 200 ms cross-fade, the Companion's 200 ms lift on return.
+- **The ← and its word** are built where this branch of the design puts them (the action zone, after the price); the art director's return moves them to the right edge with the notice before them, which comes with that push.
 
 - **The slant's rounding** is the builder's reading: a side is the line x + 16 (y − 40) / 40 taken at each row's centre and floored, so row 0 is not shifted and row 39 is shifted 15; the document gives the lines, not the rows.
 - **The tab ring's right side** (settled by the UI designer): the slants lean to the tab's bottom edge (`slantTo`, y 80) and drop straight to the bottom run at y 84, so the box is exactly (x − 4, 42, w + 24, 42); the frame check compares the drawn ring with its mask pixel for pixel.

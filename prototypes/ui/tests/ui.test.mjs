@@ -119,29 +119,35 @@ test("the asset manifest registers each picture at its size and refuses a build 
 });
 
 test("the frame components place the spec's regions and set every string in Inter at 16, 20 or 28 px", () => {
-  const nodes = frame(ctx, { title: "Pods", turn: 5, materials: { e: 10, d: 8, s: 15 }, flash: { d: true }, companion: { text: "Companion docked · with Dot", lamp: "on" }, line: { ok: "Read Coat", price: "3 ◆", back: "Home", subject: "Loika pod · meadow", need: "something new here" }, message: "New for the Loika: between, thin rings", focal: [264, 120, 160, 192] });
+  const nodes = frame(ctx, { screen: "pods", title: "Pods", turn: 5, materials: { e: 10, d: 8, s: 15 }, flash: { d: true }, companion: { docked: true, withMibi: true }, line: { ok: "Read Coat", price: "3 ◆", back: "Home", subject: "Loika is unread", need: "something new here" }, message: "New for the Loika: between, thin rings", focal: [264, 120, 160, 192] });
   const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
   assert.deepEqual(byId.top.rect, [0, 0, 1024, 40]); assert.deepEqual(byId.line.rect, [0, 562, 1024, 38]);
   assert.deepEqual(byId["line.sep.0"].rect, [396, 571, 1, 20]); assert.deepEqual(byId["line.sep.1"].rect, [628, 571, 1, 20]);
   const texts = nodes.filter((n) => n.kind === "text");
   assert.ok(texts.every((n) => [16, 20, 28].includes(n.px)), "sizes " + [...new Set(texts.map((n) => n.px))]);
-  assert.equal(byId["top.title.0"].px, 20); assert.equal(byId["top.title.0"].weight, 500);
-  assert.ok(texts.some((n) => n.text === "T5"));
+  assert.equal(byId["top.title.0"].px, 20); assert.equal(byId["top.title.0"].weight, 500); assert.equal(byId["top.title.0"].rect[0], 48, "the title starts at x 48, after the room's mark");
+  assert.ok(texts.some((n) => n.text === "5"), "the turn is a figure beside the sun mark, not T5");
+  assert.deepEqual([byId["top.sep.0"].rect, byId["top.sep.1"].rect], [[256, 8, 1, 24], [888, 8, 1, 24]]);
   // the materials sit centred on 512 with 16 px icons; a changed figure has its flash plate
   const icons = nodes.filter((n) => n.kind === "sprite" && n.asset.startsWith("icon:")); assert.equal(icons.length, 3 + 1);   // three counters and the ◆ in the price
   assert.ok(icons.every((n) => n.rect[2] === 16));
   assert.ok(byId["top.m.d.flash"]); assert.ok(!byId["top.m.e.flash"]);
   const e = byId["top.m.e.icon"].rect[0], s = byId["top.m.s"].rect[0] + byId["top.m.s"].rect[2]; assert.ok(Math.abs((e + s) / 2 - 512) <= 1, "centred on 512: " + e + ".." + s);
-  // the Companion state ends at 1008 with its lamp to the left
-  assert.equal(byId["top.comp"].rect[0] + byId["top.comp"].rect[2], 1008); assert.ok(byId["top.lamp"].rect[0] < byId["top.comp"].rect[0]); assert.equal(byId["top.lamp"].rect[2], 8);
-  // the bottom line: ✓ verb · price · ← where, the subject centred, what needs you right-aligned to 1008
-  assert.equal(texts.find((n) => n.id === "line.a.0.0").text, "✓");
-  const need = nodes.filter((n) => n.id.startsWith("line.need")); assert.equal(need.at(-1).rect[0] + need.at(-1).rect[2], 1008);
+  // who is out: marks only: the lamp 8×8 at (836, 16), the face's ring 24×24 at (856, 8); when: the figure ends at 1008
+  assert.deepEqual(byId["top.lamp"].rect, [836, 16, 8, 8]); assert.deepEqual(byId["top.face.ring"].rect, [856, 8, 24, 24]);
+  assert.equal(byId["top.turn"].rect[0] + byId["top.turn"].rect[2], 1008);
+  assert.ok(!nodes.some((n) => n.kind === "text" && /Companion|docked/.test(n.text)), "no words in the Companion's zone");
+  // the bottom line: the verb in the action's colour after its cap's room, the price, the way back, 24 px apart; the context centred; the notice right-aligned to 1008 with its lamp
+  assert.equal(texts.find((n) => n.id === "line.a.0.0").text, "Read Coat"); assert.equal(texts.find((n) => n.id === "line.a.0.0").rect[0], 16 + 16 + 4, "the verb starts after the 16 px cap and 4 px");
+  const price = nodes.find((n) => n.id === "line.a.1.0" || n.id === "line.a.1.1"), verbEnd = byId["line.a.0.0"].rect[0] + byId["line.a.0.0"].rect[2]; assert.ok(price.rect[0] - verbEnd === 24 || price.kind === "sprite", "the price is 24 px after the verb");
+  assert.ok(!texts.some((n) => /·/.test(n.text)), "no dots in the frame");
+  assert.deepEqual(byId["line.need.lamp"].rect.slice(2), [12, 12]);
+  const need = nodes.filter((n) => n.id.startsWith("line.need") && n.kind !== "rect"); assert.equal(need.at(-1).rect[0] + need.at(-1).rect[2], 1008);
   const subj = nodes.find((n) => n.id === "line.subject.0"); assert.ok(Math.abs(subj.rect[0] + subj.rect[2] / 2 - 512) <= 1);
   // the message plate: bottom at 550, over nothing focal
   assert.equal(byId.plate.rect[1] + byId.plate.rect[3], 550); assert.equal(byId.plate.region, "plate");
   // no ✓ cap without an action
-  const quiet = bottomLine(ctx, { back: "Home", subject: "Coat · read" }); assert.ok(!quiet.some((n) => n.text === "✓"));
+  const quiet = bottomLine(ctx, { back: "Home", subject: "Coat is read" }); assert.ok(!quiet.some((n) => n.id === "line.a.0.0" && n.text !== "Home"), "no verb and no ✓ cap without an action");
   assert.equal(messagePlate(ctx, { text: "" }).length, 0);
 });
 
