@@ -1,4 +1,705 @@
 {
  "schema": "mb-masters/1",
- "masters": {}
+ "masters": {
+  "plate-message-640x36": {
+   "file": "pods/plate-message-640x36.png",
+   "w": 640,
+   "h": 36,
+   "sha256": "bd62ebb7c44911d7c56d573cf18195c7ca1089633726ef3a2801345ac6490ac1",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-message-640x56": {
+   "file": "pods/plate-message-640x56.png",
+   "w": 640,
+   "h": 56,
+   "sha256": "cbae9a27e051728c9beab62a2dc2fecea0cd74c6403fc20644e16f36d69ca54b",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-message-640x76": {
+   "file": "pods/plate-message-640x76.png",
+   "w": 640,
+   "h": 76,
+   "sha256": "9bc8d345e227eb3c5a90e6bc426908af5c07dfd4663d567053a072b66ee8d466",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-112x24": {
+   "file": "pods/plate-name-112x24.png",
+   "w": 112,
+   "h": 24,
+   "sha256": "6232526688c52dec4806df6494edb59dcc1889604b27d9741007694e965b118a",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-128x24": {
+   "file": "pods/plate-name-128x24.png",
+   "w": 128,
+   "h": 24,
+   "sha256": "b939a7c978f1621612e44c2c2d0f1da67553373743ac44092ba624f001860649",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-144x24": {
+   "file": "pods/plate-name-144x24.png",
+   "w": 144,
+   "h": 24,
+   "sha256": "00e7086c5147e962dec8ef636f833756e5be0d2f2bdc6dc65cfc1a39bd2efc02",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-160x24": {
+   "file": "pods/plate-name-160x24.png",
+   "w": 160,
+   "h": 24,
+   "sha256": "a3731c896b5362d972164666ef8b5232821834df54c14e4741fd8f5e2898cd65",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-176x24": {
+   "file": "pods/plate-name-176x24.png",
+   "w": 176,
+   "h": 24,
+   "sha256": "c6f91b05a938b290bea46442b32b6db54808e73f9cc3cfd8f86acf8783ed0c01",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-192x24": {
+   "file": "pods/plate-name-192x24.png",
+   "w": 192,
+   "h": 24,
+   "sha256": "cc39683c42448db5bcc2416df020ef1a29fb49043d340839a2db6652110b2f40",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-208x24": {
+   "file": "pods/plate-name-208x24.png",
+   "w": 208,
+   "h": 24,
+   "sha256": "087f6276eed23c5e0ffbaf6ae791a3ea8d851263da5ab39cb84fc1310f82ee38",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-224x24": {
+   "file": "pods/plate-name-224x24.png",
+   "w": 224,
+   "h": 24,
+   "sha256": "2453edfaed652aeff47100a505d10145c7234fad3140abd1ed83dda3644a5a44",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-80x24": {
+   "file": "pods/plate-name-80x24.png",
+   "w": 80,
+   "h": 24,
+   "sha256": "c5d249822e5c02ae07015c2d000b2996f488117553d33923318fd5ee0146f323",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "plate-name-96x24": {
+   "file": "pods/plate-name-96x24.png",
+   "w": 96,
+   "h": 24,
+   "sha256": "0342e35131e5131f35c1b55d7af656838e55927ad2465b83f2b0424382ceb580",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-band": {
+   "file": "pods/pod-large-band.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "26e706be7751274e14eac8873afbb86d9ffcc1f95bc342b4eceb67fdaa0d0642",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-crack": {
+   "file": "pods/pod-large-crack.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "b88323a6204d9518fc46acf518ac303914e332a51782fce993648e8a299fc02e",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-identified": {
+   "file": "pods/pod-large-identified.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "7145f5546a3dcc85bb4a77a9d2b194c5d0e68b0f5ad32c0a034b8cc1789fec8d",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-mask-accent": {
+   "file": "pods/pod-large-mask-accent.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "913fd9738ff560fb3be026e7835a49ec4d698501c1de4dfca9a52c5f573f9434",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-mask-body": {
+   "file": "pods/pod-large-mask-body.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "a9524bbfe27f48686bd9d3aa74f96e418cc874c4d12e28c20bf791240f47a631",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-pattern-bands": {
+   "file": "pods/pod-large-pattern-bands.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "68513470ac4c65cf8557e8d8be7dc9c9a3cbdd7923d6691bf05fca58e471b034",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-pattern-dots": {
+   "file": "pods/pod-large-pattern-dots.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "859429db53a1b2b897d51cd87b70f954d70544908e5f7adddf1a6896abde4966",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-pattern-stripes": {
+   "file": "pods/pod-large-pattern-stripes.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "157551c0b72f4b77c5982606cd93190244321be6538ea9391960e63e7985e1f0",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-sealed": {
+   "file": "pods/pod-large-sealed.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "8dfdb43c2915f69b00d8429f328a9e88dcf710629e1a19b7224455432f60dd5b",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-shade": {
+   "file": "pods/pod-large-shade.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "0078c3a94d11bc6458e3da03cc6dfed0279a19426e8cabee078c76bda4cda977",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-large-shadow": {
+   "file": "pods/pod-large-shadow.png",
+   "w": 160,
+   "h": 14,
+   "sha256": "6a99a9bfb6d15d1a9e9c18c1cab99c09d30cca8dd70e7a12d7e6c7a99587b811",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-band": {
+   "file": "pods/pod-medium-band.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "6b6b42f6a86e27e12eae7073f469071184c2801a68ff49fab75f72ba06a0bcf8",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-crack": {
+   "file": "pods/pod-medium-crack.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "42a03dfaaae851ecd8ad428d2aa6a71804b2b3f41dd770881dfed6daf23228ca",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-identified": {
+   "file": "pods/pod-medium-identified.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "4706d8a9c724944b16c03a970cedf53533a77c1e72680c91b2604bf82c24dbe7",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-mask-accent": {
+   "file": "pods/pod-medium-mask-accent.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "757f873989bde006abf8145514063f2e33dce204fadbc4840202b72f9b340521",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-mask-body": {
+   "file": "pods/pod-medium-mask-body.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "0795d489e1736e302b3cb250bc9a714668e733a9c88232aa82b5db33c38e576c",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-pattern-bands": {
+   "file": "pods/pod-medium-pattern-bands.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "814190d730b755459dd7568733d11d3b3f4a70a3e2b13f871528eee6fc988b7c",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-pattern-dots": {
+   "file": "pods/pod-medium-pattern-dots.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "cdcc38c0c3afa30b7aa6be4b948f2eed92a01e07a45fe9a86609786105276df0",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-pattern-stripes": {
+   "file": "pods/pod-medium-pattern-stripes.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "fea9283a49769eb66f89254d9e96097a69e1da89123065a4807ca41c52813c7f",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-sealed": {
+   "file": "pods/pod-medium-sealed.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "a1dec3284a7207c6e1d9a9f65fe3db7b56fcf4572314d3206c040a8c4f9149b6",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-shade": {
+   "file": "pods/pod-medium-shade.png",
+   "w": 120,
+   "h": 152,
+   "sha256": "6b131c952a2e200178c5bd97713c4e523f8c625b943833b60c11bcdc13a25f81",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-medium-shadow": {
+   "file": "pods/pod-medium-shadow.png",
+   "w": 136,
+   "h": 14,
+   "sha256": "7c9bb668a59879981815b7ac097617f97a526fb5428a1ed799cd2ebf2b8991e6",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-band": {
+   "file": "pods/pod-small-band.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "f91394c40e6cd6277bc6599d5a233d70fe23aaf181c492d50e5fd1a2d65f564d",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-crack": {
+   "file": "pods/pod-small-crack.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "216a424afa504aff374fc0c0437d8340c5c81dab9e09e061eeb685587f01823b",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-identified": {
+   "file": "pods/pod-small-identified.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "9c1dc72ddb4eae4f2cee550ffe6ce6a48eeceed384175cc465c8ec846f7d01d9",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-mask-accent": {
+   "file": "pods/pod-small-mask-accent.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "f761108a4689813bbc48ca63d3adf20708fdc58bfcd28606ee79d29527a429fa",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-mask-body": {
+   "file": "pods/pod-small-mask-body.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "18b8e8cb35d042f91f4e90c311e6ec5b5b46479c62530d2bfdce1f0bbbe8ac2f",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-pattern-bands": {
+   "file": "pods/pod-small-pattern-bands.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "7a10e629abf7ae9b1b03cc4a295383d9d32d0bcf34dbd6647d0f4d72a313dff0",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-pattern-dots": {
+   "file": "pods/pod-small-pattern-dots.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "5439673315ecd330b9ef5a354ed25f790902edaff75e046d4075a18cc3825023",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-pattern-stripes": {
+   "file": "pods/pod-small-pattern-stripes.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "907b0a6a63703ea6c0d968ef5bcd661451c038bc1fc7e08a05511a74b38fcef5",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-sealed": {
+   "file": "pods/pod-small-sealed.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "66a625fd972a4ef17c6262fbc73f84b046810b37e5659e9edfbafcbcdbdca3ce",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-shade": {
+   "file": "pods/pod-small-shade.png",
+   "w": 104,
+   "h": 128,
+   "sha256": "ac7a024e69031773f101666c580f53f8cf9911af9818bc9d7a9620f3208a23fa",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "pod-small-shadow": {
+   "file": "pods/pod-small-shadow.png",
+   "w": 120,
+   "h": 14,
+   "sha256": "c0826b447b2f6e5a22c5f6b3d928eaca57629ae99d8218c7a76d8c0f356ebfc6",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-character-read-24x24": {
+   "file": "pods/rail-emblem-character-read-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "73e8b0c40c09597463f2bdf80c2d648dc69bc83e3c9ef070fdb2a29a6fcf4948",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-character-sealed-24x24": {
+   "file": "pods/rail-emblem-character-sealed-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "5e3233e2b16fd2b4a13ef96a27a8fce1c7936927ebca47b0abf824f27dd9168d",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-character-unread-24x24": {
+   "file": "pods/rail-emblem-character-unread-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "96acef814e4e4bac154ddc26631e39585529024c9e423dd5a186d2e1490e3079",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-coat-read-24x24": {
+   "file": "pods/rail-emblem-coat-read-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "ca8bcf94563be3f860b5f981edcbe3a523410aa777337b16e82ac450dac42cea",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-coat-sealed-24x24": {
+   "file": "pods/rail-emblem-coat-sealed-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "2db580c2927ca9bb4d8351b9008310f9c190f2eb8760b06cb020aa6e15354b98",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-coat-unread-24x24": {
+   "file": "pods/rail-emblem-coat-unread-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "01e18c2125c141a6b1bfc9162f52500d022f99f570cb664d35b4748e7542b18a",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-face-read-24x24": {
+   "file": "pods/rail-emblem-face-read-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "0065f37420c576fbf533f34d25040031697021577e0749f80828e266576e53ea",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-face-sealed-24x24": {
+   "file": "pods/rail-emblem-face-sealed-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "fbe93db1122fbdc9de0965a5dcb2e9a03fdd41e60a3a330e409a9b11df4fdbb7",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-face-unread-24x24": {
+   "file": "pods/rail-emblem-face-unread-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "34e7df89deba960389ce267c49c38716eeefd1bb88b3ed0b78ad9a69288f940a",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-glow-read-24x24": {
+   "file": "pods/rail-emblem-glow-read-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "d3f6c2fba002309bd75d2ca460ecdbbb7d1028c147abc5184b8660caa1d3e7e4",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-glow-sealed-24x24": {
+   "file": "pods/rail-emblem-glow-sealed-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "dd36c355b9bb32becb2ba43bfa045b92e52f3eeabe6eedf23800dda7d3086b2e",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-glow-unread-24x24": {
+   "file": "pods/rail-emblem-glow-unread-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "ad415891525695b590521aa8dfc96420985676ebbe70bf9c4c6d4ad8db290aac",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-stamina-read-24x24": {
+   "file": "pods/rail-emblem-stamina-read-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "a969f9ba8ea742268fbea0b079bf8dfd640c6d8a2bd518d35d0759d6c159e927",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-stamina-sealed-24x24": {
+   "file": "pods/rail-emblem-stamina-sealed-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "4d05d9639f062d230508d318b1b9ab80dcebf922a067f6972b76c8234f94de8f",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-emblem-stamina-unread-24x24": {
+   "file": "pods/rail-emblem-stamina-unread-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "87a1dd57ed7ef2ce89fb766094fea0fd176c8d39c787d46a760bcb4a1ed85bdc",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-tab-focused-compact-72x40": {
+   "file": "pods/rail-tab-focused-compact-72x40.png",
+   "w": 72,
+   "h": 40,
+   "sha256": "e7ac1a3c81060e5b071958a85638a5158b70b1f875ef0706f41ea82bdc76d86c",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-tab-focused-full-152x40": {
+   "file": "pods/rail-tab-focused-full-152x40.png",
+   "w": 152,
+   "h": 40,
+   "sha256": "d3b688def56294cf66940f0c2e195e8834180c2640d634547a56685f0b6fbf22",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-tab-read-compact-72x40": {
+   "file": "pods/rail-tab-read-compact-72x40.png",
+   "w": 72,
+   "h": 40,
+   "sha256": "e62bd7f00d8372060725d0cba2dd3d2a335e4ce39762c6b1927c908f1692357f",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-tab-read-full-152x40": {
+   "file": "pods/rail-tab-read-full-152x40.png",
+   "w": 152,
+   "h": 40,
+   "sha256": "34702dd1ee25488a9ef5b6f8d90245467d58f4f324fcbd7f34ed7184d260ec0b",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-tab-sealed-compact-72x40": {
+   "file": "pods/rail-tab-sealed-compact-72x40.png",
+   "w": 72,
+   "h": 40,
+   "sha256": "f30124a210b76c545b0b85ae4e26c4e19a35aadbccee45c44f54a0ac298b95d1",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-tab-sealed-full-152x40": {
+   "file": "pods/rail-tab-sealed-full-152x40.png",
+   "w": 152,
+   "h": 40,
+   "sha256": "bf686f7a11810e5d2a6f47aed3f89c3924fd56e657a751cd94524d4e5985087a",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-tab-unread-compact-72x40": {
+   "file": "pods/rail-tab-unread-compact-72x40.png",
+   "w": 72,
+   "h": 40,
+   "sha256": "60aba3066cfbe9ffffc24f3bf155ad70227f0bedd9a89bd0e53cb55d0eccf7d1",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "rail-tab-unread-full-152x40": {
+   "file": "pods/rail-tab-unread-full-152x40.png",
+   "w": 152,
+   "h": 40,
+   "sha256": "1fd2f86b4fb4da9bfffe2c7c4a42681c4a057ebafe96f8322597d78452270f8f",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "ring-column": {
+   "file": "pods/ring-column.png",
+   "w": 160,
+   "h": 522,
+   "sha256": "d12e5bdc2e2183d5517c7f3997dd15bf0775bbb71e0f03f58ef9d8332961608e",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "ring-hatch": {
+   "file": "pods/ring-hatch.png",
+   "w": 112,
+   "h": 56,
+   "sha256": "e9031f2d7356ff795cb17b56df7f0bbfe89256e094877eb0fcc7e7bd12ef55e6",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "room-bench-stage": {
+   "file": "pods/room-bench-stage.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "1f00f9c693c6cab09d8d0e4ba4cbbd638035282b2f057ee8d877496b0d4e6061",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "room-cradle": {
+   "file": "pods/room-cradle.png",
+   "w": 224,
+   "h": 96,
+   "sha256": "f7f74e0a57f8cd9af167539408eb55431a2332ae00fe19649fb2a1babf2c0459",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "room-cradle-front": {
+   "file": "pods/room-cradle-front.png",
+   "w": 224,
+   "h": 96,
+   "sha256": "6dc1c962ef4e46038c326bddf1ab159f71d008d089a7d1150a273ad3d5752611",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "room-shelf": {
+   "file": "pods/room-shelf.png",
+   "w": 240,
+   "h": 72,
+   "sha256": "5803fa6aa9b8055ffc61477e5f8deb4478f4afd06b42f6de9c55a8b70b14870b",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "stamp-label-120x120": {
+   "file": "pods/stamp-label-120x120.png",
+   "w": 120,
+   "h": 120,
+   "sha256": "474f93f940e3d682378c8943d2532816f5b811a52bbfba97bbb344eb53faef39",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-120x112": {
+   "file": "pods/trait-picture-frame-120x112.png",
+   "w": 120,
+   "h": 112,
+   "sha256": "235b655e4eceee24a09d846efd87ba1e9ee9c0cf51f415764cab94d59405a520",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-120x112-sealed": {
+   "file": "pods/trait-picture-frame-120x112-sealed.png",
+   "w": 120,
+   "h": 112,
+   "sha256": "3834322d8d96c3d1f8b528756a17d428ff36cd26055b3e6fd276b754e9c0cbba",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-120x112-unread": {
+   "file": "pods/trait-picture-frame-120x112-unread.png",
+   "w": 120,
+   "h": 112,
+   "sha256": "cc0d743509bebe368b9f08dba92dc74d0701d97b28f04f913ec85b1888b5a77d",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-120x96": {
+   "file": "pods/trait-picture-frame-120x96.png",
+   "w": 120,
+   "h": 96,
+   "sha256": "2321d66b7152163eac60f23611af8a5debf047b2a2173d67f277bd720d706bd4",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-120x96-sealed": {
+   "file": "pods/trait-picture-frame-120x96-sealed.png",
+   "w": 120,
+   "h": 96,
+   "sha256": "7d64f88e7d022d9f9a69e438ac33cbed3fe62d641c7460c8cd64f9d02ca3d9ad",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-120x96-unread": {
+   "file": "pods/trait-picture-frame-120x96-unread.png",
+   "w": 120,
+   "h": 96,
+   "sha256": "eadfe45e3bbc4b64278fa076907d89bdd8328af39d5999970752f115cb4bdaa7",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x104": {
+   "file": "pods/trait-picture-frame-184x104.png",
+   "w": 184,
+   "h": 104,
+   "sha256": "42fdea10c086987967541245ddf5e004f69edfa1dd1bf350feebb32362cc4208",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x104-sealed": {
+   "file": "pods/trait-picture-frame-184x104-sealed.png",
+   "w": 184,
+   "h": 104,
+   "sha256": "cfe830b107e6560da5ecccd21c5ae6ccf3394dbe4851ada5a4c0201e4f966fc4",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x104-unread": {
+   "file": "pods/trait-picture-frame-184x104-unread.png",
+   "w": 184,
+   "h": 104,
+   "sha256": "ecf10d9824011d73586ae33c57be934b134e55bf837354a0b8814375994acff2",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x112": {
+   "file": "pods/trait-picture-frame-184x112.png",
+   "w": 184,
+   "h": 112,
+   "sha256": "9f8976fae65bb0f8ec6eba11d8b34ce2176601f44b7499daa81f9c422d38e020",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x112-sealed": {
+   "file": "pods/trait-picture-frame-184x112-sealed.png",
+   "w": 184,
+   "h": 112,
+   "sha256": "d028b791fb01c0ab1c31527f7cfb24d8714ccca796981c9514ce61d139e5b139",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x112-unread": {
+   "file": "pods/trait-picture-frame-184x112-unread.png",
+   "w": 184,
+   "h": 112,
+   "sha256": "e4ca733db686e5c30092ffac344319c38554177fed25abddca8ac14dfaea7619",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x256": {
+   "file": "pods/trait-picture-frame-184x256.png",
+   "w": 184,
+   "h": 256,
+   "sha256": "40f766d6c760b4586fa741af53ec98fbba8e8cc63ab4a052c56ff50250e810d1",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x256-sealed": {
+   "file": "pods/trait-picture-frame-184x256-sealed.png",
+   "w": 184,
+   "h": 256,
+   "sha256": "f7995a4989e7e647af0d4d980d387729577765f31416469ce264e790980e6e6b",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x256-unread": {
+   "file": "pods/trait-picture-frame-184x256-unread.png",
+   "w": 184,
+   "h": 256,
+   "sha256": "4e6d0f8bb45b2bab8e18c7156330f6676f84951c931c974f3657008383e6e7ed",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x304": {
+   "file": "pods/trait-picture-frame-184x304.png",
+   "w": 184,
+   "h": 304,
+   "sha256": "bc87c8f1e67370d0f1f9ee2367abd3c33bc70c61f5009b90fbaaf29ad3a7226e",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x304-sealed": {
+   "file": "pods/trait-picture-frame-184x304-sealed.png",
+   "w": 184,
+   "h": 304,
+   "sha256": "ebaea936365f2fefea77f027f7e59e6636371f99a4b48f53585ddbc444a10109",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-184x304-unread": {
+   "file": "pods/trait-picture-frame-184x304-unread.png",
+   "w": 184,
+   "h": 304,
+   "sha256": "cdbd386f38847b5c8c1d6aefd61249d3e4504f4a6d6940288591157ba9b0f8ef",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-232x312": {
+   "file": "pods/trait-picture-frame-232x312.png",
+   "w": 232,
+   "h": 312,
+   "sha256": "3e15d93df675dd20a18731c181dfe9a7ebbf813fe9179c1e0b011ced1816888e",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-232x312-sealed": {
+   "file": "pods/trait-picture-frame-232x312-sealed.png",
+   "w": 232,
+   "h": 312,
+   "sha256": "47f53375bded70cd5455710829bc32554d26efac07538eb89df8f3662a2cb284",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-232x312-unread": {
+   "file": "pods/trait-picture-frame-232x312-unread.png",
+   "w": 232,
+   "h": 312,
+   "sha256": "19e3ff22fecdb30f6215f974a23c52d312921cd4294a910b6e883cf39df6429d",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-376x264": {
+   "file": "pods/trait-picture-frame-376x264.png",
+   "w": 376,
+   "h": 264,
+   "sha256": "7cb6e2a9cee6b10fd79da5123ab86fad3379a6e86864b615eeb0d934cdb16ede",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-376x264-sealed": {
+   "file": "pods/trait-picture-frame-376x264-sealed.png",
+   "w": 376,
+   "h": 264,
+   "sha256": "acb6caad79807907205a56ff3dfd7579c8004905fd2d081edddad9b8722527e1",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  },
+  "trait-picture-frame-376x264-unread": {
+   "file": "pods/trait-picture-frame-376x264-unread.png",
+   "w": 376,
+   "h": 264,
+   "sha256": "6d83e4461a7e0dc25830de55242de68f26cc5091eaaf05955669cb029254bffb",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
+  }
+ }
 }
