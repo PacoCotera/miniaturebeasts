@@ -21,8 +21,8 @@ def compose(state, rail):
         for k in range(4): d.arc([cx - 31, cy - 31, cx + 31, cy + 31], -90 + k * 90 + 6, -90 + k * 90 + 84, fill=(69, 216, 190, 255) if fills[k] else (93, 89, 116, 255), width=3)
     put("ring-hatch", 24, 488)
     # stage
-    put("room-shelf", 576, 392); put("room-cradle", 600, 328); put("pod-large-shadow", 712 - 88, 393); put("pod-large-identified", 632, 208); put("room-cradle-front", 600, 328)
-    put("plate-name-224x32", 600, 440); text((712, 456), "Loika pod", f28, CREAM, "mm")
+    put("room-shelf", 576, 392); put("room-cradle", 600, 328); put("pod-large-shadow", 712 - 80, 385); put("pod-large-identified", 640, 216); put("room-cradle-front", 600, 328)
+    tw = d.textlength("Loika pod", font=f28); pw = min(224, max(96, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x32", 712 - pw // 2, 440); text((712, 456), "Loika pod", f28, CREAM, "mm")
     put("plate-origin-224x40", 600, 480); text((712, 491), "rock field ·", f16, BONE, "mm"); text((712, 509), "a Tuikis felt safe", f16, BONE, "mm")
     put("stamp-label-120x120", 888, 248); cv.alpha_composite(cand.crop((830, 238, 976, 386)).resize((104, 104), Image.NEAREST), (896, 256))
     # page
@@ -31,8 +31,8 @@ def compose(state, rail):
     for k in range(4):                                   # the 8x8 trait marks, right-aligned at y 128 (stand-ins)
         x = 568 - 8 - 12 * (3 - k); d.rectangle([x, 128, x + 7, 135], fill=CREAM if k < 2 else None, outline=MIST)
     if state == "picture":
-        cv.alpha_composite(cand.crop((180, 166, 372, 430)).resize((376, 312), Image.LANCZOS), (192, 160)); put("trait-picture-frame-376x312", 192, 160)
-        text((192, 480), "Spots", f16, CREAM); text((192, 500), "dots · hides plain", f16, FOG)
+        cv.alpha_composite(cand.crop((190, 168, 370, 428)).resize((200, 280), Image.LANCZOS), (280, 176)); put("trait-picture-frame-232x312", 264, 160)
+        text((380, 480), "Spots", f16, CREAM, "ma"); text((380, 500), "dots · hides plain", f16, FOG, "ma")
     else:
         cells = [(192, 160, "read", "Spots", "dots · hides plain"), (384, 160, "read", "Belly", "cream · hides charcoal"), (192, 360, "unread", "Flank", ""), (384, 360, "sealed", "Crest", "")]
         pics = [cand.crop((180, 166, 372, 430)).resize((184, 112), Image.LANCZOS), cand.crop((200, 250, 372, 400)).resize((184, 112), Image.LANCZOS)]

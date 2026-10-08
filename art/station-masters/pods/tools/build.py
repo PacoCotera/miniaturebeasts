@@ -55,7 +55,7 @@ def cradle():
     milk = np.array([150.0, 178.0, 190.0])
     for ch in range(3): x[..., ch] = x[..., ch] * (1 - dark) + (0.55 * ref[None, :, ch] + 0.45 * milk[ch]) * dark
     fade = np.clip((yy - 46) / 6.0, 0, 1); x[..., 3] = x[..., 3] * fade; x = x.astype(np.uint8)
-    save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 328, 224, 96], "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 400 (row 72)", "dish-lowa")
+    save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 328, 224, 96], "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 392 (row 64)", "dish-lowa")
     im = load("slab3a.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); k = k.crop(bbox_alpha(k, 60))
     f = 272 / k.width; k = k.resize((272, round(k.height * f)), Image.LANCZOS); k = dim(k, 0.85)
     c = Image.new("RGBA", (272, 40), (0, 0, 0, 0)); c.alpha_composite(k, (0, -max(0, (k.height - 40) // 2)) if k.height > 40 else (0, 40 - k.height))
@@ -105,7 +105,7 @@ def pages():
 # ---- picture frames
 def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
-    sizes = [(376, 312), (184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96)]
+    sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96)]
     s = 1536 / k.width * 0 + 0.19
     fr = dim(load("frost-dark.jpg").convert("RGBA"), 0.7).convert("RGB"); sl = dim(load("slats-frost.jpg").convert("RGBA"), 0.5, 8).convert("RGB")
     frost = fr.resize((int(fr.width * 0.25), int(fr.height * 0.25)), Image.LANCZOS)
@@ -133,11 +133,32 @@ def frames():
         al = np.clip(0.34 + 0.30 * lm + 0.30 * edge, 0, 0.9)
         S = Image.fromarray(np.dstack([np.clip(col, 0, 255), al * 255]).astype(np.uint8), "RGBA"); S.alpha_composite(L)
         save(f"trait-picture-frame-{w}x{h}-sealed", S, None, "slats texture tiled by whole slats, under the frame", "slats+frame-thin")
+def portrait():
+    """The Picture state's deep frame 232x312 with the opening 200x280 (16 px inset): the painted frame resampled whole."""
+    src = key_magenta(load("frame-deep1.jpg")); a0 = np.asarray(src)[..., 3]; ys, xs = np.where(a0[:, :] < 128); inset = int(np.min(np.where(a0[a0.shape[0] // 2] < 128)[0][:1]))   # the bezel is this many source px thick
+    k = nine(src, 232, 312, inset, inset, inset, inset, ls=16 / inset)
+    fr = dim(load("frost-dark.jpg").convert("RGBA"), 0.7).convert("RGB"); frost = fr.resize((int(fr.width * 0.25), int(fr.height * 0.25)), Image.LANCZOS)
+    hole = np.asarray(k)[..., 3] < 128
+    # plain
+    save("trait-picture-frame-232x312", k, [264, 160, 232, 312], "the deep portrait frame: key magenta, resampled whole; the opening is 200x280 at 16 px inset", "frame-deep1")
+    # unread: darker frost, 0.84 alpha, in the opening only
+    ft = frost.crop((0, 0, 232, 312)).convert("RGBA"); ft.putalpha(214); F = Image.new("RGBA", (232, 312), (0, 0, 0, 0)); F.paste(ft, (0, 0), Image.fromarray((hole * 255).astype(np.uint8))); F.alpha_composite(k)
+    save("trait-picture-frame-232x312-unread", F, [264, 160, 232, 312], "frost in the opening, under the deep frame", "frost-dark+frame-deep1")
+    # sealed: translucent glass slats in the opening
+    sl = dim(load("slats-frost.jpg").convert("RGBA"), 0.5, 8).convert("RGB"); sa = np.asarray(sl.convert("L")).astype(float)[:1300, 600:2200].mean(1); sa = sa - sa.mean()
+    ac = np.correlate(sa, sa, "full")[len(sa) - 1:]; per = int(np.argmax(ac[100:400])) + 100; t = sl.crop((0, 100, 2752, 100 + per * 6)).resize((232, 90), Image.LANCZOS)
+    S0 = Image.new("RGB", (232, 312)); y = 0
+    while y < 312: S0.paste(t, (0, y)); y += t.height
+    g = np.asarray(S0).astype(float); lm = g @ np.array([0.3, 0.59, 0.11]); lm = (lm - lm.min()) / max(np.ptp(lm), 1)
+    col = 0.45 * g + 0.55 * np.array([46.0, 92.0, 108.0]); edge = np.clip(np.abs(np.diff(lm, axis=0, prepend=lm[:1])) * 4, 0, 1); al = np.clip(0.34 + 0.30 * lm + 0.30 * edge, 0, 0.9) * hole
+    Sl = Image.fromarray(np.dstack([np.clip(col, 0, 255), al * 255]).astype(np.uint8), "RGBA"); Sl.alpha_composite(k)
+    save("trait-picture-frame-232x312-sealed", Sl, [264, 160, 232, 312], "translucent glass slats in the opening, under the deep frame", "slats-frost+frame-deep1")
 # ---- plates
 def plates():
     im = load("plate-thin2.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); bb = bbox_alpha(k, 140); pl = k.crop(bb); s = 320 / pl.width
-    pln = dim(pl, 0.8)
-    save("plate-name-224x32", round_alpha(nine(pln, 224, 32, 60, 60, 60, 60, ls=s), 5), [600, 440, 224, 32], "thin frosted label: colour-to-alpha, 9-slice, rounded", "plate-thin2")
+    pln = dim(pl, 0.6)
+    for w in range(96, 225, 16):
+        save(f"plate-name-{w}x32", round_alpha(nine(pln, w, 32, 60, 60, 60, 60, ls=s), 5), [712 - w // 2, 440, w, 32], "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712", "plate-thin2")
     plo = dim(pl, 0.55)
     save("plate-origin-224x40", round_alpha(nine(plo, 224, 40, 60, 60, 60, 60, ls=s), 5), [600, 480, 224, 40], "thin frosted label: colour-to-alpha, 9-slice, rounded", "plate-thin2")
     for h in (36, 56, 76):
@@ -152,7 +173,7 @@ def bars():
     save("frame-bottom-line-1024x38", b.transpose(Image.FLIP_TOP_BOTTOM).resize((1024, 38), Image.LANCZOS), [0, 562, 1024, 38], "the bar flipped (rule on its top edge), 1024x38", "bar-top")
 
 # ---- pods
-POD_BOX = {"large": (160, 192), "medium": (136, 168), "small": (112, 144), "well": (32, 40)}
+POD_BOX = {"large": (144, 176), "medium": (120, 152), "small": (104, 128), "well": (32, 40)}
 def pod_src(n):
     k = key_magenta(load(n + ".jpg"), lo=26, hi=70); a = np.asarray(k).astype(float).copy(); a[1775:, 3] = 0
     edge = a[..., 3] < 250; g = a[..., 1]
@@ -253,7 +274,7 @@ def pods():
         def put(arr, extra=None):
             im = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA").resize((pw, ph), Image.LANCZOS)
             c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(im, (ox, oy)); return c
-        r = {"large": [632, 208, 160, 192], "medium": [644, 232, 136, 168], "small": [656, 256, 112, 144]}.get(cls, [None, None, w, h])
+        r = {"large": [640, 216, 144, 176], "medium": [652, 240, 120, 152], "small": [660, 264, 104, 128]}.get(cls, [None, None, w, h])
         for nm, arr in masks.items(): save(f"pod-{cls}-{nm}", put(arr), r, "systematic pod layer: " + nm + ", uniform scale, foot on the last row, centred", "pod-identified")
         if cls == "well":
             # legible at 32x40: darken and thicken the band before the downscale, and rebuild the sealed sprite from it
@@ -263,10 +284,10 @@ def pods():
         sw, sh_ = w + 16, 14; yy, xx = np.mgrid[0:sh_, 0:sw].astype(float)
         a = np.clip(1 - (((xx - sw / 2) / (sw / 2)) ** 2 + ((yy - sh_ / 2) / (sh_ / 2)) ** 2), 0, 1) ** 1.2 * 0.6
         sdw = np.dstack([np.full((sh_, sw), 6.0), np.full((sh_, sw), 12.0), np.full((sh_, sw), 18.0), a * 255]).astype(np.uint8)
-        save(f"pod-{cls}-shadow", Image.fromarray(sdw, "RGBA"), [712 - sw // 2, 393, sw, sh_], "contact shadow: centred on x 712 with its middle on the foot line y 400", "procedural ramp")
+        save(f"pod-{cls}-shadow", Image.fromarray(sdw, "RGBA"), [712 - sw // 2, 385, sw, sh_], "contact shadow: centred on x 712 with its middle on the foot line y 392", "procedural ramp")
 
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "plates", "bars"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)

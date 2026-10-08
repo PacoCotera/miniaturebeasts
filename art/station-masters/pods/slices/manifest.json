@@ -41,7 +41,7 @@
    96
   ],
   "src": "dish-lowa",
-  "made": "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 400 (row 72)",
+  "made": "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 392 (row 64)",
   "sha256": "52a188e2a9aca18356d832392ffb3826ff3079186c0ff13e0bb6b9f6722a17d3"
  },
  "room-shelf": {
@@ -346,138 +346,138 @@
  },
  "pod-large-identified": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-loika",
   "made": "the Loika reference sprite",
-  "sha256": "22778486062d5fed400c5829cdc55f96bd426c6717f8d1c1f633ed8f01faa8fa"
+  "sha256": "7145f5546a3dcc85bb4a77a9d2b194c5d0e68b0f5ad32c0a034b8cc1789fec8d"
  },
  "pod-large-sealed": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-band",
   "made": "the Loika reference sprite",
-  "sha256": "ef9fa0951b0341534142e3d5ab7a1b99088023cb4cec13cc9d5533c5ca633d27"
+  "sha256": "8dfdb43c2915f69b00d8429f328a9e88dcf710629e1a19b7224455432f60dd5b"
  },
  "pod-large-band": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-band",
   "made": "the sealing band as a layer",
-  "sha256": "f7823b2248099a6ed98d4fca518e1d9c5e0f38a04f3b08cf20b8a89f024046f1"
+  "sha256": "26e706be7751274e14eac8873afbb86d9ffcc1f95bc342b4eceb67fdaa0d0642"
  },
  "pod-medium-identified": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-loika",
   "made": "the Loika reference sprite",
-  "sha256": "1ce7e5ad518aa4464f56b31a6b381061fa41b41275b23160e24f72ed55135751"
+  "sha256": "4706d8a9c724944b16c03a970cedf53533a77c1e72680c91b2604bf82c24dbe7"
  },
  "pod-medium-sealed": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-band",
   "made": "the Loika reference sprite",
-  "sha256": "b3f50d250ff8058b7519cd9f23490b571aad50eeaf3ad68674ae6e7f662e91f4"
+  "sha256": "a1dec3284a7207c6e1d9a9f65fe3db7b56fcf4572314d3206c040a8c4f9149b6"
  },
  "pod-medium-band": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-band",
   "made": "the sealing band as a layer",
-  "sha256": "4172d38f08c46396b2789c33721a268259dbf24373073f620b8d2f8d8672e314"
+  "sha256": "6b6b42f6a86e27e12eae7073f469071184c2801a68ff49fab75f72ba06a0bcf8"
  },
  "pod-small-identified": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-loika",
   "made": "the Loika reference sprite",
-  "sha256": "7175c9888e1a794be019afa52103ec1e756c79daa08c7a5e7891c6f4f1a5ed3d"
+  "sha256": "9c1dc72ddb4eae4f2cee550ffe6ce6a48eeceed384175cc465c8ec846f7d01d9"
  },
  "pod-small-sealed": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-band",
   "made": "the Loika reference sprite",
-  "sha256": "412cb0e92e2b16e0481b9746a2bd5df6cabe245b19a91de8316ec82d80dd7099"
+  "sha256": "66a625fd972a4ef17c6262fbc73f84b046810b37e5659e9edfbafcbcdbdca3ce"
  },
  "pod-small-band": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-band",
   "made": "the sealing band as a layer",
-  "sha256": "6abdb3e500bc08746c373f5d0b75d0d5eb1e4d58ee967c0b3e6b5ce5b3b3b708"
+  "sha256": "f91394c40e6cd6277bc6599d5a233d70fe23aaf181c492d50e5fd1a2d65f564d"
  },
  "pod-well-identified": {
   "size": [
@@ -526,318 +526,318 @@
  },
  "pod-large-shade": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "9e1c8d48f38c3af4dbf45e7f0f2031b645f0ccd0c3246a65404502075da1356a"
+  "sha256": "0078c3a94d11bc6458e3da03cc6dfed0279a19426e8cabee078c76bda4cda977"
  },
  "pod-large-mask-body": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "6ac5adfc6924540d34af57be0a0eae2adba9c76fe8c62b5a3c954c75e4dc234f"
+  "sha256": "a9524bbfe27f48686bd9d3aa74f96e418cc874c4d12e28c20bf791240f47a631"
  },
  "pod-large-mask-accent": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "ed5cd2ad5391b31d4c9cf2d67235331f183514f8805c713be4310a6594304821"
+  "sha256": "913fd9738ff560fb3be026e7835a49ec4d698501c1de4dfca9a52c5f573f9434"
  },
  "pod-large-pattern-dots": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "d16b262f67d22fffb3f62ec592d706015c0eac5914e225429a9b6d06b1237d1b"
+  "sha256": "859429db53a1b2b897d51cd87b70f954d70544908e5f7adddf1a6896abde4966"
  },
  "pod-large-pattern-stripes": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "92a69c84f759d05c67586744fcc61b11367941789abb4504622e178f3a4791fa"
+  "sha256": "157551c0b72f4b77c5982606cd93190244321be6538ea9391960e63e7985e1f0"
  },
  "pod-large-pattern-bands": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "c863b8556448a82b2e8df7901212abce32dbeb859608ed4daa68c3286ab380c9"
+  "sha256": "68513470ac4c65cf8557e8d8be7dc9c9a3cbdd7923d6691bf05fca58e471b034"
  },
  "pod-large-shadow": {
   "size": [
-   176,
+   160,
    14
   ],
   "rect": [
-   624,
-   393,
-   176,
+   632,
+   385,
+   160,
    14
   ],
   "src": "procedural ramp",
-  "made": "contact shadow: centred on x 712 with its middle on the foot line y 400",
-  "sha256": "9991597564b79a1f759c1590143a62ed78130ac18a14ccddb3493101043a2330"
+  "made": "contact shadow: centred on x 712 with its middle on the foot line y 392",
+  "sha256": "6a99a9bfb6d15d1a9e9c18c1cab99c09d30cca8dd70e7a12d7e6c7a99587b811"
  },
  "pod-medium-shade": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "0171edfe1c3ab4eb6ab705d909e71967f480d4f8aff044851e00f06adaf5bc18"
+  "sha256": "6b131c952a2e200178c5bd97713c4e523f8c625b943833b60c11bcdc13a25f81"
  },
  "pod-medium-mask-body": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "427c31390d91ab646c5c718f271969d33dd1bb5e49a54e5fab16f660ed6eb676"
+  "sha256": "0795d489e1736e302b3cb250bc9a714668e733a9c88232aa82b5db33c38e576c"
  },
  "pod-medium-mask-accent": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "983033c961d843fdb11d3e314cf1fc22c5e0479bc2a897a83e808df6122a3cb8"
+  "sha256": "757f873989bde006abf8145514063f2e33dce204fadbc4840202b72f9b340521"
  },
  "pod-medium-pattern-dots": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "6755f70be4fc3f7607542e1ca1bf18978e6a107e1fba7db788b4c2d8e4d98f53"
+  "sha256": "cdcc38c0c3afa30b7aa6be4b948f2eed92a01e07a45fe9a86609786105276df0"
  },
  "pod-medium-pattern-stripes": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "4258f77d69067df1691d0b2f8d53a80cbf9726dc1b611728f10768d707b72818"
+  "sha256": "fea9283a49769eb66f89254d9e96097a69e1da89123065a4807ca41c52813c7f"
  },
  "pod-medium-pattern-bands": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "81e757df4d257c668e3b3ea69d496c32304c458deaa4636db89fb426fbc81cdd"
+  "sha256": "814190d730b755459dd7568733d11d3b3f4a70a3e2b13f871528eee6fc988b7c"
  },
  "pod-medium-shadow": {
   "size": [
-   152,
+   136,
    14
   ],
   "rect": [
-   636,
-   393,
-   152,
+   644,
+   385,
+   136,
    14
   ],
   "src": "procedural ramp",
-  "made": "contact shadow: centred on x 712 with its middle on the foot line y 400",
-  "sha256": "1ea3b3e359a19280e9022661cdf653bb23aa95aa9b8465284671984148728bba"
+  "made": "contact shadow: centred on x 712 with its middle on the foot line y 392",
+  "sha256": "7c9bb668a59879981815b7ac097617f97a526fb5428a1ed799cd2ebf2b8991e6"
  },
  "pod-small-shade": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "8ff39ac4886961841f376cc174a6d967bfe21d6ce131b9ff513ad4925ee2f450"
+  "sha256": "ac7a024e69031773f101666c580f53f8cf9911af9818bc9d7a9620f3208a23fa"
  },
  "pod-small-mask-body": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "205940b1c19e5a7998e736892f35bb96dfa2adfed49abba24136da1ef6bd6b5a"
+  "sha256": "18b8e8cb35d042f91f4e90c311e6ec5b5b46479c62530d2bfdce1f0bbbe8ac2f"
  },
  "pod-small-mask-accent": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "522aae1c545e02818798ce681d5c127dee78a5a3d7b750b358c5d325b42265de"
+  "sha256": "f761108a4689813bbc48ca63d3adf20708fdc58bfcd28606ee79d29527a429fa"
  },
  "pod-small-pattern-dots": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "b7c1b4165d1cd9692198416644f5e57bb5c26780a36a23074a6d976bd11a6af0"
+  "sha256": "5439673315ecd330b9ef5a354ed25f790902edaff75e046d4075a18cc3825023"
  },
  "pod-small-pattern-stripes": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "b26312a12c6d1a67ba77c225b35ffa4367f1f127a79b1a138389d9cd98c8256b"
+  "sha256": "907b0a6a63703ea6c0d968ef5bcd661451c038bc1fc7e08a05511a74b38fcef5"
  },
  "pod-small-pattern-bands": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "5cf5a6cea59334b90abe90ccdd4b6b33fa6af9fa561f666b94be982deaf6bfc9"
+  "sha256": "7a10e629abf7ae9b1b03cc4a295383d9d32d0bcf34dbd6647d0f4d72a313dff0"
  },
  "pod-small-shadow": {
   "size": [
-   128,
+   120,
    14
   ],
   "rect": [
-   648,
-   393,
-   128,
+   652,
+   385,
+   120,
    14
   ],
   "src": "procedural ramp",
-  "made": "contact shadow: centred on x 712 with its middle on the foot line y 400",
-  "sha256": "da7f87d01d82c27e3218d0e21799d87f239c3e356f709741ea4e19de4e072a23"
+  "made": "contact shadow: centred on x 712 with its middle on the foot line y 392",
+  "sha256": "c0826b447b2f6e5a22c5f6b3d928eaca57629ae99d8218c7a76d8c0f356ebfc6"
  },
  "pod-well-shade": {
   "size": [
@@ -936,58 +936,58 @@
   ],
   "rect": [
    688,
-   393,
+   385,
    48,
    14
   ],
   "src": "procedural ramp",
-  "made": "contact shadow: centred on x 712 with its middle on the foot line y 400",
+  "made": "contact shadow: centred on x 712 with its middle on the foot line y 392",
   "sha256": "0d294d592904d85f425e2811515d378faa43f80402de3b38c3b7bf65593533ce"
  },
  "pod-large-crack": {
   "size": [
-   160,
-   192
+   144,
+   176
   ],
   "rect": [
-   632,
-   208,
-   160,
-   192
+   640,
+   216,
+   144,
+   176
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "87ea2ff2307092b28c47fb24b7c086ea823c39e7d6b723f022e3e768ec06e2e4"
+  "sha256": "b88323a6204d9518fc46acf518ac303914e332a51782fce993648e8a299fc02e"
  },
  "pod-medium-crack": {
   "size": [
-   136,
-   168
+   120,
+   152
   ],
   "rect": [
-   644,
-   232,
-   136,
-   168
+   652,
+   240,
+   120,
+   152
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "f72fbf07c3d8b623b9f69999f87725eab6cc2ad67eb4ad1221a3f6edcb722bbf"
+  "sha256": "42a03dfaaae851ecd8ad428d2aa6a71804b2b3f41dd770881dfed6daf23228ca"
  },
  "pod-small-crack": {
   "size": [
-   112,
-   144
+   104,
+   128
   ],
   "rect": [
-   656,
-   256,
-   112,
-   144
+   660,
+   264,
+   104,
+   128
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "ac0fecc76f62a96a41bc6c6961cc1b5f4374f68fc34644cfb7786eab715483e6"
+  "sha256": "216a424afa504aff374fc0c0437d8340c5c81dab9e09e061eeb685587f01823b"
  },
  "pod-well-crack": {
   "size": [
@@ -1003,36 +1003,6 @@
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
   "sha256": "b4680ef80f0f127ec98c56bb273f1c981266f2cc38f770d23fcfb3c0cab78e9e"
- },
- "trait-picture-frame-376x312": {
-  "size": [
-   376,
-   312
-  ],
-  "rect": null,
-  "src": "frame-thin",
-  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
-  "sha256": "6378eef5bfcc03ac49f9b7641e4b62821cc9de26590305428f22cb33e13366d0"
- },
- "trait-picture-frame-376x312-unread": {
-  "size": [
-   376,
-   312
-  ],
-  "rect": null,
-  "src": "frost+frame-thin",
-  "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "644a58862d50685a0950fb81299150fe90e91f205ecc705a457055ef2767a4e6"
- },
- "trait-picture-frame-376x312-sealed": {
-  "size": [
-   376,
-   312
-  ],
-  "rect": null,
-  "src": "slats+frame-thin",
-  "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "885a29b42ad44144c2ad4031fad0912052472ff12d9e0e7eafaa2cafb4bb4b6f"
  },
  "trait-picture-frame-184x304": {
   "size": [
@@ -1136,8 +1106,8 @@
    32
   ],
   "src": "plate-thin2",
-  "made": "thin frosted label: colour-to-alpha, 9-slice, rounded",
-  "sha256": "f641fe8414c50384b9ab38ac4b13f615e012729633613408a490c1d25ba4713a"
+  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
+  "sha256": "a7053a2ee4e9f902f840f62683bdccb98320f6b4ef2aac6f9d1128dd1dcfea51"
  },
  "plate-origin-224x40": {
   "size": [
@@ -1273,5 +1243,170 @@
   "src": "tabs2",
   "made": "compact hanging tab, slant baked (9-slice of the full one, slant kept)",
   "sha256": "f30124a210b76c545b0b85ae4e26c4e19a35aadbccee45c44f54a0ac298b95d1"
+ },
+ "trait-picture-frame-232x312": {
+  "size": [
+   232,
+   312
+  ],
+  "rect": [
+   264,
+   160,
+   232,
+   312
+  ],
+  "src": "frame-deep1",
+  "made": "the deep portrait frame: key magenta, resampled whole; the opening is 200x280 at 16 px inset",
+  "sha256": "3e15d93df675dd20a18731c181dfe9a7ebbf813fe9179c1e0b011ced1816888e"
+ },
+ "trait-picture-frame-232x312-unread": {
+  "size": [
+   232,
+   312
+  ],
+  "rect": [
+   264,
+   160,
+   232,
+   312
+  ],
+  "src": "frost-dark+frame-deep1",
+  "made": "frost in the opening, under the deep frame",
+  "sha256": "19e3ff22fecdb30f6215f974a23c52d312921cd4294a910b6e883cf39df6429d"
+ },
+ "trait-picture-frame-232x312-sealed": {
+  "size": [
+   232,
+   312
+  ],
+  "rect": [
+   264,
+   160,
+   232,
+   312
+  ],
+  "src": "slats-frost+frame-deep1",
+  "made": "translucent glass slats in the opening, under the deep frame",
+  "sha256": "47f53375bded70cd5455710829bc32554d26efac07538eb89df8f3662a2cb284"
+ },
+ "plate-name-96x32": {
+  "size": [
+   96,
+   32
+  ],
+  "rect": [
+   664,
+   440,
+   96,
+   32
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
+  "sha256": "245f7c47aea3f5794bfb018cfe385b0d8bfa90810c44d69ffce39280b188e80d"
+ },
+ "plate-name-112x32": {
+  "size": [
+   112,
+   32
+  ],
+  "rect": [
+   656,
+   440,
+   112,
+   32
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
+  "sha256": "f26cb7ccc27688858bf577e79f5cc487f6dcf367d16e5b29ae0bb577ab263bb6"
+ },
+ "plate-name-128x32": {
+  "size": [
+   128,
+   32
+  ],
+  "rect": [
+   648,
+   440,
+   128,
+   32
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
+  "sha256": "a5590e0264bb1fd3d024889749fe8a3a59337e3ed55130bedae5817db90a4315"
+ },
+ "plate-name-144x32": {
+  "size": [
+   144,
+   32
+  ],
+  "rect": [
+   640,
+   440,
+   144,
+   32
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
+  "sha256": "3217c8b23e5796979d7a83b22497355085ac9bb53a93bbbc464000193a5bd2b2"
+ },
+ "plate-name-160x32": {
+  "size": [
+   160,
+   32
+  ],
+  "rect": [
+   632,
+   440,
+   160,
+   32
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
+  "sha256": "9501e20e7dc230f9391366af65a0fcdaa624fe4549e2bd3649284c41bc48148e"
+ },
+ "plate-name-176x32": {
+  "size": [
+   176,
+   32
+  ],
+  "rect": [
+   624,
+   440,
+   176,
+   32
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
+  "sha256": "2e124400635fc90cd0f9a4ff477dee1856375f17081b5d70ba8c960c6b1fef84"
+ },
+ "plate-name-192x32": {
+  "size": [
+   192,
+   32
+  ],
+  "rect": [
+   616,
+   440,
+   192,
+   32
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
+  "sha256": "89cb53d00b11861f287f70f5a3a921439274045bd80cc0d11f9d6ca093799a73"
+ },
+ "plate-name-208x32": {
+  "size": [
+   208,
+   32
+  ],
+  "rect": [
+   608,
+   440,
+   208,
+   32
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
+  "sha256": "46899762fff840c88b9a457cd2f6e658c93853ba58b46a91124e17982e18fb0b"
  }
 }
