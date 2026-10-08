@@ -150,8 +150,8 @@ export function podArt(frame, place, s, state = "sealed", fit = null) {
   return art(key, () => {
     const u = frame ? SIZE_U[frame.pod?.sizeClass] || 16 : 15, prop = frame?.pod?.proportion;
     let rx = u * 0.38 * (prop === "squat" ? 1.2 : prop === "tall" ? 0.86 : 1), ry = u * 0.5 * (prop === "tall" ? 1.15 : prop === "squat" ? 0.9 : 1);
-    if (fit) { s = fit[1] / (ry * 2 + 8); rx = (fit[0] / s - 2) / 2; }
-    const W = fit ? fit[0] : Math.ceil((rx * 2 + 2) * s), H = fit ? fit[1] : Math.ceil((ry * 2 + 8) * s), pb = new PB(W, H), cx = W / 2, cy = ry * s + 5 * s;
+    if (fit) { s = (fit[1] - 2) / (ry * 2 + 3); rx = (fit[0] / s - 2) / 2; }   // the stem's top on row 1, the shell's foot on the last row of the box
+    const W = fit ? fit[0] : Math.ceil((rx * 2 + 2) * s), H = fit ? fit[1] : Math.ceil((ry * 2 + 8) * s), pb = new PB(W, H), cx = W / 2, cy = fit ? ry * s + 3 * s + 2 : ry * s + 5 * s;
     const c0 = frame ? nearestHex(frame.pod.colourPair[0].hex) : C.mist, c1 = frame ? nearestHex(frame.pod.colourPair[1].hex) : C.fog;
     pb.ell(cx, cy, rx * s, ry * s, c0, { sh: [lite(c0), shade(c0)] });
     const inShell = (x, y) => ((x + 0.5 - cx) / (rx * s)) ** 2 + ((y + 0.5 - cy) / (ry * s)) ** 2 <= 0.96;

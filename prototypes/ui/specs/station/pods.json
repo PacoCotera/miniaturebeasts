@@ -72,5 +72,5 @@
   "diff": { "edge": "aqua", "bracket": "aqua", "keyline": "ink" },
   "beam": "tealD"
  },
- "strings": { "unknownPod": "Unknown pod", "newSpecies": "New species", "empty": "the rack is empty", "dockToBring": "dock the Companion for its crates", "openBay": "open the bay at Home", "explore": "take the Companion exploring", "compareHere": "they differ here", "compareElsewhere": "they differ in another chapter", "compareSame": "no read trait differs", "legsTail": { "rail": "Legs & tail", "heading": "Legs & tail" } }
+ "strings": { "unknownPod": "Unknown pod", "newSpecies": "New species", "empty": "the rack is empty", "dockToBring": "dock the Companion for its crates", "openBay": "open the bay at Home", "explore": "take the Companion exploring", "hatchArm": "Back to the {place}? ✓ again", "hatchPlace": { "meadow": "meadow", "pond": "pond", "rock": "rock", "wood": "wood", "cave": "cave" }, "compareHere": "they differ here", "compareElsewhere": "they differ in another chapter", "compareSame": "no read trait differs", "legsTail": { "rail": "Legs & tail", "heading": "Legs & tail" } }
 }

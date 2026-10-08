@@ -13,9 +13,9 @@ const shellFrame = (st, p) => (st.knownIds.includes(S.speciesOf(p)) ? podFrame(p
 const railWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.rail : c.name);
 const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.heading : c.name);
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
-// No digits where a picture or a word does: a count in a sentence is said in words (the frame's shared need line on Pods).
+// No digits where a picture or a word does: a count in a sentence is said in words (the frame's shared need line on Pods); an amount beside a material icon is a price or a shortfall and stays in figures.
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
-export const inWords = (text) => (text || "").replace(/\d+/g, (n) => WORDS[+n] ?? "many");
+export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n) => WORDS[+n] ?? "many");
 // The origin without the expedition's number (a digit would wrap alone onto a second line).
 const originOf = (p) => S.podOrigin(p).replace(/ · expedition \d+$/, "");
 

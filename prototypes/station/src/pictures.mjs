@@ -5,7 +5,7 @@
 // stamp on whole-pixel cells. Nothing is ever cropped and enlarged.
 import { registerAsset, hasAsset } from "../../ui/assets.mjs";
 import { PB, C, art, fromRGBA, bay, nearestHex } from "./gfx.mjs";
-import { podArt, ringArt, wellArt, emblemArt, closeUpPB, frostPic, ICON, PIC_GROUND } from "./art.mjs";
+import { podArt, ringArt, wellArt, emblemArt, closeUpPB, ICON, PIC_GROUND } from "./art.mjs";
 import { beamArt } from "./screens/frame.mjs";
 import { shapeTrait, stampGenome, stampSizing } from "./genome.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
@@ -21,6 +21,8 @@ const hatchPB = () => { const pb = new PB(112, 56); pb.rect(0, 2, 112, 52, C.sla
 const placePB = (place) => { const pb = new PB(16, 16), c = C[PLACE_COL[place] || "mist"]; pb.rect(1, 1, 14, 14, c); pb.rect(3, 3, 10, 10, C.ink); pb.rect(5, 5, 6, 6, c); return pb; };
 const starPB = () => { const pb = new PB(12, 12), r = 6; pb.poly([[r, 0], [r + 1.7, r - 1.7], [12, r], [r + 1.7, r + 1.7], [r, 12], [r - 1.7, r + 1.7], [0, r], [r - 1.7, r - 1.7]], C.cream); pb.rect(5, 5, 2, 2, C.white); pb.outline(() => C.gold); return pb; };
 const slatsPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const r = y % 14; pb.set(x, y, r < 2 ? C.slate : r < 4 ? C.stone : C.night); } return pb; };
+// The unread picture's frost: frosted glass over the pane, `frostS` with `frostD` at most (never `frost` or white).
+const frostPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const streak = (x + y * 2) % 23 < 2 && bay(x, y) < 10, low = y > h * 0.7 && bay(x, y) < (y - h * 0.7) / 3; pb.set(x, y, streak || low || bay(x, y) < 3 ? C.frostD : C.frostS); } return pb; };
 const keyPB = () => { const pb = new PB(44, 64); pb.poly([[22, 6], [40, 32], [22, 58], [4, 32]], C.lilac); pb.poly([[22, 6], [40, 32], [22, 32]], C.lavender); pb.outline(() => C.plumD); return pb; };
 const basePB = () => { const pb = new PB(72, 8); pb.rect(2, 0, 68, 5, C.bevel); pb.rect(2, 0, 68, 2, C.metal); pb.rect(0, 5, 72, 3, C.bar); return pb; };
 const asleepPB = () => { const pb = new PB(24, 16); for (const [x, y] of [[3, 3], [13, 7], [19, 11]]) pb.rect(x, y, 4, 4, C.fog); pb.rect(4, 4, 2, 2, C.white); return pb; };
@@ -62,7 +64,7 @@ export function registerPictures(reqs, env) {
       case "beam": put(r.id, 240, 232, until, () => beamArt(240, 232)); break;
       case "emblem": put(r.id, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24)); break;
       case "star": put(r.id, 12, 12, "the glint master", starPB); break;
-      case "frost": put(r.id, r.w, r.h, "the research bench master", () => frostPic(r.w, r.h)); break;
+      case "frost": put(r.id, r.w, r.h, "the research bench master", () => frostPB(r.w, r.h)); break;
       case "slats": put(r.id, r.w, r.h, "the research bench master", () => slatsPB(r.w, r.h)); break;
       case "key": put(r.id, 44, 64, "the chapter seals' master", keyPB); break;
       case "base": put(r.id, 72, 8, "the marks' master", basePB); break;

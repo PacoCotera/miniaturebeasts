@@ -45,7 +45,7 @@ export function chapterPage(ctx, id, region, props) {
     }
     const ny = cy + ph + 8, nw = Math.round(ctx.measure(c.name, 16, 400));
     nodes.push({ id: cid + ".name", kind: "text", rect: [cx, ny, nw, 20], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });
-    if (!c.sealed) { const lines = wrap(ctx, (c.lines || []).join(" "), cell[2], 16).slice(0, 2); lines.forEach((l, j) => nodes.push({ id: `${cid}.l${j}`, kind: "text", rect: [cx, ny + 20 + j * 20, Math.round(ctx.measure(l, 16, 400)), 20], text: l, px: 16, weight: 400, colour: c.frost ? Cc.lineEmpty : Cc.line, align: "left" })); }
+    if (!c.sealed) { /* a cut line drops its trailing separator */ const all = wrap(ctx, (c.lines || []).join(" "), cell[2], 16), lines = all.slice(0, 2); if (all.length > 2) lines[1] = lines[1].replace(/\s*·$/, ""); lines.forEach((l, j) => nodes.push({ id: `${cid}.l${j}`, kind: "text", rect: [cx, ny + 20 + j * 20, Math.round(ctx.measure(l, 16, 400)), 20], text: l, px: 16, weight: 400, colour: c.frost ? Cc.lineEmpty : Cc.line, align: "left" })); }
   });
   return { nodes, cells: grid.cells, picture: grid.picture, overflow: grid.overflow };
 }

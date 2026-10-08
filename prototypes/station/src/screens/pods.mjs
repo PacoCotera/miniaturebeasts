@@ -74,7 +74,7 @@ const INTENTS = {
   rail: (q, f, p, id) => { const ch = chaptersOf(q)[+id.slice(5)]; if (ch) { p.ci = +id.slice(5); read(q, ch); } },
   list: (q, f, p, id) => {
     if (id === "list.hatch") {   // ✓ ✓: the first arms, the second returns; any other key disarms
-      if (!p.wildArm) { p.wildArm = 1; msg("Return the " + S.podName(q) + " to the " + (S.PLACE_WORD[q.g] || "wild") + "? ✓ again"); return; }
+      if (!p.wildArm) { p.wildArm = 1; msg(SPECS.pods.strings.hatchArm.replace("{place}", SPECS.pods.strings.hatchPlace[q.g] || "wild")); return; }
       p.wildArm = 0; S.returnPod(G.st, q, G.settings, Date.now()); p.cur = null; f.set("pod"); ensure(); save(); return;
     }
     const w = G.st.tray[+id.slice(5)], A = podById(p.anchor);
