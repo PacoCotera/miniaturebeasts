@@ -8,7 +8,7 @@
 
 <img src="composite-pods-read-1024x600.png" width="720" alt="Pods Read, composed from the slices">
 
-*composite-pods-read-1024x600.png: the whole Pods Read screen at 1× from the slices alone, the decided strings typed over them in Inter 16, 20 and 28. The trait pictures are crops of the candidate's painting, the progress arcs and the stamp are stand-ins drawn only for this proof (the stamp is the candidate's placed one), and the lamps and emblems of the rail are not painted. A proof, not a deliverable the page uses. Status: proof.*
+*composite-pods-read-1024x600.png: the Pods Read page's first state at 1024×600, 1×, from the slices alone with the decided strings typed over them in Inter 16, 20 and 28. **Stand-ins, not masters:** the trait picture (a crop of the candidate's painting), the stamp raster (the candidate's placed stamp), the progress arcs on the list's rings, the tab pips and the trait marks, the focus ring; the emblem slots are empty. A proof, not a deliverable the page uses. Status: proof.*
 
 <img src="composite-vs-candidate.png" width="720" alt="Composite beside the accepted candidate">
 
@@ -173,6 +173,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264` | 376×264 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-376x264-sealed` | 376×264 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-376x264-unread` | 376×264 |  | frost texture at 0.9 alpha under the frame |
+
+## Pass 7c (2026-10-08)
+
+- **`room-stamp-case`, redone as translucent glass:** the wall's seams show through it; its inside reads one step above the wall (mean grey about 46 above the label against the wall's 38, well under the pod's 110); a faint diagonal sheen crosses it; the rails top and bottom are dim brushed metal; a faint hairline marks its left edge; it is still unlit and open at the screen's right edge. It was opaque and darker than the wall before (mean 22).
+- The Read composite and `composite-vs-candidate.png` are rebuilt; the stand-ins are listed under the composite.
 
 ## Sixth pass (2026-10-08)
 
