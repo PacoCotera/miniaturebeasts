@@ -79,10 +79,11 @@ FOLIAGE = None   # art director, round 2: under the storm the canopies keep the 
 # at the trunk's edge in the tree's shade, the warned ring on the tile beyond them, the big charged stone at the lower right of the ring
 CAN = P.canopy_rain if RAIN else None                  # the bushes one green step deeper in rain
 TRT = P.tree_rain if RAIN else None                    # the tree's rain canopy: body pine, clumps forest, leaf only on the clumps' top-left edges
-TREE = at(4, 4, 0, 8); PAWN = (TREE[0] + 34, TREE[1] + 40); LOIKA = (TREE[0] + 78, TREE[1] + 46); RING = (6, 6); STONE = at(7, 7, 14, 6)
+HUT = (OX + int(2.5 * TS), OY + 4 * TS - 2)                 # the hut at the explorer's scale: 144 px = three whole tiles (tile columns 1 to 3), its foot on the bottom of tile row 3
+TREE = at(5, 4, 0, 8); PAWN = (TREE[0] + 34, TREE[1] + 40); LOIKA = (TREE[0] + 78, TREE[1] + 46); RING = (7, 6); STONE = at(8, 7, 4, 6)
 things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk2", PAWN, None), ("tokens", "loika-idle1", LOIKA, None), ("props", "tree", TREE, TRT),
-          (("huts", f"hut-{hut}-lit", at(1, 2, 0, 6), DARK) if hut else ("props", "outpost-lit", at(1, 1, 8, 8), HUTT)),
-          ("props", "bush", at(6, 1), CAN), ("props", "bush-fruit", at(9, 5), CAN), ("props", "bush-shaken", at(1, 9), CAN),
+          (("huts", f"hut-{hut}-lit", HUT, DARK) if hut else ("props", "outpost-lit", HUT, HUTT)),
+          ("props", "bush", at(7, 1), CAN), ("props", "bush-fruit", at(9, 5), CAN), ("props", "bush-shaken", at(1, 9), CAN),
           ("props", "dew-cup", at(2, 10), GT), ("props", "reeds", at(7, 10, 0, -6), GT), ("props", "stone-step", at(6, 10, 0, -4), GT)]
 # shades are Bayer-dithered pools through the ground's shade table, never a hard ellipse with a rim: a 4 x 4 ordered dither whose density falls off from the pool's centre.
 # The tree's pool lies under the canopy and to its lower right; the stone and the hut have contact shadows 2 to 3 rows deep to the lower right.
@@ -96,12 +97,27 @@ def pool(cx, cy, rx, ry, peak=0.95, skew=0.0):
             if d > BAYER[yy_ % 4, xx_ % 4] and scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
 pool(TREE[0] + 38, TREE[1] + 22, 118, 56)
 pool(STONE[0] + 12, STONE[1] - 1, 34, 6.5, 0.98)
-hx, hy = at(1, 1, 8, 8); pool(hx + 12, hy - 1, 34, 6.0, 0.98)
+pool(HUT[0] + 16, HUT[1] - 2, 80, 8.0, 0.98)
 blit(load("props", "strike-warn2"), OX + RING[0] * TS, OY + RING[1] * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
 for group, name, (cx, cy), table in sorted(things, key=lambda t: t[2][1]): sprite(group, name, cx, cy, table)
 # the name tag over Loika, the message box at the view's top, the rain over all of it
-tag_w = font.width("Loika", 2) + 12; tx, ty = LOIKA[0] - tag_w // 2, LOIKA[1] - 40 - 20
-nine("slice-name-tag", tx, ty, tag_w, 22); font.draw(scr, "Loika", tx + 6, ty + 2, C["amber"], 2)
+# the name tag follows design/style-guide/companion-screens.md, "Name tag placement": the clear zone is the token's whole 48 px cell plus any pixel drawn outside it, plus 4 px; the tag (22 px tall)
+# goes to the first of below, right, left, above, then below slid sideways, that stays inside the view (x 6 to 444, y 38 to 558) and covers no other creature's clear zone, the pawn, the HUD,
+# the bottom line or the message box
+tag_w = font.width("Loika", 2) + 12; TH = 22
+def zone(foot, name, group):
+    sp = load(group, name); ys_, xs_ = np.where(sp >= 0); h_, w_ = sp.shape
+    return (foot[0] - max(24, w_ // 2) - 4, foot[1] - max(48, h_) - 4, foot[0] + max(24, w_ // 2) + 4, foot[1] + 4)
+LZ = zone(LOIKA, "loika-idle1", "tokens"); PZ = zone(PAWN, "pawn-right-walk2", "pawn")
+def hits(r, z): return not (r[2] <= z[0] or r[0] >= z[2] or r[3] <= z[1] or r[1] >= z[3])
+MSG = ((W - (font.width("The rain sets in", 2) + 38)) // 2 - 2, VIEW_Y + 6, (W + (font.width("The rain sets in", 2) + 38)) // 2 + 2, VIEW_Y + 42)
+def clear(r): return r[0] >= 6 and r[2] <= 444 and r[1] >= 38 and r[3] <= 558 and not hits(r, LZ) and not hits(r, PZ) and not hits(r, MSG)
+lcx = LOIKA[0]; cands = [(lcx - tag_w // 2, LZ[3] + 4), (LZ[2] + 4, LOIKA[1] - 24 - TH // 2), (LZ[0] - 4 - tag_w, LOIKA[1] - 24 - TH // 2), (lcx - tag_w // 2, LZ[1] - 4 - TH)]
+for sx in range(-120, 121, 2): cands.append((lcx - tag_w // 2 + sx, LZ[3] + 4))
+tx = ty = None
+for cx_, cy_ in cands:
+    if clear((cx_, cy_, cx_ + tag_w, cy_ + TH)): tx, ty = cx_, cy_; break
+if tx is not None: nine("slice-name-tag", tx, ty, tag_w, 22); font.draw(scr, "Loika", tx + 6, ty + 2, C["amber"], 2)
 rain = load("weather", "rain-left-1")
 for r in range(0, VIEW_H + 96, 96):
     for c in range(0, W + 96, 96):

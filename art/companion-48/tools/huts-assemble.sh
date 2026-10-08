@@ -5,7 +5,7 @@ set -e
 HUTS=$1; PRE=$2; OUTD=$3; ASE=$4
 tar -C $PRE -cf - . | mb-vm 'rm -rf ~/c48/huts && mkdir -p ~/c48/huts/in ~/c48/huts/out && tar -C ~/c48/huts/in -xf -'
 mb-vm 'cat > ~/c48/aseprite-huts.lua' < tools/aseprite-huts.lua
-mb-vm "cd ~/c48/huts && aseprite -b --script-param indir=in --script-param outdir=out --script-param huts=$HUTS --script ../aseprite-huts.lua" | tail -1
+mb-vm "cd ~/c48/huts && aseprite -b --script-param indir=in --script-param outdir=out --script-param huts=$HUTS --script-param cw=${CW:-64} --script-param ch=${CH:-64} --script ../aseprite-huts.lua" | tail -1
 rm -rf /tmp/hut-vm && mkdir -p /tmp/hut-vm $OUTD $ASE
 mb-vm 'cd ~/c48/huts/out && tar -cf - *' > /tmp/hut-vm.tar && tar -C /tmp/hut-vm -xf /tmp/hut-vm.tar
 cp /tmp/hut-vm/*.aseprite $ASE/

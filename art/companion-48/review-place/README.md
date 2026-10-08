@@ -23,6 +23,7 @@ The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md)
 7. **Left and right walks:** the far leg is one ramp step darker than the near leg (night with an ink edge against slate with night); in the passing frame the far foot is under the hip, its sole two rows off the ground (row 41), behind the planted leg; the near sleeve is swung 2 px against the near leg on every side frame.
 8. **Creeps, all facings:** the side views lean the top half 3 px (2 on creep2) toward the facing with the hood three rows down and the knees bent forward of the ankles; the front view leans the head a row toward the viewer; knees are no longer drawn out; **creep2 sits one row higher than creep1 and creep3** (the bob).
 9. **Proof:** [`still/beside-concept-and-round11.png`](still/beside-concept-and-round11.png) and [`...-clear.png`](still/beside-concept-and-round11-clear.png): the concept beside the round 10 and round 11 stills at 1×; the round 10 stills and pieces are frozen in [`round10/`](round10/).
+11. **The owner's decision (round 11): the hut at the explorer's scale, a place the explorer could walk into.** Hut B is redrawn at **144 × 152 px (a footprint of three whole 48 px tiles; the piece is 142 × 149)** with the door about the explorer's height (about 40 px), the porch and window in proportion, **through the pipeline at the final size, no scaling**: a Gemini painting of hut B enlarged ([`sources/r11/C48-H-r11-a1`](sources/r11/), from round 6's painting as the reference), Retro Diffusion img2img at 144 × 152 (three seeds; seed 42 kept), cleaned (`tools/hut-r11.py`: the service's teal thatch to straw, its orange logs to wood, the grey of the porch to wood, outline by the ramp rule, one component). It keeps hut B: **continuous bowed log courses, one elliptical eave overhanging both sides, one window, the porch at the front left** (two posts, its own plank roof, a stone step), and the base rule of item 1: **no baked disc, a Bayer-dithered contact shadow (drawn by the still), four tufts over the stones**. Placed in both stills on tile columns 1 to 3. The raw seed 50 comparison of rounds 9 and 10 is retired; items 1 and 2 above describe the 64 px hut of the first round 11 commit, which this replaces. **The name tag** now follows the placement rule in `design/style-guide/companion-screens.md` (below, then right, left, above; the creature's cell plus anything drawn outside it plus 4 px stays clear).
 10. **How each piece was finished (the honest record).** The brief asks for pieces finished by hand in Aseprite or redrawn by Retro Diffusion at final size and cleaned, and nothing left as pixels set by code. I cannot draw by hand: I have no pointer in Aseprite, only its scripting and my own code. So the record is:
 
 | Piece | How it was finished |
@@ -30,8 +31,7 @@ The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md)
 | Tree | **Retro Diffusion at final size (136 × 152), from a Gemini painting, then cleaned by code** (palette snap, outline recolour, one component). |
 | Charged stone body | **Retro Diffusion at final size (62 × 80), cleaned by code.** |
 | Charged stone crackle (zigzag, four arcs, vein) | **Pixels set by code** (not redrawn by the service). |
-| Hut B thatch, base stones, porch | **The service's own pixels (seed 50, 64 px), recoloured by code.** |
-| Hut B wall (log courses), window, step, tufts | **Pixels set by code**; assembled in Aseprite (0 pixels differ). |
+| Hut B, whole (explorer scale, 144 × 152) | **Retro Diffusion at final size from a Gemini painting, cleaned by code** (role colours, outline, one component); the four tufts are set by code; assembled in Aseprite (0 pixels differ). |
 | Pawn: H's head, torso, pack and every frame the service drew | **Retro Diffusion at 48 px (round 9), cleaned by code**, assembled in Aseprite. |
 | Pawn: legs, boots, raised arms, ruff, sleeve swings, leans | **Pixels set by code** (`pawn_limbs.py`), assembled in Aseprite. |
 | Shades and contact shadows | **Drawn by the still's script** (Bayer-dithered through the ground's shade table). |
@@ -249,7 +249,7 @@ How it was made: the painted B hut (a planted hut on a patch of grass with a bas
 
 **Round 10: seed 50's thatch to the pixel, the wall redrawn as log courses** (`tools/hut-b-edit.py`; the art director's round 9 verdict on the first edit: it is B, planted, the owner's form; the per-column shift of the service's wall texture broke the log rows into vertical streaks, a palisade, the eave was flat across ten centre columns and overhung only on the right, the porch left no wall at its right, and the apex was cut). Raw beside edit at 3×:
 
-![Seed 50's raw 64 px result beside the edit, at 3×](work/hut-b-vs-raw-3x.png)
+
 
 - **The thatch is the service's own pixels**, snapped to the palette, its **apex kept to the pixel** (the outline pixels of the service's rim are recoloured by the ramp rule instead of dropped, so the peak is the service's three-pixel peak, and the grey flecks of its rim light are the thatch's own colour); the yellow specks go to the straw's light. The stones at the base are the service's.
 - **The wall is drawn as log courses, each ONE continuous line bowed 3 px** (4 px pitch: a soil gap, a light edge, two rows of body, shifted down by the same curve d(x) = 3·√(1 − u²) along the whole row; lit on the left, shaded on the right, a few knots, log ends at both edges, two rows of stone along the base curve). The 3 px bow is kept (the art director: enough).
@@ -325,8 +325,9 @@ Signed, art director, 2026-10-08. The pawn is the owner's pick (study H), built 
 | Round 9, hut B and the ground states: no paid call (seed 50's own pixels edited; the tree refit from the painted sheet; the tables scripted) | | 0.00 |
 | C48-W-r9 the pawn from H: 19 calls at 0.45 and 6 repeats at 0.32, 25 calls, round 9 | Retro Diffusion rd_pro__topdown 48×48 | 4.50 |
 | C48-T-r11-a1 tree painting, round 11 | Pro, 1K | 0.16 |
-| C48-T-r11 tree (3 seeds, 136×152), C48-S-r11 stone (3 seeds at 48×64 and 3 at 62×80), round 11: 9 calls | Retro Diffusion rd_pro__topdown | 1.62 |
-| **Total** | | **17.61** |
+| C48-T-r11 tree (3 seeds, 136×152), C48-S-r11 stone (3 seeds at 48×64 and 3 at 62×80), C48-H-r11 hut (3 seeds, 144×152), round 11: 12 calls | Retro Diffusion rd_pro__topdown | 2.16 |
+| C48-H-r11-a1 hut painting, round 11 | Pro, 1K | 0.17 |
+| **Total** | | **18.32** |
 
 Re-summed from the sidecars by `tools/budget.py` into [`sources/budget.json`](sources/budget.json) (the superseded batch in [`sources/extra-spend.json`](sources/extra-spend.json)). The service's balance is topped up automatically, so it is not a limit.
 

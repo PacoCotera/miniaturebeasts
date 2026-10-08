@@ -5,7 +5,7 @@
 # run once after the builders, not here: it derives pieces from others.
 set -e
 # The outpost (hut B) is made by tools/rd-hut-b.py (Retro Diffusion), tools/hut-b-edit.py (seed 50's own pixels, the listed edits only) and tools/huts-assemble.sh (Aseprite on the VM), and lives in work/props/outpost-*.png.
-# Round 11 pieces, through the pipeline (the record per piece is in the README): the tree: tools/gemini-gen.py (painting) + tools/rd-gen.py (Retro Diffusion at 136 x 152) + tools/tree-r11.py; the charged stone: tools/rd-gen.py (62 x 80) + tools/stone-r11.py; the hut: tools/hut-b-edit.py; the grass tufts: tools/ground-tufts.py round10/work/ground work/ground (run once).
+# Round 11 pieces, through the pipeline (the record per piece is in the README): the tree: tools/gemini-gen.py (painting) + tools/rd-gen.py (Retro Diffusion at 136 x 152) + tools/tree-r11.py; the charged stone: tools/rd-gen.py (62 x 80) + tools/stone-r11.py; the hut (explorer scale): tools/gemini-gen.py + tools/rd-gen.py (144 x 152) + tools/hut-r11.py + tools/huts-assemble.sh (CW=160 CH=160); the grass tufts: tools/ground-tufts.py round10/work/ground work/ground (run once).
 # The pawn (study H, the owner's pick): tools/rd-pawn-h.py (Retro Diffusion img2img from H), tools/pawn-h-pass.py (the hand pass), tools/aseprite-pawn.lua (the VM), see the handover.
 # The pawn studies: tools/pawn-study.py (A to F), tools/rd-pawn-studies.py + tools/pawn-study-snap.py (G, H), tools/pawn-studies-sheet.py (the sheets).
 R=review-place; W=$R/work; P2=$R/round10/work
@@ -52,8 +52,6 @@ python3 -I tools/pawn-study.py $W/pawn-studies
 python3 -I tools/pawn-chunky.py $W/pawn-studies
 python3 -I tools/pawn-study-snap.py $R/sources/rd-pawn-studies $W/pawn-studies
 python3 -I tools/pawn-studies-sheet.py $W
-python3 -I tools/hut-b-figure.py $R/sources/rd-huts-b $W/hut-b $W/hut-b-process.png
-python3 -I tools/hut-b-vs-raw.py $R/sources/rd-huts-b/C48-H-r7-B-lit-s50-rd.png $W/hut-b/hut-B-lit.png $W/hut-b-vs-raw-3x.png
 
 python3 -I tools/pawn-h-figures.py $W $R/sources/rd-pawn-h
 python3 -I tools/pawn-cycles-figure.py $W/pawn $W/pawn-cycles-3x.png
