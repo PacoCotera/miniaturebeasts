@@ -131,6 +131,22 @@ for name in ("stone", "stone-plain2", "stone-warm1", "stone-warm2", "stone-charg
         for _ in range(5):   # sparks beside the stone
             x, y = int(rng.randint(2, W_ + 6)), int(rng.randint(3, H_ + 2))
             if big[y, x] < 0 and (big[max(y - 1, 0):y + 2, max(x - 2, 0):x + 3] >= 0).any(): big[y, x] = C["ice"]
+        if name == "stone-charged2":   # frame 2 crackles: a cage of lightning branches off the whole silhouette (not one thin vein): seven zigzag arms, white core and ice flank, a spark at each tip
+            big = np.pad(big, 11, constant_values=-1); sl = big >= 0; yy_, xx_ = np.where(sl); cxs, cys = xx_.mean(), yy_.mean(); rb = np.random.RandomState(9)
+            for ang in (-170, -135, -95, -55, -15, 25, 160):
+                a_ = np.radians(ang); dx_, dy_ = np.cos(a_), np.sin(a_)
+                px_, py_ = cxs, cys
+                while 0 <= int(py_) < big.shape[0] and 0 <= int(px_) < big.shape[1] and sl[int(py_), int(px_)]: px_ += dx_ * .5; py_ += dy_ * .5
+                x, y = int(round(px_ - dx_)), int(round(py_ - dy_)); L = 9 + int(rb.randint(0, 4)); jag = 1
+                for k in range(L):
+                    if 0 <= y < big.shape[0] and 0 <= x < big.shape[1]:
+                        if big[y, x] < 0 or big[y, x] != C["white"]: big[y, x] = C["white"]
+                        for fx, fy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                            if 0 <= y + fy < big.shape[0] and 0 <= x + fx < big.shape[1] and big[y + fy, x + fx] < 0 and abs(fx) + abs(fy) == 1 and (k + fx + fy) % 2 == 0: big[y + fy, x + fx] = C["ice"]
+                    px_ += dx_ * 1.0; py_ += dy_ * 1.0
+                    if k % 2 == 1: jag = -jag; px_ += -dy_ * 1.6 * jag; py_ += dx_ * 1.6 * jag     # the zigzag
+                    x, y = int(round(px_)), int(round(py_))
+                if 0 <= y < big.shape[0] and 0 <= x < big.shape[1] and big[y, x] < 0: big[y, x] = C["sky"]
         s = shadow(big)
     elif name == "stone-step":
         s = np.pad(s, ((0, 2), (0, 0)), constant_values=-1); yb = np.where(s >= 0)[0].max()
