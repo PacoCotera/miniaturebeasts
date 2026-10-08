@@ -1,6 +1,6 @@
 """Contact sheet of every piece in the review place, grouped, at a scale, with names under each piece.
 With a previous round's directory after a second '=', a piece that changed is shown as its previous version
-(labelled r4, round 4) beside the current one (r5); unchanged pieces are shown once.
+(labelled r5, round 5) beside the current one (r6); unchanged pieces are shown once.
 usage: python3 -I contact.py OUT.png SCALE "GROUP=DIR[=PREV_DIR]" ..."""
 import glob, os, sys
 import numpy as np
@@ -19,7 +19,7 @@ for g in sys.argv[3:]:
         pf = os.path.join(prev, nm + ".png") if prev else None
         if pf and os.path.exists(pf):
             pim = Image.open(pf).convert("RGBA")
-            if not same(pim, im): items.append((nm + " r4", pim, True)); items.append((nm + " r5", im, False)); continue
+            if not same(pim, im): items.append((nm + " r5", pim, True)); items.append((nm + " r6", im, False)); continue
         elif prev: nm += " (new)"
         items.append((nm, im, False))
     groups.append((name, items))
@@ -37,5 +37,5 @@ for it in layout:
     if it[0] == "title": d.text((8, it[2] + 2), it[1], fill=(255, 240, 200, 255), font=big)
     else:
         _, nm, im, x, yy = it; b = im.resize((im.width * scale, im.height * scale), Image.NEAREST)
-        sheet.alpha_composite(b, (x, yy)); d.text((x, yy + b.height + 1), nm, fill=(200, 196, 214, 255) if not nm.endswith(" r4") else (150, 146, 164, 255), font=font)
+        sheet.alpha_composite(b, (x, yy)); d.text((x, yy + b.height + 1), nm, fill=(200, 196, 214, 255) if not nm.endswith(" r5") else (150, 146, 164, 255), font=font)
 sheet.save(out); print("wrote", out, sheet.size)

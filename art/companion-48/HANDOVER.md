@@ -1,11 +1,11 @@
 # Companion 48 px redraw: handover
 
-State of round 5 on 2026-10-08. Everything below is in this folder; nothing in `prototypes/exploration/index.html` has been touched. Run every script with `python3 -I` from `art/companion-48/`.
+State of round 6 on 2026-10-08. Everything below is in this folder; nothing in `prototypes/exploration/index.html` has been touched. Run every script with `python3 -I` from `art/companion-48/`.
 
 ## Where things are
 
 - `palette/`: the 48 colours (identical to the Companion page's `PALETTE`), the shade (DARK/LIGHT), dither and mix tables, signed. `tools/pal.py` loads it and adds the ramps and the storm table `P.storm` (every colour mixed 30 % toward river, nearest palette colour; sand, clay, paper, bone, white kept). The owner confirmed this light and rejected the teal one (removed).
-- `review-place/`: the one place. `work/` holds every piece as one PNG (`props-scripted/` the scripted stone and stone-warm1 that Retro Diffusion replaced; `props-rd/`, `pawn-rd/` every snapped Retro Diffusion result; `candidates/` the pairs for the contact sheet); `sheets/` the six indexed sheets with JSON atlases (indices 0–47, 48 transparent); `still/` the composed 450×600 stills and the comparison figures; `sources/` the paid sources with sidecars, `budget.json` and `extra-spend.json`; `round1/` to `round4/` frozen copies of the earlier rounds (the previous round's work and still are what the contact sheets and the side-by-side compare against).
+- `review-place/`: the one place. `work/` holds every piece as one PNG (`props-scripted/` the scripted stone and stone-warm1 that Retro Diffusion replaced; `props-rd/`, `pawn-rd/` every snapped Retro Diffusion result; `candidates/` the pairs for the contact sheet); `sheets/` the six indexed sheets with JSON atlases (indices 0–47, 48 transparent); `still/` the composed 450×600 stills and the comparison figures; `sources/` the paid sources with sidecars, `budget.json` and `extra-spend.json`; `round1/` to `round5/` frozen copies of the earlier rounds (the previous round's work and still are what the contact sheets and the side-by-side compare against).
 - `review-place/README.md`: the write-up with the §2 art director's column signed. Update in place: what is true now, no history.
 
 ## Rebuild everything
@@ -23,8 +23,9 @@ State of round 5 on 2026-10-08. Everything below is in this folder; nothing in `
 | Props | Pro-painted sheet `sources/C48-P-r1-a1` | `build-props.py SRC work/props` (LIFT 1.18) | the six stones, `stone-step`, the three bushes and the three outposts in `work/props/` are Retro Diffusion results after the hand passes; the earlier scripted versions are in `work/props-scripted/` |
 | Retro Diffusion sprites | painted crops | `rd-sprites.py PROPS_SRC PAWN_SRC OUT [--only a,b] [--run]` then `rd-snap.py OUT work/props-rd work/pawn-rd` | inputs cleaned of the key halo and purple shadow; $0.18 a call; dry run without `--run` |
 | Warned strike, HUD icons, caps, bolts, 9-slices | scripted | `build-ui.py work/ui work/props` | |
-| Pawn | drawn | `pawn-draw.py DIR --coat glow`, then `aseprite-pawn.lua` on the VM | goggles and strap on the hood (no face); coat `glow` = orange with yellow-lit edges and a 3-px shade (`yellow` is round 4's, `amber` fails the four-grey check); masks and pixel sets, rim-rule shading; 4 facings (left mirrors right) × walk 3, creep 3, react; `build-pawn.py` (the painted-sheet down-render) is no longer used; `pawn-compare.py` makes the concept side-by-side |
+| Pawn | drawn | `pawn-draw.py DIR --coat glow`, then `aseprite-pawn.lua` on the VM | parka hood with a fur ruff round an open face (eyes, nose, cheeks, no mouth), goggles pushed up on the hood; coat `glow` = orange with yellow-lit edges and a 3-px shade (`yellow` is round 4's, `amber` fails the four-grey check); masks and pixel sets, rim-rule shading; 4 facings (left mirrors right) × walk 3, creep 3, react; `build-pawn.py` (the painted-sheet down-render) is no longer used; `pawn-compare.py` makes the concept side-by-side |
 | Tokens | the accepted Pip painting | `build-tokens.py` | |
+| Hut options A to D (lit, dark, dark2) | painted source `sources/C48-H-r6-a1` (`gemini-gen.py`) | A, B: `rd-huts.py SHEET OUT --run` (lit state, 64 px) then `hut-states.py RD_DIR work/huts` (down to 48 wide, roof recoloured, dark states derived); C, D: `hut-draw.py work/huts` | `compose-still.py --hut A..D` places an option in the still; `hut-figures.py` makes the contact figure and the four-still row; the `huts` sheet; the default outpost in the still is round 5's |
 | Rain tile | scripted | `build-weather.py work/weather` | 10 streaks |
 | Still | the pieces | `compose-still.py work OUT --light storm` (canopies and lit stones exempt from the table; diagonal corners over land tiles; ripples as sprites) then `beside.py` | |
 | Meadow joins | the meadow tiles | `meadow-check.py work/ground OUT_PREFIX` | |
@@ -50,11 +51,11 @@ Keep the script's own output and the tar stream in separate calls. Script parame
 
 ## Spend
 
-`python3 -I tools/budget.py review-place/sources` re-sums every sidecar and `extra-spend.json` into `budget.json`: $7.01 in total: round 2 $4.68 (two water tiles, two sprite batches of twelve), round 3 $0.72 (four stone calls), round 4 nothing, round 5 $0.72 (three outposts and the shaken bush). A re-run overwrites the piece's sidecar, so `extra-spend.json` carries the overwritten call. Retro Diffusion balance left: $0.60.
+`python3 -I tools/budget.py review-place/sources` re-sums every sidecar and `extra-spend.json` into `budget.json`: $7.55 in total: round 2 $4.68 (two water tiles, two sprite batches of twelve), round 3 $0.72 (four stone calls), round 4 nothing, round 5 $0.72 (three outposts and the shaken bush), round 6 $0.53 (the painted hut sheet $0.17, Retro Diffusion huts A and B $0.36). A re-run overwrites the piece's sidecar, so `extra-spend.json` carries the overwritten call. Retro Diffusion balance left: $0.24.
 
 ## What is open
 
-- The owner's verdict on round 5 (the goggles, the orange-and-yellow coat, the huts and the bushes).
+- The owner's choice among huts A to D (and then the chosen hut's replacement of the outpost in the still, the sheets and the page).
+- The pawn's parka face; its coat margin is one luma unit from a grey edge (Rec. 709), and the face puts 8 % of its pixels in the ground's grey.
 - The tree, the pod and the tokens have had no hand pass.
-- The pawn's coat margin is one luma unit from a grey edge (Rec. 709); round 4's yellow is the robust alternative.
-- Retro Diffusion balance $0.60 (three calls): the huts came back at about 40 px, smaller than the painted ones.
+- Retro Diffusion balance $0.24 (one call).

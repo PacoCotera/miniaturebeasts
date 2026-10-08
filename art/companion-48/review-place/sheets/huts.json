@@ -1,0 +1,134 @@
+{
+ "schemaVersion": 1,
+ "sheet": "huts.png",
+ "kind": "sprite",
+ "palette": "../palette/palette.json",
+ "transparentIndex": 48,
+ "size": [
+  512,
+  93
+ ],
+ "frames": {
+  "hut-A-dark": {
+   "x": 1,
+   "y": 1,
+   "w": 44,
+   "h": 40,
+   "anchor": [
+    22,
+    40
+   ]
+  },
+  "hut-A-dark2": {
+   "x": 46,
+   "y": 1,
+   "w": 44,
+   "h": 40,
+   "anchor": [
+    22,
+    40
+   ]
+  },
+  "hut-A-lit": {
+   "x": 91,
+   "y": 1,
+   "w": 44,
+   "h": 40,
+   "anchor": [
+    22,
+    40
+   ]
+  },
+  "hut-B-dark": {
+   "x": 136,
+   "y": 1,
+   "w": 42,
+   "h": 38,
+   "anchor": [
+    21,
+    38
+   ]
+  },
+  "hut-B-dark2": {
+   "x": 179,
+   "y": 1,
+   "w": 42,
+   "h": 38,
+   "anchor": [
+    21,
+    38
+   ]
+  },
+  "hut-B-lit": {
+   "x": 222,
+   "y": 1,
+   "w": 42,
+   "h": 38,
+   "anchor": [
+    21,
+    38
+   ]
+  },
+  "hut-C-dark": {
+   "x": 265,
+   "y": 1,
+   "w": 57,
+   "h": 44,
+   "anchor": [
+    28,
+    44
+   ]
+  },
+  "hut-C-dark2": {
+   "x": 323,
+   "y": 1,
+   "w": 57,
+   "h": 44,
+   "anchor": [
+    28,
+    44
+   ]
+  },
+  "hut-C-lit": {
+   "x": 381,
+   "y": 1,
+   "w": 57,
+   "h": 44,
+   "anchor": [
+    28,
+    44
+   ]
+  },
+  "hut-D-dark": {
+   "x": 439,
+   "y": 1,
+   "w": 57,
+   "h": 45,
+   "anchor": [
+    28,
+    45
+   ]
+  },
+  "hut-D-dark2": {
+   "x": 1,
+   "y": 47,
+   "w": 57,
+   "h": 45,
+   "anchor": [
+    28,
+    45
+   ]
+  },
+  "hut-D-lit": {
+   "x": 59,
+   "y": 47,
+   "w": 57,
+   "h": 45,
+   "anchor": [
+    28,
+    45
+   ]
+  }
+ },
+ "note": "Indexed PNG: palette indices 0-47 as signed, 48 transparent. anchor: the foot point (sprites) or the top-left (tiles, chrome), in frame pixels."
+}
