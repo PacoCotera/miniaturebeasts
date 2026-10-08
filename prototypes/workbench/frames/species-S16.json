@@ -1759,7 +1759,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S16",
-   "frameVersion": 2,
+   "frameVersion": 3,
    "loci": {
     "appearance.body-palette": [
      "periwinkle",

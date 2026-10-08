@@ -5,6 +5,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { FRAMES_LIST, byName, frameFor } from "../src/frames.mjs";
+import { stampGeometry, rasterize } from "../src/stamp.mjs";
+import { decode } from "../src/decode.mjs";
+import { individual } from "./cases.mjs";
 import { encodeCells, parseMessage, sizeFor, copyIndex, copyLook, sameGenome, stampCode } from "../src/codec.mjs";
 
 const roundTrip = (frame, genome) => {
@@ -13,13 +16,22 @@ const roundTrip = (frame, genome) => {
   return parseMessage(bits, L.N, { postmark: !!genome.postmark });
 };
 
-test("the registry carries the sixteen species of the workbench at frame version 2 beside the three legacy frames", () => {
-  const v2 = FRAMES_LIST.filter((f) => f.version === 2 && !f.synthetic), legacy = FRAMES_LIST.filter((f) => f.legacy);
-  assert.equal(v2.length, 16);
+test("the registry carries the sixteen species of the workbench at frame version 3, the same sixteen at version 2, and the three legacy frames", () => {
+  const v2 = FRAMES_LIST.filter((f) => f.version === 2 && !f.synthetic), v3 = FRAMES_LIST.filter((f) => f.version === 3), legacy = FRAMES_LIST.filter((f) => f.legacy);
+  assert.equal(v2.length, 16); assert.equal(v3.length, 16);
   assert.deepEqual(v2.map((f) => f.species), Array.from({ length: 16 }, (_, i) => i + 1));
+  assert.deepEqual(v3.map((f) => f.species), Array.from({ length: 16 }, (_, i) => i + 1));
+  for (const f of v3) {
+    const old = frameFor(f.species, 2);
+    assert.notDeepEqual(old.glyph, f.glyph, `${f.id}: version 3 carries the redrawn mark`);
+    assert.equal(old.borderSeed, f.borderSeed, `${f.id}: the border is the species'`);
+    assert.deepEqual(old.heritable.map((l) => l.id), f.heritable.map((l) => l.id), `${f.id}: same loci`);
+  }
+  assert.equal(byName("S01").version, 3, "the encoder's default frame is the newest");
+  assert.equal(byName("S01", 2).version, 2);
   assert.deepEqual(legacy.map((f) => f.id), ["hopper", "puffcap", "glowtail"]);
   for (const f of FRAMES_LIST) assert.ok(sizeFor(f), `${f.id} fits a size`);
-  assert.equal(byName("S01").name, "Loika"); assert.equal(frameFor(1, 2).id, "S01"); assert.equal(frameFor(11, 1).id, "hopper");
+  assert.equal(byName("S01").name, "Loika"); assert.equal(frameFor(1, 2).id, "S01"); assert.equal(frameFor(1, 3).id, "S01"); assert.equal(frameFor(11, 1).id, "hopper");
 });
 
 test("a blended copy is stamped as its bin and read back as that look", () => {
@@ -28,7 +40,7 @@ test("a blended copy is stamped as its bin and read back as that look", () => {
   assert.deepEqual(eye.values, [0.24, 0.32, 0.44]);
   assert.equal(copyLook(eye, 0.348), "large"); assert.equal(copyLook(eye, 0.4), "huge"); assert.equal(copyIndex(eye, "huge"), 2);
   const copies = { "appearance.marking-switch": ["on", "off"], "anatomy.crown-presence": ["on", "off"], "growth.exterior-eye-size-ratio": [0.348296, 0.348296], "movement.cycle-rate": [0.950671, 0.950671], "energy.action-efficiency": [0.983488, 0.983488] };
-  const g = { species: 1, version: 2, read: f.chapters.map((c) => c.name), copies };
+  const g = { species: 1, version: f.version, read: f.chapters.map((c) => c.name), copies };
   const r = roundTrip(f, g);
   assert.ok(r.ok, r.detail);
   assert.deepEqual(r.genome.copies["growth.exterior-eye-size-ratio"], ["large", "large"]);
@@ -45,4 +57,16 @@ test("a legacy genome still encodes and reads on its version 1 frame", () => {
   const g = { species: 11, version: 1, read: f.chapters.map((c) => c.name), copies: Object.fromEntries(f.heritable.map((l) => [l.id, [l.alleles[0], l.alleles.at(-1)]])) };
   const r = roundTrip(f, g);
   assert.ok(r.ok, r.detail); assert.equal(r.genome.species, 11); assert.ok(sameGenome(f, g, r.genome));
+});
+
+test("a version 2 print still decodes and a version 3 print decodes, each on its own frame and glyph", () => {
+  for (const [id, version] of [["S01", 2], ["S01", 3], ["S03", 2], ["S03", 3], ["S16", 2], ["S16", 3]]) {
+    const f = byName(id, version), g = individual(f, 11, { read: f.chapters.filter((c) => !c.sealed).map((c) => c.name) });
+    assert.equal(g.version, version);
+    const geom = stampGeometry(g), img = rasterize(geom, 240);
+    const d = decode(img);
+    assert.ok(d.ok && d.stamps.length === 1, `${id} v${version} reads`);
+    assert.equal(d.stamps[0].genome.version, version);
+    assert.ok(sameGenome(f, g, d.stamps[0].genome), `${id} v${version} reads back as the genome`);
+  }
 });

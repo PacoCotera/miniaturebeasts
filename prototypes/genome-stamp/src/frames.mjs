@@ -2,9 +2,10 @@
 // shipped with every reader (the stamp never carries the catalogue, only the
 // species number and frame version that pin it). Real frames come from the
 // workbench registry, prototypes/workbench/frames (snapshot in frames-data.mjs by
-// tools/extract-frames.mjs: S01 Loika = species 1 … S16 = 16, frame version 2, on
-// catalogue mb-genome-framework@9), beside the three legacy frames of version 1
-// (species 11–13 on catalogue 6) kept so old prints decode; two synthetic future
+// tools/extract-frames.mjs: S01 Loika = species 1 … S16 = 16, frame version 3, on
+// catalogue mb-genome-framework@9), beside the same sixteen at frame version 2 (the species
+// glyphs before the abstract marks) and the three legacy frames of version 1 (species 11–13 on
+// catalogue 6), all kept so old prints decode; two synthetic future
 // species test growth.
 import { FRAME_DATA } from "./frames-data.mjs";
 
@@ -64,5 +65,6 @@ export const FRAMES_LIST = [
 ];
 export const FRAMES = new Map(FRAMES_LIST.map((f) => [`${f.species}.${f.version}`, f]));
 export const frameFor = (species, version) => FRAMES.get(`${species}.${version}`) ?? null;
-export const byName = (id) => FRAMES_LIST.find((f) => f.id === id);
+// By frame id; the newest frame version unless a version is given (the encoder's default is the current one).
+export const byName = (id, version) => FRAMES_LIST.filter((f) => f.id === id && (version == null || f.version === version)).sort((a, b) => b.version - a.version)[0];
 export { rng };
