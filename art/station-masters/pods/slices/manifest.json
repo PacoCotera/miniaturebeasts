@@ -85,9 +85,9 @@
   "src": "list-column",
   "made": "cut: right part of list-column, bottom leak cropped",
   "sha256": "d12e5bdc2e2183d5517c7f3997dd15bf0775bbb71e0f03f58ef9d8332961608e",
-  "status": "signed",
-  "signed_in": "pass 1",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the 160 px column of the earlier layout; replaced by ring-column-112x522"
  },
  "ring-well-empty": {
   "size": [
@@ -121,9 +121,9 @@
   "src": "hatch-leaf",
   "made": "a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box",
   "sha256": "e9031f2d7356ff795cb17b56df7f0bbfe89256e094877eb0fcc7e7bd12ef55e6",
-  "status": "signed",
-  "signed_in": "pass 2",
-  "status_note": "the 112x56 slice of the earlier layout"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "the 112x56 slice of the earlier layout; replaced by ring-hatch-80x56"
  },
  "page-pane-408x440": {
   "size": [
@@ -571,54 +571,54 @@
  },
  "pod-well-identified": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
-   48,
+   44,
    60,
-   32,
+   40,
    48
   ],
   "src": "pod-loika",
   "made": "the Loika reference sprite",
-  "sha256": "83dacd63a70db27552d20c1ad0eee6469183089db3978d0b1858dab9e30a13c5",
+  "sha256": "1def9aa52197d5dff7755d2b6f8ae71dfbffc498ffc6c2d4e6b08e086974426c",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-sealed": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
-   48,
+   44,
    60,
-   32,
+   40,
    48
   ],
   "src": "pod-band",
   "made": "the Loika reference sprite",
-  "sha256": "2660c72172035351a6eb4e12a351d1c8745228688da9ba437255b8e29d0fc911",
+  "sha256": "c57634f8f3735888659c0de006931b5b65d8599f303c665d967200308668b1d5",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-band": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
-   48,
+   44,
    60,
-   32,
+   40,
    48
   ],
   "src": "pod-band",
   "made": "the sealing band as a layer",
-  "sha256": "2bfeb19bcf36bebf09ff0280ea559504f143a1c79ce620738dfcbc8f5129d13d",
+  "sha256": "6968e2fa959f8a3c69ef59e1af276288247e9fadb97e0855628f5df570b0a02d",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
@@ -1003,126 +1003,126 @@
  },
  "pod-well-shade": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
-   48,
+   44,
    60,
-   32,
+   40,
    48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "9594e280293d5316cb5e68439b6b245e7fa5cfbccd42e0f55dbccfc203e583a4",
+  "sha256": "c40fd8f578ee4403b4fad2973c0ce3f2b7ff09bc079287e953d72218726c6e1b",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-mask-body": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
    null,
    null,
-   32,
+   40,
    48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, held with the accent mask",
-  "sha256": "42bfbf685c930dd8403b553ef1dec2aa05a603b841e62298eea807b003282c24",
+  "sha256": "ed6c5626f1ff3e74f50ec3674a1af844ae585fba844d47bde7ffad4a3eab1a56",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-mask-accent": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
    null,
    null,
-   32,
+   40,
    48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, enclosed pixels filled",
-  "sha256": "19db840f9f499472bdf93fde367275eb7b6176f6ba81bc5d67e120c14c0969d5",
+  "sha256": "2236fa0afe54c90eccbe22a55f0861209641132041b8f5e923135de4d1fe86ae",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-pattern-dots": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
-   48,
+   44,
    60,
-   32,
+   40,
    48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "281c8b3e604946576f25538dbbf5f7bdaf0a5fe4bd2aaface21be42a9e8be416",
+  "sha256": "dca28c8ee4a97cc5cba1652d6f0cef0bc5985475fc8ae504074d8b4c36d9fdce",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-pattern-stripes": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
-   48,
+   44,
    60,
-   32,
+   40,
    48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "c5eaa317b3a40b1ddc3de1481854fceb48f082577c5ca0aba5f3ca3f80a6eee2",
+  "sha256": "e631f0f010b5d2ce0bd486e5f6a9b7c1e4eeb64ca9198a8763387ece878ee147",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-pattern-bands": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
-   48,
+   44,
    60,
-   32,
+   40,
    48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "b9a31a45789290f99679de040873a68eaebbd7acfd293ebfe0c958ac889e242b",
+  "sha256": "bc43435d4fca6bc4c628c8830e81ff002ed4e5114aab575a6dddd23a49553ad7",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
  },
  "pod-well-shadow": {
   "size": [
-   48,
+   56,
    14
   ],
   "rect": [
-   608,
+   604,
    385,
-   48,
+   56,
    14
   ],
   "src": "procedural ramp",
   "made": "contact shadow: centred on x 632 with its middle on the foot line y 392",
-  "sha256": "0d294d592904d85f425e2811515d378faa43f80402de3b38c3b7bf65593533ce",
+  "sha256": "e250f80ed856145e2b6252291f31cee3ff3543eda23a6f51d157ac8c73f67094",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
@@ -1183,18 +1183,18 @@
  },
  "pod-well-crack": {
   "size": [
-   32,
+   40,
    48
   ],
   "rect": [
-   48,
+   44,
    60,
-   32,
+   40,
    48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "c20cfa00258b91cbee32f153d03a613cdccf15601e42d506ac3ee1537e94d4b6",
+  "sha256": "d32a99fc6c672a57965797d177fc4821be099b56ecbc3fce028d23bd8331ff2c",
   "status": "new",
   "signed_in": null,
   "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
@@ -1210,7 +1210,7 @@
   "sha256": "bc87c8f1e67370d0f1f9ee2367abd3c33bc70c61f5009b90fbaaf29ad3a7226e",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x304-unread": {
   "size": [
@@ -1223,7 +1223,7 @@
   "sha256": "cdbd386f38847b5c8c1d6aefd61249d3e4504f4a6d6940288591157ba9b0f8ef",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x304-sealed": {
   "size": [
@@ -1236,7 +1236,7 @@
   "sha256": "ebaea936365f2fefea77f027f7e59e6636371f99a4b48f53585ddbc444a10109",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112": {
   "size": [
@@ -1249,7 +1249,7 @@
   "sha256": "9f8976fae65bb0f8ec6eba11d8b34ce2176601f44b7499daa81f9c422d38e020",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112-unread": {
   "size": [
@@ -1262,7 +1262,7 @@
   "sha256": "e4ca733db686e5c30092ffac344319c38554177fed25abddca8ac14dfaea7619",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112-sealed": {
   "size": [
@@ -1275,7 +1275,7 @@
   "sha256": "d028b791fb01c0ab1c31527f7cfb24d8714ccca796981c9514ce61d139e5b139",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112": {
   "size": [
@@ -1288,7 +1288,7 @@
   "sha256": "235b655e4eceee24a09d846efd87ba1e9ee9c0cf51f415764cab94d59405a520",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112-unread": {
   "size": [
@@ -1301,7 +1301,7 @@
   "sha256": "cc0d743509bebe368b9f08dba92dc74d0701d97b28f04f913ec85b1888b5a77d",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112-sealed": {
   "size": [
@@ -1314,7 +1314,7 @@
   "sha256": "3834322d8d96c3d1f8b528756a17d428ff36cd26055b3e6fd276b754e9c0cbba",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "rail-tab-unread-full-152x40": {
   "size": [
@@ -1474,9 +1474,9 @@
   "src": "frame-deep1",
   "made": "the deep portrait frame: key magenta, resampled whole; the opening is 200x280 at 16 px inset",
   "sha256": "3e15d93df675dd20a18731c181dfe9a7ebbf813fe9179c1e0b011ced1816888e",
-  "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status": "signed",
+  "signed_in": "pass 6",
+  "status_note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
  },
  "trait-picture-frame-232x312-unread": {
   "size": [
@@ -1492,9 +1492,9 @@
   "src": "frost-dark+frame-deep1",
   "made": "frost in the opening, under the deep frame",
   "sha256": "19e3ff22fecdb30f6215f974a23c52d312921cd4294a910b6e883cf39df6429d",
-  "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status": "signed",
+  "signed_in": "pass 6",
+  "status_note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
  },
  "trait-picture-frame-232x312-sealed": {
   "size": [
@@ -1510,9 +1510,9 @@
   "src": "slats-frost+frame-deep1",
   "made": "translucent glass slats in the opening, under the deep frame",
   "sha256": "47f53375bded70cd5455710829bc32554d26efac07538eb89df8f3662a2cb284",
-  "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status": "signed",
+  "signed_in": "pass 6",
+  "status_note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
  },
  "plate-name-80x24": {
   "size": [
@@ -1799,9 +1799,9 @@
   "src": "emblems/source/shape.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "2aeac7180f2c8c8fd698b7ee5a0c99db6a26d7fa0465dc5c1fbb118f34d870e5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "status_note": ""
  },
  "rail-emblem-shape-read-24x24": {
   "size": [
@@ -1812,9 +1812,9 @@
   "src": "emblems/source/shape.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "231e9fe1f509cc30cce2e1b75a834083fac54f9d9801eb8766d4b8ae72e6365f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "status_note": ""
  },
  "rail-emblem-shape-sealed-24x24": {
   "size": [
@@ -1825,9 +1825,9 @@
   "src": "emblems/source/shape.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "35e1e8741aa0e5fd16de5109241294abc4d8b6cbf8b2a6ee58849b3d69fc9302",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "status_note": ""
  },
  "rail-emblem-legs-tail-unread-24x24": {
   "size": [
@@ -1837,10 +1837,10 @@
   "rect": null,
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-  "sha256": "d0315481ee84bdf3370b7ce678cda0d7807b08e3c177df3c35ca2bafafaa7a52",
+  "sha256": "2f3c4fa7efd85f5ee6d11594be463b7c21c58a779f7b6e3cb037cd64ee55f7b6",
   "status": "new",
   "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status_note": "Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict"
  },
  "rail-emblem-legs-tail-read-24x24": {
   "size": [
@@ -1850,10 +1850,10 @@
   "rect": null,
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-  "sha256": "59fb1928d3d41cfcfe2a72f2a2833db36cfd5eaa98c7ab829a92077c08e26feb",
+  "sha256": "c0343588653122391fd4d67c952c301a7728de91c2588ed8259d75b5fca036d6",
   "status": "new",
   "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status_note": "Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict"
  },
  "rail-emblem-legs-tail-sealed-24x24": {
   "size": [
@@ -1863,10 +1863,10 @@
   "rect": null,
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-  "sha256": "8388d7e17a3593b43c990b3ce85c527ef90fe2ae944c30206f1a28e5963bf476",
+  "sha256": "bc61a3ed482f92a76a9abd177f911de1fd87dbd5cd6489adee1f0199452f3cd8",
   "status": "new",
   "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status_note": "Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict"
  },
  "rail-emblem-movement-unread-24x24": {
   "size": [
@@ -1877,9 +1877,9 @@
   "src": "emblems/source/movement.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "b958b040cddd9cdefd775ddf84cf2449a8271e55a77b660641950b1d714c3242",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "status_note": ""
  },
  "rail-emblem-movement-read-24x24": {
   "size": [
@@ -1890,9 +1890,9 @@
   "src": "emblems/source/movement.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "aad8088107741a8c87802d52f9ed0da06a8e0495bba549d97747670536d36e02",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "status_note": ""
  },
  "rail-emblem-movement-sealed-24x24": {
   "size": [
@@ -1903,9 +1903,9 @@
   "src": "emblems/source/movement.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "3c2333c4caaa6bb3d2a58c005344fe8a33f78c27c14358f30c70270d60e1b600",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "status_note": ""
  },
  "rail-emblem-stamina-unread-24x24": {
   "size": [
@@ -2033,9 +2033,9 @@
   "src": "emblems/source/charge.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "fc814be8c7c19d4722659da2a3e1f857537176e42ca1f4350b18e96942e34f0d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "status_note": ""
  },
  "rail-emblem-charge-read-24x24": {
   "size": [
@@ -2046,9 +2046,9 @@
   "src": "emblems/source/charge.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "36db425c2b69a13d2f3b38dfe824c504f81f1269a37862efee594b486fa41fde",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "status_note": ""
  },
  "rail-emblem-charge-sealed-24x24": {
   "size": [
@@ -2059,9 +2059,9 @@
   "src": "emblems/source/charge.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "9567167a5d77d1e6663abed3cfcd38b4fb8b7a6be5b43d044f0e5def35a663fd",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "status_note": ""
  },
  "ring-well-selected-80x80": {
   "size": [
@@ -3391,9 +3391,9 @@
   "src": "list-column",
   "made": "the list column at the concept's 112 px: the right part of list-column (its lit hairline on the right edge), bottom leak cropped",
   "sha256": "d196eb9b72a86516f0280103f66e89e460cfc8dc2501f3a25da44b4382494314",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "re-cut for design-pods-relayout 29b6dc9"
  },
  "ring-hatch-80x56": {
   "size": [
@@ -3409,9 +3409,9 @@
   "src": "hatch-leaf",
   "made": "the hatch at the 112 px column's width: the same etched leaf centred in 80x56",
   "sha256": "3ebdddd988510d13e2e974a351a5d24597e5dee085f24b0073a36fe80da9b7dc",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "re-cut for design-pods-relayout 29b6dc9"
  },
  "page-pane-256x440": {
   "size": [
@@ -3427,9 +3427,9 @@
   "src": "page-pane",
   "made": "9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge",
   "sha256": "f566451a7ee873a12c6b009e49bbcab45740e2d1d264a0f1d767ff0b738d127d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "re-cut for design-pods-relayout 29b6dc9"
  },
  "trait-picture-frame-224x352": {
   "size": [
@@ -3440,9 +3440,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "752d518fc2520a7eacd0ada07ef280dd3267c4193dda28ca6ba2b1440fdde973",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x352-unread": {
   "size": [
@@ -3453,9 +3453,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "04738df8c9332bf60467f43a217318870265dfbcc6e79bb7d69667428e8c30d0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x352-sealed": {
   "size": [
@@ -3466,9 +3466,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "b8e79c3ee55fb176045a5aa158420d921fcfb4d321a4b151e462fdda327aac05",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x160": {
   "size": [
@@ -3479,9 +3479,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "0c159a46d81b231eda186b0077f6dd8ee4eb3a7e1007405bd6383347f823b8ed",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x160-unread": {
   "size": [
@@ -3492,9 +3492,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "8f0a8e2f3acb0b54a3b518f4702991fbfaf189b446113c10afd698e4d5d5c26f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x160-sealed": {
   "size": [
@@ -3505,9 +3505,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "9f22c66c497ba50402b09f4b8a9c197e29067696fa1a70fe9f71eeb0ce321839",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-104x160": {
   "size": [
@@ -3518,9 +3518,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "eed8f05222ee4ddf233d9100ae640f1b4b485f768320c3016c54dd31c42ecca3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": ""
  },
  "trait-picture-frame-104x160-unread": {
   "size": [
@@ -3531,9 +3531,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "bae23b74f94b36497674631d2bf5f09d428227cd797f645dc9473857543a7729",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": ""
  },
  "trait-picture-frame-104x160-sealed": {
   "size": [
@@ -3544,9 +3544,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "6b88c746cdf3e484da9394fc1cfabc282457900c7c0a1ba67a2464976f5a1772",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": ""
  },
  "trait-picture-frame-104x96": {
   "size": [
@@ -3557,9 +3557,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "0747fe67981dcde7872631a8fd048f664a18fe8d03ed671d7a1b08c581439def",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": ""
  },
  "trait-picture-frame-104x96-unread": {
   "size": [
@@ -3570,9 +3570,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "771f6fde9092992257d565c107c71c5e35f6e78c01c7db09754be6ee6dc83eca",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": ""
  },
  "trait-picture-frame-104x96-sealed": {
   "size": [
@@ -3583,9 +3583,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "6cafe52459b4bf513c9f56948389067c1e26ee6810e6245445ff27f546a481ec",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": ""
  },
  "trait-picture-frame-104x64": {
   "size": [
@@ -3596,9 +3596,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "74d71e0fa116e798e44172773f0dcbd146071b340cbc0dcdbd90694820c3f616",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": ""
  },
  "trait-picture-frame-104x64-unread": {
   "size": [
@@ -3609,9 +3609,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "3e3a3fe2dd0a5335c3a9b1f4eb17fca61ffb97827a47beaa76be365c47034761",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": ""
  },
  "trait-picture-frame-104x64-sealed": {
   "size": [
@@ -3622,9 +3622,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "c148ba4c22c503ad2cfddf3567832a2c67ee1e046f332be17e8084120e4b6472",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": ""
  },
  "room-stamp-case-152x152": {
   "size": [
@@ -3640,9 +3640,9 @@
   "src": "case2",
   "made": "the dim unlit glass case at its new size: translucent, a faint diagonal sheen, dim brushed-metal rails, closed on all four sides",
   "sha256": "f966465a22ed2105be71980b68daa508ce7fcfdc307833c2d044d0f92704ca78",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the case at its new size (design-pods-relayout 29b6dc9); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "status_note": "with a condition: the front glass over the label (room-stamp-case-152x152-front)"
  },
  "ring-well-empty-80x80": {
   "size": [
@@ -3833,8 +3833,356 @@
   "src": "procedural, supersampled 8x",
   "made": "PROPOSED: the 'new to the field guide' mark, a 12x12 bone bead lit upper left (the page's newMark region of design-pods-relayout 29b6dc9)",
   "sha256": "f4c09fed6fab7e108827e7a855625ec7c98ca9c84853f4317453b1d99d41280c",
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "superseded by page-mark-new-10 (the layout specifies a flat engraved 10x10 dot)"
+ },
+ "frame-room-home-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "marks-rooms",
+  "made": "the home room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
+  "sha256": "a0cd5e3f27c5f0015642b6ca510974b42c037dd8ad3cb0fbfed6b7fe68648191",
   "status": "new",
   "signed_in": null,
-  "status_note": "proposed mark; awaiting verdict"
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-research-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "marks-rooms",
+  "made": "the research room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
+  "sha256": "14916cda830a5702bd2b145b94a6ae18dae68d3b916eccf99db91260bfc5d6ee",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-library-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "marks-rooms",
+  "made": "the library room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
+  "sha256": "42512e0c14391bbf4752b977a499acaf31466209f54f724a263e9ac471a3e680",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-habitat-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "marks-rooms",
+  "made": "the habitat room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
+  "sha256": "fe744992d97e78b1018beff76bf1d928f53d1b0397419e0e44f53d1e958c9b08",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-companion-solid-16x24": {
+  "size": [
+   16,
+   24
+  ],
+  "rect": [
+   816,
+   8,
+   16,
+   24
+  ],
+  "src": "marks-device2",
+  "made": "the Companion's glyph, solid (docked); painted large and reduced",
+  "sha256": "6fc434b6d4c8a66cc99f5a33f6dd6c5e62d8cbca6505932b4447a9e9071bb233",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-companion-outline-16x24": {
+  "size": [
+   16,
+   24
+  ],
+  "rect": [
+   816,
+   8,
+   16,
+   24
+  ],
+  "src": "marks-device2",
+  "made": "the Companion's glyph, outline (away); painted large and reduced",
+  "sha256": "390ee6f7c05da87c416b0ef686c1cedfcdb7b1dc3dd137bfde2ce8312162fd66",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-sun-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": [
+   null,
+   8,
+   16,
+   16
+  ],
+  "src": "marks-device2",
+  "made": "the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008)",
+  "sha256": "59cf47153ed146c66d607da6f4cc0f588e899633813d7986b4aa9d7900faf9f7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-mint-8x8": {
+  "size": [
+   8,
+   8
+  ],
+  "rect": [
+   836,
+   16,
+   8,
+   8
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the Companion's lamp, docked: a mint bead",
+  "sha256": "e19fee66d66e53ffad6ea55c1796660a4840cfdff66f808d577cd09c79ba3ddb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-stone-8x8": {
+  "size": [
+   8,
+   8
+  ],
+  "rect": [
+   836,
+   16,
+   8,
+   8
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the Companion's lamp, away: a stone bead",
+  "sha256": "7732c769d62f375be1b8a2721675f9ed81c09d5d211ed9f9b312b5e6af94bb2d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-amber-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": [
+   null,
+   null,
+   12,
+   12
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the notice's 12x12 amber lamp (the same lamp as Home's modules)",
+  "sha256": "7b2f7f70d0baca088268b9c09139d5a3ba57f3e92f0f5ca4500fc292a21693e5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-face-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   856,
+   8,
+   24,
+   24
+  ],
+  "src": "mibi-face",
+  "made": "the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring",
+  "sha256": "103830c29ebd70ce2ff262f837e79427b631a8bd0c6ce19bdd7d0c8df735925f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-face-away-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   856,
+   8,
+   24,
+   24
+  ],
+  "src": "mibi-face",
+  "made": "the Companion away: the mibi out with it, the face full on a dimmed ring",
+  "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-face-empty-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   856,
+   8,
+   24,
+   24
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "no mibi with you: an empty teal ring",
+  "sha256": "31a32690a97334cef6e50fb1f88592b765a6a8f43e82672d2e3a653507d892e8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "room-stamp-case-152x152-front": {
+  "size": [
+   152,
+   152
+  ],
+  "rect": [
+   856,
+   232,
+   152,
+   152
+  ],
+  "src": "procedural, supersampled",
+  "made": "the case's front glass over the label: a dark tint (0.41) and a faint diagonal sheen; the label's mean brightness falls to about 114 with the stamp's cells at 4.8:1 (WCAG relative luminance)",
+  "sha256": "00feb9883f5994caba3592385bc637c05f88567140c0a388809d5b8be54f0a1e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the front glass over the label; awaiting verdict"
+ },
+ "trait-picture-frame-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "69e218b8a4f4223d1747ddd75eec6ffc1e23dd97440ad97bdfbfc926887c08b8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-144x176-unread": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "649d48104e540727a8bef2c8053b2c3f7816560e5ed3ea37cf0b882193a78c55",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-144x176-sealed": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "96b3b5fab5469006c0376ceaf2dc9f28498d967022ee879901131e0ca4179128",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-176x144": {
+  "size": [
+   176,
+   144
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "769fcaf61db51c41bdbad763965d733b132aa16f6b2f86a8977f98037d606198",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-176x144-unread": {
+  "size": [
+   176,
+   144
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "c8869fd1f546f986d295e960dc9ac8b875d7074caf5758e5f110fb5a65832f81",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-176x144-sealed": {
+  "size": [
+   176,
+   144
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "15174bd5c8e667f6be38854bf522a634469cb34d80ca9d5e9282c4dd7005c97d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "page-mark-new-10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": [
+   null,
+   null,
+   10,
+   10
+  ],
+  "src": "typed by hand",
+  "made": "the 'new to the field guide' mark: a flat engraved bone dot 10x10, a 1 px lit edge, an ink keyline, art layer; at the picture's top centre",
+  "sha256": "21a2a1bef736a18c8d6cca952d2dc599a9f521b2314289605456df4ac3248d77",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the new-to-the-field-guide mark as the layout specifies it (replaces page-new-mark-12x12); awaiting verdict"
  }
 }

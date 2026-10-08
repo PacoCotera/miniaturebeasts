@@ -20,9 +20,9 @@
   "note": "re-cut for the new rectangle (shelf 488,368,288,72)"
  },
  "ring-column": {
-  "status": "signed",
-  "signed_in": "pass 1",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the 160 px column of the earlier layout; replaced by ring-column-112x522"
  },
  "ring-well-empty": {
   "status": "withdrawn",
@@ -30,9 +30,9 @@
   "note": "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))"
  },
  "ring-hatch": {
-  "status": "signed",
-  "signed_in": "pass 2",
-  "note": "the 112x56 slice of the earlier layout"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the 112x56 slice of the earlier layout; replaced by ring-hatch-80x56"
  },
  "page-pane-408x440": {
   "status": "withdrawn",
@@ -352,47 +352,47 @@
  "trait-picture-frame-184x304": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x304-unread": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x304-sealed": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112-unread": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-184x112-sealed": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112-unread": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "trait-picture-frame-120x112-sealed": {
   "status": "withdrawn",
   "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
  },
  "rail-tab-unread-full-152x40": {
   "status": "withdrawn",
@@ -435,19 +435,19 @@
   "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "trait-picture-frame-232x312": {
-  "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
  },
  "trait-picture-frame-232x312-unread": {
-  "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
  },
  "trait-picture-frame-232x312-sealed": {
-  "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9)"
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
  },
  "plate-name-80x24": {
   "status": "signed",
@@ -535,49 +535,49 @@
   "note": ""
  },
  "rail-emblem-shape-unread-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
  },
  "rail-emblem-shape-read-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
  },
  "rail-emblem-shape-sealed-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
  },
  "rail-emblem-legs-tail-unread-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "note": "Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict"
  },
  "rail-emblem-legs-tail-read-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "note": "Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict"
  },
  "rail-emblem-legs-tail-sealed-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "note": "Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict"
  },
  "rail-emblem-movement-unread-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
  },
  "rail-emblem-movement-read-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
  },
  "rail-emblem-movement-sealed-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
  },
  "rail-emblem-stamina-unread-24x24": {
   "status": "signed",
@@ -625,19 +625,19 @@
   "note": ""
  },
  "rail-emblem-charge-unread-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
  },
  "rail-emblem-charge-read-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
  },
  "rail-emblem-charge-sealed-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "redrawn in emblems round 4; awaiting verdict"
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
  },
  "ring-well-selected-80x80": {
   "status": "signed",
@@ -1005,99 +1005,99 @@
   "note": ""
  },
  "ring-column-112x522": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "re-cut for design-pods-relayout 29b6dc9"
  },
  "ring-hatch-80x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "re-cut for design-pods-relayout 29b6dc9"
  },
  "page-pane-256x440": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "re-cut for design-pods-relayout 29b6dc9"
  },
  "trait-picture-frame-224x352": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x352-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x352-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x160-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-224x160-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
  },
  "trait-picture-frame-104x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": ""
  },
  "trait-picture-frame-104x160-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": ""
  },
  "trait-picture-frame-104x160-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": ""
  },
  "trait-picture-frame-104x96": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": ""
  },
  "trait-picture-frame-104x96-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": ""
  },
  "trait-picture-frame-104x96-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": ""
  },
  "trait-picture-frame-104x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": ""
  },
  "trait-picture-frame-104x64-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": ""
  },
  "trait-picture-frame-104x64-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": ""
  },
  "room-stamp-case-152x152": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the case at its new size (design-pods-relayout 29b6dc9); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (d767daa verdict)",
+  "note": "with a condition: the front glass over the label (room-stamp-case-152x152-front)"
  },
  "ring-well-empty-80x80": {
   "status": "new",
@@ -1150,8 +1150,113 @@
   "note": "the find picture frame of a sealed chapter at (224,296); awaiting verdict"
  },
  "page-new-mark-12x12": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "superseded by page-mark-new-10 (the layout specifies a flat engraved 10x10 dot)"
+ },
+ "frame-room-home-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "proposed mark; awaiting verdict"
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-research-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-library-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-habitat-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-companion-solid-16x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-companion-outline-16x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-sun-16x16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-mint-8x8": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-stone-8x8": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-amber-12x12": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-face-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-face-away-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-face-empty-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "room-stamp-case-152x152-front": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the front glass over the label; awaiting verdict"
+ },
+ "trait-picture-frame-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-144x176-unread": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-144x176-sealed": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-176x144": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-176x144-unread": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-176x144-sealed": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "page-mark-new-10": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the new-to-the-field-guide mark as the layout specifies it (replaces page-new-mark-12x12); awaiting verdict"
  }
 }

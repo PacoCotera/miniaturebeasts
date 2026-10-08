@@ -25,29 +25,31 @@ def compose(traits, rail):
         if i in lit:
             n, k = lit[i]; put(f"ring-arc-{st}-n{n}-track", 24, y)       # selected: the open channel over the solid band; idle: the groove
             for j in range(k): put(f"ring-arc-{st}-n{n}-s{j}", 24, y)    # a read chapter: the solid band (selected) or the dim line (idle)
-        if i in pods: put(pods[i], 48, 60 + 72 * i)
+        if i in pods: put(pods[i], 44, 60 + 72 * i)
     put("glint-star-12x12", 24 + 40 + 30 - 6, 44 + 40 - 30 - 6)
     put("ring-hatch-80x56", 24, 488)
     # the stage: the pod the protagonist on axis x 632
     put("room-shelf", 488, 368); put("room-cradle", 520, 328); put("pod-large-shadow", 632 - 80, 385); put("pod-large-identified", 560, 216); put("room-cradle-front", 520, 328)
-    tw = d.textlength("Loika pod", font=f20); pw = min(224, max(80, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x24", 632 - pw // 2, 456); text((632, 468), "Loika pod", f20, CREAM, "mm")
-    text((632, 498), "rock field ·", f16, BONE, "mm"); text((632, 518), "a Tuikis felt safe", f16, BONE, "mm")
-    put("room-stamp-case-152x152", 856, 232); put("stamp-label-120x120", 872, 248); cv.alpha_composite(cand.crop((830, 238, 976, 386)).resize((104, 104), Image.NEAREST), (880, 256))
+    tw = d.textlength("Loika", font=f20); pw = min(224, max(80, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x24", 632 - pw // 2, 456); text((632, 468), "Loika", f20, CREAM, "mm")
+    text((632, 498), "Found on the rock field,", f16, BONE, "mm"); text((632, 518), "as a Tuikis felt safe.", f16, BONE, "mm")
+    put("room-stamp-case-152x152", 856, 232); put("stamp-label-120x120", 872, 248); cv.alpha_composite(Image.open("../../concept-station/pods-v2/layout/stamp-hopper-bench-300.png").convert("RGBA").resize((104, 104), Image.NEAREST), (880, 256)); put("room-stamp-case-152x152-front", 856, 232)
     # the page, 256 wide: one state, a grid of the chapter's traits
     put("page-pane-256x440", 152, 112); text((168, 120), "Coat" if rail == "six" else "Shape", f20, CREAM)
     for k in range(traits): x = 408 - 8 - 12 * (traits - 1 - k) - 16; d.rectangle([x, 128, x + 7, 135], fill=CREAM if k < 2 else None, outline=MIST)
     pic = lambda w, h, box=(180, 166, 372, 430): cand.crop(box).resize((w, h), Image.LANCZOS)
-    if traits == 1:
-        cv.alpha_composite(pic(224, 352), (168, 160)); put("trait-picture-frame-224x352", 168, 160); put("page-new-mark-12x12", 168 + 112 - 6, 160 + 8); text((168, 516), "Spots", f16, CREAM)
+    if traits == 1:      # one trait: a picture no larger than the pod's box, 144x176, centred in the cell
+        px, py = 168 + (224 - 144) // 2, 160 + 40
+        cv.alpha_composite(pic(144, 176), (px, py)); put("trait-picture-frame-144x176", px, py); put("page-mark-new-10", px + 72 - 5, py + 6); text((280, py + 184), "Spots", f16, CREAM, "ma")
     else:
         for k, (cx, cy, st) in enumerate(((168, 160, "read"), (288, 160, "read"), (168, 360, "unread"), (288, 360, "sealed"))[:traits]):
             if st == "read": cv.alpha_composite(pic(104, 160, (180, 166, 372, 430) if k == 0 else (200, 250, 372, 400)), (cx, cy)); put("trait-picture-frame-104x160", cx, cy)
             else: put(f"trait-picture-frame-104x160-{st}", cx, cy)
+            if k == 0: put("page-mark-new-10", cx + 52 - 5, cy + 6)
             text((cx, cy + 164), ("Spots", "Belly", "Flank", "Crest")[k], f16, CREAM)
     # the rail: tabs hang from the bar at y 40 and touch along their slants
     if rail == "six": tabs = [("Coat", "focused", 3), ("Face", "read", 3), ("Shape", "unread", 4), ("Legs & tail", "unread", 3), ("Movement", "sealed", 0), ("Stamina", "unread", 3)]; open_i = None
     else: tabs = [("Coat", "read", 3), ("Face", "read", 3), ("Shape", "focused", 4), ("Legs", "unread", 3), ("Movement", "unread", 3), ("Stamina", "sealed", 0), ("Character", "unread", 3)]; open_i = 2
-    x = 176; ring = None
+    x = 152; ring = None
     for i, (word, st, pips) in enumerate(tabs):
         full = rail == "six" or i == open_i; w = 136 if full else 56
         put(f"rail-tab-fill-{'open' if st == 'focused' else st}-{'full-152x40' if full else 'compact-72x40'}", x, 40)
@@ -65,13 +67,22 @@ def compose(traits, rail):
     if ring:
         rx, rw = ring; d.line([(rx - 2, 42), (rx + rw + 2, 42), (rx + rw + 20, 84), (rx + 12, 84), (rx - 2, 42)], fill=(255, 232, 190, 255), width=2)
     put("frame-bottom-line-1024x38", 0, 562); cv.alpha_composite(S("frame-top-bar-1024x40"), (0, 0))
-    text((16, 20), "Pods", f20, CREAM, "lm"); text((72, 20), "T5", f16, MIST, "lm")
-    for xx, c, v in ((432, (255, 168, 63), "9"), (496, (91, 185, 243), "4"), (560, (92, 187, 76), "6")):
-        d.polygon([(xx, 14), (xx + 6, 14), (xx + 3, 20), (xx + 8, 20), (xx + 2, 28), (xx + 3, 22), (xx - 2, 22)] if c[0] == 255 else [(xx + 4, 12), (xx + 11, 20), (xx + 4, 28), (xx - 3, 20)], fill=c)
-        text((xx + 20, 20), v, f16, CREAM, "lm")
-    text((1008, 20), "Companion away · with Dot", f16, FOG, "rm")
-    text((16, 581), "✓ Read Face · 2 ◆ · ← Home", f16, CREAM, "lm"); text((512, 581), "identified · rock field", f16, FOG, "mm"); text((1008, 581), "Face glints · something new", f16, AMBER, "rm")
-    for xx in (396, 628): d.line([(xx, 571), (xx, 591)], fill=(93, 89, 116, 255))
+    HAIR = (60, 75, 87, 255); ORANGE = (242, 103, 27, 255); STONE = (93, 89, 116, 255)
+    # the top bar: where you are, what you hold, who is out, when
+    put("frame-room-research-24x24", 16, 8); text((48, 20), "Pods", f20, CREAM, "lm")
+    for xx in (256, 888): d.line([(xx, 8), (xx, 32)], fill=HAIR)
+    for xx, c_, v in ((432, (255, 168, 63), "9"), (496, (91, 185, 243), "4"), (560, (92, 187, 76), "6")):      # the holdings: stand-in icons with figures
+        d.polygon([(xx, 14), (xx + 6, 14), (xx + 3, 20), (xx + 8, 20), (xx + 2, 28), (xx + 3, 22), (xx - 2, 22)] if c_[0] == 255 else [(xx + 4, 12), (xx + 11, 20), (xx + 4, 28), (xx - 3, 20)], fill=c_); text((xx + 20, 20), v, f16, CREAM, "lm")
+    put("frame-companion-outline-16x24", 816, 8); put("frame-lamp-stone-8x8", 836, 16); put("frame-face-away-24x24", 856, 8)
+    tw5 = d.textlength("5", font=f16); put("frame-sun-16x16", int(1008 - tw5 - 4 - 16), 12); text((1008, 20), "5", f16, CREAM, "rm")
+    # the bottom line: the one action, the context, the notice
+    d.rounded_rectangle([16, 574, 31, 589], 3, fill=ORANGE); d.line([(20, 582), (23, 585), (28, 578)], fill=(40, 20, 10, 255), width=2); text((36, 581), "Read Face", f16, ORANGE, "lm")
+    vw = d.textlength("Read Face", font=f16); gx = int(36 + vw + 24)
+    d.polygon([(gx + 4, 575), (gx + 11, 582), (gx + 4, 589), (gx - 3, 582)], fill=(91, 185, 243, 255)); text((gx + 18, 581), "2", f16, CREAM, "lm")
+    hx = gx + 18 + 10 + 24; d.rounded_rectangle([hx, 574, hx + 15, 589], 3, fill=STONE); d.line([(hx + 11, 582), (hx + 4, 582)], fill=(220, 220, 235, 255), width=2); d.line([(hx + 7, 579), (hx + 4, 582), (hx + 7, 585)], fill=(220, 220, 235, 255), width=2); text((hx + 20, 581), "Home", f16, FOG, "lm")
+    text((512, 581), "Loika, Face", f16, MIST, "mm")
+    nw = d.textlength("something new in Face", font=f16); put("frame-lamp-amber-12x12", int(1008 - nw - 8 - 12), 575); text((1008, 581), "something new in Face", f16, AMBER, "rm")
+    for xx in (396, 628): d.line([(xx, 571), (xx, 591)], fill=HAIR)
     return cv.convert("RGB")
 a = compose(4, "six"); a.save("composite-pods-read-1024x600.png")
 compose(1, "compact").save("composite-pods-grid-1024x600.png")

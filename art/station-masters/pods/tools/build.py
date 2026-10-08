@@ -155,7 +155,7 @@ def pages():
 # ---- picture frames
 def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
-    sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96), (224, 352), (224, 160), (104, 160), (104, 96), (104, 64), (112, 112)]
+    sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96), (224, 352), (224, 160), (104, 160), (104, 96), (104, 64), (112, 112), (144, 176), (176, 144)]
     s = 1536 / k.width * 0 + 0.19
     fr = dim(load("frost-dark.jpg").convert("RGBA"), 0.7).convert("RGB"); sl = dim(load("slats-frost.jpg").convert("RGBA"), 0.5, 8).convert("RGB")
     frost = fr.resize((int(fr.width * 0.25), int(fr.height * 0.25)), Image.LANCZOS)
@@ -276,6 +276,60 @@ def wellrings():
     im = load("spark.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.04); bb = bbox_alpha(k, 40); c = k.crop(bb); side = max(c.size); sq = Image.new("RGBA", (side, side), (0, 0, 0, 0)); sq.paste(c, ((side - c.width) // 2, (side - c.height) // 2))
     save("glint-star-12x12", sq.resize((12, 12), Image.LANCZOS), [None, None, 12, 12], "the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30)", "spark")
 
+def bead(size, light, dark, rim=(60.0, 50.0, 40.0)):
+    S = 8; yy, xx = np.mgrid[0:size * S, 0:size * S].astype(float); c = size / 2; x = (xx + 0.5) / S - c; y = (yy + 0.5) / S - c; r = np.hypot(x, y); R = c - 0.6
+    inside = np.clip(R + 0.5 - r, 0, 1); lit = np.clip(0.5 - (x + y) / (size * 0.95), 0, 1)
+    col = np.array(dark)[None, None, :] * (1 - lit[..., None]) + np.array(light)[None, None, :] * lit[..., None]
+    rm = np.clip(1 - np.abs(r - (R - 0.3)) / 0.7, 0, 1) * 0.3; col = col * (1 - rm[..., None]) + np.array(rim) * rm[..., None]
+    return Image.fromarray(np.clip(np.dstack([col, inside * 255]).reshape(size, S, size, S, 4).mean((1, 3)), 0, 255).astype(np.uint8), "RGBA")
+def fit(k, w, h, pad=0, thr=40, gain=1.0):
+    k = k.crop(bbox_alpha(k, thr)); f = min((w - 2 * pad) / k.width, (h - 2 * pad) / k.height); k = k.resize((max(1, round(k.width * f)), max(1, round(k.height * f))), Image.LANCZOS)
+    if gain != 1.0:
+        arr = np.asarray(k).astype(float).copy(); arr[..., 3] = np.clip(arr[..., 3] * gain, 0, 255); k = Image.fromarray(arr.astype(np.uint8), "RGBA")
+    c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(k, ((w - k.width) // 2, (h - k.height) // 2)); return c
+def framemarks():
+    """The Station frame's marks (design-station-frame): the four room marks at 24, the Companion's glyph solid and outline, the lamps, the sun mark and the
+    mibi's face on its teal ring, as a painted layer drawn from larger paintings and reduced (never a pixel face scaled up)."""
+    im = load("marks-rooms.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); W, H = k.size
+    for nm, box in (("home", (0, 0, W // 2, H // 2)), ("research", (W // 2, 0, W, H // 2)), ("library", (0, H // 2, W // 2, H)), ("habitat", (W // 2, H // 2, W, H))):
+        save(f"frame-room-{nm}-24x24", fit(k.crop(box), 24, 24, 2, 40, 1.9), [16, 8, 24, 24], f"the {nm} room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone", "marks-rooms")
+    im = load("marks-device2.jpg"); W, H = im.size
+    def third(i):
+        t = im.crop((i * W // 3, 0, (i + 1) * W // 3, H)); return color_to_alpha(t, border_median(t), 0.05)
+    save("frame-companion-solid-16x24", fit(third(0), 16, 24, 0, 200), [816, 8, 16, 24], "the Companion's glyph, solid (docked); painted large and reduced", "marks-device2")
+    save("frame-companion-outline-16x24", fit(third(1), 16, 24, 0, 200, 2.2), [816, 8, 16, 24], "the Companion's glyph, outline (away); painted large and reduced", "marks-device2")
+    save("frame-sun-16x16", fit(third(2), 16, 16, 0, 200), [None, 8, 16, 16], "the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008)", "marks-device2")
+    save("frame-lamp-mint-8x8", bead(8, (236, 255, 246), (60, 190, 160)), [836, 16, 8, 8], "the Companion's lamp, docked: a mint bead", "procedural, supersampled 8x")
+    save("frame-lamp-stone-8x8", bead(8, (138, 134, 160), (68, 64, 88)), [836, 16, 8, 8], "the Companion's lamp, away: a stone bead", "procedural, supersampled 8x")
+    save("frame-lamp-amber-12x12", bead(12, (255, 226, 160), (232, 130, 40)), [None, None, 12, 12], "the notice's 12x12 amber lamp (the same lamp as Home's modules)", "procedural, supersampled 8x")
+    # the mibi's face: from the standard painting of the mibi, a circle of the head painted at 2K and reduced to the 20 px disc inside a 2 px teal ring
+    f = load("mibi-face.jpg"); Wf, Hf = f.size; cx, cy, side = int(Wf * 0.53), int(Hf * 0.60), int(Wf * 0.92)
+    face = f.crop((cx - side // 2, cy - side // 2, cx + side // 2, cy + side // 2)).convert("RGBA").resize((20 * 8, 20 * 8), Image.LANCZOS)
+    S = 8
+    def ring_img(ringcol, with_face, dim=1.0):
+        yy, xx = np.mgrid[0:24 * S, 0:24 * S].astype(float); x = (xx + 0.5) / S - 12; y = (yy + 0.5) / S - 12; r = np.hypot(x, y)
+        out = np.zeros((24 * S, 24 * S, 4)); ring = np.clip(12 - r, 0, 1) * np.clip(r - 10, 0, 1) if False else (np.clip(12.0 - r, 0, 1) * np.clip(r - 10.0, 0, 1))
+        lit = np.clip(0.5 - (x + y) / 24.0, 0, 1); rc = np.array(ringcol)[None, None, :] * dim * (0.8 + 0.4 * lit[..., None])
+        out[..., :3] = rc; out[..., 3] = ring * 255
+        disc = np.clip(10.0 - r, 0, 1)
+        if with_face:
+            fa = np.zeros((24 * S, 24 * S, 4)); fa[2 * S:22 * S, 2 * S:22 * S] = np.asarray(face).astype(float)
+            a = disc[..., None]; out[..., :3] = out[..., :3] * (out[..., 3:4] / 255) * (1 - a) + fa[..., :3] * a; out[..., 3] = np.maximum(out[..., 3], disc * 255)
+        else:
+            a = disc[..., None] * 0.35; out[..., :3] = out[..., :3] * (1 - a) + np.array([14.0, 22.0, 30.0]) * a; out[..., 3] = np.maximum(out[..., 3], disc * 90)
+        return Image.fromarray(np.clip(out.reshape(24, S, 24, S, 4).mean((1, 3)), 0, 255).astype(np.uint8), "RGBA")
+    teal = (31, 157, 143)
+    save("frame-face-24x24", ring_img(teal, True), [856, 8, 24, 24], "the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring", "mibi-face")
+    save("frame-face-away-24x24", ring_img(teal, True, 0.5), [856, 8, 24, 24], "the Companion away: the mibi out with it, the face full on a dimmed ring", "mibi-face")
+    save("frame-face-empty-24x24", ring_img(teal, False), [856, 8, 24, 24], "no mibi with you: an empty teal ring", "procedural, supersampled 8x")
+def pagemark():
+    """page-mark-new-10: the 'new to the field guide' mark as the layout specifies it: a flat engraved bone dot, 10x10, a 1 px lit edge (white, upper left) and an ink
+    keyline, art layer (station.json colours only), no specular. Pixel data typed by hand: i = ink, b = bone, w = white, . = empty."""
+    rows = ["...iiii...", ".iiwwbbii.", ".iwbbbbbi.", "iwbbbbbbbi", "iwbbbbbbbi", "ibbbbbbbbi", "ibbbbbbbbi", ".ibbbbbbi.", ".iibbbbii.", "...iiii..."]
+    pal = {"i": (0x1a, 0x17, 0x25, 255), "b": (0xf1, 0xeb, 0xdf, 255), "w": (0xff, 0xff, 0xff, 255), ".": (0, 0, 0, 0)}
+    assert all(len(r) == 10 for r in rows) and len(rows) == 10
+    im = Image.new("RGBA", (10, 10)); [im.putpixel((x, y), pal[ch]) for y, r in enumerate(rows) for x, ch in enumerate(r)]
+    save("page-mark-new-10", im, [None, None, 10, 10], "the 'new to the field guide' mark: a flat engraved bone dot 10x10, a 1 px lit edge, an ink keyline, art layer; at the picture's top centre", "typed by hand")
 def newmark():
     """The 12x12 mark of a trait new to the field guide, at the picture's top centre: a small bone bead, lit upper left, sand lower right (a proposal; the glint star stays the spark)."""
     S = 8; yy, xx = np.mgrid[0:12 * S, 0:12 * S].astype(float); x = (xx + 0.5) / S - 6; y = (yy + 0.5) / S - 6; r = np.hypot(x, y)
@@ -326,6 +380,15 @@ def stampcase152():
     out[6:H_ - 6, 0, :3] = (96, 126, 138); out[6:H_ - 6, 0, 3] = 120; out[6:H_ - 6, 1, 3] = np.maximum(out[6:H_ - 6, 1, 3], 50)
     out[6:H_ - 6, W_ - 1, :3] = (60, 84, 96); out[6:H_ - 6, W_ - 1, 3] = 110
     save("room-stamp-case-152x152", Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA"), [856, 232, 152, 152], "the dim unlit glass case at its new size: translucent, a faint diagonal sheen, dim brushed-metal rails, closed on all four sides", "case2")
+def stampfront():
+    """The case's front glass (856,232,152,152), drawn over the label: a dark glass tint (alpha 0.41) over the label's 120 px, feathered 3 px, and a faint
+    diagonal sheen across the whole pane, so the label no longer outshines the pod while the stamp's cells keep their contrast."""
+    H_ = W_ = 152; yy, xx = np.mgrid[0:H_, 0:W_].astype(float)
+    inx = np.clip((np.minimum(xx - 16, 16 + 120 - 1 - xx) + 3) / 3.0, 0, 1); iny = np.clip((np.minimum(yy - 16, 16 + 120 - 1 - yy) + 3) / 3.0, 0, 1); box = np.minimum(inx, iny)
+    sheen = np.exp(-(((xx * 0.9 + yy * 0.9) - 110) / 14.0) ** 2) * 0.16 + np.exp(-(((xx * 0.9 + yy * 0.9) - 170) / 6.0) ** 2) * 0.10
+    alpha = np.clip(0.41 * box + sheen * (1 - 0.88 * box), 0, 1)
+    col = np.dstack([np.full((H_, W_), 6.0), np.full((H_, W_), 12.0), np.full((H_, W_), 16.0)]) * (1 - np.clip(sheen * 3 * (1 - 0.88 * box), 0, 1)[..., None]) + np.array([150.0, 190.0, 205.0]) * np.clip(sheen * 3 * (1 - 0.88 * box), 0, 1)[..., None]
+    save("room-stamp-case-152x152-front", Image.fromarray(np.clip(np.dstack([col, alpha * 255]), 0, 255).astype(np.uint8), "RGBA"), [856, 232, 152, 152], "the case's front glass over the label: a dark tint (0.41) and a faint diagonal sheen; the label's mean brightness falls to about 114 with the stamp's cells at 4.8:1 (WCAG relative luminance)", "procedural, supersampled")
 def bars():
     im = load("bar-top.jpg"); k = key_magenta(im); bb = bbox_alpha(k, 250); b = im.crop(bb).convert("RGBA")
     b = dim(b, 0.62)
@@ -333,7 +396,7 @@ def bars():
     save("frame-bottom-line-1024x38", b.transpose(Image.FLIP_TOP_BOTTOM).resize((1024, 38), Image.LANCZOS), [0, 562, 1024, 38], "the bar flipped (rule on its top edge), 1024x38", "bar-top")
 
 # ---- pods
-POD_BOX = {"large": (144, 176), "medium": (120, 152), "small": (104, 128), "well": (32, 48)}
+POD_BOX = {"large": (144, 176), "medium": (120, 152), "small": (104, 128), "well": (40, 48)}
 def pod_src(n):
     k = key_magenta(load(n + ".jpg"), lo=26, hi=70); a = np.asarray(k).astype(float).copy(); a[1775:, 3] = 0
     edge = a[..., 3] < 250; g = a[..., 1]
@@ -434,7 +497,7 @@ def pods():
         def put(arr, extra=None):
             im = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA").resize((pw, ph), Image.LANCZOS)
             c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(im, (ox, oy)); return c
-        r = {"large": [560, 216, 144, 176], "medium": [572, 240, 120, 152], "small": [580, 264, 104, 128], "well": [48, 60, 32, 48]}.get(cls, [None, None, w, h])
+        r = {"large": [560, 216, 144, 176], "medium": [572, 240, 120, 152], "small": [580, 264, 104, 128], "well": [44, 60, 40, 48]}.get(cls, [None, None, w, h])
         for nm, arr in masks.items(): save(f"pod-{cls}-{nm}", put(arr), r, "systematic pod layer: " + nm + ", uniform scale, foot on the last row, centred", "pod-identified")
         if cls == "well":
             # legible at 32x40: darken and thicken the band before the downscale, and rebuild the sealed sprite from it
@@ -450,15 +513,16 @@ def well_pinholes():
     """Fill the enclosed pixels of the well pod's accent mask (between the cap and the rib); hold the body mask with it."""
     A = np.asarray(Image.open("slices/pod-well-mask-accent.png").convert("RGBA")).copy(); Bd = np.asarray(Image.open("slices/pod-well-mask-body.png").convert("RGBA")).copy()
     al = A[..., 3].astype(int); sil = np.asarray(Image.open("slices/pod-well-shade.png").convert("RGBA"))[..., 3] > 128
-    enc = np.zeros_like(al, bool)           # the two enclosed pixels between the cap and the rib the art director named, at (6,11),(7,11) of the old 32x40 box = (6,12),(7,12) of the 32x48 box with the pod centred
-    for (px, py) in ((6, 12), (7, 12)):
-        if sil[py, px] and al[py, px] < 160: enc[py, px] = True
+    enc = np.zeros_like(al, bool)           # pinholes: a silhouette pixel the accent misses, between the cap and the rib, with the accent solid on both sides (left and right, or above and below)
+    for py in range(6, 17):
+        for px in range(2, al.shape[1] - 2):
+            if sil[py, px] and 20 < al[py, px] < 150 and ((al[py, px - 1] > 200 and al[py, px + 1] > 200) or (al[py - 1, px] > 200 and al[py + 1, px] > 200)): enc[py, px] = True
     print("well pinholes filled at", [tuple(map(int, p[::-1])) for p in np.argwhere(enc)])
     A[enc, 3] = 255; Bd[enc, 3] = 0
-    save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 32, 48], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
-    save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 32, 48], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
+    save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 40, 48], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
+    save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 40, 48], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "tabfills", "newmark", "plates", "bars", "stampcase", "stampcase152", "wellrings", "pods", "well_pinholes"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "tabfills", "newmark", "pagemark", "framemarks", "plates", "bars", "stampcase", "stampcase152", "stampfront", "wellrings", "pods", "well_pinholes"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)

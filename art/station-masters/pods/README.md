@@ -27,6 +27,19 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
 | `frame-bottom-line-1024x38` | 1024×38 | (0, 562, 1024, 38) | signed (pass 1): excluded from placing (the frame redesign) | the bar flipped (rule on its top edge), 1024x38 |
+| `frame-companion-outline-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, outline (away); painted large and reduced |
+| `frame-companion-solid-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, solid (docked); painted large and reduced |
+| `frame-face-24x24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring |
+| `frame-face-away-24x24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion away: the mibi out with it, the face full on a dimmed ring |
+| `frame-face-empty-24x24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | no mibi with you: an empty teal ring |
+| `frame-lamp-amber-12x12` | 12×12 | (·, ·, 12, 12) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the notice's 12x12 amber lamp (the same lamp as Home's modules) |
+| `frame-lamp-mint-8x8` | 8×8 | (836, 16, 8, 8) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's lamp, docked: a mint bead |
+| `frame-lamp-stone-8x8` | 8×8 | (836, 16, 8, 8) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's lamp, away: a stone bead |
+| `frame-room-habitat-24x24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the habitat room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
+| `frame-room-home-24x24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the home room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
+| `frame-room-library-24x24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the library room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
+| `frame-room-research-24x24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the research room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
+| `frame-sun-16x16` | 16×16 | (·, 8, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008) |
 | `frame-top-bar-1024x40` | 1024×40 | (0, 0, 1024, 40) | signed (pass 1): excluded from placing (the frame redesign) | key magenta, cut, 1024x40 |
 
 ### None
@@ -34,13 +47,14 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
 | `glint-star-12x12` | 12×12 | (·, ·, 12, 12) | signed (well rings verdict) | the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30) |
-| `page-new-mark-12x12` | 12×12 | (·, ·, 12, 12) | new: proposed mark; awaiting verdict | PROPOSED: the 'new to the field guide' mark, a 12x12 bone bead lit upper left (the page's newMark region of design-pods-relayout 29b6dc9) |
+| `page-mark-new-10` | 10×10 | (·, ·, 10, 10) | new: the new-to-the-field-guide mark as the layout specifies it (replaces page-new-mark-12x12); awaiting verdict | the 'new to the field guide' mark: a flat engraved bone dot 10x10, a 1 px lit edge, an ink keyline, art layer; at the picture's top centre |
+| `page-new-mark-12x12` | 12×12 | (·, ·, 12, 12) | withdrawn: superseded by page-mark-new-10 (the layout specifies a flat engraved 10x10 dot) | PROPOSED: the 'new to the field guide' mark, a 12x12 bone bead lit upper left (the page's newMark region of design-pods-relayout 29b6dc9) |
 | `rail-emblem-character-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-character-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-character-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-charge-read-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-charge-sealed-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-charge-unread-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-charge-read-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-charge-sealed-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-charge-unread-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-coat-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-coat-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-coat-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
@@ -50,15 +64,15 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `rail-emblem-glow-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-movement-read-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-movement-sealed-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-movement-unread-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-shape-read-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-shape-sealed-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-shape-unread-24x24` | 24×24 |  | new: redrawn in emblems round 4; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | new: Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | new: Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | new: Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-movement-read-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-movement-sealed-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-movement-unread-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-shape-read-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-shape-sealed-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-shape-unread-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-stamina-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-stamina-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-stamina-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
@@ -67,7 +81,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
-| `page-pane-256x440` | 256×440 | (152, 112, 256, 440) | new: re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict | 9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge |
+| `page-pane-256x440` | 256×440 | (152, 112, 256, 440) | signed (pass 8 (d767daa verdict)): re-cut for design-pods-relayout 29b6dc9 | 9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge |
 | `page-pane-408x440` | 408×440 | (176, 112, 408, 440) | withdrawn: signed in pass 1, withdrawn with the page's re-layout (the Read page is 256 wide); Compare still uses 408 | 9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge |
 
 ### Name, origin and message plates
@@ -125,17 +139,17 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `pod-small-sealed` | 104×128 | (580, 264, 104, 128) | signed (pass 6): layers signed across passes 4 to 7b; the 33 are standing | the Loika reference sprite |
 | `pod-small-shade` | 104×128 | (580, 264, 104, 128) | signed (pass 6): layers signed across passes 4 to 7b; the 33 are standing | systematic pod layer: shade, uniform scale, foot on the last row, centred |
 | `pod-small-shadow` | 120×14 | (572, 385, 120, 14) | signed (pass 6): layers signed across passes 4 to 7b; the 33 are standing | contact shadow: centred on x 632 with its middle on the foot line y 392 |
-| `pod-well-band` | 32×48 | (48, 60, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | the sealing band as a layer |
-| `pod-well-crack` | 32×48 | (48, 60, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: crack, uniform scale, foot on the last row, centred |
-| `pod-well-identified` | 32×48 | (48, 60, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | the Loika reference sprite |
-| `pod-well-mask-accent` | 32×48 | (·, ·, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: mask-accent, enclosed pixels filled |
-| `pod-well-mask-body` | 32×48 | (·, ·, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: mask-body, held with the accent mask |
-| `pod-well-pattern-bands` | 32×48 | (48, 60, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
-| `pod-well-pattern-dots` | 32×48 | (48, 60, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
-| `pod-well-pattern-stripes` | 32×48 | (48, 60, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
-| `pod-well-sealed` | 32×48 | (48, 60, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | the Loika reference sprite |
-| `pod-well-shade` | 32×48 | (48, 60, 32, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: shade, uniform scale, foot on the last row, centred |
-| `pod-well-shadow` | 48×14 | (608, 385, 48, 14) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | contact shadow: centred on x 632 with its middle on the foot line y 392 |
+| `pod-well-band` | 40×48 | (44, 60, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | the sealing band as a layer |
+| `pod-well-crack` | 40×48 | (44, 60, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: crack, uniform scale, foot on the last row, centred |
+| `pod-well-identified` | 40×48 | (44, 60, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | the Loika reference sprite |
+| `pod-well-mask-accent` | 40×48 | (·, ·, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: mask-accent, enclosed pixels filled |
+| `pod-well-mask-body` | 40×48 | (·, ·, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: mask-body, held with the accent mask |
+| `pod-well-pattern-bands` | 40×48 | (44, 60, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
+| `pod-well-pattern-dots` | 40×48 | (44, 60, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
+| `pod-well-pattern-stripes` | 40×48 | (44, 60, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
+| `pod-well-sealed` | 40×48 | (44, 60, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | the Loika reference sprite |
+| `pod-well-shade` | 40×48 | (44, 60, 40, 48) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | systematic pod layer: shade, uniform scale, foot on the last row, centred |
+| `pod-well-shadow` | 56×14 | (604, 385, 56, 14) | new: the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict | contact shadow: centred on x 632 with its middle on the foot line y 392 |
 
 ### Chapter rail tabs (hanging, slant baked)
 
@@ -232,8 +246,8 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `ring-arc-selected-n8-s6` | 80×80 | (24, 44, 80, 80) | new: repainted: the band solid and with a channel, cut by angle; awaiting verdict | chapter 7 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel |
 | `ring-arc-selected-n8-s7` | 80×80 | (24, 44, 80, 80) | new: repainted: the band solid and with a channel, cut by angle; awaiting verdict | chapter 8 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel |
 | `ring-arc-selected-n8-track` | 80×80 | (24, 44, 80, 80) | new: repainted: the band solid and with a channel, cut by angle; awaiting verdict | the open channel for 8 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring |
-| `ring-hatch` | 112×56 | (24, 488, 112, 56) | signed (pass 2): the 112x56 slice of the earlier layout | a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box |
-| `ring-hatch-80x56` | 80×56 | (24, 488, 80, 56) | new: re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict | the hatch at the 112 px column's width: the same etched leaf centred in 80x56 |
+| `ring-hatch` | 112×56 | (24, 488, 112, 56) | withdrawn: the 112x56 slice of the earlier layout; replaced by ring-hatch-80x56 | a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box |
+| `ring-hatch-80x56` | 80×56 | (24, 488, 80, 56) | signed (pass 8 (d767daa verdict)): re-cut for design-pods-relayout 29b6dc9 | the hatch at the 112 px column's width: the same etched leaf centred in 80x56 |
 | `ring-well-empty` | 64×64 | (40, 52, 64, 64) | withdrawn: the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40)) | colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow) |
 | `ring-well-empty-80x80` | 80×80 | (24, 44, 80, 80) | new: re-export of the signed ring-well-empty only, padded to 80x80; awaiting verdict | the signed ring-well-empty re-exported only: padded to 80x80, centred on (40,40) so every well slice shares one origin |
 | `ring-well-idle-80x80` | 80×80 | (24, 44, 80, 80) | signed (well rings verdict) | the idle well's thin dark-glass double ring, outer diameter 66, hairlines about 5 px apart; colour-to-alpha, centred in 80x80 |
@@ -243,8 +257,8 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
-| `ring-column` | 160×522 | (0, 40, 160, 522) | signed (pass 1) | cut: right part of list-column, bottom leak cropped |
-| `ring-column-112x522` | 112×522 | (0, 40, 112, 522) | new: re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict | the list column at the concept's 112 px: the right part of list-column (its lit hairline on the right edge), bottom leak cropped |
+| `ring-column` | 160×522 | (0, 40, 160, 522) | withdrawn: the 160 px column of the earlier layout; replaced by ring-column-112x522 | cut: right part of list-column, bottom leak cropped |
+| `ring-column-112x522` | 112×522 | (0, 40, 112, 522) | signed (pass 8 (d767daa verdict)): re-cut for design-pods-relayout 29b6dc9 | the list column at the concept's 112 px: the right part of list-column (its lit hairline on the right edge), bottom leak cropped |
 
 ### Bench scene, dish, shelf
 
@@ -255,7 +269,8 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `room-cradle-front` | 224×96 | (520, 328, 224, 96) | signed (pass 7b) | the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip |
 | `room-shelf` | 288×72 | (488, 368, 288, 72) | signed (pass 7b): re-cut for the new rectangle (shelf 488,368,288,72) | the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly |
 | `room-stamp-case` | 176×328 | (848, 144, 176, 328) | withdrawn: the old 176x328 size; the case is now 152x152 | the dim unlit glass case: translucent (the wall's seams show through), a faint diagonal sheen, dim brushed-metal rails, open at the right |
-| `room-stamp-case-152x152` | 152×152 | (856, 232, 152, 152) | new: the case at its new size (design-pods-relayout 29b6dc9); awaiting verdict | the dim unlit glass case at its new size: translucent, a faint diagonal sheen, dim brushed-metal rails, closed on all four sides |
+| `room-stamp-case-152x152` | 152×152 | (856, 232, 152, 152) | signed (pass 8 (d767daa verdict)): with a condition: the front glass over the label (room-stamp-case-152x152-front) | the dim unlit glass case at its new size: translucent, a faint diagonal sheen, dim brushed-metal rails, closed on all four sides |
+| `room-stamp-case-152x152-front` | 152×152 | (856, 232, 152, 152) | new: the front glass over the label; awaiting verdict | the case's front glass over the label: a dark tint (0.41) and a faint diagonal sheen; the label's mean brightness falls to about 114 with the stamp's cells at 4.8:1 (WCAG relative luminance) |
 
 ### Stamp label (signed)
 
@@ -267,48 +282,64 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
-| `trait-picture-frame-104x160` | 104×160 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-104x160-sealed` | 104×160 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-104x160-unread` | 104×160 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-104x64` | 104×64 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-104x64-sealed` | 104×64 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-104x64-unread` | 104×64 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-104x96` | 104×96 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-104x96-sealed` | 104×96 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-104x96-unread` | 104×96 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-104x160` | 104×160 |  | signed (pass 8 (d767daa verdict)) | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-104x160-sealed` | 104×160 |  | signed (pass 8 (d767daa verdict)) | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-104x160-unread` | 104×160 |  | signed (pass 8 (d767daa verdict)) | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-104x64` | 104×64 |  | signed (pass 8 (d767daa verdict)) | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-104x64-sealed` | 104×64 |  | signed (pass 8 (d767daa verdict)) | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-104x64-unread` | 104×64 |  | signed (pass 8 (d767daa verdict)) | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-104x96` | 104×96 |  | signed (pass 8 (d767daa verdict)) | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-104x96-sealed` | 104×96 |  | signed (pass 8 (d767daa verdict)) | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-104x96-unread` | 104×96 |  | signed (pass 8 (d767daa verdict)) | frost texture at 0.9 alpha under the frame |
 | `trait-picture-frame-112x112` | 112×112 |  | new: the find picture frame of a sealed chapter at (224,296); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-120x112` | 120×112 |  | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-120x112-sealed` | 120×112 |  | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-120x112-unread` | 120×112 |  | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-120x112` | 120×112 |  | withdrawn: the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9) | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-120x112-sealed` | 120×112 |  | withdrawn: the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9) | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-120x112-unread` | 120×112 |  | withdrawn: the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9) | frost texture at 0.9 alpha under the frame |
 | `trait-picture-frame-120x96` | 120×96 |  | signed (pass 3) | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-120x96-sealed` | 120×96 |  | signed (pass 6) | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-120x96-unread` | 120×96 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-144x176` | 144×176 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-144x176-sealed` | 144×176 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-144x176-unread` | 144×176 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-176x144` | 176×144 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-176x144-sealed` | 176×144 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-176x144-unread` | 176×144 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | frost texture at 0.9 alpha under the frame |
 | `trait-picture-frame-184x104` | 184×104 |  | signed (pass 3) | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-184x104-sealed` | 184×104 |  | signed (pass 6) | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-184x104-unread` | 184×104 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-184x112` | 184×112 |  | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-184x112-sealed` | 184×112 |  | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-184x112-unread` | 184×112 |  | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-184x112` | 184×112 |  | withdrawn: the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9) | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-184x112-sealed` | 184×112 |  | withdrawn: the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9) | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-184x112-unread` | 184×112 |  | withdrawn: the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9) | frost texture at 0.9 alpha under the frame |
 | `trait-picture-frame-184x256` | 184×256 |  | signed (pass 3) | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-184x256-sealed` | 184×256 |  | signed (pass 6) | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-184x256-unread` | 184×256 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-184x304` | 184×304 |  | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-184x304-sealed` | 184×304 |  | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-184x304-unread` | 184×304 |  | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-224x160` | 224×160 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-224x160-sealed` | 224×160 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-224x160-unread` | 224×160 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-224x352` | 224×352 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-224x352-sealed` | 224×352 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-224x352-unread` | 224×352 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-232x312` | 232×312 | (264, 160, 232, 312) | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | the deep portrait frame: key magenta, resampled whole; the opening is 200x280 at 16 px inset |
-| `trait-picture-frame-232x312-sealed` | 232×312 | (264, 160, 232, 312) | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | translucent glass slats in the opening, under the deep frame |
-| `trait-picture-frame-232x312-unread` | 232×312 | (264, 160, 232, 312) | withdrawn: the old Read picture sizes and the portrait frame are withdrawn (design-pods-relayout 29b6dc9) | frost in the opening, under the deep frame |
+| `trait-picture-frame-184x304` | 184×304 |  | withdrawn: the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9) | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-184x304-sealed` | 184×304 |  | withdrawn: the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9) | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-184x304-unread` | 184×304 |  | withdrawn: the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9) | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-224x160` | 224×160 |  | signed (pass 8 (d767daa verdict)): 224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144) | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-224x160-sealed` | 224×160 |  | signed (pass 8 (d767daa verdict)): 224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144) | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-224x160-unread` | 224×160 |  | signed (pass 8 (d767daa verdict)): 224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144) | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-224x352` | 224×352 |  | signed (pass 8 (d767daa verdict)): 224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144) | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-224x352-sealed` | 224×352 |  | signed (pass 8 (d767daa verdict)): 224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144) | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-224x352-unread` | 224×352 |  | signed (pass 8 (d767daa verdict)): 224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144) | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-232x312` | 232×312 | (264, 160, 232, 312) | signed (pass 6): confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout) | the deep portrait frame: key magenta, resampled whole; the opening is 200x280 at 16 px inset |
+| `trait-picture-frame-232x312-sealed` | 232×312 | (264, 160, 232, 312) | signed (pass 6): confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout) | translucent glass slats in the opening, under the deep frame |
+| `trait-picture-frame-232x312-unread` | 232×312 | (264, 160, 232, 312) | signed (pass 6): confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout) | frost in the opening, under the deep frame |
 | `trait-picture-frame-376x264` | 376×264 |  | signed (pass 3) | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-376x264-sealed` | 376×264 |  | signed (pass 6) | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 8: the d767daa verdict, the frame's marks and the frame language in the composite (2026-10-08)
+
+- **Signed in the d767daa verdict:** `ring-column-112x522`, `ring-hatch-80x56` (the 160 and 112 px ones withdrawn), `page-pane-256x440`, `room-stamp-case-152x152` (on a condition, below), the 15 frames at 224×352, 224×160, 104×160, 104×96 and 104×64 (224×352 and 224×160 are capped by the spec change: no page picture larger than the pod's box, 144×176 or 176×144), the plain portrait frame 232×312 (signed, not placed), and the emblems Shape, Movement and Charge.
+- **`room-stamp-case-152x152-front`:** the condition. A front glass layer over the label, 152×152 at (856,232): a dark tint at 0.41 over the label's 120 px (feathered 3 px) and a faint diagonal sheen across the pane, mostly kept off the label. Measured on the label with the real stamp raster (`art/concept-station/pods-v2/layout/stamp-hopper-bench-300.png` at 104 px): the label's mean luma falls from 185 to about 114, the pod's about 110 to 115, and the stamp's cells keep 4.8:1 (WCAG relative luminance, bone against the dark cells).
+- **Legs & tail, rethought:** the tail is dropped; the hind leg alone, a 3 px thigh mass going down from the upper left, a sharp backward angle at the hock, the shin down to a 5 px paw ending in two toe nicks. Typed pixels, three states, as in round 3. It reads as a chevron with a foot; the thigh's mass is the weak part at 1×.
+- **The selected arcs, `ring-well-empty-80x80` and the centred well pods** were done in 55944fb (the channel cut into the band, the empty ring padded to 80×80, the pod centred in its box). The layout has since given the list pod a 40×48 class (`design-pods-relayout` 05cc4ff): `pod-well-*` is re-cut at 40×48, centred (the Loika fills 40×44).
+- **`page-mark-new-10`** replaces my 12×12 bead: the new-to-the-field-guide mark as the layout specifies it, a flat engraved bone dot, 10×10, a 1 px lit edge (white, upper left), an ink keyline, art layer (station.json colours), no specular; the rows are typed by hand in `tools/build.py` (`pagemark`). Frames at 144×176 and 176×144 (the capped one- and two-trait pictures) are added in the three states.
+- **The Station frame's marks** (`design-station-frame`, `station-layouts.md` "The frame"), a painted layer at 1×, drawn from larger paintings and reduced: `frame-room-{home,research,library,habitat}-24x24` (the four room marks the frame lists: Pods, Create, Incubator and Probe use the Research mark, Book the Library's); `frame-companion-{solid,outline}-16x24` (docked, away); `frame-lamp-mint-8x8` (docked), `frame-lamp-stone-8x8` (away), `frame-lamp-amber-12x12` (the notice); `frame-sun-16x16`; and the mibi's face on its teal ring, `frame-face-24x24` (with you), `frame-face-away-24x24` (the ring dimmed, the mibi out with the Companion), `frame-face-empty-24x24` (an empty ring). The face is a 2K painting of the standard mibi's head (from the kit's Pip reference) reduced to a 20 px disc inside a 2 px ring: a Station master drawn from a larger painting, not the Companion's pixel face scaled. Rects are the frame's: room mark (16,8), glyph (816,8), lamp (836,16), face (856,8), sun right-aligned before its figure.
+- **The Read composite in the frame language:** the title zone (the Research mark, "Pods"), the holdings, who is out (the outline glyph, the stone lamp, the face on its dimmed ring) and the sun with the turn; the one action (a ✓ cap and "Read Face" in orange, the price, a ← cap and "Home"), the context ("Loika, Face") and the notice (an amber lamp and "something new in Face"); the words as on main (the name alone, "Loika"; the origin "Found on the rock field," / "as a Tuikis felt safe."); the rail at x 152, aligned with the page; the Legs & tail emblem. Stand-ins: the holdings' icons, the ✓ and ← caps, the price icon, the pictures, the stamp raster, the pips and trait marks, the focus ring.
 
 ## Well-ring verdict, the rail rule and the page's extras (2026-10-08)
 
