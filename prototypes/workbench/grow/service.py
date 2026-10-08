@@ -48,7 +48,8 @@ GEMINI_MODEL = os.environ.get("GROW_GEMINI_MODEL", "gemini-3.1-flash-image")
 # USD per million tokens, ai.google.dev/gemini-api/docs/pricing on 2026-10-08 (standard tier).
 GEMINI_PRICES = {"gemini-3.1-flash-image": {"input": 0.50, "output": 60.0}, "gemini-3.1-flash-lite-image": {"input": 0.25, "output": 30.0}, "gemini-3-pro-image": {"input": 2.00, "output": 120.0}, "gemini-2.5-flash-image": {"input": 0.30, "output": 30.0}}
 VIEWS = ["portrait", "side"]
-PART_MIN = 0.50                                       # a gated part must be covered this much by paint (calibrated on the stage 1 paintings)
+CHECKS_VERSION = "mb-grow-checks/3"                    # band, span, proportions, slots
+PART_MIN = 0.60                                       # a gated part must hold paint along this share of its drawn length (its span)
 BAND_TOL, BAND_MAX = 0.04, 0.10                       # the tolerance band round the drawn body (share of its size) and how much of the body may lie outside it or be left inside it
 PROPORTION_AREA_MIN, PROPORTION_TOL = 0.05, 0.15      # the parts whose proportions are gated (share of the body) and the tolerance on their extent
 SLOT_MARGIN = (1.5, 8)                                # a slot fails when its paint is clearly nearer another slot's pigment: own distance > 1.5 × nearest + 8 (Lab)
@@ -219,7 +220,10 @@ def check(painted_large, ctrl, legend):
     res["outside"] = round(outside, 3); res["missing"] = round(missing, 3); res["bandTolerancePx"] = tol
     if outside > BAND_MAX: res["reasons"].append(f"paint lies well outside the drawn body ({outside:.0%} of the body beyond a {tol} px band): a part was added, moved or re-laid")
     if missing > BAND_MAX: res["reasons"].append(f"part of the drawn body is left unpainted ({missing:.0%} of the body inside a {tol} px band): a part was dropped or moved")
-    # the part check: each part of the index pass, eroded 2 px, must be covered by paint
+    # the part check: each part of the index pass must have paint where the map puts it: along the drawn
+    # part's longer axis, the share of positions where the tolerance band round the part holds paint (its
+    # span), so a part painted thinner or rounder passes and a part dropped, moved or re-laid fails; the
+    # pixel coverage of the part (eroded 2 px) is reported beside it
     parts = {p["part"]: tuple(p["flat"]) for p in legend["parts"]}
     pmasks = colour_masks(ctrl["index"], parts)
     fmp = fm.load(); low = []
@@ -230,8 +234,16 @@ def check(painted_large, ctrl, legend):
             for x in range(w):
                 if ep[x, y]: tot += 1; hit += 1 if fmp[x, y] else 0
         cov = round(hit / tot, 3) if tot else 1.0
-        res["parts"][name] = cov
-        if cov < PART_MIN: low.append(f"{name} ({cov:.2f})")
+        within = Image.new("1", fm.size, 0); within.paste(fm, mask=dilate(m, tol).convert("L"))
+        b = m.getbbox(); span = 1.0
+        if b:
+            along_x = (b[2] - b[0]) >= (b[3] - b[1]); n = (b[2] - b[0]) if along_x else (b[3] - b[1]); have = 0
+            for k in range(n):
+                strip = within.crop((b[0] + k, b[1], b[0] + k + 1, b[3])) if along_x else within.crop((b[0], b[1] + k, b[2], b[1] + k + 1))
+                if strip.getbbox(): have += 1
+            span = round(have / n, 3) if n else 1.0
+        res["parts"][name] = {"span": span, "coverage": cov}
+        if span < PART_MIN: low.append(f"{name} (painted along {span:.0%} of its length)")
     if low: res["reasons"].append("a part is missing or moved from where the part map puts it: " + ", ".join(low))
     # the proportion check: each large part's painted extent (the paint within the tolerance band round the
     # drawn part) over the painted body's extent, against the drawn part's over the drawn body's, within
@@ -459,7 +471,7 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
         log_call(rec)
         man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
         vrec["attempts"].append({"callId": rec["id"], "step": 1, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
-        print(legend["species"], legend["genomeDigest"], "twostep", view, f"step 1 attempt {attempt}", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+        print(legend["species"], legend["genomeDigest"], "twostep", view, f"step 1 attempt {attempt}", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
         if im is not None and rec["checks"]["passed"]: drawing = im; break
         reasons = rec["checks"]["reasons"] if im is not None else ["the service returned no image"]
     if drawing is None: return vrec, None
@@ -474,7 +486,7 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
     log_call(rec)
     man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
     vrec["attempts"].append({"callId": rec["id"], "step": 2, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
-    print(legend["species"], legend["genomeDigest"], "twostep", view, "step 2", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} ({'would pass' if rec['checks']['passed'] else 'would fail'}, not gated)" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+    print(legend["species"], legend["genomeDigest"], "twostep", view, "step 2", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} ({'would pass' if rec['checks']['passed'] else 'would fail'}, not gated)" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
     return vrec, im
 
 
@@ -531,7 +543,7 @@ def grow(species, genome=None, digest=None, force=False, variant="blurred", view
             log_call(rec)
             man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
             vrec["attempts"].append({"callId": rec["id"], "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
-            print(species, legend["genomeDigest"], sub or variant, view, f"attempt {attempt}", rec["status"], (f"IoU {rec['checks']['silhouetteIoU']} parts {min(rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+            print(species, legend["genomeDigest"], sub or variant, view, f"attempt {attempt}", rec["status"], (f"IoU {rec['checks']['silhouetteIoU']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
             if im is not None and rec["checks"]["passed"]: painted = im; break
             reasons = rec["checks"]["reasons"] if im is not None else ["the service returned no image"]
             if attempt == 2 and im is not None: vrec["lastRejected"] = f"raw/{view}-2.png"
@@ -609,7 +621,7 @@ def cmd_calibrate(a):
                 im = Image.open(raw).convert("RGB").resize((620, 620), Image.LANCZOS).crop((10, 0, 610, 620))
                 r = check(im, {p: os.path.join(d, "controls", f"{p}.{view}.large.png") for p in ("silhouette", "index", "slots")}, legend)
                 was = att[-1].get("checks") or {}
-                print(m["species"], m["genomeDigest"], view, "was", "PASS" if was.get("passed") else "FAIL", f"IoU {r['silhouetteIoU']}", "now", "PASS" if r["passed"] else "FAIL", f"out {r['outside']} miss {r['missing']} parts {min(r['parts'].values()) if r['parts'] else '-'}", "|", "; ".join(r["reasons"])[:220], flush=True)
+                print(m["species"], m["genomeDigest"], view, "was", "PASS" if was.get("passed") else "FAIL", f"IoU {r['silhouetteIoU']}", "now", "PASS" if r["passed"] else "FAIL", f"out {r['outside']} miss {r['missing']} parts {min(v['span'] for v in r['parts'].values()) if r['parts'] else '-'}", "|", "; ".join(r["reasons"])[:220], flush=True)
         return
     rows = []
     for sp in ["S01", "S09", "S12"]:
@@ -628,7 +640,92 @@ def cmd_calibrate(a):
             r = check(im, {"silhouette": sil_path, "index": os.path.join(cdir, "index.three-quarter.large.png"), "slots": os.path.join(cdir, "slots.three-quarter.large.png")}, legend)
             os.remove(sil_path)
             rows.append((sp, m["id"], r))
-            print(sp, m["id"], "IoU", r["silhouetteIoU"], "inPlace", r["silhouetteIoUInPlace"], "parts min", min(r["parts"].values()) if r["parts"] else "-", "slots", r["slotAgreement"], r["slots"], "PASS" if r["passed"] else "FAIL", r["reasons"])
+            print(sp, m["id"], "IoU", r["silhouetteIoU"], "inPlace", r["silhouetteIoUInPlace"], "out", r["outside"], "miss", r["missing"], "parts min", min(v["span"] for v in r["parts"].values()) if r["parts"] else "-", "slots", r["slotAgreement"], r["slots"], "PASS" if r["passed"] else "FAIL", r["reasons"])
+
+
+# --- recheck: the verdicts recomputed from the logged raw outputs --------------------------------------------
+def raw_image(path):
+    return Image.open(path).convert("RGB").resize((620, 620), Image.LANCZOS).crop((10, 0, 610, 620))
+
+
+def serve(d, d0, view, painted, legend):
+    """Write a view's served outputs: the painted master and Station size, or the placeholder."""
+    if painted is not None:
+        painted.save(os.path.join(d, f"station-{view}-600x620.png"))
+        fit_to_control(painted, os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"station-{view}-300x310.png"))
+    else:
+        for size in ("600x620", "300x310"):
+            open(os.path.join(d, f"station-{view}-{size}.png"), "wb").write(open(os.path.join(d0, "plain", f"plain-{view}-{size}.png"), "rb").read())
+
+
+def derive(d, d0, man):
+    palette = load_palette()
+    if man["views"].get("portrait", {}).get("status") == "painted":
+        large = Image.open(os.path.join(d, "station-portrait-600x620.png")).convert("RGB")
+        fit_to_control(large, os.path.join(d0, "controls", "silhouette.portrait.companion.png"), (280, 300), palette).save(os.path.join(d, "companion-280x300.png"))
+        fit_to_control(large, os.path.join(d0, "controls", "silhouette.portrait.tile.png"), (48, 48), palette).save(os.path.join(d, "token-48.png"))
+    else:
+        for f, src in (("companion-280x300.png", "plain-companion-280x300.png"), ("token-48.png", "plain-token-48.png")): open(os.path.join(d, f), "wb").write(open(os.path.join(d0, "plain", src), "rb").read())
+    man["outputs"] = {f: sha_file(os.path.join(d, f)) for f in OUTPUT_FILES if os.path.exists(os.path.join(d, f))}
+
+
+def cmd_recheck(a):
+    """Re-judge every attempt of this prompt version from its logged raw output with the checks as they now
+    stand (the as-run verdicts are kept under checksAsRun), and rewrite the served outputs: the first
+    passing attempt is served, else the placeholder. For variant B, a step 1 drawing that passes without a
+    step 2 call gets its step 2 now (paid, --complete)."""
+    complete = "complete" in a
+    targets = [(d, d, m) for d, m in manifests() if m.get("promptVersion", 1) == PROMPT_VERSION]
+    for v, ms in variant_manifests().items():
+        for d, m in ms: targets.append((d, os.path.dirname(os.path.dirname(d)), m))
+    for d, d0, m in targets:
+        legend = json.load(open(os.path.join(d0, "controls", "legend.json")))
+        changed = False
+        for view, vrec in m["views"].items():
+            ctrl = {p: os.path.join(d0, "controls", f"{p}.{view}.large.png") for p in ("silhouette", "index", "slots")}
+            painted = None; served_by = None
+            if m.get("controlVariant") == "twostep":
+                step1_ok = None
+                for at in vrec["attempts"]:
+                    if at.get("step") == 1 and at["status"] == "ok":
+                        raw = os.path.join(d, "raw", f"{view}-step1-{at.get('attempt', 1)}.png")
+                        if not os.path.exists(raw): continue
+                        im = raw_image(raw); at.setdefault("checksAsRun", at.get("checks")); at["checks"] = check(im, ctrl, legend)
+                        if at["checks"]["passed"] and step1_ok is None: step1_ok = (at, im)
+                step2 = next((at for at in vrec["attempts"] if at.get("step") == 2 and at["status"] == "ok"), None)
+                if step1_ok and step2 and os.path.exists(os.path.join(d, "raw", f"{view}-step2.png")):
+                    im2 = raw_image(os.path.join(d, "raw", f"{view}-step2.png")); step2.setdefault("checksAsRun", step2.get("checks")); step2["checks"] = {**check(im2, ctrl, legend), "gated": False}
+                    painted = im2; served_by = "step 2"
+                    step1_ok[1].save(os.path.join(d, f"step1-{view}-600x620.png")); fit_to_control(step1_ok[1], os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"step1-{view}-300x310.png"))
+                elif step1_ok and complete:
+                    reference = species_reference(m["species"], legend)
+                    drawing = step1_ok[1]; drawing.save(os.path.join(d, f"step1-{view}-600x620.png")); fit_to_control(drawing, os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"step1-{view}-300x310.png"))
+                    imgs = [(f"step1-{view}-600x620.png", png_bytes(pad_square(drawing))), (f"reference:{reference['name']}", reference["png"])]
+                    fields = {"artDirection": ART_DIRECTION, "transfer": STEP2_WORDS}
+                    rec, im2 = call_logged(fields["artDirection"] + "\n\n" + fields["transfer"], imgs, {"controlVariant": "twostep", "species": m["species"], "genomeDigest": m["genomeDigest"], "genomeSha256": m["genomeSha256"], "purpose": f"station-{view}-step2", "step": 2, "attempt": 1, "fields": fields, "referenceImage": {"what": reference["what"], "name": reference["name"], "sha256": sha_bytes(reference["png"])}, "afterRecheck": True}, os.path.join(d, "raw"), f"{view}-step2.png")
+                    if im2 is not None: rec["checks"] = {**check(im2, ctrl, legend), "gated": False}
+                    log_call(rec); m["calls"] += 1; m["costUSD"] = round(m["costUSD"] + (rec.get("costUSD") or 0), 5); m["seconds"] = round(m["seconds"] + rec.get("seconds", 0), 1)
+                    vrec["attempts"].append({"callId": rec["id"], "step": 2, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId"), "afterRecheck": True})
+                    print(m["species"], m["genomeDigest"], "twostep", view, "step 2 after recheck", rec["status"], f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+                    if im2 is not None: painted = im2; served_by = "step 2 after recheck"
+            else:
+                for at in vrec["attempts"]:
+                    if at["status"] != "ok": continue
+                    raw = os.path.join(d, "raw", f"{view}-{vrec['attempts'].index(at) + 1}.png")
+                    if not os.path.exists(raw): continue
+                    im = raw_image(raw); at.setdefault("checksAsRun", at.get("checks")); at["checks"] = check(im, ctrl, legend)
+                    if at["checks"]["passed"] and painted is None: painted = im; served_by = f"attempt {vrec['attempts'].index(at) + 1}"
+            new_status = "painted" if painted is not None else "plain"
+            if new_status != vrec["status"] or served_by: changed = True
+            vrec["status"] = new_status; vrec["servedBy"] = served_by; vrec["rechecked"] = now()
+            serve(d, d0, view, painted, legend)
+            print(m["species"], m["genomeDigest"], m.get("controlVariant"), view, "→", new_status, served_by or "", flush=True)
+        derive(d, d0, m)
+        m["rechecked"] = now(); m["checksVersion"] = CHECKS_VERSION
+        json.dump(m, open(os.path.join(d, "manifest.json"), "w"), indent=1); open(os.path.join(d, "manifest.json"), "a").write("\n")
+        if m.get("controlVariant") != "twostep" and d == d0 and legend["level"] == "species" and m["species"] != "S01":
+            for view in VIEWS:
+                if m["views"].get(view, {}).get("status") == "painted": open(os.path.join(SPECIES_DIR, m["species"], f"{view}-600x620.png"), "wb").write(open(os.path.join(d, f"station-{view}-600x620.png"), "rb").read())
 
 
 # --- the report and the sheets ------------------------------------------------------------------------------
@@ -716,19 +813,19 @@ def sheets(mans, cost):
             put(os.path.join(d, "station-side-300x310.png")); x += 300 + gap
             put(os.path.join(d, "companion-280x300.png")); x += 280 + gap
             x0 = x; put(os.path.join(d, "token-48.png")); x = x0 + 56; put(os.path.join(d, "token-48.png"), 3); x = x0 + 200 + gap
-            sent = Image.open(io.BytesIO(control_image(os.path.join(d, "controls", "shaded.portrait.station.png"), "shaded", m.get("controlVariant", "crisp")))).convert("RGB")
-            sent = sent.resize((310, 310), Image.NEAREST) if sent.width != 310 else sent
+            sent = Image.open(io.BytesIO(control_image(os.path.join(d, "controls", "shaded.portrait.large.png"), "shaded", m.get("controlVariant", "crisp")))).convert("RGB")
+            sent = sent.resize((310, 310), Image.LANCZOS)  # as sent (620 square, or 256 for lowres), shown at the Station size
             sheet.paste(sent.crop((5, 0, 305, 310)), (x, y)); x += 300 + gap
             for t in trial_names:
                 td = next((td for td, tm in vm[t] if tm["genomeSha256"] == m["genomeSha256"]), None)
-                if td: put(os.path.join(td, "station-portrait-300x310.png")); tm = next(tm for td2, tm in vm[t] if td2 == td); tc = (tm["views"]["portrait"]["attempts"][-1].get("checks") or {}); draw.text((x, y + 326), f"{t}: {tm['views']['portrait']['status']}, {len(tm['views']['portrait']['attempts'])} call(s), parts min {min(tc['parts'].values()) if tc.get('parts') else '-'}, slots {tc.get('slotAgreement', '-')}", fill=ink)
+                if td: put(os.path.join(td, "station-portrait-300x310.png")); tm = next(tm for td2, tm in vm[t] if td2 == td); tc = (tm["views"]["portrait"]["attempts"][-1].get("checks") or {}); draw.text((x, y + 326), f"{t}: {tm['views']['portrait']['status']}, {len(tm['views']['portrait']['attempts'])} call(s), parts min {min(v['span'] if isinstance(v, dict) else v for v in tc['parts'].values()) if tc.get('parts') else '-'}, slots {tc.get('slotAgreement', '-')}", fill=ink)
                 x += 300 + gap
                 if t == "twostep":
                     if td: put(os.path.join(td, "step1-portrait-300x310.png"))
                     x += 300 + gap
             def vtxt(v):
                 vr = m["views"][v]; last = vr["attempts"][-1].get("checks") or {}
-                return f"{v}: {vr['status']}, {len(vr['attempts'])} call{'s' if len(vr['attempts']) > 1 else ''}, outside {last.get('outside', '-')}, missing {last.get('missing', '-')}, parts min {min(last['parts'].values()) if last.get('parts') else '-'}, slots {last.get('slotAgreement', '-')} (IoU {last.get('silhouetteIoU', '-')}, not gated)"
+                return f"{v}: {vr['status']}, {len(vr['attempts'])} call{'s' if len(vr['attempts']) > 1 else ''}, outside {last.get('outside', '-')}, missing {last.get('missing', '-')}, parts min {min(v['span'] if isinstance(v, dict) else v for v in last['parts'].values()) if last.get('parts') else '-'}, slots {last.get('slotAgreement', '-')} (IoU {last.get('silhouetteIoU', '-')}, not gated)"
             draw.text((gap, y + 312), f"{m['genomeDigest']}  {'type specimen' if m['level'] == 'species' else 'individual'}  sha256 {m['genomeSha256'][:12]}   ${m['costUSD']:.3f}, {m['seconds']} s   |   {vtxt('portrait')}   |   {vtxt('side')}", fill=ink)
             for v in VIEWS:
                 if m["views"][v]["status"] == "plain": draw.text((gap + (312 if v == "portrait" else 624), y + 326), "served plain: rejected twice", fill=(170, 40, 40))
@@ -742,5 +839,6 @@ if __name__ == "__main__":
         if t.startswith("--"): a[t[2:]] = argv[i + 1] if i + 1 < len(argv) and not argv[i + 1].startswith("--") else ""
     if cmd == "paint": cmd_paint(a)
     elif cmd == "calibrate": cmd_calibrate(a)
+    elif cmd == "recheck": cmd_recheck(a)
     elif cmd == "report": cmd_report(a)
     else: print(__doc__)
