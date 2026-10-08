@@ -58,7 +58,11 @@ What it still lacks: the Untuva and Tuikis portraits as the real species (the ge
 - The wood direction leaked state words onto its label frames in every attempt, and the one-change clean-up changed four cards' state; the wood alternative is therefore shown unplaced.
 - Generated 16:9 canvases trimmed to 1024:600; the icons and strings are live and set by the build.
 
-## Three questions for the owner
+## Owner decisions (2026-10-08)
+
+Relayed by the programme lead. **The Cabinet is not accepted.** The boxes are too basic, and an unmet species must show **no cue at all** of what it may be: no silhouette and no shape in the mist, which rules out this round's unmet treatment in both directions. The room to grow stays. The art director and the game designer are writing `design/proposals/collection-display.md` with five display directions and a recommendation; no new cabinet round starts until it lands on main. The three questions above are superseded by that proposal.
+
+## Three questions for the owner (superseded)
 
 1. **Wood and brass, or paper and slate?** The guide allows either. B (recommended) shares the book's material so the Library's two screens are one object; A's wooden drawers are warmer and more furniture-like but read as a different room from the book.
 2. **How faint is unmet?** The recommended candidate shows the unmet kinds as shapes a careful eye finds; the round-1 pick shows them a step clearer. Faint enough to keep the surprise, or clear enough that a child can name the kind?
