@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" font-family="system-ui, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="1000" height="560" font-family="system-ui, sans-serif">
 <style>
 text{fill:#2e2e2e}
 .h{font-size:15px;font-weight:600}
@@ -19,155 +19,108 @@ text{fill:#2e2e2e}
 </style>
 <defs><marker id="a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#7a7466"/></marker></defs>
 <rect width="100%" height="100%" fill="#f7f4ec"/>
-<text x="24" y="26" class="h">The art pipeline: generate at archetype levels, author masters, render individuals deterministically (Proposal)</text>
+<text x="24" y="26" class="h">The art pipeline: the rig draws the body, the service paints it, the Caddy keeps it (Proposal)</text>
+<text x="24" y="46" class="s">At Grow, inside the incubation minutes. Solid arrows: the job. Dashed: later, at the next dock or stage change.</text>
 
-<!-- stages -->
+<!-- flow row -->
 <g>
-<rect x="24" y="44" width="128" height="132" rx="6" class="det"/>
-<text x="34" y="62" class="n">0 Workbench</text>
-<text x="34" y="80" class="t">lock a species frame,</text>
-<text x="34" y="94" class="t">roll individuals and</text>
-<text x="34" y="108" class="t">crosses, judge which</text>
-<text x="34" y="122" class="t">expressions read</text>
-<text x="34" y="146" class="s">sandbox page</text>
-<text x="34" y="164" class="w">signs: the owner</text>
+<rect x="24" y="64" width="176" height="148" rx="6" class="det"/>
+<text x="34" y="82" class="n">1 Station: the rig</text>
+<text x="34" y="100" class="t">genome committed; the rig</text>
+<text x="34" y="114" class="t">renders the control set</text>
+<text x="34" y="128" class="t">(views, silhouette, slots,</text>
+<text x="34" y="142" class="t">index, marking passes) and</text>
+<text x="34" y="156" class="t">the plain version, on screen</text>
+<text x="34" y="170" class="t">within a second</text>
+<text x="34" y="196" class="w">deterministic, same bytes</text>
 
-<rect x="162" y="44" width="128" height="132" rx="6" class="det"/>
-<text x="172" y="62" class="n">1 Structural sketch</text>
-<text x="172" y="80" class="t">regions and parts,</text>
-<text x="172" y="94" class="t">marking fields,</text>
-<text x="172" y="108" class="t">pigment slots, views,</text>
-<text x="172" y="122" class="t">silhouettes 48–300 px</text>
-<text x="172" y="146" class="s">script, same bytes</text>
-<text x="172" y="164" class="w">signs: art director</text>
+<rect x="224" y="64" width="176" height="148" rx="6" class="det"/>
+<text x="234" y="82" class="n">2 Caddy: the broker</text>
+<text x="234" y="100" class="t">persistent queue; one</text>
+<text x="234" y="114" class="t">request per output, in</text>
+<text x="234" y="128" class="t">order of need; controls,</text>
+<text x="234" y="142" class="t">species plate, fixed</text>
+<text x="234" y="156" class="t">template, palette lock;</text>
+<text x="234" y="170" class="t">retries on a schedule</text>
+<text x="234" y="196" class="w">no connection: it waits</text>
 
-<rect x="300" y="44" width="128" height="132" rx="6" class="gen"/>
-<text x="310" y="62" class="n">2 Plates</text>
-<text x="310" y="80" class="t">per level, against the</text>
-<text x="310" y="94" class="t">sketch and the cached</text>
-<text x="310" y="108" class="t">plates of the level</text>
-<text x="310" y="122" class="t">above</text>
-<text x="310" y="146" class="s">Gemini, two models</text>
-<text x="310" y="164" class="w">candidates only</text>
+<rect x="424" y="64" width="176" height="148" rx="6" class="gen"/>
+<text x="434" y="82" class="n">3 Service: paints</text>
+<text x="434" y="100" class="t">materials, face and pose</text>
+<text x="434" y="114" class="t">from the species plate;</text>
+<text x="434" y="128" class="t">body, slots and markings</text>
+<text x="434" y="142" class="t">from the controls; never</text>
+<text x="434" y="156" class="t">a new part or pigment;</text>
+<text x="434" y="170" class="t">archives the call</text>
+<text x="434" y="196" class="w">generated, per individual</text>
 
-<rect x="438" y="44" width="128" height="132" rx="6" class="hand"/>
-<text x="448" y="62" class="n">3 Critique</text>
-<text x="448" y="80" class="t">checklist against the</text>
-<text x="448" y="94" class="t">sketch: counts, slots,</text>
-<text x="448" y="108" class="t">silhouette; rounds of</text>
-<text x="448" y="122" class="t">two or three changes</text>
-<text x="448" y="146" class="s">one pick, all kept</text>
-<text x="448" y="164" class="w">signs: art director</text>
+<rect x="624" y="64" width="176" height="148" rx="6" class="det"/>
+<text x="634" y="82" class="n">4 Caddy: keeps</text>
+<text x="634" y="100" class="t">content-addressed store,</text>
+<text x="634" y="114" class="t">forever; manifest with</text>
+<text x="634" y="128" class="t">model id, hashes, archive</text>
+<text x="634" y="142" class="t">ids; the four-grey copy</text>
+<text x="634" y="156" class="t">for its screen and print</text>
+<text x="634" y="196" class="w">never deletes, never regenerates</text>
 
-<rect x="576" y="44" width="128" height="132" rx="6" class="hand"/>
-<text x="586" y="62" class="n">4 Masters</text>
-<text x="586" y="80" class="t">parts library per plan:</text>
-<text x="586" y="94" class="t">HiBit and painted,</text>
-<text x="586" y="108" class="t">pigment slots, masks,</text>
-<text x="586" y="122" class="t">motion frames</text>
-<text x="586" y="146" class="s">Aseprite; RD drafts</text>
-<text x="586" y="164" class="w">signs: art director</text>
-
-<rect x="714" y="44" width="128" height="132" rx="6" class="det"/>
-<text x="724" y="62" class="n">5 Runtime renderer</text>
-<text x="724" y="80" class="t">composes each mibi</text>
-<text x="724" y="94" class="t">from its genome:</text>
-<text x="724" y="108" class="t">HiBit, rich, four-grey,</text>
-<text x="724" y="122" class="t">print, stamp face</text>
-<text x="724" y="146" class="s">on device, no model call</text>
-<text x="724" y="164" class="w">signs: art director</text>
-
-<rect x="852" y="44" width="128" height="132" rx="6" class="gen"/>
-<text x="862" y="62" class="n">6 Text</text>
-<text x="862" y="80" class="t">names, tome line,</text>
-<text x="862" y="94" class="t">field-guide sentences,</text>
-<text x="862" y="108" class="t">each mapped to a</text>
-<text x="862" y="122" class="t">frame fact or dropped</text>
-<text x="862" y="146" class="s">LLM within the brief</text>
-<text x="862" y="164" class="w">signs: designer picks</text>
+<rect x="824" y="64" width="156" height="148" rx="6" class="det"/>
+<text x="834" y="82" class="n">5 Devices</text>
+<text x="834" y="100" class="t">Station validates against</text>
+<text x="834" y="114" class="t">the controls, derives the</text>
+<text x="834" y="128" class="t">Companion version, swaps</text>
+<text x="834" y="142" class="t">at the next fresh draw;</text>
+<text x="834" y="156" class="t">Companion gets its mibis'</text>
+<text x="834" y="170" class="t">sets at the dock</text>
+<text x="834" y="196" class="w">plain until then</text>
 </g>
-<path d="M152 110 H160" class="ar"/><path d="M290 110 H298" class="ar"/><path d="M428 110 H436" class="ar"/><path d="M566 110 H574" class="ar"/><path d="M704 110 H712" class="ar"/>
+<path d="M200 138 H222" class="ar"/><path d="M400 138 H422" class="ar"/><path d="M600 138 H622" class="ar"/><path d="M800 138 H822" class="ard"/>
 
-<!-- cache -->
-<rect x="24" y="214" width="956" height="70" rx="6" class="cache"/>
-<text x="38" y="236" class="cth">The cache, art/library/: the source of truth</text>
-<text x="38" y="254" class="ct">Objects stored by SHA-256; one manifest per artefact: level, genome or seed, sketch hash, prompt, references used,</text>
-<text x="38" y="270" class="ct">model, output hashes, critique, sign-off, version, licence. Every stage writes here; stage 2 reads only from here.</text>
-<path d="M88 176 V212" class="ar"/><path d="M226 176 V212" class="ar"/><path d="M364 212 V178" class="ar"/><path d="M380 176 V212" class="ar"/><path d="M502 176 V212" class="ar"/><path d="M640 176 V212" class="ar"/><path d="M778 212 V178" class="ar"/><path d="M916 176 V212" class="ar"/>
-
-<!-- levels -->
-<text x="24" y="314" class="l">Plates by level: each level is generated against the signed-off plates of the level above</text>
-<rect x="24" y="326" width="170" height="96" rx="6" class="box"/>
-<text x="34" y="344" class="n">Accepted references</text>
-<text x="34" y="362" class="t">Miniature Lives Pip,</text>
-<text x="34" y="376" class="t">HiBit and rich; approved</text>
-<text x="34" y="390" class="t">concepts; the UI-kit ramps</text>
-<text x="34" y="410" class="s">already in the repo</text>
-
-<rect x="214" y="326" width="170" height="96" rx="6" class="gen"/>
-<text x="224" y="344" class="n">Body plan</text>
-<text x="224" y="362" class="t">parts turnaround: front,</text>
-<text x="224" y="376" class="t">side, three-quarter; the</text>
-<text x="224" y="390" class="t">rig's parts, one sheet</text>
-<text x="224" y="410" class="s">about 12 generations</text>
-
-<rect x="404" y="326" width="170" height="96" rx="6" class="gen"/>
-<text x="414" y="344" class="n">Clan</text>
-<text x="414" y="362" class="t">signature part drawn</text>
-<text x="414" y="376" class="t">large, anchor palette,</text>
-<text x="414" y="390" class="t">covering finish</text>
-<text x="414" y="410" class="s">about 6 generations</text>
-
-<rect x="594" y="326" width="170" height="96" rx="6" class="gen"/>
-<text x="604" y="344" class="n">Species</text>
-<text x="604" y="362" class="t">adult archetype, life</text>
-<text x="604" y="376" class="t">stages, expressions,</text>
-<text x="604" y="390" class="t">poses, pod, tome portrait</text>
-<text x="604" y="410" class="s">about 20 generations</text>
-
-<rect x="784" y="326" width="196" height="96" rx="6" class="gen" stroke-dasharray="4 3"/>
-<text x="794" y="344" class="n">Individual</text>
-<text x="794" y="362" class="t">illustrations only: website</text>
-<text x="794" y="376" class="t">hero, marketing; a named</text>
-<text x="794" y="390" class="t">showcase mibi, not game art</text>
-<text x="794" y="410" class="s">4 to 6 generations a piece</text>
-<path d="M194 374 H212" class="ar"/><path d="M384 374 H402" class="ar"/><path d="M574 374 H592" class="ar"/><path d="M764 374 H782" class="ar"/>
+<!-- account archive -->
+<rect x="24" y="236" width="956" height="56" rx="6" class="cache"/>
+<text x="38" y="258" class="cth">The account archive: the backup of every call (controls, request, returns, model id)</text>
+<text x="38" y="276" class="ct">The Caddy is the copy of record; the archive restores a new Caddy by account. A lost object is re-rendered from its controls and marked repainted.</text>
+<path d="M512 212 V234" class="ar"/><path d="M712 234 V214" class="ard"/>
 
 <!-- outputs -->
-<text x="24" y="452" class="l">What reaches players: signed-off masters, composed from the genome; generated pixels never ship as they came</text>
-<rect x="24" y="464" width="226" height="110" rx="6" class="det"/>
-<text x="34" y="482" class="n">Companion (ESP32-S3)</text>
-<text x="34" y="500" class="t">HiBit parts on the 48 ramps,</text>
-<text x="34" y="514" class="t">280×300 resident, 48 px tokens;</text>
-<text x="34" y="528" class="t">palette-index recolour,</text>
-<text x="34" y="542" class="t">1-bit marking masks</text>
-<text x="34" y="564" class="s">parts pack synced at the dock</text>
+<text x="24" y="322" class="l">Where each output comes from (the cut-off between unique and generic is what stage 1 tests; the default shown is cut-off B)</text>
+<rect x="24" y="334" width="226" height="130" rx="6" class="gen"/>
+<text x="34" y="352" class="n">Unique, from the service</text>
+<text x="34" y="370" class="t">Station resident 300×310</text>
+<text x="34" y="384" class="t">(master 600×620), one per life</text>
+<text x="34" y="398" class="t">stage; the side view; stages</text>
+<text x="34" y="412" class="t">painted ahead of the change</text>
+<text x="34" y="426" class="t">with the prior stage as reference</text>
+<text x="34" y="452" class="s">one or two calls in the budget</text>
 
-<rect x="266" y="464" width="226" height="110" rx="6" class="det"/>
-<text x="276" y="482" class="n">Station (Raspberry Pi)</text>
-<text x="276" y="500" class="t">painted parts, gradient-mapped</text>
-<text x="276" y="514" class="t">pigments, soft masks; vivarium</text>
-<text x="276" y="528" class="t">residents and tome portraits</text>
-<text x="276" y="542" class="t">at 300×310 and up</text>
-<text x="276" y="564" class="s">content pack over Wi-Fi or USB</text>
+<rect x="266" y="334" width="226" height="130" rx="6" class="det"/>
+<text x="276" y="352" class="n">Unique, derived on the Station</text>
+<text x="276" y="370" class="t">Companion resident 280×300:</text>
+<text x="276" y="384" class="t">down-rendered, 48 ramps, outline</text>
+<text x="276" y="398" class="t">from the index pass, no alpha;</text>
+<text x="276" y="412" class="t">Caddy four-grey and 203 dpi</text>
+<text x="276" y="426" class="t">print through the value table</text>
+<text x="276" y="452" class="s">no call; nothing on the Companion</text>
 
-<rect x="508" y="464" width="226" height="110" rx="6" class="det"/>
-<text x="518" y="482" class="n">Caddy and paper</text>
-<text x="518" y="500" class="t">four-grey e-paper and 203 dpi</text>
-<text x="518" y="514" class="t">print from the same parts by a</text>
-<text x="518" y="528" class="t">signed value table and Bayer;</text>
-<text x="518" y="542" class="t">the stamp face from the bits</text>
-<text x="518" y="564" class="s">silhouette and markings survive</text>
+<rect x="508" y="334" width="226" height="130" rx="6" class="hand"/>
+<text x="518" y="352" class="n">Generic per species</text>
+<text x="518" y="370" class="t">48 px token (idle 2, walk 3),</text>
+<text x="518" y="384" class="t">partner face, thumbnails: the</text>
+<text x="518" y="398" class="t">pixel artist's token rig, pigment</text>
+<text x="518" y="412" class="t">slots remapped to the individual;</text>
+<text x="518" y="426" class="t">book and cabinet portraits, look plates</text>
+<text x="518" y="452" class="s">species plates in art/library/</text>
 
-<rect x="750" y="464" width="230" height="110" rx="6" class="box"/>
-<text x="760" y="482" class="n">Website and marketing</text>
-<text x="760" y="500" class="t">species pages read type</text>
-<text x="760" y="514" class="t">specimens and plates from the</text>
-<text x="760" y="528" class="t">library; heroes are signed-off</text>
-<text x="760" y="542" class="t">illustrations, labelled generated</text>
-<text x="760" y="564" class="s">built from art/library/ at deploy</text>
+<rect x="750" y="334" width="230" height="130" rx="6" class="det"/>
+<text x="760" y="352" class="n">Plain, from the rig</text>
+<text x="760" y="370" class="t">every size, every mibi, offline</text>
+<text x="760" y="384" class="t">and at once: real pigments, the</text>
+<text x="760" y="398" class="t">outline rule, markings as fields,</text>
+<text x="760" y="412" class="t">fixed eyes; the research-time</text>
+<text x="760" y="426" class="t">picture; the fallback forever</text>
+<text x="760" y="452" class="s">the game a kit that never connects plays</text>
 
-<rect x="24" y="584" width="12" height="10" class="det"/><text x="42" y="593" class="s">deterministic</text>
-<rect x="124" y="584" width="12" height="10" class="gen"/><text x="142" y="593" class="s">generated (candidates, references)</text>
-<rect x="324" y="584" width="12" height="10" class="hand"/><text x="342" y="593" class="s">by hand (art director, pixel artist)</text>
+<rect x="24" y="500" width="12" height="10" class="det"/><text x="42" y="509" class="s">deterministic, on the devices</text>
+<rect x="224" y="500" width="12" height="10" class="gen"/><text x="242" y="509" class="s">generated per individual, checked by rule</text>
+<rect x="484" y="500" width="12" height="10" class="hand"/><text x="502" y="509" class="s">signed by the art director, once per species</text>
+<text x="24" y="540" class="s">Hidden copies are never in the controls or the template; unread chapters are frosted through the index pass on both versions. Pod and stamp: by rule, unchanged.</text>
 </svg>
