@@ -71,7 +71,7 @@ What it still lacks: the stamp at the decided 220 px; the code on its plate (liv
 
 ## Owner decisions (2026-10-08)
 
-Relayed by the programme lead for the painted master; no new generation here. **Ready keeps the shape glowing inside the bud** so the player cracks the incubator open; nothing is visible before Open. The growing bud is a **cute, generic glowing bean** whose colours may shift as it grows; **no embryo shapes at any stage** (the curled-embryo alternative IN-D-r1-a1 is dropped). The stamp stands alone on the Station, and the code string may also be shown as live text, since it is a shareable "look at my mibi" string. The chapter rail carries as many chapters as the species has, never a fixed four; the temperament chapter is named Nature.
+Relayed by the programme lead for the painted master; no new generation here. **Ready keeps the shape glowing inside the bud** so the player cracks the incubator open; nothing is visible before Open. The growing bud is a **cute, generic glowing bean** whose colours may shift as it grows; **no embryo shapes at any stage** (the curled-embryo alternative IN-D-r1-a1 is dropped). The stamp stands alone on the Station, and the code string may also be shown as live text, since it is a shareable "look at my mibi" string. The chapter rail carries as many chapters as the species has, never a fixed four; the temperament chapter is named Character (taxonomy §5).
 
 ## Three questions for the owner (answered above)
 

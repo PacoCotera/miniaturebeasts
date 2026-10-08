@@ -88,7 +88,7 @@ What it still lacks: the founder as Pip (the generator's creature stands in); th
 
 ## Owner decisions (2026-10-08)
 
-Relayed by the programme lead for the painted master; no new generation here. The accepted Pip asset is **placed** into the master, the same drawing on every screen, never regenerated. The roll's pictures are **flank close-ups of the changed part**. Doings chapters that are still sealed are **named in one status-bar line**, not shown as greyed tabs. The chapter rail carries as many chapters as the species has, never a fixed four; the temperament chapter is named Nature.
+Relayed by the programme lead for the painted master; no new generation here. The accepted Pip asset is **placed** into the master, the same drawing on every screen, never regenerated. The roll's pictures are **flank close-ups of the changed part**. Doings chapters that are still sealed are **named in one status-bar line**, not shown as greyed tabs. The chapter rail carries as many chapters as the species has, never a fixed four; the temperament chapter is named Character (taxonomy §5).
 
 ## Three questions for the owner (answered above)
 
