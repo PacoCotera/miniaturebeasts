@@ -1,0 +1,515 @@
+{
+ "palette": {
+  "file": "prototypes/ui/palettes/station.json",
+  "colours": 62,
+  "transparentIndex": 62
+ },
+ "columns": [
+  "A-unread",
+  "A-read",
+  "A-sealed",
+  "B-unread",
+  "B-read",
+  "B-sealed"
+ ],
+ "rows": [
+  "coat",
+  "face",
+  "shape",
+  "legs-tail",
+  "movement",
+  "stamina",
+  "character",
+  "glow",
+  "charge"
+ ],
+ "sprites": {
+  "rail-emblem-coat-a-unread-24x24": {
+   "rect": [
+    2,
+    2,
+    24,
+    24
+   ],
+   "sha256": "784d9ee55a3fada789805f6d33d78bb14bf446615f61c371b62df1309d46220d"
+  },
+  "rail-emblem-coat-a-read-24x24": {
+   "rect": [
+    28,
+    2,
+    24,
+    24
+   ],
+   "sha256": "836b4f61f71367a916bfafec71864d6b4edaf4f77ea8d5bcd9da3db831a8cc11"
+  },
+  "rail-emblem-coat-a-sealed-24x24": {
+   "rect": [
+    54,
+    2,
+    24,
+    24
+   ],
+   "sha256": "be91d6ee8abdb022a1b5265b306c8a71e0f4f5bee766651768ab50ca5d7bae43"
+  },
+  "rail-emblem-coat-b-unread-24x24": {
+   "rect": [
+    80,
+    2,
+    24,
+    24
+   ],
+   "sha256": "62da11754abbfd00bbc94468c89847846eab33048be8556c72a479ee26468ec9"
+  },
+  "rail-emblem-coat-b-read-24x24": {
+   "rect": [
+    106,
+    2,
+    24,
+    24
+   ],
+   "sha256": "a0c47469d53c34041e3308aacd2e880e3a33bbf9562be7d27ab20515fbedfd4f"
+  },
+  "rail-emblem-coat-b-sealed-24x24": {
+   "rect": [
+    132,
+    2,
+    24,
+    24
+   ],
+   "sha256": "84714be269cd40a4b09820df5972b1b7e1794732f5d939cb7444b90a873dedd8"
+  },
+  "rail-emblem-face-a-unread-24x24": {
+   "rect": [
+    2,
+    28,
+    24,
+    24
+   ],
+   "sha256": "4d0b55b3b7214ba498da0d5324e2a02278a416dbfee13b3c491cadb9fa93a91f"
+  },
+  "rail-emblem-face-a-read-24x24": {
+   "rect": [
+    28,
+    28,
+    24,
+    24
+   ],
+   "sha256": "1a2fcf1f7d341dc07bdb600be1fa70eadbffd21930f4519099b88d62a9c0a3dc"
+  },
+  "rail-emblem-face-a-sealed-24x24": {
+   "rect": [
+    54,
+    28,
+    24,
+    24
+   ],
+   "sha256": "2935a95504cb9d3fe11aa8e2087782900e349db776ec36a76a1c62647139cbcc"
+  },
+  "rail-emblem-face-b-unread-24x24": {
+   "rect": [
+    80,
+    28,
+    24,
+    24
+   ],
+   "sha256": "07b5d0ab0b83133e6f72701cbd18a38b1aded98d8e3002cf082896f13622f9b6"
+  },
+  "rail-emblem-face-b-read-24x24": {
+   "rect": [
+    106,
+    28,
+    24,
+    24
+   ],
+   "sha256": "41856d5b246ae11614a901ec13983486cc50ee895a07f86418da34a531c7dba6"
+  },
+  "rail-emblem-face-b-sealed-24x24": {
+   "rect": [
+    132,
+    28,
+    24,
+    24
+   ],
+   "sha256": "815896163e318bf7cd758a2622f35a290ace25b449ec91bb5d8f3e3d2987a70f"
+  },
+  "rail-emblem-shape-a-unread-24x24": {
+   "rect": [
+    2,
+    54,
+    24,
+    24
+   ],
+   "sha256": "5e3d0911b2ae28370388340fa5b5584f82adca81b0407142e5f60499c3ae6beb"
+  },
+  "rail-emblem-shape-a-read-24x24": {
+   "rect": [
+    28,
+    54,
+    24,
+    24
+   ],
+   "sha256": "5a8cda7f98de00691267c8d13c4029202760c1fe19c55141312fbd8844f4296a"
+  },
+  "rail-emblem-shape-a-sealed-24x24": {
+   "rect": [
+    54,
+    54,
+    24,
+    24
+   ],
+   "sha256": "ae799017de5632cc83879d0d6ef308942dddc3ce114d1c1490b653e4a926d21b"
+  },
+  "rail-emblem-shape-b-unread-24x24": {
+   "rect": [
+    80,
+    54,
+    24,
+    24
+   ],
+   "sha256": "06de02c6766eb348c1d6201378037c0ea1548aca3f8312f0885338e3662af36a"
+  },
+  "rail-emblem-shape-b-read-24x24": {
+   "rect": [
+    106,
+    54,
+    24,
+    24
+   ],
+   "sha256": "01a92aa9bdced31b315f043d62ad4550e3c842724e87c52e2ef877530507b6a3"
+  },
+  "rail-emblem-shape-b-sealed-24x24": {
+   "rect": [
+    132,
+    54,
+    24,
+    24
+   ],
+   "sha256": "a92b6d2e52e6ce264da2522cde985a90111674f99169926017c2a01b2245cb90"
+  },
+  "rail-emblem-legs-tail-a-unread-24x24": {
+   "rect": [
+    2,
+    80,
+    24,
+    24
+   ],
+   "sha256": "da4018e878e0022a28de0ab154bd4c9ce540e94f31e8b5f23fd95f92d22b2801"
+  },
+  "rail-emblem-legs-tail-a-read-24x24": {
+   "rect": [
+    28,
+    80,
+    24,
+    24
+   ],
+   "sha256": "15fd7b2fbb2a7e1a94a384c083abf9e60226c965a79951ea8694be043a16a878"
+  },
+  "rail-emblem-legs-tail-a-sealed-24x24": {
+   "rect": [
+    54,
+    80,
+    24,
+    24
+   ],
+   "sha256": "7bd15877ea39a94018f4675da1520a266c165e9a3f49491b8c7461b657bdbb1d"
+  },
+  "rail-emblem-legs-tail-b-unread-24x24": {
+   "rect": [
+    80,
+    80,
+    24,
+    24
+   ],
+   "sha256": "1c097338f82fefa6f2bca2154e96525d1739f92ca0f334e1de99f73a38272717"
+  },
+  "rail-emblem-legs-tail-b-read-24x24": {
+   "rect": [
+    106,
+    80,
+    24,
+    24
+   ],
+   "sha256": "1eaccfd8433ef8e8d852b1e903e34aa8ed10c41217a7b77eab19398940b51a73"
+  },
+  "rail-emblem-legs-tail-b-sealed-24x24": {
+   "rect": [
+    132,
+    80,
+    24,
+    24
+   ],
+   "sha256": "dda908f5d0468aab8c6f1812be906f14c5ee843f781d3b2e3227395a67cc9e50"
+  },
+  "rail-emblem-movement-a-unread-24x24": {
+   "rect": [
+    2,
+    106,
+    24,
+    24
+   ],
+   "sha256": "3a616388254bbe9ed84e4ed5dbc4a683a6df7984a36ad18cb9c7ec5e78235b4a"
+  },
+  "rail-emblem-movement-a-read-24x24": {
+   "rect": [
+    28,
+    106,
+    24,
+    24
+   ],
+   "sha256": "e949e9db83f60ec745646809c1bf148deca4b13f75279ba38115b45848b9886f"
+  },
+  "rail-emblem-movement-a-sealed-24x24": {
+   "rect": [
+    54,
+    106,
+    24,
+    24
+   ],
+   "sha256": "483100fda41808f30d28ad03594df7787f9bfd2c2695a1da6af9e85de3f61ed1"
+  },
+  "rail-emblem-movement-b-unread-24x24": {
+   "rect": [
+    80,
+    106,
+    24,
+    24
+   ],
+   "sha256": "86137237229dd8f0132317b6f7529eb3a96fe9f4c2d0bd7e4e0341cd24561e03"
+  },
+  "rail-emblem-movement-b-read-24x24": {
+   "rect": [
+    106,
+    106,
+    24,
+    24
+   ],
+   "sha256": "844b0dc2c913056829fba82787c2a6d03db60fc28aac1398217730ecf0a385bb"
+  },
+  "rail-emblem-movement-b-sealed-24x24": {
+   "rect": [
+    132,
+    106,
+    24,
+    24
+   ],
+   "sha256": "55fc0cf41c457e38ed46da8545ab1b2fd153bc49ddefb5d4ff62a89a43f6cc39"
+  },
+  "rail-emblem-stamina-a-unread-24x24": {
+   "rect": [
+    2,
+    132,
+    24,
+    24
+   ],
+   "sha256": "430a414bd06cfe54c65191af8e36dc1519e36aa241119be8f59f9b8b02354688"
+  },
+  "rail-emblem-stamina-a-read-24x24": {
+   "rect": [
+    28,
+    132,
+    24,
+    24
+   ],
+   "sha256": "2f9ca943d68efc45029cc25a440ab81145f627a4d34433217ed89d3a30f45894"
+  },
+  "rail-emblem-stamina-a-sealed-24x24": {
+   "rect": [
+    54,
+    132,
+    24,
+    24
+   ],
+   "sha256": "d8b984eead05cf45f86223c4c49a2271787096f9ebbff044d560621fae62e4e6"
+  },
+  "rail-emblem-stamina-b-unread-24x24": {
+   "rect": [
+    80,
+    132,
+    24,
+    24
+   ],
+   "sha256": "e92689f62371b2c1747c21997ad26ee8d882e26423485a901360ea513489c483"
+  },
+  "rail-emblem-stamina-b-read-24x24": {
+   "rect": [
+    106,
+    132,
+    24,
+    24
+   ],
+   "sha256": "6ca662ab754dc4d5fe05f32ab65ea7ac2ffe2cd4261bc218d321c089d1e9996f"
+  },
+  "rail-emblem-stamina-b-sealed-24x24": {
+   "rect": [
+    132,
+    132,
+    24,
+    24
+   ],
+   "sha256": "b6449fc89c42472e621bc95797df070d21a824361bed1902519bdbaf26099382"
+  },
+  "rail-emblem-character-a-unread-24x24": {
+   "rect": [
+    2,
+    158,
+    24,
+    24
+   ],
+   "sha256": "a5b59a1c3b3f3ca8ffce4f76175e62b4bba09b6832864e69cff57d30ef48d1c1"
+  },
+  "rail-emblem-character-a-read-24x24": {
+   "rect": [
+    28,
+    158,
+    24,
+    24
+   ],
+   "sha256": "8acc88c561f3eb42c4bafe49e90fb37622f05737822f5da9e82211e1e9380fae"
+  },
+  "rail-emblem-character-a-sealed-24x24": {
+   "rect": [
+    54,
+    158,
+    24,
+    24
+   ],
+   "sha256": "439b3f247fe6602acbe1cd24426c4123aae2168ee6e2d75835b0fc1780230dfb"
+  },
+  "rail-emblem-character-b-unread-24x24": {
+   "rect": [
+    80,
+    158,
+    24,
+    24
+   ],
+   "sha256": "21a97105b746959514bdfe8e0ff7e1b301248bcdc7a7923fb691178d29385f24"
+  },
+  "rail-emblem-character-b-read-24x24": {
+   "rect": [
+    106,
+    158,
+    24,
+    24
+   ],
+   "sha256": "2192187a1c1ca7284d34d897c74ece00e850d3ea75c0fb061c79bea32a3d3734"
+  },
+  "rail-emblem-character-b-sealed-24x24": {
+   "rect": [
+    132,
+    158,
+    24,
+    24
+   ],
+   "sha256": "48f8c251808ae181f3f951320e3f4d642416e6e81ae48a865c53ed01448fb706"
+  },
+  "rail-emblem-glow-a-unread-24x24": {
+   "rect": [
+    2,
+    184,
+    24,
+    24
+   ],
+   "sha256": "bdd172bb68fa1f7f65ee2165e66bd0624aee8906ef1ddfde1b0c26a1aa16c237"
+  },
+  "rail-emblem-glow-a-read-24x24": {
+   "rect": [
+    28,
+    184,
+    24,
+    24
+   ],
+   "sha256": "c875118f7ded659bdfc334995e27aef1e3d16c5878156d3882eac74bb9eed4b9"
+  },
+  "rail-emblem-glow-a-sealed-24x24": {
+   "rect": [
+    54,
+    184,
+    24,
+    24
+   ],
+   "sha256": "c3ad2a27c31187914c031ff840dcac0a5a6cd407bd5ac043dd7a6d310c97ce15"
+  },
+  "rail-emblem-glow-b-unread-24x24": {
+   "rect": [
+    80,
+    184,
+    24,
+    24
+   ],
+   "sha256": "e8ba934f15b19d61450659a5c665b2a567bb01d2386d84e318d743d39f0538d3"
+  },
+  "rail-emblem-glow-b-read-24x24": {
+   "rect": [
+    106,
+    184,
+    24,
+    24
+   ],
+   "sha256": "8bae2e48d42d0590fe45ea8ca81dfeb4ac65dcda98b3306c3aea4a9717d5f797"
+  },
+  "rail-emblem-glow-b-sealed-24x24": {
+   "rect": [
+    132,
+    184,
+    24,
+    24
+   ],
+   "sha256": "bad505202b304eca16e02d9c95c30ab99797e3685d67be07050fee4e0d4a0a8d"
+  },
+  "rail-emblem-charge-a-unread-24x24": {
+   "rect": [
+    2,
+    210,
+    24,
+    24
+   ],
+   "sha256": "55bdb4e1c059d89a80ad0d117e1a5334397ce183dc9f7128f4ee2079b2007ab0"
+  },
+  "rail-emblem-charge-a-read-24x24": {
+   "rect": [
+    28,
+    210,
+    24,
+    24
+   ],
+   "sha256": "3d3f51b3b570e02b8508aa880379d4d775794fdde61fcde0d4385efc0a9d7b37"
+  },
+  "rail-emblem-charge-a-sealed-24x24": {
+   "rect": [
+    54,
+    210,
+    24,
+    24
+   ],
+   "sha256": "8a0b485e3bc8f8cdaf3c87c8be0d9bad91b7be259f46f9ba8d7149104a00bb8f"
+  },
+  "rail-emblem-charge-b-unread-24x24": {
+   "rect": [
+    80,
+    210,
+    24,
+    24
+   ],
+   "sha256": "5e16299af8d7ef4fbb024b74980cf96e71f1a1010d2fed2308fac327bc3f06d3"
+  },
+  "rail-emblem-charge-b-read-24x24": {
+   "rect": [
+    106,
+    210,
+    24,
+    24
+   ],
+   "sha256": "1a04713c63572bcf66cd65ad169874b6e9ac83f4c007f70e93d2267f79f9ed84"
+  },
+  "rail-emblem-charge-b-sealed-24x24": {
+   "rect": [
+    132,
+    210,
+    24,
+    24
+   ],
+   "sha256": "e533b18cfb2308848db96cf742d6c779188ce3e4b425a6c62f0dc137fd073d8c"
+  }
+ },
+ "status": "round 1: two options per chapter, for the art director's picks"
+}
