@@ -6,7 +6,7 @@
 import { CATALOGUE, LOCI, PART_SWITCHES, alleleIds } from "../framework/catalogue.mjs";
 import { parsePlanKey, planKeyOf, planFacts } from "../framework/plans.mjs";
 import { buildFrame, buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, checkGenome, specFromFrame, chapterFor, rng, RING, CHAPTER_NAMES, FINDS, genomeDigest } from "../framework/species.mjs";
-import { CLANS, specOf, SPECIES } from "../framework/roster.mjs";
+import { CLANS, CLAN_NAMES, specOf, SPECIES } from "../framework/roster.mjs";
 import { render, fitCamera, markingFields } from "../framework/raster.mjs";
 import { sketchIndividual, manifest, speciesCameras, registryCameras, SKETCHER_VERSION } from "../sketch/sketch.mjs";
 import { encodePNG, zip, sha256, download } from "./zip.mjs";
@@ -20,6 +20,9 @@ const el = (tag, attrs = {}, ...children) => {
 };
 const VERDICTS = [["reads", "reads at 48 px"], ["station", "reads only on the Station"], ["invisible", "invisible: make it a doing"]];
 const STORE_KEY = "mb-workbench/specs/1";
+// Codes are the ids; the approved names ride beside them wherever a species or a clan is shown.
+const labelOf = (spec, edited = false) => `${spec.id}${spec.name && spec.name !== spec.id ? " " + spec.name : ""}${edited ? " (edited)" : ""}`;
+const clanLabel = (id) => `${id}${CLAN_NAMES[id] ? " " + CLAN_NAMES[id] : ""}`;
 
 const state = {
   registry: [], specs: {}, edited: {}, frame: null, spec: null, cameras: null, registryCameras: null,
@@ -39,8 +42,8 @@ async function load() {
     for (const [id, spec] of Object.entries(saved)) { state.specs[id] = spec; state.edited[id] = true; }
   } catch { /* storage unavailable: drafts are session-only */ }
   const sel = $("species");
-  sel.replaceChildren(...Object.keys(state.specs).map((id) => el("option", { value: id }, `${id}${state.edited[id] ? " (edited)" : ""}`)));
-  for (const [id, clan] of Object.entries(CLANS)) $("new-clan").append(el("option", { value: id }, `${id}: ${clan.resembles} (${planFacts(clan.plan, clan.extras).code})`));
+  sel.replaceChildren(...Object.keys(state.specs).map((id) => el("option", { value: id }, labelOf(state.specs[id], state.edited[id]))));
+  for (const [id, clan] of Object.entries(CLANS)) $("new-clan").append(el("option", { value: id }, `${clanLabel(id)}: ${clan.resembles} (${planFacts(clan.plan, clan.extras).code})`));
   state.registryCameras = registryCameras(frames);
   status(`catalogue ${CATALOGUE.id}@${CATALOGUE.version} · ${CATALOGUE.loci.length} loci · ${frames.length} frames`);
   selectSpecies(frames[0].species.id);
@@ -76,7 +79,7 @@ function commit() {
   state.edited[state.spec.id] = true;
   try { const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); saved[state.spec.id] = state.spec; localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch { /* fine */ }
   const opt = [...$("species").options].find((o) => o.value === state.spec.id);
-  if (opt) opt.textContent = `${state.spec.id} (edited)`;
+  if (opt) opt.textContent = labelOf(state.spec, true);
   // Individuals must still fit the frame; re-validate and drop the ones that no longer do.
   state.individuals = state.individuals.filter((ind, i) => i === 0 || checkGenome(state.frame, ind.genome).length === 0);
   state.individuals[0] = { genome: typeSpecimen(state.frame), label: "type specimen" };
@@ -92,11 +95,11 @@ function renderEditor() {
   const planSelect = (field, options) => el("select", { onchange: (e) => { const q = { ...p, [field]: e.target.value }; if (q.limbs !== "contact") q.pairs = "two"; if (q.limbs !== "free") { q.groups = "zero"; q.links = "one"; } spec.plan.key = planKeyOf(q); dropInapplicable(); commit(); } }, options.map((o) => el("option", { value: o, selected: p[field] === o ? "" : null }, o)));
   const extra = (key, labelText) => el("label", {}, el("input", { type: "checkbox", checked: spec.plan.extras[key] ? "" : null, onchange: (e) => { spec.plan.extras[key] = e.target.checked; if (key === "join") spec.plan.extras.join = e.target.checked ? "narrow" : "broad"; commit(); } }), ` ${labelText}`);
   $("frame-head").replaceChildren(
-    el("div", {}, el("b", {}, `${spec.id}`), ` · ${f.taxonomy.resembles ?? ""} · clan ${spec.clan} · ${f.plan.code} (rig ${f.plan.rig}, ${f.plan.limbSet ?? "no limbs"}${f.plan.posture ? ", " + f.plan.posture : ""}, ${f.plan.head} head) · ${f.taxonomy.tier}`),
+    el("div", {}, el("b", {}, labelOf(spec)), ` · ${f.taxonomy.resembles ?? ""} · clan ${clanLabel(spec.clan)} · ${f.plan.code} (rig ${f.plan.rig}, ${f.plan.limbSet ?? "no limbs"}${f.plan.posture ? ", " + f.plan.posture : ""}, ${f.plan.head} head) · ${f.taxonomy.tier}`),
     el("div", { class: "row" }, "Plan: ", planSelect("segments", ["one", "two", "three"]), planSelect("layout", ["serial", "fan"]), planSelect("symmetry", ["bilateral", "radial"]), planSelect("limbs", ["none", "contact", "free"]), p.limbs === "contact" ? planSelect("pairs", ["one", "two", "three"]) : "", planSelect("flaps", ["off", "on"]), planSelect("covering", ["skin", "scales", "fur"])),
     el("div", { class: "row" }, el("label", {}, el("input", { type: "checkbox", checked: spec.plan.extras.join === "narrow" ? "" : null, onchange: (e) => { spec.plan.extras.join = e.target.checked ? "narrow" : "broad"; commit(); } }), " neck (narrow join)"), extra("wave", "body wave"), extra("fins", "flaps as fins"), extra("float", "afloat")),
     el("div", {}, `Signature: ${spec.feature ?? ""} · anchor `, el("select", { onchange: (e) => { spec.anchor = e.target.value; spec.fixed["appearance.body-palette"] = e.target.value; commit(); } }, alleleIds("appearance.body-palette").map((a) => el("option", { value: a, selected: spec.anchor === a ? "" : null }, a))), spec.second ? [" · second ", el("select", { onchange: (e) => { spec.second = e.target.value; spec.fixed["appearance.underside-palette"] = e.target.value; commit(); } }, alleleIds("appearance.underside-palette").map((a) => el("option", { value: a, selected: spec.second === a ? "" : null }, a)))] : ""),
-    el("div", {}, `Carried ${f.counts.carried} (trunk ${f.counts.trunk}, branch ${f.counts.branch}) · open ${f.counts.open} in ${f.counts.traits} traits · sleeping ${f.counts.sleeping} · sealed ${f.counts.sealed} · absent ${f.counts.absent} · stamp ${f.counts.stampBitsPerCopy} bits a copy`, state.edited[spec.id] ? [" · ", el("button", { class: "small", onclick: () => { const orig = state.registry.find((r) => r.species.id === spec.id); if (!orig) return; delete state.edited[spec.id]; try { const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); delete saved[spec.id]; localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch { /* fine */ } state.specs[spec.id] = specFromFrame(orig); [...$("species").options].find((o) => o.value === spec.id).textContent = spec.id; selectSpecies(spec.id); log(`${spec.id}: edits discarded`); } }, "Discard edits")] : ""),
+    el("div", {}, `Carried ${f.counts.carried} (trunk ${f.counts.trunk}, branch ${f.counts.branch}) · open ${f.counts.open} in ${f.counts.traits} traits · sleeping ${f.counts.sleeping} · sealed ${f.counts.sealed} · absent ${f.counts.absent} · stamp ${f.counts.stampBitsPerCopy} bits a copy`, state.edited[spec.id] ? [" · ", el("button", { class: "small", onclick: () => { const orig = state.registry.find((r) => r.species.id === spec.id); if (!orig) return; delete state.edited[spec.id]; try { const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); delete saved[spec.id]; localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch { /* fine */ } state.specs[spec.id] = specFromFrame(orig); [...$("species").options].find((o) => o.value === spec.id).textContent = labelOf(state.specs[spec.id]); selectSpecies(spec.id); log(`${spec.id}: edits discarded`); } }, "Discard edits")] : ""),
   );
   const chaptersNode = $("chapters");
   chaptersNode.replaceChildren();

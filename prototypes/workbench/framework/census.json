@@ -9,7 +9,7 @@
  "species": [
   {
    "id": "S01",
-   "name": "S01",
+   "name": "Loika",
    "plan": "B1·L4",
    "planKey": "one|serial|bilateral|contact|zero|one|two|off|skin",
    "rig": "B1",
@@ -22,7 +22,7 @@
   },
   {
    "id": "S02",
-   "name": "S02",
+   "name": "Untuva",
    "plan": "R1·flaps",
    "planKey": "one|serial|radial|none|zero|one|two|on|fur",
    "rig": "R1",
@@ -35,7 +35,7 @@
   },
   {
    "id": "S03",
-   "name": "S03",
+   "name": "Tuikis",
    "plan": "B2·L4",
    "planKey": "two|serial|bilateral|contact|zero|one|two|off|scales",
    "rig": "B2",
@@ -45,21 +45,21 @@
    "meanToOwn": 0.369,
    "nearestOwnShare": 0.455,
    "confusions": {
-    "S11": 10,
-    "S09": 6,
-    "S06": 18,
-    "S16": 14,
-    "S05": 37,
-    "S10": 10,
-    "S14": 8,
-    "S08": 3,
-    "S04": 1,
-    "S13": 2
+    "Kilpo": 10,
+    "Belatz": 6,
+    "Pesko": 18,
+    "Blikur": 14,
+    "Tepor": 37,
+    "Igara": 10,
+    "Usvel": 8,
+    "Rupar": 3,
+    "Hiljan": 1,
+    "Oskol": 2
    }
   },
   {
    "id": "S04",
-   "name": "S04",
+   "name": "Hiljan",
    "plan": "B2·L4",
    "planKey": "two|serial|bilateral|contact|zero|one|two|off|fur",
    "rig": "B2",
@@ -72,7 +72,7 @@
   },
   {
    "id": "S05",
-   "name": "S05",
+   "name": "Tepor",
    "plan": "B2·L4",
    "planKey": "two|serial|bilateral|contact|zero|one|two|off|fur",
    "rig": "B2",
@@ -82,13 +82,13 @@
    "meanToOwn": 0.223,
    "nearestOwnShare": 0.965,
    "confusions": {
-    "S11": 5,
-    "S14": 2
+    "Kilpo": 5,
+    "Usvel": 2
    }
   },
   {
    "id": "S06",
-   "name": "S06",
+   "name": "Pesko",
    "plan": "B2·L4",
    "planKey": "two|serial|bilateral|contact|zero|one|two|off|fur",
    "rig": "B2",
@@ -98,19 +98,19 @@
    "meanToOwn": 0.34,
    "nearestOwnShare": 0.69,
    "confusions": {
-    "S08": 5,
-    "S03": 23,
-    "S13": 3,
-    "S14": 3,
-    "S11": 8,
-    "S05": 11,
-    "S16": 7,
-    "S01": 2
+    "Rupar": 5,
+    "Tuikis": 23,
+    "Oskol": 3,
+    "Usvel": 3,
+    "Kilpo": 8,
+    "Tepor": 11,
+    "Blikur": 7,
+    "Loika": 2
    }
   },
   {
    "id": "S07",
-   "name": "S07",
+   "name": "Azkon",
    "plan": "B1·L4",
    "planKey": "one|serial|bilateral|contact|zero|one|two|off|fur",
    "rig": "B1",
@@ -120,13 +120,13 @@
    "meanToOwn": 0.267,
    "nearestOwnShare": 0.89,
    "confusions": {
-    "S02": 18,
-    "S01": 4
+    "Untuva": 18,
+    "Loika": 4
    }
   },
   {
    "id": "S08",
-   "name": "S08",
+   "name": "Rupar",
    "plan": "B2·L4",
    "planKey": "two|serial|bilateral|contact|zero|one|two|off|fur",
    "rig": "B2",
@@ -136,14 +136,14 @@
    "meanToOwn": 0.297,
    "nearestOwnShare": 0.86,
    "confusions": {
-    "S11": 5,
-    "S05": 11,
-    "S09": 12
+    "Kilpo": 5,
+    "Tepor": 11,
+    "Belatz": 12
    }
   },
   {
    "id": "S09",
-   "name": "S09",
+   "name": "Belatz",
    "plan": "B2·L4·flaps",
    "planKey": "two|serial|bilateral|contact|zero|one|two|on|fur",
    "rig": "B2",
@@ -153,18 +153,18 @@
    "meanToOwn": 0.364,
    "nearestOwnShare": 0.77,
    "confusions": {
-    "S13": 9,
-    "S05": 21,
-    "S08": 10,
-    "S02": 1,
-    "S01": 1,
-    "S06": 3,
-    "S16": 1
+    "Oskol": 9,
+    "Tepor": 21,
+    "Rupar": 10,
+    "Untuva": 1,
+    "Loika": 1,
+    "Pesko": 3,
+    "Blikur": 1
    }
   },
   {
    "id": "S10",
-   "name": "S10",
+   "name": "Igara",
    "plan": "B3·L4",
    "planKey": "three|serial|bilateral|contact|zero|one|two|off|fur",
    "rig": "B3",
@@ -174,16 +174,16 @@
    "meanToOwn": 0.387,
    "nearestOwnShare": 0.555,
    "confusions": {
-    "S14": 46,
-    "S02": 1,
-    "S13": 31,
-    "S16": 8,
-    "S03": 3
+    "Usvel": 46,
+    "Untuva": 1,
+    "Oskol": 31,
+    "Blikur": 8,
+    "Tuikis": 3
    }
   },
   {
    "id": "S11",
-   "name": "S11",
+   "name": "Kilpo",
    "plan": "B1·L4",
    "planKey": "one|serial|bilateral|contact|zero|one|two|off|scales",
    "rig": "B1",
@@ -193,12 +193,12 @@
    "meanToOwn": 0.232,
    "nearestOwnShare": 0.91,
    "confusions": {
-    "S07": 18
+    "Azkon": 18
    }
   },
   {
    "id": "S12",
-   "name": "S12",
+   "name": "Peplos",
    "plan": "B3·L6·flaps",
    "planKey": "three|serial|bilateral|contact|zero|one|three|on|skin",
    "rig": "B3",
@@ -211,7 +211,7 @@
   },
   {
    "id": "S13",
-   "name": "S13",
+   "name": "Oskol",
    "plan": "B3·L6",
    "planKey": "three|serial|bilateral|contact|zero|one|three|off|scales",
    "rig": "B3",
@@ -224,7 +224,7 @@
   },
   {
    "id": "S14",
-   "name": "S14",
+   "name": "Usvel",
    "plan": "B3",
    "planKey": "three|serial|bilateral|none|zero|one|two|off|skin",
    "rig": "B3",
@@ -234,16 +234,16 @@
    "meanToOwn": 0.278,
    "nearestOwnShare": 0.695,
    "confusions": {
-    "S01": 31,
-    "S13": 11,
-    "S05": 5,
-    "S06": 13,
-    "S15": 1
+    "Loika": 31,
+    "Oskol": 11,
+    "Tepor": 5,
+    "Pesko": 13,
+    "Lehten": 1
    }
   },
   {
    "id": "S15",
-   "name": "S15",
+   "name": "Lehten",
    "plan": "Rfan2·rays",
    "planKey": "two|fan|radial|contact|zero|one|two|off|skin",
    "rig": "Rfan2",
@@ -253,15 +253,15 @@
    "meanToOwn": 0.298,
    "nearestOwnShare": 0.85,
    "confusions": {
-    "S11": 1,
-    "S02": 12,
-    "S05": 16,
-    "S01": 1
+    "Kilpo": 1,
+    "Untuva": 12,
+    "Tepor": 16,
+    "Loika": 1
    }
   },
   {
    "id": "S16",
-   "name": "S16",
+   "name": "Blikur",
    "plan": "Bfan3",
    "planKey": "three|fan|bilateral|none|zero|one|two|off|skin",
    "rig": "Bfan",
@@ -271,7 +271,7 @@
    "meanToOwn": 0.187,
    "nearestOwnShare": 0.975,
    "confusions": {
-    "S14": 5
+    "Usvel": 5
    }
   }
  ],

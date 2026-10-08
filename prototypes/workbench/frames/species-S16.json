@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S16",
-  "name": "S16",
-  "plural": "S16",
+  "name": "Blikur",
+  "plural": "Blikur",
   "order": 16,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "Energy from struck stones",
   "ability": "draws a stray strike to itself",
   "character": "wild and electric, rarely still",
+  "clanName": "Brontelas",
   "clanNumber": 16,
   "member": 1,
   "speciesNumber": 513,
@@ -1843,7 +1844,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S16: 5 body regions (Bfan), a head, 2 eyes; skin; belly, neck head.",
+  "brief": "Blikur: 5 body regions (Bfan), a head, 2 eyes; skin; belly, neck head.",
   "bounds": {
    "min": [
     -1.2623084507219529,

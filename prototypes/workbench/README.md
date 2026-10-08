@@ -2,7 +2,7 @@
 
 The internal authoring tool of [art-pipeline.md](../../design/proposals/art-pipeline.md) §2, stage 0: the genome framework the generator reads directly, the deterministic structural sketch, and the page where a designer locks a species and sees whether its expressions read. It ships no art. Plain Node 22 and ES modules in the browser, no dependencies; served at `/sandbox/workbench/` by the site workflow.
 
-![The page: a raccoon-like frame (S06) with a cross of two rolled individuals](img/page-cross.png)
+![The page: a raccoon-like frame (S06 Pesko) with a cross of two rolled individuals](img/page-cross.png)
 
 *The page: the frame on the left (plan, clan, chapters and traits), the sketch at Station and Companion scale in the middle, rolled individuals and their children below.*
 
@@ -10,12 +10,12 @@ The internal authoring tool of [art-pipeline.md](../../design/proposals/art-pipe
 
 ![Frame, loci on demand](img/page-loci.png)
 
-- **Frame.** Pick one of the 16 registry frames (the V1 roster of [taxonomy.md](../../design/proposals/taxonomy.md) §3, codes S01–S16 until the copywriter names them) or generate a new species by rule from a clan, a tier and a seed. The plan (segments, layout, symmetry, limbs, pairs, flaps, covering; neck, body wave, fins, afloat) and the clan signature (anchor and second pigment) are selects; the counts (carried, open, sleeping, sealed, absent, stamp bits) update at once.
+- **Frame.** Pick one of the 16 registry frames (the V1 roster of [taxonomy.md](../../design/proposals/taxonomy.md) §3; the codes S01–S16 and C01–C16 are the ids, and the approved names of [species-names.md](../../design/proposals/species-names.md) show beside them, S04 Hiljan of clan C04 Lathreta) or generate a new species by rule from a clan, a tier and a seed. The plan (segments, layout, symmetry, limbs, pairs, flaps, covering; neck, body wave, fins, afloat) and the clan signature (anchor and second pigment) are selects; the counts (carried, open, sleeping, sealed, absent, stamp bits) update at once.
 - **Chapters and traits.** Coat, Face, Shape, Legs & tail, Movement, Stamina, Character, and a species chapter (Glow, Charge). Every trait shows its state (open, sleeping, sealed), nature, shapeable or breeding-only and its looks. Lock a trait, seal a chapter behind a find, open a locked part as a new trait, add a part the clan never had, narrow a pool allele by allele. The loci are one press away and never the entry point.
 - **The sketch re-renders at once:** three-quarter at Station scale (300×310), front, side and top at Companion scale (280×300 at ½), the 48 px tile at 3×; passes shaded, slots, index, silhouette and one per marking field.
 - **Individuals.** Roll N random individuals of the frame; shift-click two as parents and cross them; every individual is validated as a whole genome against its frame and as a body against the compositional contract, and a rejected one is marked, never repaired.
 
-![Compare expressions: the Colour trait of S06, three looks by four individuals](img/page-compare.png)
+![Compare expressions: the Colour trait of S06 Pesko, three looks by four individuals](img/page-compare.png)
 
 - **Compare expressions.** Same frame, one trait changed, N individuals: one column per look, the 48 px tile beside the Station view. A verdict per trait ("reads at 48 px", "reads only on the Station", "invisible: make it a doing") is written into the frame file with a note and a date; "invisible" also makes the trait breeding-only and records the reason as its override.
 - **Check frame** builds 200 random individuals. **Export frame** downloads the species JSON; **Export sketches** and **Reference set** download a zip in the cache format. Edits persist in the browser's local storage until discarded.
@@ -66,7 +66,7 @@ Everything in the brief fitted the catalogue as records with owners and consumer
 | `validate.mjs` | Every body against the compositional contract: facet roots, attachment witnesses inside owner and part, bounds. Reported, never repaired |
 | `raster.mjs` | The deterministic rasterizer: orthographic views, a depth buffer, one light, the passes, the 48 px mask and the shape distance |
 | `species.mjs` | Species first: frames, individuals, crosses, shaping, the type specimen, whole-genome checks, a frame back into an editable spec |
-| `roster.mjs` | The 16 clans with their signatures and the 16 species; S01–S03 carry the authored frames of frames.py |
+| `roster.mjs` | The 16 clans with their signatures and the 16 species, with the approved names beside the codes (`SPECIES_NAMES`, `CLAN_NAMES`; the frame carries `species.name` and `taxonomy.clanName`); S01–S03 carry the authored frames of frames.py |
 | `build-frames.mjs` | Writes the frame registry `frames/` (schema `mb-species-frame/2`: taxonomy header, plan facts, signature, chapters and traits with verdicts, the carried loci by kind, the absent loci with reasons, pools, locked copies, counts, pod, the type specimen's brief and bounds, viability) |
 | `census.mjs` | The silhouette census below |
 
@@ -107,22 +107,22 @@ Every plan's default body, rendered as a 48 px silhouette, must differ from ever
 
 | Species | Plan | Rig | Built | Own-plan nearest | Mean distance to own specimen |
 | --- | --- | --- | ---: | ---: | ---: |
-| S01 | B1·L4 | B1 | 200/200 | 100% | 0.06 |
-| S02 | R1·flaps | R1 | 200/200 | 100% | 0.14 |
-| S03 | B2·L4 | B2 | 200/200 | 46% | 0.37 |
-| S04 | B2·L4 | B2 | 200/200 | 100% | 0.23 |
-| S05 | B2·L4 | B2 | 200/200 | 97% | 0.22 |
-| S06 | B2·L4 | B2 | 200/200 | 69% | 0.34 |
-| S07 | B1·L4 | B1 | 200/200 | 89% | 0.27 |
-| S08 | B2·L4 | B2 | 200/200 | 86% | 0.30 |
-| S09 | B2·L4·flaps | B2 | 200/200 | 77% | 0.36 |
-| S10 | B3·L4 | B3 | 200/200 | 56% | 0.39 |
-| S11 | B1·L4 | B1 | 200/200 | 91% | 0.23 |
-| S12 | B3·L6·flaps | B3 | 200/200 | 100% | 0.14 |
-| S13 | B3·L6 | B3 | 200/200 | 100% | 0.18 |
-| S14 | B3 | B3 | 200/200 | 70% | 0.28 |
-| S15 | Rfan2·rays | Rfan2 | 200/200 | 85% | 0.30 |
-| S16 | Bfan3 | Bfan | 200/200 | 98% | 0.19 |
+| S01 Loika | B1·L4 | B1 | 200/200 | 100% | 0.06 |
+| S02 Untuva | R1·flaps | R1 | 200/200 | 100% | 0.14 |
+| S03 Tuikis | B2·L4 | B2 | 200/200 | 46% | 0.37 |
+| S04 Hiljan | B2·L4 | B2 | 200/200 | 100% | 0.23 |
+| S05 Tepor | B2·L4 | B2 | 200/200 | 97% | 0.22 |
+| S06 Pesko | B2·L4 | B2 | 200/200 | 69% | 0.34 |
+| S07 Azkon | B1·L4 | B1 | 200/200 | 89% | 0.27 |
+| S08 Rupar | B2·L4 | B2 | 200/200 | 86% | 0.30 |
+| S09 Belatz | B2·L4·flaps | B2 | 200/200 | 77% | 0.36 |
+| S10 Igara | B3·L4 | B3 | 200/200 | 56% | 0.39 |
+| S11 Kilpo | B1·L4 | B1 | 200/200 | 91% | 0.23 |
+| S12 Peplos | B3·L6·flaps | B3 | 200/200 | 100% | 0.14 |
+| S13 Oskol | B3·L6 | B3 | 200/200 | 100% | 0.18 |
+| S14 Usvel | B3 | B3 | 200/200 | 70% | 0.28 |
+| S15 Lehten | Rfan2·rays | Rfan2 | 200/200 | 85% | 0.30 |
+| S16 Blikur | Bfan3 | Bfan | 200/200 | 98% | 0.19 |
 
 Shape distance between type specimens; `*` marks a pair on the same plan, which the gate does not cover.
 
@@ -145,7 +145,7 @@ Shape distance between type specimens; `*` marks a pair on the same plan, which 
 | **S15** | 0.40 | 0.42 | 0.58 | 0.76 | 0.50 | 0.62 | 0.55 | 0.60 | 0.58 | 0.68 | 0.54 | 0.70 | 0.56 | 0.52 | · | 0.56 |
 | **S16** | 0.64 | 0.68 | 0.44 | 0.64 | 0.50 | 0.55 | 0.73 | 0.68 | 0.59 | 0.47 | 0.61 | 0.76 | 0.51 | 0.39 | 0.56 | · |
 
-Closest pair of plans: S02 and S07 at 0.34. No pair of plans below the margin. Species sharing a plan are not gated; the closest are S05 and S08 at 0.40. No plan collapses into another's silhouette family. `framework/census.md` and `census.json` are the current run.
+Closest pair of plans: S02 Untuva and S07 Azkon at 0.34. No pair of plans below the margin. Species sharing a plan are not gated; the closest are S05 Tepor and S08 Rupar at 0.40. No plan collapses into another's silhouette family. `framework/census.md` and `census.json` are the current run.
 
 ## The volume rig
 
@@ -158,9 +158,9 @@ The first bodies read as logs with stick legs (the programme lead's review of mi
 - the covering as a silhouette modifier: fur and feathers push the surface out by their inherited length with a scalloped edge on body and tail, and reach the tail and ears when fur reach says so; scales and skin leave the outline alone;
 - one registry-wide scale for the Companion and Station subjects (the longest type specimen fits; every body is centred in its own frame), so size classes show; the 48 px token fills its tile for every species, as the field keeps one tile size. The page's "registry scale" box toggles this; `--fit-species` on the CLI.
 
-![Six type specimens: S04 the cat, S05 the fox, S07 the bear, S09 the bird, S11 the turtle, S14 the slug](img/six-specimens.png)
+![Six type specimens: S04 Hiljan the cat, S05 Tepor the fox, S07 Azkon the bear, S09 Belatz the bird, S11 Kilpo the turtle, S14 Usvel the slug](img/six-specimens.png)
 
-*Six type specimens at one shared Station scale (300×310) with, beside each, the 48 px tile at 4×, at 1× and as the silhouette; three-quarter view above, side view below. This is the figure to judge: does a cat read as a cat at 48 px?*
+*Six type specimens (S04 Hiljan, S05 Tepor, S07 Azkon, S09 Belatz, S11 Kilpo, S14 Usvel) at one shared Station scale (300×310) with, beside each, the 48 px tile at 4×, at 1× and as the silhouette; three-quarter view above, side view below. This is the figure to judge: does a cat read as a cat at 48 px?*
 
 ## What this does not claim
 

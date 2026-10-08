@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S13",
-  "name": "S13",
-  "plural": "S13",
+  "name": "Oskol",
+  "plural": "Oskol",
   "order": 13,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "moss",
   "ability": "burrows under stones for buried finds",
   "character": "a sturdy little tank",
+  "clanName": "Lepidos",
   "clanNumber": 13,
   "member": 1,
   "speciesNumber": 417,
@@ -1994,7 +1995,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S13: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, wing cases; scales; splayed, neck head.",
+  "brief": "Oskol: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, wing cases; scales; splayed, neck head.",
   "bounds": {
    "min": [
     -1.039946438857224,

@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S08",
-  "name": "S08",
-  "plural": "S08",
+  "name": "Rupar",
+  "plural": "Rupar",
   "order": 8,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "leaves, fruit",
   "ability": "climbs cliff steps that block other partners",
   "character": "sure-footed and proud",
+  "clanName": "Kremnion",
   "clanNumber": 8,
   "member": 1,
   "speciesNumber": 257,
@@ -2232,7 +2233,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S08: 2 body regions (B2), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, neck head.",
+  "brief": "Rupar: 2 body regions (B2), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, neck head.",
   "bounds": {
    "min": [
     -2.22504554067745,

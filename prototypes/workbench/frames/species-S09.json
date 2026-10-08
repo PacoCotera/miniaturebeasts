@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S09",
-  "name": "S09",
-  "plural": "S09",
+  "name": "Belatz",
+  "plural": "Belatz",
   "order": 9,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "fruit, seeds",
   "ability": "scouts from above: reveals the cells around",
   "character": "watchful, lordly",
+  "clanName": "Aithria",
   "clanNumber": 9,
   "member": 1,
   "speciesNumber": 289,
@@ -2564,7 +2565,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S09: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 4 legs, 2 flaps, a tail; feathers; plantigrade, neck head.",
+  "brief": "Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 4 legs, 2 flaps, a tail; feathers; plantigrade, neck head.",
   "bounds": {
    "min": [
     -2.0037699700111955,

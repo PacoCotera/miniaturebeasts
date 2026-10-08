@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S06",
-  "name": "S06",
-  "plural": "S06",
+  "name": "Pesko",
+  "plural": "Pesko",
   "order": 6,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "fruit, washed first",
   "ability": "lifts slabs to find what is under them",
   "character": "nosy, a cheerful mischief-maker",
+  "clanName": "Prosopa",
   "clanNumber": 6,
   "member": 1,
   "speciesNumber": 193,
@@ -2152,7 +2153,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S06: 2 body regions (B2), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, neck head.",
+  "brief": "Pesko: 2 body regions (B2), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, neck head.",
   "bounds": {
    "min": [
     -1.6124814358205495,

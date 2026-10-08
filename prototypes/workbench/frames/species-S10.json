@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S10",
-  "name": "S10",
-  "plural": "S10",
+  "name": "Igara",
+  "plural": "Igara",
   "order": 10,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "fruit",
   "ability": "swims fast water",
   "character": "playful, never still",
+  "clanName": "Kolymba",
   "clanNumber": 10,
   "member": 1,
   "speciesNumber": 321,
@@ -2168,7 +2169,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S10: 3 body regions (B3), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, fused head.",
+  "brief": "Igara: 3 body regions (B3), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, fused head.",
   "bounds": {
    "min": [
     -1.4898948449171718,

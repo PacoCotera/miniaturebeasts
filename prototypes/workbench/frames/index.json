@@ -13,7 +13,7 @@
  "species": [
   {
    "id": "S01",
-   "name": "S01",
+   "name": "Loika",
    "clan": "C01",
    "plan": "B1·L4",
    "rig": "B1",
@@ -25,7 +25,7 @@
   },
   {
    "id": "S02",
-   "name": "S02",
+   "name": "Untuva",
    "clan": "C02",
    "plan": "R1·flaps",
    "rig": "R1",
@@ -37,7 +37,7 @@
   },
   {
    "id": "S03",
-   "name": "S03",
+   "name": "Tuikis",
    "clan": "C03",
    "plan": "B2·L4",
    "rig": "B2",
@@ -49,7 +49,7 @@
   },
   {
    "id": "S04",
-   "name": "S04",
+   "name": "Hiljan",
    "clan": "C04",
    "plan": "B2·L4",
    "rig": "B2",
@@ -61,7 +61,7 @@
   },
   {
    "id": "S05",
-   "name": "S05",
+   "name": "Tepor",
    "clan": "C05",
    "plan": "B2·L4",
    "rig": "B2",
@@ -73,7 +73,7 @@
   },
   {
    "id": "S06",
-   "name": "S06",
+   "name": "Pesko",
    "clan": "C06",
    "plan": "B2·L4",
    "rig": "B2",
@@ -85,7 +85,7 @@
   },
   {
    "id": "S07",
-   "name": "S07",
+   "name": "Azkon",
    "clan": "C07",
    "plan": "B1·L4",
    "rig": "B1",
@@ -97,7 +97,7 @@
   },
   {
    "id": "S08",
-   "name": "S08",
+   "name": "Rupar",
    "clan": "C08",
    "plan": "B2·L4",
    "rig": "B2",
@@ -109,7 +109,7 @@
   },
   {
    "id": "S09",
-   "name": "S09",
+   "name": "Belatz",
    "clan": "C09",
    "plan": "B2·L4·flaps",
    "rig": "B2",
@@ -121,7 +121,7 @@
   },
   {
    "id": "S10",
-   "name": "S10",
+   "name": "Igara",
    "clan": "C10",
    "plan": "B3·L4",
    "rig": "B3",
@@ -133,7 +133,7 @@
   },
   {
    "id": "S11",
-   "name": "S11",
+   "name": "Kilpo",
    "clan": "C11",
    "plan": "B1·L4",
    "rig": "B1",
@@ -145,7 +145,7 @@
   },
   {
    "id": "S12",
-   "name": "S12",
+   "name": "Peplos",
    "clan": "C12",
    "plan": "B3·L6·flaps",
    "rig": "B3",
@@ -157,7 +157,7 @@
   },
   {
    "id": "S13",
-   "name": "S13",
+   "name": "Oskol",
    "clan": "C13",
    "plan": "B3·L6",
    "rig": "B3",
@@ -169,7 +169,7 @@
   },
   {
    "id": "S14",
-   "name": "S14",
+   "name": "Usvel",
    "clan": "C14",
    "plan": "B3",
    "rig": "B3",
@@ -181,7 +181,7 @@
   },
   {
    "id": "S15",
-   "name": "S15",
+   "name": "Lehten",
    "clan": "C15",
    "plan": "Rfan2·rays",
    "rig": "Rfan2",
@@ -193,7 +193,7 @@
   },
   {
    "id": "S16",
-   "name": "S16",
+   "name": "Blikur",
    "clan": "C16",
    "plan": "Bfan3",
    "rig": "Bfan",
