@@ -1,6 +1,7 @@
 """One Retro Diffusion call for a weather piece, with the signed 48-colour palette as input_palette.
 Dry run first (check_cost, free); then the paid call, polled; raw PNG and a sidecar (no key material) kept.
-usage: python3 -I rd-gen.py TAG OUT_DIR WIDTH HEIGHT "prompt" [--run] [--remove-bg] [--style rd_pro__topdown]"""
+usage: python3 -I rd-gen.py TAG OUT_DIR WIDTH HEIGHT "prompt" [--run] [--remove-bg] [--style rd_pro__topdown]
+       [--input IMG --strength 0.0-1.0] (img2img from a painted crop) [--ref IMG] (RD Pro reference) [--seed N]"""
 import base64, hashlib, io, json, os, sys, time, urllib.request, urllib.error
 HERE = os.path.dirname(os.path.abspath(__file__))
 PAL_PNG = os.path.join(HERE, "..", "palette", "palette.png")
@@ -8,6 +9,10 @@ API = "https://api.retrodiffusion.ai/v2/inferences"
 tag, out, w, h, prompt = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
 run = "--run" in sys.argv; rbg = "--remove-bg" in sys.argv
 style = sys.argv[sys.argv.index("--style") + 1] if "--style" in sys.argv else "rd_pro__topdown"
+def opt(k, d=None): return sys.argv[sys.argv.index(k) + 1] if k in sys.argv else d
+inp, strength, ref, seed = opt("--input"), float(opt("--strength", "0.6")), opt("--ref"), int(opt("--seed", "48"))
+def b64f(p): return base64.b64encode(open(p, "rb").read()).decode()
+def sha(p): return hashlib.sha256(open(p, "rb").read()).hexdigest()
 os.makedirs(out, exist_ok=True)
 pal_b64 = base64.b64encode(open(PAL_PNG, "rb").read()).decode()
 
@@ -18,8 +23,10 @@ def req(method, url, body=None, headers=None):
         with urllib.request.urlopen(r, timeout=120) as resp: return resp.status, json.loads(resp.read().decode())
     except urllib.error.HTTPError as e: return e.code, json.loads(e.read().decode() or "{}")
 
-payload = {"prompt": prompt, "width": w, "height": h, "num_images": 1, "prompt_style": style, "input_palette": pal_b64, "remove_bg": rbg, "seed": 48}
-side = {"id": tag, "tool": "retro-diffusion", "style": style, "size": f"{w}x{h}", "prompt": prompt, "remove_bg": rbg, "seed": 48,
+payload = {"prompt": prompt, "width": w, "height": h, "num_images": 1, "prompt_style": style, "input_palette": pal_b64, "remove_bg": rbg, "seed": seed}
+if inp: payload["input_image"] = b64f(inp); payload["strength"] = strength
+if ref: payload["reference_images"] = [b64f(ref)]
+side = {"id": tag, "tool": "retro-diffusion", "style": style, "size": f"{w}x{h}", "prompt": prompt, "remove_bg": rbg, "seed": seed, "input_image": {"file": inp, "sha256": sha(inp), "strength": strength} if inp else None, "reference_image": {"file": ref, "sha256": sha(ref)} if ref else None,
         "input_palette": {"file": "palette/palette.png", "sha256": hashlib.sha256(open(PAL_PNG, "rb").read()).hexdigest()}, "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
 st, res = req("POST", API, {**payload, "check_cost": True}); print("check_cost", st, res)
 side["checkCost"] = res

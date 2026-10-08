@@ -12,7 +12,7 @@ def streak(pb, x0, y0, lean):
         col = C["white"] if k < 4 else C["ice"] if k < 7 else C["mist"]
         x = x0 + (3 - k // 3) * lean; pb.set(x % S, (y0 + k) % S, col)
 rng = np.random.RandomState(48)
-pts = [(int(rng.randint(S)), int(rng.randint(S))) for _ in range(26)]
+pts = [(int(rng.randint(S)), int(rng.randint(S))) for _ in range(10)]   # sparse: one clean sheet, not a downpour
 for lean, nm in ((1, "left"), (-1, "right")):   # "left": the streak falls toward the left (top right, foot left)
     for fr in (1, 2):
         pb = PB(S, S)

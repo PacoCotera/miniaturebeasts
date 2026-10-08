@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
 from PIL import Image
 import pal, quant
+LIFT = 1.18   # round 2: the owner read the props and the pawn as dark; the painted values are lifted before quantising
 P = quant.P
 src, out = sys.argv[1], sys.argv[2]
 rgba = quant.key_background(Image.open(src), (255, 0, 255), tol=110)
@@ -26,6 +27,7 @@ for name, (r, c), (fw, fh), ramps in spec:
     s = min(fw / w, fh / h)
     size = (max(1, round(w * s)), max(1, round(h * s)))
     small = quant.resize_rgba(np.ascontiguousarray(crop), size)
+    small = small.copy(); small[..., :3] = np.clip(small[..., :3].astype(np.float64) * LIFT, 0, 255).astype(np.uint8)
     # allow white for charged stones' sparks via the N ramp's white
     allowed = pal.ramp_indices(P, ramps.replace("W", "W")) + ([P.index["white"], P.index["ice"]] if "charged" in name else [])
     idx = quant.quantize(small, allowed, alpha_thresh=110)

@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
 from PIL import Image
 import pal, quant
+LIFT = 1.18   # round 2: the owner read the props and the pawn as dark; the painted values are lifted before quantising
 P = quant.P
 src, out = sys.argv[1], sys.argv[2]
 im = Image.open(src).convert("RGB")
@@ -56,6 +57,7 @@ def frame(r, c, fh=40):
     crop = np.ascontiguousarray(cell[y0b:y1b, x0b:x1b])
     h, w = crop.shape[:2]; s = fh / h
     small = quant.resize_rgba(crop, (max(1, round(w * s)), fh))
+    small = small.copy(); small[..., :3] = np.clip(small[..., :3].astype(np.float64) * LIFT, 0, 255).astype(np.uint8)
     idx = quant.quantize(small, allowed, alpha_thresh=120)
     idx = quant.despeckle(idx, 1)
     return quant.outline(idx)

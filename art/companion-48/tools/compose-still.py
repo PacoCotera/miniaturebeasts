@@ -1,7 +1,8 @@
 """The composed 450x600 still: the review place (meadow and pond edge) in a storm, every piece at 1x.
-HUD 32 / view 532 / bottom line 36; the ground and props through the DARK table (a storm over you), the pawn
-and the mibis never; rain over the view; the message box, the name tag, the key caps and the condition bolts
-from the ui sheet; the page's bitmap font at 2x. usage: python3 -I compose-still.py WORK_DIR OUT.png"""
+HUD 32 / view 532 / bottom line 36; the ground and props through the STORM table (round 2: a blue cast, no DARK
+step; --light plain for no table, --light dark for round 1's DARK step), the pawn and the mibis never; rain over
+the view; the message box, the name tag, the key caps and the condition bolts from the ui sheet; the page's
+bitmap font at 2x. usage: python3 -I compose-still.py WORK_DIR OUT.png [--light storm|plain|dark]"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
@@ -9,6 +10,7 @@ from PIL import Image
 import pal, quant, font
 P = quant.P; C = P.index
 work, outp = sys.argv[1], sys.argv[2]
+light = sys.argv[sys.argv.index("--light") + 1] if "--light" in sys.argv else "storm"
 def load(group, name):
     im = Image.open(os.path.join(work, group, name + ".png")).convert("RGBA"); return quant.quantize(np.asarray(im))
 W, H, HUD, LINE = 450, 600, 32, 36; VIEW_Y, VIEW_H = HUD, H - HUD - LINE
@@ -34,16 +36,27 @@ VIEW = (VIEW_Y, VIEW_Y + VIEW_H)
 COLS, ROWS, TS = 10, 12, 48; OX, OY = -15, VIEW_Y - 22
 water = [[(c >= 6 and r >= 7 and not (c == 6 and r == 7) and not (c == 6 and r == 11)) for c in range(COLS)] for r in range(ROWS)]
 rng = np.random.RandomState(7)
-land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "flowers2", (0, 7): "tall1", (4, 9): "flowers1", (2, 3): "shade", (3, 3): "shade", (2, 4): "shade", (5, 11): "tall2"}
-DARK = P.dark
+land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "flowers2", (0, 7): "tall1", (4, 9): "flowers1", (5, 11): "tall2", (9, 3): "tall1"}
+DARK = {"storm": P.storm, "plain": None, "dark": P.dark}[light]
 for r in range(ROWS):
     for c in range(COLS):
         if water[r][c]:
-            t = "deep" if (c >= 8 and r >= 9) else "stone-step" if (c, r) == (7, 10) else "reeds" if (c, r) == (9, 7) else "water1"
+            t = "deep1" if (c >= 8 and r >= 9) else "water1"
         else:
             m = (water[r - 1][c] if r > 0 else False) * 1 + (water[r][c + 1] if c < COLS - 1 else False) * 2 + (water[r + 1][c] if r < ROWS - 1 else False) * 4 + (water[r][c - 1] if c > 0 else False) * 8
             t = f"shore-{m:02d}-1" if m else land.get((c, r), f"grass{1 + rng.randint(4)}")
         blit(load("ground", t) if not t.startswith("shore") else load("shore", t), OX + c * TS, OY + r * TS, DARK, VIEW)
+# the deep water: a soft wavy edge instead of a tile boundary, deep1 drawn over the water where the pond falls away
+deep = load("ground", "deep1")
+for r in range(ROWS):
+    for c in range(COLS):
+        if not water[r][c] or c < 7 or r < 8: continue
+        tile = np.full((TS, TS), -1, dtype=np.int64)
+        for yy in range(TS):
+            for xx in range(TS):
+                gx, gy = c * TS + xx, r * TS + yy
+                if (gx - 7 * TS) + (gy - 8 * TS) + 6 * np.sin(gx / 11.0) + 5 * np.sin(gy / 9.0) > 2.2 * TS: tile[yy, xx] = deep[yy, xx]
+        blit(tile, OX + c * TS, OY + r * TS, DARK, VIEW)
 # ---- props by foot point (tile column, row, piece) and the pawn and mibis, sorted by foot
 def sprite(group, name, cx, cy, table=None):
     idx = load(group, name); ys, xs = np.where(idx >= 0); fy = ys.max() + 1
@@ -51,7 +64,7 @@ def sprite(group, name, cx, cy, table=None):
 def at(c, r, dx=0, dy=0): return OX + c * TS + TS // 2 + dx, OY + r * TS + TS - 2 + dy
 things = [("props", "tree", at(2, 3, 0, 8), DARK), ("props", "bush", at(4, 1), DARK), ("props", "bush-fruit", at(7, 3), DARK), ("props", "bush-shaken", at(1, 8), DARK),
           ("props", "stone", at(5, 4), DARK), ("props", "stone-warm1", at(8, 4), DARK), ("props", "stone-charged1", at(3, 10), DARK),
-          ("props", "outpost-lit", at(8, 1, 0, 4), DARK), ("props", "pod", at(1, 5), DARK), ("props", "dew-cup", at(5, 8), DARK), ("props", "reeds", at(9, 7, 0, -6), DARK),
+          ("props", "outpost-lit", at(8, 1, 0, 4), DARK), ("props", "pod", at(1, 5), DARK), ("props", "dew-cup", at(5, 8), DARK), ("props", "reeds", at(9, 7, 0, -6), DARK), ("props", "stone-plain2", at(7, 10, 0, -4), DARK),
           ("pawn", "pawn-down-walk2", at(4, 6), None), ("tokens", "loika-idle1", at(2, 6), None), ("tokens", "placeholder-S02", at(1, 10), None)]
 blit(load("props", "strike-warn1"), OX + 6 * TS, OY + 5 * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
 for group, name, (cx, cy), table in sorted(things, key=lambda t: t[2][1]): sprite(group, name, cx, cy, table)

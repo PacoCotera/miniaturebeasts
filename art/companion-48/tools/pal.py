@@ -43,6 +43,9 @@ class Palette:
         self.dark2 = [self.dark[i] for i in self.dark]
         self.fog = self.mix_lut("bone", .62)
         self.fade = self.mix_lut("stone", .5)
+        self.storm = self.mix_lut("river", .3)   # round 2: a storm over you casts blue (shade greens go teal) without a DARK step
+        for n in ("sand", "clay", "paper", "bone", "white"):   # the bank and the pale things keep their warmth: storms go blue, never brown-grey
+            self.storm[self.index[n]] = self.index[n]
 
     def nearest(self, r, g, b):
         d = (self.rgb[:, 0] - r) ** 2 * 3 + (self.rgb[:, 1] - g) ** 2 * 4 + (self.rgb[:, 2] - b) ** 2 * 2

@@ -1,20 +1,22 @@
-# Companion 48 px redraw, round 1: the review place
+# Companion 48 px redraw: the review place
 
-The first round of the [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md) (§9 Decided): one place, the meadow and pond edge in a storm, with every piece it needs at 1× on the 48 ramps of the [signed palette](../palette/README.md). Everything here is **a candidate for the owner's review**: generated sources down-rendered by script, scripted chrome, and Pip derived into the Loika token. Nothing is accepted; nothing touches `prototypes/exploration/index.html`.
+The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md) (§9 Decided) on one place, the meadow and pond edge in a storm, with every piece it needs at 1× on the 48 ramps of the [signed palette](../palette/README.md). Everything here is **a candidate for the owner's review**: generated sources down-rendered by script, an Aseprite pass for the meadow, scripted chrome and water, Retro Diffusion candidates beside the scripted pieces, and Pip derived into the Loika token. Nothing is accepted; nothing touches `prototypes/exploration/index.html`.
+
+**State: round 2 in progress, handed over.** Round 1 went to the owner; the owner's five notes (too dark and the rain too heavy; the grid not seamless; pawn, trees and stones dark; river borders too wavy; water flat) are being worked in round 2. What is fixed, what is half done and how every group is made is in [`../HANDOVER.md`](../HANDOVER.md). The pieces, sheets and stills below are round 2's current state; round 1's are frozen in [`round1/`](round1/). The sign-off checklist below is round 1's and is re-filled when round 2 is delivered.
 
 ![Contact sheet at 3×](contact-sheet-3x.png)
 
-*Every piece at 3× ([1× here](contact-sheet-1x.png)). Candidates, not accepted.*
+*Every piece at 3× ([1× here](contact-sheet-1x.png)); a piece that changed in round 2 shows its round 1 version (r1) beside it (r2); the Retro Diffusion candidates are a group of their own, not yet picked. Candidates, not accepted.*
 
 ## The still
 
 ![The review place in a storm, 450×600 at 1×](still/companion-place-storm-48.png)
 
-*450×600 at 1×: HUD 32, view 532, bottom line 36. The ground and props pass once through the DARK table (strong rain over you); the pawn and the mibis never. Rain from the weather sheet over the view; the message box, the name tag, the key caps and the condition bolts from the ui sheet; the page's Mibi 7×9 font at 2×. 0 off-palette pixels by `tools/check.py`; its four-grey rendering is in [`still/four-gray/`](still/four-gray/). "Loika" is a text layer, never baked.*
+*450×600 at 1×: HUD 32, view 532, bottom line 36. Round 2: the ground and props pass through the storm table (a blue cast, no DARK step; [the no-table alternative](still/companion-place-storm-48-plain.png) is kept beside it); the pawn and the mibis never. Rain from the weather sheet over the view; the message box, the name tag, the key caps and the condition bolts from the ui sheet; the page's Mibi 7×9 font at 2×. 0 off-palette pixels by `tools/check.py`; its four-grey rendering is in [`still/four-gray/`](still/four-gray/). "Loika" is a text layer, never baked.*
 
-![Beside the accepted concept and the kit's storm still](still/beside-concept-and-kit.png)
+![Beside the accepted concept and the round 1 still](still/beside-concept-and-round1.png)
 
-*Left, the accepted Companion concept; middle, the ui-kit's `companion-place-storm.png` (the page as it draws today at 32 px); right, this round's still.*
+*Left, the accepted Companion concept; middle, the round 1 still (DARK table); right, the round 2 still (storm table). The kit's own storm still is compared in [`still/beside-concept-and-kit.png`](still/beside-concept-and-kit.png) (round 1).*
 
 ## What is generated, scripted, derived
 
@@ -36,7 +38,7 @@ Sheets: six indexed PNGs (indices 0–47 as signed, 48 transparent) with JSON at
 - `tools/check.py` on the six sheets and the still: **0 off-palette, 0 semi-transparent pixels** on every one.
 - Four-grey renderings of every sheet in [`sheets/four-gray/`](sheets/four-gray/) and of the still in [`still/four-gray/`](still/four-gray/). Fail noted below: under the storm's DARK table the pawn's orange body lands in the same grey as the darkened grass; only its outline separates it.
 
-## Sign-off checklist, §2 Painted master, art director's column
+## Sign-off checklist, §2 Painted master, art director's column (round 1; to be re-filled for round 2)
 
 From [`design/style-guide/sign-off.md`](../../../design/style-guide/sign-off.md) §2. Yes/no per line; failures listed, not hidden. The capabilities column is the builder's and is not signed here.
 

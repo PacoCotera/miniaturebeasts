@@ -11,10 +11,10 @@ P = quant.P; C = P.index
 gd, out = sys.argv[1], sys.argv[2]; os.makedirs(out, exist_ok=True)
 def load(n):
     im = np.asarray(Image.open(os.path.join(gd, n + ".png")).convert("RGBA")); return quant.quantize(im)
-grass, sand = load("grass1"), load("sand"); water = [load("water1"), load("water2")]
+grass, sand = load("grass1"), load("sand"); water = [load("water1"), load("water2")]; shallows = load("shallows")
 N = 48
 def wave(t):   # repeats every 48 px so neighbours join
-    return round(2.2 * np.sin(2 * np.pi * t / 24) + 1.3 * np.sin(2 * np.pi * t / 16 + 1.1))
+    return round(0.9 * np.sin(2 * np.pi * t / 24) + 0.5 * np.sin(2 * np.pi * t / 16 + 1.1))   # a pond bank, not a scallop
 for mask in range(16):
     # depth into water, per pixel: the deepest of the water sides' signed distances past a wavy shoreline 12 px in
     depth = np.full((N, N), -99.0)
@@ -30,10 +30,9 @@ for mask in range(16):
         idx = grass.copy()
         idx = np.where(depth > -7, sand, idx)                          # dry sand band
         idx = np.where(depth > -3, C["clay"], idx)                      # the wet band
-        idx = np.where(depth > -1, water[fr], idx)
+        idx = np.where(depth > -1, shallows, idx)                      # the bank's shallows
+        idx = np.where(depth > 5, water[fr], idx)
         foam = (depth > -1) & (depth <= (0.5 if fr == 0 else 1.5)) & (depth > (-0.5 if fr == 0 else 0.5))
         idx = np.where(foam, C["bone"] if fr == 0 else C["white"], idx)
-        glint = (depth > 1.5) & (depth <= 2.5) & (((np.arange(N)[None, :] + np.arange(N)[:, None] * 3 + fr * 2) % 7) == 0)
-        idx = np.where(glint, C["ice"], idx)
         quant.save_indexed(idx, os.path.join(out, f"shore-{mask:02d}-{fr + 1}.png"))
 print("shore 16 x 2")

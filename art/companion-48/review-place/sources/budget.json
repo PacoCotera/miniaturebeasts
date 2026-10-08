@@ -1,18 +1,10 @@
 {
- "successfulCalls": 3,
- "runs": [
-  {
-   "time": "2026-10-08T17:15:53Z",
-   "plan": "/tmp/claude-0/-home-user-miniaturebeasts/b951398d-74c3-50ba-be6f-9ba22988419a/scratchpad/plan-c48-sources-flat.json",
-   "ids": null,
-   "success": 3,
-   "error": 0
-  }
- ],
+ "successfulCalls": 14,
+ "totalUSD": 2.51,
  "calls": [
   {
    "tag": "C48-P-r1-a1",
-   "model": "gemini-3-pro-image",
+   "tool": "gemini-3-pro-image",
    "in": 1090,
    "out": 1523,
    "usd": 0.1849,
@@ -20,7 +12,7 @@
   },
   {
    "tag": "C48-T-r1-a1",
-   "model": "gemini-3-pro-image",
+   "tool": "gemini-3-pro-image",
    "in": 1124,
    "out": 1415,
    "usd": 0.172,
@@ -28,27 +20,89 @@
   },
   {
    "tag": "C48-W-r1-a1",
-   "model": "gemini-3-pro-image",
+   "tool": "gemini-3-pro-image",
    "in": 1070,
    "out": 1432,
    "usd": 0.174,
    "seconds": 19.5
   },
   {
+   "tag": "C48-S-r2-bush-fruit",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x43",
+   "usd": 0.18,
+   "seconds": 58.2
+  },
+  {
+   "tag": "C48-S-r2-bush",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x43",
+   "usd": 0.18,
+   "seconds": 31.3
+  },
+  {
+   "tag": "C48-S-r2-outpost-lit",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x55",
+   "usd": 0.18,
+   "seconds": 31.2
+  },
+  {
+   "tag": "C48-S-r2-stone-charged1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "44x48",
+   "usd": 0.18,
+   "seconds": 47.0
+  },
+  {
+   "tag": "C48-S-r2-stone-warm1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "44x45",
+   "usd": 0.18,
+   "seconds": 36.5
+  },
+  {
+   "tag": "C48-S-r2-stone",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "32x35",
+   "usd": 0.18,
+   "seconds": 31.2
+  },
+  {
+   "tag": "C48-S-r2-tree",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "96x111",
+   "usd": 0.18,
+   "seconds": 47.1
+  },
+  {
    "tag": "C48-R-r1-a1",
-   "model": "retro-diffusion rd_pro__topdown",
+   "tool": "retro-diffusion rd_pro__topdown",
    "size": "96x96",
    "usd": 0.18,
    "seconds": 21.2
   },
   {
    "tag": "C48-R-r1-a2",
-   "model": "retro-diffusion rd_pro__topdown",
+   "tool": "retro-diffusion rd_pro__topdown",
    "size": "96x96",
    "usd": 0.18,
    "seconds": 52.7
+  },
+  {
+   "tag": "C48-R-r2-water1",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 21.1
+  },
+  {
+   "tag": "C48-R-r2-water2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 41.9
   }
  ],
- "totalUSD": 0.89,
- "pricing": "gemini-3-pro-image standard tier: $2.00/M input, $120/M output tokens (ai.google.dev pricing, 2026-10-08); Retro Diffusion rd_pro: $0.18 per 96x96 image (balance_cost in the task result)"
+ "pricing": "gemini-3-pro-image standard tier: $2.00/M input, $120/M output tokens (ai.google.dev pricing, 2026-10-08); Retro Diffusion rd_pro: $0.18 per image (balance_cost in the task result)"
 }
