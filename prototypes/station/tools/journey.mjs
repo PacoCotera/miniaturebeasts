@@ -145,7 +145,7 @@ expect(dec.stamps.length === 1 && dec.stamps[0].genome.read.join() === "Coat,Fac
 await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika2.id);
 await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
 await press("up", 100); await press("left", 100); await press("left", 100); await press("right", 100);   // the rail remembers the last chapter: back to Coat, then Face
-l = await line(); expect(/Read Face/.test(l.ok) && l.price === "1 ◆", "a second Loika's Face costs 1: " + JSON.stringify(l));
+l = await line(); expect(/Read Face/.test(l.ok) && l.price === "1 ◆ · half", "a second Loika's Face costs 1, half price shown on the bottom line: " + JSON.stringify(l));
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 // a glint on the first Loika? (only when the second carried something new: not asserted); the need line never shows digits of progress
 // 5. Compare: from the second Loika's pod, ← to its well, walk to the first Loika's well, ✓
@@ -159,7 +159,7 @@ l = await line(); expect(/two Loika pods/.test(l.subject), "compare open: " + JS
 await press("back", 200);
 // 6. return the Tuikis to the wild: +1 Essence, the Companion's record
 const tuikis = s.tray.find((p) => p.species === "S03");
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "gate"; }, tuikis.id);
+await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, tuikis.id);
 const s0 = s.s;
 await press("confirm", 150); await press("confirm", 300);
 s = await st(); expect(s.s === s0 + 1 && !s.tray.some((p) => p.id === tuikis.id) && s.returned.at(-1).id === tuikis.id, "returned for +1 Essence");

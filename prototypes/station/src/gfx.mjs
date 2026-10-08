@@ -174,8 +174,6 @@ export function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; 
 // ---------- The frame: 1024×600 at 1:1 device pixels ----------
 export const R = (x, y, w, h, c) => SC.fillRect([Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)], name(c));
 export const blit = (pb, x, y) => SC.part(pb.layer || "art", pb.canvas(), 0, 0, pb.w, pb.h, Math.round(x), Math.round(y));
-// A sprite inside a rectangle only (a reveal that shows part of a picture).
-export const blitClip = (pb, x, y, clip) => SC.part(pb.layer || "art", pb.canvas(), 0, 0, pb.w, pb.h, Math.round(x), Math.round(y), clip);
 export function text(str, x, y, col, s, align) {
   s = s || 2; x = Math.round(x); y = Math.round(y); const w = textW(str, s), px = FONT_PX[s] || 16;
   if (align === "center") x -= Math.round(w / 2); else if (align === "right") x -= w;

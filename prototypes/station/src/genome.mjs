@@ -8,6 +8,7 @@ import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genome
 import { lookOf } from "../../workbench/framework/describe.mjs";
 import { cross, forecast, kinship, relatedness, identity, SPREAD } from "../../workbench/framework/cross.mjs";
 import { frameFor as stampFrameFor } from "../../genome-stamp/src/frames.mjs";
+import { sizeFor as stampSizeFor } from "../../genome-stamp/src/codec.mjs";
 import { stampCode as stampCodeOf } from "../../genome-stamp/src/codec.mjs";
 
 export { genomeDigest, checkGenome, buildIndividual, shapeTrait, cross, forecast, kinship, relatedness, identity, SPREAD };
@@ -44,7 +45,11 @@ export const chapterSeal = (frame, chapter) => (chapter.sealed ? chapter.opensWi
 
 // A trait as the player reads it (research-loop.md §4): shows X, shows X · hides Y, only X, asleep,
 // breed to change (a doing), and for a blended trait the two halves it carries.
-export function traitState(frame, trait, genome) {
+// Read states are memoised per genome object (a pod's genome is never edited in place; a changed genome is a new object): the screen asks every frame.
+const MEMO = new WeakMap();
+const memo = (genome, key, fn) => { let m = MEMO.get(genome); if (!m) MEMO.set(genome, (m = new Map())); if (!m.has(key)) m.set(key, fn()); return m.get(key); };
+export const traitState = (frame, trait, genome) => memo(genome, "t:" + frame.species.id + ":" + trait.id, () => traitStateOf(frame, trait, genome));
+function traitStateOf(frame, trait, genome) {
   const shows = lookOf(frame, trait, genome);
   const a = lookOf(frame, trait, shapeTrait(frame, genome, trait.id, 1));
   const b = lookOf(frame, trait, shapeTrait(frame, genome, trait.id, 2));
@@ -66,11 +71,15 @@ export function traitState(frame, trait, genome) {
     sub: doing ? "breed to change" : kind === "blend" ? `half ${a}, half ${b}` : null };
 }
 // Every look a pod carries in a chapter (shows and hides of each trait), for the field guide and the glint.
-export function chapterLooks(frame, chapter, genome) {
+export const chapterLooks = (frame, chapter, genome) => memo(genome, "c:" + frame.species.id + ":" + chapter.id, () => chapterLooksOf(frame, chapter, genome));
+function chapterLooksOf(frame, chapter, genome) {
   return chapter.traits.map((t) => [t.id, traitState(frame, t, genome).carried]);
 }
 
 // --- the stamp (genome-stamp/src): the registry's frame for this species, the genome as copies, the read chapters by name ---
+// The stamp's modules a side (N): the cell of its label is floor(104 / (N + 2)), at least 2 (station-layouts.md, the stamp label).
+export const stampModules = (frame) => { const sf = stampFrameOf(frame); return sf ? stampSizeFor(sf).N : 0; };
+export const stampSizing = (frame) => { const N = stampModules(frame), cell = Math.max(2, Math.floor(104 / (N + 2))); return { N, cell, size: (N + 2) * cell }; };
 export const stampFrameOf = (frame) => stampFrameFor(frame.species.order, frame.frameVersion ?? FRAME_VERSION);
 export function stampGenome(frame, genome, readIds) {
   const sf = stampFrameOf(frame);

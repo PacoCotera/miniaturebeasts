@@ -80,6 +80,19 @@ function partBox(scene, camera, parts) {
   return { x0, y0, x1, y1, whole: !parts || nodes.length === scene.nodes.length };
 }
 const PIC_BG = C.creamT;
+const pictureGround = (w, h) => { const pb = new PB(w, h), band = Math.max(8, Math.round(h * 0.2)); pb.rect(0, 0, w, h, PIC_BG); for (let y = h - band; y < h; y++) for (let x = 0; x < w; x++) if (bay(x, y) < (y - (h - band)) / (band / 8)) pb.set(x, y, C.sand); return pb; };
+// A trait's close-up rendered by the rig's camera at the picture's own size (the layout spec's rule: never a crop of a
+// larger render enlarged). The camera is set on the part the trait names (the whole body when no part matches), its scale
+// chosen so the part fills w×h with the old crop's margins; the placeholder renderer draws it once, at that size.
+export function closeUpPB(frame, genome, traitId, w, h) {
+  const pb = pictureGround(w, h), b = builtOf(frame, genome);
+  if (b.error || b.validation.status !== "valid") { pb.blit(blobArt(w, h), 0, 0); return pb; }
+  const base = fitCamera(b.scene, "portrait", [300, 310], 0.06), box = partBox(b.scene, base, partsFor(traitId)), pad = box.whole ? 0.04 : 0.3;
+  const bw = Math.max(box.x1 - box.x0, 40) * (1 + pad), bh = Math.max(box.y1 - box.y0, 40) * (1 + pad), s0 = base.scale;
+  const center = [base.center[0] + ((box.x0 + box.x1) / 2 - 150) / s0, base.center[1] - ((box.y0 + box.y1) / 2 - 155) / s0];
+  pb.blit(renderPB(b.scene, { view: "portrait", scale: s0 * Math.min(w / bw, h / bh), center, size: [w, h] }, "station"), 0, 0);
+  return pb;
+}
 export function traitPic(frame, genome, traitId, w = 150, h = 110) {
   const key = "pic" + genomeDigest(genome) + ":" + traitId + ":" + w + "x" + h;
   return art(key, () => {
@@ -173,19 +186,21 @@ export function ringArt(frame, pod, chapterFlags, r = 30) {
     return pb;
   });
 }
-// Chapter emblems, 16 px: coat (swirl), face (an eye), shape (a bean), legs & tail (a paw), movement (a trail),
-// stamina (a leaf), character (a spark), glow (a star), charge (a bolt).
-export function emblemArt(chapterId) { return art("emb" + chapterId, () => { const pb = new PB(16, 16), c = C.lamp;
-  if (chapterId === "coat") { for (let a = 0; a < 12; a += 0.15) { const r = 1 + a * 0.55; pb.set(8 + Math.cos(a) * r, 8 + Math.sin(a) * r, c); } }
-  else if (chapterId === "face") { pb.ell(8, 8, 7, 4.2, c); pb.ell(8, 8, 2.6, 2.6, C.wood0); pb.set(7, 7, c); }
-  else if (chapterId === "shape") { pb.ell(8, 9, 6.5, 4.5, c); pb.ell(11, 6, 3.2, 3, c); }
-  else if (chapterId === "legs-tail") { pb.ell(8, 11, 4.4, 3.4, c); pb.ell(2.5, 5.5, 1.6, 1.8, c); pb.ell(6, 2.5, 1.6, 1.8, c); pb.ell(10, 2.5, 1.6, 1.8, c); pb.ell(13.5, 5.5, 1.6, 1.8, c); }
-  else if (chapterId === "movement") { for (let i = 0; i < 4; i++) pb.rect(1 + i * 4, 10 - (i % 2) * 5, 3, 3, c); pb.poly([[12, 3], [15, 6], [12, 9]], c); }
-  else if (chapterId === "stamina") { pb.ell(8, 8, 3.5, 7, c, { rot: 0.6 }); pb.line(5, 13, 11, 3, C.wood0); }
-  else if (chapterId === "character") { pb.poly([[8, 0], [10, 6], [16, 8], [10, 10], [8, 16], [6, 10], [0, 8], [6, 6]], c); }
-  else if (chapterId === "glow") { pb.ell(8, 8, 5, 5, c); pb.ell(8, 8, 2.5, 2.5, C.white); }
-  else if (chapterId === "charge") { pb.poly([[9, 0], [3, 9], [8, 9], [6, 16], [13, 6], [8, 6]], c); }
-  else { pb.ell(8, 8, 6, 6, c); }
+// Chapter emblems: coat (swirl), face (an eye), shape (a bean), legs & tail (a paw), movement (a trail), stamina (a leaf),
+// character (a spark), glow (a star), charge (a bolt). Drawn at the size asked (16 for the screens not yet moved, 24 on
+// the rail and pages): the shapes are redrawn from their parameters at that size, never a 16 px picture enlarged.
+export function emblemArt(chapterId, n = 16) { return art("emb" + chapterId + (n === 16 ? "" : ":" + n), () => { const pb = new PB(n, n), c = C.lamp, k = n / 16, K = (v) => v * k, th = Math.max(1, Math.round(k));
+  const E = (x, y, rx, ry, col, o) => pb.ell(K(x), K(y), K(rx), K(ry), col, o), P = (pts, col) => pb.poly(pts.map(([x, y]) => [K(x), K(y)]), col);
+  if (chapterId === "coat") { for (let a = 0; a < 12; a += 0.15 / k) { const r = 1 + a * 0.55; pb.rect(Math.floor(K(8) + Math.cos(a) * K(r) - (th - 1) / 2), Math.floor(K(8) + Math.sin(a) * K(r) - (th - 1) / 2), th, th, c); } }
+  else if (chapterId === "face") { E(8, 8, 7, 4.2, c); E(8, 8, 2.6, 2.6, C.wood0); pb.rect(K(7), K(7), th, th, c); }
+  else if (chapterId === "shape") { E(8, 9, 6.5, 4.5, c); E(11, 6, 3.2, 3, c); }
+  else if (chapterId === "legs-tail") { E(8, 11, 4.4, 3.4, c); E(2.5, 5.5, 1.6, 1.8, c); E(6, 2.5, 1.6, 1.8, c); E(10, 2.5, 1.6, 1.8, c); E(13.5, 5.5, 1.6, 1.8, c); }
+  else if (chapterId === "movement") { for (let i = 0; i < 4; i++) pb.rect(K(1 + i * 4), K(10 - (i % 2) * 5), K(3), K(3), c); P([[12, 3], [15, 6], [12, 9]], c); }
+  else if (chapterId === "stamina") { E(8, 8, 3.5, 7, c, { rot: 0.6 }); pb.line(K(5), K(13), K(11), K(3), C.wood0, th); }
+  else if (chapterId === "character") { P([[8, 0], [10, 6], [16, 8], [10, 10], [8, 16], [6, 10], [0, 8], [6, 6]], c); }
+  else if (chapterId === "glow") { E(8, 8, 5, 5, c); E(8, 8, 2.5, 2.5, C.white); }
+  else if (chapterId === "charge") { P([[9, 0], [3, 9], [8, 9], [6, 16], [13, 6], [8, 6]], c); }
+  else { E(8, 8, 6, 6, c); }
   pb.outline(() => C.wood0); return pb; }); }
 
 // ---------- The room and the bench, as the stand-in v2 drew them (until the masters) ----------

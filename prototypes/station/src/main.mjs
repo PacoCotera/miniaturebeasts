@@ -135,7 +135,7 @@ bootText("loading the species frames…");
 const bootLayer = async () => {
   const { canvas, type } = await bootStationCanvas({ base: new URL("../../ui/", import.meta.url) });
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
-  for (const k of ["frame"]) SPECS[k] = await spec(k + ".json");
+  for (const k of ["frame", "pods"]) SPECS[k] = await spec(k + ".json");
   SC = canvas; bindCanvas(SC); CTX = LAYER.ctx = makeCtx(SPECS.frame, type);
 };
 // The icons the text runs inline (⚡ ◆ ❀ ✕ at the 16 px body size) are registered in the manifest as type assets.

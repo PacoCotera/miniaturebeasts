@@ -36,7 +36,7 @@ export function compState() {
   return "Companion away · since " + hm(G.st.dock.at) + (w ? " · with " + w.name : "");
 }
 let turnShown = null, turnFlash = -1e9;
-function shownTurn() { const a = FX.arr; if (a && arriving()) { const i = Math.floor((clock.now - a.at) / ARRIVE_MS), p = a.plays[i]; return (clock.now - a.at) % ARRIVE_MS > ARRIVE_MS * 0.55 ? p.turnTo : p.turnFrom; } return G.st.turn; }
+export function shownTurn() { const a = FX.arr; if (a && arriving()) { const i = Math.floor((clock.now - a.at) / ARRIVE_MS), p = a.plays[i]; return (clock.now - a.at) % ARRIVE_MS > ARRIVE_MS * 0.55 ? p.turnTo : p.turnFrom; } return G.st.turn; }
 export function drawTop(title) {
   const NOW = clock.now;
   R(0, 0, SW, TOP_H, C.moss1); R(0, TOP_H - 1, SW, 1, C.moss0);
@@ -71,18 +71,18 @@ export function stageBg() {   // an evening room: deep moss, lit softly from abo
     return pb; }), 0, STAGE_Y);
 }
 // The research bench's ground: a deep blue-teal pane (station-screens.md, the instrument).
-export function benchBg() {
-  blit(art("benchbg", () => { const pb = new PB(SW, STAGE_H);
+export function benchArt() { return art("benchbg", () => { const pb = new PB(SW, STAGE_H);
     for (let y = 0; y < STAGE_H; y++) for (let x = 0; x < SW; x++) { const d = Math.hypot((x - SW * 0.45) / (SW * 0.7), (y - STAGE_H * 0.2) / (STAGE_H * 1.1)); pb.p[y * SW + x] = ramp(["deep", "tealD", "night"], 1.2 - d, x, y); }
-    return pb; }), 0, STAGE_Y);
-}
+    return pb; }); }
+export function benchBg() { blit(benchArt(), 0, STAGE_Y); }
 export function lampPool(cx, cy, rx, ry, cols = ["moss1", "moss2", "moss3"]) { blit(art("pool" + rx + "x" + ry + cols.join(), () => { const pb = new PB(rx * 2, ry * 2);
   for (let y = 0; y < ry * 2; y++) for (let x = 0; x < rx * 2; x++) { const d = Math.hypot((x - rx) / rx, (y - ry) / ry); if (d > 1) continue; const c = ramp(cols, (1 - d) * 1.1, x, y); if (c !== C[cols[0]]) pb.set(x, y, c); }
   return pb; }), cx - rx, cy - ry); }
 // A cool beam from above on the specimen stage.
-export function beam(cx, topY, w, h) { blit(art("beam" + w + "x" + h, () => { const pb = new PB(w, h);
+export function beamArt(w, h) { return art("beam" + w + "x" + h, () => { const pb = new PB(w, h);
   for (let y = 0; y < h; y++) { const hw = w * 0.12 + (w * 0.38 * y) / h; for (let x = 0; x < w; x++) { const d = Math.abs(x - w / 2) / hw; if (d > 1) continue; const lvl = (1 - d) * (1 - y / h) * 7; if (lvl > 0.5 && (lvl >= 7 ? true : (x * 7 + y * 3) % 7 < lvl)) pb.set(x, y, C.tealD); } }
-  return pb; }), cx - w / 2, topY); }
+  return pb; }); }
+export function beam(cx, topY, w, h) { blit(beamArt(w, h), cx - w / 2, topY); }
 
 // ---------- Residents living in the vivarium (presentation only; positions are not saved) ----------
 const RES = new Map();
