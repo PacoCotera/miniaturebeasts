@@ -39,7 +39,7 @@ When the Companion is docked and the Station accepts its sealed cargo (exactly o
 
 ### Pods (Research key): identify, read, create
 
-The pod list up close. Each pod in the list wears its place stamp, its species glyph (or its seal) and a progress ring that fills as its chapters are read. One pod fills the centre, large, with its origin written under it in play words ("rock field · a Tuikis felt safe · expedition 4"). The pad moves between pods along the list.
+The pod list up close. Each pod in the list wears its place stamp, its species glyph (or its seal) and a progress ring that fills as its chapters are read. One pod fills the centre, large, with its origin written under it in play words ("Found on the rock field, as a Tuikis felt safe."). The pad moves between pods along the list.
 
 - **Identify** (1 Energy; the first pod ever is free). ✓ and the seal on the cap breaks: the species glyph shows, then its name. A new species gets a stamp ("New species · Tuikis"): its **frame**, every part the species fixes, is learned once and its Library page opens. A pod of a known species is quicker ("Tuikis · logged"). Either way the pod's genome ring draws its grey centre band, and each chapter shows as a sector of hairlines: something is there, not read yet.
 - **Read** (Data, one chapter). An identified pod shows its **chapters** as arcs and as pages: Coat, Face, Movement and so on, each a page of a few **traits**, each trait one picture (markings, crown, gait). Which chapters and traits exist comes from the species frame; the player never sees a locus.
@@ -191,7 +191,7 @@ Breeding beyond the minimal same-species cross (eligibility rules, fertility, fa
 
 The Companion comes back with one consignment sealed ("1 consignment sealed · dock to transfer") and is set on the Caddy; the Station, on Home, accepts the cargo. A Tuikis pod rolls into a cup; the counters tick. Bottom line: "✓ Look at the new pods".
 
-1. ✓ Research opens on the new pod: "Unknown pod · rock field · a Tuikis felt safe". Line: "✓ Identify · 1 ⚡".
+1. ✓ Research opens on the new pod: the pod labelled "Unknown", with "Found on the rock field, as a creature felt safe.". Line: "✓ Identify · 1 ⚡".
 2. ✓ The seal breaks; the Tuikis glyph shows. "New species · Tuikis". Its frame is learned; the ring draws its grey band and four hairline sectors, one per chapter.
 3. Pad → the Coat arc. "✓ Read Coat · 3 ◆".
 4. ✓ The page turns: stripes on the flank with a seed holding spots ("shows stripes · hides spots"), "only teal", "short fur". The Coat sector fills; the preview redraws with stripes.
