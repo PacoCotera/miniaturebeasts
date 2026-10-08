@@ -54,6 +54,20 @@ jobs:
           gh release create "$tag" --target "$GITHUB_SHA" --title "Sandbox $tag" \
             --notes "Tested site + prototypes at $GITHUB_SHA. The VM installs the newest sandbox-* release." \
             "sandbox-${GITHUB_SHA:0:7}.tar.gz" "sandbox-${GITHUB_SHA:0:7}.sha256"
+      - name: Keep only the five newest sandbox releases
+        # Every push to main adds a bundle of 100+ MB; nothing ever removed them.
+        # The VM keeps its last five installs, so five on GitHub matches it.
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release list --limit 500 --json tagName,createdAt \
+            --jq '[.[] | select(.tagName | startswith("sandbox-"))] | sort_by(.createdAt) | reverse | .[5:][].tagName' |
+          while read -r tag; do
+            echo "pruning $tag"
+            gh release delete "$tag" --cleanup-tag --yes
+          done
       - name: Push the same bundle to the gh-pages branch (temporary mirror)
         if: github.ref == 'refs/heads/main'
         run: |
