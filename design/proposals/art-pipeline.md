@@ -22,7 +22,27 @@
 
 **Decided 2026-10-08 (the words, [the portrait](the-portrait.md)).** The prize is a **portrait**; the earned right to one is **a sitting**, never a token; the act is the sitting ceremony on the Station, and the portrait arrives as a crate at the dock. Where this document says "jewel", read "a sitting" for the right and "the portrait" for the render. A sitting is earned once each by a species' field guide filled, its sealed chapter opened, a drop's first pod and a deep line; one is held at a time, a second earned while one is held is not given and the Station warns ahead, and the paid tier's monthly sitting waits on the account until the slot is empty. One sitting per mibi, ever. The generic species pictures of §6 are **faces**; the plain renderer that draws every mibi has its own brief, [the plain renderer](plain-renderer.md).
 
-**Still standing.** The kit plays standalone and the core game never depends on a remote call (Project 10-07; Architecture): the plain version is the game offline. No hand-made art per individual (10-01). Sketch before art (10-02): the control images are the sketch. Art never changes genes; draw only what is known; same individual everywhere. The art director signs every piece *the owner sees* (10-07): the species plates, the contract and the test sets; no person sees a player's render before the player, so the checks of §5 stand in. Engineers do not draw. Clean room (10-07): a fixed template, project-owned references only. Pods from one renderer and the stamp from the genome bits: unchanged.
+**Decided 2026-10-08 (the standard painting).** Generic, locally hosted generation below the quality of the Loika painted with Gemini in the stage 1 trial is **not accepted**. The **standard look of every mibi is the cloud painting**, made at Grow over the Station's control passes: about $0.35 a mibi, three-quarter and side views, checked against the silhouette and the slot map, one retry. From it the Station **derives** the Companion resident, the 48 px token and the idle and walk frames; nothing is painted small. **Offline, the player sees the stylised rig placeholder** until the Caddy reconnects and the painting lands; the placeholder is never the final look. **Species pieces** (the type specimen, the face set, a generic token for silhouettes not yet met, the Library face) are painted once per species at authoring. **The portrait** (a sitting) adds the chosen pose and place, the richer finish, the full view set, the signed postmark and the card. **Retro Diffusion is dropped** from the pipeline unless a token clean-up test earns it back. The flood is held by **the bud** (one at a time, twenty minutes) and a **daily grow cap** behind the developer toggle. *Consequences:* "plain is the kit, unique is the paid layer" (decision 3) and the cut-off framing (§6, §8, §9) are superseded; of the second round above, the sitting, its wait, the allowance and the limit stand for the portrait, but "the standard look rendered from the rig is the game's art" does not: the rig's render is the placeholder ([the placeholder brief](plain-renderer.md)), and the art investment goes to the species pieces and the control passes. Principle 5 returns in its new form: offline the placeholder, connected the painting. Principle 1's "generated per individual while it incubates" stands again as the default flow. The components are in §1.1.
+
+### 1.1 The components
+
+**Decided 2026-10-08.** Where each piece is made, when, what it is and what it costs.
+
+| Component | Where | When | What | Cost per step |
+| --- | --- | --- | --- | --- |
+| Genome | Station | at Grow | committed and validated whole; the manifest keyed by its digest | none |
+| Rig | Station | at Grow, within a second | continuous proportions, species pools, markings | none |
+| Control passes | Station | at Grow | silhouette, slots, index, markings, shaded; three-quarter and side (§4) | none |
+| Placeholder | Station | at Grow, shown until the painting lands | the stylised rig pass: ramps, outline, no faces, no materials ([brief](plain-renderer.md)) | none |
+| Standard painting | the cloud painter, brokered by the Caddy | at Grow, inside the bud's twenty minutes; later stages ahead of the change | three-quarter and side views over the controls and the species pieces; checked against silhouette and slot map; one retry | about $0.35 a mibi |
+| Derivation | Station | when the painting lands | the Companion resident 280×300, the 48 px token, idle 2 and walk 3 frames, the Caddy four-grey; never painted small | none |
+| Species pieces | the cloud painter, the art director's pick | once per species, at authoring | type specimen, face set, generic token for unmet silhouettes, Library face | about 20 calls, $2–3 a species |
+| Portrait | the cloud painter, brokered by the Caddy | at a sitting, a few hours | the chosen pose and place, the richer finish, the full view set, the signed postmark | a few calls; measured in stage 1 |
+| Card | Station layout; the website page from the archive | when the portrait lands | portrait, name, species, place, stamp and postmark; Companion, Caddy print and web | none |
+| Retro Diffusion | dropped | | may return only if a token clean-up test earns it | |
+| Flood control | Station (the bud) and Caddy (the cap) | always | one bud at a time, twenty minutes; a daily grow cap behind the developer toggle | |
+
+**Still standing.** The kit plays standalone and the core game never depends on a remote call (Project 10-07; Architecture): the plain version is the game offline (*2026-10-08: as the placeholder, until the painting lands*). No hand-made art per individual (10-01). Sketch before art (10-02): the control images are the sketch. Art never changes genes; draw only what is known; same individual everywhere. The art director signs every piece *the owner sees* (10-07): the species plates, the contract and the test sets; no person sees a player's render before the player, so the checks of §5 stand in. Engineers do not draw. Clean room (10-07): a fixed template, project-owned references only. Pods from one renderer and the stamp from the genome bits: unchanged.
 
 **Superseded.** "Generate at archetype levels; render individuals on device from a parts library" (the earlier principle 1, stages 2–5, §4 and §5), the hour budget per rig, limb set and covering, the first-drop weeks, and the earlier decisions 1, 2 and 5. Decision 3 (the first drop is one of each kind: Loika, Kilpo, Belatz, Peplos, Lehten) and 4 (species artefacts in `art/library/`) stand; individual renders never enter the repository.
 
@@ -31,6 +51,8 @@
 The player presses Grow. From that press to Open are the **incubation minutes** (station-loop §1, **Decided**: small 2, medium 3, large 4, +1 per chapter beyond three, +1 per trait changed; the first mibi ever 1). That is the latency budget.
 
 **Decided 2026-10-08.** *The gate changes:* Grow no longer starts a generation job. Step 1 (the rig renders the standard look, on screen within a second) is the whole flow for every mibi; steps 2–5 run only when the player **spends a jewel** on a mibi (earned by a research item, or from the paid tier's monthly allowance), and the jewel's wait is its own, not the incubation's. *2026-10-08, the words:* the gate is the **sitting**: `✓ Portray Fig · 1 sitting` on Habitat, with the pose and place chosen in the ceremony ([the portrait](the-portrait.md) §1); the job runs for a few hours and the portrait lands in the sample bay as a crate, never in the incubator. The incubation minutes are now [research-economy](research-economy.md) §5 (twenty plus one per shaped trait; the first bud ever five; an instant grow for a cost). The latency reasoning below stands for the jewel's job and is otherwise *superseded*.
+
+**Decided 2026-10-08 (the standard painting).** *The gate changes back:* Grow starts the standard painting for every mibi (§1.1), and steps 1–5 are the flow again. Step 1 shows the **placeholder**, not a finished look; steps 2–5 bring the painting (three-quarter and side, one retry) inside the bud's twenty minutes on a connected kit, and later on an offline one. The sitting is a second, separate job for the portrait. The bud and the daily grow cap bound how many jobs a day can start.
 
 1. **Station, at once.** The genome is committed and validated as a whole. The Station runs the rig (the workbench's `rig.mjs` and `raster.mjs`) and writes the **control set** (§4) and the **plain version** (§3) for the juvenile, on screen within a second. The job manifest names the genome digest, the frame, rig, species plate and template versions, and the outputs wanted in order of need.
 2. **Station → Caddy** over the home Wi-Fi (both are on it; the dock is not needed). The Caddy keeps the queue on its own storage; a job survives a power cut.
@@ -49,6 +71,8 @@ The player presses Grow. From that press to Open are the **incubation minutes** 
 **The swap** is a one-way promotion at the next fresh draw of that mibi (a screen change, waking, coming home), never while it is on screen. Silhouette, slots and markings are the same by contract, so the swap changes craft, not identity. The plain version is kept forever and drawn again only when the unique set is missing or fails validation. The player is never told which version they see.
 
 **Decided 2026-10-08.** The plain version is the **standard look**, the game's art for every mibi, and it gets real art investment. The swap happens only for a mibi given a jewel, and it is shown as the prize it is: *"the player is never told which version they see" is superseded.*
+
+**Decided 2026-10-08 (the standard painting).** *The paragraph above is superseded.* The plain version is the **placeholder**: a deliberate stylised rig pass, no faces, no materials, shown while the painting is pending and never the final look ([the placeholder brief](plain-renderer.md)). The swap is the **painting landing**: one-way, at the next fresh draw, for every mibi; it is not announced as a prize, but the placeholder is plainly a placeholder, so a player can see a mibi is still waiting for its painting. The portrait, when it comes, replaces the standard painting the same way. Research before Grow still shows the placeholder of the expressed look on Pods and Create.
 
 **Frosting.** A bred child is known only where its parents' copies matched (research-loop §4). Generation runs at Grow for the whole expressed body; the display frosts the parts of unread chapters through the **index pass**, on both versions, and reading clears it. The hidden copy of any locus is never in the manifest, the template or the controls, so it cannot be painted (Decided 2).
 
@@ -69,6 +93,8 @@ Per output, from the workbench's sketch (`sketch.mjs`, the cache manifest of `mb
 | **Palette lock** | the individual's slot colours with the device ramps | stay on it; the Station snaps the rest |
 
 The three things the rig cannot say (stage 0 report: materials, the face, the pose) are the species plate's to say. Stage 1 chooses the service and call shape that honour this: the Retro Diffusion trial shows palette locks and references hold but identity and outline do not without them, and its Pro family stops at 256 px, so the Station master is a painted-model call and the Companion version is derived (§6).
+
+**Decided 2026-10-08 (the standard painting).** The contract above is the contract of the standard painting, for every mibi: the three-quarter view is the main view, the **side view is painted too**, and the species pieces of §1.1 (type specimen, face set) travel as the references. Retro Diffusion is dropped from the pipeline; its stage 1 token came out as a dark silhouette, and it returns only if a token clean-up test earns it back. The token is derived from the painting.
 
 ## 5. Consistency rules
 
@@ -100,6 +126,8 @@ Two Loikas with the same pool values share a token in the field and differ in th
 
 **Decided 2026-10-08.** The "unique" rows above describe a mibi that has been given a jewel. For every other mibi the resident views are the standard look from the rig, which, with continuous proportions, already differs per individual.
 
+**Decided 2026-10-08 (the standard painting).** *The note above is superseded.* The table reads for every mibi: the Station resident and side view are the standard painting; the Companion resident, the Caddy four-grey, the field token and the HUD face are **derived from that painting** on the Station, never painted small and no longer generic per species. The generic token of the token rig stays only for a silhouette the painting has not yet met (an offline mibi before its painting lands, a wild creature not yet grown). The faces and the look plates stay generic per species, painted once at authoring. The portrait adds the full view set with its own finish over the standard painting. "Two Loikas with the same pool values share a token in the field" no longer holds.
+
 ## 7. Storage, backup and restore
 
 - **Caddy.** An SD card beside the e-paper module (an addition to the reference hardware): content-addressed objects and one manifest per mibi per stage, forever. A full set is 1–3 MB; 500 mibis under 2 GB; a 32 GB card holds a kit's lifetime. The Caddy never deletes a render.
@@ -124,6 +152,17 @@ Two Loikas with the same pool values share a token in the field and differ in th
 
 **Decided 2026-10-08.** *The framing "per mibi grown" is superseded.* The unit of spend is the **jewel**: one earned per research item (a species' field guide completed, or its sealed chapter opened), so at most about one per species per kit on the free path, plus the paid tier's monthly allowance, which the tier's price covers. A hard per-Caddy daily limit (behind a developer toggle) bounds the worst day; a jewel is never bought with in-game currency. The per-jewel figures in the table (one row is one jewel at that cut-off) stand; stage 1 measures them. **Per species, once:** the plate set (type specimen, three stages, two views, two or three candidates each for the art director's pick) about 20 calls, $2–3, plus the token rig (about 6 art hours) and the look plates. Sixteen species: about $45 in calls and 100–130 art hours, against the superseded 1,400.
 
+**Decided 2026-10-08 (the standard painting).** *The unit of spend is the mibi again, plus sittings.* The model is **standard per mibi plus sittings**:
+
+| | Per unit | Per kit-year | Note |
+| --- | ---: | ---: | --- |
+| Standard painting | about $0.35 a mibi (three-quarter and side, one retry) | about $14 at 40 mibis grown; $21 at 60 | the owner's figure; stage 1 measured $0.096 a call for one view and one stage, so the figure assumes both views in a call or two per juvenile, the later stages measured next |
+| Sittings | about $0.70 a portrait (the full view set, the trial's B) | about $11 if every species yields one | the paid tier's monthly sitting is covered by its price |
+| Species pieces | $2–3 a species | none; once at authoring | about $45 for sixteen |
+| Kit-year | | **about $25–30**, before the archive's storage | ten kits about $250–300 a year |
+
+The daily grow cap behind the developer toggle bounds the worst day; the bud (one at a time, twenty minutes) bounds the ordinary one. The cut-off rows above stand as the record of what was measured; the cut-off itself is no longer a question.
+
 ## 9. The cut-off test (stage 1)
 
 1. **Individuals.** Loika (S01, skin), Belatz (S09, fur, one pair), Peplos (S12, insect-like, flaps): three rigs, three coverings. Five random individuals each from the workbench's pools plus the type specimen; controls from `sketch/cli.mjs --set`.
@@ -135,6 +174,8 @@ Two Loikas with the same pool values share a token in the field and differ in th
 7. **The plain version beside everything,** so the owner sees what an offline kit plays.
 
 **Owner review A:** the sheets, the tallies, the costs; the owner names the cut-off and says whether the plain version is good enough to be the offline game.
+
+**Decided 2026-10-08 (the standard painting).** Review A is held: the owner saw the stage 1 sheets and set the bar at the Loika painted with Gemini. *The cut-off question is closed:* the painting is the standard for every mibi, down to the derived Companion and token (the trial's derived token was the better 48 px picture in all three species); the plain version is the placeholder, not the offline game. What stage 1 still owes: the side view, the three stages, the validator's index and slot checks, and the token clean-up test that could earn Retro Diffusion back.
 
 ## 10. The stages, revised
 
@@ -151,12 +192,16 @@ Superseded: plates per level, the parts library per plan, the runtime compositor
 
 **Decided 2026-10-08.** The stage plan is read with the prize in mind: **stage 1** keeps the service trial, but its purpose is to learn **what a jewel costs** and to set the contract for the jewel; **stage 2** gains the **standard look** as its first deliverable, the plain treatment finished to the style guide and signed as the game's art for every mibi (the art director's review B judges it, since it is what every player sees); **stage 3** adds the research-item hook (a field guide completed, a sealed chapter opened, yields a jewel), the paid tier's allowance and the daily limit toggle, and owner review C opens a mibi in the standard look and spends a jewel on it. "Owner review A: whether the plain version is good enough to be the offline game" (§9) becomes whether it is good enough to be the game.
 
+**Decided 2026-10-08 (the standard painting).** *Read again:* **stage 1** finishes the contract of the standard painting (both views, three stages, the validator) and measures its cost per mibi; **stage 2**'s first deliverable is the **species pieces** (type specimen, face set, generic token for unmet silhouettes, Library face) and the **placeholder** pass, not a finished standard look from the rig; **stage 3** builds the painting at Grow for every mibi, the placeholder state, the landing, the derivation, the daily grow cap, and keeps the sitting; owner review C opens a mibi in the placeholder, sees its painting land, carries it and spends a sitting on it.
+
 ## 11. What each device needs built
 
 - **Station (Pi).** The rig and rasterizer on the device (native port, or the workbench's modules as a local service; **Open**); the plain treatment; the control export and manifest; the hand-off and fetch over Wi-Fi; the validator; the down-render for the Companion and the value-table pass for the Caddy; the swap and frosting on every screen that draws a mibi; stage-change scheduling.
 - **Caddy (ESP32-S3).** SD storage and the object store; the persistent queue with its retry schedule; the account, credentials and calls with idempotency keys; archive upload and restore; a monthly call cap per kit with a quiet stop; sync to the Station and, at the dock, the Companion; its own four-grey view and print.
 - **Companion (ESP32-S3).** Keep the resident sets of the mibis it carries; the swap on the resident view; the species token rigs with pigment remap for the field, the partner ring and Cargo; nothing that calls out.
 - **Shared.** The manifest and cache format (the workbench's, per §5); the content pack with plates, token rigs, templates and value tables.
+
+**Decided 2026-10-08 (the standard painting).** The Station's "plain treatment" is the placeholder pass, and its down-render now also makes the token and the idle and walk frames from the painting. The Caddy's monthly call cap becomes the **daily grow cap** behind the developer toggle. The Companion keeps the derived sets of the mibis it carries and the generic token rigs only for silhouettes without a painting yet.
 
 ## 12. Risks
 
@@ -165,7 +210,7 @@ Superseded: plates per level, the parts library per plan, the runtime compositor
 | The service moves or adds a part despite the controls (v1's constant failure) | identity | the index and silhouette checks, one named retry, then plain; thresholds from stage 1 evidence |
 | Identity drifts between views and stages | same individual everywhere | the prior render as reference; the side view may stay plain (cut-off C) |
 | The derived Companion version is not HiBit | the Companion's rules | stage 1 judges it at 1×; the fallback is a painted call at size, or plain |
-| The plain version reads as a placeholder | offline kits, Decided 5 | finished to the style guide and signed as a treatment; review A judges it |
+| The plain version reads as a placeholder | offline kits, Decided 5 | finished to the style guide and signed as a treatment; review A judges it. *2026-10-08: it is the placeholder, by design; the risk is now a kit that stays offline for long, whose mibis wait in it; the painting lands at the first reconnection* |
 | Incubation shorter than the calls | the first mibi, small species | one call in the budget, the rest ahead of need; the swap makes a late set harmless |
 | Spend grows with play | per-kit cost | the cut-off; a monthly cap per kit; the archive serves restores |
 | A model is retired or changes under its name | consistency | the model id in the key; never regenerate; the archive keeps the bytes |
@@ -176,5 +221,5 @@ Superseded: plates per level, the parts library per plan, the runtime compositor
 ## 13. Decisions for the owner
 
 1. **The hub's work split.** The Caddy brokers, stores and archives (Decided); the Station, being the Pi, renders the controls and the plain version, validates and derives. *Recommended.* The Station as broker too would spare the Caddy its card but leave the renders on the device replaced first.
-2. **Test cut-off B first** (unique down to the Companion resident, token generic), with A as the control and C as the saving. *Recommended.*
-3. **Is the unique art part of the kit or of the paid cloud layer?** Architecture decides the cloud is a gated, paid layer never needed for core play. *Recommended:* the plain version is the kit; the unique version is the first feature of the paid layer, which also funds the archive. **Decided 2026-10-08, with a change:** the standard look is the kit and the game's art for every mibi; the unique render is a **prize** that the kit itself earns by research (a field guide completed, a sealed chapter opened), so it is not only a paid feature; the paid tier adds a monthly allowance and the archive on top; never bought with in-game currency; a hard per-Caddy daily limit behind a developer toggle. *2026-10-08, the words:* the kit earns **sittings** by research; the paid tier adds **one sitting a month**, held on the account until the kit's slot is empty; the plain renderer is the kit's, the portrait is what a sitting buys.
+2. **Test cut-off B first** (unique down to the Companion resident, token generic), with A as the control and C as the saving. *Recommended.* **Decided 2026-10-08 (the standard painting):** closed; the painting is the standard, everything smaller is derived from it (§1.1).
+3. **Is the unique art part of the kit or of the paid cloud layer?** Architecture decides the cloud is a gated, paid layer never needed for core play. *Recommended:* the plain version is the kit; the unique version is the first feature of the paid layer, which also funds the archive. **Decided 2026-10-08, with a change:** the standard look is the kit and the game's art for every mibi; the unique render is a **prize** that the kit itself earns by research (a field guide completed, a sealed chapter opened), so it is not only a paid feature; the paid tier adds a monthly allowance and the archive on top; never bought with in-game currency; a hard per-Caddy daily limit behind a developer toggle. *2026-10-08, the words:* the kit earns **sittings** by research; the paid tier adds **one sitting a month**, held on the account until the kit's slot is empty; the plain renderer is the kit's, the portrait is what a sitting buys. **Decided 2026-10-08 (the standard painting), superseding both:** the standard painting is for **every mibi**, free, made at Grow; the rig's render is only the placeholder shown until it lands; the sitting buys the portrait on top (pose, place, finish, the full view set, the postmark, the card). The cloud is still never needed to play, only to see a mibi finished.
