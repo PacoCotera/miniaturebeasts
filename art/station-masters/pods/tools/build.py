@@ -48,18 +48,32 @@ def cradle():
     f = min(224 / d.width, 96 / d.height); d = d.resize((round(d.width * f), round(d.height * f)), Image.LANCZOS)
     c = Image.new("RGBA", (224, 96), (0, 0, 0, 0)); c.alpha_composite(d, ((224 - d.width) // 2, 96 - d.height))
     save("room-cradle", c, [600, 328, 224, 96], "the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is %d px wide), bottom on the last row" % d.width, "dish-lowa")
-    x = np.asarray(c).astype(float).copy(); yy = np.arange(96)[:, None]
-    # below the dip the wall must read as frosted glass, not as a window on the bed: from row 60 down, dark bed pixels take the wall's own colour from row 80
-    lum = x[..., :3] @ np.array([0.3, 0.59, 0.11]); ref = x[80, :, :3].copy(); ref = smooth1d(ref, 3, 0)
-    dark = np.clip((95 - lum) / 35.0, 0, 1) * np.clip((yy - 58) / 4.0, 0, 1) * (x[..., 3] > 128)
-    milk = np.array([150.0, 178.0, 190.0])
-    for ch in range(3): x[..., ch] = x[..., ch] * (1 - dark) + (0.55 * ref[None, :, ch] + 0.45 * milk[ch]) * dark
-    fade = np.clip((yy - 46) / 6.0, 0, 1); x[..., 3] = x[..., 3] * fade; x = x.astype(np.uint8)
-    save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 328, 224, 96], "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 392 (row 64)", "dish-lowa")
-    im = load("slab3a.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); k = k.crop(bbox_alpha(k, 60))
-    f = 272 / k.width; k = k.resize((272, round(k.height * f)), Image.LANCZOS); k = dim(k, 0.85)
-    c = Image.new("RGBA", (272, 40), (0, 0, 0, 0)); c.alpha_composite(k, (0, -max(0, (k.height - 40) // 2)) if k.height > 40 else (0, 40 - k.height))
-    save("room-shelf", c, [576, 392, 272, 40], "PROPOSED: the thick glass slab, the full 272 px, top face and lit front edge; colour-to-alpha, scaled evenly to 272 wide (its halo trimmed to 40 rows)", "slab3a")
+    x = np.asarray(c).astype(float).copy(); H, W = 96, 224
+    # the near rim's own contour, read off the bowl's lit rim edge: both near side walls from their top edge (row ~19), the dip's U
+    pts = [(11, 19), (25, 24), (40, 27), (52, 30), (58, 34), (63, 41), (70, 52), (80, 62), (95, 69), (112, 72), (130, 69), (142, 62), (150, 52), (155, 41), (160, 34), (166, 30), (178, 27), (195, 23), (210, 19), (224, 19)]
+    px = np.array([p[0] for p in pts], float); py = np.array([p[1] for p in pts], float)
+    yc = smooth1d(np.interp(np.arange(W), px, py), 1.2, 0)
+    rows = np.arange(H)[:, None].astype(float)
+    below = np.clip(rows - yc[None, :] + 0.5, 0, 1)                      # 1 below the contour, antialiased over a pixel
+    # the dip's bed in front of the pod's round foot: uneven grit tufts lapping it, their tops ragged, the rim's curve visible below them
+    rng = np.random.RandomState(7); tuft = np.zeros((H, W))
+    for cx, hw, hh in ((88, 8, 5), (99, 7, 8), (112, 9, 6), (124, 7, 9), (136, 8, 5)):
+        xs = np.arange(W); prof = np.clip(1 - ((xs - cx) / hw) ** 2, 0, 1) ** 0.6
+        top = 66 - hh * prof + rng.uniform(-0.6, 0.6, W) * (prof > 0)
+        tuft = np.maximum(tuft, np.clip(rows - top[None, :] + 0.5, 0, 1) * (prof[None, :] > 0))
+    inside = np.clip(yc[None, :] - 0.0 - (rows - 0), 0, 1)                # above the contour: the dip's interior
+    mask = np.maximum(below, tuft * (rows < yc[None, :] + 0.5))
+    x[..., 3] = x[..., 3] * np.clip(mask, 0, 1); x = x.astype(np.uint8)
+    save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 328, 224, 96], "the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip", "dish-lowa")
+    SH = (568, 368, 288, 72)                  # provisional: the UI designer's rectangle is awaited
+    im = load("slab4b.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); k = k.crop(bbox_alpha(k, 60))
+    f = min(SH[2] / k.width, SH[3] / k.height); k = k.resize((round(k.width * f), round(k.height * f)), Image.LANCZOS); k = dim(k, 0.9)
+    c = Image.new("RGBA", SH[2:], (0, 0, 0, 0)); c.alpha_composite(k, ((SH[2] - k.width) // 2, SH[3] - k.height))
+    # the bowl's contact shadow on the top face: a soft dark ellipse under the bowl's footprint (the bowl is 201 wide, centred on x 712, its front lip at y 424)
+    yy, xx = np.mgrid[0:SH[3], 0:SH[2]].astype(float); cx = 712 - SH[0]; cy = 424 - SH[1] - 14
+    e = np.clip(1 - (((xx - cx) / 112.0) ** 2 + ((yy - cy) / 16.0) ** 2), 0, 1) ** 1.3 * 0.55
+    a = np.asarray(c).astype(float); a[..., :3] = a[..., :3] * (1 - e[..., None]) + np.array([4, 10, 14.0]) * e[..., None]; a[..., 3] = np.maximum(a[..., 3], e * 255 * (a[..., 3] > 0))
+    save("room-shelf", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGBA"), list(SH), "PROVISIONAL rectangle: the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly", "slab4b")
 # ---- list column
 def listcol():
     im = load("list-column.jpg"); im = im.crop((1536 - 735, 0, 1536, 2400)).resize((160, 522), Image.LANCZOS)
@@ -101,7 +115,11 @@ def pages():
     a = np.asarray(im.convert("L")).astype(float)
     pane = im.crop((70, 62, 2331, 1733)); s = 480 / pane.width
     for nm, w in (("page-pane-408x440", 408),):
-        save(nm, nine(pane.convert("RGBA"), w, 440, 70, 70, 70, 70, ls=s), [176, 112, w, 440], "9-slice of the generated pane, corners kept at 1x", "page-pane")
+        p = nine(pane.convert("RGBA"), w, 440, 70, 70, 70, 70, ls=s); arr = np.asarray(p).astype(float).copy()
+        yy, xx = np.mgrid[0:440, 0:w]; dist = np.minimum(np.minimum(xx, w - 1 - xx), np.minimum(yy, 439 - yy)).astype(float)
+        k = np.clip((dist - 2.0) / 4.0, 0, 1)                      # 0 on the lit hairline edge, 1 inside
+        arr[..., :3] = arr[..., :3] * (1 - k[..., None]) + (arr[..., :3] * 0.30 + np.array([4.0, 10.0, 14.0]) * 0.8) * k[..., None]
+        save(nm, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [176, 112, w, 440], "9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge", "page-pane")
 # ---- picture frames
 def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
@@ -287,8 +305,19 @@ def pods():
         sdw = np.dstack([np.full((sh_, sw), 6.0), np.full((sh_, sw), 12.0), np.full((sh_, sw), 18.0), a * 255]).astype(np.uint8)
         save(f"pod-{cls}-shadow", Image.fromarray(sdw, "RGBA"), [712 - sw // 2, 385, sw, sh_], "contact shadow: centred on x 712 with its middle on the foot line y 392", "procedural ramp")
 
+def well_pinholes():
+    """Fill the enclosed pixels of the well pod's accent mask (between the cap and the rib); hold the body mask with it."""
+    A = np.asarray(Image.open("slices/pod-well-mask-accent.png").convert("RGBA")).copy(); Bd = np.asarray(Image.open("slices/pod-well-mask-body.png").convert("RGBA")).copy()
+    al = A[..., 3].astype(int); sil = np.asarray(Image.open("slices/pod-well-shade.png").convert("RGBA"))[..., 3] > 128
+    enc = np.zeros_like(al, bool)
+    for (px, py) in ((6, 11), (7, 11)):          # the two enclosed pixels between the cap and the rib named by the art director
+        if al[py, px] < 160 and sil[py, px]: enc[py, px] = True
+    print("well pinholes filled at", [tuple(map(int, p[::-1])) for p in np.argwhere(enc)])
+    A[enc, 3] = 255; Bd[enc, 3] = 0
+    save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 32, 40], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
+    save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 32, 40], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars", "well_pinholes"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)

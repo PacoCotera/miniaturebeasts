@@ -22,8 +22,8 @@ def compose(state, rail):
     put("ring-hatch", 24, 488)
     # stage
     put("room-shelf", 576, 392); put("room-cradle", 600, 328); put("pod-large-shadow", 712 - 80, 385); put("pod-large-identified", 640, 216); put("room-cradle-front", 600, 328)
-    tw = d.textlength("Loika pod", font=f20); pw = min(224, max(80, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x24", 712 - pw // 2, 440); text((712, 452), "Loika pod", f20, CREAM, "mm")
-    put("plate-origin-224x40", 600, 480); text((712, 491), "rock field ·", f16, BONE, "mm"); text((712, 509), "a Tuikis felt safe", f16, BONE, "mm")
+    tw = d.textlength("Loika pod", font=f20); pw = min(224, max(80, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x24", 712 - pw // 2, 456); text((712, 468), "Loika pod", f20, CREAM, "mm")
+    put("plate-origin-224x40", 600, 496); text((712, 507), "rock field ·", f16, BONE, "mm"); text((712, 525), "a Tuikis felt safe", f16, BONE, "mm")
     put("stamp-label-120x120", 888, 248); cv.alpha_composite(cand.crop((830, 238, 976, 386)).resize((104, 104), Image.NEAREST), (896, 256))
     # page
     put("page-pane-408x440", 176, 112)
@@ -49,7 +49,7 @@ def compose(state, rail):
         full = rail == "six" or i == open_i; w = 136 if full else 56
         put(f"rail-tab-{st}-{'full-152x40' if full else 'compact-72x40'}", x, 40)
         if st == "focused": ring = (x, w)
-        emb = lambda ex, ey: d.rounded_rectangle([ex, ey, ex + 23, ey + 23], 5, outline=(160, 175, 190, 255) if st != "unread" else (120, 135, 150, 255), width=2)
+        emb = lambda ex, ey: None      # the emblem slot stays empty in the proof
         pc = CREAM if st in ("read", "focused") else (150, 168, 184)
         if full:
             tw = d.textlength(word, font=f16); bx = x + 76 - (32 + tw) / 2

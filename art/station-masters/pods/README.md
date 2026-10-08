@@ -33,7 +33,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
-| `page-pane-408x440` | 408×440 | (176, 112, 408, 440) | 9-slice of the generated pane, corners kept at 1x |
+| `page-pane-408x440` | 408×440 | (176, 112, 408, 440) | 9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge |
 
 ### Name, origin and message plates
 
@@ -94,8 +94,8 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `pod-well-band` | 32×40 | (·, ·, 32, 40) | the sealing band as a layer |
 | `pod-well-crack` | 32×40 | (·, ·, 32, 40) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
 | `pod-well-identified` | 32×40 | (·, ·, 32, 40) | the Loika reference sprite |
-| `pod-well-mask-accent` | 32×40 | (·, ·, 32, 40) | systematic pod layer: mask-accent, uniform scale, foot on the last row, centred |
-| `pod-well-mask-body` | 32×40 | (·, ·, 32, 40) | systematic pod layer: mask-body, uniform scale, foot on the last row, centred |
+| `pod-well-mask-accent` | 32×40 | (·, ·, 32, 40) | systematic pod layer: mask-accent, enclosed pixels filled |
+| `pod-well-mask-body` | 32×40 | (·, ·, 32, 40) | systematic pod layer: mask-body, held with the accent mask |
 | `pod-well-pattern-bands` | 32×40 | (·, ·, 32, 40) | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
 | `pod-well-pattern-dots` | 32×40 | (·, ·, 32, 40) | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
 | `pod-well-pattern-stripes` | 32×40 | (·, ·, 32, 40) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
@@ -136,8 +136,8 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | --- | --- | --- | --- |
 | `room-bench-stage` | 1024×522 | (0, 40, 1024, 522) | the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (712, 424) |
 | `room-cradle` | 224×96 | (600, 328, 224, 96) | the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is 201 px wide), bottom on the last row |
-| `room-cradle-front` | 224×96 | (600, 328, 224, 96) | the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 392 (row 64) |
-| `room-shelf` | 272×40 | (576, 392, 272, 40) | PROPOSED: the thick glass slab, the full 272 px, top face and lit front edge; colour-to-alpha, scaled evenly to 272 wide (its halo trimmed to 40 rows) |
+| `room-cradle-front` | 224×96 | (600, 328, 224, 96) | the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip |
+| `room-shelf` | 288×72 | (568, 368, 288, 72) | PROVISIONAL rectangle: the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly |
 
 ### Stamp label (signed)
 

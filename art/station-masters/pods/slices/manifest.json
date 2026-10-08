@@ -41,23 +41,23 @@
    96
   ],
   "src": "dish-lowa",
-  "made": "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 392 (row 64)",
-  "sha256": "52a188e2a9aca18356d832392ffb3826ff3079186c0ff13e0bb6b9f6722a17d3"
+  "made": "the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip",
+  "sha256": "6dc1c962ef4e46038c326bddf1ab159f71d008d089a7d1150a273ad3d5752611"
  },
  "room-shelf": {
   "size": [
-   272,
-   40
+   288,
+   72
   ],
   "rect": [
-   576,
-   392,
-   272,
-   40
+   568,
+   368,
+   288,
+   72
   ],
-  "src": "slab3a",
-  "made": "PROPOSED: the thick glass slab, the full 272 px, top face and lit front edge; colour-to-alpha, scaled evenly to 272 wide (its halo trimmed to 40 rows)",
-  "sha256": "07e7ea678ba7f0bb468cc9779ce54fabd5b1ca53aff63a1f740caf8ca4c7c3e2"
+  "src": "slab4b",
+  "made": "PROVISIONAL rectangle: the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly",
+  "sha256": "c382c8d1980968878d82884d751a0930b95982623859a68c73e0bba7662223d6"
  },
  "ring-column": {
   "size": [
@@ -131,8 +131,8 @@
    440
   ],
   "src": "page-pane",
-  "made": "9-slice of the generated pane, corners kept at 1x",
-  "sha256": "ad2a6985f9e7cca93f44f7cc1be66fe5c6fb7fbf9ff8020183f575c72d3e6168"
+  "made": "9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge",
+  "sha256": "ddcb1dcf18b91a7b1736f6148e79f922c7211efc876c0a27b91fdcaa8590e0f3"
  },
  "trait-picture-frame-376x264": {
   "size": [
@@ -866,8 +866,8 @@
    40
   ],
   "src": "pod-identified",
-  "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "f35d573d1ee65bc5d3488473d270c500aec377baed7f1ce979cae2eb9835f75b"
+  "made": "systematic pod layer: mask-body, held with the accent mask",
+  "sha256": "8dfa5828d59ba6a95a7bb92ce3339f08ff1e0a4fade2c45060b2d2d7f82c807b"
  },
  "pod-well-mask-accent": {
   "size": [
@@ -881,8 +881,8 @@
    40
   ],
   "src": "pod-identified",
-  "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "d799d422c27994d920ec85881ff605bff84bb2b5ddf368a5577a9881579ca1f5"
+  "made": "systematic pod layer: mask-accent, enclosed pixels filled",
+  "sha256": "6d35aa74f86acd429847e0dca0e129a6ea359093f9d874ca6eff097965866300"
  },
  "pod-well-pattern-dots": {
   "size": [
