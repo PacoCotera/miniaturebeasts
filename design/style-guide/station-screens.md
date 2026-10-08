@@ -213,48 +213,60 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 ## Library
 
-**Vibe.** Library: a botanical tome. Two screens: the **cabinet** and the **book**.
+**Vibe.** Library: a botanical tome. Two screens: the **Spread** and the **Book**. The Library is one object, an old botanical-expedition volume, and both screens are its pages.
 
-**Owner direction 2026-10-08 (after the concept round in `art/concept-station/library/`).** No shelf of species. The Library opens on a full cabinet with a box for each species, so the whole record is seen at a glance; it grows with every drop, and a scrolling shelf never shows the collection whole. Selecting a box opens the book, the species page, with the whole screen to itself. Lineage matters: the stamp carries it, and the book must show a family tree (display to be designed, `design/proposals/family-tree.md`).
+**Decided 2026-10-08 (owner).** The collection screen is the **tome's spread of plates**: reference `art/concept-station/library-spread/`, recommended SP-P-r4-a1. Three earlier displays are rejected, with the reasons in their READMEs: the **Cabinet** of boxes (`library-cabinet`; the boxes too basic, and an unmet species may show no cue at all of what it may be, so no silhouettes and no shapes in the mist); the **Specimen Case** (`library-case`; too gimmicky, and nothing on it communicates what it is: it does not read as a collection, no dedicated place per species shows, glass plus box plus frame plus paper to show a sketch is boring, and the ledge's tags, bars and pins do not say what they are); and the **gallery wall** (`library-collection`, direction G; its hooks, plates, frames and lighting steal the spotlight from the specimens). The shelf of the first round (`library`) was rejected earlier. Lineage matters: the stamp carries it, and the Book shows a family tree (display in `design/proposals/family-tree.md`).
 
-### Cabinet
+**Standing rule (owner, 2026-10-08; [art direction](../art-direction.md)).** Never drift to childish art. The look is cute by charm and craft, as the accepted Pip is; not cartoon simplification, sticker faces, toy-like rendering, nursery colours or storybook ornament. The spread's correction round is the example: the first recommendation (SP-P-r2-a1) drew the warning, since its lanterns, scrollwork and ribbons read storybook, its plates read as stickers, its cat was cute and the device's type turned serif; rounds 3 and 4 redrew it as a real naturalist's expedition volume in ink and watercolour, restrained ornament, plates at Pip's craft, a real pencil study, aged natural colours and the device's own type on the chrome. Every Library brief, critique and master checks against this line.
 
-**Purpose.** The whole collection at a glance. **Reads first:** how much of the record is filled.
+### Spread
 
-- **Living window.** None; the cabinet is quiet. Found species show a small face in their box (the species' generic picture; "portrait" until 2026-10-08).
-- **Instrument.** A cabinet of boxes, one per species, grouped by clan (the clan's spine colour on the box edge). Found species: a bright box with the face and name; once a mibi of the species is portrayed, its portrait, small, with a gilt frame corner, replaces the face (with several portrayed, the book offers `✓ Make Fig the face`). Met, not researched: a slate silhouette. Unmet: a faint shape in the mist. Boxes for species not yet released do not exist; the cabinet grows with each drop. A synopsis strip: found and hidden counts as filled boxes, progress, completion, clans met.
-- **Composition.** The cabinet fills the screen; sixteen boxes today in a 4×4 or 8×2 grid at a size that stays readable at 32 boxes.
-- **Palette.** Wood and brass or the tome's cream and slate; clan spine colours.
-- **Type.** Species names at 2× under found boxes; nothing under hidden ones.
-- **Chrome.** `✓ Open` on a found box; read-only on hidden ones.
-- **Motion.** A box lifts and the book opens from it in 300 ms.
+**Purpose.** The whole collection at a glance, as pages of the book that opens from it. **Reads first:** the found plates among the sixteen frames.
+
+- **Living window.** None; the spread is quiet. The plates' own warmth is the only warmth, inside the found frames.
+- **The tome.** An old botanical-expedition volume: aged, foxed laid paper with worn boards and a deckle; a single ink rule; restrained life in the margins, a cloth marker, a leaf and seeds, a dried flower, a wordless pencil scribble, a survey sketch, none covering a frame. No scrollwork, lanterns or ribbons. The device's own sans (Inter) on the chrome; a serif leak is a fail.
+- **Frames.** Sixteen ruled frames to the spread, eight a page in two rows of four, one place per species, all seen at once; the collection grows by a page turn, never by scrolling. Each frame has a blank caption rule under it.
+- **Found.** A tipped-in framed plate in the book's own plate style (the Book's mounted portrait at small size), painted at Pip's level of craft; never a flat card or a sticker. Once a mibi of the species is portrayed, its portrait takes the plate, with a gilt corner on the mat (with several portrayed, the Book offers `✓ Make Fig the face`). Loika's plate is the placed Pip.
+- **Met, not researched.** An anatomical pencil study, a real naturalist's pencil with its construction lines, the name in pencil grey.
+- **Unmet.** An empty ruled frame with a blank caption rule and no cue: no silhouette, no shape, no colour.
+- **Clan.** An inked rule in the clan's colour over the frame of each met species; none at the page edge, none on unmet frames.
+- **Focus.** A thin cream rounded rectangle around the frame.
+- **Composition.** The open spread fills the stage; frames 96×112 with their caption rules; the margins' life between and around them.
+- **Palette.** Aged cream and sepia; graphite; the plates' own natural colours; the clan colours only on the inked rules.
+- **Type.** 3× screen name; names at 2× in the device type, placed on the caption rules (the met name in pencil grey); nothing under unmet frames. No digits.
+- **Chrome.** `✓ Open` on a found or met plate; read-only on an empty frame. No ledge, no synopsis objects: the spread itself is the record.
+- **Motion.** The plate lifts off the page and becomes the Book's mounted plate in 300 ms; a page turn past sixteen.
 
 ### Book
 
 **Purpose.** Each species' field guide: its frame, the looks found so far, lineage and wishes. **Reads first:** the species' portrait and name.
 
-- **Living window.** The species portrait: one resident of that species in rich treatment, doing its habit (dig, glow, puff).
-- **Instrument.** The field guide, full screen: the species' places as stamps; the frame once, as a pressed plate; one tab per chapter (as many as the species has), every look found as a small specimen plate per trait and one dotted "more?" slot; the stamp at 120 px on a plain plate; the family tree panel; the pinned wish.
-- **Composition.** Portrait at the left (about 300×310); guide pages centre; tree and wishes right.
+- **Living window.** The species portrait: one resident of that species in rich treatment, doing its habit (dig, glow, puff), mounted on the page as a framed plate.
+- **Instrument.** The field guide, full screen: the species' places as stamps; the frame once, as a pressed plate; one tab per chapter (as many as the species has), every look found as a small specimen plate per trait and one dotted "more?" slot; the stamp at 120 px on a plain plate; the family tree panel under the stamp; the pinned wish.
+- **Composition.** Portrait at the left (about 300×310); guide pages centre; stamp, tree and wishes right.
 - **Lively / quiet.** Lively: the portrait. Quiet: the guide, the tree.
 - **Light.** Warm on the portrait; cool, even light on the archive.
-- **Palette.** The tome's cream, the species' hues on plates; silhouettes in slate.
-- **Type.** 3× species name; one 2× habit line; no paragraphs.
-- **Chrome.** `✓ Visit Fig` on a mibi, `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Cabinet`.
+- **Palette.** The tome's cream, the species' hues on plates.
+- **Type.** 3× species name on a paper label, with one 2× habit line under it; no paragraphs.
+- **Chrome.** `✓ Visit Fig` on a mibi, `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Spread`.
 - **Motion.** Tabs turn in 200 ms; the portrait lives.
+
+**Decided 2026-10-08 (owner; `art/concept-station/library-book/`, BK-D-r2-a1).** The Book is accepted. The portrait is mounted as a framed plate, not painted straight onto the page; the family tree panel stays under the stamp at about its present size (about 180×160 px); the name sits on a paper label with the habit line under it. For the master, the label's copy and the names go through the copywriter's rules and this guide's type first: consistent case (the owner flagged a mix of lower and upper case) and the typeface.
 
 **Decided 2026-10-08 ([the portrait](../proposals/the-portrait.md) §1, §7).** The book's living window is the species' **face** (a resident in the standard look, doing its habit) until a mibi of the species has sat for its portrait; then **the portrait replaces the face**: that mibi in its chosen pose and place, alive in the window, the habit line under it. A portrayed mibi returned to the wild keeps its portrait here, marked "released". After the welcome portrait, the gilt frame is drawn faintly over the species' last empty look plate to show where the next sitting comes from.
 
 **Pass when**
-- [ ] The cabinet shows every released species' box at once, no scrolling, and still would at twice the count.
+- [ ] The spread shows every released species' frame at once, sixteen to the spread, no scrolling; more species turn a page.
+- [ ] The specimens are the spotlight: framed plates in the book's style and a real pencil study, never flat cards or stickers; the tome's life stays in the margins.
+- [ ] Unmet frames give no cue at all; the met study shows only what the field saw.
+- [ ] Nothing childish: no storybook ornament, no sticker plates, no cute animals, no serif on the chrome.
 - [ ] Knowledge, never material: nothing implies a look, or a wish, can be taken from here.
-- [ ] Silhouettes reveal only what is known.
 - [ ] The family tree reads parents, siblings and children without text.
 - [ ] Two mibis are told apart by stamp at 40 px.
-- [ ] Never a text page or a school lesson.
+- [ ] No digits, no ledge, no furniture; never a text page or a school lesson.
 
-<table><tr><td valign="top"><img src="../../art/concept-station/library/placed/LB-D-r3-a2-fit-stamped-named-1024x600.png" width="480" alt="Library concept round"><br><em>Concept round (shelf and book). The book's treatment stands; the shelf is replaced by the cabinet.</em></td>
-<td valign="top"><img src="../../art/concept-homepage/station-known-forms.png" width="420" alt="Known forms concept"><br><em>Known forms: the portrait's treatment. Approved concept, generated.</em></td></tr></table>
+<table><tr><td valign="top"><img src="../../art/concept-station/library-spread/placed/SP-P-r4-a1-pip-named-1024x600.png" width="480" alt="Library spread concept"><br><em>The Spread, SP-P-r4-a1 with Pip and the names placed. Concept art, generated and placed; the chosen direction, not a master.</em></td>
+<td valign="top"><img src="../../art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png" width="480" alt="Library book concept"><br><em>The Book, BK-D-r2-a1 with the real stamp and the name placed. Accepted 2026-10-08; concept art, not a master.</em></td></tr></table>
 
 ---
 

@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="600" viewBox="0 0 1024 600" font-family="sans-serif" font-size="10" fill="none" stroke="#999">
+<rect width="1024" height="600" fill="#1b1f24" stroke="none"/><rect width="1024" height="40" stroke="#777"/><rect y="562" width="1024" height="38" stroke="#777"/>
+<text x="16" y="26" fill="#ddd" stroke="none" font-size="12">Library  T5</text><text x="446" y="26" fill="#ddd" stroke="none" font-size="12">⚡ 7  ◆ 3  ❀ 2</text><text x="820" y="26" fill="#ddd" stroke="none" font-size="12">Companion away · with Dot</text>
+<rect x="0" y="40" width="1024" height="522" fill="#4a3a2e" stroke="none"/>
+<rect x="16" y="48" width="492" height="506" fill="#efe6d2" stroke="#b9a87e"/><rect x="516" y="48" width="492" height="506" fill="#f2eadb" stroke="#b9a87e"/>
+<rect x="506" y="48" width="12" height="90" fill="#8a3a3a" stroke="none"/><text x="470" y="150" fill="#8a3a3a" stroke="none" font-size="9">ribbon marker</text>
+<rect x="36" y="76" width="96" height="112" stroke="#6a5a48"/>
+<path d="M30 76 L42 76 M36 70 L36 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M126 76 L138 76 M132 70 L132 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M30 188 L42 188 M36 182 L36 194" stroke="#6a5a48" stroke-width="2"/>
+<path d="M126 188 L138 188 M132 182 L132 194" stroke="#6a5a48" stroke-width="2"/>
+<line x1="40" y1="208" x2="128" y2="208" stroke="#b9a87e"/><line x1="40" y1="222" x2="128" y2="222" stroke="#b9a87e"/>
+<rect x="44" y="84" width="80" height="96" fill="#3a2a20" stroke="none"/><rect x="50" y="90" width="68" height="84" fill="#f6f1e6" stroke="none"/><text x="52" y="132" fill="#444" stroke="none" font-size="8">Loika · placed Pip · gilt</text>
+<path d="M108 90 L118 90 L118 100 Z" fill="#c9a84a" stroke="none"/>
+<path d="M30 90 L50 70 L58 78 L38 98 Z" fill="#5a9a4a" stroke="none"/>
+<rect x="154" y="76" width="96" height="112" stroke="#6a5a48"/>
+<path d="M148 76 L160 76 M154 70 L154 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M244 76 L256 76 M250 70 L250 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M148 188 L160 188 M154 182 L154 194" stroke="#6a5a48" stroke-width="2"/>
+<path d="M244 188 L256 188 M250 182 L250 194" stroke="#6a5a48" stroke-width="2"/>
+<line x1="158" y1="208" x2="246" y2="208" stroke="#b9a87e"/><line x1="158" y1="222" x2="246" y2="222" stroke="#b9a87e"/>
+<rect x="162" y="84" width="80" height="96" fill="#3a2a20" stroke="none"/><rect x="168" y="90" width="68" height="84" fill="#f6f1e6" stroke="none"/><text x="170" y="132" fill="#444" stroke="none" font-size="8">Untuva plate</text>
+<path d="M148 90 L168 70 L176 78 L156 98 Z" fill="#e98268" stroke="none"/>
+<rect x="272" y="76" width="96" height="112" stroke="#6a5a48"/>
+<path d="M266 76 L278 76 M272 70 L272 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M362 76 L374 76 M368 70 L368 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M266 188 L278 188 M272 182 L272 194" stroke="#6a5a48" stroke-width="2"/>
+<path d="M362 188 L374 188 M368 182 L368 194" stroke="#6a5a48" stroke-width="2"/>
+<line x1="276" y1="208" x2="364" y2="208" stroke="#b9a87e"/><line x1="276" y1="222" x2="364" y2="222" stroke="#b9a87e"/>
+<rect x="280" y="84" width="80" height="96" fill="#3a2a20" stroke="none"/><rect x="286" y="90" width="68" height="84" fill="#f6f1e6" stroke="none"/><text x="288" y="132" fill="#444" stroke="none" font-size="8">Tuikis plate · focused</text>
+<rect x="267" y="71" width="106" height="122" rx="4" stroke="#eda" stroke-width="2"/>
+<path d="M266 90 L286 70 L294 78 L274 98 Z" fill="#269fa5" stroke="none"/>
+<rect x="390" y="76" width="96" height="112" stroke="#6a5a48"/>
+<path d="M384 76 L396 76 M390 70 L390 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M480 76 L492 76 M486 70 L486 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M384 188 L396 188 M390 182 L390 194" stroke="#6a5a48" stroke-width="2"/>
+<path d="M480 188 L492 188 M486 182 L486 194" stroke="#6a5a48" stroke-width="2"/>
+<line x1="394" y1="208" x2="482" y2="208" stroke="#b9a87e"/><line x1="394" y1="222" x2="482" y2="222" stroke="#b9a87e"/>
+<text x="400" y="132" fill="#777" stroke="none" font-size="8">Hiljan · pencil cat</text>
+<path d="M384 90 L404 70 L412 78 L392 98 Z" fill="#7a6f9a" stroke="none"/>
+<rect x="536" y="76" width="96" height="112" stroke="#6a5a48"/>
+<path d="M530 76 L542 76 M536 70 L536 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M626 76 L638 76 M632 70 L632 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M530 188 L542 188 M536 182 L536 194" stroke="#6a5a48" stroke-width="2"/>
+<path d="M626 188 L638 188 M632 182 L632 194" stroke="#6a5a48" stroke-width="2"/>
+<line x1="540" y1="208" x2="628" y2="208" stroke="#b9a87e"/><line x1="540" y1="222" x2="628" y2="222" stroke="#b9a87e"/>
+<rect x="654" y="76" width="96" height="112" stroke="#6a5a48"/>
+<path d="M648 76 L660 76 M654 70 L654 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M744 76 L756 76 M750 70 L750 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M648 188 L660 188 M654 182 L654 194" stroke="#6a5a48" stroke-width="2"/>
+<path d="M744 188 L756 188 M750 182 L750 194" stroke="#6a5a48" stroke-width="2"/>
+<line x1="658" y1="208" x2="746" y2="208" stroke="#b9a87e"/><line x1="658" y1="222" x2="746" y2="222" stroke="#b9a87e"/>
+<rect x="772" y="76" width="96" height="112" stroke="#6a5a48"/>
+<path d="M766 76 L778 76 M772 70 L772 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M862 76 L874 76 M868 70 L868 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M766 188 L778 188 M772 182 L772 194" stroke="#6a5a48" stroke-width="2"/>
+<path d="M862 188 L874 188 M868 182 L868 194" stroke="#6a5a48" stroke-width="2"/>
+<line x1="776" y1="208" x2="864" y2="208" stroke="#b9a87e"/><line x1="776" y1="222" x2="864" y2="222" stroke="#b9a87e"/>
+<rect x="890" y="76" width="96" height="112" stroke="#6a5a48"/>
+<path d="M884 76 L896 76 M890 70 L890 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M980 76 L992 76 M986 70 L986 82" stroke="#6a5a48" stroke-width="2"/>
+<path d="M884 188 L896 188 M890 182 L890 194" stroke="#6a5a48" stroke-width="2"/>
+<path d="M980 188 L992 188 M986 182 L986 194" stroke="#6a5a48" stroke-width="2"/>
+<line x1="894" y1="208" x2="982" y2="208" stroke="#b9a87e"/><line x1="894" y1="222" x2="982" y2="222" stroke="#b9a87e"/>
+<rect x="36" y="300" width="96" height="112" stroke="#6a5a48"/>
+<path d="M30 300 L42 300 M36 294 L36 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M126 300 L138 300 M132 294 L132 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M30 412 L42 412 M36 406 L36 418" stroke="#6a5a48" stroke-width="2"/>
+<path d="M126 412 L138 412 M132 406 L132 418" stroke="#6a5a48" stroke-width="2"/>
+<line x1="40" y1="432" x2="128" y2="432" stroke="#b9a87e"/><line x1="40" y1="446" x2="128" y2="446" stroke="#b9a87e"/>
+<rect x="154" y="300" width="96" height="112" stroke="#6a5a48"/>
+<path d="M148 300 L160 300 M154 294 L154 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M244 300 L256 300 M250 294 L250 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M148 412 L160 412 M154 406 L154 418" stroke="#6a5a48" stroke-width="2"/>
+<path d="M244 412 L256 412 M250 406 L250 418" stroke="#6a5a48" stroke-width="2"/>
+<line x1="158" y1="432" x2="246" y2="432" stroke="#b9a87e"/><line x1="158" y1="446" x2="246" y2="446" stroke="#b9a87e"/>
+<rect x="272" y="300" width="96" height="112" stroke="#6a5a48"/>
+<path d="M266 300 L278 300 M272 294 L272 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M362 300 L374 300 M368 294 L368 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M266 412 L278 412 M272 406 L272 418" stroke="#6a5a48" stroke-width="2"/>
+<path d="M362 412 L374 412 M368 406 L368 418" stroke="#6a5a48" stroke-width="2"/>
+<line x1="276" y1="432" x2="364" y2="432" stroke="#b9a87e"/><line x1="276" y1="446" x2="364" y2="446" stroke="#b9a87e"/>
+<rect x="390" y="300" width="96" height="112" stroke="#6a5a48"/>
+<path d="M384 300 L396 300 M390 294 L390 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M480 300 L492 300 M486 294 L486 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M384 412 L396 412 M390 406 L390 418" stroke="#6a5a48" stroke-width="2"/>
+<path d="M480 412 L492 412 M486 406 L486 418" stroke="#6a5a48" stroke-width="2"/>
+<line x1="394" y1="432" x2="482" y2="432" stroke="#b9a87e"/><line x1="394" y1="446" x2="482" y2="446" stroke="#b9a87e"/>
+<rect x="536" y="300" width="96" height="112" stroke="#6a5a48"/>
+<path d="M530 300 L542 300 M536 294 L536 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M626 300 L638 300 M632 294 L632 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M530 412 L542 412 M536 406 L536 418" stroke="#6a5a48" stroke-width="2"/>
+<path d="M626 412 L638 412 M632 406 L632 418" stroke="#6a5a48" stroke-width="2"/>
+<line x1="540" y1="432" x2="628" y2="432" stroke="#b9a87e"/><line x1="540" y1="446" x2="628" y2="446" stroke="#b9a87e"/>
+<rect x="654" y="300" width="96" height="112" stroke="#6a5a48"/>
+<path d="M648 300 L660 300 M654 294 L654 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M744 300 L756 300 M750 294 L750 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M648 412 L660 412 M654 406 L654 418" stroke="#6a5a48" stroke-width="2"/>
+<path d="M744 412 L756 412 M750 406 L750 418" stroke="#6a5a48" stroke-width="2"/>
+<line x1="658" y1="432" x2="746" y2="432" stroke="#b9a87e"/><line x1="658" y1="446" x2="746" y2="446" stroke="#b9a87e"/>
+<rect x="772" y="300" width="96" height="112" stroke="#6a5a48"/>
+<path d="M766 300 L778 300 M772 294 L772 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M862 300 L874 300 M868 294 L868 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M766 412 L778 412 M772 406 L772 418" stroke="#6a5a48" stroke-width="2"/>
+<path d="M862 412 L874 412 M868 406 L868 418" stroke="#6a5a48" stroke-width="2"/>
+<line x1="776" y1="432" x2="864" y2="432" stroke="#b9a87e"/><line x1="776" y1="446" x2="864" y2="446" stroke="#b9a87e"/>
+<rect x="890" y="300" width="96" height="112" stroke="#6a5a48"/>
+<path d="M884 300 L896 300 M890 294 L890 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M980 300 L992 300 M986 294 L986 306" stroke="#6a5a48" stroke-width="2"/>
+<path d="M884 412 L896 412 M890 406 L890 418" stroke="#6a5a48" stroke-width="2"/>
+<path d="M980 412 L992 412 M986 406 L986 418" stroke="#6a5a48" stroke-width="2"/>
+<line x1="894" y1="432" x2="982" y2="432" stroke="#b9a87e"/><line x1="894" y1="446" x2="982" y2="446" stroke="#b9a87e"/>
+<text x="40" y="478" fill="#8a7a5a" stroke="none" font-size="10">pressed leaf · seeds</text><text x="300" y="60" fill="#8a7a5a" stroke="none" font-size="10">pencil note · margin</text>
+<text x="900" y="470" fill="#8a7a5a" stroke="none" font-size="10">map vignette</text><text x="980" y="250" fill="#8a7a5a" stroke="none" font-size="10" transform="rotate(90 980 250)">dried flower</text>
+<text x="16" y="586" fill="#f06d1e" stroke="none" font-size="12">✓ Open · ← Home</text><text x="440" y="586" fill="#666" stroke="none" font-size="12">(name · placed)</text><text x="860" y="586" fill="#bbb" stroke="none" font-size="12">a pod waits in the tray</text></svg>
