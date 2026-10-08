@@ -10,9 +10,9 @@ import { makeCtx } from "../context.mjs";
 const frame = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8")), R = frame.regions.rail;
 
 test("the rail's runs: six full tabs fill 832, seven to twelve are compact with the open tab full, centred runs snap to the grid", () => {
-  const six = slantTabs(R, 6); assert.equal(six.run, 832); assert.deepEqual(six.tabs.map((t) => t.rect[0]), [176, 312, 448, 584, 720, 856]); assert.ok(six.tabs.every((t) => t.rect[1] === 40 && t.rect[3] === 40 && t.rect[2] === 136));
+  const six = slantTabs(R, 6); assert.equal(six.run, 832); assert.deepEqual(six.tabs.map((t) => t.rect[0]), [152, 288, 424, 560, 696, 832]); assert.ok(six.tabs.every((t) => t.rect[1] === 40 && t.rect[3] === 40 && t.rect[2] === 136));
   assert.equal(slantTabs(R, 1).run, 152);
-  const seven = slantTabs(R, 7, 2); assert.equal(seven.run, 488); assert.deepEqual(seven.tabs.map((t) => t.rect[2]), [56, 56, 136, 56, 56, 56, 56]); assert.deepEqual(seven.tabs.map((t) => t.rect[0]).slice(2, 4), [288, 424]);   // the tabs after the open one sit 80 px further on
+  const seven = slantTabs(R, 7, 2); assert.equal(seven.run, 488); assert.deepEqual(seven.tabs.map((t) => t.rect[2]), [56, 56, 136, 56, 56, 56, 56]); assert.deepEqual(seven.tabs.map((t) => t.rect[0]).slice(2, 4), [264, 400]);   // the tabs after the open one sit 80 px further on
   assert.equal(slantTabs(R, 8, 0).run, 544); assert.equal(slantTabs(R, 12, 0).run, 768);
   assert.equal(slantTabs(R, 6, 0, "centred").x0, 96); assert.equal(slantTabs(R, 7, 0, "centred").x0, 264); assert.equal(slantTabs(R, 8, 0, "centred").x0, 240);
   assert.equal(slantTabs(R, 13).overflow, true);
@@ -45,6 +45,6 @@ test("a rail of six builds from the spec: nodes at the tab positions, one word p
   const out = slantRail(ctx, "rail", { tabs, focused: 1, open: 0, colours: { changed: "amber" }, star: "star:12", ground: "ground" });
   assert.equal(out.tabs.length, 6); assert.equal(out.nodes.filter((n) => n.kind === "text").length, 6);
   const pips = out.nodes.filter((n) => /^rail\.0\.pip\.\d$/.test(n.id)); assert.deepEqual(pips.map((n) => n.rect[0] - pips[0].rect[0]), [0, 8, 16]);
-  const g = out.nodes.find((n) => n.id === "rail.1.glint"); assert.deepEqual(g.rect, [312 + 16 + 68 - 6, 82, 12, 12]);
-  const ring = out.nodes.find((n) => n.id === "rail.1.focus"); assert.deepEqual(ring.rect, [312 - 4, 42, 160, 42]);
+  const g = out.nodes.find((n) => n.id === "rail.1.glint"); assert.deepEqual(g.rect, [288 + 16 + 68 - 6, 82, 12, 12]);
+  const ring = out.nodes.find((n) => n.id === "rail.1.focus"); assert.deepEqual(ring.rect, [288 - 4, 42, 160, 42]);
 });

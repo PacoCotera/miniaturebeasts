@@ -119,10 +119,10 @@ test("the asset manifest registers each picture at its size and refuses a build 
 });
 
 test("the frame components place the spec's regions and set every string in Inter at 16, 20 or 28 px", () => {
-  const nodes = frame(ctx, { screen: "pods", title: "Pods", turn: 5, materials: { e: 10, d: 8, s: 15 }, flash: { d: true }, companion: { docked: true, withMibi: true }, line: { ok: "Read Coat", price: "3 ◆", back: "Home", subject: "Loika is unread", need: "something new here" }, message: "New for the Loika: between, thin rings", focal: [264, 120, 160, 192] });
+  const nodes = frame(ctx, { screen: "pods", title: "Pods", turn: 5, materials: { e: 10, d: 8, s: 15 }, flash: { d: true }, companion: { docked: true, withMibi: "m1" }, line: { ok: "Read Coat", price: "3 ◆", back: "Home", subject: "Loika is unread", need: "something new here" }, message: "New for the Loika: between, thin rings", focal: [264, 120, 160, 192] });
   const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
   assert.deepEqual(byId.top.rect, [0, 0, 1024, 40]); assert.deepEqual(byId.line.rect, [0, 562, 1024, 38]);
-  assert.deepEqual(byId["line.sep.0"].rect, [396, 571, 1, 20]); assert.deepEqual(byId["line.sep.1"].rect, [628, 571, 1, 20]);
+  assert.deepEqual(byId["line.sep.0"].rect, [404, 571, 1, 20]); assert.deepEqual(byId["line.sep.1"].rect, [620, 571, 1, 20]);
   const texts = nodes.filter((n) => n.kind === "text");
   assert.ok(texts.every((n) => [16, 20, 28].includes(n.px)), "sizes " + [...new Set(texts.map((n) => n.px))]);
   assert.equal(byId["top.title.0"].px, 20); assert.equal(byId["top.title.0"].weight, 500); assert.equal(byId["top.title.0"].rect[0], 48, "the title starts at x 48, after the room's mark");
@@ -142,7 +142,8 @@ test("the frame components place the spec's regions and set every string in Inte
   const price = nodes.find((n) => n.id === "line.a.1.0" || n.id === "line.a.1.1"), verbEnd = byId["line.a.0.0"].rect[0] + byId["line.a.0.0"].rect[2]; assert.ok(price.rect[0] - verbEnd === 24 || price.kind === "sprite", "the price is 24 px after the verb");
   assert.ok(!texts.some((n) => /·/.test(n.text)), "no dots in the frame");
   assert.deepEqual(byId["line.need.lamp"].rect.slice(2), [12, 12]);
-  const need = nodes.filter((n) => n.id.startsWith("line.need") && n.kind !== "rect"); assert.equal(need.at(-1).rect[0] + need.at(-1).rect[2], 1008);
+  const need = nodes.filter((n) => n.id.startsWith("line.need") && n.kind !== "rect"); assert.equal(need.at(-1).rect[0] + need.at(-1).rect[2], 904, "the notice ends at x 904");
+  const back = byId["line.back.0"]; assert.equal(back.rect[0] + back.rect[2], 1008, "the way back is right-aligned to 1008, alone in its zone");
   const subj = nodes.find((n) => n.id === "line.subject.0"); assert.ok(Math.abs(subj.rect[0] + subj.rect[2] / 2 - 512) <= 1);
   // the message plate: bottom at 550, over nothing focal
   assert.equal(byId.plate.rect[1] + byId.plate.rect[3], 550); assert.equal(byId.plate.region, "plate");

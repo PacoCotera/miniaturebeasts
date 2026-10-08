@@ -13,7 +13,7 @@ import { frameView } from "../views/frame.mjs";
 // the screen's bottom line and the message plate while the timeline holds it.
 export const plateText = () => (FX.msg && TL.progress("plate", "msg") != null && TL.progress("plate", "msg") < 1 ? FX.msg : "");
 export function frameFor(ctx, screen, line, { need: needText = need().text, focal = null } = {}) {
-  return frameNodes(ctx, frameView({ screen, title: ctx.spec.strings.titles[screen], step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { docked: docked(), withMibi: hasWorld() && S.withId(G.sv) != null }, line, need: needText, message: plateText(), focal }));
+  return frameNodes(ctx, frameView({ screen, title: ctx.spec.strings.titles[screen], step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { docked: docked(), withMibi: hasWorld() ? S.withId(G.sv) : null }, line, need: needText, message: plateText(), focal }));
 }
 export const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 export const tgt = (id, x, y, w, h) => ({ id, x, y, w, h });

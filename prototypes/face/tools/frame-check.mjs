@@ -62,7 +62,7 @@ expect(eq(px(D, 300, 570), rgbOf(C.chrome)), "the bottom line is the chrome grou
 for (const x of Rg.separators.x) expect(eq(px(D, x, 580), rgbOf(C.dot)) && eq(px(D, x - 1, 580), rgbOf(C.chrome)) && eq(px(D, x + 1, 580), rgbOf(C.chrome)), `a 1 px separator at x ${x}`);
 expect(eq(px(D, 500, 100), rgbOf(C.stageGround)), "the stage ground is " + C.stageGround);
 // where the ink of each region lies, against the JavaScript renderer's (the engines place glyphs by their own rounding: within 3 px)
-const regions = { title: Rg.title.rect, materials: Rg.materials.rect, companion: Rg.companion.rect, subject: Rg.subject.rect, need: Rg.need.rect, action: Rg.action.rect };
+const regions = { title: Rg.title.rect, materials: Rg.materials.rect, companion: Rg.companion.rect, subject: Rg.subject.rect, need: Rg.need.rect, action: Rg.action.rect, back: Rg.back.rect };
 for (const x of Rg.topRules.x) expect(eq(px(D, x, 20), rgbOf(C.topRule)) && eq(px(D, x - 1, 20), rgbOf(C.chrome)), `a 1 px hairline rule at x ${x} in the top bar`);
 const rows = [];
 for (const [name, r] of Object.entries(regions)) {
@@ -72,7 +72,7 @@ for (const [name, r] of Object.entries(regions)) {
   const left = a[0] - b[0], right = a[0] + a[2] - (b[0] + b[2]), top = a[1] - b[1], bottom = a[1] + a[3] - (b[1] + b[3]);
   rows.push(`${name.padEnd(10)} face ${a.join(",")}  js ${b.join(",")}  edges ${left}/${right} (x)  ${top}/${bottom} (y)`);
   expect(Math.abs(top) <= 2 && Math.abs(bottom) <= 2, `${name}: the ink sits on the same lines (${top}/${bottom})`);
-  const align = name === "subject" || name === "materials" ? Math.abs((a[0] + a[2] / 2) - Rg[name].centre) : name === "need" || name === "companion" ? Math.abs(a[0] + a[2] - Rg[name].right) : name === "title" ? Math.abs(a[0] - Rg.title.text[0]) : Math.abs(a[0] - (Rg.action.rect[0] + Rg.action.capSize[0] + Rg.action.capGap));   // the title after the room's mark, the verb after the cap's room
+  const align = name === "subject" || name === "materials" ? Math.abs((a[0] + a[2] / 2) - Rg[name].centre) : name === "need" || name === "companion" || name === "back" ? Math.abs(a[0] + a[2] - Rg[name].right) : name === "title" ? Math.abs(a[0] - Rg.title.text[0]) : Math.abs(a[0] - (Rg.action.rect[0] + Rg.action.capSize[0] + Rg.action.capGap));   // the title after the room's mark, the verb after the cap's room
   expect(align <= 3, `${name}: aligned as the spec says (off by ${align.toFixed(1)})`);
 }
 console.log(rows.join("\n"));
