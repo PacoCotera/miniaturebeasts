@@ -1,0 +1,19 @@
+{
+  "successfulCalls": 2,
+  "runs": [
+    {
+      "time": "2026-10-08T01:31:48Z",
+      "plan": "/tmp/claude-0/-home-user-miniaturebeasts/b951398d-74c3-50ba-be6f-9ba22988419a/scratchpad/plan-cabinet-r2-flat.json",
+      "ids": null,
+      "success": 1,
+      "error": 0
+    },
+    {
+      "time": "2026-10-08T01:33:02Z",
+      "plan": "/tmp/claude-0/-home-user-miniaturebeasts/b951398d-74c3-50ba-be6f-9ba22988419a/scratchpad/plan-cabinet-r2b-flat.json",
+      "ids": null,
+      "success": 1,
+      "error": 0
+    }
+  ]
+}
