@@ -80,11 +80,12 @@ function chapterLooksOf(frame, chapter, genome) {
 
 // --- the stamp (genome-stamp/src): the registry's frame for this species, the genome as copies, the read chapters by name ---
 // The stamp's modules a side (N): the cell of its label is floor(104 / (N + 2)), at least 2 (station-layouts.md, the stamp label).
-export const stampModules = (frame) => { const sf = stampFrameOf(frame); return sf ? stampSizeFor(sf).N : 0; };
-export const stampSizing = (frame) => { const N = stampModules(frame), cell = Math.max(2, Math.floor(104 / (N + 2))); return { N, cell, size: (N + 2) * cell }; };
-export const stampFrameOf = (frame) => stampFrameFor(frame.species.order, frame.frameVersion ?? FRAME_VERSION);
+export const stampModules = (frame, genome = null) => { const sf = stampFrameOf(frame, genome); return sf ? stampSizeFor(sf).N : 0; };
+export const stampSizing = (frame, genome = null) => { const N = stampModules(frame, genome), cell = Math.max(2, Math.floor(104 / (N + 2))); return { N, cell, size: (N + 2) * cell }; };
+// A mibi or pod keeps the frame version it was born with (the same individual everywhere, on paper too): the genome's own, then the frame's, then the current one.
+export const stampFrameOf = (frame, genome = null) => stampFrameFor(frame.species.order, genome?.frameVersion ?? frame.frameVersion ?? FRAME_VERSION);
 export function stampGenome(frame, genome, readIds) {
-  const sf = stampFrameOf(frame);
+  const sf = stampFrameOf(frame, genome);
   if (!sf) return null;
   const copies = {};
   for (const l of sf.heritable) copies[l.id] = genome.loci[l.id] ? [...genome.loci[l.id]] : [l.alleles[0], l.alleles[0]];
@@ -93,7 +94,7 @@ export function stampGenome(frame, genome, readIds) {
 }
 export function stampCode(frame, genome, readIds) {
   const sg = stampGenome(frame, genome, readIds);
-  return sg ? stampCodeOf(stampFrameOf(frame), sg) : null;
+  return sg ? stampCodeOf(stampFrameOf(frame, genome), sg) : null;
 }
 // The mibi's name-code: eight base-32 characters of the genome's SHA-256, shown in threes (the short
 // code stays as a lookup, never the genome: research-loop.md §7).

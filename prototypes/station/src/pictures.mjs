@@ -46,7 +46,7 @@ function seedPB(frame, genome, traitId, w, h) {
 // The stamp on its label: cells of whole pixels, cell = floor(104 / (N + 2)) and at least 2, drawn with its quiet margin, centred on the 120 label.
 export function stampPicture(frame, genome, readIds) {
   const sg = stampGenome(frame, genome, readIds); if (!sg) return null;
-  const { N, cell, size } = stampSizing(frame);
+  const { N, cell, size } = stampSizing(frame, genome);
   return { N, cell, size, build: () => fromRGBA(rasterize(stampGeometry(sg), N * cell, { ss: 3, size })) };
 }
 

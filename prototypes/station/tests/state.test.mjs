@@ -313,3 +313,13 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.equal(S.kinshipOf(st, sib.mibis[0], a), 0, "unrelated lines");
   assert.match(S.kinshipWord(0.25), /close kin/); assert.match(S.kinshipWord(0), /wild founders/);
 });
+
+test("a mibi keeps the frame version it was born with: a v2-born genome stamps S1v2 after the registry moved to v3", () => {
+  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born3 = podGenome(fr, 4242), born2 = { ...born3, frameVersion: 2 };
+  assert.equal(born3.frameVersion, 3, "a genome sampled now is born at the current frame version");
+  assert.equal(stampFrameOf(fr, born2).version, 2); assert.equal(stampFrameOf(fr, born3).version, 3);
+  assert.equal(stampGenome(fr, born2, []).version, 2); assert.equal(stampGenome(fr, born3, []).version, 3);
+  assert.match(S.stampCodeOf({ species: fr.species.id, genome: born2, read: [] }) ?? "", /^S1v2-/);
+  assert.match(S.stampCodeOf({ species: fr.species.id, genome: born3, read: [] }) ?? "", /^S1v3-/);
+  assert.equal(stampFrameOf(fr).version, 3, "with no genome the current version stands");
+});

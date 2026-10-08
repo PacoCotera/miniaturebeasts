@@ -138,7 +138,7 @@ export function stampArt(frame, genome, readIds, side = 200) {
   const key = "stamp" + genomeDigest(genome) + ":" + readIds.slice().sort().join(",") + ":" + side;
   return art(key, () => fromRGBA(rasterize(stampGeometry(sg), side, { ss: 3 })));
 }
-export const stampSize = (frame) => stampFrameOf(frame) ? stampFrameOf(frame).payloadBits : 0;
+export const stampSize = (frame, genome = null) => stampFrameOf(frame, genome) ? stampFrameOf(frame, genome).payloadBits : 0;
 
 // ---------- Pods from one renderer: the frame's four parameters and the glyph ----------
 // The progress ring around a pod in the list: the centre at Identify; an arc per chapter sized by its traits;
