@@ -1,0 +1,25 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S09",
+ "name": "Belatz",
+ "resembles": "a big bird",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "an egg body tilted up at the front, a long neck, a small head with a beak and a crest, a folded wing along the back, tail feathers behind, one pair of long thin legs under the middle",
+ "shapes": [
+  {"ellipse":[48,56,24,17,10]},
+  {"capsule":[62,48,70,30,5,4]},
+  {"ellipse":[72,24,8,7]},
+  {"polygon":[[78,22],[92,26],[78,28]]},
+  {"polygon":[[70,18],[72,8],[76,18]]},
+  {"polygon":[[30,44],[62,40],[70,50],[40,60]]},
+  {"polygon":[[26,52],[8,46],[6,58],[24,62]]},
+  {"capsule":[50,70,48,92,2]},
+  {"capsule":[53,70,52,92,2]},
+  {"polygon":[[42,92],[58,92],[56,94],[44,94]]}
+ ]
+}

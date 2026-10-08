@@ -1,0 +1,25 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S15",
+ "name": "Lehten",
+ "resembles": "a walking plant",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a round bulb with leaves fanning up, a face at the front, and three or four root legs it walks on",
+ "shapes": [
+  {"ellipse":[50,58,20,18]},
+  {"polygon":[[50,45],[38,20],[52,30]]},
+  {"polygon":[[50,44],[55,16],[60,32]]},
+  {"polygon":[[48,46],[30,36],[40,46]]},
+  {"polygon":[[52,46],[72,38],[62,48]]},
+  {"ellipse":[66,62,6,5]},
+  {"capsule":[40,72,32,92,2.5]},
+  {"capsule":[50,74,50,92,2.5]},
+  {"capsule":[60,72,68,92,2.5]},
+  {"capsule":[46,74,42,92,2]}
+ ]
+}

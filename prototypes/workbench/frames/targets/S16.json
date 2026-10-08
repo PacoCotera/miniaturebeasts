@@ -1,0 +1,17 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S16",
+ "name": "Blikur",
+ "resembles": "a wisp of lightning",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a jagged bolt standing on nothing: a vertical zigzag body with a small head at the top, afloat",
+ "shapes": [
+  {"polygon":[[50,10],[40,36],[52,36],[42,62],[56,60],[46,90],[66,52],[54,52],[66,28],[56,30]]},
+  {"ellipse":[52,12,6,6]}
+ ]
+}

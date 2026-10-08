@@ -1540,6 +1540,14 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "growth.auricular-set-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
    "id": "anatomy.antenna-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -1668,7 +1676,7 @@
   "carried": 43,
   "trunk": 40,
   "branch": 3,
-  "absent": 93,
+  "absent": 95,
   "locked": 22,
   "lockedBy": {
    "switch": 2,
@@ -1904,7 +1912,7 @@
     "kind": "type-specimen"
    }
   },
-  "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
+  "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
   "brief": "Untuva: 1 body region (R1), a head, 2 eyes, a cap on top; fur, bands; belly, fused head.",
   "bounds": {
    "min": [

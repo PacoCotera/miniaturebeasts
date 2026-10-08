@@ -580,7 +580,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: core.ryOverRx"
+   "guard": "rig: core.ryOverRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.core-depth-ratio",
@@ -602,7 +606,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: core.rzOverRx"
+   "guard": "rig: core.rzOverRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.head-length-ratio",
@@ -616,11 +624,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "large",
-    "large"
+    "small",
+    "small"
    ],
    "looks": [
-    "large"
+    "small"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "nature": "look"
@@ -637,11 +645,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "low",
+    "high",
     "low"
    ],
    "looks": [
-    "low"
+    "high"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "nature": "look"
@@ -659,7 +667,7 @@
    "shapeable": false,
    "copies": [
     "high",
-    "high"
+    "low"
    ],
    "looks": [
     "high"
@@ -679,11 +687,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "low",
+    "low"
    ],
    "looks": [
-    "high"
+    "low"
    ],
    "guard": "rig: head.centerLiftOverCoreRx",
    "nature": "look"
@@ -708,7 +716,11 @@
     "between small and large",
     "large"
    ],
-   "guard": "rig: eye.radiusOverHeadMinYZ"
+   "guard": "rig: eye.radiusOverHeadMinYZ",
+   "typical": [
+    "small",
+    "small"
+   ]
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -730,7 +742,11 @@
     "between close and wide",
     "wide"
    ],
-   "guard": "rig: eye.anchorYOverHeadRy"
+   "guard": "rig: eye.anchorYOverHeadRy",
+   "typical": [
+    "wide",
+    "wide"
+   ]
   },
   {
    "id": "growth.region-bend",
@@ -830,11 +846,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "seeking",
-    "seeking"
+    "reserved",
+    "reserved"
    ],
    "looks": [
-    "seeking"
+    "reserved"
    ],
    "guard": "rig: innate.explorationClass",
    "nature": "doing"
@@ -894,11 +910,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
-    "short"
+    "long",
+    "long"
    ],
    "looks": [
-    "short"
+    "long"
    ],
    "guard": "rig: antenna length over head depth",
    "nature": "look"
@@ -1023,11 +1039,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
-    "short"
+    "long",
+    "long"
    ],
    "looks": [
-    "short"
+    "long"
    ],
    "guard": "behaviour: how long the glow lasts",
    "nature": "doing"
@@ -1315,6 +1331,14 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "growth.auricular-set-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
    "id": "appearance.flap-marking",
    "why": "absent: no thin-surface owner"
   },
@@ -1443,7 +1467,7 @@
   "carried": 35,
   "trunk": 33,
   "branch": 2,
-  "absent": 101,
+  "absent": 103,
   "locked": 24,
   "lockedBy": {
    "switch": 3,
@@ -1559,34 +1583,34 @@
     ],
     "growth.core-width-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.core-depth-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.head-length-ratio": [
-     "large",
-     "large"
+     "small",
+     "small"
     ],
     "growth.head-width-ratio": [
-     "low",
+     "high",
      "low"
     ],
     "growth.head-depth-ratio": [
      "high",
-     "high"
+     "low"
     ],
     "growth.head-lift-ratio": [
-     "high",
-     "high"
+     "low",
+     "low"
     ],
     "growth.exterior-eye-size-ratio": [
      "small",
-     "large"
+     "small"
     ],
     "growth.exterior-eye-spacing-ratio": [
-     "close",
+     "wide",
      "wide"
     ],
     "growth.region-bend": [
@@ -1606,8 +1630,8 @@
      "barrel"
     ],
     "cognition.exploration-tendency": [
-     "seeking",
-     "seeking"
+     "reserved",
+     "reserved"
     ],
     "cognition.arousal-threshold": [
      "low",
@@ -1618,8 +1642,8 @@
      "on"
     ],
     "growth.antenna-length-ratio": [
-     "short",
-     "short"
+     "long",
+     "long"
     ],
     "anatomy.antenna-form": [
      "club",
@@ -1642,26 +1666,26 @@
      "bright"
     ],
     "appearance.emission-length": [
-     "short",
-     "short"
+     "long",
+     "long"
     ]
    },
    "origin": {
     "kind": "type-specimen"
    }
   },
-  "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
+  "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
   "brief": "Usvel: 3 body regions (B3), a head, 2 eyes, two antennae, a foot skirt; skin; belly, fused head.",
   "bounds": {
    "min": [
-    -0.9299244695634257,
-    -0.3930130125,
-    -0.0069534450000000025
+    -0.6539964414863512,
+    -0.2833349625,
+    -0.005161320000000025
    ],
    "max": [
-    1.5456104956749026,
-    0.3930130125,
-    1.0159501390355221
+    0.5452034985583009,
+    0.2833349625,
+    0.8207863103178924
    ]
   },
   "counts": {
@@ -1765,20 +1789,20 @@
    "small"
   ],
   "growth.head-length-ratio": [
-   "large",
-   "large"
+   "small",
+   "small"
   ],
   "growth.head-width-ratio": [
-   "low",
+   "high",
    "low"
   ],
   "growth.head-depth-ratio": [
    "high",
-   "high"
+   "low"
   ],
   "growth.head-lift-ratio": [
-   "high",
-   "high"
+   "low",
+   "low"
   ],
   "anatomy.region-cross-exponent": [
    "rounded-square",
@@ -1789,16 +1813,16 @@
    "barrel"
   ],
   "cognition.exploration-tendency": [
-   "seeking",
-   "seeking"
+   "reserved",
+   "reserved"
   ],
   "anatomy.antenna-presence": [
    "on",
    "on"
   ],
   "growth.antenna-length-ratio": [
-   "short",
-   "short"
+   "long",
+   "long"
   ],
   "anatomy.antenna-form": [
    "club",
@@ -1817,8 +1841,8 @@
    "bright"
   ],
   "appearance.emission-length": [
-   "short",
-   "short"
+   "long",
+   "long"
   ]
  },
  "sealed": {}

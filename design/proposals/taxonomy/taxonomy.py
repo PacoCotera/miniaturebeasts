@@ -157,7 +157,7 @@ ROSTER = [
     ("S06", "C06", "two|serial|bilateral|contact|zero|one|two|off|fur", "medium"),       # raccoon-like
     ("S07", "C07", "one|serial|bilateral|contact|zero|one|two|off|fur", "large"),        # badger- or bear-like
     ("S08", "C08", "two|serial|bilateral|contact|zero|one|two|off|fur", "large"),        # goat- or deer-like
-    ("S09", "C09", "two|serial|bilateral|contact|zero|one|two|on|fur", "large"),         # big bird-like flier
+    ("S09", "C09", "two|serial|bilateral|contact|zero|one|one|on|fur", "large"),         # big bird-like flier, one pair of legs (plans.json onePairPlans)
     ("S10", "C10", "three|serial|bilateral|contact|zero|one|two|off|fur", "medium"),     # otter-like swimmer
     ("S11", "C11", "one|serial|bilateral|contact|zero|one|two|off|scales", "large"),     # turtle-like
     ("S12", "C12", "three|serial|bilateral|contact|zero|one|three|on|skin", "small"),    # insect flutterer

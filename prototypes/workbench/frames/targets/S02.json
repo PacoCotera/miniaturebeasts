@@ -1,0 +1,19 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S02",
+ "name": "Untuva",
+ "resembles": "a puffball under a cap",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a round fluffy body under a wide flat cap, no legs, the face a soft bump; it sits on the ground",
+ "shapes": [
+  {"ellipse":[50,67,30,23]},
+  {"dome":[50,46,42,16]},
+  {"ellipse":[50,46,42,5]},
+  {"ellipse":[74,60,8,7]}
+ ]
+}

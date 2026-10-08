@@ -19,11 +19,13 @@ test("catalogue 7 carries catalogue6 plus the taxonomy's 6 switches · 15 loci a
   const mine = CATALOGUE.loci.filter((l) => l.provenance.catalogue === "mb-genome-framework@7");
   assert.equal(v1.filter((l) => l.status === "validated").length, 114);
   assert.equal(v1.filter((l) => l.status !== "validated").length, 6);
-  assert.equal(mine.length, 45);
+  assert.equal(mine.length, 47, "45 taxonomy records plus the two ear proportions");
   const gaps = (l) => ["anatomy.tail-tip-bulb", "anatomy.top-cap-sheet", "appearance.cap-palette", "appearance.cap-spots", "appearance.belly-field", "growth.crest-leaf-count"].includes(l.id);
-  const kinds = mine.filter((l) => !gaps(l) && l.id !== "energy.light-feeding" && !l.id.startsWith("appearance.emission"));
+  const proportions = (l) => ["growth.auricular-set-ratio", "growth.auricular-width-ratio"].includes(l.id);
+  const kinds = mine.filter((l) => !gaps(l) && !proportions(l) && l.id !== "energy.light-feeding" && !l.id.startsWith("appearance.emission"));
   assert.equal(kinds.filter((l) => l.switch === "part").length, 11, "eleven new switches");
   assert.equal(kinds.filter((l) => l.switch !== "part").length, 25, "twenty-five new loci");
+  assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
   assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 5, "hoof, webbed, root, one pair, huge");
   assert.equal(PLAN_SWITCHES.size, 23);
@@ -118,4 +120,29 @@ test("a body whose part does not touch its owner is reported against the contrac
   const v = validateBody(built.scene);
   assert.equal(v.status, "rejected");
   assert.ok(v.problems.some((p) => p.startsWith("tail:")));
+});
+
+test("proportions by kind: the species' measures sit in its genome, and the kind check scores it against hand-drawn targets", async () => {
+  const { KINDS, proportionPairs, nearestPair } = await import("../framework/proportions.mjs");
+  const { loadTargets, targetScores, rasterizeTarget } = await import("../framework/targets.mjs");
+  assert.equal(Object.keys(KINDS).length, 16);
+  assert.deepEqual(nearestPair("growth.support-drop-ratio", 0.8), ["long", "short"], "a value between alleles is a mixed pair");
+  assert.deepEqual(nearestPair("growth.support-drop-ratio", 1.05), ["medium", "medium"]);
+  const cat = frameOf("S04"), catPairs = proportionPairs("S04");
+  assert.deepEqual(catPairs["growth.auricular-set-ratio"], ["crown", "crown"], "a cat's ears sit on the crown");
+  assert.deepEqual(catPairs["growth.axial-tail-bend"], ["up", "up"], "and its tail is carried up");
+  const specimen = typeSpecimen(cat);
+  for (const [id, pair] of Object.entries(catPairs)) if (specimen.loci[id]) assert.deepEqual(specimen.loci[id], pair, `${id}: the type specimen carries the kind's copies`);
+  assert.ok(cat.loci.some((l) => l.kind !== "locked" && l.typical), "an open proportion locus names its typical copies");
+  assert.ok(cat.loci.some((l) => l.kind === "locked" && l.copies[0] !== l.copies[1]), "a locked proportion between two alleles is a mixed pair");
+  assert.equal(checkGenome(cat, specimen).length, 0);
+  const targets = loadTargets(path.resolve(here, "../frames/targets"));
+  assert.equal(Object.keys(targets).length, 16);
+  for (const t of Object.values(targets)) { assert.equal(t.mask.length, 48 * 48); assert.ok([...t.mask].some((x) => x), `${t.species}: a drawn target`); }
+  assert.deepEqual([...rasterizeTarget(targets.S07)], [...targets.S07.mask], "targets rasterize the same twice");
+  const rows = ["S07", "S11"].map((id) => { const f = frameOf(id); const b = buildIndividual(f, typeSpecimen(f)); return { id, specMasks: { side: silhouetteMask(b.scene, "side", 48) }, individuals: [] }; });
+  const scores = targetScores(rows, targets);
+  assert.equal(scores[0].id, "S07");
+  assert.ok(scores[0].own > 0.6 && scores[0].pass, "the bear reads as a bear");
+  assert.ok(scores.every((s) => s.bestWrong && s.bestWrong.id !== s.id));
 });

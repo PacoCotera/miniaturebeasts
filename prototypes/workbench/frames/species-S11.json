@@ -787,7 +787,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: core.ryOverRx"
+   "guard": "rig: core.ryOverRx",
+   "typical": [
+    "high",
+    "low"
+   ]
   },
   {
    "id": "growth.core-depth-ratio",
@@ -809,7 +813,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: core.rzOverRx"
+   "guard": "rig: core.rzOverRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.head-length-ratio",
@@ -835,7 +843,11 @@
     "between medium and large",
     "large"
    ],
-   "guard": "rig: head.rxOverCoreRx"
+   "guard": "rig: head.rxOverCoreRx",
+   "typical": [
+    "small",
+    "small"
+   ]
   },
   {
    "id": "growth.head-width-ratio",
@@ -857,7 +869,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.ryOverCoreRx"
+   "guard": "rig: head.ryOverCoreRx",
+   "typical": [
+    "high",
+    "low"
+   ]
   },
   {
    "id": "growth.head-depth-ratio",
@@ -879,7 +895,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.rzOverCoreRx"
+   "guard": "rig: head.rzOverCoreRx",
+   "typical": [
+    "high",
+    "low"
+   ]
   },
   {
    "id": "growth.head-lift-ratio",
@@ -901,7 +921,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.centerLiftOverCoreRx"
+   "guard": "rig: head.centerLiftOverCoreRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.muzzle-projection-ratio",
@@ -923,7 +947,11 @@
     "between short and long",
     "long"
    ],
-   "guard": "rig: muzzle.rxOverHeadRx"
+   "guard": "rig: muzzle.rxOverHeadRx",
+   "typical": [
+    "short",
+    "short"
+   ]
   },
   {
    "id": "growth.muzzle-width-ratio",
@@ -945,7 +973,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: muzzle.ryOverHeadRy"
+   "guard": "rig: muzzle.ryOverHeadRy",
+   "typical": [
+    "high",
+    "high"
+   ]
   },
   {
    "id": "growth.support-drop-ratio",
@@ -1001,11 +1033,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "fine",
-    "fine"
+    "stout",
+    "stout"
    ],
    "looks": [
-    "fine"
+    "stout"
    ],
    "guard": "rig: support.proximalRadiusOverCoreRx",
    "nature": "look"
@@ -1043,11 +1075,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "small",
+    "small"
    ],
    "looks": [
-    "high"
+    "small"
    ],
    "guard": "rig: terminal.rzOverCoreRx",
    "nature": "look"
@@ -1072,7 +1104,11 @@
     "between small and large",
     "large"
    ],
-   "guard": "rig: eye.radiusOverHeadMinYZ"
+   "guard": "rig: eye.radiusOverHeadMinYZ",
+   "typical": [
+    "small",
+    "small"
+   ]
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -1094,7 +1130,11 @@
     "between close and wide",
     "wide"
    ],
-   "guard": "rig: eye.anchorYOverHeadRy"
+   "guard": "rig: eye.anchorYOverHeadRy",
+   "typical": [
+    "wide",
+    "wide"
+   ]
   },
   {
    "id": "appearance.anatomical-covering-extent",
@@ -1643,6 +1683,14 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "growth.auricular-set-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
    "id": "anatomy.antenna-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -1779,7 +1827,7 @@
   "carried": 43,
   "trunk": 40,
   "branch": 3,
-  "absent": 93,
+  "absent": 95,
   "locked": 17,
   "lockedBy": {
    "switch": 3,
@@ -1903,35 +1951,35 @@
      "large"
     ],
     "growth.core-width-ratio": [
-     "low",
-     "high"
+     "high",
+     "low"
     ],
     "growth.core-depth-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.head-length-ratio": [
      "small",
-     "large"
+     "small"
     ],
     "growth.head-width-ratio": [
-     "low",
-     "high"
+     "high",
+     "low"
     ],
     "growth.head-depth-ratio": [
-     "low",
-     "high"
+     "high",
+     "low"
     ],
     "growth.head-lift-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.muzzle-projection-ratio": [
      "short",
-     "long"
+     "short"
     ],
     "growth.muzzle-width-ratio": [
-     "low",
+     "high",
      "high"
     ],
     "growth.support-drop-ratio": [
@@ -1943,23 +1991,23 @@
      "high"
     ],
     "growth.support-radius-ratio": [
-     "fine",
-     "fine"
+     "stout",
+     "stout"
     ],
     "growth.terminal-length-ratio": [
      "small",
      "small"
     ],
     "growth.terminal-depth-ratio": [
-     "high",
-     "high"
+     "small",
+     "small"
     ],
     "growth.exterior-eye-size-ratio": [
      "small",
-     "large"
+     "small"
     ],
     "growth.exterior-eye-spacing-ratio": [
-     "close",
+     "wide",
      "wide"
     ],
     "appearance.anatomical-covering-extent": [
@@ -2023,18 +2071,18 @@
     "kind": "type-specimen"
    }
   },
-  "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
+  "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
   "brief": "Kilpo: 1 body region (B1), a head, a snout, 2 eyes, 4 legs, wing cases; scales; plantigrade, neck head.",
   "bounds": {
    "min": [
-    -1.9835327924135582,
-    -0.8189347802699104,
-    0
+    -1.6880260440541366,
+    -0.8601729023399283,
+    -0.018273319614091066
    ],
    "max": [
     0.8360000000000001,
-    0.8189347802699102,
-    1.6678357088257916
+    0.8601729023399283,
+    1.1825488746820447
    ]
   },
   "counts": {
@@ -2189,16 +2237,16 @@
    "high"
   ],
   "growth.support-radius-ratio": [
-   "fine",
-   "fine"
+   "stout",
+   "stout"
   ],
   "growth.terminal-length-ratio": [
    "small",
    "small"
   ],
   "growth.terminal-depth-ratio": [
-   "high",
-   "high"
+   "small",
+   "small"
   ],
   "appearance.anatomical-covering-extent": [
    "long",
