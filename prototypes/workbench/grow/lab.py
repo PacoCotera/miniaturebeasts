@@ -29,6 +29,7 @@ import service as S
 
 LAB = os.path.join(HERE, "lab")
 SHEETS = os.path.join(HERE, "species-sheets")
+PROMPT_SET = os.path.join(HERE, "prompt-lab")  # the art prompter's prompt set, when it lands on main (see README: "The prompt lab")
 
 CRAFT = ("Craft rules. Limbs, feet and joints are developed, rounded, finished forms: never boxes, never bare cylinders, never undeveloped 3D artefacts, never facets or flat planes. "
          "Put special care in the surface and make it read as its named material. The eyes are large, wet and lit: a dark iris with a bright catch light top left, the ring clean. "
@@ -52,6 +53,32 @@ VARIANTS = [
 
 def species_sheet(sp):
     return json.load(open(os.path.join(SHEETS, f"{sp}.json")))
+
+
+def prompt_set():
+    """The art prompter's prompt set under grow/prompt-lab/, or None: variants.json (a list of
+    {id, name, change, step1?, step2?}: a variant's step1/step2 texts, with {controls}, {description},
+    {species}, {artDirection1}, {artDirection2}, {generate}, {transfer} as placeholders, are used as
+    written; without them the lab assembles the steps from the set's blocks), art-direction-step1.txt
+    and art-direction-step2.txt (the v5 blocks), species/<species>.txt (the material words),
+    description-template.txt (with {description} for the genome's words). Any file missing falls back
+    to the lab's own."""
+    if not os.path.exists(os.path.join(PROMPT_SET, "variants.json")): return None
+    read = lambda *p: open(os.path.join(PROMPT_SET, *p)).read().strip() if os.path.exists(os.path.join(PROMPT_SET, *p)) else None
+    return {"variants": json.load(open(os.path.join(PROMPT_SET, "variants.json"))), "art1": read("art-direction-step1.txt"), "art2": read("art-direction-step2.txt"), "template": read("description-template.txt"), "species": lambda sp: read("species", f"{sp}.txt")}
+
+
+def build_from_set(sp, legend, sheet, variant, pset):
+    """A variant of the art prompter's set, its texts used as written."""
+    controls = S.controls_text_two_step(legend, "portrait")
+    description = (pset["template"] or "The creature: {description}").replace("{description}", legend["description"]["text"])
+    species_words = pset["species"](sp) or f"The species: {sheet['signature']}. {sheet['surfaceWords']}"
+    fields = {"controls": controls, "description": description, "species": species_words, "artDirection1": pset["art1"] or "", "artDirection2": pset["art2"] or S.ART_DIRECTION, "generate": S.STEP1_WORDS, "transfer": S.STEP2_WORDS}
+    fill = lambda t: t.format(**fields) if t else None
+    step1 = fill(variant.get("step1")) or "\n\n".join(x for x in [fields["artDirection1"], controls, description, species_words, fields["generate"]] if x)
+    step2 = fill(variant.get("step2")) or "\n\n".join(x for x in [fields["artDirection2"], species_words, fields["transfer"]] if x)
+    changed = variant.get("change") or variant.get("name", "")
+    return {"step1": step1, "step2": step2, "fields": {**fields, "variant": {k: v for k, v in variant.items() if k not in ("step1", "step2")}}, "changed": changed}
 
 
 def reference_for(sp, sheet):
@@ -84,11 +111,14 @@ def run(sp, variant_ids):
     sheet = species_sheet(sp); reference = reference_for(sp, sheet)
     ctrl = {p: os.path.join(d0, "controls", f"{p}.portrait.large.png") for p in ("silhouette", "index", "slots")}
     c = os.path.join(d0, "controls")
-    for v in VARIANTS:
+    pset = prompt_set()
+    variants = pset["variants"] if pset else VARIANTS
+    if pset: print("the art prompter's prompt set:", len(variants), "variants")
+    for v in variants:
         if variant_ids and v["id"] not in variant_ids: continue
         out = os.path.join(LAB, sp, v["id"]); os.makedirs(out, exist_ok=True)
         if os.path.exists(os.path.join(out, "prompt.json")) and "--force" not in sys.argv: print(sp, v["id"], "done already"); continue
-        pr = build_prompts(sp, legend, sheet, v)
+        pr = build_from_set(sp, legend, sheet, v, pset) if pset else build_prompts(sp, legend, sheet, v)
         common = {"lab": {"species": sp, "variant": v["id"], "name": v["name"]}, "controlVariant": "twostep", "species": sp, "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"]}
         imgs = [("key.portrait.large.png", S.png_bytes(S.pad_square(Image.open(os.path.join(c, "key.portrait.large.png")).convert("RGB")))), ("index.portrait.large.png", S.png_bytes(S.pad_square(Image.open(os.path.join(c, "index.portrait.large.png")).convert("RGB")))), ("board:02-miniature-lives.png", S.png_bytes(Image.open(S.BOARD).convert("RGB")))]
         rec1, im1 = S.call_logged(pr["step1"], imgs, {**common, "purpose": "lab-step1", "step": 1, "attempt": 1, "fields": pr["fields"]}, os.path.join(out, "raw"), "step1.png")
@@ -114,7 +144,8 @@ def run(sp, variant_ids):
 
 def sheet_for(sp, d0=None):
     rows = []
-    for v in VARIANTS:
+    pset = prompt_set()
+    for v in (pset["variants"] if pset else VARIANTS):
         p = os.path.join(LAB, sp, v["id"], "prompt.json")
         if os.path.exists(p): rows.append((v, json.load(open(p)), os.path.join(LAB, sp, v["id"])))
     if not rows: return
