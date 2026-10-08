@@ -1,0 +1,165 @@
+{
+ "species": "S12",
+ "variant": {
+  "id": "6B-contact-shadow",
+  "name": "Contact shadow",
+  "change": "Step 2, the cast shadow ban becomes a small soft contact shadow under the feet: tests whether grounding the creature, as Pip is grounded, adds weight without failing the band check.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Step 2, the cast shadow ban becomes a small soft contact shadow under the feet: tests whether grounding the creature, as Pip is grounded, adds weight without failing the band check.",
+ "costUSD": 0.1706,
+ "step1": {
+  "shared": "v5's drawing"
+ },
+ "step2": {
+  "callId": "55f8a4cb-ec63-4e15-b01d-6373566509d8",
+  "status": "ok",
+  "costUSD": 0.17055,
+  "seconds": 19.5,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.718,
+   "silhouetteIoUInPlace": 0.74,
+   "parts": {
+    "region-0": {
+     "span": 0.992,
+     "coverage": 0.999
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.996
+    },
+    "eye": {
+     "span": 0.968,
+     "coverage": 0.985
+    },
+    "antenna": {
+     "span": 0.973,
+     "coverage": 0.604
+    },
+    "leg-0": {
+     "span": 0.636,
+     "coverage": 0.695
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.919
+    },
+    "leg-2": {
+     "span": 1.0,
+     "coverage": 0.76
+    },
+    "flap": {
+     "span": 0.984,
+     "coverage": 0.989
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.311,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.24,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.302,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.516,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.267,
+     "ok": true
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.284,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.542,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.939,
+     "median": "#df9936",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.888,
+     "median": "#d8963c",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.831,
+     "median": "#df9d36",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.623,
+     "median": "#dcc99e",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.538,
+     "median": "#d7c69b",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-2": {
+     "agreement": 0.504,
+     "median": "#c8b78c",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.922,
+     "median": "#f6e3a7",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.024,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.845,
+   "passed": true,
+   "gated": false
+  }
+ }
+}

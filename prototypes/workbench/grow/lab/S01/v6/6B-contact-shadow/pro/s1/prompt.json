@@ -1,0 +1,157 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "6B-contact-shadow",
+  "name": "Contact shadow",
+  "change": "Step 2, the cast shadow ban becomes a small soft contact shadow under the feet: tests whether grounding the creature, as Pip is grounded, adds weight without failing the band check.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Step 2, the cast shadow ban becomes a small soft contact shadow under the feet: tests whether grounding the creature, as Pip is grounded, adds weight without failing the band check.",
+ "costUSD": 0.1607,
+ "step1": {
+  "shared": "v5's drawing"
+ },
+ "step2": {
+  "callId": "ea86cc7a-90c8-4615-905a-fbaa57c91137",
+  "status": "ok",
+  "costUSD": 0.16071,
+  "seconds": 14.8,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.725,
+   "silhouetteIoUInPlace": 0.719,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.824
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.97
+    },
+    "muzzle": {
+     "span": 0.992,
+     "coverage": 1.0
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.895
+    },
+    "crown": {
+     "span": 0.922,
+     "coverage": 0.617
+    },
+    "leg-0": {
+     "span": 0.828,
+     "coverage": 0.747
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.352
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.722,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.502,
+     "ok": false
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.317,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.415,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.654,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.337,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.51,
+     "median": "#42444b",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.615,
+     "median": "#63645b",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@region-0": {
+     "agreement": 0.025,
+     "median": "#3a4b5a",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.11,
+     "median": "#5d5c5b",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "second@leg-1": {
+     "agreement": 0.045,
+     "median": "#3b4b5a",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "leaf@crown": {
+     "agreement": 0.891,
+     "median": "#72a257",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.325,
+     "median": "#6a645e",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "belly@muzzle": {
+     "agreement": 0.594,
+     "median": "#d4ae7b",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "the proportions are off: the head is larger than drawn (0.50 of the body against 0.35)",
+    "a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #3a4b5a, the colour of body), the second slot on the leg-0 (painted #5d5c5b, the colour of body), the second slot on the leg-1 (painted #3b4b5a, the colour of body), the belly slot on the region-0 (painted #6a645e, the colour of body)"
+   ],
+   "outside": 0.0,
+   "missing": 0.042,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.44,
+   "passed": false,
+   "gated": false
+  }
+ }
+}
