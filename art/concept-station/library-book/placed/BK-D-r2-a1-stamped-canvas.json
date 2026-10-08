@@ -1,0 +1,19 @@
+{
+  "screen": "/home/user/miniaturebeasts/art/concept-station/library-book/round2/BK-D-r2-a1-canvas.png",
+  "stamp": "/home/user/miniaturebeasts/art/concept-station/library-book/layout/stamp-s03-tome-300.png",
+  "detectedSquare": [
+    1255,
+    153,
+    1425,
+    332
+  ],
+  "pasted": {
+    "x": 1257,
+    "y": 159,
+    "side": 166
+  },
+  "outputs": {
+    "canvas": "/home/user/miniaturebeasts/art/concept-station/library-book/placed/BK-D-r2-a1-stamped-canvas.png",
+    "screen": "/home/user/miniaturebeasts/art/concept-station/library-book/placed/BK-D-r2-a1-stamped-1024x600.png"
+  }
+}

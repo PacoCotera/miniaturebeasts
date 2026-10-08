@@ -1,0 +1,84 @@
+{
+  "id": "book-species-page",
+  "direction": "D",
+  "round": 2,
+  "attempt": 1,
+  "tag": "BK-D-r2-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the whole left page, the seven tabs and their words, the four row words and every specimen plate, the pale square plate, the empty mounted frame and the pinned wish.\nONE CHANGE ONLY: in the three empty dotted plates at the end of the Leg colour, Markings and Scales rows on the right page, write the same small ink word that the first row's dotted plate already carries, \"more?\", in the same size, ink and position within the plate; nothing else changes.\nConstraints: preserve every other pixel of the screen; no other new words, no digits.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/library-book/round1/BK-D-r1-a1-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "85486593f79b8ef663e459377dd027f0298d99a97170512017ef5b7556371c1b"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T04:33:31Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/BK-D-r2-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "8116dc54d155981404c35e68f2a3efda5d574597e5b509a20408454d0ef29a7b"
+    },
+    "png": {
+      "file": "BK-D-r2-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "3b834ca76767cee929a38a991f213be4682fa08c2a8161a5496b1abfcd488a05"
+    },
+    "screen": {
+      "file": "BK-D-r2-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "5ea8adec5bec0bedc8aea2435befc0ebd5c7467d21cb745ed24e9caaa3879bb9",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 21.1,
+    "usage": {
+      "promptTokenCount": 460,
+      "candidatesTokenCount": 1311,
+      "totalTokenCount": 1952,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 202
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 181,
+      "serviceTier": "standard"
+    }
+  }
+}

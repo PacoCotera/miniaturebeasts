@@ -1,0 +1,94 @@
+{
+  "id": "book-species-page",
+  "direction": "D",
+  "round": 1,
+  "attempt": 3,
+  "tag": "BK-D-r1-a3",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's BOOK screen (one species' field guide as an open page of a botanical tome, filling the whole screen), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a BOTANICAL TOME, a naturalist's field guide open on a research instrument, exactly the paper, ink and ornament of the supplied book page (Image 1): cream pages with deckled edges, sepia ink, mounted plates, pressed specimens, small round ink stamps, a pin; cool, even light on the paper; the only warm light is on the living portrait. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, soft shadows, crisp edges, no noise or dither. No wood, no felt, no leather, no lamp. Pictures lead; a few words in ink, each written once.\nLAYOUT, as the template: a thin graphite top bar and bottom line, and between them THE OPEN TOME filling the whole stage: two tall cream pages with deckled edges and a soft gutter in the middle, each with a thin ink border and small lantern-and-leaf ornaments at the corners, lit cool and even. LEFT PAGE: the PORTRAIT, large, a living painting set into the page, taking the upper two thirds of the page's left side: the lagoon lizard of Image 1 in the rich sculpted treatment, a low scaled body in lagoon blue with marigold plate edges, a small pointed crest, four short legs, a long tail ending in a glowing golden bulb, digging at the mouth of a small burrow, lit by one warm key light from the upper left, the only warm light on the screen. Under the portrait an EMPTY paper name label (nothing written) with an empty hairline rule beneath it. To the right of the portrait, at the top, two small round sepia ink stamps, one with a tree ring and one with a stone, pictures only; below them the FRAME PLATE: the same species pressed like a specimen, drawn once in sepia ink on a tall mounted plate, its silhouette with crest and tail-bulb. The lower part of the left page stays quiet cream with at most a faint pressed-leaf ornament. RIGHT PAGE: along its top edge, seven small paper tabs in a row, the first lifted and open, each with one small ink word. Below them, on the left two thirds of the page, four rows: each row has a small ink word at the left and a row of small pressed-specimen plates, little mounted swatches: the first row three plates (a lagoon swatch of scaled skin, a jade one, a marigold one) and a dotted empty plate with its word; the second row two plates (a milk-mint leg, a cream leg) and a dotted plate; the third row two plates (a plain flank, a striped flank) and a dotted plate; the fourth row one plate (fine scales) and a dotted plate. On the right third of the page, from the top: a plain, flat, completely EMPTY pale square plate about a quarter of the page's width, with no frame or ornament around it (the genome stamp is placed there later); below it a mounted EMPTY frame with small corner ticks, a blank cream panel inside and nothing drawn in it; below that a small card pinned to the page with a red pin, carrying a loose sepia sketch of a striped lizard with a long tail, a wish, no words on it.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". On the seven small paper tabs along the top of the right page, one word each in this order: \"Coat\", \"Face\", \"Shape\", \"Legs & tail\", \"Movement\", \"Stamina\", \"Character\". At the left of the four rows on the right page, one word each: \"Colour\", \"Leg colour\", \"Markings\", \"Scales\". On the dotted last plate of each row: \"more?\". Bottom line: orange \"✓ Visit · ← Cabinet\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere, nothing written on the name label under the portrait, nothing on the pale square plate, nothing inside the empty frame, no other words, no digits except the three counters.\nConstraints: no species name anywhere (the name label under the portrait is an EMPTY paper label and the bottom line's middle is empty: names are placed later); the pale square plate on the right page stays completely empty and flat with no frame or ornament around it (the real genome stamp is placed there later); the mounted frame below it stays EMPTY inside, a blank cream panel within its frame, nothing drawn in it (its drawing comes later); no letters for genes, ratios, percentages, counts, DNA helices or codes; no paragraphs, no handwriting blocks, no fake Latin text; no wood, felt or leather; no people; no shelf.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the book's approved treatment: take its paper, ink, ornaments, portrait, plates and tabs; its shelf is rejected and absent here. Image 2 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 3 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/library/round3/LB-D-r3-a2-1024x600.png",
+      "role": "the book's approved treatment from the first Library round: take its paper, ink, lantern-and-leaf ornaments, portrait painting, frame plate, round stamps, tabs and specimen plates exactly; its shelf across the top is REJECTED and is not on this screen, where the open tome fills the whole stage",
+      "sha256": "e8aeefd063819c53d827b9de0ac511868a11ea7d3ebb42535588856b2bd985c8"
+    },
+    {
+      "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+      "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only",
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+    },
+    {
+      "path": "art/concept-station/library-book/layout/book-layout-template.png",
+      "role": "layout truth only: flat boxes at 1024x600 showing the open tome filling the stage, the portrait, empty name label, place stamps and frame plate on the left page, the seven tabs, the four specimen rows, the empty pale stamp plate, the empty mounted frame and the pinned wish on the right page; not style",
+      "sha256": "4eeb2f3b89e5819dbf7af5309873a4889579d39b12a3946053a98fbfed489cdc"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T04:32:22Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/BK-D-r1-a3.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "5c435a5d2875f117abcb091a4c07cb6a2f7a51a62873a766dc0e0635cf53499e"
+    },
+    "png": {
+      "file": "BK-D-r1-a3-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "2ca71c9f2912fd9de42fd7ea1b5e07a74cb9f6731079205c88671bb3ccfb9f6d"
+    },
+    "screen": {
+      "file": "BK-D-r1-a3-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "40c4541d581ffdad5fba4f5730187e547f088d7f993b6709273f0120960b3410",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 27.9,
+    "usage": {
+      "promptTokenCount": 2237,
+      "candidatesTokenCount": 1850,
+      "totalTokenCount": 4462,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1463
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 774
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 375,
+      "serviceTier": "standard"
+    }
+  }
+}

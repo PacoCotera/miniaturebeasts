@@ -1,0 +1,12 @@
+{
+  "successfulCalls": 3,
+  "runs": [
+    {
+      "time": "2026-10-08T04:32:54Z",
+      "plan": "/tmp/claude-0/-home-user-miniaturebeasts/b951398d-74c3-50ba-be6f-9ba22988419a/scratchpad/plan-book-r1-flat.json",
+      "ids": null,
+      "success": 3,
+      "error": 0
+    }
+  ]
+}
