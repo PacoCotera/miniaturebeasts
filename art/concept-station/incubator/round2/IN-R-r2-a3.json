@@ -1,0 +1,84 @@
+{
+  "id": "incubator-ready",
+  "direction": "R",
+  "round": 2,
+  "attempt": 3,
+  "tag": "IN-R-r2-a3",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar, the four tabs and their words, the four leaves, the dome with the embryo, its base and plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY, in the bottom line (the thin graphite strip along the bottom edge): its left part, currently grey \"← Home\", becomes an orange check mark and orange \"✓ Open\" followed by grey \"· ← Home\", in the same small smooth sans-serif as the rest of the line; its middle part becomes grey \"founder · ready\"; its right part becomes grey \"ready to open\". Nothing above the bottom line changes.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label or the small plate under it.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/incubator/round1/IN-D-r1-a3-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T00:10:22Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/IN-R-r2-a3.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "a19a1f143d59c94cf990926e2245b8a13efa90368cbcb5886e6122bc1801ddcc"
+    },
+    "png": {
+      "file": "IN-R-r2-a3-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "d458f58c31a3c8ee2da50ba2eb6ec4efdd2f1129956e78d38d4d1cbdf8e0bef8"
+    },
+    "screen": {
+      "file": "IN-R-r2-a3-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "5f19bd28101e8375c290377ebbcb951c10cd2b0ba005c8c3c93d461a0dcee68e",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 20.4,
+    "usage": {
+      "promptTokenCount": 493,
+      "candidatesTokenCount": 1269,
+      "totalTokenCount": 1978,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 235
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 216,
+      "serviceTier": "standard"
+    }
+  }
+}

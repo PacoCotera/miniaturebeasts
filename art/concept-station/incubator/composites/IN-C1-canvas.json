@@ -1,0 +1,64 @@
+{
+  "base": "art/concept-station/incubator/round4/IN-R-r4-a2-canvas.png",
+  "feather": 10,
+  "pastes": [
+    {
+      "source": "art/concept-station/incubator/round2/IN-R-r2-a3-canvas.png",
+      "screenRect": [
+        0,
+        559,
+        1024,
+        600
+      ],
+      "canvasRect": [
+        30,
+        805,
+        1505,
+        864
+      ],
+      "feather": 0
+    },
+    {
+      "source": "art/concept-station/incubator/round2/IN-R-r2-a3-canvas.png",
+      "screenRect": [
+        430,
+        484,
+        596,
+        540
+      ],
+      "canvasRect": [
+        649,
+        697,
+        888,
+        778
+      ],
+      "feather": 10
+    },
+    {
+      "source": "art/concept-station/incubator/round4/IN-R-r4-a1-canvas.png",
+      "screenRect": [
+        652,
+        40,
+        820,
+        100
+      ],
+      "canvasRect": [
+        969,
+        58,
+        1211,
+        144
+      ],
+      "feather": 10
+    }
+  ],
+  "outputs": {
+    "canvas": "art/concept-station/incubator/composites/IN-C1-canvas.png",
+    "screen": "art/concept-station/incubator/composites/IN-C1-1024x600.png",
+    "bandRect": [
+      30,
+      0,
+      1505,
+      864
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "screen": "round1/IN-D-r1-a1-canvas.png",
+  "stamp": "layout/stamp-s01-incubator-bench-300.png",
+  "detectedSquare": [
+    1166,
+    418,
+    1381,
+    635
+  ],
+  "pasted": {
+    "x": 1168,
+    "y": 421,
+    "side": 210
+  },
+  "outputs": {
+    "canvas": "placed/IN-D-r1-a1-stamped-canvas.png",
+    "screen": "placed/IN-D-r1-a1-stamped-1024x600.png"
+  }
+}

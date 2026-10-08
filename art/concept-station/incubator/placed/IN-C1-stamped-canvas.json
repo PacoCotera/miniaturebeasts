@@ -1,0 +1,19 @@
+{
+  "screen": "art/concept-station/incubator/composites/IN-C1-canvas.png",
+  "stamp": "art/concept-station/incubator/layout/stamp-s01-ready-bench-300.png",
+  "detectedSquare": [
+    1096,
+    402,
+    1335,
+    668
+  ],
+  "pasted": {
+    "x": 1098,
+    "y": 418,
+    "side": 234
+  },
+  "outputs": {
+    "canvas": "art/concept-station/incubator/placed/IN-C1-stamped-canvas.png",
+    "screen": "art/concept-station/incubator/placed/IN-C1-stamped-1024x600.png"
+  }
+}

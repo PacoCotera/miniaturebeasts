@@ -1,0 +1,61 @@
+{
+ "ok": true,
+ "code": "S11v1-0F-DDCB-4DEAF4",
+ "species": 11,
+ "version": 1,
+ "read": [
+  "Coat",
+  "Face",
+  "Movement",
+  "Stamina"
+ ],
+ "unread": [],
+ "copies": {
+  "appearance.marking-switch": [
+   "on",
+   "on"
+  ],
+  "anatomy.crown-presence": [
+   "on",
+   "on"
+  ],
+  "growth.exterior-eye-size-ratio": [
+   "small",
+   "small"
+  ],
+  "movement.cycle-rate": [
+   "high",
+   "high"
+  ],
+  "energy.action-efficiency": [
+   "low",
+   "low"
+  ]
+ },
+ "crc": 56779,
+ "postmark": "none",
+ "stamp": {
+  "cells": 17,
+  "correctedBytes": 0,
+  "of": 12,
+  "mirrored": false,
+  "quad": [
+   [
+    758.4,
+    307.2
+   ],
+   [
+    886,
+    307.2
+   ],
+   [
+    886,
+    434.8
+   ],
+   [
+    758.4,
+    434.8
+   ]
+  ]
+ }
+}

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="600" viewBox="0 0 1024 600" font-family="sans-serif" font-size="12" fill="none" stroke="#999">
+<rect width="1024" height="600" fill="#141c22" stroke="none"/>
+<rect width="1024" height="40" stroke="#777"/><rect y="562" width="1024" height="38" stroke="#777"/>
+<text x="16" y="26" fill="#ddd" stroke="none">Incubator  T5</text><text x="446" y="26" fill="#ddd" stroke="none">⚡ 7  ◆ 3  ❀ 2</text><text x="820" y="26" fill="#ddd" stroke="none">Companion away · with Dot</text>
+<!-- chapter arc -->
+<rect x="284" y="72" width="72" height="36" stroke="#8bb"/><rect x="412" y="56" width="72" height="36" stroke="#eda"/><rect x="540" y="56" width="72" height="36" stroke="#8bb"/><rect x="668" y="72" width="72" height="36" stroke="#8bb" stroke-dasharray="3 3"/>
+<text x="306" y="124" fill="#8bb" stroke="none">Coat</text><text x="436" y="108" fill="#eda" stroke="none">Face · just lit</text><text x="548" y="108" fill="#8bb" stroke="none">Movement ∞</text><text x="682" y="124" fill="#8bb" stroke="none">Stamina</text>
+<!-- leaves -->
+<ellipse cx="392" cy="150" rx="20" ry="14" fill="#5a9a4a" stroke="#5a9a4a"/><ellipse cx="472" cy="138" rx="20" ry="14" fill="#5a9a4a" stroke="#5a9a4a"/>
+<ellipse cx="552" cy="138" rx="20" ry="14" stroke="#5a9a4a"/><path d="M532 138 A20 14 0 0 0 572 138 Z" fill="#5a9a4a" stroke="none"/>
+<ellipse cx="632" cy="150" rx="20" ry="14" stroke="#5a9a4a" stroke-dasharray="3 3"/>
+<text x="300" y="154" fill="#5a9a4a" stroke="none">leaves: full · full · half · empty</text>
+<!-- dome -->
+<path d="M332 440 L332 360 A180 180 0 0 1 692 360 L692 440" stroke="#8bb"/><rect x="300" y="440" width="424" height="60" stroke="#8bb"/>
+<ellipse cx="512" cy="380" rx="50" ry="60" stroke="#eda"/><text x="470" y="384" fill="#eda" stroke="none">bud · glows</text>
+<text x="420" y="470" fill="#999" stroke="none">machined base · brushed rim</text>
+<rect x="448" y="504" width="128" height="26" stroke="#8bb"/><text x="484" y="522" fill="#ddd" stroke="none">growing</text>
+<text x="452" y="548" fill="#999" stroke="none">a founder · rock field</text>
+<!-- left: quiet, lamp -->
+<path d="M120 140 L512 300" stroke="#eda" stroke-dasharray="4 4"/><text x="60" y="130" fill="#eda" stroke="none">lamp · cool beam</text>
+<!-- right: label and code plate -->
+<rect x="760" y="232" width="220" height="220" fill="#d9dde0" stroke="#d9dde0"/><text x="802" y="346" fill="#889" stroke="none">stamp 220 · placed</text>
+<rect x="800" y="464" width="140" height="26" stroke="#8bb"/><text x="826" y="482" fill="#999" stroke="none">code · empty</text>
+<text x="16" y="586" fill="#bbb" stroke="none">← Home</text><text x="452" y="586" fill="#ddd" stroke="none">founder · growing</text><text x="860" y="586" fill="#bbb" stroke="none">Stamina still a surprise</text>
+</svg>
