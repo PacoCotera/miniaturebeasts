@@ -14,7 +14,7 @@
  },
  "regions": {
   "list": { "rect": [0, 40, 112, 522], "component": "list", "item": "well", "slots": 6, "rule": { "x": 112, "y0": 48, "y1": 552 } },
-  "well": { "rect": [24, 48, 80, 72], "pitch": [0, 72], "ring": { "slice": [0, -4, 80, 80], "centre": [40, 36], "outer": 33, "band": 8, "master": "1:1" }, "pod": { "size": [32, 48], "centre": [40, 36] }, "focus": { "shape": "circle", "radius": 37, "width": 2, "colour": "focus", "onlyInList": true }, "place": null },
+  "well": { "rect": [24, 48, 80, 72], "pitch": [0, 72], "ring": { "slice": [0, -4, 80, 80], "centre": [40, 36], "outer": 33, "band": 8, "master": "1:1" }, "pod": { "size": [40, 48], "centre": [40, 36] }, "focus": { "shape": "circle", "radius": 37, "width": 2, "colour": "focus", "onlyInList": true }, "place": null },
   "hatch": { "rect": [24, 488, 80, 56], "mark": [24, 24] },
   "rail": { "rect": [152, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail" },
   "bench": { "rect": [0, 40, 1024, 522] },
@@ -31,7 +31,7 @@
   "stamp": { "rect": [872, 248, 120, 120], "component": "stampLabel" },
   "page": {
    "rect": [152, 112, 256, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
-   "states": ["grid"], "pictureMax": [144, 176], "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": [12, 12], "sealedFind": [72, 184, 112, 112],
+   "states": ["grid"], "pictureMax": [144, 176], "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": { "slice": "page-mark-new-10", "size": [10, 10], "at": "P.x + P.w / 2 - 5, P.y + 8", "layer": "art", "fill": "bone", "edge": "white", "keyline": "ink", "specular": false }, "sealedFind": [72, 184, 112, 112],
    "grid": {
     "1": { "cells": [[16, 48, 224, 384]], "picture": [144, 176], "align": "centre top" },
     "2": { "cells": [[16, 48, 224, 184], [16, 248, 224, 184]], "picture": [176, 144], "align": "centre top" },
@@ -52,7 +52,7 @@
   "compareB": { "rect": [600, 112, 408, 440], "same": "compareA" },
   "ribbon": { "rect": [520, 488, 224, 40], "px": 20, "ms": 6000 }
  },
- "classes": { "pod": { "large": [144, 176], "medium": [120, 152], "small": [104, 128], "list": [32, 48] } },
+ "classes": { "pod": { "large": [144, 176], "medium": [120, 152], "small": [104, 128], "list": [40, 48] } },
  "page": { "marks": { "seed": [40, 52], "seedSmall": [32, 40], "smallUnder": 120, "only": [72, 8], "asleep": [24, 16], "doing": [28, 16], "key": [44, 64] }, "diff": { "bracket": [12, 12], "bracketAt": "top centre, `inset` px in: [P.x + P.w / 2 - 6, P.y + inset]", "inset": 8, "edge": 2 } },
  "focus": {
   "list": { "axis": "vertical", "right": "pod", "left": "none" },
