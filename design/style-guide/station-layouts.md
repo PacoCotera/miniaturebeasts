@@ -72,12 +72,12 @@ The rail is the same object on all three bench screens. It sits at the same heig
 
 | Tab state | How it is drawn (shape first, colour second) |
 | --- | --- |
-| Unread | 1 px hairline outline, cool frost fill, hollow pips |
+| Unread | 1 px hairline outline, cool frost fill (`frostS`, one step below the frost of the page so the pod stays the brightest thing; corrected by the UI designer against the build, 2026-10-08, was `frostD`), hollow pips |
 | Read | Solid deep-teal fill, 1 px lit rim, filled pips |
 | Glint | A four-point star, 12×12, at the tab's top right (tab.x + 92, tab.y + 4) |
-| Sealed | The tab drawn shut (horizontal slats), an 8×4 notch cut into its bottom edge, no pips |
+| Sealed | The tab drawn shut (horizontal slats), an 8×4 notch cut into its bottom edge, no pips; its word in `mist`, so it still reads on the slats (corrected by the UI designer against the build, 2026-10-08) |
 | Cleared while growing (Incubator) | Unread turns to read one tab at a time, the pips filling left to right across the bud's minutes |
-| Focused | The cream focus ring, and the tab lifts 4 px |
+| Focused | The cream focus ring, and the tab lifts 2 px, the chrome lift (*corrected by the UI designer against the build, 2026-10-08: was 4 px; at 4 the ring's top met the top bar's rule at y 40*) |
 | Trait states on Create | Filled pip: read. Amber dot in the pip: changed. ✕ in place of the pip: clashes. A cream ring round the pip: the focused trait |
 
 ### States shared by every screen
@@ -180,8 +180,8 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 | Beam | 224, 104, 240, 232 | A cool cone from above left, ending in a pool on the cradle |
 | **Pod (focal)** | 264, 120, 160, 192 | Bottom-centred on (344, 312). Sized by size class: large 160×192, medium 136×168, small 112×144 |
 | Cradle | 232, 296, 224, 40 | Glass ring |
-| Name | 184, 344, 320, 32 | 28 px, centred on x 344. "Unknown pod" before Identify |
-| Origin | 184, 384, 320, 40 | 16 px, mist, at most two lines, centred |
+| Name | 184, 344, 320, 32 | 28 px, centred on x 344. "Unknown pod" before Identify. No digits |
+| Origin | 184, 384, 320, 40 | 16 px, mist, at most two lines, centred. The place and how it was found ("rock field · a Tuikis felt safe"); no digits, never an expedition number (corrected by the UI designer against the build, 2026-10-08) |
 | **Stamp label** | 176, 432, 120, 120 | 120 px below the pod's box. Appears at Identify with every chapter as hairlines |
 | Open page | 528, 112, 480, 440 | Deep pane, 1 px slate edge |
 | Page heading | 544, 120, 448, 24 | Emblem 24×24, then the chapter's word in 20 px. Nothing at the right |
@@ -193,7 +193,7 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 | --- | --- | --- |
 | 1 | 544, 160, 448, 384 | 448×312 |
 | 2 | 544, 160, 216, 384 and 776, 160, 216, 384 | 216×304 |
-| 3–4 | 544 or 776, at y 160 and 360; each 216×184 | 216×120 |
+| 3–4 | 544 or 776, at y 160 and 360; each 216×184 | 216×112 (*corrected by the UI designer against the build, 2026-10-08: was 216×120, which left the name and two lines 4 px past the cell*) |
 | 5–6 | x 544, 696, 848 at y 160 and 360; each 144×184 | 144×112 |
 | 7 or more | none today (the most is six, the S09 Coat) | comes back to the UI designer |
 
@@ -208,6 +208,7 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 | Breed to change (two joined rings) | P.x + 8, P.y + 8, 28×16 | Top left |
 | Unread | frost over the whole picture | No mark. The trait's name shows, its line stays empty |
 | Sealed | slats over the whole picture, with what opens it (44×64) centred | No line |
+| Differs (Compare) | a 2 px aqua edge on P itself, and a 12×12 bracket at P.x + P.w / 2 − 6, P.y + 8 | Aqua on a 1 px ink keyline, on both pages. Never the cream ring: cream is the focus's alone (corrected by the UI designer against the build, 2026-10-08) |
 
 **Hierarchy check at 1×:**
 
@@ -218,15 +219,17 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 **States.**
 
 - **Unidentified.** No rail, no page and no stamp: only the list, the sealed pod, "Unknown pod" and its origin. `✓ Identify · 1 ⚡`.
-- **Identifying.** The seal clears from the top down over 2 s and the glyph lights. "New species" shows for 6 s as a 20 px ribbon in the origin's rectangle (184, 384, 320, 40), then the origin returns.
-- **Reading.** The page's frost wipes away from the top over 2 s, the tab fills, its pips fill, and the stamp's sector and the list ring's arc fill.
+- **Identifying.** The seal clears from the top down over 2 s and the glyph lights. "New species" shows for 6 s as a 20 px ribbon in the origin's rectangle (184, 384, 320, 40), then the origin returns. The ribbon is the read tab's cool look (deep teal, aqua rim, bone words), never a warm plate beside the pod; no message plate repeats it (corrected by the UI designer against the build, 2026-10-08).
+- **Reading.** The page's frost wipes away from the top over 2 s, the tab fills, its pips fill, and the stamp's sector and the list ring's arc fill. No message plate: the pictures and the star say what is new (corrected by the UI designer against the build, 2026-10-08). On Pods a message plate shows only a refusal and the hatch's arming.
 - **Read again.** A read chapter is free to look at again. The bottom line has no ✓ cap and the subject says "read".
-- **Empty rack.** The empty cradle under the beam and nothing else on the stage. The subject is "the rack is empty"; what needs you is "dock the Companion to bring its crates home".
+- **Empty rack.** The empty cradle under the beam and nothing else on the stage. The subject is "the rack is empty"; what needs you is "dock the Companion to bring its crates home". *corrected by the UI designer against the build, 2026-10-08:* away, "dock the Companion for its crates" (six words); docked with crates in the bay, "open the bay at Home"; docked with the bay empty, "take the Companion exploring".
 - **Compare.**
   - The list hides. Two pages sit at (176, 112, 408, 440) and (600, 112, 408, 440).
-  - Each heading shows its pod at 32×40 and its place picture.
+  - Each heading shows its pod at 32×40 at (16, 8) on the page and its place picture 16×16 at (56, 20).
   - The page grid is the same as Read, scaled to 408 px wide: two columns of 184 with an 8 px gap, pictures 184×104 for three or four traits; three columns of 120, pictures 120×96, for five or six.
-  - Traits that differ wear the cream ring and a 12×12 bracket mark on both pages, so the difference shows without the pulse.
+  - *corrected by the UI designer against the build, 2026-10-08:* one trait: one cell (16, 56, 376, 376), picture 376×264; two traits: cells (16, 56, 184, 376) and (208, 56, 184, 376), pictures 184×256. The rows sit at y 56 and 248 on the page, cells 184 tall, so the heading's 40 px pod clears the first row by 8 px (the rows were Read's 48 and 248, and the pod touched the pictures).
+  - Traits that differ wear the cream ring and a 12×12 bracket mark on both pages, so the difference shows without the pulse. *corrected by the UI designer against the build, 2026-10-08:* not the cream ring, which is the focus's alone; a 2 px aqua edge on the picture and the bracket at its top centre, 8 px in (Marks on a picture, "Differs").
+  - The bottom line: `← Pods` | "two Loika pods" | "they differ here" when the open chapter holds a difference, "they differ in another chapter" when only another does, "no read trait differs". Never a count.
   - The rail stays.
 
 ### 6. Interactions
@@ -237,7 +240,7 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 | → | Well | Ring to the pod |
 | ← | Pod | Ring back to the pod's well |
 | ▲ | Pod | Ring to the rail, on the last chapter looked at |
-| ◀ ▶ | Rail | Step through chapters; the focused tab lifts 4 px and the page shows that chapter at once (page turn 200 ms) |
+| ◀ ▶ | Rail | Step through chapters; the focused tab lifts 2 px (was 4; see the rail) and the page shows that chapter at once (page turn 200 ms) |
 | ▼ | Rail | Back to the pod |
 | ✓ | Unidentified pod | `✓ Identify · 1 ⚡` (the first ever: "free"). Plays the seal clearing; input is held for the 2 s |
 | ✓ | Identified pod, nothing read | `✓ Read its chapters` moves the ring to the first unread tab. No spend |
@@ -263,7 +266,7 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 | Pod in a well | 32×40 | The same |
 | Progress ring | 64×64 | The pod list master |
 | Chapter emblem | 24×24 (the build draws 16; redraw at 24, never enlarge) | The chapter rail master |
-| Trait pictures | 448×312, 216×304, 216×120, 144×112 | The painting's close-ups |
+| Trait pictures | 448×312, 216×304, 216×112 (was 216×120), 144×112; Compare 376×264, 184×256, 184×104, 120×96 | The painting's close-ups |
 | Seed | 40×52 or 32×40 | The seed master |
 | Place stamp | 16×16 | The place stamp set |
 | Stamp | whole-pixel cells, at most 104 px, on the 120 label | The stamp's label art |
@@ -276,6 +279,16 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 - The rail tabs grow from 54 to 56 tall. Their status words and prices are replaced by pips.
 - The list's aqua bar and amber square go, and so do "n sealed" and "and n more".
 - Trait pictures are rendered at their size, never enlarged from a crop.
+
+### Confirmed against the build (UI designer, 2026-10-08)
+
+Checked on the seven 1× captures of the screen layer (`prototypes/station/img/pods-*.png`) and the Compare shot of the page (`page-compare.png`), against this section, the wireframe and `prototypes/ui/specs/station/pods.json`.
+
+- **As specified, measured on the captures:** the list column and its hairline at x 160 from y 48; the six well slots, rings centred on (72, 84 + 72i), the place stamps at (112, 60 + 72i); the hatch at (24, 488, 112, 56); the rail at y 48, tabs 112×56 on the 120 pitch from x 176 for up to seven chapters, 96×56 on 104 from x 180 for eight; the pod's box bottom-centred on (344, 312) by size class; the name and origin rectangles; the stamp label at (176, 432, 120, 120); the open page at (528, 112, 480, 440) with its heading at (544, 120); the grids for one, four and six traits (448×312; 216×120 as built, now 216×112; 144×112) at y 160 and 360; Compare's pages at (176, 112) and (600, 112), 408×440, with the one-trait picture 376×264; the bottom line's separators at x 396 and 628.
+- **Corrected here:** Compare's rows (y 56 and 248 on the page; the one- and two-trait grids confirmed at 376×264 and 184×256); Read's picture for three or four traits (216×112); the focused tab's lift (2 px); the unread and sealed tab colours; the difference mark (an aqua edge and bracket, no cream ring); the ribbon's colours; the empty rack's three need lines; no digits in the name and origin. The spec file carries each, with the builder's derived note kept and the decision added.
+- **The pod under the beam does not fill its box.** The build draws the pod, stem included, at about 70×114 in the small box (112×144), 88×137 in the medium (136×168) and 105×160 in the large (160×192): the box is right, the drawing is about two thirds of its width and four fifths of its height. The pod, stem to foot, should fill its box's height (192, 168 or 144), its width following the species' proportion inside the box; the dust and the cradle's pool sit on the cradle, not inside the box.
+- **The bottom line's subject** names the pod and its place, never a well's number ("well 3 · …" goes).
+- **Not captured, so not confirmed on screen:** Compare with two to six traits and a difference, and the empty rack. The journey should add a frame shot of each.
 
 ---
 
