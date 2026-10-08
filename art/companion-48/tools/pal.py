@@ -88,3 +88,28 @@ def load(signed=True):
         return Palette([c["name"] for c in d["colours"]], [c["hex"] for c in d["colours"]], d["darkOf"], d["lightOf"])
     names, hexes, dark_of, light_of = parse_page()
     return Palette(names, hexes, dark_of, light_of)
+
+
+# Ramps by name, dark to light, as ui-kit §2 groups them; the outline rule uses a part's own ramp.
+RAMPS = {
+    "N": ["void", "ink", "night", "slate", "stone", "mist", "fog", "bone", "white"],
+    "W": ["soil", "bark", "clay", "sand", "paper"],
+    "G": ["pine", "forest", "leaf", "grass", "sprout", "lime"],
+    "B": ["deep", "sea", "river", "sky", "ice"],
+    "T": ["tealD", "teal", "aqua", "mint"],
+    "V": ["plumD", "plum", "lilac", "lavender"],
+    "R": ["wine", "red", "coral", "peach", "blush"],
+    "O": ["rust", "orange", "amber"],
+    "Y": ["gold", "yellow", "cream"],
+    "P": ["magenta", "pink"],
+    "K": ["rock", "rockL"],
+}
+RAMP_OF = {n: r for r, ns in RAMPS.items() for n in ns}
+
+
+def ramp_indices(P, ramps):
+    """Palette indices of the named ramps (a string of ramp letters), for restricted quantisation."""
+    out = []
+    for r in ramps:
+        out += [P.index[n] for n in RAMPS[r]]
+    return out
