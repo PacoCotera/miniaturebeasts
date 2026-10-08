@@ -53,7 +53,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | --- | --- | --- |
 | Home | Home | Home |
 | Pods | Research | Pods |
-| Create | Research | Grow |
+| Create | Research | Create |
 | Incubator | Research | Incubator |
 | Probe bench | Research | Probe |
 | Library spread | Library | Library |
