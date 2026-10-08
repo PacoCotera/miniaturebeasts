@@ -78,6 +78,10 @@ export function describeGenome(frame, genome, scene, { typeSpecimen = false } = 
   const proportions = proportionWords(genome);
   const name = frame.species.name;
   const caption = brief(scene, frame).replace(new RegExp(`^${name}: `), "");
+  // Posture, from the plan: how the body stands, with its weight on what it stands on.
+  const plan = scene.plan ?? {};
+  const posture = plan.limbSet === "legs" ? (plan.posture === "upright" ? "standing upright on its two legs, weight on its broad feet, body held level" : plan.posture === "splayed" ? "standing low on splayed legs, weight on all its feet, belly just off the ground" : "standing square on all its legs, weight settled on its feet, body resting between them")
+    : plan.limbSet === "rays" ? "standing on its rays, weight on their tips" : plan.limbSet === "feelers" ? (plan.ground === "feeler tips" ? "poised on its feeler tips" : "resting on its belly, feelers trailing") : plan.ground === "afloat" ? "floating, fins spread" : "resting on its belly";
   let text = `A juvenile ${name}: ${caption}`;
   if (typeSpecimen) text += ` It is the type of its kind, ${frame.taxonomy.resembles}: ${frame.signature.feature}.`;
   for (const ch of chapters) text += ` ${ch.name}: ${ch.looks.map((l) => `${l.name.toLowerCase()} ${l.look.startsWith("between ") ? "between" : l.look}`).join("; ")}.`;
