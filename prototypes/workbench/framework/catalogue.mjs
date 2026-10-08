@@ -199,13 +199,28 @@ export const alleleIds = (id) => locusById(id).alleles.map((a) => a.id);
 // Operator semantics, as v1's resolver applies them (compositional-vocabulary-adapter.mjs:
 // copy-mean, dominant-enable, recessive-enable, pair-map keyed by the sorted copy pair;
 // partition-map returns the ordered pigment array of the sorted pair).
+// A continuous locus (copy-mean) takes a copy as a named allele or as a number in its range (the
+// cross blends, the-cross.md §1): the named alleles are then the bins the player sees as looks.
+export const isContinuous = (locus) => locus.operator === "copy-mean" && locus.alleles.every((a) => typeof a.value === "number");
+export function copyValue(locus, copy) {
+  if (typeof copy === "number") { if (!isContinuous(locus)) throw new Error(`${locus.id}: a numeric copy on a locus that is not continuous`); return copy; }
+  const a = locus.alleles.find((x) => x.id === copy);
+  if (!a) throw new Error(`${locus.id}: unknown allele ${copy}`);
+  return a.value;
+}
+// The bin of a copy: a named copy is its own; a numeric one is the nearest named allele by value.
+export function binFor(locus, copy) {
+  if (typeof copy !== "number") return copy;
+  let best = null, d = Infinity;
+  for (const a of locus.alleles) { const e = Math.abs(a.value - copy); if (e < d) { d = e; best = a.id; } }
+  return best;
+}
+// The value range of a set of named alleles (the catalogue's, or a species pool): [min, max].
+export const valueRange = (locus, ids = locus.alleles.map((a) => a.id)) => { const vs = ids.map((id) => copyValue(locus, id)); return [Math.min(...vs), Math.max(...vs)]; };
+
 export function resolveCopies(locus, copies) {
   if (!Array.isArray(copies) || copies.length !== 2) throw new Error(`${locus.id}: two copies required`);
-  const values = copies.map((id) => {
-    const a = locus.alleles.find((x) => x.id === id);
-    if (!a) throw new Error(`${locus.id}: unknown allele ${id}`);
-    return a.value;
-  });
+  const values = copies.map((c) => copyValue(locus, c));
   switch (locus.operator) {
     case "copy-mean": return Math.round(((values[0] + values[1]) / 2) * 1e6) / 1e6;
     case "dominant-enable": return values.some(Boolean);

@@ -69,6 +69,10 @@ input[type=number]{width:64px}
 .cell.selected{outline:2px solid var(--accent)} .cell.parent{outline:2px dashed var(--ok)}
 .cell canvas{display:block; image-rendering:pixelated; background:#f6f3ec; border-radius:3px}
 .cell.rejected{outline:2px solid var(--warn)}
+.forecast{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:8px; font-size:12px}
+.forecast .trait{border:1px solid var(--line); border-radius:6px; padding:6px 8px; background:var(--panel-2)}
+.forecast .look{font-weight:600} .forecast .seeds{display:flex; flex-wrap:wrap; gap:4px; margin:4px 0}
+.forecast .seed{border:1px solid var(--line); border-radius:4px; padding:1px 6px} .forecast .seed.hides{border-style:dashed}
 .compare{display:grid; gap:8px; overflow-x:auto}
 .compare .col{display:flex; flex-direction:column; gap:6px; align-items:center; font-size:12px}
 .compare .col .look{font-weight:600}
@@ -118,6 +122,10 @@ dialog label{display:block; margin:8px 0}
     <div class="panel" style="margin-top:12px">
       <h2>Individuals <span class="hint">click to select, shift-click to pick two parents; the type specimen is first</span></h2>
       <div class="strip" id="strip"></div>
+    </div>
+    <div class="panel" style="margin-top:12px" id="forecast-panel" hidden>
+      <h2>The cross <span class="hint" id="forecast-hint"></span></h2>
+      <div class="forecast" id="forecast"></div>
     </div>
     <div class="panel" style="margin-top:12px" id="compare-panel" hidden>
       <h2>Compare expressions <span class="hint" id="compare-hint"></span></h2>

@@ -5,7 +5,8 @@
 // model.
 import { CATALOGUE, LOCI, PART_SWITCHES, alleleIds } from "../framework/catalogue.mjs";
 import { parsePlanKey, planKeyOf, planFacts } from "../framework/plans.mjs";
-import { buildFrame, buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, checkGenome, specFromFrame, chapterFor, rng, RING, CHAPTER_NAMES, FINDS, genomeDigest , FRAME_VERSION} from "../framework/species.mjs";
+import { buildFrame, buildIndividual, sampleIndividual, typeSpecimen, checkGenome, specFromFrame, chapterFor, rng, RING, CHAPTER_NAMES, FINDS, genomeDigest , FRAME_VERSION} from "../framework/species.mjs";
+import { forecast, children, relatedness } from "../framework/cross.mjs";
 import { CLANS, CLAN_NAMES, specOf, SPECIES } from "../framework/roster.mjs";
 import { render, fitCamera, markingFields } from "../framework/raster.mjs";
 import { sketchIndividual, manifest, speciesCameras, registryCameras, SKETCHER_VERSION } from "../sketch/sketch.mjs";
@@ -247,7 +248,7 @@ function renderStrip() {
     strip.append(cell);
   });
 }
-function renderAll() { renderEditor(); renderSketch(); renderStrip(); if (state.compare) renderCompare(); }
+function renderAll() { renderEditor(); renderSketch(); renderStrip(); renderForecast(); if (state.compare) renderCompare(); }
 
 // --- individuals ---------------------------------------------------------------------------------------
 function roll() {
@@ -259,16 +260,39 @@ function roll() {
   log(`${state.frame.species.id}: rolled ${n} individuals`);
   renderAll();
 }
+// The cross (framework/cross.mjs, the-cross.md): the forecast first, then N children validated whole,
+// with pedigree kinship from the individuals on the page (a child's parents are recorded by digest).
+const lookup = (digest) => state.individuals.find((ind) => genomeDigest(ind.genome) === digest)?.genome ?? null;
 function cross() {
   if (state.parents.length !== 2) return;
   const [a, b] = state.parents.map((i) => state.individuals[i]);
   const r = rng(`${state.frame.species.id}:cross:${Date.now()}`);
   const n = Math.max(1, Math.min(48, Number($("roll-n").value) || 8));
+  let fc;
+  try { fc = forecast(state.frame, a.genome, b.genome, { lookup }); } catch (e) { log(`cross refused: ${e.message}`, "warn"); return; }
+  const rel = relatedness(state.frame, a.genome, b.genome, lookup);
   const start = state.individuals.length;
-  for (let i = 0; i < n; i++) state.individuals.push({ genome: crossIndividuals(state.frame, a.genome, b.genome, r), label: `${a.label} × ${b.label} #${i + 1}` });
-  state.current = start;
-  log(`cross ${a.label} × ${b.label}: ${n} children`);
+  const made = children(state.frame, a.genome, b.genome, n, { rng: r, lookup });
+  made.children.forEach((c, i) => state.individuals.push({ genome: c.genome, label: `${a.label} × ${b.label} #${i + 1}` }));
+  state.current = made.children.length ? start : state.current;
+  state.forecast = { a, b, fc, rel, made };
+  log(`cross ${a.label} × ${b.label}: kinship ${fc.kinship}${rel.pedigreeKnown ? "" : " (a parent unknown: identity " + rel.identity.toFixed(2) + " is the caution)"}, ${made.children.length} children built, ${made.rejected.length} rejected`);
   renderAll();
+  $("forecast-panel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+function renderForecast() {
+  const panel = $("forecast-panel"), box = $("forecast");
+  if (!state.forecast) { panel.hidden = true; return; }
+  const { a, b, fc, rel, made } = state.forecast;
+  panel.hidden = false;
+  $("forecast-hint").textContent = `${a.label} × ${b.label}: kinship ${fc.kinship}, identity ${rel.identity.toFixed(2)}${rel.pedigreeKnown ? "" : " (pedigree unknown on a side)"}; spread ${Math.round(fc.spread * 100)} %, penalty ${fc.penalty}; ${made.children.length} children built, ${made.rejected.length} rejected`;
+  box.replaceChildren(...fc.traits.map((t) => {
+    const head = el("div", { class: "look" }, `${t.name}`, el("span", { class: "hint" }, ` ${t.kind}${t.firm ? ", known for sure" : ""}`));
+    if (t.kind === "sealed") return el("div", { class: "trait" }, head, el("div", {}, "sealed: shut, no seeds"));
+    if (t.kind === "blend") return el("div", { class: "trait" }, head, el("div", {}, `parents ${t.parents.join(" and ")}; the child between ${t.range[0]} and ${t.range[1]}: ${t.bins.join(" to ")}`));
+    const seeds = t.seeds.map((s) => el("span", { class: `seed${s.hides ? " hides" : ""}`, title: s.copies.join("/") + (s.hides ? `, hides ${s.hides}` : "") }, `${s.label}${s.weight !== 0.25 ? " " + Math.round(s.weight * 100) + "%" : ""}`));
+    return el("div", { class: "trait" }, head, el("div", { class: "seeds" }, ...seeds), el("div", { class: "hint" }, Object.entries(t.looks).map(([k, v]) => `${k} ${Math.round(v * 4)} in 4`).join(", ") + (t.sleeping.length ? `; sleeping parts ride along: ${t.sleeping.length}` : "")));
+  }));
 }
 
 // --- compare expressions -------------------------------------------------------------------------------

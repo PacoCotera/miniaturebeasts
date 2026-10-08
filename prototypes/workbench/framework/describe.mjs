@@ -2,7 +2,7 @@
 // patches", "wide pale rings", "leaf crest") and the proportions in plain words from the rig's
 // ratios ("a short muzzle, a long tail"), never a locus id. The Grow painting service puts this
 // text in every call as its own logged field (grow/service.py); the field guide can say the same.
-import { LOCI, resolveCopies } from "./catalogue.mjs";
+import { LOCI, resolveCopies, binFor } from "./catalogue.mjs";
 import { brief } from "./species.mjs";
 
 // The trait's look for a genome, aligned with the frame's trait looks as catalogue.looksFor orders
@@ -12,8 +12,9 @@ export function lookOf(frame, trait, genome) {
   const id = trait.loci[0], locus = LOCI.get(id);
   if (!locus) return null;
   const pool = frame.pools?.[id] ?? locus.alleles.map((a) => a.id);
-  const copies = genome.loci[id];
-  if (!copies) return null;
+  const raw = genome.loci[id];
+  if (!raw) return null;
+  const copies = raw.map((c) => binFor(locus, c)); // a blended copy (a number) is read as its bin
   const labelOf = ([a, b]) => {
     const v = resolveCopies(locus, [a, b]);
     if (locus.operator === "copy-mean") return a === b ? a : `between ${a} and ${b}`;

@@ -42,6 +42,35 @@ await page.click("#strip .cell:nth-child(3)", { modifiers: ["Shift"] });
 await page.click("#cross");
 await page.waitForTimeout(500);
 await shot("page-cross");
+// the cross journey on two Loikas (the-cross.md): roll, pick two founders, cross; the forecast panel
+// shows quarters for the switches and a range for the blends, the children join the strip; then two
+// children crossed as siblings show the penalty (kinship 1/4)
+await page.selectOption("#species", "S01");
+await page.waitForTimeout(300);
+await page.fill("#roll-n", "8");
+await page.click("#roll");
+await page.waitForTimeout(400);
+await page.click("#strip .cell:nth-child(2)", { modifiers: ["Shift"] });
+await page.click("#strip .cell:nth-child(3)", { modifiers: ["Shift"] });
+await page.click("#cross");
+await page.waitForFunction(() => !document.getElementById("forecast-panel").hidden && document.querySelectorAll("#forecast .trait").length >= 5, null, { timeout: 10000 });
+const forecastText = await page.textContent("#forecast-panel");
+for (const word of ["Markings", "Crown", "Eye rings", "Drive", "Efficiency", "in 4", "between"]) if (!forecastText.includes(word)) errors.push(`forecast lacks "${word}"`);
+if (!/kinship 0,/.test(forecastText)) errors.push("founders should have kinship 0");
+const cells = await page.$$eval("#strip .cell", (cs) => cs.map((c) => c.textContent));
+if (!cells.some((t) => /#1 × #2 #1/.test(t))) errors.push("no children in the strip after the cross");
+await page.$eval("#forecast-panel", (n) => n.scrollIntoView());
+await shot("page-cross-loika");
+// siblings: the last two children
+await page.click("#strip .cell:nth-last-child(1)", { modifiers: ["Shift"] });
+await page.click("#strip .cell:nth-last-child(2)", { modifiers: ["Shift"] });
+await page.click("#cross");
+await page.waitForTimeout(500);
+const sibText = await page.textContent("#forecast-hint");
+if (!/kinship 0\.25/.test(sibText)) errors.push(`siblings should have kinship 0.25: ${sibText}`);
+await shot("page-cross-siblings");
+await page.selectOption("#species", "S06");
+await page.waitForTimeout(300);
 // open a trait's loci, then compare it
 await page.click("#chapters .trait");
 await page.keyboard.press("o");
