@@ -80,17 +80,21 @@ function partBox(scene, camera, parts) {
   return { x0, y0, x1, y1, whole: !parts || nodes.length === scene.nodes.length };
 }
 const PIC_BG = C.bone;
-const pictureGround = (w, h) => { const pb = new PB(w, h), band = Math.max(8, Math.round(h * 0.2)); pb.rect(0, 0, w, h, PIC_BG); for (let y = h - band; y < h; y++) for (let x = 0; x < w; x++) if (bay(x, y) < (y - (h - band)) / (band / 8)) pb.set(x, y, C.sand); return pb; };
+// The Pods pictures sit on the page's own pane (deep): a plain flat ground, nothing of a card (PH §0).
+export const PIC_GROUND = C.deep;
+const pictureGround = (w, h) => { const pb = new PB(w, h); pb.rect(0, 0, w, h, PIC_GROUND); return pb; };
+// The rig's scene without its eye parts: a stand-in close-up draws no face (PH §0).
+const faceless = (scene) => ({ ...scene, nodes: scene.nodes.filter((n) => (n.part ?? n.id) !== "eye") });
 // A trait's close-up rendered by the rig's camera at the picture's own size (the layout spec's rule: never a crop of a
 // larger render enlarged). The camera is set on the part the trait names (the whole body when no part matches), its scale
 // chosen so the part fills w×h with the old crop's margins; the placeholder renderer draws it once, at that size.
 export function closeUpPB(frame, genome, traitId, w, h) {
   const pb = pictureGround(w, h), b = builtOf(frame, genome);
   if (b.error || b.validation.status !== "valid") { pb.blit(blobArt(w, h), 0, 0); return pb; }
-  const base = fitCamera(b.scene, "portrait", [300, 310], 0.06), box = partBox(b.scene, base, partsFor(traitId)), pad = box.whole ? 0.04 : 0.3;
+  const scene = faceless(b.scene), base = fitCamera(scene, "portrait", [300, 310], 0.06), box = partBox(scene, base, partsFor(traitId)), pad = box.whole ? 0.04 : 0.3;
   const bw = Math.max(box.x1 - box.x0, 40) * (1 + pad), bh = Math.max(box.y1 - box.y0, 40) * (1 + pad), s0 = base.scale;
   const center = [base.center[0] + ((box.x0 + box.x1) / 2 - 150) / s0, base.center[1] - ((box.y0 + box.y1) / 2 - 155) / s0];
-  pb.blit(renderPB(b.scene, { view: "portrait", scale: s0 * Math.min(w / bw, h / bh), center, size: [w, h] }, "station"), 0, 0);
+  pb.blit(renderPB(scene, { view: "portrait", scale: s0 * Math.min(w / bw, h / bh), center, size: [w, h] }, "station"), 0, 0);
   return pb;
 }
 export function traitPic(frame, genome, traitId, w = 150, h = 110) {
@@ -139,16 +143,20 @@ export const stampSize = (frame) => stampFrameOf(frame) ? stampFrameOf(frame).pa
 const SIZE_U = { small: 13, medium: 16, large: 19 };
 const PLACE_DUST = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 // state: "sealed" (the shell, the cap sealed), "identified" (the glyph lit on the cap), "hatched"; frame null: a quiet grey pod.
-export function podArt(frame, place, s, state = "sealed") {
-  const key = "pod" + (frame ? frame.species.id : "none") + ":" + (place || "") + ":" + s + ":" + state;
+// fit: [w, h] draws the shell to fill that box (the scale from its height, the shell as wide as the box allows); without it the shell keeps the frame's proportion.
+export function podArt(frame, place, s, state = "sealed", fit = null) {
+  const key = "pod" + (frame ? frame.species.id : "none") + ":" + (place || "") + ":" + s + ":" + state + (fit ? ":" + fit.join("x") : "");
   return art(key, () => {
-    const u = frame ? SIZE_U[frame.pod?.sizeClass] || 16 : 15, prop = frame?.pod?.proportion, rx = u * 0.38 * (prop === "squat" ? 1.2 : prop === "tall" ? 0.86 : 1), ry = u * 0.5 * (prop === "tall" ? 1.15 : prop === "squat" ? 0.9 : 1);
-    const W = Math.ceil((rx * 2 + 2) * s), H = Math.ceil((ry * 2 + 8) * s), pb = new PB(W, H), cx = W / 2, cy = ry * s + 5 * s;
+    const u = frame ? SIZE_U[frame.pod?.sizeClass] || 16 : 15, prop = frame?.pod?.proportion;
+    let rx = u * 0.38 * (prop === "squat" ? 1.2 : prop === "tall" ? 0.86 : 1), ry = u * 0.5 * (prop === "tall" ? 1.15 : prop === "squat" ? 0.9 : 1);
+    if (fit) { s = fit[1] / (ry * 2 + 8); rx = (fit[0] / s - 2) / 2; }
+    const W = fit ? fit[0] : Math.ceil((rx * 2 + 2) * s), H = fit ? fit[1] : Math.ceil((ry * 2 + 8) * s), pb = new PB(W, H), cx = W / 2, cy = ry * s + 5 * s;
     const c0 = frame ? nearestHex(frame.pod.colourPair[0].hex) : C.mist, c1 = frame ? nearestHex(frame.pod.colourPair[1].hex) : C.fog;
     pb.ell(cx, cy, rx * s, ry * s, c0, { sh: [lite(c0), shade(c0)] });
     const inShell = (x, y) => ((x + 0.5 - cx) / (rx * s)) ** 2 + ((y + 0.5 - cy) / (ry * s)) ** 2 <= 0.96;
     const pat = frame?.pod?.shellPattern || "smooth dots";
-    if (pat.includes("rib")) { for (let i = -3; i <= 3; i++) pb.ell(cx + i * rx * s * 0.3, cy + ry * s * 0.1, rx * s * 0.12, ry * s * 0.75, c1, { clip: (x, y) => inShell(x, y) && bay(x, y) < 10 }); }
+    if (state === "sealed") { /* a sealed shell is plain: its pattern shows when the pod is identified */ }
+    else if (pat.includes("rib")) { for (let i = -3; i <= 3; i++) pb.ell(cx + i * rx * s * 0.3, cy + ry * s * 0.1, rx * s * 0.12, ry * s * 0.75, c1, { clip: (x, y) => inShell(x, y) && bay(x, y) < 10 }); }
     else if (pat.includes("plate") || pat.includes("scale")) { for (let j = 0; j < 4; j++) for (let i = -2; i <= 2; i++) pb.ring(cx + (i + (j % 2) * 0.5) * rx * s * 0.45, cy - ry * s * 0.5 + j * ry * s * 0.4, rx * s * 0.26, ry * s * 0.2, c1, Math.max(1, s / 2), 0, inShell); }
     else if (pat.includes("segment")) { for (let j = -2; j <= 2; j++) pb.ell(cx, cy + j * ry * s * 0.36, rx * s, ry * s * 0.06, c1, { clip: inShell }); }
     else { for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) if ((i + j) % 2 === 0) pb.ell(cx + i * rx * s * 0.42, cy + j * ry * s * 0.36, s * 0.9, s * 0.9, c1, { clip: inShell }); }
@@ -160,7 +168,7 @@ export function podArt(frame, place, s, state = "sealed") {
     pb.rect(cx - 1.5 * s, capY - 2 * s, 3 * s, 3 * s, C.forest); pb.rect(cx - 0.8 * s, capY - 3 * s, 1.6 * s, 1.5 * s, C.leaf);  // the short stem
     if (state === "identified" && frame?.glyph && s >= 2) { const gs = Math.max(1, Math.round(s / 2)), gw = 5 * gs;
       frame.glyph.forEach((row, y) => [...row].forEach((ch, x) => { if (ch === "#") pb.rect(cx - gw / 2 + x * gs, capY + 2 * s - 2.5 * gs + y * gs, gs, gs, C.ink); })); }
-    else if (state === "sealed") { pb.rect(cx - 2.5 * s, capY + 1.3 * s, 5 * s, 1.4 * s, C.red); pb.rect(cx - 0.7 * s, capY + 0.7 * s, 1.4 * s, 2.6 * s, C.red); }   // the seal
+    else if (state === "sealed") pb.rect(cx - 2.5 * s, capY + 1.3 * s, 5 * s, 1.4 * s, C.night);   // the seal: a plain dark band
     if (place && PLACE_DUST[place]) for (let i = 0; i < 6 * s; i++) { const a = (i / (6 * s)) * Math.PI, x = cx + Math.cos(a) * rx * s * (0.4 + (i % 3) * 0.2), y = cy + ry * s * 0.95 - (i % 2) * s; if (bay(Math.round(x), Math.round(y)) < 7) pb.rect(x, y, Math.max(1, s / 2), Math.max(1, s / 2), C[PLACE_DUST[place]]); }
     if (s >= 3) pb.rich(Math.round(s / 3));
     pb.outline(() => C.ink); return pb;

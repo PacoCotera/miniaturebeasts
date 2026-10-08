@@ -4,11 +4,11 @@
 // (views/pods.mjs); each region is drawn by its vocabulary component; the focus follows the spec's graph. This module is
 // the glue: the region-to-component map, the intent table onto the rules in state.mjs (unchanged), and the events the
 // timeline plays (the seal clearing, the wipe) with the input holds they carry.
-import { G, FX, UI, TL, SPECS, LAYER, READ_MS, ID_MS, msg, save, goScreen, registerScreen, docked, podById, need } from "../game.mjs";
+import { G, FX, UI, TL, SPECS, LAYER, READ_MS, ID_MS, msg, save, goScreen, registerScreen, docked, podById, need, bayCrates } from "../game.mjs";
 import { clock, motion } from "../gfx.mjs";
 import { DIRS } from "../../../ui/focus.mjs";
 import { frame as frameNodes, list, specimen, stampLabel, chapterRail, chapterPage, focusRing } from "../../../ui/components/frame.mjs";
-import { podsView } from "../views/pods.mjs";
+import { podsView, inWords } from "../views/pods.mjs";
 import { frameView } from "../views/frame.mjs";
 import { registerPictures, iconRequests } from "../pictures.mjs";
 import { frameOf } from "../genome.mjs";
@@ -31,7 +31,7 @@ function present() {
   const rb = TL.active("ribbon")[0]; if (rb && TL.elapsed("ribbon", rb.target) >= rb.from) out.ribbon = rb.target;
   return out;
 }
-const model = () => ({ st: G.st, settings: G.settings, docked: docked(), ui: P(), focus: P().focus.cur, present: present() });
+const model = () => ({ st: G.st, settings: G.settings, docked: docked(), crates: bayCrates().length, ui: P(), focus: P().focus.cur, present: present() });
 
 // --- keeping the cradle and the focus valid ---
 let last = null;   // the latest view (the targets the keys move through)
@@ -56,14 +56,12 @@ function identify(p) {
   const r = S.identify(G.st, p, G.settings); if (!r.ok) { if (r.msg) msg(r.msg); return; }
   const ms = ID_MS;   // the seal clears over 2 s, whether or not the species is new
   TL.play({ kind: "seal", target: p.id, ms, hold: true });
-  if (r.newSp) { TL.play({ kind: "ribbon", target: p.id, ms: 6000 + Math.round(ms * 0.7), from: Math.round(ms * 0.7) }); msg("New species · " + S.spName(p) + " · its frame is learned and its Library page opens"); G.openBook?.(r.species); }
+  if (r.newSp) { TL.play({ kind: "ribbon", target: p.id, ms: 6000 + Math.round(ms * 0.7), from: Math.round(ms * 0.7) }); G.openBook?.(r.species); }   // the ribbon says it; no plate
   save();
 }
 function read(p, ch) {
   const r = S.read(G.st, p, ch.id, G.settings); if (!r.ok) { if (r.msg) msg(r.msg); return; }
   TL.play({ kind: "wipe", target: p.id, chapter: ch.id, ms: READ_MS, hold: true });
-  if (r.newLooks.length) msg("New for the " + S.spName(p) + ": " + r.newLooks.slice(0, 3).join(", ") + (r.newLooks.length > 3 ? "…" : ""));
-  else if (r.first) msg("The first read is free · " + ch.name + " read");
   save();
 }
 const INTENTS = {
@@ -77,7 +75,7 @@ const INTENTS = {
   list: (q, f, p, id) => {
     if (id === "list.hatch") {   // ✓ ✓: the first arms, the second returns; any other key disarms
       if (!p.wildArm) { p.wildArm = 1; msg("Return the " + S.podName(q) + " to the " + (S.PLACE_WORD[q.g] || "wild") + "? ✓ again"); return; }
-      p.wildArm = 0; const r = S.returnPod(G.st, q, G.settings, Date.now()); if (r.ok) msg(r.msg); p.cur = null; f.set("pod"); ensure(); save(); return;
+      p.wildArm = 0; S.returnPod(G.st, q, G.settings, Date.now()); p.cur = null; f.set("pod"); ensure(); save(); return;
     }
     const w = G.st.tray[+id.slice(5)], A = podById(p.anchor);
     if (A && w && A !== w && S.canCompare(G.st, A, w)) { p.cmp = { a: A.id, b: w.id, ci: 0 }; p.cur = A.id; }
@@ -107,9 +105,8 @@ function act(k) {
 // --- the scene: each region of the spec drawn by its component ---
 function nodes(ctx) {
   ensure(); const spec = SPECS.pods, R = spec.regions, C = spec.colours, v = last, out = [], F = P().focus;
-  const bench = R.bench.rect, benchId = `bench:${bench[2]}x${bench[3]}`;
-  registerPictures([...v.requests, ...iconRequests(), { kind: "bench", id: benchId, w: bench[2], h: bench[3] }], env);
-  out.push({ id: "bench", kind: "sprite", rect: bench.slice(), asset: benchId });
+  registerPictures([...v.requests, ...iconRequests()], env);
+  out.push({ id: "bench", kind: "rect", rect: R.bench.rect.slice(), colour: C.ground });   // the bench: a flat ground, no grain
   const focusOn = (id) => F.cur === id;
   if (v.mode === "compare") {
     const rail = chapterRail(ctx, "rail", R.rail, { ...v.rail, fillGround: false, focused: v.rail.current, region: "rail", tabRegion: "rail.tab" });
@@ -126,7 +123,7 @@ function nodes(ctx) {
     if (t && t.group !== "rail") out.push(...focusRing("focus", t.rect, SPECS.frame, { shape: t.group === "pod" ? "ellipse" : "round" }));
   }
   // the frame: top bar, bottom line, message plate
-  const fp = frameView({ title: "Pods", step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { text: compState(), docked: docked() }, line: v.line, need: need().text, message: msgText(), focal: v.box });
+  const fp = frameView({ title: "Pods", step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { text: compState(), docked: docked() }, line: v.line, need: inWords(need().text), message: msgText(), focal: v.box });
   out.push(...frameNodes(ctx, fp));
   return out;
 }

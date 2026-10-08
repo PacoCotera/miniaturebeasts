@@ -193,7 +193,7 @@ await press("right", 60); expect((await focusNow()) === "pod", "→ from the hat
 // a sealed chapter (the Untuva's Character): no ✓ cap, 'opens with', the slats on its page; the page's traits unread: frost
 await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.3"; }, untuva.id); await page.waitForTimeout(300);
 l = await line(); expect(!l.ok && /Character · sealed · opens with /.test(l.subject), "a sealed chapter has no ✓ cap: " + JSON.stringify(l)); await frameShot("pods-sealed");
-// the Tuikis: eight chapters, tabs 96 on a 104 pitch; the Coat has four traits (216×120 pictures)
+// the Tuikis: eight chapters, tabs 96 on a 104 pitch; the Coat has four traits (216×112 pictures)
 await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.0"; }, tuikisPod.id); await page.waitForTimeout(300); await frameShot("pods-eight-chapters");
 // the Large pod with six Coat traits (144×112 pictures), read whole by the developer
 await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.0"; }, coatSix.id); await page.waitForTimeout(300); await frameShot("pods-six-traits");
@@ -215,6 +215,32 @@ expect(!!extra, "the pod that waited for a well entered the rack when one freed"
 await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, extra.id); await press("confirm", 700); await page.evaluate(() => window.__st.unlock()); await page.evaluate(() => { window.__st.UI.pods.f = "rail.0"; }); await page.waitForTimeout(150); await press("confirm", 900); expect(await page.evaluate(() => window.__st.holding()), "a read holds input for its wipe"); await frameShot("pods-reading"); await page.evaluate(() => window.__st.unlock());
   await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, extra.id); await press("confirm", 100); await press("confirm", 300); }
 s = await st(); expect(s.tray.length === 4, "the rack is back to its four pods: " + s.tray.length);
+// P2. Compare with one, two, four and six traits and a difference mark on the layer; then the empty rack. Each pair is a fresh crate of two pods, read whole by the developer, compared, and given back through the hatch.
+const compareShot = async (species, seed, ci, name, grid) => {
+  await page.evaluate(([sp, sd]) => { window.__st.seedCrate(sp, 2, sd); window.__st.openBay(); }, [species, seed]); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
+  const pair = (await st()).tray.filter((p) => p.species === species && !p.idd);
+  expect(pair.length === 2, `two ${species} pods in the wells: ` + pair.length);
+  for (const p of pair) await page.evaluate((id) => window.__st.skipRead(id), p.id);
+  await page.evaluate(([a, b, c]) => { const u = window.__st.UI.pods; u.cur = a; u.cmp = { a, b, ci: c }; }, [pair[0].id, pair[1].id, ci]); await page.waitForTimeout(300);
+  const cl = await line(), cells = await page.evaluate(() => window.__st.check().regions.filter((r) => r.region === "page.cell" && r.id.startsWith("pageA.")).length);
+  expect(cells === grid, `${name}: ${grid} traits on Compare's page: ${cells}`);
+  expect(["they differ here", "they differ in another chapter", "no read trait differs"].includes(cl.need), `${name}: Compare's need line is one of the spec's strings: ` + JSON.stringify(cl));
+  expect(!/\d/.test(cl.need) && !/well \d/.test(cl.subject || ""), `${name}: no digits in the line`);
+  await frameShot(name);
+  await page.evaluate(() => { window.__st.UI.pods.cmp = null; });
+  for (const p of pair) { await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, p.id); await press("confirm", 100); await press("confirm", 300); }
+  expect(!(await st()).tray.some((p) => pair.some((q) => q.id === p.id)), `${name}: the pair went back through the hatch`);
+  return cl.need;
+};
+const needs = [await compareShot("S04", 4101, 0, "pods-compare-one", 1), await compareShot("S09", 4102, 3, "pods-compare-two", 2), await compareShot("S03", 4103, 0, "pods-compare-four", 4), await compareShot("S09", 4104, 0, "pods-compare-six", 6)];
+expect(needs.includes("they differ here"), "at least one Compare capture shows a difference on the page: " + needs.join(" | "));
+{   // the empty rack (docked, the bay empty): the cradle under the beam and nothing else; the wells are put back after
+  await page.evaluate(() => { const g = window.__st.ST; window.__keep = { tray: g.tray, waiting: g.waiting }; g.tray = []; g.waiting = []; window.__st.UI.pods.cur = null; window.__st.UI.pods.cmp = null; }); await page.waitForTimeout(300);
+  const el = await line(); expect(el.subject === "the rack is empty" && el.need === "take the Companion exploring", "the empty rack's lines: " + JSON.stringify(el));
+  await frameShot("pods-empty-rack");
+  await page.evaluate(() => { const g = window.__st.ST; g.tray = window.__keep.tray; g.waiting = window.__keep.waiting; window.__st.UI.pods.cur = null; }); await page.waitForTimeout(200);
+}
+s = await st();
 // 6. return the Tuikis to the wild: +1 Essence, the Companion's record
 const tuikis = s.tray.find((p) => p.species === "S03");
 await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, tuikis.id);

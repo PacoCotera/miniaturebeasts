@@ -78,9 +78,9 @@ export function benchBg() { blit(benchArt(), 0, STAGE_Y); }
 export function lampPool(cx, cy, rx, ry, cols = ["ground", "panel", "bar"]) { blit(art("pool" + rx + "x" + ry + cols.join(), () => { const pb = new PB(rx * 2, ry * 2);
   for (let y = 0; y < ry * 2; y++) for (let x = 0; x < rx * 2; x++) { const d = Math.hypot((x - rx) / rx, (y - ry) / ry); if (d > 1) continue; const c = ramp(cols, (1 - d) * 1.1, x, y); if (c !== C[cols[0]]) pb.set(x, y, c); }
   return pb; }), cx - rx, cy - ry); }
-// A cool beam from above on the specimen stage.
+// A cool beam from above on the specimen stage: a flat cone of one colour, no grain (chrome is crisp).
 export function beamArt(w, h) { return art("beam" + w + "x" + h, () => { const pb = new PB(w, h);
-  for (let y = 0; y < h; y++) { const hw = w * 0.12 + (w * 0.38 * y) / h; for (let x = 0; x < w; x++) { const d = Math.abs(x - w / 2) / hw; if (d > 1) continue; const lvl = (1 - d) * (1 - y / h) * 7; if (lvl > 0.5 && (lvl >= 7 ? true : (x * 7 + y * 3) % 7 < lvl)) pb.set(x, y, C.tealD); } }
+  for (let y = 0; y < h; y++) { const hw = w * 0.12 + (w * 0.38 * y) / h, x0 = Math.ceil(w / 2 - hw), x1 = Math.floor(w / 2 + hw); pb.rect(x0, y, x1 - x0, 1, C.tealD); }
   return pb; }); }
 export function beam(cx, topY, w, h) { blit(beamArt(w, h), cx - w / 2, topY); }
 

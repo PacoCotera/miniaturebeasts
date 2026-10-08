@@ -5,24 +5,17 @@
 // stamp on whole-pixel cells. Nothing is ever cropped and enlarged.
 import { registerAsset, hasAsset } from "../../ui/assets.mjs";
 import { PB, C, art, fromRGBA, bay, nearestHex } from "./gfx.mjs";
-import { podArt, ringArt, wellArt, emblemArt, closeUpPB, frostPic, ICON } from "./art.mjs";
-import { beamArt, benchArt } from "./screens/frame.mjs";
+import { podArt, ringArt, wellArt, emblemArt, closeUpPB, frostPic, ICON, PIC_GROUND } from "./art.mjs";
+import { beamArt } from "./screens/frame.mjs";
 import { shapeTrait, stampGenome, stampSizing } from "./genome.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
-const SIZE_U = { small: 13, medium: 16, large: 19 };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
 
-// The pod at the exact size of its box, bottom-centred in it: the shape is redrawn at the scale that fits (the pod
-// renderer's own parameters), never an image enlarged.
-function podPicture(frame, place, state, [bw, bh]) {
-  const u = frame ? SIZE_U[frame.pod?.sizeClass] || 16 : 15, prop = frame?.pod?.proportion;
-  const rx = u * 0.38 * (prop === "squat" ? 1.2 : prop === "tall" ? 0.86 : 1), ry = u * 0.5 * (prop === "tall" ? 1.15 : prop === "squat" ? 0.9 : 1);
-  const s = Math.floor(Math.min(bw / (rx * 2 + 2), bh / (ry * 2 + 8)) * 100) / 100;
-  const a = podArt(frame, place, s, state), pb = new PB(bw, bh);
-  pb.blit(a, Math.round((bw - a.w) / 2), bh - a.h); return pb;
-}
+// The pod at the exact size of its box: the shell is drawn to fill it (the pod renderer's own parameters at the scale
+// that fits the box), never an image enlarged.
+function podPicture(frame, place, state, [bw, bh]) { return podArt(frame, place, 1, state, [bw, bh]); }
 const cradlePB = () => { const pb = new PB(224, 40); pb.ell(112, 24, 110, 15, C.slate); pb.ell(112, 20, 100, 12, C.stone, { sh: [C.mist, C.night] }); pb.outline(() => C.ink); return pb; };
 const hatchPB = () => { const pb = new PB(112, 56); pb.rect(0, 2, 112, 52, C.slate); pb.rect(4, 6, 104, 44, C.night); pb.rect(8, 24, 96, 8, C.void); pb.ell(56, 28, 5.5, 11.5, C.leaf, { rot: 0.6, sh: [C.sprout, C.forest] }); pb.outline(() => C.ink); return pb; };
 const placePB = (place) => { const pb = new PB(16, 16), c = C[PLACE_COL[place] || "mist"]; pb.rect(1, 1, 14, 14, c); pb.rect(3, 3, 10, 10, C.ink); pb.rect(5, 5, 6, 6, c); return pb; };
@@ -32,13 +25,20 @@ const keyPB = () => { const pb = new PB(44, 64); pb.poly([[22, 6], [40, 32], [22
 const basePB = () => { const pb = new PB(72, 8); pb.rect(2, 0, 68, 5, C.bevel); pb.rect(2, 0, 68, 2, C.metal); pb.rect(0, 5, 72, 3, C.bar); return pb; };
 const asleepPB = () => { const pb = new PB(24, 16); for (const [x, y] of [[3, 3], [13, 7], [19, 11]]) pb.rect(x, y, 4, 4, C.fog); pb.rect(4, 4, 2, 2, C.white); return pb; };
 const doingPB = () => { const pb = new PB(28, 16); pb.ring(9, 8, 8, 7, C.focus, 2); pb.ring(19, 8, 8, 7, C.focus, 2); pb.outline(() => C.panel); return pb; };
-const bracketPB = () => { const pb = new PB(12, 12); for (const [x, y, sx, sy] of [[0, 0, 1, 1], [11, 0, -1, 1], [0, 11, 1, -1], [11, 11, -1, -1]]) { for (let i = 0; i < 4; i++) { pb.set(x + sx * i, y, C.cream); pb.set(x, y + sy * i, C.cream); } } return pb; };
+// The difference mark: an aqua bracket (corner ticks, 4 px arms) on a 1 px ink keyline, 12×12.
+const bracketPB = () => {
+  const pb = new PB(12, 12), ticks = [];
+  for (const [x, y, sx, sy] of [[1, 1, 1, 1], [10, 1, -1, 1], [1, 10, 1, -1], [10, 10, -1, -1]]) for (let i = 0; i < 4; i++) ticks.push([x + sx * i, y], [x, y + sy * i]);
+  for (const [x, y] of ticks) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && x + dx < 12 && y + dy >= 0 && y + dy < 12) pb.set(x + dx, y + dy, C.ink);
+  for (const [x, y] of ticks) pb.set(x, y, C.aqua);
+  return pb;
+};
 // The misty seed: the hidden look as a frosted close-up in a pearl, the close-up rendered at the pearl's own inner size.
 function seedPB(frame, genome, traitId, w, h) {
   const pb = new PB(w, h), iw = Math.round(w * 0.75), ih = Math.round(h * 0.65), ox = Math.round(w * 0.125), oy = Math.round(h * 0.19), src = closeUpPB(frame, genome, traitId, iw, ih), cx = (w - 1) / 2, cy = (h - 1) / 2 + 0.5;
   pb.ell(cx + 0.5, cy, w / 2 - 0.5, h / 2 - 0.5, C.frostS); pb.ell(cx + 0.5, cy, w / 2 - 2, h / 2 - 2, C.frost);
   for (let y = 0; y < ih; y++) for (let x = 0; x < iw; x++) { const c = src.get(x, y), px = x + ox, py = y + oy;
-    if (((px - cx) / (w / 2 - 2)) ** 2 + ((py - cy) / (h / 2 - 2)) ** 2 <= 0.92 && c >= 0 && c !== C.bone && c !== C.sand) pb.set(px, py, bay(px, py) < 5 ? C.frost : c); }
+    if (((px - cx) / (w / 2 - 2)) ** 2 + ((py - cy) / (h / 2 - 2)) ** 2 <= 0.92 && c >= 0 && c !== PIC_GROUND) pb.set(px, py, bay(px, py) < 5 ? C.frost : c); }
   pb.ring(cx + 0.5, cy, w / 2 - 0.5, h / 2 - 0.5, C.stone, 1); pb.set(Math.round(w * 0.35), Math.round(h * 0.2), C.white); pb.set(Math.round(w * 0.33), Math.round(h * 0.22), C.white); return pb;
 }
 // The stamp on its label: cells of whole pixels, cell = floor(104 / (N + 2)) and at least 2, drawn with its quiet margin, centred on the 120 label.
@@ -61,7 +61,6 @@ export function registerPictures(reqs, env) {
       case "cradle": put(r.id, 224, 40, "the pod renderer's masters", cradlePB); break;
       case "beam": put(r.id, 240, 232, until, () => beamArt(240, 232)); break;
       case "emblem": put(r.id, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24)); break;
-      case "bench": put(r.id, r.w, r.h, "the research bench master", benchArt); break;
       case "star": put(r.id, 12, 12, "the glint master", starPB); break;
       case "frost": put(r.id, r.w, r.h, "the research bench master", () => frostPic(r.w, r.h)); break;
       case "slats": put(r.id, r.w, r.h, "the research bench master", () => slatsPB(r.w, r.h)); break;

@@ -13,6 +13,11 @@ const shellFrame = (st, p) => (st.knownIds.includes(S.speciesOf(p)) ? podFrame(p
 const railWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.rail : c.name);
 const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.heading : c.name);
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+// No digits where a picture or a word does: a count in a sentence is said in words (the frame's shared need line on Pods).
+const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+export const inWords = (text) => (text || "").replace(/\d+/g, (n) => WORDS[+n] ?? "many");
+// The origin without the expedition's number (a digit would wrap alone onto a second line).
+const originOf = (p) => S.podOrigin(p).replace(/ · expedition \d+$/, "");
 
 // m: { st, settings, docked, ui: { cur, anchor, ci, cmp, wildArm }, focus: id | null, present: { idCut: { pod, p } | null, read: { pod, chapter, p } | null, ribbon: pod id | null } }
 // ctx: the components' context (the spec and the type metrics, to wrap the origin)
@@ -57,7 +62,7 @@ export function podsView(m, spec, ctx) {
     } : null,
     cut: cur && cur.idd ? idCut : null,
     name: cur ? (cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod) : null,
-    origin: cur ? wrap(ctx, S.podOrigin(cur), R.origin.rect[2], R.origin.px).slice(0, R.origin.lines) : [],
+    origin: cur ? wrap(ctx, originOf(cur), R.origin.rect[2], R.origin.px).slice(0, R.origin.lines) : [],
     ribbon: cur && present.ribbon === cur.id ? spec.strings.newSpecies : null,
     ribbonColours: { fill: C.ribbonFill, edge: C.ribbonEdge, text: C.ribbonText },
   };
@@ -107,7 +112,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
   });
   const frost = (w, h) => req({ kind: "frost", id: `frost:${w}x${h}`, w, h }), slats = (w, h) => req({ kind: "slats", id: `slats:${w}x${h}`, w, h });
   for (const c of cells) { if (c.frost || c.wipe != null) frost(pw, ph); if (c.sealed) slats(pw, ph); }
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:24`, chapter: ch.id }), word } : null, cells, overflow: grid.overflow || ch.traits.length > 6, frost: "frost:", slats: "slats:", colours: C.page, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
+  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:24`, chapter: ch.id }), word } : null, cells, overflow: grid.overflow || ch.traits.length > 6, frost: "frost:", slats: "slats:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks, diffEdge: spec.page.diff.edge, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
 }
 
 function compareView(view, m, spec, ctx, req) {
@@ -123,7 +128,7 @@ function compareView(view, m, spec, ctx, req) {
   const compareRegion = (key) => ({ ...R[key === "compareB" ? "compareA" : key], rect: R[key].rect });
   view.pages = [side(A, compareRegion("compareA"), "compareA"), side(B, compareRegion("compareB"), "compareB")];
   view.rail = { colours: C.rail, ground: C.ground, focused: null, slats: "slats:", tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, 6), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:24`, chapter: x.id }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
-  view.line = { back: "Pods", subject: "two " + S.spName(A) + " pods", need: diff.length ? S.plural(diff.length, "trait") + " differ" : "no read trait differs" };
+  view.line = { back: "Pods", subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
   view.targets = [];
   return view;
 }
@@ -131,7 +136,7 @@ function compareView(view, m, spec, ctx, req) {
 // The bottom line: the one action and its price, where ← goes, the subject, what needs you.
 function lineOf(m, spec, p, chapters, ci) {
   const { st, settings, ui, docked } = m, f = m.focus ?? "pod", glintNeed = S.podGlints(st, p || {}) ? "something new here" : null;
-  if (!p) return { back: "Home", subject: spec.strings.empty, need: docked ? spec.strings.openBay : spec.strings.dockToBring };
+  if (!p) return { back: "Home", subject: spec.strings.empty, need: !docked ? spec.strings.dockToBring : m.crates > 0 ? spec.strings.openBay : spec.strings.explore };
   const subj = S.podName(p) + " · " + (S.PLACE_WORD[p.g] || "");
   if (f === "pod") {
     if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: cost ? cost + " ⚡" : "free", dim: st.e < cost, back: "Home", subject: subj }; }
@@ -148,9 +153,9 @@ function lineOf(m, spec, p, chapters, ci) {
   }
   if (f.startsWith("list.") && f !== "list.hatch") {
     const i = +f.slice(5), q = st.tray[i]; if (!q) return { back: "Home" };
-    const A = S.podById(st, ui.anchor), tail = "well " + (i + 1) + " · " + S.podName(q);
+    const A = S.podById(st, ui.anchor), tail = S.podName(q);
     if (A && A !== q && S.canCompare(st, A, q)) return { ok: "Compare", price: "free", back: "Home", subject: tail + " · " + (S.PLACE_WORD[q.g] || "") };
-    return { ok: "Look at this pod", back: "Home", subject: tail + " · " + S.podOrigin(q) };
+    return { ok: "Look at this pod", back: "Home", subject: tail + " · " + originOf(q) };
   }
   if (f === "list.hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back: "Home", subject: "the hatch · " + S.podName(p) + " back to the " + (S.PLACE_WORD[p.g] || "wild") };
   return { back: "Home" };

@@ -44,14 +44,27 @@ Not measured: the pixel-grain check G2 per region (its CI recipe is owed, not pa
 
 Departures from the layout document, each to be settled by the UI designer or the lead:
 
-- **Derived** (listed under `derived` in `pods.json`, "derived, UI designer to confirm"): Compare's page grid for one and two traits (the document gives three to six; pictures 376×264 and 184×256, Read's scaled to 408 px) and its cell rows; the unread and read tab fills; the place of Compare's 12×12 difference bracket (centred on the picture's top edge).
-- **Motion not built:** the focused thing lifts at once (the pod 4 px, the rail's tab 4 px), not over 200 ms; wells and the hatch do not lift; the page turns at once, not over 200 ms; the glint star does not twinkle (a still frame shows it).
+- **Derived** (listed under `derived` in `pods.json`, "derived, UI designer to confirm"): Compare's page grid for one and two traits (the document gives three to six; pictures 376×264 and 184×256, Read's scaled to 408 px) and its cell rows; the unread and read tab fills; the place of Compare's 12×12 difference bracket (since confirmed: inside the picture, top centre, 8 px in).
+- **Motion not built:** the focused thing lifts at once (the pod 4 px, the rail's tab 2 px), not over 200 ms; wells and the hatch do not lift; the page turns at once, not over 200 ms; the glint star does not twinkle (a still frame shows it).
 - **Tabs** for fewer than seven chapters are left-aligned from the rail's x, as the document says ("tab i is at x0 + 120i"); nothing is centred.
 - **Behaviour changed to the document:** ✓ on an identified pod with nothing read moves the ring to the first unread tab (it moved to the last chapter looked at); the bottom line says "something new here" with no star; the tab and list words, the heading readout, "and n more", "n sealed", the aqua bar and the amber square are gone.
 - **The screens not yet moved** (Home, Create, Incubator, Habitat, Library, Cross, Sitting, Idle): drawn through the adapter as before, with this change forced by the atlases: the 13 px strings (Cross, Habitat) are set at 16 px (the decided "✕" stays "✕": Inter has no such glyph, so it is a sprite in the text run, registered with the icons); their text sits on the type layer and their art on the art layer (0 off-palette). They still crop and enlarge trait pictures and draw 16 px emblems until T2.
 - **Type:** the converter carries only the font's legacy kerning pairs (about 250 a face; none between figures, which stay tabular); the Mibi 7×9 atlas waits for the type designer's glyph sheet.
 - **Close-ups** are placeholders rendered by the rig's camera at their size, centred on the part the trait names; the part table is the old one.
 - **What the checks cover:** the palette, the type and the frame size are measured on every screen at every screenshot point; the regions check only on the screens on the layer (Pods, ten points); the job log names which points go through the adapter.
+
+### Section 3, Pods on the screen layer (T1): the correction stage, by the builder
+
+Built to the art director's list and the corrected spec; the art director re-checks it before the owner sees it.
+
+- **The pod fills its box**: the shell is drawn to the box's height and as wide as the box allows (the pod renderer's parameters, never an image enlarged); a sealed pod has a plain shell and a plain dark band for its seal (no pattern dots, no red cross); the pattern shows once it is identified.
+- **Crisp and flat**: the bench is one flat `deep` rectangle (no dither, no rings), the beam a flat cone of `tealD`; the plate, the "only" base and the ring outlines use the palette's migrated names (no wood); the ribbon is `tealD` with an `aqua` rim and `bone` words.
+- **No digits**: the origin drops the expedition's number, a well's subject its number, Compare's need line is the spec's three strings, the empty rack's line follows the bay (away, docked with crates, docked with the bay empty); the shared need line on Pods says its counts in words ("three new pods wait", "two crates in the bay"), a rendering the layout document does not give (derived: UI designer to confirm). The name and origin carry `noDigits` and the checks read them.
+- **Tabs and marks**: the focused tab lifts 2 px (component, its test, the regions check); a sealed tab's word is `mist`; the unread fill is `frostS`; the page pane is `deep`; Compare's rows are at y 56 and 248; the three- and four-trait picture is 216×112 with the 32×40 seed; the difference is a 2 px `aqua` edge on the picture and a 12×12 `aqua` bracket on an `ink` keyline, 8 px in at the top centre, with no cream ring.
+- **Message plates on Pods** only for refusals and for the hatch's arming (Identify, a read and the return show none).
+- **Placeholders that drifted**: the close-ups are drawn without the rig's eye parts on the page's own pane (no cream card, no sand band); the seeds follow.
+- **Captured**: Compare with one, two, four and six traits (`pods-compare-*.png`, a difference on the page) and the empty rack (`pods-empty-rack.png`); the journey asserts each line and the checks read them.
+- **Not mine, listed as departures**: the trait names of two words ("Second colour", "Fur reach", "Cap colour", "Cap spots", "Leg colour") and the trait lines over six words ("off · asleep: patches, if they wake") are the catalogue's; the copy owner settles them. Motion (the 200 ms lift, the page turn, the glint, Compare's slide, the pod's glow) is not built.
 
 ### Section 3, Pods on the screen layer (T1): the art direction column and the layout, by the art director and the UI designer
 
