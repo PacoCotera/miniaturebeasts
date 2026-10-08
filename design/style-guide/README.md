@@ -73,6 +73,8 @@ Materials keep one shape on both devices: Energy a yellow bolt, Data a blue diam
 
 The art director signs off every piece before the owner sees it. Engineers do not draw: no code-drawn screen, sprite, scene or effect is art. Engineers place signed-off assets and set live text. Pieces go brief → generated candidates against the approved references → critique → rounds → masters (hand-pixelled on the Companion, painted on the Station) → sign-off. Generated images are labelled; prompts and originals are kept.
 
+**Decided 2026-10-08** ([art pipeline](../proposals/art-pipeline.md) v2). Mibis are the exception to "masters per piece": every mibi is drawn in the **standard look** rendered from the rig, and the art director signs the **treatment** (the plain render finished to this guide), the species plates, the control contract and the test sets, not each individual. A unique cloud-painted render is a prize a mibi earns by research; no person sees a player's prize render before the player, so the pipeline's validation checks stand in for sign-off there. "Masters hand-pixelled on the Companion" is *superseded* for creatures: the Companion's version is derived from the Station's render.
+
 ## Per-screen checklist template
 
 ```

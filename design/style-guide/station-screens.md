@@ -159,6 +159,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 **Decided 2026-10-08 (concept round).** Reference `art/concept-station/create/`, candidate CR-C2. The painted master places the accepted Pip asset (the same drawing on every Station screen; Pip is not regenerated). Roll pictures are flank close-ups of the changed part, not whole founders. The still-sealed doings chapters are named in one status-bar line ("Face and Stamina stay a surprise"), not as greyed tabs.
 
+**Decided 2026-10-08 (the standard look).** The founder on Create, and every mibi everywhere, is drawn in the **standard look** rendered from the rig (continuous proportions, the species' pools), finished to this guide: that is the game's art, the default and not a placeholder ([art-pipeline](../proposals/art-pipeline.md) §1). A unique cloud-painted render is a prize a mibi may earn later; Create never shows one.
+
 **Pass when**
 - [ ] Founder, changes, surprises and cost are all visible at once.
 - [ ] The founder's misty parts match the unread chapters exactly.
@@ -188,6 +190,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Motion.** A leaf fills over its minute; Open lifts the glass in 600 ms, the bud cracks and the juvenile steps out: "Fig · Tuikis · juvenile".
 
 **Decided 2026-10-08 (concept round).** Reference `art/concept-station/incubator/`, candidates IN-D-r1-a3 (growing) and IN-C1 (ready). Ready keeps the shape glowing inside the bud so the player gets to crack the incubator open. The growing bud is a cute, generic glowing bean; colours may shift, shapes never become embryos. The stamp stands alone on the Station; the code string may also show, as a shareable "look at my mibi" string.
+
+**Decided 2026-10-08 (economy and the prize).** Two additions. **Instant grow:** while growing, the chrome offers `✓ Grow now · <price>` beside the read-only wait (the price to be set with the real economy; the first bud ever grows in five minutes, others twenty plus one per shaped trait; all timers sit under the developer-tools toggle for testing). **The prize render state:** the juvenile that steps out wears the standard look, always. When a mibi has been given a jewel (a unique cloud-painted render earned by a research item or the paid tier's allowance), the chamber gets a fourth state after growing and ready: the painted set arriving, shown as a prize with its own small ceremony (the dome lit, the jewel mark on the stamp label), never as "the real art" against a lesser one, and never with a spinner while it is awaited.
 
 **Pass when**
 - [ ] Time reads as leaves, never digits.

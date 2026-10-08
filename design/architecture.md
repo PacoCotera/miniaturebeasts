@@ -111,3 +111,12 @@ and the core game never depends on a remote model call.
 - where heavy creature generation runs;
 - whether the Companion can render creatures itself;
 - the design of the cloud layer.
+
+**Decided 2026-10-08** ([art pipeline](proposals/art-pipeline.md) v2): the first two are
+settled. Every mibi's art is the **standard look**, rendered from the rig on the
+Station and derived for the Companion and Caddy; the Companion renders nothing.
+The unique cloud-painted render is a **prize** earned by a research item, brokered
+by the Caddy, stored on the Caddy forever and archived under the kit's account;
+the paid tier adds a monthly allowance and the archive. The core game still never
+depends on a remote call. The first feature of the cloud layer is thereby named;
+its design otherwise stays open.
