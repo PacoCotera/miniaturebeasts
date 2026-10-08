@@ -7,6 +7,6 @@ import { panel } from "./panel.mjs";
 export const stampCell = (N, inner = 104, least = 2) => Math.max(least, Math.floor(inner / (N + 2)));
 export function stampLabel(ctx, id, rect, props, colours = { fill: "bone", edge: "slate" }) {
   const [x, y, w, h] = rect, nodes = panel(id, rect, { fill: colours.fill, edge: colours.edge, region: props.region ?? null });
-  if (props.stamp && props.size) nodes.push({ id: id + ".stamp", kind: "sprite", rect: [x + Math.round((w - props.size) / 2), y + Math.round((h - props.size) / 2), props.size, props.size], asset: props.stamp });
+  if (props.stamp && props.size) nodes.push({ id: id + ".stamp", kind: "sprite", rect: [x + Math.round((w - props.size) / 2), y + Math.round((h - props.size) / 2), props.size, props.size], asset: props.stamp, region: props.region ? props.region + ".image" : null });
   return nodes;
 }
