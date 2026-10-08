@@ -1,0 +1,359 @@
+{
+ "name": "pod placeholders",
+ "status": "signed by the art director, 2026-10-08",
+ "palette": "../../../../palettes/station-settled.json",
+ "stage": {
+  "anchor": [
+   344,
+   312
+  ],
+  "note": "the pod's box is bottom-centred on this point: box x = 344 - w/2, y = 312 - h"
+ },
+ "legend": {
+  "A": [
+   "bar",
+   "hairline",
+   "bevel",
+   "metal",
+   "enamel",
+   "frostS"
+  ],
+  "B": [
+   "wine",
+   "red",
+   "coral",
+   "peach",
+   "blush",
+   "white"
+  ],
+  "fixed": {
+   "n": "night",
+   "s": "slate",
+   "t": "stone",
+   "k": "ink",
+   "c": "cream"
+  }
+ },
+ "pigments": {
+  "charcoal": [
+   "bar",
+   "hairline",
+   "bevel",
+   "metal",
+   "enamel",
+   "bone"
+  ],
+  "cream": [
+   "bark",
+   "clay",
+   "sand",
+   "paper",
+   "bone",
+   "white"
+  ],
+  "coral": [
+   "wine",
+   "red",
+   "coral",
+   "peach",
+   "blush",
+   "bone"
+  ],
+  "marigold": [
+   "bark",
+   "gold",
+   "amber",
+   "yellow",
+   "cream",
+   "white"
+  ],
+  "lagoon": [
+   "tealD",
+   "deepTeal",
+   "teal",
+   "aqua",
+   "mint",
+   "white"
+  ],
+  "russet": [
+   "soil",
+   "bark",
+   "rust",
+   "clay",
+   "sand",
+   "paper"
+  ],
+  "cobalt": [
+   "deep",
+   "sea",
+   "river",
+   "sky",
+   "ice",
+   "white"
+  ],
+  "jade": [
+   "pine",
+   "forest",
+   "leaf",
+   "grass",
+   "sprout",
+   "lime"
+  ],
+  "plum": [
+   "plumD",
+   "plum",
+   "lilac",
+   "lavender",
+   "bone",
+   "white"
+  ],
+  "periwinkle": [
+   "deep",
+   "plumD",
+   "plum",
+   "lilac",
+   "lavender",
+   "bone"
+  ]
+ },
+ "classes": {
+  "large": {
+   "w": 160,
+   "h": 192,
+   "glyphCell": 6,
+   "band": [
+    46,
+    60
+   ],
+   "glow": [
+    32,
+    110
+   ],
+   "glyph": [
+    65,
+    24
+   ],
+   "cap": [
+    48,
+    16,
+    64,
+    44
+   ]
+  },
+  "medium": {
+   "w": 136,
+   "h": 168,
+   "glyphCell": 5,
+   "band": [
+    39,
+    52
+   ],
+   "glow": [
+    27,
+    96
+   ],
+   "glyph": [
+    55,
+    21
+   ],
+   "cap": [
+    41,
+    14,
+    54,
+    38
+   ]
+  },
+  "small": {
+   "w": 112,
+   "h": 144,
+   "glyphCell": 4,
+   "band": [
+    32,
+    44
+   ],
+   "glow": [
+    23,
+    83
+   ],
+   "glyph": [
+    46,
+    19
+   ],
+   "cap": [
+    34,
+    12,
+    44,
+    32
+   ]
+  },
+  "well": {
+   "w": 32,
+   "h": 40,
+   "glyphCell": 1,
+   "band": [
+    10,
+    13
+   ],
+   "glow": [
+    9,
+    27
+   ],
+   "glyph": [
+    14,
+    6
+   ],
+   "cap": [
+    11,
+    3,
+    10,
+    10
+   ]
+  }
+ },
+ "species": [
+  {
+   "id": "S01",
+   "name": "Loika",
+   "sizeClass": "medium",
+   "slotA": "charcoal",
+   "slotB": "cream",
+   "shellPattern": "smooth dots",
+   "proportion": null
+  },
+  {
+   "id": "S02",
+   "name": "Untuva",
+   "sizeClass": "large",
+   "slotA": "coral",
+   "slotB": "marigold",
+   "shellPattern": "segments",
+   "proportion": null
+  },
+  {
+   "id": "S03",
+   "name": "Tuikis",
+   "sizeClass": "small",
+   "slotA": "lagoon",
+   "slotB": "marigold",
+   "shellPattern": "plates",
+   "proportion": null
+  },
+  {
+   "id": "S04",
+   "name": "Hiljan",
+   "sizeClass": "medium",
+   "slotA": "russet",
+   "slotB": "cream",
+   "shellPattern": "soft ribs",
+   "proportion": null
+  },
+  {
+   "id": "S05",
+   "name": "Tepor",
+   "sizeClass": "medium",
+   "slotA": "marigold",
+   "slotB": "coral",
+   "shellPattern": "soft ribs",
+   "proportion": null
+  },
+  {
+   "id": "S06",
+   "name": "Pesko",
+   "sizeClass": "medium",
+   "slotA": "charcoal",
+   "slotB": "marigold",
+   "shellPattern": "soft ribs",
+   "proportion": null
+  },
+  {
+   "id": "S07",
+   "name": "Azkon",
+   "sizeClass": "large",
+   "slotA": "russet",
+   "slotB": "charcoal",
+   "shellPattern": "soft ribs",
+   "proportion": null
+  },
+  {
+   "id": "S08",
+   "name": "Rupar",
+   "sizeClass": "large",
+   "slotA": "russet",
+   "slotB": "charcoal",
+   "shellPattern": "soft ribs",
+   "proportion": null
+  },
+  {
+   "id": "S09",
+   "name": "Belatz",
+   "sizeClass": "large",
+   "slotA": "cobalt",
+   "slotB": "lagoon",
+   "shellPattern": "soft ribs",
+   "proportion": null
+  },
+  {
+   "id": "S10",
+   "name": "Igara",
+   "sizeClass": "medium",
+   "slotA": "russet",
+   "slotB": "charcoal",
+   "shellPattern": "soft ribs",
+   "proportion": null
+  },
+  {
+   "id": "S11",
+   "name": "Kilpo",
+   "sizeClass": "large",
+   "slotA": "jade",
+   "slotB": "russet",
+   "shellPattern": "plates",
+   "proportion": null
+  },
+  {
+   "id": "S12",
+   "name": "Peplos",
+   "sizeClass": "small",
+   "slotA": "marigold",
+   "slotB": "coral",
+   "shellPattern": "smooth dots",
+   "proportion": null
+  },
+  {
+   "id": "S13",
+   "name": "Oskol",
+   "sizeClass": "small",
+   "slotA": "charcoal",
+   "slotB": "marigold",
+   "shellPattern": "plates",
+   "proportion": null
+  },
+  {
+   "id": "S14",
+   "name": "Usvel",
+   "sizeClass": "small",
+   "slotA": "plum",
+   "slotB": "periwinkle",
+   "shellPattern": "smooth dots",
+   "proportion": null
+  },
+  {
+   "id": "S15",
+   "name": "Lehten",
+   "sizeClass": "medium",
+   "slotA": "jade",
+   "slotB": "russet",
+   "shellPattern": "segments",
+   "proportion": null
+  },
+  {
+   "id": "S16",
+   "name": "Blikur",
+   "sizeClass": "medium",
+   "slotA": "periwinkle",
+   "slotB": "cobalt",
+   "shellPattern": "smooth dots",
+   "proportion": null
+  }
+ ]
+}
