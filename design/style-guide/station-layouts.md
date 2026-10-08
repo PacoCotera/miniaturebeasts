@@ -172,7 +172,7 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 | --- | --- | --- |
 | List column | 0, 40, 160, 522 | Graphite panel. 1 px hairline at x 160, from y 48 to 552 |
 | Well slot i (0–5) | 8, 48 + 72i, 144, 72 | The focus target |
-| Well and its progress ring | 40, 52 + 72i, 64, 64 | Ring outer radius 31; the pod in the well is 32×40, centred |
+| Well and its progress ring | 40, 52 + 72i, 64, 64 | Ring outer radius 31; the pod in the well is 32×40, centred. The ring carries chapters only and draws no centre fill: the pod says it is identified (*corrected by the UI designer against the build, 2026-10-08*, after the decision of 2026-10-07) |
 | Place stamp | 112, 60 + 72i, 16, 16 | A picture of the place, no word |
 | Hatch (return to the wild) | 24, 488, 112, 56 | Leaf mark 24×24, centred |
 | Rail | 176, 48, 832, 56 | Seven tabs of 112×56 at x 176 + 120i |
@@ -247,10 +247,10 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 | ✓ | Pod with a read chapter | `✓ Shape a founder` opens Create |
 | ✓ | Unread tab | `✓ Read Coat · 3 ◆` (half price shows as "· half" on the bottom line only). Plays the wipe; input is held for 2 s |
 | ✓ | Read tab | No ✓ cap; subject "Coat · read" |
-| ✓ | Sealed tab | No ✓ cap; subject "Coat · sealed · opens with ‹what opens it›". The page shows the picture of what opens it |
+| ✓ | Sealed tab | No ✓ cap; subject "Coat · sealed". The page shows the picture of what opens it (*corrected by the UI designer against the build, 2026-10-08*: "· opens with ‹what opens it›" ran past the subject's 224 px and was cut with "…") |
 | ✓ | Another well, same species | `✓ Compare · free` when a pod of the same species was under the beam. Opens Compare |
 | ✓ | Another well, other species | `✓ Look at this pod`. No compare is offered |
-| ✓ ✓ | Hatch | First ✓ arms: `✓ Again: return it · +1 ❀`, with a message plate saying what will happen: "Back to the ‹place›? ✓ again" (*set by the UI designer against the build, 2026-10-08*: six words or fewer for every place). The second ✓ returns the pod. Any other key disarms it |
+| ✓ ✓ | Hatch | First ✓ arms: `✓ Again: return it · +1 ❀`, with a message plate saying what will happen: "Back to the ‹place›? ✓ again" (*set by the UI designer against the build, 2026-10-08*: six words or fewer for every place). The second ✓ returns the pod. Any other key disarms it. The subject is "the hatch · ‹the pod's name›" ("the hatch · Belatz pod"; *set by the UI designer against the build, 2026-10-08*: the plate says where it goes, and the longer subject was cut with "…") |
 | ◀ ▶ | Compare | Step through chapters on both pages |
 | ← | Compare | Closes Compare |
 | ← | Anywhere else | Home |
@@ -282,12 +282,13 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 
 ### Confirmed against the build (UI designer, 2026-10-08)
 
-Checked again after the correction stage, on the twelve 1× captures of the screen layer (`prototypes/station/img/pods-*.png`, Compare with one, two, four and six traits and the empty rack among them), against this section, the wireframe and `prototypes/ui/specs/station/pods.json`, by pixel.
+Checked a third time, with the placeholder pods placed (the code of ebfb3b8), on the twelve 1× captures of the screen layer (`prototypes/station/img/pods-*.png`, Compare with one, two, four and six traits and the empty rack among them), against this section, the wireframe and `prototypes/ui/specs/station/pods.json`, by pixel.
 
 - **As specified, measured on the captures:** the list column and its hairline at x 160 from y 48; the six well slots, rings centred on (72, 84 + 72i), the place stamps at (112, 60 + 72i); the hatch at (24, 488, 112, 56); the rail at y 48, tabs 112×56 on the 120 pitch from x 176 for up to seven chapters, 96×56 on 104 from x 180 for eight; the focused tab lifted 2 px (top at y 46, its ring's top at y 42, clear of the top bar's rule); the unread tab in `frostS`, a sealed tab's word in `mist`; the pod's box bottom-centred on (344, 312) by size class; the name and origin rectangles, with no digits; the ribbon in the origin's rectangle in the read tab's cool look; the stamp label at (176, 432, 120, 120); the open page at (528, 112, 480, 440) on its `deep` pane with its heading at (544, 120); the grids for one, three or four, and five or six traits (448×312; 216×112 with the 32×40 seed; 144×112) at y 160 and 360; Compare's pages at (176, 112) and (600, 112), 408×440, rows at y 56 and 248 on the page, pictures 376×264, 184×256, 184×104 and 120×96; the difference as a 2 px aqua edge and the 12×12 bracket at (P.x + P.w / 2 − 6, P.y + 8) on an ink keyline, only on the traits that differ; Compare's need line from its three strings; the empty rack (the cradle and nothing else on the stage, its three need lines); the subject naming the pod and its place, no well number; the bottom line's separators at x 396 and 628.
-- **The pod under the beam still does not fill its box.** Its width now fills the box, but the drawing runs about 136 of 168 px (medium), 160 of 192 (large) and 114 of 144 (small), from about 8 px under the box's top to about 20 px above its foot, so it hovers over the cradle. The pod, stem to foot, fills its box's height (192, 168 or 144): the stem's top on the box's top, the shell's foot on y 312 in the cradle's ring; the dust on the cradle, outside the box.
+- **The pod fills its box** (checked again on the placed placeholder sprites): the signed sprite of its class 1:1, the stem's top on the box's top row (y 120, 144 or 168), the shell's foot on its last row in the cradle's ring at y 312, the box's full width; the focused pod rides 4 px higher, the focus's lift. The 32×40 well pod is centred in its ring; the ring's centre disc is still drawn over the pod's neck and goes (§5, the well's row).
 - **The shared need line's counts in words** (the builder's derived rendering) **confirmed**: "a new pod waits", "three new pods wait", "two crates in the bay"; past twelve, "many". An amount beside a material icon is a price or a shortfall and stays in figures ("needs 3 ◆"), the frame's exception.
-- **The hatch's arming plate** says "Back to the ‹place›? ✓ again", six words or fewer for every place (the build's "Return the Belatz pod to the cave? ✓ again" is seven before the key); see §6.
+- **The hatch's arming plate** says "Back to the cave? ✓ again", as set in §6.
+- **The bottom line's subject** fits its 224 px on every state, with no "…": a sealed tab's subject is "‹chapter› · sealed" and the hatch's "the hatch · ‹the pod's name›" (§6); the build cuts both today.
 
 ---
 

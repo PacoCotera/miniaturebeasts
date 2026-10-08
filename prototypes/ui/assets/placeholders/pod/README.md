@@ -83,4 +83,6 @@ Rebuilt with `python3 -I build.py`. `python3 -I check.py`: 0 off-palette pixels,
 | Same individual in four-grey and on paper (§2) | **n/a**: Station art layer only; pods are not printed |
 | Plainly placeholders; pods of one species match; no shell shows an individual's genes (SS Pods) | **yes**: one drawing per class and state, colour by species remap only, registered as `placeholder` |
 
+**A pod of a species not yet known** (placed on Pods; decided by the art director, 2026-10-08): grey. The shell keeps base ramp A and the foot ring takes ramp A, because the colour pair would show what is not yet known. The glow's core is `bone` (in that remap, `frostS` → `bone`), as on the charcoal species, so every pod keeps a warm centre. It differs from a sealed charcoal pod by its grey foot ring and its name.
+
 **Failures:** none that hold these back. **Departures, listed:** no shell pattern (question 1); the glow is still, with no breathing and no seal-break motion (the motion departure stays with the screen build); the note on the S01 and S02 glyphs goes to the frames' owner. **Questions for the owner:** none. The builder signs the capabilities column.
