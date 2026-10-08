@@ -1,4 +1,4 @@
-"""Draw the Station palette as a swatch strip at 1x, from station.json.
+"""Draw the Station palette as a swatch strip at 1x, from station-settled.json.
 
 Row one: the Companion's 48, the shared core, grouped by ramp.
 Row two: the Station's 14, grouped by role.
@@ -13,7 +13,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[3]
-PAL = json.loads((ROOT / "prototypes/ui/palettes/station.json").read_text())
+PAL = json.loads((ROOT / "prototypes/ui/palettes/station-settled.json").read_text())
 OUT = ROOT / "design/proposals/ui-kit/station-palette-1x.png"
 
 # Groups by name, in file order: ramps of the core, then the Station's roles.
