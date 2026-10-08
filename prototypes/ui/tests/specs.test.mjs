@@ -35,8 +35,10 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
   const g = pageGrid(R.page, 4); for (const c of g.cells) has([c[0], c[1], g.picture[0], g.picture[1]], "trait picture", gridBoxes);
   assert.deepEqual(g.picture, [184, 112]);
   assert.deepEqual(R.cradle.rect, [600, 328, 224, 96]); assert.deepEqual(R.cradleFront.rect, R.cradle.rect); assert.equal(pods.colours.origin, "bone");
-  assert.deepEqual([R.name.rect, R.name.px, R.name.weight, R.name.plate.h, R.name.plate.min], [[600, 440, 224, 24], 20, 500, 24, 80]); assert.equal(R.name.rect[0] + R.name.rect[2] / 2, 712);
-  has([672, 440, 80, 24], "the name plate hugging Loika"); has([632, 440, 160, 24], "the name plate hugging Unknown pod");
+  assert.deepEqual([R.name.rect, R.name.px, R.name.weight, R.name.plate.h, R.name.plate.min], [[600, 456, 224, 24], 20, 500, 24, 80]); assert.equal(R.name.rect[0] + R.name.rect[2] / 2, 712);
+  has([672, 456, 80, 24], "the name plate hugging Loika"); has([632, 456, 160, 24], "the name plate hugging Unknown pod");
+  has(R.shelf.rect, "shelf slab"); assert.equal(R.shelf.rect[0] + R.shelf.rect[2] / 2, 712); assert.ok(R.shelf.rect[0] >= R.page.rect[0] + R.page.rect[2] + 8, "the slab clears the page"); assert.equal(R.name.rect[1] - (R.shelf.rect[1] + R.shelf.rect[3]), 16, "the name 16 px under the slab's front edge");
+  assert.deepEqual(R.origin.rect, [600, 496, 224, 40]); assert.equal(R.origin.plate, null); assert.deepEqual(R.ribbon.rect, R.origin.rect); assert.equal(frame.colours.ring, "focus"); assert.equal(pods.colours.rail.ring, "focus");
   const ring = frame.focus.ring.tab; assert.deepEqual([ring.top, ring.slantTo, ring.bottom, ring.box], [42, 80, 84, "x - 4, 42, w + 24, 42"]); assert.equal(16 * (ring.slantTo - 40) / 40 + 4, 20, "the right slant ends at x + w + 20, the box's edge");
   // the concept's way round: the page left of the pod, the pod's box 96 px clear of the stamp label at the right
   const pod = R.pod.rect, page = R.page.rect, stamp = R.stamp.rect;
