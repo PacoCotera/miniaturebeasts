@@ -84,8 +84,8 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 | S12 | Peplos | C12 Graptoma | a moth or butterfly | small | B3·L6·flaps · skin | flutters | meadow | early |
 | S13 | Oskol | C13 Lepidos | a beetle | small | B3·L6 · scales | crawls | rock field, cave | mid |
 | S14 | Usvel | C14 Kapnis | a slug | small | B3, legless · skin | slides | pond edge, wood; out in fog banks | early |
-| S15 | Lehten | C15 Phyllaxa | a walking plant | medium | Rfan2·rays · skin | walks on its roots | wood | late · sealed chapter |
-| S16 | Blikur | C16 Brontelas | a wisp of lightning (spectral, energy) | medium | Bfan3, legless · translucent skin | floats, ripples | meadow, rock field, only in a storm | late · Charge sealed (storm-glass shard) |
+| S15 | Lehten | C15 Phyllaxa | a walking plant | medium | standing bulb, three fan arms as leaves, three root legs · skin | walks on its roots | wood | late · sealed chapter |
+| S16 | Blikur | C16 Brontelas | a wisp of lightning (spectral, energy) | medium | standing bolt: a vertical ribbon, head on top, two streamers, legless · translucent skin | floats, ripples | meadow, rock field, only in a storm | late · Charge sealed (storm-glass shard) |
 
 **For the copywriter**, one row per species; each species founds its own clan in the first drop, and cousins come in drops (abilities beyond S01–S03's built ones are proposals):
 
