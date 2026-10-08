@@ -356,13 +356,16 @@ export function buildBody(resolved) {
         const u = pairs === 2 ? (pair === 0 ? -0.15 : 0.35) : 0.15;
         const rt = rootOn(owner, worldPoint(owner, [u * owner.radii[0], 0, 0]), localVector(owner.frame, [0, side * 0.55, 0.83]), 0.05 * L, envOf(owner));
         const rootP = rt.surface;
-        const k = (pair === 0 ? 1 : 0.75) * (flat ? 1.5 : 1); // wings at rest reach past the body: 1.5 times the span and chord the loci say
-        const outer = flat ? add(rootP, [swp + 0.6 * chord * k, side * 0.7 * span * k, -0.75 * span * k]) : add(rootP, [swp, side * 0.65 * span, 0.76 * span]); // flat: a roof sloping down and back over the flanks
+        // E9 (the cute envelope): a wing pair at rest folds along the body, a tent over the back whose
+        // blades lie against the flanks and reach back past the abdomen, not a flat plane standing out
+        // from the thorax; the hind pair tucks under the fore pair.
+        const k = (pair === 0 ? 1 : 0.8) * (flat ? 1.25 : 1); // wings at rest reach past the body: 1.25 times the span and chord the loci say
+        const outer = flat ? add(rootP, [swp + 0.9 * chord * k, side * 0.32 * span * k, -0.55 * span * k]) : add(rootP, [swp, side * 0.65 * span, 0.76 * span]); // flat: a tent sloping down the flanks and back along the body
         const corners = flat
-          ? [add(rootP, [-0.4 * chord * k, 0, 0]), add(rootP, [0.5 * chord * k, 0, 0]), add(outer, [0.9 * chord * k, 0, 0]), add(outer, [-0.3 * chord * k, 0, 0])]
+          ? [add(rootP, [-0.3 * chord * k, 0, 0]), add(rootP, [0.4 * chord * k, 0, 0]), add(outer, [0.9 * chord * k, side * 0.05 * span, 0]), add(outer, [-0.2 * chord * k, side * 0.05 * span, 0])]
           : [add(rootP, [-0.5 * chord, 0, 0]), add(rootP, [0.5 * chord, 0, 0]), add(outer, [0.3 * chord, 0, 0]), add(outer, [-0.3 * chord, 0, 0])];
         const wing = newNode(`wing-${pairs === 2 ? (pair === 0 ? "fore-" : "hind-") : ""}${side < 0 ? "L" : "R"}`, "thin-surface", owner.id, "second"); wing.part = "flap"; wing.opacity = flapOpacity;
-        sheet(wing, corners, flat ? unit([0, side * 0.4, 0.9]) : unit([0, -side * 0.76, 0.65]), thickness);
+        sheet(wing, corners, flat ? unit([0, side * 0.85, 0.5]) : unit([0, -side * 0.76, 0.65]), thickness);
         push(wing, owner, rt.inner);
       }
     } else if (plan.flapSet === "fins") {
