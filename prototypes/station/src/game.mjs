@@ -4,16 +4,18 @@
 import * as S from "./state.mjs";
 import { clock } from "./gfx.mjs";
 import { createTimeline } from "../../ui/timeline.mjs";
+import { createFramePresenter } from "./present.mjs";
+import { createFocus } from "../../ui/focus.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, lockUntil: 0, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
-export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { f: "pod", cur: null, anchor: null, ci: 0, cmp: null, wildArm: 0 },
+export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { cur: null, anchor: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, "pod"), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
   create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", bondArm: 0, wildArm: 0, from: null }, bench: { f: 0, arm: 0 },
   report: null, meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
-// What the screen layer needs from the page's boot: the spec files and the components' context.
-export const SPECS = {}, LAYER = { ctx: null };
+// What the screen layer needs from the page's boot: the spec files, the components' context and the frame's presenter.
+export const SPECS = {}, LAYER = { ctx: null, presenter: createFramePresenter() };
 export const IDLE_MS = 60000, READ_MS = 2000, ID_MS = 1800, ARRIVE_MS = 3000;
 
 const listeners = new Set();

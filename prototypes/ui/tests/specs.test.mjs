@@ -46,3 +46,31 @@ test("the focus graph names only groups and selectors the screen resolves", () =
   const groups = new Set(["list", "pod", "rail", "none"]), selectors = new Set(["list.current", "rail.last"]);
   for (const [g, e] of Object.entries(pods.focus)) { if (!groups.has(g) && g !== "fallback" && g !== "initial") assert.fail("group " + g); if (typeof e !== "object") continue; for (const [k, v] of Object.entries(e)) if (["up", "down", "left", "right"].includes(k)) assert.ok(groups.has(v) || selectors.has(v), `${g}.${k} → ${v}`); }
 });
+
+test("the page grid in pods.json is the table of station-layouts.md, cell by cell and picture by picture", () => {
+  const md = readFileSync(new URL("../../../design/style-guide/station-layouts.md", import.meta.url), "utf8");
+  const start = md.indexOf("**Page grid,**"), table = md.slice(start, md.indexOf("**Marks on a picture,**", start)).split("\n").filter((l) => /^\| (\d)/.test(l) && !/7 or more/.test(l));
+  assert.equal(table.length, 4, "four rows in the document's table");
+  const rect = (a) => a.join(",");
+  for (const row of table) {
+    const [, traits, cellsText, picText] = row.split("|").map((c) => c.trim()), key = traits.replace("–", "-"), picture = picText.match(/(\d+)×(\d+)/).slice(1).map(Number);
+    let doc;
+    const list = [...cellsText.matchAll(/(\d+), (\d+), (\d+), (\d+)/g)].map((m) => m.slice(1).map(Number));
+    if (list.length) doc = list;   // the cells are listed one by one (one trait, two)
+    else {   // "544 or 776, at y 160 and 360; each 216×184" and "x 544, 696, 848 at y 160 and 360; each 144×184"
+      const size = cellsText.match(/each (\d+)×(\d+)/).slice(1).map(Number), xs = cellsText.split("at y")[0].match(/\d+/g).map(Number), ys = cellsText.split("at y")[1].match(/\d+/g).slice(0, 2).map(Number);
+      doc = ys.flatMap((y) => xs.map((x) => [x, y, ...size]));
+    }
+    const page = pods.regions.page.rect, mine = pods.regions.page.grid[key];
+    assert.ok(mine, "pods.json has the row " + key);
+    assert.deepEqual(mine.cells.map(([x, y, w, h]) => rect([page[0] + x, page[1] + y, w, h])), doc.map(rect), "cells of " + key);
+    assert.deepEqual(mine.picture, picture, "picture of " + key);
+  }
+});
+
+test("Compare's grid for three to six traits is the document's: two columns of 184 with an 8 px gap, pictures 184×104; three columns of 120, pictures 120×96", () => {
+  const g = pods.regions.compareA.grid;
+  assert.deepEqual(g["3-4"].picture, [184, 104]); assert.ok(g["3-4"].cells.every((c) => c[2] === 184)); assert.equal(g["3-4"].cells[1][0] - (g["3-4"].cells[0][0] + 184), 8);
+  assert.deepEqual(g["5-6"].picture, [120, 96]); assert.ok(g["5-6"].cells.every((c) => c[2] === 120)); assert.equal(g["5-6"].cells[1][0] - (g["5-6"].cells[0][0] + 120), 8);
+  assert.deepEqual(pods.regions.compareA.rect, [176, 112, 408, 440]); assert.deepEqual(pods.regions.compareB.rect, [600, 112, 408, 440]);
+});
