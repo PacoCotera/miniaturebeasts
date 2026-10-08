@@ -1,0 +1,992 @@
+{
+ "room-bench-stage": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": [
+   0,
+   40,
+   1024,
+   522
+  ],
+  "src": "bench-d2",
+  "made": "cut: bench-d2 window, bottom extended",
+  "sha256": "aec1e1a5f52fbaf1a2b0fb051423590f7bb030e45c14d7090c8c418ec0faa08a"
+ },
+ "room-cradle": {
+  "size": [
+   224,
+   40
+  ],
+  "rect": [
+   232,
+   296,
+   224,
+   40
+  ],
+  "src": "cradle3",
+  "made": "color-to-alpha on flat ground, cut, resampled 224x40",
+  "sha256": "60d9a93351323228bcf4c6b957a8146148c6e8701e05f8a605fc4d2933d751e9"
+ },
+ "room-cradle-front": {
+  "size": [
+   224,
+   40
+  ],
+  "rect": [
+   232,
+   296,
+   224,
+   40
+  ],
+  "src": "cradle3",
+  "made": "the cradle's near rim only (rows 16 to 39), drawn over the pod's foot",
+  "sha256": "7dc52d0e6cd8d8996e7b1869e9a649debbaddf19e5b3e9c9603776f6d034232d"
+ },
+ "room-shelf": {
+  "size": [
+   288,
+   48
+  ],
+  "rect": [
+   200,
+   304,
+   288,
+   48
+  ],
+  "src": "cradle-shelf",
+  "made": "PROPOSED: the glass shelf under the cradle; color-to-alpha, cut, 288x48",
+  "sha256": "5734caf2d9313162a9411380ab1d0f046a669e7b74642bbc824e0a0723ab2f45"
+ },
+ "ring-column": {
+  "size": [
+   160,
+   522
+  ],
+  "rect": [
+   0,
+   40,
+   160,
+   522
+  ],
+  "src": "list-column",
+  "made": "cut: right part of list-column, bottom leak cropped",
+  "sha256": "d12e5bdc2e2183d5517c7f3997dd15bf0775bbb71e0f03f58ef9d8332961608e"
+ },
+ "ring-well-empty": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": [
+   40,
+   52,
+   64,
+   64
+  ],
+  "src": "well",
+  "made": "key magenta, cut, 64x64",
+  "sha256": "967672dd1530c78db7c8235e61a823d76d041522ab3745efcd3e94dc586ac474"
+ },
+ "ring-well-current": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": [
+   40,
+   52,
+   64,
+   64
+  ],
+  "src": "well",
+  "made": "key magenta, cut, 64x64",
+  "sha256": "0a54b18b5dd6eaa62464acd436fa6899fac0e59509a8a5ff94409901b2fa2277"
+ },
+ "ring-hatch": {
+  "size": [
+   112,
+   56
+  ],
+  "rect": [
+   24,
+   488,
+   112,
+   56
+  ],
+  "src": "hatch",
+  "made": "key magenta, cut, 112x56",
+  "sha256": "4be15733aa520e3908ac16e6a6c9d95a344eb1398d59fbed7bc9d3557e0c1dad"
+ },
+ "rail-tab-unread-112x56": {
+  "size": [
+   112,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   112,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "key magenta, cut, 112x56",
+  "sha256": "868e0def5593be0e3b5069ecdde0ee832c23fa6eb919e4fd3f7dde3985d1d678"
+ },
+ "rail-tab-unread-96x56": {
+  "size": [
+   96,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   96,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "9-slice of the 112 plate (corners kept)",
+  "sha256": "54ef787f3e621815e455f776bd89ca7ecc361e2066576e2e40ba30fd6f5bb6c3"
+ },
+ "rail-tab-unread-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   56,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "9-slice of the 112 plate (corners kept)",
+  "sha256": "f1445b1fbcfc637a4f6e74ce670f4faf8836b180dcf04814d68e2b7132fa51bb"
+ },
+ "rail-tab-read-112x56": {
+  "size": [
+   112,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   112,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "key magenta, cut, 112x56",
+  "sha256": "2388f8a4a3272e0fe83bc14e99a74fc943c26041cc89650aba8ec8acf1fa3c9a"
+ },
+ "rail-tab-read-96x56": {
+  "size": [
+   96,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   96,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "9-slice of the 112 plate (corners kept)",
+  "sha256": "b4508873879f3c18686508d5fe9cf9fa1faeedb7d0c7e9d17ee63f01bc84c9f4"
+ },
+ "rail-tab-read-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   56,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "9-slice of the 112 plate (corners kept)",
+  "sha256": "00ac866d4bde297624839f1d8a46e30933e0fb1e95d620d97a2f8da89213e6d9"
+ },
+ "rail-tab-focused-112x56": {
+  "size": [
+   112,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   112,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "key magenta, cut, 112x56",
+  "sha256": "a633c4d6cc5526759c5ece6be1b20e2a816929df0a7185cd27d440fe042e8b37"
+ },
+ "rail-tab-focused-96x56": {
+  "size": [
+   96,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   96,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "9-slice of the 112 plate (corners kept)",
+  "sha256": "5b336d42af6b61ba58bff9ef28d16c39f1b1c7204cd2d0e2feccf9b2690af0a7"
+ },
+ "rail-tab-focused-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   56,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "9-slice of the 112 plate (corners kept)",
+  "sha256": "1b311f2dfeb2a0a45cec325141c75578e16a211762c41b307a7d00202d6f82a4"
+ },
+ "rail-tab-sealed-112x56": {
+  "size": [
+   112,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   112,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "key magenta, cut, 112x56",
+  "sha256": "849835bd30ec73eeee748a1edf27efe07cc94b2394374d63b1d5d2c02bc649ff"
+ },
+ "rail-tab-sealed-96x56": {
+  "size": [
+   96,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   96,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "9-slice of the 112 plate (corners kept)",
+  "sha256": "aac496b6d8a49872386de7ecbed6816d8a463af052877893fbe6e4bf424983a1"
+ },
+ "rail-tab-sealed-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": [
+   null,
+   48,
+   56,
+   56
+  ],
+  "src": "tab-sheet",
+  "made": "9-slice of the 112 plate (corners kept)",
+  "sha256": "161a670bcbe1dd03dc7cf5d8afe4aac349764fcfd8a8d4609f7662293db5bc48"
+ },
+ "page-pane-480x440": {
+  "size": [
+   480,
+   440
+  ],
+  "rect": [
+   528,
+   112,
+   480,
+   440
+  ],
+  "src": "page-pane",
+  "made": "9-slice of the generated pane, corners kept at 1x",
+  "sha256": "be1be4758e695f833695fd0e667e189bdb361cd4c3f1c4d93a6d3c255532e139"
+ },
+ "page-pane-408x440": {
+  "size": [
+   408,
+   440
+  ],
+  "rect": [
+   null,
+   112,
+   408,
+   440
+  ],
+  "src": "page-pane",
+  "made": "9-slice of the generated pane, corners kept at 1x",
+  "sha256": "ad2a6985f9e7cca93f44f7cc1be66fe5c6fb7fbf9ff8020183f575c72d3e6168"
+ },
+ "trait-picture-frame-448x312": {
+  "size": [
+   448,
+   312
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "c60cd0ba534fce44a73803e74594115e40c0a3137c3c7d370e83565e901bc31e"
+ },
+ "trait-picture-frame-448x312-unread": {
+  "size": [
+   448,
+   312
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "b5530073d39e9f3ef0dc485a9ad97b77b2b714054ae33b38423328de84a4c17d"
+ },
+ "trait-picture-frame-448x312-sealed": {
+  "size": [
+   448,
+   312
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "e9452e68bacc3db6d548191b1462b80c33fe04cb2ebc7d2fc437c36025ca05f8"
+ },
+ "trait-picture-frame-216x304": {
+  "size": [
+   216,
+   304
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "9ecb97c703314d4806b66e2fb403c791b8093326eab6d434cd5436fc78d6a061"
+ },
+ "trait-picture-frame-216x304-unread": {
+  "size": [
+   216,
+   304
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "f4020c87980a83720a08e275c7774791103625a912807774206744b744c7b6ca"
+ },
+ "trait-picture-frame-216x304-sealed": {
+  "size": [
+   216,
+   304
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "a561a9de7dfa6f01bc6810aa44adfbf465b9644e4d08729f4ef5615211e18989"
+ },
+ "trait-picture-frame-216x112": {
+  "size": [
+   216,
+   112
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "8ba2f83fe2e1ed2f6ae67ed422d399b2ae6a25ed5da4947dd97dc4558129774b"
+ },
+ "trait-picture-frame-216x112-unread": {
+  "size": [
+   216,
+   112
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "eb72c2a9ef69775bfe9c595d1ee2d78bd252d840fcaf926012f9b826622c56ae"
+ },
+ "trait-picture-frame-216x112-sealed": {
+  "size": [
+   216,
+   112
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "4e0278d22011d58c2668ed54e069c809f6b17b17e571edc189ffbaa9783411a7"
+ },
+ "trait-picture-frame-144x112": {
+  "size": [
+   144,
+   112
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "d5bd30e121082823cc5455029c9e6c6d450465cbe87c5b9fa3688b403428a081"
+ },
+ "trait-picture-frame-144x112-unread": {
+  "size": [
+   144,
+   112
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "04e0cbe35ffb8bfd5270e952671284f387e575baa94263329e36112922cc8875"
+ },
+ "trait-picture-frame-144x112-sealed": {
+  "size": [
+   144,
+   112
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "91d7bf012140bb5b69929af36f67262eee782fc0501e3a060c0260547ff10729"
+ },
+ "trait-picture-frame-376x264": {
+  "size": [
+   376,
+   264
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "c1980cd4c9aae40e04bd5e3bff8d42f1d916d9bb766dfa36a1ef295b0440bfc4"
+ },
+ "trait-picture-frame-376x264-unread": {
+  "size": [
+   376,
+   264
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "2227bf38cc625ae117e48e09d0881cffa48c4ff2535ab941df87334c50ed5f13"
+ },
+ "trait-picture-frame-376x264-sealed": {
+  "size": [
+   376,
+   264
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "be8b5739309dbf15a8b8b5c40d8212fd851313b1681d667a3bf78895588eb7ac"
+ },
+ "trait-picture-frame-184x256": {
+  "size": [
+   184,
+   256
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "be5d15e3d4c671c790ec686679cbeb35369780b4f6dfd0abafa1cf1df31dcefa"
+ },
+ "trait-picture-frame-184x256-unread": {
+  "size": [
+   184,
+   256
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "662105e6ff886f3ac12dbdde1f0003a86c9f141b5085a8adc3a4ea1a7d07faed"
+ },
+ "trait-picture-frame-184x256-sealed": {
+  "size": [
+   184,
+   256
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "da413bdbb1618f12a5ad746314c2704cb9d53bd3b1998dc6ce05d4f8d5d758e5"
+ },
+ "trait-picture-frame-184x104": {
+  "size": [
+   184,
+   104
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "ce2f07c2a141146c204aad9a2f2dd9ba302191bf430b3602f732d435b173af76"
+ },
+ "trait-picture-frame-184x104-unread": {
+  "size": [
+   184,
+   104
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "6cc61902b2e1f614156d23f8e9475074801ab4f4a38e271e9e579bd19e37304c"
+ },
+ "trait-picture-frame-184x104-sealed": {
+  "size": [
+   184,
+   104
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "4e4ffb00919b05291a7f43072b0bfff84380b6157a98e025b82ca548875c5dc0"
+ },
+ "trait-picture-frame-120x96": {
+  "size": [
+   120,
+   96
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "c23c80e283115ac5ab53a6d6f0111f65157472ac6785fafeee8e60b496ee4cc1"
+ },
+ "trait-picture-frame-120x96-unread": {
+  "size": [
+   120,
+   96
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "d4f0239725b429fe31bba772a97039ef157f264d7578dd9b690308231c7ef817"
+ },
+ "trait-picture-frame-120x96-sealed": {
+  "size": [
+   120,
+   96
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "e04b360041a5bfcdac3bbdd8d40fa59f6c4b28e72a1712ca1c6e316a1842a861"
+ },
+ "plate-name-320x32": {
+  "size": [
+   320,
+   32
+  ],
+  "rect": [
+   184,
+   344,
+   320,
+   32
+  ],
+  "src": "name-plate2",
+  "made": "9-slice, rounded alpha",
+  "sha256": "954d327827cd37a6dce8aa6382404b8ed015a1079ba86048b34d202666bceae0"
+ },
+ "plate-origin-320x40": {
+  "size": [
+   320,
+   40
+  ],
+  "rect": [
+   184,
+   384,
+   320,
+   40
+  ],
+  "src": "name-plate2",
+  "made": "9-slice, rounded alpha (same glass as the name plate)",
+  "sha256": "db5aaa1d5fe98f7c2d37c53c6938f061e1bac5b675eb59c81e71696a01d6031c"
+ },
+ "plate-message-640x36": {
+  "size": [
+   640,
+   36
+  ],
+  "rect": [
+   192,
+   null,
+   640,
+   36
+  ],
+  "src": "name-plate2",
+  "made": "9-slice, rounded alpha",
+  "sha256": "73d26f5e0ec77144f3fc0498f5ddc3caae5db22259a4fb651386ba8af60744d0"
+ },
+ "plate-message-640x56": {
+  "size": [
+   640,
+   56
+  ],
+  "rect": [
+   192,
+   null,
+   640,
+   56
+  ],
+  "src": "name-plate2",
+  "made": "9-slice, rounded alpha",
+  "sha256": "41b9e49172c7c6985bbf62cbff56b3b4a3a18339092b3b17ff3cb586bc52a533"
+ },
+ "plate-message-640x76": {
+  "size": [
+   640,
+   76
+  ],
+  "rect": [
+   192,
+   null,
+   640,
+   76
+  ],
+  "src": "name-plate2",
+  "made": "9-slice, rounded alpha",
+  "sha256": "6209e39b25ab2dd84299ba3047b0841c6bc9173841f7dacf847b34035bdf3dfd"
+ },
+ "stamp-label-120x120": {
+  "size": [
+   120,
+   120
+  ],
+  "rect": [
+   176,
+   432,
+   120,
+   120
+  ],
+  "src": "label-plate",
+  "made": "cut, 120x120",
+  "sha256": "474f93f940e3d682378c8943d2532816f5b811a52bbfba97bbb344eb53faef39"
+ },
+ "frame-top-bar-1024x40": {
+  "size": [
+   1024,
+   40
+  ],
+  "rect": [
+   0,
+   0,
+   1024,
+   40
+  ],
+  "src": "bar-top",
+  "made": "key magenta, cut, 1024x40",
+  "sha256": "9d40520a555e4f43bf79a87e949a0856da79d0539468a11b75e0773dfa6de65a"
+ },
+ "frame-bottom-line-1024x38": {
+  "size": [
+   1024,
+   38
+  ],
+  "rect": [
+   0,
+   562,
+   1024,
+   38
+  ],
+  "src": "bar-top",
+  "made": "the bar flipped (rule on its top edge), 1024x38",
+  "sha256": "1322d4e5234ce0ce4999bf7e6bf37bd97615b7e7969a3987065cacadfbd644c2"
+ },
+ "pod-large-identified": {
+  "size": [
+   160,
+   192
+  ],
+  "rect": [
+   null,
+   null,
+   160,
+   192
+  ],
+  "src": "pod-loika",
+  "made": "key magenta, shell cut, fitted to the class box",
+  "sha256": "4cd5c0cec73b1ee703f4618c60758efae69af4a80d939d0849456a5ec032edf9"
+ },
+ "pod-large-sealed": {
+  "size": [
+   160,
+   192
+  ],
+  "rect": [
+   null,
+   null,
+   160,
+   192
+  ],
+  "src": "pod-band",
+  "made": "key magenta, shell cut, fitted to the class box",
+  "sha256": "0ce9216ab1d1b09966d65d1215897f98e05c95a35ffb13957250f0dd76c54b20"
+ },
+ "pod-large-body": {
+  "size": [
+   160,
+   192
+  ],
+  "rect": [
+   null,
+   null,
+   160,
+   192
+  ],
+  "src": "pod-identified",
+  "made": "the identified shell without glyph or band",
+  "sha256": "97e95b12976b62eb74a468116ff425cf5913cd3e33102bc3696576997400abe6"
+ },
+ "pod-large-glyph": {
+  "size": [
+   160,
+   192
+  ],
+  "rect": [
+   null,
+   null,
+   160,
+   192
+  ],
+  "src": "pod-loika-pod-identified",
+  "made": "the lit glyph and its glow as a layer (difference of two draws)",
+  "sha256": "4664b94f73ae9710efee28e860ce07f61c18acbd82cd76b23f7164177aa3f49d"
+ },
+ "pod-large-band": {
+  "size": [
+   160,
+   192
+  ],
+  "rect": [
+   null,
+   null,
+   160,
+   192
+  ],
+  "src": "pod-band-pod-identified",
+  "made": "the sealing band as a layer (difference of two draws)",
+  "sha256": "bc27d5bbcc7828f9f76ad9ef753914bcc0e7d091d542b34702e19c2c298c5fd9"
+ },
+ "pod-medium-identified": {
+  "size": [
+   136,
+   168
+  ],
+  "rect": [
+   null,
+   null,
+   136,
+   168
+  ],
+  "src": "pod-loika",
+  "made": "key magenta, shell cut, fitted to the class box",
+  "sha256": "891f5d268610dfab5073414d5f1bbd059d3f4efadccf9319bc826c49fcb94009"
+ },
+ "pod-medium-sealed": {
+  "size": [
+   136,
+   168
+  ],
+  "rect": [
+   null,
+   null,
+   136,
+   168
+  ],
+  "src": "pod-band",
+  "made": "key magenta, shell cut, fitted to the class box",
+  "sha256": "054cf3513559efdabbc0b0578d2a5c8f8686f2c7c752db8c7d4d426fc4ffa36f"
+ },
+ "pod-medium-body": {
+  "size": [
+   136,
+   168
+  ],
+  "rect": [
+   null,
+   null,
+   136,
+   168
+  ],
+  "src": "pod-identified",
+  "made": "the identified shell without glyph or band",
+  "sha256": "276e60d2b32f120b9158e1e9528afebd35d3282b4544ec7386e2306e11d6850a"
+ },
+ "pod-medium-glyph": {
+  "size": [
+   136,
+   168
+  ],
+  "rect": [
+   null,
+   null,
+   136,
+   168
+  ],
+  "src": "pod-loika-pod-identified",
+  "made": "the lit glyph and its glow as a layer (difference of two draws)",
+  "sha256": "886c0dac8e4462308bcb600de4d6c5791b5123048feb546f67462ddd60fa700e"
+ },
+ "pod-medium-band": {
+  "size": [
+   136,
+   168
+  ],
+  "rect": [
+   null,
+   null,
+   136,
+   168
+  ],
+  "src": "pod-band-pod-identified",
+  "made": "the sealing band as a layer (difference of two draws)",
+  "sha256": "2fdf73739001383aae1db14d96d96046cc9a514438647c89c1c6b24ecbc18c8e"
+ },
+ "pod-small-identified": {
+  "size": [
+   112,
+   144
+  ],
+  "rect": [
+   null,
+   null,
+   112,
+   144
+  ],
+  "src": "pod-loika",
+  "made": "key magenta, shell cut, fitted to the class box",
+  "sha256": "793b97c61b5b164ab592ee9278d1c5199c3a563a60b306aa58ae7f882ca28297"
+ },
+ "pod-small-sealed": {
+  "size": [
+   112,
+   144
+  ],
+  "rect": [
+   null,
+   null,
+   112,
+   144
+  ],
+  "src": "pod-band",
+  "made": "key magenta, shell cut, fitted to the class box",
+  "sha256": "b21feb08bf20a2c3eb54057e8ad6f154ec271ebf27c2bb042fe6ef15241bf13b"
+ },
+ "pod-small-body": {
+  "size": [
+   112,
+   144
+  ],
+  "rect": [
+   null,
+   null,
+   112,
+   144
+  ],
+  "src": "pod-identified",
+  "made": "the identified shell without glyph or band",
+  "sha256": "a8beec25d91b721ddfe99d28ad80946e94c31157d2d0bb6a1bf4394410053515"
+ },
+ "pod-small-glyph": {
+  "size": [
+   112,
+   144
+  ],
+  "rect": [
+   null,
+   null,
+   112,
+   144
+  ],
+  "src": "pod-loika-pod-identified",
+  "made": "the lit glyph and its glow as a layer (difference of two draws)",
+  "sha256": "afa52ae8e062f5563ddb80736d6ff5f3e4d1746bc86da2f0840dcd1710e202ae"
+ },
+ "pod-small-band": {
+  "size": [
+   112,
+   144
+  ],
+  "rect": [
+   null,
+   null,
+   112,
+   144
+  ],
+  "src": "pod-band-pod-identified",
+  "made": "the sealing band as a layer (difference of two draws)",
+  "sha256": "e46a78f347e2f2b92666034d1d33598a1e707315b5d9783a2a760e1a2508ea30"
+ },
+ "pod-well-identified": {
+  "size": [
+   32,
+   40
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   40
+  ],
+  "src": "pod-loika",
+  "made": "key magenta, shell cut, fitted to the class box",
+  "sha256": "2803511a18412b822efe91eb49f3cc83489a97b39b358073f3198a0aaf2bf51f"
+ },
+ "pod-well-sealed": {
+  "size": [
+   32,
+   40
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   40
+  ],
+  "src": "pod-band",
+  "made": "key magenta, shell cut, fitted to the class box",
+  "sha256": "de21ab820219253cbce16518a58f03c01b90cbcfa994df07ef9b6a81c6a59f9a"
+ },
+ "pod-well-body": {
+  "size": [
+   32,
+   40
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   40
+  ],
+  "src": "pod-identified",
+  "made": "the identified shell without glyph or band",
+  "sha256": "287a3cd3d8dff327d5886cc8ee2edb5a0dc0e9defef36be075e9607b45403d44"
+ },
+ "pod-well-glyph": {
+  "size": [
+   32,
+   40
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   40
+  ],
+  "src": "pod-loika-pod-identified",
+  "made": "the lit glyph and its glow as a layer (difference of two draws)",
+  "sha256": "7122c2dd2ea59bccada8a36d258c5d6c6789f050479dd57bff94036a5a334141"
+ },
+ "pod-well-band": {
+  "size": [
+   32,
+   40
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   40
+  ],
+  "src": "pod-band-pod-identified",
+  "made": "the sealing band as a layer (difference of two draws)",
+  "sha256": "a47c4a625f81147f94f286d90b3d57c4c31726d73caaf071a3038b9b27c6a79f"
+ }
+}
