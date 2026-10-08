@@ -1,0 +1,284 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3-pro-image",
+ "promptVersion": 5,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "plain",
+   "attempts": [
+    {
+     "callId": "b0c52a95-0b5a-4ded-8372-af46c93eb5ba",
+     "step": 1,
+     "attempt": 1,
+     "status": "ok",
+     "costUSD": 0.16797,
+     "seconds": 21.7,
+     "checks": {
+      "silhouetteIoU": 0.439,
+      "silhouetteIoUInPlace": 0.476,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.785
+       },
+       "region-1": {
+        "span": 0.823,
+        "coverage": 0.185
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.819
+       },
+       "leg-0": {
+        "span": 0.821,
+        "coverage": 0.513
+       },
+       "flap": {
+        "span": 0.316,
+        "coverage": 0.199
+       },
+       "tail": {
+        "span": 0.0,
+        "coverage": 0.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.456,
+        "painted": 0.619,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.262,
+        "painted": 0.305,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.29,
+        "painted": 0.428,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.371,
+        "painted": 0.405,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.607,
+        "painted": 0.435,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.414,
+        "median": "#dbba82",
+        "nearest": "#fff0b8",
+        "ok": false
+       },
+       "body@region-1": {
+        "agreement": 0.0,
+        "median": "#fbe6a0",
+        "nearest": "#fff0b8",
+        "ok": false
+       },
+       "body@head": {
+        "agreement": 0.917,
+        "median": "#28949a",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.777,
+        "median": "#e0d8cb",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.053,
+        "median": "#29959b",
+        "nearest": "#269fa5",
+        "ok": false
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: flap (painted along 32% of its length), tail (painted along 0% of its length)",
+       "a pigment slot is painted in another slot's colour: the body colour on the body (painted #dbba82, the second colour), the body colour on body segment 2 (painted #fbe6a0, the second colour), the second colour on the wings (painted #29959b, the body colour)"
+      ],
+      "outside": 0.176,
+      "missing": 0.055,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.18,
+       "partMin": 0.5,
+       "proportion": 0.25
+      },
+      "slotAgreement": 0.556,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "OaPHauPFO-iu_PUP-Zby-A4"
+    },
+    {
+     "callId": "fde59efe-d4e5-460e-9f1f-e6380294a1b8",
+     "step": 1,
+     "attempt": 2,
+     "status": "ok",
+     "costUSD": 0.18127,
+     "seconds": 20.1,
+     "checks": {
+      "silhouetteIoU": 0.506,
+      "silhouetteIoUInPlace": 0.483,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.816
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 0.717
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.844
+       },
+       "leg-0": {
+        "span": 0.696,
+        "coverage": 0.191
+       },
+       "flap": {
+        "span": 0.336,
+        "coverage": 0.293
+       },
+       "tail": {
+        "span": 0.845,
+        "coverage": 0.889
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.456,
+        "painted": 0.691,
+        "ok": false
+       },
+       "region-1": {
+        "drawn": 0.262,
+        "painted": 0.41,
+        "ok": false
+       },
+       "head": {
+        "drawn": 0.29,
+        "painted": 0.478,
+        "ok": false
+       },
+       "leg-0": {
+        "drawn": 0.371,
+        "painted": 0.421,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.607,
+        "painted": 0.436,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.703,
+        "median": "#2f9597",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 0.854,
+        "median": "#2d7381",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.911,
+        "median": "#30979d",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.845,
+        "median": "#cdc3b0",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.095,
+        "median": "#2f828c",
+        "nearest": "#269fa5",
+        "ok": false
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: flap (painted along 34% of its length)",
+       "the proportions are off: the region-0 is larger than drawn (0.69 of the body against 0.46), the region-1 is larger than drawn (0.41 of the body against 0.26), the head is larger than drawn (0.48 of the body against 0.29)",
+       "a pigment slot is painted in another slot's colour: the second colour on the wings (painted #2f828c, the body colour)"
+      ],
+      "outside": 0.091,
+      "missing": 0.048,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.18,
+       "partMin": 0.5,
+       "proportion": 0.25
+      },
+      "slotAgreement": 0.719,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "a6PHaqi9JJvF39IP1purgQ8"
+    }
+   ],
+   "steps": []
+  }
+ },
+ "species": "S09",
+ "name": "Belatz",
+ "level": "individual",
+ "genomeDigest": "S09-bd3313fe",
+ "genomeSha256": "4116c87ba006271cd68c5ebd582580c0112724b23ddac74901dd5684e3911650",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 9,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Coat: colour lagoon; fluff between; sheen matte; feathers long; fur reach bushy tail; second colour butter. Face: head small; beak between; crest between; crown between; eyes between. Shape: waist between; back line dipping; hind body small; body pear; build between. Legs & tail: tail curl straight; tail short, thin. Proportions: a large body, a small head, long legs, broad feet, a dipping back, a short tail, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Belatz)",
+  "name": "species/S09/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T14:05:43Z",
+ "outputs": {
+  "station-portrait-600x620.png": "2f4212a1594a700cc437fed64f996f8f7d5c33febf06e762e32c7de5ee79a024",
+  "station-portrait-300x310.png": "133e0a0d20f7e8e1c2c6655c9ca66148a38a35cebdf290ea799ee5c2868671ed",
+  "companion-280x300.png": "47acc231e739a9320dd2233d44dd6c99d564a0196553ada67feda291e77e5888",
+  "token-48.png": "725235f5415745f111dcc9cb3a7bff125a00584407102f556cf7b49b18ce3d30"
+ },
+ "calls": 2,
+ "costUSD": 0.34924,
+ "seconds": 41.8,
+ "finishedAt": "2026-10-08T14:07:24Z"
+}
