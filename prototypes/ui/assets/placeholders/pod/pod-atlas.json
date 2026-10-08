@@ -1,6 +1,6 @@
 {
  "name": "Pod placeholders",
- "status": "candidate; art director to sign",
+ "status": "signed by the art director, 2026-10-08",
  "note": "Hand-drawn placeholders: one drawing per size class and state, coloured per species by remap. Never a master.",
  "palette": {
   "file": "prototypes/ui/palettes/station-settled.json",
@@ -243,23 +243,23 @@
    "glow": "pod.well.glow",
    "glyph": "glyph.well.<species id>",
    "bandAt": [
-    5,
-    20
+    10,
+    13
    ],
    "glowAt": [
-    7,
+    9,
     27
    ],
    "glyphAt": [
-    11,
-    7
+    14,
+    6
    ],
-   "glyphCell": 2,
+   "glyphCell": 1,
    "cap": [
-    7,
-    4,
-    18,
-    16
+    11,
+    3,
+    10,
+    10
    ]
   }
  },
@@ -366,15 +366,15 @@
    "sheet": "pod-bodies.png",
    "x": 68,
    "y": 510,
-   "w": 22,
+   "w": 12,
    "h": 3
   },
   "pod.well.glow": {
    "sheet": "pod-bodies.png",
-   "x": 92,
+   "x": 82,
    "y": 510,
-   "w": 18,
-   "h": 10
+   "w": 14,
+   "h": 8
   },
   "glyph.large.S01": {
    "sheet": "pod-glyphs.png",
@@ -716,113 +716,113 @@
    "sheet": "pod-glyphs.png",
    "x": 0,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S02": {
    "sheet": "pod-glyphs.png",
-   "x": 12,
+   "x": 7,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S03": {
    "sheet": "pod-glyphs.png",
-   "x": 24,
+   "x": 14,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S04": {
    "sheet": "pod-glyphs.png",
-   "x": 36,
+   "x": 21,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S05": {
    "sheet": "pod-glyphs.png",
-   "x": 48,
+   "x": 28,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S06": {
    "sheet": "pod-glyphs.png",
-   "x": 60,
+   "x": 35,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S07": {
    "sheet": "pod-glyphs.png",
-   "x": 72,
+   "x": 42,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S08": {
    "sheet": "pod-glyphs.png",
-   "x": 84,
+   "x": 49,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S09": {
    "sheet": "pod-glyphs.png",
-   "x": 96,
+   "x": 56,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S10": {
    "sheet": "pod-glyphs.png",
-   "x": 108,
+   "x": 63,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S11": {
    "sheet": "pod-glyphs.png",
-   "x": 120,
+   "x": 70,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S12": {
    "sheet": "pod-glyphs.png",
-   "x": 132,
+   "x": 77,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S13": {
    "sheet": "pod-glyphs.png",
-   "x": 144,
+   "x": 84,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S14": {
    "sheet": "pod-glyphs.png",
-   "x": 156,
+   "x": 91,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S15": {
    "sheet": "pod-glyphs.png",
-   "x": 168,
+   "x": 98,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   },
   "glyph.well.S16": {
    "sheet": "pod-glyphs.png",
-   "x": 180,
+   "x": 105,
    "y": 81,
-   "w": 10,
-   "h": 10
+   "w": 5,
+   "h": 5
   }
  },
  "species": {
@@ -838,11 +838,11 @@
     "35": 10,
     "36": 9,
     "37": 7,
-    "50": 2,
-    "51": 3,
-    "52": 4,
-    "53": 5,
-    "54": 6,
+    "50": 50,
+    "51": 51,
+    "52": 52,
+    "53": 53,
+    "54": 54,
     "55": 7
    },
    "remapNames": {
@@ -852,11 +852,11 @@
     "coral": "sand",
     "peach": "paper",
     "blush": "bone",
-    "bar": "night",
-    "hairline": "slate",
-    "bevel": "stone",
-    "metal": "mist",
-    "enamel": "fog",
+    "bar": "bar",
+    "hairline": "hairline",
+    "bevel": "bevel",
+    "metal": "metal",
+    "enamel": "enamel",
     "frostS": "bone"
    }
   },
@@ -907,10 +907,10 @@
     "36": 42,
     "37": 43,
     "50": 25,
-    "51": 26,
-    "52": 27,
-    "53": 28,
-    "54": 7,
+    "51": 58,
+    "52": 26,
+    "53": 27,
+    "54": 28,
     "55": 8
    },
    "remapNames": {
@@ -921,10 +921,10 @@
     "peach": "yellow",
     "blush": "cream",
     "bar": "tealD",
-    "hairline": "teal",
-    "bevel": "aqua",
-    "metal": "mint",
-    "enamel": "bone",
+    "hairline": "deepTeal",
+    "bevel": "teal",
+    "metal": "aqua",
+    "enamel": "mint",
     "frostS": "white"
    }
   },
@@ -1008,11 +1008,11 @@
     "35": 40,
     "36": 42,
     "37": 43,
-    "50": 2,
-    "51": 3,
-    "52": 4,
-    "53": 5,
-    "54": 6,
+    "50": 50,
+    "51": 51,
+    "52": 52,
+    "53": 53,
+    "54": 54,
     "55": 7
    },
    "remapNames": {
@@ -1022,11 +1022,11 @@
     "coral": "amber",
     "peach": "yellow",
     "blush": "cream",
-    "bar": "night",
-    "hairline": "slate",
-    "bevel": "stone",
-    "metal": "mist",
-    "enamel": "fog",
+    "bar": "bar",
+    "hairline": "hairline",
+    "bevel": "bevel",
+    "metal": "metal",
+    "enamel": "enamel",
     "frostS": "bone"
    }
   },
@@ -1037,11 +1037,11 @@
    "slotB": "charcoal",
    "remap": {
     "8": 7,
-    "33": 2,
-    "34": 3,
-    "35": 4,
-    "36": 5,
-    "37": 6,
+    "33": 50,
+    "34": 51,
+    "35": 52,
+    "36": 53,
+    "37": 54,
     "50": 13,
     "51": 12,
     "52": 38,
@@ -1051,11 +1051,11 @@
    },
    "remapNames": {
     "white": "bone",
-    "wine": "night",
-    "red": "slate",
-    "coral": "stone",
-    "peach": "mist",
-    "blush": "fog",
+    "wine": "bar",
+    "red": "hairline",
+    "coral": "bevel",
+    "peach": "metal",
+    "blush": "enamel",
     "bar": "soil",
     "hairline": "bark",
     "bevel": "rust",
@@ -1071,11 +1071,11 @@
    "slotB": "charcoal",
    "remap": {
     "8": 7,
-    "33": 2,
-    "34": 3,
-    "35": 4,
-    "36": 5,
-    "37": 6,
+    "33": 50,
+    "34": 51,
+    "35": 52,
+    "36": 53,
+    "37": 54,
     "50": 13,
     "51": 12,
     "52": 38,
@@ -1085,11 +1085,11 @@
    },
    "remapNames": {
     "white": "bone",
-    "wine": "night",
-    "red": "slate",
-    "coral": "stone",
-    "peach": "mist",
-    "blush": "fog",
+    "wine": "bar",
+    "red": "hairline",
+    "coral": "bevel",
+    "peach": "metal",
+    "blush": "enamel",
     "bar": "soil",
     "hairline": "bark",
     "bevel": "rust",
@@ -1106,10 +1106,10 @@
    "remap": {
     "8": 8,
     "33": 25,
-    "34": 26,
-    "35": 27,
-    "36": 28,
-    "37": 7,
+    "34": 58,
+    "35": 26,
+    "36": 27,
+    "37": 28,
     "50": 20,
     "51": 21,
     "52": 22,
@@ -1120,10 +1120,10 @@
    "remapNames": {
     "white": "white",
     "wine": "tealD",
-    "red": "teal",
-    "coral": "aqua",
-    "peach": "mint",
-    "blush": "bone",
+    "red": "deepTeal",
+    "coral": "teal",
+    "peach": "aqua",
+    "blush": "mint",
     "bar": "deep",
     "hairline": "sea",
     "bevel": "river",
@@ -1139,11 +1139,11 @@
    "slotB": "charcoal",
    "remap": {
     "8": 7,
-    "33": 2,
-    "34": 3,
-    "35": 4,
-    "36": 5,
-    "37": 6,
+    "33": 50,
+    "34": 51,
+    "35": 52,
+    "36": 53,
+    "37": 54,
     "50": 13,
     "51": 12,
     "52": 38,
@@ -1153,11 +1153,11 @@
    },
    "remapNames": {
     "white": "bone",
-    "wine": "night",
-    "red": "slate",
-    "coral": "stone",
-    "peach": "mist",
-    "blush": "fog",
+    "wine": "bar",
+    "red": "hairline",
+    "coral": "bevel",
+    "peach": "metal",
+    "blush": "enamel",
     "bar": "soil",
     "hairline": "bark",
     "bevel": "rust",
@@ -1246,11 +1246,11 @@
     "35": 40,
     "36": 42,
     "37": 43,
-    "50": 2,
-    "51": 3,
-    "52": 4,
-    "53": 5,
-    "54": 6,
+    "50": 50,
+    "51": 51,
+    "52": 52,
+    "53": 53,
+    "54": 54,
     "55": 7
    },
    "remapNames": {
@@ -1260,11 +1260,11 @@
     "coral": "amber",
     "peach": "yellow",
     "blush": "cream",
-    "bar": "night",
-    "hairline": "slate",
-    "bevel": "stone",
-    "metal": "mist",
-    "enamel": "fog",
+    "bar": "bar",
+    "hairline": "hairline",
+    "bevel": "bevel",
+    "metal": "metal",
+    "enamel": "enamel",
     "frostS": "bone"
    }
   },
@@ -1373,11 +1373,11 @@
  },
  "pigments": {
   "charcoal": [
-   "night",
-   "slate",
-   "stone",
-   "mist",
-   "fog",
+   "bar",
+   "hairline",
+   "bevel",
+   "metal",
+   "enamel",
    "bone"
   ],
   "cream": [
@@ -1406,10 +1406,10 @@
   ],
   "lagoon": [
    "tealD",
+   "deepTeal",
    "teal",
    "aqua",
    "mint",
-   "bone",
    "white"
   ],
   "russet": [
@@ -1474,7 +1474,7 @@
    "id": "pod.sheet.glyphs",
    "file": "prototypes/ui/assets/placeholders/pod/pod-glyphs.png",
    "w": 510,
-   "h": 91,
+   "h": 86,
    "policy": "stationChrome",
    "status": "placeholder"
   }

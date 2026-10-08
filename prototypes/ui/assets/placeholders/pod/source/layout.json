@@ -1,6 +1,6 @@
 {
  "name": "pod placeholders",
- "status": "candidate; art director to sign",
+ "status": "signed by the art director, 2026-10-08",
  "palette": "../../../../palettes/station-settled.json",
  "stage": {
   "anchor": [
@@ -36,11 +36,11 @@
  },
  "pigments": {
   "charcoal": [
-   "night",
-   "slate",
-   "stone",
-   "mist",
-   "fog",
+   "bar",
+   "hairline",
+   "bevel",
+   "metal",
+   "enamel",
    "bone"
   ],
   "cream": [
@@ -69,10 +69,10 @@
   ],
   "lagoon": [
    "tealD",
+   "deepTeal",
    "teal",
    "aqua",
    "mint",
-   "bone",
    "white"
   ],
   "russet": [
@@ -189,24 +189,24 @@
   "well": {
    "w": 32,
    "h": 40,
-   "glyphCell": 2,
+   "glyphCell": 1,
    "band": [
-    5,
-    20
+    10,
+    13
    ],
    "glow": [
-    7,
+    9,
     27
    ],
    "glyph": [
-    11,
-    7
+    14,
+    6
    ],
    "cap": [
-    7,
-    4,
-    18,
-    16
+    11,
+    3,
+    10,
+    10
    ]
   }
  },

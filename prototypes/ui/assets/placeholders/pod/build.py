@@ -286,7 +286,7 @@ def main():
         manifest.append({"id": "pod.sheet." + sheet[4:-4], "file": "prototypes/ui/assets/placeholders/pod/" + sheet,
                          "w": im.w, "h": im.h, "policy": "stationChrome", "status": "placeholder"})
     atlas = {
-        "name": "Pod placeholders", "status": "candidate; art director to sign",
+        "name": "Pod placeholders", "status": layout["status"],
         "note": "Hand-drawn placeholders: one drawing per size class and state, coloured per species by remap. Never a master.",
         "palette": {"file": "prototypes/ui/palettes/station-settled.json", "colours": 62, "transparentIndex": T,
                     "names": names, "note": "PNG palette index = position in that file; index 62 is transparent (tRNS)"},
