@@ -1,138 +1,166 @@
-# Art pipeline: from genome to signed-off art, cached
+# Art pipeline: the rig draws the body, the service paints it, the Caddy keeps it
 
-**Proposal** from the art director with the genome engineer, 2026-10-07, for the owner. **Decided** marks owner decisions restated here; everything else is **Proposal**. It answers the owner's earlier workbench idea ("design a genome, create a sketch of the creature, and then feed it to Gemini for art") for every level of the [taxonomy](taxonomy.md) (body plan, clan, species, individual) and every life stage, with one change of principle: **images are generated once per archetype, kept, and reused as references; individuals are never generated, they are rendered from signed-off masters by rule.** It builds on the [art direction](../art-direction.md), the [style guide](../style-guide/README.md), the [species frames](species-frames.md) and the [research loop](research-loop.md) §6, and on what the v1 [genome workbench](../../v1/prototype/generator-workbench/README.md) proved and disproved.
+**Proposal**, version 2 of 2026-10-08, from the pipeline designer with the art director and the genome engineer, for the owner. It replaces the version of 2026-10-07 after the owner's decisions of 10-08 (§1) and the close of stage 0 ([the workbench](../../prototypes/workbench/README.md)). **Decided** marks owner decisions restated here; **Superseded** marks what the earlier version proposed and no longer stands; everything else is **Proposal**. It builds on the [art direction](../art-direction.md), the [style guide](../style-guide/README.md), the [taxonomy](taxonomy.md), the [species frames](species-frames.md), the [research loop](research-loop.md) §4–6 and the [devices](../devices.md).
 
-![The pipeline, the cache and what reaches players](art-pipeline/pipeline.svg)
+![The pipeline: Station, Caddy, service, devices, and what is unique or generic](art-pipeline/pipeline.svg)
 
-*Stages 0–6 left to right; every stage writes to the cache, and generation reads only from it. Below: the reference chain by level, and the four places art reaches players.*
+*Top: what happens at Grow, inside the incubation minutes. Bottom: where each output comes from.*
 
 ## 1. Principles
 
-1. **Generate at archetype levels; render individuals deterministically on device.** The kit works standalone and the Companion is an ESP32 that cannot call a model (**Decided** 10-07, Project; Devices, 09-26); no hand-made art for individuals (**Decided** 10-01); a species is an assembly, never a drawing (taxonomy §7).
-2. **Sketch before art.** Outline, then illustration, then pet-ification, then animation (**Decided** direction 10-02); the image model gets a deterministic sketch as its form authority, never a bare prompt.
-3. **Nothing generated ships unprocessed.** Generated images are references for hand-authored masters (style guide, Sign-off; art-direction "hand-authored pixel masters"); a generated illustration ships only critiqued, corrected and labelled.
-4. **Art never changes genes.** Rendering cannot invent parts, move pigments or repair a weak result (art-direction Rules; research-loop §5). Only the genome drives the renderer; a plate never feeds back into a frame.
-5. **The cache is the source of truth.** Originals, exact prompts and hashes are kept (art-direction "Keep originals"); nothing is regenerated that the library already holds, and generation reads only from the library.
-6. **Art director sign-off** on every piece before the owner sees it; engineers place signed-off assets and never draw (**Decided** 10-07).
-7. **Clean room.** Our own vocabulary and references only; no other franchise's creature as source, prompt or reference (**Decided** 10-07, Intellectual property).
+**Decided 2026-10-08.**
 
-## 2. The pipeline, stage by stage
+1. **No device rendering of finished art, and no fixed set of looks.** Expression is continuous. A mibi's art is generated **per individual**, as a batch background job while it incubates, brokered by the Caddy through a cloud generation service. The rig's renders (the workbench's structural sketch: views, slot map, index and marking passes) are the **control images**; the service paints, it does not invent the body.
+2. **Hidden copies never show.** Only research reveals them.
+3. **Species have colour pools:** common colours and markings, with slight per-individual variation.
+4. **The 48 px token is a generalisation** of a species' most representative traits. Full detail is for the Station and the Companion resident view.
+5. **Offline, a plain version** rendered from the rig; **connected, the unique generated version.**
+6. **Smaller sizes may be generic per species** rather than per individual, which cuts the spend. Tests find the satisfactory cut-off size.
+7. **The Caddy stores the renders forever;** the service call backs them up, for archival, re-render and restore.
 
-### Stage 0: the workbench
+**Still standing.** The kit plays standalone and the core game never depends on a remote call (Project 10-07; Architecture): the plain version is the game offline. No hand-made art per individual (10-01). Sketch before art (10-02): the control images are the sketch. Art never changes genes; draw only what is known; same individual everywhere. The art director signs every piece *the owner sees* (10-07): the species plates, the contract and the test sets; no person sees a player's render before the player, so the checks of §5 stand in. Engineers do not draw. Clean room (10-07): a fixed template, project-owned references only. Pods from one renderer and the stamp from the genome bits: unchanged.
 
-The owner: *"we need to revisit the workbench, because we may want to tinker with genomes to lock the species, see if different expressions have noticeable effects."* And his verdict on v1: *"The v1 workbench was a good idea, but the implementation was really bad. The 3D models were a good approach. But the way we edited loci, and the fact that all structures led to slug-like creatures or 6-legged things only, was a letdown. It needed more thinking, a tighter link between the algorithmic generation and the genome framework."*
+**Superseded.** "Generate at archetype levels; render individuals on device from a parts library" (the earlier principle 1, stages 2–5, §4 and §5), the hour budget per rig, limb set and covering, the first-drop weeks, and the earlier decisions 1, 2 and 5. Decision 3 (the first drop is one of each kind: Loika, Kilpo, Belatz, Peplos, Lehten) and 4 (species artefacts in `art/library/`) stand; individual renders never enter the repository.
 
-**What it is.** An internal authoring tool, a page on the sandbox (engineering; it ships no art). The designers and the owner load the catalogue and the frame registry; define or edit a species frame (locked, open, sleeping, sealed; chapters and traits; the clan's branch loci); roll random individuals and crosses; see each one's structural sketch at Companion and Station scale; and **compare expressions side by side**: same frame, one locus changed, N individuals, with a verdict recorded per trait ("reads at 48 px", "reads only on the Station", "invisible: make it a doing"). Its exports are the species-frame JSON, the sketches and the reference sets stage 2 consumes; it writes them to the cache with provenance. No species is locked without it.
+## 2. The flow at Grow
 
-**1. Keep the 3D models.** The structural sketch is a parametric body built from the genome's regions and parts: superellipse volumes per region, typed head, tube chains for limbs, thin sheets for flaps and fins, exactly the [compositional contract](../../v1/design/anatomical-source-prototype/compositional-contract.md)'s meshes. One camera rig per body plan renders it the same way every time: a four-view turnaround (front, side, three-quarter lit from the top left, top), flat fills by **pigment slot** (not final colour), marking fields as separate masks, region and part ids as an index pass, and black silhouettes at 48 px, 280×300 and 300×310. So the image model always gets consistent views of one body, and the masters get a slot map to paint into. What v1 lacked was not the mesh but the depiction: diagram-like bulbs, tiny fixed faces, fur as scratch dashes ([anatomical roles](../../v1/prototype/generator-workbench/evidence/anatomical-roles/README.md), [coherent coat](../../v1/prototype/generator-workbench/evidence/coherent-coat/README.md)). The sketch stops at form and slots; craft is the masters' job.
+The player presses Grow. From that press to Open are the **incubation minutes** (station-loop §1, **Decided**: small 2, medium 3, large 4, +1 per chapter beyond three, +1 per trait changed; the first mibi ever 1). That is the latency budget.
 
-**2. Edit as a designer thinks.** v1 edited copy by copy in an eleven-layer tree of 114 pairs with a "Refresh structure" step ([guided authoring](../../v1/prototype/generator-workbench/evidence/guided-authoring/README.md)). The new editor works at **frame → chapter → trait**, loci underneath and inspectable but never the entry point: switch the plan, lock or open a trait, narrow a pool, and the sketch re-renders at once (no refresh button), with a strip of variants beside it (each look of the trait, or N random individuals of the frame). Crosses take two individuals and show children in the same strip.
+1. **Station, at once.** The genome is committed and validated as a whole. The Station runs the rig (the workbench's `rig.mjs` and `raster.mjs`) and writes the **control set** (§4) and the **plain version** (§3) for the juvenile, on screen within a second. The job manifest names the genome digest, the frame, rig, species plate and template versions, and the outputs wanted in order of need.
+2. **Station → Caddy** over the home Wi-Fi (both are on it; the dock is not needed). The Caddy keeps the queue on its own storage; a job survives a power cut.
+3. **Caddy → service.** Per output: the control images, the species plate (the signed type-specimen render, the treatment reference), the fixed template filled from frame facts, the palette lock. One request per output with an idempotency key; no silent retry: a failure is recorded and retried at one minute, five, thirty, then at every dock.
+4. **Service → Caddy.** Returns are stored content-addressed with the request, the model id and the hashes; the call archives them under the kit's account (§7).
+5. **Caddy → devices.** The Station fetches the set, **validates** it against the controls (§5), derives the Companion and Caddy versions (§6) and **swaps** it in (§3). The Companion gets the sets of the mibis it carries at the next dock; the Caddy keeps the four-grey copy for its screen and the printer.
 
-**3. Why everything became a slug or a six-legged thing.** The evidence and the code say why, and none of it was the 3D approach:
+**Order of need.** The juvenile Station render first (what steps out at Open), then the side view. Adult and elder sets are painted **ahead of the stage change**, which the Station can schedule, so the budget holds one or two calls. The Retro Diffusion trial measured 20–105 s a request with references; two calls in parallel fit two minutes. The first mibi ever (1 minute) will usually open plain and swap soon after.
 
-| Cause | Where | Effect |
+**When the budget runs out,** the mibi opens plain, with no wait, no spinner and no apology; the unique version swaps in later. Nothing in the game waits for art. **With no connection,** the same, for as long as it takes: the job waits on the Caddy, and a kit that never connects plays the whole game plain.
+
+## 3. The plain version and the swap
+
+**The plain version** is what the rig renders by itself, finished to the style guide rather than left as the sketch: the shaded pass with the individual's real pigments in its slots, markings as fields, the 1 px outline from the index pass in the darkest step of the part's ramp, fixed eye inks with a catch light, lit from the top left, quantised to the device ramps, at every size. It is deterministic, it carries the exact silhouette, slots and markings the unique version must keep, and it is the picture research shows before Grow: each trait on *this pod's mibi* on Pods and Create (research-loop §4) is the plain render of the expressed look; the misty seed for a hidden look is the species' field-guide plate, never this individual.
+
+**The swap** is a one-way promotion at the next fresh draw of that mibi (a screen change, waking, coming home), never while it is on screen. Silhouette, slots and markings are the same by contract, so the swap changes craft, not identity. The plain version is kept forever and drawn again only when the unique set is missing or fails validation. The player is never told which version they see.
+
+**Frosting.** A bred child is known only where its parents' copies matched (research-loop §4). Generation runs at Grow for the whole expressed body; the display frosts the parts of unread chapters through the **index pass**, on both versions, and reading clears it. The hidden copy of any locus is never in the manifest, the template or the controls, so it cannot be painted (Decided 2).
+
+## 4. The control-image contract
+
+Per output, from the workbench's sketch (`sketch.mjs`, the cache manifest of `mb-species-frame/2`).
+
+| Control | From the rig | The service must |
 | --- | --- | --- |
-| **Every limb, wing and head roots on one region.** Chains, flaps and the head attach to `region-root` only; later regions are legless children | `compositional-source-construction.mjs` (the `anchor` node) | A two- or three-region body is a legged bulb towing legless bulbs: a slug or caterpillar |
-| **Legs at fixed stations, fixed links.** Bilateral contact pairs sit at ±0.65 or −0.65/0/+0.65 of that one region, always two links, one splay and drop | same file; [anatomical V1 contract](../../v1/design/anatomical-source-prototype/genomic-contract.md) | Three pairs crowd one body: an insect, whatever else the genome says |
-| **Equal beads.** Regions on one axis with equal lengths and symmetric bulges until growth and join were added, and the axial map offered only 1, 3 or 5 regions | [random diversity](../../v1/prototype/generator-workbench/evidence/random-diversity/README.md), [body organization](../../v1/prototype/generator-workbench/evidence/body-organization/README.md) | Chained-bulb silhouettes; 13 of 16 winners had three or five regions |
-| **Uniform founder sampling, no species.** Every categorical locus drawn independently and evenly (appendage role none/free/contact a third each; two or three pairs half each) | contract, "Founder sampling policy" | A third legless (slugs), half of the legged ones six-legged; no draw aims at a kind of animal |
-| **Guards that reject instead of draw.** Unsupported radial, membranes, deformation, markings and roles rejected the draw; the first eligible of up to 1,024 draws was kept | [diversity diagnosis](../../v1/prototype/generator-workbench/evidence/diversity-diagnosis/README.md): 99 of 100 rejected; 1,555 scene rejections in 2,563 draws | Survivors are what the constructor could draw: axial, finned, legless or six-legged |
-| **Missing pet parts.** No paws, necks or posture by kind, tiny faces, no partial coats | [critter family](../../v1/prototype/generator-workbench/evidence/critter-family/README.md) learnings 1–3 | Nothing read as a mammal, a bird or a plant even when the counts were right |
+| **Views** | three-quarter lit from the top left as the main view; side, front, top as support; one camera rig, the body centred in its fixed frame | paint the main view; use the others for form only; never a new angle |
+| **`silhouette`** | black on white at the target size | keep the painted silhouette within the tolerance of §5 |
+| **`slots`** | one flat colour per pigment slot, both halves of a split slot, with the legend (slot → exact colour from the individual's pool value) | paint each slot in its ramp, within the palette lock; never move a pigment |
+| **`index`** | one flat colour per part | keep every part, add none; the Station frosts and counts by it |
+| **`markings-<field>`** | one mask per marking field (coat, flaps, cap, mask, rings, shell, belly) | paint the pattern only inside its field |
+| **`shaded`** | the sketch's one-light form | the light and the volumes; no second light, no scene |
+| **Species plate** | the signed type-specimen render of the species, same view | the material (fur, scales, skin, leaf, sheen), the face treatment, the pose language |
+| **Template** | fixed per plan, filled with frame facts (kind, covering, state, stage); no free text | nothing in it may add a part, a colour or a prop; a subject on a plain ground |
+| **Palette lock** | the individual's slot colours with the device ramps | stay on it; the Station snaps the rest |
 
-![v1: eight random winners, shared camera](../../v1/prototype/generator-workbench/evidence/body-organization/random-comparison.png)
+The three things the rig cannot say (stage 0 report: materials, the face, the pose) are the species plate's to say. Stage 1 chooses the service and call shape that honour this: the Retro Diffusion trial shows palette locks and references hold but identity and outline do not without them, and its Pro family stops at 256 px, so the Station master is a painted-model call and the Companion version is derived (§6).
 
-*v1 evidence: the first eligible draw in each of eight seed windows, shared camera. Seven of eight are three-region bodies.*
+## 5. Consistency rules
 
-**What must change, so the 510 plans look like 510 bodies.**
-- **In the genome framework** (genome engineer): a **mass hierarchy** per plan (leading, support, posterior) with unequal growth as species-fixed loci; **limb stations per region**, so a plan says which region carries which pair (fore legs on the front region, wings on the back, rays round a fan's hub); **link count, posture and ground contact per limb set** (plantigrade, upright, splayed insect, finned, rooted); a **neck or fused head** and head-to-body ratio as plan facts; and the clan **branch loci** the new kinds need (taxonomy in revision: fliers 0·2, insect-like 2·4, slug 1·2, plants 3·7 new switches·loci).
-- **In the generator:** **species first**. A body is built from a frame, never from 114 independent draws; the plan's switches pick one of the **seven body rigs** and the limb sets, and only open traits vary. A guard never rejects into a narrower survivor set: an unsupported part is a missing consumer to build, shown as such. And a **silhouette census**: every plan's default body, rendered as a 48 px silhouette, must differ from every other plan's by a measured margin (shape distance on the silhouette masks), or the plan is merged or redesigned. taxonomy.py checks today that all 510 plans *build*; the census checks that they *look different*.
+- **Generate once, cache forever.** The key is genome digest + frame, rig, species plate and template versions + service model id. The same key is never requested twice.
+- **Versioned by service model.** A render records the model that painted it. A retired model's renders stay as they are; a rule, plate or model change never rewrites a living mibi (**Working rule**, kept).
+- **Never silently regenerate.** A re-render happens only on a restore whose archive copy is lost, or on an explicit action the owner may add later, and is a new version with its reason, the old one kept.
+- **Stages inherit.** The adult is painted with the juvenile's unique render as a second reference, the elder with the adult's.
+- **Validation before the swap**, on the Station: silhouette IoU against the control (threshold set by stage 1; the census separates species at 0.22 shape distance, an individual against its own control should sit above 0.9); every index part present, nothing painted outside the silhouette beyond the tolerance; each slot's mean colour within its ramp; markings inside their fields. A failure is kept with its reason and retried once with the fault named in the template's correction slot; a second failure leaves the mibi plain and puts the key on the owner's review sheet.
+- **The manifest** is the workbench's, with `controls`, `references`, `prompt`, `model`, `outputs`, `validation`, `archive` and `supersedes` filled.
 
-**4. The tight link.** The workbench and the sketcher import the catalogue, the frame registry and the resolver directly, the same modules [frames.py](species-frames/frames.py) and taxonomy.py read; there is no hand-kept parallel model (v1's anatomical V1 drew from fixed example tuples, `parameters.json`). Every rendered body is validated against the compositional contract (roots, attachment witnesses, bounds) and its frame's checks, and fails visibly; a gene is never repaired.
+## 6. Per individual or per species, by output and size
 
-**Salvage and rebuild.**
+Decided 4 and 6 draw the line; the cut-off is what §9 tests. The default below is the position to test.
 
-| Salvage from `v1/prototype/generator-workbench/` | Rebuild |
-| --- | --- |
-| The resolver and its guards (`compositional-vocabulary-adapter.mjs`, catalogue6 in `innate-profile-package.mjs`), already reused by frames.py | The editor and journey (React tree of loci, refresh step, browser storage capped at eight proposals) |
-| The mesh constructor (graph source, head, chains, sheets, ears, tail, mantle, marking fields) as the sketch's geometry, with the fixes above | Limb rooting, station tables and founder sampling (above); per-plan cameras and the slot and silhouette passes |
-| The tree codec and the [genome stamp](../../prototypes/genome-stamp/README.md) encoder for exports | The per-creature "Render mibi" button: generation moves to stage 2, per archetype |
-| The evidence tooling: replay by digest, byte-identical regeneration, hashed manifests, the Sharp compositors | The source-derived prompt (`art-prompt-summary`): kept as the sketch's caption, no longer the whole brief |
-| The rendering transport's retention rules (request ids, no silent retry, exact prompt kept) for stage 2 | |
-
-### Stages 1–6
-
-| Stage | Inputs | Outputs | Tool | Signs | Cached |
-| --- | --- | --- | --- | --- | --- |
-| **1. Structural sketch** | a frame, or a genome | turnaround, slot map, marking masks, index pass, silhouettes at 48 px, 280×300, 300×310 | the workbench's sketcher, deterministic | art director: readable at device size, kinds distinct (the frame itself: the owner, in stage 0) | sketch bytes and hash, frame version, sketcher version |
-| **2. Plates per level** | the sketch (form authority, attached first) and the signed plates of the level above | **plan:** parts turnaround; **clan:** signature part large, palette, finish; **species:** adult archetype, life stages (juvenile, adult, elder; the embryo as a frosted silhouette), expressions, poses from the state machine, pod; **individual:** illustrations only | Gemini, both image models, hard call budget per batch | none: candidates | every call: prompt, references, model, raw output, hashes |
-| **3. Critique and selection** | candidates, the sketch, the style guide checklist | one pick per plate, or a round of two or three changes; a clean-room check (no likeness to another franchise's creature) | art director | **art director** | critique per candidate, verdict, the pick |
-| **4. Pixel masters** | the picks, the slot map | the **parts library per body plan**: HiBit parts on the 48 ramps and painted Station parts, drawn in pigment slots, marking masks per region, 48 px token rig, motion frames per the style guide's vocabulary, life-stage variants | Aseprite (layers per slot, tags per motion); Retro Diffusion for drafts only | **art director**, every part | .aseprite sources, exported parts, rig tables |
-| **5. Runtime renderer** | a genome, its frame, the parts library | the individual: Companion HiBit, Station rich, Caddy four-grey and print, the stamp face | device code, no model call | art director signs each species' **type specimen** and a sheet of random individuals | renderer version; specimen renders as golden images |
-| **6. Text** | the name brief (locked facts only) | five name candidates, the tome line, field-guide sentences, one line per trait look | the LLM within the brief; web clearance per name | a person picks among cleared names | prompt, outputs, clause-to-fact map, clearance rows |
-
-**What v1 taught stages 2–4.** The image model is a good finisher of a clean form and a poor keeper of facts. Given a clean source it returned useful craft (fur that reads, ear interiors), but every return moved something: pigments relocated, a fourth leg lost, a rug added ([coherent coat](../../v1/prototype/generator-workbench/evidence/coherent-coat/README.md)); ten fins for six ([critter family](../../v1/prototype/generator-workbench/evidence/critter-family/README.md)); scales past their field ([faithful pet](../../v1/prototype/generator-workbench/evidence/faithful-pet/README.md)); Pip as a toad or a rodent in four of eleven Station candidates and a drifting ten-change edit ([concept station](../../art/concept-station/README.md)); a dropped leaf crown ([homepage V2](../../art/concept-homepage/README.md)). What held: the source attached first as authority restored the fins; a pre-oriented source with a separate field guide passed; edits of two or three changes hold; one attempt per model with a written checklist; every call recorded with hashes. Retro Diffusion keeps palette and light but not the outline rule, two-frame idles or identity without references, and stops at 256 px ([trial](../../art/retro-diffusion-trial/README.md)). Hence plates are references, masters are drawn, and individuals are composed.
-
-<table><tr><td valign="top"><img src="../../v1/prototype/generator-workbench/evidence/coherent-coat/authored.png" width="240" alt="v1 source"><br><em>v1 source sent to Gemini.</em></td><td valign="top"><img src="../../v1/prototype/generator-workbench/evidence/coherent-coat/gemini-pet.png" width="240" alt="Gemini return"><br><em>The return: good fur, moved pigments, three legs, a rug. A reference, never a mibi.</em></td></tr></table>
-
-**The renderer, per device.** **Companion** (ESP32-S3, LVGL, 16 MB flash): parts as 8-bit indexed sprites; a pigment slot is a palette index remapped to the genome's pigment ramp; markings are 1-bit masks clipped to their region; layers placed by the plan's rig table; budget about 384 KB of parts per plan plus 32 KB of tokens; tokens for every plan, resident parts for the plans the Companion carries, synced at the dock. **Station** (Pi): painted parts in neutral value with shade and highlight layers, gradient-mapped to the pigment ramp; soft marking masks; eased part motion for the living window. **Caddy and paper:** the same parts through a value table the art director signs (each ramp step to one of four greys, then Bayer to one bit at 203 dpi). **Stamp face:** drawn from the genome bits by the stamp encoder; art supplies the clan border families and the glyph style, never the cells. **Draw only what is known:** unread parts render frosted, from the same masks.
-
-## 3. The cache
-
-**Where.** `art/library/`, in the public repository beside `art/miniature-lives/`. Blobs are content-addressed (`objects/sha256/ab/…`); raw generations and rejected candidates are stored through Git LFS; masters, signed plates and manifests are ordinary files. Folders are views: `plan/<plan-code>/v<N>/`, `clan/<clan>/v<N>/`, `species/<species>/v<N>/`, `individual/<code>/v<N>/` (illustrations only), `shared/` (face set, ramps, coverings, marking masks, pod renderer, stamp borders, tome template), `packs/<drop>/` (built content packs), and `index.json` (every artefact's current version and status).
-
-**One manifest per artefact**, in the schema `art/concept-homepage/prompts.json` already uses, extended: `level` · `id` · `version` · `genome` or `seed` and `frameVersion` · `sketch` (hash, sketcher version) · `prompt` (verbatim) · `references` (hash and role each) · `model` and parameters · `outputs` (raw and derived hashes, sizes, crops) · `critique` (checklist, verdict, rounds) · `signoff` (who, date, scope) · `supersedes` · `licence` (CC BY-SA 4.0 for project-held rights, per [LICENSING.md](../../LICENSING.md); generated outputs flagged as generated).
-
-**Reference selection, per level.** At most three references per call: the sketch first, labelled as form authority, and one or two **signed** plates as treatment anchors. A **plan** uses the accepted Miniature Lives pair until its first plan sheet is signed, then the nearest signed plan sheet. A **clan** uses its plan sheet. A **species** uses its clan sheet; life stages, expressions, poses and the pod use the signed adult archetype. An **individual** illustration uses its species archetype plus the individual's own deterministic Station render as authority. Never an unsigned candidate, never another franchise's image, never a whole screen (it gets copied, as Retro Diffusion's A2-2 showed).
-
-**Invalidation.** A plate or master changes only when its **brief** (style guide or treatment) or its **genome** (a new frame version) changes, and then as a **new version**; the old one stays, and a device keeps every master version a saved mibi's frame version needs (rule changes never rewrite creatures, **Working rule**).
-
-**Who reads it.** The website build reads signed plates and type specimens from `index.json`. The Station reads only built **content packs** (signed masters, rig tables, value tables, text), and passes the Companion and Caddy their subsets at the dock. Nothing reads a candidate.
-
-## 4. What is generated and what is rendered
-
-| Output | Generated? | Rendered from | Device constraint |
+| Output | Size | Unique or generic | Comes from |
 | --- | --- | --- | --- |
-| **Field token** (world, partner) | no; plan plates are references | HiBit token rig, 48 px, palette remap | Companion: the 48 ramps, no alpha, two-frame idle, three-frame walk |
-| **Companion resident** (280×300) | no | HiBit parts per plan | ≈384 KB a plan; parts synced at the dock |
-| **Station resident** (vivarium, 300×310 and up) | no | painted parts, gradient-mapped | Pi at 1024×600; fine grain on creatures, eased motion |
-| **Tome portrait** (Library) | no; the species archetype is its reference | painted parts in the species' habit pose | the one warm thing on the archive page |
-| **Pod** | no; one renderer (**Decided**) | shell family per plan, clan tint, species parameters | the same pod on Station and Companion; dust per pod |
-| **Stamp face** | no | the stamp encoder; border families and glyph style as masters | monochrome, 203 dpi, must still scan |
-| **Website hero** | yes, individual level, a named showcase mibi | critiqued, corrected, labelled "illustration"; device shots are real renderer captures | web sizes; never shown as a capture |
-| **Marketing** | yes, as the hero | as the hero | as the hero |
-| **Names and text** | yes, the LLM, once per species | templates fill per-individual lines from trait words | shipped as data; no model at runtime |
+| Station resident (vivarium, Habitat, Visit) | 300×310, master 600×620 | **unique** | the service, main view, one per life stage |
+| Station side view (walking, routines) | 300×310 | unique, a second call; or the plain side view if the eye accepts it | the service or the rig |
+| Companion resident | 280×300 | **unique, derived**: the master down-rendered on the Station (k-centroid reduction, the 48 ramps, the outline from the index pass, no alpha) | the Station |
+| Caddy four-grey and print | the Caddy's sizes, 203 dpi | unique, derived through the signed value table and Bayer | the Station |
+| Field token (world, partner) | 48 px, idle 2 frames, walk 3 | **generic per species**, pigment slots remapped to the individual's pool values | the pixel artist's token rig |
+| Partner face on the HUD ring, list and tree thumbnails | 16–40 px | generic, remapped | the token rig |
+| Cabinet and book portraits, field-guide look plates, the misty seed | 120–310 px | generic per species and per look | the species plates |
+| Life stages | as the resident | unique per stage, painted ahead of the change | the service |
+| Motion | Companion stepped frames; Station eased | derived by rule from the still (breathing, bob, blink; the walk on the token); never painted frame by frame (the trial's frames boil) | device code on signed rules |
+| Pod, stamp face, frosting | as before | by rule | unchanged |
 
-## 5. Budget and effort
+Two Loikas with the same pool values share a token in the field and differ in the resident view: that is what Decided 4 accepts.
 
-Hours are art hours (pixel artist and art director together); generations are calls. Money is small; hours are the cost.
+## 7. Storage, backup and restore
 
-| Unit | Gemini calls | Retro Diffusion | Art hours | Sign-off |
-| --- | --- | --- | --- | --- |
-| **Shared, once:** face set with expressions, marking masks, pod shell families, stamp border style, tome template | 16 | 4 requests | 78 | 6 h |
-| **Per body rig** (HiBit and painted parts, token rig) | in the plan | in the plan | 40 | |
-| **Per limb set** / **per covering** | in the plan | in the plan | 16 / 16 | |
-| **Per body plan** (turnaround plates, assembly, animation set from the state machine, life stages) | 12 | 8 Pro + 2 animation | 32 | 3 h |
-| **Per clan** (signature and branch parts, clan plate) | 6 | | 11 (+12 for a plant clan) | 1 h |
-| **Per species** (archetype, stages, expressions, poses, pod, portrait; part variants, specimen) | 20 | 2 Pro | 15 | 2 h |
+- **Caddy.** An SD card beside the e-paper module (an addition to the reference hardware): content-addressed objects and one manifest per mibi per stage, forever. A full set is 1–3 MB; 500 mibis under 2 GB; a 32 GB card holds a kit's lifetime. The Caddy never deletes a render.
+- **Account archive.** Every call runs under the kit's account and archives controls, request and returns (Decided 7). The archive is the backup; the Caddy is the copy of record. A new or wiped Caddy restores by account; until then the Station draws plain and swaps as sets arrive. A lost archive object is re-rendered from its controls, by the same model if it exists, else marked repainted. Cancelling the account never deletes local renders (**Working rule**, kept).
+- **Sync.** Station and Caddy over Wi-Fi; the Companion at the dock, only the sets of the mibis it carries (8-bit indexed 280×300, about 85 KB a stage) plus the species token rigs; the Companion calls nothing.
+- **Species artefacts** (plates, token rigs, templates, value tables) stay in `art/library/` and ship in content packs.
 
-**First drop, five species** (§6: 3 body rigs, 2 limb sets, 3 coverings, 5 plans, 5 clans, one plant): **about 206 calls** (cap 240 with retries), **64 Retro Diffusion requests (about $21)**, **580 art hours** (78 + 120 + 32 + 48 + 160 + 67 + 75), about 36 h of sign-off and four owner reviews. Gemini spend, assuming about $0.10 a call on average, is about $25; the first batch's manifests replace that assumption with measured cost. **All 16** (taxonomy in revision: 7 rigs, 3 limb sets, 3 coverings, 16 plans, 16 clans, 2 plants): **about 624 calls (≈$62), 196 requests (≈$64), about 1,400 art hours**. **A seasonal drop** (4 species: two cousins in existing clans, one new clan, at most one new plan): **about 104 calls and $16 in tools, 130–155 art hours**, two cousins alone about 30.
+## 8. The cost model
 
-Engineering, outside the art hours: the stage-0 workbench and sketcher about three weeks; the framework changes in §2 and the first drop's branch loci, the genome engineer's two to three weeks; the Companion and Station compositors about two weeks each, the Caddy value path one.
+**Assumptions.** The private spend notes are not in the public repository, so the figures use the earlier version's assumption for the painted model (about $0.10 a Pro-class call, $0.04 flash-class) and the Retro Diffusion prices the trial measured ($0.03, $0.06, $0.18 an image). Stage 1 replaces them with measured cost per manifest. Retries at 20 percent. A derived Companion version costs no call.
 
-## 6. The first-drop plan
+**Per mibi, three life stages**, by where the unique set stops:
 
-**Which five.** The approved roster (`taxonomy.md`) lists 16 species and marks the starters and early kinds (Loika, Untuva, Tuikis, Hiljan, Tepor: three rigs, two pairs on shared skeletons) as the first to build. The art pipeline should prove itself on one of each kind instead, on distinct plans: **Loika** (S01), the round walker (B1·L4, skin; Pip is the accepted calibration); **Kilpo** (S11), the swimmer (B1·L4, scales, a shell); **Belatz** (S09), the flier (B2·L4·flaps, fur, feathers to come; fur was v1's hardest failure); **Peplos** (S12), the insect-like (B3·L6·flaps, skin); **Lehten** (S15), the walking plant (Rfan2·rays, skin; the most new loci). Three body rigs, two limb sets, all three coverings. Decision 3.
+| Cut-off (smallest unique size) | Unique | Generic or derived | Calls a stage | Calls a mibi | At $0.10 | With retries |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| A. Everything at size | Station main and side; Companion painted at size; token painted at size (pixel-art service, $0.18) | nothing | 4 | 12 | $1.44 | $1.73 |
+| B. Down to the Companion | Station main and side; Companion derived | token | 2 | 6 | $0.60 | $0.72 |
+| C. Station main only | Station main; Companion derived; side from the rig | token, side | 1 | 3 | $0.30 | $0.36 |
+| D. Adult only | adult main; juvenile and elder plain | the rest | — | 1 | $0.10 | $0.12 |
 
-**Order, with the owner's review points.**
-1. **Stage 0 first** (weeks 1–3): the workbench, the framework changes, the five frames locked and their expression verdicts, the silhouette census across all five. **Owner review A:** five turnarounds and silhouettes side by side: five kinds of animal, or not?
-2. **Shared masters and a vertical slice on Loika** (weeks 3–7): plates against the accepted Pip, the face set, ramps, B1 rig, skin; both compositors; a type specimen and twelve random Loika at 48 px, 280×300, 300×310 and four-grey. **Owner review B:** the slice at device size.
-3. **Kilpo, Belatz, Peplos plates** in one batch (weeks 6–9), masters after critique; Lehten's plates once its branch loci land. **Owner review C:** one signed plan sheet per new kind, before masters are drawn.
-4. **Masters and specimens for all five** (weeks 8–16); the LLM's names and text, cleared; the content pack built from the library. **Owner review D:** the drop pack on the devices.
+**Per kit a year**, at 40 mibis grown: A about $69, B $29, C $14, D $5. Ten kits at B: about $290 a year, before the archive's storage. **Per species, once:** the plate set (type specimen, three stages, two views, two or three candidates each for the art director's pick) about 20 calls, $2–3, plus the token rig (about 6 art hours) and the look plates. Sixteen species: about $45 in calls and 100–130 art hours, against the superseded 1,400.
 
-## 7. Decisions for the owner
+## 9. The cut-off test (stage 1)
 
-1. **Archetypes generated, individuals rendered.** Images are generated per plan, clan and species, signed and cached; every mibi is composed on the device from masters by its genome; generated individual art exists only as labelled illustration, and not as a cloud feature for players' own mibis until a fidelity check exists. *Recommended.*
-2. **Rebuild the workbench as stage 0 before any plate.** Keep its 3D bodies, resolver and evidence tooling; rebuild the editor (frame, chapter, trait), limb rooting and sampling; read the framework directly; adopt the silhouette census as a gate for every plan. About three weeks of engineering ahead of art. *Recommended.*
-3. **The first drop is one of each kind** (Loika, Kilpo, Belatz, Peplos, Lehten), not the five starters and early kinds first. It proves fur, scales and skin, three rigs and the hardest genes early, and five look-alikes would undercut the 16-species grid. *Recommended;* the roster's build order should align with it.
-4. **The library lives in the public repository** at `art/library/`, with raw and rejected generations in Git LFS and devices fed only by built content packs. *Recommended* over a private bucket: provenance stays with the open project.
-5. **Spend and review cadence.** Raise the Gemini monthly cap to cover 240 calls (with margin), top up Retro Diffusion by $25, keep a hard call budget per batch, and see the work at the four review points in §6 rather than every plate. *Recommended.*
+1. **Individuals.** Loika (S01, skin), Belatz (S09, fur, one pair), Peplos (S12, insect-like, flaps): three rigs, three coverings. Five random individuals each from the workbench's pools plus the type specimen; controls from `sketch/cli.mjs --set`.
+2. **Full unique sets (cut-off A)** for all eighteen; three stages for six of them. Every call in the manifest with its cost and time.
+3. **The small sizes both ways.** Per individual, the Companion resident and the token (a) down-rendered from the unique Station set by the Station's rule and (b) generic per species, the type specimen's small sizes remapped to the individual's pool values, beside (c) painted at size.
+4. **Side by side at device size** on true-size screens at 1×: the Companion at 450×600 with each version in the resident view and as a token in a reach view among the species' others; the Station at 1024×600 with the resident in the vivarium beside its plain version. Each sheet carries that version's cost per mibi and per kit-year.
+5. **Two blind checks** with the owner and two testers: *match* (find this mibi's Companion version among its species' five from its Station version) and *tell apart* (which two tokens are different individuals). A size where generic is matched as often as unique is below the cut-off.
+6. **Latency and validation.** Time per call and batch against the budget per size class; the validator's scores and rejections, so the threshold rests on evidence.
+7. **The plain version beside everything,** so the owner sees what an offline kit plays.
+
+**Owner review A:** the sheets, the tallies, the costs; the owner names the cut-off and says whether the plain version is good enough to be the offline game.
+
+## 10. The stages, revised
+
+| Stage | What | Signs | Status |
+| --- | --- | --- | --- |
+| **0. Workbench** | frames, the rig, the sketch, the census | owner (frames) | closed 10-08 |
+| **1. Contract and service trial** | the contract (§4), templates per plan, validator thresholds, the service and call shape, the cut-off test (§9), measured cost and latency | art director; owner review A | next, 2–3 weeks |
+| **2. Species plates** | per species: the type specimen's signed set (the plate the service receives), stages, the generic small sizes, the token rig, the look plates; the first five species first | art director, every plate; owner review B at device size | after A |
+| **3. The pipeline on the devices** | Station rig, plain treatment, controls, validator, swap, frosting; Caddy queue, broker, store, archive, restore; Companion sync and swap | owner review C: a mibi grown, opened plain, swapped, carried, printed | with stage 2 |
+| **4. All sixteen and the pack** | plates and token rigs for the roster; the content pack; the cost report from real manifests | owner review D: the pack on the devices | |
+| **5. Text** | names, tome line, field-guide sentences | unchanged | |
+
+Superseded: plates per level, the parts library per plan, the runtime compositor.
+
+## 11. What each device needs built
+
+- **Station (Pi).** The rig and rasterizer on the device (native port, or the workbench's modules as a local service; **Open**); the plain treatment; the control export and manifest; the hand-off and fetch over Wi-Fi; the validator; the down-render for the Companion and the value-table pass for the Caddy; the swap and frosting on every screen that draws a mibi; stage-change scheduling.
+- **Caddy (ESP32-S3).** SD storage and the object store; the persistent queue with its retry schedule; the account, credentials and calls with idempotency keys; archive upload and restore; a monthly call cap per kit with a quiet stop; sync to the Station and, at the dock, the Companion; its own four-grey view and print.
+- **Companion (ESP32-S3).** Keep the resident sets of the mibis it carries; the swap on the resident view; the species token rigs with pigment remap for the field, the partner ring and Cargo; nothing that calls out.
+- **Shared.** The manifest and cache format (the workbench's, per §5); the content pack with plates, token rigs, templates and value tables.
+
+## 12. Risks
+
+| Risk | Where it bites | What limits it |
+| --- | --- | --- |
+| The service moves or adds a part despite the controls (v1's constant failure) | identity | the index and silhouette checks, one named retry, then plain; thresholds from stage 1 evidence |
+| Identity drifts between views and stages | same individual everywhere | the prior render as reference; the side view may stay plain (cut-off C) |
+| The derived Companion version is not HiBit | the Companion's rules | stage 1 judges it at 1×; the fallback is a painted call at size, or plain |
+| The plain version reads as a placeholder | offline kits, Decided 5 | finished to the style guide and signed as a treatment; review A judges it |
+| Incubation shorter than the calls | the first mibi, small species | one call in the budget, the rest ahead of need; the swap makes a late set harmless |
+| Spend grows with play | per-kit cost | the cut-off; a monthly cap per kit; the archive serves restores |
+| A model is retired or changes under its name | consistency | the model id in the key; never regenerate; the archive keeps the bytes |
+| The reference Caddy has no storage, and is the hub | Devices | an SD card; or the Station as hub (decision 1) |
+| Clean room with no person per individual | intellectual property | a fixed template, project-owned references only; a periodic owner sheet of random renders |
+| Genomes and renders leave the kit | privacy, terms | digests, not genomes, in the request; the archive under the kit's account; the service's data terms checked in stage 1 |
+
+## 13. Decisions for the owner
+
+1. **The hub's work split.** The Caddy brokers, stores and archives (Decided); the Station, being the Pi, renders the controls and the plain version, validates and derives. *Recommended.* The Station as broker too would spare the Caddy its card but leave the renders on the device replaced first.
+2. **Test cut-off B first** (unique down to the Companion resident, token generic), with A as the control and C as the saving. *Recommended.*
+3. **Is the unique art part of the kit or of the paid cloud layer?** Architecture decides the cloud is a gated, paid layer never needed for core play. *Recommended:* the plain version is the kit; the unique version is the first feature of the paid layer, which also funds the archive.
