@@ -141,6 +141,10 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 .pal i{display:block; aspect-ratio:1; border-radius:2px; box-shadow: inset 0 0 0 1px rgba(127,127,127,.35)}
 .obs-row{display:flex; align-items:center; justify-content:space-between; gap:10px}
 .obs-row .btn{padding:6px 10px; font-size:13px}
+.dev-row{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; font: 500 14px/1.4 var(--font-ui)}
+.dev-row label{color:var(--muted); font-weight:400}
+.dev-row input{width:64px; padding:4px 6px; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--ink); font:inherit; font-variant-numeric:tabular-nums}
+.dev-row .btn{padding:4px 8px; font-size:13px}
 .reset-ask{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--chip); font: 500 14px/1.4 var(--font-ui); color:var(--ink)}
 .reset-ask[hidden]{display:none}
 .btn-danger{color:#a6420c; border-color:#a6420c}
@@ -206,7 +210,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>The dots top left are your reach, one per cell: a dot fills once you have been in that place and Called there; your cell is framed. Fill them all and everything in reach is explored. The map's quarters show how fully each place is surveyed.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
         <li>One mibi is <b>with you</b> in the Companion. Grown, it is your Probe partner; a juvenile comes along in the Companion but is too young for the Probe. The others live at the Station: choose who goes with you in its Habitat (or, while docked, ✓ on Mibis here).</li>
-        <li>Between expeditions the Companion shows the mibi with you, large. ))) and it answers; ✓ <b>Walk</b> with it once per world turn (+1 Data, undocked), then ✓ spends time with it; the pad looks at the others; ← goes up to Mibis.</li>
+        <li>Between expeditions the Companion shows the mibi with you, large. ))) and it answers; ✓ <b>Walk</b> with it once per world turn (a moment together, undocked; its Data is part of the expedition's field yield), then ✓ spends time with it; the pad looks at the others; ← goes up to Mibis.</li>
         <li>Bubbles: <b>!</b> startled, stop or it runs · <b>?</b> curious, it comes closer · <b>fruit</b> it eats what you carry · <b>…</b> settling, keep still.</li>
       </ul>
     </details>
@@ -217,7 +221,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
         <li>Go down into a place and Call in each quarter. Watch the overview: its quarters lose their dots as you survey them.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
-        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data.</li>
+        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data. A walk brings home 2 / 4 / 6 / 8 Data by the tier of the place (meadow and pond edge 2, wood and rock field 6, the cave 8): moments bring it in early, the rest arrives at Head home.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and <b>Head home</b> from the menu; away from it the menu says how far. Head home seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, and open the bay there. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can head home there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
@@ -242,15 +246,17 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
           <dt>Map</dt><dd id="oMap">–</dd>
           <dt>Survey</dt><dd id="oSurvey">–</dd>
           <dt>Energy</dt><dd id="oEnergy">–</dd>
+          <dt>Data yield</dt><dd id="oYield">–</dd>
           <dt>Seed</dt><dd id="oSeed">–</dd>
         </dl>
+        <div class="dev-row"><label for="devStep">Developer · Data per tier step</label><input id="devStep" type="number" min="0.5" max="20" step="0.5" inputmode="decimal"><span id="devLadder" role="status"></span><button class="btn" id="devStepReset" type="button">Decided (2)</button></div>
         <h2>Events</h2>
         <ol class="log" id="oLog"></ol>
         <h2 id="palHead">Palette</h2>
         <div class="pal" id="oPal" role="img" aria-label="The screen palette"></div>
         <div class="copy-row"><button class="btn" id="copyNotes" type="button">Copy playtest notes</button><span id="copyMsg" role="status"></span></div>
         <textarea id="notesFallback" hidden readonly aria-label="Playtest notes"></textarea>
-        <p class="obs-note"><code>?seed=</code> in the address sets the seed of the <b>next New world</b>; a saved world keeps playing until you choose New world.</p>
+        <p class="obs-note"><code>?seed=</code> in the address sets the seed of the <b>next New world</b>; a saved world keeps playing until you choose New world. <code>?dev=1</code> opens this panel. The Data step is a developer setting, kept outside the save: a walk yields step × the tier of the place (1 starter, 2 early, 3 mid, 4 late), 2 / 4 / 6 / 8 as decided.</p>
       </div>
     </div>
   </aside>
@@ -314,6 +320,20 @@ const BAY = 3;   // the sealed bay holds three consignments, one per expedition
 // Probe tiers: range in cells from the expedition's start, pods carried, shield bars. Sweep is one ring at both.
 const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shield: 4 } };
 const CAP = 20;                                   // each material caps at 20 carried
+// Data per walk, by the tier of the place explored (design/proposals/research-economy.md §2): 2 / 4 / 6 / 8, which is
+// DATA_STEP × tier. A place's tier follows its land as the proposal's table lays it out: meadow and pond edge are
+// starter places (1), wood and rock field mid places (3), the cave behind the burrow a late place (4, behind a gate);
+// no land in this prototype is an early place (2) yet. A walk over several places takes the highest tier it entered.
+// The walk with the mibi has no Data of its own any more: it folds into this field yield. The step (the tier
+// multiplier) is a developer setting in the Observer, kept outside the save under its own key.
+const DATA_STEP = 2, PLACE_TIER = [1, 1, 3, 3, 0, 0], CAVE_TIER = 4, TIER_NAME = ['', 'starter', 'early', 'mid', 'late'], DEV_STEP_KEY = 'mb-dev-datastep';
+let dataStep = DATA_STEP; try { const v = +localStorage.getItem(DEV_STEP_KEY); if (v > 0 && v <= 20) dataStep = v; } catch (e) { }
+function setDataStep(v) { v = +v; dataStep = v > 0 && v <= 20 ? v : DATA_STEP; try { if (dataStep === DATA_STEP) localStorage.removeItem(DEV_STEP_KEY); else localStorage.setItem(DEV_STEP_KEY, String(dataStep)); } catch (e) { } if (typeof onStateChanged === 'function' && typeof S !== 'undefined' && S) onStateChanged(); return dataStep; }
+function placeTier(lay) { return lay.cave ? CAVE_TIER : PLACE_TIER[lay.land] || 1; }
+function noteTier(ex, lay) { ex.placeTier = Math.max(ex.placeTier || 0, placeTier(lay)); }   // the walk's tier: the highest place it entered
+const walkTier = ex => ex.placeTier || 0;
+const walkYield = ex => Math.round(walkTier(ex) * dataStep);                                 // the Data this walk brings home
+const dataLadder = () => [1, 2, 3, 4].map(t => Math.round(t * dataStep)).join(' / ');
 // Station stand-in prices.
 const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
 const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
@@ -1379,7 +1399,7 @@ function placePartnerNear(key, P) {
 function enterPatch() {
   const ex = S.exp, key = String(ex.pos), lay = layout(key); ensureLive(key); S.visited[ex.pos] = 1; updateSurvey(ex.pos);
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos);
-  clearSkull(key);
+  noteTier(ex, lay); clearSkull(key);
   const e = entryPoint(lay, key, ex.lastDir);
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
@@ -1392,7 +1412,7 @@ function enterPatch() {
 // The skull clears only when you go down into the place that holds the lost pods.
 function clearSkull(key) { if (!S.skulls) return; for (const c in S.skulls) { const k = S.skulls[c] === 1 ? String(c) : S.skulls[c]; if (k === key) { delete S.skulls[c]; logEv('Back where the Probe broke · skull cleared'); fxMsg('The pods you lost lie here', 3); } } }
 function enterCave() {
-  const ex = S.exp, key = 'c' + G.gate; ensureLive(key); clearSkull(key);
+  const ex = S.exp, key = 'c' + G.gate; ensureLive(key); clearSkull(key); noteTier(ex, layout(key));
   ex.patch = { key, x: 14, y: 27, dir: 'up', noise: 'creep' };
   placePartnerNear(key, ex.patch); transition(); logEv('Went down the burrow'); save();
 }
@@ -1640,15 +1660,19 @@ function takePod(p, leave) {
 function calmRadius(X) { return X.ptElder ? 8 : 4; }
 function calmedBy(c, X) { return !!X.pt && cheb(c, X.pt) <= calmRadius(X) && (X.ptAb === 'calm' || X.ptSp === c.sp); }
 function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? SPECIES[ex.pt.sp].ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder) }; }
-// Data comes only from moments you cause: +1, +2 the first time ever for that species and moment; once per creature per expedition.
+// Data is a record of creatures doing things: a moment you cause brings +1, +2 the first time ever for that species and
+// moment; once per creature per expedition. Moments bring the walk's Data in early, up to the walk's yield (2 / 4 / 6 / 8
+// by the tier of the place) and never past it; whatever the moments did not bring arrives at Head home.
 function awardMoment(c, kind, X) {
   const ex = S.exp; if (ex.momented[c.id]) return; ex.momented[c.id] = 1;
   // +2 the first time ever for this species and moment, and for the first moment with each species on an expedition
   const fk = c.sp + ':' + kind, first = !S.firsts[fk]; S.firsts[fk] = 1;
   ex.spMom = ex.spMom || {}; const firstHere = !ex.spMom[c.sp]; ex.spMom[c.sp] = 1;
-  const got = addMat('d', first || firstHere ? 2 : 1, c.x, c.y);
-  ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data');
+  const left = Math.max(0, walkYield(ex) - (ex.dField || 0)), got = left ? addMat('d', Math.min(first || firstHere ? 2 : 1, left), c.x, c.y) : 0;
+  ex.dField = (ex.dField || 0) + got;
+  ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (left ? '' : ' (the walk’s yield is in)'));
   const who = S.known.includes(c.sp) ? aAn(spName(c.sp)) : 'this creature', verb = { eat: 'eat', settle: 'settle' }[kind];
+  if (!got) { fxMsg((kind === 'eat' ? 'The ' + spName(c.sp) + ' ate your fruit' : 'The ' + spName(c.sp) + ' settled') + ' · this walk’s Data is in', 2); return; }
   fxMsg(first ? '+' + got + ' Data · first time you saw ' + who + ' ' + verb : '+' + got + ' Data · ' + (kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled'), 2);
 }
 function offer(c) {
@@ -2114,6 +2138,10 @@ function endExpedition(reason) {
     if (explored) w.outings = (w.outings || 0) + 1;
     if (ex.abUsed && ex.pt && ex.pt.id === w.id) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) logEv(w.name + ' gains a skill notch (' + w.notches + ' of 3)'); } } }
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], explored: rc.surveyed, of: rc.total };
+  if (explored && !broke) {   // the field yield: the walk brings home its tier's Data; moments brought part of it in early, the rest arrives now
+    const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
+    rep.yield = { tier, data: want, moments: ex.moments.length, early: ex.dField - got, late: got };
+    logEv('Field yield · ' + want + ' Data · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · ' + (ex.dField - got) + ' from moments, ' + got + ' at Head home'); }
   for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
   if (ex.carry === 'fruit') ex.carry = null;
   if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
@@ -2121,7 +2149,7 @@ function endExpedition(reason) {
   const pending = { trail: [...new Set(ex.trail)], storm: Object.keys(ex.stormCells).map(Number) };
   S.hist.push({ n: ex.n, reason, actions: ex.actions, e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, pods: ex.cargo.pods.length, rev: ex.stats.rev, lit: ex.stats.lit,
     hits: ex.stats.hits, done: ex.saidDone || 0, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length,
-    warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
+    warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: walkTier(ex), dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
   if (!explored) {   // nothing explored: nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Headed home · nothing explored · the world waits');
@@ -2138,14 +2166,14 @@ function endExpedition(reason) {
   S.exp = null; S.report = rep;
   S.phase = 'sealed'; transition(); save();
 }
-// The walk: once per world turn, undocked, with the mibi with you. One creature moment: +1 Data, into the hold.
+// The walk with the mibi: once per world turn, undocked, with the mibi with you. A species moment and an outing; its
+// Data folds into the expedition's field yield (research-economy §2), so it brings none of its own.
 const canWalk = () => !S.exp && !!withMibi() && !isDocked() && S.walkTurn !== S.turn;
 function walk(m) {
   if (!canWalk()) return; S.walkTurn = S.turn; m.outings = (m.outings || 0) + 1;
-  const h = S.hold || (S.hold = { e: 0, d: 0, s: 0, pods: [] }); h.d = Math.min(CAP, h.d + 1);
   FX.moment = { id: m.id, at: NOW }; lockInput(400);
   const did = [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp];
-  fxMsg(did + ' · +1 Data', 3); logEv('Walked with ' + m.name + ' · +1 Data');
+  fxMsg(did, 3); logEv('Walked with ' + m.name);
 }
 function dirWord(dx, dy, n) {
   const ax = dx / n, ay = dy / n, ns = ay < -.15 ? 'north' : ay > .15 ? 'south' : '', ew = ax > .15 ? 'east' : ax < -.15 ? 'west' : '';
@@ -3867,8 +3895,8 @@ function drawSealed(t) {
     text(clipText('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), 410, 2), 22, y, C.peach); y += 24;
     text('Dock at the Station: it mends the Probe free.', 22, y, C.amber); y += 34; }
   else if (r.waited) { text('Nothing explored', 22, y, C.bone, 3); y += 34; text('The world waits · nothing is sealed.', 22, y, C.fog); y += 24; text('Your finds stay in the hold.', 22, y, C.fog); y += 34; }
-  else if (r.sealed) { text('Sealed', 22, y, C.bone, 3); y += 34; text(clipText('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', 410, 2), 22, y, C.fog); y += 26; }
-  else if (r.kept) { text('Bay full', 22, y, C.amber, 3); y += 34; text('Your finds stay in the hold, unsealed.', 22, y, C.fog); y += 24; text('A break would lose them · dock to free the bay.', 22, y, C.fog); y += 34; }
+  else if (r.sealed) { text('Sealed', 22, y, C.bone, 3); y += 34; text(clipText('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } else y += 2; }
+  else if (r.kept) { text('Bay full', 22, y, C.amber, 3); y += 34; text('Your finds stay in the hold, unsealed.', 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } text('A break would lose them · dock to free the bay.', 22, y, C.fog); y += 34; }
   else { text('Home, hold empty', 22, y, C.bone, 3); y += 34; text('Nothing to seal this time.', 22, y, C.fog); y += 34; }
   // the bay: three crates, the new one sliding in
   const age = NOW - FX.transAt, slide = motion() ? clamp((age - 200) / 500, 0, 1) : 1;
@@ -3878,6 +3906,7 @@ function drawSealed(t) {
   text(clipText(isDocked() ? 'Docked · open the bay at the Station' : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
   if (!r.waited) drawTurnLines(r, y);
 }
+function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' moment' + (q.moments === 1 ? '' : 's'); }
 function drawTurnLines(r, y) {
   text('Meanwhile, the world turned', 22, y, C.stone); text(clipText(turnLine(), 410, 2), 22, y + 22, C.mist); y += 48;
   for (const l of r.lines.slice(0, 3)) { if (y > 500) break; R(26, y + 6, 4, 4, C.orange); wrapText(l, 390, 2).forEach((s2, i) => text(s2, 40, y + i * 20, C.bone)); y += 20 * wrapText(l, 390, 2).length + 6; }
@@ -3977,7 +4006,7 @@ function lineFor() {
       return L1('Take ' + m.name, mibiStage(m) + ' · at home', bk); }
     case 'active': { const m = shownMibi(), w = withMibi(), list = rosterList(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');
       const ctx = list.length > 1 ? (list.indexOf(m) + 1) + ' of ' + list.length : '';
-      if (m === w) return canWalk() ? L1('Walk with ' + m.name, '+1 Data · once a turn', 'Mibis') : L1('Spend time with ' + m.name, bayLine() || ctx, 'Mibis');
+      if (m === w) return canWalk() ? L1('Walk with ' + m.name, 'a moment · once a turn', 'Mibis') : L1('Spend time with ' + m.name, bayLine() || ctx, 'Mibis');
       if (S.exp) return L1('Stays home', w ? w.name + ' is with you till home' : '', 'Mibis', true);
       if (!isDocked()) return L1('At the Station', bayLine() || 'swap while docked', 'Mibis', true);
       return L1('Take ' + m.name, ctx, 'Mibis'); }
@@ -4184,6 +4213,7 @@ window.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = keyOf(e); if (!k) return;
   const inPanel = e.target && e.target.closest && e.target.closest('.panel');
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;   // the developer field keeps its keys
   if (e.target && e.target.tagName === 'TEXTAREA') e.target.blur();   // the notes box gives the keys back to the game (copying uses Ctrl/⌘)
   else if (inPanel && (k === 'confirm' || k === 'back')) return;   // panel controls keep their own keys
   e.preventDefault(); if (e.repeat) return;
@@ -4223,6 +4253,20 @@ fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw ne
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
 function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
 obsBtn.addEventListener('click', e => { setObserver(obsBtn.getAttribute('aria-pressed') !== 'true'); if (e.detail) obsBtn.blur(); });   // a mouse click hands the keys back to the game
+// Developer: the Data step (the tier multiplier). Typing in the field keeps the keys; Enter or leaving it applies.
+const devStepEl = document.getElementById('devStep'), devLadderEl = document.getElementById('devLadder');
+function showDevStep() { devStepEl.value = String(dataStep); devLadderEl.textContent = '= ' + dataLadder() + ' Data a walk by tier' + (dataStep === DATA_STEP ? '' : ' (decided: 2 / 4 / 6 / 8)'); }
+devStepEl.addEventListener('change', () => { setDataStep(devStepEl.value); showDevStep(); });
+devStepEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === 'Escape') devStepEl.blur(); e.stopPropagation(); });
+document.getElementById('devStepReset').addEventListener('click', e => { setDataStep(DATA_STEP); showDevStep(); if (e.detail) e.currentTarget.blur(); });
+showDevStep();
+// What this walk yields: its tier, the Data it brings home, how much the moments have brought in so far.
+function yieldText() {
+  const ex = S.exp, r = S.report;
+  if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data this walk · ' + (ex.dField || 0) + ' in from ' + ex.moments.length + ' moment' + (ex.moments.length === 1 ? '' : 's') + ', ' + Math.max(0, walkYield(ex) - (ex.dField || 0)) + ' at Head home' : 'no place entered yet') + ' | ladder ' + dataLadder(); }
+  if (S.phase === 'sealed' && r && r.yield) return 'last walk: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' moment' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' at Head home | ladder ' + dataLadder();
+  return 'ladder ' + dataLadder() + ' by tier (starter / early / mid / late)';
+}
 (function buildPalette() {
   const el = document.getElementById('oPal');
   PALETTE.forEach(([n, h]) => { const i = document.createElement('i'); i.style.background = h; i.title = n + ' ' + h; el.appendChild(i); });
@@ -4259,6 +4303,7 @@ function onStateChanged() {
   const ex = S.exp;
   document.getElementById('oExp').textContent = ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · home' : S.expN + ' · not started';
   document.getElementById('oTurn').textContent = wTurn();
+  document.getElementById('oYield').textContent = yieldText();
   document.getElementById('oAct').textContent = ex ? ex.actions + ' (total ' + S.totalActions + ')' : 'total ' + S.totalActions;
   document.getElementById('oWhere').textContent = whereText();
   const wm = withMibi(), pm = ex ? ex.pt : partnerMibi(), home = S.mibis.filter(m => m !== wm);
@@ -4328,12 +4373,13 @@ window.addEventListener('storage', e => {
 save();
 if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup';
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
+try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(true); } catch (e) { }   // ?dev=1 opens the Observer, the page's developer panel
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { get S() { return S; }, get G() { return G; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
-  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, TEST,
+  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, TEST,
   capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, withMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();
