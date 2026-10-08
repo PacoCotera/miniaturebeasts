@@ -36,7 +36,8 @@ OUT = os.path.join(HERE, "out")
 PROMPTS = os.path.join(HERE, "prompts.json")
 ART_DIRECTION = open(os.path.join(HERE, "art-direction.txt")).read().strip()
 PROMPT_VERSION = 3  # 1: the stage 1 template over the controls; 2: art direction, controls, the genome's description and the species reference as separate fields; 3: the controls named as structure only, structural checks in place of the silhouette gate, control variants
-CONTROL_VARIANTS = ("blurred", "crisp", "lowres")  # how the shaded control is sent: blurred so its facets cannot be copied (the default), as rendered, or at a quarter of the pixels
+CONTROL_VARIANTS = ("blurred", "crisp", "lowres", "twostep")  # how the shaded control is sent: blurred so its facets cannot be copied (the default), as rendered, or at a quarter of the pixels; twostep: variant B, a HiBit drawing from the softened key and index passes, then a style transfer
+BOARD = os.path.join(REPO, "art/visual-directions/02-miniature-lives.png")  # the Miniature Lives concept board, the material reference of the Loika's own making
 BLUR_RADIUS, LOWRES_SIZE = 5, 256
 SPECIES_DIR = os.path.join(HERE, "species")  # the species' type specimen painting, the reference image of every individual's call
 REF = os.path.join(WB, "out", "reference")
@@ -386,6 +387,97 @@ def paint_view(d, legend, view, attempt, reasons, reference, portrait_png, varia
 
 
 # --- one mibi ---------------------------------------------------------------------------------------------
+# --- variant B: two steps, as the Loika was made (art/miniature-lives/prompts.json) ------------------------------
+STEP1_WORDS = ("DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280×300 pixel grid and shown at 2× within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: "
+               "crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. "
+               "Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. "
+               "Cream eye rings and pale coat markings stay stronger than lighting. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. "
+               "The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. "
+               "The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.")
+STEP2_WORDS = ("Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. "
+               "Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. "
+               "INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. "
+               "CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. "
+               "Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. "
+               "The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.")
+
+
+def controls_text_two_step(legend, view):
+    slots = ", ".join(f"{s['slot']} → {' and '.join(s['pigments'])}" for s in legend["slots"])
+    parts = ", ".join(p["part"] for p in legend["parts"])
+    t = ("Draw the creature whose structure images 1 and 2 give. Image 1 is the colour key: the body with every area flat in the exact pigment it carries; keep each area in that colour and no other, never moved, never swapped: "
+         f"{slots}. Image 2 is the part map: its colours are labels, not paint; each flat colour is one part ({parts}); keep every part where it is, at the same size, facing the same way. "
+         f"The creature stands still, seen {VIEW_PHRASE[view]}. The two images give structure, proportion and colour placement only, as flat shapes; the volume, the softness, the face and the drawing are yours to design.")
+    if legend.get("translucent"):
+        names = sorted({n["part"] for n in legend["translucent"]})
+        t += f" Its {' and '.join(names)}s are thin membranes, lightly translucent: draw them opaque as a flat pale tint of their slot colour, not as glass."
+    return t
+
+
+def soften(path, radius=2):
+    return png_bytes(pad_square(Image.open(path).convert("RGB")).filter(ImageFilter.GaussianBlur(radius)))
+
+
+def call_logged(text, imgs, rec_fields, d_raw, raw_name):
+    """One paid call: the text and the images in order; the record logged; returns (record, 600×620 image or None)."""
+    parts = [{"text": text}] + [{"inline_data": {"mime_type": "image/png", "data": b64(b)}} for _, b in imgs]
+    rec = {"id": str(uuid.uuid4()), "service": "gemini", "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, **rec_fields, "prompt": text,
+           "images": [{"name": n, "sha256": sha_bytes(b), "bytes": len(b)} for n, b in imgs], "generationConfig": {"responseModalities": ["IMAGE"], "aspectRatio": "1:1", "imageSize": "1K"}, "startedAt": now()}
+    status, res = gemini_call(parts, rec)
+    if status != 200:
+        rec["status"] = "failed"; rec["error"] = res.get("error", res); return rec, None
+    rec["responseId"] = res.get("responseId"); rec["modelVersion"] = res.get("modelVersion"); usage = res.get("usageMetadata", {}); rec["usage"] = usage
+    prices = GEMINI_PRICES[GEMINI_MODEL]
+    rec["costUSD"] = round(usage.get("promptTokenCount", 0) / 1e6 * prices["input"] + usage.get("candidatesTokenCount", 0) / 1e6 * prices["output"], 5)
+    part = next((p for p in res.get("candidates", [{}])[0].get("content", {}).get("parts", []) if "inlineData" in p), None)
+    if not part:
+        rec["status"] = "no-image"; rec["response"] = json.dumps(res)[:1500]; return rec, None
+    raw = base64.b64decode(part["inlineData"]["data"])
+    os.makedirs(d_raw, exist_ok=True)
+    im = Image.open(io.BytesIO(raw)).convert("RGB"); im.save(os.path.join(d_raw, raw_name))
+    rec["output"] = {"file": raw_name, "mimeType": part["inlineData"].get("mimeType"), "size": list(im.size), "sha256": sha_bytes(raw)}
+    rec["status"] = "ok"
+    return rec, im.resize((620, 620), Image.LANCZOS).crop((10, 0, 610, 620))
+
+
+def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
+    """Variant B for one view: step 1 generates the HiBit drawing from the softened key and index passes, the
+    description and the Loika's own generate words (checked for structure, one named retry); step 2 style-
+    transfers it to the rich treatment with the invariants in words and the species reference as image 2
+    (treatment only: its checks are logged, not gated). Returns (view record, painted master or None)."""
+    c = os.path.join(d0, "controls"); vrec = {"status": None, "attempts": [], "steps": []}
+    common = {"controlVariant": "twostep", "species": legend["species"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"]}
+    board = png_bytes(Image.open(BOARD).convert("RGB"))
+    reasons = None; drawing = None
+    for attempt in (1, 2):
+        imgs = [(f"key.{view}.large.png:softened", soften(os.path.join(c, f"key.{view}.large.png"))), (f"index.{view}.large.png:softened", soften(os.path.join(c, f"index.{view}.large.png"))), ("board:02-miniature-lives.png", board)]
+        fields = {"controls": controls_text_two_step(legend, view), "description": legend["description"]["text"], "generate": STEP1_WORDS}
+        text = fields["controls"] + "\n\nThe creature: " + fields["description"] + "\n\n" + fields["generate"]
+        if reasons: text += "\n\nA previous drawing was rejected because " + "; ".join(reasons) + ". This time keep the parts of image 2 exactly, part for part."
+        rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step1", "step": 1, "attempt": attempt, "fields": fields, "reasonsGiven": reasons}, os.path.join(d, "raw"), f"{view}-step1-{attempt}.png")
+        if im is not None: rec["checks"] = check(im, ctrl, legend)
+        log_call(rec)
+        man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
+        vrec["attempts"].append({"callId": rec["id"], "step": 1, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
+        print(legend["species"], legend["genomeDigest"], "twostep", view, f"step 1 attempt {attempt}", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+        if im is not None and rec["checks"]["passed"]: drawing = im; break
+        reasons = rec["checks"]["reasons"] if im is not None else ["the service returned no image"]
+    if drawing is None: return vrec, None
+    drawing.save(os.path.join(d, f"step1-{view}-600x620.png"))
+    fit_to_control(drawing, os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"step1-{view}-300x310.png"))
+    imgs = [(f"step1-{view}-600x620.png", png_bytes(pad_square(drawing))), (f"reference:{reference['name']}", reference["png"])]
+    fields = {"artDirection": ART_DIRECTION, "transfer": STEP2_WORDS}
+    text = fields["artDirection"] + "\n\n" + fields["transfer"]
+    if view == "side" and portrait_png: imgs.append(("station-portrait-600x620.png", png_bytes(pad_square(Image.open(io.BytesIO(portrait_png)).convert("RGB"))))); text += " Image 3 is this same creature already painted from the front quarter: match its colours, surfaces, markings and face exactly, so the two views are one creature."
+    rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step2", "step": 2, "attempt": 1, "fields": fields, "referenceImage": {"what": reference["what"], "name": reference["name"], "sha256": sha_bytes(reference["png"])}}, os.path.join(d, "raw"), f"{view}-step2.png")
+    if im is not None: rec["checks"] = {**check(im, ctrl, legend), "gated": False}
+    log_call(rec)
+    man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
+    vrec["attempts"].append({"callId": rec["id"], "step": 2, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
+    print(legend["species"], legend["genomeDigest"], "twostep", view, "step 2", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} ({'would pass' if rec['checks']['passed'] else 'would fail'}, not gated)" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+    return vrec, im
+
+
 def pip_reference():
     return {"what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)", "name": "rich-plain-300x310.png", "png": png_bytes(flat_rgb(STYLE_REF)), "ownKind": False}
 
@@ -429,7 +521,8 @@ def grow(species, genome=None, digest=None, force=False, variant="blurred", view
         ctrl = {p: os.path.join(d0, "controls", f"{p}.{view}.large.png") for p in ("silhouette", "index", "slots")}
         vrec = {"status": None, "attempts": []}
         reasons = None; painted = None
-        for attempt in (1, 2):
+        if variant == "twostep": vrec, painted = two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl)
+        for attempt in ((1, 2) if variant != "twostep" else ()):
             rec, im = paint_view(d0, legend, view, attempt, reasons, reference, portrait_png, variant)
             if sub is not None and im is not None: os.makedirs(os.path.join(d, "raw"), exist_ok=True); im.save(os.path.join(d, "raw", f"{view}-{attempt}.png"))
             rec["reasonsGiven"] = reasons
@@ -595,7 +688,8 @@ def cmd_report(a):
 def sheets(mans, cost):
     os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
     vm = variant_manifests(); trial_names = sorted(vm)
-    cols = [("previous run (prompt v2), portrait", 300), (f"painted Station, portrait ({cost.get('controlVariant')} control)", 300), ("painted Station, side", 300), ("Companion 280x300, derived", 280), ("token 48 at 1x and 3x, derived", 200), ("control: shaded pass as sent, portrait", 300)] + [(f"trial: {t} control, portrait", 300) for t in trial_names]
+    cols = [("previous run (prompt v2), portrait", 300), (f"A: painted Station, portrait ({cost.get('controlVariant')} control)", 300), ("A: painted Station, side", 300), ("Companion 280x300, derived", 280), ("token 48 at 1x and 3x, derived", 200), ("control: shaded pass as sent, portrait", 300)]
+    for t in trial_names: cols += [("B: two steps, step 2 (rich), portrait", 300), ("B: step 1, the HiBit drawing", 300)] if t == "twostep" else [(f"trial: {t} control, portrait", 300)]
     gap = 12; rowh = 310 + 44; ink = (40, 40, 50)
     for sp in sorted({m["species"] for _, m in mans}):
         rows = [(d, m) for d, m in mans if m["species"] == sp]
@@ -627,8 +721,11 @@ def sheets(mans, cost):
             sheet.paste(sent.crop((5, 0, 305, 310)), (x, y)); x += 300 + gap
             for t in trial_names:
                 td = next((td for td, tm in vm[t] if tm["genomeSha256"] == m["genomeSha256"]), None)
-                if td: put(os.path.join(td, "station-portrait-300x310.png")); tm = next(tm for td2, tm in vm[t] if td2 == td); tc = (tm["views"]["portrait"]["attempts"][-1].get("checks") or {}); draw.text((x, y + 326), f"{t}: {tm['views']['portrait']['status']}, {len(tm['views']['portrait']['attempts'])} call(s), parts min {min(tc['parts'].values()) if tc.get('parts') else '-'}", fill=ink)
+                if td: put(os.path.join(td, "station-portrait-300x310.png")); tm = next(tm for td2, tm in vm[t] if td2 == td); tc = (tm["views"]["portrait"]["attempts"][-1].get("checks") or {}); draw.text((x, y + 326), f"{t}: {tm['views']['portrait']['status']}, {len(tm['views']['portrait']['attempts'])} call(s), parts min {min(tc['parts'].values()) if tc.get('parts') else '-'}, slots {tc.get('slotAgreement', '-')}", fill=ink)
                 x += 300 + gap
+                if t == "twostep":
+                    if td: put(os.path.join(td, "step1-portrait-300x310.png"))
+                    x += 300 + gap
             def vtxt(v):
                 vr = m["views"][v]; last = vr["attempts"][-1].get("checks") or {}
                 return f"{v}: {vr['status']}, {len(vr['attempts'])} call{'s' if len(vr['attempts']) > 1 else ''}, outside {last.get('outside', '-')}, missing {last.get('missing', '-')}, parts min {min(last['parts'].values()) if last.get('parts') else '-'}, slots {last.get('slotAgreement', '-')} (IoU {last.get('silhouetteIoU', '-')}, not gated)"
