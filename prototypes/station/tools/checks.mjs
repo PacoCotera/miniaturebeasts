@@ -88,6 +88,7 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
   }
   // the rail's tab count against the frame; the stamp's size on its label; no digits where a picture does the job
   if (c.screen === "pods" && c.pod && c.pod.idd && !c.cmp) must(got.length === c.pod.chapters, `the rail has ${got.length} tabs for ${c.pod.chapters} chapters`);
+  for (const t of c.texts) if (t.id === "line.subject") must(!t.text.endsWith("…"), `the bottom line's subject "${t.text}" is clipped with "…"`);
   for (const t of c.texts) { const key = t.id.startsWith("specimen.name") ? "name" : t.id.startsWith("specimen.origin") ? "origin" : NO_DIGIT_IDS[t.id.split(".")[0]]; if (key && R[key].noDigits && /\d/.test(t.text)) must(false, `a digit in "${t.text}" in region ${key}, which the spec marks noDigits`); }
   console.log(`${s.name.padEnd(24)} ${c.regions.length} drawn regions, rail ${got.length}/${c.pod ? c.pod.chapters : "-"} tabs, placeholders registered ${c.placeholders}`);
 }

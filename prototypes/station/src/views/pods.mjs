@@ -3,7 +3,7 @@
 // JSON: the props of the screen's components, the focus targets, the bottom line, and the pictures it asks for (each a
 // plain request the asset manifest registers). Runs in Node, tested there.
 import * as S from "../state.mjs";
-import { frameOf, traitState, chapterSeal, genomeDigest, stampSizing } from "../genome.mjs";
+import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
 import { railTabs, pageGrid, repeat } from "../../../ui/layout.mjs";
 import { wrap } from "../../../ui/components/text.mjs";
 
@@ -147,7 +147,7 @@ function lineOf(m, spec, p, chapters, ci) {
     const ch = chapters[+f.slice(5)]; if (!ch) return { back: "Home" };
     const b = S.readBlock(st, p, ch.id, settings), fr = podFrame(p);
     if (b === null) return { back: "Home", subject: ch.name + " · read", need: glintNeed };
-    if (b.startsWith("sealed")) return { back: "Home", subject: ch.name + " · sealed · opens with " + chapterSeal(fr, ch) };
+    if (b.startsWith("sealed")) return { back: "Home", subject: railWord(ch, spec) + " · sealed" };
     const cost = S.readCost(st, p, ch.id, settings), half = (st.readOnce[fr.species.id] || []).includes(ch.id) && cost > 0;
     return { ok: "Read " + ch.name, price: b ? b : cost === 0 ? "free" : cost + " ◆" + (half ? " · half" : ""), dim: !!b, back: "Home", subject: subj, need: S.glint(st, p, ch.id) ? "something new here" : null };
   }
@@ -157,7 +157,7 @@ function lineOf(m, spec, p, chapters, ci) {
     if (A && A !== q && S.canCompare(st, A, q)) return { ok: "Compare", price: "free", back: "Home", subject: tail + " · " + (S.PLACE_WORD[q.g] || "") };
     return { ok: "Look at this pod", back: "Home", subject: tail + " · " + originOf(q) };
   }
-  if (f === "list.hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back: "Home", subject: "the hatch · " + S.podName(p) + " back to the " + (S.PLACE_WORD[p.g] || "wild") };
+  if (f === "list.hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back: "Home", subject: "the hatch · " + S.podName(p) };
   return { back: "Home" };
 }
 

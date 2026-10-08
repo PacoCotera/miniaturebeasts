@@ -31,7 +31,9 @@ export const classOfBox = (w, h) => Object.keys(ATLAS.classes).find((k) => ATLAS
 const remapOf = (species) => {
   const r = ATLAS.species[species]?.remap; if (r) return Object.fromEntries(Object.entries(r).map(([a, b]) => [+a, b]));
   // a pod of a species not yet known is a quiet grey one: the foot ring's ramp (B) takes the shell's (A)
-  const A = ATLAS.ramps.A.indices, B = ATLAS.ramps.B.indices; return Object.fromEntries(B.map((b, i) => [b, A[i]]));
+  // (the light end, frostS, goes to bone so the glow's core is warm, not cold)
+  const A = ATLAS.ramps.A.indices, B = ATLAS.ramps.B.indices, bone = ATLAS.palette.names.indexOf("bone"), cold = A[A.length - 1];
+  return { ...Object.fromEntries(B.map((b, i) => [b, A[i] === cold ? bone : A[i]])), [cold]: bone };
 };
 function put(pb, id, dx, dy, remap) {
   const s = ATLAS.sprites[id], sh = SHEETS[s.sheet];

@@ -190,9 +190,9 @@ await walk(["right", "right"], "rail.2", "▶ steps the chapters"); await walk([
 await walk(["down", "left"], "list." + s.tray.findIndex((p) => p.id === untuva.id), "back to the well");
 for (let i = 0; i < 8; i++) await press("down", 40); await walk([], "list.hatch", "▼ through the wells ends on the hatch, and stops there");
 await press("right", 60); expect((await focusNow()) === "pod", "→ from the hatch to the pod");
-// a sealed chapter (the Untuva's Character): no ✓ cap, 'opens with', the slats on its page; the page's traits unread: frost
+// a sealed chapter (the Untuva's Character): no ✓ cap, the subject "Character · sealed", the slats on its page; the page's traits unread: frost
 await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.3"; }, untuva.id); await page.waitForTimeout(300);
-l = await line(); expect(!l.ok && /Character · sealed · opens with /.test(l.subject), "a sealed chapter has no ✓ cap: " + JSON.stringify(l)); await frameShot("pods-sealed");
+l = await line(); expect(!l.ok && l.subject === "Character · sealed", "a sealed chapter has no ✓ cap: " + JSON.stringify(l)); await frameShot("pods-sealed");
 // the Tuikis: eight chapters, tabs 96 on a 104 pitch; the Coat has four traits (216×112 pictures)
 await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.0"; }, tuikisPod.id); await page.waitForTimeout(300); await frameShot("pods-eight-chapters");
 // the Large pod with six Coat traits (144×112 pictures), read whole by the developer

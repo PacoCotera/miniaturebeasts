@@ -160,3 +160,10 @@ test("Compare's need line follows the spec's strings: here, in another chapter, 
 test("the hatch's arming plate is six words or fewer for every place", () => {
   for (const p of Object.keys(spec.strings.hatchPlace)) assert.ok(spec.strings.hatchArm.replace("{place}", spec.strings.hatchPlace[p]).split(" ").length <= 6, p);
 });
+
+test("the bottom line's subjects: a sealed tab's \"<chapter> · sealed\", the hatch's \"the hatch · <pod name>\"", () => {
+  const st = stock(["S02"], 11), p = st.tray[0]; S.skipRead(st, p, settings);
+  const fr = frameOf("S02"), ci = fr.chapters.findIndex((c) => c.sealed);
+  assert.equal(view(model(st, { ui: { cur: p.id, anchor: null, ci, cmp: null, wildArm: 0 }, focus: "rail." + ci })).line.subject, fr.chapters[ci].name + " · sealed");
+  assert.equal(view(model(st, { focus: "list.hatch" })).line.subject, "the hatch · " + S.podName(p));
+});

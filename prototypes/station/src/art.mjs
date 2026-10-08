@@ -149,7 +149,6 @@ export function ringArt(frame, pod, chapterFlags, r = 30) {
     const pb = new PB(r * 2 + 2, r * 2 + 2), c = r + 1;
     pb.ring(c, c, r, r, C.hairline, 1);
     if (!frame || !pod.idd) return pb;
-    pb.ell(c, c, r * 0.16, r * 0.16, C.fog);
     const total = chapterFlags.reduce((a, f) => a + f.traits, 0) || 1, gap = 0.08; let a = -Math.PI / 2;
     for (const f of chapterFlags) {
       const span = (2 * Math.PI * f.traits) / total, a0 = a + gap / 2, a1 = a + span - gap / 2;
