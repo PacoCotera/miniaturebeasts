@@ -18,6 +18,8 @@
 6. **Smaller sizes may be generic per species** rather than per individual, which cuts the spend. Tests find the satisfactory cut-off size.
 7. **The Caddy stores the renders forever;** the service call backs them up, for archival, re-render and restore.
 
+**Decided 2026-10-08, second round (generation as a prize).** The **standard look**, rendered from the rig (continuous proportions, species pools; the "plain version" of §3) **is the game's art for every mibi**. The **unique cloud-painted render is a jewel**, earned by a **research item**: completing a species' field guide, or opening its sealed chapter, yields one. A **paid tier** adds a **monthly allowance** of jewels and the archive on top. A **hard per-Caddy daily limit** sits behind a developer toggle. A jewel is **never bought with in-game currency**. Consequences: principle 5 above is *superseded* (offline and connected kits play the same art; the unique render is a prize, not the connected default); principle 1's "generated per individual while it incubates" is *superseded* as the default flow and holds only for a jewel being painted; the standard renderer therefore needs **real art investment** (the plain treatment is the art, finished and signed, §3); and the cloud trial (stage 1) **continues, to learn what a jewel costs**.
+
 **Still standing.** The kit plays standalone and the core game never depends on a remote call (Project 10-07; Architecture): the plain version is the game offline. No hand-made art per individual (10-01). Sketch before art (10-02): the control images are the sketch. Art never changes genes; draw only what is known; same individual everywhere. The art director signs every piece *the owner sees* (10-07): the species plates, the contract and the test sets; no person sees a player's render before the player, so the checks of §5 stand in. Engineers do not draw. Clean room (10-07): a fixed template, project-owned references only. Pods from one renderer and the stamp from the genome bits: unchanged.
 
 **Superseded.** "Generate at archetype levels; render individuals on device from a parts library" (the earlier principle 1, stages 2–5, §4 and §5), the hour budget per rig, limb set and covering, the first-drop weeks, and the earlier decisions 1, 2 and 5. Decision 3 (the first drop is one of each kind: Loika, Kilpo, Belatz, Peplos, Lehten) and 4 (species artefacts in `art/library/`) stand; individual renders never enter the repository.
@@ -25,6 +27,8 @@
 ## 2. The flow at Grow
 
 The player presses Grow. From that press to Open are the **incubation minutes** (station-loop §1, **Decided**: small 2, medium 3, large 4, +1 per chapter beyond three, +1 per trait changed; the first mibi ever 1). That is the latency budget.
+
+**Decided 2026-10-08.** *The gate changes:* Grow no longer starts a generation job. Step 1 (the rig renders the standard look, on screen within a second) is the whole flow for every mibi; steps 2–5 run only when the player **spends a jewel** on a mibi (earned by a research item, or from the paid tier's monthly allowance), and the jewel's wait is its own, not the incubation's. The incubation minutes are now [research-economy](research-economy.md) §5 (twenty plus one per shaped trait; the first bud ever five; an instant grow for a cost). The latency reasoning below stands for the jewel's job and is otherwise *superseded*.
 
 1. **Station, at once.** The genome is committed and validated as a whole. The Station runs the rig (the workbench's `rig.mjs` and `raster.mjs`) and writes the **control set** (§4) and the **plain version** (§3) for the juvenile, on screen within a second. The job manifest names the genome digest, the frame, rig, species plate and template versions, and the outputs wanted in order of need.
 2. **Station → Caddy** over the home Wi-Fi (both are on it; the dock is not needed). The Caddy keeps the queue on its own storage; a job survives a power cut.
@@ -41,6 +45,8 @@ The player presses Grow. From that press to Open are the **incubation minutes** 
 **The plain version** is what the rig renders by itself, finished to the style guide rather than left as the sketch: the shaded pass with the individual's real pigments in its slots, markings as fields, the 1 px outline from the index pass in the darkest step of the part's ramp, fixed eye inks with a catch light, lit from the top left, quantised to the device ramps, at every size. It is deterministic, it carries the exact silhouette, slots and markings the unique version must keep, and it is the picture research shows before Grow: each trait on *this pod's mibi* on Pods and Create (research-loop §4) is the plain render of the expressed look; the misty seed for a hidden look is the species' field-guide plate, never this individual.
 
 **The swap** is a one-way promotion at the next fresh draw of that mibi (a screen change, waking, coming home), never while it is on screen. Silhouette, slots and markings are the same by contract, so the swap changes craft, not identity. The plain version is kept forever and drawn again only when the unique set is missing or fails validation. The player is never told which version they see.
+
+**Decided 2026-10-08.** The plain version is the **standard look**, the game's art for every mibi, and it gets real art investment. The swap happens only for a mibi given a jewel, and it is shown as the prize it is: *"the player is never told which version they see" is superseded.*
 
 **Frosting.** A bred child is known only where its parents' copies matched (research-loop §4). Generation runs at Grow for the whole expressed body; the display frosts the parts of unread chapters through the **index pass**, on both versions, and reading clears it. The hidden copy of any locus is never in the manifest, the template or the controls, so it cannot be painted (Decided 2).
 
@@ -90,6 +96,8 @@ Decided 4 and 6 draw the line; the cut-off is what §9 tests. The default below 
 
 Two Loikas with the same pool values share a token in the field and differ in the resident view: that is what Decided 4 accepts.
 
+**Decided 2026-10-08.** The "unique" rows above describe a mibi that has been given a jewel. For every other mibi the resident views are the standard look from the rig, which, with continuous proportions, already differs per individual.
+
 ## 7. Storage, backup and restore
 
 - **Caddy.** An SD card beside the e-paper module (an addition to the reference hardware): content-addressed objects and one manifest per mibi per stage, forever. A full set is 1–3 MB; 500 mibis under 2 GB; a 32 GB card holds a kit's lifetime. The Caddy never deletes a render.
@@ -110,7 +118,9 @@ Two Loikas with the same pool values share a token in the field and differ in th
 | C. Station main only | Station main; Companion derived; side from the rig | token, side | 1 | 3 | $0.30 | $0.36 |
 | D. Adult only | adult main; juvenile and elder plain | the rest | — | 1 | $0.10 | $0.12 |
 
-**Per kit a year**, at 40 mibis grown: A about $69, B $29, C $14, D $5. Ten kits at B: about $290 a year, before the archive's storage. **Per species, once:** the plate set (type specimen, three stages, two views, two or three candidates each for the art director's pick) about 20 calls, $2–3, plus the token rig (about 6 art hours) and the look plates. Sixteen species: about $45 in calls and 100–130 art hours, against the superseded 1,400.
+**Per kit a year**, at 40 mibis grown: A about $69, B $29, C $14, D $5. Ten kits at B: about $290 a year, before the archive's storage.
+
+**Decided 2026-10-08.** *The framing "per mibi grown" is superseded.* The unit of spend is the **jewel**: one earned per research item (a species' field guide completed, or its sealed chapter opened), so at most about one per species per kit on the free path, plus the paid tier's monthly allowance, which the tier's price covers. A hard per-Caddy daily limit (behind a developer toggle) bounds the worst day; a jewel is never bought with in-game currency. The per-jewel figures in the table (one row is one jewel at that cut-off) stand; stage 1 measures them. **Per species, once:** the plate set (type specimen, three stages, two views, two or three candidates each for the art director's pick) about 20 calls, $2–3, plus the token rig (about 6 art hours) and the look plates. Sixteen species: about $45 in calls and 100–130 art hours, against the superseded 1,400.
 
 ## 9. The cut-off test (stage 1)
 
@@ -136,6 +146,8 @@ Two Loikas with the same pool values share a token in the field and differ in th
 | **5. Text** | names, tome line, field-guide sentences | unchanged | |
 
 Superseded: plates per level, the parts library per plan, the runtime compositor.
+
+**Decided 2026-10-08.** The stage plan is read with the prize in mind: **stage 1** keeps the service trial, but its purpose is to learn **what a jewel costs** and to set the contract for the jewel; **stage 2** gains the **standard look** as its first deliverable, the plain treatment finished to the style guide and signed as the game's art for every mibi (the art director's review B judges it, since it is what every player sees); **stage 3** adds the research-item hook (a field guide completed, a sealed chapter opened, yields a jewel), the paid tier's allowance and the daily limit toggle, and owner review C opens a mibi in the standard look and spends a jewel on it. "Owner review A: whether the plain version is good enough to be the offline game" (§9) becomes whether it is good enough to be the game.
 
 ## 11. What each device needs built
 
@@ -163,4 +175,4 @@ Superseded: plates per level, the parts library per plan, the runtime compositor
 
 1. **The hub's work split.** The Caddy brokers, stores and archives (Decided); the Station, being the Pi, renders the controls and the plain version, validates and derives. *Recommended.* The Station as broker too would spare the Caddy its card but leave the renders on the device replaced first.
 2. **Test cut-off B first** (unique down to the Companion resident, token generic), with A as the control and C as the saving. *Recommended.*
-3. **Is the unique art part of the kit or of the paid cloud layer?** Architecture decides the cloud is a gated, paid layer never needed for core play. *Recommended:* the plain version is the kit; the unique version is the first feature of the paid layer, which also funds the archive.
+3. **Is the unique art part of the kit or of the paid cloud layer?** Architecture decides the cloud is a gated, paid layer never needed for core play. *Recommended:* the plain version is the kit; the unique version is the first feature of the paid layer, which also funds the archive. **Decided 2026-10-08, with a change:** the standard look is the kit and the game's art for every mibi; the unique render is a **prize** that the kit itself earns by research (a field guide completed, a sealed chapter opened), so it is not only a paid feature; the paid tier adds a monthly allowance and the archive on top; never bought with in-game currency; a hard per-Caddy daily limit behind a developer toggle.

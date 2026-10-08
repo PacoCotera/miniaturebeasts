@@ -32,6 +32,14 @@ been built or measured yet.
 **Working rule:** docking, charging or tapping never accepts cargo, transfers a
 mibi or awards anything.
 
+**Decided 2026-10-08** ([art pipeline](proposals/art-pipeline.md) v2): the Station
+renders every mibi's standard look from the rig and derives the Companion and
+Caddy versions; the Companion never renders or calls out. The Caddy brokers the
+unique cloud-painted render that a mibi earns as a prize, keeps every render
+forever and syncs it, which asks the reference Caddy for storage (an SD card,
+**Proposal**). The last open question below ("where does creature rendering run")
+is answered: the Station only.
+
 **Open:** display technology, final controls, sensors, battery and charging, the
 printer, the reader (NFC, QR or none), dimensions and enclosures.
 

@@ -4,6 +4,8 @@
 
 **Decided 2026-10-08:** continuous loci **blend** (the child sits between its parents with a small spread); switch loci are **Mendelian** (a dominant copy shows, a recessive one hides, sleeping looks can wake); inheritance is **independent per trait**, because this is a breeding game; **mutation is not in the first build** and may come later as an event during incubation, breeding or exploration; mibis will **age and die**, but not today; **the more removed the parents' genomes, the better the cross**, and **inbreeding inflicts a penalty**, whose form is still to be designed (§5, decision 1).
 
+**Decided 2026-10-08, on this proposal:** the three decisions of §8, as recommended. **The penalty** is **B, what hides surfaces, with A, the narrowing spread, as its second half** (§5): in a close cross, hidden copies and sleeping looks surface more, and the blend's spread narrows with kinship. **Relatedness** is **pedigree kinship** from recorded parents, with **genome identity as the fallback** where a parent is unknown (§4); this adds a **parents field to the save** from the first cross. **A blended child carries both copies equal to the drawn value** (§1). The consequences listed under §8 ("What this changes once decided") now apply.
+
 ## 1. The rules, per kind of part
 
 A cross takes two adults of one species and makes one child, a new individual with real parents (**Decided**). Every heritable locus is crossed on its own, with no linkage between traits, and nothing else is.
@@ -107,8 +109,10 @@ Breed the brightest child back to Ember and kinship is 1/4: under A the glow sto
 
 ## 8. Decisions for the owner
 
-1. **The penalty's form.** *Recommended:* **B, what hides surfaces, with A, the narrowing spread, as its second half.** C is set aside for ageing, as a shorter life.
-2. **Relatedness.** *Recommended:* **pedigree kinship** from the save's parents field, with genome identity as the fallback where a parent is unknown and as the picture in the stamp overlay. This unparks the parents field of the family tree, and nothing else of it.
-3. **The blended child's two copies.** *Recommended:* **both equal to the drawn value**, so a blend hides nothing and the ring's two tracks match at that spoke. The alternative keeps one nudged copy per parent and shows their mean, which keeps the tracks different and pins the child near the midpoint.
+All three **Decided 2026-10-08** as recommended.
 
-**What this changes once decided:** research-loop §7 and family-tree §1, where a child "shares one of each parent's two marks at every spoke" and the stamp verifies lineage at 100 percent, hold for switches only; at a blended spoke the child's marks sit between its parents', and the stamp check becomes a range check there. Research-loop §4's "known where both parents' copies were the same" holds for switches; a blended trait is known only when read. Taxonomy §3's genotype counts per species (a Loika's 243) become counts of bins. `species.mjs` `crossIndividuals` and the frame checks take continuous copies.
+1. **The penalty's form.** *Recommended:* **B, what hides surfaces, with A, the narrowing spread, as its second half.** C is set aside for ageing, as a shorter life. **Decided.**
+2. **Relatedness.** *Recommended:* **pedigree kinship** from the save's parents field, with genome identity as the fallback where a parent is unknown and as the picture in the stamp overlay. This unparks the parents field of the family tree, and nothing else of it. **Decided.**
+3. **The blended child's two copies.** *Recommended:* **both equal to the drawn value**, so a blend hides nothing and the ring's two tracks match at that spoke. The alternative keeps one nudged copy per parent and shows their mean, which keeps the tracks different and pins the child near the midpoint. **Decided.**
+
+**What this changes, now decided (2026-10-08):** research-loop §7 and family-tree §1, where a child "shares one of each parent's two marks at every spoke" and the stamp verifies lineage at 100 percent, hold for switches only; at a blended spoke the child's marks sit between its parents', and the stamp check becomes a range check there. Research-loop §4's "known where both parents' copies were the same" holds for switches; a blended trait is known only when read. Taxonomy §3's genotype counts per species (a Loika's 243) become counts of bins. `species.mjs` `crossIndividuals` and the frame checks take continuous copies.

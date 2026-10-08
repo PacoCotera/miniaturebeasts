@@ -4,6 +4,8 @@
 
 **Decided 2026-10-08:** a day is one walk that yields a pod and a partial read; full knowledge of a species takes about a week of pods, so reading is rationed and glints matter; Data comes from the field and from a small, daily-capped bench trickle earned by residents being watched and compared; a bud grows about twenty minutes plus one minute per shaped trait; the vivarium has a capacity of six or eight at first, grown by Station upgrades; returning a mibi to the wild has meaning.
 
+**Decided 2026-10-08, on this proposal (owner).** The game must last: the real economy will be made **more expensive** than the week worked here, and **one day per pod is too fast** for the real game. **For now the economy and the timers stay loose and growth quick, for testing:** flesh out the loop and the mechanics first, tighten later. Resources allocated by function (§2) stand. **Six bays** at the start (§8.1); **the first bud ever grows in five minutes** (§8.2); **an instant grow exists, for a cost** (§5); **a developer-tools toggle** covers timers, the economy and limits for testing; **a returned mibi's place later sheds a pod of its lineage** (§8.3). On room: **a player keeps as many mibis as the vivarium holds, and the number of vivariums is the gate** (§6); the later direction is vivariums as living, self-stabilising ecosystems where mibis breed, grow and die. The day, the week and the numbers below are therefore the **testing pace**, not the shipped one.
+
 ## 1. The day and the week
 
 **A day** is one **walk** and one **bench sitting**.
@@ -11,6 +13,8 @@
 - **The sitting** (5–15 minutes): identify the pod, read the chapter or two the day's Data pays for, shape and grow when something is worth growing, watch and compare the residents (the bench trickle), open yesterday's bud. A pod is rarely read whole on its day; the player picks the chapter that glints.
 
 **A week** is the unit for a species: about seven pods of it, hunted on purpose once a chapter is read (its pods wear the species' shell colour on the map). By the week's end every chapter is read, the guide shows nearly every look, two or three members live in the vivarium, and a first child is crossed. The last looks pull into the next week.
+
+*Superseded 2026-10-08 as the shipped pace:* one pod a day and a species in a week are the testing pace; the real game will be slower and dearer (see the owner's note above).
 
 ## 2. The three currencies
 
@@ -97,9 +101,13 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 
 **The generation budget.** Twenty minutes is the art pipeline's latency budget (v2 §2): at 20–105 seconds a call the full unique set of four calls fits with retries at one and five minutes, so a connected kit opens a unique juvenile almost every time. One incubator, one or two buds a day in practice and six to ten bays bound the spend at about 40–60 mibis a kit-year, the pipeline's cost assumption. Returning a mibi and growing another costs twenty minutes, 2 Energy and a net 2 Essence, so a render is never free to churn; the Caddy's monthly call cap is the backstop.
 
+**Decided 2026-10-08.** *The paragraph above is superseded:* no render is painted at Grow. Every mibi opens in the standard look rendered from the rig; the unique cloud-painted render is a prize earned by a research item, so the spend is bounded by prizes, not by buds ([art-pipeline](art-pipeline.md) §1). **The first bud ever grows in five minutes** (§8.2, decided). **An instant grow exists, for a cost** (the price to be set with the real economy; for testing it sits under the developer-tools toggle with every other timer).
+
 ## 6. Vivarium capacity and the return
 
-**Six bays at the start**, six beds in the terrarium; the one with you keeps its bed. The pod tray stays at six. **Upgrades add bays:** a **second shelf** (+2, after the first cross; 8 Energy, 8 Data, 6 Essence) and a **third shelf** (+2; 12, 12, 10): ten in V1, bought at the bench beside the Probe. The shelves are the sinks the starter week needs. **A full vivarium** turns a bud away before it is paid for ("No bay free · return one, or grow a shelf").
+**Six bays at the start** (**Decided 2026-10-08**), six beds in the terrarium; the one with you keeps its bed. The pod tray stays at six. **Upgrades add bays:** a **second shelf** (+2, after the first cross; 8 Energy, 8 Data, 6 Essence) and a **third shelf** (+2; 12, 12, 10): ten in V1, bought at the bench beside the Probe. The shelves are the sinks the starter week needs. **A full vivarium** turns a bud away before it is paid for ("No bay free · return one, or grow a shelf").
+
+**Decided 2026-10-08 (vivariums).** A player keeps **as many mibis as the vivarium holds**; **the number of vivariums is the gate**, not bays bought one shelf at a time. *The shelf upgrades above are superseded as the long-term gate* and stand only as the testing stand-in until a second vivarium is designed. Later direction: vivariums as **living, self-stabilising ecosystems** where mibis breed, grow and die.
 
 **Return to the wild** (a mibi, from Habitat, two presses) gives back:
 - **+2 Essence**, half the body: a founder returned the day it is grown loses 2 Essence and 2 Energy net.
@@ -116,6 +124,8 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 
 ## 8. Decisions for the owner
 
-1. **Six bays, not eight.** Six keeps pods precious (**Decided:** no multitude of mibis) and makes the first shelf a goal inside the Pip week; eight pushes the first return and upgrade to week three. *Recommended: six.*
-2. **The first bud ever grows in five minutes, not twenty,** so the first sitting ends with a meet (r7's best moment); it opens plain and swaps later, as the pipeline allows. *Recommended: yes.*
-3. **A returned mibi's place can shed a pod of its lineage.** It makes the return a meaning, not a refund, and is the one way a player's shaping reaches the wild. The limits: one pod per returned mibi, a turn later, every read still paid. *Recommended: yes.*
+All three **Decided 2026-10-08** as recommended.
+
+1. **Six bays, not eight.** Six keeps pods precious (**Decided:** no multitude of mibis) and makes the first shelf a goal inside the Pip week; eight pushes the first return and upgrade to week three. *Recommended: six.* **Decided: six.**
+2. **The first bud ever grows in five minutes, not twenty,** so the first sitting ends with a meet (r7's best moment); it opens plain and swaps later, as the pipeline allows. *Recommended: yes.* **Decided: yes** (it opens in the standard look, which is the game's art; nothing swaps unless a prize render is earned).
+3. **A returned mibi's place can shed a pod of its lineage.** It makes the return a meaning, not a refund, and is the one way a player's shaping reaches the wild. The limits: one pod per returned mibi, a turn later, every read still paid. *Recommended: yes.* **Decided: yes.**

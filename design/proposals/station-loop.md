@@ -83,7 +83,7 @@ Create shows the founder large, the chapters around it, and the cost.
 - Cost: **2 Energy + 4 Essence** (**Decided**, to tune), **+1 Data per trait changed** (**Decided**). The bottom line always reads the total.
 - ✓ "Review" shows one card: the founder, what was changed, what stays a surprise, the cost. ✓ again creates; ← goes back to choosing. Two presses, as for a Shield patch.
 
-The pod moves into the incubator. The embryo (**Decided** life stage) glows through the shell, and as it grows the unread chapters clear one by one: the surprises reveal themselves while you wait, so the wait has a purpose, and every mibi grown is fully known. **Incubation minutes** (**Decided:** they vary by species and genome complexity): the species' base by body (small 2, medium 3, large 4 minutes) + 1 minute per chapter beyond three + 1 per trait changed at creation. The first mibi ever takes 1 minute. A cargo arriving does not shorten it. The incubator shows the minutes left, and the Station shows the embryo while the Companion is away. When ready, ✓ "Open" (deliberate, **Decided**) and the juvenile steps into the vivarium with a name ("Fig · Tuikis · juvenile"). One incubator in V1.
+The pod moves into the incubator. The embryo (**Decided** life stage) glows through the shell, and as it grows the unread chapters clear one by one: the surprises reveal themselves while you wait, so the wait has a purpose, and every mibi grown is fully known. **Incubation minutes** (**Decided:** they vary by species and genome complexity): the species' base by body (small 2, medium 3, large 4 minutes) + 1 minute per chapter beyond three + 1 per trait changed at creation. The first mibi ever takes 1 minute. A cargo arriving does not shorten it. **Decided 2026-10-08:** *the rule by body and chapters is superseded* by [research-economy](research-economy.md) §5: twenty minutes plus one per shaped trait; **the first bud ever five minutes**; **an instant grow for a cost**; all timers under a developer-tools toggle for testing, loose for now and tightened later. The incubator shows the minutes left, and the Station shows the embryo while the Companion is away. When ready, ✓ "Open" (deliberate, **Decided**) and the juvenile steps into the vivarium with a name ("Fig · Tuikis · juvenile"). One incubator in V1.
 
 ### Library (Library key): species and lineage
 
@@ -97,7 +97,7 @@ A shelf of species cards: known species bright, met-but-unidentified ones as sil
 ### Cross and Wish
 
 **Decided:** a minimal same-species cross and wishes are in the first Station build: tinkering is the core ([research loop](research-loop.md) §5).
-- **Cross** (from Habitat, on an adult). Pick two adults of one species; an ineligible pair is refused before anything is spent (**Working rule**). Each trait shows a **forecast** as four seed pictures (one in four spotted, two in four hiding spots): quarters, never odds as numbers. Cost as a founder, 2 Energy + 4 Essence. The child is a new individual with real parents (**Decided**); it incubates like a founder, and its ring takes one copy from each parent at every spoke. It is known only where both parents' copies were the same; elsewhere it shows "one of these" until that chapter is read.
+- **Cross** (from Habitat, on an adult). Pick two adults of one species; an ineligible pair is refused before anything is spent (**Working rule**). Each trait shows a **forecast** as four seed pictures (one in four spotted, two in four hiding spots): quarters, never odds as numbers. Cost as a founder, 2 Energy + 4 Essence. The child is a new individual with real parents (**Decided**); it incubates like a founder, and its ring takes one copy from each parent at every spoke. It is known only where both parents' copies were the same; elsewhere it shows "one of these" until that chapter is read. **Decided 2026-10-08:** the cross's rules are in [the cross](the-cross.md); "one copy at every spoke" and "known where the parents match" hold for switches only, and blended traits are known only when read.
 - **Wish** (free, on a species' Library page). Pin a dream mibi made from looks in the field guide. Pods and mibis that carry pieces of it glint, and the cross forecast shows how close a pairing gets. Knowledge, never material: a wish puts nothing into a pod (**Decided**).
 
 ### Habitat (Habitat key): residents
@@ -156,7 +156,7 @@ All rewards for going out, never penalties for staying home, and none timed:
 | Probe tier 2 | 12 Energy + 4 Data (**Decided**) |
 | Return a pod to the wild | gives +1 Essence |
 
-**Room.** The tray holds 6 pods and the vivarium 4 residents (plus the one with you) at the start, so pods stay precious and the collection stays small (**Decided:** no multitude of mibis). A full tray turns a pod away without breaking its seal (**Working rule**), and the Cargo preview warns first.
+**Room.** The tray holds 6 pods and the vivarium 4 residents (plus the one with you) at the start, so pods stay precious and the collection stays small (**Decided:** no multitude of mibis). A full tray turns a pod away without breaking its seal (**Working rule**), and the Cargo preview warns first. **Decided 2026-10-08:** *"4 residents" is superseded:* **six bays** at the start ([research-economy](research-economy.md) §6); a player keeps as many mibis as the vivarium holds, and **the number of vivariums is the gate**; later direction, vivariums as living, self-stabilising ecosystems. The prices in this section are the testing economy; the real one will be dearer.
 
 **Data income.** These prices assume about **3 Data per expedition**: the field needs more creature moments, or the walk must pay more (**Open**, for the exploration tuning).
 
@@ -185,7 +185,7 @@ Three expeditions, three species met, two mibis, one real choice, and every mate
 
 ## 6. Deliberately out
 
-Breeding beyond the minimal same-species cross (eligibility rules, fertility, failed attempts, families across generations); editing with a rare item; care, needs and growth timing beyond what is built; crafting and research chips; Station upgrades and more incubators; naming by text entry (names are given, renaming later); several player profiles; trading, printing and the Caddy; the cloud layer (sync, exchange, lineage records); wild capture; habitats other than the one vivarium.
+Breeding beyond the minimal same-species cross (eligibility rules, fertility, failed attempts, families across generations); editing with a rare item; care, needs and growth timing beyond what is built; crafting and research chips; Station upgrades and more incubators; naming by text entry (names are given, renaming later); several player profiles; trading, printing and the Caddy; the cloud layer (sync, exchange, lineage records); wild capture; habitats other than the one vivarium (**Decided 2026-10-08** as later direction: more vivariums are the gate on how many mibis a player keeps, and vivariums become living, self-stabilising ecosystems; still out of this build).
 
 ## 7. A worked session
 
@@ -206,8 +206,8 @@ The Companion comes back with one consignment sealed ("1 consignment sealed · d
 
 1. **A Station the player drives:** arrival only stores and mends the free bars; identifying, reading, creating and opening are presses on the Station. The stand-in's automatic plan goes.
 2. **A read reveals the picture that shows and a seed for what hides;** later pods of a species glint where they hold something unseen. **Added:** the genome fingerprint and code (§1). **Changed (research loop):** the unit is one chapter at 1 Data per trait, half on later pods of the species, the first read free; the glint is per chapter; the fingerprint is the genome ring.
-3. **Prices and room:** 6 pod cups and 4 vivarium places to start; a pod can be returned to the wild for +1 Essence. **Changed (research loop):** shaping costs +1 Data per trait changed.
-4. **Incubation time:** real minutes, shown growing on the always-on Station. **Changed:** minutes by species and genome complexity, as the rule in §1.
+3. **Prices and room:** 6 pod cups and 4 vivarium places to start; a pod can be returned to the wild for +1 Essence. **Changed (research loop):** shaping costs +1 Data per trait changed. **Changed 2026-10-08:** six vivarium places; the number of vivariums is the gate (§4).
+4. **Incubation time:** real minutes, shown growing on the always-on Station. **Changed:** minutes by species and genome complexity, as the rule in §1. **Changed 2026-10-08:** twenty minutes plus one per shaped trait, the first bud five, an instant grow for a cost (§1).
 5. **The sealed hold:** Head home (renamed from Send home) seals the cargo; it transfers only on docking; the world turns at Head home, not at the dock, and not after an expedition that explored nothing. **Changed:** no forced return; a sealed bay of three consignments (§2).
 6. **Reasons to go out:** expeditions only undocked, one walk per world turn (+1 Data), skill notches from using an ability, bond offered after a first outing.
 7. **A separate Station prototype page** at 1024×600 sharing the save with the Companion page (§9).

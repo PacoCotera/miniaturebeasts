@@ -65,7 +65,15 @@ All **Open**:
   species.
 - **A creature pipeline:** how a genome becomes a sprite and a richer portrait
   without hand-drawing every individual. Generated images from the workbench are
-  on hold because they don't match their source genome.
+  on hold because they don't match their source genome. **Decided 2026-10-08**
+  ([art pipeline](proposals/art-pipeline.md) v2): expression is continuous, with
+  no fixed set of looks; the **standard look** rendered from the rig (continuous
+  proportions, species colour pools), finished to the style guide, is the game's
+  art for every mibi and needs real art investment; the unique cloud-painted
+  render, with the rig's renders as its control images, is a **prize** earned by
+  research, never the default. "Hand-authored pixel masters" below is
+  *superseded* for individuals: masters are per species (plates, token rigs),
+  never per mibi.
 - **Animation:** idle, movement and reactions; growth stages that keep identity.
 - **World art:** tiles, objects, creatures in the world and the map's look at
   450×600. This depends on the exploration design.
