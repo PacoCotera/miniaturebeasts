@@ -1,0 +1,54 @@
+{
+ "schemaVersion": 1,
+ "sheet": "weather.png",
+ "kind": "tile",
+ "palette": "../palette/palette.json",
+ "transparentIndex": 48,
+ "size": [
+  389,
+  98
+ ],
+ "frames": {
+  "rain-left-1": {
+   "x": 1,
+   "y": 1,
+   "w": 96,
+   "h": 96,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "rain-left-2": {
+   "x": 98,
+   "y": 1,
+   "w": 96,
+   "h": 96,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "rain-right-1": {
+   "x": 195,
+   "y": 1,
+   "w": 96,
+   "h": 96,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "rain-right-2": {
+   "x": 292,
+   "y": 1,
+   "w": 96,
+   "h": 96,
+   "anchor": [
+    0,
+    0
+   ]
+  }
+ },
+ "note": "Indexed PNG: palette indices 0-47 as signed, 48 transparent. anchor: the foot point (sprites) or the top-left (tiles, chrome), in frame pixels."
+}

@@ -1,0 +1,294 @@
+{
+ "schemaVersion": 1,
+ "sheet": "pawn.png",
+ "kind": "sprite",
+ "palette": "../palette/palette.json",
+ "transparentIndex": 48,
+ "size": [
+  512,
+  148
+ ],
+ "frames": {
+  "pawn-down-creep1": {
+   "x": 1,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-down-creep2": {
+   "x": 50,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-down-creep3": {
+   "x": 99,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-down-react": {
+   "x": 148,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-down-walk1": {
+   "x": 197,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-down-walk2": {
+   "x": 246,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-down-walk3": {
+   "x": 295,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-left-creep1": {
+   "x": 344,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-left-creep2": {
+   "x": 393,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-left-creep3": {
+   "x": 442,
+   "y": 1,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-left-react": {
+   "x": 1,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-left-walk1": {
+   "x": 50,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-left-walk2": {
+   "x": 99,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-left-walk3": {
+   "x": 148,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-right-creep1": {
+   "x": 197,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-right-creep2": {
+   "x": 246,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-right-creep3": {
+   "x": 295,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-right-react": {
+   "x": 344,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-right-walk1": {
+   "x": 393,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-right-walk2": {
+   "x": 442,
+   "y": 50,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-right-walk3": {
+   "x": 1,
+   "y": 99,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-up-creep1": {
+   "x": 50,
+   "y": 99,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-up-creep2": {
+   "x": 99,
+   "y": 99,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-up-creep3": {
+   "x": 148,
+   "y": 99,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-up-react": {
+   "x": 197,
+   "y": 99,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-up-walk1": {
+   "x": 246,
+   "y": 99,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-up-walk2": {
+   "x": 295,
+   "y": 99,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "pawn-up-walk3": {
+   "x": 344,
+   "y": 99,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    46
+   ]
+  }
+ },
+ "note": "Indexed PNG: palette indices 0-47 as signed, 48 transparent. anchor: the foot point (sprites) or the top-left (tiles, chrome), in frame pixels."
+}

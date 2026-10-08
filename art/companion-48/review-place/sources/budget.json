@@ -1,0 +1,54 @@
+{
+ "successfulCalls": 3,
+ "runs": [
+  {
+   "time": "2026-10-08T17:15:53Z",
+   "plan": "/tmp/claude-0/-home-user-miniaturebeasts/b951398d-74c3-50ba-be6f-9ba22988419a/scratchpad/plan-c48-sources-flat.json",
+   "ids": null,
+   "success": 3,
+   "error": 0
+  }
+ ],
+ "calls": [
+  {
+   "tag": "C48-P-r1-a1",
+   "model": "gemini-3-pro-image",
+   "in": 1090,
+   "out": 1523,
+   "usd": 0.1849,
+   "seconds": 19.3
+  },
+  {
+   "tag": "C48-T-r1-a1",
+   "model": "gemini-3-pro-image",
+   "in": 1124,
+   "out": 1415,
+   "usd": 0.172,
+   "seconds": 18.4
+  },
+  {
+   "tag": "C48-W-r1-a1",
+   "model": "gemini-3-pro-image",
+   "in": 1070,
+   "out": 1432,
+   "usd": 0.174,
+   "seconds": 19.5
+  },
+  {
+   "tag": "C48-R-r1-a1",
+   "model": "retro-diffusion rd_pro__topdown",
+   "size": "96x96",
+   "usd": 0.18,
+   "seconds": 21.2
+  },
+  {
+   "tag": "C48-R-r1-a2",
+   "model": "retro-diffusion rd_pro__topdown",
+   "size": "96x96",
+   "usd": 0.18,
+   "seconds": 52.7
+  }
+ ],
+ "totalUSD": 0.89,
+ "pricing": "gemini-3-pro-image standard tier: $2.00/M input, $120/M output tokens (ai.google.dev pricing, 2026-10-08); Retro Diffusion rd_pro: $0.18 per 96x96 image (balance_cost in the task result)"
+}
