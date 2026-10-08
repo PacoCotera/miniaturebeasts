@@ -434,13 +434,16 @@ def controls_text_two_step(legend, view):
 
 
 WING_LINE = "The wings are part of the body outline: they lie folded flat along the flanks exactly as Image 1 draws them; never re-laid, lifted or spread."
+FLAT_WING_LINE = ("The wings are closed. They lie flat along the flanks, part of the body outline, and show only as the narrow strips Image 1 draws on the flanks: "
+                  "no open wing, no wing above the back, no wing wider or longer than the body, no wing shape of your own; every leg Image 1 draws stays, at its place.")
 
 
 def plan_lines(legend):
     """The loader's own lines for the plan, said once after the description: the rig's rules the painter
-    must not undo. Winged plans (any flap part): the resting wings fold along the body (envelope E9)."""
+    must not undo. Winged plans (any flap part): the resting wings are part of the body outline (envelope
+    E9); on a flat-winged plan (a moth's) the closed wings show only as strips on the flanks."""
     lines = []
-    if any(p["part"] == "flap" for p in legend["parts"]): lines.append(WING_LINE)
+    if any(p["part"] == "flap" for p in legend["parts"]): lines.append(FLAT_WING_LINE if legend.get("flapRest") == "flat" else WING_LINE)
     return lines
 
 
@@ -546,7 +549,7 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
         imgs = [(f"index.{view}.large.png", crisp(os.path.join(c, f"index.{view}.large.png"))), (f"key.{view}.large.png", crisp(os.path.join(c, f"key.{view}.large.png")))]
         fields = {"artDirection1": pset["art1"], "species": species_words, "description": description, "planLines": plan_lines(legend), "imageOrder": ["index", "key"]}
         text = "\n\n".join(x for x in [fields["artDirection1"], species_words, description] if x)
-        if reasons: text += "\n\nA previous drawing was rejected because " + "; ".join(reasons) + ". This time keep every part as Image 1 places it, part for part, at its size and place."
+        if reasons: text += "\n\nA previous drawing was rejected because " + "; ".join(reasons) + ". This time keep every part as Image 1 places it, part for part, at its size and place." + (" " + " ".join(plan_lines(legend)) if plan_lines(legend) else "")
         rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step1", "step": 1, "attempt": attempt, "fields": fields, "reasonsGiven": reasons}, os.path.join(d, "raw"), f"{view}-step1-{attempt}.png")
         if im is not None: rec["checks"] = {**check(im, ctrl, legend, DRAWING_TOL), "proportionTolerance": DRAWING_TOL}
         log_call(rec)

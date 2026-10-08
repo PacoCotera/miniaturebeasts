@@ -60,6 +60,7 @@ export function writeControls(frame, genome, outRoot, { palette }) {
   writeFileSync(path.join(dir, "genome.json"), JSON.stringify(genome, null, 1) + "\n");
   const legend = {
     schema: GROW_CONTROLS_VERSION, species: frame.species.id, name: frame.species.name, clan: frame.taxonomy.clan, plan: frame.plan.code, rig: frame.plan.rig,
+    flapRest: frame.plan.flapSet === "wings" ? frame.plan.extras?.flapRest ?? "raised" : null, flapPairs: frame.plan.flapSet === "wings" ? frame.plan.extras?.flapPairs ?? 1 : null,
     level: genome.origin?.kind === "type-specimen" ? "species" : "individual", genomeDigest: genomeDigest(genome), genomeSha256: sha, frameVersion: FRAME_VERSION, catalogue: frame.catalogue,
     caption: brief(scene, frame), covering: scene.covering?.kind ?? null, views: GROW_VIEWS, sizes: SIZES,
     description: describeGenome(frame, genome, scene, { typeSpecimen: genome.origin?.kind === "type-specimen" }), // the genome in the player's words (describe.mjs)
