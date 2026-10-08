@@ -1,0 +1,315 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3-pro-image",
+ "promptVersion": 5,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "plain",
+   "attempts": [
+    {
+     "callId": "d0816880-de92-495f-ac4c-98500bec4b9b",
+     "step": 1,
+     "attempt": 1,
+     "status": "ok",
+     "costUSD": 0.17849,
+     "seconds": 21.2,
+     "checks": {
+      "silhouetteIoU": 0.661,
+      "silhouetteIoUInPlace": 0.526,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.727
+       },
+       "muzzle": {
+        "span": 0.983,
+        "coverage": 0.881
+       },
+       "eye": {
+        "span": 0.879,
+        "coverage": 0.564
+       },
+       "crown": {
+        "span": 0.69,
+        "coverage": 0.483
+       },
+       "leg-0": {
+        "span": 0.843,
+        "coverage": 0.676
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.896
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.565,
+        "painted": 0.743,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.502,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.234,
+        "painted": 0.313,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.377,
+        "painted": 0.348,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.526,
+        "painted": 0.659,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.238,
+        "painted": 0.369,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.709,
+        "median": "#525c60",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.541,
+        "median": "#536f5e",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.504,
+        "median": "#d1af8d",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.634,
+        "median": "#c9a17e",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "leaf@crown": {
+        "agreement": 0.948,
+        "median": "#619f5c",
+        "nearest": "#5aa65c",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.352,
+        "median": "#48565b",
+        "nearest": "#465459",
+        "ok": false
+       },
+       "belly@muzzle": {
+        "agreement": 0.122,
+        "median": "#4d595f",
+        "nearest": "#465459",
+        "ok": false
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the belly slot on the region-0 (painted #48565b, the colour of body), the belly slot on the muzzle (painted #4d595f, the colour of body)"
+      ],
+      "outside": 0.056,
+      "missing": 0.031,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.18,
+       "partMin": 0.5,
+       "proportion": 0.25
+      },
+      "slotAgreement": 0.572,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "TqDHasKjNI_6-8YP5rjvkQk"
+    },
+    {
+     "callId": "01f5ef69-fd64-4af0-807f-542eb2889856",
+     "step": 1,
+     "attempt": 2,
+     "status": "ok",
+     "costUSD": 0.16834,
+     "seconds": 22.6,
+     "checks": {
+      "silhouetteIoU": 0.647,
+      "silhouetteIoUInPlace": 0.651,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.77
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.964
+       },
+       "muzzle": {
+        "span": 0.871,
+        "coverage": 0.92
+       },
+       "eye": {
+        "span": 0.907,
+        "coverage": 0.918
+       },
+       "crown": {
+        "span": 0.989,
+        "coverage": 0.788
+       },
+       "leg-0": {
+        "span": 0.693,
+        "coverage": 0.613
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.484
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.565,
+        "painted": 0.642,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.433,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.234,
+        "painted": 0.243,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.377,
+        "painted": 0.412,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.526,
+        "painted": 0.487,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.238,
+        "painted": 0.282,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.906,
+        "median": "#404952",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.732,
+        "median": "#5d6559",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.349,
+        "median": "#86665b",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.531,
+        "median": "#c59d7f",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "leaf@crown": {
+        "agreement": 0.829,
+        "median": "#5da15e",
+        "nearest": "#5aa65c",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.399,
+        "median": "#4a5559",
+        "nearest": "#465459",
+        "ok": false
+       },
+       "belly@muzzle": {
+        "agreement": 0.673,
+        "median": "#e1cfa7",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the belly slot on the region-0 (painted #4a5559, the colour of body)"
+      ],
+      "outside": 0.071,
+      "missing": 0.066,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.18,
+       "partMin": 0.5,
+       "proportion": 0.25
+      },
+      "slotAgreement": 0.677,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "lqDHaofHF7Ka_uMPlIKM8Qk"
+    }
+   ],
+   "steps": []
+  }
+ },
+ "species": "S01",
+ "name": "Loika",
+ "level": "individual",
+ "genomeDigest": "S01-654f3487",
+ "genomeSha256": "c5317771247621e011ea9bf7d6cc9ed36a39e44a05c71690894f54b0916fe324",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 9,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings thin rings. Proportions: a big head, the head carried high, big eyes, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T13:53:17Z",
+ "outputs": {
+  "station-portrait-600x620.png": "70f30b4c115644299fde5d5d5711276a70f463b8914726f7b6b44f2a5a3170d9",
+  "station-portrait-300x310.png": "91e2e2afa3c6ad8f3425785011a3ccecb46e351f032fc7ab52791999331f8c3e",
+  "companion-280x300.png": "9b964cf9e54e1cd05e24874dcdf722e507df4ab0c599207c47a3a1b7b04619ba",
+  "token-48.png": "1505a8b1e5bf70d54e63ef1c1717df7f0691869ae3c5e39b00d4ac766a094726"
+ },
+ "calls": 2,
+ "costUSD": 0.34683,
+ "seconds": 43.8,
+ "finishedAt": "2026-10-08T13:55:45Z"
+}

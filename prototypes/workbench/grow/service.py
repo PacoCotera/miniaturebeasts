@@ -301,7 +301,7 @@ def check(painted_large, ctrl, legend, proportion_tol=PROPORTION_TOL, band_max=B
         agree = round(hit / tot, 3)
         res["slots"][name] = {"agreement": agree, "median": "#%02x%02x%02x" % med, "nearest": "#%02x%02x%02x" % best[0], "ok": ok}
         wsum += agree * tot; wtot += tot
-        if not ok: wrong.append(f"the {slot} slot on the {name.split('@')[1]} (painted {res['slots'][name]['median']}, the colour of {'/'.join(sorted(pigments[best[0]]))})")
+        if not ok: wrong.append(f"the {slot} colour on {part_word(name.split('@')[1], legend)} (painted {res['slots'][name]['median']}, the {'/'.join(sorted(pigments[best[0]]))} colour)")
     res["slotAgreement"] = round(wsum / wtot, 3) if wtot else 1.0
     if wrong: res["reasons"].append("a pigment slot is painted in another slot's colour: " + ", ".join(wrong))
     res["passed"] = not res["reasons"]
@@ -524,7 +524,8 @@ def colour_placement(legend, ctrl_dir, view="portrait", min_share=0.01):
         if not on: continue
         names = [part_word(p, legend) for p in on]
         marking = s["slot"] == "second" and any(p.startswith("region-") for p in on) and "coat" in (legend.get("markingFields") or [])
-        out.append(f"{SLOT_WORDS.get(s['slot'], 'the ' + s['slot'] + ' colour')} {s['pigments'][0]} on {', '.join(names[:-1]) + ' and ' + names[-1] if len(names) > 1 else names[0]}" + (" (its coat marking: the patches or bands the key shows, there and nowhere else)" if marking else ""))
+        note = " (its coat marking: the patches or bands the key shows, there and nowhere else)" if marking else (" (the belly field: the underside and the lower body, rising up the flanks exactly as far as the key shows)" if s["slot"] == "belly" and any(p.startswith("region-") for p in on) else "")
+        out.append(f"{SLOT_WORDS.get(s['slot'], 'the ' + s['slot'] + ' colour')} {s['pigments'][0]} on {', '.join(names[:-1]) + ' and ' + names[-1] if len(names) > 1 else names[0]}" + note)
     return "Colour placement, this individual's own, exactly as the colour key shows it: " + "; ".join(out) + "."
 
 
