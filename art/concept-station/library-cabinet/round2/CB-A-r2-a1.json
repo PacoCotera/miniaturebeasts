@@ -1,0 +1,84 @@
+{
+  "id": "cabinet-wood",
+  "direction": "A",
+  "round": 2,
+  "attempt": 1,
+  "tag": "CB-A-r2-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the wooden cabinet, every drawer, pull, spine strip, card and silhouette, the focus ring, and the synopsis strip.\nONE CHANGE ONLY: on the sixteen small brass label frames of the top two rows of drawers, erase the printed words (FOUND, MET, UNMET) so every label frame holds a plain, empty cream card with nothing written on it; the frames themselves, their size, position and brass stay exactly as they are.\nConstraints: preserve every other pixel of the screen; no new words, no digits.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/library-cabinet/round1/CB-A-r1-a2-canvas.png",
+      "role": "edit target: the wood direction's pick",
+      "sha256": "ae1314af6edfdd8ed01934243258c25850f6d997dd3d36a69386789ac4424c29"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T01:31:21Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/CB-A-r2-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "7be3c4eacd06114fe79535d0989a0d9319cdfe376fd65aa147e1052702354b90"
+    },
+    "png": {
+      "file": "CB-A-r2-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "5320cfc72f039cd78ab332d4fa07edf1341ece043de820f1856d14ee513cda1c"
+    },
+    "screen": {
+      "file": "CB-A-r2-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "a6cf7cdf18e9ff26d58ea1a8f9b5210d07f10c9e8c765466f7e056f876f4db03",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 22.8,
+    "usage": {
+      "promptTokenCount": 450,
+      "candidatesTokenCount": 1264,
+      "totalTokenCount": 1851,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 192
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 137,
+      "serviceTier": "standard"
+    }
+  }
+}

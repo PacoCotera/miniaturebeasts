@@ -1,0 +1,662 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Generated candidates for the Library's Cabinet screen (the whole collection as a grid of boxes, one per species, grouped by clan with spine colours: found bright with portrait and name, met as slate silhouettes, unmet as faint shapes in the mist; a synopsis strip) in art/concept-station/library-cabinet/brief-cabinet.md, with the accepted Pip asset and the species names placed after generation; concept art awaiting the owner's choice.",
+  "brief": "art/concept-station/library-cabinet/brief-cabinet.md",
+  "tool": {
+    "name": "Gemini API",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+    "auth": "API key from the environment; not recorded",
+    "models": {
+      "gemini-3-pro-image": "Gemini 3 Pro Image: final candidates and refinements",
+      "gemini-3.1-flash-image": "Gemini 3.1 Flash Image: layout round"
+    },
+    "modelChoice": "Pro throughout: an exact eight-by-four grid, sixteen distinct silhouettes, empty labels and an exact synopsis strip need it. Round 1: two directions, two fresh each. Round 2: one one-change edit per direction, described in words with no extra reference image.",
+    "generationConfig": {
+      "responseModalities": [
+        "IMAGE"
+      ],
+      "imageConfig": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      }
+    },
+    "output": "image/jpeg 2752x1536 (16:9 at 2K), kept byte-exact in raw/ for kept candidates; LANCZOS to 1536x864 as the canvas PNG; the screen PNG is the centred 1024:600 band resampled to 1024x600. The Pip asset and then the name layer are placed afterwards (placed/).",
+    "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the preamble, then the prompt verbatim as the last text part.",
+    "budget": "At most 20 generations for this screen; 6 used (round 1: 4 fresh, round 2: 2 edits), all on gemini-3-pro-image. No call failed; none was retried."
+  },
+  "plan": {
+    "references": {
+      "art/concept-station/round3/A-r3-a1-1024x600.png": "approved Home: same device (top bar, bottom line, type, counters, light direction)",
+      "art/concept-station/library/placed/LB-D-r3-a2-fit-stamped-named-1024x600.png": "the Library's book, the next screen: its paper, ink and the two small species cards' style; its rejected shelf not to be copied",
+      "art/concept-station/library-cabinet/layout/cabinet-layout-template.png": "layout truth only: the brief's eight-by-four grid with sixteen boxes in clan order, the focus ring, the empty carcass and the synopsis strip",
+      "art/miniature-lives/assets/rich-plain-300x310.png": "the accepted rich Pip, placed into the Loika box after generation, never sent to the generator",
+      "art/concept-station/library-cabinet/layout/text-cabinet.json": "the live-text layer placed after Pip: the three found species' names under their boxes and the bottom line's subject, set in Inter"
+    },
+    "directions": {
+      "A cabinet-wood": "The naturalist's cabinet: pale wood drawers with brass pulls and label frames, the one place the guide allows wood.",
+      "B cabinet-paper": "The tome's boxes: cream card on slate with ink borders, sharing the book's material."
+    },
+    "rounds": "Round 1: A twice and B twice (Pro). Round 2: one one-change edit each (A: empty the leaked labels; B: fainter unmet silhouettes)."
+  },
+  "recommended": {
+    "tag": "CB-B-r2-a1",
+    "screen": "placed/CB-B-r2-a1-pip-named-1024x600.png",
+    "generated": "round2/CB-B-r2-a1-1024x600.png",
+    "alternative": "round1/CB-A-r1-a2-1024x600.png",
+    "pipAsset": "art/miniature-lives/assets/rich-plain-300x310.png",
+    "textLayer": "layout/text-cabinet.json"
+  },
+  "calls": [
+    {
+      "id": "cabinet-wood",
+      "direction": "A",
+      "round": 1,
+      "attempt": 1,
+      "tag": "CB-A-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's CABINET screen (the whole collection of species seen at a glance as a cabinet of boxes), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a naturalist's record: quiet, orderly, cool and even light from the upper left, no warm light anywhere (nothing is alive on this screen), crisp edges, clean painted light, soft shadows, no noise or dither. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Pictures lead; the only words are the few listed, each written once.\nLAYOUT, as the template. THE CABINET fills the stage: a wall of small specimen drawers in pale, fine-grained wood, the naturalist's own cabinet, eight drawers across and four down in an even grid with thin wooden rails between them, each drawer front a flat box of the same size with a small brass pull and a brass label frame at its foot, and a thin painted spine strip along its left edge in that drawer's own colour exactly as in the template (each of the sixteen a different colour; the lower two rows have no spine strip). The TOP TWO ROWS are the sixteen species, left to right: the first three drawers stand a little open and are FOUND: their label frame holds an empty cream card (nothing written) and their front carries a small painted portrait on cream: the first drawer's portrait area is left EMPTY cream (the creature is placed later); the second shows a round coral fluff under a cap of three flaps; the third a low lagoon-blue lizard with a crest and a tail ending in a glowing bulb, and this third drawer is lifted inside a warm cream focus ring. The fourth drawer is MET: a slate-grey card with the solid slate silhouette of a cat and an empty label frame. The remaining twelve drawers of the top two rows are UNMET: closed, their cards misty slate with a faint silhouette barely darker than the mist, each a different kind seen only as a shape (a fox, a raccoon, a badger, a goat, a big bird, an otter, a turtle, a moth, a beetle, a slug, a standing bulb on root legs, a vertical bolt of lightning), no label frame. The LOWER TWO ROWS are closed blank drawers, plain wood with pulls and no cards or spines, the cabinet's room to grow. Under the drawers a thin slate tray, the SYNOPSIS STRIP: at its left one small engraved word; then a row of sixteen tiny square boxes in a line, the first three filled cream, the fourth filled slate, the other twelve empty hairline squares; then a short thin bar, filled cream for about a fifth of its length; then a row of sixteen tiny upright ticks in the sixteen spine colours, the first four solid and the other twelve thin. Cool, even light from the upper left over the whole cabinet; no lamp, no glow.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". At the left of the thin strip near the bottom, one small engraved word: \"record\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: every name plate on the boxes is an EMPTY label (names are placed later); no numbers on or near the boxes or the strip; no other words.\nConstraints: no digits except the three counters; no letters, numbers, tallies or percentages in the synopsis strip (it is tiny boxes, a bar and ticks only); no species names, the name plates stay empty; the first found box's portrait area is left as a plain, flat, EMPTY cream card (the creature is placed there later); hidden shapes are silhouettes only, no faces, no colours, no detail; no paragraphs, no handwriting, no fake Latin; no people; no living window, no plants, no glow.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 2 is the Library's book, the screen this cabinet opens into: take its paper, ink and the small creature cards' style for the found boxes; its shelf is rejected and nothing of its layout is on this screen. Image 3 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only; its vivarium and modules are not on this screen",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library/placed/LB-D-r3-a2-fit-stamped-named-1024x600.png",
+          "role": "the Library's book, the next screen: take its cream paper, ink and the two small species cards' drawing style (the coral fluff under a cap, the lagoon lizard with the glowing tail) for the found boxes; its shelf is rejected and is NOT to be copied, and nothing of its page layout is on this screen",
+          "sha256": "0f40afa6af6776f49037e7092070ace5790d0db1cfe2e93f8f1238939a472b6a"
+        },
+        {
+          "path": "art/concept-station/library-cabinet/layout/cabinet-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the grid of eight columns by four rows (today's sixteen boxes in the top two rows in clan order: three found with empty name plates, one slate met, twelve misty unmet; the lower two rows the empty carcass), the focus ring on the third box, the synopsis strip, and the bottom line; the spine colours are the clans' and are to be kept; not style",
+          "sha256": "1b35020b759f86b832e09bfe7f1448bad5218ffe069ed2504f053d1d9e175939"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T01:28:22Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/CB-A-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "a2d15a13753347c06355070d03c0d4e24b93a468846827358005e80c192fe1b4"
+        },
+        "png": {
+          "file": "round1/CB-A-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "05bb0f9b6917c42a479c4e9a22b19487521c9ef01e8b564e99e98a160ac68c86"
+        },
+        "screen": {
+          "file": "round1/CB-A-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "fa15da4357582aa9c63a9370beb9bd46167044bb2b5d797c12003f24611d2206",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 29.6,
+        "usage": {
+          "promptTokenCount": 2079,
+          "candidatesTokenCount": 1651,
+          "totalTokenCount": 4126,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1305
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 396,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (a six-column catalogue, so the sixteen do not fit the top two rows; the unmet silhouettes as solid as the met one; a lovely drawer material)"
+      },
+      "promptSource": "art/concept-station/library-cabinet/prompts.json plan (art director), from brief-cabinet.md"
+    },
+    {
+      "id": "cabinet-wood",
+      "direction": "A",
+      "round": 1,
+      "attempt": 2,
+      "tag": "CB-A-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's CABINET screen (the whole collection of species seen at a glance as a cabinet of boxes), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a naturalist's record: quiet, orderly, cool and even light from the upper left, no warm light anywhere (nothing is alive on this screen), crisp edges, clean painted light, soft shadows, no noise or dither. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Pictures lead; the only words are the few listed, each written once.\nLAYOUT, as the template. THE CABINET fills the stage: a wall of small specimen drawers in pale, fine-grained wood, the naturalist's own cabinet, eight drawers across and four down in an even grid with thin wooden rails between them, each drawer front a flat box of the same size with a small brass pull and a brass label frame at its foot, and a thin painted spine strip along its left edge in that drawer's own colour exactly as in the template (each of the sixteen a different colour; the lower two rows have no spine strip). The TOP TWO ROWS are the sixteen species, left to right: the first three drawers stand a little open and are FOUND: their label frame holds an empty cream card (nothing written) and their front carries a small painted portrait on cream: the first drawer's portrait area is left EMPTY cream (the creature is placed later); the second shows a round coral fluff under a cap of three flaps; the third a low lagoon-blue lizard with a crest and a tail ending in a glowing bulb, and this third drawer is lifted inside a warm cream focus ring. The fourth drawer is MET: a slate-grey card with the solid slate silhouette of a cat and an empty label frame. The remaining twelve drawers of the top two rows are UNMET: closed, their cards misty slate with a faint silhouette barely darker than the mist, each a different kind seen only as a shape (a fox, a raccoon, a badger, a goat, a big bird, an otter, a turtle, a moth, a beetle, a slug, a standing bulb on root legs, a vertical bolt of lightning), no label frame. The LOWER TWO ROWS are closed blank drawers, plain wood with pulls and no cards or spines, the cabinet's room to grow. Under the drawers a thin slate tray, the SYNOPSIS STRIP: at its left one small engraved word; then a row of sixteen tiny square boxes in a line, the first three filled cream, the fourth filled slate, the other twelve empty hairline squares; then a short thin bar, filled cream for about a fifth of its length; then a row of sixteen tiny upright ticks in the sixteen spine colours, the first four solid and the other twelve thin. Cool, even light from the upper left over the whole cabinet; no lamp, no glow.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". At the left of the thin strip near the bottom, one small engraved word: \"record\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: every name plate on the boxes is an EMPTY label (names are placed later); no numbers on or near the boxes or the strip; no other words.\nConstraints: no digits except the three counters; no letters, numbers, tallies or percentages in the synopsis strip (it is tiny boxes, a bar and ticks only); no species names, the name plates stay empty; the first found box's portrait area is left as a plain, flat, EMPTY cream card (the creature is placed there later); hidden shapes are silhouettes only, no faces, no colours, no detail; no paragraphs, no handwriting, no fake Latin; no people; no living window, no plants, no glow.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 2 is the Library's book, the screen this cabinet opens into: take its paper, ink and the small creature cards' style for the found boxes; its shelf is rejected and nothing of its layout is on this screen. Image 3 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only; its vivarium and modules are not on this screen",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library/placed/LB-D-r3-a2-fit-stamped-named-1024x600.png",
+          "role": "the Library's book, the next screen: take its cream paper, ink and the two small species cards' drawing style (the coral fluff under a cap, the lagoon lizard with the glowing tail) for the found boxes; its shelf is rejected and is NOT to be copied, and nothing of its page layout is on this screen",
+          "sha256": "0f40afa6af6776f49037e7092070ace5790d0db1cfe2e93f8f1238939a472b6a"
+        },
+        {
+          "path": "art/concept-station/library-cabinet/layout/cabinet-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the grid of eight columns by four rows (today's sixteen boxes in the top two rows in clan order: three found with empty name plates, one slate met, twelve misty unmet; the lower two rows the empty carcass), the focus ring on the third box, the synopsis strip, and the bottom line; the spine colours are the clans' and are to be kept; not style",
+          "sha256": "1b35020b759f86b832e09bfe7f1448bad5218ffe069ed2504f053d1d9e175939"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T01:28:56Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/CB-A-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "8c8020a42d26f5054c9fb1ac33fca45d818ebeaadb9ddb81daf289a677d5be9e"
+        },
+        "png": {
+          "file": "round1/CB-A-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "ae1314af6edfdd8ed01934243258c25850f6d997dd3d36a69386789ac4424c29"
+        },
+        "screen": {
+          "file": "round1/CB-A-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "ac2812dfcde744ce3b1d7534972a72932f75b7f1539151102630c1e4b7b88907",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 28.9,
+        "usage": {
+          "promptTokenCount": 2079,
+          "candidatesTokenCount": 1913,
+          "totalTokenCount": 4435,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1305
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 443,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: the wood direction's pick and the owner's alternative (eight by four, open found drawers with their cards, closed blank drawers below, the strip exact; FOUND, MET and UNMET leaked onto the label frames; left and right strings clipped)"
+      },
+      "promptSource": "art/concept-station/library-cabinet/prompts.json plan (art director), from brief-cabinet.md"
+    },
+    {
+      "id": "cabinet-paper",
+      "direction": "B",
+      "round": 1,
+      "attempt": 1,
+      "tag": "CB-B-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's CABINET screen (the whole collection of species seen at a glance as a cabinet of boxes), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a naturalist's record: quiet, orderly, cool and even light from the upper left, no warm light anywhere (nothing is alive on this screen), crisp edges, clean painted light, soft shadows, no noise or dither. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Pictures lead; the only words are the few listed, each written once.\nLAYOUT, as the template. THE CABINET fills the stage: a deep slate panel holding an even grid of flat cream card boxes, eight across and four down, like mounted plates in a tome, each box the same size with a thin ink border and a thin painted spine strip along its left edge in that box's own colour exactly as in the template (each of the sixteen a different colour; the lower two rows have no spine strip). No wood anywhere: paper, card, slate and ink only. The TOP TWO ROWS are the sixteen species, left to right: the first three boxes are FOUND: bright cream card with a small painted portrait on it and an empty paper name label at the foot (nothing written): the first box's portrait area is left EMPTY cream (the creature is placed later); the second shows a round coral fluff under a cap of three flaps; the third a low lagoon-blue lizard with a crest and a tail ending in a glowing bulb, and this third box is lifted inside a warm cream focus ring. The fourth box is MET: a slate card with the solid slate silhouette of a cat and an empty label. The remaining twelve boxes of the top two rows are UNMET: misty slate cards with a faint silhouette barely darker than the mist, each a different kind seen only as a shape (a fox, a raccoon, a badger, a goat, a big bird, an otter, a turtle, a moth, a beetle, a slug, a standing bulb on root legs, a vertical bolt of lightning), no label. The LOWER TWO ROWS are the cabinet's empty carcass: the slate panel with faint hairline outlines where sixteen more boxes will sit, nothing in them. Under the grid a thin slate tray, the SYNOPSIS STRIP: at its left one small engraved word; then a row of sixteen tiny square boxes in a line, the first three filled cream, the fourth filled slate, the other twelve empty hairline squares; then a short thin bar, filled cream for about a fifth of its length; then a row of sixteen tiny upright ticks in the sixteen spine colours, the first four solid and the other twelve thin. Cool, even light from the upper left; no lamp, no glow.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". At the left of the thin strip near the bottom, one small engraved word: \"record\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: every name plate on the boxes is an EMPTY label (names are placed later); no numbers on or near the boxes or the strip; no other words.\nConstraints: no digits except the three counters; no letters, numbers, tallies or percentages in the synopsis strip (it is tiny boxes, a bar and ticks only); no species names, the name plates stay empty; the first found box's portrait area is left as a plain, flat, EMPTY cream card (the creature is placed there later); hidden shapes are silhouettes only, no faces, no colours, no detail; no paragraphs, no handwriting, no fake Latin; no people; no living window, no plants, no glow.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 2 is the Library's book, the screen this cabinet opens into: take its paper, ink and the small creature cards' style for the found boxes; its shelf is rejected and nothing of its layout is on this screen. Image 3 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only; its vivarium and modules are not on this screen",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library/placed/LB-D-r3-a2-fit-stamped-named-1024x600.png",
+          "role": "the Library's book, the next screen: take its cream paper, ink and the two small species cards' drawing style (the coral fluff under a cap, the lagoon lizard with the glowing tail) for the found boxes; its shelf is rejected and is NOT to be copied, and nothing of its page layout is on this screen",
+          "sha256": "0f40afa6af6776f49037e7092070ace5790d0db1cfe2e93f8f1238939a472b6a"
+        },
+        {
+          "path": "art/concept-station/library-cabinet/layout/cabinet-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the grid of eight columns by four rows (today's sixteen boxes in the top two rows in clan order: three found with empty name plates, one slate met, twelve misty unmet; the lower two rows the empty carcass), the focus ring on the third box, the synopsis strip, and the bottom line; the spine colours are the clans' and are to be kept; not style",
+          "sha256": "1b35020b759f86b832e09bfe7f1448bad5218ffe069ed2504f053d1d9e175939"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T01:29:28Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/CB-B-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "ac8c1aaa67d15c3f9805a1fd2ad9f4bab51e338fd12ed11179eeacbb321b8e2b"
+        },
+        "png": {
+          "file": "round1/CB-B-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "3806e4db6eb0a799abc0d18beedc7e3d0e1e009a472a3c9c005ae48770b02df9"
+        },
+        "screen": {
+          "file": "round1/CB-B-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "51aced9b13bf6cbd59900305d5ea348981a76f823b8b9a10e540f2d8f8633a0f",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 23.8,
+        "usage": {
+          "promptTokenCount": 2054,
+          "candidatesTokenCount": 1623,
+          "totalTokenCount": 3968,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1280
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 291,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: round 1 pick and edit target (the grid exact, the three states told apart at a glance, the first box's card left empty for Pip, empty labels, the empty carcass, the strip exact, every string in place; the Essence drop blue rather than green)"
+      },
+      "promptSource": "art/concept-station/library-cabinet/prompts.json plan (art director), from brief-cabinet.md"
+    },
+    {
+      "id": "cabinet-paper",
+      "direction": "B",
+      "round": 1,
+      "attempt": 2,
+      "tag": "CB-B-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's CABINET screen (the whole collection of species seen at a glance as a cabinet of boxes), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a naturalist's record: quiet, orderly, cool and even light from the upper left, no warm light anywhere (nothing is alive on this screen), crisp edges, clean painted light, soft shadows, no noise or dither. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Pictures lead; the only words are the few listed, each written once.\nLAYOUT, as the template. THE CABINET fills the stage: a deep slate panel holding an even grid of flat cream card boxes, eight across and four down, like mounted plates in a tome, each box the same size with a thin ink border and a thin painted spine strip along its left edge in that box's own colour exactly as in the template (each of the sixteen a different colour; the lower two rows have no spine strip). No wood anywhere: paper, card, slate and ink only. The TOP TWO ROWS are the sixteen species, left to right: the first three boxes are FOUND: bright cream card with a small painted portrait on it and an empty paper name label at the foot (nothing written): the first box's portrait area is left EMPTY cream (the creature is placed later); the second shows a round coral fluff under a cap of three flaps; the third a low lagoon-blue lizard with a crest and a tail ending in a glowing bulb, and this third box is lifted inside a warm cream focus ring. The fourth box is MET: a slate card with the solid slate silhouette of a cat and an empty label. The remaining twelve boxes of the top two rows are UNMET: misty slate cards with a faint silhouette barely darker than the mist, each a different kind seen only as a shape (a fox, a raccoon, a badger, a goat, a big bird, an otter, a turtle, a moth, a beetle, a slug, a standing bulb on root legs, a vertical bolt of lightning), no label. The LOWER TWO ROWS are the cabinet's empty carcass: the slate panel with faint hairline outlines where sixteen more boxes will sit, nothing in them. Under the grid a thin slate tray, the SYNOPSIS STRIP: at its left one small engraved word; then a row of sixteen tiny square boxes in a line, the first three filled cream, the fourth filled slate, the other twelve empty hairline squares; then a short thin bar, filled cream for about a fifth of its length; then a row of sixteen tiny upright ticks in the sixteen spine colours, the first four solid and the other twelve thin. Cool, even light from the upper left; no lamp, no glow.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". At the left of the thin strip near the bottom, one small engraved word: \"record\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: every name plate on the boxes is an EMPTY label (names are placed later); no numbers on or near the boxes or the strip; no other words.\nConstraints: no digits except the three counters; no letters, numbers, tallies or percentages in the synopsis strip (it is tiny boxes, a bar and ticks only); no species names, the name plates stay empty; the first found box's portrait area is left as a plain, flat, EMPTY cream card (the creature is placed there later); hidden shapes are silhouettes only, no faces, no colours, no detail; no paragraphs, no handwriting, no fake Latin; no people; no living window, no plants, no glow.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 2 is the Library's book, the screen this cabinet opens into: take its paper, ink and the small creature cards' style for the found boxes; its shelf is rejected and nothing of its layout is on this screen. Image 3 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only; its vivarium and modules are not on this screen",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library/placed/LB-D-r3-a2-fit-stamped-named-1024x600.png",
+          "role": "the Library's book, the next screen: take its cream paper, ink and the two small species cards' drawing style (the coral fluff under a cap, the lagoon lizard with the glowing tail) for the found boxes; its shelf is rejected and is NOT to be copied, and nothing of its page layout is on this screen",
+          "sha256": "0f40afa6af6776f49037e7092070ace5790d0db1cfe2e93f8f1238939a472b6a"
+        },
+        {
+          "path": "art/concept-station/library-cabinet/layout/cabinet-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the grid of eight columns by four rows (today's sixteen boxes in the top two rows in clan order: three found with empty name plates, one slate met, twelve misty unmet; the lower two rows the empty carcass), the focus ring on the third box, the synopsis strip, and the bottom line; the spine colours are the clans' and are to be kept; not style",
+          "sha256": "1b35020b759f86b832e09bfe7f1448bad5218ffe069ed2504f053d1d9e175939"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T01:29:58Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/CB-B-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "0e6113cd7a76e3d754436e149cc9a6069867126e6b4d16c9bb70a912aef5cc45"
+        },
+        "png": {
+          "file": "round1/CB-B-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "410bce3d17097649ff06b9d6ad6f8fb04a58b7f31f09be4984ed6cc85f240646"
+        },
+        "screen": {
+          "file": "round1/CB-B-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "3c22b31f3e7956b0307fada2364db7fccea7503adbd38ec5a21237cddd40c1f8",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 27.2,
+        "usage": {
+          "promptTokenCount": 2054,
+          "candidatesTokenCount": 1758,
+          "totalTokenCount": 4337,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1280
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 525,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as reference (the boxes drawn as book spines on a shelf; a glowing disc for the focus ring; otherwise the same reading)"
+      },
+      "promptSource": "art/concept-station/library-cabinet/prompts.json plan (art director), from brief-cabinet.md"
+    },
+    {
+      "id": "cabinet-wood",
+      "direction": "A",
+      "round": 2,
+      "attempt": 1,
+      "tag": "CB-A-r2-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the wooden cabinet, every drawer, pull, spine strip, card and silhouette, the focus ring, and the synopsis strip.\nONE CHANGE ONLY: on the sixteen small brass label frames of the top two rows of drawers, erase the printed words (FOUND, MET, UNMET) so every label frame holds a plain, empty cream card with nothing written on it; the frames themselves, their size, position and brass stay exactly as they are.\nConstraints: preserve every other pixel of the screen; no new words, no digits.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/library-cabinet/round1/CB-A-r1-a2-canvas.png",
+          "role": "edit target: the wood direction's pick",
+          "sha256": "ae1314af6edfdd8ed01934243258c25850f6d997dd3d36a69386789ac4424c29"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T01:31:21Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/CB-A-r2-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "7be3c4eacd06114fe79535d0989a0d9319cdfe376fd65aa147e1052702354b90"
+        },
+        "png": {
+          "file": "round2/CB-A-r2-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "5320cfc72f039cd78ab332d4fa07edf1341ece043de820f1856d14ee513cda1c"
+        },
+        "screen": {
+          "file": "round2/CB-A-r2-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "a6cf7cdf18e9ff26d58ea1a8f9b5210d07f10c9e8c765466f7e056f876f4db03",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 22.8,
+        "usage": {
+          "promptTokenCount": 450,
+          "candidatesTokenCount": 1264,
+          "totalTokenCount": 1851,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 192
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 137,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (the one-change label clean-up held, but four misty cards in the second row turned bright cream and now read as found)"
+      },
+      "promptSource": "art/concept-station/library-cabinet/prompts.json plan (art director), from brief-cabinet.md"
+    },
+    {
+      "id": "cabinet-paper",
+      "direction": "B",
+      "round": 2,
+      "attempt": 1,
+      "tag": "CB-B-r2-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the three bright found boxes and their labels, the slate met box with its cat, the focus ring, the empty lower rows, the spine strips and the synopsis strip.\nONE CHANGE ONLY: the twelve misty unmet boxes (the fifth to eighth boxes of the first row and all eight of the second row): make their silhouettes much fainter, barely darker than the mist of the card, as if seen through fog, so they are shapes a careful eye finds rather than pictures; keep each silhouette's kind, size and position, and keep the cards' misty slate tone, spine strips and borders exactly as they are.\nConstraints: preserve every other pixel of the screen; no new words, no digits.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/library-cabinet/round1/CB-B-r1-a1-canvas.png",
+          "role": "edit target: the paper direction's pick",
+          "sha256": "3806e4db6eb0a799abc0d18beedc7e3d0e1e009a472a3c9c005ae48770b02df9"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T01:32:34Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/CB-B-r2-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "a386b43873afcb7a79041c52eb413b502fd3ab0e7231f044097b56dd0a4912f3"
+        },
+        "png": {
+          "file": "round2/CB-B-r2-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "e2f0cbe833061ad840a297af110ef970d65f1f5aa6f10339e624b8286c525057"
+        },
+        "screen": {
+          "file": "round2/CB-B-r2-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "c8c9e27fbd5f4e81c248beecc1723d1e243b02921f2795a6786528b1b5326d73",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 23.0,
+        "usage": {
+          "promptTokenCount": 485,
+          "candidatesTokenCount": 1301,
+          "totalTokenCount": 1939,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 227
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 153,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: the recommended candidate's base (the twelve unmet silhouettes fainter, barely darker than the mist; nothing else moved); Pip and the names are placed on it"
+      },
+      "promptSource": "art/concept-station/library-cabinet/prompts.json plan (art director), from brief-cabinet.md"
+    }
+  ],
+  "placements": [
+    {
+      "tag": "CB-B-r1-a1",
+      "screen": "/home/user/miniaturebeasts/art/concept-station/library-cabinet/round1/CB-B-r1-a1-canvas.png",
+      "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "detectedCard": [
+        69,
+        99,
+        209,
+        215
+      ],
+      "pasted": {
+        "x": 91,
+        "y": 108,
+        "w": 95,
+        "h": 98
+      },
+      "outputs": {
+        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-cabinet/placed/CB-B-r1-a1-pip-canvas.png",
+        "screen": "/home/user/miniaturebeasts/art/concept-station/library-cabinet/placed/CB-B-r1-a1-pip-1024x600.png"
+      },
+      "textLayer": {
+        "spec": "layout/text-cabinet.json",
+        "output": "placed/CB-B-r1-a1-pip-named-1024x600.png",
+        "face": "Inter (system install), the Station's type"
+      }
+    },
+    {
+      "tag": "CB-B-r2-a1",
+      "screen": "/home/user/miniaturebeasts/art/concept-station/library-cabinet/round2/CB-B-r2-a1-canvas.png",
+      "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "detectedCard": [
+        69,
+        97,
+        209,
+        216
+      ],
+      "pasted": {
+        "x": 90,
+        "y": 106,
+        "w": 98,
+        "h": 101
+      },
+      "outputs": {
+        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-cabinet/placed/CB-B-r2-a1-pip-canvas.png",
+        "screen": "/home/user/miniaturebeasts/art/concept-station/library-cabinet/placed/CB-B-r2-a1-pip-1024x600.png"
+      },
+      "textLayer": {
+        "spec": "layout/text-cabinet.json",
+        "output": "placed/CB-B-r2-a1-pip-named-1024x600.png",
+        "face": "Inter (system install), the Station's type"
+      }
+    }
+  ],
+  "placementNote": "Pip is the accepted rich asset placed into the Loika box after generation (the generator leaves that card empty); the names are a text layer set in Inter after Pip. Nothing generated carries a name or Pip."
+}

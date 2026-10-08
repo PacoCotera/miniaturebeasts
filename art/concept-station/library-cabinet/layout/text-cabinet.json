@@ -1,0 +1,6 @@
+[
+  {"text": "Loika", "x": 71, "y": 158, "size": 13, "weight": "Medium", "color": "#2b2420", "anchor": "mm"},
+  {"text": "Untuva", "x": 197, "y": 158, "size": 13, "weight": "Medium", "color": "#2b2420", "anchor": "mm"},
+  {"text": "Tuikis", "x": 323, "y": 158, "size": 13, "weight": "Medium", "color": "#2b2420", "anchor": "mm"},
+  {"text": "Tuikis · Stilbera", "x": 512, "y": 582, "size": 17, "weight": "Regular", "color": "#c3c7cb", "anchor": "mm"}
+]
