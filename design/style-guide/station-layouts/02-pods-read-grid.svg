@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Pods · Read, Picture state (one large picture) wireframe, 1024×600, measured. Layout only, no art.</title>
+<title>Pods · Read, Grid state (four traits), with a seven-chapter compact rail wireframe, 1024×600, measured. Layout only, no art.</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
@@ -32,22 +32,26 @@
 <rect x="112.5" y="420.5" width="15" height="15" fill="#ffffff" stroke="#666" stroke-width="1"/>
 <rect x="24.5" y="488.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <rect x="176.5" y="40.5" width="831" height="39" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
-<polygon points="176,40 312,40 328,80 192,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="312,40 448,40 464,80 328,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="448,40 584,40 600,80 464,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="584,40 720,40 736,80 600,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="720,40 856,40 872,80 736,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="856,40 992,40 1008,80 872,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<path d="M308.8,42 L452.8,42 L469.6,84 L325.6,84 Z" fill="none" stroke="#d29a00" stroke-width="2"/>
+<polygon points="176,40 232,40 248,80 192,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="232,40 368,40 384,80 248,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="368,40 424,40 440,80 384,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="424,40 480,40 496,80 440,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="480,40 536,40 552,80 496,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="536,40 592,40 608,80 552,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="592,40 648,40 664,80 608,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<path d="M228.8,42 L372.8,42 L389.6,84 L245.6,84 Z" fill="none" stroke="#d29a00" stroke-width="2"/>
 <rect x="176.5" y="112.5" width="407" height="439" fill="#eef1f3" stroke="#556" stroke-width="1"/>
 <rect x="192.5" y="120.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="512.5" y="128.5" width="7" height="7" fill="#ffffff" stroke="#555" stroke-width="1"/>
-<rect x="528.5" y="128.5" width="7" height="7" fill="#555" stroke="#555" stroke-width="1"/>
-<rect x="544.5" y="128.5" width="7" height="7" fill="#ffffff" stroke="#555" stroke-width="1"/>
-<rect x="560.5" y="128.5" width="7" height="7" fill="#ffffff" stroke="#555" stroke-width="1"/>
-<rect x="192.5" y="160.5" width="375" height="311" fill="#ffffff" stroke="#666" stroke-width="1"/>
-<rect x="520.5" y="412.5" width="39" height="51" fill="#f4f5fa" stroke="#6b6f8a" stroke-width="1" stroke-dasharray="3 2"/>
-<rect x="192.5" y="480.5" width="375" height="63" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="192.5" y="160.5" width="183" height="111" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="192.5" y="280.5" width="183" height="63" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="384.5" y="160.5" width="183" height="111" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="384.5" y="280.5" width="183" height="63" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="192.5" y="360.5" width="183" height="111" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="192.5" y="480.5" width="183" height="63" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="384.5" y="360.5" width="183" height="111" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="384.5" y="480.5" width="183" height="63" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="384.5" y="160.5" width="183" height="111" rx="6" fill="none" stroke="#d29a00" stroke-width="2"/>
+<rect x="528.5" y="224.5" width="31" height="39" fill="#f4f5fa" stroke="#6b6f8a" stroke-width="1" stroke-dasharray="3 2"/>
 <rect x="592.5" y="112.5" width="239" height="439" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
 <rect x="592.5" y="104.5" width="239" height="319" fill="none" stroke="#9fb8c8" stroke-width="1" stroke-dasharray="1 3"/>
 <rect x="600.5" y="328.5" width="223" height="95" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
@@ -60,7 +64,7 @@
 <text x="20" y="21" font-size="11" fill="#222">Screen name 20px · turn 16px</text>
 <text x="388" y="21" font-size="11" fill="#222">Energy · Data · Essence 16px</text>
 <text x="644" y="21" font-size="11" fill="#222">Companion state 16px, right</text>
-<text x="20" y="583" font-size="11" fill="#222">✓ All traits · ← where</text>
+<text x="20" y="583" font-size="11" fill="#222">✓ Look closer · ← where</text>
 <text x="404" y="583" font-size="11" fill="#222">subject, centred</text>
 <text x="636" y="583" font-size="11" fill="#222">what needs you, right</text>
 <text x="12" y="61" font-size="11" fill="#222">well 1</text>
@@ -77,26 +81,39 @@
 <text x="12" y="433" font-size="9" fill="#777">8,408 144×72</text>
 <text x="28" y="501" font-size="11" fill="#222">Hatch 112×56</text>
 <text x="28" y="513" font-size="9" fill="#777">24,488 112×56</text>
-<text x="200" y="58" font-size="11" fill="#222">Coat</text>
-<text x="200" y="71" font-size="9" fill="#777">176,40 136</text>
-<text x="336" y="58" font-size="11" fill="#222">Face</text>
-<text x="336" y="71" font-size="9" fill="#777">312,40 136</text>
-<text x="472" y="58" font-size="11" fill="#222">Shape</text>
-<text x="472" y="71" font-size="9" fill="#777">448,40 136</text>
-<text x="608" y="58" font-size="11" fill="#222">Movement</text>
-<text x="608" y="71" font-size="9" fill="#777">584,40 136</text>
-<text x="744" y="58" font-size="11" fill="#222">Stamina</text>
-<text x="744" y="71" font-size="9" fill="#777">720,40 136</text>
-<text x="880" y="58" font-size="11" fill="#222">Character</text>
-<text x="880" y="71" font-size="9" fill="#777">856,40 136</text>
-<text x="840" y="96" font-size="9" fill="#777">run 832: six full tabs of 136, slant 16</text>
+<text x="188" y="58" font-size="9" fill="#222">Co</text>
+<text x="188" y="71" font-size="8" fill="#777">176</text>
+<text x="256" y="58" font-size="11" fill="#222">Face</text>
+<text x="256" y="71" font-size="9" fill="#777">232,40 136</text>
+<text x="380" y="58" font-size="9" fill="#222">Sh</text>
+<text x="380" y="71" font-size="8" fill="#777">368</text>
+<text x="436" y="58" font-size="9" fill="#222">Le</text>
+<text x="436" y="71" font-size="8" fill="#777">424</text>
+<text x="492" y="58" font-size="9" fill="#222">Mo</text>
+<text x="492" y="71" font-size="8" fill="#777">480</text>
+<text x="548" y="58" font-size="9" fill="#222">St</text>
+<text x="548" y="71" font-size="8" fill="#777">536</text>
+<text x="604" y="58" font-size="9" fill="#222">Ch</text>
+<text x="604" y="71" font-size="8" fill="#777">592</text>
+<text x="672" y="64" font-size="9" fill="#777">run 488: compact 56, open tab 136</text>
 <text x="196" y="133" font-size="11" fill="#222">emblem 24 + chapter word 20px</text>
-<text x="440" y="137" font-size="9" fill="#777">marks 8, pitch 16</text>
-<text x="196" y="173" font-size="11" fill="#222">trait picture 376×312 (the shown trait)</text>
-<text x="196" y="185" font-size="9" fill="#777">192,160 376×312</text>
-<text x="196" y="493" font-size="11" fill="#222">name 16px · line, at most two lines</text>
-<text x="196" y="505" font-size="9" fill="#777">192,480 376×64</text>
-<text x="196" y="155" font-size="9" fill="#777">page 176,112 408×440 · ✓ on the page: the Grid</text>
+<text x="196" y="173" font-size="11" fill="#222">trait picture 184×112</text>
+<text x="196" y="185" font-size="9" fill="#777">192,160 184×112</text>
+<text x="196" y="293" font-size="11" fill="#222">name · line 16px</text>
+<text x="196" y="305" font-size="9" fill="#777">192,280 184×64</text>
+<text x="388" y="173" font-size="11" fill="#222">trait picture 184×112</text>
+<text x="388" y="185" font-size="9" fill="#777">384,160 184×112</text>
+<text x="388" y="293" font-size="11" fill="#222">name · line 16px</text>
+<text x="388" y="305" font-size="9" fill="#777">384,280 184×64</text>
+<text x="196" y="373" font-size="11" fill="#222">trait picture 184×112</text>
+<text x="196" y="385" font-size="9" fill="#777">192,360 184×112</text>
+<text x="196" y="493" font-size="11" fill="#222">name · line 16px</text>
+<text x="196" y="505" font-size="9" fill="#777">192,480 184×64</text>
+<text x="388" y="373" font-size="11" fill="#222">trait picture 184×112</text>
+<text x="388" y="385" font-size="9" fill="#777">384,360 184×112</text>
+<text x="388" y="493" font-size="11" fill="#222">name · line 16px</text>
+<text x="388" y="505" font-size="9" fill="#777">384,480 184×64</text>
+<text x="404" y="133" font-size="9" fill="#777">✓ on a cell: Picture · back: Picture</text>
 <text x="660" y="125" font-size="9" fill="#6f8ea3">cone of light 592,104 240×320</text>
 <text x="636" y="221" font-size="11" fill="#222">POD 160×192</text>
 <text x="636" y="233" font-size="9" fill="#777">632,208 160×192</text>

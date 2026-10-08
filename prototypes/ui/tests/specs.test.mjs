@@ -3,22 +3,37 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { railTabs, pageGrid, repeat } from "../layout.mjs";
+import { pageGrid, repeat } from "../layout.mjs";
 
 const rd = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 const frame = rd("../specs/station/frame.json"), pods = rd("../specs/station/pods.json"), palette = rd("../palettes/station.json");
-const svg = readFileSync(new URL("../../../design/style-guide/station-layouts/02-pods-read.svg", import.meta.url), "utf8");
-// every <rect> of the wireframe as "x,y,w,h" (strokes sit on the half pixel: x.5 and a size one short)
-const boxes = new Set([...svg.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g)].map((m) => [Math.round(m[1] - 0.5), Math.round(m[2] - 0.5), Math.round(+m[3] + 1), Math.round(+m[4] + 1)].join(",")));
-const has = (r, what) => assert.ok(boxes.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
+const wire = (name) => readFileSync(new URL("../../../design/style-guide/station-layouts/" + name, import.meta.url), "utf8");
+const svg = wire("02-pods-read.svg"), svgGrid = wire("02-pods-read-grid.svg");
+// every <rect> of a wireframe as "x,y,w,h" (strokes sit on the half pixel: x.5 and a size one short)
+const rects = (s) => new Set([...s.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g)].map((m) => [Math.round(m[1] - 0.5), Math.round(m[2] - 0.5), Math.round(+m[3] + 1), Math.round(+m[4] + 1)].join(",")));
+const boxes = rects(svg), gridBoxes = rects(svgGrid);
+const has = (r, what, set = boxes) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
+// every <polygon> of a wireframe as its points (the rail's slanted tabs)
+const polys = (s) => new Set([...s.matchAll(/<polygon points="([^"]+)"/g)].map((m) => m[1]));
+// the shared rail's tabs by the rule in frame.json: full tabs up to fullUpTo chapters, else compact with the open tab full;
+// each a parallelogram hanging from y, leaning `slant` px right over its height, touching its neighbours
+const slantTabs = (x0, n, open, r = frame.regions.rail) => { const out = []; let x = x0; for (let i = 0; i < n; i++) { const w = n <= r.fullUpTo || i === open ? r.full : r.compact; out.push(`${x},${r.y} ${x + w},${r.y} ${x + w + r.slant},${r.y + r.h} ${x + r.slant},${r.y + r.h}`); x += w; } return { tabs: out, run: x - x0 + r.slant }; };
 
 test("the Pods spec file agrees with the Pods wireframe, region by region", () => {
   const R = pods.regions, w = R.well;
   for (let i = 0; i < R.list.slots; i++) { has(repeat(w.rect, i, w.pitch), "well slot " + i); const ring = repeat([w.rect[0] + w.ring.at[0], w.rect[1] + w.ring.at[1], 64, 64], i, w.pitch); assert.equal(ring[0] + 32, 72); assert.equal(ring[1] + 32, 84 + 72 * i); has(repeat([w.rect[0] + w.place.at[0], w.rect[1] + w.place.at[1], 16, 16], i, w.pitch), "place stamp " + i); }
   has(R.hatch.rect, "hatch"); has(R.stage.rect, "stage"); has(R.beam.rect, "beam"); has(R.pod.rect, "pod"); has(R.cradle.rect, "cradle"); has(R.name.rect, "name"); has(R.origin.rect, "origin"); has(R.stamp.rect, "stamp"); has(R.page.rect, "page"); has(R.list.rect, "list");
-  const rail = railTabs(R.rail, 7); assert.equal(rail.tabs.length, 7); for (const t of rail.tabs) has(t, "rail tab");
-  const g = pageGrid(R.page, 4); for (const c of g.cells) has([c[0], c[1], g.picture[0], g.picture[1]], "trait picture");
+  // the rail: six full tabs in the Picture wireframe, seven compact (the second open) in the Grid wireframe
+  const six = slantTabs(R.rail.rect[0], 6, 1), seven = slantTabs(R.rail.rect[0], 7, 1), P6 = polys(svg), P7 = polys(svgGrid);
+  for (const t of six.tabs) assert.ok(P6.has(t), "rail tab " + t); for (const t of seven.tabs) assert.ok(P7.has(t), "compact rail tab " + t);
+  assert.equal(six.run, 832); assert.equal(seven.run, 488); assert.equal(slantTabs(0, 8, 0).run, 544); assert.equal(slantTabs(0, 12, 0).run, 768);
+  assert.deepEqual(R.rail.rect, [176, frame.regions.rail.y, 832, frame.regions.rail.h]); assert.equal(frame.regions.rail.y, 40);
+  // the page's Picture state (one large picture) and its Grid state (four traits)
+  const pic = R.page.picture; has([R.page.rect[0] + pic.cell[0], R.page.rect[1] + pic.cell[1], pic.picture[0], pic.picture[1]], "the Picture state's picture");
+  assert.deepEqual(pic.picture, [376, 312]); assert.equal(R.page.initial, "picture"); assert.deepEqual(R.page.states, ["picture", "grid"]);
+  const g = pageGrid(R.page, 4); for (const c of g.cells) has([c[0], c[1], g.picture[0], g.picture[1]], "trait picture", gridBoxes);
   assert.deepEqual(g.picture, [184, 112]);
+  assert.deepEqual(R.cradle.rect, [600, 328, 224, 96]); assert.deepEqual(R.cradleFront.rect, R.cradle.rect); assert.equal(pods.colours.origin, "bone");
   // the concept's way round: the page left of the pod, the pod's box 96 px clear of the stamp label at the right
   const pod = R.pod.rect, page = R.page.rect, stamp = R.stamp.rect;
   assert.ok(page[0] + page[2] + 16 <= R.cradle.rect[0] && pod[0] + pod[2] + 96 <= stamp[0] && stamp[0] + stamp[2] === 1008, "page, pod, stamp from left to right");
@@ -49,7 +64,7 @@ test("every colour a spec file names is in the palette; every region is on the 8
 });
 
 test("the focus graph names only groups and selectors the screen resolves", () => {
-  const groups = new Set(["list", "pod", "rail", "none"]), selectors = new Set(["list.current", "rail.last"]);
+  const groups = new Set(["list", "page", "pod", "rail", "none"]), selectors = new Set(["list.current", "rail.last"]);
   for (const [g, e] of Object.entries(pods.focus)) { if (!groups.has(g) && g !== "fallback" && g !== "initial") assert.fail("group " + g); if (typeof e !== "object") continue; for (const [k, v] of Object.entries(e)) if (["up", "down", "left", "right"].includes(k)) assert.ok(groups.has(v) || selectors.has(v), `${g}.${k} → ${v}`); }
 });
 
