@@ -14,6 +14,99 @@
      "costUSD": 0.08899,
      "seconds": 8.9,
      "checks": {
+      "silhouetteIoU": 0.826,
+      "silhouetteIoUInPlace": 0.804,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 0.987
+       },
+       "leg-0": {
+        "span": 0.675,
+        "coverage": 1.0
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.949,
+        "coverage": 0.997
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.26,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.238,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.47,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.754,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.999,
+        "median": "#ce9436",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.998,
+        "median": "#dfad43",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.99,
+        "median": "#f7e3a4",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.649,
+        "median": "#e6d8b4",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.033,
+      "missing": 0.0,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.784,
+      "passed": true
+     },
+     "responseId": "NhPHapjkBJG639IPz6jk0A4",
+     "checksAsRun": {
       "silhouetteIoU": 0.819,
       "silhouetteIoUInPlace": 0.852,
       "parts": {
@@ -80,10 +173,11 @@
       "bandTolerancePx": 20,
       "slotAgreement": 0.783,
       "passed": true
-     },
-     "responseId": "NhPHapjkBJG639IPz6jk0A4"
+     }
     }
-   ]
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:22:38Z"
   }
  },
  "species": "S12",
@@ -111,13 +205,15 @@
  },
  "startedAt": "2026-10-08T03:51:16Z",
  "outputs": {
-  "station-portrait-600x620.png": "31463301acd8edc2f5272f92186acd16ba6df9a6691d85b3dd0ddca331f678fc",
-  "station-portrait-300x310.png": "a9b88959b08190c75933eb7bf504db6dafe39fa63856e74a8916fdaddb15bf40",
-  "companion-280x300.png": "de8838c789539e23dd86a8aaaa14ea8adc6efd18f7f2cc3fd1e26851c4bd7e9b",
-  "token-48.png": "03cc45bb4f97e1cbb00652a597d76bc36063d8cb65da13216a6dd34db7a3ca58"
+  "station-portrait-600x620.png": "4fcf81037c6e6c3a1c44e173b14a195fd87b5c85a609360c38d6549153b4bd22",
+  "station-portrait-300x310.png": "bbf6ec8c626cb71b4a5fc679c58fbc713dde3b41917e2562cf4e39d1376206ef",
+  "companion-280x300.png": "18ca5d41a255005571ba96ac8705bae0a3532c6d36133c9592ef6d73ee2e28a1",
+  "token-48.png": "79e5a16d1e90ae2f67ce280e4cd7aa584f2aa169e5f400808f69f20175f12f4f"
  },
  "calls": 1,
  "costUSD": 0.08899,
  "seconds": 8.9,
- "finishedAt": "2026-10-08T03:51:50Z"
+ "finishedAt": "2026-10-08T03:51:50Z",
+ "rechecked": "2026-10-08T04:22:38Z",
+ "checksVersion": "mb-grow-checks/3"
 }

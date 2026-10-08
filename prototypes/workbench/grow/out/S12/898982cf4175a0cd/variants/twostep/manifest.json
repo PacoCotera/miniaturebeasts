@@ -6,7 +6,7 @@
  "controlVariant": "twostep",
  "views": {
   "portrait": {
-   "status": "painted",
+   "status": "plain",
    "attempts": [
     {
      "callId": "697f4e89-2466-44fd-9a5b-ea6b8fc117ed",
@@ -15,6 +15,101 @@
      "costUSD": 0.10371,
      "seconds": 9.4,
      "checks": {
+      "silhouetteIoU": 0.733,
+      "silhouetteIoUInPlace": 0.74,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.985
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 0.934
+       },
+       "leg-0": {
+        "span": 0.665,
+        "coverage": 0.808
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.923
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.949,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.287,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.266,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.465,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.754,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#e97e64",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.751,
+        "median": "#e97f65",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.942,
+        "median": "#fed3bf",
+        "nearest": "#ffd7c5",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.973,
+        "median": "#fed3c0",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "paint lies well outside the drawn body (12% of the body beyond a 20 px band): a part was added, moved or re-laid"
+      ],
+      "outside": 0.119,
+      "missing": 0.003,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.947,
+      "passed": false
+     },
+     "responseId": "HhXHavNc18Gw4g-AgMCxCQ",
+     "checksAsRun": {
       "silhouetteIoU": 0.733,
       "silhouetteIoUInPlace": 0.74,
       "parts": {
@@ -83,8 +178,7 @@
       "bandTolerancePx": 20,
       "slotAgreement": 0.947,
       "passed": false
-     },
-     "responseId": "HhXHavNc18Gw4g-AgMCxCQ"
+     }
     },
     {
      "callId": "8703de03-11ff-45da-a23b-087cbb322961",
@@ -93,6 +187,101 @@
      "costUSD": 0.10014,
      "seconds": 9.2,
      "checks": {
+      "silhouetteIoU": 0.733,
+      "silhouetteIoUInPlace": 0.74,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.985
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 0.934
+       },
+       "leg-0": {
+        "span": 0.665,
+        "coverage": 0.808
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.923
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.949,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.287,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.266,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.465,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.754,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#e97e64",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.751,
+        "median": "#e97f65",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.942,
+        "median": "#fed3bf",
+        "nearest": "#ffd7c5",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.973,
+        "median": "#fed3c0",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "paint lies well outside the drawn body (12% of the body beyond a 20 px band): a part was added, moved or re-laid"
+      ],
+      "outside": 0.119,
+      "missing": 0.003,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.947,
+      "passed": false
+     },
+     "responseId": "NhXHat7dF8uZjMcPr4eEqQg",
+     "checksAsRun": {
       "silhouetteIoU": 0.914,
       "silhouetteIoUInPlace": 0.917,
       "parts": {
@@ -159,8 +348,7 @@
       "bandTolerancePx": 20,
       "slotAgreement": 0.926,
       "passed": true
-     },
-     "responseId": "NhXHat7dF8uZjMcPr4eEqQg"
+     }
     },
     {
      "callId": "0a66234e-07b9-4ce3-8d9e-9fa29cb97a66",
@@ -242,7 +430,9 @@
      "responseId": "RxXHatH6KZusjMcP2peKkQ8"
     }
    ],
-   "steps": []
+   "steps": [],
+   "servedBy": null,
+   "rechecked": "2026-10-08T04:36:06Z"
   }
  },
  "species": "S12",
@@ -270,13 +460,15 @@
  },
  "startedAt": "2026-10-08T03:59:24Z",
  "outputs": {
-  "station-portrait-600x620.png": "4ca19d098d2c0f91cea0aea340a7ca064b310b916d6b67378dadd50c809a3dff",
-  "station-portrait-300x310.png": "0224934d05749120bcc27905cf3689c8dc0f6edc1eb4cc0198dfb4792dc91203",
-  "companion-280x300.png": "41af3643e8097fb69dae3f4bac9851622de54f5168f18d4d465c8df72c72d370",
-  "token-48.png": "2c7a2c45c07f30f4f29c9a0d3b3b49b3cb34525f80ac704c69dc387871145669"
+  "station-portrait-600x620.png": "a15458606600312d02e4120406ac552419e972b771c33d926fc13e2945dfd387",
+  "station-portrait-300x310.png": "ad2345d1e51af10392d2d6709580178a631cb9f5bad363504785f7f23ff7cbd5",
+  "companion-280x300.png": "dc973716e441e1ac97172c44c414457499a292be9871f2b3124271d0e8e10faf",
+  "token-48.png": "b0715b464cd5de1a60543136c0643ddd6db470de49fa5ecf81d53e0d50e65b80"
  },
  "calls": 3,
  "costUSD": 0.2964,
  "seconds": 28.1,
- "finishedAt": "2026-10-08T04:00:34Z"
+ "finishedAt": "2026-10-08T04:00:34Z",
+ "rechecked": "2026-10-08T04:36:06Z",
+ "checksVersion": "mb-grow-checks/3"
 }

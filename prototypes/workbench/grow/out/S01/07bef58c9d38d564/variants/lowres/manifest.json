@@ -14,6 +14,121 @@
      "costUSD": 0.09458,
      "seconds": 9.7,
      "checks": {
+      "silhouetteIoU": 0.931,
+      "silhouetteIoUInPlace": 0.904,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.998
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "muzzle": {
+        "span": 0.974,
+        "coverage": 0.999
+       },
+       "crown": {
+        "span": 1.0,
+        "coverage": 0.996
+       },
+       "leg-0": {
+        "span": 0.923,
+        "coverage": 0.972
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.991
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.598,
+        "painted": 0.694,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.443,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.227,
+        "painted": 0.267,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.29,
+        "painted": 0.33,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.665,
+        "painted": 0.723,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.296,
+        "painted": 0.385,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.881,
+        "median": "#32363a",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.582,
+        "median": "#5e6367",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 0.968,
+        "median": "#444d4e",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@crown": {
+        "agreement": 0.015,
+        "median": "#cfbb9c",
+        "nearest": "#dfd2ae",
+        "ok": false
+       },
+       "second@leg-0": {
+        "agreement": 0.928,
+        "median": "#c5b292",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.791,
+        "median": "#c2ae8f",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.863,
+        "median": "#b79f80",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the body slot on the crown (painted #cfbb9c, the colour of belly/second)"
+      ],
+      "outside": 0.011,
+      "missing": 0.0,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.789,
+      "passed": false
+     },
+     "responseId": "XRPHaoH6BO6j_uMPjfeNsAw",
+     "checksAsRun": {
       "silhouetteIoU": 0.939,
       "silhouetteIoUInPlace": 0.933,
       "parts": {
@@ -108,8 +223,7 @@
       "bandTolerancePx": 20,
       "slotAgreement": 0.8,
       "passed": false
-     },
-     "responseId": "XRPHaoH6BO6j_uMPjfeNsAw"
+     }
     },
     {
      "callId": "ee83e468-fef0-4ffa-a2be-beae8446d98b",
@@ -117,6 +231,119 @@
      "costUSD": 0.10812,
      "seconds": 16.2,
      "checks": {
+      "silhouetteIoU": 0.931,
+      "silhouetteIoUInPlace": 0.92,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.995
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "muzzle": {
+        "span": 0.983,
+        "coverage": 0.999
+       },
+       "crown": {
+        "span": 1.0,
+        "coverage": 0.919
+       },
+       "leg-0": {
+        "span": 0.923,
+        "coverage": 0.958
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.98
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.598,
+        "painted": 0.696,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.444,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.227,
+        "painted": 0.27,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.29,
+        "painted": 0.351,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.665,
+        "painted": 0.724,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.296,
+        "painted": 0.385,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.994,
+        "median": "#444e50",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.995,
+        "median": "#454f51",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 1.0,
+        "median": "#465153",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@crown": {
+        "agreement": 0.991,
+        "median": "#495456",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.988,
+        "median": "#d2c09a",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.867,
+        "median": "#bda683",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.955,
+        "median": "#bea680",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.001,
+      "missing": 0.0,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.977,
+      "passed": true
+     },
+     "responseId": "ghPHasZ925j-4w_mn4o5",
+     "checksAsRun": {
       "silhouetteIoU": 0.952,
       "silhouetteIoUInPlace": 0.949,
       "parts": {
@@ -209,10 +436,11 @@
       "bandTolerancePx": 20,
       "slotAgreement": 0.982,
       "passed": true
-     },
-     "responseId": "ghPHasZ925j-4w_mn4o5"
+     }
     }
-   ]
+   ],
+   "servedBy": "attempt 2",
+   "rechecked": "2026-10-08T04:23:22Z"
   }
  },
  "species": "S01",
@@ -240,13 +468,15 @@
  },
  "startedAt": "2026-10-08T03:51:56Z",
  "outputs": {
-  "station-portrait-600x620.png": "872754fc493a0681142ccca209a3af710f7e548dbfd357de9e38617ecfe34cad",
-  "station-portrait-300x310.png": "94a9a23ae3413c0f2dc89a8eb561d767a76e76f35705a363e4a6f8f7e9d2dc52",
-  "companion-280x300.png": "5d5b3f51a249a6bdf78edce9f83918c4a471d3c5b04efe5c2784ed1f96cdb260",
-  "token-48.png": "b544c210f276dbbe230cb37f7f08b002d1fb1cbeecdace6997b8cf13e5bce659"
+  "station-portrait-600x620.png": "1820939dfe107a62e3e80814a1f347dfca4b81d328d3f6b32726f2e7eb740cee",
+  "station-portrait-300x310.png": "2ed4ec1abfc539cc6850a2f97bce1edacc1a4745b6eca3895de6364aa8bac5d5",
+  "companion-280x300.png": "56d796568675675105c7cee6d7caf6482b8f925691059e1080084b68afb89aaa",
+  "token-48.png": "fb48c0e72a1677822bbb1018a6b67c6e0c0a52491fbb9e6341398d6223d27ce6"
  },
  "calls": 2,
  "costUSD": 0.2027,
  "seconds": 25.9,
- "finishedAt": "2026-10-08T03:53:12Z"
+ "finishedAt": "2026-10-08T03:53:12Z",
+ "rechecked": "2026-10-08T04:23:22Z",
+ "checksVersion": "mb-grow-checks/3"
 }

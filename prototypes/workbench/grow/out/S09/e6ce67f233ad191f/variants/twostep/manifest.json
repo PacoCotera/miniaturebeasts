@@ -18,6 +18,119 @@
       "silhouetteIoU": 0.569,
       "silhouetteIoUInPlace": 0.69,
       "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.953
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 0.772
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.979
+       },
+       "leg-0": {
+        "span": 0.895,
+        "coverage": 0.512
+       },
+       "flap": {
+        "span": 0.896,
+        "coverage": 0.665
+       },
+       "tail": {
+        "span": 0.652,
+        "coverage": 0.572
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.407,
+        "painted": 0.536,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.206,
+        "painted": 0.315,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.263,
+        "painted": 0.367,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.416,
+        "painted": 0.472,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.58,
+        "painted": 0.596,
+        "ok": true
+       },
+       "tail": {
+        "drawn": 0.241,
+        "painted": 0.217,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.921,
+        "median": "#2f9aa3",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.897,
+        "median": "#2f9aa4",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 1.0,
+        "median": "#877fd0",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.872,
+        "median": "#f8e099",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second#2@leg-0": {
+        "agreement": 0.894,
+        "median": "#bdd8e6",
+        "nearest": "#d9ecf5",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.917,
+        "median": "#d6e9f2",
+        "nearest": "#d9ecf5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "paint lies well outside the drawn body (14% of the body beyond a 22 px band): a part was added, moved or re-laid"
+      ],
+      "outside": 0.144,
+      "missing": 0.003,
+      "bandTolerancePx": 22,
+      "slotAgreement": 0.921,
+      "passed": false
+     },
+     "responseId": "jRTHauGAJJHV-sAPhZuAoA8",
+     "checksAsRun": {
+      "silhouetteIoU": 0.569,
+      "silhouetteIoUInPlace": 0.69,
+      "parts": {
        "region-0": 0.953,
        "region-1": 0.772,
        "neck": 1.0,
@@ -104,8 +217,7 @@
       "bandTolerancePx": 22,
       "slotAgreement": 0.921,
       "passed": false
-     },
-     "responseId": "jRTHauGAJJHV-sAPhZuAoA8"
+     }
     },
     {
      "callId": "f640f877-e62d-4100-b2ca-ba99da426c18",
@@ -114,6 +226,119 @@
      "costUSD": 0.10754,
      "seconds": 9.7,
      "checks": {
+      "silhouetteIoU": 0.569,
+      "silhouetteIoUInPlace": 0.69,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.953
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 0.772
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.979
+       },
+       "leg-0": {
+        "span": 0.895,
+        "coverage": 0.512
+       },
+       "flap": {
+        "span": 0.896,
+        "coverage": 0.665
+       },
+       "tail": {
+        "span": 0.652,
+        "coverage": 0.572
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.407,
+        "painted": 0.536,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.206,
+        "painted": 0.315,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.263,
+        "painted": 0.367,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.416,
+        "painted": 0.472,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.58,
+        "painted": 0.596,
+        "ok": true
+       },
+       "tail": {
+        "drawn": 0.241,
+        "painted": 0.217,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.921,
+        "median": "#2f9aa3",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.897,
+        "median": "#2f9aa4",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 1.0,
+        "median": "#877fd0",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.872,
+        "median": "#f8e099",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second#2@leg-0": {
+        "agreement": 0.894,
+        "median": "#bdd8e6",
+        "nearest": "#d9ecf5",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.917,
+        "median": "#d6e9f2",
+        "nearest": "#d9ecf5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "paint lies well outside the drawn body (14% of the body beyond a 22 px band): a part was added, moved or re-laid"
+      ],
+      "outside": 0.144,
+      "missing": 0.003,
+      "bandTolerancePx": 22,
+      "slotAgreement": 0.921,
+      "passed": false
+     },
+     "responseId": "tRTHapTkINzh_uMPlcHO8Ag",
+     "checksAsRun": {
       "silhouetteIoU": 0.617,
       "silhouetteIoUInPlace": 0.775,
       "parts": {
@@ -204,11 +429,12 @@
       "bandTolerancePx": 22,
       "slotAgreement": 0.885,
       "passed": false
-     },
-     "responseId": "tRTHapTkINzh_uMPlcHO8Ag"
+     }
     }
    ],
-   "steps": []
+   "steps": [],
+   "servedBy": null,
+   "rechecked": "2026-10-08T04:32:49Z"
   }
  },
  "species": "S09",
@@ -244,5 +470,7 @@
  "calls": 2,
  "costUSD": 0.20521,
  "seconds": 21.8,
- "finishedAt": "2026-10-08T03:58:12Z"
+ "finishedAt": "2026-10-08T03:58:12Z",
+ "rechecked": "2026-10-08T04:32:49Z",
+ "checksVersion": "mb-grow-checks/3"
 }

@@ -14,6 +14,119 @@
      "costUSD": 0.09898,
      "seconds": 13.7,
      "checks": {
+      "silhouetteIoU": 0.927,
+      "silhouetteIoUInPlace": 0.916,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.994
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.994
+       },
+       "muzzle": {
+        "span": 0.991,
+        "coverage": 0.998
+       },
+       "crown": {
+        "span": 1.0,
+        "coverage": 0.892
+       },
+       "leg-0": {
+        "span": 0.923,
+        "coverage": 0.97
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.989
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.598,
+        "painted": 0.693,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.442,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.227,
+        "painted": 0.271,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.29,
+        "painted": 0.345,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.665,
+        "painted": 0.721,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.296,
+        "painted": 0.384,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.634,
+        "median": "#485152",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.958,
+        "median": "#3e4648",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 1.0,
+        "median": "#3d4447",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@crown": {
+        "agreement": 0.989,
+        "median": "#475051",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.901,
+        "median": "#c9b897",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.831,
+        "median": "#baa584",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.645,
+        "median": "#a78863",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.002,
+      "missing": 0.002,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.781,
+      "passed": true
+     },
+     "responseId": "ChPHavKlI7bV-sAPuLzOqA8",
+     "checksAsRun": {
       "silhouetteIoU": 0.939,
       "silhouetteIoUInPlace": 0.944,
       "parts": {
@@ -106,10 +219,11 @@
       "bandTolerancePx": 20,
       "slotAgreement": 0.79,
       "passed": true
-     },
-     "responseId": "ChPHavKlI7bV-sAPuLzOqA8"
+     }
     }
-   ]
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:21:28Z"
   }
  },
  "species": "S01",
@@ -137,13 +251,15 @@
  },
  "startedAt": "2026-10-08T03:50:33Z",
  "outputs": {
-  "station-portrait-600x620.png": "d683b06fdd792390f189bc48796a62e6287cc9e782cf8d8aeaa1d46a7af88acf",
-  "station-portrait-300x310.png": "0aeec7b118d567a23a45c8fbe9650740b7bd207cb3580fb88ccc129665856e75",
-  "companion-280x300.png": "e2cd29b53db6421dcd5655083fe85f01776ade5575f35c528c1f7a26e4a69c05",
-  "token-48.png": "e9ceb718581d80c6c982b27dbf6eb11c1e189b38d0bc35fd5488e734a5217d96"
+  "station-portrait-600x620.png": "72390f7f2d1b6b1706d1cd6e10867b5c7c946a3346cb505c2dbfdbbaf82c3ec3",
+  "station-portrait-300x310.png": "f518f3292552703e702ef152e375c1cd5ab49526d7136b2981e1792b45834a7e",
+  "companion-280x300.png": "e6cbee35053b3fb15fb9d9d2bbb788096d422cf49e32abcaa0dea8436eeae5db",
+  "token-48.png": "62673d64296ef61ad1581584e388b7902bfb30beb63b5af8aadd1b08153ea47b"
  },
  "calls": 1,
  "costUSD": 0.09898,
  "seconds": 13.7,
- "finishedAt": "2026-10-08T03:51:11Z"
+ "finishedAt": "2026-10-08T03:51:11Z",
+ "rechecked": "2026-10-08T04:21:28Z",
+ "checksVersion": "mb-grow-checks/3"
 }

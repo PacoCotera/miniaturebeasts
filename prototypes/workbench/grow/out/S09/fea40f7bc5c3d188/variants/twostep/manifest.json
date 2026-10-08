@@ -18,6 +18,121 @@
       "silhouetteIoU": 0.915,
       "silhouetteIoUInPlace": 0.915,
       "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.957
+       },
+       "beak": {
+        "span": 0.964,
+        "coverage": 0.997
+       },
+       "leg-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.99,
+        "coverage": 1.0
+       },
+       "tail": {
+        "span": 1.0,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.407,
+        "painted": 0.486,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.222,
+        "painted": 0.301,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.185,
+        "painted": 0.264,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.267,
+        "painted": 0.344,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.419,
+        "painted": 0.458,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.579,
+        "painted": 0.578,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#2e9b9f",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 1.0,
+        "median": "#2b989c",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@neck": {
+        "agreement": 1.0,
+        "median": "#2e9ba0",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.914,
+        "median": "#2e9a9f",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 1.0,
+        "median": "#efd28a",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 1.0,
+        "median": "#fdedb2",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.006,
+      "bandTolerancePx": 21,
+      "slotAgreement": 0.987,
+      "passed": true
+     },
+     "responseId": "4BTHarTpDerK_uMPwfzf6Ak",
+     "checksAsRun": {
+      "silhouetteIoU": 0.915,
+      "silhouetteIoUInPlace": 0.915,
+      "parts": {
        "region-0": 1.0,
        "region-1": 1.0,
        "neck": 1.0,
@@ -103,8 +218,7 @@
       "bandTolerancePx": 21,
       "slotAgreement": 0.987,
       "passed": true
-     },
-     "responseId": "4BTHarTpDerK_uMPwfzf6Ak"
+     }
     },
     {
      "callId": "f5dd2f2a-9eac-43c5-abde-92c9ed6440ed",
@@ -113,6 +227,122 @@
      "costUSD": 0.08883,
      "seconds": 9.8,
      "checks": {
+      "silhouetteIoU": 0.898,
+      "silhouetteIoUInPlace": 0.907,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.998
+       },
+       "beak": {
+        "span": 0.964,
+        "coverage": 0.991
+       },
+       "leg-0": {
+        "span": 1.0,
+        "coverage": 0.997
+       },
+       "flap": {
+        "span": 0.994,
+        "coverage": 0.998
+       },
+       "tail": {
+        "span": 1.0,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.407,
+        "painted": 0.486,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.222,
+        "painted": 0.301,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.185,
+        "painted": 0.264,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.267,
+        "painted": 0.344,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.419,
+        "painted": 0.458,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.579,
+        "painted": 0.579,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.998,
+        "median": "#286975",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 1.0,
+        "median": "#2c6f77",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@neck": {
+        "agreement": 1.0,
+        "median": "#2a6f7b",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.906,
+        "median": "#327d86",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.999,
+        "median": "#c5b48a",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 1.0,
+        "median": "#dfc37c",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.0,
+      "bandTolerancePx": 21,
+      "slotAgreement": 0.984,
+      "passed": true,
+      "gated": false
+     },
+     "responseId": "ARXHaqmGDKq__uMP1YXbuAs",
+     "checksAsRun": {
       "silhouetteIoU": 0.898,
       "silhouetteIoUInPlace": 0.907,
       "parts": {
@@ -202,11 +432,12 @@
       "slotAgreement": 0.984,
       "passed": true,
       "gated": false
-     },
-     "responseId": "ARXHaqmGDKq__uMP1YXbuAs"
+     }
     }
    ],
-   "steps": []
+   "steps": [],
+   "servedBy": "step 2",
+   "rechecked": "2026-10-08T04:33:25Z"
   }
  },
  "species": "S09",
@@ -242,5 +473,7 @@
  "calls": 2,
  "costUSD": 0.18936,
  "seconds": 25.1,
- "finishedAt": "2026-10-08T03:59:22Z"
+ "finishedAt": "2026-10-08T03:59:22Z",
+ "rechecked": "2026-10-08T04:33:25Z",
+ "checksVersion": "mb-grow-checks/3"
 }

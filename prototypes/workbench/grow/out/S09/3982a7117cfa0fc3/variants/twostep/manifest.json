@@ -18,6 +18,105 @@
       "silhouetteIoU": 0.565,
       "silhouetteIoUInPlace": 0.769,
       "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.938
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 0.515
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.936
+       },
+       "leg-0": {
+        "span": 0.867,
+        "coverage": 0.441
+       },
+       "flap": {
+        "span": 0.823,
+        "coverage": 0.521
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.426,
+        "painted": 0.589,
+        "ok": false
+       },
+       "neck": {
+        "drawn": 0.181,
+        "painted": 0.304,
+        "ok": false
+       },
+       "head": {
+        "drawn": 0.346,
+        "painted": 0.474,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.501,
+        "painted": 0.551,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.643,
+        "painted": 0.646,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.79,
+        "median": "#4c7ca2",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.952,
+        "median": "#4d7cc9",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 0.858,
+        "median": "#3fa17c",
+        "nearest": "#38a878",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.862,
+        "median": "#cfbfa7",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.173,
+        "median": "#3da279",
+        "nearest": "#38a878",
+        "ok": false
+       }
+      },
+      "reasons": [
+       "the proportions are off: the region-0 is larger than drawn (0.59 of the body against 0.43), the neck is larger than drawn (0.30 of the body against 0.18)",
+       "a pigment slot is painted in another slot's colour: the second slot on the flap (painted #3da279, the colour of body)"
+      ],
+      "outside": 0.072,
+      "missing": 0.028,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.736,
+      "passed": false
+     },
+     "responseId": "txTHaoXhLY_V-8YPoMHQKQ",
+     "checksAsRun": {
+      "silhouetteIoU": 0.565,
+      "silhouetteIoUInPlace": 0.769,
+      "parts": {
        "region-0": 0.938,
        "region-1": 0.515,
        "neck": 1.0,
@@ -94,8 +193,7 @@
       "bandTolerancePx": 19,
       "slotAgreement": 0.736,
       "passed": false
-     },
-     "responseId": "txTHaoXhLY_V-8YPoMHQKQ"
+     }
     },
     {
      "callId": "f4cf2dc3-7468-4f4e-aa9f-146f1c2f3714",
@@ -104,6 +202,105 @@
      "costUSD": 0.1018,
      "seconds": 12.9,
      "checks": {
+      "silhouetteIoU": 0.565,
+      "silhouetteIoUInPlace": 0.769,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.938
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 0.515
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.936
+       },
+       "leg-0": {
+        "span": 0.867,
+        "coverage": 0.441
+       },
+       "flap": {
+        "span": 0.823,
+        "coverage": 0.521
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.426,
+        "painted": 0.589,
+        "ok": false
+       },
+       "neck": {
+        "drawn": 0.181,
+        "painted": 0.304,
+        "ok": false
+       },
+       "head": {
+        "drawn": 0.346,
+        "painted": 0.474,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.501,
+        "painted": 0.551,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.643,
+        "painted": 0.646,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.79,
+        "median": "#4c7ca2",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.952,
+        "median": "#4d7cc9",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 0.858,
+        "median": "#3fa17c",
+        "nearest": "#38a878",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.862,
+        "median": "#cfbfa7",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.173,
+        "median": "#3da279",
+        "nearest": "#38a878",
+        "ok": false
+       }
+      },
+      "reasons": [
+       "the proportions are off: the region-0 is larger than drawn (0.59 of the body against 0.43), the neck is larger than drawn (0.30 of the body against 0.18)",
+       "a pigment slot is painted in another slot's colour: the second slot on the flap (painted #3da279, the colour of body)"
+      ],
+      "outside": 0.072,
+      "missing": 0.028,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.736,
+      "passed": false
+     },
+     "responseId": "3BTHavGrGNGr_uMPpJW6oQ0",
+     "checksAsRun": {
       "silhouetteIoU": 0.617,
       "silhouetteIoUInPlace": 0.698,
       "parts": {
@@ -182,11 +379,12 @@
       "bandTolerancePx": 19,
       "slotAgreement": 0.832,
       "passed": false
-     },
-     "responseId": "3BTHavGrGNGr_uMPpJW6oQ0"
+     }
     }
    ],
-   "steps": []
+   "steps": [],
+   "servedBy": null,
+   "rechecked": "2026-10-08T04:29:00Z"
   }
  },
  "species": "S09",
@@ -222,5 +420,7 @@
  "calls": 2,
  "costUSD": 0.19634,
  "seconds": 33.1,
- "finishedAt": "2026-10-08T03:58:55Z"
+ "finishedAt": "2026-10-08T03:58:55Z",
+ "rechecked": "2026-10-08T04:29:00Z",
+ "checksVersion": "mb-grow-checks/3"
 }
