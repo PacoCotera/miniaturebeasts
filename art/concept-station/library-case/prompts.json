@@ -1,0 +1,746 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Generated candidates for the Library's collection screen as the specimen case (direction B of design/proposals/collection-display.md with the owner's changes: the case's own materials, one tray per clan with the clan colour on the edge, found cards with faces, a met species as a pencil sketch, unmet as bare mounts with blank tags and no cue, room to grow as bare linen, a synopsis of objects on a brass ledge) in art/concept-station/library-case/brief-case.md, with the accepted Pip asset and the species names placed after generation; concept art awaiting the owner's choice.",
+  "brief": "art/concept-station/library-case/brief-case.md",
+  "tool": {
+    "name": "Gemini API",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+    "auth": "API key from the environment; not recorded",
+    "models": {
+      "gemini-3-pro-image": "Gemini 3 Pro Image: final candidates and refinements",
+      "gemini-3.1-flash-image": "Gemini 3.1 Flash Image: layout round"
+    },
+    "modelChoice": "Pro throughout: twelve identical bare places, exact clan strips, blank tags and a ledge of objects without digits need it. Round 1: three fresh in the one chosen direction. Rounds 2 and 3: one-change edits of the pick in words, composited by rectangle.",
+    "generationConfig": {
+      "responseModalities": [
+        "IMAGE"
+      ],
+      "imageConfig": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      }
+    },
+    "output": "image/jpeg 2752x1536 (16:9 at 2K), kept byte-exact in raw/ for kept candidates; LANCZOS to 1536x864 as the canvas PNG; the screen PNG is the centred 1024:600 band resampled to 1024x600. Pip and then the name layer are placed afterwards (placed/).",
+    "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the preamble, then the prompt verbatim as the last text part.",
+    "budget": "At most 20 generations for this screen; 6 used (round 1: 3 fresh, round 2: 2 edits, round 3: 1 edit), all on gemini-3-pro-image. No call failed; none was retried."
+  },
+  "plan": {
+    "references": {
+      "art/concept-station/round3/A-r3-a1-1024x600.png": "approved Home: same device (top bar, bottom line, type, counters, light direction)",
+      "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png": "the accepted book a card opens into: only its specimen plates' drawing style and its lizard for the found cards",
+      "art/concept-station/library-case/layout/case-layout-template.png": "layout truth only: the proposal's slot grid at thirty-two with four clan trays, the plain tray of twelve bare places, the footprints and the ledge",
+      "art/miniature-lives/assets/rich-plain-300x310.png": "the accepted rich Pip, placed into the Loika card after generation, never sent to the generator",
+      "art/concept-station/library-case/layout/text-case.json": "the live-text layer placed after Pip: the three found names inked, the met name in pencil grey, and the bottom line's subject, set in Inter"
+    },
+    "directions": {
+      "B specimen-case": "The owner's chosen direction: a glazed case of unit trays in its own materials (ebonised frame, brass corners, glass lid, linen floor, cards on mounts, tags on pins)."
+    },
+    "rounds": "Round 1: three fresh (Pro). Round 2: two one-change edits (the focus ring, which duplicated the card and was rejected; the ledge tags, which held). Round 3: the focus ring again, which held. Both held edits pasted by rectangle onto the pick."
+  },
+  "recommended": {
+    "tag": "SC-C2",
+    "screen": "placed/SC-C2-pip-named-1024x600.png",
+    "composite": "composites/SC-C2-1024x600.png",
+    "base": "round1/SC-B-r1-a3-1024x600.png",
+    "alternative": "round1/SC-B-r1-a1-1024x600.png",
+    "pipAsset": "art/miniature-lives/assets/rich-plain-300x310.png",
+    "textLayer": "layout/text-case.json"
+  },
+  "calls": [
+    {
+      "id": "specimen-case",
+      "direction": "B",
+      "round": 1,
+      "attempt": 1,
+      "tag": "SC-B-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's SPECIMEN CASE screen (the whole collection of species seen at a glance as a glazed entomologist's case of unit trays), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a naturalist's SPECIMEN CASE seen straight from above through its glass lid: an ebonised dark-wood frame with brass corner caps, one glass lid with a single soft reflection running from the upper left, a pale linen floor, shallow unit trays with pale card walls that cast short shadows, small cream cards standing proud on mounts, paper tags on brass pins; real depth, material and shadow, a cataloguing hand; quiet. Cool, even light from the upper left, short shadows to the lower right, nothing warm. NOT paper pages, not a book, not flat tiles. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, crisp edges, no noise or dither. The only words are the few listed.\nLAYOUT, as the template. THE CASE fills the stage: an ebonised dark-wood frame with small brass caps at its four corners, a single glass lid over the whole case (one soft diagonal reflection from the upper left, nothing else on the glass), and inside it a pale, finely woven LINEN floor. UPPER LEFT, FOUR CLAN TRAYS in a two-by-two block, each a shallow unit tray with pale card walls and a thin lip casting a short shadow onto the linen, and a thin strip along its top edge in that tray's own colour exactly as in the template (moss green, coral, lagoon, slate violet). In each clan tray a small cream CARD standing a little proud on a low mount, and under the card a small paper TAG held by a brass pin through the tag's corner (the pin never touches the card): the first tray's card is a plain EMPTY cream card with a small gilt triangle at its top right corner (the creature is placed later); the second tray's card shows a small painted face of a round coral fluff under a cap of three flaps; the third tray's card shows a small painted lagoon-blue lizard with a crest and a tail ending in a glowing bulb, and this card is lifted inside a warm cream focus ring; the fourth tray's card carries only a soft, unfinished PENCIL field sketch in grey graphite of a sitting cat, a naturalist's quick sketch, no colour. All four tags are blank paper. TO THE RIGHT, ONE WIDE PLAIN TRAY with pale card walls and NO colour strip, holding twelve IDENTICAL bare places in two rows of six: each a low empty mount with a small brass pin and a blank paper tag under it, nothing on any mount, nothing to tell them apart. BELOW THE TRAYS, the lower half of the linen floor is bare, with only faint rectangular footprints pressed into the linen where more trays will sit. ALONG THE FOOT OF THE CASE, a brass-edged LEDGE in front of the glass: at its left a thread strung with sixteen tiny paper tags (the first three inked dark, the fourth pencilled light grey, the other twelve blank); in the middle a short engraved brass rule with a small brass slider a quarter of the way along; to the right a small round pin cushion with four pins whose heads are the four tray colours; at the far right a small brass plate, a quarter of it filled bright. No digits, no words anywhere on the case or the ledge.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: every paper tag is BLANK (names are placed later); no words or digits on the trays, cards, tags or the ledge.\nConstraints: no digits except the three counters; nothing written on any tag, card or plate; the first clan tray's card is a plain, flat, EMPTY cream card (the creature is placed there later) with only a small gilt triangle at its top right corner; the twelve places in the wide plain tray are IDENTICAL bare mounts with blank tags and show no silhouette, shape, shadow of a creature, colour or hint of any kind; no pin passes through any creature or card picture, pins hold only the tags; no wood grain on the floor (it is linen); no paper pages; no people; no warm light or glow.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 2 is the Library's book that a card opens into: take only the drawing style of its specimen plates and its lizard for the found cards; nothing of its pages is on this screen. Image 3 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only; nothing else of it is on this screen",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+          "role": "the Library's book, the screen a card opens into: take ONLY the drawing style of its small specimen plates and its portrait's creature (the lagoon lizard with the glowing tail) for the found cards' faces; its paper pages, tabs and layout are NOT on this screen",
+          "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+        },
+        {
+          "path": "art/concept-station/library-case/layout/case-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the case frame and linen floor, the four clan trays at the upper left (each with its colour strip, a card on its mount and a tag), the wide plain tray with twelve identical bare mounts and blank tags, the faint footprints on the lower floor, the brass-edged ledge with its string of tiny tags, slider on a rule, pin cushion and brass plate, and the bottom line; the four strip colours are the clans' and are to be kept; not style",
+          "sha256": "b0c8eb57e0ddf15b30cf038c95d762daa3bdc5f4b21ba2da9c38425bd51758d9"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T06:43:39Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/SC-B-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "0bd795866716da6addf01cfff5657176eab60bd4526748c6aa218473a4663538"
+        },
+        "png": {
+          "file": "round1/SC-B-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "5b59e150c469ff734f927f4f6238625dce39332145afc63b8c8844fbb12dab45"
+        },
+        "screen": {
+          "file": "round1/SC-B-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "294fc407ca0c4e57466664e543a196e57296d3cd1268c39542e394febd56a3a7",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 28.2,
+        "usage": {
+          "promptTokenCount": 2197,
+          "candidatesTokenCount": 1892,
+          "totalTokenCount": 4567,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1423
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 478,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as the alternative (strong depth and shadow; whole tray frames tinted in the clan colours rather than an edge strip; a blue-grey floor rather than linen; four large footprints; a clean ledge; a book glyph before the screen name)"
+      },
+      "promptSource": "art/concept-station/library-case/prompts.json plan (art director), from brief-case.md"
+    },
+    {
+      "id": "specimen-case",
+      "direction": "B",
+      "round": 1,
+      "attempt": 2,
+      "tag": "SC-B-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's SPECIMEN CASE screen (the whole collection of species seen at a glance as a glazed entomologist's case of unit trays), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a naturalist's SPECIMEN CASE seen straight from above through its glass lid: an ebonised dark-wood frame with brass corner caps, one glass lid with a single soft reflection running from the upper left, a pale linen floor, shallow unit trays with pale card walls that cast short shadows, small cream cards standing proud on mounts, paper tags on brass pins; real depth, material and shadow, a cataloguing hand; quiet. Cool, even light from the upper left, short shadows to the lower right, nothing warm. NOT paper pages, not a book, not flat tiles. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, crisp edges, no noise or dither. The only words are the few listed.\nLAYOUT, as the template. THE CASE fills the stage: an ebonised dark-wood frame with small brass caps at its four corners, a single glass lid over the whole case (one soft diagonal reflection from the upper left, nothing else on the glass), and inside it a pale, finely woven LINEN floor. UPPER LEFT, FOUR CLAN TRAYS in a two-by-two block, each a shallow unit tray with pale card walls and a thin lip casting a short shadow onto the linen, and a thin strip along its top edge in that tray's own colour exactly as in the template (moss green, coral, lagoon, slate violet). In each clan tray a small cream CARD standing a little proud on a low mount, and under the card a small paper TAG held by a brass pin through the tag's corner (the pin never touches the card): the first tray's card is a plain EMPTY cream card with a small gilt triangle at its top right corner (the creature is placed later); the second tray's card shows a small painted face of a round coral fluff under a cap of three flaps; the third tray's card shows a small painted lagoon-blue lizard with a crest and a tail ending in a glowing bulb, and this card is lifted inside a warm cream focus ring; the fourth tray's card carries only a soft, unfinished PENCIL field sketch in grey graphite of a sitting cat, a naturalist's quick sketch, no colour. All four tags are blank paper. TO THE RIGHT, ONE WIDE PLAIN TRAY with pale card walls and NO colour strip, holding twelve IDENTICAL bare places in two rows of six: each a low empty mount with a small brass pin and a blank paper tag under it, nothing on any mount, nothing to tell them apart. BELOW THE TRAYS, the lower half of the linen floor is bare, with only faint rectangular footprints pressed into the linen where more trays will sit. ALONG THE FOOT OF THE CASE, a brass-edged LEDGE in front of the glass: at its left a thread strung with sixteen tiny paper tags (the first three inked dark, the fourth pencilled light grey, the other twelve blank); in the middle a short engraved brass rule with a small brass slider a quarter of the way along; to the right a small round pin cushion with four pins whose heads are the four tray colours; at the far right a small brass plate, a quarter of it filled bright. No digits, no words anywhere on the case or the ledge.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: every paper tag is BLANK (names are placed later); no words or digits on the trays, cards, tags or the ledge.\nConstraints: no digits except the three counters; nothing written on any tag, card or plate; the first clan tray's card is a plain, flat, EMPTY cream card (the creature is placed there later) with only a small gilt triangle at its top right corner; the twelve places in the wide plain tray are IDENTICAL bare mounts with blank tags and show no silhouette, shape, shadow of a creature, colour or hint of any kind; no pin passes through any creature or card picture, pins hold only the tags; no wood grain on the floor (it is linen); no paper pages; no people; no warm light or glow.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 2 is the Library's book that a card opens into: take only the drawing style of its specimen plates and its lizard for the found cards; nothing of its pages is on this screen. Image 3 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only; nothing else of it is on this screen",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+          "role": "the Library's book, the screen a card opens into: take ONLY the drawing style of its small specimen plates and its portrait's creature (the lagoon lizard with the glowing tail) for the found cards' faces; its paper pages, tabs and layout are NOT on this screen",
+          "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+        },
+        {
+          "path": "art/concept-station/library-case/layout/case-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the case frame and linen floor, the four clan trays at the upper left (each with its colour strip, a card on its mount and a tag), the wide plain tray with twelve identical bare mounts and blank tags, the faint footprints on the lower floor, the brass-edged ledge with its string of tiny tags, slider on a rule, pin cushion and brass plate, and the bottom line; the four strip colours are the clans' and are to be kept; not style",
+          "sha256": "b0c8eb57e0ddf15b30cf038c95d762daa3bdc5f4b21ba2da9c38425bd51758d9"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T06:44:10Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/SC-B-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "5767124b05474e33ddd88c031c38bf2c2399bf0201c4dc67dfa926219426a014"
+        },
+        "png": {
+          "file": "round1/SC-B-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "1c75891e0220223553068bd9c1109e413ec7d78dd7d14fc0016759ba9cee5afa"
+        },
+        "screen": {
+          "file": "round1/SC-B-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "33194ab0f0816d19d16ed76ca991c2d959b2c7bf0dd802be002f33e8c0fb4116",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 27.6,
+        "usage": {
+          "promptTokenCount": 2197,
+          "candidatesTokenCount": 1658,
+          "totalTokenCount": 4167,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1423
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 312,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (the trays regrouped and recoloured: the Loika card a two-by-two plate, Untuva and Tuikis sharing the coral tray, Hiljan in lagoon; a colour strip on the unmet tray; the right string clipped)"
+      },
+      "promptSource": "art/concept-station/library-case/prompts.json plan (art director), from brief-case.md"
+    },
+    {
+      "id": "specimen-case",
+      "direction": "B",
+      "round": 1,
+      "attempt": 3,
+      "tag": "SC-B-r1-a3",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's SPECIMEN CASE screen (the whole collection of species seen at a glance as a glazed entomologist's case of unit trays), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a naturalist's SPECIMEN CASE seen straight from above through its glass lid: an ebonised dark-wood frame with brass corner caps, one glass lid with a single soft reflection running from the upper left, a pale linen floor, shallow unit trays with pale card walls that cast short shadows, small cream cards standing proud on mounts, paper tags on brass pins; real depth, material and shadow, a cataloguing hand; quiet. Cool, even light from the upper left, short shadows to the lower right, nothing warm. NOT paper pages, not a book, not flat tiles. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, crisp edges, no noise or dither. The only words are the few listed.\nLAYOUT, as the template. THE CASE fills the stage: an ebonised dark-wood frame with small brass caps at its four corners, a single glass lid over the whole case (one soft diagonal reflection from the upper left, nothing else on the glass), and inside it a pale, finely woven LINEN floor. UPPER LEFT, FOUR CLAN TRAYS in a two-by-two block, each a shallow unit tray with pale card walls and a thin lip casting a short shadow onto the linen, and a thin strip along its top edge in that tray's own colour exactly as in the template (moss green, coral, lagoon, slate violet). In each clan tray a small cream CARD standing a little proud on a low mount, and under the card a small paper TAG held by a brass pin through the tag's corner (the pin never touches the card): the first tray's card is a plain EMPTY cream card with a small gilt triangle at its top right corner (the creature is placed later); the second tray's card shows a small painted face of a round coral fluff under a cap of three flaps; the third tray's card shows a small painted lagoon-blue lizard with a crest and a tail ending in a glowing bulb, and this card is lifted inside a warm cream focus ring; the fourth tray's card carries only a soft, unfinished PENCIL field sketch in grey graphite of a sitting cat, a naturalist's quick sketch, no colour. All four tags are blank paper. TO THE RIGHT, ONE WIDE PLAIN TRAY with pale card walls and NO colour strip, holding twelve IDENTICAL bare places in two rows of six: each a low empty mount with a small brass pin and a blank paper tag under it, nothing on any mount, nothing to tell them apart. BELOW THE TRAYS, the lower half of the linen floor is bare, with only faint rectangular footprints pressed into the linen where more trays will sit. ALONG THE FOOT OF THE CASE, a brass-edged LEDGE in front of the glass: at its left a thread strung with sixteen tiny paper tags (the first three inked dark, the fourth pencilled light grey, the other twelve blank); in the middle a short engraved brass rule with a small brass slider a quarter of the way along; to the right a small round pin cushion with four pins whose heads are the four tray colours; at the far right a small brass plate, a quarter of it filled bright. No digits, no words anywhere on the case or the ledge.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: every paper tag is BLANK (names are placed later); no words or digits on the trays, cards, tags or the ledge.\nConstraints: no digits except the three counters; nothing written on any tag, card or plate; the first clan tray's card is a plain, flat, EMPTY cream card (the creature is placed there later) with only a small gilt triangle at its top right corner; the twelve places in the wide plain tray are IDENTICAL bare mounts with blank tags and show no silhouette, shape, shadow of a creature, colour or hint of any kind; no pin passes through any creature or card picture, pins hold only the tags; no wood grain on the floor (it is linen); no paper pages; no people; no warm light or glow.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 2 is the Library's book that a card opens into: take only the drawing style of its specimen plates and its lizard for the found cards; nothing of its pages is on this screen. Image 3 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only; nothing else of it is on this screen",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+          "role": "the Library's book, the screen a card opens into: take ONLY the drawing style of its small specimen plates and its portrait's creature (the lagoon lizard with the glowing tail) for the found cards' faces; its paper pages, tabs and layout are NOT on this screen",
+          "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+        },
+        {
+          "path": "art/concept-station/library-case/layout/case-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the case frame and linen floor, the four clan trays at the upper left (each with its colour strip, a card on its mount and a tag), the wide plain tray with twelve identical bare mounts and blank tags, the faint footprints on the lower floor, the brass-edged ledge with its string of tiny tags, slider on a rule, pin cushion and brass plate, and the bottom line; the four strip colours are the clans' and are to be kept; not style",
+          "sha256": "b0c8eb57e0ddf15b30cf038c95d762daa3bdc5f4b21ba2da9c38425bd51758d9"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T06:44:41Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/SC-B-r1-a3.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "7a865cc6d7519c3378935f92c7b5b2bcb691e0abde27761967e23728e6479a7b"
+        },
+        "png": {
+          "file": "round1/SC-B-r1-a3-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "1231c096687fa0b1bc0f79af897f0a348cbea7af61081c8b5e72ce2010ebbaca"
+        },
+        "screen": {
+          "file": "round1/SC-B-r1-a3-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "bb23a1b43f3f540b32f8f22f998b6a943cc4eb8fbfebe7aa04885eef99f9324d",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 27.6,
+        "usage": {
+          "promptTokenCount": 2197,
+          "candidatesTokenCount": 1822,
+          "totalTokenCount": 4444,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1423
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 774
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 425,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: round 1 pick and the base of the composites (colour strips on the tray edges, cream linen, faint footprints, the pencil cat, twelve identical bare places, the ledge's objects; the focus ring a large circle; leaf marks on the first ledge tags; the counters drawn digit-first)"
+      },
+      "promptSource": "art/concept-station/library-case/prompts.json plan (art director), from brief-case.md"
+    },
+    {
+      "id": "specimen-case",
+      "direction": "B",
+      "round": 2,
+      "attempt": 1,
+      "tag": "SC-B-r2-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the case frame and glass, the four clan trays with their cards, sketches and tags, the wide plain tray and its blank places, the linen floor and footprints, and the brass ledge with its objects.\nONE CHANGE ONLY: the warm cream focus ring around the lizard card in the lower-left clan tray is a large circle; replace it with a thin warm cream rounded rectangle hugging the card itself, a few pixels outside its edges, and lift that card a little so it casts a slightly longer shadow on the tray; the card's picture, its tag and the tray stay exactly as they are.\nConstraints: preserve every other pixel of the screen; no new words, no digits.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "1231c096687fa0b1bc0f79af897f0a348cbea7af61081c8b5e72ce2010ebbaca"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T06:46:05Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/SC-B-r2-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "07aac45f72d466bb70bf1c875f72bdf63fc5084589b2c64e102f6398af7ad678"
+        },
+        "png": {
+          "file": "round2/SC-B-r2-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "fd8e52c2fa3b5ff2a940c5182acd0b6688cd82fd053a77edc330d94ce3148ff6"
+        },
+        "screen": {
+          "file": "round2/SC-B-r2-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "d95e89a30bb1cb357ffaeb642830f6021ad234a32239e09d2314fb1ed12b606b",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 24.8,
+        "usage": {
+          "promptTokenCount": 481,
+          "candidatesTokenCount": 1300,
+          "totalTokenCount": 1978,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 223
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 197,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (the focus-ring edit removed the circle but set a second, lifted lizard card on the bare floor)"
+      },
+      "promptSource": "art/concept-station/library-case/prompts.json plan (art director), from brief-case.md"
+    },
+    {
+      "id": "specimen-case",
+      "direction": "B",
+      "round": 2,
+      "attempt": 2,
+      "tag": "SC-B-r2-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the case frame and glass, the four clan trays with their cards, sketches and tags, the wide plain tray and its blank places, the linen floor and footprints, and the brass ledge with its objects.\nONE CHANGE ONLY: on the brass ledge at the bottom left, the string of sixteen tiny paper tags: make the first three tags plain and inked solid dark (no leaf drawings, no marks), the fourth tag a light pencil grey, and the remaining twelve plain blank cream, all the same size on the same thread; nothing else on the ledge or the case changes.\nConstraints: preserve every other pixel of the screen; no new words, no digits.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "1231c096687fa0b1bc0f79af897f0a348cbea7af61081c8b5e72ce2010ebbaca"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T06:46:33Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/SC-B-r2-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "eff3d37c60d61ac09e29d9dcb0adab2c3df6a0c5b2bdd1106d191d3c813e6054"
+        },
+        "png": {
+          "file": "round2/SC-B-r2-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "fc6cd600a033f9dd54917f51bda04d0388ff12351ad4a1ce972a7c9455966882"
+        },
+        "screen": {
+          "file": "round2/SC-B-r2-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "68ee39279afd063da2a027044240ff72aa0541603b685e66f06d3fa87194aaf1",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 21.9,
+        "usage": {
+          "promptTokenCount": 475,
+          "candidatesTokenCount": 1288,
+          "totalTokenCount": 1959,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 217
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 196,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept, composited (the ledge's string of tags: three inked, one pencilled, twelve blank; region x 40-430, y 492-548)"
+      },
+      "promptSource": "art/concept-station/library-case/prompts.json plan (art director), from brief-case.md"
+    },
+    {
+      "id": "specimen-case",
+      "direction": "B",
+      "round": 3,
+      "attempt": 1,
+      "tag": "SC-B-r3-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the case frame and glass, the four clan trays with their cards, sketches and tags, the wide plain tray and its blank places, the bare linen floor with its faint footprints (nothing is added to the floor), and the brass ledge with its objects.\nONE CHANGE ONLY, inside the lower-left clan tray (the lagoon-edged tray with the lizard card): erase the large warm cream circle drawn around that card, and draw instead a thin warm cream rounded-rectangle outline that hugs the lizard card closely, about six pixels outside the card's edges, as the focus ring; the lizard card stays exactly where it is inside its tray, with its tag under it; no card, ring or object is added anywhere else on the screen.\nConstraints: preserve every other pixel of the screen; no new words, no digits; add nothing to the linen floor.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "1231c096687fa0b1bc0f79af897f0a348cbea7af61081c8b5e72ce2010ebbaca"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T06:47:39Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/SC-B-r3-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "e8008c428f9135440f313a7029ff57f0be78ec34434d0fdaa30b78164c1c63c6"
+        },
+        "png": {
+          "file": "round3/SC-B-r3-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "fccd0c07caf172b4aae00eb2f3f65830a12b50f645a21ac82d18a03e65de62b1"
+        },
+        "screen": {
+          "file": "round3/SC-B-r3-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "23d9017d66baa5c3fedb906e7c73bf09d2f3b239c47202ea4cc39d68db79cca0",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 23.9,
+        "usage": {
+          "promptTokenCount": 516,
+          "candidatesTokenCount": 1306,
+          "totalTokenCount": 1976,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 258
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 154,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept, composited (the focus ring as a thin cream rounded rectangle hugging the lizard card, nothing added elsewhere; region x 48-282, y 186-304)"
+      },
+      "promptSource": "art/concept-station/library-case/prompts.json plan (art director), from brief-case.md"
+    }
+  ],
+  "composites": [
+    {
+      "base": "/home/user/miniaturebeasts/art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+      "feather": 0,
+      "pastes": [
+        {
+          "source": "/home/user/miniaturebeasts/art/concept-station/library-case/round2/SC-B-r2-a2-canvas.png",
+          "screenRect": [
+            40,
+            492,
+            430,
+            548
+          ],
+          "canvasRect": [
+            88,
+            708,
+            649,
+            789
+          ],
+          "feather": 6
+        }
+      ],
+      "outputs": {
+        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-canvas.png",
+        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-1024x600.png",
+        "bandRect": [
+          30,
+          0,
+          1505,
+          864
+        ]
+      },
+      "tag": "SC-C1"
+    },
+    {
+      "base": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-canvas.png",
+      "feather": 0,
+      "pastes": [
+        {
+          "source": "/home/user/miniaturebeasts/art/concept-station/library-case/round3/SC-B-r3-a1-canvas.png",
+          "screenRect": [
+            44,
+            176,
+            286,
+            324
+          ],
+          "canvasRect": [
+            93,
+            253,
+            442,
+            467
+          ],
+          "feather": 6
+        }
+      ],
+      "outputs": {
+        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C2-canvas.png",
+        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C2-1024x600.png",
+        "bandRect": [
+          30,
+          0,
+          1505,
+          864
+        ]
+      },
+      "tag": "SC-C2"
+    }
+  ],
+  "placements": [
+    {
+      "tag": "SC-B-r1-a3",
+      "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+      "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "detectedCard": [
+        174,
+        137,
+        361,
+        233
+      ],
+      "pasted": {
+        "x": 226,
+        "y": 142,
+        "w": 83,
+        "h": 86
+      },
+      "outputs": {
+        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-B-r1-a3-pip-canvas.png",
+        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-B-r1-a3-pip-1024x600.png"
+      },
+      "textLayer": {
+        "spec": "layout/text-case.json",
+        "output": "placed/SC-B-r1-a3-pip-named-1024x600.png",
+        "face": "Inter (system install), the Station's type; the met name in pencil grey"
+      }
+    },
+    {
+      "tag": "SC-C1",
+      "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-canvas.png",
+      "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "detectedCard": [
+        174,
+        137,
+        361,
+        233
+      ],
+      "pasted": {
+        "x": 226,
+        "y": 142,
+        "w": 83,
+        "h": 86
+      },
+      "outputs": {
+        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-C1-pip-canvas.png",
+        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-C1-pip-1024x600.png"
+      },
+      "textLayer": {
+        "spec": "layout/text-case.json",
+        "output": "placed/SC-C1-pip-named-1024x600.png",
+        "face": "Inter (system install), the Station's type; the met name in pencil grey"
+      }
+    },
+    {
+      "tag": "SC-C2",
+      "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C2-canvas.png",
+      "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "detectedCard": [
+        174,
+        137,
+        361,
+        233
+      ],
+      "pasted": {
+        "x": 226,
+        "y": 142,
+        "w": 83,
+        "h": 86
+      },
+      "outputs": {
+        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-C2-pip-canvas.png",
+        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-C2-pip-1024x600.png"
+      },
+      "textLayer": {
+        "spec": "layout/text-case.json",
+        "output": "placed/SC-C2-pip-named-1024x600.png",
+        "face": "Inter (system install), the Station's type; the met name in pencil grey"
+      }
+    }
+  ],
+  "placementNote": "Pip is the accepted rich asset placed into the Loika card after generation (the generator leaves that card empty with its gilt corner); the names are a text layer set in Inter after Pip, the met species' name in a pencil grey. Nothing generated carries a name or Pip; no pin touches a creature."
+}

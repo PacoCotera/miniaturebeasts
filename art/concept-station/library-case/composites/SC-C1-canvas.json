@@ -1,0 +1,32 @@
+{
+  "base": "/home/user/miniaturebeasts/art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+  "feather": 0,
+  "pastes": [
+    {
+      "source": "/home/user/miniaturebeasts/art/concept-station/library-case/round2/SC-B-r2-a2-canvas.png",
+      "screenRect": [
+        40,
+        492,
+        430,
+        548
+      ],
+      "canvasRect": [
+        88,
+        708,
+        649,
+        789
+      ],
+      "feather": 6
+    }
+  ],
+  "outputs": {
+    "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-canvas.png",
+    "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-1024x600.png",
+    "bandRect": [
+      30,
+      0,
+      1505,
+      864
+    ]
+  }
+}

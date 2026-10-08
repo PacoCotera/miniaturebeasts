@@ -1,0 +1,84 @@
+{
+  "id": "specimen-case",
+  "direction": "B",
+  "round": 2,
+  "attempt": 2,
+  "tag": "SC-B-r2-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the case frame and glass, the four clan trays with their cards, sketches and tags, the wide plain tray and its blank places, the linen floor and footprints, and the brass ledge with its objects.\nONE CHANGE ONLY: on the brass ledge at the bottom left, the string of sixteen tiny paper tags: make the first three tags plain and inked solid dark (no leaf drawings, no marks), the fourth tag a light pencil grey, and the remaining twelve plain blank cream, all the same size on the same thread; nothing else on the ledge or the case changes.\nConstraints: preserve every other pixel of the screen; no new words, no digits.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "1231c096687fa0b1bc0f79af897f0a348cbea7af61081c8b5e72ce2010ebbaca"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T06:46:33Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/SC-B-r2-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "eff3d37c60d61ac09e29d9dcb0adab2c3df6a0c5b2bdd1106d191d3c813e6054"
+    },
+    "png": {
+      "file": "SC-B-r2-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "fc6cd600a033f9dd54917f51bda04d0388ff12351ad4a1ce972a7c9455966882"
+    },
+    "screen": {
+      "file": "SC-B-r2-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "68ee39279afd063da2a027044240ff72aa0541603b685e66f06d3fa87194aaf1",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 21.9,
+    "usage": {
+      "promptTokenCount": 475,
+      "candidatesTokenCount": 1288,
+      "totalTokenCount": 1959,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 217
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 196,
+      "serviceTier": "standard"
+    }
+  }
+}
