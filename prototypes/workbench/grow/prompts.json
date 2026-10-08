@@ -70066,6 +70066,219 @@
     "passed": false,
     "gated": false
    }
+  },
+  {
+   "id": "fdaa2cf3-19fc-4229-bcc1-eb214481b11f",
+   "service": "gemini",
+   "model": "gemini-3-pro-image",
+   "promptVersion": 4,
+   "lab": {
+    "species": "S01",
+    "variant": "7C-no-framing",
+    "name": "No framing rule",
+    "model": "pro",
+    "sample": 1,
+    "set": "v7"
+   },
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-45ff1025",
+   "genomeSha256": "f7a2d788e5827862dad88cc4cf68708f900a69bf626cddd3ed46a8944df26686",
+   "purpose": "lab-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "text": "Image 1 is the HiBit drawing: structure, proportion, pose, colour and eye placement only, never the finish. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light.\n\nPaint it in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: soft volume shading: a lit tone, two shadow steps, one soft specular on the highest lit form; occlusion where parts meet.\n\nContour: no ink outline of any colour; edges are value: the form against the ground, and the rim.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere smooth value, never texture noise.\n\nFinish: a soft vinyl collectible, matte with one highlight; never clay, glossy plastic, paper or brushwork.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nChange only the rendering; add nothing.\n\nNot: strand-by-strand texture, panels, vignettes, scene, text.\n\nSpecies notes: the Loika, a round frog-hare. Only what differs from the house rendering.\nColour placement: charcoal on the body, the head and the upper face; cream on the belly, the muzzle, the lower face and the legs; the crest leaves are green.\nEyes: the house eye, with an orange iris, inside the cream ring.\nMaterial: smooth skin, matte like suede, no hairs. Its touches: a soft sheen across the back and the crown; the cream belly and muzzle a shade warmer where the light reaches; a soft midrib on each leaf.\nVolume: the body is one round mass like a ripe fruit, its back and crown the highest lit form; the head is fused to it with no neck.\nParts: the muzzle is a soft, full-cheeked cream pad that blends into the lower face, with a tiny curved smile; never a bill or a beak. The crest is three broad leaves sprouting together from the crown and fanning outward; leaves, not ears. The four legs are short, plump and padded, ending in rounded feet with small toe bumps.\nPosture: it sits square and low on all four feet, its weight in its haunches, its head up and a little forward.\nCharacter: gentle and curious, a little shy; a pet you want to pick up.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+    "imageOrder": [
+     "drawing",
+     "key"
+    ]
+   },
+   "prompt": "Image 1 is the HiBit drawing: structure, proportion, pose, colour and eye placement only, never the finish. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light.\n\nPaint it in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: soft volume shading: a lit tone, two shadow steps, one soft specular on the highest lit form; occlusion where parts meet.\n\nContour: no ink outline of any colour; edges are value: the form against the ground, and the rim.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere smooth value, never texture noise.\n\nFinish: a soft vinyl collectible, matte with one highlight; never clay, glossy plastic, paper or brushwork.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nChange only the rendering; add nothing.\n\nNot: strand-by-strand texture, panels, vignettes, scene, text.\n\nSpecies notes: the Loika, a round frog-hare. Only what differs from the house rendering.\nColour placement: charcoal on the body, the head and the upper face; cream on the belly, the muzzle, the lower face and the legs; the crest leaves are green.\nEyes: the house eye, with an orange iris, inside the cream ring.\nMaterial: smooth skin, matte like suede, no hairs. Its touches: a soft sheen across the back and the crown; the cream belly and muzzle a shade warmer where the light reaches; a soft midrib on each leaf.\nVolume: the body is one round mass like a ripe fruit, its back and crown the highest lit form; the head is fused to it with no neck.\nParts: the muzzle is a soft, full-cheeked cream pad that blends into the lower face, with a tiny curved smile; never a bill or a beak. The crest is three broad leaves sprouting together from the crown and fanning outward; leaves, not ears. The four legs are short, plump and padded, ending in rounded feet with small toe bumps.\nPosture: it sits square and low on all four feet, its weight in its haunches, its head up and a little forward.\nCharacter: gentle and curious, a little shy; a pet you want to pick up.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+   "images": [
+    {
+     "name": "step1-drawing.png",
+     "sha256": "b8d3c50d4ed5ae71bb9d52269a9f8d4e6a9dc981a0bdd7f4849fc8208b6fa319",
+     "bytes": 321055
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "ff4ec97bd1d35828336c3f2e5e18b8090667d2051e60f905dc34ad06880db5ce",
+     "bytes": 6724
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T07:05:29Z",
+   "seconds": 18.9,
+   "httpStatus": 200,
+   "responseId": "ukDHarH7FemV39IPm_jUsQk",
+   "modelVersion": "gemini-3-pro-image",
+   "usage": {
+    "promptTokenCount": 1312,
+    "candidatesTokenCount": 1377,
+    "totalTokenCount": 2975,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 796
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "thoughtsTokenCount": 286,
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.16786,
+   "output": {
+    "file": "step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "2e26aa3ee5f41d28d3488f7da3964a2448ef4127a2c5dbf7af95a8d705a01512"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.702,
+    "silhouetteIoUInPlace": 0.576,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.974
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.988
+     },
+     "muzzle": {
+      "span": 1.0,
+      "coverage": 0.993
+     },
+     "eye": {
+      "span": 1.0,
+      "coverage": 0.856
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 0.562
+     },
+     "leg-0": {
+      "span": 0.84,
+      "coverage": 0.614
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 0.89
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.565,
+      "painted": 0.743,
+      "ok": false
+     },
+     "head": {
+      "drawn": 0.352,
+      "painted": 0.503,
+      "ok": false
+     },
+     "muzzle": {
+      "drawn": 0.234,
+      "painted": 0.32,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.378,
+      "painted": 0.499,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.528,
+      "painted": 0.655,
+      "ok": true
+     },
+     "leg-1": {
+      "drawn": 0.238,
+      "painted": 0.345,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.164,
+      "median": "#3a3d41",
+      "nearest": "#273036",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.289,
+      "median": "#5e6d58",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@region-0": {
+      "agreement": 0.035,
+      "median": "#242729",
+      "nearest": "#273036",
+      "ok": false
+     },
+     "second@leg-0": {
+      "agreement": 0.96,
+      "median": "#d3c3a5",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "second@leg-1": {
+      "agreement": 0.75,
+      "median": "#a7957c",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "leaf@crown": {
+      "agreement": 0.866,
+      "median": "#71a668",
+      "nearest": "#5aa65c",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.614,
+      "median": "#aa8d72",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.137,
+      "median": "#5c5752",
+      "nearest": "#465459",
+      "ok": false
+     }
+    },
+    "reasons": [
+     "the proportions are off: the region-0 is larger than drawn (0.74 of the body against 0.56), the head is larger than drawn (0.50 of the body against 0.35)",
+     "a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #242729, the colour of pupil), the belly slot on the muzzle (painted #5c5752, the colour of body)"
+    ],
+    "outside": 0.077,
+    "missing": 0.009,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.398,
+    "passed": false,
+    "gated": false
+   }
   }
  ]
 }
