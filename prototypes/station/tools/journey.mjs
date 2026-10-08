@@ -204,14 +204,15 @@ await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.
 // the hatch: the first ✓ arms with a plate, any other key disarms, the second ✓ returns
 l = await line(); expect(l.ok === "Return to the wild" && l.price === "+1 ❀", "the hatch offers the return: " + JSON.stringify(l));
 await press("confirm", 150); l = await line(); expect(l.ok === "Again: return it", "armed: " + JSON.stringify(l)); await frameShot("pods-hatch-armed");
-await press("up", 100); l = await line(); expect(l.ok !== "Again: return it", "any other key disarms the hatch"); await page.evaluate(() => { window.__st.UI.pods.f = "list.hatch"; });
+await press("up", 100); l = await line(); expect(l.ok !== "Again: return it", "any other key disarms the hatch"); expect((await page.evaluate(() => window.__st.UI.pods.wildArm)) === 0 && (await focusNow()) !== "list.hatch", "the disarm cleared the armed state and the ring left the hatch (it is on " + (await focusNow()) + ")"); await page.evaluate(() => { window.__st.UI.pods.f = "list.hatch"; });
 const sBefore = (await st()).s; await press("confirm", 100); await press("confirm", 300); s = await st();
 expect(s.s === sBefore + 1 && !s.tray.some((p) => p.id === coatSix.id), "the second ✓ returned the pod for +1 Essence");
 // the same for the Untuva, which leaves the rack as it was; the waiting pod (if any) takes the well
 await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, untuva.id); await press("confirm", 100); await press("confirm", 300);
 s = await st(); expect(!s.tray.some((p) => p.id === untuva.id), "the Untuva returned");
 const extra = s.tray.find((p) => p.species === "S01" && !p.idd && p.id !== loika.id && p.id !== loika2.id);
-if (extra) { await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, extra.id); await press("confirm", 700); await page.evaluate(() => window.__st.unlock()); await page.evaluate(() => { window.__st.UI.pods.f = "rail.0"; }); await page.waitForTimeout(150); await press("confirm", 900); expect(await page.evaluate(() => window.__st.holding()), "a read holds input for its wipe"); await frameShot("pods-reading"); await page.evaluate(() => window.__st.unlock());
+expect(!!extra, "the pod that waited for a well entered the rack when one freed"); {   // not skipped when absent: the read-holds-input assertion and the pods-reading capture must run
+await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, extra.id); await press("confirm", 700); await page.evaluate(() => window.__st.unlock()); await page.evaluate(() => { window.__st.UI.pods.f = "rail.0"; }); await page.waitForTimeout(150); await press("confirm", 900); expect(await page.evaluate(() => window.__st.holding()), "a read holds input for its wipe"); await frameShot("pods-reading"); await page.evaluate(() => window.__st.unlock());
   await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, extra.id); await press("confirm", 100); await press("confirm", 300); }
 s = await st(); expect(s.tray.length === 4, "the rack is back to its four pods: " + s.tray.length);
 // 6. return the Tuikis to the wild: +1 Essence, the Companion's record

@@ -13,19 +13,19 @@ function draw() {
   stageBg(); drawTop("Probe bench");
   const pr = docked() ? G.st.probe : null, b = B();
   lampPool(270, 300, 230, 200);
-  blit(art("cradleBig", () => { const pb = new PB(340, 80); pb.ell(170, 44, 168, 34, C.wood2); pb.ell(170, 36, 150, 24, C.wood1); pb.outline(() => C.wood0); return pb; }), 100, 300);
+  blit(art("cradleBig", () => { const pb = new PB(340, 80); pb.ell(170, 44, 168, 34, C.hairline); pb.ell(170, 36, 150, 24, C.bar); pb.outline(() => C.panel); return pb; }), 100, 300);
   if (pr) blit(probeArt(7), 172, 120); else { text("The Probe is away", 270, 220, C.fog, 3, "center"); text("with the Companion", 270, 260, C.mist, 2, "center"); }
   const n = pr ? pr.smax : S.TIER[S.tierNow(G.st, G.sv)].shield, sh = pr ? pr.shield : -1;
-  for (let i = 0; i < n; i++) { const px = 270 - n * 37 + i * 74; if (sh < 0) R(px, 392, 64, 36, C.moss3); else if (i < sh) { R(px, 392, 64, 36, C.bone); R(px, 420, 64, 8, C.fog); } else { R(px, 392, 64, 36, C.slate); R(px + 3, 395, 58, 30, C.ink); } }
+  for (let i = 0; i < n; i++) { const px = 270 - n * 37 + i * 74; if (sh < 0) R(px, 392, 64, 36, C.bar); else if (i < sh) { R(px, 392, 64, 36, C.bone); R(px, 420, 64, 8, C.fog); } else { R(px, 392, 64, 36, C.slate); R(px + 3, 395, 58, 30, C.ink); } }
   text(pr ? "tier " + pr.tier + " · " + pr.shield + " of " + pr.smax + " plates" : "last seen tier " + S.tierNow(G.st, G.sv), 270, 448, C.fog, 2, "center");
-  panel(520, 120, 420, 90, C.wood2, C.wood1);
-  R(548, 150, 70, 30, C.wood0); R(G.st.mendFull ? 584 : 552, 152, 32, 26, G.st.mendFull ? C.leaf : C.stone);
-  text("Mend fully on docking", 640, 140, C.creamT, 2); text(G.st.mendFull ? "on · 1 ⚡ a plate · cheaper at the dock" : "off · only the free plates", 640, 166, C.lampD, 2);
+  panel(520, 120, 420, 90, C.hairline, C.bar);
+  R(548, 150, 70, 30, C.panel); R(G.st.mendFull ? 584 : 552, 152, 32, 26, G.st.mendFull ? C.leaf : C.stone);
+  text("Mend fully on docking", 640, 140, C.bone, 2); text(G.st.mendFull ? "on · 1 ⚡ a plate · cheaper at the dock" : "off · only the free plates", 640, 166, C.mist, 2);
   const lit = S.tier2Ready(G.st, G.settings), has2 = pr && pr.tier >= 2, p2 = P2();
-  panel(520, 260, 420, 160, lit ? C.lamp : C.wood1, C.wood2);
-  if (has2) { text("Tier 2 installed", 730, 300, C.lampD, 3, "center"); text("reaches 4 cells · 3 pods · 4 plates", 730, 344, C.lampD, 2, "center"); }
-  else { text("Tier 2 slot", 730, 286, lit ? C.wood0 : C.wood3, 3, "center"); text("reaches 4 cells · 3 pods · reads the deep", 730, 326, lit ? C.wood1 : C.wood3, 2, "center");
-    text(S.priceText(p2.e, p2.d, 0) + (lit ? "" : pr ? " · " + S.shortText(G.st, p2.e, p2.d, 0) : " · dock first"), 730, 360, lit ? C.rust : C.wood3, 2, "center");
+  panel(520, 260, 420, 160, lit ? C.focus : C.bar, C.hairline);
+  if (has2) { text("Tier 2 installed", 730, 300, C.mist, 3, "center"); text("reaches 4 cells · 3 pods · 4 plates", 730, 344, C.mist, 2, "center"); }
+  else { text("Tier 2 slot", 730, 286, lit ? C.panel : C.bevel, 3, "center"); text("reaches 4 cells · 3 pods · reads the deep", 730, 326, lit ? C.bar : C.bevel, 2, "center");
+    text(S.priceText(p2.e, p2.d, 0) + (lit ? "" : pr ? " · " + S.shortText(G.st, p2.e, p2.d, 0) : " · dock first"), 730, 360, lit ? C.rust : C.bevel, 2, "center");
     if (b.arm) text("armed · ✓ again installs", 730, 392, C.rust, 2, "center"); }
   const t = benchTargets()[b.f]; if (t) focusRing(t.x - 3, t.y - 3, t.w + 6, t.h + 6);
 }
@@ -59,5 +59,5 @@ export function drawIdle() {
   parts.push(docked() ? "Companion docked" : "Companion away"); if (w) parts.push("with " + w.name);
   if (docked() && bayCrates().length) parts.push(S.plural(bayCrates().length, "crate") + " in the bay");
   if (G.st.bud) parts.push(S.budReady(G.st, G.settings) ? "a bud is ready to open" : "a bud is growing");
-  R(0, SH - LINE_H, SW, LINE_H, C.moss0); text(parts.join(" · "), SW / 2, SH - LINE_H + 12, C.fog, 2, "center");
+  R(0, SH - LINE_H, SW, LINE_H, C.void); text(parts.join(" · "), SW / 2, SH - LINE_H + 12, C.fog, 2, "center");
 }

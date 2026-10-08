@@ -20,10 +20,10 @@
  "type": { "body": 16, "title": 20, "name": 28, "pitch": { "16": 20, "20": 28, "28": 36 }, "weight": { "16": 400, "20": 500, "28": 600 } },
  "focus": { "ring": { "width": 2, "outside": 4, "radius": 6 }, "feet": { "widen": 16, "height": 24 }, "lift": { "chrome": 2, "creature": 4, "ms": 200 } },
  "colours": {
-  "chrome": "moss1", "rule": "moss0", "title": "creamT", "turn": "lampD", "figure": "creamT", "flash": "amber", "flashInk": "ink",
+  "chrome": "ground", "rule": "void", "title": "bone", "turn": "mist", "figure": "bone", "flash": "amber", "flashInk": "ink",
   "companion": "fog", "companionDocked": "mint", "lampOn": "mint", "lampOff": "stone",
-  "tick": "orange", "verb": "creamT", "dim": "moss5", "price": "lamp", "dot": "moss4", "back": "fog", "subject": "mist", "need": "amber",
-  "plate": "wood1", "plateEdge": "lampD", "plateShadow": "moss0", "plateText": "creamT",
+  "tick": "orange", "verb": "bone", "dim": "mist", "price": "focus", "dot": "hairline", "back": "fog", "subject": "mist", "need": "amber",
+  "plate": "bar", "plateEdge": "sand", "plateShadow": "void", "plateText": "bone",
   "ring": "cream", "stageGround": "deep"
  },
  "strings": { "turn": "T{n}", "backArrow": "← ", "tick": "✓", "dot": " · " }

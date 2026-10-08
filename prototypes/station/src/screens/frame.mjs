@@ -25,7 +25,7 @@ function drawCounter(x, y, key, icon, value) {
   blit(ICON[icon](24), x, y + 2);
   const s = String(st.v), fl = NOW - st.fl < 240;
   if (fl) panel(x + 28, y - 1, textW(s, 3) + 10, 28, C.amber);
-  text(s, x + 33, y + 4, fl ? C.ink : C.creamT, 3);
+  text(s, x + 33, y + 4, fl ? C.ink : C.bone, 3);
   return x + 33 + textW(s, 3) + 22;
 }
 export const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
@@ -39,35 +39,35 @@ let turnShown = null, turnFlash = -1e9;
 export function shownTurn() { const a = FX.arr; if (a && arriving()) { const i = Math.floor((clock.now - a.at) / ARRIVE_MS), p = a.plays[i]; return (clock.now - a.at) % ARRIVE_MS > ARRIVE_MS * 0.55 ? p.turnTo : p.turnFrom; } return G.st.turn; }
 export function drawTop(title) {
   const NOW = clock.now;
-  R(0, 0, SW, TOP_H, C.moss1); R(0, TOP_H - 1, SW, 1, C.moss0);
-  const tw = text(title, 16, 9, C.creamT, 3), t = shownTurn();
+  R(0, 0, SW, TOP_H, C.ground); R(0, TOP_H - 1, SW, 1, C.void);
+  const tw = text(title, 16, 9, C.bone, 3), t = shownTurn();
   if (turnShown !== t) { if (turnShown != null) turnFlash = NOW; turnShown = t; }
   const fl = NOW - turnFlash < 1000 && Math.floor((NOW - turnFlash) / 160) % 2 === 0, lbl = "T" + (t + 1);
   if (fl) panel(16 + tw + 10, 8, textW(lbl, 2) + 12, 24, C.amber);
-  text(lbl, 16 + tw + 16, 13, fl ? C.ink : C.lampD, 2);
+  text(lbl, 16 + tw + 16, 13, fl ? C.ink : C.mist, 2);
   let x = Math.max(236, 16 + tw + 30 + textW(lbl, 2) + 24); x = drawCounter(x, 6, "e", "energy", G.st.e); x = drawCounter(x, 6, "d", "data", G.st.d); drawCounter(x, 6, "s", "essence", G.st.s);
   text(clipText(compState(), 450, 2), SW - 16, 13, docked() ? C.mint : C.fog, 2, "right");
 }
 // The bottom line: ✓ action · price · ← where | the subject | what needs you. Read-only focus leaves ✓ empty.
 export function drawLine(o) {
-  const y = SH - LINE_H, ty = y + 12; R(0, y, SW, LINE_H, C.moss1); R(0, y, SW, 1, C.moss0);
+  const y = SH - LINE_H, ty = y + 12; R(0, y, SW, LINE_H, C.ground); R(0, y, SW, 1, C.void);
   let x = 16;
-  if (o.ok) { x += text("✓", x, ty, C.orange) + 8; x += text(o.ok, x, ty, o.dim ? C.moss5 : C.creamT); if (o.price) { x += text(" · ", x, ty, C.moss4); x += text(o.price, x, ty, o.dim ? C.moss5 : C.lamp); } }
-  if (o.back) { if (o.ok) x += text(" · ", x, ty, C.moss4); x += text("← ", x, ty, C.fog); x += text(o.back, x, ty, C.fog); }
+  if (o.ok) { x += text("✓", x, ty, C.orange) + 8; x += text(o.ok, x, ty, o.dim ? C.mist : C.bone); if (o.price) { x += text(" · ", x, ty, C.hairline); x += text(o.price, x, ty, o.dim ? C.mist : C.focus); } }
+  if (o.back) { if (o.ok) x += text(" · ", x, ty, C.hairline); x += text("← ", x, ty, C.fog); x += text(o.back, x, ty, C.fog); }
   const nd = o.need != null ? o.need : need().text, nw = nd ? textW(nd, 2) : 0;
   const mx = x + 18, avail = SW - 16 - (nw ? nw + 34 : 0) - mx;
-  if (o.subject && avail > 40) { R(x + 8, y + 9, 1, 20, C.moss3); text(clipText(o.subject, avail, 2), mx, ty, C.mist); }
-  if (nd) { R(SW - 16 - nw - 16, y + 9, 1, 20, C.moss3); text(nd, SW - 16, ty, C.amber, 2, "right"); }
+  if (o.subject && avail > 40) { R(x + 8, y + 9, 1, 20, C.bar); text(clipText(o.subject, avail, 2), mx, ty, C.mist); }
+  if (nd) { R(SW - 16 - nw - 16, y + 9, 1, 20, C.bar); text(nd, SW - 16, ty, C.amber, 2, "right"); }
 }
 export function drawMsg() {
   if (!FX.msg || clock.now - FX.msgAt > 4000) return;
   const lines = wrapText(FX.msg, 600, 2), w = Math.min(640, Math.max(...lines.map((l) => textW(l, 2))) + 40), h = 16 + lines.length * 22, x = Math.round((SW - w) / 2), y = SH - LINE_H - h - 12;
-  panel(x, y + 3, w, h, C.moss0); panel(x, y, w, h, C.wood1, C.lampD);
-  lines.forEach((l, i) => text(l, SW / 2, y + 10 + i * 22, C.creamT, 2, "center"));
+  panel(x, y + 3, w, h, C.void); panel(x, y, w, h, C.bar, C.sand);
+  lines.forEach((l, i) => text(l, SW / 2, y + 10 + i * 22, C.bone, 2, "center"));
 }
 export function stageBg() {   // an evening room: deep moss, lit softly from above the middle
   blit(art("stagebg", () => { const pb = new PB(SW, STAGE_H);
-    for (let y = 0; y < STAGE_H; y++) for (let x = 0; x < SW; x++) { const d = Math.hypot((x - SW * 0.5) / (SW * 0.62), (y - STAGE_H * 0.3) / (STAGE_H * 0.95)); pb.p[y * SW + x] = ramp(["moss1", "moss2"], 1.15 - d, x, y); }
+    for (let y = 0; y < STAGE_H; y++) for (let x = 0; x < SW; x++) { const d = Math.hypot((x - SW * 0.5) / (SW * 0.62), (y - STAGE_H * 0.3) / (STAGE_H * 0.95)); pb.p[y * SW + x] = ramp(["ground", "panel"], 1.15 - d, x, y); }
     return pb; }), 0, STAGE_Y);
 }
 // The research bench's ground: a deep blue-teal pane (station-screens.md, the instrument).
@@ -75,7 +75,7 @@ export function benchArt() { return art("benchbg", () => { const pb = new PB(SW,
     for (let y = 0; y < STAGE_H; y++) for (let x = 0; x < SW; x++) { const d = Math.hypot((x - SW * 0.45) / (SW * 0.7), (y - STAGE_H * 0.2) / (STAGE_H * 1.1)); pb.p[y * SW + x] = ramp(["deep", "tealD", "night"], 1.2 - d, x, y); }
     return pb; }); }
 export function benchBg() { blit(benchArt(), 0, STAGE_Y); }
-export function lampPool(cx, cy, rx, ry, cols = ["moss1", "moss2", "moss3"]) { blit(art("pool" + rx + "x" + ry + cols.join(), () => { const pb = new PB(rx * 2, ry * 2);
+export function lampPool(cx, cy, rx, ry, cols = ["ground", "panel", "bar"]) { blit(art("pool" + rx + "x" + ry + cols.join(), () => { const pb = new PB(rx * 2, ry * 2);
   for (let y = 0; y < ry * 2; y++) for (let x = 0; x < rx * 2; x++) { const d = Math.hypot((x - rx) / rx, (y - ry) / ry); if (d > 1) continue; const c = ramp(cols, (1 - d) * 1.1, x, y); if (c !== C[cols[0]]) pb.set(x, y, c); }
   return pb; }), cx - rx, cy - ry); }
 // A cool beam from above on the specimen stage.
@@ -112,7 +112,7 @@ export function drawResidents(vx, vy, w, h, big) {
     const st = S.mibiStage(G.st, m), size = (st === "juvenile" ? 64 : 96) + (big ? 32 : 0);
     const x = Math.round(vx + 20 + r.u * (w - 40 - size)), y = Math.round(vy + gy - size * 0.75 + r.v * (h - gy - size * 0.3 - 10));
     const walking = r.st === "walk" && motion(), bob = walking ? -Math.round(Math.abs(Math.sin(NOW / 160)) * 5) : 0;
-    blit(art("shadow" + size, () => { const pb = new PB(size, 10); pb.ell(size / 2, 5, size * 0.36, 4, C.moss0, { chk: 1 }); return pb; }), x, y + size * 0.86);
+    blit(art("shadow" + size, () => { const pb = new PB(size, 10); pb.ell(size / 2, 5, size * 0.36, 4, C.void, { chk: 1 }); return pb; }), x, y + size * 0.86);
     const spr = residentArt(m, size, r.face < 0); if (spr) blit(spr, x, y + bob + (r.st === "nap" ? 6 : 0));
     if (lampText(m)) blit(waitLamp(), x + size - 12, y + 2);   // the cool waiting lamp: its painting is not here yet
     if (m.bonded) blit(art("minih", () => { const pb = new PB(9, 8); pb.ell(2.5, 2.5, 2.3, 2.3, C.coral); pb.ell(6.5, 2.5, 2.3, 2.3, C.coral); pb.poly([[0, 3], [9, 3], [4.5, 8]], C.coral); return pb; }), x + size / 2 - 4, y - 10 + bob);

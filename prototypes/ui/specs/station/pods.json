@@ -64,10 +64,10 @@
  "colours": {
   "ground": "deep", "listPane": "night", "listEdge": "slate", "listRule": "slate",
   "wellLit": "stone", "well": "slate", "wellCore": "ink", "wellPit": "night",
-  "ringRead": "aqua", "ringUnread": "mist", "ringSealed": "stone", "ringBase": "moss4", "ringDot": "fog",
-  "name": "creamT", "origin": "mist", "ribbonFill": "lamp", "ribbonEdge": "rust", "ribbonText": "rust",
+  "ringRead": "aqua", "ringUnread": "mist", "ringSealed": "stone", "ringBase": "hairline", "ringDot": "fog",
+  "name": "bone", "origin": "mist", "ribbonFill": "focus", "ribbonEdge": "rust", "ribbonText": "rust",
   "rail": { "unreadFill": "frostD", "unreadEdge": "slate", "unreadWord": "ink", "readFill": "tealD", "readRim": "aqua", "readWord": "mint", "pip": "aqua", "pipHollow": "stone", "ring": "cream", "changed": "amber" },
-  "page": { "pane": "night", "edge": "slate", "heading": "creamT", "name": "creamT", "line": "fog", "lineEmpty": "stone", "wipe": "white" },
+  "page": { "pane": "night", "edge": "slate", "heading": "bone", "name": "bone", "line": "fog", "lineEmpty": "stone", "wipe": "white" },
   "stampLabel": { "fill": "bone", "edge": "slate" },
   "diff": "cream",
   "beam": "tealD"

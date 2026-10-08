@@ -46,7 +46,7 @@ function render() {
   if (!UI.idle && screen.nodes) nodes.push(...screen.nodes(CTX));
   else nodes.push(legacy("legacy", () => { if (UI.idle) drawIdle(); else { screen.draw(); drawLine(lineFor()); drawMsg(); } }));
   const ta = clock.now - (FX.transAt || -1e9);
-  if (ta >= 0 && ta < 180 && motion()) nodes.push(legacy("trans", () => ditherFill(0, STAGE_Y, SW, STAGE_H, "moss0", 16 - Math.floor((ta / 180) * 16))));
+  if (ta >= 0 && ta < 180 && motion()) nodes.push(legacy("trans", () => ditherFill(0, STAGE_Y, SW, STAGE_H, "void", 16 - Math.floor((ta / 180) * 16))));
   scene.set(nodes); SC.paint(scene); SC.composite(vctx);
 }
 let errN = 0;

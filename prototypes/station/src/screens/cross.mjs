@@ -40,7 +40,7 @@ function draw() {
     if (!m) { panel(px + 20, 80, 200, 200, C.night, C.slate); text("no partner yet", px + 120, 170, C.stone, 2, "center"); text(label, px + 120, 194, C.stone, 2, "center"); return; }
     const away = m.id === effWithId(), spr = parentArt(m, 200); if (spr) blit(spr, px + 20, 70);
     if (away) { panel(px + 40, 150, 160, 30, C.night, C.slate); text("away with you", px + 120, 157, C.fog, 2, "center"); }
-    text(clipText(m.name, 220, 3), px + 120, 276, C.creamT, 3, "center");
+    text(clipText(m.name, 220, 3), px + 120, 276, C.bone, 3, "center");
     const st = stampArt(fr, m.genome, m.read, 96); if (st) { panel(px + 70, 306, st.w + 12, st.h + 12, C.bone, C.slate); blit(st, px + 76, 312); }
     text(codeText(m.code), px + 120, 430, C.fog, 2, "center");
   };
@@ -57,7 +57,7 @@ function draw() {
   panel(280, ROW_Y - 8, 464, ROWS * ROW_H + 12, C.night, C.slate);
   shown.forEach((t, i) => {
     const y = ROW_Y + i * ROW_H, trait = fr.chapters.flatMap((c) => c.traits).find((q) => q.id === t.trait), isClash = x.clash.includes(t.trait);
-    text(clipText(t.name, 110, 2), 292, y + 4, isClash ? C.coral : C.creamT, 2);
+    text(clipText(t.name, 110, 2), 292, y + 4, isClash ? C.coral : C.bone, 2);
     if (t.sealed) { text("sealed", 292, y + 26, C.stone, 2); for (let k = 0; k < 4; k++) R(410 + k * 80, y + 2, 72, 44, C.slate); return; }
     if (t.kind === "switch") {
       const slots = fourSlots(t.seeds);

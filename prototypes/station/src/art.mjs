@@ -30,13 +30,13 @@ export const ICON = {
   // ✕ is a decided string and Inter has no glyph for it: it is set as this sprite, at the size of the text it sits in
   cross: (n = 14) => art("i-cross" + n, () => { const pb = new PB(n, n), t = Math.max(2, Math.round(n / 6)), m = Math.round(n * 0.15); for (let i = 0; i < n - 2 * m; i++) { pb.rect(m + i, m + i - (t >> 1), t, t, C.red); pb.rect(n - 1 - m - i - t + 1, m + i - (t >> 1), t, t, C.red); } return pb; }),
   star: (n = 14) => (n >= 18 ? starArt(true) : starArt(false)),
-  comp: () => art("i-comp", () => { const pb = new PB(14, 20); pb.rect(1, 0, 12, 20, C.sand); pb.rect(3, 2, 8, 9, C.ink); pb.ell(9.5, 15, 2, 2, C.orange); pb.ell(4.5, 15, 1.6, 1.6, C.teal); pb.outline(() => C.wood1); return pb; }),
-  heart: (full) => art("i-heart" + full, () => { const pb = new PB(30, 28), c = full ? C.coral : C.moss3; pb.ell(9, 9, 7.5, 7.5, c); pb.ell(21, 9, 7.5, 7.5, c); pb.poly([[2, 11], [28, 11], [15, 26]], c); if (full) pb.ell(8, 7, 2.5, 2.5, C.blush); pb.outline(() => (full ? C.wine : C.lampD)); return pb; }),
+  comp: () => art("i-comp", () => { const pb = new PB(14, 20); pb.rect(1, 0, 12, 20, C.sand); pb.rect(3, 2, 8, 9, C.ink); pb.ell(9.5, 15, 2, 2, C.orange); pb.ell(4.5, 15, 1.6, 1.6, C.teal); pb.outline(() => C.bar); return pb; }),
+  heart: (full) => art("i-heart" + full, () => { const pb = new PB(30, 28), c = full ? C.coral : C.bar; pb.ell(9, 9, 7.5, 7.5, c); pb.ell(21, 9, 7.5, 7.5, c); pb.poly([[2, 11], [28, 11], [15, 26]], c); if (full) pb.ell(8, 7, 2.5, 2.5, C.blush); pb.outline(() => (full ? C.wine : C.sand)); return pb; }),
 };
 export const starArt = (big) => art("star" + big, () => { const r = big ? 9 : 5, pb = new PB(r * 2 + 1, r * 2 + 1);
   pb.poly([[r, 0], [r + r * 0.28, r - r * 0.28], [r * 2, r], [r + r * 0.28, r + r * 0.28], [r, r * 2], [r - r * 0.28, r + r * 0.28], [0, r], [r - r * 0.28, r - r * 0.28]], C.cream); pb.ell(r + 0.5, r + 0.5, r * 0.3, r * 0.3, C.white); pb.outline(() => C.gold); return pb; });
-export const famArt = () => art("fam", () => { const pb = new PB(26, 16); pb.ring(8, 8, 7, 7, C.lamp, 2); pb.ring(17, 8, 7, 7, C.lamp, 2); pb.outline(() => C.wood0); return pb; });
-export const baseArt = () => art("base", () => { const pb = new PB(70, 10); pb.rect(2, 0, 66, 7, C.wood3); pb.rect(2, 0, 66, 2, C.wood4); pb.rect(0, 7, 70, 3, C.wood1); return pb; });
+export const famArt = () => art("fam", () => { const pb = new PB(26, 16); pb.ring(8, 8, 7, 7, C.focus, 2); pb.ring(17, 8, 7, 7, C.focus, 2); pb.outline(() => C.panel); return pb; });
+export const baseArt = () => art("base", () => { const pb = new PB(70, 10); pb.rect(2, 0, 66, 7, C.bevel); pb.rect(2, 0, 66, 2, C.metal); pb.rect(0, 7, 70, 3, C.bar); return pb; });
 
 // ---------- The mibi placeholder: the plain renderer on the genome, quantised ----------
 const BUILT = new Map();
@@ -79,7 +79,7 @@ function partBox(scene, camera, parts) {
   for (const n of nodes) for (const v of n.mesh.vertices) { const x = W / 2 + (dot(v, view.right) - cam.center[0]) * cam.scale, y = H / 2 - (dot(v, view.up) - cam.center[1]) * cam.scale; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
   return { x0, y0, x1, y1, whole: !parts || nodes.length === scene.nodes.length };
 }
-const PIC_BG = C.creamT;
+const PIC_BG = C.bone;
 const pictureGround = (w, h) => { const pb = new PB(w, h), band = Math.max(8, Math.round(h * 0.2)); pb.rect(0, 0, w, h, PIC_BG); for (let y = h - band; y < h; y++) for (let x = 0; x < w; x++) if (bay(x, y) < (y - (h - band)) / (band / 8)) pb.set(x, y, C.sand); return pb; };
 // A trait's close-up rendered by the rig's camera at the picture's own size (the layout spec's rule: never a crop of a
 // larger render enlarged). The camera is set on the part the trait names (the whole body when no part matches), its scale
@@ -172,7 +172,7 @@ export function ringArt(frame, pod, chapterFlags, r = 30) {
   const key = "ring" + (frame ? frame.species.id : "-") + ":" + r + ":" + (pod.idd ? 1 : 0) + ":" + chapterFlags.map((f) => f.read + (f.glint ? "g" : "") + (f.sealed ? "s" : "")).join(",");
   return art(key, () => {
     const pb = new PB(r * 2 + 2, r * 2 + 2), c = r + 1;
-    pb.ring(c, c, r, r, C.moss4, 1);
+    pb.ring(c, c, r, r, C.hairline, 1);
     if (!frame || !pod.idd) return pb;
     pb.ell(c, c, r * 0.16, r * 0.16, C.fog);
     const total = chapterFlags.reduce((a, f) => a + f.traits, 0) || 1, gap = 0.08; let a = -Math.PI / 2;
@@ -189,49 +189,49 @@ export function ringArt(frame, pod, chapterFlags, r = 30) {
 // Chapter emblems: coat (swirl), face (an eye), shape (a bean), legs & tail (a paw), movement (a trail), stamina (a leaf),
 // character (a spark), glow (a star), charge (a bolt). Drawn at the size asked (16 for the screens not yet moved, 24 on
 // the rail and pages): the shapes are redrawn from their parameters at that size, never a 16 px picture enlarged.
-export function emblemArt(chapterId, n = 16) { return art("emb" + chapterId + (n === 16 ? "" : ":" + n), () => { const pb = new PB(n, n), c = C.lamp, k = n / 16, K = (v) => v * k, th = Math.max(1, Math.round(k));
+export function emblemArt(chapterId, n = 16) { return art("emb" + chapterId + (n === 16 ? "" : ":" + n), () => { const pb = new PB(n, n), c = C.focus, k = n / 16, K = (v) => v * k, th = Math.max(1, Math.round(k));
   const E = (x, y, rx, ry, col, o) => pb.ell(K(x), K(y), K(rx), K(ry), col, o), P = (pts, col) => pb.poly(pts.map(([x, y]) => [K(x), K(y)]), col);
   if (chapterId === "coat") { for (let a = 0; a < 12; a += 0.15 / k) { const r = 1 + a * 0.55; pb.rect(Math.floor(K(8) + Math.cos(a) * K(r) - (th - 1) / 2), Math.floor(K(8) + Math.sin(a) * K(r) - (th - 1) / 2), th, th, c); } }
-  else if (chapterId === "face") { E(8, 8, 7, 4.2, c); E(8, 8, 2.6, 2.6, C.wood0); pb.rect(K(7), K(7), th, th, c); }
+  else if (chapterId === "face") { E(8, 8, 7, 4.2, c); E(8, 8, 2.6, 2.6, C.panel); pb.rect(K(7), K(7), th, th, c); }
   else if (chapterId === "shape") { E(8, 9, 6.5, 4.5, c); E(11, 6, 3.2, 3, c); }
   else if (chapterId === "legs-tail") { E(8, 11, 4.4, 3.4, c); E(2.5, 5.5, 1.6, 1.8, c); E(6, 2.5, 1.6, 1.8, c); E(10, 2.5, 1.6, 1.8, c); E(13.5, 5.5, 1.6, 1.8, c); }
   else if (chapterId === "movement") { for (let i = 0; i < 4; i++) pb.rect(K(1 + i * 4), K(10 - (i % 2) * 5), K(3), K(3), c); P([[12, 3], [15, 6], [12, 9]], c); }
-  else if (chapterId === "stamina") { E(8, 8, 3.5, 7, c, { rot: 0.6 }); pb.line(K(5), K(13), K(11), K(3), C.wood0, th); }
+  else if (chapterId === "stamina") { E(8, 8, 3.5, 7, c, { rot: 0.6 }); pb.line(K(5), K(13), K(11), K(3), C.panel, th); }
   else if (chapterId === "character") { P([[8, 0], [10, 6], [16, 8], [10, 10], [8, 16], [6, 10], [0, 8], [6, 6]], c); }
   else if (chapterId === "glow") { E(8, 8, 5, 5, c); E(8, 8, 2.5, 2.5, C.white); }
   else if (chapterId === "charge") { P([[9, 0], [3, 9], [8, 9], [6, 16], [13, 6], [8, 6]], c); }
   else { E(8, 8, 6, 6, c); }
-  pb.outline(() => C.wood0); return pb; }); }
+  pb.outline(() => C.panel); return pb; }); }
 
 // ---------- The room and the bench, as the stand-in v2 drew them (until the masters) ----------
-export function cupArt(sel) { return art("cup" + sel, () => { const pb = new PB(52, 24); pb.ell(26, 14, 25, 9.5, C.feltD); pb.ell(26, 12, 23, 7.5, sel ? C.felt : C.feltD, { sh: [C.felt, C.wood0] }); pb.ell(26, 11, 17, 4.5, C.wood0); return pb; }); }
+export function cupArt(sel) { return art("cup" + sel, () => { const pb = new PB(52, 24); pb.ell(26, 14, 25, 9.5, C.ground); pb.ell(26, 12, 23, 7.5, sel ? C.panel : C.ground, { sh: [C.panel, C.panel] }); pb.ell(26, 11, 17, 4.5, C.panel); return pb; }); }
 // A well in the rack (the instrument's list): a cool machined ring.
 export function wellArt(sel, r = 34) { return art("well" + sel + r, () => { const pb = new PB(r * 2 + 4, r * 2 + 4), c = r + 2; pb.ell(c, c, r + 1, r + 1, sel ? C.stone : C.slate); pb.ell(c, c, r - 2, r - 2, C.night); pb.ell(c, c + 2, r - 6, r - 6, C.ink); return pb; }); }
 export function crateArt(shell, n) { return art("crate" + shell + n, () => { const pb = new PB(96, 70);
-  pb.rect(2, 6, 92, 62, C.wood3); for (let y = 6; y < 68; y += 12) pb.rect(2, y, 92, 1, C.wood2); pb.rect(2, 6, 92, 3, C.wood4); pb.rect(2, 64, 92, 4, C.wood1);
-  pb.rect(8, 6, 6, 62, C.wood2); pb.rect(82, 6, 6, 62, C.wood2);
-  pb.ell(48, 30, 15, 15, C[shell], { sh: [lite(C[shell]), shade(C[shell])] }); pb.ring(48, 30, 15, 15, C.wood1, 2);
+  pb.rect(2, 6, 92, 62, C.bevel); for (let y = 6; y < 68; y += 12) pb.rect(2, y, 92, 1, C.hairline); pb.rect(2, 6, 92, 3, C.metal); pb.rect(2, 64, 92, 4, C.bar);
+  pb.rect(8, 6, 6, 62, C.hairline); pb.rect(82, 6, 6, 62, C.hairline);
+  pb.ell(48, 30, 15, 15, C[shell], { sh: [lite(C[shell]), shade(C[shell])] }); pb.ring(48, 30, 15, 15, C.bar, 2);
   for (let i = 0; i < n; i++) pb.ell(30 + i * 18 + (3 - n) * 9, 54, 4.5, 5.5, C.paper);
-  pb.ell(80, 14, 6, 6, C.red, { sh: [C.coral, C.wine] }); pb.outline(() => C.wood0); return pb; }); }
+  pb.ell(80, 14, 6, 6, C.red, { sh: [C.coral, C.wine] }); pb.outline(() => C.panel); return pb; }); }
 export function probeArt(s) { return art("probe" + s, () => { const pb = new PB(28 * s, 28 * s), E = (x, y, r, c) => pb.ell(x * s, y * s, r * s, r * s, C[c]);
   E(14, 14, 13, "sky"); E(14, 14, 11, "paper"); E(14, 14, 7, "sky"); E(14, 14, 5, "paper"); pb.line(14 * s, 14 * s, 23 * s, 6 * s, C.sea, Math.max(1, s * 2)); pb.rect(18 * s, 17 * s, 3 * s, 3 * s, C.orange);
   pb.rich(s); pb.outline(() => C.ink); return pb; }); }
 export function leafArt(f, big) { const n = Math.round(f * 8); return art("leaf" + n + big, () => { const L = big ? 36 : 14, W = big ? 16 : 6, pb = new PB(W + 2, L + 2), cx = (W + 2) / 2, cy = (L + 2) / 2;
-  pb.ell(cx, cy, W / 2, L / 2, C.moss3); pb.ell(cx, cy, W / 2, L / 2, C.leaf, { clip: (x, y) => y >= (L + 2) * (1 - n / 8), sh: [C.sprout, C.forest] });
-  pb.line(cx, 2, cx, L, n >= 8 ? C.forest : C.moss1); pb.outline(() => C.moss0); return pb; }); }
+  pb.ell(cx, cy, W / 2, L / 2, C.bar); pb.ell(cx, cy, W / 2, L / 2, C.leaf, { clip: (x, y) => y >= (L + 2) * (1 - n / 8), sh: [C.sprout, C.forest] });
+  pb.line(cx, 2, cx, L, n >= 8 ? C.forest : C.ground); pb.outline(() => C.void); return pb; }); }
 export function domeArt(w, h, glow, part) { return art("dome" + w + "x" + h + glow + (part || ""), () => { const pb = new PB(w, h), cx = w / 2;
-  if (part !== "base") { pb.ell(cx, h * 0.58, w * 0.46, h * 0.56, glow ? C.lamp : C.moss2, { clip: (x, y) => y < h * 0.82, dith: [glow ? C.cream : C.moss3, 5] });
-    pb.ring(cx, h * 0.58, w * 0.46, h * 0.56, C.glassD, 2, 0, (x, y) => y < h * 0.82); pb.ring(cx, h * 0.58, w * 0.4, h * 0.5, C.glass, 1, 0, (x, y) => y < h * 0.4 && x < cx); }
-  if (part !== "glass") { pb.rect(w * 0.04, h * 0.8, w * 0.92, h * 0.12, C.wood3); pb.rect(w * 0.04, h * 0.8, w * 0.92, 3, C.wood4); pb.rect(w * 0.08, h * 0.92, w * 0.84, h * 0.07, C.wood1); }
+  if (part !== "base") { pb.ell(cx, h * 0.58, w * 0.46, h * 0.56, glow ? C.focus : C.panel, { clip: (x, y) => y < h * 0.82, dith: [glow ? C.cream : C.bar, 5] });
+    pb.ring(cx, h * 0.58, w * 0.46, h * 0.56, C.enamel, 2, 0, (x, y) => y < h * 0.82); pb.ring(cx, h * 0.58, w * 0.4, h * 0.5, C.frostD, 1, 0, (x, y) => y < h * 0.4 && x < cx); }
+  if (part !== "frostD") { pb.rect(w * 0.04, h * 0.8, w * 0.92, h * 0.12, C.bevel); pb.rect(w * 0.04, h * 0.8, w * 0.92, 3, C.metal); pb.rect(w * 0.08, h * 0.92, w * 0.84, h * 0.07, C.bar); }
   return pb; }); }
 // The bud: a glowing bean, never an embryo (decided).
-export function budArt(stage) { return art("bud" + stage, () => { const pb = new PB(70, 70); pb.ell(35, 40, stage ? 22 : 13, stage ? 24 : 15, C.cream, { dith: [C.lamp, 6] }); pb.ell(35, 40, stage ? 15 : 8, stage ? 17 : 10, C.amber, { sh: [C.yellow, C.orange] });
+export function budArt(stage) { return art("bud" + stage, () => { const pb = new PB(70, 70); pb.ell(35, 40, stage ? 22 : 13, stage ? 24 : 15, C.cream, { dith: [C.focus, 6] }); pb.ell(35, 40, stage ? 15 : 8, stage ? 17 : 10, C.amber, { sh: [C.yellow, C.orange] });
   if (stage) { pb.ell(41, 22, 4, 9, C.sprout, { rot: 0.5 }); pb.ell(29, 24, 3, 7, C.sprout, { rot: -0.6 }); } pb.outline(() => C.gold); return pb; }); }
-export const lampArt = () => art("lamp", () => { const pb = new PB(40, 72); pb.poly([[6, 30], [34, 30], [28, 10], [12, 10]], C.amber); pb.poly([[12, 10], [28, 10], [26, 4], [14, 4]], C.gold);
-  pb.rect(18, 30, 4, 32, C.wood2); pb.ell(20, 66, 14, 5, C.wood3); pb.ell(20, 33, 9, 3, C.cream); pb.rich(1); pb.outline(() => C.wood0); return pb; });
-export const bedArt = () => art("bed", () => { const pb = new PB(150, 44); pb.ell(75, 26, 74, 17, C.feltD); pb.ell(75, 22, 70, 14, C.felt, { sh: [C.coral, C.feltD] }); pb.ell(75, 22, 52, 8, C.feltD); pb.outline(() => C.wood0); return pb; });
-export const gateArt = () => art("gate", () => { const pb = new PB(76, 70); pb.rect(4, 8, 68, 58, C.moss3); for (let i = 0; i < 6; i++) pb.rect(10 + i * 11, 8, 4, 58, C.wood3); pb.rect(4, 18, 68, 4, C.wood2); pb.rect(4, 50, 68, 4, C.wood2);
-  pb.ell(38, 8, 34, 8, C.wood3, { clip: (x, y) => y < 9 }); for (let i = 0; i < 9; i++) pb.ell(6 + i * 8, 64, 4, 5, C.leaf, { sh: [C.sprout, C.forest] }); pb.outline(() => C.wood0); return pb; });
+export const lampArt = () => art("focus", () => { const pb = new PB(40, 72); pb.poly([[6, 30], [34, 30], [28, 10], [12, 10]], C.amber); pb.poly([[12, 10], [28, 10], [26, 4], [14, 4]], C.gold);
+  pb.rect(18, 30, 4, 32, C.hairline); pb.ell(20, 66, 14, 5, C.bevel); pb.ell(20, 33, 9, 3, C.cream); pb.rich(1); pb.outline(() => C.panel); return pb; });
+export const bedArt = () => art("bed", () => { const pb = new PB(150, 44); pb.ell(75, 26, 74, 17, C.ground); pb.ell(75, 22, 70, 14, C.panel, { sh: [C.coral, C.ground] }); pb.ell(75, 22, 52, 8, C.ground); pb.outline(() => C.panel); return pb; });
+export const gateArt = () => art("gate", () => { const pb = new PB(76, 70); pb.rect(4, 8, 68, 58, C.bar); for (let i = 0; i < 6; i++) pb.rect(10 + i * 11, 8, 4, 58, C.bevel); pb.rect(4, 18, 68, 4, C.hairline); pb.rect(4, 50, 68, 4, C.hairline);
+  pb.ell(38, 8, 34, 8, C.bevel, { clip: (x, y) => y < 9 }); for (let i = 0; i < 9; i++) pb.ell(6 + i * 8, 64, 4, 5, C.leaf, { sh: [C.sprout, C.forest] }); pb.outline(() => C.panel); return pb; });
 // The return hatch of the rack: a slot with a leaf mark.
 export const hatchArt = () => art("hatch", () => { const pb = new PB(120, 56); pb.rect(2, 4, 116, 48, C.slate); pb.rect(6, 8, 108, 40, C.night); pb.rect(10, 24, 100, 8, C.void);
   pb.ell(60, 20, 5, 10, C.leaf, { rot: 0.6, sh: [C.sprout, C.forest] }); pb.outline(() => C.ink); return pb; });
@@ -241,19 +241,19 @@ export function vivArt(w, h) { return art("viv" + w + "x" + h, () => {
   const pb = new PB(w, h), gy = Math.round(h * 0.62);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const lamp = Math.hypot((x - w * 0.45) / (w * 0.55), (y - h * 0.05) / (h * 0.7)), wave = gy + Math.round(Math.sin(x / 47) * 6 + Math.sin(x / 13) * 2);
-    let c; if (y < wave) c = ramp(["moss2", "moss3", "moss4"], 1.2 - lamp, x, y);
+    let c; if (y < wave) c = ramp(["panel", "bar", "hairline"], 1.2 - lamp, x, y);
     else { const d = y - wave; c = d < 3 ? C.grass : d < 7 ? (bay(x, y) < 8 ? C.grass : C.leaf) : d < 30 ? (bay(x, y) < 5 ? C.leaf : C.forest) : bay(x, y) < 7 ? C.soil : C.bark; }
     pb.p[y * w + x] = c;
   }
   const R2 = mulberry32(w * 31 + h);
-  for (let i = 0; i < Math.round(w / 40); i++) { const x = R2() * w, ht = 40 + R2() * 90; for (let j = 0; j < 5; j++) pb.ell(x + (R2() - 0.5) * 18, gy - ht * (j / 5) - 6, 5 + R2() * 4, 12 + R2() * 6, j % 2 ? C.moss5 : C.moss4, { rot: (R2() - 0.5) * 0.8 }); }
+  for (let i = 0; i < Math.round(w / 40); i++) { const x = R2() * w, ht = 40 + R2() * 90; for (let j = 0; j < 5; j++) pb.ell(x + (R2() - 0.5) * 18, gy - ht * (j / 5) - 6, 5 + R2() * 4, 12 + R2() * 6, j % 2 ? C.sageD : C.hairline, { rot: (R2() - 0.5) * 0.8 }); }
   for (let i = 0; i < Math.round(w / 90); i++) { const x = 40 + R2() * (w - 80), y = gy + 18 + R2() * (h - gy - 50); pb.ell(x, y, 18 + R2() * 14, 9 + R2() * 6, C.rock, { sh: [C.rockL, C.stone] }); }
   pb.ell(w * 0.78, gy + 40, 46, 13, C.stone); pb.ell(w * 0.78, gy + 38, 40, 9, C.sky, { sh: [C.ice, C.river] });
   pb.ell(w * 0.14, gy + 6, 34, 18, C.soil, { clip: (x, y) => y < gy + 10 }); pb.ell(w * 0.14, gy + 8, 22, 12, C.void, { clip: (x, y) => y < gy + 10 });
   for (let i = 0; i < Math.round(w / 22); i++) { const x = R2() * w, y = gy + 4 + R2() * (h - gy - 10); for (let j = 0; j < 3; j++) pb.line(x, y, x + (j - 1) * 3, y - 6 - R2() * 6, C.sprout); }
-  for (let x = 0; x < w; x++) { pb.set(x, 0, C.glassD); pb.set(x, 1, C.glass); pb.set(x, h - 1, C.wood1); pb.set(x, h - 2, C.wood2); }
-  for (let y = 0; y < h; y++) { pb.set(0, y, C.glassD); pb.set(w - 1, y, C.glassD); pb.set(1, y, C.glass); }
-  for (let y = 12; y < h * 0.5; y++) { pb.set(18 + y * 0.15, y, C.glass); if (y % 3) pb.set(24 + y * 0.15, y, C.glass); }
+  for (let x = 0; x < w; x++) { pb.set(x, 0, C.enamel); pb.set(x, 1, C.frostD); pb.set(x, h - 1, C.bar); pb.set(x, h - 2, C.hairline); }
+  for (let y = 0; y < h; y++) { pb.set(0, y, C.enamel); pb.set(w - 1, y, C.enamel); pb.set(1, y, C.frostD); }
+  for (let y = 12; y < h * 0.5; y++) { pb.set(18 + y * 0.15, y, C.frostD); if (y % 3) pb.set(24 + y * 0.15, y, C.frostD); }
   return pb; }); }
 export const twinkle = () => (motion() ? Math.floor(clock.now / 300) % 3 : 0);
 export { upPB };
@@ -275,7 +275,7 @@ export function mistyArt(frame, genome, mistyTraitIds, w, h) {
   });
 }
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
-export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.lamp, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });
+export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.focus, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });
 
 // ---------- A landed painting: drawn as it came (the Station may be anti-aliased), its flat ground cleared for a sprite ----------
 class Painted { layer = "painted"; constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } }

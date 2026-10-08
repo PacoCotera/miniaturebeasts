@@ -29,16 +29,16 @@ const placePB = (place) => { const pb = new PB(16, 16), c = C[PLACE_COL[place] |
 const starPB = () => { const pb = new PB(12, 12), r = 6; pb.poly([[r, 0], [r + 1.7, r - 1.7], [12, r], [r + 1.7, r + 1.7], [r, 12], [r - 1.7, r + 1.7], [0, r], [r - 1.7, r - 1.7]], C.cream); pb.rect(5, 5, 2, 2, C.white); pb.outline(() => C.gold); return pb; };
 const slatsPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const r = y % 14; pb.set(x, y, r < 2 ? C.slate : r < 4 ? C.stone : C.night); } return pb; };
 const keyPB = () => { const pb = new PB(44, 64); pb.poly([[22, 6], [40, 32], [22, 58], [4, 32]], C.lilac); pb.poly([[22, 6], [40, 32], [22, 32]], C.lavender); pb.outline(() => C.plumD); return pb; };
-const basePB = () => { const pb = new PB(72, 8); pb.rect(2, 0, 68, 5, C.wood3); pb.rect(2, 0, 68, 2, C.wood4); pb.rect(0, 5, 72, 3, C.wood1); return pb; };
+const basePB = () => { const pb = new PB(72, 8); pb.rect(2, 0, 68, 5, C.bevel); pb.rect(2, 0, 68, 2, C.metal); pb.rect(0, 5, 72, 3, C.bar); return pb; };
 const asleepPB = () => { const pb = new PB(24, 16); for (const [x, y] of [[3, 3], [13, 7], [19, 11]]) pb.rect(x, y, 4, 4, C.fog); pb.rect(4, 4, 2, 2, C.white); return pb; };
-const doingPB = () => { const pb = new PB(28, 16); pb.ring(9, 8, 8, 7, C.lamp, 2); pb.ring(19, 8, 8, 7, C.lamp, 2); pb.outline(() => C.wood0); return pb; };
+const doingPB = () => { const pb = new PB(28, 16); pb.ring(9, 8, 8, 7, C.focus, 2); pb.ring(19, 8, 8, 7, C.focus, 2); pb.outline(() => C.panel); return pb; };
 const bracketPB = () => { const pb = new PB(12, 12); for (const [x, y, sx, sy] of [[0, 0, 1, 1], [11, 0, -1, 1], [0, 11, 1, -1], [11, 11, -1, -1]]) { for (let i = 0; i < 4; i++) { pb.set(x + sx * i, y, C.cream); pb.set(x, y + sy * i, C.cream); } } return pb; };
 // The misty seed: the hidden look as a frosted close-up in a pearl, the close-up rendered at the pearl's own inner size.
 function seedPB(frame, genome, traitId, w, h) {
   const pb = new PB(w, h), iw = Math.round(w * 0.75), ih = Math.round(h * 0.65), ox = Math.round(w * 0.125), oy = Math.round(h * 0.19), src = closeUpPB(frame, genome, traitId, iw, ih), cx = (w - 1) / 2, cy = (h - 1) / 2 + 0.5;
   pb.ell(cx + 0.5, cy, w / 2 - 0.5, h / 2 - 0.5, C.frostS); pb.ell(cx + 0.5, cy, w / 2 - 2, h / 2 - 2, C.frost);
   for (let y = 0; y < ih; y++) for (let x = 0; x < iw; x++) { const c = src.get(x, y), px = x + ox, py = y + oy;
-    if (((px - cx) / (w / 2 - 2)) ** 2 + ((py - cy) / (h / 2 - 2)) ** 2 <= 0.92 && c >= 0 && c !== C.creamT && c !== C.sand) pb.set(px, py, bay(px, py) < 5 ? C.frost : c); }
+    if (((px - cx) / (w / 2 - 2)) ** 2 + ((py - cy) / (h / 2 - 2)) ** 2 <= 0.92 && c >= 0 && c !== C.bone && c !== C.sand) pb.set(px, py, bay(px, py) < 5 ? C.frost : c); }
   pb.ring(cx + 0.5, cy, w / 2 - 0.5, h / 2 - 0.5, C.stone, 1); pb.set(Math.round(w * 0.35), Math.round(h * 0.2), C.white); pb.set(Math.round(w * 0.33), Math.round(h * 0.22), C.white); return pb;
 }
 // The stamp on its label: cells of whole pixels, cell = floor(104 / (N + 2)) and at least 2, drawn with its quiet margin, centred on the 120 label.

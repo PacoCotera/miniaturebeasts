@@ -177,7 +177,7 @@ test("the chapter rail draws emblem, word and pips per tab, no words of status, 
 
 test("the chapter page lays the cells on the grid with the marks inside each picture", () => {
   const region = { rect: [528, 112, 480, 440], heading: [16, 8], grid: { "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 120] } } };
-  const colours = { pane: "night", edge: "slate", heading: "creamT", name: "creamT", line: "fog", lineEmpty: "stone", wipe: "white" };
+  const colours = { pane: "night", edge: "slate", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white" };
   const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eye rings", lines: ["shows thin · hides none"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }];
   const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, frost: "frost:", slats: "slats:", region: "page", cellRegion: "page.cell" });
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
@@ -193,10 +193,10 @@ test("the chapter page lays the cells on the grid with the marks inside each pic
 });
 
 test("text runs draw the material symbols as icons, wrap and clip", () => {
-  const r = textRun(ctx, "t", "Read Coat · 3 ◆", 16, 570, { px: 16, colour: "creamT" });
+  const r = textRun(ctx, "t", "Read Coat · 3 ◆", 16, 570, { px: 16, colour: "bone" });
   assert.equal(r.nodes.filter((n) => n.kind === "sprite").length, 1); assert.equal(r.nodes.filter((n) => n.kind === "sprite")[0].asset, "icon:data:16");
   assert.ok(r.nodes.filter((n) => n.kind === "text").every((n) => !/[⚡◆❀]/.test(n.text)));
   assert.deepEqual(wrap(ctx, "a b c d e f", 48, 16), ["a b c", "d e f"]);
   assert.ok(clip(ctx, "a very long subject indeed", 60, 16).endsWith("…"));
-  const c = textRun(ctx, "c", "Loika", 344, 344, { px: 28, weight: 600, colour: "creamT", align: "center" }); assert.ok(Math.abs(c.nodes[0].rect[0] + c.nodes[0].rect[2] / 2 - 344) <= 1);
+  const c = textRun(ctx, "c", "Loika", 344, 344, { px: 28, weight: 600, colour: "bone", align: "center" }); assert.ok(Math.abs(c.nodes[0].rect[0] + c.nodes[0].rect[2] / 2 - 344) <= 1);
 });

@@ -19,8 +19,8 @@ function drawSpread() {
   paperBg(); drawTop("Library");
   const ids = pageOf();
   ids.forEach((id, i) => { const fr = frameOf(id), { x, y } = frameXY(i);
-    R(x - 2, y - 2, FRAME.w + 4, FRAME.h + 4, C.bark); R(x, y, FRAME.w, FRAME.h, C.creamT);
-    if (known(id)) { panel(x + 6, y + 6, FRAME.w - 12, FRAME.h - 28, C.bone, C.clay); const a = speciesArt(fr, 76, 76); blit(a, x + 10, y + 8); text(clipText(fr.species.name, FRAME.w - 4, 2), x + FRAME.w / 2, y + FRAME.h + 6, C.wood0, 2, "center"); }
+    R(x - 2, y - 2, FRAME.w + 4, FRAME.h + 4, C.bark); R(x, y, FRAME.w, FRAME.h, C.bone);
+    if (known(id)) { panel(x + 6, y + 6, FRAME.w - 12, FRAME.h - 28, C.bone, C.clay); const a = speciesArt(fr, 76, 76); blit(a, x + 10, y + 8); text(clipText(fr.species.name, FRAME.w - 4, 2), x + FRAME.w / 2, y + FRAME.h + 6, C.panel, 2, "center"); }
     else if (met(id)) { const a = speciesArt(fr, 76, 76); blit(art("study" + id, () => { const pb = new PB(a.w, a.h); for (let j = 0; j < a.p.length; j++) if (a.p[j] >= 0 && ((j % a.w) + ((j / a.w) | 0)) % 3 === 0) pb.p[j] = C.stone; return pb; }), x + 10, y + 8); text(clipText(fr.species.name, FRAME.w - 4, 2), x + FRAME.w / 2, y + FRAME.h + 6, C.mist, 2, "center"); }
     R(x, y + FRAME.h + 24, FRAME.w, 1, C.clay);   // the caption rule
     if (L().f === "spread" && L().i === i) focusRing(x - 5, y - 5, FRAME.w + 10, FRAME.h + 10);
@@ -31,12 +31,12 @@ function drawSpread() {
 function drawBook() {
   paperBg(); drawTop("Library");
   const id = L().sp, fr = frameOf(id); if (!fr) { L().f = "spread"; return; }
-  panel(30, 60, 300, 330, C.creamT, C.bark); blit(speciesArt(fr, 260, 270), 50, 70);
-  panel(40, 400, 280, 60, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.wood0, 3, "center"); text(fr.taxonomy?.clan ? "clan " + fr.taxonomy.clan + " · " + S.plural(fr.chapters.length, "chapter") : S.plural(fr.chapters.length, "chapter"), 180, 440, C.bark, 2, "center");
+  panel(30, 60, 300, 330, C.bone, C.bark); blit(speciesArt(fr, 260, 270), 50, 70);
+  panel(40, 400, 280, 60, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.panel, 3, "center"); text(fr.taxonomy?.clan ? "clan " + fr.taxonomy.clan + " · " + S.plural(fr.chapters.length, "chapter") : S.plural(fr.chapters.length, "chapter"), 180, 440, C.bark, 2, "center");
   // the chapters as tabs and the looks found so far
-  text("the field guide · looks found so far", 360, 62, C.wood0, 2);
+  text("the field guide · looks found so far", 360, 62, C.panel, 2);
   let y = 90;
-  fr.chapters.forEach((ch) => { blit(emblemArt(ch.id), 360, y); text(ch.name + (ch.sealed ? " · sealed" : ""), 384, y + 1, C.wood0, 2);
+  fr.chapters.forEach((ch) => { blit(emblemArt(ch.id), 360, y); text(ch.name + (ch.sealed ? " · sealed" : ""), 384, y + 1, C.panel, 2);
     const seen = ch.traits.map((t) => [t, S.guideLooks(G.st, id, t.id)]);
     const line = seen.map(([t, ls]) => t.name + ": " + (ls.length ? ls.join(", ") : "?") + (ls.length < (t.looks?.length || 1) ? " · more?" : "")).join("  ·  ");
     text(clipText(line, 620, 2), 384, y + 22, ls_col(seen), 2); y += 50; if (y > 500) return; });
