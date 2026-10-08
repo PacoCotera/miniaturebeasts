@@ -11,5 +11,5 @@ out = ["## Slices\n\nEach slice is named by the register id it replaces (`room`,
 for g, items in G.items():
     out.append(f"\n### {g}\n\n| Slice id | Size | Rect on the screen | Made by |\n| --- | --- | --- | --- |")
     for n, v in items: out.append(f"| `{n}` | {v['size'][0]}×{v['size'][1]} | {rect(v)} | {v['made']} |")
-a = r.index("## Slices"); b = r.index("## Sixth pass") if "## Sixth pass" in r else r.index("## Fifth pass")
+a = r.index("## Slices"); b = r.index("<!-- end of the generated Slices section -->")
 open("README.md", "w").write(r[:a] + "\n".join(out) + "\n\n" + r[b:])

@@ -174,10 +174,24 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-sealed` | 376×264 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-376x264-unread` | 376×264 |  | frost texture at 0.9 alpha under the frame |
 
+<!-- end of the generated Slices section -->
+
 ## Pass 7c (2026-10-08)
 
 - **`room-stamp-case`, redone as translucent glass:** the wall's seams show through it; its inside reads one step above the wall (mean grey about 46 above the label against the wall's 38, well under the pod's 110); a faint diagonal sheen crosses it; the rails top and bottom are dim brushed metal; a faint hairline marks its left edge; it is still unlit and open at the screen's right edge. It was opaque and darker than the wall before (mean 22).
 - The Read composite and `composite-vs-candidate.png` are rebuilt; the stand-ins are listed under the composite.
+
+## Seventh pass (2026-10-08)
+
+To the art director's verdict on pass 6 (the 33 re-cut pods and shadows, the 8 sealed slats, the portrait frame with its states and the 0.6 name plates are signed and unchanged):
+
+- **Name plate at 20 px (owner):** `plate-name-<w>x24`, 80 to 224 wide in steps of 16, 24 tall, centred on x 712 at y 456 (the name's text rectangle is (600,456,224,24)); the composites set the name in Inter 20 medium. The origin has no plate: bone text with a 1 px dark shadow at (600,496,224,40), so the `plate-origin` slice is removed.
+- **`room-cradle-front`:** re-cut along the bowl's own near-rim contour, not a row. The contour was read off the bowl's lit rim edge (from the left wall's top edge at row 19, down the dip's U to row 72 and up to the right wall), so both near side walls from their top edge are in front of the pod, its flanks pass behind them, and the dip's U is the front edge. Inside the dip there is no flat band of bed: five uneven grit tufts (5 to 9 px high, ragged tops) lap the pod's round foot. `room-cradle` is unchanged. *Method note:* the front layer is cut from the cradle's own pixels by that contour and by the tufts' profiles (`tools/build.py`, `cradle`), not painted as a separate assembly; the art director signed it.
+- **`room-shelf`:** the concept's slab, a trapezoid in perspective with a deep top face, a lit pale-cyan front edge and the bowl's contact shadow on the top face; its rectangle is the UI designer's (592, 368, 240, 72), centred on x 712, front edge at y 440, about 20 px of slab either side of the bowl.
+- **`page-pane-408x440`:** brought to the stage wall's values (the inside is about 30 percent of its former brightness), thin dark glass inside the lit hairline edge, so the portrait frame is the page's only lit object.
+- **`pod-well-mask-accent`:** the two enclosed pixels at (6,11) and (7,11) are filled; `pod-well-mask-body` is held with it.
+- **`room-stamp-case` (new, 176×328 at (848,144)):** the stamp's dim, unlit glass case (owner's decision, `design-pods-relayout` 4699815), open at the screen's right edge; the label (888,248,120,120) stands in it. Redone as translucent glass in pass 7c, below.
+- **Composites:** the emblem slots are empty, only the words and pips show.
 
 ## Sixth pass (2026-10-08)
 
