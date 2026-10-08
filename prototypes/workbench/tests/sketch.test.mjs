@@ -47,3 +47,21 @@ test("the manifest carries genome, frame and sketcher provenance and one entry p
   assert.ok(m.sketch.markingFields.includes("shell"));
   assert.equal(markingFields(buildIndividual(f, g).scene).includes("shell"), true);
 });
+
+test("an individual comes back by its genome digest, deterministically, from the reference or seed stream", async () => {
+  const { genomeByDigest, genomeSha256, canonicalGenome } = await import("../sketch/cli.mjs");
+  const { genomeDigest } = await import("../framework/species.mjs");
+  const f = frame("S05");
+  const bySeed = sampleIndividual(f, rng("S05:7"), { kind: "random", seed: 7 });
+  const found = genomeByDigest(f, genomeDigest(bySeed));
+  assert.ok(found, "the seed stream holds seed 7");
+  assert.deepEqual(found.loci, bySeed.loci);
+  assert.equal(genomeSha256(found), genomeSha256(bySeed));
+  const r = rng("S05:reference-set");
+  const members = Array.from({ length: 4 }, (_, i) => sampleIndividual(f, r, { kind: "random", seed: i + 1 }));
+  const byHash = genomeByDigest(f, genomeSha256(members[3]).slice(0, 16));
+  assert.deepEqual(byHash.loci, members[3].loci, "a sha256 prefix finds the fourth reference member");
+  assert.equal(genomeByDigest(f, "S05-00000000"), null, "an unknown digest is null, never a guess");
+  assert.equal(canonicalGenome(bySeed), canonicalGenome({ ...bySeed, loci: Object.fromEntries(Object.entries(bySeed.loci).reverse()) }), "canonical text is order-free");
+  assert.equal(genomeByDigest(f, "S05").origin.kind, "type-specimen");
+});
