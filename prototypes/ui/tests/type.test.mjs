@@ -38,6 +38,13 @@ test("figures are tabular and kerning is applied from the atlas metrics", () => 
   T.layout("中", 16); assert.ok(T.missing.has("中")); T.missing.clear();   // an unbaked character is logged and shows '?'
 });
 
+test("✕ is set as it is decided: a sprite in the text run, never a glyph or a substitute", async () => {
+  const { textRun } = await import("../components/text.mjs");
+  const r = textRun(makeCtx(spec, T), "t", "Clash ✕ here", 0, 0, { px: 16, colour: "red" });
+  assert.deepEqual(r.nodes.filter((n) => n.kind === "sprite").map((n) => n.asset), ["icon:cross:16"]);
+  assert.ok(r.nodes.filter((n) => n.kind === "text").every((n) => !/[✕×]/.test(n.text)));
+});
+
 test("PNG round-trips and decodes every filter", () => {
   const w = 5, h = 4, rgba = new Uint8Array(w * h * 4).map((_, i) => (i * 37) & 255), png = encodePNG(w, h, rgba), back = decodePNG(png);
   assert.equal(back.width, w); assert.deepEqual([...back.data], [...rgba]);

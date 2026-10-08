@@ -157,13 +157,11 @@ const name = (c) => PALETTE[c][0];
 // titles, 28 px names). The size argument keeps the old scale numbers: 2 body, 3 title, 4 name; 1 (13 px, which the
 // style guide forbids) is set at 16, the nearest face the atlases have.
 export const FONT_PX = { 1: 16, 2: 16, 3: 20, 4: 28 };
-export const ICON_GLYPH = { "⚡": "energy", "◆": "data", "❀": "essence", "★": "star" };   // drawn as the material icons inside text
+export const ICON_GLYPH = { "⚡": "energy", "◆": "data", "❀": "essence", "★": "star", "✕": "cross" };   // drawn as the material icons inside text
 let iconsOf = () => null;   // art.mjs registers the material icons (name, px)
 export const setIcons = (fn) => { iconsOf = fn; };
 const iconPx = (s) => Math.round((FONT_PX[s] || 16) * 0.9);
-// Inter has no ✕ (U+2715): the screens not yet moved say × (U+00D7) where they said ✕, which the old canvas drew from a system font.
-const FALLBACK = { "✕": "×" };
-function runs(str) { str = [...str].map((c) => FALLBACK[c] ?? c).join(""); const out = []; let cur = ""; for (const ch of str) { if (ICON_GLYPH[ch]) { if (cur) out.push(cur); out.push({ icon: ICON_GLYPH[ch] }); cur = ""; } else cur += ch; } if (cur) out.push(cur); return out; }
+function runs(str) { const out = []; let cur = ""; for (const ch of str) { if (ICON_GLYPH[ch]) { if (cur) out.push(cur); out.push({ icon: ICON_GLYPH[ch] }); cur = ""; } else cur += ch; } if (cur) out.push(cur); return out; }
 export function textW(str, s) {
   s = s || 2; const px = FONT_PX[s] || 16; let w = 0;
   for (const r of runs(str)) w += typeof r === "string" ? SC.measure(r, px) : iconPx(s) + 2;

@@ -1,0 +1,75 @@
+{
+ "screen": "pods",
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md#pods-list-and-read",
+ "frame": "frame.json",
+ "note": "The one home of the Pods numbers, transcribed from station-layouts.md (Pods §5, §6). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What is not in the layout document is listed under `derived`, each waiting for the UI designer. The strings other than strings.openBay are the decided strings of the layout document (§5 States, §6).",
+ "derived": {
+  "compare grid for one or two traits": "derived, UI designer to confirm: the document gives Compare's grid for three to six traits only; one and two are Read's cells and pictures scaled to the page's 408 px (pictures 376×264 and 184×256), as the previous builder chose",
+  "compare cell rows": "derived, UI designer to confirm: the rows of Compare's cells follow Read's (y 48 and 248 on the page)",
+  "colours": "derived, UI designer to confirm: the colour roles of the Pods regions are the builder's choice from the palette's names (the layout document names none beyond the cream focus ring, the bone stamp label with a slate edge, the frost unread page, the deep pane and the slate edge)",
+  "strings.openBay": "derived, UI designer to confirm: the empty rack's need line when the Companion is docked (open the bay at Home to bring pods in); the document gives only the undocked one",
+  "tab fills": "derived, UI designer to confirm: the unread and read tab colours (colours.rail), as the previous builder chose: unread frost with a slate hairline and ink word, read deep teal with an aqua rim and mint word, the cream ring",
+  "compare difference mark": "derived, UI designer to confirm: the 12×12 bracket sits centred on the picture's top edge (the document gives its size, not its place)"
+ },
+ "regions": {
+  "list": { "rect": [0, 40, 160, 522], "component": "list", "item": "well", "slots": 6, "rule": { "x": 160, "y0": 48, "y1": 552 } },
+  "well": { "rect": [8, 48, 144, 72], "pitch": [0, 72], "ring": { "at": [32, 4, 64, 64], "radius": 31 }, "pod": { "size": [32, 40], "centre": [64, 36] }, "place": { "at": [104, 12, 16, 16] } },
+  "hatch": { "rect": [24, 488, 112, 56], "mark": [24, 24] },
+  "rail": { "rect": [176, 48, 832, 56], "component": "chapterRail" },
+  "stage": { "rect": [168, 112, 352, 440] },
+  "beam": { "rect": [224, 104, 240, 232] },
+  "pod": { "rect": [264, 120, 160, 192], "component": "specimen", "focal": true, "axis": 344, "feet": 312 },
+  "cradle": { "rect": [232, 296, 224, 40] },
+  "name": { "rect": [184, 344, 320, 32], "px": 28, "centre": 344 },
+  "origin": { "rect": [184, 384, 320, 40], "px": 16, "lines": 2, "centre": 344 },
+  "stamp": { "rect": [176, 432, 120, 120], "component": "stampLabel" },
+  "page": {
+   "rect": [528, 112, 480, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
+   "grid": {
+    "1": { "cells": [[16, 48, 448, 384]], "picture": [448, 312] },
+    "2": { "cells": [[16, 48, 216, 384], [248, 48, 216, 384]], "picture": [216, 304] },
+    "3-4": { "cells": [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], "picture": [216, 120] },
+    "5-6": { "cells": [[16, 48, 144, 184], [168, 48, 144, 184], [320, 48, 144, 184], [16, 248, 144, 184], [168, 248, 144, 184], [320, 248, 144, 184]], "picture": [144, 112] }
+   }
+  },
+  "compareA": {
+   "rect": [176, 112, 408, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8], "pod": [32, 40], "derived": ["grid 1", "grid 2", "grid rows"],
+   "grid": {
+    "1": { "cells": [[16, 48, 376, 384]], "picture": [376, 264] },
+    "2": { "cells": [[16, 48, 184, 384], [208, 48, 184, 384]], "picture": [184, 256] },
+    "3-4": { "cells": [[16, 48, 184, 184], [208, 48, 184, 184], [16, 248, 184, 184], [208, 248, 184, 184]], "picture": [184, 104] },
+    "5-6": { "cells": [[16, 48, 120, 184], [144, 48, 120, 184], [272, 48, 120, 184], [16, 248, 120, 184], [144, 248, 120, 184], [272, 248, 120, 184]], "picture": [120, 96] }
+   }
+  },
+  "compareB": { "rect": [600, 112, 408, 440], "same": "compareA" },
+  "ribbon": { "rect": [184, 384, 320, 40], "px": 20, "ms": 6000 }
+ },
+ "classes": { "pod": { "large": [160, 192], "medium": [136, 168], "small": [112, 144] } },
+ "page": { "marks": { "seed": [40, 52], "seedSmall": [32, 40], "smallUnder": 120, "only": [72, 8], "asleep": [24, 16], "doing": [28, 16], "key": [44, 64] }, "diff": { "bracket": [12, 12] } },
+ "focus": {
+  "list": { "axis": "vertical", "right": "pod", "left": "none" },
+  "pod": { "left": "list.current", "up": "rail.last", "right": "none", "down": "none" },
+  "rail": { "axis": "horizontal", "down": "pod", "up": "none" },
+  "fallback": "spatial",
+  "initial": "pod"
+ },
+ "targets": {
+  "well": { "group": "list", "inset": 0 },
+  "hatch": { "group": "list" },
+  "pod": { "group": "pod", "shape": "ellipse" },
+  "tab": { "group": "rail" }
+ },
+ "colours": {
+  "ground": "deep", "listPane": "night", "listEdge": "slate", "listRule": "slate",
+  "wellLit": "stone", "well": "slate", "wellCore": "ink", "wellPit": "night",
+  "ringRead": "aqua", "ringUnread": "mist", "ringSealed": "stone", "ringBase": "moss4", "ringDot": "fog",
+  "name": "creamT", "origin": "mist", "ribbonFill": "lamp", "ribbonEdge": "rust", "ribbonText": "rust",
+  "rail": { "unreadFill": "frostD", "unreadEdge": "slate", "unreadWord": "ink", "readFill": "tealD", "readRim": "aqua", "readWord": "mint", "pip": "aqua", "pipHollow": "stone", "ring": "cream", "changed": "amber" },
+  "page": { "pane": "night", "edge": "slate", "heading": "creamT", "name": "creamT", "line": "fog", "lineEmpty": "stone", "wipe": "white" },
+  "stampLabel": { "fill": "bone", "edge": "slate" },
+  "diff": "cream",
+  "beam": "tealD"
+ },
+ "strings": { "unknownPod": "Unknown pod", "newSpecies": "New species", "empty": "the rack is empty", "dockToBring": "dock the Companion to bring its crates home", "openBay": "open the bay at Home to bring pods in", "legsTail": { "rail": "Legs", "heading": "Legs & tail" } }
+}
