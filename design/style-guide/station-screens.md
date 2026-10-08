@@ -117,6 +117,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 **Decided 2026-10-07 (concept round).** The genome stamp sits on a square label of about 220 px, no plate. The progress ring sits around the pod's shell and carries chapters only; "identified" shows on the pod's seal. The dark glass lab is the bench, and Create and Incubator follow it. Reference: `art/concept-station/pods-v2/`, candidate PV-D-r3-a4.
 
+**Chapter rail (Decided 2026-10-08).** Every research-bench screen shows as many chapters as the species has, in ring order; there is no fixed count. The four-tab rails in the concept plates are legacy concept art. Loika shows seven.
+
 **Pass when**
 - [ ] Unread chapters show nothing; draw only what is known.
 - [ ] The seven chapter states are told apart without colour.
@@ -153,7 +155,9 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Palette.** The founder's own colours; frost pale blue-white; the price icons in their hues.
 - **Type.** 2× trait lines ("shows stripes · hides spots", "only spots"); the total in the bottom line.
 - **Chrome.** `✓ Grow it · 2 ⚡ 4 ❀ 1 ◆ · ← Pods`.
-- **Motion.** A roll swaps the trait's picture, the founder's part and the ring's spokes in 200 ms; on Grow the ring stamps the shell, the code appears, the pod glides into the chamber in 600 ms.
+- **Motion.** A roll swaps the trait's picture, the founder's part and the stamp's cells in 200 ms; on Grow the stamp prints on its label, the code appears, the pod glides into the chamber in 600 ms.
+
+**Decided 2026-10-08 (concept round).** Reference `art/concept-station/create/`, candidate CR-C2. The painted master places the accepted Pip asset (the same drawing on every Station screen; Pip is not regenerated). Roll pictures are flank close-ups of the changed part, not whole founders. The still-sealed doings chapters are named in one status-bar line ("Face and Stamina stay a surprise"), not as greyed tabs.
 
 **Pass when**
 - [ ] Founder, changes, surprises and cost are all visible at once.
@@ -171,21 +175,23 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 **Vibe.** Research bench: a modern digital lab, with the chamber's glow as the one warm thing.
 
-**Purpose.** Watch the embryo grow and open it. **Reads first:** the embryo, then how many leaves remain.
+**Purpose.** Watch the bud grow and open it. **Reads first:** the glowing bud, then how many leaves remain.
 
-- **Living window.** Inside the dome: the embryo glowing as it grows (seed, bud, the species' shape asleep). Warm, slow, alive.
-- **Instrument.** The incubation chamber: a glass dome on a machined base, a ring of leaves as the timer (one leaf a minute, each filling smoothly), the plate with the genome ring and code. The unread chapter arcs above clear one by one, and the ring's sectors fill with them.
+- **Living window.** Inside the dome: a cute, generic glowing bean in a nest, brighter and perhaps shifting in colour as it grows, with the species' shape glowing inside it when ready. Never an embryo shape at any stage (**Decided 2026-10-08**). Warm, slow, alive.
+- **Instrument.** The incubation chamber: a glass dome on a machined base, a ring of leaves as the timer (one leaf a minute, each filling smoothly), the stamp on its label at the right, its code string beside it as live text. The unread chapter tabs above clear one by one, and the stamp's chapters fill with them.
 - **Composition.** Dome centred, large (about 360 px across); leaves in an arc over it; chapter arcs above; plate below.
-- **Lively / quiet.** Lively: the embryo's glow and the filling leaf. Quiet: everything else. Ready: the dome glows.
+- **Lively / quiet.** Lively: the bud's glow and the filling leaf. Quiet: everything else. Ready: the dome glows, the shape visible inside the bud, and nothing steps out until the player opens it.
 - **Light.** Warm light from inside the dome; cool chrome around.
-- **Palette.** Leaf greens for the timer, pale glass, the embryo's species hue.
+- **Palette.** Leaf greens for the timer, pale glass, the bud's warm glow drifting toward the species hue.
 - **Type.** 2× status, no digits for time.
 - **Chrome.** Read-only while growing (no ✓ cap); ready: `✓ Open`.
-- **Motion.** A leaf fills over its minute; Open lifts the glass in 600 ms and the juvenile steps out: "Fig · Tuikis · juvenile".
+- **Motion.** A leaf fills over its minute; Open lifts the glass in 600 ms, the bud cracks and the juvenile steps out: "Fig · Tuikis · juvenile".
+
+**Decided 2026-10-08 (concept round).** Reference `art/concept-station/incubator/`, candidates IN-D-r1-a3 (growing) and IN-C1 (ready). Ready keeps the shape glowing inside the bud so the player gets to crack the incubator open. The growing bud is a cute, generic glowing bean; colours may shift, shapes never become embryos. The stamp stands alone on the Station; the code string may also show, as a shareable "look at my mibi" string.
 
 **Pass when**
 - [ ] Time reads as leaves, never digits.
-- [ ] The embryo is the only warm, living thing.
+- [ ] The bud is the only warm, living thing.
 - [ ] Ready reads from across a table.
 - [ ] The juvenile that steps out is the founder from Create, its ring whole.
 - [ ] A still frame shows progress.
