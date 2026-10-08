@@ -7,6 +7,7 @@
 import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync, mkdirSync } from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { decode } from "../../genome-stamp/src/decode.mjs";
@@ -21,7 +22,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
-const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown", ".woff2": "font/woff2" };
+const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown" };
 // The Caddy service in mock mode beside the static server (station-build.md §5), its calls proxied under /caddy-api/ as the VM's web server does.
 loadCaddyFrames();
 const caddyData = mkdtempSync(path.join(tmpdir(), "mb-caddy-journey-"));
@@ -58,6 +59,18 @@ await page.addInitScript(() => { window.__fillTextCalls = 0; for (const f of ["f
 await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.removeItem("mb-station-dev"); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
+// The atlases the page draws from are the committed ones: their files hash to what the index records, and the index's sources are the committed frozen TTFs.
+{
+  const dir = path.join(here, "../../ui/fonts"), sha = (f) => createHash("sha256").update(readFileSync(f)).digest("hex"), index = JSON.parse(readFileSync(path.join(dir, "atlas/index.json"), "utf8"));
+  const sums = Object.fromEntries(readFileSync(path.join(dir, "inter/src/SHA256SUMS"), "utf8").trim().split("\n").map((l) => l.split(/\s+/).reverse()));
+  for (const f of index.faces) {
+    if (sha(path.join(dir, "atlas", f.atlas)) !== f.sha256.atlas) fail(`atlas ${f.atlas} does not match the hash in the index`);
+    if (sha(path.join(dir, "atlas", f.metrics)) !== f.sha256.metrics) fail(`metrics ${f.metrics} do not match the hash in the index`);
+    const m = JSON.parse(readFileSync(path.join(dir, "atlas", f.metrics), "utf8"));
+    if (sums[m.source.replace(".ttf", "-tnum.ttf")] !== m.sourceSha256) fail(`${f.id} was baked from a TTF other than the committed ${m.source}`);
+  }
+  console.log("atlases: " + index.faces.length + " faces, files hash to the index, baked from the committed frozen TTFs");
+}
 // The type is baked atlases of Inter (prototypes/ui/fonts/atlas), blitted as glyph runs: no font is loaded by the page, and no request leaves the page's origin.
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
 const fillText = await page.evaluate(() => window.__fillTextCalls);
