@@ -97,6 +97,26 @@ Judged a third time, after the placeholder pods were placed (the code of ebfb3b8
 
 **Delivery: signed by the art director and confirmed by the UI designer, 2026-10-08.** The four failures of the second check and the three of the third are closed (f3567d6); the geometry holds. Motion, the well pod on the screens not yet moved and the plain shell are accepted departures. The question on the species glyphs goes to the owner with it.
 
+### Section 3, the Station frame on the LVGL face (L1, L1b): by the builder
+
+The frame (top bar, bottom line, message plate, focus ring) and the slanted chapter rail, drawn by LVGL 9.6 behind `?face=lvgl`; the JavaScript page is the default and untouched. Captures: `prototypes/face/img/l1-*.png` (the frame, the plate, the counter's tick; the canvas renderer's frame beside the face's) and `l1b-rail*.png` (the rail, the ring on a tab).
+
+| Art direction | Capabilities |
+| --- | --- |
+| Reads first what the guide names (SG checklist) — **n/a to the frame**: the frame names nothing; the stage is empty on the face until L2 | Native 1024×600 at 1×, no scaling — **yes**: the display is 1024×600 ARGB8888 and the page copies the redrawn rectangles 1:1; nothing is scaled |
+| Chrome and type crisp (SG Decided 3) — **yes, one departure**: rules, bars, the plate and the rail are flat rectangles and whole-pixel masks; Inter is anti-aliased 4 bpp from the same frozen TTFs; the one soft edge is the round focus ring's corners, which LVGL anti-aliases (the canvas renderer's were hard-edged) | Palette names only — **yes**: nodes carry colour names; the page resolves them from `station.json` at the boundary; no colour value is in a view, a component or a spec |
+| One ring per screen, in the focus role, 2 px, 4 px outside (SS) — **yes**: `focus` (#ffe6ad) in `frame.json`, `pods.json` and the ring component; the round ring is a border (width 2, radius 6), the creature's feet and the tab ring are sprites from pixel-centre masks; the checks read the ring's pixels | Layout from the spec, no coordinates in screen code — **yes**: the rail's tab positions, widths, the slant, pips, glint and ring box come from `frame.json`'s `rail` and `focus.ring.tab` through `layout.slantTabs`; the frame's regions from the same file; the checks recompute them independently |
+| The rail hangs from the top bar, touching slanted tabs (SS Chapter rail) — **yes**: tabs at y 40, 40 tall, 136 wide up to six, compact 56 with the open tab full for seven to twelve; shared slants are one hairline (the check reads the column at five rows); the run is the sum plus 16; no lift | Closed primitive set — **yes**: rect, sprite, text only; the slanted ends are 16×40 sprites from masks and the ring a sprite; **no new primitive** (a custom-draw triangle was not needed) |
+| Strings as decided — **yes**: none changed | Type: Inter 16, 20, 28 only, tabular figures — **yes**: three `lv_font_conv` C fonts from the committed TTFs and ranges; the views measure through the face, so centring and clipping use LVGL's widths |
+
+Departures and open items, for the UI designer or the lead:
+
+- **The slant's rounding** is the builder's reading: a side is the line x + 16 (y − 40) / 40 taken at each row's centre and floored, so row 0 is not shifted and row 39 is shifted 15; the document gives the lines, not the rows.
+- **The tab ring's right side** (open): the document's box (x − 4, 42, w + 24, 42) ends at the line's value at y 80, while the right slant carried to y 84 would reach 1.6 px further. Built: the slants lean to the tab's bottom edge (y 80), then drop straight to the bottom run at y 84, which keeps the stated box. One constant if the other reading is meant.
+- **Glyph advances** are whole pixels in LVGL (the atlases kept fractions), so a string's last letters can sit 1 to 4 px from the canvas renderer's; the views measure through the face, so centring and clipping are right in the face itself.
+- **Not built on the face yet**: the stage's content (L2), Compare's rail, motion (the rail's 300 ms slide, the 200 ms lift, the glint's twinkle), the sealed tab's slats are rows of 1 px lines (the master art is owed).
+- **Sizes and timings** (CI and the development VM): `face.wasm` 359,511 B (141,985 B gzipped), page load 6 to 8 ms (26 ms at 4× CPU throttle), a full-frame copy 3 ms (13 ms throttled), an unchanged frame 0.003 ms.
+
 ## 4. Companion screen build
 
 | Art direction | Capabilities |

@@ -15,10 +15,11 @@
   "subject": { "rect": [400, 570, 224, 24], "centre": 512, "px": 16 },
   "need": { "rect": [632, 570, 376, 24], "right": 1008, "px": 16 },
   "separators": { "x": [396, 628], "y0": 571, "y1": 591 },
+  "rail": { "y": 40, "h": 40, "slant": 16, "full": 136, "compact": 56, "fullUpTo": 6, "max": 12, "pip": { "size": 6, "pitch": 8 }, "full_layout": { "emblem": [24, 24], "gap": 8, "centreAt": 76, "emblemY": 48, "wordLine": [44, 20], "pipsY": 68 }, "compact_layout": { "emblemY": 44, "emblemCentre": 34, "pipsY": 72, "pipsCentre": 42 }, "glint": { "size": 12, "below": 2 }, "pods": { "x": 176 }, "centred": { "on": 512, "snap": 8 }, "slideMs": 300, "note": "The shared chapter rail (station-layouts.md, The chapter rail): tabs are parallelograms hanging from the top bar's rule (y 40 to 80), both sides leaning 16 px right over the height, touching along their slants (pitch = width, run = sum of widths + 16). One to six chapters: full tabs of 136. Seven to twelve: compact tabs of 56 and the open chapter's tab full. Pods starts the run at x 176; Create and Incubator centre it on x 512, snapped down to the grid. A hanging tab does not lift." },
   "plate": { "centre": 512, "maxWidth": 640, "pad": 16, "line": 20, "lead": 16, "bottom": 550, "topOverFocal": 112, "showMs": 4000, "px": 16 }
  },
  "type": { "body": 16, "title": 20, "name": 28, "pitch": { "16": 20, "20": 28, "28": 36 }, "weight": { "16": 400, "20": 500, "28": 600 } },
- "focus": { "ring": { "width": 2, "outside": 4, "radius": 6 }, "feet": { "widen": 16, "height": 24 }, "lift": { "chrome": 2, "creature": 4, "ms": 200 } },
+ "focus": { "ring": { "width": 2, "outside": 4, "radius": 6, "tab": { "shape": "slant", "slant": 16, "outside": 4, "top": 42, "bottom": 84, "radiusBottom": 6, "radiusTop": 0, "lift": 0 } }, "feet": { "widen": 16, "height": 24 }, "lift": { "chrome": 2, "creature": 4, "ms": 200 } },
  "colours": {
   "chrome": "ground", "rule": "void", "title": "bone", "turn": "mist", "figure": "bone", "flash": "amber", "flashInk": "ink",
   "companion": "fog", "companionDocked": "mint", "lampOn": "mint", "lampOff": "stone",

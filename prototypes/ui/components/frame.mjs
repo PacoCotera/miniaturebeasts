@@ -14,6 +14,7 @@ export { panel, hairline } from "./panel.mjs";
 export { focusRing } from "./focusRing.mjs";
 export { stampLabel, stampCell } from "./stampLabel.mjs";
 export { chapterRail } from "./chapterRail.mjs";
+export { slantRail } from "./slantRail.mjs";
 export { chapterPage } from "./chapterPage.mjs";
 export { textRun, runWidth, wrap, clip, iconAsset } from "./text.mjs";
 export { list } from "./list.mjs";

@@ -7,7 +7,7 @@
 import { G, FX, UI, TL, SPECS, LAYER, READ_MS, ID_MS, msg, save, goScreen, registerScreen, docked, podById, need, bayCrates } from "../game.mjs";
 import { clock, motion } from "../gfx.mjs";
 import { DIRS } from "../../../ui/focus.mjs";
-import { frame as frameNodes, list, specimen, stampLabel, chapterRail, chapterPage, focusRing } from "../../../ui/components/frame.mjs";
+import { frame as frameNodes, list, specimen, stampLabel, chapterRail, slantRail, chapterPage, focusRing } from "../../../ui/components/frame.mjs";
 import { podsView, inWords } from "../views/pods.mjs";
 import { frameView } from "../views/frame.mjs";
 import { registerPictures, iconRequests } from "../pictures.mjs";
@@ -129,4 +129,9 @@ function nodes(ctx) {
 }
 const msgText = () => (FX.msg && TL.progress("plate", "msg") != null && TL.progress("plate", "msg") < 1 ? FX.msg : "");
 
-registerScreen("pods", { nodes, line: () => { ensure(); return last.line; }, act, enter: ensure });
+// The slanted rail (the face draws this one; the canvas renderer keeps the older rail until it is retired).
+function railNodes(ctx) {
+  ensure(); const v = last, F = P().focus; if (v.mode === "compare" || !v.rail) return [];
+  return slantRail(ctx, "rail", { ...v.rail, focused: F.cur && F.cur.startsWith("rail.") ? +F.cur.slice(5) : null, where: "pods", tabRegion: "rail.tab", star: v.rail.star, clashMark: v.rail.clashMark }).nodes;
+}
+registerScreen("pods", { nodes, railNodes, line: () => { ensure(); return last.line; }, act, enter: ensure });

@@ -10,6 +10,7 @@ import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync } from "no
 import { createRequire } from "node:module";
 import path from "node:path";
 import { decodePNG } from "../../ui/png.mjs";
+import { tabRingMask } from "../../ui/rings.mjs";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
@@ -92,6 +93,36 @@ const Q = await pixels(face); expect(eq(px(Q, 512, py1 - 4), px(D, 512, py1 - 4)
 await face.evaluate(() => window.__st.addMaterials(1, 0, 0));
 const A = await shot(face, "l1-tick.png", 90); let amber = 0; const am = rgbOf(C.flash); for (const j of [9, 30]) for (let i = 384; i < 640; i++) if (eq(px(A, i, j), am)) amber++;   // above and below the icons: only the tick reaches there
 expect(amber > 10, `a changed counter wears the amber tick (${amber} px)`);
+// The slanted rail (L1b): the Tuiki pod is identified, the ring goes up to the rail's first tab. The nodes follow frame.json's rail numbers;
+// the pixels the face drew are the nodes' (the slants, the hairlines, the ring's four sides), and nothing of the ring is above y 42.
+await face.evaluate(() => { const u = window.__st.UI, p = window.__st.ST.tray.find((q) => q.idd); u.pods.cur = p.id; u.pods.f = "pod"; window.__st.act("up"); });
+const RL = frame.regions.rail, lean = (r) => Math.floor((RL.slant * (r + 0.5)) / RL.h);
+const T = await shot(face, "l1b-rail.png", 400), nodes = await face.evaluate(() => window.__st.faceNodes());
+const tabs = nodes.filter((n) => /^rail\.\d+$/.test(n.id)).sort((a, b) => a.id.localeCompare(b.id, "en", { numeric: true }));
+expect(tabs.length >= 1, "the rail has tabs"); 
+tabs.forEach((t, i) => { expect(t.rect[1] === 1 + RL.y && t.rect[3] === RL.h - 2, `tab ${i}: the body hangs from y ${RL.y}, ${RL.h} tall with its rim rows`); });
+let at = RL.pods.x; const tabX = []; for (let i = 0; i < tabs.length; i++) { const w = tabs.length <= RL.fullUpTo ? RL.full : tabs[i].rect[2] + RL.slant === RL.full ? RL.full : RL.compact; tabX.push([at, w]); at += w; }
+tabs.forEach((t, i) => expect(t.rect[0] === tabX[i][0] + RL.slant && t.rect[2] === tabX[i][1] - RL.slant, `tab ${i} starts where the one before ends (x ${tabX[i][0]}, width ${tabX[i][1]})`));
+expect(at + RL.slant - RL.pods.x === (tabs.length <= RL.fullUpTo ? RL.full * tabs.length + RL.slant : RL.compact * (tabs.length - 1) + RL.full + RL.slant), "the run is the sum of the widths plus the slant");
+// the pixels: each tab's two slants carry the hairline at the column the line gives, row by row; the body's middle is the fill; the top rule above is the bar's
+tabX.forEach(([x0, w], i) => {
+  const rimN = nodes.find((q) => q.id === `rail.${i}.et`), rim = rgbOf(rimN.colour);
+  for (const r of [10, 20, 30, 38]) {
+    const y = 40 + r, xl = x0 + lean(r), xr = x0 + w + lean(r);
+    expect(eq(px(T, xl, y), rim), `tab ${i} row ${r}: the left slant hairline at x ${xl}`);
+    expect(eq(px(T, xr, y), rim) || eq(px(T, xr, y), rgbOf(C.ring)) || eq(px(T, xr - 1, y), rgbOf(C.ring)), `tab ${i} row ${r}: the right slant hairline at x ${xr}`);
+  }
+  expect(eq(px(T, x0 + 16, 40), rim) && eq(px(T, x0 + 16, 79), rim), `tab ${i}: the top and bottom edges are the hairline (y 40 and 79)`);
+});
+const ringRgbT = rgbOf(C.ring), fi = nodes.findIndex((n) => /^rail\.\d+\.focus$/.test(n.id)); expect(fi >= 0, "the focused tab wears the ring"); const ringNode = nodes[fi];
+const [bx, by, bw, bh] = ringNode.rect, focusTab = tabX[+ringNode.id.split(".")[1]];
+expect(bx === focusTab[0] - 4 && by === 42 && bw === focusTab[1] + 24 && bh === 42, `the ring's box is (x - 4, 42, w + 24, 42): ${ringNode.rect}`);
+{ const m = tabRingMask(focusTab[1], { tab: frame.focus.ring.tab, width: frame.focus.ring.width }); let miss = 0, on = 0;   // the face drew the ring's mask, pixel for pixel
+  for (let j = 0; j < m.h; j++) for (let i = 0; i < m.w; i++) if (m.mask[j * m.w + i]) { on++; if (!eq(px(T, bx + i, by + j), ringRgbT)) miss++; }
+  expect(on > 200 && miss === 0, `the face drew the tab ring's ${on} pixels exactly (${miss} missing)`); }
+for (let i = bx; i < bx + bw; i++) for (const j of [40, 41]) if (eq(px(T, i, j), ringRgbT)) expect(false, "no ring pixel above y 42");
+expect(eq(px(T, bx + 40, 42), ringRgbT) && eq(px(T, bx + 40, 43), ringRgbT) && !eq(px(T, bx + 40, 44), ringRgbT), "the top run is 2 px at y 42");
+await shot(face, "l1b-rail-ring-on-tab.png", 50);
 expect(errors.length === 0, "no page errors: " + errors.join(" | "));
 await browser.close(); server.close();
 if (fails.length) { console.error("frame check failed"); process.exit(1); }
