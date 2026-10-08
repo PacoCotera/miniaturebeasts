@@ -203,28 +203,45 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 ## Library
 
-**Vibe.** Library: a botanical tome.
+**Vibe.** Library: a botanical tome. Two screens: the **cabinet** and the **book**.
 
-**Purpose.** Each species' field guide: its frame, the looks found so far, lineage and wishes. **Reads first:** the focused species' portrait and name.
+**Owner direction 2026-10-08 (after the concept round in `art/concept-station/library/`).** No shelf of species. The Library opens on a full cabinet with a box for each species, so the whole record is seen at a glance; it grows with every drop, and a scrolling shelf never shows the collection whole. Selecting a box opens the book, the species page, with the whole screen to itself. Lineage matters: the stamp carries it, and the book must show a family tree (display to be designed, `design/proposals/family-tree.md`).
+
+### Cabinet
+
+**Purpose.** The whole collection at a glance. **Reads first:** how much of the record is filled.
+
+- **Living window.** None; the cabinet is quiet. Found species show a small portrait in their box.
+- **Instrument.** A cabinet of boxes, one per species, grouped by clan (the clan's spine colour on the box edge). Found species: a bright box with the portrait and name. Met, not researched: a slate silhouette. Unmet: a faint shape in the mist. Boxes for species not yet released do not exist; the cabinet grows with each drop. A synopsis strip: found and hidden counts as filled boxes, progress, completion, clans met.
+- **Composition.** The cabinet fills the screen; sixteen boxes today in a 4×4 or 8×2 grid at a size that stays readable at 32 boxes.
+- **Palette.** Wood and brass or the tome's cream and slate; clan spine colours.
+- **Type.** Species names at 2× under found boxes; nothing under hidden ones.
+- **Chrome.** `✓ Open` on a found box; read-only on hidden ones.
+- **Motion.** A box lifts and the book opens from it in 300 ms.
+
+### Book
+
+**Purpose.** Each species' field guide: its frame, the looks found so far, lineage and wishes. **Reads first:** the species' portrait and name.
 
 - **Living window.** The species portrait: one resident of that species in rich treatment, doing its habit (dig, glow, puff).
-- **Instrument.** The shelf across the top: known species as bright cards, met ones as silhouettes, dashed empty slots. Below, the field guide: the species' places as stamps; the frame once, as a pressed plate; one page per chapter, every look found as a small specimen plate per trait and one dotted "more?"; lineage as a branch, each pod to its mibi and each child to its two parents, with ring and code; the wishes as pinned dream mibis.
-- **Composition.** Shelf 120 px tall; the portrait at the left of the page (about 300×310); guide pages centre; lineage and wishes right.
-- **Lively / quiet.** Lively: the portrait. Quiet: shelf, guide, lineage.
+- **Instrument.** The field guide, full screen: the species' places as stamps; the frame once, as a pressed plate; one tab per chapter (as many as the species has), every look found as a small specimen plate per trait and one dotted "more?" slot; the stamp at 120 px on a plain plate; the family tree panel; the pinned wish.
+- **Composition.** Portrait at the left (about 300×310); guide pages centre; tree and wishes right.
+- **Lively / quiet.** Lively: the portrait. Quiet: the guide, the tree.
 - **Light.** Warm on the portrait; cool, even light on the archive.
-- **Palette.** Species hues on cards; silhouettes in slate; dashed slots in mist.
+- **Palette.** The tome's cream, the species' hues on plates; silhouettes in slate.
 - **Type.** 3× species name; one 2× habit line; no paragraphs.
-- **Chrome.** `✓ Visit Fig` on a mibi, `✓ Add to the wish` on a look, `✓ Find a pair` on a wish; read-only elsewhere.
-- **Motion.** The page slides with the shelf in 200 ms; the portrait lives.
+- **Chrome.** `✓ Visit Fig` on a mibi, `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Cabinet`.
+- **Motion.** Tabs turn in 200 ms; the portrait lives.
 
 **Pass when**
+- [ ] The cabinet shows every released species' box at once, no scrolling, and still would at twice the count.
 - [ ] Knowledge, never material: nothing implies a look, or a wish, can be taken from here.
 - [ ] Silhouettes reveal only what is known.
-- [ ] Two mibis are told apart by ring at 40 px.
+- [ ] The family tree reads parents, siblings and children without text.
+- [ ] Two mibis are told apart by stamp at 40 px.
 - [ ] Never a text page or a school lesson.
-- [ ] Empty slots say more exist without a number.
 
-<table><tr><td valign="top"><img src="../proposals/station-screens/07-library.svg" width="480" alt="Library wireframe"><br><em>Library wireframe. Layout only.</em></td>
+<table><tr><td valign="top"><img src="../../art/concept-station/library/placed/LB-D-r3-a2-fit-stamped-named-1024x600.png" width="480" alt="Library concept round"><br><em>Concept round (shelf and book). The book's treatment stands; the shelf is replaced by the cabinet.</em></td>
 <td valign="top"><img src="../../art/concept-homepage/station-known-forms.png" width="420" alt="Known forms concept"><br><em>Known forms: the portrait's treatment. Approved concept, generated.</em></td></tr></table>
 
 ---
