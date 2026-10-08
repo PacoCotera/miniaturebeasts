@@ -38,14 +38,14 @@
 <rect x="48.5" y="420.5" width="31" height="47" fill="#ffeedb" stroke="#c45f12" stroke-width="1"/>
 <circle cx="64.0" cy="84.0" r="37.0" fill="none" stroke="#d29a00" stroke-width="2" stroke-dasharray="3 3"/>
 <rect x="24.5" y="488.5" width="79" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="176.5" y="40.5" width="831" height="39" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
-<polygon points="176,40 232,40 248,80 192,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="232,40 368,40 384,80 248,80" fill="#dfe3e8" stroke="#444" stroke-width="1"/>
-<polygon points="368,40 424,40 440,80 384,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="424,40 480,40 496,80 440,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="480,40 536,40 552,80 496,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="536,40 592,40 608,80 552,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<polygon points="592,40 648,40 664,80 608,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="152.5" y="40.5" width="831" height="39" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
+<polygon points="152,40 208,40 224,80 168,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="208,40 344,40 360,80 224,80" fill="#dfe3e8" stroke="#444" stroke-width="1"/>
+<polygon points="344,40 400,40 416,80 360,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="400,40 456,40 472,80 416,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="456,40 512,40 528,80 472,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="512,40 568,40 584,80 528,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<polygon points="568,40 624,40 640,80 584,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <rect x="152.5" y="112.5" width="255" height="439" fill="#eef1f3" stroke="#556" stroke-width="1"/>
 <rect x="168.5" y="120.5" width="223" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="168.5" y="160.5" width="103" height="63" fill="#ffffff" stroke="#666" stroke-width="1"/>
@@ -88,15 +88,15 @@
 <text x="636" y="583" font-size="11" fill="#222">what needs you, right</text>
 <text x="28" y="501" font-size="11" fill="#222">Hatch 80×56</text>
 <text x="28" y="513" font-size="9" fill="#777">24,488</text>
-<text x="198" y="59" font-size="9" fill="#222">Co</text>
-<text x="262" y="59" font-size="11" fill="#222">Face</text>
-<text x="262" y="76" font-size="8" fill="#777">232 · label y 43, pips y 71</text>
-<text x="390" y="59" font-size="9" fill="#222">Sh</text>
-<text x="446" y="59" font-size="9" fill="#222">Le</text>
-<text x="502" y="59" font-size="9" fill="#222">Mo</text>
-<text x="558" y="59" font-size="9" fill="#222">St</text>
-<text x="614" y="59" font-size="9" fill="#222">Ch</text>
-<text x="672" y="64" font-size="9" fill="#777">run 488: compact 56, open tab 136</text>
+<text x="174" y="59" font-size="9" fill="#222">Co</text>
+<text x="238" y="59" font-size="11" fill="#222">Face</text>
+<text x="238" y="76" font-size="8" fill="#777">208 · label y 43, pips y 71</text>
+<text x="366" y="59" font-size="9" fill="#222">Sh</text>
+<text x="422" y="59" font-size="9" fill="#222">Le</text>
+<text x="478" y="59" font-size="9" fill="#222">Mo</text>
+<text x="534" y="59" font-size="9" fill="#222">St</text>
+<text x="590" y="59" font-size="9" fill="#222">Ch</text>
+<text x="648" y="64" font-size="9" fill="#777">run 488: compact 56, open tab 136</text>
 <text x="172" y="133" font-size="10" fill="#222">emblem 24 + chapter word 20px</text>
 <text x="172" y="155" font-size="9" fill="#777">page 152,112 256×440</text>
 <text x="172" y="172" font-size="9" fill="#222">trait 1 · 104×64</text>
@@ -133,7 +133,7 @@
 <text x="676" y="471" font-size="8" fill="#777">592,456 80×24</text>
 <text x="524" y="501" font-size="10" fill="#222">caption 16px, bone, no plate</text>
 <text x="524" y="513" font-size="9" fill="#777">520,488 224×40 · 8 under the name</text>
-<text x="860" y="244" font-size="8" fill="#555">case 856,232 152×152, dim</text>
+<text x="860" y="244" font-size="8" fill="#555">case 856,232 152×152 + front glass</text>
 <text x="876" y="261" font-size="11" fill="#222">STAMP label 120</text>
 <text x="876" y="273" font-size="9" fill="#777">872,248</text>
 <text x="770" y="301" font-size="9" fill="#777">168 px</text>

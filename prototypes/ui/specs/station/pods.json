@@ -16,7 +16,7 @@
   "list": { "rect": [0, 40, 112, 522], "component": "list", "item": "well", "slots": 6, "rule": { "x": 112, "y0": 48, "y1": 552 } },
   "well": { "rect": [24, 48, 80, 72], "pitch": [0, 72], "ring": { "slice": [0, -4, 80, 80], "centre": [40, 36], "outer": 33, "band": 8, "master": "1:1" }, "pod": { "size": [32, 48], "centre": [40, 36] }, "focus": { "shape": "circle", "radius": 37, "width": 2, "colour": "focus", "onlyInList": true }, "place": null },
   "hatch": { "rect": [24, 488, 80, 56], "mark": [24, 24] },
-  "rail": { "rect": [176, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail" },
+  "rail": { "rect": [152, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail" },
   "bench": { "rect": [0, 40, 1024, 522] },
   "stage": { "rect": [488, 112, 288, 440], "room": [408, 856] },
   "beam": { "rect": [512, 104, 240, 320] },
@@ -27,13 +27,14 @@
   "name": { "rect": [520, 456, 224, 24], "text": "the species name alone (owner, 2026-10-08); the unidentified wording is the copywriter's", "px": 20, "weight": 500, "exception": "owner, 2026-10-08: the pod's name label at 20 px", "centre": 632, "noDigits": true, "plate": { "pad": 12, "round": 16, "min": 80, "max": 224, "h": 24 } },
   "origin": { "rect": [520, 488, 224, 40], "role": "caption", "px": 16, "weight": 400, "colour": "bone", "case": "sentence", "lines": 2, "pitch": 20, "centre": 632, "noDigits": true, "plate": null, "shadow": "void", "text": "the copywriter's sentence with slots (branch copy-origin)" },
   "stampCase": { "rect": [856, 232, 152, 152], "under": "stamp", "lit": false, "bleed": null, "dimmerThan": "cradle", "note": "owner, 2026-10-08: the small label inside a dim, unlit glass case, where the concept's case stands" },
+  "stampCaseFront": { "rect": [856, 232, 152, 152], "over": "stamp", "slice": "room-stamp-case-152x152-front", "tint": "ground", "opacity": 0.48, "labelMeanMax": 115, "cellContrastMin": 4 },
   "stamp": { "rect": [872, 248, 120, 120], "component": "stampLabel" },
   "page": {
    "rect": [152, 112, 256, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
-   "states": ["grid"], "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": [12, 12], "sealedFind": [72, 184, 112, 112],
+   "states": ["grid"], "pictureMax": [144, 176], "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": [12, 12], "sealedFind": [72, 184, 112, 112],
    "grid": {
-    "1": { "cells": [[16, 48, 224, 384]], "picture": [224, 352] },
-    "2": { "cells": [[16, 48, 224, 184], [16, 248, 224, 184]], "picture": [224, 160] },
+    "1": { "cells": [[16, 48, 224, 384]], "picture": [144, 176], "align": "centre top" },
+    "2": { "cells": [[16, 48, 224, 184], [16, 248, 224, 184]], "picture": [176, 144], "align": "centre top" },
     "3-4": { "cells": [[16, 48, 104, 184], [136, 48, 104, 184], [16, 248, 104, 184], [136, 248, 104, 184]], "picture": [104, 160] },
     "5-6": { "cells": [[16, 48, 104, 120], [136, 48, 104, 120], [16, 176, 104, 120], [136, 176, 104, 120], [16, 304, 104, 120], [136, 304, 104, 120]], "picture": [104, 96] },
     "7-8": { "cells": [[16, 48, 104, 88], [136, 48, 104, 88], [16, 144, 104, 88], [136, 144, 104, 88], [16, 240, 104, 88], [136, 240, 104, 88], [16, 336, 104, 88], [136, 336, 104, 88]], "picture": [104, 64] }

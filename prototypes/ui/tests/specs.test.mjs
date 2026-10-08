@@ -28,11 +28,11 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
   const six = slantTabs(R.rail.rect[0], 6, 1), seven = slantTabs(R.rail.rect[0], 7, 1), P6 = polys(svg), P7 = polys(svgGrid);
   for (const t of six.tabs) assert.ok(P6.has(t), "rail tab " + t); for (const t of seven.tabs) assert.ok(P7.has(t), "compact rail tab " + t);
   assert.equal(six.run, 832); assert.equal(seven.run, 488); assert.equal(slantTabs(0, 8, 0).run, 544); assert.equal(slantTabs(0, 12, 0).run, 768);
-  assert.deepEqual(R.rail.rect, [176, frame.regions.rail.y, 832, frame.regions.rail.h]); assert.equal(frame.regions.rail.y, 40);
+  assert.deepEqual(R.rail.rect, [R.page.rect[0], frame.regions.rail.y, 832, frame.regions.rail.h]); assert.equal(frame.regions.rail.pods.x, R.page.rect[0]); assert.equal(frame.regions.rail.y, 40);
   // the page's Picture state (one large picture) and its Grid state (four traits)
   // the page, one state: six traits in the Pods wireframe, eight in the second
   for (const [n, set] of [[6, boxes], [8, gridBoxes]]) { const g = pageGrid(R.page, n); assert.equal(g.cells.length, n); for (const c of g.cells) has([c[0], c[1], g.picture[0], g.picture[1]], n + "-trait picture", set); }
-  assert.deepEqual(R.page.states, ["grid"]); assert.equal(R.page.picture, undefined); assert.deepEqual(pageGrid(R.page, 8).picture, [104, 64]); assert.deepEqual(pageGrid(R.page, 4).picture, [104, 160]);
+  assert.deepEqual(R.page.states, ["grid"]); for (const g of Object.values(R.page.grid)) assert.ok(g.picture[0] * g.picture[1] <= R.pod.rect[2] * R.pod.rect[3], "no page picture larger than the pod's box"); assert.equal(R.stampCaseFront.slice, "room-stamp-case-152x152-front"); assert.deepEqual(R.stampCaseFront.rect, R.stampCase.rect); assert.equal(R.page.picture, undefined); assert.deepEqual(pageGrid(R.page, 8).picture, [104, 64]); assert.deepEqual(pageGrid(R.page, 4).picture, [104, 160]);
   assert.deepEqual(R.cradle.rect, [520, 328, 224, 96]); assert.deepEqual(R.cradleFront.rect, R.cradle.rect); assert.equal(pods.colours.origin, "bone");
   assert.deepEqual([R.name.rect, R.name.px, R.name.weight, R.name.plate.h, R.name.plate.min], [[520, 456, 224, 24], 20, 500, 24, 80]); assert.equal(R.name.rect[0] + R.name.rect[2] / 2, R.pod.axis);
   has([592, 456, 80, 24], "the name plate hugging Loika"); has([552, 456, 160, 24], "the name plate hugging Unknown pod");
