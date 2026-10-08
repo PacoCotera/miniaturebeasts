@@ -1,0 +1,1128 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Generated candidates for the research bench's Incubator screen (the embryo growing under the dome, the leaf timer, chapters clearing) in art/concept-station/incubator/brief-incubator.md, with the real styled genome stamp placed after generation; concept art awaiting the owner's choice.",
+  "brief": "art/concept-station/incubator/brief-incubator.md",
+  "tool": {
+    "name": "Gemini API",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+    "auth": "API key from the environment; not recorded",
+    "models": {
+      "gemini-3-pro-image": "Gemini 3 Pro Image: final candidates and refinements",
+      "gemini-3.1-flash-image": "Gemini 3.1 Flash Image: layout round"
+    },
+    "modelChoice": "Pro throughout: exact strings, an exact leaf count and a clean empty label need it. Round 1 fresh; rounds 2 and 3 are one-change edits of the pick for the ready frame, composited by rectangle. An edit that carried a creature reference image drifted completely; the same edit described in words alone held.",
+    "generationConfig": {
+      "responseModalities": [
+        "IMAGE"
+      ],
+      "imageConfig": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      }
+    },
+    "output": "image/jpeg 2752x1536 (16:9 at 2K), kept byte-exact in raw/ for kept candidates; LANCZOS to 1536x864 as the canvas PNG; the screen PNG is the centred 1024:600 band resampled to 1024x600. The stamp is placed afterwards (placed/), and the placed 1024x600 screen is what the decoder reads.",
+    "imageInputs": "Sent as inline image parts, each preceded by a short text part stating its role; the preamble, then the prompt verbatim as the last text part.",
+    "budget": "At most 20 generations for this screen; 10 used (round 1: 3 fresh, round 2: 3 edits, round 3: 2 edits, round 4: 2 edits), all on gemini-3-pro-image. No call failed; none was retried."
+  },
+  "plan": {
+    "references": {
+      "art/concept-station/create/composites/CR-C2-1024x600.png": "the Create screen of the same bench, before its stamp was placed: materials, light, tabs, plates, type",
+      "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png": "the decided Pods screen of the same bench: the room's materials and quietness",
+      "art/concept-station/round3/A-r3-a1-1024x600.png": "approved Home: same device (type, counters, bottom line, light direction); its incubation module shows the dome and leaves at thumbnail size",
+      "art/concept-station/incubator/layout/incubator-layout-template.png": "layout truth only: the brief's boxes at 1024x600 with the exact leaves and the empty stamp label",
+      "art/concept-station/incubator/layout/stamp-s01-incubator-bench-300.png": "the real styled stamp for the growing state (S01, C01 family, Coat, Face and Movement read, Stamina unread; bench paper), placed after generation, never sent to the generator",
+      "art/concept-station/incubator/layout/stamp-s01-ready-bench-300.png": "the real styled stamp for the ready state (every chapter read), placed on the ready frame"
+    },
+    "directions": {
+      "D incubator-growing": "The brief's layout in the decided dark-lab treatment: growing, two leaves full, one filling, one empty, Face just cleared.",
+      "R incubator-ready": "The companion frame: every leaf full, the dome glowing, the bottom line offering Open; built from one-change edits of the pick."
+    },
+    "rounds": "Round 1: three fresh (Pro). Round 2: three one-change edits for the ready frame (leaves, embryo, bottom line). Round 3: the embryo edit again, in words alone, twice. Round 4: the Stamina tab, and the leaves again on the ready-embryo base."
+  },
+  "recommended": {
+    "tag": "IN-D-r1-a3",
+    "screen": "placed/IN-D-r1-a3-stamped-1024x600.png",
+    "generated": "round1/IN-D-r1-a3-1024x600.png",
+    "companion": "placed/IN-C1-stamped-1024x600.png",
+    "stamp": "layout/stamp-s01-incubator-bench-300.png",
+    "companionStamp": "layout/stamp-s01-ready-bench-300.png",
+    "decode": "decode/IN-D-r1-a3-stamped.json"
+  },
+  "calls": [
+    {
+      "id": "incubator-growing",
+      "direction": "D",
+      "round": 1,
+      "attempt": 1,
+      "tag": "IN-D-r1-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's INCUBATOR screen (where a founder's embryo grows under a glass dome), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument, exactly the room of the supplied Create and Pods screens: deep dark blue-teal glass and anodised graphite with thin lit edges, floating glass, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied screens: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The embryo glowing inside the dome is the ONLY warm light on screen; everything else is cool. Labels are one small engraved or etched word, low contrast, read second, written once; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn except the small housing named below.\nLAYOUT, as the template: a thin graphite top bar and bottom line. ABOVE THE STAGE, four small machined TABS on a shallow arc centred on the screen (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, and ONE quiet word under each tab (no word on the tab itself): the Coat tab and the Movement tab are full weight with their lamps lit, the Movement tab's emblem two small joined rings; the Face tab is full weight and its lamp has just lit, with a soft pale glow around the tab; the Stamina tab is a faint hairline outline, unlit. UNDER THE TABS, THE LEAVES: four small leaf shapes in a row on a shallow arc over the dome, stems pointing down toward the dome, drawn as thin machined leaf outlines on the chrome: the first two leaves filled solid with a soft leaf green, the third leaf filled green from its stem up to its middle and empty above, the fourth leaf an empty hairline outline; no digits, no marks beside them. CENTRE, the DOME: a large clear glass dome, about a third of the screen's width, standing on a machined graphite base with a brushed rim and a thin lit inner edge; inside the dome, resting in a soft nest of pale fibre, the EMBRYO: a translucent pearl bud, taller than wide, glowing warm amber-cream from inside, its glow pooling softly on the nest and on the inside of the glass; no face, no eyes, no limbs; the only warm light on screen. A cool beam from a small lamp housing high at the upper left falls down-right across the dome's glass. On the base's front a small plate with its two lines. LEFT of the dome, quiet dark glass and the lamp housing, nothing else. RIGHT of the dome, standing on the bench, the STAMP LABEL: one completely EMPTY, flat, pale square label with straight edges and slightly rounded corners, about a fifth of the screen's width, nothing drawn on it at all (the genome stamp is placed there later), and under it a small empty dark plate with nothing written on it.\nTEXT, exactly these and nothing else: top bar left \"Incubator  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each, once: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the plate on the dome's base: \"growing\" and under it smaller \"a founder · rock field\". Bottom line: grey \"← Home\" at left (no check mark, nothing to confirm); grey \"founder · growing\" in the middle; grey \"Stamina still a surprise\" at right. No species name anywhere, no other words, no digits except those listed, no numbers on or near the leaves, nothing written on the pale label or on the small plate under it.\nConstraints: no letters, ratios, percentages, clocks, timers, progress bars, DNA helices, codes or genes anywhere; time is shown only by the four leaves; the pale square label stays completely empty and flat (the real genome stamp is placed there later) and the small plate under it is empty; the embryo is a translucent bud with no face, eyes or limbs; no other animal, no plants other than the four leaf shapes; no tables, title bars, bullet lists or boxed buttons; no logos; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the Create screen of this same room: take its materials, light, tabs, plates and type; its roll, pod and founder chamber are not on this screen. Image 2 is the decided Pods screen of the same room, for its materials and quietness. Image 3 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/composites/CR-C2-1024x600.png",
+          "role": "the Create screen of the same bench, before its stamp was placed: take its materials, light, tabs, glass, graphite base, plates and type exactly; its roll, pod and founder chamber are NOT on this screen, the layout below replaces them",
+          "sha256": "b20a1f19e7ac3ab85419d59f73debbe4c13144b11f671f5aaebc96297c939916"
+        },
+        {
+          "path": "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png",
+          "role": "the decided Pods screen of the same bench: the room's materials and quietness; its list, page and stage plate are not on this screen",
+          "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only; its small incubation module shows the dome-and-leaves idea at thumbnail size",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/incubator/layout/incubator-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the four tabs on an arc, the four leaves over the dome (two full, one half, one empty), the large dome on its base with the bud inside, the status plate, the lamp at the left, and the empty pale square label with its small empty plate at the right; not style",
+          "sha256": "cf0c8bb49bc2aa6b38bff0ff77376052c5225c1c450e1b42376902f1255faff2"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:07:09Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/IN-D-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "aab856d6a69e3e3968014702d96b7f7b4daa00e3078b1955e22bcd093a97eade"
+        },
+        "png": {
+          "file": "round1/IN-D-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "00d90df2d1be08a6bd2c1eddaa0a0530bcde1ac2a5d8235039222faeb40f7e6c"
+        },
+        "screen": {
+          "file": "round1/IN-D-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "da9042aad26ea7bea6e13646b422a9f28dc3faee055011526c3a0ba7b4533902",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 22.8,
+        "usage": {
+          "promptTokenCount": 2430,
+          "candidatesTokenCount": 1562,
+          "totalTokenCount": 4307,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1398
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1032
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 315,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as the alternative (the dome, nest and warm bud right, the leaves exact, the label clean; the bud already curled into an embryo shape; the tab words doubled; the lamp housing not drawn; left and right strings clipped)"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    },
+    {
+      "id": "incubator-growing",
+      "direction": "D",
+      "round": 1,
+      "attempt": 2,
+      "tag": "IN-D-r1-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's INCUBATOR screen (where a founder's embryo grows under a glass dome), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument, exactly the room of the supplied Create and Pods screens: deep dark blue-teal glass and anodised graphite with thin lit edges, floating glass, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied screens: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The embryo glowing inside the dome is the ONLY warm light on screen; everything else is cool. Labels are one small engraved or etched word, low contrast, read second, written once; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn except the small housing named below.\nLAYOUT, as the template: a thin graphite top bar and bottom line. ABOVE THE STAGE, four small machined TABS on a shallow arc centred on the screen (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, and ONE quiet word under each tab (no word on the tab itself): the Coat tab and the Movement tab are full weight with their lamps lit, the Movement tab's emblem two small joined rings; the Face tab is full weight and its lamp has just lit, with a soft pale glow around the tab; the Stamina tab is a faint hairline outline, unlit. UNDER THE TABS, THE LEAVES: four small leaf shapes in a row on a shallow arc over the dome, stems pointing down toward the dome, drawn as thin machined leaf outlines on the chrome: the first two leaves filled solid with a soft leaf green, the third leaf filled green from its stem up to its middle and empty above, the fourth leaf an empty hairline outline; no digits, no marks beside them. CENTRE, the DOME: a large clear glass dome, about a third of the screen's width, standing on a machined graphite base with a brushed rim and a thin lit inner edge; inside the dome, resting in a soft nest of pale fibre, the EMBRYO: a translucent pearl bud, taller than wide, glowing warm amber-cream from inside, its glow pooling softly on the nest and on the inside of the glass; no face, no eyes, no limbs; the only warm light on screen. A cool beam from a small lamp housing high at the upper left falls down-right across the dome's glass. On the base's front a small plate with its two lines. LEFT of the dome, quiet dark glass and the lamp housing, nothing else. RIGHT of the dome, standing on the bench, the STAMP LABEL: one completely EMPTY, flat, pale square label with straight edges and slightly rounded corners, about a fifth of the screen's width, nothing drawn on it at all (the genome stamp is placed there later), and under it a small empty dark plate with nothing written on it.\nTEXT, exactly these and nothing else: top bar left \"Incubator  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each, once: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the plate on the dome's base: \"growing\" and under it smaller \"a founder · rock field\". Bottom line: grey \"← Home\" at left (no check mark, nothing to confirm); grey \"founder · growing\" in the middle; grey \"Stamina still a surprise\" at right. No species name anywhere, no other words, no digits except those listed, no numbers on or near the leaves, nothing written on the pale label or on the small plate under it.\nConstraints: no letters, ratios, percentages, clocks, timers, progress bars, DNA helices, codes or genes anywhere; time is shown only by the four leaves; the pale square label stays completely empty and flat (the real genome stamp is placed there later) and the small plate under it is empty; the embryo is a translucent bud with no face, eyes or limbs; no other animal, no plants other than the four leaf shapes; no tables, title bars, bullet lists or boxed buttons; no logos; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the Create screen of this same room: take its materials, light, tabs, plates and type; its roll, pod and founder chamber are not on this screen. Image 2 is the decided Pods screen of the same room, for its materials and quietness. Image 3 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/composites/CR-C2-1024x600.png",
+          "role": "the Create screen of the same bench, before its stamp was placed: take its materials, light, tabs, glass, graphite base, plates and type exactly; its roll, pod and founder chamber are NOT on this screen, the layout below replaces them",
+          "sha256": "b20a1f19e7ac3ab85419d59f73debbe4c13144b11f671f5aaebc96297c939916"
+        },
+        {
+          "path": "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png",
+          "role": "the decided Pods screen of the same bench: the room's materials and quietness; its list, page and stage plate are not on this screen",
+          "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only; its small incubation module shows the dome-and-leaves idea at thumbnail size",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/incubator/layout/incubator-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the four tabs on an arc, the four leaves over the dome (two full, one half, one empty), the large dome on its base with the bud inside, the status plate, the lamp at the left, and the empty pale square label with its small empty plate at the right; not style",
+          "sha256": "cf0c8bb49bc2aa6b38bff0ff77376052c5225c1c450e1b42376902f1255faff2"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:07:37Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/IN-D-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "3c08f9e3ab0bdb44b8cf91bc496168762d3b21d3370012ff2be3c89aa916c6d1"
+        },
+        "png": {
+          "file": "round1/IN-D-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "5352fe47a0bc12682fc36c27b1e4b1df49554b4c2af2339e3cc7050ff9827af2"
+        },
+        "screen": {
+          "file": "round1/IN-D-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "0932b2f310be88786986cf3fab329b4ce77e79309ab3aac15e5061509ff58671",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 25.6,
+        "usage": {
+          "promptTokenCount": 2430,
+          "candidatesTokenCount": 1827,
+          "totalTokenCount": 4638,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1398
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1032
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 381,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (the tab descriptions leaked as words under the tabs: etch, just, hairline; the embryo an egg; otherwise a clean screen whose top-left string is not clipped)"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    },
+    {
+      "id": "incubator-growing",
+      "direction": "D",
+      "round": 1,
+      "attempt": 3,
+      "tag": "IN-D-r1-a3",
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's INCUBATOR screen (where a founder's embryo grows under a glass dome), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument, exactly the room of the supplied Create and Pods screens: deep dark blue-teal glass and anodised graphite with thin lit edges, floating glass, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied screens: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The embryo glowing inside the dome is the ONLY warm light on screen; everything else is cool. Labels are one small engraved or etched word, low contrast, read second, written once; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn except the small housing named below.\nLAYOUT, as the template: a thin graphite top bar and bottom line. ABOVE THE STAGE, four small machined TABS on a shallow arc centred on the screen (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, and ONE quiet word under each tab (no word on the tab itself): the Coat tab and the Movement tab are full weight with their lamps lit, the Movement tab's emblem two small joined rings; the Face tab is full weight and its lamp has just lit, with a soft pale glow around the tab; the Stamina tab is a faint hairline outline, unlit. UNDER THE TABS, THE LEAVES: four small leaf shapes in a row on a shallow arc over the dome, stems pointing down toward the dome, drawn as thin machined leaf outlines on the chrome: the first two leaves filled solid with a soft leaf green, the third leaf filled green from its stem up to its middle and empty above, the fourth leaf an empty hairline outline; no digits, no marks beside them. CENTRE, the DOME: a large clear glass dome, about a third of the screen's width, standing on a machined graphite base with a brushed rim and a thin lit inner edge; inside the dome, resting in a soft nest of pale fibre, the EMBRYO: a translucent pearl bud, taller than wide, glowing warm amber-cream from inside, its glow pooling softly on the nest and on the inside of the glass; no face, no eyes, no limbs; the only warm light on screen. A cool beam from a small lamp housing high at the upper left falls down-right across the dome's glass. On the base's front a small plate with its two lines. LEFT of the dome, quiet dark glass and the lamp housing, nothing else. RIGHT of the dome, standing on the bench, the STAMP LABEL: one completely EMPTY, flat, pale square label with straight edges and slightly rounded corners, about a fifth of the screen's width, nothing drawn on it at all (the genome stamp is placed there later), and under it a small empty dark plate with nothing written on it.\nTEXT, exactly these and nothing else: top bar left \"Incubator  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each, once: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the plate on the dome's base: \"growing\" and under it smaller \"a founder · rock field\". Bottom line: grey \"← Home\" at left (no check mark, nothing to confirm); grey \"founder · growing\" in the middle; grey \"Stamina still a surprise\" at right. No species name anywhere, no other words, no digits except those listed, no numbers on or near the leaves, nothing written on the pale label or on the small plate under it.\nConstraints: no letters, ratios, percentages, clocks, timers, progress bars, DNA helices, codes or genes anywhere; time is shown only by the four leaves; the pale square label stays completely empty and flat (the real genome stamp is placed there later) and the small plate under it is empty; the embryo is a translucent bud with no face, eyes or limbs; no other animal, no plants other than the four leaf shapes; no tables, title bars, bullet lists or boxed buttons; no logos; no people.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the Create screen of this same room: take its materials, light, tabs, plates and type; its roll, pod and founder chamber are not on this screen. Image 2 is the decided Pods screen of the same room, for its materials and quietness. Image 3 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/create/composites/CR-C2-1024x600.png",
+          "role": "the Create screen of the same bench, before its stamp was placed: take its materials, light, tabs, glass, graphite base, plates and type exactly; its roll, pod and founder chamber are NOT on this screen, the layout below replaces them",
+          "sha256": "b20a1f19e7ac3ab85419d59f73debbe4c13144b11f671f5aaebc96297c939916"
+        },
+        {
+          "path": "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png",
+          "role": "the decided Pods screen of the same bench: the room's materials and quietness; its list, page and stage plate are not on this screen",
+          "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3"
+        },
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only; its small incubation module shows the dome-and-leaves idea at thumbnail size",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/incubator/layout/incubator-layout-template.png",
+          "role": "layout truth only: flat boxes at 1024x600 showing the four tabs on an arc, the four leaves over the dome (two full, one half, one empty), the large dome on its base with the bud inside, the status plate, the lamp at the left, and the empty pale square label with its small empty plate at the right; not style",
+          "sha256": "cf0c8bb49bc2aa6b38bff0ff77376052c5225c1c450e1b42376902f1255faff2"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:08:08Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round1/raw/IN-D-r1-a3.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "fab7c66681b09373939f11791cd591ad982a58f6147248e8e25a11f03ee064b3"
+        },
+        "png": {
+          "file": "round1/IN-D-r1-a3-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+        },
+        "screen": {
+          "file": "round1/IN-D-r1-a3-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "34c471f45983f2a381d8bf554e0314559740bac6e48033bbb97e46923d1d75bd",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 25.8,
+        "usage": {
+          "promptTokenCount": 2430,
+          "candidatesTokenCount": 2038,
+          "totalTokenCount": 4797,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1398
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1032
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 329,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: round 1 pick, the recommended growing frame and the base of the ready composite (words once with emblems, Face lit with a glow, the bud glowing in its nest, the leaves exact, the lamp housing and beam, a clean pale label and an empty code plate; the top-left string clipped)"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    },
+    {
+      "id": "incubator-ready",
+      "direction": "R",
+      "round": 2,
+      "attempt": 1,
+      "tag": "IN-R-r2-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the dome, its base, the nest and the embryo inside, the plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY: the four leaf shapes in a row above the dome: fill all four leaves solid with the same soft leaf green as the first two, so every leaf is full (the half-filled third leaf and the empty outlined fourth leaf become full green leaves, same size, same place, same stems); nothing else moves.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label or the small plate under it.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/incubator/round1/IN-D-r1-a3-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:09:31Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/IN-R-r2-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "6ffb07685772d2f8a1bdd58ca1cbef898aa1cdad4576c0f5eedd264509b2681c"
+        },
+        "png": {
+          "file": "round2/IN-R-r2-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "d47e49776cc9119c7d8a04d8396bf14665151d13b86290c18b9e395c7b8be29c"
+        },
+        "screen": {
+          "file": "round2/IN-R-r2-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "5463a7595ec1f0b07f90cd894f1ec12f3d7c3ad78bdc78df497b2d35a7417a36",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 21.1,
+        "usage": {
+          "promptTokenCount": 479,
+          "candidatesTokenCount": 1291,
+          "totalTokenCount": 1950,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 221
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 180,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as reference (all four leaves full on the growing base; its paste onto the ready-embryo base left a visible rectangle in the glow, so the leaves were edited again on that base in round 4)"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    },
+    {
+      "id": "incubator-ready",
+      "direction": "R",
+      "round": 2,
+      "attempt": 2,
+      "tag": "IN-R-r2-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the four leaves, the dome's glass and base and plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY, inside the glass dome: the glowing bud in the nest has opened and in its place, curled asleep in the nest, lies a small newborn creature like Image 2 but very young: a round, plump charcoal body with a cream belly, eyes shut, a tiny three-leaf crest on its head, no bigger than the bud was, glowing softly warm from within and lit warm, with the whole inside of the dome glowing a little brighter and warmer than before so the dome reads as ready from across a room; the glass, the base, the nest's shape and everything outside the dome stay exactly as they are.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label or the small plate under it.",
+      "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted creature; the newborn asleep in the nest is this species, tiny and curled, eyes shut.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/incubator/round1/IN-D-r1-a3-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+        },
+        {
+          "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+          "role": "the accepted creature, plain: the newborn asleep in the nest is this species, tiny and curled",
+          "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:09:58Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/IN-R-r2-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "1fe81ccae9c7bf2e8e07bce981fe05722b96ae76bbac98b2a867957666881d9e"
+        },
+        "png": {
+          "file": "round2/IN-R-r2-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "c407365ce59e56afcfb5cb66bcbd65e31dc8915989de3c209c3d9b15b41ccc9e"
+        },
+        "screen": {
+          "file": "round2/IN-R-r2-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "1080413cc4bd7772fc330c940ca96c27c08f10706391f1dbe2633e5852807fb8",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 20.2,
+        "usage": {
+          "promptTokenCount": 849,
+          "candidatesTokenCount": 1331,
+          "totalTokenCount": 2407,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 333
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 227,
+          "serviceTier": "standard"
+        },
+        "disposition": "rejected (the one-change embryo edit carried a creature reference image and drifted into a two-panel cottage scene with a penguin and another game's bars)"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    },
+    {
+      "id": "incubator-ready",
+      "direction": "R",
+      "round": 2,
+      "attempt": 3,
+      "tag": "IN-R-r2-a3",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar, the four tabs and their words, the four leaves, the dome with the embryo, its base and plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY, in the bottom line (the thin graphite strip along the bottom edge): its left part, currently grey \"← Home\", becomes an orange check mark and orange \"✓ Open\" followed by grey \"· ← Home\", in the same small smooth sans-serif as the rest of the line; its middle part becomes grey \"founder · ready\"; its right part becomes grey \"ready to open\". Nothing above the bottom line changes.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label or the small plate under it.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/incubator/round1/IN-D-r1-a3-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:10:22Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round2/raw/IN-R-r2-a3.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "a19a1f143d59c94cf990926e2245b8a13efa90368cbcb5886e6122bc1801ddcc"
+        },
+        "png": {
+          "file": "round2/IN-R-r2-a3-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "d458f58c31a3c8ee2da50ba2eb6ec4efdd2f1129956e78d38d4d1cbdf8e0bef8"
+        },
+        "screen": {
+          "file": "round2/IN-R-r2-a3-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "5f19bd28101e8375c290377ebbcb951c10cd2b0ba005c8c3c93d461a0dcee68e",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 20.4,
+        "usage": {
+          "promptTokenCount": 493,
+          "candidatesTokenCount": 1269,
+          "totalTokenCount": 1978,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 235
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 216,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept, composited (the bottom line: orange check and Open, founder · ready, ready to open; the plate changed to ready as well; regions y 558-600 and x 436-590, y 488-536)"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    },
+    {
+      "id": "incubator-ready",
+      "direction": "R",
+      "round": 3,
+      "attempt": 1,
+      "tag": "IN-R-r3-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the four leaves, the dome's glass and base and plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY, inside the glass dome: the glowing bud in the nest has opened, and in its place a tiny newborn creature lies curled asleep in the nest, no bigger than the bud was: a round, plump, squat body of smooth charcoal skin with a cream belly, four short legs tucked in, eyes shut, a tiny three-leaf crest of pale leaves on its head, glowing softly warm from within as the bud did, with the whole inside of the dome a little brighter and warmer than before so the dome reads as ready from across a room. The glass, the base, the nest's shape and everything outside the dome stay exactly as they are.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label or the small plate under it; no other animal.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/incubator/round1/IN-D-r1-a3-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:11:30Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/IN-R-r3-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "bf852be4243ab46f642465071cc985b5c9456ba138a0cd3622a0cd5b77bbc726"
+        },
+        "png": {
+          "file": "round3/IN-R-r3-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "f2f18387626cb1b4fa713705373ec11f728d29ac59ec629de83f30fb91883580"
+        },
+        "screen": {
+          "file": "round3/IN-R-r3-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "e4e75f768fb86c71d7d120fab0d03d7055aab774ed8ac6bd3cfc623a473e0124",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 21.6,
+        "usage": {
+          "promptTokenCount": 549,
+          "candidatesTokenCount": 1332,
+          "totalTokenCount": 2107,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 291
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 226,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept as reference (the same embryo edit in words alone held: a newborn asleep in the nest with its three-leaf crest, the dome brighter; an owner question whether Ready shows the creature or the bud)"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    },
+    {
+      "id": "incubator-ready",
+      "direction": "R",
+      "round": 3,
+      "attempt": 2,
+      "tag": "IN-R-r3-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the four leaves, the dome's glass and base and plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY, inside the glass dome: the glowing bud in the nest is now fully grown and ready: it has swelled to fill more of the nest, its pearl skin gone thin and bright so a small dark curled shape sleeps visibly inside it (a round body, a cream belly, three tiny leaves at one end), and it glows far brighter and warmer than before, lighting the whole inside of the dome so it reads as ready from across a room. The glass, the base, the nest and everything outside the dome stay exactly as they are.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label or the small plate under it; no other animal.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/incubator/round1/IN-D-r1-a3-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:11:58Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round3/raw/IN-R-r3-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "9b9da942322162a37262909893453dbaa71d1bfce03765b6dda2fa047f77f644"
+        },
+        "png": {
+          "file": "round3/IN-R-r3-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "00e07b4a77e851c895926844ab5681fd2e37228ba3e61b52cc47cc5ee025338a"
+        },
+        "screen": {
+          "file": "round3/IN-R-r3-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "ff9b28da664b468c7023db1852847c952ba8ce23f3a6a2e12c04f53d8827b155",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 19.5,
+        "usage": {
+          "promptTokenCount": 525,
+          "candidatesTokenCount": 1307,
+          "totalTokenCount": 2006,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 267
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 174,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: the ready embryo (the bud grown bright with the sleeping shape visible inside, the dome glowing); the base for the round 4 leaves edit"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    },
+    {
+      "id": "incubator-ready",
+      "direction": "R",
+      "round": 4,
+      "attempt": 1,
+      "tag": "IN-R-r4-a1",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the other three tabs and all four words under the tabs, the leaves, the dome with the embryo, its base and plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY: the fourth tab along the arc at the top, the faint hairline outline with the small heart emblem, becomes a full-weight tab like the first three: a solid dark bevelled tab face with a thin lit edge, its emblem drawn solid and its small round lamp lit cream, in exactly the same place and size; the etched word under it stays as it is.\nConstraints: preserve every other pixel of the screen; no new text, no digits.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/incubator/round1/IN-D-r1-a3-canvas.png",
+          "role": "edit target: the round 1 pick",
+          "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:13:42Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round4/raw/IN-R-r4-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "fd784d7f9dbe085d2ae9884f79439fa07ff2f9c3c235f2a3d0f7901d9e02e697"
+        },
+        "png": {
+          "file": "round4/IN-R-r4-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "75a47a67f971e0fa8497e1e05729d2422e2bb6a98fc26744dfc5b9991c5f45fd"
+        },
+        "screen": {
+          "file": "round4/IN-R-r4-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "64b1e3b1881128259da9f3326abe164dbf6d2d80d23e1222bf25b731d79418fc",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 19.1,
+        "usage": {
+          "promptTokenCount": 480,
+          "candidatesTokenCount": 1294,
+          "totalTokenCount": 1933,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 222
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 159,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept, composited (the Stamina tab full weight and lit; region x 652-820, y 40-100)"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    },
+    {
+      "id": "incubator-ready",
+      "direction": "R",
+      "round": 4,
+      "attempt": 2,
+      "tag": "IN-R-r4-a2",
+      "model": "gemini-3-pro-image",
+      "operation": "edit",
+      "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the dome with the glowing bud and the sleeping shape inside, its base and plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY: the four leaf shapes in a row above the dome: fill all four leaves solid with the same soft leaf green as the first two, so every leaf is full (the half-filled third leaf and the empty outlined fourth leaf become full green leaves, same size, same place, same stems); nothing else moves.\nConstraints: preserve every other pixel of the screen; no new text, no digits.",
+      "preamble": "One reference image follows: Image 1 is the screen to edit.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/incubator/round3/IN-R-r3-a2-canvas.png",
+          "role": "edit target: the ready embryo edit",
+          "sha256": "00e07b4a77e851c895926844ab5681fd2e37228ba3e61b52cc47cc5ee025338a"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "targetSize": "1536x864",
+      "screenCrop": "centered",
+      "time": "2026-10-08T00:15:31Z",
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "round4/raw/IN-R-r4-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "b7c26b6bd6631354bdaf30cb105f2f4d2eba11273651da138618397d90b23f3d"
+        },
+        "png": {
+          "file": "round4/IN-R-r4-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "21e134120f7c4a9743640268a2dad7f7f7b28739899315c6729c370cda19b821"
+        },
+        "screen": {
+          "file": "round4/IN-R-r4-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "18f49895c67f7c30aaf3f0e4054c02a6de2ec0efc9c062845ce3785fb3027677",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 23.3,
+        "usage": {
+          "promptTokenCount": 466,
+          "candidatesTokenCount": 1285,
+          "totalTokenCount": 1905,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 208
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 258
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 154,
+          "serviceTier": "standard"
+        },
+        "disposition": "kept: the base of the ready composite (all four leaves full, edited on the ready-embryo result r3-a2 so no glow seam remains)"
+      },
+      "promptSource": "art/concept-station/incubator/prompts.json plan (art director), from brief-incubator.md"
+    }
+  ],
+  "composites": [
+    {
+      "base": "art/concept-station/incubator/round4/IN-R-r4-a2-canvas.png",
+      "feather": 10,
+      "pastes": [
+        {
+          "source": "art/concept-station/incubator/round2/IN-R-r2-a3-canvas.png",
+          "screenRect": [
+            0,
+            559,
+            1024,
+            600
+          ],
+          "canvasRect": [
+            30,
+            805,
+            1505,
+            864
+          ],
+          "feather": 0
+        },
+        {
+          "source": "art/concept-station/incubator/round2/IN-R-r2-a3-canvas.png",
+          "screenRect": [
+            430,
+            484,
+            596,
+            540
+          ],
+          "canvasRect": [
+            649,
+            697,
+            888,
+            778
+          ],
+          "feather": 10
+        },
+        {
+          "source": "art/concept-station/incubator/round4/IN-R-r4-a1-canvas.png",
+          "screenRect": [
+            652,
+            40,
+            820,
+            100
+          ],
+          "canvasRect": [
+            969,
+            58,
+            1211,
+            144
+          ],
+          "feather": 10
+        }
+      ],
+      "outputs": {
+        "canvas": "art/concept-station/incubator/composites/IN-C1-canvas.png",
+        "screen": "art/concept-station/incubator/composites/IN-C1-1024x600.png",
+        "bandRect": [
+          30,
+          0,
+          1505,
+          864
+        ]
+      },
+      "tag": "IN-C1"
+    }
+  ],
+  "placements": [
+    {
+      "tag": "IN-C1",
+      "screen": "art/concept-station/incubator/composites/IN-C1-canvas.png",
+      "stamp": "art/concept-station/incubator/layout/stamp-s01-ready-bench-300.png",
+      "detectedSquare": [
+        1096,
+        402,
+        1335,
+        668
+      ],
+      "pasted": {
+        "x": 1098,
+        "y": 418,
+        "side": 234
+      },
+      "outputs": {
+        "canvas": "art/concept-station/incubator/placed/IN-C1-stamped-canvas.png",
+        "screen": "art/concept-station/incubator/placed/IN-C1-stamped-1024x600.png"
+      },
+      "decode": {
+        "ok": true,
+        "code": "S11v1-0F-DDCB-4DEAF4",
+        "read": [
+          "Coat",
+          "Face",
+          "Movement",
+          "Stamina"
+        ],
+        "unread": []
+      }
+    },
+    {
+      "tag": "IN-D-r1-a1",
+      "screen": "round1/IN-D-r1-a1-canvas.png",
+      "stamp": "layout/stamp-s01-incubator-bench-300.png",
+      "detectedSquare": [
+        1166,
+        418,
+        1381,
+        635
+      ],
+      "pasted": {
+        "x": 1168,
+        "y": 421,
+        "side": 210
+      },
+      "outputs": {
+        "canvas": "placed/IN-D-r1-a1-stamped-canvas.png",
+        "screen": "placed/IN-D-r1-a1-stamped-1024x600.png"
+      },
+      "decode": {
+        "ok": true,
+        "code": "S11v1-07-C85B-501D8D",
+        "read": [
+          "Coat",
+          "Face",
+          "Movement"
+        ],
+        "unread": [
+          "Stamina"
+        ]
+      }
+    },
+    {
+      "tag": "IN-D-r1-a3",
+      "screen": "round1/IN-D-r1-a3-canvas.png",
+      "stamp": "layout/stamp-s01-incubator-bench-300.png",
+      "detectedSquare": [
+        1096,
+        402,
+        1335,
+        664
+      ],
+      "pasted": {
+        "x": 1098,
+        "y": 416,
+        "side": 234
+      },
+      "outputs": {
+        "canvas": "placed/IN-D-r1-a3-stamped-canvas.png",
+        "screen": "placed/IN-D-r1-a3-stamped-1024x600.png"
+      },
+      "decode": {
+        "ok": true,
+        "code": "S11v1-07-C85B-501D8D",
+        "read": [
+          "Coat",
+          "Face",
+          "Movement"
+        ],
+        "unread": [
+          "Stamina"
+        ]
+      }
+    }
+  ],
+  "stampNote": "Two real styled faces are placed: the growing state (S01, C01 family, Coat, Face and Movement read, Stamina unread; layout/genome-s01-incubator.json) on the growing frames, and the ready state (every chapter read; layout/genome-s01-ready.json) on the ready composite. Round perforations, bench paper. Placed after generation and decoded from the finished 1024x600 screen; the generator never draws a cell. The code under the label is live text and is left empty in the art."
+}

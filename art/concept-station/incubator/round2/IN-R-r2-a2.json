@@ -1,0 +1,89 @@
+{
+  "id": "incubator-ready",
+  "direction": "R",
+  "round": 2,
+  "attempt": 2,
+  "tag": "IN-R-r2-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the four leaves, the dome's glass and base and plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY, inside the glass dome: the glowing bud in the nest has opened and in its place, curled asleep in the nest, lies a small newborn creature like Image 2 but very young: a round, plump charcoal body with a cream belly, eyes shut, a tiny three-leaf crest on its head, no bigger than the bud was, glowing softly warm from within and lit warm, with the whole inside of the dome glowing a little brighter and warmer than before so the dome reads as ready from across a room; the glass, the base, the nest's shape and everything outside the dome stay exactly as they are.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label or the small plate under it.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the screen to edit. Image 2 is the accepted creature; the newborn asleep in the nest is this species, tiny and curled, eyes shut.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/incubator/round1/IN-D-r1-a3-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "the accepted creature, plain: the newborn asleep in the nest is this species, tiny and curled",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T00:09:58Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/IN-R-r2-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "1fe81ccae9c7bf2e8e07bce981fe05722b96ae76bbac98b2a867957666881d9e"
+    },
+    "png": {
+      "file": "IN-R-r2-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "c407365ce59e56afcfb5cb66bcbd65e31dc8915989de3c209c3d9b15b41ccc9e"
+    },
+    "screen": {
+      "file": "IN-R-r2-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "1080413cc4bd7772fc330c940ca96c27c08f10706391f1dbe2633e5852807fb8",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 20.2,
+    "usage": {
+      "promptTokenCount": 849,
+      "candidatesTokenCount": 1331,
+      "totalTokenCount": 2407,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 333
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 227,
+      "serviceTier": "standard"
+    }
+  }
+}

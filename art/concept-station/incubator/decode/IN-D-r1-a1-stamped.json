@@ -1,0 +1,58 @@
+{
+ "ok": true,
+ "code": "S11v1-07-C85B-501D8D",
+ "species": 11,
+ "version": 1,
+ "read": [
+  "Coat",
+  "Face",
+  "Movement"
+ ],
+ "unread": [
+  "Stamina"
+ ],
+ "copies": {
+  "appearance.marking-switch": [
+   "on",
+   "on"
+  ],
+  "anatomy.crown-presence": [
+   "on",
+   "on"
+  ],
+  "growth.exterior-eye-size-ratio": [
+   "small",
+   "small"
+  ],
+  "movement.cycle-rate": [
+   "high",
+   "high"
+  ]
+ },
+ "crc": 51291,
+ "postmark": "none",
+ "stamp": {
+  "cells": 17,
+  "correctedBytes": 0,
+  "of": 12,
+  "mirrored": false,
+  "quad": [
+   [
+    805.2,
+    307.5
+   ],
+   [
+    919.6,
+    307.5
+   ],
+   [
+    919.6,
+    422.1
+   ],
+   [
+    805.2,
+    422.1
+   ]
+  ]
+ }
+}

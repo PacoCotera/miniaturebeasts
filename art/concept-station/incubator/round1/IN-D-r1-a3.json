@@ -1,0 +1,99 @@
+{
+  "id": "incubator-growing",
+  "direction": "D",
+  "round": 1,
+  "attempt": 3,
+  "tag": "IN-D-r1-a3",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the research bench's INCUBATOR screen (where a founder's embryo grows under a glass dome), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a MODERN DIGITAL LAB, the research bench of a genetics instrument, exactly the room of the supplied Create and Pods screens: deep dark blue-teal glass and anodised graphite with thin lit edges, floating glass, one cool beam from the upper left, exact small readouts; calm and precise, not plasticky. Same device as the supplied screens: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar, light from the upper left, clean painted light with soft shadows, crisp edges, no noise or dither. The embryo glowing inside the dome is the ONLY warm light on screen; everything else is cool. Labels are one small engraved or etched word, low contrast, read second, written once; any caption inside the stage sits on a small plate, never floating. No wood, no felt, no lamp fixture drawn except the small housing named below.\nLAYOUT, as the template: a thin graphite top bar and bottom line. ABOVE THE STAGE, four small machined TABS on a shallow arc centred on the screen (the inner two higher), each a dark bevelled tab with a thin lit edge, a tiny etched emblem and a small lamp, and ONE quiet word under each tab (no word on the tab itself): the Coat tab and the Movement tab are full weight with their lamps lit, the Movement tab's emblem two small joined rings; the Face tab is full weight and its lamp has just lit, with a soft pale glow around the tab; the Stamina tab is a faint hairline outline, unlit. UNDER THE TABS, THE LEAVES: four small leaf shapes in a row on a shallow arc over the dome, stems pointing down toward the dome, drawn as thin machined leaf outlines on the chrome: the first two leaves filled solid with a soft leaf green, the third leaf filled green from its stem up to its middle and empty above, the fourth leaf an empty hairline outline; no digits, no marks beside them. CENTRE, the DOME: a large clear glass dome, about a third of the screen's width, standing on a machined graphite base with a brushed rim and a thin lit inner edge; inside the dome, resting in a soft nest of pale fibre, the EMBRYO: a translucent pearl bud, taller than wide, glowing warm amber-cream from inside, its glow pooling softly on the nest and on the inside of the glass; no face, no eyes, no limbs; the only warm light on screen. A cool beam from a small lamp housing high at the upper left falls down-right across the dome's glass. On the base's front a small plate with its two lines. LEFT of the dome, quiet dark glass and the lamp housing, nothing else. RIGHT of the dome, standing on the bench, the STAMP LABEL: one completely EMPTY, flat, pale square label with straight edges and slightly rounded corners, about a fifth of the screen's width, nothing drawn on it at all (the genome stamp is placed there later), and under it a small empty dark plate with nothing written on it.\nTEXT, exactly these and nothing else: top bar left \"Incubator  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Under the four tabs, one small etched word each, once: \"Coat\", \"Face\", \"Movement\", \"Stamina\". On the plate on the dome's base: \"growing\" and under it smaller \"a founder · rock field\". Bottom line: grey \"← Home\" at left (no check mark, nothing to confirm); grey \"founder · growing\" in the middle; grey \"Stamina still a surprise\" at right. No species name anywhere, no other words, no digits except those listed, no numbers on or near the leaves, nothing written on the pale label or on the small plate under it.\nConstraints: no letters, ratios, percentages, clocks, timers, progress bars, DNA helices, codes or genes anywhere; time is shown only by the four leaves; the pale square label stays completely empty and flat (the real genome stamp is placed there later) and the small plate under it is empty; the embryo is a translucent bud with no face, eyes or limbs; no other animal, no plants other than the four leaf shapes; no tables, title bars, bullet lists or boxed buttons; no logos; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the Create screen of this same room: take its materials, light, tabs, plates and type; its roll, pod and founder chamber are not on this screen. Image 2 is the decided Pods screen of the same room, for its materials and quietness. Image 3 is the approved Home screen: same device; take type, counters, bottom line and light only. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/create/composites/CR-C2-1024x600.png",
+      "role": "the Create screen of the same bench, before its stamp was placed: take its materials, light, tabs, glass, graphite base, plates and type exactly; its roll, pod and founder chamber are NOT on this screen, the layout below replaces them",
+      "sha256": "b20a1f19e7ac3ab85419d59f73debbe4c13144b11f671f5aaebc96297c939916"
+    },
+    {
+      "path": "art/concept-station/pods-v2/round3/PV-D-r3-a4-1024x600.png",
+      "role": "the decided Pods screen of the same bench: the room's materials and quietness; its list, page and stage plate are not on this screen",
+      "sha256": "8d89cca71910773817e1be7450089ccc05e2132de22670a9c3d62bc41dcc91f3"
+    },
+    {
+      "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+      "role": "approved Station Home concept: same device, so take its type, counters, bottom line grammar and light direction only; its small incubation module shows the dome-and-leaves idea at thumbnail size",
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+    },
+    {
+      "path": "art/concept-station/incubator/layout/incubator-layout-template.png",
+      "role": "layout truth only: flat boxes at 1024x600 showing the four tabs on an arc, the four leaves over the dome (two full, one half, one empty), the large dome on its base with the bud inside, the status plate, the lamp at the left, and the empty pale square label with its small empty plate at the right; not style",
+      "sha256": "cf0c8bb49bc2aa6b38bff0ff77376052c5225c1c450e1b42376902f1255faff2"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T00:08:08Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/IN-D-r1-a3.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "fab7c66681b09373939f11791cd591ad982a58f6147248e8e25a11f03ee064b3"
+    },
+    "png": {
+      "file": "IN-D-r1-a3-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+    },
+    "screen": {
+      "file": "IN-D-r1-a3-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "34c471f45983f2a381d8bf554e0314559740bac6e48033bbb97e46923d1d75bd",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 25.8,
+    "usage": {
+      "promptTokenCount": 2430,
+      "candidatesTokenCount": 2038,
+      "totalTokenCount": 4797,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1398
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1032
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 329,
+      "serviceTier": "standard"
+    }
+  }
+}

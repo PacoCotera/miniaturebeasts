@@ -1,0 +1,84 @@
+{
+  "id": "incubator-ready",
+  "direction": "R",
+  "round": 3,
+  "attempt": 2,
+  "tag": "IN-R-r3-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the four tabs and their words, the four leaves, the dome's glass and base and plate, the lamp and beam, the pale label and the small plate at the right.\nONE CHANGE ONLY, inside the glass dome: the glowing bud in the nest is now fully grown and ready: it has swelled to fill more of the nest, its pearl skin gone thin and bright so a small dark curled shape sleeps visibly inside it (a round body, a cream belly, three tiny leaves at one end), and it glows far brighter and warmer than before, lighting the whole inside of the dome so it reads as ready from across a room. The glass, the base, the nest and everything outside the dome stay exactly as they are.\nConstraints: preserve every other pixel of the screen; no new text, no digits, nothing drawn on the pale label or the small plate under it; no other animal.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/incubator/round1/IN-D-r1-a3-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "7eec0551b02883d3c797eeb7fdda4553d58a2b7e2070e3fb3426ad1ab25e8577"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T00:11:58Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/IN-R-r3-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "9b9da942322162a37262909893453dbaa71d1bfce03765b6dda2fa047f77f644"
+    },
+    "png": {
+      "file": "IN-R-r3-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "00e07b4a77e851c895926844ab5681fd2e37228ba3e61b52cc47cc5ee025338a"
+    },
+    "screen": {
+      "file": "IN-R-r3-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "ff9b28da664b468c7023db1852847c952ba8ce23f3a6a2e12c04f53d8827b155",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 19.5,
+    "usage": {
+      "promptTokenCount": 525,
+      "candidatesTokenCount": 1307,
+      "totalTokenCount": 2006,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 267
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 174,
+      "serviceTier": "standard"
+    }
+  }
+}
