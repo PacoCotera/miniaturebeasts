@@ -28,16 +28,19 @@ PW_DIR=<dir with node_modules/playwright> node prototypes/face/tools/face-check.
 
 Open the Station with `?face=lvgl` (the build's `dist/` must sit beside the page: `prototypes/face/dist`, published at `/sandbox/face/dist`).
 
-## What L0 measured (Chromium 1.49 headless, a development VM)
+## What L0 measured (Chromium headless; a development VM and CI's ubuntu-24.04 runner)
 
-| | |
-| --- | --- |
-| Clean build, WebAssembly (LVGL 9.6.0 + the face, `-O2`) | 26.6 s |
-| Clean build, native Linux (gcc) | 19.9 s |
-| `face.wasm` | 221,847 B (89,896 B gzipped); `face.mjs` 9,251 B (3,101 B gzipped) |
-| Page: fetch, compile and initialise | 5 to 7 ms (local); 17 to 20 ms with the CPU throttled 4× |
-| A frame with nothing changed | 0.003 ms |
-| A full 1024×600 frame copied to the canvas | 3.3 ms; 15 ms with the CPU throttled 4× (a 60 Hz frame is 16.7 ms) |
-| The WebAssembly and native faces' framebuffer hashes | equal (`5fc5fdc5`) |
+| | Development VM | CI runner (first run, cache cold) |
+| --- | --- | --- |
+| Emscripten 4.0.23 install and both builds | n/a | 1 min 51 s for the whole step; later runs restore the SDK from the cache |
+| Clean build, WebAssembly (LVGL 9.6.0 + the face, `-O2`) | 26.7 s | 35.0 s |
+| Clean build, native Linux (gcc) | 19–20 s | 39.1 s |
+| `face.wasm` | 221,847 B (89,896 B gzipped) | the same bytes |
+| `face.mjs` | 9,251 B (3,101 B gzipped) | the same bytes |
+| Page: fetch, compile and initialise | 5 to 7 ms; 15 to 19 ms with the CPU throttled 4× | 7.9 ms; 14.1 ms throttled 4× |
+| A frame with nothing changed | 0.003 ms | 0.003 ms |
+| A full 1024×600 frame copied to the canvas | 3.3 ms; 15 to 19 ms throttled 4× | 2.7 ms; 13.1 ms throttled 4× (a 60 Hz frame is 16.7 ms) |
+| The WebAssembly and native faces' framebuffer hashes | equal (`5fc5fdc5`) | equal (`5fc5fdc5`) |
+| The whole job (build, site, smoke, journey, face check, layer checks) | n/a | 5 min 13 s |
 
 The full-frame copy is the worst case (LVGL redraws only what changed, and the page copies only those rectangles); on a phone it fits a frame at 4× throttling but only just, so the copy is done on 32-bit words. The sizes are the empty face: the fonts and images arrive at L1.
