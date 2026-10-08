@@ -3,7 +3,7 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#pods-list-and-read",
  "frame": "frame.json",
- "note": "The one home of the Pods numbers, transcribed from station-layouts.md (Pods §5, §6). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What is not in the layout document is listed under `derived`, each waiting for the UI designer. The strings other than strings.openBay are the decided strings of the layout document (§5 States, §6).",
+ "note": "The one home of the Pods numbers, transcribed from station-layouts.md (Pods §5, §6). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What is not in the layout document is listed under `derived`, each waiting for the UI designer. Laid out the concept's way round (UI designer, 2026-10-08): the wells at the far left, the page left of the pod on Compare's columns, the pod on its frosted dish under the cone of light, its name and origin under it, the stamp label at the right; was the page at the right (528, 112, 480, 440) and the stamp under the pod (176, 432), the pod on (344, 312), the cradle 224×40. After the art director's second verdict (UI designer, 2026-10-08): the dish (600, 328, 224, 96) with its near lip on the same rectangle (was 600, 352, 224, 72); the rail hanging from y 40, 40 tall, by frame.rail (was 176, 48, 832, 56); the origin in bone (was mist); the page opening on one large picture (Picture) with the grid as its second state; the focus graph gains the page (list.right was pod, pod.left was list.current). After the art director's fourth check (UI designer, 2026-10-08): the pod classes 144×176, 120×152, 104×128 (were 160×192, 136×168, 112×144) on the foot line y 392 (was 400) in the bowl's dip; the Picture state a portrait 200×280 in a 232×312 frame, 16 px inset (was 376×312); the name's plate hugging the word (name.plate). The owner's decision (2026-10-08): the name label at 20 px medium, its text rectangle (600, 440, 224, 24) and its plate 24 tall, at least 80 (were 28 px, 224×32, plate 32 tall, at least 96). After the art director's pass-6 verdict (UI designer, 2026-10-08): the shelf slab (592, 368, 240, 72) under the dish; the name (600, 456, 224, 24) and the origin and ribbon (600, 496, 224, 40), 16 px lower (were at y 440 and 480); the origin has no plate; the rail's ring in the `focus` role (was `cream`). After the owner's rulings on the composite (UI designer, 2026-10-08): the well column 112 (was 160) with 80×80 ring slices, the 32×48 list pod and a circular focus; no place stamps in the list; the page (152, 112, 256, 440) (was 176, 112, 408, 440) with the portrait 192×272 in a 224×304 frame and a two-column grid; the pod's room 408 to 856 with the axis x 632 (was 712); the slab 288 wide; the caption (origin) 8 px under the name; the stamp case (856, 232, 152, 152) and the label (872, 248) (were 848, 144, 176, 328 and 888, 248); the rail's state colours, one fill, word and pip colour per state. After the game designer's answer (2026-10-08; the owner asked): the page is one state, every trait at once by the grid for one to eight traits, each cell the picture, 4 px, the one-word name; no Picture state, no trait marks, no page focus (list.right is the pod again, pod.left the well). The strings other than strings.openBay are the decided strings of the layout document (§5 States, §6).",
  "derived": {
   "compare grid for one or two traits": "derived, UI designer to confirm: the document gives Compare's grid for three to six traits only; one and two are Read's cells and pictures scaled to the page's 408 px (pictures 376×264 and 184×256), as the previous builder chose — UI designer, 2026-10-08: confirmed (Read's pictures scaled to 408 px, rounded to the grid), the cells 376 tall on the corrected rows",
   "compare cell rows": "derived, UI designer to confirm: the rows of Compare's cells follow Read's (y 48 and 248 on the page) — UI designer, 2026-10-08: corrected to y 56 and 248: the heading's 32×40 pod runs from y 8 to 48 and touched the first row; cells 184 tall (376 for one or two traits), the second row ending 8 px above the page's edge",
@@ -13,25 +13,31 @@
   "compare difference mark": "derived, UI designer to confirm: the 12×12 bracket sits centred on the picture's top edge (the document gives its size, not its place) — UI designer, 2026-10-08: corrected: inside the picture, top centre, 8 px in (P.x + P.w / 2 − 6, P.y + 8), like the other marks, in aqua on a 1 px ink keyline (a cream bracket vanished on the pictures' pale ground; the build draws it at P.y + 4); a differing picture also wears a 2 px aqua edge on its own rectangle, never the cream ring, which is the focus's alone (one ring per screen)"
  },
  "regions": {
-  "list": { "rect": [0, 40, 160, 522], "component": "list", "item": "well", "slots": 6, "rule": { "x": 160, "y0": 48, "y1": 552 } },
-  "well": { "rect": [8, 48, 144, 72], "pitch": [0, 72], "ring": { "at": [32, 4, 64, 64], "radius": 31 }, "pod": { "size": [32, 40], "centre": [64, 36] }, "place": { "at": [104, 12, 16, 16] } },
-  "hatch": { "rect": [24, 488, 112, 56], "mark": [24, 24] },
-  "rail": { "rect": [176, 48, 832, 56], "component": "chapterRail" },
+  "list": { "rect": [0, 40, 112, 522], "component": "list", "item": "well", "slots": 6, "rule": { "x": 112, "y0": 48, "y1": 552 } },
+  "well": { "rect": [24, 48, 80, 72], "pitch": [0, 72], "ring": { "slice": [0, -4, 80, 80], "centre": [40, 36], "outer": 33, "band": 8, "master": "1:1" }, "pod": { "size": [32, 48], "centre": [40, 36] }, "focus": { "shape": "circle", "radius": 37, "width": 2, "colour": "focus", "onlyInList": true }, "place": null },
+  "hatch": { "rect": [24, 488, 80, 56], "mark": [24, 24] },
+  "rail": { "rect": [152, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail" },
   "bench": { "rect": [0, 40, 1024, 522] },
-  "stage": { "rect": [168, 112, 352, 440] },
-  "beam": { "rect": [224, 104, 240, 232] },
-  "pod": { "rect": [264, 120, 160, 192], "component": "specimen", "focal": true, "axis": 344, "feet": 312 },
-  "cradle": { "rect": [232, 296, 224, 40] },
-  "name": { "rect": [184, 344, 320, 32], "px": 28, "centre": 344, "noDigits": true },
-  "origin": { "rect": [184, 384, 320, 40], "px": 16, "lines": 2, "centre": 344, "noDigits": true },
-  "stamp": { "rect": [176, 432, 120, 120], "component": "stampLabel" },
+  "stage": { "rect": [488, 112, 288, 440], "room": [408, 856] },
+  "beam": { "rect": [512, 104, 240, 320] },
+  "pod": { "rect": [560, 216, 144, 176], "component": "specimen", "focal": true, "axis": 632, "feet": 392, "dipFloor": 388 },
+  "cradle": { "rect": [520, 328, 224, 96], "under": "pod" },
+  "cradleFront": { "rect": [520, 328, 224, 96], "over": "pod", "note": "the dish's near lip, drawn over the pod's foot" },
+  "shelf": { "rect": [488, 368, 288, 72], "under": "cradle", "frontEdge": 440, "shape": "trapezoid" },
+  "name": { "rect": [520, 456, 224, 24], "text": "the species name alone (owner, 2026-10-08); the unidentified wording is the copywriter's", "px": 20, "weight": 500, "exception": "owner, 2026-10-08: the pod's name label at 20 px", "centre": 632, "noDigits": true, "plate": { "pad": 12, "round": 16, "min": 80, "max": 224, "h": 24 } },
+  "origin": { "rect": [520, 488, 224, 40], "role": "caption", "px": 16, "weight": 400, "colour": "bone", "case": "sentence", "lines": 2, "pitch": 20, "centre": 632, "noDigits": true, "plate": null, "shadow": "void", "text": "the copywriter's sentence with slots (branch copy-origin)" },
+  "stampCase": { "rect": [856, 232, 152, 152], "under": "stamp", "lit": false, "bleed": null, "dimmerThan": "cradle", "note": "owner, 2026-10-08: the small label inside a dim, unlit glass case, where the concept's case stands" },
+  "stampCaseFront": { "rect": [856, 232, 152, 152], "over": "stamp", "slice": "room-stamp-case-152x152-front", "tint": "ground", "opacity": 0.48, "labelMeanMax": 115, "cellContrastMin": 4 },
+  "stamp": { "rect": [872, 248, 120, 120], "component": "stampLabel" },
   "page": {
-   "rect": [528, 112, 480, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
+   "rect": [152, 112, 256, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
+   "states": ["grid"], "pictureMax": [144, 176], "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": [12, 12], "sealedFind": [72, 184, 112, 112],
    "grid": {
-    "1": { "cells": [[16, 48, 448, 384]], "picture": [448, 312] },
-    "2": { "cells": [[16, 48, 216, 384], [248, 48, 216, 384]], "picture": [216, 304] },
-    "3-4": { "cells": [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], "picture": [216, 112] },
-    "5-6": { "cells": [[16, 48, 144, 184], [168, 48, 144, 184], [320, 48, 144, 184], [16, 248, 144, 184], [168, 248, 144, 184], [320, 248, 144, 184]], "picture": [144, 112] }
+    "1": { "cells": [[16, 48, 224, 384]], "picture": [144, 176], "align": "centre top" },
+    "2": { "cells": [[16, 48, 224, 184], [16, 248, 224, 184]], "picture": [176, 144], "align": "centre top" },
+    "3-4": { "cells": [[16, 48, 104, 184], [136, 48, 104, 184], [16, 248, 104, 184], [136, 248, 104, 184]], "picture": [104, 160] },
+    "5-6": { "cells": [[16, 48, 104, 120], [136, 48, 104, 120], [16, 176, 104, 120], [136, 176, 104, 120], [16, 304, 104, 120], [136, 304, 104, 120]], "picture": [104, 96] },
+    "7-8": { "cells": [[16, 48, 104, 88], [136, 48, 104, 88], [16, 144, 104, 88], [136, 144, 104, 88], [16, 240, 104, 88], [136, 240, 104, 88], [16, 336, 104, 88], [136, 336, 104, 88]], "picture": [104, 64] }
    }
   },
   "compareA": {
@@ -44,9 +50,9 @@
    }
   },
   "compareB": { "rect": [600, 112, 408, 440], "same": "compareA" },
-  "ribbon": { "rect": [184, 384, 320, 40], "px": 20, "ms": 6000 }
+  "ribbon": { "rect": [520, 488, 224, 40], "px": 20, "ms": 6000 }
  },
- "classes": { "pod": { "large": [160, 192], "medium": [136, 168], "small": [112, 144] } },
+ "classes": { "pod": { "large": [144, 176], "medium": [120, 152], "small": [104, 128], "list": [32, 48] } },
  "page": { "marks": { "seed": [40, 52], "seedSmall": [32, 40], "smallUnder": 120, "only": [72, 8], "asleep": [24, 16], "doing": [28, 16], "key": [44, 64] }, "diff": { "bracket": [12, 12], "bracketAt": "top centre, `inset` px in: [P.x + P.w / 2 - 6, P.y + inset]", "inset": 8, "edge": 2 } },
  "focus": {
   "list": { "axis": "vertical", "right": "pod", "left": "none" },
@@ -59,18 +65,18 @@
   "well": { "group": "list", "inset": 0 },
   "hatch": { "group": "list" },
   "pod": { "group": "pod", "shape": "ellipse" },
-  "tab": { "group": "rail" }
+  "tab": { "group": "rail", "ring": "frame.focus.ring.tab" }
  },
  "colours": {
   "ground": "deep", "listPane": "night", "listEdge": "slate", "listRule": "slate",
   "wellLit": "stone", "well": "slate", "wellCore": "ink", "wellPit": "night",
-  "ringRead": "aqua", "ringUnread": "mist", "ringSealed": "stone", "ringBase": "hairline", "ringDot": "fog",
-  "name": "bone", "origin": "mist", "ribbonFill": "tealD", "ribbonEdge": "aqua", "ribbonText": "bone",
-  "rail": { "unreadFill": "frostS", "unreadEdge": "slate", "unreadWord": "ink", "sealedWord": "mist", "readFill": "tealD", "readRim": "aqua", "readWord": "mint", "pip": "aqua", "pipHollow": "stone", "ring": "cream", "changed": "amber" },
+  "ringRead": "bevel", "ringCurrent": "bone", "ringUnread": "hairline", "ringSealed": "hairline", "ringBase": "hairline", "ringDot": "bone", "wellFocus": "focus",
+  "name": "bone", "origin": "bone", "ribbonFill": "tealD", "ribbonEdge": "aqua", "ribbonText": "bone",
+  "rail": { "edge": "bevel", "unreadFill": "panel", "unreadEdge": "bevel", "unreadWord": "mist", "unreadPip": "mist", "readFill": "panel", "readRim": "bevel", "readWord": "bone", "readPip": "bone", "openFill": "hairline", "openWord": "bone", "openPip": "bone", "sealedFill": "panel", "sealedSlats": "bar", "sealedWord": "mist", "sealedNotch": null, "pip": "bone", "pipHollow": "mist", "ring": "focus", "changed": "amber" },
   "page": { "pane": "deep", "edge": "slate", "heading": "bone", "name": "bone", "line": "fog", "lineEmpty": "stone", "wipe": "white" },
   "stampLabel": { "fill": "bone", "edge": "slate" },
   "diff": { "edge": "aqua", "bracket": "aqua", "keyline": "ink" },
   "beam": "tealD"
  },
- "strings": { "unknownPod": "Unknown", "newSpecies": "New species", "empty": "the rack is empty", "dockToBring": "dock the Companion for its crates", "openBay": "open the bay at Home", "explore": "take the Companion exploring", "hatchArm": "Back to the {place}? ✓ again", "hatchPlace": { "meadow": "meadow", "pond": "pond", "rock": "rock", "wood": "wood", "cave": "cave" }, "compareHere": "they differ here", "compareElsewhere": "they differ in another chapter", "compareSame": "no read trait differs", "legsTail": { "rail": "Legs & tail", "heading": "Legs & tail" } }
+ "strings": { "unknownPod": "Unknown", "newSpecies": "New species", "empty": "the rack is empty", "dockToBring": "dock the Companion for its crates", "openBay": "open the bay at Home", "explore": "take the Companion exploring", "hatchArm": "Back to the {place}? ✓ again", "hatchPlace": { "meadow": "meadow", "pond": "pond", "rock": "rock", "wood": "wood", "cave": "cave" }, "compareHere": "they differ here", "compareElsewhere": "they differ in another chapter", "compareSame": "no read trait differs", "legsTail": { "rail": "Legs & Tail", "heading": "Legs & Tail" }, "chapterCase": "every word capitalised (owner, 2026-10-08); the chapter names come from the species frames, prototypes/workbench/frames/species-*.json, chapters[].name" }
 }
