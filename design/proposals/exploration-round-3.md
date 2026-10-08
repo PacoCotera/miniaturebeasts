@@ -16,8 +16,8 @@ Expedition 6, calm. The HUD corner shows the reach as 5×5 dots, 4 filled.
    "rock field · half surveyed".
 2. **In the place,** that half lies under a light veil. Call at its edge unveils
    a 15×15 square; a warm stone glints, and drawing it gives +1 Energy.
-3. **A fruit drops.** The line says "puffcaps eat these". When the player picks
-   it up, a puffcap shows a fruit bubble; the glowtail shows nothing.
+3. **A fruit drops.** The line says "Untuvas eat these". When the player picks
+   it up, an Untuva shows a fruit bubble; the Tuikis shows nothing.
 4. **One more Call:** "Surveyed · 1 dew, 1 fruit left". Walking off the east edge
    lands on the next map cell; the rock field draws whole, and a fifth dot fills.
 
@@ -87,11 +87,11 @@ stays a one-off check and "cleared" stays an abstract word.
   action count.
 
 **Proposal: time shows through things that move, never a counter.**
-Wait says what changed ("The storm edges east · the hopper grazes again"), or
+Wait says what changed ("The storm edges east · the Loika grazes again"), or
 "Nothing is moving here", which ends pointless waiting honestly. Storm and fog
 bank show their heading as ◀ or ▶ beside the bolts, and the map's edge triangle
 gets a first-sighting line ("The storm moves this way"). Creature routines close
-with a line ("The puffcap finished its meal"). No sun arc or day-part: light
+with a line ("The Untuva finished its meal"). No sun arc or day-part: light
 that changes with the action count reads as a clock.
 
 **Alternative: a day-part clock**, with morning, noon and evening every 40
@@ -124,7 +124,7 @@ glowing partner.
 **Proposal: the fog bank limits sight in a place to 4 tiles.**
 Beyond 4 tiles the terrain takes the fog table, and creatures, pods and fruit
 aren't drawn (the prototype already dims sprites there; make it hide them). It
-mirrors cover: they notice you late, you see them late. A glowtail partner
+mirrors cover: they notice you late, you see them late. A Tuikis partner
 widens sight to 6 tiles. Rain, storm and fog in one cell stays possible, and
 stray strikes stay off inside the bank.
 
@@ -149,12 +149,12 @@ burrow).
 | **…** and pips | Settling | Keep still (Wait) |
 
 **Proposal: diet shows before a fruit is wasted.**
-When a fruit drops, the line names who eats it ("A fruit drops · puffcaps eat
+When a fruit drops, the line names who eats it ("A fruit drops · Untuvas eat
 these", or "· no one here eats fruit"). While you carry fruit, eaters in view
-show the fruit bubble for one action. Facing a non-eater gives "Glowtails don't
+show the fruit bubble for one action. Facing a non-eater gives "Tuikis don't
 eat fruit" and spends nothing: refusal is never silent. Putting fruit down
 explains it once ("Fruit down · eaters come when you back off"). Facing any
-creature names its state and your options ("Hopper · watching you · bring fruit,
+creature names its state and your options ("Loika · watching you · bring fruit,
 or Call"), never "Nothing here".
 
 **Cost.** One bubble sprite (about 11×13) and line text; `eats` already exists.
@@ -184,7 +184,7 @@ or Call"), never "Nothing here".
   in the menu; Wait reports changes; a storm and fog heading mark and the
   edge-triangle line.
 - **Edges.** Walking off a place lands on the neighbouring map cell, or bumps back.
-- **Fog sight.** 4 tiles in a fog bank, 6 with a glowtail.
+- **Fog sight.** 4 tiles in a fog bank, 6 with a Tuikis.
 - **Creatures.** Four bubbles explained once, the fruit bubble on eaters, diet
   lines, and a line when facing a creature.
 - **Fix the r4 defects these depend on:** the dig prompt at the burrow, beat

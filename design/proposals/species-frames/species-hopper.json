@@ -2,8 +2,9 @@
  "schema": "mb-species-frame/1",
  "species": {
   "id": "hopper",
-  "name": "Hopper",
-  "plural": "hoppers",
+  "name": "Loika",
+  "plural": "Loikas",
+  "clan": "Lophessa",
   "order": 1,
   "summary": "The starter: Pip as in the approved art. Exactly the five open traits of the Pip proof."
  },

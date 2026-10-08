@@ -2,8 +2,9 @@
  "schema": "mb-species-frame/1",
  "species": {
   "id": "puffcap",
-  "name": "Puffcap",
-  "plural": "puffcaps",
+  "name": "Untuva",
+  "plural": "Untuvas",
+  "clan": "Kausida",
   "order": 2,
   "summary": "A radial, capped plan: a round furred body, a face, three flaps for a cap, no legs. It waddles."
  },
@@ -214,7 +215,7 @@
    "id": "temperament",
    "name": "Temperament",
    "sealed": true,
-   "opensWith": "a vybronic crystal, dug up where a puffcap partner sniffs out a buried pod",
+   "opensWith": "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod",
    "traits": [
     {
      "id": "curiosity",

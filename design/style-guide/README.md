@@ -90,7 +90,7 @@ Screen: ________  Device: Companion 450×600 | Station 1024×600  Piece: _______
 
 ## Decided
 
-1. **The hopper** is Pip as in the approved art: charcoal, cream belly, orange eyes, three-leaf crest. The lilac long-eared token is retired.
+1. **The Loika** is Pip as in the approved art: charcoal, cream belly, orange eyes, three-leaf crest. The lilac long-eared token is retired.
 2. **Station type** is a smooth face, Inter, anti-aliased.
 3. **Pixel indication on the Station:** a fine grain on creatures and world; chrome and type crisp.
 4. **Companion tile size:** 48 px, about 9 across and 11 down; the camera keeps the pawn in the middle third.

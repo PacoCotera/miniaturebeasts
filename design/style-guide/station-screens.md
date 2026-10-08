@@ -51,7 +51,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Light.** Warm daylight inside the vivarium from the top left; even cool light on the chrome.
 - **Palette.** Deep blue-teal chrome; the vivarium's greens and warm earth; amber only on the lamp that needs you.
 - **Type.** 3× screen name; 2× readouts, three words or fewer each.
-- **Chrome.** `✓ Look at Bean · ← the room` | `Bean · puffcap · adult` | `a puffcap pod waits · needs 2 ❀`.
+- **Chrome.** `✓ Look at Bean · ← the room` | `Bean · Untuva · adult` | `an Untuva pod waits · needs 2 ❀`.
 - **Motion.** Residents move smoothly at the panel's rate; module doors and lamps move only on events.
 
 **Pass when**
@@ -111,7 +111,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Lively / quiet.** Lively: the pod's glow, glints, the page turn. Quiet: list, arcs, plate.
 - **Light.** The beam from above-left on the pod; a read page lit warm from inside; arcs and list cool.
 - **Palette.** Pods from one renderer: the species' colour pair and shell pattern, the place's dust or moss; frost pale blue-white; seeds pearl with a ghost inside; the ring's band grey, its tracks in the looks' hues.
-- **Type.** Pod name at 4×; origin at 2× ("rock field · a glowtail felt safe"); one word per chapter; one short line per trait ("shows stripes · hides spots", "only teal", "breed to change").
+- **Type.** Pod name at 4×; origin at 2× ("rock field · a Tuikis felt safe"); one word per chapter; one short line per trait ("shows stripes · hides spots", "only teal", "breed to change").
 - **Chrome.** `✓ Identify · 1 ⚡`, `✓ Read Coat · 3 ◆`, `✓ Shape a founder`, `✓ Compare`, `✓ Return to the wild · +1 ❀`.
 - **Motion.** The seal breaks and the glyph lights in about 2 s; the page turns in 2 s and its sector fills; glints 2 Hz; compare slides the second pod in at 300 ms.
 
@@ -181,7 +181,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Palette.** Leaf greens for the timer, pale glass, the embryo's species hue.
 - **Type.** 2× status, no digits for time.
 - **Chrome.** Read-only while growing (no ✓ cap); ready: `✓ Open`.
-- **Motion.** A leaf fills over its minute; Open lifts the glass in 600 ms and the juvenile steps out: "Fig · glowtail · juvenile".
+- **Motion.** A leaf fills over its minute; Open lifts the glass in 600 ms and the juvenile steps out: "Fig · Tuikis · juvenile".
 
 **Pass when**
 - [ ] Time reads as leaves, never digits.

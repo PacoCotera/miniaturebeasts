@@ -4,8 +4,8 @@
 // A body is built from a frame, never from independent draws: the plan's switches pick the rig
 // and the limb sets, the clan's signature fixes its feature parts, the species fixes everything
 // else by seed and opens its traits by tier. Individuals vary only at the open loci, from the
-// species' pools. The three authored frames (hopper, puffcap, glowtail in frames.py, here under
-// their clean-room names zacatín, copolí and ocotín) keep their open traits and fixed values.
+// species' pools. The three authored frames (the files hopper, puffcap and glowtail in frames.py, here S01, S02
+// and S03: Loika, Untuva and Tuikis) keep their open traits and fixed values.
 import { CATALOGUE, LOCI, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds } from "./catalogue.mjs";
 import { planFacts } from "./plans.mjs";
 import { carried, ownerOn, isDoing, isPartSwitch, SWITCH_TARGETS } from "./guards.mjs";

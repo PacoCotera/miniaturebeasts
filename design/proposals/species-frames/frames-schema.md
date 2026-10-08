@@ -1,13 +1,13 @@
 # Species frame schema (`mb-species-frame/1`)
 
-**Proposal**, with [species-frames.md](../species-frames.md). One JSON file per species (`species-<id>.json`), written by [frames.py](frames.py) from the real authoring catalogue (catalogue6 of `v1/prototype/generator-workbench`, 114 paired loci plus six drafts). Every locus id, allele id and guard comes from that catalogue and its resolver; nothing here is typed by hand except the species' choices. Regenerate with `python3 frames.py`, and verify with `python3 frames.py --check`, which fails if a file is stale.
+**Proposal**, with [species-frames.md](../species-frames.md). One JSON file per species (`species-<id>.json`), written by [frames.py](frames.py) from the real authoring catalogue (catalogue6 of `v1/prototype/generator-workbench`, 114 paired loci plus six drafts). Every locus id, allele id and guard comes from that catalogue and its resolver; nothing here is typed by hand except the species' choices. The file names and ids keep the earlier working words *hopper*, *puffcap* and *glowtail*; the names are in `species.name` and `species.clan`. Regenerate with `python3 frames.py`, and verify with `python3 frames.py --check`, which fails if a file is stale.
 
 ## Header
 
 | Field | Meaning |
 | --- | --- |
 | `schema` | `"mb-species-frame/1"` |
-| `species` | `id`, `name`, `plural`, `order` (the order the player is expected to meet it), `summary` (one line) |
+| `species` | `id` (the working id; it is also the file name), `name` and `plural` (the owner-approved species name: Loika, Untuva, Tuikis), `clan` (the clan name: Lophessa, Kausida, Stilbera), `order` (the order the player is expected to meet it), `summary` (one line) |
 | `catalogue` | `id`, `version`, `foundationDigest` (the workbench's foundation pin), `pairs` (114), `drafts` (6). A frame is valid only against this exact pin |
 | `glyph` | Five strings of five characters, `#` marked and `.` empty, each mirrored left to right. The mark at the centre of the genome ring and on the pod cap. Draft: the art director redraws it |
 | `pod` | The four pod parameters: `sizeClass` (`small`, `medium`, `large`, from the frame's body size `growth.core-half-length`); `proportion` (`squat` or `tall`, from the type specimen's height to length, `heightToLength`); `shellPattern` (`segments` for a radial plan, else `soft ribs` for fur, `plates` for scales, `smooth dots` for skin); `colourPair` (two pigments, `{pigment, hex}`, from the species' pool) |

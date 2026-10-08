@@ -1,5 +1,7 @@
 # Station Home: generated concept candidates
 
+> **Names.** The species this folder calls the hopper, the puffcap and the glowtail are now **Loika** (clan Lophessa), **Untuva** (Kausida) and **Tuikis** (Stilbera). Captions use the new names; file names, prompts and quoted briefs keep the earlier words.
+
 Everything in this folder is **generated concept art** for the Station's Home screen, made in rounds against [`brief-home.md`](brief-home.md) and the style guide's Home section ([design/style-guide/station-screens.md](../../design/style-guide/station-screens.md)). Nothing is a build capture, nothing is an authored master, and nothing is accepted until the owner says so. Caption every use as "Concept art, generated".
 
 ![Contact sheet of all candidates](contact-sheet.png)
@@ -29,7 +31,7 @@ Judged against the brief's checklist and the style guide's "Pass when" list, at 
 **A instrument-window.** The brief's layout as drawn: bezelled vivarium window, slate module column, lamps, all strings spelled right in both attempts.
 - Pass: reads as an instrument holding something alive; cool chrome, one warm window; the four modules read by shape; top bar and bottom line in place; Pip in a1 is the rich Pip (squat, cream belly, orange eyes with cream rings, three leaves) at about 300 px.
 - Fail (guide): wooden crates in the bay, a felt bed, a lamp fixture drawn at the top of the window, corner brackets instead of a cream ring, the concept's chip and crystal icons instead of bolt, diamond and drop.
-- Fail: the puffcap is a plain mushroom, not a mibi; a1 has five wells, a2 eight; a2's Pip sits upright and slim, a different pose from the reference.
+- Fail: the Untuva is a plain mushroom, not a mibi; a1 has five wells, a2 eight; a2's Pip sits upright and slim, a different pose from the reference.
 - Minor: module labels are engraved caps that lean toward title bars; a2's Probe dock has no cradle.
 
 <table>
@@ -44,7 +46,7 @@ Judged against the brief's checklist and the style guide's "Pass when" list, at 
 
 **C two-pane.** Rejected as a direction. The right pane became a labelled readout with a title ("INSTRUMENT READOUT") and bold module titles, the panel-with-title-bar look the owner rejected in the engineers' mock-up. a1's Pip is a faithful rich Pip; a2's is the frog pose again, with eight wells, a "Shield" caption and a boxed orange Confirm button, which the kit forbids. The split gives the vivarium only half the width.
 
-**Choice.** Direction A. Round 2 keeps a1's composition and Pip and applies the guide: slate-and-teal crates with orange seal tags, a frosted-glass nest, warm daylight instead of a lamp fixture, a cream ring, six wells, a puffcap mibi, bolt, diamond and drop icons, an empty cradle with Shield plates.
+**Choice.** Direction A. Round 2 keeps a1's composition and Pip and applies the guide: slate-and-teal crates with orange seal tags, a frosted-glass nest, warm daylight instead of a lamp fixture, a cream ring, six wells, an Untuva mibi, bolt, diamond and drop icons, an empty cradle with Shield plates.
 ## Round 2: three refinements of A, all on Pro
 
 The guide's Home section arrived between the rounds, so round 2 also carries its changes: slate-and-teal crates with orange seal tags, a frosted-glass nest, warm daylight in place of the lamp fixture, a cream ring, bolt, diamond and drop icons, module names "Sample bay", "Pod rack", "Incubation", "Probe dock".
@@ -61,7 +63,7 @@ The guide's Home section arrived between the rounds, so round 2 also carries its
 
 **A-r2-a2.** Runner-up. Every module reads by shape; crates, wells (six), dome with leaves, cradle with two cream plates and one dark; the Probe dock's lamp is amber because the Companion is away; icons are bolt, diamond and drop; every string is spelled right; the vivarium is bright daylight and the only warm light. Fails: Pip is a toad sitting up (orange eyes and three leaves, but a frog's body), module labels are doubled (caps plus a small repeat), and the name label moved out of the window onto the chrome, which is clean but not the brief.
 
-**A-r2-a3.** Near-pass, the strongest picture of the set. The vivarium has depth (burrow, pool, rocks, ferns), the ring reads, the puffcap is a mibi, the glowtail glows, the nest is frosted glass with its Companion mark, the module column is calm slate with single sentence-case labels, and the whole thing reads as an instrument holding something alive. Fails: Pip is again a toad rather than the squat four-legged rich Pip; three small readout boxes carry junk digits ("0.00", "....", "300"), which the brief forbids on the bench; the pod rack has eight wells; a house icon crept into the top bar. One specific change, Pip, is what stands between it and a pass, with the digits and the wells as housekeeping; that is round 3.
+**A-r2-a3.** Near-pass, the strongest picture of the set. The vivarium has depth (burrow, pool, rocks, ferns), the ring reads, the Untuva is a mibi, the Tuikis glows, the nest is frosted glass with its Companion mark, the module column is calm slate with single sentence-case labels, and the whole thing reads as an instrument holding something alive. Fails: Pip is again a toad rather than the squat four-legged rich Pip; three small readout boxes carry junk digits ("0.00", "....", "300"), which the brief forbids on the bench; the pod rack has eight wells; a house icon crept into the top bar. One specific change, Pip, is what stands between it and a pass, with the digits and the wells as housekeeping; that is round 3.
 ## Round 3: one edit, two attempts
 
 A three-change edit of A-r2-a3 on Pro: put the rich Pip inside the ring, remove the readout digits, six wells. Two attempts of the same edit, because round 2 showed edits can drift.
@@ -101,7 +103,7 @@ Checklist from the brief (section 8) and the guide's "Pass when":
 - [x] 11. No logos; no bezel shown.
 - [x] 12. The screen fills its canvas edge to edge; flat screen design.
 - [x] 13. (guide) No wood, felt, shelves or lamp-lit bench; the vivarium is the only warm light; modules read by shape first.
-- [x] (guide) Residents are the matched rich treatment, never upscaled tokens: Pip yes; the glowtail and puffcap are generated stand-ins for species not yet designed.
+- [x] (guide) Residents are the matched rich treatment, never upscaled tokens: Pip yes; the Tuikis and Untuva are generated stand-ins for species not yet designed.
 - [x] (guide) What needs you is found in one glance: the bottom line's right part and the amber lamp.
 
 What it still lacks: six wells; two lit Shield plates; the Companion-docked, bay-empty and incubation-ready states; a decision on pixel indication; and a painted master, since this is a generated 16:9 canvas trimmed to 1024:600, not a screen drawn at 1024×600.

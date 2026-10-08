@@ -1,30 +1,32 @@
 # The genome stamp, styled: concept candidates
 
+> **Names.** The species this folder calls the hopper, the puffcap and the glowtail are now **Loika** (clan Lophessa), **Untuva** (Kausida) and **Tuikis** (Stilbera). Captions use the new names; file names, prompts and quoted briefs keep the earlier words.
+
 The stamp's cells are the encoder's and never move; this folder styles what the prototype's README allows around and within them (paper, the perforation's shape, the cell ink's shape, the clan border's ink and silhouette, the glyph halo, copy hues, chapter tints, unread hairlines) and shows the stamp in its three homes: the research bench, the Library's botanical tome and the Caddy's thermal paper. The brief is [`brief-stamp.md`](brief-stamp.md). **Every candidate was run through the prototype's decoder** (`node prototypes/genome-stamp/decode.mjs`); a candidate that does not decode is rejected. Decoder output per candidate is in [`decode/`](decode/), the one-line results in [`decode/results.txt`](decode/results.txt).
 
-**How it is made.** [`tools/style-stamp.mjs`](tools/style-stamp.mjs) imports the prototype's frames and codec, so the dark/light pattern is the encoder's cell for cell, and re-dresses the marks: one engraved family per clan carried by the border cells alone (C01, the hopper frame's clan: leaf-tipped rounded cells in moss ink; C03, the glowtail frame's clan: cut-corner lantern cells in umber; a species without a clan yet: plain graphite), round perforations in every clan, copy 1 in lagoon blue and copy 2 in brick red with pale tints for zero, chapter tints keyed by chapter name so Coat is the same tint on every species, hairline outlines for unread blocks, a light halo behind the glyph corner (clipped to the 5×5 at 17×17), warm cream paper for the tome and a cool pale plate for the bench. [`tools/render-svg.cjs`](tools/render-svg.cjs) rasterizes the SVG with Chromium. The Caddy label ([`tools/caddy-label.py`](tools/caddy-label.py)) uses the encoder's own 20 mm monochrome print untouched, a rule and the code; nothing else and no name. The tome and bench surroundings are **generated** (prompts and hashes in [`prompts.json`](prompts.json)), and the real stamp is composited into their empty centre by [`tools/composite-plate.py`](tools/composite-plate.py); the composite is what gets decoded. Nothing styled is drawn by hand; nothing generated carries a cell.
+**How it is made.** [`tools/style-stamp.mjs`](tools/style-stamp.mjs) imports the prototype's frames and codec, so the dark/light pattern is the encoder's cell for cell, and re-dresses the marks: one engraved family per clan carried by the border cells alone (C01, the Loika frame's clan: leaf-tipped rounded cells in moss ink; C03, the Tuikis frame's clan: cut-corner lantern cells in umber; a species without a clan yet: plain graphite), round perforations in every clan, copy 1 in lagoon blue and copy 2 in brick red with pale tints for zero, chapter tints keyed by chapter name so Coat is the same tint on every species, hairline outlines for unread blocks, a light halo behind the glyph corner (clipped to the 5×5 at 17×17), warm cream paper for the tome and a cool pale plate for the bench. [`tools/render-svg.cjs`](tools/render-svg.cjs) rasterizes the SVG with Chromium. The Caddy label ([`tools/caddy-label.py`](tools/caddy-label.py)) uses the encoder's own 20 mm monochrome print untouched, a rule and the code; nothing else and no name. The tome and bench surroundings are **generated** (prompts and hashes in [`prompts.json`](prompts.json)), and the real stamp is composited into their empty centre by [`tools/composite-plate.py`](tools/composite-plate.py); the composite is what gets decoded. Nothing styled is drawn by hand; nothing generated carries a cell.
 
 ![Styled faces: three species on two papers, an unread variant and two Caddy labels](contact-sheet-faces.png)
 
-*The styled faces after the owner's decisions (round perforations everywhere, the clan in the border cells alone). Row 1: tome paper; row 2: bench plate; row 3: the glowtail with two chapters unread, and the Caddy labels. Every one decodes. The faces are encoder cells, styled in code, not generated.*
+*The styled faces after the owner's decisions (round perforations everywhere, the clan in the border cells alone). Row 1: tome paper; row 2: bench plate; row 3: the Tuikis with two chapters unread, and the Caddy labels. Every one decodes. The faces are encoder cells, styled in code, not generated.*
 
 ## Decode results
 
 | Candidate | Size | Decodes | Code |
 | --- | --- | --- | --- |
-| hopper · C01 · tome paper | 300 px (17×17) | yes | `S11v1-0F-8898-7EC96C` |
-| hopper · C01 · bench plate | 300 px | yes | same |
-| glowtail · C03 · tome paper | 300 px (25×25) | yes | `S13v1-7F-82F9-08AA9F` |
-| glowtail · C03 · bench plate | 300 px | yes | same |
-| glowtail, two chapters unread · tome and bench | 300 px | yes | `S13v1-37-FAC1-07667D` |
+| Loika · C01 · tome paper | 300 px (17×17) | yes | `S11v1-0F-8898-7EC96C` |
+| Loika · C01 · bench plate | 300 px | yes | same |
+| Tuikis · C03 · tome paper | 300 px (25×25) | yes | `S13v1-7F-82F9-08AA9F` |
+| Tuikis · C03 · bench plate | 300 px | yes | same |
+| Tuikis, two chapters unread · tome and bench | 300 px | yes | `S13v1-37-FAC1-07667D` |
 | 150 loci · unassigned · tome paper | 300 px (37×37) | yes | `S22v1-FF-20AC-66DBCD` |
 | 150 loci · unassigned · bench plate | 300 px | yes | same |
-| hopper, glowtail, 150 loci · bench plate | 120 px | yes | each its own |
-| hopper, glowtail, 150 loci · Caddy 20 mm print (203 dpi, bilevel) | 160 px | yes | each its own |
-| hopper, glowtail, 150 loci · Caddy 58 mm label | 160 px stamp | yes | each its own |
-| hopper, 150 loci on the C01 plates; glowtail on the round-2 C03 plates (composites) | 512 px stamps in 1024 px plates | yes, default search | each its own |
-| glowtail Caddy label warped onto the photographed strip | about 330 px stamp, tilted | yes | `S13v1-7F-82F9-08AA9F` |
-| glowtail on the round-1 C03 plates | 430 px stamp | **no** (a1: grid not found; a2: only with the full search) | plates rejected |
+| Loika, Tuikis, 150 loci · bench plate | 120 px | yes | each its own |
+| Loika, Tuikis, 150 loci · Caddy 20 mm print (203 dpi, bilevel) | 160 px | yes | each its own |
+| Loika, Tuikis, 150 loci · Caddy 58 mm label | 160 px stamp | yes | each its own |
+| Loika, 150 loci on the C01 plates; Tuikis on the round-2 C03 plates (composites) | 512 px stamps in 1024 px plates | yes, default search | each its own |
+| Tuikis Caddy label warped onto the photographed strip | about 330 px stamp, tilted | yes | `S13v1-7F-82F9-08AA9F` |
+| Tuikis on the round-1 C03 plates | 430 px stamp | **no** (a1: grid not found; a2: only with the full search) | plates rejected |
 
 ## The surroundings: generated, then the real stamp placed
 
@@ -42,9 +44,9 @@ Nine generations (of 16 allowed), all on Pro: round 1 with two trefoil plates fo
 </tr>
 </table>
 
-**C01 plates (the hopper frame's clan).** Both are herbarium plates with an engraved trefoil border in moss ink on deckled cream paper and a clean inner square; a1 adds a pressed leaf in the corner and a heavier frame, a2 a rule under the frame. The hopper stamp sits at half the width inside either; both composites decode. a1 is recommended: its border is denser and reads as one family with the stamp's leaf-tipped border cells.
+**C01 plates (the Loika frame's clan).** Both are herbarium plates with an engraved trefoil border in moss ink on deckled cream paper and a clean inner square; a1 adds a pressed leaf in the corner and a heavier frame, a2 a rule under the frame. The Loika stamp sits at half the width inside either; both composites decode. a1 is recommended: its border is denser and reads as one family with the stamp's leaf-tipped border cells.
 
-**C03 plates (the glowtail frame's clan), round 1: both rejected by the decoder.** a1 drew the plate as an open book on a blue-grey table and a2 a flat deckled page, each with a dense lantern border inside a double rectangular frame. Both look right for the tome and both fail the test that matters: with the glowtail stamp at a safe size, a1 returns "grid not found" ([composites/rejected-glowtail-on-ST-F-r1-a1.png](composites/rejected-glowtail-on-ST-F-r1-a1.png)) and a2 decodes only when the reader is told to try every candidate square, not with its default search ([composites/glowtail-on-ST-F-r1-a2.png](composites/glowtail-on-ST-F-r1-a2.png)). The nested engraved frames are square candidates that the reader tries before the stamp. That is the brief's rule made concrete, and sharper than written: a plate must not put rectangular frames around the stamp at all, not only keep clear of its quiet margin.
+**C03 plates (the Tuikis frame's clan), round 1: both rejected by the decoder.** a1 drew the plate as an open book on a blue-grey table and a2 a flat deckled page, each with a dense lantern border inside a double rectangular frame. Both look right for the tome and both fail the test that matters: with the Tuikis stamp at a safe size, a1 returns "grid not found" ([composites/rejected-glowtail-on-ST-F-r1-a1.png](composites/rejected-glowtail-on-ST-F-r1-a1.png)) and a2 decodes only when the reader is told to try every candidate square, not with its default search ([composites/glowtail-on-ST-F-r1-a2.png](composites/glowtail-on-ST-F-r1-a2.png)). The nested engraved frames are square candidates that the reader tries before the stamp. That is the brief's rule made concrete, and sharper than written: a plate must not put rectangular frames around the stamp at all, not only keep clear of its quiet margin.
 
 <table>
 <tr>
@@ -58,17 +60,17 @@ Nine generations (of 16 allowed), all on Pro: round 1 with two trefoil plates fo
 
 **The Caddy strip.** A photograph of blank 58 mm thermal paper on a table with its left third flat. The monochrome label (the encoder's 20 mm print, a rule, the code) is warped onto the paper in perspective ([tools/composite-strip.py](tools/composite-strip.py)); the decoder reads it through the tilt.
 
-**Style references.** R-a1 illustrates the real hopper face as a stamp among engraved leaves; R-a2 as a label on the lab's dark glass plate. Neither is decodable (the model redraws cells), and neither is a candidate; they show the owner how the stamp can feel in each room and they guided the perforation and ink choices in the code.
+**Style references.** R-a1 illustrates the real Loika face as a stamp among engraved leaves; R-a2 as a label on the lab's dark glass plate. Neither is decodable (the model redraws cells), and neither is a candidate; they show the owner how the stamp can feel in each room and they guided the perforation and ink choices in the code.
 
 ## Recommended
 
 <table>
 <tr>
-<td align="center" valign="top"><img src="composites/hopper-on-ST-T-r1-a1.png" width="480" alt="hopper on the C01 plate"><br><em>Tome: the hopper stamp on the C01 plate. Decodes: S11v1-0F-8898-7EC96C.</em></td>
-<td align="center" valign="top"><img src="composites/glowtail-on-ST-F-r2-a1.png" width="480" alt="glowtail on the C03 plate"><br><em>Tome: the glowtail stamp on the round-2 C03 plate. Decodes: S13v1-7F-82F9-08AA9F.</em></td>
+<td align="center" valign="top"><img src="composites/hopper-on-ST-T-r1-a1.png" width="480" alt="Loika on the C01 plate"><br><em>Tome: the Loika stamp on the C01 plate. Decodes: S11v1-0F-8898-7EC96C.</em></td>
+<td align="center" valign="top"><img src="composites/glowtail-on-ST-F-r2-a1.png" width="480" alt="Tuikis on the C03 plate"><br><em>Tome: the Tuikis stamp on the round-2 C03 plate. Decodes: S13v1-7F-82F9-08AA9F.</em></td>
 </tr>
 <tr>
-<td align="center" valign="top"><img src="renders/glowtail-c03-bench-300.png" width="300" alt="glowtail on the bench plate"><br><em>Bench: the glowtail face on the cool plate, 300 px. Decodes.</em></td>
+<td align="center" valign="top"><img src="renders/glowtail-c03-bench-300.png" width="300" alt="Tuikis on the bench plate"><br><em>Bench: the Tuikis face on the cool plate, 300 px. Decodes.</em></td>
 <td align="center" valign="top"><img src="caddy/glowtail-label-58mm.png" width="460" alt="Caddy label"><br><em>Caddy: the 58 mm label, 20 mm stamp in plain dots, rule and code. Decodes.</em></td>
 </tr>
 </table>

@@ -4,7 +4,7 @@
 
 **Decided by the owner on 10-07, folded in:** a roster with cat-, fox- and raccoon-like mammals, at most two insect-like kinds and more big animals across size classes; names left to the copywriter (§5); before that, the growing genome, the four levels, one roster for every kit, and the first 16 with one change: one plant, and a spectral or energy creature in place of the second; before that, 16 species in V1, shown as a grid of 16 on the Station, with seasonal drops about every three months; the first 16 as different from each other as possible (fliers, swimmers, mammal-like, insect-like, slugs, sentient plants); hidden silhouettes for clans and species not yet met; Compare on any living mibi; the clean-room naming stands (the "combination of words" was for the product name).
 
-**One word first.** The website and the breeding design already use *family* for a mibi's kin: "One species. Endless families", the genealogy tree (**Decided** 10-06, homepage). The owner asked that individuals and families never be confused (09-24). So the level between plan and species is called a **clan** here and on screen; *family* keeps meaning parents and children. And the frames' file names *hopper*, *puffcap* and *glowtail* belong to other franchises' creatures, so here the species carry codes: the three frames are **S01**, **S02** and **S03** (§3, §5).
+**One word first.** The website and the breeding design already use *family* for a mibi's kin: "One species. Endless families", the genealogy tree (**Decided** 10-06, homepage). The owner asked that individuals and families never be confused (09-24). So the level between plan and species is called a **clan** here and on screen; *family* keeps meaning parents and children. And the frames' working file names *hopper*, *puffcap* and *glowtail* belong to other franchises' creatures, so the species carry codes as ids (S01–S16, C01–C16) and the owner-approved names ([species-names](species-names.md)) stand beside them: the three frames are **S01** Loika, **S02** Untuva and **S03** Tuikis (§3, §5).
 
 ## 1. What a species is, in this game
 
@@ -66,47 +66,47 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 - **Rarity is the tier.** Starters are common where a new player starts, with no partner needed (**Decided**: a first-time player reaches all starter content). Mid species turn up in fewer cells. Late species sit behind the gates the map already has: the narrow hole (a digger), fast water (a swimmer, which V1 finally gives it), the deep "?" (a tier 2 Probe), Night (a glowing partner). So one species opens the way to the next.
 - **Finds.** A sealed chapter is read only with its find, brought back from an expedition (S02's crystal, species-frames §3).
 
-**The first 16** (**Decided** 10-07: 16, as different as possible; then, from the owner, cat-, fox- and raccoon-like mammals, at most two insect-like kinds, more big animals; the slug, the plant and the lightning kind stay as the strange ones). Codes are placeholders: naming is the copywriter's (§5). Every plan is one of the 510 that build ([examples.json](taxonomy/examples.json) `roster`, checked by the script). Size is the frame's body size, the catalogue's three classes.
+**The first 16** (**Decided** 10-07: 16, as different as possible; then, from the owner, cat-, fox- and raccoon-like mammals, at most two insect-like kinds, more big animals; the slug, the plant and the lightning kind stay as the strange ones). The codes stay as ids; the names beside them are the owner-approved ones from [species-names](species-names.md) (§5). Every plan is one of the 510 that build ([examples.json](taxonomy/examples.json) `roster`, checked by the script). Size is the frame's body size, the catalogue's three classes.
 
-| Code | Kind (resembles) | Size | Plan · covering | Moves | Habitat, when met | Gate · tier |
-| --- | --- | --- | --- | --- | --- | --- |
-| S01 | a round frog-hare, Pip (frame *hopper*) | medium | B1·L4 · skin | hops | meadow, pond edge | starter |
-| S02 | a puffball under a cap (frame *puffcap*) | large | R1·flaps · fur | waddles | wood, meadow, pond | early · Character sealed (a crystal) |
-| S03 | a lizard with a lantern tail (frame *glowtail*) | small | B2·L4 · scales | scurries, digs | wood, rock field | mid · opens narrow holes and Night |
-| S04 | a cat | medium | B2·L4 · fur | prowls, pounces | wood, meadow | starter |
-| S05 | a fox | medium | B2·L4 · fur | trots | meadow, wood edge | early |
-| S06 | a raccoon | medium | B2·L4 · fur | ambles, climbs | pond edge, wood | early |
-| S07 | a badger or small bear | large | B1·L4 · fur | lumbers, digs | rock field, cave | mid · Deep ground |
-| S08 | a goat or deer | large | B2·L4 · fur | bounds, climbs | rock field, meadow | mid |
-| S09 | a big bird | large | B2·L4·flaps · fur (feathers to come) | strides, soars | meadow, rock field | late · Weather expeditions |
-| S10 | an otter | medium | B3·L4 · fur | swims, slides | pond, fast water | mid · opens fast water |
-| S11 | a turtle | large | B1·L4 · scales | plods, swims slowly | pond edge | late · beyond fast water |
-| S12 | a moth or butterfly | small | B3·L6·flaps · skin | flutters | meadow | early |
-| S13 | a beetle | small | B3·L6 · scales | crawls | rock field, cave | mid |
-| S14 | a slug | small | B3, legless · skin | slides | pond edge, wood; out in fog banks | early |
-| S15 | a walking plant | medium | Rfan2·rays · skin | walks on its roots | wood | late · sealed chapter |
-| S16 | a wisp of lightning (spectral, energy) | medium | Bfan3, legless · translucent skin | floats, ripples | meadow, rock field, only in a storm | late · Charge sealed (storm-glass shard) |
+| Code | Name | Clan | Kind (resembles) | Size | Plan · covering | Moves | Habitat, when met | Gate · tier |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| S01 | Loika | C01 Lophessa | a round frog-hare, Pip (frame file *hopper*) | medium | B1·L4 · skin | hops | meadow, pond edge | starter |
+| S02 | Untuva | C02 Kausida | a puffball under a cap (frame file *puffcap*) | large | R1·flaps · fur | waddles | wood, meadow, pond | early · Character sealed (a crystal) |
+| S03 | Tuikis | C03 Stilbera | a lizard with a lantern tail (frame file *glowtail*) | small | B2·L4 · scales | scurries, digs | wood, rock field | mid · opens narrow holes and Night |
+| S04 | Hiljan | C04 Lathreta | a cat | medium | B2·L4 · fur | prowls, pounces | wood, meadow | starter |
+| S05 | Tepor | C05 Dasyla | a fox | medium | B2·L4 · fur | trots | meadow, wood edge | early |
+| S06 | Pesko | C06 Prosopa | a raccoon | medium | B2·L4 · fur | ambles, climbs | pond edge, wood | early |
+| S07 | Azkon | C07 Skapana | a badger or small bear | large | B1·L4 · fur | lumbers, digs | rock field, cave | mid · Deep ground |
+| S08 | Rupar | C08 Kremnion | a goat or deer | large | B2·L4 · fur | bounds, climbs | rock field, meadow | mid |
+| S09 | Belatz | C09 Aithria | a big bird | large | B2·L4·flaps · fur (feathers to come) | strides, soars | meadow, rock field | late · Weather expeditions |
+| S10 | Igara | C10 Kolymba | an otter | medium | B3·L4 · fur | swims, slides | pond, fast water | mid · opens fast water |
+| S11 | Kilpo | C11 Thyreka | a turtle | large | B1·L4 · scales | plods, swims slowly | pond edge | late · beyond fast water |
+| S12 | Peplos | C12 Graptoma | a moth or butterfly | small | B3·L6·flaps · skin | flutters | meadow | early |
+| S13 | Oskol | C13 Lepidos | a beetle | small | B3·L6 · scales | crawls | rock field, cave | mid |
+| S14 | Usvel | C14 Kapnis | a slug | small | B3, legless · skin | slides | pond edge, wood; out in fog banks | early |
+| S15 | Lehten | C15 Phyllaxa | a walking plant | medium | Rfan2·rays · skin | walks on its roots | wood | late · sealed chapter |
+| S16 | Blikur | C16 Brontelas | a wisp of lightning (spectral, energy) | medium | Bfan3, legless · translucent skin | floats, ripples | meadow, rock field, only in a storm | late · Charge sealed (storm-glass shard) |
 
 **For the copywriter**, one row per species; each species founds its own clan in the first drop, and cousins come in drops (abilities beyond S01–S03's built ones are proposals):
 
-| Code | Diet | Signature look | Habit or ability | Clan: what members share; feel | Character, in a line |
-| --- | --- | --- | --- | --- | --- |
-| S01 | fruit | charcoal, cream belly, orange eyes, three-leaf crest | calms wary creatures | C01: a leaf crest and a snout, charcoal; the friendly garden-pond hoppers | gentle and curious, a little shy |
-| S02 | fruit | a round fluff under a cap of three flaps | sniffs out buried pods; sheds after a full meal | C02: a cap of flaps, coral, radial bodies; soft, round, sleepy | a sleepy glutton nothing startles |
-| S03 | dew | a gold glow at the tail at dusk, a pointed crest | digs narrow burrows; lights fog and Night | C03: a glowing tail and a crest, lagoon; small lights of wood and rock | a brave little torchbearer |
-| S04 | fruit | upright pointed ears, short muzzle, long tail, striped coat | creeps up without startling anything | C04: upright pointed ears, striped fur; quiet hunters of the grass | aloof at first, then devoted |
-| S05 | fruit, seeds | tall ears, long muzzle, bushy tail with a pale tip | senses warm stones (Energy) | C05: tall ears, a long muzzle, a bushy tail; clever wanderers | quick and clever |
-| S06 | fruit, washed first | black eye mask, ringed tail, rounded ears, nimble paws | lifts slabs to find what is under them | C06: a face mask and a ringed tail; masked tinkerers | nosy, a cheerful mischief-maker |
-| S07 | fruit, roots | stout body, striped face, broad claws, small round ears | digs through to Deep ground | C07: broad claws, a striped face, stout bodies; the diggers | slow, stubborn, protective |
-| S08 | leaves, fruit | horns, hooves, long legs | climbs cliff steps that block other partners | C08: horns and hooves; climbers of the high rocks | sure-footed and proud |
-| S09 | fruit, seeds | broad wings, a beak, a crest | scouts from above: reveals the cells around | C09: wings and a beak; big birds of open sky | watchful, lordly |
-| S10 | fruit | sleek long body, webbed paws, thick tail | swims fast water | C10: long sleek bodies and webbed paws; the water players | playful, never still |
-| S11 | moss, fruit | a domed shell, a scaled head | carries one more pod | C11: a shell; slow keepers of the pond | an old soul, patient |
-| S12 | dew | broad patterned flaps, six fine legs | finds dew (Essence) | C12: patterned flaps; fliers of the flowers | flighty and bright |
-| S13 | moss | a plated shell and wing cases | burrows under stones for buried finds | C13: plates and wing cases; armoured crawlers | a sturdy little tank |
-| S14 | moss | eye stalks, a sheen | leaves a sheen trail back to the start | C14: eye stalks and a sheen; the fog-lovers | unhurried and sweet |
-| S15 | light and dew | leafy arms, root feet | roots for a turn; a bush grows where it stood | C15: leaves and roots; the walking green | patient, faintly wise |
-| S16 | Energy from struck stones | a translucent ribbon of light, two streamers | draws a stray strike to itself | C16: a body of charge; storm-born | wild and electric, rarely still |
+| Code | Name | Diet | Signature look | Habit or ability | Clan: what members share; feel | Character, in a line |
+| --- | --- | --- | --- | --- | --- | --- |
+| S01 | Loika | fruit | charcoal, cream belly, orange eyes, three-leaf crest | calms wary creatures | C01 Lophessa: a leaf crest and a snout, charcoal; the friendly garden-pond hoppers | gentle and curious, a little shy |
+| S02 | Untuva | fruit | a round fluff under a cap of three flaps | sniffs out buried pods; sheds after a full meal | C02 Kausida: a cap of flaps, coral, radial bodies; soft, round, sleepy | a sleepy glutton nothing startles |
+| S03 | Tuikis | dew | a gold glow at the tail at dusk, a pointed crest | digs narrow burrows; lights fog and Night | C03 Stilbera: a glowing tail and a crest, lagoon; small lights of wood and rock | a brave little torchbearer |
+| S04 | Hiljan | fruit | upright pointed ears, short muzzle, long tail, striped coat | creeps up without startling anything | C04 Lathreta: upright pointed ears, striped fur; quiet hunters of the grass | aloof at first, then devoted |
+| S05 | Tepor | fruit, seeds | tall ears, long muzzle, bushy tail with a pale tip | senses warm stones (Energy) | C05 Dasyla: tall ears, a long muzzle, a bushy tail; clever wanderers | quick and clever |
+| S06 | Pesko | fruit, washed first | black eye mask, ringed tail, rounded ears, nimble paws | lifts slabs to find what is under them | C06 Prosopa: a face mask and a ringed tail; masked tinkerers | nosy, a cheerful mischief-maker |
+| S07 | Azkon | fruit, roots | stout body, striped face, broad claws, small round ears | digs through to Deep ground | C07 Skapana: broad claws, a striped face, stout bodies; the diggers | slow, stubborn, protective |
+| S08 | Rupar | leaves, fruit | horns, hooves, long legs | climbs cliff steps that block other partners | C08 Kremnion: horns and hooves; climbers of the high rocks | sure-footed and proud |
+| S09 | Belatz | fruit, seeds | broad wings, a beak, a crest | scouts from above: reveals the cells around | C09 Aithria: wings and a beak; big birds of open sky | watchful, lordly |
+| S10 | Igara | fruit | sleek long body, webbed paws, thick tail | swims fast water | C10 Kolymba: long sleek bodies and webbed paws; the water players | playful, never still |
+| S11 | Kilpo | moss, fruit | a domed shell, a scaled head | carries one more pod | C11 Thyreka: a shell; slow keepers of the pond | an old soul, patient |
+| S12 | Peplos | dew | broad patterned flaps, six fine legs | finds dew (Essence) | C12 Graptoma: patterned flaps; fliers of the flowers | flighty and bright |
+| S13 | Oskol | moss | a plated shell and wing cases | burrows under stones for buried finds | C13 Lepidos: plates and wing cases; armoured crawlers | a sturdy little tank |
+| S14 | Usvel | moss | eye stalks, a sheen | leaves a sheen trail back to the start | C14 Kapnis: eye stalks and a sheen; the fog-lovers | unhurried and sweet |
+| S15 | Lehten | light and dew | leafy arms, root feet | roots for a turn; a bush grows where it stood | C15 Phyllaxa: leaves and roots; the walking green | patient, faintly wise |
+| S16 | Blikur | Energy from struck stones | a translucent ribbon of light, two streamers | draws a stray strike to itself | C16 Brontelas: a body of charge; storm-born | wild and electric, rarely still |
 
 **Cut from the last revision, and why:** the radial wobbler and the jelly drifter (two bobbers and drifters that added the least), the manta glider, the bat and the fish (replaced by the big bird, the otter and the turtle), and the many-legged crawler (a third insect-like kind). The woolly grazer becomes the goat or deer, and the cat-like prowler becomes S04. The feeler limb set is no longer needed.
 
@@ -155,7 +155,7 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 
 ## 5. Naming
 
-Names are the **copywriter's** job, not game design's (programme lead, 10-07); species and clans carry placeholder codes (S01–S16, C01–C16) until then. These are the rules the names must meet:
+Names are the **copywriter's** job, not game design's (programme lead, 10-07). The owner has approved the species and clan names in [species-names](species-names.md); the codes (S01–S16, C01–C16) stay as ids in the frames and files, and the roster in §3 shows each name beside its code. These were the rules the names had to meet:
 
 - **A clean room** (owner, 10-07). Taxonomy, names, descriptions and art come from our own rules and vocabulary (§3, §6), never from or in the style of another franchise's bestiary. The frames' file ids *hopper*, *puffcap* and *glowtail* are other franchises' creatures (Metroid, Drawn to Life and Elder Scrolls; a Legends of Runeterra card; an ARK creature, [name screen](name-screen.md)) and are never used as names.
 - **The experience is in English.** Roots are **invented, Latin, Greek, or from less-heard languages** (Nahuatl, Basque, Finnish, Old Norse, Quechua and the like, for sound and sense, never a living trademark). No diminutives and no suffix that sounds childish (owner: "the -ín and -ito make it sound childish").
@@ -198,7 +198,7 @@ A brief, not art. Every item is mastered by the art director once and assembled 
 
 - **The catalogue and the frame registry** (**Decided**): loci split into trunk and clan branches; a frame lists the trunk loci it has and its branch, and drops absent ones instead of locking them; the codec packs only those. Emission goes to the trunk (two clans need it); the first branch loci are the top cap sheet and the belly field.
 - **`creatures-and-genomics.md`:** "Open: how many species there are" becomes the four levels and their rules, with V1's 16 (**Decided**); naming rules join Identity, with the clean room and the name clearance as **Working rules**. Its Identity section still describes the retired ring; it should say the stamp (**Decided** 10-07).
-- **`species-frames.md` and the frame schema:** a `taxonomy` header (plan code, clan, species number as clan · member, name, binomial, clearance record, diet, habitat, ability, state machine); the glyph rule (clan rows over species rows); the pod colour pair as the clan anchor plus one pool neighbour (the three frames already fit: charcoal, coral, lagoon). The files' names *hopper*, *puffcap* and *glowtail* are replaced (§5). Temperament shows as **Character**, not Nature (§5).
+- **`species-frames.md` and the frame schema:** a `taxonomy` header (plan code, clan, species number as clan · member, name, binomial, clearance record, diet, habitat, ability, state machine); the glyph rule (clan rows over species rows); the pod colour pair as the clan anchor plus one pool neighbour (the three frames already fit: charcoal, coral, lagoon). The files keep the working names *hopper*, *puffcap* and *glowtail*; each frame carries the approved `name` and `clan` fields (§5). Temperament shows as **Character**, not Nature (§5).
 - **`research-loop.md`:** §6, pods share a shell pattern and anchor tint per clan; §8's Compare row covers living mibis and other species (§4); the *misty seed* becomes the *sleeping bud* (§5).
 - **Station screens:** the 16-species grid (**Decided**) and the Library's hidden silhouettes (**Decided**) in `station-screens.md` and the style guide; drops add a page.
 - **The genome stamp:** the 12-bit species field read as clan (7 bits, 128 clans) and member (5 bits, 32 species); the prototype's species 11, 12, 13 become 1·1, 2·1, 3·1. Proposed to the stamp's builders; nothing under `prototypes/` changes here.

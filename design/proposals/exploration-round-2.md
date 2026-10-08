@@ -15,8 +15,8 @@ walking everywhere, and you always know what you have found and what is left.
 
 ## 1. The experience: one expedition
 
-Expedition 4, Weather. The player has Pip, an adult hopper, as a partner, and
-Dot, a juvenile glowtail, riding in the Companion. At the Station a puffcap pod
+Expedition 4, Weather. The player has Pip, an adult Loika, as a partner, and
+Dot, a juvenile Tuikis, riding in the Companion. At the Station an Untuva pod
 is waiting to hatch; it needs 2 more Essence. The Probe is tier 1: it reaches 2
 cells from the start, has 3 shield and carries 2 pods.
 
@@ -28,12 +28,12 @@ cells from the start, has 3 shield and carries 2 pods.
    something left (bright, with a white pip) and which are cleared (a tick). The
    bottom line names the cell ahead: "Ahead: wood · slow beat (often a pod)".
 3. **Down into the wood.** The player presses **Call**, the new fourth button. A
-   ring spreads out: a buried pod glints, two puffcaps show "?" and come closer,
-   a hopper shows "!" and hides. Pip trots over to the player.
+   ring spreads out: a buried pod glints, two Untuvas show "?" and come closer,
+   a Loika shows "!" and hides. Pip trots over to the player.
 4. **A choice about fruit.** Shaking a bush drops a fruit. Pressing it gives 2
    Essence, exactly what the waiting pod needs. Instead the player puts it down
-   and backs off three tiles. A puffcap comes and eats: "+2 Data · first time you
-   saw a puffcap eat". Then the player presses a second fruit for the Essence and
+   and backs off three tiles. An Untuva comes and eats: "+2 Data · first time you
+   saw an Untuva eat". Then the player presses a second fruit for the Essence and
    digs up the buried pod ("unknown species"). One pod slot is left.
 5. **The storm.** The sky darkens and the HUD shows two bolts: "Strong storm · 1
    in 12 each action in the open". Lightning charges a stone in the clearing:
@@ -42,14 +42,14 @@ cells from the start, has 3 shield and carries 2 pods.
    one more action, takes +3, and stops at 5 Energy. A break would lose every
    unit carried.
 6. **Back on the map.** The wood now shows a tick, because the Call found nothing
-   more. A nearby cell shows a glowtail hole the player wants to try once Dot is
+   more. A nearby cell shows a Tuikis hole the player wants to try once Dot is
    grown. The player presses Call on the map to pin it, which costs 1 Energy.
 7. **The edge.** The pawn bumps the range edge ("tier 2 reaches further"). Every
    cell in reach is visited, the storm has gone, and the line says "Nothing new
    until the world turns".
 8. **Send home.** The Cargo screen previews what follows: "1 pod to identify ·
-   puffcap pod can hatch". The puffcap hatches, the new pod turns out to be a
-   glowtail, and the Probe's tier 2 bar fills a little. The world turns.
+   Untuva pod can hatch". The Untuva hatches, the new pod turns out to be a
+   Tuikis, and the Probe's tier 2 bar fills a little. The world turns.
 9. **Later, at home.** In Companion mode the player presses Call. Dot looks up
    and hops to the front of the screen; answering the call is part of a
    juvenile's first training.
@@ -68,7 +68,7 @@ Every source is an interaction you choose, never a pickup you walk over.
 | | Energy | Data | Essence |
 | --- | --- | --- | --- |
 | **What it is** | Charge. In the field it is the Probe's own charge | Records of creatures doing things. The Station matches behaviour to genome to learn what a stretch of genome does | Living matter: sap, dew, pulp, shed tufts |
-| **Gathered by** | Drawing the charge from a stone after a strike (+2, +3 at a storm's peak). Mostly from storms | Causing a creature moment: it eats your fruit, settles, shakes dry or sheds because of you. +1 each, +2 the first time ever for that species and moment, once per creature per expedition | Taking dew from cups after rain (+1). Pressing a fruit instead of offering it (+2). Picking up the tuft a hopper leaves when it shakes dry (+1) |
+| **Gathered by** | Drawing the charge from a stone after a strike (+2, +3 at a storm's peak). Mostly from storms | Causing a creature moment: it eats your fruit, settles, shakes dry or sheds because of you. +1 each, +2 the first time ever for that species and moment, once per creature per expedition | Taking dew from cups after rain (+1). Pressing a fruit instead of offering it (+2). Picking up the tuft a Loika leaves when it shakes dry (+1) |
 | **Spent in the field** | Player pins (1). Patching the shield (3 for 1 bar) | Nothing | Nothing directly. The choice comes earlier: feed the fruit, or press it |
 | **Spent at the Station** | Identifying a pod (1). Incubating (2). Probe upgrades | Research studies (2 each). Setting a researched trait at creation (+2). Probe upgrades | Growing a founder (4 for a small species; more for bigger or more complex bodies) |
 
@@ -85,7 +85,7 @@ They can stay as scenery, or be cut.
 more Data to read, which matches "genomes grow more complex". Energy runs every
 machine, and the Probe is one of them.
 
-The screen says "+2 Data · first time you saw a puffcap eat", never
+The screen says "+2 Data · first time you saw an Untuva eat", never
 "observation". Looking still awards nothing: only moments you cause count.
 
 **Alternative: keep today's sources** (humming stones for Data, dew for Essence,
@@ -134,7 +134,7 @@ patches (3) spend it, and whatever is left goes home. So a player who wants to
 pin, or to patch the shield and stay out, has to charge up in a storm. Every unit
 carried is also at stake.
 
-**Partners** are never hurt. An adult with keen senses (puffcap) flinches one
+**Partners** are never hurt. An adult with keen senses (Untuva) flinches one
 action before a stray strike near you, turning some luck into reading your
 partner. An elder senses every stray strike (§8).
 
@@ -239,7 +239,7 @@ of them a clock:
 5. **The Station pulls.**
    Hatching costs Essence and Energy, so a pod waiting at home sends you out
    with a purpose. **Send home** moves into the mode list, one press from
-   anywhere, and previews what follows ("1 pod to identify · puffcap pod can
+   anywhere, and previews what follows ("1 pod to identify · Untuva pod can
    hatch"). The first pod ever taken adds one line: "Pods open at the Station ·
    send it home when you're ready".
 
@@ -281,7 +281,7 @@ mode gains nothing.
 - **It completes the count,** so the map can mark the cell cleared (§5).
 - **It is the lure** when you have no partner. Curious creatures ("?") walk
   toward you, bringing them into feeding range. Wary ones ("!") hide: that's the
-  cost, along with startling a settling glowtail.
+  cost, along with startling a settling Tuikis.
 - **It commands your partner.** The partner comes, and if you face a gate or
   target it can handle, it acts.
 
@@ -298,11 +298,11 @@ down. It is simpler, but loses the lure, the partner command and the deliberate
   quiet actions it goes back to what it was doing. It never runs off-screen.
 - **Put it down and back off.** This is the reliable way. Set the fruit down and
   move 3 tiles away. An eating species comes within about 4 quiet actions and
-  eats, unless something startles it. The line coaches once: "The puffcap eyes
+  eats, unless something startles it. The line coaches once: "The Untuva eyes
   the fruit · back off".
 - **Offering from your hand** works for curious creatures, or for any creature
   while a calming partner is near.
-- **What feeding earns:** Data (§2), and for a puffcap a chance of a pod after
+- **What feeding earns:** Data (§2), and for an Untuva a chance of a pod after
   its meal. Pressing the fruit for Essence is the other choice.
 
 **Partners by life stage.** **Decided:** juveniles ride in the Companion but
@@ -368,7 +368,7 @@ Essence as its own weather event yet.
 
 **Changes:**
 - **Materials.** Data from caused creature moments (+1, +2 the first time);
-  humming stones no longer give it. Pressing a fruit gives 2 Essence, hopper
+  humming stones no longer give it. Pressing a fruit gives 2 Essence, Loika
   tufts 1. Energy carried is the Probe's charge. The Station stand-in charges for
   identifying, hatching and the tier 2 upgrade; unaffordable pods wait.
 - **Storm.** Bolts on the HUD; stray strikes at 1 in 12 and 1 in 6 in the open,

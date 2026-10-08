@@ -32,7 +32,7 @@ function finish(f) {
 
 const REAL = FRAME_DATA.frames.map((d) => finish(structuredClone(d)));
 
-// Synthetic future species: the glowtail's allele mix, scaled, plus an 8th chapter.
+// Synthetic future species: the Tuikis's (frame id glowtail) allele mix, scaled, plus an 8th chapter.
 const GLOW = REAL.find((f) => f.id === "glowtail");
 const CH = [["Coat", 10], ["Face", 5], ["Shape", 4], ["Legs & tail", 8], ["Movement", 6], ["Stamina", 3], ["Nature", 2], ["Glow", 3]];
 export function synthetic(nOpen, species, name, glyph) {

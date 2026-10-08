@@ -7,7 +7,7 @@ import { decode } from "../src/decode.mjs";
 import { blank, cameraH, warp, gaussianBlur, lighting, monochrome, noise, jpeg, dotGain } from "./distort.mjs";
 
 export const SPECIES = ["hopper", "glowtail", "glowtail-pm", "future150"];
-// "glowtail-pm": a glowtail carrying a 64-bit postmark
+// ids are the frames' working ids (hopper = Loika, glowtail = Tuikis). "glowtail-pm": a Tuikis carrying a 64-bit postmark
 export const frameOf = (sp) => byName(sp.replace(/-pm$/, ""));
 
 // Screen conditions at side D px (blur "scaled" = 1.5 px at 300 px)

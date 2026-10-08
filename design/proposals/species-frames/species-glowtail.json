@@ -2,8 +2,9 @@
  "schema": "mb-species-frame/1",
  "species": {
   "id": "glowtail",
-  "name": "Glowtail",
-  "plural": "glowtails",
+  "name": "Tuikis",
+  "plural": "Tuikis",
+  "clan": "Stilbera",
   "order": 3,
   "summary": "A tailed, scaled burrower: a low two-part body, four short legs, a crest, a long tail that carries the glow."
  },
@@ -248,7 +249,7 @@
      ],
      "nature": "look",
      "shapeable": false,
-     "override": "breeding only: the claws are how a glowtail digs, a field ability, so they change like a doing"
+     "override": "breeding only: the claws are how a Tuikis digs, a field ability, so they change like a doing"
     },
     {
      "id": "tail",
@@ -498,7 +499,7 @@
     "trait": "glow",
     "chapter": "Glow (after Temperament)",
     "kind": "heritable-doing",
-    "why": "no emission locus yet; until one exists every glowtail glows gold at dusk as part of the frame"
+    "why": "no emission locus yet; until one exists every Tuikis glows gold at dusk as part of the frame"
    },
    {
     "trait": "a glowing bulb at the tail tip",

@@ -38,7 +38,7 @@ for (const [name, file] of [["station-glowtail", "glowtail"], ["station-glowtail
   png(`img/${name}.png`, rasterize(geom, 300));
   writeFileSync(here(`img/${name}.svg`), toSVG(geom, 300));
 }
-// growth: the same scale of cell, hopper -> glowtail -> postmarked glowtail -> 150 loci (8 px a cell)
+// growth: the same scale of cell, Loika -> Tuikis -> postmarked Tuikis -> 150 loci (8 px a cell)
 png("img/growth.png", montage(["hopper", "glowtail", "glowtail-postmark", "future150"].map((k) => { const geom = stampGeometry(read(`examples/${k}.json`)); return rasterize(geom, geom.N * 8); }), 320, 4));
 // a family at 200 px: mother, child, father
 png("img/family.png", montage(["mother", "child", "father"].map((k) => rasterize(stampGeometry(read(`examples/glowtail-${k}.json`)), 200)), 232, 3));

@@ -141,9 +141,9 @@ showing a game screen. **S2 `station-research-hands`**, 1536×1024, using H1's
 sage Station as the device reference and S1 as the screen. Prompt sketch: *The
 sage Station, a two-thumb handheld, held in two hands at a wooden table at home
 in warm lamp light, slightly tilted toward the viewer; on its 1024×600 screen the
-S1 research screen: the sealed hopper pod in its padded cradle under a pool of
-light, "Hopper pod", amber "Needs 2 more Essence", Pip small at right with
-"Hopper · known", header with chip 4, crystal 5, droplet 2. Physical controls as
+S1 research screen: the sealed Loika pod in its padded cradle under a pool of
+light, "Loika pod", amber "Needs 2 more Essence", Pip small at right with
+"Loika · known", header with chip 4, crystal 5, droplet 2. Physical controls as
 in H1; no other text.* Screen strings that drift may be set in the page as a
 masked overlay; the device itself must be right.
 

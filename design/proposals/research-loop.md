@@ -33,7 +33,7 @@ A genome is not one field to research. It has five kinds of part:
 
 | Kind | What it is | Who knows it, and when | Worked frame on the 114-pair authoring genome | Pip proof |
 | --- | --- | --- | --- | --- |
-| **Locked** (species frame) | What makes a hopper a hopper: the body plan's switches, plus every copy a switched-off part still carries (wings off, so the wing copies are fixed too) | Learned **once per species** at the first Identify and kept in the Library. It shows as the ring's grey centre band | 57: 31 body-plan switches and 26 parts the frame switches off | 12: 9 fixed modules and 3 fixed loci (charcoal, cream, amber) |
+| **Locked** (species frame) | What makes a Loika a Loika: the body plan's switches, plus every copy a switched-off part still carries (wings off, so the wing copies are fixed too) | Learned **once per species** at the first Identify and kept in the Library. It shows as the ring's grey centre band | 57: 31 body-plan switches and 26 parts the frame switches off | 12: 9 fixed modules and 3 fixed loci (charcoal, cream, amber) |
 | **Heritable · looks** | Visible traits that differ between individuals and pass to children | Read **per pod**, chapter by chapter. Shapeable at creation once read | 44 in Coat, Face, Shape, and Legs & tail | 3: pale, crown, eye rings |
 | **Heritable · doings** | Movement, stamina and temperament | Read per pod. **Change only by breeding** | 13 in Movement, Stamina and Temperament | 2: drive, efficiency |
 | **Sleeping** | Heritable copies whose switch is off in *this individual* (the five marking parts of a plain coat) | Read with their chapter and drawn as "asleep". They can wake in a child | 5, inside Coat | none |
@@ -41,7 +41,7 @@ A genome is not one field to research. It has five kinds of part:
 
 ![The 114 loci split into a locked species frame and heritable chapters](research-loop/genome-map.svg)
 
-*The 114 authoring loci for one worked species frame (a hopper-like body plan: head, crown, eyes, ears, tail, fur, jointed legs, no wings or fins). The split was computed from the catalogue's real guards. The Pip proof is shown below for scale.*
+*The 114 authoring loci for one worked species frame (a Loika-like body plan: head, crown, eyes, ears, tail, fur, jointed legs, no wings or fins). The split was computed from the catalogue's real guards. The Pip proof is shown below for scale.*
 
 - **Locked stays locked** (**Decided:** species-defining organization is protected). Locked parts are never researched pod by pod, never shaped and never crossed. They are **species knowledge**, so the field guide shows them once.
 - **What species do differently is how much they leave open.** A starter species leaves a handful of traits open, like Pip's five. A late species leaves dozens, behind more chapters, and some of those chapters are sealed. That is how "genomes grow with the player" (**Decided** as direction) on a single 114-pair catalogue.
@@ -67,13 +67,13 @@ A genome is not one field to research. It has five kinds of part:
 - **Worked numbers.** A first Pip pod costs 4 Data to read fully (5 traits, the first read free). A first pod of the worked 24-trait frame costs 24 Data, and a later one 14. Players read where the glints are, not every page.
 - **Pacing.** This assumes about **3 Data per expedition**. The r7 tester earned 1, and Data starvation was its top problem. The field needs more creature moments, or the walk needs to pay more (**Open**, for the exploration tuning).
 
-**The first three pods** (Pip as the starter hopper, with its real five open traits; the puffcap's chapters are illustrative):
+**The first three pods** (Pip as the starter Loika, with its real five open traits; the Untuva's chapters are illustrative):
 
 | Expedition brings | At the Station | Store after |
 | --- | --- | --- |
-| 1: one unknown pod, +3⚡ +3◆ +5❀ | Identify free: **hopper**, new species. The frame is learned and the grey band fills. Read **Coat** free: "shows plain · hides pale". Read **Face** (2◆): "frill crown · hides bare head", "pale eye rings". Shape *only pale* (+1◆). Grow (first founder, 2⚡). The pod's ring was 3/5 read; Movement and Stamina clear during incubation | 1⚡ 0◆ 5❀ |
-| 2: one hopper pod, +4⚡ +3◆ +3❀ | Log it (1⚡): its Face arc glints. Read **Face** at half price (1◆): "only plain eyes", a new look for the field guide. Read **Movement**, the first time on any hopper (1◆): "bursts · hides steady". Grow it unedited (2⚡ 4❀). Two hoppers now live in the vivarium, and a cross becomes possible once both are adults (§5) | 2⚡ 1◆ 4❀ |
-| 3: one unknown pod, +3⚡ +4◆ +2❀ | Identify (1⚡): **puffcap**, new species, 3 chapters. A real choice: grow the puffcap now (2⚡ 4❀), or read Stamina on a hopper (1◆) and keep the 4❀ to cross the two hoppers when they are adults and see what their hidden looks do in a child | 4⚡ 5◆ 6❀ before choosing |
+| 1: one unknown pod, +3⚡ +3◆ +5❀ | Identify free: **Loika**, new species. The frame is learned and the grey band fills. Read **Coat** free: "shows plain · hides pale". Read **Face** (2◆): "frill crown · hides bare head", "pale eye rings". Shape *only pale* (+1◆). Grow (first founder, 2⚡). The pod's ring was 3/5 read; Movement and Stamina clear during incubation | 1⚡ 0◆ 5❀ |
+| 2: one Loika pod, +4⚡ +3◆ +3❀ | Log it (1⚡): its Face arc glints. Read **Face** at half price (1◆): "only plain eyes", a new look for the field guide. Read **Movement**, the first time on any Loika (1◆): "bursts · hides steady". Grow it unedited (2⚡ 4❀). Two Loikas now live in the vivarium, and a cross becomes possible once both are adults (§5) | 2⚡ 1◆ 4❀ |
+| 3: one unknown pod, +3⚡ +4◆ +2❀ | Identify (1⚡): **Untuva**, new species, 3 chapters. A real choice: grow the Untuva now (2⚡ 4❀), or read Stamina on a Loika (1◆) and keep the 4❀ to cross the two Loikas when they are adults and see what their hidden looks do in a child | 4⚡ 5◆ 6❀ before choosing |
 
 ## 5. Tinkering: acting on the genome
 

@@ -15,7 +15,7 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] : d; };
 const file = args.find((a, i) => !a.startsWith("--") && !args[i - 1]?.startsWith("--"));
 if (!file && opt("random") === undefined) {
-  console.error("usage: node encode.mjs <genome.json> | --random <seed> [--species hopper|puffcap|glowtail|future100|future150]  [--size 300] [--out stamp] [--mm 20 --dpi 203]");
+  console.error("usage: node encode.mjs <genome.json> | --random <seed> [--species hopper|puffcap|glowtail|future100|future150]  (frame ids: Loika, Untuva, Tuikis)  [--size 300] [--out stamp] [--mm 20 --dpi 203]");
   process.exit(2);
 }
 const genome = file ? JSON.parse(readFileSync(file, "utf8")) : individual(byName(opt("species", "glowtail")), Number(opt("random")));

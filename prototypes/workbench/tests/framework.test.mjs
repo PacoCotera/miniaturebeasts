@@ -42,13 +42,13 @@ test("operators resolve as v1 does", () => {
 test("the 16 roster plans map to the seven body rigs and their limb sets", () => {
   const rigs = new Set(frames.map((f) => f.plan.rig));
   assert.deepEqual([...rigs].sort(), ["B1", "B2", "B3", "Bfan", "R1", "Rfan2"], "six body rigs in the roster (the seventh, Rfan3, is in plans.mjs)");
-  const petalu = planFacts("three|serial|bilateral|contact|zero|one|three|on|skin");
-  assert.deepEqual(petalu.stations.map((s) => s.region), [0, 1, 2], "one leg pair per region on a three-region six-legged plan");
-  assert.equal(petalu.flapRegion, 1, "wings on the thorax");
-  assert.equal(petalu.posture, "splayed");
-  const ocotin = planFacts("two|serial|bilateral|contact|zero|one|two|off|scales", { join: "narrow" });
-  assert.deepEqual(ocotin.stations.map((s) => s.region), [0, 1], "fore legs on the front region, hind legs on the back one");
-  assert.equal(ocotin.head, "neck");
+  const moth = planFacts("three|serial|bilateral|contact|zero|one|three|on|skin");
+  assert.deepEqual(moth.stations.map((s) => s.region), [0, 1, 2], "one leg pair per region on a three-region six-legged plan");
+  assert.equal(moth.flapRegion, 1, "wings on the thorax");
+  assert.equal(moth.posture, "splayed");
+  const lizard = planFacts("two|serial|bilateral|contact|zero|one|two|off|scales", { join: "narrow" });
+  assert.deepEqual(lizard.stations.map((s) => s.region), [0, 1], "fore legs on the front region, hind legs on the back one");
+  assert.equal(lizard.head, "neck");
   assert.equal(rigOf(parsePlanKey("two|fan|radial|contact|zero|one|two|off|skin")), "Rfan2");
 });
 
@@ -60,11 +60,11 @@ test("every frame carries only trunk loci its plan owns plus its clan's branch; 
     assert.equal(f.viability.constructed, f.viability.sampled);
     for (const ch of f.chapters) for (const t of ch.traits) assert.ok(t.loci.every((id) => f.loci.some((l) => l.id === id && l.kind !== "locked")));
   }
-  const zac = frameOf("S01");
-  assert.ok(zac.absent.some((a) => a.id === "growth.wing-span-ratio"), "a zacatín has no wing locus at all");
-  assert.ok(zac.loci.some((l) => l.id === "appearance.belly-field" && l.scope === "branch"), "but its clan's belly field");
-  assert.ok(zac.absent.some((a) => a.id === "anatomy.tail-tip-bulb" && a.why.includes("C03")));
-  assert.equal(zac.counts.open, 5, "exactly the five traits of the Pip proof");
+  const loika = frameOf("S01");
+  assert.ok(loika.absent.some((a) => a.id === "growth.wing-span-ratio"), "a Loika has no wing locus at all");
+  assert.ok(loika.loci.some((l) => l.id === "appearance.belly-field" && l.scope === "branch"), "but its clan's belly field");
+  assert.ok(loika.absent.some((a) => a.id === "anatomy.tail-tip-bulb" && a.why.includes("C03")));
+  assert.equal(loika.counts.open, 5, "exactly the five traits of the Pip proof");
   const s03 = frameOf("S03");
   assert.ok(s03.chapters.some((c) => c.id === "glow" && c.traits.every((t) => !t.shapeable)), "the glow is a doing");
   assert.ok(frameOf("S16").chapters.some((c) => c.id === "charge" && c.sealed), "the lightning kind's Charge chapter is sealed");
@@ -72,18 +72,18 @@ test("every frame carries only trunk loci its plan owns plus its clan's branch; 
 });
 
 test("an individual resolves against its frame: sleeping parts, absent parts, foreign loci", () => {
-  const zac = frameOf("S01");
-  const g = typeSpecimen(zac);
+  const loika = frameOf("S01");
+  const g = typeSpecimen(loika);
   g.loci["appearance.marking-switch"] = ["off", "off"];
-  const built = buildIndividual(zac, g);
+  const built = buildIndividual(loika, g);
   assert.equal(built.validation.status, "valid");
   const layout = built.resolved.facts.find((f) => f.id === "appearance.marking-layout");
   assert.equal(layout.state, "asleep", "marking parts sleep when the switch is off");
   assert.equal(built.scene.markings, null);
   assert.ok(!("wing.outwardSpanOverCoreRx" in built.resolved.values), "absent parts never enter the rig");
   const foreign = structuredClone(g); foreign.loci["growth.wing-span-ratio"] = ["short", "short"];
-  assert.throws(() => buildIndividual(zac, foreign), /does not have/);
-  assert.ok(checkGenome(zac, foreign).length > 0);
+  assert.throws(() => buildIndividual(loika, foreign), /does not have/);
+  assert.ok(checkGenome(loika, foreign).length > 0);
 });
 
 test("crosses pass one copy from each parent and keep locked copies; shaping picks among the pod's own copies", () => {

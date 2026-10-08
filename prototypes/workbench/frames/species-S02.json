@@ -308,7 +308,7 @@
    "id": "character",
    "name": "Character",
    "sealed": true,
-   "opensWith": "a vybronic crystal, dug up where an S02 partner sniffs out a buried pod",
+   "opensWith": "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod",
    "traits": [
     {
      "id": "curiosity",
@@ -2112,6 +2112,6 @@
   ]
  },
  "sealed": {
-  "character": "a vybronic crystal, dug up where an S02 partner sniffs out a buried pod"
+  "character": "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod"
  }
 }
