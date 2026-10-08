@@ -1,0 +1,84 @@
+{
+  "id": "specimen-case",
+  "direction": "B",
+  "round": 3,
+  "attempt": 1,
+  "tag": "SC-B-r3-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the case frame and glass, the four clan trays with their cards, sketches and tags, the wide plain tray and its blank places, the bare linen floor with its faint footprints (nothing is added to the floor), and the brass ledge with its objects.\nONE CHANGE ONLY, inside the lower-left clan tray (the lagoon-edged tray with the lizard card): erase the large warm cream circle drawn around that card, and draw instead a thin warm cream rounded-rectangle outline that hugs the lizard card closely, about six pixels outside the card's edges, as the focus ring; the lizard card stays exactly where it is inside its tray, with its tag under it; no card, ring or object is added anywhere else on the screen.\nConstraints: preserve every other pixel of the screen; no new words, no digits; add nothing to the linen floor.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "1231c096687fa0b1bc0f79af897f0a348cbea7af61081c8b5e72ce2010ebbaca"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T06:47:39Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/SC-B-r3-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "e8008c428f9135440f313a7029ff57f0be78ec34434d0fdaa30b78164c1c63c6"
+    },
+    "png": {
+      "file": "SC-B-r3-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "fccd0c07caf172b4aae00eb2f3f65830a12b50f645a21ac82d18a03e65de62b1"
+    },
+    "screen": {
+      "file": "SC-B-r3-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "23d9017d66baa5c3fedb906e7c73bf09d2f3b239c47202ea4cc39d68db79cca0",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 23.9,
+    "usage": {
+      "promptTokenCount": 516,
+      "candidatesTokenCount": 1306,
+      "totalTokenCount": 1976,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 258
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 154,
+      "serviceTier": "standard"
+    }
+  }
+}
