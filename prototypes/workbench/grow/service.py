@@ -652,10 +652,10 @@ def grow(species, genome=None, digest=None, force=False, variant="crisp", views=
     json.dump(man, open(mpath, "w"), indent=1); open(mpath, "a").write("\n")
     if sub is None and legend["level"] == "species" and species != "S01":  # the species' reference painting, kept once
         os.makedirs(os.path.join(SPECIES_DIR, species), exist_ok=True)
-        for view in VIEWS:
+        for view in man["views"]:
             if man["views"][view]["status"] == "painted":
                 open(os.path.join(SPECIES_DIR, species, f"{view}-600x620.png"), "wb").write(open(os.path.join(d, f"station-{view}-600x620.png"), "rb").read())
-        json.dump({"species": species, "genomeSha256": legend["genomeSha256"], "views": {v: man["views"][v]["status"] for v in VIEWS}, "description": legend["description"]["text"], "madeAt": man["finishedAt"], "manifest": os.path.relpath(mpath, HERE)}, open(os.path.join(SPECIES_DIR, species, "reference.json"), "w"), indent=1)
+        json.dump({"species": species, "genomeSha256": legend["genomeSha256"], "views": {v: man["views"][v]["status"] for v in man["views"]}, "description": legend["description"]["text"], "madeAt": man["finishedAt"], "manifest": os.path.relpath(mpath, HERE)}, open(os.path.join(SPECIES_DIR, species, "reference.json"), "w"), indent=1)
     return man
 
 
@@ -689,7 +689,7 @@ def cmd_paint(a):
     for sp in sorted({j[0] for j in jobs}):
         if sub is not None or sp == "S01" or (os.path.exists(os.path.join(SPECIES_DIR, sp, "portrait-600x620.png")) and not force): continue
         spec = os.path.join(REF, sp, "type-specimen", "genome.json")
-        man = grow(sp, spec, None, force, variant); print(sp, "type specimen", {v: man["views"][v]["status"] for v in VIEWS}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
+        man = grow(sp, spec, None, force, variant, views); print(sp, "type specimen", {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
         jobs = [j for j in jobs if not (j[0] == sp and j[1] == spec)]
     with ThreadPoolExecutor(max_workers=int(a.get("workers", 3))) as ex:
         for man in ex.map(lambda j: grow(j[0], j[1], j[2], force, variant, views, sub), jobs):
