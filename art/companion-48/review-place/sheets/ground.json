@@ -631,10 +631,10 @@
     3,
     14,
     14,
+    14,
     15,
     16,
     17,
-    18,
     21,
     21,
     22,
@@ -664,8 +664,8 @@
     46,
     47
    ],
-   "tuftIndex": 15,
-   "grassBody": 16
+   "tuftIndex": 14,
+   "grassBody": 15
   },
   "clear": {
    "note": "ground.clear: the G ramp warmed one step (the lime ground lighter and yellower), every other colour unchanged",
