@@ -59,7 +59,11 @@ What it still lacks: the family tree once its design lands; the other chapter pa
 - Edits hold for one change described in words; none here carried a reference image.
 - Generated 16:9 canvases trimmed to 1024:600; the names are live text and would be set by the build, as the layer does here.
 
-## Three questions for the owner
+## Owner decisions (2026-10-08)
+
+Relayed by the programme lead. **The Book is accepted** ("beautiful"), on the recommended candidate: the portrait mounted as a framed plate (not painted straight onto the page); the family tree panel stays under the stamp at about its present size; the name on a paper label with the habit line under it. For the master, the copy on the label and the names go through the copywriter's rules and the style guide's type first: consistent case (the owner flagged a mix of lower- and upper-case) and the typeface. The three questions above are answered by this.
+
+## Three questions for the owner (answered above)
 
 1. **Portrait framed or painted on the page?** The recommended page mounts the portrait as a plate with a frame; the alternative paints it straight onto the paper, which reads more like a naturalist's watercolour and less like a photograph. Which should the master take?
 2. **The tree panel's size.** Here it is about 180×160 px under the stamp. Is that enough room for parents, siblings and children with rings at 40 px, or should the tree take the page's whole right column and the wish move under the portrait?

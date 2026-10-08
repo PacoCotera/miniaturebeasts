@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="system-ui, sans-serif">
+<title>C, the herbarium folio: a pressed sheet per species, clan folders behind (wireframe, layout only)</title>
+<style>
+.bg{fill:#f7f4ec}
+.bar{fill:#2f3a40}
+.bartx{font-size:15px;fill:#e9e3d3}
+.ok{font-size:15px;fill:#e08a3a}
+.dim{font-size:15px;fill:#a7a49c}
+.ink{stroke:#2e2e2e;stroke-width:1.5;fill:none}
+.hair{stroke:#2e2e2e;stroke-width:1;fill:none}
+.faint{stroke:#b9b2a2;stroke-width:1;fill:none;stroke-dasharray:4 4}
+.cream{fill:#fbf6e8;stroke:#2e2e2e;stroke-width:1.2}
+.paper{fill:#fffdf6;stroke:#2e2e2e;stroke-width:1}
+.linen{fill:#ebe5d6}
+.brass{fill:#c9a24a;stroke:#6e5520;stroke-width:1}
+.wood{fill:#3d3631;stroke:#1e1a17;stroke-width:1.5}
+.shadow{fill:#2e2e2e;opacity:.16}
+.glass{fill:#ffffff;opacity:.35}
+.sketch{stroke:#6f6a5e;stroke-width:1.2;fill:none;stroke-dasharray:3 2}
+.focus{fill:none;stroke:#f0d890;stroke-width:3}
+.name{font-size:11px;fill:#2e2e2e;text-anchor:middle}
+.note{font-size:11px;fill:#a0472c;paint-order:stroke;stroke:#f7f4ec;stroke-width:3px;stroke-linejoin:round}
+.lead{stroke:#a0472c;stroke-width:1;fill:none}
+.h{font-size:13px;font-weight:600;fill:#2e2e2e}
+.cap{font-size:11px;fill:#6f6a5e}
+</style>
+<rect width="1024" height="600" class="bg"/>
+<!-- top bar and bottom line: the Station frame -->
+<rect x="0" y="0" width="1024" height="40" class="bar"/>
+<text x="16" y="26" class="bartx">Library  T5</text>
+<path d="M470 12 l-6 10 h5 l-3 9 l9 -12 h-5 l3 -7z" fill="#e8c23a"/><text x="482" y="26" class="bartx">7</text>
+<path d="M508 14 l6 0 l3 5 l-6 8 l-6 -8z" fill="#5a8fd8"/><text x="522" y="26" class="bartx">3</text>
+<path d="M548 12 q6 8 0 16 q-6 -8 0 -16z" fill="#5aa860"/><text x="558" y="26" class="bartx">2</text>
+<text x="1008" y="26" class="bartx" text-anchor="end">Companion away · with Dot</text>
+<rect x="0" y="562" width="1024" height="38" class="bar"/>
+<text x="16" y="586" class="ok">✓ Open · ← Home</text>
+<text x="512" y="586" class="bartx" text-anchor="middle">Tuikis · Stilbera</text>
+<text x="1008" y="586" class="dim" text-anchor="end">a pod waits in the tray</text>
+<rect x="0" y="40" width="1024" height="522" fill="#d9cfb8"/>
+<rect x="32" y="50" width="100" height="136" fill="#7a9a4a" stroke="#2e2e2e"/>
+<rect x="26" y="58" width="100" height="136" class="shadow"/>
+<path d="M22 54 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<circle cx="72" cy="104" r="20" class="ink" fill="#efe6cf"/><circle cx="66" cy="101" r="2" fill="#2e2e2e"/><circle cx="78" cy="101" r="2" fill="#2e2e2e"/><ellipse cx="72" cy="127" rx="20" ry="3" class="shadow"/>
+<path d="M42 94 h60 M46 120 h52" stroke="#d8cfb6" stroke-width="5"/>
+<path d="M38 140 q8 -14 16 -6 q4 -10 10 0" class="hair" stroke="#8a9a6a"/>
+<rect x="66" y="162" width="52" height="24" fill="#fbf6e8" stroke="#2e2e2e"/><text x="92" y="178" class="name" style="font-size:10px">Loika</text>
+<path d="M106 54 h16 v16 z" class="brass"/>
+<rect x="156" y="50" width="100" height="136" fill="#e07a62" stroke="#2e2e2e"/>
+<rect x="150" y="58" width="100" height="136" class="shadow"/>
+<path d="M146 54 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<circle cx="196" cy="104" r="20" class="ink" fill="#efe6cf"/><circle cx="190" cy="101" r="2" fill="#2e2e2e"/><circle cx="202" cy="101" r="2" fill="#2e2e2e"/><ellipse cx="196" cy="127" rx="20" ry="3" class="shadow"/>
+<path d="M166 94 h60 M170 120 h52" stroke="#d8cfb6" stroke-width="5"/>
+<path d="M162 140 q8 -14 16 -6 q4 -10 10 0" class="hair" stroke="#8a9a6a"/>
+<rect x="190" y="162" width="52" height="24" fill="#fbf6e8" stroke="#2e2e2e"/><text x="216" y="178" class="name" style="font-size:10px">Untuva</text>
+<rect x="280" y="50" width="100" height="136" fill="#3f9aa0" stroke="#2e2e2e"/>
+<rect x="274" y="58" width="100" height="136" class="shadow"/>
+<path d="M270 54 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<circle cx="320" cy="104" r="20" class="ink" fill="#efe6cf"/><circle cx="314" cy="101" r="2" fill="#2e2e2e"/><circle cx="326" cy="101" r="2" fill="#2e2e2e"/><ellipse cx="320" cy="127" rx="20" ry="3" class="shadow"/>
+<path d="M290 94 h60 M294 120 h52" stroke="#d8cfb6" stroke-width="5"/>
+<path d="M286 140 q8 -14 16 -6 q4 -10 10 0" class="hair" stroke="#8a9a6a"/>
+<rect x="314" y="162" width="52" height="24" fill="#fbf6e8" stroke="#2e2e2e"/><text x="340" y="178" class="name" style="font-size:10px">Tuikis</text>
+<rect x="266" y="46" width="118" height="152" rx="4" class="focus"/>
+<rect x="404" y="50" width="100" height="136" fill="#8a7aa8" stroke="#2e2e2e"/>
+<rect x="398" y="58" width="100" height="136" class="shadow"/>
+<path d="M394 54 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<circle cx="444" cy="104" r="20" class="sketch"/><path d="M428 110 q16 8 32 0" class="sketch"/>
+<rect x="438" y="162" width="52" height="24" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="528" y="50" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="522" y="58" width="100" height="136" class="shadow"/>
+<path d="M518 54 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="652" y="50" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="646" y="58" width="100" height="136" class="shadow"/>
+<path d="M642 54 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="776" y="50" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="770" y="58" width="100" height="136" class="shadow"/>
+<path d="M766 54 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="900" y="50" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="894" y="58" width="100" height="136" class="shadow"/>
+<path d="M890 54 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="32" y="200" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="26" y="208" width="100" height="136" class="shadow"/>
+<path d="M22 204 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="156" y="200" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="150" y="208" width="100" height="136" class="shadow"/>
+<path d="M146 204 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="280" y="200" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="274" y="208" width="100" height="136" class="shadow"/>
+<path d="M270 204 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="404" y="200" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="398" y="208" width="100" height="136" class="shadow"/>
+<path d="M394 204 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="528" y="200" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="522" y="208" width="100" height="136" class="shadow"/>
+<path d="M518 204 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="652" y="200" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="646" y="208" width="100" height="136" class="shadow"/>
+<path d="M642 204 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="776" y="200" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="770" y="208" width="100" height="136" class="shadow"/>
+<path d="M766 204 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="900" y="200" width="100" height="136" fill="#b8ad94" stroke="#2e2e2e"/>
+<rect x="894" y="208" width="100" height="136" class="shadow"/>
+<path d="M890 204 h100 l-2 4 l2 4 v124 l-3 2 l3 2 v0 h-100 z" class="paper"/>
+<rect x="22" y="356" width="980" height="124" class="faint"/>
+<rect x="16" y="500" width="992" height="52" fill="#efe7d4" stroke="#2e2e2e"/>
+<rect x="40" y="512" width="8" height="28" fill="#fffdf6" stroke="#2e2e2e"/>
+<rect x="52" y="513" width="8" height="28" fill="#fffdf6" stroke="#2e2e2e"/>
+<rect x="64" y="512" width="8" height="28" fill="#fffdf6" stroke="#2e2e2e"/>
+<rect x="76" y="513" width="8" height="28" fill="#fffdf6" stroke="#2e2e2e"/>
+<rect x="88" y="512" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="100" y="513" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="112" y="512" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="124" y="513" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="136" y="512" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="148" y="513" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="160" y="512" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="172" y="513" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="184" y="512" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="196" y="513" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="208" y="512" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<rect x="220" y="513" width="8" height="28" fill="#e2dac6" stroke="#2e2e2e"/>
+<path d="M260 526 h300" stroke="#2e2e2e" stroke-dasharray="1 5"/><path d="M260 526 h56" stroke="#2e2e2e" stroke-width="2"/>
+<rect x="620" y="514" width="16" height="24" fill="#7a9a4a" stroke="#2e2e2e"/>
+<rect x="642" y="514" width="16" height="24" fill="#e07a62" stroke="#2e2e2e"/>
+<rect x="664" y="514" width="16" height="24" fill="#3f9aa0" stroke="#2e2e2e"/>
+<rect x="686" y="514" width="16" height="24" fill="#8a7aa8" stroke="#2e2e2e"/>
+<path d="M40 376 L80 140" class="lead"/><circle cx="80" cy="140" r="2" fill="#a0472c"/>
+<text x="40" y="380" class="note" text-anchor="start">Found: the face pressed on a mounted sheet, linen tape straps, a pressed</text>
+<text x="40" y="393" class="note" text-anchor="start">leaf, the printed label in the corner; the clan folder peeks behind.</text>
+<path d="M40 414 L520 120" class="lead"/><circle cx="520" cy="120" r="2" fill="#a0472c"/>
+<text x="40" y="418" class="note" text-anchor="start">Unmet: a blank mounting sheet in a plain kraft folder, no label. All alike.</text>
+<text x="40" y="446" class="note" text-anchor="start">Room to grow: the table below. Risk: tall sheets narrow to about 76 px at</text>
+<text x="40" y="459" class="note" text-anchor="start">thirty-two, and a pressed pet is unsettling.</text>
+<path d="M640 466 L680 512" class="lead"/><circle cx="680" cy="512" r="2" fill="#a0472c"/>
+<text x="640" y="470" class="note" text-anchor="start">Synopsis: the stack edge (sheets), a pencil</text>
+<text x="640" y="483" class="note" text-anchor="start">line for progress, clan folder tabs.</text>
+</svg>
