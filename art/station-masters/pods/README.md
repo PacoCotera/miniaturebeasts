@@ -12,7 +12,7 @@
 
 <img src="composite-vs-candidate.png" width="720" alt="Composite beside the accepted candidate">
 
-*composite-vs-candidate.png: the composite (left) beside the accepted candidate PV-D-r3-a4 (right). The layout follows the concept's composition (the re-layout of branch `design-pods-relayout`): wells at the far left, the page left of centre showing the chapter as one large 376×312 picture, the pod centred on its dish under the cone, the stamp label at the right. The rail is still the old 56 px tabs at y 48 until the UI designer's change to tabs hung from the bar lands. The trait picture, stamp raster, progress arcs, emblems and lamps are stand-ins. Status: proof.*
+*composite-vs-candidate.png: the composite (left) beside the accepted candidate PV-D-r3-a4 (right). The layout follows the concept's composition (the re-layout of branch `design-pods-relayout`): wells at the far left, the page left of centre showing the chapter as one large 376×312 picture, the pod centred on its dish under the cone, the stamp label at the right. The rail is the hanging tabs of the fourth pass. The trait picture, stamp raster, progress arcs, emblems and lamps are stand-ins. Status: proof.*
 
 <img src="contact-sheet-1x.png" width="720" alt="Contact sheet of every slice at 1x">
 
@@ -20,7 +20,7 @@
 
 ## Slices
 
-Each slice is named by the register id it replaces (`room`, `ring`, `page`, `trait-picture`, `stamp`, `pod`); where the register has none, the id is **proposed** (`rail-tab-*`, `plate-*`, `frame-*`, `room-shelf`). Rectangles are the concept's re-layout (branch `design-pods-relayout`, 962f71d) with the dish grown to (600, 328, 224, 96): the pod's box is bottom-centred on (712, 400), the page is (176, 112, 408, 440), the stamp label (888, 248). A tab's x is 176 + 120 i (112 wide), 180 + 104 i (96 wide) or its slot in the compact rail; its y is 48 (the tabs wait for the UI designer's new rectangles). Hashes and sources: [`slices/manifest.json`](slices/manifest.json).
+Each slice is named by the register id it replaces (`room`, `ring`, `page`, `trait-picture`, `stamp`, `pod`); where the register has none, the id is **proposed** (`rail-tab-*`, `plate-*`, `frame-*`, `room-shelf`). Rectangles follow the layout spec of branch `design-pods-relayout` (6b5bfea): the pod's box is bottom-centred on (712, 400), the dish is (600, 328, 224, 96), the page (176, 112, 408, 440), the stamp label (888, 248). A tab hangs from the top bar's rule at y 40: a full tab (136 wide, slice 152×40) at x0 + 136 i, a compact tab (56 wide, slice 72×40) at its place in the run, neighbours sharing one slant. Hashes and sources: [`slices/manifest.json`](slices/manifest.json).
 
 ### Top bar and bottom line (signed)
 
@@ -94,22 +94,18 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `pod-well-shade` | 32×40 | (·, ·, 32, 40) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
 | `pod-well-shadow` | 48×14 | (688, 393, 48, 14) | contact shadow: centred on x 712 with its middle on the foot line y 400 |
 
-### Chapter rail tab plates
+### Chapter rail tab plates (hanging, slant baked)
 
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
-| `rail-tab-focused-112x56` | 112×56 | (·, 48, 112, 56) | key magenta, cut, 112x56 |
-| `rail-tab-focused-56x56` | 56×56 | (·, 48, 56, 56) | 9-slice of the 112 plate (slants kept) |
-| `rail-tab-focused-96x56` | 96×56 | (·, 48, 96, 56) | 9-slice of the 112 plate (slants kept) |
-| `rail-tab-read-112x56` | 112×56 | (·, 48, 112, 56) | key magenta, cut, 112x56 |
-| `rail-tab-read-56x56` | 56×56 | (·, 48, 56, 56) | 9-slice of the 112 plate (slants kept) |
-| `rail-tab-read-96x56` | 96×56 | (·, 48, 96, 56) | 9-slice of the 112 plate (slants kept) |
-| `rail-tab-sealed-112x56` | 112×56 | (·, 48, 112, 56) | key magenta, cut, 112x56 |
-| `rail-tab-sealed-56x56` | 56×56 | (·, 48, 56, 56) | 9-slice of the 112 plate (slants kept) |
-| `rail-tab-sealed-96x56` | 96×56 | (·, 48, 96, 56) | 9-slice of the 112 plate (slants kept) |
-| `rail-tab-unread-112x56` | 112×56 | (·, 48, 112, 56) | key magenta, cut, 112x56 |
-| `rail-tab-unread-56x56` | 56×56 | (·, 48, 56, 56) | 9-slice of the 112 plate (slants kept) |
-| `rail-tab-unread-96x56` | 96×56 | (·, 48, 96, 56) | 9-slice of the 112 plate (slants kept) |
+| `rail-tab-focused-compact-72x40` | 72×40 | (·, 40, 72, 40) | compact hanging tab, slant baked (9-slice of the full one, slant kept) |
+| `rail-tab-focused-full-152x40` | 152×40 | (·, 40, 152, 40) | hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px |
+| `rail-tab-read-compact-72x40` | 72×40 | (·, 40, 72, 40) | compact hanging tab, slant baked (9-slice of the full one, slant kept) |
+| `rail-tab-read-full-152x40` | 152×40 | (·, 40, 152, 40) | hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px |
+| `rail-tab-sealed-compact-72x40` | 72×40 | (·, 40, 72, 40) | compact hanging tab, slant baked (9-slice of the full one, slant kept) |
+| `rail-tab-sealed-full-152x40` | 152×40 | (·, 40, 152, 40) | hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px |
+| `rail-tab-unread-compact-72x40` | 72×40 | (·, 40, 72, 40) | compact hanging tab, slant baked (9-slice of the full one, slant kept) |
+| `rail-tab-unread-full-152x40` | 152×40 | (·, 40, 152, 40) | hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px |
 
 ### List column plate (signed)
 
@@ -168,6 +164,15 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x312` | 376×312 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-376x312-sealed` | 376×312 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-376x312-unread` | 376×312 |  | frost texture at 0.9 alpha under the frame |
+
+## Fourth pass (2026-10-08)
+
+- **Tabs (8 slices, replacing the 12):** the rail's tabs hang from the top bar's rule, y 40 to 80, each a parallelogram leaning exactly 16 px over its 40 px height (measured on the slices: 0.4 px per row), with the slant and the transparent corners baked. Two forms times four states (unread, read, focused, sealed): full 152×40 (a 136 tab and its slant) and compact 72×40 (a 56 tab). The painted plate is un-sheared to a rectangle, resized and sheared back, so the lit rim follows the slant. Emblem, word, pips, the glint star under the tab and the focus ring are the build's. The twelve slices of the old plates (112, 96, 56 by 56) are removed.
+- **Composites:** `composite-pods-read-1024x600.png` is the Read page's first state (one 376×312 picture at (192,160), the trait name under it, a row of 8×8 trait marks right-aligned at y 128) with six full tabs hanging and touching; `composite-pods-grid-1024x600.png` is the Grid state (the four small pictures) with a seven-chapter compact rail, the open chapter's tab full. Stand-ins in both: tab emblems and pips, trait marks, the focus ring, progress arcs, the stamp raster, the picture.
+
+<img src="composite-pods-grid-1024x600.png" width="720" alt="Pods Read, Grid state with a seven-chapter compact rail">
+
+*composite-pods-grid-1024x600.png: the Grid state and a seven-chapter compact rail, from the slices alone with the live strings in Inter. Stand-ins as listed above. Status: proof.*
 
 ## Third pass (2026-10-08)
 

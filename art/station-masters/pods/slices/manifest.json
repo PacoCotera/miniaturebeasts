@@ -119,186 +119,6 @@
   "made": "a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box",
   "sha256": "e9031f2d7356ff795cb17b56df7f0bbfe89256e094877eb0fcc7e7bd12ef55e6"
  },
- "rail-tab-unread-112x56": {
-  "size": [
-   112,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   112,
-   56
-  ],
-  "src": "tabs2",
-  "made": "key magenta, cut, 112x56",
-  "sha256": "0a8295d2b2f48c0a44fc72232acab340a935dc134784c53c6445b927d2fb8384"
- },
- "rail-tab-unread-96x56": {
-  "size": [
-   96,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   96,
-   56
-  ],
-  "src": "tabs2",
-  "made": "9-slice of the 112 plate (slants kept)",
-  "sha256": "9016e6bbef3a0bc7348c929430e2a55ff912bbed494f9e0807032d32a64d9616"
- },
- "rail-tab-unread-56x56": {
-  "size": [
-   56,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   56,
-   56
-  ],
-  "src": "tabs2",
-  "made": "9-slice of the 112 plate (slants kept)",
-  "sha256": "d59a3a4420aebe95dc532d1afe28a28bd484645e484a103b0be6cf96cfe186b4"
- },
- "rail-tab-read-112x56": {
-  "size": [
-   112,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   112,
-   56
-  ],
-  "src": "tabs2",
-  "made": "key magenta, cut, 112x56",
-  "sha256": "00138fef3d34697c3fdef1ac05186a3a6e6bf4224b4a6cbe740925c0bb5ece4b"
- },
- "rail-tab-read-96x56": {
-  "size": [
-   96,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   96,
-   56
-  ],
-  "src": "tabs2",
-  "made": "9-slice of the 112 plate (slants kept)",
-  "sha256": "7677d6a3c8f38a99d048d05111cfc9aad97139bf1a7b387cbd6c57ab66e24bd4"
- },
- "rail-tab-read-56x56": {
-  "size": [
-   56,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   56,
-   56
-  ],
-  "src": "tabs2",
-  "made": "9-slice of the 112 plate (slants kept)",
-  "sha256": "5d0616446d2e058043ca95bc5cca9adadc97f5ae87e054c40f55b08827335342"
- },
- "rail-tab-focused-112x56": {
-  "size": [
-   112,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   112,
-   56
-  ],
-  "src": "tabs2",
-  "made": "key magenta, cut, 112x56",
-  "sha256": "d6948a489cfc5656d603058f302ff10fc32352b9fa2799b61d95b99b827f3b42"
- },
- "rail-tab-focused-96x56": {
-  "size": [
-   96,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   96,
-   56
-  ],
-  "src": "tabs2",
-  "made": "9-slice of the 112 plate (slants kept)",
-  "sha256": "4d0b2c1bd7fc16ae0a1b0f459e7032e73a1badf62acec0b871245b729b33df9a"
- },
- "rail-tab-focused-56x56": {
-  "size": [
-   56,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   56,
-   56
-  ],
-  "src": "tabs2",
-  "made": "9-slice of the 112 plate (slants kept)",
-  "sha256": "06c2f6237d021c70e187d101c61e6f7573ad8359f5a4b0aa9e934bcc14f8d188"
- },
- "rail-tab-sealed-112x56": {
-  "size": [
-   112,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   112,
-   56
-  ],
-  "src": "tabs2",
-  "made": "key magenta, cut, 112x56",
-  "sha256": "966ebf482037562124252af1cd922b2a4cd32d452f66779cbfa3f1308c63a11b"
- },
- "rail-tab-sealed-96x56": {
-  "size": [
-   96,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   96,
-   56
-  ],
-  "src": "tabs2",
-  "made": "9-slice of the 112 plate (slants kept)",
-  "sha256": "2c3ccdc51f779c80e64f90d0a38072f5c51aedcf3425c5280fc6ca73de2d1013"
- },
- "rail-tab-sealed-56x56": {
-  "size": [
-   56,
-   56
-  ],
-  "rect": [
-   null,
-   48,
-   56,
-   56
-  ],
-  "src": "tabs2",
-  "made": "9-slice of the 112 plate (slants kept)",
-  "sha256": "483af2ecbe9d0c1bdae6557856e7552bac58cd68dd1ee9bbbd0c5fcc0e332059"
- },
  "page-pane-408x440": {
   "size": [
    408,
@@ -1333,5 +1153,125 @@
   "src": "plate-thin2",
   "made": "thin frosted label: colour-to-alpha, 9-slice, rounded",
   "sha256": "de9e1921c272e414e65d5c859ee979e2c6ea21d1c021ff0bd2e368afb49e16a7"
+ },
+ "rail-tab-unread-full-152x40": {
+  "size": [
+   152,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   152,
+   40
+  ],
+  "src": "tabs2",
+  "made": "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px",
+  "sha256": "1fd2f86b4fb4da9bfffe2c7c4a42681c4a057ebafe96f8322597d78452270f8f"
+ },
+ "rail-tab-unread-compact-72x40": {
+  "size": [
+   72,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   72,
+   40
+  ],
+  "src": "tabs2",
+  "made": "compact hanging tab, slant baked (9-slice of the full one, slant kept)",
+  "sha256": "60aba3066cfbe9ffffc24f3bf155ad70227f0bedd9a89bd0e53cb55d0eccf7d1"
+ },
+ "rail-tab-read-full-152x40": {
+  "size": [
+   152,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   152,
+   40
+  ],
+  "src": "tabs2",
+  "made": "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px",
+  "sha256": "34702dd1ee25488a9ef5b6f8d90245467d58f4f324fcbd7f34ed7184d260ec0b"
+ },
+ "rail-tab-read-compact-72x40": {
+  "size": [
+   72,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   72,
+   40
+  ],
+  "src": "tabs2",
+  "made": "compact hanging tab, slant baked (9-slice of the full one, slant kept)",
+  "sha256": "e62bd7f00d8372060725d0cba2dd3d2a335e4ce39762c6b1927c908f1692357f"
+ },
+ "rail-tab-focused-full-152x40": {
+  "size": [
+   152,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   152,
+   40
+  ],
+  "src": "tabs2",
+  "made": "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px",
+  "sha256": "d3b688def56294cf66940f0c2e195e8834180c2640d634547a56685f0b6fbf22"
+ },
+ "rail-tab-focused-compact-72x40": {
+  "size": [
+   72,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   72,
+   40
+  ],
+  "src": "tabs2",
+  "made": "compact hanging tab, slant baked (9-slice of the full one, slant kept)",
+  "sha256": "e7ac1a3c81060e5b071958a85638a5158b70b1f875ef0706f41ea82bdc76d86c"
+ },
+ "rail-tab-sealed-full-152x40": {
+  "size": [
+   152,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   152,
+   40
+  ],
+  "src": "tabs2",
+  "made": "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px",
+  "sha256": "bf686f7a11810e5d2a6f47aed3f89c3924fd56e657a751cd94524d4e5985087a"
+ },
+ "rail-tab-sealed-compact-72x40": {
+  "size": [
+   72,
+   40
+  ],
+  "rect": [
+   null,
+   40,
+   72,
+   40
+  ],
+  "src": "tabs2",
+  "made": "compact hanging tab, slant baked (9-slice of the full one, slant kept)",
+  "sha256": "f30124a210b76c545b0b85ae4e26c4e19a35aadbccee45c44f54a0ac298b95d1"
  }
 }

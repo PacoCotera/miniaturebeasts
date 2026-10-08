@@ -74,15 +74,27 @@ def listcol():
     cv = Image.new("RGBA", (112, 56), (0, 0, 0, 0)); cv.alpha_composite(lf, ((112 - lf.width) // 2, 14)); save("ring-hatch", cv, [24, 488, 112, 56], "a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box", "hatch-leaf")
 # ---- rail tab plates
 def tabs():
+    """Tabs hang from the top bar: parallelograms leaning 16 px right over 40 px, a full tab 136 wide (slice 152x40) and a
+    compact one 56 wide (slice 72x40). The painted plate is un-sheared to a rectangle, resized, and sheared to exactly 16 px."""
     k = key_magenta(load("tabs2.jpg")); a = np.asarray(k)[..., 3]
     boxes = comp_bboxes(a, 128, 30000); boxes = [b for b in boxes if (b[2]-b[0]) > 400]
     boxes.sort(key=lambda b: (round(b[1] / 500), b[0]))
     names = ["unread", "read", "focused", "sealed"]
     for nm, bb in zip(names, boxes):
-        c = k.crop(bb); p112 = dim(c.resize((112, 56), Image.LANCZOS), {"unread": 0.8, "focused": 0.88}.get(nm, 1.0))
-        save(f"rail-tab-{nm}-112x56", p112, [None, 48, 112, 56], "key magenta, cut, 112x56", "tabs2")
-        save(f"rail-tab-{nm}-96x56", nine(p112, 96, 56, 24, 8, 24, 8), [None, 48, 96, 56], "9-slice of the 112 plate (slants kept)", "tabs2")
-        save(f"rail-tab-{nm}-56x56", nine(p112, 56, 56, 24, 8, 24, 8), [None, 48, 56, 56], "9-slice of the 112 plate (slants kept)", "tabs2")
+        c = k.crop(bb); ca = np.asarray(c)[..., 3]; h = c.height
+        def edges(y): xs = np.where(ca[y] > 128)[0]; return xs.min(), xs.max()
+        y0, y1 = int(h * 0.12), int(h * 0.80); l0, r0 = edges(y0); l1, r1 = edges(y1)
+        slant = ((l1 - l0) + (r1 - r0)) / 2 * h / (y1 - y0)                      # source px of lean over the whole height
+        W = round(c.width - slant); kx = slant / h
+        un = c.transform((W, h), Image.AFFINE, (1, kx, 0, 0, 1, 0), Image.BICUBIC)          # un-shear: the left edge becomes vertical
+        full = dim(un.resize((136, 40), Image.LANCZOS), {"unread": 0.8, "focused": 0.88}.get(nm, 1.0))
+        def shear(rect_img):
+            w = rect_img.width; out = Image.new("RGBA", (w + 16, 40), (0, 0, 0, 0)); big = Image.new("RGBA", (w + 16, 40), (0, 0, 0, 0)); big.paste(rect_img, (0, 0))
+            return big.transform((w + 16, 40), Image.AFFINE, (1, -16 / 40, 0, 0, 1, 0), Image.BICUBIC)
+        # note: out(x,y) samples big(x - 16 y/40): the bottom row moves 16 px right
+        save(f"rail-tab-{nm}-full-152x40", shear(full), [None, 40, 152, 40], "hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px", "tabs2")
+        save(f"rail-tab-{nm}-compact-72x40", shear(nine(full, 56, 40, 20, 8, 20, 8)), [None, 40, 72, 40], "compact hanging tab, slant baked (9-slice of the full one, slant kept)", "tabs2")
+
 # ---- page panes
 def pages():
     im = load("page-pane.jpg"); W, H = im.size
