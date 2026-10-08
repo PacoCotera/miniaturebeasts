@@ -38,7 +38,7 @@ test("every colour a spec file names is in the palette; every region is on the 8
   const walk = (o) => { for (const v of Object.values(o)) { if (typeof v === "string") { if (!names.has(v)) bad.push(v); } else if (v && typeof v === "object") walk(v); } };
   walk(pods.colours); walk(Object.fromEntries(Object.entries(frame.colours)));
   assert.deepEqual(bad, []);
-  const off = []; for (const [id, r] of Object.entries(pods.regions)) if (r.rect && !["compareA", "compareB", "list"].includes(id) && r.rect.some((v) => v % 8)) off.push(id);
+  const off = []; for (const [id, r] of Object.entries(pods.regions)) if (r.rect && !["compareA", "compareB", "list", "bench"].includes(id) && r.rect.some((v) => v % 8)) off.push(id);
   assert.deepEqual(off, []);
 });
 

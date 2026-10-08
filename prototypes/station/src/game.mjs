@@ -16,7 +16,7 @@ export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { cur: 
 export const TL = createTimeline();
 // What the screen layer needs from the page's boot: the spec files, the components' context and the frame's presenter.
 export const SPECS = {}, LAYER = { ctx: null, presenter: createFramePresenter() };
-export const IDLE_MS = 60000, READ_MS = 2000, ID_MS = 1800, ARRIVE_MS = 3000;
+export const IDLE_MS = 60000, READ_MS = 2000, ID_MS = 2000, ARRIVE_MS = 3000;
 
 const listeners = new Set();
 export const onChange = (fn) => listeners.add(fn);

@@ -61,7 +61,7 @@ export function registerPictures(reqs, env) {
       case "cradle": put(r.id, 224, 40, "the pod renderer's masters", cradlePB); break;
       case "beam": put(r.id, 240, 232, until, () => beamArt(240, 232)); break;
       case "emblem": put(r.id, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24)); break;
-      case "bench": put(r.id, 1024, 522, "the research bench master", benchArt); break;
+      case "bench": put(r.id, r.w, r.h, "the research bench master", benchArt); break;
       case "star": put(r.id, 12, 12, "the glint master", starPB); break;
       case "frost": put(r.id, r.w, r.h, "the research bench master", () => frostPic(r.w, r.h)); break;
       case "slats": put(r.id, r.w, r.h, "the research bench master", () => slatsPB(r.w, r.h)); break;

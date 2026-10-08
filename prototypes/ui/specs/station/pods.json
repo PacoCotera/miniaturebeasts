@@ -17,6 +17,7 @@
   "well": { "rect": [8, 48, 144, 72], "pitch": [0, 72], "ring": { "at": [32, 4, 64, 64], "radius": 31 }, "pod": { "size": [32, 40], "centre": [64, 36] }, "place": { "at": [104, 12, 16, 16] } },
   "hatch": { "rect": [24, 488, 112, 56], "mark": [24, 24] },
   "rail": { "rect": [176, 48, 832, 56], "component": "chapterRail" },
+  "bench": { "rect": [0, 40, 1024, 522] },
   "stage": { "rect": [168, 112, 352, 440] },
   "beam": { "rect": [224, 104, 240, 232] },
   "pod": { "rect": [264, 120, 160, 192], "component": "specimen", "focal": true, "axis": 344, "feet": 312 },
@@ -71,5 +72,5 @@
   "diff": "cream",
   "beam": "tealD"
  },
- "strings": { "unknownPod": "Unknown pod", "newSpecies": "New species", "empty": "the rack is empty", "dockToBring": "dock the Companion to bring its crates home", "openBay": "open the bay at Home to bring pods in", "legsTail": { "rail": "Legs", "heading": "Legs & tail" } }
+ "strings": { "unknownPod": "Unknown pod", "newSpecies": "New species", "empty": "the rack is empty", "dockToBring": "dock the Companion to bring its crates home", "openBay": "open the bay at Home to bring pods in", "legsTail": { "rail": "Legs & tail", "heading": "Legs & tail" } }
 }

@@ -62,8 +62,8 @@ test("every species: the rail shows all its chapters, one word each, no status w
     const st = stock([id]), p = st.tray[0]; S.skipIdentify(st, p); const v = view(model(st)), fr = frameOf(id);
     assert.equal(v.rail.tabs.length, fr.chapters.length, id + " rail tabs against the frame");
     assert.ok(fr.chapters.length <= 12);
-    for (const t of v.rail.tabs) { assert.ok(!/\s/.test(t.word), `${id}: "${t.word}" is one word`); assert.ok(!/read|sealed|cleared|misty|◆|\d/i.test(t.word)); assert.equal(t.pips, Math.min(6, fr.chapters.find((c) => c.id === t.id).traits.length)); assert.equal(t.filled, 0); }
-    if (fr.chapters.some((c) => c.id === "legs-tail")) assert.ok(v.rail.tabs.some((t) => t.word === "Legs"));
+    for (const t of v.rail.tabs) { assert.ok(t.word === "Legs & tail" || !/\s/.test(t.word), `${id}: "${t.word}" is one word (the one decided exception is "Legs & tail")`); assert.ok(!/read|sealed|cleared|misty|◆|\d/i.test(t.word)); assert.equal(t.pips, Math.min(6, fr.chapters.find((c) => c.id === t.id).traits.length)); assert.equal(t.filled, 0); }
+    if (fr.chapters.some((c) => c.id === "legs-tail")) assert.ok(v.rail.tabs.some((t) => t.word === "Legs & tail"));
     const placed = railTabs(spec.regions.rail, fr.chapters.length); assert.equal(placed.tabs.length, fr.chapters.length); assert.ok(!placed.overflow);
     assert.equal(v.requests.find((r) => r.kind === "stamp").size, v.stamp.size);
   }

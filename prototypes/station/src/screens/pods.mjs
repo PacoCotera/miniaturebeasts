@@ -54,7 +54,7 @@ const resolve = (sel) => {
 // --- the intents: a key on a focused target is one rule call; the rule's result becomes events ---
 function identify(p) {
   const r = S.identify(G.st, p, G.settings); if (!r.ok) { if (r.msg) msg(r.msg); return; }
-  const ms = r.newSp ? ID_MS : 700;
+  const ms = ID_MS;   // the seal clears over 2 s, whether or not the species is new
   TL.play({ kind: "seal", target: p.id, ms, hold: true });
   if (r.newSp) { TL.play({ kind: "ribbon", target: p.id, ms: 6000 + Math.round(ms * 0.7), from: Math.round(ms * 0.7) }); msg("New species · " + S.spName(p) + " · its frame is learned and its Library page opens"); G.openBook?.(r.species); }
   save();
@@ -107,8 +107,9 @@ function act(k) {
 // --- the scene: each region of the spec drawn by its component ---
 function nodes(ctx) {
   ensure(); const spec = SPECS.pods, R = spec.regions, C = spec.colours, v = last, out = [], F = P().focus;
-  registerPictures([...v.requests, ...iconRequests(), { kind: "bench", id: "bench:1024x522" }], env);
-  out.push({ id: "bench", kind: "sprite", rect: [0, 40, 1024, 522], asset: "bench:1024x522" });
+  const bench = R.bench.rect, benchId = `bench:${bench[2]}x${bench[3]}`;
+  registerPictures([...v.requests, ...iconRequests(), { kind: "bench", id: benchId, w: bench[2], h: bench[3] }], env);
+  out.push({ id: "bench", kind: "sprite", rect: bench.slice(), asset: benchId });
   const focusOn = (id) => F.cur === id;
   if (v.mode === "compare") {
     const rail = chapterRail(ctx, "rail", R.rail, { ...v.rail, fillGround: false, focused: v.rail.current, region: "rail", tabRegion: "rail.tab" });
@@ -116,7 +117,7 @@ function nodes(ctx) {
     v.pages.forEach((pg, i) => out.push(...chapterPage(ctx, i ? "pageB" : "pageA", { ...R.compareA, rect: R[i ? "compareB" : "compareA"].rect }, { ...pg, region: i ? "compareB" : "compareA", cellRegion: "page.cell" }).nodes));
   } else {
     out.push(...list(ctx, "list", spec, v.list));
-    out.push(...specimen(ctx, "specimen", spec, { ...v.specimen, pod: v.specimen.pod && focusOn("pod") ? { ...v.specimen.pod, lift: 4 } : v.specimen.pod }));
+    out.push(...specimen(ctx, "specimen", spec, { ...v.specimen, pod: v.specimen.pod && focusOn("pod") ? { ...v.specimen.pod, lift: SPECS.frame.focus.lift.creature } : v.specimen.pod }));
     if (v.rail) out.push(...chapterRail(ctx, "rail", R.rail, { ...v.rail, fillGround: false, focused: F.cur && F.cur.startsWith("rail.") ? +F.cur.slice(5) : null, region: "rail", tabRegion: "rail.tab" }).nodes);
     if (v.page) out.push(...chapterPage(ctx, "page", R.page, { ...v.page, region: "page", cellRegion: "page.cell" }).nodes);
     if (v.stamp) out.push(...stampLabel(ctx, "stamp", R.stamp.rect, { stamp: v.stamp.asset, size: v.stamp.size, region: "stamp" }, v.stamp.colours));

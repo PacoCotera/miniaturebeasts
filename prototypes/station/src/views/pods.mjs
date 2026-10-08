@@ -71,7 +71,7 @@ export function podsView(m, spec, ctx) {
       return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", pips: n, filled: read ? (wipe == null ? n : Math.ceil(wipe * n)) : 0, glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:24`, chapter: c.id }) };
     }), star: req({ kind: "star", id: "star:12" }) };
     view.rail.slats = "slats:";
-    if (view.rail.tabs.some((t) => t.state === "sealed")) for (const w of new Set([56, 96, 112])) req({ kind: "slats", id: `slats:${w}x${R.rail.rect[3]}`, w, h: R.rail.rect[3] });
+    if (view.rail.tabs.some((t) => t.state === "sealed")) for (const w of new Set([...railTabs(R.rail, chapters.length).tabs, ...railTabs(R.rail, chapters.length, 0).tabs].map((t) => t[2]))) req({ kind: "slats", id: `slats:${w}x${R.rail.rect[3]}`, w, h: R.rail.rect[3] });   // the widths the rail's own rule gives
     const ch = chapters[ci];
     view.page = pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, present, null);
     const sz = stampSizing(fr), read = fr.chapters.filter((c) => cur.read.includes(c.id)).map((c) => c.id);
@@ -162,7 +162,7 @@ function targetsOf(view, st, spec, rack, cur, nChapters, ci) {
   if (view.rail && view.rail.tabs.length) railTabs(R.rail, view.rail.tabs.length).tabs.forEach((r, i) => t.push({ id: "rail." + i, group: "rail", index: i, rect: r }));
   if (cur && view.box) t.push({ id: "pod", group: "pod", rect: view.box });
   st.tray.slice(0, rack).forEach((q, i) => t.push({ id: "list." + i, group: "list", index: i, rect: repeat(R.well.rect, i, R.well.pitch) }));
-  if (cur) t.push({ id: "list.hatch", group: "list", index: 99, rect: R.hatch.rect.slice() });
+  if (cur) t.push({ id: "list.hatch", group: "list", index: R.list.slots, rect: R.hatch.rect.slice() });
   return t;
 }
 export { targetsOf };
