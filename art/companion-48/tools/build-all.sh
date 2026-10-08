@@ -27,3 +27,13 @@ python3 -I tools/meadow-check.py $W/ground $W/meadow-mixed
 python3 -I tools/preview.py $W/preview-water-3x.png 3 $W/ground/water1.png $W/ground/water2.png $W/ground/deep1.png $W/ground/deep2.png $W/ground/shallows.png $W/shore/shore-03-1.png $W/shore/shore-diag-ne-1.png
 python3 -I tools/check.py $R/sheets/*.png --fourgray $R/sheets/four-gray
 python3 -I tools/check.py $R/still/companion-place-storm-48.png --fourgray $R/still/four-gray
+python3 -I tools/preview.py $W/preview-ripples-5x.png 5 $W/ripples/*.png
+python3 -I tools/preview.py $W/preview-stones-5x.png 5 $W/props/stone.png $W/props/stone-plain2.png $W/props/stone-warm1.png $W/props/stone-warm2.png $W/props/stone-charged1.png $W/props/stone-charged2.png $W/props/stone-step.png
+python3 -I tools/preview.py $W/preview-handpass-5x.png 5 $W/ground/grass2.png $W/props/dew-cup.png $W/pawn/pawn-down-creep1.png $W/pawn/pawn-down-creep2.png $W/pawn/pawn-left-creep1.png $W/pawn/pawn-right-creep3.png $W/pawn/pawn-up-creep2.png
+python3 -I - <<'PY'
+from PIL import Image
+W = "review-place/work"; names = ["m00-d05", "m00-d13", "m03-d04", "m06-d08", "m07-d00", "m12-d01"]
+im = Image.new("RGB", (480 + 20 + 3 * 148, 480), (40, 36, 50)); im.paste(Image.open(f"{W}/shore-test-pond/pond-outline-random.png").convert("RGB"), (0, 0))
+for i, n in enumerate(names): im.paste(Image.open(f"{W}/shore-test/{n}.png").convert("RGB"), (500 + (i % 3) * 148, (i // 3) * 148))
+im.save(f"{W}/preview-shore-test-1x.png")
+PY
