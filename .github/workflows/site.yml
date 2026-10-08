@@ -68,6 +68,14 @@ jobs:
           set -euo pipefail
           node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
+      - name: Station face fonts re-baked and compared
+        # The face's Inter fonts are generated C (prototypes/face/src/fonts) from the committed TrueType files by lv_font_conv,
+        # pinned here to the version the sources were baked with; the bake is reproducible, so a diff means the sources or the
+        # script changed without the fonts being re-baked.
+        run: |
+          npm install --prefix "$RUNNER_TEMP/lvfc" lv_font_conv@1.5.3
+          sh prototypes/face/tools/bake-fonts.sh "$RUNNER_TEMP/lvfc/node_modules/.bin/lv_font_conv"
+          git diff --exit-code -- prototypes/face/src/fonts
       - name: Station face in a browser (LVGL)
         # The page with ?face=lvgl loads the WebAssembly face: LVGL 9.6.0, a 1024×600 display, keys in, the same pixels as
         # the native Linux build; the load time, the size on the wire and the cost of a full-frame copy (CPU throttled

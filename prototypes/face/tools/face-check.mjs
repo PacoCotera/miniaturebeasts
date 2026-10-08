@@ -31,7 +31,7 @@ const f = await page.evaluate(() => window.__st.face);
 expect(f, "the face is loaded (?face=lvgl)");
 if (f) {
   expect(f.version === "LVGL 9.6.0", "LVGL 9.6.0: " + f.version); expect(f.size[0] === 1024 && f.size[1] === 600, "a 1024×600 display: " + f.size);
-  expect(JSON.stringify(await page.evaluate(() => window.__st.face.pixel(10, 10))) === JSON.stringify([22, 42, 55]), "the empty display is the palette's ground colour");
+  expect(JSON.stringify(await page.evaluate(() => window.__st.face.pixel(10, 10))) === JSON.stringify([22, 42, 55]), "the top bar is the palette's ground colour");
   const onCanvas = await page.evaluate(() => { const d = document.getElementById("screen").getContext("2d").getImageData(10, 10, 1, 1).data; return [d[0], d[1], d[2]]; });
   expect(JSON.stringify(onCanvas) === JSON.stringify([22, 42, 55]), "the page's canvas shows the face's pixels: " + onCanvas);
   if (existsSync(path.join(dist, "native.hash"))) {   // the fixed scene (rules, the three Inter sizes, both rings, a picture) in a fresh face: the same pixels as the native build's

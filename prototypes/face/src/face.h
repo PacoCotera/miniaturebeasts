@@ -39,6 +39,8 @@ int face_measure(int px);
 uint8_t *face_asset(int handle, int w, int h);
 int face_object_count(void);
 int face_node_refused(void);
+int face_asset_limit(void);
+void face_background(uint32_t rgb);   /* the screen's ground under the scene */
 void face_selftest_scene(void);   /* a fixed scene for the parity check (selftest.c) */
 #ifdef __cplusplus
 }

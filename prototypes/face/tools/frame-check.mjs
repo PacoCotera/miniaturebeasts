@@ -10,6 +10,7 @@ import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync } from "no
 import { createRequire } from "node:module";
 import path from "node:path";
 import { decodePNG } from "../../ui/png.mjs";
+import { ringMask } from "../../ui/rings.mjs";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
@@ -77,21 +78,41 @@ console.log(rows.join("\n"));
 // the type: every run is Inter 16, 20 or 28 through the face, none refused
 const refused = await face.evaluate(() => window.__st.face.refused());
 expect(refused === 0, "no node refused by the face: " + refused);
-// the focus ring in the focus role, on the focused pod's feet
-const ringRgb = rgbOf(C.ring); let ringPx = 0; for (let j = 40; j < 562; j++) for (let i = 0; i < 1024; i++) if (eq(px(D, i, j), ringRgb)) ringPx++;
-expect(ringPx > 40, `the focus ring is drawn in ${C.ring} (${ringPx} px)`);
+// the focus ring, in the focus role: its rectangle is the target's ±4 px (the creature's ellipse: the box's width + 16 by 24 under its feet),
+// 2 px wide with a 6 px corner radius, and the face drew its mask pixel for pixel; nothing of it lies outside its rectangle
+const ringRgb = rgbOf(C.ring), RG = frame.focus.ring, FT = frame.focus.feet;
+const ringCheck = async (what) => {
+  const img = await shot(face, `l1-ring-${what}.png`, 200), nodes = await face.evaluate(() => window.__st.faceNodes()), tg = await face.evaluate(() => ({ cur: window.__st.UI.pods.focus.cur, targets: window.__st.targets() }));
+  const target = tg.targets.find((x) => x.id === tg.cur), [tx, ty, tw, th] = target.rect, n = nodes.find((q) => q.id === "focus");
+  const want = what === "feet" ? [tx + Math.round(tw / 2) - Math.round((tw + FT.widen) / 2), ty + th - Math.round(FT.height / 2), tw + FT.widen, FT.height] : [tx - RG.outside, ty - RG.outside, tw + 2 * RG.outside, th + 2 * RG.outside];
+  expect(n && JSON.stringify(n.rect) === JSON.stringify(want), `${what}: the ring's rectangle is the target's ${what === "feet" ? "box + 16 by 24 under its feet" : "±4 px"}: ${n && n.rect} (want ${want})`);
+  const [x, y, w, h] = want, mask = what === "feet" ? ringMask(w, h, RG.width, 0, "ellipse") : ringMask(w, h, RG.width, RG.radius); let on = 0, miss = 0, stray = 0;
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const c = eq(px(img, x + i, y + j), ringRgb); if (mask[j * w + i]) { on++; if (!c) miss++; } else if (c && (i < RG.width || j < RG.width || i >= w - RG.width || j >= h - RG.width)) stray++; }
+  expect(on > 0 && miss === 0 && stray === 0, `${what}: the face drew the ring's ${on} pixels (${RG.width} px wide${what === "feet" ? "" : ", radius " + RG.radius}) exactly: ${miss} missing, ${stray} stray`);
+};
+await ringCheck("feet");
+const round = (await face.evaluate(() => window.__st.targets())).find((t) => t.group !== "pod" && t.group !== "rail");
+await face.evaluate((id) => { window.__st.UI.pods.focus.cur = id; }, round.id); await ringCheck("round");
+await face.evaluate(() => { window.__st.UI.pods.focus.cur = "pod"; });
 await shot(face, "l1-pods-frame.png");
-// the message plate: wood plate, shown for 4 s, centred on 512, bottom edge at 550
-await face.evaluate(() => window.__st.say("The pod needs a little more Energy before it can be read.")); await face.waitForTimeout(250);
-const P = await shot(face, "l1-plate.png"), plateCol = rgbOf(C.plate), edge = rgbOf(C.plateEdge);
+// the ✓ cap on the bottom line is in the tick colour
+{ let n = 0; const tk = rgbOf(C.tick); for (let j = Rg.action.rect[1]; j < Rg.action.rect[1] + Rg.action.rect[3]; j++) for (let i = Rg.action.rect[0]; i < Rg.action.rect[0] + 40; i++) { const q = px(D, i, j); if (Math.abs(q[0] - tk[0]) + Math.abs(q[1] - tk[1]) + Math.abs(q[2] - tk[2]) < 60) n++; } expect(n > 6, `the ✓ is drawn in the tick colour ${C.tick}, anti-aliased (${n} px near it)`); }
+// the message plate: centred on 512, at most 640 wide, its bottom edge at 550, there at 3.5 s and gone at 4.3 s
+const PL = frame.regions.plate, t0 = Date.now(); await face.evaluate(() => window.__st.say("The pod needs a little more Energy before it can be read."));
+const P = await shot(face, "l1-plate.png", 300), plateCol = rgbOf(C.plate), edge = rgbOf(C.plateEdge);
 let py0 = -1, py1 = -1; for (let j = 40; j < 562; j++) if (eq(px(P, 512, j), edge) || eq(px(P, 512, j), plateCol)) { if (py0 < 0) py0 = j; py1 = j; }
-expect(py0 > 0 && py1 <= 550, `the plate sits above the bottom line, its bottom edge at y ${py1} (the spec: 550)`);
-await face.waitForTimeout(4300);
-const Q = await pixels(face); expect(eq(px(Q, 512, py1 - 4), px(D, 512, py1 - 4)), "the plate is gone after 4 s");
-// a counter that changed: its tick is amber for 240 ms
+expect(py0 > 0 && py1 + 1 === PL.bottom, `the plate's bottom edge is y ${PL.bottom}: it ends at ${py1 + 1}`);
+let px0 = 1e9, px1 = -1; for (let i = 0; i < 1024; i++) if (eq(px(P, i, py0), edge)) { px0 = Math.min(px0, i); px1 = Math.max(px1, i); }
+expect(Math.abs((px0 + px1 + 1) / 2 - PL.centre) <= 1 && px1 - px0 + 1 <= PL.maxWidth, `the plate is centred on ${PL.centre} (x ${px0} to ${px1}) and at most ${PL.maxWidth} wide (${px1 - px0 + 1})`);
+await face.waitForTimeout(Math.max(0, 3500 - (Date.now() - t0))); const P35 = await pixels(face);
+expect(eq(px(P35, 512, py0), edge), "the plate is still up at 3.5 s");
+await face.waitForTimeout(Math.max(0, 4300 - (Date.now() - t0))); const Q = await pixels(face);
+expect(!eq(px(Q, 512, py0), edge) && eq(px(Q, 512, py1 - 2), px(D, 512, py1 - 2)), "the plate is gone at 4.3 s");
+// a counter that changed: its tick (amber behind the figure) is there at once and cleared after flashMs
 await face.evaluate(() => window.__st.addMaterials(1, 0, 0));
-const A = await shot(face, "l1-tick.png", 90); let amber = 0; const am = rgbOf(C.flash); for (const j of [9, 30]) for (let i = 384; i < 640; i++) if (eq(px(A, i, j), am)) amber++;   // above and below the icons: only the tick reaches there
-expect(amber > 10, `a changed counter wears the amber tick (${amber} px)`);
+const flash = (img) => { let n = 0; const am = rgbOf(C.flash); for (const j of [9, 30]) for (let i = Rg.materials.rect[0]; i < Rg.materials.rect[0] + Rg.materials.rect[2]; i++) if (eq(px(img, i, j), am)) n++; return n; };   // above and below the icons: only the tick reaches there
+const A = await shot(face, "l1-tick.png", 60); expect(flash(A) > 10, `a changed counter wears the amber tick (${flash(A)} px)`);
+await face.waitForTimeout(Rg.materials.flashMs + 200); const A2 = await pixels(face); expect(flash(A2) === 0, `the tick is cleared after ${Rg.materials.flashMs} ms (${flash(A2)} px left)`);
 expect(errors.length === 0, "no page errors: " + errors.join(" | "));
 await browser.close(); server.close();
 if (fails.length) { console.error("frame check failed"); process.exit(1); }
