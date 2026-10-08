@@ -1,22 +1,24 @@
 # Chapter emblems
 
-> **Round 2 (2026-10-08): the picked motifs hand-pixelled at 24×24, three states each, for the art director's sign-off.** Round 1 (two options per chapter, brush-drawn) is kept below and in `round1/` for the record.
+> **Round 3 (2026-10-08): the nine emblems written by hand at 24×24, three states each, for the art director's sign-off.** Round 2 was code-traced and not signed (see the correction below); round 1 (two options per chapter, brush-drawn) is kept for the record. The sheets below are named `round2/` for the output folder only.
 
-**What round 2 is.** Each emblem is explicit pixel data in `source/<chapter>.txt` (24 rows of 24: `#` base colour, `+` lit edge on the top and the left, one palette step lighter, `.` empty), read by `build.py`. The strokes are tapered at their ends (1 px tips, 2 px bodies) like an engraving. The text files were first traced by `trace.py` from anchor curves (a guide only, kept for the record) and then edited by hand, pixel by pixel (`source_gen.py` and `edits.py` record the first writing and the edits); the traced output is not the final. A state changes colour only, never the drawing: unread is mist with a fog edge, read is bone with a white edge, sealed is mist flat with no lit edge.
+**Correction (2026-10-08).** The round 2 README said the emblems were hand-edited pixel by pixel. That was false. Round 2's drawings were traced by a script (`trace.py`) from anchor curves, five pixels were cleared by `edits.py`, and the lit edge was placed by a rule on every left and top boundary pixel: code-drawn, as the art director read in `source_gen.py`. None of round 2 was signed.
 
-**Picks and redos, as directed.**
+**What round 3 is.** Each emblem is explicit pixel data written by hand on the 24 grid: for each emblem I typed the rows as positions and pixels (for example row 6: pixels `+++++` from x 11) and a one-off helper expanded them into `source/<chapter>.txt` (24 rows of 24: `#` base colour, `+` lit edge, `.` empty). No curve is traced and no edge is placed by rule: the lit `+` pixels are the upper-left walls of each stroke, chosen by eye, and a stroke's lower-right wall is base colour. The tracing scripts are removed from the folder (they remain in the git history and in the round 2 commit); `build.py` only reads the text files and packs them. A state changes colour only, never the drawing: unread is mist with a fog edge, read is bone with a white edge, sealed is mist flat with no lit edge.
 
-| Chapter | Round 2 drawing |
+**The drawings, to the art director's directions.**
+
+| Chapter | Round 3 drawing |
 | --- | --- |
-| Coat | A, the combed lock: three leaning strokes of three lengths, tips tapered |
-| Face | A, the almond eye under a brow arc, the pupil a 2×2 cut |
-| Shape | redone as a resting body from the side: the face line up to a pointed ear tip, a dip at the neck, one long back arc to the rump, a flat base |
-| Legs & tail | B as the base: the hind leg ends in a 2 px foot turned forward; the tail is a separate curl behind, not joined to the leg |
-| Movement | redone from B's level walk: two larger prints on a diagonal step, each a 6×7 pad with two toe nicks |
-| Stamina | A, redone: the wave runs the full 22 px, rising gently, ending in a separate 2×2 dot |
-| Character | B, the single-curve ear, with an arc of the head at its base |
-| Glow | B, the ring broken three times, a dot at its centre |
-| Charge | B, the angular spark with a branch |
+| Coat | the combed lock: three leaning strokes of three lengths, tips tapered |
+| Face | the almond eye under a brow arc, the pupil a 2×2 cut |
+| Shape | side-on, 20 wide by 12 tall: a low flat head at the left, a long back arc rising to the apex and falling to the rump at the right, over a flat base; no ear bumps |
+| Legs & tail | one figure: a leg bent at the hock ending in a 3 px forward foot, the tail rising from the top of the leg behind it as an open hook with a 1 px tip |
+| Movement | two solid pads, 7 wide by 5 tall, on a rising diagonal, each with three toe dots in an arc above it (the outer dots one pixel clear of the pad, the middle one two) |
+| Stamina | the wave runs the full 22 px, rising gently, ending in a separate 2×2 dot |
+| Character | a pricked ear in one outline with its cup as a 1 px curve inside, and a short head arc running down to the right on that side only; no brim |
+| Glow | a dot in a ring broken three times |
+| Charge | a zig of three angled cuts with no horizontal bar, and a 1 px fork 4 px long leaving the lower stroke |
 
 ## The sheets
 
