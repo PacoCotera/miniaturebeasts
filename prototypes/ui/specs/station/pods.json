@@ -3,7 +3,7 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#pods-list-and-read",
  "frame": "frame.json",
- "note": "The one home of the Pods numbers, transcribed from station-layouts.md (Pods §5, §6). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What is not in the layout document is listed under `derived`, each waiting for the UI designer. The strings other than strings.openBay are the decided strings of the layout document (§5 States, §6).",
+ "note": "The one home of the Pods numbers, transcribed from station-layouts.md (Pods §5, §6). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What is not in the layout document is listed under `derived`, each waiting for the UI designer. Laid out the concept's way round (UI designer, 2026-10-08): the wells at the far left, the page left of the pod on Compare's columns, the pod on its frosted dish under the cone of light, its name and origin under it, the stamp label at the right; was the page at the right (528, 112, 480, 440) and the stamp under the pod (176, 432), the pod on (344, 312), the cradle 224×40. The focus graph's edges are unchanged: the page holds no focus target, so → from a well still lands on the pod. The strings other than strings.openBay are the decided strings of the layout document (§5 States, §6).",
  "derived": {
   "compare grid for one or two traits": "derived, UI designer to confirm: the document gives Compare's grid for three to six traits only; one and two are Read's cells and pictures scaled to the page's 408 px (pictures 376×264 and 184×256), as the previous builder chose — UI designer, 2026-10-08: confirmed (Read's pictures scaled to 408 px, rounded to the grid), the cells 376 tall on the corrected rows",
   "compare cell rows": "derived, UI designer to confirm: the rows of Compare's cells follow Read's (y 48 and 248 on the page) — UI designer, 2026-10-08: corrected to y 56 and 248: the heading's 32×40 pod runs from y 8 to 48 and touched the first row; cells 184 tall (376 for one or two traits), the second row ending 8 px above the page's edge",
@@ -18,20 +18,20 @@
   "hatch": { "rect": [24, 488, 112, 56], "mark": [24, 24] },
   "rail": { "rect": [176, 48, 832, 56], "component": "chapterRail" },
   "bench": { "rect": [0, 40, 1024, 522] },
-  "stage": { "rect": [168, 112, 352, 440] },
-  "beam": { "rect": [224, 104, 240, 232] },
-  "pod": { "rect": [264, 120, 160, 192], "component": "specimen", "focal": true, "axis": 344, "feet": 312 },
-  "cradle": { "rect": [232, 296, 224, 40] },
-  "name": { "rect": [184, 344, 320, 32], "px": 28, "centre": 344, "noDigits": true },
-  "origin": { "rect": [184, 384, 320, 40], "px": 16, "lines": 2, "centre": 344, "noDigits": true },
-  "stamp": { "rect": [176, 432, 120, 120], "component": "stampLabel" },
+  "stage": { "rect": [592, 112, 240, 440] },
+  "beam": { "rect": [592, 104, 240, 320] },
+  "pod": { "rect": [632, 208, 160, 192], "component": "specimen", "focal": true, "axis": 712, "feet": 400 },
+  "cradle": { "rect": [600, 352, 224, 72] },
+  "name": { "rect": [600, 440, 224, 32], "px": 28, "centre": 712, "noDigits": true },
+  "origin": { "rect": [600, 480, 224, 40], "px": 16, "lines": 2, "centre": 712, "noDigits": true },
+  "stamp": { "rect": [888, 248, 120, 120], "component": "stampLabel" },
   "page": {
-   "rect": [528, 112, 480, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
+   "rect": [176, 112, 408, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
    "grid": {
-    "1": { "cells": [[16, 48, 448, 384]], "picture": [448, 312] },
-    "2": { "cells": [[16, 48, 216, 384], [248, 48, 216, 384]], "picture": [216, 304] },
-    "3-4": { "cells": [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], "picture": [216, 112] },
-    "5-6": { "cells": [[16, 48, 144, 184], [168, 48, 144, 184], [320, 48, 144, 184], [16, 248, 144, 184], [168, 248, 144, 184], [320, 248, 144, 184]], "picture": [144, 112] }
+    "1": { "cells": [[16, 48, 376, 384]], "picture": [376, 312] },
+    "2": { "cells": [[16, 48, 184, 384], [208, 48, 184, 384]], "picture": [184, 304] },
+    "3-4": { "cells": [[16, 48, 184, 184], [208, 48, 184, 184], [16, 248, 184, 184], [208, 248, 184, 184]], "picture": [184, 112] },
+    "5-6": { "cells": [[16, 48, 120, 184], [144, 48, 120, 184], [272, 48, 120, 184], [16, 248, 120, 184], [144, 248, 120, 184], [272, 248, 120, 184]], "picture": [120, 112] }
    }
   },
   "compareA": {
@@ -44,7 +44,7 @@
    }
   },
   "compareB": { "rect": [600, 112, 408, 440], "same": "compareA" },
-  "ribbon": { "rect": [184, 384, 320, 40], "px": 20, "ms": 6000 }
+  "ribbon": { "rect": [600, 480, 224, 40], "px": 20, "ms": 6000 }
  },
  "classes": { "pod": { "large": [160, 192], "medium": [136, 168], "small": [112, 144] } },
  "page": { "marks": { "seed": [40, 52], "seedSmall": [32, 40], "smallUnder": 120, "only": [72, 8], "asleep": [24, 16], "doing": [28, 16], "key": [44, 64] }, "diff": { "bracket": [12, 12], "bracketAt": "top centre, `inset` px in: [P.x + P.w / 2 - 6, P.y + inset]", "inset": 8, "edge": 2 } },

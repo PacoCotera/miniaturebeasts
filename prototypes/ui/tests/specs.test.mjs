@@ -18,7 +18,13 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
   has(R.hatch.rect, "hatch"); has(R.stage.rect, "stage"); has(R.beam.rect, "beam"); has(R.pod.rect, "pod"); has(R.cradle.rect, "cradle"); has(R.name.rect, "name"); has(R.origin.rect, "origin"); has(R.stamp.rect, "stamp"); has(R.page.rect, "page"); has(R.list.rect, "list");
   const rail = railTabs(R.rail, 7); assert.equal(rail.tabs.length, 7); for (const t of rail.tabs) has(t, "rail tab");
   const g = pageGrid(R.page, 4); for (const c of g.cells) has([c[0], c[1], g.picture[0], g.picture[1]], "trait picture");
-  assert.deepEqual(g.picture, [216, 112]);
+  assert.deepEqual(g.picture, [184, 112]);
+  // the concept's way round: the page left of the pod, the pod's box 96 px clear of the stamp label at the right
+  const pod = R.pod.rect, page = R.page.rect, stamp = R.stamp.rect;
+  assert.ok(page[0] + page[2] + 16 <= R.cradle.rect[0] && pod[0] + pod[2] + 96 <= stamp[0] && stamp[0] + stamp[2] === 1008, "page, pod, stamp from left to right");
+  assert.deepEqual(page, pods.regions.compareA.rect, "Read's page is Compare's left page");
+  assert.equal(R.cradle.rect[1] + R.cradle.rect[3], R.pod.feet + 24, "the dish's front lip 24 px below the pod's foot line");
+  assert.ok(R.cradle.rect[1] + R.cradle.rect[3] < R.name.rect[1] && R.name.rect[1] + R.name.rect[3] < R.origin.rect[1], "dish, name, origin do not collide");
 });
 
 test("the grid tables follow the layout document: cells inside the page, none touching, a picture inside its cell", () => {
