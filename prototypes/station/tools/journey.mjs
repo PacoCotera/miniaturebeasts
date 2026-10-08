@@ -12,13 +12,29 @@ import { createRequire } from "node:module";
 import { decode } from "../../genome-stamp/src/decode.mjs";
 import { sameGenome } from "../../genome-stamp/src/codec.mjs";
 import { frameFor } from "../../genome-stamp/src/frames.mjs";
+import { createApp, loadFrames as loadCaddyFrames } from "../../caddy/app.mjs";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import http from "node:http";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown" };
+// The Caddy service in mock mode beside the static server (station-build.md §5), its calls proxied under /caddy-api/ as the VM's web server does.
+loadCaddyFrames();
+const caddyData = mkdtempSync(path.join(tmpdir(), "mb-caddy-journey-"));
+let caddy = createApp({ dataDir: caddyData, painter: "mock", mockDelay: 1, tickMs: 200 });
+let caddyServer = createServer((req, res) => caddy.handle(req, res));
+await new Promise((r) => caddyServer.listen(0, "127.0.0.1", r)); caddy.start();
+let caddyPort = caddyServer.address().port, caddyUp = true;
 const server = createServer((req, res) => {
+  if (req.url.startsWith("/caddy-api/")) {
+    if (!caddyUp) { res.writeHead(502); res.end("the Caddy service is down"); return; }
+    const up = http.request({ host: "127.0.0.1", port: caddyPort, path: req.url, method: req.method, headers: req.headers }, (r2) => { res.writeHead(r2.statusCode, r2.headers); r2.pipe(res); });
+    up.on("error", () => { res.writeHead(502); res.end(); }); req.pipe(up); return;
+  }
   let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/"));
   if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
   if (!existsSync(p)) { res.writeHead(404); res.end("not found"); return; }
@@ -134,8 +150,11 @@ await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
 s = await st();
 expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "eye-rings", "the bud: 21 minutes, eye rings shaped");
 expect(s.e === e1 - 2 && s.s === s1 - 4 && s.d === d1 - 1, "paid 2 ⚡ 4 ❀ 1 ◆");
-expect(s.outbox.length === 1 && s.outbox[0].sha === s.bud.sha, "the genome waits in the outbox for the Caddy service");
 expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on the Incubator");
+// the hand-off: the genome went to the Caddy service and is queued under its hash; the outbox is empty
+await page.waitForFunction(() => window.__st.ST.outbox.length === 0, null, { timeout: 5000 }).catch(() => fail("the outbox did not flush to the Caddy service"));
+s = await st(); expect(s.bud.paint && ["sent", "queued", "painting", "done"].includes(s.bud.paint.state), "the bud's job is with the service: " + JSON.stringify(s.bud.paint));
+expect(caddy.state.jobs.length === 1 && caddy.state.jobs[0].sha === s.bud.sha, "one job queued under the genome's hash");
 await page.waitForTimeout(1600); await shot("page-incubator");
 l = await line(); expect(l.ok === "Grow now", "instant grow offered while growing: " + JSON.stringify(l));
 // the developer's skip: ready to open; Open: the juvenile steps out fully read, into a bay, its stamp whole
@@ -144,10 +163,21 @@ l = await line(); expect(l.ok === "Open", "ready: " + JSON.stringify(l));
 await press("confirm", 300); await shot("page-hatch");
 await page.waitForTimeout(2800); await page.evaluate(() => window.__st.unlock());
 s = await st(); const fig = s.mibis.at(-1);
-expect(!s.bud && s.mibis.length === 2 && fig.name === "Moss" && fig.bay === 1 && fig.read.length === 4 && fig.paint === null, "Moss opened into bay 2, fully read, waiting for its painting");
+expect(!s.bud && s.mibis.length === 2 && fig.name === "Moss" && fig.bay === 1 && fig.read.length === 4, "Moss opened into bay 2, fully read");
 expect((await page.evaluate(() => window.__st.UI.screen)) === "habitat", "the meet view on Habitat");
 await page.waitForTimeout(300); await shot("page-meet");
 l = await line(); expect(/Take Moss with you/.test(l.ok), "the door is focused: " + JSON.stringify(l));
+// the mock paints within a second; the page polls and fetches the set; it lands at a fresh draw (a screen change), never mid-draw
+for (let i = 0; i < 40 && caddy.state.jobs[0].state !== "done"; i++) await page.waitForTimeout(200);
+expect(caddy.state.jobs[0].state === "done", "the mock painted the set: " + caddy.state.jobs[0].state);
+await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(500);
+const fetched = await page.evaluate((sha) => ({ pending: window.__st.caddy.pending().includes(sha), landed: window.__st.caddy.landed(sha) }), fig.sha);
+expect(fetched.pending || fetched.landed, "the set is fetched: " + JSON.stringify(fetched));
+await shot("page-meet-placeholder");
+await press("home", 300);
+expect((await page.evaluate((sha) => window.__st.caddy.landed(sha), fig.sha)), "landed at the next fresh draw (Home)");
+s = await st(); expect(s.mibis.find((m) => m.id === fig.id).paint?.state === "landed", "Moss's paint state is landed");
+await press("habitat", 400); await shot("page-painted");
 // fill the bays: Grow is refused before payment; return a mibi frees a bay for +2 Essence
 await page.evaluate(() => window.__st.seedAdults("S01", 77, 4));
 s = await st(); expect(s.mibis.filter((m) => !m.released).length === 6, "six bays taken");
@@ -164,11 +194,31 @@ s = await st(); expect(s.s === s2 + 2 && s.mibis.find((m) => m.id === adult.id).
 await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "wild"; }, fig.id);
 l = await line(); expect(/not until it is adult/.test(l.subject), "a juvenile stays: " + JSON.stringify(l));
 await press("home", 200);
+// 13. the service stops: Grow still works, the genome waits in the outbox and the lamp says waiting for the cloud; the service returns and the painting lands
+caddyUp = false;
+await page.evaluate(() => window.__st.addMaterials(10, 10, 10));
+await press("research", 200);
+await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika2.id);
+await press("confirm", 300); await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
+s = await st(); expect(s.bud && s.outbox.length === 1, "offline: the genome waits in the outbox");
+await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(300);
+expect((await page.evaluate(() => window.__st.caddy.state.online)) === false, "the client knows the service is down");
+await page.evaluate(() => window.__st.skipBud("ready")); await press("confirm", 300); await page.waitForTimeout(2800); await page.evaluate(() => window.__st.unlock());
+s = await st(); const later = s.mibis.at(-1);
+expect(/waiting for the cloud/.test(await page.evaluate(() => { const m = window.__st.ST.mibis.at(-1); return window.__st.caddy.state.online === false ? "waiting for the cloud" : ""; })), "the lamp says waiting for the cloud");
+await shot("page-offline");
+caddyUp = true;
+await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(300);
+s = await st(); expect(s.outbox.length === 0, "the outbox went when the service answered");
+for (let i = 0; i < 40 && !caddy.state.jobs.some((j) => j.sha === later.sha && j.state === "done"); i++) await page.waitForTimeout(200);
+await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(400);
+await press("home", 300);
+expect((await page.evaluate((sha) => window.__st.caddy.landed(sha), later.sha)), "the second painting landed after the service returned");
 // 7. the other screens draw without errors; the save round-trips
 for (const k of ["library", "confirm", "back", "habitat", "home", "left", "confirm", "back"]) await press(k, 150);
 await press("library", 200); await shot("page-library"); await press("habitat", 300); await shot("page-habitat"); await press("home", 200);
 const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("mb-save-v8")));
-expect(stored.st.schema === 2 && stored.st.tray.length === 2 && stored.st.mibis.length === 6 && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
+expect(stored.st.schema === 2 && stored.st.tray.length === 1 && stored.st.mibis.length === 7 && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
 // 8. the CI smoke's presses, from a fresh world with no save
 await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
 
@@ -179,6 +229,6 @@ await page.keyboard.press("KeyD"); await page.waitForTimeout(150);
 expect(/No Companion world yet/.test(await page.evaluate(() => window.__st.msg)), "docking without a world says so");
 for (const k of ["KeyR", "ArrowRight", "Enter", "KeyL", "KeyB", "KeyD", "KeyH"]) { await page.keyboard.press(k); await page.waitForTimeout(150); }
 await page.waitForTimeout(300); await shot("page-fresh");
-await browser.close(); server.close();
+await browser.close(); server.close(); caddy.stop(); caddyServer.close();
 if (errors.length) { console.error("journey failed:\n" + errors.join("\n")); process.exit(1); }
 console.log("journey ok · screenshots in img/");

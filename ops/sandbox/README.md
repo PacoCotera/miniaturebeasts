@@ -11,3 +11,9 @@ newest `sandbox-*` releases on GitHub; older ones (and their tags) are deleted.
   symlink, keeps the last five releases.
 
 Public reach is a Cloudflare tunnel on the VM pointing at `http://localhost:80`.
+
+The Station's paintings go through **the Caddy service** (`prototypes/caddy/`, unit `mb-caddy`),
+which runs from the current release with its data under `/srv/miniaturebeasts/caddy-data` and its
+mode, ceiling and key in `/etc/miniaturebeasts/caddy.env` (root-only). The web server proxies
+`/caddy-api/*` to it; `deploy.sh` restarts it after switching the release. It starts in mock mode;
+set `CADDY_PAINTER=real` and the key there to paint for money, under the daily ceiling.

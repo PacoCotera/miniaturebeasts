@@ -133,4 +133,4 @@ python3 grow/service.py recheck                                     # re-judge f
 python3 grow/service.py report                                      # costs.json and the sheets
 ```
 
-`paint` skips an individual whose manifest already holds this prompt version; `--force` repaints.
+`paint` skips an individual whose manifest already holds this prompt version; `--force` repaints. `--out <dir>` (or `GROW_OUT`) moves the output root, with the call log `prompts.json` beside it, outside the repository: the Caddy service on the sandbox VM paints under its own data directory this way (`prototypes/caddy/`).

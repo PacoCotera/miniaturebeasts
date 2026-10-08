@@ -22,7 +22,7 @@ python3 grow/service.py report                                        # costs.js
 python3 grow/lab.py --set v8 --models pro --species S12 --samples 2   # the lab on the service's set (paid)
 ```
 
-`GEMINI_API_KEY` comes from the environment; if it is missing, say so, do not work around it.
+`GEMINI_API_KEY` comes from the environment; if it is missing, say so, do not work around it. `--out <dir>` (or `GROW_OUT`) sets the output root and puts the call log beside it, for the Caddy service on the VM (`prototypes/caddy/`, station-build.md G1).
 
 ## Pending
 

@@ -259,3 +259,32 @@ export function mistyArt(frame, genome, mistyTraitIds, w, h) {
 }
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.lamp, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });
+
+// ---------- A landed painting: drawn as it came (the Station may be anti-aliased), its flat ground cleared for a sprite ----------
+class Painted { constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } }
+const PAINTED = new Map();
+// The ground of a painting cleared by a flood from its corners (the painter's plain ground, the derived sizes' white), so the mibi stands free in the vivarium.
+function clearGround(img, w, h) {
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(img, 0, 0, w, h);
+  const id = ctx.getImageData(0, 0, w, h), d = id.data, seen = new Uint8Array(w * h), stack = [];
+  const corner = (x, y) => [d[(y * w + x) * 4], d[(y * w + x) * 4 + 1], d[(y * w + x) * 4 + 2]];
+  const grounds = [corner(0, 0), corner(w - 1, 0), corner(0, h - 1), corner(w - 1, h - 1)];
+  const near = (i) => grounds.some(([r, g2, b]) => Math.abs(d[i * 4] - r) + Math.abs(d[i * 4 + 1] - g2) + Math.abs(d[i * 4 + 2] - b) < 48);
+  for (const [x, y] of [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1], [w >> 1, 0], [0, h >> 1], [w - 1, h >> 1]]) stack.push(y * w + x);
+  while (stack.length) { const i = stack.pop(); if (seen[i] || !near(i)) continue; seen[i] = 1; d[i * 4 + 3] = 0; const x = i % w, y = (i / w) | 0; if (x > 0) stack.push(i - 1); if (x < w - 1) stack.push(i + 1); if (y > 0) stack.push(i - w); if (y < h - 1) stack.push(i + w); }
+  ctx.putImageData(id, 0, 0); return cv;
+}
+// A mibi's landed painting at w×h: the portrait as a plate when it is large, a cleared sprite when it is small; flipped for a facing.
+export function paintedArt(set, sha, w, h, { sprite = false, flip = false } = {}) {
+  const key = sha + ":" + w + "x" + h + ":" + (sprite ? "s" : "p") + (flip ? "f" : "");
+  let p = PAINTED.get(key); if (p) return p;
+  const src = sprite ? (w <= 64 && set.token ? set.token : set.companion || set.portrait) : set.portrait;
+  if (!src) return null;
+  let cv;
+  if (sprite) { cv = clearGround(src, Math.round(w), Math.round(h)); }
+  else { cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high"; ctx.drawImage(src, 0, 0, w, h); }
+  if (flip) { const f = document.createElement("canvas"); f.width = cv.width; f.height = cv.height; const ctx = f.getContext("2d"); ctx.translate(f.width, 0); ctx.scale(-1, 1); ctx.drawImage(cv, 0, 0); cv = f; }
+  p = new Painted(cv); if (PAINTED.size > 200) PAINTED.clear(); PAINTED.set(key, p); return p;
+}
+export const waitLamp = () => art("waitlamp", () => { const pb = new PB(10, 10); pb.ell(5, 5, 4, 4, C.sky); pb.ell(3.5, 3.5, 1.3, 1.3, C.ice); pb.outline(() => C.deep); return pb; });

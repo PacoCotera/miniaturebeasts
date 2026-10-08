@@ -72,11 +72,14 @@ export function saveSettings(patch) { Object.assign(G.settings, patch || {}); tr
 
 // --- screens ---
 const SCREENS = {};
+const screenListeners = new Set();
+export const onScreenChange = (fn) => screenListeners.add(fn);
 export const registerScreen = (name, screen) => { SCREENS[name] = screen; };
 export const screenOf = (name) => SCREENS[name];
 export function goScreen(name) {
-  if (UI.screen !== name) FX.transAt = clock.now;
-  UI.screen = name; UI.pods.wildArm = 0; UI.hab.bondArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null;
+  const fresh = UI.screen !== name; if (fresh) FX.transAt = clock.now;
+  UI.screen = name;
+  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.wildArm = 0; UI.hab.bondArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
   if (name === "habitat" && UI.meet != null && UI.hab.id === UI.meet) UI.meet = null;
 }

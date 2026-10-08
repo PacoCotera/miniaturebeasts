@@ -43,11 +43,12 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install --with-deps chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
       - name: Station rules and journey
-        # The Station's rules in Node (prices, glints, the migration, the stamp) and its browser journey
-        # (a fixture save, a seeded pod, dock, identify, read, compare, return); station-build.md §5.
+        # The Station's rules and the Caddy service in Node, and the Station's browser journey with the service
+        # in mock mode beside it (a fixture save, a seeded pod, dock, identify, read, compare, return, grow, open,
+        # the painting landing, the service down and back); station-build.md §5.
         run: |
           set -euo pipefail
-          node --test prototypes/station/tests/*.test.mjs
+          node --test prototypes/station/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
       - name: Publish the tested bundle as a release
         if: github.ref == 'refs/heads/main'

@@ -93,8 +93,9 @@ export function nameCode(sha) {
 }
 export const codeText = (c) => (c ? `${c.slice(0, 3)} · ${c.slice(3, 6)} · ${c.slice(6, 9)}` : "");
 
-// A canonical text of a genome (sorted loci) and its SHA-256, synchronous so the migration can run on load.
-export const genomeText = (g) => JSON.stringify({ schema: g.schema, species: g.species, frameVersion: g.frameVersion, loci: Object.fromEntries(Object.keys(g.loci).sort().map((k) => [k, g.loci[k]])) });
+// A canonical text of a genome (sorted loci, each pair sorted: the Grow service's canonical form, so the
+// Station's sha names the same set the painter stores) and its SHA-256, synchronous so the migration can run on load.
+export const genomeText = (g) => JSON.stringify({ schema: g.schema, species: g.species, frameVersion: g.frameVersion, loci: Object.fromEntries(Object.keys(g.loci).sort().map((k) => [k, [...g.loci[k]].sort()])) });
 export const genomeSha = (g) => sha256(genomeText(g));
 
 // SHA-256 in plain JS (FIPS 180-4), for a string of code points below 0x80 or UTF-8 encoded here.
