@@ -120,3 +120,13 @@ by the Caddy, stored on the Caddy forever and archived under the kit's account;
 the paid tier adds a monthly allowance and the archive. The core game still never
 depends on a remote call. The first feature of the cloud layer is thereby named;
 its design otherwise stays open.
+
+**Decided 2026-10-08** (the standard painting, [art pipeline](proposals/art-pipeline.md)
+§1.1): the note above is revised. Every mibi's standard look is a **cloud painting
+made at Grow**, not a render from the rig; the Station renders the genome's control
+passes and the **placeholder**, the Caddy **brokers** the painting and **stores**
+every return forever, and the Station validates the painting and **derives** the
+Companion and Caddy versions from it. Offline, a mibi wears the placeholder until the
+Caddy reconnects; the game plays on, so core play still never waits on a remote call,
+but a mibi's finished look does. The portrait stays the paid or earned layer on top.
+A daily grow cap behind the developer toggle bounds the spend.

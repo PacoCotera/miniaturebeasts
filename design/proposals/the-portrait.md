@@ -6,6 +6,8 @@
 
 **Decided 2026-10-08.** The unique cloud-painted render is a prize. The act is a ceremony on the Station: choose the mibi, a pose from its habits and a place it has been; it takes real time, longer than a bud, and arrives as a delivery at the dock, announced on the Companion. It is paid with a token earned by research (a field guide completed, a sealed chapter opened, a drop's first pod, a deep line); one token held at a time; a paid tier adds a monthly one; a welcome token teaches it early; never bought with in-game currency. The portrait makes that mibi the species' face in the cabinet and book, gives it the full moving set on Station and Companion, signs the postmark on its stamp, and makes its shareable card (website, phone, print). Only portrayed mibis are tradeable; any mibi can breed. One sitting per mibi, ever; re-render only for restore. The owner likes "sitting" and "portrait" and wants other options explored.
 
+**Decided 2026-10-08 (the standard painting, [art pipeline](art-pipeline.md) §1.1).** Every mibi now gets a **standard painting** at Grow, free: the cloud painting over the Station's control passes, three-quarter and side views, from which the Companion resident, the token and the frames are derived. The portrait is no longer the only painted mibi. **What the sitting adds** over the standard painting: the **chosen pose and place**; the **richer finish** (more material, more sheen, the place's light); the **full view set** (every stage, main and side, painted ahead of each change); the **signed postmark**; and the **card**. Where this document contrasts the portrait with "the standard look", "plain" or "drawn plain", read the standard painting; where it says the rig's render, that is now the placeholder a mibi wears only until its painting lands. Trading still needs the portrait: the standard painting is not signed.
+
 ## 1. The mechanic, as the player meets it
 
 **Earning the sitting.** Four research moments each give one, and each gives it once: a species' field guide filled (every look seen), its sealed chapter opened, the first pod of a new drop identified, and a deep line (a mibi whose recorded tree runs four generations of the player's own crosses; the number is tuned with the cross). The moment plays where it happens, then a small gilt frame drops into a slot on Home's instrument, beside the Probe dock: the held sitting. One slot, one frame. The paid tier's monthly sitting arrives the same way. A sitting is never on sale for Energy, Data or Essence, and no screen offers one for them.
@@ -35,6 +37,8 @@ A juvenile may sit; later stages are painted ahead of each change (v2 §5). A mi
 | Companion | the standard look derived for HiBit | the painted set derived for HiBit, at the next dock |
 | Stamp | the face and an unsigned postmark ("unverified") | the postmark signed by the cloud; a small frame corner on the face |
 | Card | none | Fig's card: portrait, name, species, place, the stamp and its postmark |
+
+*2026-10-08 (the standard painting):* in the table, "the standard look, motion by rule" and "the standard look derived for HiBit" are the standard painting and its derived set; the portrait's row adds the pose, the place, the finish and the full set over them. The sitting screen's small pictures and its stage show Fig in its standard painting.
 
 **One sitting each, ever.** A portrayed mibi offers no second sitting. The archive keeps the render; it is painted again only to restore a lost copy, and says so on the card ("restored").
 
@@ -79,7 +83,7 @@ Each family names five things: the act, the token, the result, the card, and the
 
 The Companion calls nothing; it learns at the dock.
 - **The notice.** When a crate lands while the Companion is docked, its docked screen shows a message box: "**Fig's portrait** has come · see it at the Station", the name in orange. If it is away, the notice waits for the next dock and joins the link sheet ("The Station has them · a portrait for Fig"). One notice per portrait, never repeated.
-- **The set.** At that dock the Companion takes Fig's painted set (derived to HiBit on the Station) if Fig is one it carries, and the field token stays generic, as v2 §6 says.
+- **The set.** At that dock the Companion takes Fig's painted set (derived to HiBit on the Station) if Fig is one it carries, and the field token stays generic, as v2 §6 says. *2026-10-08 (the standard painting):* the token is derived from the painting too, so the portrait's token replaces the standard painting's token at that dock; nothing stays generic.
 - **The card on the phone.** On a portrayed mibi, Companion mode adds `✓ Show Fig's card`: the card at 450×600, Fig's portrait in HiBit, its name and place, and the postmark large enough for a phone camera. The phone opens Fig's page on the website, where the card can be saved. The Caddy prints the same card in four greys.
 
 ## 6. What the build needs

@@ -40,6 +40,15 @@ forever and syncs it, which asks the reference Caddy for storage (an SD card,
 **Proposal**). The last open question below ("where does creature rendering run")
 is answered: the Station only.
 
+**Decided 2026-10-08** (the standard painting, [art pipeline](proposals/art-pipeline.md)
+§1.1): the split is restated. The **Station** renders the control passes and the
+placeholder, validates the painting and derives the Companion resident, token,
+frames and Caddy four-grey from it. The **Caddy brokers** every mibi's standard
+painting at Grow, not only the portrait, keeps the queue and the daily grow cap, and
+**stores** every painting forever on its card; so the Caddy must be reachable from
+the Station over Wi-Fi and connected for a mibi to get its painting. The Companion
+still renders nothing and calls nothing.
+
 **Open:** display technology, final controls, sensors, battery and charging, the
 printer, the reader (NFC, QR or none), dimensions and enclosures.
 
