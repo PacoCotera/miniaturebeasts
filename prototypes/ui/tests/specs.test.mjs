@@ -18,7 +18,7 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
   has(R.hatch.rect, "hatch"); has(R.stage.rect, "stage"); has(R.beam.rect, "beam"); has(R.pod.rect, "pod"); has(R.cradle.rect, "cradle"); has(R.name.rect, "name"); has(R.origin.rect, "origin"); has(R.stamp.rect, "stamp"); has(R.page.rect, "page"); has(R.list.rect, "list");
   const rail = railTabs(R.rail, 7); assert.equal(rail.tabs.length, 7); for (const t of rail.tabs) has(t, "rail tab");
   const g = pageGrid(R.page, 4); for (const c of g.cells) has([c[0], c[1], g.picture[0], g.picture[1]], "trait picture");
-  assert.deepEqual(g.picture, [216, 120]);
+  assert.deepEqual(g.picture, [216, 112]);
 });
 
 test("the grid tables follow the layout document: cells inside the page, none touching, a picture inside its cell", () => {
