@@ -35,7 +35,7 @@ REPO = os.path.dirname(os.path.dirname(WB))
 OUT = os.path.join(HERE, "out")
 PROMPTS = os.path.join(HERE, "prompts.json")
 ART_DIRECTION = open(os.path.join(HERE, "art-direction.txt")).read().strip()
-PROMPT_VERSION = 3  # 1: the stage 1 template over the controls; 2: art direction, controls, the genome's description and the species reference as separate fields; 3: the controls named as structure only, structural checks in place of the silhouette gate, control variants
+PROMPT_VERSION = 4  # 1: the stage 1 template over the controls; 2: art direction, controls, the genome's description and the species reference as separate fields; 3: the controls named as structure only, structural checks in place of the silhouette gate, control variants; 4: the Loika's rig calibrated to Pip, variant B with only the named markings and a drawing's tolerance in step 1, crisp controls
 CONTROL_VARIANTS = ("blurred", "crisp", "lowres", "twostep")  # how the shaded control is sent: blurred so its facets cannot be copied (the default), as rendered, or at a quarter of the pixels; twostep: variant B, a HiBit drawing from the softened key and index passes, then a style transfer
 BOARD = os.path.join(REPO, "art/visual-directions/02-miniature-lives.png")  # the Miniature Lives concept board, the material reference of the Loika's own making
 BLUR_RADIUS, LOWRES_SIZE = 5, 256
@@ -52,6 +52,7 @@ CHECKS_VERSION = "mb-grow-checks/3"                    # band, span, proportions
 PART_MIN = 0.60                                       # a gated part must hold paint along this share of its drawn length (its span)
 BAND_TOL, BAND_MAX = 0.04, 0.10                       # the tolerance band round the drawn body (share of its size) and how much of the body may lie outside it or be left inside it
 PROPORTION_AREA_MIN, PROPORTION_TOL = 0.05, 0.15      # the parts whose proportions are gated (share of the body) and the tolerance on their extent
+DRAWING_TOL = 0.25                                    # variant B's step 1 is a drawing, not a repaint: a wider proportion tolerance
 SLOT_MARGIN = (1.5, 8)                                # a slot fails when its paint is clearly nearer another slot's pigment: own distance > 1.5 × nearest + 8 (Lab)
 PART_AREA_MIN, SLOT_AREA_MIN, CELL_AREA_MIN = 0.02, 0.01, 0.05             # parts, slots and part-by-slot cells smaller than this share of the body are not gated (eyes, feelers, feet)
 LOG_LOCK = threading.Lock()
@@ -201,7 +202,7 @@ def ImageChops_subtract(a, b):
     return ImageChops.subtract(a.convert("L"), b.convert("L")).point(lambda v: 255 if v > 127 else 0).convert("1")
 
 
-def check(painted_large, ctrl, legend):
+def check(painted_large, ctrl, legend, proportion_tol=PROPORTION_TOL):
     """The checks of a painting at 600×620 against its controls {silhouette, index, slots} (paths): the
     structure (every part present where the part map puts it; the paint within a tolerance band of the
     drawn body), the proportions (each part's painted extent against the drawn extent, relative to the
@@ -253,7 +254,7 @@ def check(painted_large, ctrl, legend):
         if count(m) < PROPORTION_AREA_MIN * body: continue
         within = Image.new("1", fm.size, 0); within.paste(fm, mask=dilate(m, tol).convert("L"))
         rc = max(bbox_size(m)) / csize; rp = max(bbox_size(within)) / psize
-        ok = abs(rp - rc) <= PROPORTION_TOL * rc + 2 * tol / csize
+        ok = abs(rp - rc) <= proportion_tol * rc + 2 * tol / csize
         res["proportions"][name] = {"drawn": round(rc, 3), "painted": round(rp, 3), "ok": ok}
         if not ok: off.append(f"the {name} is {'larger' if rp > rc else 'smaller'} than drawn ({rp:.2f} of the body against {rc:.2f})")
     if off: res["reasons"].append("the proportions are off: " + ", ".join(off))
@@ -365,7 +366,7 @@ def control_image(path, pass_name, variant):
     return png_bytes(im)
 
 
-def paint_view(d, legend, view, attempt, reasons, reference, portrait_png, variant="blurred"):
+def paint_view(d, legend, view, attempt, reasons, reference, portrait_png, variant="crisp"):
     """One paid call for one view; returns (record, painted 600×620 image or None). `reference` is the
     species' reference painting {what, name, png}: the accepted Pip for S01 and for a species' own type
     specimen, else the species' type specimen painting."""
@@ -403,7 +404,7 @@ def paint_view(d, legend, view, attempt, reasons, reference, portrait_png, varia
 STEP1_WORDS = ("DESIGN AT LOW RESOLUTION FIRST: the subject is designed on a logical 280×300 pixel grid and shown at 2× within the frame. Deliberate contemporary HiBit pixel art, not a detailed painting later pixelated: "
                "crisp connected stepped silhouette edges, broad coherent 2D pixel clusters describing rounded ceramic/resin-like cheek, belly and back volumes, restrained crisp highlights, three or four principal value masses. "
                "Shadow and contour clusters are intentional shape design; a smooth emotional shape despite stepped edges. No photographic grain, fur noise, dither spray, tiny isolated bright speckles, subpixel blur or smooth gradients. "
-               "Cream eye rings and pale coat markings stay stronger than lighting. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. "
+               "The eye rings and any coat marking the description names stay stronger than lighting; draw no marking, patch, spot, band or ring the description does not name, and no colour the colour key does not carry. A compact affectionate creature with gentle modeled volume, large friendly eyes with a catch light, a tiny curved friendly mouth, one soft upper-left light. "
                "The last image is the Miniature Lives concept board: it supplies rounded tactile personality; its rich landscape rendering is not requested. "
                "The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border, no frame; the same size and in the same place as in image 1. Output one square image.")
 STEP2_WORDS = ("Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. "
@@ -467,7 +468,7 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
         text = fields["controls"] + "\n\nThe creature: " + fields["description"] + "\n\n" + fields["generate"]
         if reasons: text += "\n\nA previous drawing was rejected because " + "; ".join(reasons) + ". This time keep the parts of image 2 exactly, part for part."
         rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step1", "step": 1, "attempt": attempt, "fields": fields, "reasonsGiven": reasons}, os.path.join(d, "raw"), f"{view}-step1-{attempt}.png")
-        if im is not None: rec["checks"] = check(im, ctrl, legend)
+        if im is not None: rec["checks"] = {**check(im, ctrl, legend, DRAWING_TOL), "proportionTolerance": DRAWING_TOL}
         log_call(rec)
         man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
         vrec["attempts"].append({"callId": rec["id"], "step": 1, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
@@ -508,11 +509,11 @@ def species_reference(species, legend):
 OUTPUT_FILES = ["station-portrait-600x620.png", "station-portrait-300x310.png", "station-side-600x620.png", "station-side-300x310.png", "companion-280x300.png", "token-48.png"]
 
 
-def grow(species, genome=None, digest=None, force=False, variant="blurred", views=VIEWS, sub=None):
+def grow(species, genome=None, digest=None, force=False, variant="crisp", views=VIEWS, sub=None, controls_dir=None):
     """One mibi: the controls, the calls per view with one retry, the derived sizes, the manifest. `sub`
     names a variant trial kept under variants/<sub>/ beside the main outputs (portrait only, no reference
     painting kept); the main run keeps the previous prompt version's outputs under v<n>/ for the sheet."""
-    info = prepare(species, genome, digest); d0 = info["dir"]
+    d0 = controls_dir or prepare(species, genome, digest)["dir"]
     d = d0 if sub is None else os.path.join(d0, "variants", sub)
     os.makedirs(d, exist_ok=True)
     mpath = os.path.join(d, "manifest.json")
@@ -592,7 +593,7 @@ def cmd_paint(a):
                 seen.add(m["genomeSha256"]); jobs.append((sp, os.path.join(REF, sp, m["dir"], "genome.json"), None))
                 if len(seen) == n: break
     force = a.get("force") is not None
-    variant = a.get("control", "blurred"); assert variant in CONTROL_VARIANTS, f"--control one of {CONTROL_VARIANTS}"
+    variant = a.get("control", "crisp"); assert variant in CONTROL_VARIANTS, f"--control one of {CONTROL_VARIANTS}"
     views = a["views"].split(",") if a.get("views") else VIEWS
     sub = a.get("sub")  # a variant trial kept beside the main outputs, e.g. --control crisp --views portrait --sub crisp
     # the species' type specimen painting first (the reference image of every other call of that species)
@@ -643,6 +644,62 @@ def cmd_calibrate(a):
             print(sp, m["id"], "IoU", r["silhouetteIoU"], "inPlace", r["silhouetteIoUInPlace"], "out", r["outside"], "miss", r["missing"], "parts min", min(v["span"] for v in r["parts"].values()) if r["parts"] else "-", "slots", r["slotAgreement"], r["slots"], "PASS" if r["passed"] else "FAIL", r["reasons"])
 
 
+# --- the control experiment: Pip's own silhouette as the control ----------------------------------------------
+HIBIT = os.path.join(REPO, "art/miniature-lives/assets/hibit-plain-280x300.png")
+PIP_PIGMENTS = {"body": ["#465459"], "belly": ["#dfd2ae"], "eyeRim": ["#f1eddc"], "pupil": ["#273036"], "iris": ["#e08a2c"], "crest": ["#6f9a3c"]}
+PIP_FLATS = {"body": (220, 80, 60), "belly": (240, 230, 200), "eyeRim": (200, 200, 220), "pupil": (40, 40, 50), "iris": (230, 150, 60), "crest": (90, 180, 90)}
+
+
+def cmd_pip_control(a):
+    """What the painter does with the right structure: variant B on the Loika's type specimen with the
+    accepted HiBit Pip's own silhouette as the control. The key pass is the HiBit pixels quantised to
+    Pip's pigments (body, belly, eye ring, pupil, iris, crest), the slot map the same in label colours,
+    the silhouette its alpha, the part map one part (the whole body: the part and proportion checks
+    then hold nothing, the band and the slots do). Outputs under out/S01/pip-control/variants/twostep/."""
+    d0 = os.path.join(OUT, "S01", "pip-control"); c = os.path.join(d0, "controls"); os.makedirs(c, exist_ok=True)
+    spec_dir = next(d for d, m in manifests() if m["species"] == "S01" and m["level"] == "species") if any(m["species"] == "S01" and m["level"] == "species" for _, m in manifests()) else None
+    if spec_dir is None:
+        idx = json.load(open(os.path.join(REF, "S01", "index.json"))); spec_dir = prepare("S01", os.path.join(REF, "S01", idx["members"][0]["dir"], "genome.json"))["dir"]
+    legend = json.load(open(os.path.join(spec_dir, "controls", "legend.json")))
+    hib = Image.open(HIBIT).convert("RGBA")
+    pig = [(k, hexrgb(v[0]), lab(hexrgb(v[0]))) for k, v in PIP_PIGMENTS.items()]
+    def quantised(size, scale_box, flats):
+        """The HiBit subject scaled into the frame, each pixel its nearest Pip pigment (or its slot's label colour)."""
+        W, H = size; bw, bh = scale_box
+        sc = min(bw / hib.width, bh / hib.height); im = hib.resize((round(hib.width * sc), round(hib.height * sc)), Image.NEAREST)
+        canvas = Image.new("RGB", size, BG if not flats else (0, 0, 0)); ox, oy = (W - im.width) // 2, (H - im.height) // 2
+        px = im.load(); cp = canvas.load()
+        for y in range(im.height):
+            for x in range(im.width):
+                r, g, b, al = px[x, y]
+                if al < 128: continue
+                best = min(pig, key=lambda t: dist(t[2], lab((r, g, b))))
+                cp[ox + x, oy + y] = PIP_FLATS[best[0]] if flats else best[1]
+        return canvas
+    def silhouette(size, scale_box):
+        W, H = size; bw, bh = scale_box
+        sc = min(bw / hib.width, bh / hib.height); im = hib.resize((round(hib.width * sc), round(hib.height * sc)), Image.NEAREST)
+        canvas = Image.new("L", size, 255); mask = im.split()[3].point(lambda v: 0 if v >= 128 else 255)
+        canvas.paste(mask, ((W - im.width) // 2, (H - im.height) // 2)); return canvas
+    frames = {"large": ((600, 620), (560, 600)), "station": ((300, 310), (280, 300)), "companion": ((280, 300), (262, 280)), "tile": ((48, 48), (46, 46))}
+    for name, (size, box) in frames.items():
+        quantised(size, box, False).save(os.path.join(c, f"key.portrait.{name}.png"))
+        quantised(size, box, True).save(os.path.join(c, f"slots.portrait.{name}.png"))
+        sil = silhouette(size, box); sil.save(os.path.join(c, f"silhouette.portrait.{name}.png"))
+        idx = Image.new("RGB", size, (0, 0, 0)); idx.paste(Image.new("RGB", size, (53, 137, 241)), mask=sil.point(lambda v: 255 - v)); idx.save(os.path.join(c, f"index.portrait.{name}.png"))
+        quantised(size, box, False).save(os.path.join(c, f"shaded.portrait.{name}.png"))
+    exp = {**legend, "schema": legend["schema"] + "+pip-control", "genomeDigest": "S01-pip-control", "genomeSha256": "pip-control-" + sha_file(HIBIT)[:40],
+           "slots": [{"slot": k, "pigments": v, "flat": list(PIP_FLATS[k]), "secondHalf": None} for k, v in PIP_PIGMENTS.items()],
+           "parts": [{"part": "body", "flat": [53, 137, 241]}], "caption": legend["caption"], "note": "the accepted HiBit Pip's own silhouette and pigments as the control (the owner's experiment)"}
+    exp["description"] = {**legend["description"], "text": legend["description"]["text"] + " The drawing follows the accepted Pip's own silhouette."}
+    json.dump(exp, open(os.path.join(c, "legend.json"), "w"), indent=1)
+    os.makedirs(os.path.join(d0, "plain"), exist_ok=True)
+    for f in os.listdir(os.path.join(spec_dir, "plain")): open(os.path.join(d0, "plain", f), "wb").write(open(os.path.join(spec_dir, "plain", f), "rb").read())
+    open(os.path.join(d0, "genome.json"), "w").write(open(os.path.join(spec_dir, "genome.json")).read())
+    man = grow("S01", None, None, "force" in a, "twostep", ["portrait"], "twostep", controls_dir=d0)
+    print("pip-control", {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls ${man['costUSD']:.3f}")
+
+
 # --- recheck: the verdicts recomputed from the logged raw outputs --------------------------------------------
 def raw_image(path):
     return Image.open(path).convert("RGB").resize((620, 620), Image.LANCZOS).crop((10, 0, 610, 620))
@@ -690,7 +747,7 @@ def cmd_recheck(a):
                     if at.get("step") == 1 and at["status"] == "ok":
                         raw = os.path.join(d, "raw", f"{view}-step1-{at.get('attempt', 1)}.png")
                         if not os.path.exists(raw): continue
-                        im = raw_image(raw); at.setdefault("checksAsRun", at.get("checks")); at["checks"] = check(im, ctrl, legend)
+                        im = raw_image(raw); at.setdefault("checksAsRun", at.get("checks")); at["checks"] = {**check(im, ctrl, legend, DRAWING_TOL), "proportionTolerance": DRAWING_TOL}
                         if at["checks"]["passed"] and step1_ok is None: step1_ok = (at, im)
                 step2 = next((at for at in vrec["attempts"] if at.get("step") == 2 and at["status"] == "ok"), None)
                 if step1_ok and step2 and os.path.exists(os.path.join(d, "raw", f"{view}-step2.png")):
@@ -779,7 +836,64 @@ def cmd_report(a):
                                      "plainServed": sum(1 for m in ms for v in VIEWS if m["views"][v]["status"] == "plain"), "retries": sum(len(m["views"][v]["attempts"]) - 1 for m in ms for v in VIEWS)}
     json.dump(cost, open(os.path.join(HERE, "costs.json"), "w"), indent=1); open(os.path.join(HERE, "costs.json"), "a").write("\n")
     print(json.dumps(cost, indent=1))
-    sheets(mans, cost)
+    if mans: sheets(mans, cost)
+    if PROMPT_VERSION >= 4: sheet_loika(cost)
+
+
+def sheet_loika(cost):
+    """The Loika calibrated to Pip: the accepted Pip, then per individual the new control (the shaded
+    pass, portrait), variant B's step 1 drawing and step 2 painting on the calibrated rig, and the
+    previous B (prompt v3, the old rig) matched by reference-set member; last the Pip-silhouette
+    experiment."""
+    os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
+    prev = {}
+    pi = os.path.join(OUT, "S01", "previous-index.json")
+    if os.path.exists(pi):
+        old = json.load(open(pi))["members"]; new = json.load(open(os.path.join(REF, "S01", "index.json")))["members"]
+        for o, n in zip(old, new): prev[n["genomeSha256"][:16]] = os.path.join(OUT, "S01", o["genomeSha256"][:16], "variants", "twostep")
+    rows = []
+    for d, m in manifests():
+        if m["species"] != "S01" or m.get("promptVersion", 1) < PROMPT_VERSION: continue
+        if os.path.exists(os.path.join(d, "variants", "twostep", "manifest.json")): rows.append((d, m, os.path.join(d, "variants", "twostep"), json.load(open(os.path.join(d, "variants", "twostep", "manifest.json")))))
+    rows.sort(key=lambda r: (r[1]["level"] != "species", r[1]["genomeDigest"]))
+    exp = os.path.join(OUT, "S01", "pip-control", "variants", "twostep")
+    cols = [("new control: shaded pass, portrait (rig calibrated to Pip)", 300), ("B step 1: the HiBit drawing", 300), ("B step 2: the rich painting", 300), ("previous B (prompt v3, the old rig)", 300), ("B: Companion derived", 280), ("token 1x, 3x", 200)]
+    gap = 12; rowh = 310 + 44; ink = (40, 40, 50)
+    W = gap + sum(w + gap for _, w in cols); H = 70 + (len(rows) + 2) * rowh
+    sheet = Image.new("RGB", (W, H), (255, 255, 255)); draw = ImageDraw.Draw(sheet)
+    bs = cost.get("variantTrials", {}).get("twostep", {})
+    draw.text((gap, 8), f"S01 Loika calibrated to the accepted Pip: variant B (two steps, crisp controls, only the named markings, a drawing's tolerance of 25 %), {cost['model']}, prompt v{PROMPT_VERSION}, device size at 1x. {bs.get('calls')} calls, ${bs.get('usdPerIndividual', 0) or 0:.3f} a portrait, step 1 first-attempt pass {bs.get('firstAttemptPassRate')}, {bs.get('plainServed')} served plain. Last row: the Pip-silhouette control experiment.", fill=ink)
+    x = gap
+    for name, w in cols: draw.text((x, 26), name, fill=ink); x += w + gap
+    y = 44
+    sheet.paste(flat_rgb(STYLE_REF), (gap, y)); sheet.paste(flat_rgb(os.path.join(REPO, "art/miniature-lives/assets/hibit-plain-280x300.png")), (gap + 4 * (300 + gap), y))
+    draw.text((gap, y + 312), "the accepted Pip: rich treatment 300x310 and HiBit 280x300; art/miniature-lives, accepted appearance reference", fill=ink)
+    def put(path, x, y, zoom=1):
+        if os.path.exists(path):
+            im = Image.open(path).convert("RGB")
+            if zoom > 1: im = im.resize((im.width * zoom, im.height * zoom), Image.NEAREST)
+            sheet.paste(im, (x, y)); return True
+        return False
+    def label(tm):
+        vr = tm["views"]["portrait"]; s1 = [a for a in vr["attempts"] if a.get("step") == 1]; s2 = [a for a in vr["attempts"] if a.get("step") == 2]
+        c1 = (s1[-1].get("checks") or {}) if s1 else {}; c2 = (s2[-1].get("checks") or {}) if s2 else {}
+        return (f"{vr['status']}, {len(vr['attempts'])} calls, ${tm['costUSD']:.3f} | step 1: outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {min(v['span'] if isinstance(v, dict) else v for v in c1['parts'].values()) if c1.get('parts') else '-'}, slots {c1.get('slotAgreement', '-')}"
+                + (f" | step 2 (not gated): outside {c2.get('outside', '-')}, slots {c2.get('slotAgreement', '-')}" if c2 else ""))
+    for r, (d, m, td, tm) in enumerate(rows + ([(os.path.join(OUT, "S01", "pip-control"), None, exp, json.load(open(os.path.join(exp, "manifest.json"))))] if os.path.exists(os.path.join(exp, "manifest.json")) else [])):
+        y = 44 + (r + 1) * rowh; x = gap
+        put(os.path.join(d, "controls", "shaded.portrait.station.png"), x, y); x += 300 + gap
+        put(os.path.join(td, "step1-portrait-300x310.png"), x, y); x += 300 + gap
+        put(os.path.join(td, "station-portrait-300x310.png"), x, y); x += 300 + gap
+        if m is not None:
+            if not put(os.path.join(prev.get(m["genomeSha256"][:16], ""), "station-portrait-300x310.png"), x, y): draw.text((x, y + 140), "no previous B", fill=(120, 120, 130))
+        else: draw.text((x, y + 140), "the experiment: Pip's own HiBit silhouette as the control", fill=(120, 120, 130))
+        x += 300 + gap
+        put(os.path.join(td, "companion-280x300.png"), x, y); x += 280 + gap
+        put(os.path.join(td, "token-48.png"), x, y); put(os.path.join(td, "token-48.png"), x + 56, y, 3)
+        who = f"{m['genomeDigest']}  {'type specimen' if m['level'] == 'species' else 'individual'}  sha256 {m['genomeSha256'][:12]}" if m is not None else "S01 type specimen on the accepted Pip's own silhouette (pip-control)"
+        draw.text((gap, y + 312), f"{who}   |   {label(tm)}", fill=ink)
+        if tm["views"]["portrait"]["status"] == "plain": draw.text((gap + 2 * 312, y + 326), "served plain: step 1 rejected twice", fill=(170, 40, 40))
+    sheet.save(os.path.join(HERE, "sheets", "S01-pip.png")); print("sheet S01-pip", sheet.size)
 
 
 def sheets(mans, cost):
@@ -840,5 +954,6 @@ if __name__ == "__main__":
     if cmd == "paint": cmd_paint(a)
     elif cmd == "calibrate": cmd_calibrate(a)
     elif cmd == "recheck": cmd_recheck(a)
+    elif cmd == "pip-control": cmd_pip_control(a)
     elif cmd == "report": cmd_report(a)
     else: print(__doc__)
