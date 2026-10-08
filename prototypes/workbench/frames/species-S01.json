@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 8,
+  "version": 9,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -89,7 +89,7 @@
    "appearance.belly-field": "on"
   },
   "finish": {
-   "anatomy.crown-form": "pointed",
+   "anatomy.crown-form": "leaf",
    "growth.crest-leaf-count": "three"
   }
  },
@@ -655,11 +655,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "pointed",
-    "pointed"
+    "leaf",
+    "leaf"
    ],
    "looks": [
-    "pointed"
+    "leaf"
    ],
    "guard": "rig: crown.form",
    "nature": "look"
@@ -697,11 +697,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "wide",
+    "wide"
    ],
    "looks": [
-    "high"
+    "wide"
    ],
    "guard": "rig: core.ryOverRx",
    "nature": "look"
@@ -718,11 +718,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "deep",
+    "deep"
    ],
    "looks": [
-    "high"
+    "deep"
    ],
    "guard": "rig: core.rzOverRx",
    "nature": "look"
@@ -823,11 +823,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
-    "short"
+    "stub",
+    "stub"
    ],
    "looks": [
-    "short"
+    "stub"
    ],
    "guard": "rig: muzzle.rxOverHeadRx",
    "nature": "look"
@@ -844,11 +844,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "full",
+    "full"
    ],
    "looks": [
-    "high"
+    "full"
    ],
    "guard": "rig: muzzle.ryOverHeadRy",
    "nature": "look"
@@ -928,11 +928,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "broad",
-    "broad"
+    "narrow",
+    "narrow"
    ],
    "looks": [
-    "broad"
+    "narrow"
    ],
    "guard": "rig: terminal.rxOverCoreRx",
    "nature": "look"
@@ -949,11 +949,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "high",
-    "high"
+    "small",
+    "small"
    ],
    "looks": [
-    "high"
+    "small"
    ],
    "guard": "rig: terminal.rzOverCoreRx",
    "nature": "look"
@@ -970,18 +970,18 @@
    "trait": "eye-rings",
    "shapeable": true,
    "alleles": [
-    "small",
-    "large"
+    "large",
+    "huge"
    ],
    "looks": [
-    "small",
-    "between small and large",
-    "large"
+    "large",
+    "between large and huge",
+    "huge"
    ],
    "guard": "rig: eye.radiusOverHeadMinYZ",
    "typical": [
-    "large",
-    "large"
+    "huge",
+    "huge"
    ]
   },
   {
@@ -1038,11 +1038,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "rounded-square",
-    "rounded-square"
+    "round",
+    "round"
    ],
    "looks": [
-    "rounded-square"
+    "round"
    ],
    "guard": "rig: region.crossExponent",
    "nature": "look"
@@ -1059,11 +1059,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "barrel",
-    "barrel"
+    "ovoid",
+    "ovoid"
    ],
    "looks": [
-    "barrel"
+    "ovoid"
    ],
    "guard": "rig: region.longitudinalForm",
    "nature": "look"
@@ -1080,11 +1080,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "pad",
-    "pad"
+    "rounded",
+    "rounded"
    ],
    "looks": [
-    "pad"
+    "rounded"
    ],
    "guard": "rig: terminal.form",
    "nature": "look"
@@ -1164,11 +1164,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "dim",
-    "dim"
+    "bright",
+    "bright"
    ],
    "looks": [
-    "dim"
+    "bright"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
    "nature": "doing"
@@ -1185,11 +1185,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "long",
-    "long"
+    "short",
+    "short"
    ],
    "looks": [
-    "long"
+    "short"
    ],
    "guard": "behaviour: how long the glow lasts",
    "nature": "doing"
@@ -1236,6 +1236,50 @@
     "3"
    ],
    "guard": "rig: two or three crest leaves",
+   "nature": "look"
+  },
+  {
+   "id": "growth.belly-field-extent",
+   "family": "appearance",
+   "scope": "branch",
+   "clan": "C01",
+   "switch": false,
+   "consumer": "sketch: the share of the body's depth the underside field covers, from below",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "high",
+    "high"
+   ],
+   "looks": [
+    "high"
+   ],
+   "guard": "sketch: the share of the body's depth the underside field covers, from below",
+   "nature": "look"
+  },
+  {
+   "id": "growth.exterior-eye-height-ratio",
+   "family": "structure",
+   "scope": "branch",
+   "clan": "C01",
+   "switch": false,
+   "consumer": "rig: the eye centre's height over the head's half depth (0.2 above the middle elsewhere)",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "middle",
+    "middle"
+   ],
+   "looks": [
+    "middle"
+   ],
+   "guard": "rig: the eye centre's height over the head's half depth (0.2 above the middle elsewhere)",
    "nature": "look"
   }
  ],
@@ -1602,14 +1646,14 @@
   }
  ],
  "counts": {
-  "carried": 48,
+  "carried": 50,
   "trunk": 46,
-  "branch": 2,
+  "branch": 4,
   "absent": 90,
-  "locked": 43,
+  "locked": 45,
   "lockedBy": {
    "switch": 3,
-   "fixed": 40
+   "fixed": 42
   },
   "heritableLook": 3,
   "heritableDoing": 2,
@@ -1636,7 +1680,7 @@
    }
   },
   "fieldGuideLooks": 15,
-  "stampBitsPerCopy": 5
+  "stampBitsPerCopy": 6
  },
  "notYet": {
   "domains": [
@@ -1750,20 +1794,20 @@
      "on"
     ],
     "anatomy.crown-form": [
-     "pointed",
-     "pointed"
+     "leaf",
+     "leaf"
     ],
     "growth.core-half-length": [
      "medium",
      "medium"
     ],
     "growth.core-width-ratio": [
-     "high",
-     "high"
+     "wide",
+     "wide"
     ],
     "growth.core-depth-ratio": [
-     "high",
-     "high"
+     "deep",
+     "deep"
     ],
     "growth.head-length-ratio": [
      "large",
@@ -1782,12 +1826,12 @@
      "high"
     ],
     "growth.muzzle-projection-ratio": [
-     "short",
-     "short"
+     "stub",
+     "stub"
     ],
     "growth.muzzle-width-ratio": [
-     "high",
-     "high"
+     "full",
+     "full"
     ],
     "growth.support-drop-ratio": [
      "short",
@@ -1802,16 +1846,16 @@
      "stout"
     ],
     "growth.terminal-length-ratio": [
-     "broad",
-     "broad"
+     "narrow",
+     "narrow"
     ],
     "growth.terminal-depth-ratio": [
-     "high",
-     "high"
+     "small",
+     "small"
     ],
     "growth.exterior-eye-size-ratio": [
-     "large",
-     "large"
+     "huge",
+     "huge"
     ],
     "growth.exterior-eye-spacing-ratio": [
      "wide",
@@ -1822,16 +1866,16 @@
      "high"
     ],
     "anatomy.region-cross-exponent": [
-     "rounded-square",
-     "rounded-square"
+     "round",
+     "round"
     ],
     "anatomy.region-longitudinal-form": [
-     "barrel",
-     "barrel"
+     "ovoid",
+     "ovoid"
     ],
     "anatomy.contact-terminal-form": [
-     "pad",
-     "pad"
+     "rounded",
+     "rounded"
     ],
     "cognition.exploration-tendency": [
      "seeking",
@@ -1846,12 +1890,12 @@
      "glossy"
     ],
     "appearance.emission-brightness": [
-     "dim",
-     "dim"
+     "bright",
+     "bright"
     ],
     "appearance.emission-length": [
-     "long",
-     "long"
+     "short",
+     "short"
     ],
     "appearance.belly-field": [
      "on",
@@ -1860,6 +1904,14 @@
     "growth.crest-leaf-count": [
      "three",
      "three"
+    ],
+    "growth.belly-field-extent": [
+     "high",
+     "high"
+    ],
+    "growth.exterior-eye-height-ratio": [
+     "middle",
+     "middle"
     ]
    },
    "origin": {
@@ -1870,20 +1922,20 @@
   "brief": "Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head.",
   "bounds": {
    "min": [
-    -1.2946596624284283,
-    -0.7803596143087312,
-    0
+    -1.113871769379756,
+    -0.6672900978699474,
+    -0.02190396574551834
    ],
    "max": [
     0.68696,
-    0.7803596143087311,
-    2.206887341162675
+    0.6672900978699476,
+    2.176738581534379
    ]
   },
   "counts": {
    "nodes": 27,
    "edges": 26,
-   "vertices": 1276
+   "vertices": 1201
   }
  },
  "viability": {
@@ -1902,8 +1954,8 @@
    "on"
   ],
   "growth.exterior-eye-size-ratio": [
-   "small",
-   "large"
+   "large",
+   "huge"
   ],
   "movement.cycle-rate": [
    "low",
@@ -1980,20 +2032,20 @@
    "on"
   ],
   "anatomy.crown-form": [
-   "pointed",
-   "pointed"
+   "leaf",
+   "leaf"
   ],
   "growth.core-half-length": [
    "medium",
    "medium"
   ],
   "growth.core-width-ratio": [
-   "high",
-   "high"
+   "wide",
+   "wide"
   ],
   "growth.core-depth-ratio": [
-   "high",
-   "high"
+   "deep",
+   "deep"
   ],
   "growth.head-length-ratio": [
    "large",
@@ -2012,12 +2064,12 @@
    "high"
   ],
   "growth.muzzle-projection-ratio": [
-   "short",
-   "short"
+   "stub",
+   "stub"
   ],
   "growth.muzzle-width-ratio": [
-   "high",
-   "high"
+   "full",
+   "full"
   ],
   "growth.support-drop-ratio": [
    "short",
@@ -2032,12 +2084,12 @@
    "stout"
   ],
   "growth.terminal-length-ratio": [
-   "broad",
-   "broad"
+   "narrow",
+   "narrow"
   ],
   "growth.terminal-depth-ratio": [
-   "high",
-   "high"
+   "small",
+   "small"
   ],
   "growth.exterior-eye-spacing-ratio": [
    "wide",
@@ -2048,16 +2100,16 @@
    "high"
   ],
   "anatomy.region-cross-exponent": [
-   "rounded-square",
-   "rounded-square"
+   "round",
+   "round"
   ],
   "anatomy.region-longitudinal-form": [
-   "barrel",
-   "barrel"
+   "ovoid",
+   "ovoid"
   ],
   "anatomy.contact-terminal-form": [
-   "pad",
-   "pad"
+   "rounded",
+   "rounded"
   ],
   "cognition.exploration-tendency": [
    "seeking",
@@ -2072,12 +2124,12 @@
    "glossy"
   ],
   "appearance.emission-brightness": [
-   "dim",
-   "dim"
+   "bright",
+   "bright"
   ],
   "appearance.emission-length": [
-   "long",
-   "long"
+   "short",
+   "short"
   ],
   "appearance.belly-field": [
    "on",
@@ -2086,6 +2138,14 @@
   "growth.crest-leaf-count": [
    "three",
    "three"
+  ],
+  "growth.belly-field-extent": [
+   "high",
+   "high"
+  ],
+  "growth.exterior-eye-height-ratio": [
+   "middle",
+   "middle"
   ]
  },
  "sealed": {}

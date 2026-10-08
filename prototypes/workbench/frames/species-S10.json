@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 8,
+  "version": 9,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -788,12 +788,16 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "wide"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and wide",
+    "high",
+    "between high and wide",
+    "wide"
    ],
    "guard": "rig: core.ryOverRx",
    "typical": [
@@ -814,12 +818,16 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "deep"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and deep",
+    "high",
+    "between high and deep",
+    "deep"
    ],
    "guard": "rig: core.rzOverRx",
    "typical": [
@@ -1108,12 +1116,16 @@
    "shapeable": true,
    "alleles": [
     "small",
-    "large"
+    "large",
+    "huge"
    ],
    "looks": [
     "small",
     "between small and large",
-    "large"
+    "between small and huge",
+    "large",
+    "between large and huge",
+    "huge"
    ],
    "guard": "rig: eye.radiusOverHeadMinYZ",
    "typical": [
@@ -1969,13 +1981,21 @@
   {
    "id": "growth.crest-leaf-count",
    "why": "absent: a C01 branch locus"
+  },
+  {
+   "id": "growth.belly-field-extent",
+   "why": "absent: a C01 branch locus"
+  },
+  {
+   "id": "growth.exterior-eye-height-ratio",
+   "why": "absent: a C01 branch locus"
   }
  ],
  "counts": {
   "carried": 56,
   "trunk": 56,
   "branch": 0,
-  "absent": 82,
+  "absent": 84,
   "locked": 37,
   "lockedBy": {
    "switch": 4,
@@ -2013,8 +2033,8 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 75,
-  "stampBitsPerCopy": 28
+  "fieldGuideLooks": 84,
+  "stampBitsPerCopy": 31
  },
  "notYet": {
   "domains": [
@@ -2304,7 +2324,8 @@
   ],
   "growth.exterior-eye-size-ratio": [
    "small",
-   "large"
+   "large",
+   "huge"
   ],
   "growth.exterior-eye-spacing-ratio": [
    "close",
@@ -2316,11 +2337,13 @@
   ],
   "growth.core-width-ratio": [
    "low",
-   "high"
+   "high",
+   "wide"
   ],
   "growth.core-depth-ratio": [
    "low",
-   "high"
+   "high",
+   "deep"
   ],
   "anatomy.ear-tilt": [
    "upright",

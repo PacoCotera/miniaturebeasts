@@ -149,15 +149,17 @@ export function buildBody(resolved) {
     const proj = v["muzzle.rxOverHeadRx"];
     const mR = [proj * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], (0.34 - 0.08 * Math.max(0, Math.min(1, (proj - 0.58) / 0.66))) * headR[2]];
     const mC = add(headCenter, [-headR[0] + 0.15 * headR[0] - 0.5 * mR[0], 0, -0.38 * headR[2]]);
-    const muzzle = newNode("muzzle", "muzzle", head.id, "body"); muzzle.center = mC; muzzle.part = "muzzle";
+    // With a belly field the muzzle and the chin are the underside's pigment too, as Pip's cream snout.
+    const muzzleSlot = v["belly.enabled"] ? "belly" : "body";
+    const muzzle = newNode("muzzle", "muzzle", head.id, muzzleSlot); muzzle.center = mC; muzzle.part = "muzzle";
     if (proj > 0.9) { muzzle.frame = [[-1, 0, 0], [0, -1, 0], [0, 0, 1]]; ringSolid(muzzle, mR, "tapered", 2); } // the frame faces the nose, so the taper thins forward
     else ellipsoid(muzzle, mR);
     push(muzzle, head);
-    const jaw = newNode("jaw", "lower-jaw", muzzle.id, "body"); jaw.center = add(mC, [0.07 * headR[0], 0, -0.22 * headR[2]]); ellipsoid(jaw, [0.85 * mR[0], 0.85 * mR[1], 0.17 * headR[2]]); jaw.part = "muzzle";
+    const jaw = newNode("jaw", "lower-jaw", muzzle.id, muzzleSlot); jaw.center = add(mC, [0.07 * headR[0], 0, -0.22 * headR[2]]); ellipsoid(jaw, [0.85 * mR[0], 0.85 * mR[1], 0.17 * headR[2]]); jaw.part = "muzzle";
     push(jaw, muzzle);
   }
   if (v["modules.exteriorEyePair"]) for (const side of [-1, 1]) {
-    const y = side * v["eye.anchorYOverHeadRy"] * headR[1], z = 0.2 * headR[2], r = v["eye.radiusOverHeadMinYZ"] * Math.min(headR[1], headR[2]);
+    const y = side * v["eye.anchorYOverHeadRy"] * headR[1], z = (v["growth.exterior-eye-height-ratio"] ?? 0.2) * headR[2], r = v["eye.radiusOverHeadMinYZ"] * Math.min(headR[1], headR[2]); // the eye's height on the head: 0.2 of the half depth above the centre, or the C01 locus (Pip's sit at the middle)
     if (Math.abs(y) + 0.82 * r > headR[1] || Math.abs(z) + r > headR[2]) throw new Error("eye does not fit the head (eye size against head size)");
     const analytic = [-headR[0] * Math.sqrt(Math.max(0.01, 1 - (y / headR[1]) ** 2 - (z / headR[2]) ** 2)), y, z];
     const rt = rootOn(head, headCenter, analytic, 0, envOf(head)); // on the actual facet
@@ -174,6 +176,20 @@ export function buildBody(resolved) {
       const height = v["crown.heightOverHeadRz"] * headR[2], radius = 0.36 * Math.min(headR[1], headR[2]);
       const crown = newNode(`crown-${side < 0 ? "L" : side === 0 ? "M" : "R"}`, "crown", head.id, "body"); crown.part = "crown";
       if (v["crown.form"] === "rounded") { crown.center = add(rt.inner, [0, 0, 0.4 * height]); ellipsoid(crown, [radius, radius, 0.6 * height], 2); push(crown, head); }
+      else if (v["crown.form"] === "leaf") {
+        // A leaf sheet, as Pip's crest: the middle leaf up and a little back, the side leaves up and out,
+        // each leaning back; the blade faces forward so the leaves show their width in the portrait.
+        const len = 1.25 * height, w = 0.62 * len;
+        const upAxis = unit([side === 0 ? 0.2 : 0.28, side * 0.55, side === 0 ? 0.98 : 0.8]);
+        // The blade faces forward and a little to its side (the middle leaf to the viewer's left), so the
+        // leaves show their width in the portrait and still read from the side.
+        const across = unit(cross(upAxis, unit([-0.8, (side === 0 ? -1 : side) * 0.6, 0.1])));
+        const outline = [[-0.1, 0], [-0.5, 0.42], [-0.32, 0.82], [0, 1], [0.32, 0.82], [0.5, 0.42], [0.1, 0]];
+        const corners = outline.map(([a, b]) => add(rt.inner, add(mul(across, a * w), mul(upAxis, b * len))));
+        sheet(crown, corners, cross(across, upAxis), 0.025 * len);
+        crown.radii = [w / 2, w / 2, len / 2]; crown.center = add(rt.inner, mul(upAxis, 0.5 * len));
+        push(crown, head, rt.inner);
+      }
       else {
         crown.center = add(rt.inner, [0, 0, 0.5 * height]); crown.radii = [radius, radius, height / 2];
         const base = Array.from({ length: 6 }, (_, i) => add(rt.inner, [radius * Math.cos((i * Math.PI) / 3), radius * Math.sin((i * Math.PI) / 3), 0]));
@@ -524,7 +540,7 @@ export function buildBody(resolved) {
   const tailRings = v["tailRings.enabled"] ? v["growth.tail-ring-count"] ?? 1 : 0;
   const shellPlates = !!v["shell.enabled"] && v["appearance.shell-plates"] === "plated";
   if (v["charged.enabled"]) for (const node of nodes) if (node.role === "primary-region" || node.role === "region-connector" || node.role === "typed-head") node.opacity = 1 - (v["physiology.phase"] ?? 0.4);
-  return { status: "constructed", plan: { key: plan.key, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, states: plan.states }, nodes, edges, bounds, slots, covering, markings, flapMarking, capSpots, mask, tailRings, shellPlates, belly: !!v["belly.enabled"], L };
+  return { status: "constructed", plan: { key: plan.key, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, states: plan.states }, nodes, edges, bounds, slots, covering, markings, flapMarking, capSpots, mask, tailRings, shellPlates, belly: !!v["belly.enabled"], bellyExtent: v["growth.belly-field-extent"] ?? 0.33, L };
 }
 
 // --- helpers ----------------------------------------------------------------------------------------

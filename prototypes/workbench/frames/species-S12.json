@@ -42,7 +42,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 8,
+  "version": 9,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -1675,13 +1675,21 @@
   {
    "id": "growth.crest-leaf-count",
    "why": "absent: a C01 branch locus"
+  },
+  {
+   "id": "growth.belly-field-extent",
+   "why": "absent: a C01 branch locus"
+  },
+  {
+   "id": "growth.exterior-eye-height-ratio",
+   "why": "absent: a C01 branch locus"
   }
  ],
  "counts": {
   "carried": 49,
   "trunk": 49,
   "branch": 0,
-  "absent": 89,
+  "absent": 91,
   "locked": 42,
   "lockedBy": {
    "switch": 2,

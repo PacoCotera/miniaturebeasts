@@ -40,7 +40,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 8,
+  "version": 9,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -964,12 +964,16 @@
    "shapeable": true,
    "alleles": [
     "small",
-    "large"
+    "large",
+    "huge"
    ],
    "looks": [
     "small",
     "between small and large",
-    "large"
+    "between small and huge",
+    "large",
+    "between large and huge",
+    "huge"
    ],
    "guard": "rig: eye.radiusOverHeadMinYZ",
    "typical": [
@@ -1753,13 +1757,21 @@
   {
    "id": "growth.crest-leaf-count",
    "why": "absent: a C01 branch locus"
+  },
+  {
+   "id": "growth.belly-field-extent",
+   "why": "absent: a C01 branch locus"
+  },
+  {
+   "id": "growth.exterior-eye-height-ratio",
+   "why": "absent: a C01 branch locus"
   }
  ],
  "counts": {
   "carried": 39,
   "trunk": 34,
   "branch": 5,
-  "absent": 99,
+  "absent": 101,
   "locked": 13,
   "lockedBy": {
    "switch": 2,
@@ -1801,8 +1813,8 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 101,
-  "stampBitsPerCopy": 34
+  "fieldGuideLooks": 104,
+  "stampBitsPerCopy": 35
  },
  "notYet": {
   "domains": [
@@ -2037,7 +2049,8 @@
   ],
   "growth.exterior-eye-size-ratio": [
    "small",
-   "large"
+   "large",
+   "huge"
   ],
   "growth.exterior-eye-spacing-ratio": [
    "close",

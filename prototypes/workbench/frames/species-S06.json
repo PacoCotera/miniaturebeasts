@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 8,
+  "version": 9,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -837,7 +837,7 @@
    "shapeable": false,
    "copies": [
     "long",
-    "short"
+    "stub"
    ],
    "looks": [
     "long"
@@ -1933,13 +1933,21 @@
   {
    "id": "growth.crest-leaf-count",
    "why": "absent: a C01 branch locus"
+  },
+  {
+   "id": "growth.belly-field-extent",
+   "why": "absent: a C01 branch locus"
+  },
+  {
+   "id": "growth.exterior-eye-height-ratio",
+   "why": "absent: a C01 branch locus"
   }
  ],
  "counts": {
   "carried": 59,
   "trunk": 59,
   "branch": 0,
-  "absent": 79,
+  "absent": 81,
   "locked": 44,
   "lockedBy": {
    "switch": 6,
@@ -2091,7 +2099,7 @@
     ],
     "growth.muzzle-projection-ratio": [
      "long",
-     "short"
+     "stub"
     ],
     "growth.muzzle-width-ratio": [
      "low",
@@ -2246,7 +2254,7 @@
   "brief": "Pesko: 2 body regions (B2), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, neck head.",
   "bounds": {
    "min": [
-    -0.9990804870377071,
+    -0.957369987037707,
     -0.4597892675035008,
     0
    ],
@@ -2259,7 +2267,7 @@
   "counts": {
    "nodes": 29,
    "edges": 28,
-   "vertices": 1468
+   "vertices": 1437
   }
  },
  "viability": {
@@ -2391,7 +2399,7 @@
   ],
   "growth.muzzle-projection-ratio": [
    "long",
-   "short"
+   "stub"
   ],
   "growth.muzzle-width-ratio": [
    "low",

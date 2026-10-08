@@ -1,4 +1,4 @@
-// The genome framework's catalogue, version 8: the v1 authoring catalogue6 (114 validated pairs
+// The genome framework's catalogue, version 9: the v1 authoring catalogue6 (114 validated pairs
 // and six drafts, snapshotted with provenance in catalogue6-data.mjs) plus the records the
 // taxonomy proposal lists as missing for the V1 roster (design/proposals/taxonomy.md §3, "What the
 // catalogue needs": 11 switches · 25 loci + 6 alleles) and the three gaps the species frames list
@@ -105,6 +105,9 @@ const NEW_LOCI = [
   // C01: Pip's cream belly and third crest leaf.
   { id: "appearance.belly-field", family: "appearance", label: "Belly field", scope: "branch", clan: "C01", owner: null, consumer: "sketch: an underside field in the second pigment", ...enable() },
   { id: "growth.crest-leaf-count", family: "structure", label: "Crest leaves", scope: "branch", clan: "C01", owner: "anatomy.crown-presence", consumer: "rig: two or three crest leaves", ...pairMap({ two: 2, three: 3 }, { "two|two": 2, "three|two": 3, "three|three": 3 }) },
+  // Catalogue 9, the Loika calibrated to Pip: how far up the body the belly field reaches, and how high the eyes sit on the head.
+  { id: "growth.belly-field-extent", family: "appearance", label: "Belly reach", scope: "branch", clan: "C01", owner: "appearance.belly-field", consumer: "sketch: the share of the body's depth the underside field covers, from below", ...mean({ low: 0.33 }, { high: 0.5 }) },
+  { id: "growth.exterior-eye-height-ratio", family: "structure", label: "Eye height", scope: "branch", clan: "C01", owner: "anatomy.exterior-eye-presence", consumer: "rig: the eye centre's height over the head's half depth (0.2 above the middle elsewhere)", ...mean({ middle: 0.0 }, { high: 0.2 }) },
 ];
 
 // Alleles added to v1 records (taxonomy §3: "+ 6 alleles"). A changed record is a new record
@@ -118,6 +121,14 @@ const ADDED_ALLELES = {
   "growth.head-length-ratio": { alleles: [{ id: "tiny", label: "tiny", value: 0.22 }], since: 8, why: "a head a quarter of its region long, for the turtle (C11); small (0.3) was the floor" },
   "growth.head-width-ratio": { alleles: [{ id: "tiny", label: "tiny", value: 0.25 }], since: 8, why: "a head a quarter of its region wide, for the turtle (C11); low (0.31) was the floor" },
   "growth.head-depth-ratio": { alleles: [{ id: "tiny", label: "tiny", value: 0.25 }], since: 8, why: "a head a quarter of its region deep, for the turtle (C11); low (0.36) was the floor" },
+  // Catalogue 9: the Loika calibrated to the accepted Pip (the owner's decision 2026-10-08): the rig is structure
+  // and proportion, so its ranges reach the measures taken from art/miniature-lives.
+  "growth.exterior-eye-size-ratio": { alleles: [{ id: "huge", label: "huge", value: 0.44 }], since: 9, why: "Pip's eye ring is 0.43 of the head's height; large (0.32) gave 0.31" },
+  "growth.muzzle-projection-ratio": { alleles: [{ id: "stub", label: "stub", value: 0.32 }], since: 9, why: "Pip's snout clears the head by a tenth of its length; short (0.58) gave three tenths" },
+  "growth.muzzle-width-ratio": { alleles: [{ id: "full", label: "full", value: 0.85 }], since: 9, why: "Pip's snout is the whole lower face" },
+  "growth.core-width-ratio": { alleles: [{ id: "wide", label: "wide", value: 0.65 }], since: 9, why: "Pip's body is as round from the front as from the side" },
+  "growth.core-depth-ratio": { alleles: [{ id: "deep", label: "deep", value: 0.7 }], since: 9, why: "Pip's body is 0.92 as tall as it is long; high (0.61) gave 0.82" },
+  "anatomy.crown-form": { alleles: [{ id: "leaf", label: "leaf", value: "leaf" }], pairMap: (map) => ({ ...map, "leaf|leaf": "leaf", "leaf|pointed": "leaf", "leaf|rounded": "leaf" }), since: 9, why: "Pip's crest is three leaf sheets, not spikes" },
 };
 
 // v1 records whose consumer lived outside the construction target table (the shared pigments and
@@ -148,7 +159,7 @@ function v1Locus(l) {
   const added = ADDED_ALLELES[l.id];
   return {
     ...l, family, status, scope: "trunk", switch: sw, target: l.target ?? V1_TARGETS[l.id] ?? null,
-    ...(added ? { alleles: [...l.alleles, ...added.alleles], pairMap: added.pairMap ?? l.pairMap, version: l.version + 1, addedAlleles: { ids: added.alleles.map((a) => a.id), why: added.why, since: added.since ?? 7 } } : {}),
+    ...(added ? { alleles: [...l.alleles, ...added.alleles], pairMap: typeof added.pairMap === "function" ? added.pairMap(l.pairMap) : added.pairMap ?? l.pairMap, version: l.version + 1, addedAlleles: { ids: added.alleles.map((a) => a.id), why: added.why, since: added.since ?? 7 } } : {}),
     nature: DOING_FAMILIES.has(family) ? "doing" : "look",
     consumer: NEW_CONSUMERS[l.id] ?? (l.target ? `rig: ${l.target}` : DOING_FAMILIES.has(family) ? "behaviour: carried, weighed by the state machine" : null),
     provenance: { catalogue: `${CATALOGUE6.id}@${CATALOGUE6.version}`, digest: CATALOGUE6.foundationDigest, recordVersion: l.version, ...(added ? { amended: `mb-genome-framework@${added.since ?? 7} adds alleles; the v1 record stays exact under its own pin` } : {}) },
@@ -166,7 +177,7 @@ function newLocus(l) {
 export const CATALOGUE = {
   // Pin 8: 7 plus the tiny head alleles (a changed range is a new pin; frames and genomes carry the pin
   // they were built against, and a saved mibi keeps its own).
-  id: "mb-genome-framework", version: 8, schema: "mb-catalogue/8",
+  id: "mb-genome-framework", version: 9, schema: "mb-catalogue/9",
   parent: { id: CATALOGUE6.id, version: CATALOGUE6.version, foundationDigest: CATALOGUE6.foundationDigest, source: CATALOGUE6.source },
   families: CATALOGUE6.families,
   loci: [...CATALOGUE6.loci.map(v1Locus), ...NEW_LOCI.map(newLocus)],
