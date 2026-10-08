@@ -83,7 +83,7 @@ dot, 16 px dithered edge), **cloud bank** (unexplored map: lavender masses, no g
 under them, darkening away from the explored island), **fade** (seen cells: DARK, checker).
 
 **Station palette: 62 colours** (**Working rule**). The numbers live in
-[`prototypes/ui/palettes/station-settled.json`](../../prototypes/ui/palettes/station-settled.json), which replaces `station.json` when the Station build renames its colour uses per the migration table below; this section
+[`prototypes/ui/palettes/station.json`](../../prototypes/ui/palettes/station.json), which the Station build took when it renamed its colour uses per the migration table below; this section
 shows them and their roles. It is the one palette of the Station's **art layer**: the chrome,
 the pixel art the build draws (material icons, lamps, pips, the glint, the leaf timer, Shield
 plates), placeholders and the living window's frame. Painted art and the anti-aliased type are

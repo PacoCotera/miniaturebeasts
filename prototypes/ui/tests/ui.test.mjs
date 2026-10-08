@@ -52,9 +52,9 @@ test("the rail compacts by chapter count as the spec states, and nothing else", 
 });
 
 test("the page grid follows the spec's table by trait count; past it, overflow", () => {
-  const page = { rect: [528, 112, 480, 440], grid: { "1": { cells: [[16, 48, 448, 384]], picture: [448, 312] }, "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 120] } } };
+  const page = { rect: [528, 112, 480, 440], grid: { "1": { cells: [[16, 48, 448, 384]], picture: [448, 312] }, "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 112] } } };
   assert.deepEqual(pageGrid(page, 1).cells, [[544, 160, 448, 384]]);
-  const three = pageGrid(page, 3); assert.equal(three.cells.length, 3); assert.deepEqual(three.cells[2], [544, 360, 216, 184]); assert.deepEqual(three.picture, [216, 120]);
+  const three = pageGrid(page, 3); assert.equal(three.cells.length, 3); assert.deepEqual(three.cells[2], [544, 360, 216, 184]); assert.deepEqual(three.picture, [216, 112]);
   assert.equal(pageGrid(page, 2).overflow, true);   // no row in this table
   assert.equal(pageGrid(page, 0).cells.length, 0);
   assert.deepEqual(repeat([40, 52, 64, 64], 3, [0, 72]), [40, 268, 64, 64]);
@@ -158,45 +158,49 @@ test("the stamp label is 120×120 with the stamp on whole-pixel cells, centred",
 });
 
 test("the chapter rail draws emblem, word and pips per tab, no words of status, the focused tab lifted and ringed", () => {
-  const colours = { unreadFill: "frostD", unreadEdge: "slate", unreadWord: "ink", readFill: "tealD", readRim: "aqua", readWord: "mint", pip: "aqua", pipHollow: "stone", ring: "cream", changed: "amber" };
+  const colours = { unreadFill: "frostS", unreadEdge: "slate", unreadWord: "ink", sealedWord: "mist", readFill: "tealD", readRim: "aqua", readWord: "mint", pip: "aqua", pipHollow: "stone", ring: "cream", changed: "amber" };
   const tabs = [{ id: "coat", word: "Coat", emblem: "emblem:coat:24", pips: 1, filled: 1, state: "read", glint: false }, { id: "face", word: "Face", emblem: "emblem:face:24", pips: 2, filled: 0, state: "unread", glint: true }, { id: "legs-tail", word: "Legs", emblem: "emblem:legs-tail:24", pips: 4, filled: 0, state: "sealed", glint: false }];
   const r = chapterRail(ctx, "rail", { rect: [176, 48, 832, 56] }, { tabs, focused: 1, colours, ground: "deep", slats: "slats:", star: "star:12", region: "rail", tabRegion: "rail.tab" });
   assert.equal(r.tabs.length, 3); assert.equal(r.overflow, false);
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
-  assert.deepEqual(by["rail.0"].rect, [176, 48, 112, 56]); assert.deepEqual(by["rail.1"].rect, [296, 44, 112, 56]);   // the focused tab lifts 4 px
+  assert.deepEqual(by["rail.0"].rect, [176, 48, 112, 56]); assert.deepEqual(by["rail.1"].rect, [296, 46, 112, 56]);   // the focused tab lifts 2 px (the chrome lift)
   assert.deepEqual(by["rail.0.emblem"].rect, [220, 52, 24, 24]);   // tab.x + 44, 52
   assert.equal(by["rail.0.word"].text, "Coat"); assert.equal(by["rail.0.word"].px, 16); assert.equal(by["rail.0.word"].rect[1], 76);
   assert.deepEqual(by["rail.0.pip.0"].rect, [229, 96, 6, 6]); assert.equal(by["rail.0.pip.0"].kind, "rect");
   assert.ok(by["rail.1.pip.0.t"] && !by["rail.1.pip.0"]); assert.equal(by["rail.1.pip.1.t"].rect[0] - by["rail.1.pip.0.t"].rect[0], 10);   // hollow: an outline of four rectangles
-  assert.deepEqual(by["rail.1.glint"].rect, [296 + 92, 44 + 4, 12, 12]);
-  assert.ok(by["rail.2.slats"] && by["rail.2.notch"] && !by["rail.2.pip.0"]); assert.deepEqual(by["rail.2.notch"].rect, [416 + 52, 48 + 52, 8, 4]);
-  assert.ok(by["rail.1.focus"] && by["rail.1.focus"].kind === "nineSlice"); assert.deepEqual(by["rail.1.focus"].rect, [292, 40, 120, 64]);
+  assert.deepEqual(by["rail.1.glint"].rect, [296 + 92, 46 + 4, 12, 12]);
+  assert.equal(by["rail.2.word"].colour, "mist"); assert.ok(by["rail.2.slats"] && by["rail.2.notch"] && !by["rail.2.pip.0"]); assert.deepEqual(by["rail.2.notch"].rect, [416 + 52, 48 + 52, 8, 4]);
+  assert.ok(by["rail.1.focus"] && by["rail.1.focus"].kind === "nineSlice"); assert.deepEqual(by["rail.1.focus"].rect, [292, 42, 120, 64]);
   const words = r.nodes.filter((n) => n.kind === "text").map((n) => n.text); assert.deepEqual(words, ["Coat", "Face", "Legs"]);   // never "read", "sealed" or a price
   assert.ok(!r.nodes.some((n) => n.kind === "text" && /\d/.test(n.text)));
 });
 
 test("the chapter page lays the cells on the grid with the marks inside each picture", () => {
-  const region = { rect: [528, 112, 480, 440], heading: [16, 8], grid: { "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 120] } } };
-  const colours = { pane: "night", edge: "slate", heading: "creamT", name: "creamT", line: "fog", lineEmpty: "stone", wipe: "white" };
-  const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eyes", lines: ["thin rings · hides wide pale rings"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }];
-  const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, frost: "frost:", slats: "slats:", region: "page", cellRegion: "page.cell" });
+  const region = { rect: [528, 112, 480, 440], heading: [16, 8], grid: { "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 112] } } };
+  const colours = { pane: "deep", edge: "slate", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white", diff: { edge: "aqua", bracket: "aqua", keyline: "ink" } };
+  const marks = { seed: [40, 52], seedSmall: [32, 40], smallUnder: 120, only: [72, 8], asleep: [24, 16], doing: [28, 16], key: [44, 64] };
+  const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eyes", lines: ["thin rings · hides wide pale rings"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }, { picture: "pic:d", name: "Tail", lines: ["shows long"], marks: [], diff: true }];
+  const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, marks, diff: { edge: 2, inset: 8 }, bracket: "bracket:12x12", frost: "frost:", slats: "slats:", region: "page", cellRegion: "page.cell" });
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
   assert.deepEqual(by.page.rect, [528, 112, 480, 440]); assert.deepEqual(by["page.emblem"].rect, [544, 120, 24, 24]); assert.equal(by["page.word"].px, 20);
-  assert.deepEqual(by["page.c0.pic"].rect, [544, 160, 216, 120]); assert.deepEqual(by["page.c2.pic"].rect, [544, 360, 216, 120]);
-  assert.deepEqual(by["page.c0.m0"].rect, [544 + 108 - 36, 160 + 120 - 8, 72, 8]);   // the base centred on the bottom edge
-  assert.deepEqual(by["page.c1.m0"].rect, [776 + 216 - 48, 160 + 120 - 60, 40, 52]);   // the seed at the bottom right
+  assert.deepEqual(by["page.c0.pic"].rect, [544, 160, 216, 112]); assert.deepEqual(by["page.c2.pic"].rect, [544, 360, 216, 112]);
+  assert.deepEqual(by["page.c0.m0"].rect, [544 + 108 - 36, 160 + 112 - 8, 72, 8]);   // the base centred on the bottom edge
+  assert.deepEqual(by["page.c1.m0"].rect, [776 + 216 - 40, 160 + 112 - 48, 32, 40]);   // the small seed (32×40 under a 120 px picture) at the bottom right
   assert.deepEqual(by["page.c1.m1"].rect, [776 + 8, 160 + 8, 28, 16]);   // breed to change at the top left
-  assert.equal(by["page.c2.frost"].asset, "frost:216x120"); assert.ok(!by["page.c2.l0"] || by["page.c2.l0"].text === "");
-  assert.deepEqual(by["page.c0.wipe"].rect, [544, 220, 216, 60]); assert.equal(by["page.c0.name"].rect[1], 160 + 120 + 8);
+  assert.equal(by["page.c2.frost"].asset, "frost:216x112"); assert.ok(!by["page.c2.l0"] || by["page.c2.l0"].text === "");
+  assert.deepEqual(by["page.c0.wipe"].rect, [544, 216, 216, 56]); assert.equal(by["page.c0.name"].rect[1], 160 + 112 + 8);
+  // Compare: the difference is a 2 px aqua edge on the picture's own rectangle and the bracket 8 px in at the top centre; never the cream ring
+  assert.deepEqual(by["page.c3.diff.t"].rect, [776, 360, 216, 2]); assert.deepEqual(by["page.c3.diff.r"].rect, [776 + 214, 360, 2, 112]); assert.equal(by["page.c3.diff.t"].colour, "aqua");
+  assert.deepEqual(by["page.c3.bracket"].rect, [776 + 108 - 6, 360 + 8, 12, 12]); assert.ok(!r.nodes.some((n) => n.kind === "nineSlice"));
   assert.ok(r.nodes.filter((n) => n.kind === "text").every((n) => [16, 20].includes(n.px)));
-  assert.equal(chapterPage(ctx, "p2", region, { heading: null, cells: new Array(7).fill(cells[2]), colours, frost: "f:", slats: "s:" }).overflow, true);
+  assert.equal(chapterPage(ctx, "p2", region, { heading: null, cells: new Array(7).fill(cells[2]), colours, marks, diff: { edge: 2, inset: 8 }, frost: "f:", slats: "s:" }).overflow, true);
 });
 
 test("text runs draw the material symbols as icons, wrap and clip", () => {
-  const r = textRun(ctx, "t", "Read Coat · 3 ◆", 16, 570, { px: 16, colour: "creamT" });
+  const r = textRun(ctx, "t", "Read Coat · 3 ◆", 16, 570, { px: 16, colour: "bone" });
   assert.equal(r.nodes.filter((n) => n.kind === "sprite").length, 1); assert.equal(r.nodes.filter((n) => n.kind === "sprite")[0].asset, "icon:data:16");
   assert.ok(r.nodes.filter((n) => n.kind === "text").every((n) => !/[⚡◆❀]/.test(n.text)));
   assert.deepEqual(wrap(ctx, "a b c d e f", 48, 16), ["a b c", "d e f"]);
   assert.ok(clip(ctx, "a very long subject indeed", 60, 16).endsWith("…"));
-  const c = textRun(ctx, "c", "Loika", 344, 344, { px: 28, weight: 600, colour: "creamT", align: "center" }); assert.ok(Math.abs(c.nodes[0].rect[0] + c.nodes[0].rect[2] / 2 - 344) <= 1);
+  const c = textRun(ctx, "c", "Loika", 344, 344, { px: 28, weight: 600, colour: "bone", align: "center" }); assert.ok(Math.abs(c.nodes[0].rect[0] + c.nodes[0].rect[2] / 2 - 344) <= 1);
 });

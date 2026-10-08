@@ -30,41 +30,41 @@ function draw() {
   blit(art("habviv", () => cropPB(vivArt(SW, SH - LINE_H), 200, 120, 600, 380)), 20, 56);
   const isW = m.id === effWithId(), mo = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < 1800 ? NOW - FX.moment.at : -1;
   const st = stageWord(m), size = st === "juvenile" ? 230 : 290, x = 320 - size / 2, y = 420 - size;
-  blit(art("hshadow" + size, () => { const pb = new PB(size, 16); pb.ell(size / 2, 8, size * 0.36, 7, C.moss0, { chk: 1 }); return pb; }), x, y + size * 0.86);
+  blit(art("hshadow" + size, () => { const pb = new PB(size, 16); pb.ell(size / 2, 8, size * 0.36, 7, C.void, { chk: 1 }); return pb; }), x, y + size * 0.86);
   const set = landedSet(m), painted = set ? paintedArt(set, m.sha, size, Math.round(size * 310 / 300), { sprite: true }) : null;
   if (painted) blit(painted, x, y - (mo >= 0 ? Math.round(Math.abs(Math.sin(mo / 150)) * 16) : 0));
   else if (fr && m.genome) blit(mibiArt(fr, m.genome, size, size, "portrait"), x, y - (mo >= 0 ? Math.round(Math.abs(Math.sin(mo / 150)) * 16) : 0));
   const lamp = lampText(m); if (lamp) { blit(waitLamp(), 40, 402); text(lamp + " · placeholder", 58, 400, C.fog, 2); } else if (m.paint?.state === "failed") text("its painting failed · the placeholder stands", 40, 400, C.mist, 2);
-  if (FX.meetId === m.id) { const t = "Meet " + m.name + " · new"; panel(36, 70, textW(t, 3) + 32, 44, C.lamp, C.rust); text(t, 52, 79, C.wood0, 3); }
-  else if (isW) { panel(36, 70, 250, 34, C.lamp, C.wood2); text("in the Companion with you", 161, 80, C.wood0, 2, "center"); }
+  if (FX.meetId === m.id) { const t = "Meet " + m.name + " · new"; panel(36, 70, textW(t, 3) + 32, 44, C.focus, C.rust); text(t, 52, 79, C.panel, 3); }
+  else if (isW) { panel(36, 70, 250, 34, C.focus, C.hairline); text("in the Companion with you", 161, 80, C.panel, 2, "center"); }
   // the card
-  panel(636, 50, 374, 246, C.paper, C.wood2);
-  text(clipText(m.name, 220, 3), 654, 62, C.wood0, 3); if (m.bonded) blit(ICON.heart(true), 654 + textW(clipText(m.name, 220, 3), 3) + 10, 60);
+  panel(636, 50, 374, 246, C.paper, C.hairline);
+  text(clipText(m.name, 220, 3), 654, 62, C.panel, 3); if (m.bonded) blit(ICON.heart(true), 654 + textW(clipText(m.name, 220, 3), 3) + 10, 60);
   text(S.spName(m) + " · " + st, 654, 98, C.bark, 2); text(m.parents ? "bred · " + (S.mibiFullyRead(m, G.settings) ? "fully read" : "one of these until read") : m.shaped && m.shaped.length ? "shaped: " + clipText(m.shaped.join(", "), 170, 2) : "grown as its pod was", 654, 120, C.bark, 2);
   text(clipText(m.parents ? "of " + m.parents.map((p) => p.name).join(" and ") : m.mem ? "remembers the " + m.mem : m.from.g ? "from the " + (S.PLACE_WORD[m.from.g] || m.from.g) : "hasn’t been out yet", 236, 2), 654, 142, C.clay, 2);
-  text(codeText(m.code), 654, 164, C.wood2, 2);
+  text(codeText(m.code), 654, 164, C.hairline, 2);
   if (fr && m.genome) { const sp = stampArt(fr, m.genome, m.read, 88); if (sp) blit(sp, 904, 58); }
   // the chapters as tabs: read ones show, unread ones (a bred child) name their price; ✓ on one reads it
   if (fr && m.genome) fr.chapters.forEach((ch, i) => { const px = 650 + (i % 4) * 88, py = 184 + Math.floor(i / 4) * 44, read = m.read.includes(ch.id), cost = read ? 0 : S.mibiReadCost(G.st, m, ch.id, G.settings);
-    panel(px, py, 80, 40, read ? C.wood3 : C.sand, C.wood1); blit(emblemArt(ch.id), px + 4, py + 4);
-    text(clipText(ch.name, 54, 1), px + 24, py + 4, read ? C.creamT : C.wood0, 1); text(read ? "read" : ch.sealed && !G.settings.sealedOpen ? "sealed" : cost === 0 ? "free" : cost + " ◆", px + 24, py + 21, read ? C.lampD : C.rust, 1); });
+    panel(px, py, 80, 40, read ? C.bevel : C.sand, C.bar); blit(emblemArt(ch.id), px + 4, py + 4);
+    text(clipText(ch.name, 54, 1), px + 24, py + 4, read ? C.bone : C.panel, 1); text(read ? "read" : ch.sealed && !G.settings.sealedOpen ? "sealed" : cost === 0 ? "free" : cost + " ◆", px + 24, py + 21, read ? C.sand : C.rust, 1); });
   if (S.isAdult(G.st, m, G.settings)) { panel(636, 250, 374, 46, C.tealD, C.aqua); text("✕ cross " + m.name + " with another adult " + S.spName(m), 823, 262, C.mint, 2, "center"); }
   else text(S.mibiStage(G.st, m, G.settings) === "juvenile" ? "crosses once adult" : "", 823, 262, C.clay, 2, "center");
   // the with-you door and the bond heart
   const wm = mibiById(effWithId()), pend = S.pendingWith(G.st, G.sv);
-  panel(636, 306, 128, 136, C.wood2, C.wood1); panel(646, 316, 50, 112, C.wood0, C.wood3);
+  panel(636, 306, 128, 136, C.hairline, C.bar); panel(646, 316, 50, 112, C.panel, C.bevel);
   const wfr = wm && frameOf(S.speciesOf(wm)); if (wm && wfr && wm.genome) { const ws = landedSet(wm); blit(ws ? paintedArt(ws, wm.sha, 44, 44, { sprite: true }) : mibiArt(wfr, wm.genome, 44, 44, "portrait"), 649, 350); } else blit(ICON.comp(), 664, 360);
-  text("with you", 730, 330, C.lamp, 2, "center"); wrapText(wm ? wm.name : "no one", 60, 2).slice(0, 2).forEach((l, i) => text(l, 730, 356 + i * 20, C.creamT, 2, "center"));
+  text("with you", 730, 330, C.focus, 2, "center"); wrapText(wm ? wm.name : "no one", 60, 2).slice(0, 2).forEach((l, i) => text(l, 730, 356 + i * 20, C.bone, 2, "center"));
   if (pend && !docked()) wrapText(pend.name + " next dock", 60, 2).slice(0, 2).forEach((l, i) => text(l, 730, 396 + i * 20, C.amber, 2, "center"));
-  panel(774, 306, 118, 136, C.wood2, C.wood1); blit(ICON.heart(!!m.bonded), 818, 322);
-  text(m.bonded ? "bonded" : S.bondOffered(m) ? "offered" : "bond", 833, 364, m.bonded ? C.coral : C.lamp, 2, "center");
-  if (!m.bonded && !S.bondOffered(m)) ["after a", "first outing"].forEach((l, i) => text(l, 833, 388 + i * 20, C.lampD, 2, "center"));
-  panel(902, 306, 108, 136, C.moss2, C.moss4); blit(gateArt(), 918, 312); text("to the wild", 956, 386, C.fog, 2, "center"); text("+2 ❀", 956, 410, C.lamp, 2, "center");
+  panel(774, 306, 118, 136, C.hairline, C.bar); blit(ICON.heart(!!m.bonded), 818, 322);
+  text(m.bonded ? "bonded" : S.bondOffered(m) ? "offered" : "bond", 833, 364, m.bonded ? C.coral : C.focus, 2, "center");
+  if (!m.bonded && !S.bondOffered(m)) ["after a", "first outing"].forEach((l, i) => text(l, 833, 388 + i * 20, C.mist, 2, "center"));
+  panel(902, 306, 108, 136, C.panel, C.hairline); blit(gateArt(), 918, 312); text("to the wild", 956, 386, C.fog, 2, "center"); text("+2 ❀", 956, 410, C.focus, 2, "center");
   if (h.wildArm) text("✓ again", 956, 428, C.amber, 2, "center");
   // the strip of bays
-  panel(16, 450, 994, 104, C.moss1, C.moss3);
-  habList().forEach((q, i) => { const sx = 24 + i * 140, qf = frameOf(S.speciesOf(q)); panel(sx, 456, 128, 92, q.id === m.id ? C.moss3 : C.moss2, C.wood2); if (qf && q.genome) { const qs = landedSet(q); blit(qs ? paintedArt(qs, q.sha, 60, 60, { sprite: true }) : mibiArt(qf, q.genome, 60, 60, "portrait"), sx + 34, 460); } text(clipText(q.name, 120, 2), sx + 64, 526, q.id === effWithId() ? C.amber : C.fog, 2, "center"); });
-  for (let i = habList().length; i < (G.settings.bays || S.BAYS) + 1 && i < 7; i++) { const sx = 24 + i * 140; for (let k = 0; k < 128; k += 8) { R(sx + k, 456, 4, 2, C.moss4); R(sx + k, 546, 4, 2, C.moss4); } text("free", sx + 64, 496, C.moss4, 2, "center"); }
+  panel(16, 450, 994, 104, C.ground, C.bar);
+  habList().forEach((q, i) => { const sx = 24 + i * 140, qf = frameOf(S.speciesOf(q)); panel(sx, 456, 128, 92, q.id === m.id ? C.bar : C.panel, C.hairline); if (qf && q.genome) { const qs = landedSet(q); blit(qs ? paintedArt(qs, q.sha, 60, 60, { sprite: true }) : mibiArt(qf, q.genome, 60, 60, "portrait"), sx + 34, 460); } text(clipText(q.name, 120, 2), sx + 64, 526, q.id === effWithId() ? C.amber : C.fog, 2, "center"); });
+  for (let i = habList().length; i < (G.settings.bays || S.BAYS) + 1 && i < 7; i++) { const sx = 24 + i * 140; for (let k = 0; k < 128; k += 8) { R(sx + k, 456, 4, 2, C.hairline); R(sx + k, 546, 4, 2, C.hairline); } text("free", sx + 64, 496, C.hairline, 2, "center"); }
   const t = targets().find((q) => q.id === h.f); if (t) focusRing(t.x - 3, t.y - 3, t.w + 6, t.h + 6); else h.f = "stage";
 }
 function line() {

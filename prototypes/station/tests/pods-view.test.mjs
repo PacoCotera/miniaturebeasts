@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { podsView, targetsOf } from "../src/views/pods.mjs";
+import { podsView, targetsOf, inWords } from "../src/views/pods.mjs";
 import { nextFocus } from "../../ui/focus.mjs";
 import { makeCtx } from "../../ui/context.mjs";
 import { loadTypeNode } from "../../ui/type-node.mjs";
@@ -33,8 +33,10 @@ const view = (m) => podsView(m, spec, ctx);
 test("an empty rack: the empty cradle under the beam and nothing else on the stage", () => {
   const v = view(model(S.freshSt("w1", 1, 1000)));
   assert.equal(v.empty, true); assert.equal(v.specimen.pod, null); assert.equal(v.rail, null); assert.equal(v.page, null); assert.equal(v.stamp, null);
-  assert.equal(v.line.subject, "the rack is empty"); assert.equal(v.line.need, "open the bay at Home to bring pods in");
-  assert.equal(view(model(S.freshSt("w1", 1, 1000), { docked: false })).line.need, "dock the Companion to bring its crates home");
+  const empty = S.freshSt("w1", 1, 1000);
+  assert.equal(v.line.subject, "the rack is empty"); assert.equal(v.line.need, spec.strings.explore);   // docked, the bay empty
+  assert.equal(view(model(empty, { crates: 2 })).line.need, "open the bay at Home");   // docked, crates in the bay
+  assert.equal(view(model(empty, { docked: false })).line.need, "dock the Companion for its crates");
   assert.equal(v.list.wells.length, 6); assert.ok(v.list.wells.every((w) => w.pod === null));
   assert.deepEqual(v.targets, []);
 });
@@ -93,7 +95,7 @@ test("a read pod: the page by trait count, every picture at its grid size, no di
       }
       const sizes = new Set(page.cells.filter((c) => c.picture).map((c) => c.picture.split(":").at(-1)));
       assert.ok(sizes.size <= 1, "one picture size on a page: " + [...sizes]);
-      if (sizes.size) assert.ok(["448x312", "216x304", "216x120", "144x112"].includes([...sizes][0]), [...sizes][0]);
+      if (sizes.size) assert.ok(["448x312", "216x304", "216x112", "144x112"].includes([...sizes][0]), [...sizes][0]);
       assert.equal(v.rail.tabs[ci].state, sealed ? "sealed" : "read");
     }
     // unread: the frost and the name, no line, no picture
@@ -140,4 +142,28 @@ test("Compare: two pages at the spec's rectangles with their pods at 32×40, the
   const pods = v.requests.filter((r) => r.kind === "pod" && r.size.join("x") === "32x40"); assert.ok(pods.length >= 2);
   const diff = S.compareDiff(st, st.tray[0], st.tray[1]), traits = frameOf("S01").chapters[1].traits;
   assert.deepEqual(v.pages[0].cells.map((c) => c.diff), traits.map((t) => diff.includes(t.id))); assert.deepEqual(v.pages[1].cells.map((c) => c.diff), v.pages[0].cells.map((c) => c.diff));
+});
+
+test("no digits where a word does: the origin drops the expedition's number, a well's subject its number, the shared need line is said in words", () => {
+  const st = stock(["S01"], 11); st.tray[0].n = 7; S.skipIdentify(st, st.tray[0]);
+  const v = view(model(st, { focus: "list.0" }));
+  assert.ok(v.specimen.origin.every((l) => !/\d/.test(l)), v.specimen.origin.join("|")); assert.ok(!/\d/.test(v.line.subject), v.line.subject);
+  assert.equal(inWords("3 new pods wait"), "three new pods wait"); assert.equal(inWords("2 crates in the bay"), "two crates in the bay"); assert.equal(inWords("a Belatz pod waits · needs 3 ◆"), "a Belatz pod waits · needs 3 ◆"); assert.equal(inWords("14 pods wait"), "many pods wait");
+});
+test("Compare's need line follows the spec's strings: here, in another chapter, or none", () => {
+  const st = stock(["S01", "S01"], 11); S.skipRead(st, st.tray[0], settings); S.skipRead(st, st.tray[1], settings);
+  const A = st.tray[0], B = st.tray[1], diff = S.compareDiff(st, A, B), chs = frameOf("S01").chapters;
+  const at = (ci) => view(model(st, { ui: { cur: A.id, anchor: null, ci: 0, cmp: { a: A.id, b: B.id, ci }, wildArm: 0 }, focus: null })).line.need;
+  for (let ci = 0; ci < chs.length; ci++) assert.equal(at(ci), !diff.length ? spec.strings.compareSame : chs[ci].traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere);
+});
+
+test("the hatch's arming plate is six words or fewer for every place", () => {
+  for (const p of Object.keys(spec.strings.hatchPlace)) assert.ok(spec.strings.hatchArm.replace("{place}", spec.strings.hatchPlace[p]).split(" ").length <= 6, p);
+});
+
+test("the bottom line's subjects: a sealed tab's \"<chapter> · sealed\", the hatch's \"the hatch · <pod name>\"", () => {
+  const st = stock(["S02"], 11), p = st.tray[0]; S.skipRead(st, p, settings);
+  const fr = frameOf("S02"), ci = fr.chapters.findIndex((c) => c.sealed);
+  assert.equal(view(model(st, { ui: { cur: p.id, anchor: null, ci, cmp: null, wildArm: 0 }, focus: "rail." + ci })).line.subject, fr.chapters[ci].name + " · sealed");
+  assert.equal(view(model(st, { focus: "list.hatch" })).line.subject, "the hatch · " + S.podName(p));
 });

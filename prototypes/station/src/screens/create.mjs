@@ -3,7 +3,8 @@
 // pictures from the pod's own copies (▲▼); changed tags; doings say breed to change; a clash marks its
 // traits and withholds Grow; the total on the bottom line. ← goes back to Pods with nothing spent.
 import { SW, C, R, blit, text, textW, clipText, wrapText, panel, focusRing, art, PB, clamp, clock, motion } from "../gfx.mjs";
-import { podArt, emblemArt, traitPic, frostPic, famArt, stampArt, domeArt, mistyArt } from "../art.mjs";
+import { podSprite } from "../podsprites.mjs";
+import { emblemArt, traitPic, frostPic, famArt, stampArt, domeArt, mistyArt } from "../art.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, podById } from "../game.mjs";
 import { benchBg, drawTop, beam } from "./frame.mjs";
 import { podFrame } from "./home.mjs";
@@ -32,7 +33,7 @@ function draw() {
   blit(mistyArt(fr, genome, misty, 300, 310), fx, fy + bob);
   if (clash.length) { panel(fx + 40, fy + 10, 220, 30, C.wine, C.red); text("this shape won't grow", fx + 150, fy + 17, C.blush, 2, "center"); }
   // the opened pod at the left; the empty chamber and the stamp at the right
-  const pa = podArt(fr, p.g, 4, "identified"); blit(pa, 150 - pa.w / 2, 130); text("from the pod", 150, 250, C.fog, 2, "center");
+  const pa = podSprite(fr.species.id, "well", "identified"); blit(pa, 150 - pa.w / 2, 130); text("from the pod", 150, 250, C.fog, 2, "center");
   wrapText(S.podOrigin(p), 220, 2).slice(0, 3).forEach((l, i) => text(l, 150, 274 + i * 22, C.mist, 2, "center"));
   blit(domeArt(140, 140, false), 820, 110); text(G.st.bud ? "busy" : "empty", 890, 258, G.st.bud ? C.amber : C.fog, 2, "center");
   const stamp = stampArt(fr, genome, fr.chapters.filter((c) => p.read.includes(c.id) || changed.some((id) => c.traits.some((t) => t.id === id))).map((c) => c.id), 120);
@@ -43,17 +44,17 @@ function draw() {
   if (!list.length) text("Read a chapter first to shape anything", 512, sy + 20, C.mist, 2, "center");
   else {
     const opts = S.rollOptions(p, cur.t.id), choice = cr.choices[cur.t.id] || 0, state = traitState(fr, cur.t, genome), isClash = clash.includes(cur.t.id);
-    text(clipText(cur.c.name + " · " + cur.t.name, 300, 2), 190, sy, C.creamT, 2);
+    text(clipText(cur.c.name + " · " + cur.t.name, 300, 2), 190, sy, C.bone, 2);
     if (opts.length > 1) { opts.forEach((o, i) => { const x = 190 + i * 96; blit(art("roll" + o.look + ":" + cur.t.id + ":" + genomeDigest(o.genome), () => traitPic(fr, o.genome, cur.t.id, 88, 60)), x, sy + 22);
         R(x - 2, sy + 20, 92, 2, i === choice ? C.amber : C.slate); R(x - 2, sy + 82, 92, 2, i === choice ? C.amber : C.slate); R(x - 2, sy + 20, 2, 64, i === choice ? C.amber : C.slate); R(x + 88, sy + 20, 2, 64, i === choice ? C.amber : C.slate); });
       text("▲", 480, sy + 30, C.amber, 2); text("▼", 480, sy + 56, C.amber, 2);
-      text(clipText((choice ? "changed · " : "as the pod is · ") + state.line, 290, 2), 504, sy + 22, isClash ? C.coral : choice ? C.lamp : C.fog, 2);
+      text(clipText((choice ? "changed · " : "as the pod is · ") + state.line, 290, 2), 504, sy + 22, isClash ? C.coral : choice ? C.focus : C.fog, 2);
       text(choice ? "+1 ◆ · ▲▼ to roll back" : "▲▼ roll · +1 ◆ a change", 504, sy + 46, C.mist, 2); }
     else { blit(traitPic(fr, genome, cur.t.id, 88, 60), 190, sy + 22); text(clipText(state.line, 500, 2), 290, sy + 22, C.fog, 2);
-      if (cur.t.nature === "doing") { blit(famArt(), 290, sy + 46); text("breed to change", 322, sy + 46, C.lampD, 2); } else text("this pod carries one look here", 290, sy + 46, C.mist, 2); }
+      if (cur.t.nature === "doing") { blit(famArt(), 290, sy + 46); text("breed to change", 322, sy + 46, C.mist, 2); } else text("this pod carries one look here", 290, sy + 46, C.mist, 2); }
     text("◀ ▶ " + (f + 1) + " of " + list.length + " read traits", 1010, sy, C.stone, 2, "right");
     const s = surprises(p); if (s.length) text(clipText((s.length > 1 ? s.slice(0, -1).join(", ") + " and " + s.at(-1) + " stay" : s[0] + " stays") + " a surprise", 200, 2), 1010, sy + 24, C.mist, 2, "right");
-    if (changed.length) text(clipText("changed: " + changed.map((id) => clash.includes(id) ? id + " ✕" : id).join(", "), 200, 2), 1010, sy + 48, clash.length ? C.coral : C.lamp, 2, "right");
+    if (changed.length) text(clipText("changed: " + changed.map((id) => clash.includes(id) ? id + " ✕" : id).join(", "), 200, 2), 1010, sy + 48, clash.length ? C.coral : C.focus, 2, "right");
   }
   focusRing(184, sy + 16, 300, 72);
 }

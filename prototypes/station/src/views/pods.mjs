@@ -3,7 +3,7 @@
 // JSON: the props of the screen's components, the focus targets, the bottom line, and the pictures it asks for (each a
 // plain request the asset manifest registers). Runs in Node, tested there.
 import * as S from "../state.mjs";
-import { frameOf, traitState, chapterSeal, genomeDigest, stampSizing } from "../genome.mjs";
+import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
 import { railTabs, pageGrid, repeat } from "../../../ui/layout.mjs";
 import { wrap } from "../../../ui/components/text.mjs";
 
@@ -13,6 +13,11 @@ const shellFrame = (st, p) => (st.knownIds.includes(S.speciesOf(p)) ? podFrame(p
 const railWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.rail : c.name);
 const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.heading : c.name);
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+// No digits where a picture or a word does: a count in a sentence is said in words (the frame's shared need line on Pods); an amount beside a material icon is a price or a shortfall and stays in figures.
+const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n) => WORDS[+n] ?? "many");
+// The origin without the expedition's number (a digit would wrap alone onto a second line).
+const originOf = (p) => S.podOrigin(p).replace(/ · expedition \d+$/, "");
 
 // m: { st, settings, docked, ui: { cur, anchor, ci, cmp, wildArm }, focus: id | null, present: { idCut: { pod, p } | null, read: { pod, chapter, p } | null, ribbon: pod id | null } }
 // ctx: the components' context (the spec and the type metrics, to wrap the origin)
@@ -38,7 +43,7 @@ export function podsView(m, spec, ctx) {
     const f = q.idd ? podFrame(q) : null, flags = q.idd ? flagsOf(q) : [];
     wells.push({
       base,
-      pod: req({ kind: "pod", id: `pod:${q.id}:${q.idd ? "i" : "s"}:32x40`, species: shellFrame(st, q) ? S.speciesOf(q) : null, place: q.g, state: q.idd ? "identified" : "sealed", size: R.well.pod.size }),
+      pod: req({ kind: "pod", id: `pod:${shellFrame(st, q) ? S.speciesOf(q) : "-"}:${q.idd ? "i" : "s"}:32x40`, species: shellFrame(st, q) ? S.speciesOf(q) : null, state: q.idd ? "identified" : "sealed", size: R.well.pod.size }),
       ring: req({ kind: "ring", id: `ring:${q.idd ? S.speciesOf(q) : "-"}:${q.idd ? 1 : 0}:${flags.map((x) => x.read + (x.glint ? "g" : "") + (x.sealed ? "s" : "") + x.traits).join(",")}`, species: f ? S.speciesOf(q) : null, idd: q.idd ? 1 : 0, flags }),
       place: PLACE_KEYS.includes(q.g) ? req({ kind: "place", id: `place:${q.g}`, place: q.g }) : null,
     });
@@ -52,12 +57,12 @@ export function podsView(m, spec, ctx) {
     colours: { name: C.name, origin: C.origin, cut: "white" }, beam: req({ kind: "beam", id: "beam:240x232" }), cradle: req({ kind: "cradle", id: "cradle:224x40" }),
     pod: cur ? {
       size: box,
-      sealed: req({ kind: "pod", id: `pod:${cur.id}:s:${box.join("x")}`, species: shellFrame(st, cur) ? S.speciesOf(cur) : null, place: cur.g, state: "sealed", size: box }),
-      identified: cur.idd ? req({ kind: "pod", id: `pod:${cur.id}:i:${box.join("x")}`, species: S.speciesOf(cur), place: cur.g, state: "identified", size: box }) : null,
+      sealed: req({ kind: "pod", id: `pod:${shellFrame(st, cur) ? S.speciesOf(cur) : "-"}:s:${box.join("x")}`, species: shellFrame(st, cur) ? S.speciesOf(cur) : null, state: "sealed", size: box }),
+      identified: cur.idd ? req({ kind: "pod", id: `pod:${S.speciesOf(cur)}:i:${box.join("x")}`, species: S.speciesOf(cur), state: "identified", size: box }) : null,
     } : null,
     cut: cur && cur.idd ? idCut : null,
     name: cur ? (cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod) : null,
-    origin: cur ? wrap(ctx, S.podOrigin(cur), R.origin.rect[2], R.origin.px).slice(0, R.origin.lines) : [],
+    origin: cur ? wrap(ctx, originOf(cur), R.origin.rect[2], R.origin.px).slice(0, R.origin.lines) : [],
     ribbon: cur && present.ribbon === cur.id ? spec.strings.newSpecies : null,
     ribbonColours: { fill: C.ribbonFill, edge: C.ribbonEdge, text: C.ribbonText },
   };
@@ -107,7 +112,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
   });
   const frost = (w, h) => req({ kind: "frost", id: `frost:${w}x${h}`, w, h }), slats = (w, h) => req({ kind: "slats", id: `slats:${w}x${h}`, w, h });
   for (const c of cells) { if (c.frost || c.wipe != null) frost(pw, ph); if (c.sealed) slats(pw, ph); }
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:24`, chapter: ch.id }), word } : null, cells, overflow: grid.overflow || ch.traits.length > 6, frost: "frost:", slats: "slats:", colours: C.page, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
+  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:24`, chapter: ch.id }), word } : null, cells, overflow: grid.overflow || ch.traits.length > 6, frost: "frost:", slats: "slats:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks, diff: { edge: spec.page.diff.edge, inset: spec.page.diff.inset }, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
 }
 
 function compareView(view, m, spec, ctx, req) {
@@ -117,13 +122,13 @@ function compareView(view, m, spec, ctx, req) {
   const both = A.read.includes(ch.id) && B.read.includes(ch.id), ids = both ? diff : [];
   const side = (p, region, key) => {
     const page = pageView(m, spec, p, fr, ch, null, region, req, present, ids, key);
-    page.heading = { pod: req({ kind: "pod", id: `pod:${p.id}:i:32x40`, species: S.speciesOf(p), place: p.g, state: "identified", size: R.compareA.pod }), place: PLACE_KEYS.includes(p.g) ? req({ kind: "place", id: `place:${p.g}`, place: p.g }) : null };
+    page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:32x40`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }), place: PLACE_KEYS.includes(p.g) ? req({ kind: "place", id: `place:${p.g}`, place: p.g }) : null };
     return page;
   };
   const compareRegion = (key) => ({ ...R[key === "compareB" ? "compareA" : key], rect: R[key].rect });
   view.pages = [side(A, compareRegion("compareA"), "compareA"), side(B, compareRegion("compareB"), "compareB")];
   view.rail = { colours: C.rail, ground: C.ground, focused: null, slats: "slats:", tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, 6), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:24`, chapter: x.id }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
-  view.line = { back: "Pods", subject: "two " + S.spName(A) + " pods", need: diff.length ? S.plural(diff.length, "trait") + " differ" : "no read trait differs" };
+  view.line = { back: "Pods", subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
   view.targets = [];
   return view;
 }
@@ -131,7 +136,7 @@ function compareView(view, m, spec, ctx, req) {
 // The bottom line: the one action and its price, where ← goes, the subject, what needs you.
 function lineOf(m, spec, p, chapters, ci) {
   const { st, settings, ui, docked } = m, f = m.focus ?? "pod", glintNeed = S.podGlints(st, p || {}) ? "something new here" : null;
-  if (!p) return { back: "Home", subject: spec.strings.empty, need: docked ? spec.strings.openBay : spec.strings.dockToBring };
+  if (!p) return { back: "Home", subject: spec.strings.empty, need: !docked ? spec.strings.dockToBring : m.crates > 0 ? spec.strings.openBay : spec.strings.explore };
   const subj = S.podName(p) + " · " + (S.PLACE_WORD[p.g] || "");
   if (f === "pod") {
     if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: cost ? cost + " ⚡" : "free", dim: st.e < cost, back: "Home", subject: subj }; }
@@ -142,17 +147,17 @@ function lineOf(m, spec, p, chapters, ci) {
     const ch = chapters[+f.slice(5)]; if (!ch) return { back: "Home" };
     const b = S.readBlock(st, p, ch.id, settings), fr = podFrame(p);
     if (b === null) return { back: "Home", subject: ch.name + " · read", need: glintNeed };
-    if (b.startsWith("sealed")) return { back: "Home", subject: ch.name + " · sealed · opens with " + chapterSeal(fr, ch) };
+    if (b.startsWith("sealed")) return { back: "Home", subject: railWord(ch, spec) + " · sealed" };
     const cost = S.readCost(st, p, ch.id, settings), half = (st.readOnce[fr.species.id] || []).includes(ch.id) && cost > 0;
     return { ok: "Read " + ch.name, price: b ? b : cost === 0 ? "free" : cost + " ◆" + (half ? " · half" : ""), dim: !!b, back: "Home", subject: subj, need: S.glint(st, p, ch.id) ? "something new here" : null };
   }
   if (f.startsWith("list.") && f !== "list.hatch") {
     const i = +f.slice(5), q = st.tray[i]; if (!q) return { back: "Home" };
-    const A = S.podById(st, ui.anchor), tail = "well " + (i + 1) + " · " + S.podName(q);
+    const A = S.podById(st, ui.anchor), tail = S.podName(q);
     if (A && A !== q && S.canCompare(st, A, q)) return { ok: "Compare", price: "free", back: "Home", subject: tail + " · " + (S.PLACE_WORD[q.g] || "") };
-    return { ok: "Look at this pod", back: "Home", subject: tail + " · " + S.podOrigin(q) };
+    return { ok: "Look at this pod", back: "Home", subject: tail + " · " + originOf(q) };
   }
-  if (f === "list.hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back: "Home", subject: "the hatch · " + S.podName(p) + " back to the " + (S.PLACE_WORD[p.g] || "wild") };
+  if (f === "list.hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back: "Home", subject: "the hatch · " + S.podName(p) };
   return { back: "Home" };
 }
 

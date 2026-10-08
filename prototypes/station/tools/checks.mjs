@@ -56,6 +56,8 @@ console.log("== regions against the spec files");
 const R = pods.regions, F = frame.regions, W = R.well;
 const textBox = (n) => { const w = type.measure(n.text, n.px), x = n.align === "center" ? n.rect[0] - Math.round(w / 2) : n.align === "right" ? n.rect[0] - w : n.rect[0]; return [x, n.rect[1], w, type.face(n.px).cap]; };
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
+// the scene ids of the text drawn in each region (the page and Compare's two pages); whether a region may hold digits is the spec's `noDigits` flag
+const NO_DIGIT_IDS = { page: "page", pageA: "compareA", pageB: "compareB" };
 let regionsChecked = 0;
 for (const s of rec.shots.filter((x) => x.check.layered)) {
   const c = s.check, got = [];
@@ -76,19 +78,24 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
     else if (id === "stamp.image") { const L = R.stamp.rect; must(rect[2] === rect[3] && rect[2] <= 104 && rect[2] >= 34 && Math.abs(rect[0] + rect[2] / 2 - (L[0] + L[2] / 2)) <= 1 && Math.abs(rect[1] + rect[3] / 2 - (L[1] + L[3] / 2)) <= 1, `the stamp ${rect} is not at most 104 px square and centred on its label ${L}`); }
     else if (id === "page") must(eq(rect, R.page.rect), `page ${rect} is not ${R.page.rect}`);
     else if (id === "compareA" || id === "compareB") must(eq(rect, R[id].rect), `${id} ${rect} is not ${R[id].rect}`);
-    else if (id === "rail.tab") { const i = +r.id.match(/^rail\.(\d+)$/)[1], n = c.pod.chapters, t = railTabs(R.rail, n, c.cmp ? -1 : -1).tabs[i]; must(t && rect[0] === t[0] && rect[2] === t[2] && rect[3] === t[3] && (rect[1] === t[1] || rect[1] === t[1] - 4), `rail tab ${i} ${rect} is not ${t}`); got.push(i); }
-    else if (id === "page.cell") {
-      const m = r.id.match(/^(page|pageA|pageB)\.c(\d+)\.pic$/), key = m[1] === "page" ? "page" : m[1] === "pageA" ? "compareA" : "compareB", spec = R[key].grid ? R[key] : R.compareA, region = { ...spec, rect: R[key].rect }, traits = c.regions.filter((q) => q.region === "page.cell" && q.id.startsWith(m[1] + ".c")).length, g = pageGrid(region, traits), cell = g.cells[+m[2]];
-      must(cell && rect[0] === cell[0] && rect[1] === cell[1] && rect[2] === g.picture[0] && rect[3] === g.picture[1], `${r.id} ${rect} is not the grid's ${cell} at ${g.picture}`);
+    else if (id === "rail.tab") { const i = +r.id.match(/^rail\.(\d+)$/)[1], n = c.pod.chapters, t = railTabs(R.rail, n, c.cmp ? -1 : -1).tabs[i]; must(t && rect[0] === t[0] && rect[2] === t[2] && rect[3] === t[3] && (rect[1] === t[1] || rect[1] === t[1] - frame.focus.lift.chrome), `rail tab ${i} ${rect} is not ${t}`); got.push(i); }
+    else if (id === "page.cell" || id === "page.diff" || id === "page.bracket") {
+      const m = r.id.match(/^(page|pageA|pageB)\.c(\d+)\./), key = m[1] === "page" ? "page" : m[1] === "pageA" ? "compareA" : "compareB", spec = R[key].grid ? R[key] : R.compareA, region = { ...spec, rect: R[key].rect }, traits = c.regions.filter((q) => q.region === "page.cell" && q.id.startsWith(m[1] + ".c")).length, g = pageGrid(region, traits), cell = g.cells[+m[2]], [pw, ph] = g.picture, D = pods.page.diff;
+      const want = id === "page.cell" ? [cell[0], cell[1], pw, ph] : id === "page.diff" ? [cell[0], cell[1], pw, D.edge] : [cell[0] + Math.round(pw / 2) - D.bracket[0] / 2, cell[1] + D.inset, D.bracket[0], D.bracket[1]];
+      must(cell && eq(rect, want), `${r.id} ${rect} is not the grid's ${want}`);
     }
     else must(false, `region "${id}" (${r.id}) is not in the spec`);
   }
   // the rail's tab count against the frame; the stamp's size on its label; no digits where a picture does the job
   if (c.screen === "pods" && c.pod && c.pod.idd && !c.cmp) must(got.length === c.pod.chapters, `the rail has ${got.length} tabs for ${c.pod.chapters} chapters`);
-  for (const t of c.texts) if (/^page[AB]?\./.test(t.id) && /\d/.test(t.text)) must(false, `a digit in "${t.text}" on a page marked noDigits`);
+  for (const t of c.texts) if (t.id === "line.subject") must(!t.text.endsWith("…"), `the bottom line's subject "${t.text}" is clipped with "…"`);
+  for (const t of c.texts) { const key = t.id.startsWith("specimen.name") ? "name" : t.id.startsWith("specimen.origin") ? "origin" : NO_DIGIT_IDS[t.id.split(".")[0]]; if (key && R[key].noDigits && /\d/.test(t.text)) must(false, `a digit in "${t.text}" in region ${key}, which the spec marks noDigits`); }
   console.log(`${s.name.padEnd(24)} ${c.regions.length} drawn regions, rail ${got.length}/${c.pod ? c.pod.chapters : "-"} tabs, placeholders registered ${c.placeholders}`);
 }
 console.log(`regions: ${regionsChecked} boxes compared with the spec files`);
+const onLayer = rec.shots.filter((x) => x.check.layered).map((x) => x.name), adapter = rec.shots.filter((x) => !x.check.layered).map((x) => x.name);
+console.log(`on the screen layer (${onLayer.length}): ${onLayer.join(", ")}`);
+console.log(`through the adapter, palette and type checked, regions not (${adapter.length}): ${adapter.join(", ")}`);
 if (!rec.shots.some((x) => x.check.layered)) fail("no screen on the layer was recorded");
 console.log(fails.length ? `${fails.length} failure(s)` : "layer checks ok");
 process.exit(fails.length ? 1 : 0);

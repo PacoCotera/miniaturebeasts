@@ -18,6 +18,7 @@ import { openBook } from "./screens/library.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
 import { stampArt } from "./art.mjs";
+import { loadPodSprites } from "./podsprites.mjs";
 import { manifest as manifestOf, registerAsset } from "../../ui/assets.mjs";
 
 setIcons((name, px) => ICON[name]?.(px));
@@ -46,7 +47,7 @@ function render() {
   if (!UI.idle && screen.nodes) nodes.push(...screen.nodes(CTX));
   else nodes.push(legacy("legacy", () => { if (UI.idle) drawIdle(); else { screen.draw(); drawLine(lineFor()); drawMsg(); } }));
   const ta = clock.now - (FX.transAt || -1e9);
-  if (ta >= 0 && ta < 180 && motion()) nodes.push(legacy("trans", () => ditherFill(0, STAGE_Y, SW, STAGE_H, "moss0", 16 - Math.floor((ta / 180) * 16))));
+  if (ta >= 0 && ta < 180 && motion()) nodes.push(legacy("trans", () => ditherFill(0, STAGE_Y, SW, STAGE_H, "void", 16 - Math.floor((ta / 180) * 16))));
   scene.set(nodes); SC.paint(scene); SC.composite(vctx);
 }
 let errN = 0;
@@ -136,6 +137,7 @@ const bootLayer = async () => {
   const { canvas, type } = await bootStationCanvas({ base: new URL("../../ui/", import.meta.url) });
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
   for (const k of ["frame", "pods"]) SPECS[k] = await spec(k + ".json");
+  await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   SC = canvas; bindCanvas(SC); CTX = LAYER.ctx = makeCtx(SPECS.frame, type);
 };
 // The icons the text runs inline (⚡ ◆ ❀ ✕ at the 16 px body size) are registered in the manifest as type assets.
@@ -163,7 +165,7 @@ function checkSnapshot() {
 // Test hooks (not part of play).
 window.__st = { ready, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   act: (k) => { FX.lockUntil = 0; TL.release(); act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; TL.release(); }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
-  get msg() { return FX.msg; }, capture: () => SC.capture().toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), sceneRegions: () => scene.regions(), sceneTexts: () => scene.texts(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
+  get msg() { return FX.msg; }, capture: () => SC.capture().toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), holding: () => TL.holding(), region: (layer, r) => { const d = SC.ctx[layer].getImageData(r[0], r[1], r[2], r[3]); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, sceneRegions: () => scene.regions(), sceneTexts: () => scene.texts(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },
   grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; }, openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; }, forecastOf: (aId, bId) => S.forecastOf(G.st, podById ? mibiById(aId) : null, mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),

@@ -5,7 +5,7 @@
 // P.x + 8 for a blend), the "only" base centred on the bottom edge, "asleep" at the top right, "breed to change" at
 // the top left; unread: frost over the whole picture, the name shows, the line stays empty; sealed: slats with what
 // opens it centred, no line. A read in progress wipes the frost away from the top (props.wipe, 0 to 1).
-// props: { heading: { emblem, word } | null, cells: [{ picture, name, lines: [], frost, sealed, seals: asset, marks: [{ kind, asset }], wipe }],
+// props: { marks (the spec's page.marks), diff ({ edge, inset } px), heading: { emblem, word } | null, cells: [{ picture, name, lines: [], frost, sealed, seals: asset, marks: [{ kind, asset }], wipe }],
 //          colours: { pane, edge, heading, name, line, lineEmpty, wipe }, frost and slats (the id prefixes of those pictures: `<prefix><w>x<h>`), compact }
 import { pageGrid } from "../layout.mjs";
 import { panel } from "./panel.mjs";
@@ -32,16 +32,20 @@ export function chapterPage(ctx, id, region, props) {
     else if (c.frost) nodes.push({ id: cid + ".frost", kind: "sprite", rect: P, asset: `${props.frost}${pw}x${ph}` });
     else {
       for (const [k, m] of (c.marks || []).entries()) {
-        const small = ph < 120, sw = small ? 32 : 40, sh = small ? 40 : 52;
-        const r = m.kind === "seed" ? [cx + pw - 8 - sw, cy + ph - 8 - sh, sw, sh] : m.kind === "seed2" ? [cx + 8, cy + ph - 8 - sh, sw, sh] : m.kind === "only" ? [cx + Math.round(pw / 2) - 36, cy + ph - 8, 72, 8] : m.kind === "asleep" ? [cx + pw - 32, cy + 8, 24, 16] : m.kind === "doing" ? [cx + 8, cy + 8, 28, 16] : null;
+        const M = props.marks, small = ph < M.smallUnder, [sw, sh] = small ? M.seedSmall : M.seed;
+        const r = m.kind === "seed" ? [cx + pw - 8 - sw, cy + ph - 8 - sh, sw, sh] : m.kind === "seed2" ? [cx + 8, cy + ph - 8 - sh, sw, sh] : m.kind === "only" ? [cx + Math.round(pw / 2) - M.only[0] / 2, cy + ph - 8, M.only[0], M.only[1]] : m.kind === "asleep" ? [cx + pw - 8 - M.asleep[0], cy + 8, M.asleep[0], M.asleep[1]] : m.kind === "doing" ? [cx + 8, cy + 8, M.doing[0], M.doing[1]] : null;
         if (r) nodes.push({ id: `${cid}.m${k}`, kind: "sprite", rect: r, asset: m.asset });
       }
       if (c.wipe != null && c.wipe < 1) { const cut = Math.round(c.wipe * ph); nodes.push({ id: cid + ".wipe", kind: "clip", rect: [cx, cy + cut, pw, ph - cut], children: [{ id: cid + ".wipefrost", kind: "sprite", rect: P, asset: `${props.frost}${pw}x${ph}` }] }, { id: cid + ".wipeline", kind: "rect", rect: [cx + 6, cy + cut, pw - 12, 2], colour: Cc.wipe }); }
     }
-    if (c.diff) nodes.push(...focusRing(cid + ".diff", P, ctx.spec, { colour: props.diffColour ?? "cream" }), { id: cid + ".bracket", kind: "sprite", rect: [cx + Math.round(pw / 2) - 6, cy + 4, 12, 12], asset: props.bracket });   // Compare: a trait that differs wears the ring and a 12×12 bracket
+    if (c.diff) {   // Compare: a trait that differs wears a 2 px aqua edge on its own rectangle (never the cream ring) and the 12×12 bracket, inside the picture, top centre, 8 px in
+      const D = Cc.diff, e = props.diff.edge;
+      nodes.push({ id: cid + ".diff.t", kind: "rect", rect: [cx, cy, pw, e], colour: D.edge, region: "page.diff" }, { id: cid + ".diff.b", kind: "rect", rect: [cx, cy + ph - e, pw, e], colour: D.edge }, { id: cid + ".diff.l", kind: "rect", rect: [cx, cy, e, ph], colour: D.edge }, { id: cid + ".diff.r", kind: "rect", rect: [cx + pw - e, cy, e, ph], colour: D.edge },
+        { id: cid + ".bracket", kind: "sprite", rect: [cx + Math.round(pw / 2) - 6, cy + props.diff.inset, 12, 12], asset: props.bracket, region: "page.bracket" });
+    }
     const ny = cy + ph + 8, nw = Math.round(ctx.measure(c.name, 16, 400));
     nodes.push({ id: cid + ".name", kind: "text", rect: [cx, ny, nw, 20], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });
-    if (!c.sealed) { const lines = wrap(ctx, (c.lines || []).join(" "), cell[2], 16).slice(0, 2); lines.forEach((l, j) => nodes.push({ id: `${cid}.l${j}`, kind: "text", rect: [cx, ny + 20 + j * 20, Math.round(ctx.measure(l, 16, 400)), 20], text: l, px: 16, weight: 400, colour: c.frost ? Cc.lineEmpty : Cc.line, align: "left" })); }
+    if (!c.sealed) { /* a cut line drops its trailing separator */ const all = wrap(ctx, (c.lines || []).join(" "), cell[2], 16), lines = all.slice(0, 2); if (all.length > 2) lines[1] = lines[1].replace(/\s*·$/, ""); lines.forEach((l, j) => nodes.push({ id: `${cid}.l${j}`, kind: "text", rect: [cx, ny + 20 + j * 20, Math.round(ctx.measure(l, 16, 400)), 20], text: l, px: 16, weight: 400, colour: c.frost ? Cc.lineEmpty : Cc.line, align: "left" })); }
   });
   return { nodes, cells: grid.cells, picture: grid.picture, overflow: grid.overflow };
 }

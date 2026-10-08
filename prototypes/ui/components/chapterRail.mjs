@@ -4,7 +4,7 @@
 // of 6×6 trait pips on a 10 px pitch centred at y 96. Unread: a 1 px hairline outline, a cool frost fill, hollow
 // pips. Read: a solid deep-teal fill, a 1 px lit rim, filled pips. Glint: the four-point star 12×12 at the tab's top
 // right. Sealed: the tab drawn shut (slats), an 8×4 notch in its bottom edge, no pips. Focused: the cream ring and
-// the tab lifts 4 px. No status words or prices on a tab.
+// the tab lifts 2 px (the chrome lift). No status words or prices on a tab.
 // props: { tabs: [{ id, word, emblem (asset id), pips: n, filled: n, state: "unread" | "read" | "sealed", glint, pipMarks?: [{ amber, clash, ring }] }], focused: index, colours, slats (the id prefix of the slat pictures: `<prefix><w>x<h>`), star (asset id) }
 import { railTabs } from "../layout.mjs";
 import { focusRing } from "./focusRing.mjs";
@@ -14,7 +14,7 @@ export function chapterRail(ctx, id, region, props) {
   const nodes = [], Cc = props.colours, placed = railTabs(region, props.tabs.length, props.focused);
   if (props.fillGround) nodes.push({ id, kind: "rect", rect: region.rect.slice(), colour: props.ground, region: props.region ?? null });   // the rail's ground, when the stage has none of its own to show through
   placed.tabs.forEach((r, i) => {
-    const t = props.tabs[i], focused = i === props.focused, lift = focused ? ctx.spec.focus.lift.chrome * 2 : 0;   // the spec's 4 px lift
+    const t = props.tabs[i], focused = i === props.focused, lift = focused ? ctx.spec.focus.lift.chrome : 0;   // the chrome lift (2 px)
     const [x, y0, w, h] = r, y = y0 - lift, tid = `${id}.${i}`, read = t.state === "read", sealed = t.state === "sealed";
     nodes.push({ id: tid, kind: "rect", rect: [x, y, w, h], colour: read ? Cc.readFill : Cc.unreadFill, region: props.tabRegion ?? null });
     if (sealed) nodes.push({ id: tid + ".slats", kind: "sprite", rect: [x, y, w, h], asset: `${props.slats}${w}x${h}` });
@@ -23,7 +23,7 @@ export function chapterRail(ctx, id, region, props) {
     if (sealed) nodes.push({ id: tid + ".notch", kind: "rect", rect: [x + Math.round(w / 2) - 4, y + h - 4, 8, 4], colour: props.ground });
     const compact = placed.mode === "compact" && !focused;
     nodes.push({ id: tid + ".emblem", kind: "sprite", rect: [x + Math.round(w / 2) - 12, y + 4, 24, 24], asset: t.emblem });
-    if (!compact) { const ww = Math.round(ctx.measure(t.word, 16, 400)); nodes.push({ id: tid + ".word", kind: "text", rect: [x + Math.round(w / 2) - Math.round(ww / 2), y + 28, ww, 20], text: t.word, px: 16, weight: 400, colour: read ? Cc.readWord : Cc.unreadWord, align: "left" }); }
+    if (!compact) { const ww = Math.round(ctx.measure(t.word, 16, 400)); nodes.push({ id: tid + ".word", kind: "text", rect: [x + Math.round(w / 2) - Math.round(ww / 2), y + 28, ww, 20], text: t.word, px: 16, weight: 400, colour: read ? Cc.readWord : sealed ? Cc.sealedWord : Cc.unreadWord, align: "left" }); }
     if (!sealed && t.pips > 0) {
       const pitch = 10, total = (t.pips - 1) * pitch + 6, px0 = x + Math.round(w / 2) - Math.round(total / 2), py = y + 48;
       for (let k = 0; k < t.pips; k++) {
