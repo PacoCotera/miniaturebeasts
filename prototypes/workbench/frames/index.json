@@ -57,7 +57,7 @@
    "file": "species-S04.json",
    "open": 8,
    "traits": 5,
-   "carried": 61
+   "carried": 63
   },
   {
    "id": "S05",
@@ -69,7 +69,7 @@
    "file": "species-S05.json",
    "open": 13,
    "traits": 9,
-   "carried": 55
+   "carried": 57
   },
   {
    "id": "S06",
@@ -81,7 +81,7 @@
    "file": "species-S06.json",
    "open": 15,
    "traits": 10,
-   "carried": 57
+   "carried": 59
   },
   {
    "id": "S07",
@@ -93,7 +93,7 @@
    "file": "species-S07.json",
    "open": 26,
    "traits": 17,
-   "carried": 46
+   "carried": 48
   },
   {
    "id": "S08",
@@ -103,15 +103,15 @@
    "rig": "B2",
    "tier": "mid",
    "file": "species-S08.json",
-   "open": 22,
-   "traits": 15,
-   "carried": 56
+   "open": 24,
+   "traits": 18,
+   "carried": 58
   },
   {
    "id": "S09",
    "name": "Belatz",
    "clan": "C09",
-   "plan": "B2·L4·flaps",
+   "plan": "B2·L2·flaps",
    "rig": "B2",
    "tier": "late",
    "file": "species-S09.json",
@@ -129,7 +129,7 @@
    "file": "species-S10.json",
    "open": 19,
    "traits": 14,
-   "carried": 54
+   "carried": 56
   },
   {
    "id": "S11",

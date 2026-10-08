@@ -52,6 +52,10 @@ const NEW_LOCI = [
   { id: "appearance.tail-rings", family: "appearance", label: "Tail rings", scope: "trunk", owner: "tail", consumer: "sketch: second-pigment rings along the tail", ...enable() },
   { id: "growth.tail-ring-count", family: "appearance", label: "Ring count", scope: "trunk", owner: "appearance.tail-rings", consumer: "sketch: rings along the tail (one is a pale tip)", ...pairMap({ one: 1, four: 4 }, { "one|one": 1, "four|one": 2, "four|four": 4 }) },
   { id: "anatomy.ear-tilt", family: "structure", label: "Ear tilt", scope: "trunk", owner: "ears", consumer: "rig: ears upright or drooping", ...pairMap({ upright: "upright", drooping: "drooping" }, { "upright|upright": "upright", "drooping|upright": "upright", "drooping|drooping": "drooping" }) },
+  // Proportions by kind (the proportions milestone): the two ear measures an artist takes that no
+  // locus carried, ear set (on the side of the head or on its crown) and ear width over ear length.
+  { id: "growth.auricular-set-ratio", family: "structure", label: "Ear set", scope: "trunk", owner: "ears", consumer: "rig: the ear root's lateral offset over the head's half width (side or crown)", ...mean({ side: 0.78 }, { crown: 0.42 }) },
+  { id: "growth.auricular-width-ratio", family: "structure", label: "Ear width", scope: "trunk", owner: "ears", consumer: "rig: ear width over ear length", ...mean({ narrow: 0.42 }, { broad: 0.8 }) },
   // Horns (C08 branch): 1 · 2, plus the hoof allele on the terminal form.
   { id: "anatomy.horn-presence", family: "structure", label: "Horns", scope: "branch", clan: "C08", owner: "head", consumer: "rig: a pair of horns on the head", ...enable() },
   { id: "growth.horn-curl", family: "structure", label: "Horn curl", scope: "branch", clan: "C08", owner: "anatomy.horn-presence", consumer: "rig: horn bend", ...mean({ straight: 0.2 }, { curled: 1.4 }) },

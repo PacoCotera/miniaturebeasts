@@ -655,11 +655,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "anterior",
-    "anterior"
+    "even",
+    "even"
    ],
    "looks": [
-    "anterior"
+    "even"
    ],
    "guard": "rig: the mass hierarchy (even, central, anterior) scales the regions",
    "nature": "look"
@@ -676,11 +676,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "low",
+    "high",
     "low"
    ],
    "looks": [
-    "low"
+    "high"
    ],
    "guard": "rig: neck length between head and body on a narrow join",
    "nature": "look"
@@ -747,7 +747,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: core.ryOverRx"
+   "guard": "rig: core.ryOverRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.core-depth-ratio",
@@ -769,7 +773,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: core.rzOverRx"
+   "guard": "rig: core.rzOverRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.head-length-ratio",
@@ -795,7 +803,11 @@
     "between medium and large",
     "large"
    ],
-   "guard": "rig: head.rxOverCoreRx"
+   "guard": "rig: head.rxOverCoreRx",
+   "typical": [
+    "small",
+    "small"
+   ]
   },
   {
    "id": "growth.head-width-ratio",
@@ -817,7 +829,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.ryOverCoreRx"
+   "guard": "rig: head.ryOverCoreRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.head-depth-ratio",
@@ -839,7 +855,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.rzOverCoreRx"
+   "guard": "rig: head.rzOverCoreRx",
+   "typical": [
+    "low",
+    "low"
+   ]
   },
   {
    "id": "growth.head-lift-ratio",
@@ -861,7 +881,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: head.centerLiftOverCoreRx"
+   "guard": "rig: head.centerLiftOverCoreRx",
+   "typical": [
+    "high",
+    "low"
+   ]
   },
   {
    "id": "growth.exterior-eye-size-ratio",
@@ -883,7 +907,11 @@
     "between small and large",
     "large"
    ],
-   "guard": "rig: eye.radiusOverHeadMinYZ"
+   "guard": "rig: eye.radiusOverHeadMinYZ",
+   "typical": [
+    "large",
+    "large"
+   ]
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -905,7 +933,11 @@
     "between close and wide",
     "wide"
    ],
-   "guard": "rig: eye.anchorYOverHeadRy"
+   "guard": "rig: eye.anchorYOverHeadRy",
+   "typical": [
+    "close",
+    "close"
+   ]
   },
   {
    "id": "growth.region-taper",
@@ -969,7 +1001,11 @@
     "between thin and broad",
     "broad"
    ],
-   "guard": "rig: region.connectorRadiusRatio"
+   "guard": "rig: region.connectorRadiusRatio",
+   "typical": [
+    "thin",
+    "thin"
+   ]
   },
   {
    "id": "anatomy.region-cross-exponent",
@@ -983,11 +1019,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "round",
-    "round"
+    "rounded-square",
+    "rounded-square"
    ],
    "looks": [
-    "round"
+    "rounded-square"
    ],
    "guard": "rig: region.crossExponent",
    "nature": "look"
@@ -1493,6 +1529,14 @@
    "why": "absent: no head-owned ears"
   },
   {
+   "id": "growth.auricular-set-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "why": "absent: no head-owned ears"
+  },
+  {
    "id": "anatomy.antenna-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -1625,7 +1669,7 @@
   "carried": 35,
   "trunk": 31,
   "branch": 4,
-  "absent": 101,
+  "absent": 103,
   "locked": 11,
   "lockedBy": {
    "switch": 2,
@@ -1735,11 +1779,11 @@
      "high"
     ],
     "development.regional-growth": [
-     "anterior",
-     "anterior"
+     "even",
+     "even"
     ],
     "structure.join-neck-ratio": [
-     "low",
+     "high",
      "low"
     ],
     "anatomy.exterior-eye-presence": [
@@ -1752,35 +1796,35 @@
     ],
     "growth.core-width-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.core-depth-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.head-length-ratio": [
      "small",
-     "large"
+     "small"
     ],
     "growth.head-width-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.head-depth-ratio": [
      "low",
-     "high"
+     "low"
     ],
     "growth.head-lift-ratio": [
-     "low",
-     "high"
+     "high",
+     "low"
     ],
     "growth.exterior-eye-size-ratio": [
-     "small",
+     "large",
      "large"
     ],
     "growth.exterior-eye-spacing-ratio": [
      "close",
-     "wide"
+     "close"
     ],
     "growth.region-taper": [
      "strong",
@@ -1792,11 +1836,11 @@
     ],
     "growth.join-throat-ratio": [
      "thin",
-     "broad"
+     "thin"
     ],
     "anatomy.region-cross-exponent": [
-     "round",
-     "round"
+     "rounded-square",
+     "rounded-square"
     ],
     "anatomy.region-longitudinal-form": [
      "ovoid",
@@ -1843,18 +1887,18 @@
     "kind": "type-specimen"
    }
   },
-  "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
+  "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
   "brief": "Blikur: 5 body regions (Bfan), a head, 2 eyes; skin; belly, neck head.",
   "bounds": {
    "min": [
-    -1.2623084507219529,
-    -0.9635214308261382,
+    -1.0205841325047136,
+    -0.9998411425209989,
     0
    ],
    "max": [
-    1.6846370537784925,
-    0.9635214308261382,
-    1.2241079612080454
+    1.766913107681022,
+    0.9998411425209989,
+    1.0016762728775923
    ]
   },
   "counts": {
@@ -1976,11 +2020,11 @@
    "smooth"
   ],
   "development.regional-growth": [
-   "anterior",
-   "anterior"
+   "even",
+   "even"
   ],
   "structure.join-neck-ratio": [
-   "low",
+   "high",
    "low"
   ],
   "anatomy.exterior-eye-presence": [
@@ -2000,8 +2044,8 @@
    "close"
   ],
   "anatomy.region-cross-exponent": [
-   "round",
-   "round"
+   "rounded-square",
+   "rounded-square"
   ],
   "appearance.sheen": [
    "glossy",
