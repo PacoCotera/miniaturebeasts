@@ -24,7 +24,7 @@
   "companion": "fog", "companionDocked": "mint", "lampOn": "mint", "lampOff": "stone",
   "tick": "orange", "verb": "bone", "dim": "mist", "price": "focus", "dot": "hairline", "back": "fog", "subject": "mist", "need": "amber",
   "plate": "bar", "plateEdge": "sand", "plateShadow": "void", "plateText": "bone",
-  "ring": "cream", "stageGround": "deep"
+  "ring": "focus", "stageGround": "deep"
  },
  "strings": { "turn": "T{n}", "backArrow": "← ", "tick": "✓", "dot": " · " }
 }

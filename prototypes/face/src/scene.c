@@ -1,0 +1,111 @@
+#include "scene.h"
+#include "lvgl.h"
+#include "src/lvgl_private.h"
+#include <stdlib.h>
+#include <string.h>
+
+extern const lv_font_t face_inter_16, face_inter_20, face_inter_28;
+#define MAX_OBJ 512
+#define MAX_ASSET 256
+#define NINE_PARTS 9
+typedef struct { uint32_t id; lv_obj_t *obj; lv_obj_t *part[NINE_PARTS]; int kind, seen, fresh; int x, y, w, h; uint32_t rgb; int a, b; } node_t;
+static node_t g_o[MAX_OBJ];
+static int g_n, g_unknown, g_nseq;
+static lv_obj_t *g_seq[MAX_OBJ];
+static char g_text[1024];
+typedef struct { int w, h; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; int view_b; } asset_t;
+static asset_t g_a[MAX_ASSET];
+
+void scene_init(void) { g_n = 0; g_unknown = 0; }
+char *scene_text(void) { return g_text; }
+int scene_text_size(void) { return (int)sizeof g_text; }
+int scene_count(void) { return g_n; }
+int scene_unknown(void) { return g_unknown; }
+int scene_asset_limit(void) { return MAX_ASSET; }
+static const lv_font_t *font_of(int px) { return px == 16 ? &face_inter_16 : px == 20 ? &face_inter_20 : px == 28 ? &face_inter_28 : NULL; }
+int scene_measure(int px) {
+  const lv_font_t *f = font_of(px); if (!f) return -1;
+  lv_text_attributes_t at; lv_text_attributes_init(&at);
+  return (int)lv_text_get_width(g_text, (uint32_t)strlen(g_text), f, &at);
+}
+static void dsc_of(lv_image_dsc_t *d, uint8_t *data, int w, int h, int stride) {
+  memset(d, 0, sizeof *d);
+  d->header.magic = LV_IMAGE_HEADER_MAGIC; d->header.cf = LV_COLOR_FORMAT_ARGB8888; d->header.w = (uint32_t)w; d->header.h = (uint32_t)h;
+  d->header.stride = (uint32_t)stride; d->data_size = (uint32_t)stride * (uint32_t)h; d->data = data;
+}
+uint8_t *scene_asset(int handle, int w, int h) {
+  if (handle < 0 || handle >= MAX_ASSET || w <= 0 || h <= 0) return NULL;
+  free(g_a[handle].px);
+  g_a[handle].px = (uint8_t *)calloc((size_t)w * h, 4); g_a[handle].w = w; g_a[handle].h = h; g_a[handle].view_b = -1;
+  dsc_of(&g_a[handle].dsc, g_a[handle].px, w, h, w * 4);
+  return g_a[handle].px;
+}
+/* the nine parts of a picture as views into its own pixels (no copy): corners b x b, edges and the middle `mid` wide or tall, tiled by the objects */
+static void views_of(asset_t *s, int b) {
+  if (s->view_b == b) return;
+  int w = s->w, h = s->h, mid_w = w - 2 * b, mid_h = h - 2 * b, st = w * 4;
+  const int xs[3] = { 0, b, w - b }, ys[3] = { 0, b, h - b }, ws[3] = { b, mid_w, b }, hs[3] = { b, mid_h, b };
+  for (int j = 0; j < 3; j++) for (int i = 0; i < 3; i++) dsc_of(&s->view[j * 3 + i], s->px + ys[j] * st + xs[i] * 4, ws[i], hs[j], st);
+  s->view_b = b;
+}
+static void plain(lv_obj_t *o) {
+  lv_obj_remove_style_all(o);
+  lv_obj_set_clickable(o, false); lv_obj_set_scrollable(o, false);
+}
+static lv_obj_t *make(node_t *n, int a) {
+  lv_obj_t *s = lv_screen_active(), *o;
+  if (n->kind == FN_TEXT) { o = lv_label_create(s); plain(o); lv_label_set_long_mode(o, LV_LABEL_LONG_MODE_CLIP); lv_obj_set_style_text_font(o, font_of(a), 0); }
+  else if (n->kind == FN_SPRITE) { o = lv_image_create(s); plain(o); }
+  else if (n->kind == FN_NINE) {
+    o = lv_obj_create(s); plain(o);
+    for (int i = 0; i < NINE_PARTS; i++) { n->part[i] = lv_image_create(o); plain(n->part[i]); lv_image_set_inner_align(n->part[i], LV_IMAGE_ALIGN_TILE); }
+  } else { o = lv_obj_create(s); plain(o); }
+  return o;
+}
+void scene_begin(void) { for (int i = 0; i < g_n; i++) g_o[i].seen = 0; g_unknown = 0; g_nseq = 0; }
+static int find(uint32_t id) { for (int i = 0; i < g_n; i++) if (g_o[i].id == id) return i; return -1; }
+static void drop(int i) { lv_obj_delete(g_o[i].obj); g_o[i] = g_o[--g_n]; }
+void scene_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) {
+  if (kind < FN_RECT || kind > FN_NINE) { g_unknown++; return; }
+  if (kind == FN_TEXT && !font_of(a)) { g_unknown++; return; }
+  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || g_a[a].w != w || g_a[a].h != h)) { g_unknown++; return; }
+  if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || b < 1 || g_a[a].w <= 2 * b || g_a[a].h <= 2 * b || w < 2 * b || h < 2 * b)) { g_unknown++; return; }
+  int i = find(id);
+  if (i >= 0 && g_o[i].kind != kind) { drop(i); i = -1; }
+  if (i < 0) {
+    if (g_n >= MAX_OBJ) { g_unknown++; return; }
+    i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].kind = kind; g_o[i].fresh = 1; g_o[i].obj = make(&g_o[i], a);
+  }
+  node_t *n = &g_o[i]; lv_obj_t *o = n->obj; n->seen = 1; g_seq[g_nseq++] = o;
+  int py = y;
+  if (kind == FN_TEXT) {
+    /* the label's top is the line's top; the page gives the cap top. The baseline sits (line height - base line) below the line's top. */
+    const lv_font_t *f = font_of(a); py = y + b - (f->line_height - f->base_line);
+    if (strcmp(lv_label_get_text(o), g_text) != 0) lv_label_set_text(o, g_text);
+    if (n->a != a) lv_obj_set_style_text_font(o, f, 0);
+  }
+  if (n->fresh || n->x != x || n->y != py) lv_obj_set_pos(o, x, py);
+  if (n->fresh || n->w != w || n->h != h) {
+    if (kind == FN_TEXT) lv_obj_set_size(o, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    else lv_obj_set_size(o, w, h);
+  }
+  if (kind == FN_NINE && (n->fresh || n->w != w || n->h != h || n->a != a || n->b != b)) {
+    asset_t *s = &g_a[a]; views_of(s, b);
+    const int xs[3] = { 0, b, w - b }, ys[3] = { 0, b, h - b }, ws[3] = { b, w - 2 * b, b }, hs[3] = { b, h - 2 * b, b };
+    for (int j = 0; j < 3; j++) for (int k = 0; k < 3; k++) {
+      lv_obj_t *p = n->part[j * 3 + k]; lv_image_set_src(p, &s->view[j * 3 + k]);
+      lv_obj_set_pos(p, xs[k], ys[j]); lv_obj_set_size(p, ws[k], hs[j]);
+    }
+  }
+  if (n->fresh || n->rgb != rgb || n->a != a || n->b != b) {
+    if (kind == FN_RECT) { lv_obj_set_style_bg_color(o, lv_color_hex(rgb), 0); lv_obj_set_style_bg_opa(o, LV_OPA_COVER, 0); }
+    else if (kind == FN_TEXT) lv_obj_set_style_text_color(o, lv_color_hex(rgb), 0);
+    else if (kind == FN_SPRITE) lv_image_set_src(o, &g_a[a].dsc);
+  }
+  n->fresh = 0; n->x = x; n->y = py; n->w = w; n->h = h; n->rgb = rgb; n->a = a; n->b = b;
+}
+void scene_end(void) {
+  for (int i = g_n - 1; i >= 0; i--) if (!g_o[i].seen) drop(i);
+  /* draw order is child order: put each object at its place in the sequence the page sent */
+  for (int k = 0; k < g_nseq; k++) if (lv_obj_get_index(g_seq[k]) != k) lv_obj_move_to_index(g_seq[k], k);
+}

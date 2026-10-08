@@ -3,7 +3,7 @@
 // chapter emblem 24×24 centred at the top, the chapter's one word in 16 px centred on the line from y 76, and a row
 // of 6×6 trait pips on a 10 px pitch centred at y 96. Unread: a 1 px hairline outline, a cool frost fill, hollow
 // pips. Read: a solid deep-teal fill, a 1 px lit rim, filled pips. Glint: the four-point star 12×12 at the tab's top
-// right. Sealed: the tab drawn shut (slats), an 8×4 notch in its bottom edge, no pips. Focused: the cream ring and
+// right. Sealed: the tab drawn shut (slats), an 8×4 notch in its bottom edge, no pips. Focused: the focus-role ring (warm cream, #ffe6ad) and
 // the tab lifts 2 px (the chrome lift). No status words or prices on a tab.
 // props: { tabs: [{ id, word, emblem (asset id), pips: n, filled: n, state: "unread" | "read" | "sealed", glint, pipMarks?: [{ amber, clash, ring }] }], focused: index, colours, slats (the id prefix of the slat pictures: `<prefix><w>x<h>`), star (asset id) }
 import { railTabs } from "../layout.mjs";

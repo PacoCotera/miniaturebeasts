@@ -1,7 +1,8 @@
 // The Station's LVGL face in the page (technical-architecture.md §8): `?face=lvgl` loads face.mjs and face.wasm (built by
 // prototypes/face/build.sh and published beside the page), runs LVGL's frames from the page's animation frame, copies the
-// rectangles LVGL redrew onto the screen canvas and passes the keys in. At L0 the display is empty; from L1 the JavaScript
-// views feed it props over the same contract and it sends intents back.
+// rectangles LVGL redrew onto the screen canvas and passes the keys in. From L1 the JavaScript views feed it their scene nodes
+// (the contract the canvas renderer takes) and the face builds them as LVGL objects, placing and styling only; it measures text
+// itself, so the views' centring and clipping use the widths LVGL's font engine gives. Intents come back as keys.
 export const LV_KEYS = { up: 17, down: 18, right: 19, left: 20, confirm: 10, back: 27, home: 2, research: 114, library: 108, habitat: 98, dock: 100 };
 
 export async function bootFace(base = new URL("../../face/dist/", import.meta.url)) {
@@ -22,8 +23,43 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       ctx.putImageData(img, x, y); copied += w * h;
     }
   }
+  const enc = new TextEncoder(), KIND = { rect: 1, text: 2, sprite: 3, nine: 4 };
+  const fnv = (str) => { let h = 2166136261; for (const b of enc.encode(str)) { h ^= b; h = Math.imul(h, 16777619); } return h >>> 0; };
+  const setText = (str) => { const b = enc.encode(str), cap = M._face_text_size() - 1, p = M._face_text(); if (b.length > cap) throw new Error(`the face's text buffer holds ${cap} bytes; "${String(str).slice(0, 24)}…" is ${b.length}`); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
+  const measure = (str, px) => { setText(String(str)); return M._face_measure(px); };
+  // A picture's pixels into the face (RGBA from a canvas, stored as B, G, R, A); once per asset id.
+  const handles = new Map();
+  function handleOf(id, picture) {
+    let h = handles.get(id); if (h != null) return h;
+    const pic = picture(id); if (!pic) return -1;
+    h = handles.size; if (h >= M._face_asset_limit()) throw new Error(`the face's picture table is full (${h} pictures); ${id} cannot be added`);
+    const p = M._face_asset(h, pic.w, pic.h); if (!p) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h})`);
+    const d = pic.data, out = M.HEAPU8.subarray(p, p + pic.w * pic.h * 4);
+    for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
+    handles.set(id, h); return h;
+  }
+  // One frame's nodes in draw order. env: { rgb(name) -> [r, g, b], cap(px), picture(assetId) -> { w, h, data (RGBA) }, slice(assetId) -> insets | null }.
+  // A frame identical to the last one is not sent again. Returns the nodes the face cannot draw (a kind outside the closed set, a picture it lacks).
+  let lastKey = null;
+  const keyOf = (nodes) => { let h = 2166136261; const mix = (v) => { for (const b of enc.encode(String(v))) { h ^= b; h = Math.imul(h, 16777619); } h ^= 0xff; h = Math.imul(h, 16777619); }; for (const n of nodes) { mix(n.id); mix(n.kind); mix(n.rect); mix(n.colour ?? ""); mix(n.text ?? ""); mix(n.px ?? ""); mix(n.asset ?? ""); } return h >>> 0; };
+  function scene(nodes, env) {
+    const key = keyOf(nodes); if (key === lastKey) return []; lastKey = key;
+    const left = [], hex = (n) => { const [r, g, b] = env.rgb(n); return (r << 16) | (g << 8) | b; };
+    M._face_scene_begin();
+    for (const n of nodes) {
+      const [x, y, w, h] = n.rect, id = fnv(n.id);
+      if (n.kind === "rect") M._face_node(id, KIND.rect, x, y, w, h, hex(n.colour), 0, 0);
+      else if (n.kind === "text") { setText(n.text); M._face_node(id, KIND.text, x, y, w, h, hex(n.colour), n.px, env.cap(n.px)); }
+      else if (n.kind === "sprite") { const hd = handleOf(n.asset, env.picture); if (hd < 0) left.push(n); else M._face_node(id, KIND.sprite, x, y, w, h, 0, hd, 0); }
+      else if (n.kind === "nineSlice") { const hd = handleOf(n.asset, env.picture), sl = env.slice(n.asset); if (hd < 0 || !sl || new Set(sl).size !== 1) left.push(n); else M._face_node(id, KIND.nine, x, y, w, h, 0, hd, sl[0]); }
+      else left.push(n);
+    }
+    M._face_scene_end(); return left;
+  }
+  const setBackground = (rgb) => M._face_background(rgb);
   return {
-    M, version, size: [W, H], loadMs,
+    M, version, measure, scene, setBackground, objects: () => M._face_object_count(), refused: () => M._face_node_refused(),
+    size: [W, H], loadMs,
     frame: (ms) => { frames++; M._face_frame(Math.floor(ms)); },
     present, forceFull: () => { first = true; },
     key: (name) => { const code = LV_KEYS[name]; if (code == null) return; M._face_key(code, 1); M._face_key(code, 0); },

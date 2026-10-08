@@ -1,6 +1,8 @@
-/* The Station's face, L0: an empty 1024x600 LVGL display that draws into a retained framebuffer, reports its dirty
-   rectangles and takes key input. The screens arrive at L1 and later; this file is the platform-neutral core. */
+/* The Station's face: a 1024x600 LVGL display that draws into a retained framebuffer, reports the rectangles it redrew,
+   takes key input and builds the page's scene (scene.c). This file is the platform-neutral core: nothing in it knows
+   JavaScript, SDL or a device. */
 #include "face.h"
+#include "scene.h"
 #include "lvgl.h"
 #include <string.h>
 
@@ -38,9 +40,10 @@ void face_init(void) {
   lv_indev_t *kp = lv_indev_create();
   lv_indev_set_type(kp, LV_INDEV_TYPE_KEYPAD);
   lv_indev_set_read_cb(kp, key_read_cb);
-  /* the empty display: the Station's ground colour (palette `ground`) */
-  lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(0x162a37), 0);
+  /* the display under the scene is black until the page names its ground (face_background: a palette colour from the spec) */
+  lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(0x000000), 0);
   lv_obj_set_style_bg_opa(lv_screen_active(), LV_OPA_COVER, 0);
+  scene_init();
 }
 void face_frame(uint32_t ms) {
   static uint32_t last; static int started;
@@ -69,3 +72,15 @@ const char *face_version(void) {
   static char v[24]; if (!v[0]) lv_snprintf(v, sizeof v, "LVGL %d.%d.%d", (int)lv_version_major(), (int)lv_version_minor(), (int)lv_version_patch());
   return v;
 }
+
+void face_scene_begin(void) { scene_begin(); }
+void face_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) { scene_node(id, kind, x, y, w, h, rgb, a, b); }
+void face_scene_end(void) { scene_end(); }
+char *face_text(void) { return scene_text(); }
+int face_text_size(void) { return scene_text_size(); }
+int face_measure(int px) { return scene_measure(px); }
+uint8_t *face_asset(int handle, int w, int h) { return scene_asset(handle, w, h); }
+int face_object_count(void) { return scene_count(); }
+int face_node_refused(void) { return scene_unknown(); }
+void face_background(uint32_t rgb) { lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(rgb), 0); }
+int face_asset_limit(void) { return scene_asset_limit(); }
