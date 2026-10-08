@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="system-ui, sans-serif">
+<title>E, the index of plates: the tome open at its index, small plates tipped in by clan (wireframe, layout only)</title>
+<style>
+.bg{fill:#f7f4ec}
+.bar{fill:#2f3a40}
+.bartx{font-size:15px;fill:#e9e3d3}
+.ok{font-size:15px;fill:#e08a3a}
+.dim{font-size:15px;fill:#a7a49c}
+.ink{stroke:#2e2e2e;stroke-width:1.5;fill:none}
+.hair{stroke:#2e2e2e;stroke-width:1;fill:none}
+.faint{stroke:#b9b2a2;stroke-width:1;fill:none;stroke-dasharray:4 4}
+.cream{fill:#fbf6e8;stroke:#2e2e2e;stroke-width:1.2}
+.paper{fill:#fffdf6;stroke:#2e2e2e;stroke-width:1}
+.linen{fill:#ebe5d6}
+.brass{fill:#c9a24a;stroke:#6e5520;stroke-width:1}
+.wood{fill:#3d3631;stroke:#1e1a17;stroke-width:1.5}
+.shadow{fill:#2e2e2e;opacity:.16}
+.glass{fill:#ffffff;opacity:.35}
+.sketch{stroke:#6f6a5e;stroke-width:1.2;fill:none;stroke-dasharray:3 2}
+.focus{fill:none;stroke:#f0d890;stroke-width:3}
+.name{font-size:11px;fill:#2e2e2e;text-anchor:middle}
+.note{font-size:11px;fill:#a0472c;paint-order:stroke;stroke:#f7f4ec;stroke-width:3px;stroke-linejoin:round}
+.lead{stroke:#a0472c;stroke-width:1;fill:none}
+.h{font-size:13px;font-weight:600;fill:#2e2e2e}
+.cap{font-size:11px;fill:#6f6a5e}
+</style>
+<rect width="1024" height="600" class="bg"/>
+<!-- top bar and bottom line: the Station frame -->
+<rect x="0" y="0" width="1024" height="40" class="bar"/>
+<text x="16" y="26" class="bartx">Library  T5</text>
+<path d="M470 12 l-6 10 h5 l-3 9 l9 -12 h-5 l3 -7z" fill="#e8c23a"/><text x="482" y="26" class="bartx">7</text>
+<path d="M508 14 l6 0 l3 5 l-6 8 l-6 -8z" fill="#5a8fd8"/><text x="522" y="26" class="bartx">3</text>
+<path d="M548 12 q6 8 0 16 q-6 -8 0 -16z" fill="#5aa860"/><text x="558" y="26" class="bartx">2</text>
+<text x="1008" y="26" class="bartx" text-anchor="end">Companion away · with Dot</text>
+<rect x="0" y="562" width="1024" height="38" class="bar"/>
+<text x="16" y="586" class="ok">✓ Open · ← Home</text>
+<text x="512" y="586" class="bartx" text-anchor="middle">Tuikis · Stilbera</text>
+<text x="1008" y="586" class="dim" text-anchor="end">a pod waits in the tray</text>
+<rect x="0" y="40" width="1024" height="522" fill="#4a3f37"/>
+<path d="M20 50 h490 v498 h-490 z" class="paper"/><path d="M514 50 h490 v498 h-490 z" class="paper"/>
+<rect x="508" y="50" width="8" height="498" class="shadow"/>
+<line x1="36" y1="158" x2="136" y2="158" class="hair" stroke="#b9b2a2"/>
+<rect x="39" y="65" width="100" height="76" class="shadow"/>
+<rect x="36" y="62" width="100" height="76" class="cream"/>
+<path d="M36 62 h10 L36 72 z" fill="#2e2e2e"/>
+<path d="M136 62 h-10 L136 72 z" fill="#2e2e2e"/>
+<path d="M36 138 h10 L36 128 z" fill="#2e2e2e"/>
+<path d="M136 138 h-10 L136 128 z" fill="#2e2e2e"/>
+<rect x="30" y="62" width="4" height="76" fill="#7a9a4a"/>
+<circle cx="86" cy="98" r="18" class="ink" fill="#efe6cf"/><circle cx="80" cy="95" r="2" fill="#2e2e2e"/><circle cx="92" cy="95" r="2" fill="#2e2e2e"/><ellipse cx="86" cy="119" rx="18" ry="3" class="shadow"/>
+<text x="86" y="154" class="name">Loika</text>
+<path d="M120 62 h16 v16 z" class="brass"/>
+<line x1="154" y1="158" x2="254" y2="158" class="hair" stroke="#b9b2a2"/>
+<rect x="157" y="65" width="100" height="76" class="shadow"/>
+<rect x="154" y="62" width="100" height="76" class="cream"/>
+<path d="M154 62 h10 L154 72 z" fill="#2e2e2e"/>
+<path d="M254 62 h-10 L254 72 z" fill="#2e2e2e"/>
+<path d="M154 138 h10 L154 128 z" fill="#2e2e2e"/>
+<path d="M254 138 h-10 L254 128 z" fill="#2e2e2e"/>
+<rect x="148" y="62" width="4" height="76" fill="#e07a62"/>
+<circle cx="204" cy="98" r="18" class="ink" fill="#efe6cf"/><circle cx="198" cy="95" r="2" fill="#2e2e2e"/><circle cx="210" cy="95" r="2" fill="#2e2e2e"/><ellipse cx="204" cy="119" rx="18" ry="3" class="shadow"/>
+<text x="204" y="154" class="name">Untuva</text>
+<line x1="272" y1="158" x2="372" y2="158" class="hair" stroke="#b9b2a2"/>
+<rect x="275" y="65" width="100" height="76" class="shadow"/>
+<rect x="272" y="62" width="100" height="76" class="cream"/>
+<path d="M272 62 h10 L272 72 z" fill="#2e2e2e"/>
+<path d="M372 62 h-10 L372 72 z" fill="#2e2e2e"/>
+<path d="M272 138 h10 L272 128 z" fill="#2e2e2e"/>
+<path d="M372 138 h-10 L372 128 z" fill="#2e2e2e"/>
+<rect x="266" y="62" width="4" height="76" fill="#3f9aa0"/>
+<circle cx="322" cy="98" r="18" class="ink" fill="#efe6cf"/><circle cx="316" cy="95" r="2" fill="#2e2e2e"/><circle cx="328" cy="95" r="2" fill="#2e2e2e"/><ellipse cx="322" cy="119" rx="18" ry="3" class="shadow"/>
+<text x="322" y="154" class="name">Tuikis</text>
+<rect x="268" y="58" width="108" height="84" rx="4" class="focus"/>
+<line x1="390" y1="158" x2="490" y2="158" class="hair" stroke="#b9b2a2"/>
+<rect x="393" y="65" width="100" height="76" class="shadow"/>
+<rect x="390" y="62" width="100" height="76" class="cream"/>
+<path d="M390 62 h10 L390 72 z" fill="#2e2e2e"/>
+<path d="M490 62 h-10 L490 72 z" fill="#2e2e2e"/>
+<path d="M390 138 h10 L390 128 z" fill="#2e2e2e"/>
+<path d="M490 138 h-10 L490 128 z" fill="#2e2e2e"/>
+<rect x="384" y="62" width="4" height="76" fill="#8a7aa8"/>
+<circle cx="440" cy="100" r="18" class="sketch"/><path d="M426 106 q14 8 28 0" class="sketch"/>
+<line x1="36" y1="268" x2="136" y2="268" class="hair" stroke="#b9b2a2"/>
+<rect x="36" y="172" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M36 172 h10 L36 182 z" fill="#2e2e2e"/>
+<path d="M136 172 h-10 L136 182 z" fill="#2e2e2e"/>
+<path d="M36 248 h10 L36 238 z" fill="#2e2e2e"/>
+<path d="M136 248 h-10 L136 238 z" fill="#2e2e2e"/>
+<line x1="154" y1="268" x2="254" y2="268" class="hair" stroke="#b9b2a2"/>
+<rect x="154" y="172" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M154 172 h10 L154 182 z" fill="#2e2e2e"/>
+<path d="M254 172 h-10 L254 182 z" fill="#2e2e2e"/>
+<path d="M154 248 h10 L154 238 z" fill="#2e2e2e"/>
+<path d="M254 248 h-10 L254 238 z" fill="#2e2e2e"/>
+<line x1="272" y1="268" x2="372" y2="268" class="hair" stroke="#b9b2a2"/>
+<rect x="272" y="172" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M272 172 h10 L272 182 z" fill="#2e2e2e"/>
+<path d="M372 172 h-10 L372 182 z" fill="#2e2e2e"/>
+<path d="M272 248 h10 L272 238 z" fill="#2e2e2e"/>
+<path d="M372 248 h-10 L372 238 z" fill="#2e2e2e"/>
+<line x1="390" y1="268" x2="490" y2="268" class="hair" stroke="#b9b2a2"/>
+<rect x="390" y="172" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M390 172 h10 L390 182 z" fill="#2e2e2e"/>
+<path d="M490 172 h-10 L490 182 z" fill="#2e2e2e"/>
+<path d="M390 248 h10 L390 238 z" fill="#2e2e2e"/>
+<path d="M490 248 h-10 L490 238 z" fill="#2e2e2e"/>
+<line x1="36" y1="378" x2="136" y2="378" class="hair" stroke="#b9b2a2"/>
+<rect x="36" y="282" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M36 282 h10 L36 292 z" fill="#2e2e2e"/>
+<path d="M136 282 h-10 L136 292 z" fill="#2e2e2e"/>
+<path d="M36 358 h10 L36 348 z" fill="#2e2e2e"/>
+<path d="M136 358 h-10 L136 348 z" fill="#2e2e2e"/>
+<line x1="154" y1="378" x2="254" y2="378" class="hair" stroke="#b9b2a2"/>
+<rect x="154" y="282" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M154 282 h10 L154 292 z" fill="#2e2e2e"/>
+<path d="M254 282 h-10 L254 292 z" fill="#2e2e2e"/>
+<path d="M154 358 h10 L154 348 z" fill="#2e2e2e"/>
+<path d="M254 358 h-10 L254 348 z" fill="#2e2e2e"/>
+<line x1="272" y1="378" x2="372" y2="378" class="hair" stroke="#b9b2a2"/>
+<rect x="272" y="282" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M272 282 h10 L272 292 z" fill="#2e2e2e"/>
+<path d="M372 282 h-10 L372 292 z" fill="#2e2e2e"/>
+<path d="M272 358 h10 L272 348 z" fill="#2e2e2e"/>
+<path d="M372 358 h-10 L372 348 z" fill="#2e2e2e"/>
+<line x1="390" y1="378" x2="490" y2="378" class="hair" stroke="#b9b2a2"/>
+<rect x="390" y="282" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M390 282 h10 L390 292 z" fill="#2e2e2e"/>
+<path d="M490 282 h-10 L490 292 z" fill="#2e2e2e"/>
+<path d="M390 358 h10 L390 348 z" fill="#2e2e2e"/>
+<path d="M490 358 h-10 L490 348 z" fill="#2e2e2e"/>
+<line x1="36" y1="488" x2="136" y2="488" class="hair" stroke="#b9b2a2"/>
+<rect x="36" y="392" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M36 392 h10 L36 402 z" fill="#2e2e2e"/>
+<path d="M136 392 h-10 L136 402 z" fill="#2e2e2e"/>
+<path d="M36 468 h10 L36 458 z" fill="#2e2e2e"/>
+<path d="M136 468 h-10 L136 458 z" fill="#2e2e2e"/>
+<line x1="154" y1="488" x2="254" y2="488" class="hair" stroke="#b9b2a2"/>
+<rect x="154" y="392" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M154 392 h10 L154 402 z" fill="#2e2e2e"/>
+<path d="M254 392 h-10 L254 402 z" fill="#2e2e2e"/>
+<path d="M154 468 h10 L154 458 z" fill="#2e2e2e"/>
+<path d="M254 468 h-10 L254 458 z" fill="#2e2e2e"/>
+<line x1="272" y1="488" x2="372" y2="488" class="hair" stroke="#b9b2a2"/>
+<rect x="272" y="392" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M272 392 h10 L272 402 z" fill="#2e2e2e"/>
+<path d="M372 392 h-10 L372 402 z" fill="#2e2e2e"/>
+<path d="M272 468 h10 L272 458 z" fill="#2e2e2e"/>
+<path d="M372 468 h-10 L372 458 z" fill="#2e2e2e"/>
+<line x1="390" y1="488" x2="490" y2="488" class="hair" stroke="#b9b2a2"/>
+<rect x="390" y="392" width="100" height="76" fill="none" stroke="#b3aa94"/>
+<path d="M390 392 h10 L390 402 z" fill="#2e2e2e"/>
+<path d="M490 392 h-10 L490 402 z" fill="#2e2e2e"/>
+<path d="M390 468 h10 L390 458 z" fill="#2e2e2e"/>
+<path d="M490 468 h-10 L490 458 z" fill="#2e2e2e"/>
+<path d="M40 512 h440" class="hair" stroke="#b9b2a2"/><path d="M40 530 h120" stroke="#2e2e2e" stroke-width="2"/><path d="M40 530 h440" class="sketch"/>
+<path d="M420 50 v8 l5 -4 l5 4 v-8" fill="#7a9a4a" stroke="#2e2e2e"/>
+<path d="M436 50 v10 l5 -4 l5 4 v-10" fill="#e07a62" stroke="#2e2e2e"/>
+<path d="M452 50 v12 l5 -4 l5 4 v-12" fill="#3f9aa0" stroke="#2e2e2e"/>
+<path d="M468 50 v14 l5 -4 l5 4 v-14" fill="#8a7aa8" stroke="#2e2e2e"/>
+<path d="M540 96 L250 150" class="lead"/><circle cx="250" cy="150" r="2" fill="#a0472c"/>
+<text x="540" y="100" class="note" text-anchor="start">Found: a small plate tipped in with photo corners, a tissue</text>
+<text x="540" y="113" class="note" text-anchor="start">guard, the name inked below; the clan colour at its edge.</text>
+<path d="M540 146 L420 240" class="lead"/><circle cx="420" cy="240" r="2" fill="#a0472c"/>
+<text x="540" y="150" class="note" text-anchor="start">Unmet: an empty ruled frame with photo corners and</text>
+<text x="540" y="163" class="note" text-anchor="start">a blank caption line. All alike.</text>
+<path d="M540 196 L400 100" class="lead"/><circle cx="400" cy="100" r="2" fill="#a0472c"/>
+<text x="540" y="200" class="note" text-anchor="start">Met: a pencil sketch, caption blank.</text>
+<text x="540" y="250" class="note" text-anchor="start">Room to grow: the facing page, ruled margin only.</text>
+<text x="540" y="263" class="note" text-anchor="start">Sixteen a page, thirty-two a spread; past that a</text>
+<text x="540" y="276" class="note" text-anchor="start">page turn breaks the whole record at a glance.</text>
+<text x="540" y="330" class="note" text-anchor="start">Risk: still rectangles on paper, the flatness</text>
+<text x="540" y="343" class="note" text-anchor="start">the owner just rejected.</text>
+<path d="M540 466 L300 530" class="lead"/><circle cx="300" cy="530" r="2" fill="#a0472c"/>
+<text x="540" y="470" class="note" text-anchor="start">Synopsis: an inked rule for progress at the page</text>
+<text x="540" y="483" class="note" text-anchor="start">foot; clan ribbons at the head band, one per clan met.</text>
+</svg>
