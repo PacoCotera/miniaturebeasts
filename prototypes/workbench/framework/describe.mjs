@@ -8,7 +8,8 @@ import { brief } from "./species.mjs";
 // The trait's look for a genome, aligned with the frame's trait looks as catalogue.looksFor orders
 // them (one label per distinct pair of the pool, or per distinct resolved value when the trait names
 // fewer looks than pairs, as a switch does).
-export function lookOf(frame, trait, genome) {
+export function lookOf(frame, trait, genome, opts = {}) {
+  const pairSep = opts.pairSep ?? " and ";   // how a pair of colours is joined (the Pods lines use a comma)
   const id = trait.loci[0], locus = LOCI.get(id);
   if (!locus) return null;
   const pool = frame.pools?.[id] ?? locus.alleles.map((a) => a.id);
@@ -18,7 +19,7 @@ export function lookOf(frame, trait, genome) {
   const labelOf = ([a, b]) => {
     const v = resolveCopies(locus, [a, b]);
     if (locus.operator === "copy-mean") return a === b ? a : `between ${a} and ${b}`;
-    if (locus.operator === "partition-map") return a === b ? a : `${a} and ${b}`;
+    if (locus.operator === "partition-map") return a === b ? a : `${a}${pairSep}${b}`;
     if (locus.operator === "pair-map") return typeof v === "boolean" ? (v ? "on" : "off") : String(v);
     return a === b ? a : [a, b].sort().join("/");
   };

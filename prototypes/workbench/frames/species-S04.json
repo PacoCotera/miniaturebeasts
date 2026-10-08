@@ -135,9 +135,9 @@
       "appearance.fur-flow"
      ],
      "looks": [
-      "short and straight",
+      "short, straight",
       "between",
-      "long and swept"
+      "long, swept"
      ],
      "nature": "look",
      "shapeable": true,
@@ -175,7 +175,7 @@
    "traits": [
     {
      "id": "back-line",
-     "name": "Back line",
+     "name": "Topline",
      "loci": [
       "growth.region-bend"
      ],

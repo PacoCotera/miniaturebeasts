@@ -155,9 +155,9 @@
       "appearance.fur-flow"
      ],
      "looks": [
-      "short and straight",
+      "short, straight",
       "between",
-      "long and swept"
+      "long, swept"
      ],
      "nature": "look",
      "shapeable": true,
@@ -165,7 +165,7 @@
     },
     {
      "id": "cap-colour",
-     "name": "Cap colour",
+     "name": "Tint",
      "loci": [
       "appearance.cap-palette"
      ],
@@ -187,7 +187,7 @@
     },
     {
      "id": "cap-spots",
-     "name": "Cap spots",
+     "name": "Flecks",
      "loci": [
       "appearance.cap-spots"
      ],
@@ -238,7 +238,7 @@
     },
     {
      "id": "cap-size",
-     "name": "Cap size",
+     "name": "Span",
      "loci": [
       "growth.wing-span-ratio",
       "growth.wing-chord-ratio"

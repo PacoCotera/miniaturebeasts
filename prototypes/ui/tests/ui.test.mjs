@@ -178,7 +178,7 @@ test("the chapter rail draws emblem, word and pips per tab, no words of status, 
 test("the chapter page lays the cells on the grid with the marks inside each picture", () => {
   const region = { rect: [528, 112, 480, 440], heading: [16, 8], grid: { "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 120] } } };
   const colours = { pane: "night", edge: "slate", heading: "creamT", name: "creamT", line: "fog", lineEmpty: "stone", wipe: "white" };
-  const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eye rings", lines: ["shows thin · hides none"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }];
+  const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eyes", lines: ["thin rings · hides wide pale rings"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }];
   const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, frost: "frost:", slats: "slats:", region: "page", cellRegion: "page.cell" });
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
   assert.deepEqual(by.page.rect, [528, 112, 480, 440]); assert.deepEqual(by["page.emblem"].rect, [544, 120, 24, 24]); assert.equal(by["page.word"].px, 20);

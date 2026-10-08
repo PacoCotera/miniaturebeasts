@@ -55,7 +55,7 @@ await page.click("#strip .cell:nth-child(3)", { modifiers: ["Shift"] });
 await page.click("#cross");
 await page.waitForFunction(() => !document.getElementById("forecast-panel").hidden && document.querySelectorAll("#forecast .trait").length >= 5, null, { timeout: 10000 });
 const forecastText = await page.textContent("#forecast-panel");
-for (const word of ["Markings", "Crown", "Eye rings", "Drive", "Efficiency", "in 4", "between"]) if (!forecastText.includes(word)) errors.push(`forecast lacks "${word}"`);
+for (const word of ["Markings", "Crown", "Eyes", "Drive", "Efficiency", "in 4", "between"]) if (!forecastText.includes(word)) errors.push(`forecast lacks "${word}"`);
 if (!/kinship 0,/.test(forecastText)) errors.push("founders should have kinship 0");
 const cells = await page.$$eval("#strip .cell", (cs) => cs.map((c) => c.textContent));
 if (!cells.some((t) => /#1 × #2 #1/.test(t))) errors.push("no children in the strip after the cross");

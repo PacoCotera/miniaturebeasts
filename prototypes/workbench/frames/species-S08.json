@@ -145,14 +145,14 @@
     },
     {
      "id": "fur-reach",
-     "name": "Fur reach",
+     "name": "Tufts",
      "loci": [
       "appearance.fur-reach"
      ],
      "looks": [
       "body only",
-      "bushy tail",
-      "bushy tail and ears"
+      "tail",
+      "tail and ears"
      ],
      "nature": "look",
      "shapeable": true,
@@ -160,7 +160,7 @@
     },
     {
      "id": "second-colour",
-     "name": "Second colour",
+     "name": "Trim",
      "loci": [
       "appearance.underside-palette"
      ],
@@ -219,7 +219,7 @@
     },
     {
      "id": "ear-tilt",
-     "name": "Ear tilt",
+     "name": "Ears",
      "loci": [
       "anatomy.ear-tilt"
      ],
@@ -256,7 +256,7 @@
    "traits": [
     {
      "id": "hind-body",
-     "name": "Hind body",
+     "name": "Haunch",
      "loci": [
       "growth.region-taper"
      ],

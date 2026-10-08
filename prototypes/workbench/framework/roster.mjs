@@ -76,7 +76,7 @@ export const SPECIES = [
     open: [
       { chapter: "coat", id: "markings", name: "Markings", loci: ["appearance.marking-switch"], looks: ["plain", "pale patches"] },
       { chapter: "face", id: "crown", name: "Crown", loci: ["anatomy.crown-presence"], looks: ["bare head", "leaf crest"] },
-      { chapter: "face", id: "eye-rings", name: "Eye rings", loci: ["growth.exterior-eye-size-ratio"], looks: ["thin rings", "between", "wide pale rings"], pool: { "growth.exterior-eye-size-ratio": ["large", "huge"] } },
+      { chapter: "face", id: "eye-rings", name: "Eyes", loci: ["growth.exterior-eye-size-ratio"], looks: ["thin rings", "between", "wide pale rings"], pool: { "growth.exterior-eye-size-ratio": ["large", "huge"] } },
       { chapter: "movement", id: "drive", name: "Drive", loci: ["movement.cycle-rate"], looks: ["steady", "between", "bursts"] },
       { chapter: "stamina", id: "efficiency", name: "Efficiency", loci: ["energy.action-efficiency"], looks: ["thrifty", "between", "ordinary"] },
     ],
@@ -89,7 +89,7 @@ export const SPECIES = [
       { trait: "colour", pool: { "appearance.body-palette": ["coral", "raspberry", "marigold", "plum"] }, looks: ["coral", "raspberry", "marigold", "plum", "two side by side"] },
       { trait: "markings", name: "Spots", looks: ["bare", "bands", "spots", "bands and spots"] },
       { trait: "fluff" }, { trait: "roundness" }, { trait: "body" },
-      { chapter: "shape", id: "cap-size", name: "Cap size", loci: ["growth.wing-span-ratio", "growth.wing-chord-ratio"], looks: ["small cap", "between", "wide cap"] },
+      { chapter: "shape", id: "cap-size", name: "Span", loci: ["growth.wing-span-ratio", "growth.wing-chord-ratio"], looks: ["small cap", "between", "wide cap"] },
       { trait: "cap-colour" }, { trait: "cap-spots" },
       { trait: "pace" }, { trait: "turning" },
       { chapter: "movement", id: "waddle", name: "Waddle", loci: ["movement.axial-amplitude", "movement.axial-phase"], looks: ["slight sway", "between", "big waddle"] },
@@ -101,7 +101,7 @@ export const SPECIES = [
     fixed: S03_FIXED, openSwitches: ["appearance.marking-switch"],
     open: [
       { trait: "colour", pool: { "appearance.body-palette": ["lagoon", "jade", "marigold", "periwinkle"] }, looks: ["lagoon", "jade", "marigold", "periwinkle", "two side by side"] },
-      { trait: "second-colour", name: "Leg colour", pool: { "appearance.underside-palette": ["milk-mint", "cream", "ice", "slate"] }, looks: ["milk-mint", "cream", "ice", "slate", "two side by side"] },
+      { trait: "second-colour", name: "Trim", pool: { "appearance.underside-palette": ["milk-mint", "cream", "ice", "slate"] }, looks: ["milk-mint", "cream", "ice", "slate", "two side by side"] },
       { trait: "markings", looks: ["plain", "stripes", "spots", "stripes and spots"] }, { trait: "scales" },
       { chapter: "face", id: "crest", name: "Crest", loci: ["growth.crown-height-ratio"], looks: ["low crest", "between", "tall crest"] },
       { trait: "eyes" }, { trait: "snout" }, { trait: "build" }, { trait: "hind-body" }, { trait: "back-line" },

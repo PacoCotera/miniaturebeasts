@@ -202,7 +202,7 @@
    "traits": [
     {
      "id": "hind-body",
-     "name": "Hind body",
+     "name": "Haunch",
      "loci": [
       "growth.region-taper"
      ],
@@ -238,7 +238,7 @@
       "growth.leaf-length-ratio"
      ],
      "looks": [
-      "a few short",
+      "few short",
       "between",
       "many long"
      ],
@@ -393,7 +393,7 @@
     },
     {
      "id": "light-feeding",
-     "name": "Light feeding",
+     "name": "Basking",
      "loci": [
       "energy.light-feeding"
      ],

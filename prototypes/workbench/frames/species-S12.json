@@ -165,7 +165,7 @@
     },
     {
      "id": "flap-markings",
-     "name": "Flap markings",
+     "name": "Pattern",
      "loci": [
       "appearance.flap-marking"
      ],
@@ -181,7 +181,7 @@
     },
     {
      "id": "second-colour",
-     "name": "Second colour",
+     "name": "Trim",
      "loci": [
       "appearance.underside-palette"
      ],
@@ -206,7 +206,7 @@
    "traits": [
     {
      "id": "hind-body",
-     "name": "Hind body",
+     "name": "Haunch",
      "loci": [
       "growth.region-taper"
      ],

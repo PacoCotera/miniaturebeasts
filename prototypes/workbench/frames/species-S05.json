@@ -175,7 +175,7 @@
    "traits": [
     {
      "id": "hind-body",
-     "name": "Hind body",
+     "name": "Haunch",
      "loci": [
       "growth.region-taper"
      ],
@@ -212,7 +212,7 @@
    "traits": [
     {
      "id": "tail-curl",
-     "name": "Tail curl",
+     "name": "Carriage",
      "loci": [
       "growth.axial-tail-bend"
      ],
