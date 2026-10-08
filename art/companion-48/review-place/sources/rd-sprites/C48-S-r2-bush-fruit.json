@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r2-bush-fruit",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "48x43",
+ "prompt": "a small round leafy bush with red berries from above, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/bush-fruit-in.png",
+  "sha256": "7ed0ce4d077210ccf3b4e901b43ad8d7b22630c187726d2918ee4f7852443a56",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T18:02:47Z",
+ "checkCost": {
+  "created_at": 1791482568,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 3.840000000000009
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "03eb9912-4715-43b7-939d-97011da28cc1",
+  "seconds": 52.0,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 3.66,
+  "model": "rd_pro",
+  "file": "C48-S-r2-bush-fruit-rd.png",
+  "sha256": "c3b88fb41b892a409afb181751e648d51bb2bb6b22c83c08a0c608d7f9c407a7"
+ }
+}

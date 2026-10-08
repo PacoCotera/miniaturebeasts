@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r2-stone-warm1",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "44x45",
+ "prompt": "a grey field stone glowing warm amber from inside, from above, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/stone-warm1-in.png",
+  "sha256": "aee4e102a627147fc5612a282a16430f02d2c0ef5e39bc79faae41506f1156dd",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T18:04:22Z",
+ "checkCost": {
+  "created_at": 1791482662,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 3.480000000000009
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "ca550ad0-280c-4127-9b47-5c98070db070",
+  "seconds": 31.3,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 3.3,
+  "model": "rd_pro",
+  "file": "C48-S-r2-stone-warm1-rd.png",
+  "sha256": "a515ea9c6c6c8784c29697f3d289a629b85b1ab114497552198916a712168e23"
+ }
+}

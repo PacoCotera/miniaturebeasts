@@ -1,6 +1,6 @@
 {
- "successfulCalls": 14,
- "totalUSD": 2.51,
+ "successfulCalls": 19,
+ "totalUSD": 3.41,
  "calls": [
   {
    "tag": "C48-P-r1-a1",
@@ -31,14 +31,14 @@
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x43",
    "usd": 0.18,
-   "seconds": 58.2
+   "seconds": 52.0
   },
   {
    "tag": "C48-S-r2-bush",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x43",
    "usd": 0.18,
-   "seconds": 31.3
+   "seconds": 31.2
   },
   {
    "tag": "C48-S-r2-outpost-lit",
@@ -48,32 +48,67 @@
    "seconds": 31.2
   },
   {
+   "tag": "C48-S-r2-pawn-down",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 26.1
+  },
+  {
+   "tag": "C48-S-r2-pawn-left",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 62.2
+  },
+  {
+   "tag": "C48-S-r2-pawn-right",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 46.8
+  },
+  {
+   "tag": "C48-S-r2-pawn-up",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 52.0
+  },
+  {
+   "tag": "C48-S-r2-pod",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "32x30",
+   "usd": 0.18,
+   "seconds": 46.7
+  },
+  {
    "tag": "C48-S-r2-stone-charged1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "44x48",
    "usd": 0.18,
-   "seconds": 47.0
+   "seconds": 31.2
   },
   {
    "tag": "C48-S-r2-stone-warm1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "44x45",
    "usd": 0.18,
-   "seconds": 36.5
+   "seconds": 31.3
   },
   {
    "tag": "C48-S-r2-stone",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "32x35",
    "usd": 0.18,
-   "seconds": 31.2
+   "seconds": 41.8
   },
   {
    "tag": "C48-S-r2-tree",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "96x111",
    "usd": 0.18,
-   "seconds": 47.1
+   "seconds": 57.3
   },
   {
    "tag": "C48-R-r1-a1",

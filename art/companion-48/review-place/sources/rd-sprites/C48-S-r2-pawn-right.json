@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r2-pawn-right",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "48x48",
+ "prompt": "a small explorer in an orange hooded suit with a lantern, facing right, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/pawn-right-in.png",
+  "sha256": "4ddc92898eea4d57b9affe78cc9f139dece1b0a88600d78776b61a0ce77b1930",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T18:09:07Z",
+ "checkCost": {
+  "created_at": 1791482947,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 2.2200000000000077
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "1ba54d90-613f-4ffd-b785-be22c7889aba",
+  "seconds": 46.8,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 2.04,
+  "model": "rd_pro",
+  "file": "C48-S-r2-pawn-right-rd.png",
+  "sha256": "b6b92843a055d468c8bbe246e9d6c822aed81f1773f03e4beb204968eb3d8b75"
+ }
+}

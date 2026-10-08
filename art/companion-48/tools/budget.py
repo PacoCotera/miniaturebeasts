@@ -15,6 +15,9 @@ for p in sorted(glob.glob(os.path.join(src, "**", "*.json"), recursive=True)):
         u = d["result"]["usage"]; pi, po = PRICES[d["model"]]
         c = u["promptTokenCount"] * pi / 1e6 + u["candidatesTokenCount"] * po / 1e6
         calls.append({"tag": d["tag"], "tool": d["model"], "in": u["promptTokenCount"], "out": u["candidatesTokenCount"], "usd": round(c, 4), "seconds": d["result"]["seconds"]}); total += c
+ex = os.path.join(src, "extra-spend.json")
+if os.path.exists(ex):
+    for e in json.load(open(ex)): calls.append(e); total += e["usd"]
 out = {"successfulCalls": len(calls), "totalUSD": round(total, 2), "calls": calls,
        "pricing": "gemini-3-pro-image standard tier: $2.00/M input, $120/M output tokens (ai.google.dev pricing, 2026-10-08); Retro Diffusion rd_pro: $0.18 per image (balance_cost in the task result)"}
 json.dump(out, open(os.path.join(src, "budget.json"), "w"), indent=1); print("calls", len(calls), "total USD", out["totalUSD"])
