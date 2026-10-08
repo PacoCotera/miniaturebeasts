@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Library · spread wireframe, 1024×600, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><pattern id="g40" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e2e2e2" stroke-width="0.6"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444"/><line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="239" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="640.5" y="8.5" width="367" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="400.5" y="570.5" width="223" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="632.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="8.5" y="48.5" width="1007" height="503" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="24.5" y="56.5" width="479" height="487" fill="#f6f1e4" stroke="#8a7a5a" stroke-width="1"/>
+<rect x="520.5" y="56.5" width="479" height="487" fill="#f6f1e4" stroke="#8a7a5a" stroke-width="1"/>
+<rect x="48.5" y="112.5" width="95" height="111" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
+<rect x="48.5" y="100.5" width="95" height="3" fill="#6a8a4a" stroke="none"/>
+<rect x="40.5" y="232.5" width="111" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="48.5" y="256" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="160.5" y="112.5" width="95" height="111" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
+<rect x="160.5" y="100.5" width="95" height="3" fill="#6a8a4a" stroke="none"/>
+<rect x="152.5" y="232.5" width="111" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="160.5" y="256" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="272.5" y="112.5" width="95" height="111" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
+<rect x="272.5" y="100.5" width="95" height="3" fill="#6a8a4a" stroke="none"/>
+<rect x="264.5" y="232.5" width="111" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="272.5" y="256" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="384.5" y="112.5" width="95" height="111" fill="#fbf8f0" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="384.5" y="100.5" width="95" height="3" fill="#6a8a4a" stroke="none"/>
+<rect x="376.5" y="232.5" width="111" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="384.5" y="256" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="48.5" y="296.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="48.5" y="440" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="160.5" y="296.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="160.5" y="440" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="272.5" y="296.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="272.5" y="440" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="384.5" y="296.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="384.5" y="440" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="544.5" y="112.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="544.5" y="256" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="656.5" y="112.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="656.5" y="256" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="768.5" y="112.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="768.5" y="256" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="880.5" y="112.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="880.5" y="256" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="544.5" y="296.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="544.5" y="440" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="656.5" y="296.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="656.5" y="440" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="768.5" y="296.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="768.5" y="440" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="880.5" y="296.5" width="95" height="111" fill="#fbf8f0" stroke="#7a6a50" stroke-width="1"/>
+<rect x="880.5" y="440" width="95" height="1" fill="#7a6a50" stroke="none"/>
+<rect x="44.5" y="108.5" width="103" height="119" rx="6" fill="none" stroke="#d29a00" stroke-width="2.5"/>
+<rect x="40.5" y="464.5" width="447" height="71" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="536.5" y="464.5" width="399" height="71" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="968.5" y="512.5" width="23" height="23" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="500.5" y="48.5" width="23" height="263" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="20" y="21" font-size="11" fill="#222">Screen name 20px · turn 16px</text>
+<text x="388" y="21" font-size="11" fill="#222">Energy · Data · Essence 16px</text>
+<text x="644" y="21" font-size="11" fill="#222">Companion state 16px, right</text>
+<text x="20" y="583" font-size="11" fill="#222">✓ verb · price · ← where</text>
+<text x="404" y="583" font-size="11" fill="#222">subject, centred</text>
+<text x="636" y="583" font-size="11" fill="#222">what needs you, right</text>
+<text x="52" y="125" font-size="11" fill="#222">found plate 96×112</text>
+<text x="52" y="137" font-size="9" fill="#777">48,112 96×112</text>
+<text x="44" y="245" font-size="11" fill="#222">name 16px</text>
+<text x="164" y="125" font-size="11" fill="#222">found 96×112</text>
+<text x="164" y="137" font-size="9" fill="#777">160,112 96×112</text>
+<text x="156" y="245" font-size="11" fill="#222">name 16px</text>
+<text x="276" y="125" font-size="11" fill="#222">found 96×112</text>
+<text x="276" y="137" font-size="9" fill="#777">272,112 96×112</text>
+<text x="268" y="245" font-size="11" fill="#222">name 16px</text>
+<text x="388" y="125" font-size="11" fill="#222">met study 96×112</text>
+<text x="388" y="137" font-size="9" fill="#777">384,112 96×112</text>
+<text x="380" y="245" font-size="11" fill="#222">name 16px</text>
+<text x="52" y="309" font-size="11" fill="#222">unmet 96×112</text>
+<text x="52" y="321" font-size="9" fill="#777">48,296 96×112</text>
+<text x="164" y="309" font-size="11" fill="#222">unmet 96×112</text>
+<text x="164" y="321" font-size="9" fill="#777">160,296 96×112</text>
+<text x="276" y="309" font-size="11" fill="#222">unmet 96×112</text>
+<text x="276" y="321" font-size="9" fill="#777">272,296 96×112</text>
+<text x="388" y="309" font-size="11" fill="#222">unmet 96×112</text>
+<text x="388" y="321" font-size="9" fill="#777">384,296 96×112</text>
+<text x="548" y="125" font-size="11" fill="#222">unmet 96×112</text>
+<text x="548" y="137" font-size="9" fill="#777">544,112 96×112</text>
+<text x="660" y="125" font-size="11" fill="#222">unmet 96×112</text>
+<text x="660" y="137" font-size="9" fill="#777">656,112 96×112</text>
+<text x="772" y="125" font-size="11" fill="#222">unmet 96×112</text>
+<text x="772" y="137" font-size="9" fill="#777">768,112 96×112</text>
+<text x="884" y="125" font-size="11" fill="#222">unmet 96×112</text>
+<text x="884" y="137" font-size="9" fill="#777">880,112 96×112</text>
+<text x="548" y="309" font-size="11" fill="#222">unmet 96×112</text>
+<text x="548" y="321" font-size="9" fill="#777">544,296 96×112</text>
+<text x="660" y="309" font-size="11" fill="#222">unmet 96×112</text>
+<text x="660" y="321" font-size="9" fill="#777">656,296 96×112</text>
+<text x="772" y="309" font-size="11" fill="#222">unmet 96×112</text>
+<text x="772" y="321" font-size="9" fill="#777">768,296 96×112</text>
+<text x="884" y="309" font-size="11" fill="#222">unmet 96×112</text>
+<text x="884" y="321" font-size="9" fill="#777">880,296 96×112</text>
+<text x="44" y="477" font-size="11" fill="#222">margin life (never over a frame)</text>
+<text x="44" y="489" font-size="9" fill="#777">40,464 448×72</text>
+<text x="540" y="477" font-size="11" fill="#222">margin life</text>
+<text x="540" y="489" font-size="9" fill="#777">536,464 400×72</text>
+<text x="960" y="496" font-size="9" fill="#222">turn</text>
+<text x="960" y="507" font-size="9" fill="#777">968,512 24×24</text>
+</svg>

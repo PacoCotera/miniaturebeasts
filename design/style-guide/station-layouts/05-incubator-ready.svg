@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Incubator · ready wireframe, 1024×600, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><pattern id="g40" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e2e2e2" stroke-width="0.6"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444"/><line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="239" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="640.5" y="8.5" width="367" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="400.5" y="570.5" width="223" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="632.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="96.5" y="48.5" width="831" height="55" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="96.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="216.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="336.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="456.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="576.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="696.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="816.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<path d="M312.0 320 A200 200 0 0 1 712.0 320" fill="none" stroke="#5a8a3a" stroke-width="1" stroke-dasharray="5 3"/>
+<rect x="360.5" y="176.5" width="303" height="295" fill="#fff4e3" stroke="#b9772f" stroke-width="1.5"/>
+<rect x="448.5" y="264.5" width="127" height="159" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
+<rect x="408.5" y="400.5" width="207" height="47" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="328.5" y="464.5" width="367" height="79" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="448.5" y="488.5" width="127" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="324.5" y="172.5" width="375" height="375" rx="6" fill="none" stroke="#d29a00" stroke-width="2.5"/>
+<rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef7" stroke="#2f5f8f" stroke-width="1.5"/>
+<rect x="824.5" y="424.5" width="151" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="360.5" y="232.5" width="303" height="311" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="312.5" y="112.5" width="399" height="39" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="20" y="21" font-size="11" fill="#222">Screen name 20px · turn 16px</text>
+<text x="388" y="21" font-size="11" fill="#222">Energy · Data · Essence 16px</text>
+<text x="644" y="21" font-size="11" fill="#222">Companion state 16px, right</text>
+<text x="20" y="583" font-size="11" fill="#222">✓ verb · price · ← where</text>
+<text x="404" y="583" font-size="11" fill="#222">subject, centred</text>
+<text x="636" y="583" font-size="11" fill="#222">what needs you, right</text>
+<text x="100" y="61" font-size="11" fill="#222">Coat</text>
+<text x="100" y="73" font-size="9" fill="#777">96,48 112×56</text>
+<text x="220" y="61" font-size="11" fill="#222">Face</text>
+<text x="220" y="73" font-size="9" fill="#777">216,48 112×56</text>
+<text x="340" y="61" font-size="11" fill="#222">Shape</text>
+<text x="340" y="73" font-size="9" fill="#777">336,48 112×56</text>
+<text x="460" y="61" font-size="11" fill="#222">Legs*</text>
+<text x="460" y="73" font-size="9" fill="#777">456,48 112×56</text>
+<text x="580" y="61" font-size="11" fill="#222">Movement</text>
+<text x="580" y="73" font-size="9" fill="#777">576,48 112×56</text>
+<text x="700" y="61" font-size="11" fill="#222">Stamina</text>
+<text x="700" y="73" font-size="9" fill="#777">696,48 112×56</text>
+<text x="820" y="61" font-size="11" fill="#222">Character</text>
+<text x="820" y="73" font-size="9" fill="#777">816,48 112×56</text>
+<text x="304" y="304" font-size="11" fill="#222" text-anchor="end">Leaf arc: every leaf full</text>
+<text x="304" y="316" font-size="9" fill="#777" text-anchor="end">296,120 432×224</text>
+<text x="452" y="277" font-size="11" fill="#222">BUD, species shape glowing inside</text>
+<text x="452" y="289" font-size="9" fill="#777">448,264 128×160</text>
+<text x="412" y="413" font-size="11" fill="#222">nest</text>
+<text x="412" y="425" font-size="9" fill="#777">408,400 208×48</text>
+<text x="452" y="501" font-size="11" fill="#222">plaque · ready</text>
+<text x="452" y="513" font-size="9" fill="#777">448,488 128×32</text>
+<text x="844" y="309" font-size="11" fill="#222">STAMP label 120</text>
+<text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
+<text x="828" y="437" font-size="11" fill="#222">code 16px</text>
+<text x="316" y="125" font-size="11" fill="#222">ribbon: name · species · stage 20px</text>
+<text x="316" y="137" font-size="9" fill="#777">312,112 400×40</text>
+</svg>

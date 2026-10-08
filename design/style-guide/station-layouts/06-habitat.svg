@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Habitat wireframe, 1024×600, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><pattern id="g40" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e2e2e2" stroke-width="0.6"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444"/><line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="239" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="640.5" y="8.5" width="367" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="400.5" y="570.5" width="223" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="632.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="48.5" width="607" height="423" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="24.5" y="56.5" width="591" height="407" fill="#fff4e3" stroke="#b9772f" stroke-width="1.5"/>
+<rect x="168.5" y="136.5" width="303" height="311" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
+<rect x="168.5" y="72.5" width="303" height="39" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="40.5" y="432.5" width="15" height="15" fill="#ffd66b" stroke="#6b5200" stroke-width="1"/>
+<rect x="640.5" y="48.5" width="367" height="215" fill="#eef1f3" stroke="#556" stroke-width="1"/>
+<rect x="656.5" y="64.5" width="199" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="656.5" y="104.5" width="199" height="67" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="656.5" y="180.5" width="199" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="872.5" y="64.5" width="119" height="119" fill="#e6eef7" stroke="#2f5f8f" stroke-width="1.5"/>
+<rect x="656.5" y="208.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="704.5" y="208.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="752.5" y="208.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="800.5" y="208.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="848.5" y="208.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="896.5" y="208.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="944.5" y="208.5" width="39" height="39" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="656.5" y="208.5" width="327" height="39" fill="none" stroke="none"/>
+<rect x="640.5" y="280.5" width="127" height="183" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="776.5" y="280.5" width="111" height="87" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="896.5" y="280.5" width="111" height="87" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="776.5" y="376.5" width="231" height="87" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="480.5" width="991" height="71" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="24.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="160.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="296.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="432.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="568.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="704.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<rect x="840.5" y="484.5" width="127" height="63" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="20" y="21" font-size="11" fill="#222">Screen name 20px · turn 16px</text>
+<text x="388" y="21" font-size="11" fill="#222">Energy · Data · Essence 16px</text>
+<text x="644" y="21" font-size="11" fill="#222">Companion state 16px, right</text>
+<text x="20" y="583" font-size="11" fill="#222">✓ verb · price · ← where</text>
+<text x="404" y="583" font-size="11" fill="#222">subject, centred</text>
+<text x="636" y="583" font-size="11" fill="#222">what needs you, right</text>
+<text x="28" y="69" font-size="11" fill="#222">Living window (glass) 592×408</text>
+<text x="28" y="81" font-size="9" fill="#777">24,56 592×408</text>
+<text x="172" y="149" font-size="11" fill="#222">RESIDENT 304×312 (focal)</text>
+<text x="172" y="161" font-size="9" fill="#777">168,136 304×312</text>
+<text x="172" y="85" font-size="11" fill="#222">meet ribbon</text>
+<text x="172" y="97" font-size="9" fill="#777">168,72 304×40</text>
+<text x="660" y="77" font-size="11" fill="#222">Name 28px</text>
+<text x="660" y="89" font-size="9" fill="#777">656,64 200×32</text>
+<text x="660" y="117" font-size="11" fill="#222">3 lines 16px, pitch 24</text>
+<text x="660" y="129" font-size="9" fill="#777">656,104 200×68</text>
+<text x="660" y="193" font-size="11" fill="#222">code 16px</text>
+<text x="876" y="77" font-size="11" fill="#222">STAMP label 120</text>
+<text x="876" y="89" font-size="9" fill="#777">872,64 120×120</text>
+<text x="656" y="260" font-size="11" fill="#222">chapter plates 7 × 40, pitch 48</text>
+<text x="656" y="271" font-size="9" fill="#777">656,208 328×40</text>
+<text x="644" y="293" font-size="11" fill="#222">Door 128×184</text>
+<text x="644" y="305" font-size="9" fill="#777">640,280 128×184</text>
+<text x="780" y="293" font-size="11" fill="#222">Bond 112×88</text>
+<text x="780" y="305" font-size="9" fill="#777">776,280 112×88</text>
+<text x="900" y="293" font-size="11" fill="#222">Cross 112×88</text>
+<text x="900" y="305" font-size="9" fill="#777">896,280 112×88</text>
+<text x="780" y="389" font-size="11" fill="#222">Wild 232×88</text>
+<text x="780" y="401" font-size="9" fill="#777">776,376 232×88</text>
+<text x="28" y="497" font-size="11" fill="#222">bay 1</text>
+<text x="28" y="509" font-size="9" fill="#777">24,484 128×64</text>
+<text x="164" y="497" font-size="11" fill="#222">bay 2</text>
+<text x="164" y="509" font-size="9" fill="#777">160,484 128×64</text>
+<text x="300" y="497" font-size="11" fill="#222">bay 3</text>
+<text x="300" y="509" font-size="9" fill="#777">296,484 128×64</text>
+<text x="436" y="497" font-size="11" fill="#222">bay 4</text>
+<text x="436" y="509" font-size="9" fill="#777">432,484 128×64</text>
+<text x="572" y="497" font-size="11" fill="#222">bay 5</text>
+<text x="572" y="509" font-size="9" fill="#777">568,484 128×64</text>
+<text x="708" y="497" font-size="11" fill="#222">bay 6</text>
+<text x="708" y="509" font-size="9" fill="#777">704,484 128×64</text>
+<text x="844" y="497" font-size="11" fill="#222">free</text>
+<text x="844" y="509" font-size="9" fill="#777">840,484 128×64</text>
+</svg>
