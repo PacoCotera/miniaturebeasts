@@ -184,12 +184,28 @@ def plates():
     lb = load("label-plate.jpg"); m = (np.asarray(lb).astype(int).min(2) < 240); ys, xs = np.where(m); bb = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)
     save("stamp-label-120x120", lb.crop(bb).resize((120, 120), Image.LANCZOS), [888, 248, 120, 120], "cut, 120x120", "label-plate")
 def stampcase():
-    """The stamp's dim, unlit glass case (848,144,176,328), open at the screen's right edge."""
+    """The stamp's case (848,144,176,328): translucent unlit glass over the wall (the wall's seams show through, one step above it),
+    a faint diagonal sheen, dim brushed-metal rails top and bottom, a faint left edge, open at the screen's right edge."""
     im = load("case2.jpg"); W, H = im.size; y0, y1 = int(H * 0.075), int(H * 0.925); x0 = int(W * 0.108); h = y1 - y0; w = round(h * 176 / 328)
-    c = im.crop((x0, y0, x0 + w, y1)).resize((176, 328), Image.LANCZOS)
-    a = np.asarray(c).astype(float); a = a * 0.8        # darker than the page's wall: the pod keeps the only light
-    save("room-stamp-case", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)), [848, 144, 176, 328], "the dim unlit glass case, left edge and rails painted, open at the right; cut from case2, scaled evenly, darkened", "case2")
-# ---- bars
+    src = np.asarray(im.crop((x0, y0, x0 + w, y1)).resize((176, 328), Image.LANCZOS)).astype(float)
+    yy, xx = np.mgrid[0:328, 0:176].astype(float)
+    lumv = src @ np.array([0.3, 0.59, 0.11]); var = (lumv - np.median(lumv)) / 40.0                   # the painted glass's own faint variation
+    sheen = np.exp(-(((xx * 0.9 + yy * 0.45) - 215) / 34.0) ** 2) * 0.10 + np.exp(-(((xx * 0.9 + yy * 0.45) - 330) / 14.0) ** 2) * 0.05
+    alpha = np.clip(0.27 + sheen + 0.02 * var, 0.18, 0.45)
+    col = np.array([88.0, 124.0, 138.0]) + sheen[..., None] * 140
+    out = np.dstack([np.broadcast_to(col, (328, 176, 3)).copy(), alpha * 255])
+    # rails: dim brushed metal, opaque enough to read as metal, never brighter than the wall's glass
+    rng = np.random.RandomState(3)
+    for r0, r1 in ((0, 7), (321, 328)):
+        n = rng.uniform(-6, 6, (r1 - r0, 176)); n = smooth1d(n, 6, 1); base = np.array([58.0, 70.0, 78.0])
+        for y in range(r1 - r0):
+            k = (y / max(1, r1 - r0 - 1)) if r0 == 0 else 1 - y / max(1, r1 - r0 - 1)
+            out[r0 + y, :, :3] = base * (0.75 + 0.45 * (1 - k)) + n[y][:, None]; out[r0 + y, :, 3] = 235
+    out[1, :, :3] += 16                                                  # the lit top edge of the upper rail, kept dim
+    # the left edge: a faint hairline
+    out[7:321, 0, :3] = (96, 126, 138); out[7:321, 0, 3] = 120; out[7:321, 1, 3] = np.maximum(out[7:321, 1, 3], 50)
+    save("room-stamp-case", Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA"), [848, 144, 176, 328], "the dim unlit glass case: translucent (the wall's seams show through), a faint diagonal sheen, dim brushed-metal rails, open at the right", "case2")
+
 def bars():
     im = load("bar-top.jpg"); k = key_magenta(im); bb = bbox_alpha(k, 250); b = im.crop(bb).convert("RGBA")
     b = dim(b, 0.62)

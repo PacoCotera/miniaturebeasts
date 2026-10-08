@@ -137,7 +137,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `room-cradle` | 224×96 | (600, 328, 224, 96) | the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is 201 px wide), bottom on the last row |
 | `room-cradle-front` | 224×96 | (600, 328, 224, 96) | the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip |
 | `room-shelf` | 240×72 | (592, 368, 240, 72) | the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly |
-| `room-stamp-case` | 176×328 | (848, 144, 176, 328) | the dim unlit glass case, left edge and rails painted, open at the right; cut from case2, scaled evenly, darkened |
+| `room-stamp-case` | 176×328 | (848, 144, 176, 328) | the dim unlit glass case: translucent (the wall's seams show through), a faint diagonal sheen, dim brushed-metal rails, open at the right |
 
 ### Stamp label (signed)
 
