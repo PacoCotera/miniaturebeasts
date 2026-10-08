@@ -3,32 +3,59 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#home",
  "frame": "frame.json",
- "note": "The one home of the Home numbers, transcribed from station-layouts.md (Home §5, §6) and its wireframe 01-home.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What the layout document does not give is listed under `derived`, each waiting for the UI designer.",
+ "note": "The one home of the Home numbers, transcribed from station-layouts.md (Home §5, §6) and its wireframe 01-home.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What the layout document did not give was listed under `derived`; each entry is now the UI designer's decision (2026-10-08), written into the document's Home section too.",
  "derived": {
-  "colours": "derived, UI designer to confirm: the colour roles of the Home regions are the builder's choice from the palette's names (the layout document names none beyond the kit's: the bezel in `metal`, the module boxes in `panel` with a `bevel` top edge, the amber lamp, the cream focus ring); the living window's inside is one flat placeholder plate in `night` with its ground band in `slate` until the Home master exists (no wood, no warm lamp pool)",
-  "rack pods": "derived, UI designer to confirm: the layout lists pods in the Rack as 24×32 in 40×40 wells; the signed placeholder pod sprites have a well size of 32×40, which is the sprite placed (1:1, never scaled), centred in its 40×40 well — OPEN, see the report",
-  "message plate": "derived, UI designer to confirm: ← on the room says Home is the top view; the document gives no exact words, so the string is \"Home is the top view\"",
-  "waiting lamp": "derived, UI designer to confirm: the 12×12 waiting lamp sits at the resident's top right, inset 0 (its right edge on the box's right edge, its top on the box's top)",
-  "bay lift": "derived, UI designer to confirm: the document lifts the Bay module 4 px on arrival, but the chrome lift is 2 px (frame.json focus.lift.chrome) because at y 48 a 4 px lift puts the 4 px focus ring on the top bar's rule at y 40 — OPEN, see the report; the build reads the lift from here"
+  "colours": "UI designer, 2026-10-08: decided, see `colours` and Home §4's colour roles. Bezel `metal`, lit `enamel`, shade `bevel` (the derived `bevel`/`hairline` were darker than the metal on both sides); glass edge `frostD`; the placeholder inside is a `forest` back and a `clay` ground band with a `sand` top row and a `soil` foot, the only warm field on screen (the derived `night`/`slate` plate was cold and failed 'the vivarium is the only warm light'); modules the kit's instrument panel with the word in `metal`, engraved and quiet (the derived `bone` out-shone the objects); lamps off `hairline`, well `sprout`, waiting `sky`, needs you `amber`; the ribbon as on Pods; the report card an instrument `panel`, not paper",
+  "rack pods": "UI designer, 2026-10-08: decided: the signed 32×40 well pod, 1:1, at well + (4, 0). It fills the 40×40 well's height, so centred and bottom-aligned are one place: the stem on the well's top row, the shell's foot on its floor. The listed 24×32 is struck. The glint star is centred above its well, well + (14, -12)",
+  "message plate": "UI designer, 2026-10-08: decided: no plate. ← on the room does nothing and the bottom line shows no `← where`; a plate on Home would sit over the living window, which carries no words, and the top bar already names Home. strings.homeTop is gone",
+  "waiting lamp": "UI designer, 2026-10-08: confirmed: at the resident box's top right, inset 0, so it stays off the creature's body; it rides the resident's 4 px lift; `sky` with a `void` rim",
+  "bay lift": "UI designer, 2026-10-08: decided: 2 px, the chrome lift (frame.json focus.lift.chrome), over 200 ms as the door opens, held while the crates open, settling when the report card shows. At 4 the Bay's top would sit 4 px under the top bar's rule; the door, the beam and the crates carry the arrival. Nothing is scaled",
+  "report card": "UI designer, 2026-10-08: decided (the document gave only its box): `regions.report` and Home §5's table. Heading, one row per crate (pods pictured, the land's reach in words), Gathered (figures beside material icons only), the Probe's mend, the world's lines; 24 px rows, height 104 + 24 × (crates + Probe row) + (lines ? 40 + 24 × lines : 0), at most 312",
+  "vocabulary": "UI designer, 2026-10-08: decided: a module is a build of panel and the vivarium is a living window, both existing words; the rest knob, the with-you bed and the report card are compositions of panel and sprites, not new words (station-layouts.md, the vocabulary)"
  },
  "regions": {
-  "bezel": { "rect": [16, 48, 656, 504], "inset": 8 },
-  "glass": { "rect": [24, 56, 640, 488], "component": "livingWindow", "ground": [24, 300, 640, 228] },
+  "bezel": { "rect": [16, 48, 656, 504], "inset": 8, "component": "livingWindow", "part": "frame" },
+  "glass": { "rect": [24, 56, 640, 488], "component": "livingWindow", "part": "inside", "ground": [24, 300, 640, 228] },
   "resident": { "adult": [144, 152], "juvenile": [104, 112], "focus": { "widen": 16, "height": 24 }, "lift": 4, "lamp": [12, 12], "walk": { "ground": [24, 300, 640, 228] } },
-  "bed": { "rect": [520, 472, 128, 56], "mark": [16, 24] },
-  "knob": { "rect": [624, 544, 32, 8], "target": [48, 24] },
-  "bay": { "rect": [688, 48, 320, 120], "component": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "door": [16, 36, 288, 72], "crate": [80, 56], "pitch": 96, "max": 3, "lift": 4 },
-  "rack": { "rect": [688, 176, 320, 120], "component": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "wells": { "at": [24, 40], "size": [40, 40], "pitch": [48, 0], "slots": 6 }, "pod": [24, 32], "star": [12, 12], "starAt": [0, -12] },
-  "incubator": { "rect": [688, 304, 320, 120], "component": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "dome": [16, 24, 80, 80], "leaves": { "at": [112, 40, 192, 40], "leaf": [8, 12], "pitch": 12, "rows": 2, "perRow": 16 } },
-  "probe": { "rect": [688, 432, 320, 120], "component": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "cradle": [16, 24, 128, 80], "shields": { "at": [160, 64], "size": [28, 12], "pitch": 36, "count": 3 }, "slot": [264, 24, 40, 80] },
+  "bed": { "rect": [520, 472, 128, 56], "mark": [16, 24], "composition": ["sprite: bed", "sprite: the mibi with you, or the Companion mark"] },
+  "knob": { "rect": [624, 544, 32, 8], "target": [48, 24], "composition": ["sprite: knob on the living window's frame"] },
+  "bay": { "rect": [688, 48, 320, 120], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "door": [16, 36, 288, 72], "crate": [80, 56], "pitch": 96, "max": 3, "lift": 2, "liftMs": 200 },
+  "rack": { "rect": [688, 176, 320, 120], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "wells": { "at": [24, 40], "size": [40, 40], "pitch": [48, 0], "slots": 6 }, "pod": { "asset": "pod.well", "size": [32, 40], "at": [4, 0] }, "star": [12, 12], "starAt": [14, -12] },
+  "incubator": { "rect": [688, 304, 320, 120], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "dome": [16, 24, 80, 80], "leaves": { "at": [112, 40, 192, 40], "leaf": [8, 12], "pitch": 12, "rows": 2, "perRow": 16 } },
+  "probe": { "rect": [688, 432, 320, 120], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "cradle": [16, 24, 128, 80], "shields": { "at": [160, 64], "size": [28, 12], "pitch": 36, "count": 3 }, "slot": [264, 24, 40, 80] },
   "ribbon": { "rect": [40, 72, 608, 40], "px": 20 },
-  "report": { "rect": [64, 120, 560, 320], "maxHeight": 320 }
+  "report": {
+   "rect": [64, 120, 560, 312], "maxHeight": 320, "component": "panel", "build": "reportCard", "pad": 16, "noDigits": "but beside a material icon",
+   "heading": { "at": [16, 16], "h": 32, "px": 20 },
+   "rows": { "first": 56, "h": 24, "pitch": 24, "icon": 16, "iconAt": 4, "lineAt": 2, "lead": [16, 128], "content": 152, "px": 16 },
+   "crates": { "max": 3, "podIcon": 16, "podPitch": 20, "podMax": 8, "reachAt": 328 },
+   "gathered": { "gapAbove": 8, "icon": 16, "gap": 4, "between": 24 },
+   "probe": { "plateIcon": 16, "platePitch": 20 },
+   "world": { "gapAbove": 16, "max": 3, "bullet": [16, 10, 4, 4], "lineAt": 32 },
+   "height": "104 + 24 × (crates + probe row) + (world lines ? 40 + 24 × lines : 0)"
+  }
  },
  "focus": { "fallback": "spatial", "initial": "room", "targets": { "resident": "ellipse", "module": "round", "knob": "round" } },
  "colours": {
-  "bezel": "metal", "bezelLight": "bevel", "bezelShade": "hairline", "glass": "night", "groundBand": "slate",
-  "module": "panel", "moduleTop": "bevel", "moduleEdge": "hairline", "word": "bone", "lampOn": "amber", "lampOff": "stone",
-  "bed": "panel", "knob": "metal", "slotEmpty": "gold", "ribbonFill": "tealD", "ribbonEdge": "aqua", "ribbonText": "bone"
+  "bezel": { "fill": "metal", "light": "enamel", "shade": "bevel", "edge": "hairline" },
+  "glass": { "edge": "frostD", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil" },
+  "module": { "fill": "panel", "top": "bevel", "edge": "hairline", "word": "metal" },
+  "lamp": { "off": "hairline", "well": "sprout", "waiting": "sky", "needsYou": "amber", "rim": "void" },
+  "bay": { "door": "metal", "doorSlat": "bevel", "doorLight": "enamel", "inside": "ground", "beam": "tealD", "crate": "deepTeal", "crateTop": "teal", "crateEdge": "hairline", "seal": "orange" },
+  "rack": { "well": "ground", "wellShade": "void", "wellLip": "bevel", "glint": "yellow" },
+  "incubator": { "base": "enamel", "glassEdge": "frostD", "glassLight": "frost", "leaf": "sage", "leafVein": "sageD", "leafEmpty": "hairline" },
+  "probe": { "cradle": "metal", "plate": "white", "plateGone": "bevel", "slotEmpty": "hairline", "frame": "gold", "frameLight": "yellow" },
+  "bed": { "rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist" },
+  "waitingLamp": { "fill": "sky", "rim": "void" },
+  "knob": { "fill": "enamel", "light": "frost", "shade": "bevel" },
+  "ribbon": { "fill": "tealD", "edge": "aqua", "text": "bone" },
+  "report": { "fill": "panel", "edge": "hairline", "top": "bevel", "shadow": "void", "heading": "bone", "lead": "mist", "line": "bone", "figure": "bone", "bullet": "bevel" }
  },
- "strings": { "modules": { "bay": "Bay", "rack": "Rack", "incubator": "Incubator", "probe": "Probe" }, "bayClosed": "closed while the Companion is away", "homeTop": "Home is the top view", "rest": "Rest" }
+ "strings": { "modules": { "bay": "Bay", "rack": "Rack", "incubator": "Incubator", "probe": "Probe" }, "bayClosed": "closed while the Companion is away", "rest": "Rest",
+  "report": {
+   "heading": "Home from the field", "crate": ["First crate", "Second crate", "Third crate"], "devCrate": "Developer crate", "noPods": "no pods", "manyPods": "many pods",
+   "reach": { "underThird": "a first look around", "underTwoThirds": "half the land explored", "underAll": "most of the land explored", "all": "all the land explored" },
+   "gathered": "Gathered", "topUp": "· with the top-up", "probe": "Probe", "mendedFree": "mended free", "mendedPaid": "mended · {price}", "world": "Meanwhile, the world turned"
+  }
+ }
 }
