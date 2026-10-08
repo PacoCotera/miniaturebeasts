@@ -1,6 +1,6 @@
 {
- "successfulCalls": 20,
- "totalUSD": 5.57,
+ "successfulCalls": 24,
+ "totalUSD": 6.29,
  "calls": [
   {
    "tag": "C48-P-r1-a1",
@@ -90,11 +90,39 @@
    "seconds": 31.2
   },
   {
+   "tag": "C48-S-r2-stone-charged2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "44x47",
+   "usd": 0.18,
+   "seconds": 41.9
+  },
+  {
+   "tag": "C48-S-r2-stone-plain2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "32x35",
+   "usd": 0.18,
+   "seconds": 37.2
+  },
+  {
+   "tag": "C48-S-r2-stone-step",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "40x28",
+   "usd": 0.18,
+   "seconds": 68.0
+  },
+  {
    "tag": "C48-S-r2-stone-warm1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "44x45",
    "usd": 0.18,
    "seconds": 31.3
+  },
+  {
+   "tag": "C48-S-r2-stone-warm2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "44x47",
+   "usd": 0.18,
+   "seconds": 26.3
   },
   {
    "tag": "C48-S-r2-stone",

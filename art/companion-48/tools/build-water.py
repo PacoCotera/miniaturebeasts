@@ -1,8 +1,8 @@
 """Pond water, scripted on the B ramp, two frames, repeating every 48 px. Depth: a periodic depth field read through a
 4x4 Bayer matrix (the one dither the Companion allows) between two neighbouring ramp steps, so the colour moves
 softly from lighter to deeper water over the tile. Light: short horizontal crests in the lighter step with an ice
-glint on their left end. Ripple: two flat elliptical rings that widen by 2 px between the frames, fading from the
-lighter step to the base. deep is the same one step down the ramp; shallows is the bank tile.
+glint on their left end. The ripple rings are not in the tiles (they would repeat on the tile grid): build-ripples.py draws them as sparse
+overlay sprites. deep is the same one step down the ramp; shallows is the bank tile.
 usage: python3 -I build-water.py OUT_DIR"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -12,7 +12,6 @@ out = sys.argv[1]; os.makedirs(out, exist_ok=True)
 N = 48
 BAYER = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]) / 16.0 + 1 / 32
 CRESTS = [(6, 9, 5), (30, 4, 4), (18, 22, 6), (40, 30, 4), (8, 38, 5), (28, 43, 5)]   # x, y, length
-RINGS = [(14, 14, 0), (35, 33, 1)]                                                       # centre and a phase
 def field(fr, base, lo, hi, glint):
     pb = PB(N, N); g = np.empty((N, N), dtype=object)
     for y in range(N):
@@ -25,11 +24,6 @@ def field(fr, base, lo, hi, glint):
         for i in range(ln): g[cy % N, (sx + i) % N] = hi
         g[cy % N, sx % N] = glint
         for i in range(1, ln - 1): g[(cy + 1) % N, (sx + i + 1) % N] = base if g[(cy + 1) % N, (sx + i + 1) % N] is lo else g[(cy + 1) % N, (sx + i + 1) % N]
-    for cx, cy, ph in RINGS:
-        rx = 5 + 2 * (fr + ph) % 4 * 1 + 3 * (fr ^ ph); ry = max(2, rx // 3 + 1)
-        for a in np.linspace(0, 2 * np.pi, 90, endpoint=False):
-            x = int(round(cx + rx * np.cos(a))) % N; y = int(round(cy + ry * np.sin(a))) % N
-            g[y, x] = glint if (np.sin(a) < -0.6 and np.cos(a) < 0.2) else hi
     for y in range(N):
         for x in range(N): pb.set(x, y, g[y, x])
     return pb

@@ -43,12 +43,12 @@ class Palette:
         self.dark2 = [self.dark[i] for i in self.dark]
         self.fog = self.mix_lut("bone", .62)
         self.fade = self.mix_lut("stone", .5)
-        # round 2: the storm casts the ground, water and stones toward blue without a DARK step. storm (the pick) keeps the
-        # grass body at its own value, so the pawn (luma 127) separates from it in four greys, and sends the shade strokes teal;
-        # cool is the stronger cast (teal ground, luma 129, the pawn no longer separates), kept as a labelled alternative
-        self.storm = self.mix_lut("river", .3); self.cool = self.mix_lut("river", .45)
+        # round 2 and 3: the storm casts the ground, water and plain stones toward blue without a DARK step: every colour mixed 30 % toward
+        # river, nearest palette colour. The grass body keeps its value (so the pawn, luma 127, separates from it in four greys); the shade
+        # strokes go teal. The stronger cast was rejected by the owner and is gone.
+        self.storm = self.mix_lut("river", .3)
         for n in ("sand", "clay", "paper", "bone", "white"):   # the bank and the pale things keep their warmth: storms go blue, never brown-grey
-            self.storm[self.index[n]] = self.index[n]; self.cool[self.index[n]] = self.index[n]
+            self.storm[self.index[n]] = self.index[n]
 
     def nearest(self, r, g, b):
         d = (self.rgb[:, 0] - r) ** 2 * 3 + (self.rgb[:, 1] - g) ** 2 * 4 + (self.rgb[:, 2] - b) ** 2 * 2
