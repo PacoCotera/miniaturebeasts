@@ -75,23 +75,26 @@ for facing in ("down", "right", "up"):
 for key, idx in P_.items(): frames[key] = place(idx, lift=2 if key[1] == "react" else 0)
 def cells(facing, st): return frames[(facing, st)]
 down, upb, side = frames[("down", "walk2")].copy(), frames[("up", "walk2")].copy(), frames[("right", "walk1")].copy()
-D = dict(leg_top=33, left_x=19, right_x=25, boot_rows=(41, 44)); U = dict(leg_top=34, left_x=19, right_x=25, boot_rows=(41, 44))
+D = dict(leg_top=33, left_x=19, right_x=25, boot_rows=(43, 46)); U = dict(leg_top=34, left_x=19, right_x=25, boot_rows=(43, 46))   # the front sole on row 45, the back sole (lifted 2) on row 43, both on the shadow
 xx_, yy_ = np.meshgrid(np.arange(48), np.arange(48))
 for facing, base, S in (("down", down, D), ("up", upb, U)):
-    for st, kw in (("walk2", dict()), ("walk1", dict(body_dy=1, r_dy=-3, r_dx=1, arm_l=2, arm_r=-2)), ("walk3", dict(body_dy=1, l_dy=-3, l_dx=1, arm_l=-2, arm_r=2)),
+    for st, kw in (("walk2", dict()), ("walk1", dict(body_dy=1, r_dy=-2, r_dx=1, arm_l=2, arm_r=-2)), ("walk3", dict(body_dy=1, l_dy=-2, l_dx=1, arm_l=-2, arm_r=2)),
                    ("creep1", dict(body_dy=3, l_dy=-2, l_dx=1, r_dx=1, knee=1.5)), ("creep2", dict(body_dy=3, l_dx=2, r_dx=2, knee=2.0)), ("creep3", dict(body_dy=3, r_dy=-2, l_dx=1, r_dx=1, knee=1.5))):
         frames[(facing, st)] = L.fb_pose(base, **S, **kw)
 bu = upb.copy(); bu[(yy_ >= 19) & ((xx_ <= 16) | (xx_ >= 31))] = -1                      # up react: the sleeves are taken off and drawn again raised
 r = L.fb_pose(bu, **U, body_dy=-2, l_dy=-2, r_dy=-2, arms=(24, 24)); L.limb(r, [(16, 21), (13, 16), (12, 11)], 4); L.limb(r, [(31, 21), (34, 16), (35, 11)], 4); frames[("up", "react")] = r
 # right: the passing pose, the second contact (the near leg forward), the creeps with bent knees and the hood three rows down, and the react from H's own head and torso
 SD = lambda **k: L.side_pose(side, **k)
-frames[("right", "walk2")] = SD(far=[(24, 34), (27, 37), (26, 39)], far_ankle=(26, 38), near=[(23, 34), (23, 38), (23, 41)], near_ankle=(23, 41))
+frames[("right", "walk1")] = SD(far=[(23, 34), (27, 38), (29, 41)], far_ankle=(29, 41), near=[(22, 34), (18, 38), (17, 41)], near_ankle=(17, 41))   # walk3's open V with the legs swapped, both soles on row 43
+frames[("right", "walk2")] = SD(body_dy=-1, far=[(24, 33), (27, 36), (26, 38)], far_ankle=(26, 37), near=[(23, 33), (23, 37), (23, 41)], near_ankle=(23, 41))   # the passing pose, raised a row as the front and back ones are
 frames[("right", "walk3")] = SD(far=[(23, 34), (19, 38), (17, 41)], far_ankle=(17, 41), near=[(22, 34), (26, 38), (29, 41)], near_ankle=(29, 41))
 frames[("right", "creep1")] = SD(body_dy=3, far=[(23, 37), (19, 39), (17, 41)], far_ankle=(17, 41), near=[(22, 37), (27, 39), (28, 41)], near_ankle=(28, 41))
 frames[("right", "creep2")] = SD(body_dy=3, far=[(23, 37), (26, 39), (25, 41)], far_ankle=(25, 41), near=[(22, 37), (21, 39), (22, 41)], near_ankle=(22, 41))
 frames[("right", "creep3")] = SD(body_dy=3, far=[(24, 37), (28, 39), (29, 41)], far_ankle=(29, 41), near=[(22, 37), (18, 39), (17, 41)], near_ankle=(17, 41))
 r = SD(body_dy=-2, far=[(23, 32), (24, 36), (24, 39)], far_ankle=(24, 39), near=[(22, 32), (22, 36), (22, 39)], near_ankle=(22, 39))
 L.limb(r, [(30, 23), (35, 18), (36, 12)], 3); L.limb(r, [(18, 21), (13, 17), (12, 11)], 3); frames[("right", "react")] = r
+dr = frames[("down", "react")].copy(); dr[38:] = -1                                          # down react: the plank under the feet (a skateboard) is out; the legs and boots are drawn again, a clean hop over the shadow
+frames[("down", "react")] = L.fb_pose(dr, leg_top=31, left_x=18, right_x=26, boot_rows=(40, 43), arms=(47, 47))
 for (facing, st), cell in frames.items():
     quant.save_indexed(cell, os.path.join(out, f"pawn-{facing}-{st}.png"))
     if facing == "right": quant.save_indexed(cell[:, ::-1].copy(), os.path.join(out, f"pawn-left-{st}.png"))
