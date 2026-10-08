@@ -120,7 +120,7 @@
 - **Palette.** Grass, warm earth and cool stone ramps; storms go blue, never brown-grey; red only for danger and fruit.
 - **Type.** Only the name tag and bubbles in the view; everything else in the message box and the bottom line.
 - **Chrome.** Message box (paper), name tag (ink with a pointer).
-- **Name tag placement (Working rule).** The specimen is the spotlight: a name tag never covers a creature. The **clear zone** is the token's whole 48 px cell plus any pixel drawn outside it (a sprout or ear above the head, the teal ring at the feet), plus 4 px. The tag (22 px tall) goes, in this order, to the first position that stays inside the view (x 6–444, y 38–558) and covers no other creature's or token's clear zone, the pawn, the HUD, the bottom line or the message box:
+- **Name tag placement (Working rule).** The specimen is the spotlight: a name tag never covers a creature. The **clear zone** is the token's whole 48 px cell plus any pixel drawn outside it (a sprout or ear above the head, the teal ring at the feet), plus 4 px. The tag (22 px tall) goes, in this order, to the first position that stays inside the view (x 6–444, y 38–558) and covers no other creature's or token's clear zone, the pawn, the HUD, the bottom line or the message box, and never sits over the warned cell or a sign (the warned ring is the one signal the player must read):
   1. **Below:** centred on the cell, its top 4 px under the clear zone's foot, pointer up.
   2. **Right:** its left edge 4 px right of the clear zone, centred on the cell's middle row, pointer left.
   3. **Left:** the mirror of right, pointer right.

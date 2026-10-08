@@ -1,6 +1,6 @@
 # Companion 48 px redraw: handover
 
-State of round 9 on 2026-10-08. Everything below is in this folder; nothing in `prototypes/exploration/index.html` has been touched. Run every script with `python3 -I` from `art/companion-48/`.
+State of round 11d on 2026-10-08. Everything below is in this folder; nothing in `prototypes/exploration/index.html` has been touched. Run every script with `python3 -I` from `art/companion-48/`.
 
 ## Where things are
 
@@ -60,3 +60,7 @@ Keep the script's own output and the tar stream in separate calls. Script parame
 - The owner's verdict on the pawn built from H (the 28 frames), and on the hut and the ground candidates (unchanged since round 8).
 - The pawn's down and up strides are derived by hand and stiffer than H; the service redraws the character at the usual strength on turns and crouches.
 - The tree, the pod and the tokens have had no hand pass.
+
+## Round 11 (this round)
+
+Branch `studio-r11` from origin/main. New tools: `tree-r11.py`, `stone-r11.py` (replacing `tree-big.py`, `stone-big.py`), `pawn_limbs.py` additions (`ruff_front`, `ruff_back`, `lean`, `top_dy`), `compose-still.py` (dithered pools, one light direction), `pal.py` (`tree_rain`). Rebuild: `sh tools/build-all.sh` (the Retro Diffusion and Gemini calls are not in it; their sources and sidecars are in `review-place/sources/r11/`). Frozen: `review-place/round10/`. The per-piece finish record is in the README (round 11, item 10).

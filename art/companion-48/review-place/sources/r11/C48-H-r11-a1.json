@@ -1,0 +1,52 @@
+{
+ "id": "C48-H-r11-a1",
+ "tag": "C48-H-r11-a1",
+ "model": "gemini-3-pro-image",
+ "operation": "generate",
+ "prompt": "Redraw the small thatched log hut in the reference image at a LARGER scale, as a place a person could walk into, for a cosy top-down 3/4 pixel-art game. Paint it large and clean on a flat solid magenta (#FF00FF) background. It stands on bare ground: NO grass patch and NO cast shadow disc under it, only a ring of grey base stones at its foot (the ground is added by the game). Keep: a tall thatched cone roof with two bands of thatch and a ragged fringe; the roof's lower edge is ONE smooth continuous elliptical arc overhanging the round log wall on both sides; the round wall is built of continuous horizontal log courses, each course one unbroken line bowed like the front of a cylinder (never vertical streaks, never a palisade); exactly ONE small glowing window on the wall; a small SIDE PORCH at the front left with two wooden posts, its own small lean-to roof of planks (wood colours, not teal) and a stone step; a plank door under the porch tall enough for a standing person (the door is about as tall as two thirds of the wall). Warm brown wood and straw thatch colours only. Light from the top left, shadow side at the lower right. Dark blue-green or dark brown outline, never black. Flat colour shapes with a few highlights, like a hand-painted game sprite, not a photograph and not a 3D render. No text, no people.\n",
+ "imageInputs": [
+  {
+   "path": "review-place/sources/rd-huts-b/inputs/hut-B-painted-in.png",
+   "sha256": "44237da12fc0e23a73f2999e3d2f3eb86c2b5b4f4e49b33811318e5d304b9fdf"
+  }
+ ],
+ "requested": {
+  "aspectRatio": "1:1",
+  "imageSize": "1K"
+ },
+ "time": "2026-10-08T23:18:15Z",
+ "result": {
+  "status": "success",
+  "png": {
+   "file": "C48-H-r11-a1-canvas.png",
+   "width": 1024,
+   "height": 1024,
+   "sha256": "81672004c4edbc24c9aa7f8b9c9ffe8b317785897c985ddf44c3aeb49c30f8c0"
+  },
+  "finishReason": "STOP",
+  "seconds": 19.8,
+  "usage": {
+   "promptTokenCount": 564,
+   "candidatesTokenCount": 1346,
+   "totalTokenCount": 2181,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 306
+    },
+    {
+     "modality": "IMAGE",
+     "tokenCount": 258
+    }
+   ],
+   "candidatesTokensDetails": [
+    {
+     "modality": "IMAGE",
+     "tokenCount": 1120
+    }
+   ],
+   "thoughtsTokenCount": 271,
+   "serviceTier": "standard"
+  }
+ }
+}
