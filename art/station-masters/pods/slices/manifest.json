@@ -3837,78 +3837,6 @@
   "signed_in": null,
   "status_note": "superseded by page-mark-new-10 (the layout specifies a flat engraved 10x10 dot)"
  },
- "frame-room-home-24x24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   16,
-   8,
-   24,
-   24
-  ],
-  "src": "marks-rooms",
-  "made": "the home room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
-  "sha256": "a0cd5e3f27c5f0015642b6ca510974b42c037dd8ad3cb0fbfed6b7fe68648191",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-room-research-24x24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   16,
-   8,
-   24,
-   24
-  ],
-  "src": "marks-rooms",
-  "made": "the research room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
-  "sha256": "14916cda830a5702bd2b145b94a6ae18dae68d3b916eccf99db91260bfc5d6ee",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-room-library-24x24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   16,
-   8,
-   24,
-   24
-  ],
-  "src": "marks-rooms",
-  "made": "the library room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
-  "sha256": "42512e0c14391bbf4752b977a499acaf31466209f54f724a263e9ac471a3e680",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-room-habitat-24x24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   16,
-   8,
-   24,
-   24
-  ],
-  "src": "marks-rooms",
-  "made": "the habitat room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
-  "sha256": "fe744992d97e78b1018beff76bf1d928f53d1b0397419e0e44f53d1e958c9b08",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
  "frame-companion-solid-16x24": {
   "size": [
    16,
@@ -3941,132 +3869,6 @@
   "src": "marks-device2",
   "made": "the Companion's glyph, outline (away); painted large and reduced",
   "sha256": "390ee6f7c05da87c416b0ef686c1cedfcdb7b1dc3dd137bfde2ce8312162fd66",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-sun-16x16": {
-  "size": [
-   16,
-   16
-  ],
-  "rect": [
-   null,
-   8,
-   16,
-   16
-  ],
-  "src": "marks-device2",
-  "made": "the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008)",
-  "sha256": "59cf47153ed146c66d607da6f4cc0f588e899633813d7986b4aa9d7900faf9f7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-lamp-mint-8x8": {
-  "size": [
-   8,
-   8
-  ],
-  "rect": [
-   836,
-   16,
-   8,
-   8
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the Companion's lamp, docked: a mint bead",
-  "sha256": "e19fee66d66e53ffad6ea55c1796660a4840cfdff66f808d577cd09c79ba3ddb",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-lamp-stone-8x8": {
-  "size": [
-   8,
-   8
-  ],
-  "rect": [
-   836,
-   16,
-   8,
-   8
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the Companion's lamp, away: a stone bead",
-  "sha256": "7732c769d62f375be1b8a2721675f9ed81c09d5d211ed9f9b312b5e6af94bb2d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-lamp-amber-12x12": {
-  "size": [
-   12,
-   12
-  ],
-  "rect": [
-   null,
-   null,
-   12,
-   12
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the notice's 12x12 amber lamp (the same lamp as Home's modules)",
-  "sha256": "7b2f7f70d0baca088268b9c09139d5a3ba57f3e92f0f5ca4500fc292a21693e5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-face-24x24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   856,
-   8,
-   24,
-   24
-  ],
-  "src": "mibi-face",
-  "made": "the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring",
-  "sha256": "103830c29ebd70ce2ff262f837e79427b631a8bd0c6ce19bdd7d0c8df735925f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-face-away-24x24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   856,
-   8,
-   24,
-   24
-  ],
-  "src": "mibi-face",
-  "made": "the Companion away: the mibi out with it, the face full on a dimmed ring",
-  "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-face-empty-24x24": {
-  "size": [
-   24,
-   24
-  ],
-  "rect": [
-   856,
-   8,
-   24,
-   24
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "no mibi with you: an empty teal ring",
-  "sha256": "31a32690a97334cef6e50fb1f88592b765a6a8f43e82672d2e3a653507d892e8",
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
@@ -4235,6 +4037,204 @@
   "src": "typed by hand",
   "made": "the bottom line's back key cap: a flat key, a stone arrow; before the Back word",
   "sha256": "d518826996a3dda961bb132ef873457667152327c3cbba1c77dce4541a722d20",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-home-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "marks-rooms",
+  "made": "the home room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
+  "sha256": "a0cd5e3f27c5f0015642b6ca510974b42c037dd8ad3cb0fbfed6b7fe68648191",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-research-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "marks-rooms",
+  "made": "the research room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
+  "sha256": "14916cda830a5702bd2b145b94a6ae18dae68d3b916eccf99db91260bfc5d6ee",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-library-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "marks-rooms",
+  "made": "the library room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
+  "sha256": "42512e0c14391bbf4752b977a499acaf31466209f54f724a263e9ac471a3e680",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-habitat-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "marks-rooms",
+  "made": "the habitat room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
+  "sha256": "fe744992d97e78b1018beff76bf1d928f53d1b0397419e0e44f53d1e958c9b08",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-sun-16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": [
+   null,
+   8,
+   16,
+   16
+  ],
+  "src": "marks-device2",
+  "made": "the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008)",
+  "sha256": "59cf47153ed146c66d607da6f4cc0f588e899633813d7986b4aa9d7900faf9f7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-8-mint": {
+  "size": [
+   8,
+   8
+  ],
+  "rect": [
+   836,
+   16,
+   8,
+   8
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the Companion's lamp, docked: a mint bead",
+  "sha256": "e19fee66d66e53ffad6ea55c1796660a4840cfdff66f808d577cd09c79ba3ddb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-8-stone": {
+  "size": [
+   8,
+   8
+  ],
+  "rect": [
+   836,
+   16,
+   8,
+   8
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the Companion's lamp, away: a stone bead",
+  "sha256": "7732c769d62f375be1b8a2721675f9ed81c09d5d211ed9f9b312b5e6af94bb2d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-12-amber": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": [
+   null,
+   null,
+   12,
+   12
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the notice's 12x12 amber lamp (the same lamp as Home's modules)",
+  "sha256": "7b2f7f70d0baca088268b9c09139d5a3ba57f3e92f0f5ca4500fc292a21693e5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "face-loika-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   856,
+   8,
+   24,
+   24
+  ],
+  "src": "mibi-face",
+  "made": "the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring",
+  "sha256": "103830c29ebd70ce2ff262f837e79427b631a8bd0c6ce19bdd7d0c8df735925f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "face-loika-24-away": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   856,
+   8,
+   24,
+   24
+  ],
+  "src": "mibi-face",
+  "made": "the Companion away: the mibi out with it, the face full on a dimmed ring",
+  "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "face-24-empty": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   856,
+   8,
+   24,
+   24
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "no mibi with you: an empty teal ring",
+  "sha256": "31a32690a97334cef6e50fb1f88592b765a6a8f43e82672d2e3a653507d892e8",
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"

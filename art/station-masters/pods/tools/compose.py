@@ -69,19 +69,19 @@ def compose(traits, rail):
     put("frame-bottom-line-1024x38", 0, 562); cv.alpha_composite(S("frame-top-bar-1024x40"), (0, 0))
     HAIR = (60, 75, 87, 255); ORANGE = (242, 103, 27, 255); STONE = (93, 89, 116, 255)
     # the top bar: where you are, what you hold, who is out, when
-    put("frame-room-research-24x24", 16, 8); text((48, 20), "Pods", f20, CREAM, "lm")
+    put("frame-room-research-24", 16, 8); text((48, 20), "Pods", f20, CREAM, "lm")
     for xx in (256, 888): d.line([(xx, 8), (xx, 32)], fill=HAIR)
     for xx, c_, v in ((432, (255, 168, 63), "9"), (496, (91, 185, 243), "4"), (560, (92, 187, 76), "6")):      # the holdings: stand-in icons with figures
         d.polygon([(xx, 14), (xx + 6, 14), (xx + 3, 20), (xx + 8, 20), (xx + 2, 28), (xx + 3, 22), (xx - 2, 22)] if c_[0] == 255 else [(xx + 4, 12), (xx + 11, 20), (xx + 4, 28), (xx - 3, 20)], fill=c_); text((xx + 20, 20), v, f16, CREAM, "lm")
-    put("frame-companion-outline-16x24", 816, 8); put("frame-lamp-stone-8x8", 836, 16); put("frame-face-away-24x24", 856, 8)
-    tw5 = d.textlength("5", font=f16); put("frame-sun-16x16", int(1008 - tw5 - 4 - 16), 12); text((1008, 20), "5", f16, CREAM, "rm")
+    put("frame-companion-outline-16x24", 816, 8); put("frame-lamp-8-stone", 836, 16); put("face-loika-24-away", 856, 8)
+    tw5 = d.textlength("5", font=f16); put("frame-sun-16", int(1008 - tw5 - 4 - 16), 12); text((1008, 20), "5", f16, CREAM, "rm")
     # the bottom line: the one action, the context, the notice
     put('frame-cap-confirm-16', 16, 574); text((36, 581), "Read Face", f16, ORANGE, "lm")
     vw = d.textlength("Read Face", font=f16); gx = int(36 + vw + 24)
     d.polygon([(gx + 4, 575), (gx + 11, 582), (gx + 4, 589), (gx - 3, 582)], fill=(91, 185, 243, 255)); text((gx + 18, 581), "2", f16, CREAM, "lm")
     hx = gx + 18 + 10 + 24; put('frame-cap-back-16', hx, 574); text((hx + 20, 581), "Home", f16, FOG, "lm")
     text((512, 581), "Loika, Face", f16, MIST, "mm")
-    nw = d.textlength("something new in Face", font=f16); put("frame-lamp-amber-12x12", int(1008 - nw - 8 - 12), 575); text((1008, 581), "something new in Face", f16, AMBER, "rm")
+    nw = d.textlength("something new in Face", font=f16); put("frame-lamp-12-amber", int(1008 - nw - 8 - 12), 575); text((1008, 581), "something new in Face", f16, AMBER, "rm")
     for xx in (396, 628): d.line([(xx, 571), (xx, 591)], fill=HAIR)
     return cv.convert("RGB")
 a = compose(4, "six"); a.save("composite-pods-read-1024x600.png")

@@ -22,33 +22,13 @@
 
 Each slice is named by the register id it replaces (`room`, `ring`, `page`, `trait-picture`, `stamp`, `pod`); where the register has none, the id is **proposed** (`rail-tab-*`, `plate-*`, `frame-*`, `room-shelf`). Rectangles follow the layout spec of branch `design-pods-relayout` (637fb1e): the pod's box is bottom-centred on (712, 392), the dish is (600, 328, 224, 96), the page (176, 112, 408, 440) with the portrait frame (264, 160, 232, 312), the stamp label (888, 248). A tab hangs from the top bar's rule at y 40: a full tab (slice 152×40) at x0 + 136 i, a compact tab (slice 72×40) at its place in the run. The name plate is a 9-slice delivered at every 16 px from 80 to 224 wide, 24 tall. Hashes and sources: [`slices/manifest.json`](slices/manifest.json). **Status** (one per slice, also in [`slices/status.json`](slices/status.json) for the builder's place-masters tool, reconciled with the art director's consolidated list of 2026-10-08): *signed* with the pass that signed it, *withdrawn* (not to be placed), *new* (awaiting a verdict); the two frame bars are signed but excluded from placing (the frame redesign).
 
-### Top bar and bottom line (signed)
-
-| Slice id | Size | Rect on the screen | Status | Made by |
-| --- | --- | --- | --- | --- |
-| `frame-bottom-line-1024x38` | 1024×38 | (0, 562, 1024, 38) | signed (pass 1): excluded from placing (the frame redesign) | the bar flipped (rule on its top edge), 1024x38 |
-| `frame-cap-back-16` | 16×16 | (·, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's back key cap: a flat key, a stone arrow; before the Back word |
-| `frame-cap-confirm-16` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's confirm key cap: a flat key, an orange tick; at (16,574) |
-| `frame-cap-confirm-16-dim` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the confirm key cap for the unavailable state: the tick in mist (its own slice) |
-| `frame-companion-outline-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, outline (away); painted large and reduced |
-| `frame-companion-solid-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, solid (docked); painted large and reduced |
-| `frame-face-24x24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring |
-| `frame-face-away-24x24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion away: the mibi out with it, the face full on a dimmed ring |
-| `frame-face-empty-24x24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | no mibi with you: an empty teal ring |
-| `frame-lamp-amber-12x12` | 12×12 | (·, ·, 12, 12) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the notice's 12x12 amber lamp (the same lamp as Home's modules) |
-| `frame-lamp-mint-8x8` | 8×8 | (836, 16, 8, 8) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's lamp, docked: a mint bead |
-| `frame-lamp-stone-8x8` | 8×8 | (836, 16, 8, 8) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's lamp, away: a stone bead |
-| `frame-room-habitat-24x24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the habitat room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
-| `frame-room-home-24x24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the home room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
-| `frame-room-library-24x24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the library room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
-| `frame-room-research-24x24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the research room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
-| `frame-sun-16x16` | 16×16 | (·, 8, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008) |
-| `frame-top-bar-1024x40` | 1024×40 | (0, 0, 1024, 40) | signed (pass 1): excluded from placing (the frame redesign) | key magenta, cut, 1024x40 |
-
 ### None
 
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
+| `face-24-empty` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | no mibi with you: an empty teal ring |
+| `face-loika-24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring |
+| `face-loika-24-away` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion away: the mibi out with it, the face full on a dimmed ring |
 | `glint-star-12x12` | 12×12 | (·, ·, 12, 12) | signed (well rings verdict) | the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30) |
 | `page-mark-new-10` | 10×10 | (·, ·, 10, 10) | new: the new-to-the-field-guide mark as the layout specifies it (replaces page-new-mark-12x12); awaiting verdict | the 'new to the field guide' mark: a flat engraved bone dot 10x10, a 1 px lit edge, an ink keyline, art layer; at the picture's top centre |
 | `page-new-mark-12x12` | 12×12 | (·, ·, 12, 12) | withdrawn: superseded by page-mark-new-10 (the layout specifies a flat engraved 10x10 dot) | PROPOSED: the 'new to the field guide' mark, a 12x12 bone bead lit upper left (the page's newMark region of design-pods-relayout 29b6dc9) |
@@ -79,6 +59,26 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `rail-emblem-stamina-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-stamina-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-stamina-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+
+### Top bar and bottom line (signed)
+
+| Slice id | Size | Rect on the screen | Status | Made by |
+| --- | --- | --- | --- | --- |
+| `frame-bottom-line-1024x38` | 1024×38 | (0, 562, 1024, 38) | signed (pass 1): excluded from placing (the frame redesign) | the bar flipped (rule on its top edge), 1024x38 |
+| `frame-cap-back-16` | 16×16 | (·, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's back key cap: a flat key, a stone arrow; before the Back word |
+| `frame-cap-confirm-16` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's confirm key cap: a flat key, an orange tick; at (16,574) |
+| `frame-cap-confirm-16-dim` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the confirm key cap for the unavailable state: the tick in mist (its own slice) |
+| `frame-companion-outline-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, outline (away); painted large and reduced |
+| `frame-companion-solid-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, solid (docked); painted large and reduced |
+| `frame-lamp-12-amber` | 12×12 | (·, ·, 12, 12) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the notice's 12x12 amber lamp (the same lamp as Home's modules) |
+| `frame-lamp-8-mint` | 8×8 | (836, 16, 8, 8) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's lamp, docked: a mint bead |
+| `frame-lamp-8-stone` | 8×8 | (836, 16, 8, 8) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's lamp, away: a stone bead |
+| `frame-room-habitat-24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the habitat room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
+| `frame-room-home-24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the home room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
+| `frame-room-library-24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the library room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
+| `frame-room-research-24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the research room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
+| `frame-sun-16` | 16×16 | (·, 8, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008) |
+| `frame-top-bar-1024x40` | 1024×40 | (0, 0, 1024, 40) | signed (pass 1): excluded from placing (the frame redesign) | key magenta, cut, 1024x40 |
 
 ### Page pane (signed)
 
@@ -334,7 +334,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
-## Pass 9 - the bottom line's key caps
+## Pass 9 - frame ids as the spec names them, and the key caps
+
+Renamed, pixels kept: `frame-room-{home,research,library,habitat}-24`, `frame-sun-16`, and the face as `face-loika-24`, `face-loika-24-away`, `face-24-empty`. The lamp is one painted shape per colour, so the ids are `frame-lamp-8-mint`, `frame-lamp-8-stone` and `frame-lamp-12-amber`. Only Loika's face is painted so far (no Belatz painting exists in the repository); a `face-belatz-24` needs the standard painting of that mibi.
+
+The key caps:
 
 `frame-cap-confirm-16`, `frame-cap-confirm-16-dim` (the tick in mist, its own slice) and `frame-cap-back-16`: 16x16 art-layer key caps, station.json colours only, a flat key with an ink keyline, a panel face and a 1 px bevel edge top and left; the tick orange, the arrow stone (frame.json). Glyph pixels typed by hand (`framecaps` in `tools/build.py`). The composites now place them in place of the stand-ins.
 
@@ -346,7 +350,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 - **Legs & tail, rethought:** the tail is dropped; the hind leg alone, a 3 px thigh mass going down from the upper left, a sharp backward angle at the hock, the shin down to a 5 px paw ending in two toe nicks. Typed pixels, three states, as in round 3. It reads as a chevron with a foot; the thigh's mass is the weak part at 1×.
 - **The selected arcs, `ring-well-empty-80x80` and the centred well pods** were done in 55944fb (the channel cut into the band, the empty ring padded to 80×80, the pod centred in its box). The layout has since given the list pod a 40×48 class (`design-pods-relayout` 05cc4ff): `pod-well-*` is re-cut at 40×48, centred (the Loika fills 40×44).
 - **`page-mark-new-10`** replaces my 12×12 bead: the new-to-the-field-guide mark as the layout specifies it, a flat engraved bone dot, 10×10, a 1 px lit edge (white, upper left), an ink keyline, art layer (station.json colours), no specular; the rows are typed by hand in `tools/build.py` (`pagemark`). Frames at 144×176 and 176×144 (the capped one- and two-trait pictures) are added in the three states.
-- **The Station frame's marks** (`design-station-frame`, `station-layouts.md` "The frame"), a painted layer at 1×, drawn from larger paintings and reduced: `frame-room-{home,research,library,habitat}-24x24` (the four room marks the frame lists: Pods, Create, Incubator and Probe use the Research mark, Book the Library's); `frame-companion-{solid,outline}-16x24` (docked, away); `frame-lamp-mint-8x8` (docked), `frame-lamp-stone-8x8` (away), `frame-lamp-amber-12x12` (the notice); `frame-sun-16x16`; and the mibi's face on its teal ring, `frame-face-24x24` (with you), `frame-face-away-24x24` (the ring dimmed, the mibi out with the Companion), `frame-face-empty-24x24` (an empty ring). The face is a 2K painting of the standard mibi's head (from the kit's Pip reference) reduced to a 20 px disc inside a 2 px ring: a Station master drawn from a larger painting, not the Companion's pixel face scaled. Rects are the frame's: room mark (16,8), glyph (816,8), lamp (836,16), face (856,8), sun right-aligned before its figure.
+- **The Station frame's marks** (`design-station-frame`, `station-layouts.md` "The frame"), a painted layer at 1×, drawn from larger paintings and reduced: `frame-room-{home,research,library,habitat}-24x24` (the four room marks the frame lists: Pods, Create, Incubator and Probe use the Research mark, Book the Library's); `frame-companion-{solid,outline}-16x24` (docked, away); `frame-lamp-8-mint` (docked), `frame-lamp-8-stone` (away), `frame-lamp-12-amber` (the notice); `frame-sun-16`; and the mibi's face on its teal ring, `face-loika-24` (with you), `face-loika-24-away` (the ring dimmed, the mibi out with the Companion), `face-24-empty` (an empty ring). The face is a 2K painting of the standard mibi's head (from the kit's Pip reference) reduced to a 20 px disc inside a 2 px ring: a Station master drawn from a larger painting, not the Companion's pixel face scaled. Rects are the frame's: room mark (16,8), glyph (816,8), lamp (836,16), face (856,8), sun right-aligned before its figure.
 - **The Read composite in the frame language:** the title zone (the Research mark, "Pods"), the holdings, who is out (the outline glyph, the stone lamp, the face on its dimmed ring) and the sun with the turn; the one action (a ✓ cap and "Read Face" in orange, the price, a ← cap and "Home"), the context ("Loika, Face") and the notice (an amber lamp and "something new in Face"); the words as on main (the name alone, "Loika"; the origin "Found on the rock field," / "as a Tuikis felt safe."); the rail at x 152, aligned with the page; the Legs & tail emblem. Stand-ins: the holdings' icons, the ✓ and ← caps, the price icon, the pictures, the stamp raster, the pips and trait marks, the focus ring.
 
 ## Well-ring verdict, the rail rule and the page's extras (2026-10-08)

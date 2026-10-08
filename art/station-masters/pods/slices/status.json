@@ -1154,67 +1154,12 @@
   "signed_in": null,
   "note": "superseded by page-mark-new-10 (the layout specifies a flat engraved 10x10 dot)"
  },
- "frame-room-home-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-room-research-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-room-library-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-room-habitat-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
  "frame-companion-solid-16x24": {
   "status": "new",
   "signed_in": null,
   "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
  },
  "frame-companion-outline-16x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-sun-16x16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-lamp-mint-8x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-lamp-stone-8x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-lamp-amber-12x12": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-face-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-face-away-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
- },
- "frame-face-empty-24x24": {
   "status": "new",
   "signed_in": null,
   "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
@@ -1270,6 +1215,61 @@
   "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
  },
  "frame-cap-back-16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-home-24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-research-24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-library-24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-room-habitat-24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-sun-16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-8-mint": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-8-stone": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-lamp-12-amber": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "face-loika-24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "face-loika-24-away": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "face-24-empty": {
   "status": "new",
   "signed_in": null,
   "note": "a mark of the Station frame (design-station-frame); awaiting verdict"

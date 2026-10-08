@@ -292,16 +292,16 @@ def framemarks():
     mibi's face on its teal ring, as a painted layer drawn from larger paintings and reduced (never a pixel face scaled up)."""
     im = load("marks-rooms.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); W, H = k.size
     for nm, box in (("home", (0, 0, W // 2, H // 2)), ("research", (W // 2, 0, W, H // 2)), ("library", (0, H // 2, W // 2, H)), ("habitat", (W // 2, H // 2, W, H))):
-        save(f"frame-room-{nm}-24x24", fit(k.crop(box), 24, 24, 2, 40, 1.9), [16, 8, 24, 24], f"the {nm} room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone", "marks-rooms")
+        save(f"frame-room-{nm}-24", fit(k.crop(box), 24, 24, 2, 40, 1.9), [16, 8, 24, 24], f"the {nm} room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone", "marks-rooms")
     im = load("marks-device2.jpg"); W, H = im.size
     def third(i):
         t = im.crop((i * W // 3, 0, (i + 1) * W // 3, H)); return color_to_alpha(t, border_median(t), 0.05)
     save("frame-companion-solid-16x24", fit(third(0), 16, 24, 0, 200), [816, 8, 16, 24], "the Companion's glyph, solid (docked); painted large and reduced", "marks-device2")
     save("frame-companion-outline-16x24", fit(third(1), 16, 24, 0, 200, 2.2), [816, 8, 16, 24], "the Companion's glyph, outline (away); painted large and reduced", "marks-device2")
-    save("frame-sun-16x16", fit(third(2), 16, 16, 0, 200), [None, 8, 16, 16], "the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008)", "marks-device2")
-    save("frame-lamp-mint-8x8", bead(8, (236, 255, 246), (60, 190, 160)), [836, 16, 8, 8], "the Companion's lamp, docked: a mint bead", "procedural, supersampled 8x")
-    save("frame-lamp-stone-8x8", bead(8, (138, 134, 160), (68, 64, 88)), [836, 16, 8, 8], "the Companion's lamp, away: a stone bead", "procedural, supersampled 8x")
-    save("frame-lamp-amber-12x12", bead(12, (255, 226, 160), (232, 130, 40)), [None, None, 12, 12], "the notice's 12x12 amber lamp (the same lamp as Home's modules)", "procedural, supersampled 8x")
+    save("frame-sun-16", fit(third(2), 16, 16, 0, 200), [None, 8, 16, 16], "the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008)", "marks-device2")
+    save("frame-lamp-8-mint", bead(8, (236, 255, 246), (60, 190, 160)), [836, 16, 8, 8], "the Companion's lamp, docked: a mint bead", "procedural, supersampled 8x")
+    save("frame-lamp-8-stone", bead(8, (138, 134, 160), (68, 64, 88)), [836, 16, 8, 8], "the Companion's lamp, away: a stone bead", "procedural, supersampled 8x")
+    save("frame-lamp-12-amber", bead(12, (255, 226, 160), (232, 130, 40)), [None, None, 12, 12], "the notice's 12x12 amber lamp (the same lamp as Home's modules)", "procedural, supersampled 8x")
     # the mibi's face: from the standard painting of the mibi, a circle of the head painted at 2K and reduced to the 20 px disc inside a 2 px teal ring
     f = load("mibi-face.jpg"); Wf, Hf = f.size; cx, cy, side = int(Wf * 0.53), int(Hf * 0.60), int(Wf * 0.92)
     face = f.crop((cx - side // 2, cy - side // 2, cx + side // 2, cy + side // 2)).convert("RGBA").resize((20 * 8, 20 * 8), Image.LANCZOS)
@@ -319,9 +319,9 @@ def framemarks():
             a = disc[..., None] * 0.35; out[..., :3] = out[..., :3] * (1 - a) + np.array([14.0, 22.0, 30.0]) * a; out[..., 3] = np.maximum(out[..., 3], disc * 90)
         return Image.fromarray(np.clip(out.reshape(24, S, 24, S, 4).mean((1, 3)), 0, 255).astype(np.uint8), "RGBA")
     teal = (31, 157, 143)
-    save("frame-face-24x24", ring_img(teal, True), [856, 8, 24, 24], "the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring", "mibi-face")
-    save("frame-face-away-24x24", ring_img(teal, True, 0.5), [856, 8, 24, 24], "the Companion away: the mibi out with it, the face full on a dimmed ring", "mibi-face")
-    save("frame-face-empty-24x24", ring_img(teal, False), [856, 8, 24, 24], "no mibi with you: an empty teal ring", "procedural, supersampled 8x")
+    save("face-loika-24", ring_img(teal, True), [856, 8, 24, 24], "the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring", "mibi-face")
+    save("face-loika-24-away", ring_img(teal, True, 0.5), [856, 8, 24, 24], "the Companion away: the mibi out with it, the face full on a dimmed ring", "mibi-face")
+    save("face-24-empty", ring_img(teal, False), [856, 8, 24, 24], "no mibi with you: an empty teal ring", "procedural, supersampled 8x")
 def framecaps():
     """The bottom line's key caps, 16x16, art layer (station.json colours only): the confirm tick (orange), the same tick in mist for the unavailable state
     (its own slice), the back arrow (stone). A flat key: ink keyline, panel face, a 1 px bevel lit edge top and left. Glyph pixels typed by hand: x = glyph, . = face."""
