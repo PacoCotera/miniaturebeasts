@@ -1,0 +1,71 @@
+/* The Station's face, L0: an empty 1024x600 LVGL display that draws into a retained framebuffer, reports its dirty
+   rectangles and takes key input. The screens arrive at L1 and later; this file is the platform-neutral core. */
+#include "face.h"
+#include "lvgl.h"
+#include <string.h>
+
+static uint8_t g_fb[FACE_W * FACE_H * 4];
+static lv_display_t *g_disp;
+static int32_t g_dirty[FACE_MAX_DIRTY * 4];
+static int g_ndirty;
+#define KEYQ 64
+static struct { int code; int down; } g_keys[KEYQ];
+static int g_kh, g_kt, g_kcount, g_klast;
+
+static void flush_cb(lv_display_t *d, const lv_area_t *a, uint8_t *px) {
+  (void)px; /* direct mode: LVGL has drawn into g_fb itself; we only note what changed */
+  if (g_ndirty < FACE_MAX_DIRTY) {
+    g_dirty[g_ndirty * 4 + 0] = a->x1; g_dirty[g_ndirty * 4 + 1] = a->y1;
+    g_dirty[g_ndirty * 4 + 2] = a->x2 - a->x1 + 1; g_dirty[g_ndirty * 4 + 3] = a->y2 - a->y1 + 1;
+    g_ndirty++;
+  } else { /* too many to list: the whole frame */
+    g_dirty[0] = 0; g_dirty[1] = 0; g_dirty[2] = FACE_W; g_dirty[3] = FACE_H; g_ndirty = 1;
+  }
+  lv_display_flush_ready(d);
+}
+static void key_read_cb(lv_indev_t *i, lv_indev_data_t *data) {
+  (void)i;
+  if (g_kh == g_kt) { data->state = LV_INDEV_STATE_RELEASED; data->key = g_klast; data->continue_reading = false; return; }
+  data->key = (uint32_t)g_keys[g_kh].code; data->state = g_keys[g_kh].down ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
+  g_kh = (g_kh + 1) % KEYQ; data->continue_reading = g_kh != g_kt;
+}
+void face_init(void) {
+  lv_init();
+  g_disp = lv_display_create(FACE_W, FACE_H);
+  lv_display_set_color_format(g_disp, LV_COLOR_FORMAT_ARGB8888);
+  lv_display_set_buffers(g_disp, g_fb, NULL, sizeof g_fb, LV_DISPLAY_RENDER_MODE_DIRECT);
+  lv_display_set_flush_cb(g_disp, flush_cb);
+  lv_indev_t *kp = lv_indev_create();
+  lv_indev_set_type(kp, LV_INDEV_TYPE_KEYPAD);
+  lv_indev_set_read_cb(kp, key_read_cb);
+  /* the empty display: the Station's ground colour (palette `ground`) */
+  lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(0x162a37), 0);
+  lv_obj_set_style_bg_opa(lv_screen_active(), LV_OPA_COVER, 0);
+}
+void face_frame(uint32_t ms) {
+  static uint32_t last; static int started;
+  if (!started) { started = 1; last = ms; }
+  lv_tick_inc(ms - last); last = ms;
+  g_ndirty = 0;
+  lv_timer_handler();
+}
+uint8_t *face_fb(void) { return g_fb; }
+int face_width(void) { return FACE_W; }
+int face_height(void) { return FACE_H; }
+int face_dirty_count(void) { return g_ndirty; }
+int32_t *face_dirty_rects(void) { return g_dirty; }
+uint32_t face_hash(void) {
+  uint32_t h = 2166136261u;
+  for (int i = 0; i < FACE_W * FACE_H; i++) { const uint8_t *p = g_fb + i * 4; h = (h ^ p[2]) * 16777619u; h = (h ^ p[1]) * 16777619u; h = (h ^ p[0]) * 16777619u; }
+  return h;
+}
+void face_key(int code, int down) {
+  int nt = (g_kt + 1) % KEYQ; if (nt == g_kh) return;
+  g_keys[g_kt].code = code; g_keys[g_kt].down = down; g_kt = nt; if (down) { g_kcount++; g_klast = code; }
+}
+int face_key_count(void) { return g_kcount; }
+int face_last_key(void) { return g_klast; }
+const char *face_version(void) {
+  static char v[24]; if (!v[0]) lv_snprintf(v, sizeof v, "LVGL %d.%d.%d", (int)lv_version_major(), (int)lv_version_minor(), (int)lv_version_patch());
+  return v;
+}

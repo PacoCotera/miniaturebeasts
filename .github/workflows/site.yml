@@ -3,7 +3,7 @@ name: Sandbox
 on:
   push:
     branches: [main]
-    paths: ['website/**', 'prototypes/**', 'ops/sandbox/**', '.github/workflows/site.yml', '.github/smoke.mjs']
+    paths: ['website/**', 'prototypes/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', '.github/workflows/site.yml', '.github/smoke.mjs']
   workflow_dispatch:
 
 permissions:
@@ -16,9 +16,27 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+      - name: Emscripten SDK (pinned in prototypes/face/emsdk.version)
+        # The Station's face is LVGL in C, built for the sandbox as WebAssembly (technical-architecture.md §8). The SDK
+        # (about 1 GB installed) is cached by its pinned version.
+        id: emsdk
+        run: echo "version=$(cat prototypes/face/emsdk.version)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ~/emsdk
+          key: emsdk-${{ steps.emsdk.outputs.version }}-ubuntu-24.04
+      - name: Build the Station's face (LVGL 9.6 to WebAssembly, and native Linux)
+        # Build time and sizes are printed in the log. The face is built before the site is assembled so that
+        # prototypes/face/dist travels with the sandbox bundle.
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y -q ninja-build bc >/dev/null
+          if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
+          (cd "$HOME/emsdk" && ./emsdk install "${{ steps.emsdk.outputs.version }}" >/dev/null && ./emsdk activate "${{ steps.emsdk.outputs.version }}" >/dev/null)
+          EMSDK="$HOME/emsdk" prototypes/face/build.sh all
       - name: Assemble the site
         run: |
           set -euo pipefail
@@ -48,8 +66,13 @@ jobs:
         # the painting landing, the service down and back); station-build.md §5.
         run: |
           set -euo pipefail
-          node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs
+          node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
+      - name: Station face in a browser (LVGL)
+        # The page with ?face=lvgl loads the WebAssembly face: LVGL 9.6.0, a 1024×600 display, keys in, the same pixels as
+        # the native Linux build; the load time, the size on the wire and the cost of a full-frame copy (CPU throttled
+        # 4× as a phone's stand-in) are printed.
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/face-check.mjs
       - name: Station layer checks
         # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):
         # the art layer at exactly 0 off-palette pixels; the type layer's run log (every string Inter at 16, 20 or 28 px

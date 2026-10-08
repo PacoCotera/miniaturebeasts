@@ -19,6 +19,7 @@ import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
+import { bootFace } from "./face-lvgl.mjs";
 import { manifest as manifestOf, registerAsset } from "../../ui/assets.mjs";
 
 setIcons((name, px) => ICON[name]?.(px));
@@ -41,8 +42,12 @@ async function loadFrames() {
 const scene = new Scene(SW, SH);
 let SC = null, CTX = null;
 const legacy = (id, draw) => ({ id, kind: "legacy", rect: [0, 0, SW, SH], always: true, draw });
+// ?face=lvgl: the LVGL face (prototypes/face) draws the screen; the JavaScript layer keeps the rules, the views and the timeline (technical-architecture.md §8).
+const FACE_FLAG = new URLSearchParams(location.search).get("face") === "lvgl";
+let FACE = null;
 function render() {
   stepResidents(); TL.tick(clock.now);
+  if (FACE) { FACE.frame(clock.now); FACE.present(vctx); return; }
   const screen = screenOf(UI.screen), nodes = [];
   if (!UI.idle && screen.nodes) nodes.push(...screen.nodes(CTX));
   else nodes.push(legacy("legacy", () => { if (UI.idle) drawIdle(); else { screen.draw(); drawLine(lineFor()); drawMsg(); } }));
@@ -65,6 +70,7 @@ function frame(t) {
 // --- the Station's keys: pad, Home/Research/Library/Habitat, ← and ✓, plus the Caddy's Dock/Lift key ---
 export function act(k) {
   if (!G.ready) return;
+  if (FACE) FACE.key(k);
   clock.now = performance.now(); UI.lastInput = clock.now;
   if (UI.idle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); }   // a press wakes the screen and still does what it says; a landed painting shows from here
   if (k === "dock") { dockKey(); return; }
@@ -142,7 +148,8 @@ const bootLayer = async () => {
 };
 // The icons the text runs inline (⚡ ◆ ❀ ✕ at the 16 px body size) are registered in the manifest as type assets.
 for (const name of ["energy", "data", "essence", "cross"]) registerAsset({ id: `icon:${name}:16`, w: 16, h: 16, policy: "type", status: "placeholder", until: "the icon set", build: () => ICON[name](16) });
-const ready = Promise.all([loadFrames(), bootLayer()]).then(([info]) => {
+const faceBoot = FACE_FLAG ? bootFace().then((f) => { FACE = f; }).catch((e) => { console.error("the LVGL face did not load: " + e.message); }) : Promise.resolve();
+const ready = Promise.all([loadFrames(), bootLayer(), faceBoot]).then(([info]) => {
   loadSettings(); load();
   // a new species identified opens its Library page: the Pods screen asks for it through this hook
   G.openBook = openBook;
@@ -165,7 +172,7 @@ function checkSnapshot() {
 // Test hooks (not part of play).
 window.__st = { ready, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   act: (k) => { FX.lockUntil = 0; TL.release(); act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; TL.release(); }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
-  get msg() { return FX.msg; }, capture: () => SC.capture().toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), holding: () => TL.holding(), region: (layer, r) => { const d = SC.ctx[layer].getImageData(r[0], r[1], r[2], r[3]); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, sceneRegions: () => scene.regions(), sceneTexts: () => scene.texts(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
+  get face() { return FACE ? { version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel } : null; }, get msg() { return FX.msg; }, capture: () => (FACE ? vis : SC.capture()).toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), holding: () => TL.holding(), region: (layer, r) => { const d = SC.ctx[layer].getImageData(r[0], r[1], r[2], r[3]); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, sceneRegions: () => scene.regions(), sceneTexts: () => scene.texts(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },
   grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; }, openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; }, forecastOf: (aId, bId) => S.forecastOf(G.st, podById ? mibiById(aId) : null, mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
