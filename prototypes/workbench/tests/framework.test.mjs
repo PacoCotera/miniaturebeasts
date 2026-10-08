@@ -152,3 +152,22 @@ test("proportions by kind: the species' measures sit in its genome, and the kind
   for (const s of scores.slice(1)) assert.ok(s.parts.margin > 0, `${s.id}: the cat, the fox and the raccoon each win their own parts score (${s.parts.own} vs ${s.parts.bestWrong.id} ${s.parts.bestWrong.score})`);
   assert.ok(scores.every((s) => s.bestWrong && s.bestWrong.id !== s.id));
 });
+
+test("a painting service's controls: the key pass is the pigments flat, and flat translucency leaves no dither holes", () => {
+  const moth = frameOf("S12");
+  const scene = buildIndividual(moth, typeSpecimen(moth)).scene;
+  const camera = fitCamera(scene, "portrait", [120, 124], 0.08);
+  const key = render(scene, camera, "key", { translucency: "flat" });
+  const pigments = new Set(Object.values(scene.slots).filter(Boolean).flat().map((h) => h.toLowerCase()));
+  for (const n of scene.nodes) if (n.ink) pigments.add(n.ink.toLowerCase());
+  const hexOf = (i) => "#" + [0, 1, 2].map((c) => key.data[i * 4 + c].toString(16).padStart(2, "0")).join("");
+  let body = 0;
+  for (let i = 0; i < 120 * 124; i++) if (key.index[i]) { body++; assert.ok(pigments.has(hexOf(i)), `${hexOf(i)} is a pigment of the body`); }
+  assert.ok(body > 500);
+  const flap = scene.nodes.find((n) => n.opacity !== undefined && n.opacity < 1);
+  assert.ok(flap, "the moth carries a translucent flap");
+  const dithered = render(scene, camera, "shaded"), flat = render(scene, camera, "shaded", { translucency: "flat" });
+  const flapId = scene.nodes.indexOf(flap) + 1;
+  const count = (img) => { let n = 0; for (let i = 0; i < img.index.length; i++) if (img.index[i] === flapId) n++; return n; };
+  assert.ok(count(flat) > count(dithered) * 1.3, "the flat flap is solid where the dithered one is holed");
+});
