@@ -2,7 +2,7 @@
 
 The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md) (§9 Decided) on one place, the meadow and pond edge in a storm, with every piece it needs at 1× on the 48 ramps of the [signed palette](../palette/README.md). Everything here is **a candidate for the owner's review**: generated sources down-rendered by script, an Aseprite pass for the meadow, scripted chrome and water, Retro Diffusion sprites beside the scripted ones where one was picked, and Pip derived into the Loika token. Nothing is accepted; nothing touches `prototypes/exploration/index.html`.
 
-**State: round 11c ready for the art director.** It answers the owner's five notes on round 1 and their answers on rounds 2 to 8 (below). Rounds 1 to 8 and 10 are frozen in [`round1/`](round1/) to [`round8/`](round8/) and [`round10/`](round10/).
+**State: round 11d ready for the art director.** It answers the owner's five notes on round 1 and their answers on rounds 2 to 8 (below). Rounds 1 to 8 and 10 are frozen in [`round1/`](round1/) to [`round8/`](round8/) and [`round10/`](round10/).
 
 ![Contact sheet at 3×](contact-sheet-3x.png)
 
@@ -38,6 +38,14 @@ The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md)
 | Ground tufts | **Pixels set by code** on round 8's tiles. |
 
 Where the art director wants a piece hand-finished, it needs a person in Aseprite (the sources are in [`work/hut-b-aseprite/`](work/hut-b-aseprite/), [`work/pawn-aseprite/`](work/pawn-aseprite/)) or a decision that code-set pixels are acceptable for the listed pieces.
+
+### Round 11d: the art director's verdict on 11c (signed: the ring clearance, the staging, the tree's size, both shade pools, the pond, the flower tile, the roof height and the storm-table idea)
+
+1. **Tree seam:** the straight vertical light/dark line and the light wedge down the canopy's top are gone: in a band round the seam each pixel is lifted or lowered one ramp step where a leaf-sized blob field says so (the share falling off with the distance from the seam), and the seam's own columns take the value 4 px to their left or right by the same field, so the boundary runs along blobs of the canopy's own leaf size; no vertical run is longer than a blob (`tools/tree-r11.py`). The ground shadow the service left under the trunk is taken off.
+2. **Hut in rain:** its own table (`compose-still.py`): the wood and thatch ramps one step down (sand to clay, clay to bark, bark to soil), no cast toward river, the window's yellow, amber and cream kept, the base stones one step down the shade table, the tufts on the ground's table; it reads as brown wood in the storm, not a grey silo.
+3. **Hut placement:** at the **upper-right** edge, cut off a little on its right side, so the porch and the door face the scene; the sprite is not mirrored (the light stays at the top left); the upper-right bush moved to the upper left.
+4. **Hut form:** the wall's right side is straight and vertical (everything right of the wall's width below the eave is taken off), the log rows keep the bow the service gave them (the cylinder's own curve), the ragged straw fringe is kept with a one-row shadow under it (soil); the roof stays at 43 % with the calm thatch.
+5. **Base stones** in the rock greys (rock, stone, rockL by the service's own luminance), not tan. **Window:** drawn as two panes, 7 × 7 with a 1 px amber surround on the logs (a cream catch-light at the top left, a soil mullion); in the dark states the panes are night and the surround plain wood; the one warm light at 1× in rain.
 
 ### Round 11c: the art director's verdict on 11b (signed: hut base, the stone as lightning, the tree form, the ruffs, sleeve and cycles, the rain shade pool, the proofs)
 

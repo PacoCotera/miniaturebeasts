@@ -33,13 +33,40 @@ for y, x in zip(*np.where(idx >= 0)):
                 if 0 <= ny < H and 0 <= nx < W and idx[ny, nx] >= 0 and not lab[ny, nx]: lab[ny, nx] = n; st.append((ny, nx))
 idx[lab != np.bincount(lab[lab > 0]).argmax()] = -1
 idx = quant.despeckle(idx, 1)
-# the service left one straight vertical light/dark seam down the top of the canopy: where a column has a jump in luminance on many rows, the two columns at the seam are swapped on alternate rows
-# (a 1 px checker at the seam, so the edge is broken, not straight)
+# the service left a straight vertical light/dark seam with a light wedge down the top of the canopy (about 60 px). The boundary is moved onto leaf-sized blobs: in a band round the seam each pixel is
+# lifted a ramp step (dark side) or lowered a step (light side) where a blob field (random 5 px cells, blurred, thresholded) says so, the share of the pixels changed falling off with the distance from the
+# seam, so the light and the dark meet along the outlines of blobs of the canopy's own leaf size and not along a straight line (no vertical run of the boundary is longer than a blob).
+GR = [C["forest"], C["leaf"], C["grass"], C["sprout"], C["lime"]]
 lum_ = np.where(idx >= 0, 0.2126 * P.rgb[np.maximum(idx, 0)][..., 0] + 0.7152 * P.rgb[np.maximum(idx, 0)][..., 1] + 0.0722 * P.rgb[np.maximum(idx, 0)][..., 2], -1)
 cnt = [(int(((np.abs(lum_[:80, x] - lum_[:80, x - 1]) > 30) & (lum_[:80, x] >= 0) & (lum_[:80, x - 1] >= 0)).sum()), x) for x in range(1, idx.shape[1])]
 c_, sx = max(cnt)
 if c_ > 15:
-    for y in range(0, 80):
-        if idx[y, sx] >= 0 and idx[y, sx - 1] >= 0 and abs(lum_[y, sx] - lum_[y, sx - 1]) > 30 and y % 2: idx[y, sx], idx[y, sx - 1] = idx[y, sx - 1], idx[y, sx]
-    print("seam at", sx, "rows", c_)
+    rg = np.random.RandomState(11); cell = rg.rand(idx.shape[0] // 5 + 2, idx.shape[1] // 5 + 2)
+    field = np.kron(cell, np.ones((5, 5)))[:idx.shape[0], :idx.shape[1]]
+    for _ in range(2):
+        f2 = field.copy(); f2[1:-1, 1:-1] = (field[1:-1, 1:-1] * 4 + field[:-2, 1:-1] + field[2:, 1:-1] + field[1:-1, :-2] + field[1:-1, 2:]) / 8; field = f2
+    field = (field - field.min()) / (field.max() - field.min())
+    new = idx.copy()
+    for y in range(0, 90):
+        for x in range(max(0, sx - 22), min(idx.shape[1], sx + 30)):
+            v = idx[y, x]
+            if v not in GR: continue
+            dist = (x - sx) / 22.0 if x >= sx else (sx - x) / 22.0
+            share = max(0.0, 1.0 - dist)                              # 1 at the seam, 0 at the band's edge
+            i = GR.index(v)
+            if field[y, x] < share * 0.85:
+                new[y, x] = GR[min(4, i + 1)] if x >= sx else GR[max(0, i - 1)]
+    for y in range(0, 90):                                   # the seam's own column and its neighbours: each pixel takes the value 4 px to its left or to its right (by the blob field), so no 1 px line is left
+        for x in range(sx - 3, sx + 4):
+            l_, r_ = new[y, x - 4], new[y, x + 4]
+            if new[y, x] in GR and l_ in GR and r_ in GR: new[y, x] = l_ if field[y, x] < 0.5 else r_
+    idx = new; print("seam softened at", sx, "rows", c_)
+# the ground shadow the service drew under the trunk (dark blue-violet, outside the trunk's own colours) is taken off: below the trunk's top, only wood and the outline stay
+TR = [C["soil"], C["bark"], C["clay"], C["sand"], C["tealD"]]
+cnt = np.isin(idx, [C["soil"], C["bark"], C["clay"]]).sum(1); ty = int(np.where(cnt >= 6)[0].max())
+while ty > 0 and cnt[ty - 1] >= 6: ty -= 1
+for y in range(ty + 2, idx.shape[0]):
+    for x in range(idx.shape[1]):
+        if idx[y, x] >= 0 and idx[y, x] not in TR: idx[y, x] = -1
+idx = quant.despeckle(idx, 1)
 x0, y0, x1, y1 = quant.bbox((idx >= 0) * 255); quant.save_indexed(idx[y0:y1, x0:x1], sys.argv[2]); print("tree", idx[y0:y1, x0:x1].shape)

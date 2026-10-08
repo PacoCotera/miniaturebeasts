@@ -79,18 +79,20 @@ FOLIAGE = None   # art director, round 2: under the storm the canopies keep the 
 # at the trunk's edge in the tree's shade, the warned ring on the tile beyond them, the big charged stone at the lower right of the ring
 CAN = P.canopy_rain if RAIN else None                  # the bushes one green step deeper in rain
 TRT = P.tree_rain if RAIN else None                    # the tree's rain canopy: body pine, clumps forest, leaf only on the clumps' top-left edges
-HUT = (22, 168)                                              # the hut at the explorer's scale (144 px wide), at the view's upper-left edge, partly cut off by the frame: setting, not a subject
+HUT = (398, 168)                                              # the hut at the explorer's scale (144 px wide), at the view's UPPER-RIGHT edge, cut off on its right side, so the porch and the door face the scene (the sprite is not mirrored: the light stays at the top left)
 TREE = (240, 304); PAWN = (TREE[0] + 34, TREE[1] + 40); LOIKA = (TREE[0] + 78, TREE[1] + 46); RING = (6, 8); STONE = at(8, 9, 0, 6)
 CAN = P.canopy_rain if RAIN else None                  # the bushes one green step deeper in rain
 TRT = P.tree_rain if RAIN else None                    # the tree's rain canopy: body pine, clumps forest, leaf only on the clumps' top-left edges
-# the hut in rain goes through the storm table so it sits back (the window stays lit; the G ramp of its tufts takes the ground's table); in clear only its tufts move
-_hr = list(P.storm)
-for _n in ("yellow", "cream", "gold", "amber"): _hr[P.index[_n]] = P.index[_n]
+# the hut in rain has its OWN table (round 11d): the wood and thatch ramps one step down (sand to clay, clay to bark, bark to soil), no cast toward river (it read as a grey silo); the window's
+# yellow, amber and cream stay lit; the base stones go one step down the shade table; the G ramp of its tufts takes the ground's table. In clear only its tufts move.
+_hr = list(range(len(P.names)))
+for _a, _b in (("sand", "clay"), ("clay", "bark"), ("bark", "soil"), ("paper", "sand"), ("cream", "cream"), ("yellow", "yellow"), ("amber", "amber")): _hr[P.index[_a]] = P.index[_b]
+for _n in ("rock", "rockL", "stone"): _hr[P.index[_n]] = P.dark[P.index[_n]]
 for _n in ("pine", "forest", "leaf", "grass", "sprout", "lime"): _hr[P.index[_n]] = P.ground_rain[P.index[_n]]
 HUTT = _hr if RAIN else P.ground_clear
 things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk2", PAWN, None), ("tokens", "loika-idle1", LOIKA, None), ("props", "tree", TREE, TRT),
           (("huts", f"hut-{hut}-lit", HUT, DARK) if hut else ("props", "outpost-lit", HUT, HUTT)),
-          ("props", "bush", at(8, 1), CAN), ("props", "bush-fruit", at(9, 6), CAN), ("props", "bush-shaken", at(4, 10), CAN),
+          ("props", "bush", at(1, 1), CAN), ("props", "bush-fruit", at(9, 6), CAN), ("props", "bush-shaken", at(4, 10), CAN),
           ("props", "dew-cup", at(3, 10), GT), ("props", "reeds", at(2, 10, 0, -6), GT), ("props", "stone-step", at(7, 10, 0, -4), GT)]
 # shades are Bayer-dithered pools through the ground's shade table, never a hard ellipse with a rim: a 4 x 4 ordered dither whose density falls off from the pool's centre.
 # The tree's pool lies under the canopy and to its lower right; the stone and the hut have contact shadows 2 to 3 rows deep to the lower right.

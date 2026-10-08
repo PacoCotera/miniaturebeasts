@@ -44,6 +44,10 @@ for y, x in zip(*np.where(np.isin(idx, list(DARKN)))):
         nbr = [out[yy_, xx_] for yy_ in range(max(0, y - 1), min(H, y + 2)) for xx_ in range(max(0, x - 1), min(W, x + 2)) if out[yy_, xx_] >= 0 and idx[yy_, xx_] not in DARKN]
         out[y, x] = P.dark[max(set(nbr), key=nbr.count)] if nbr else C["soil"]
     else: out[y, x] = C["soil"] if not stone_zone[y, x] else C["rock"]       # no night spur at the end of the base stones
+# the wall's right side straight and vertical (the service drew a barrel): below the eave every pixel right of the wall's width at its top is taken off
+ref = int(H * 0.55); cols = np.where(out[ref] >= 0)[0]; xr = int(cols.max())
+for y in range(ref, int(H * 0.9)):
+    out[y, xr + 1:] = -1
 # the largest component, despeckled
 lab = np.zeros(out.shape, int); n = 0
 for y, x in zip(*np.where(out >= 0)):
@@ -62,16 +66,28 @@ for x, dy in ((int(W * .18), 0), (int(W * .40), 1), (int(W * .62), 0), (int(W * 
     y = y1 - 1 - dy
     for dx, ddy, c in ((0, 0, "forest"), (-1, -1, "leaf"), (0, -1, "grass"), (1, -1, "leaf"), (0, -2, "grass"), (-1, 0, "leaf"), (1, 0, "leaf")):
         if 0 <= y + ddy < H and 0 <= x + dx < W: out[y + ddy, x + dx] = C[c]
+sat = np.abs(raw0[..., 0].astype(int) - raw0[..., 1]) < 22; sat &= np.abs(raw0[..., 1].astype(int) - raw0[..., 2]) < 40
+grey = sat & (raw0[..., 3] > 0) & (yy >= int(H * 0.88)) & (out >= 0)
+for y, x in zip(*np.where(grey)):
+    l = 0.2126 * raw0[y, x, 0] + 0.7152 * raw0[y, x, 1] + 0.0722 * raw0[y, x, 2]
+    out[y, x] = C["rock"] if l < 80 else (C["stone"] if l < 125 else C["rockL"])          # the base stones in the rock greys, not tan
 lit = quant.outline(out)
-# the window keeps its glow (the lift turned it pale): the bright pixels in its box are yellow above its sill and amber below, a cream catch-light at the top left
-wbox = (xx >= int(W * 0.68)) & (xx <= int(W * 0.82)) & (yy >= int(H * 0.42)) & (yy <= int(H * 0.60))
-bright = (raw0[..., 0] > 170) & (raw0[..., 1] > 110) & (raw0[..., 2] < 120) & (raw0[..., 3] > 0) & wbox      # the glow, read from the service's own pixels
-by_ = np.where(bright)[0]
-if len(by_):
-    mid = (by_.min() + by_.max()) // 2
-    for y, x in zip(*np.where(bright)): lit[y, x] = C["yellow"] if y <= mid else C["amber"]
-    for y, x in sorted(zip(*np.where(bright)))[:3]: lit[y, x] = C["cream"]
-    print("window pixels", int(bright.sum()))
+# a one-row shadow under the ragged fringe along the eave: the first wall pixel under the roof's lowest straw in each column
+for x in range(W):
+    ry = [y for y in range(H) if roofpix[y, x] and lit[y, x] in (C["bark"], C["clay"], C["sand"])]
+    if ry and ry[-1] + 1 < H and lit[ry[-1] + 1, x] >= 0 and lit[ry[-1] + 1, x] not in (C["bark"], C["clay"], C["sand"]) or (ry and ry[-1] + 1 < H and lit[ry[-1] + 1, x] >= 0 and not roofpix[ry[-1] + 1, x]): lit[ry[-1] + 1, x] = C["soil"]
+# the window, two panes 7 x 7 with a 1 px warm amber surround on the logs (the one warm light at 1x in rain): placed where the service's glow is (read from its own pixels)
+wbox = (xx >= int(W * 0.68)) & (xx <= int(W * 0.84)) & (yy >= int(H * 0.40)) & (yy <= int(H * 0.62))
+bright = (raw0[..., 0] > 170) & (raw0[..., 1] > 110) & (raw0[..., 2] < 120) & (raw0[..., 3] > 0) & wbox
+by_, bx_ = np.where(bright); wcy, wcx = int(round(by_.mean())), min(int(round(bx_.mean())), xr - 9)      # inside the straightened wall
+lit_win = lit.copy()
+for dy in range(-4, 5):
+    for dx in range(-4, 5):
+        y, x = wcy + dy, wcx + dx; ring = max(abs(dx), abs(dy)) == 4
+        if lit[y, x] < 0: continue
+        lit[y, x] = C["amber"] if ring else (C["soil"] if dx == 0 else C["yellow"])
+lit[wcy - 3, wcx - 3] = C["cream"]; lit[wcy - 3, wcx - 2] = C["cream"]; lit[wcy - 2, wcx - 3] = C["cream"]
+print("window at", wcx, wcy)
 # each porch post has a 1 px foot shadow
 for x0, x1 in ((14, 24), (42, 52)):
     for x in range(x0, x1):
@@ -79,7 +95,9 @@ for x0, x1 in ((14, 24), (42, 52)):
         if ys_ and ys_[-1] + 1 < H and lit[ys_[-1] + 1, x] < 0 and lit[ys_[-1], x] in (C["soil"], C["bark"], C["clay"]): lit[ys_[-1] + 1, x] = C["night"]
 WIN = {C["yellow"], C["cream"], C["gold"], C["amber"]}
 box = wbox
-dark = np.where(np.isin(lit, list(WIN)) & box, C["night"], lit)                      # only the window's box: the thatch's light is not the window
+dark = lit.copy()
+ring_m = (np.maximum(np.abs(yy - wcy), np.abs(xx - wcx)) == 4); in_m = (np.abs(yy - wcy) <= 3) & (np.abs(xx - wcx) <= 3)
+dark[in_m & (lit != C["soil"])] = C["night"]; dark[ring_m & (lit == C["amber"])] = C["bark"]            # the dark state: the panes night, the surround plain wood
 os.makedirs(sys.argv[2], exist_ok=True)
 def save(a, n): x0, y0, x1, y1 = quant.bbox((a >= 0) * 255); quant.save_indexed(a[y0:y1, x0:x1], os.path.join(sys.argv[2], n))
 save(lit, "hut-B-lit.png"); save(dark, "hut-B-dark.png"); save(np.array([[P.dark[v] if v >= 0 else -1 for v in r] for r in dark]), "hut-B-dark2.png")
