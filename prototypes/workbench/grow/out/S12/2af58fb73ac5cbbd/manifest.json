@@ -1,0 +1,203 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 2,
+ "species": "S12",
+ "name": "Peplos",
+ "level": "species",
+ "genomeDigest": "S12-94f298de",
+ "genomeSha256": "2af58fb73ac5cbbd45f397f78257f06ee8ebb6b61d774a875fa8c73a275d6e33",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. It is the type of its kind, a moth or butterfly: patterned flaps; fliers of the flowers. Coat: colour marigold; translucency between; flap markings plain; second colour butter. Shape: hind body between. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:12:55Z",
+ "views": {
+  "portrait": {
+   "status": "plain",
+   "attempts": [
+    {
+     "callId": "a72de4ad-236e-4459-bfbb-74ea7d409ba9",
+     "status": "ok",
+     "costUSD": 0.09466,
+     "seconds": 7.3,
+     "checks": {
+      "silhouetteIoU": 0.952,
+      "silhouetteIoUInPlace": 0.963,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 1.0,
+       "antenna": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.978,
+        "median": "#d9a646",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.968,
+        "median": "#e6b342",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.038,
+        "median": "#e7ba5b",
+        "nearest": "#e8b83f",
+        "ok": false
+       },
+       "second@flap": {
+        "agreement": 1.0,
+        "median": "#f5e5b3",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #e7ba5b, the colour of body)"
+      ],
+      "slotAgreement": 0.931,
+      "passed": false
+     },
+     "responseId": "OArHao3CHLvu-8YP4eCdKA"
+    },
+    {
+     "callId": "4de920dc-7a03-4a03-92d0-44b71fe56e5d",
+     "status": "ok",
+     "costUSD": 0.10381,
+     "seconds": 8.3,
+     "checks": {
+      "silhouetteIoU": 0.965,
+      "silhouetteIoUInPlace": 0.964,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 1.0,
+       "antenna": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#db9d2d",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.992,
+        "median": "#e1a836",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.997,
+        "median": "#f1dda6",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.06,
+        "median": "#e8b135",
+        "nearest": "#e8b83f",
+        "ok": false
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the second slot on the flap (painted #e8b135, the colour of body)"
+      ],
+      "slotAgreement": 0.424,
+      "passed": false
+     },
+     "responseId": "QQrHas2nJJvHjMcPi7yl0A8"
+    }
+   ],
+   "lastRejected": "raw/portrait-2.png"
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "267e64d5-827b-416e-85f7-330a557439c7",
+     "status": "ok",
+     "costUSD": 0.09538,
+     "seconds": 7.4,
+     "checks": {
+      "silhouetteIoU": 0.958,
+      "silhouetteIoUInPlace": 0.971,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 0.992,
+       "antenna": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.775,
+        "median": "#e8b841",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.863,
+        "median": "#e4b442",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.81,
+        "median": "#fdecb4",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.811,
+      "passed": true
+     },
+     "responseId": "SwrHas_9J7nX-sAPuaaqkQ8"
+    }
+   ]
+  }
+ },
+ "outputs": {
+  "station-portrait-600x620.png": "7a134a18e19de611e1051e1b12ca047bcb9eb102fc3a9a534187a55be3c2925d",
+  "station-portrait-300x310.png": "98b7dd7d54b0389077aa70167aa7805e299b9e677312451488fd51bbe1cafc65",
+  "station-side-600x620.png": "87e1cab1aeb7207a71bbfe38718e86e6620f718311d1c9cfcb426feb1832f1a7",
+  "station-side-300x310.png": "aa7a1c17b4a53feec3c57b6a496acb47af9618571051480eca34100297b36be6",
+  "companion-280x300.png": "6042506ae2de2db5d3d1cdfe5950e21c3f2507ee6b9adf394525e3ad1feb185e",
+  "token-48.png": "31b9bf53c32a5092ea9525f01a5e7bb56c36aff90119c54b5575416579c2e0b0"
+ },
+ "calls": 3,
+ "costUSD": 0.29385,
+ "seconds": 23.0,
+ "finishedAt": "2026-10-08T03:13:24Z"
+}
