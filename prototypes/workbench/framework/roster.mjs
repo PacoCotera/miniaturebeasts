@@ -79,18 +79,18 @@ const row = (code, clan, size, tier, kind, moves, habitat, gate, diet, ability, 
 // those) and the pod placeholder's source/glyphs.txt is checked against them.
 export const GLYPHS = {
   S01: ["..###", ".#..#", "#..#.", "#.#..", "##..."], // Loika: a leaf, the crest's leaf, on the diagonal
-  S02: [".###.", "#...#", "#...#", ".....", "..#.."], // Untuva: a cap, open beneath, and what it sheds
+  S02: [".###.", "#...#", "#...#", ".....", "#...."], // Untuva: a cap, open beneath, and a shed fleck drifting off to one side
   S03: ["...##", "...##", "..#..", "..#..", "##..."], // Tuikis: a lit tail that curls
   S04: ["#..#.", ".#..#", "#..#.", ".#..#", "#..#."], // Hiljan: tabby bands
-  S05: ["#....", ".#...", "..#.#", ".#...", "#...."], // Tepor: a long muzzle's line and the tail's tip
+  S05: ["##...", ".###.", "....#", ".....", "...#."], // Tepor: the bushy tail's sweep and its pale tip
   S06: ["###..", "#.#..", "#####", "..#.#", "..###"], // Pesko: two linked rings, the ringed tail
-  S07: ["#####", "#...#", ".#.#.", "..#..", "....."], // Azkon: a pit dug down from the ground line
+  S07: ["#####", "#..#.", "#.#..", "##...", "....."], // Azkon: a pit dug down from the ground line, one wall sheer, one sloped
   S08: ["#....", "#....", "###..", "..#..", "..###"], // Rupar: the steps of a climb, a fret rising by ledges
   S09: [".#...", "#.#..", "..#.#", "...#.", "....#"], // Belatz: a long soar on one line
   S10: [".#...", "#.#.#", "...#.", ".....", "#####"], // Igara: a ripple over the pond floor
   S11: [".....", "#.#.#", ".#.#.", "#.#.#", "....."], // Kilpo: the plates of a shell
-  S12: [".#.#.", "#...#", "..#..", "#...#", ".#.#."], // Peplos: four flaps about a centre
-  S13: ["..#..", ".#.#.", "#...#", ".#.#.", "..#.."], // Oskol: an armour plate
+  S12: [".#.#.", ".....", "#...#", ".....", ".#.#."], // Peplos: six points about an empty centre, the six fine legs
+  S13: [".....", ".###.", "#...#", "#####", "....."], // Oskol: an armour plate, domed over its base
   S14: [".....", ".##..", "#..##", "....#", "....."], // Usvel: the slow line of a trail
   S15: ["..#..", ".##..", "..#..", "..##.", "..#.."], // Lehten: a stem with alternate leaves
   S16: ["...##", "..#..", ".#.#.", "#...#", "....."], // Blikur: a branching charge
