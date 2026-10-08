@@ -1,0 +1,319 @@
+{
+ "species": "S12",
+ "variant": {
+  "id": "7A-no-eye-recipe",
+  "name": "No eye recipe",
+  "change": "Both steps, the Eyes paragraph removed; the species iris colour in the notes stays. Measures what the house eye recipe buys in sameness across species.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Both steps, the Eyes paragraph removed; the species iris colour in the notes stays. Measures what the house eye recipe buys in sameness across species.",
+ "costUSD": 0.335,
+ "subject": {
+  "member": "type-specimen",
+  "genomeDigest": "S12-94f298de",
+  "controls": "out/S12/2af58fb73ac5cbbd"
+ },
+ "step1": {
+  "callId": "3cf1ee01-8b4a-4a07-9167-fffe17bc598d",
+  "status": "ok",
+  "costUSD": 0.16833,
+  "seconds": 22.0,
+  "imageOrder": [
+   "index",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.57,
+   "silhouetteIoUInPlace": 0.568,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.954
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 0.657
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.881
+    },
+    "eye": {
+     "span": 0.905,
+     "coverage": 0.812
+    },
+    "antenna": {
+     "span": 0.898,
+     "coverage": 0.403
+    },
+    "leg-0": {
+     "span": 0.678,
+     "coverage": 0.691
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.917
+    },
+    "leg-2": {
+     "span": 1.0,
+     "coverage": 0.92
+    },
+    "flap": {
+     "span": 0.939,
+     "coverage": 0.952
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.325,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.262,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.317,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.59,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.28,
+     "ok": true
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.306,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.544,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.866,
+     "median": "#eab03b",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.758,
+     "median": "#e9b13b",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.776,
+     "median": "#e4ae37",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.36,
+     "median": "#ddd3b0",
+     "nearest": "#f1eddc",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.119,
+     "median": "#ddd3c7",
+     "nearest": "#f1eddc",
+     "ok": false
+    },
+    "second@leg-2": {
+     "agreement": 0.298,
+     "median": "#dcd3c3",
+     "nearest": "#f1eddc",
+     "ok": false
+    },
+    "second@flap": {
+     "agreement": 0.716,
+     "median": "#f4e2a7",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (17% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a pigment slot is painted in another slot's colour: the second slot on the leg-1 (painted #ddd3c7, the colour of eyeRim), the second slot on the leg-2 (painted #dcd3c3, the colour of eyeRim)"
+   ],
+   "outside": 0.173,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.682,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "c228ccbc-6bb3-4a9d-b88a-3f9b3641438d",
+  "status": "ok",
+  "costUSD": 0.16665,
+  "seconds": 26.2,
+  "imageOrder": [
+   "drawing",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.566,
+   "silhouetteIoUInPlace": 0.567,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.956
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 0.644
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.879
+    },
+    "eye": {
+     "span": 0.905,
+     "coverage": 0.82
+    },
+    "antenna": {
+     "span": 0.898,
+     "coverage": 0.442
+    },
+    "leg-0": {
+     "span": 0.678,
+     "coverage": 0.688
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.917
+    },
+    "leg-2": {
+     "span": 1.0,
+     "coverage": 0.924
+    },
+    "flap": {
+     "span": 0.943,
+     "coverage": 0.951
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.325,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.262,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.316,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.589,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.279,
+     "ok": true
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.305,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.545,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.828,
+     "median": "#dea942",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.706,
+     "median": "#dda842",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.76,
+     "median": "#dcaa41",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.426,
+     "median": "#ded3ab",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.121,
+     "median": "#ded4c8",
+     "nearest": "#f1eddc",
+     "ok": false
+    },
+    "second@leg-2": {
+     "agreement": 0.371,
+     "median": "#ded3ba",
+     "nearest": "#f1eddc",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.804,
+     "median": "#f0dea6",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (18% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a pigment slot is painted in another slot's colour: the second slot on the leg-1 (painted #ded4c8, the colour of eyeRim)"
+   ],
+   "outside": 0.177,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.704,
+   "passed": false,
+   "gated": false
+  }
+ }
+}
