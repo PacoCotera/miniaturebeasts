@@ -1,0 +1,303 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "1G-markings-positive",
+  "name": "Plain coat said positively",
+  "change": "Step 1, markings words only: the markings paragraph says what the coat is instead of naming the patches it must not have, since naming them may prime them.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "Step 1, markings words only: the markings paragraph says what the coat is instead of naming the patches it must not have, since naming them may prime them.",
+ "costUSD": 0.3273,
+ "step1": {
+  "callId": "aaaaf44f-84c5-425e-90a0-8789634a628d",
+  "status": "ok",
+  "costUSD": 0.17135,
+  "seconds": 21.2,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.575,
+   "silhouetteIoUInPlace": 0.584,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.971
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.977
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.98
+    },
+    "beak": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "crown": {
+     "span": 0.807,
+     "coverage": 0.39
+    },
+    "leg-0": {
+     "span": 0.904,
+     "coverage": 0.323
+    },
+    "flap": {
+     "span": 0.99,
+     "coverage": 0.965
+    },
+    "tail": {
+     "span": 0.853,
+     "coverage": 0.362
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.398,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.309,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.383,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.413,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.328,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.381,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.703,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.92,
+     "median": "#3d62ae",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.285,
+     "median": "#e5cc9a",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@neck": {
+     "agreement": 0.939,
+     "median": "#4c7acc",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.944,
+     "median": "#4b7acd",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.046,
+     "median": "#fdf0c3",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.853,
+     "median": "#c1a376",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.009,
+     "median": "#3f65b4",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the body slot on the region-1 (painted #e5cc9a, the colour of second), the body slot on the crown (painted #fdf0c3, the colour of second), the second slot on the flap (painted #3f65b4, the colour of body)"
+   ],
+   "outside": 0.087,
+   "missing": 0.002,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.78,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "c6bd6ec1-130b-40a5-9d8e-2117af959bfa",
+  "status": "ok",
+  "costUSD": 0.15591,
+  "seconds": 22.2,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.588,
+   "silhouetteIoUInPlace": 0.581,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.966
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.982
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.985
+    },
+    "beak": {
+     "span": 1.0,
+     "coverage": 0.992
+    },
+    "crown": {
+     "span": 0.827,
+     "coverage": 0.402
+    },
+    "leg-0": {
+     "span": 0.898,
+     "coverage": 0.517
+    },
+    "flap": {
+     "span": 0.99,
+     "coverage": 0.97
+    },
+    "tail": {
+     "span": 0.843,
+     "coverage": 0.363
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.397,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.309,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.383,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.412,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.338,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.391,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.704,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.923,
+     "median": "#335384",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.293,
+     "median": "#c5a893",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@neck": {
+     "agreement": 0.931,
+     "median": "#507bab",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.813,
+     "median": "#5b86af",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.0,
+     "median": "#fcefbb",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.78,
+     "median": "#a99483",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.144,
+     "median": "#597ba4",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the body slot on the region-1 (painted #c5a893, the colour of second), the body slot on the crown (painted #fcefbb, the colour of second), the second slot on the flap (painted #597ba4, the colour of body)"
+   ],
+   "outside": 0.096,
+   "missing": 0.002,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.745,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

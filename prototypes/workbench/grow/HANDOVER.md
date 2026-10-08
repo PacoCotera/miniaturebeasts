@@ -6,7 +6,7 @@ For a fresh session taking over the genome engineer's seat. Branch `dev`; main i
 
 - **The rig** (`framework/rig.mjs`) draws every species inside the cute envelope (`framework/envelope.mjs`, rules E1–E9 with reasons; the workbench README lists them). The Loika is calibrated to the accepted Pip (catalogue 9). The leaf crest is green (the `leaf` slot); the Belatz's feet are rounded; the Peplos's resting wings fold along the body (E9). Under the envelope 13 of 16 species read as their kind by the parts check; the raccoon, the otter and the turtle sit within 0.03 of their hand-drawn targets (`frames/targets/`), which were drawn to the old shapes and are to be redrawn.
 - **The Grow service** (`grow/service.py`, `grow/controls.mjs`): a genome in, the painted portrait (and side) out, with structural checks (band, part span, proportions, slots), one named retry, then the plain placeholder; derived Companion and token; layout by genome SHA-256 under `grow/out/`; every call in `grow/prompts.json`. Variant B (two steps: a HiBit drawing from the crisp key and index passes, then a treatment transfer with the species reference) is the recipe the owner is iterating. The side view is painted only at a sitting; the portrait is the standard.
-- **The prompt lab** (`grow/lab.py`) runs the art prompter's set `grow/prompt-lab/` (on main since c452679) as written: twelve variants, each one change, on the type specimen of S01, S09 and S12, on `gemini-3.1-flash-image` and `gemini-3-pro-image`, two samples a cell; outputs under `grow/lab/<species>/<variant>/<flash|pro>/s<k>/` with `prompt.json`; one sheet per species, `grow/sheets/lab-<species>.png`. The checks are logged, not gated: the eye decides.
+- **The prompt lab** (`grow/lab.py`) runs a prompt set as written: the art prompter's v5 set `grow/prompt-lab/` (on main since c452679) and the art director's v6 set `grow/prompt-lab/v6/` (a4cebb6; the default, `--set v5` for the other; a file missing in v6 falls back to v5). v5: twelve variants, each one change, on the type specimen of S01, S09 and S12, on `gemini-3.1-flash-image` and `gemini-3-pro-image`, two samples a cell; outputs under `grow/lab/<species>/<variant>/<flash|pro>/s<k>/` with `prompt.json`; one sheet per species, `grow/sheets/lab-<species>.png`. The checks are logged, not gated: the eye decides.
 - **Spend**: all Gemini calls are in `grow/prompts.json` with cost; `python3 grow/service.py report` sums them into `grow/costs.json`.
 
 ## How to run
@@ -25,15 +25,17 @@ python3 grow/service.py report                                        # costs.js
 
 ## Pending
 
-1. **The v5 lab.** The priority cells (v5, 1G, 1B, 2C on all three species, both models, two samples) are running or done; then the rest (v4, 1A, 1C, 1D, 1E, 1F, 2A, 2B). After each species' cells, `lab.py --sheet` lays the sheet; report the sheets with a pick and the cost to the lead. No full run until the owner picks a variant.
-2. **`description.v5.md`** in `grow/prompt-lab/` is the prompter's target for the next change to `framework/describe.mjs` (colours placed on parts, proportions said once, posture): not needed for the lab run, owed after it.
-3. **The species references** for S09 and S12 (`grow/species/`) were painted on the old rig and carry its faults; repaint from a v6 type specimen once the prompt settles.
-4. **Kind targets** for S06, S10, S11 to be redrawn under the envelope.
-5. The S12 token at 48 px: the tile camera fits the mesh bounds; fit it to the visible silhouette.
+1. **The v5 lab.** The owner picked Pro with 1B plus 1G's coat paragraph from the Loika sheet (the lab synthesises it as `1BG-anti-artefact-plain`). S01 and S09 priority cells are done (`sheets/lab-S01.png`, `lab-S09.png`); S12 and the remaining v5 variants are not run and are no longer asked for.
+2. **The v6 lab** (the art director's set): v6 and its three variants (6A no style line, 6B contact shadow, 6C Pip-style eyes) on Pro only, two samples, S01 then S09 then S12; one sheet per species `sheets/lab-<species>-v6.png` with the v5 1B Pro row on top for comparison. Cells under `grow/lab/<species>/v6/`. Report the sheets with a pick. No full run until the owner picks.
+3. **`description.v5.md`** in `grow/prompt-lab/` is the prompter's target for the next change to `framework/describe.mjs` (colours placed on parts, proportions said once, posture): not needed for the lab run, owed after it.
+4. **The species references** for S09 and S12 (`grow/species/`) were painted on the old rig and carry its faults; repaint from a v6 type specimen once the prompt settles.
+5. **Kind targets** for S06, S10, S11 to be redrawn under the envelope.
+6. The S12 token at 48 px: the tile camera fits the mesh bounds; fit it to the visible silhouette.
 
 ## Open rig faults the prompter named
 
 - Fixed: the Loika's crest colour (now the leaf slot, green); the Belatz's wedge feet (now rounded); the flat Peplos wing (now folded, E9).
+- Fixed: the key pass and the slot map now show a coat, flap, cap or shell marking field in the second pigment, so the description's markings, the key and the slot check agree (the Loika type specimen has patches on).
 - Still open: the S09 and S12 reference paintings themselves show the old block feet and plank wing; words cannot fix that, a repaint can.
 
 ## Reading the lab's results

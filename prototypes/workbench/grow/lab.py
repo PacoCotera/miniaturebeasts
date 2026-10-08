@@ -9,6 +9,7 @@ Both steps always run (the owner judges by eye); the checks are logged beside ea
   python3 grow/lab.py --species S09                      # every variant (paid)
   python3 grow/lab.py --species S09 --variants v1,v4     # some
   python3 grow/lab.py --species S09 --models pro         # one model only (both by default: Flash and Pro, side by side on the sheet)
+  python3 grow/lab.py --species S09 --set v5 --sheet     # the v5 set's sheet (the default set is prompt-lab/v6; its cells live under lab/<species>/v6/)
   python3 grow/lab.py --sheet                            # the sheets only, from what is on disk
 
 Three fields, worked separately, each variant one change from the baseline (v0 = prompt v4 as run):
@@ -341,6 +342,8 @@ def sheet_for(sp, d0=None):
 if __name__ == "__main__":
     args = sys.argv[1:]
     opt = lambda k, d=None: args[args.index(k) + 1] if k in args and args.index(k) + 1 < len(args) else d
+    if opt("--set"):  # --set v5 (the prompter's set at grow/prompt-lab) or --set v6 (grow/prompt-lab/v6, the default)
+        PROMPT_SET = PROMPT_SET_FALLBACK if opt("--set") == "v5" else os.path.join(PROMPT_SET_FALLBACK, opt("--set")); SET_NAME = os.path.basename(PROMPT_SET)
     sp = opt("--species")
     if "--sheet" in args:
         pset = prompt_set()
