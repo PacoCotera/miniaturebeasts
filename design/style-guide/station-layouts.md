@@ -28,17 +28,71 @@ Pods comes first because it sets the pattern the other screens follow.
 
 ### The frame
 
+The frame is the same on every Station screen and speaks one language, the Companion's (*corrected by the UI designer, 2026-10-08, after the owner: "the header and the footer, just as we did with the Companion, require a language, a structure" and "somewhere in the screen you must indicate what you're looking at"*). The Companion's HUD is marks, not words: who you are out with, what you carry, what you hold, the time; numbers only beside an icon. Its bottom line is three parts: the one action (an orange ✓ cap with the verb in orange), the context (mist, the only part that shrinks) and the way out (a grey ← cap with its word). The Station's frame keeps that grammar at its own size and adds what the Station needs most: a title that says what you are looking at.
+
+<table><tr>
+<td valign="top"><img src="station-layouts/00-frame.svg" width="1024" alt="The Station's top bar and bottom line at 1×"><br><em>The Station's top bar and bottom line at 1×, measured: zones, rules and marks. Wireframe; the words are slots. Status: Working rule, for the art director's signature.</em></td>
+</tr><tr>
+<td valign="top"><img src="station-layouts/companion-hud-1x.png" width="450" alt="The Companion's HUD and bottom line at 1×"><br><em>The Companion's HUD and bottom line at 1×, cut from the kit's mock-up (<a href="../proposals/ui-kit/companion-place-storm.png">companion-place-storm.png</a>), for comparison: the same grammar the Station's frame follows. Status: kit mock-up.</em></td>
+</tr></table>
+
+**The top bar (40 px): where you are, what you hold, who is out, when.** Three groups, separated by 1 px `hairline` rules at x 256 and x 888 (y 8 to 32); 16 px between a rule and its neighbours.
+
+| Zone | Rectangle | What it says | Sentence or mark |
+| --- | --- | --- | --- |
+| **Title: where you are** | 16, 8, 232, 24 | The room's mark, 24×24 at (16, 8), the same glyph as the device key that leads there (Home, Research, Library, Habitat), then the screen's title from x 48, 20 px medium, `bone` | One word, the title; title case. The first thing in the bar, and the only word in it |
+| **What you hold** | 384, 8, 256, 24 | Energy, Data and Essence, centred on x 512: each a 16 px icon, a 4 px gap, then 16 px tabular figures in `bone`, 24 px between counters | Marks with figures; the figures are the frame's exception to "no digits" |
+| **Who is out, and with whom** | 816, 8, 64, 24 | The Companion's glyph, 16×24 at (816, 8), with its 8×8 lamp at (836, 16); the mibi with you as a 24 px face on its `teal` ring at (856, 8), the same face as on the Companion's HUD (an empty ring when no mibi is with you) | Marks only, no words. Docked: the glyph solid, its lamp `mint`, the face full. Away: the glyph in outline, its lamp `stone`, the face on a dimmed ring: the mibi is out with it |
+| **When** | 904, 8, 104, 24 | The world turn: a 16 px sun mark, 4 px, then its figure, right-aligned to x 1008 | A mark with a figure, as on the Companion ("☀ 5"), not "T5" |
+
+The Probe's tier is not in the top bar: Home's Probe module shows it by its Shield plates (three or four), as the Companion shows it on its own Shield plates.
+
+**The title** is first-class: the one word in the bar, at the left where reading starts, with its room's mark. It uses the title role, 20 px medium; it needs no role of its own. A 28 px title would fill the 40 px bar to 2 px of its edges and compete with the 28 px names on the stage, and the mark and the rule after it are what make it a title. It names the screen and never the chapter: on Pods the open chapter is the rail's lighter open tab and the page's heading, and a title that changed with every ◀ ▶ would stop being a landmark. So there is no "Pods · Coat".
+
+| Screen | Room mark (the key) | Title (the slot; today's word, the copywriter's to confirm) |
+| --- | --- | --- |
+| Home | Home | Home |
+| Pods | Research | Pods |
+| Create | Research | Grow |
+| Incubator | Research | Incubator |
+| Probe bench | Research | Probe |
+| Library spread | Library | Library |
+| Book | Library | Library (the species' name is the page's own 28 px name) |
+| Habitat | Habitat | Habitat |
+
+**The bottom line (38 px): the one action, the context, the notice.** Three zones separated by 1 px `hairline` rules at x 396 and x 628 (y 571 to 591).
+
+| Zone | Rectangle | What it says | Sentence or mark |
+| --- | --- | --- | --- |
+| **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, then the verb in `orange`, 16 px; then the price, a material's icon and its figures in `bone`. Then the way back: the ← key cap, 16×16 in `stone`, and where it leads, one word in `fog`. Three groups (✓ and the verb; the price; ← and where), 24 px apart and never joined by dots; a cap sits 4 px before its word | A verb phrase of four words or fewer; the price is marks with figures; the way back is one word. No ✓ cap when ✓ does nothing; no ← cap when ← does nothing |
+| **The context** | 400, 570, 224, 24 | What the focus is on, centred on x 512, 16 px `mist` | A label of six words or fewer. The only zone that may shrink, ending in "…" |
+| **The notice** | 632, 570, 376, 24 | What needs you, right-aligned to x 1008, 16 px `amber`, with the 12×12 amber lamp 8 px to its left, the same lamp as Home's modules | A sentence of six words or fewer; one notice at a time, the most pressing |
+
+**Slots, not words.** Every word in the frame is the copywriter's, written to the zone's rule above: no dot-separated fragments, a verb phrase for the action, a label for the context, a sentence for the notice, the title one word.
+
+**How states change the frame:**
+
+- **A notice arrives:** the lamp lights `amber` and the notice slides in from the right over 200 ms; it stays until it is resolved. A newer, more pressing notice replaces it the same way.
+- **A cost is shown:** the price follows the verb. When the player cannot pay, the ✓ cap and the verb turn `mist` and the price's figure turns `amber`. The press is refused with a message plate; nothing is spent.
+- **Something is spent or gained:** the counter's figure ticks, with a 240 ms flash behind it.
+- **The Companion returns:** its lamp turns from `stone` to `mint`, the glyph fills in and lifts 2 px for 200 ms, and the face's ring brightens; the arrival then plays on Home. When it leaves, the same in reverse.
+- **The world turns:** the turn's figure ticks, with the same flash.
+- **Another screen opens:** the title and its mark cross-fade in 200 ms; nothing else in the frame moves.
+- **Read-only focus:** no ✓ cap; the context still names the focus.
+
 | Region | Rectangle | Holds |
 | --- | --- | --- |
-| Top bar | 0, 0, 1024, 40 | Chrome ground, with a 1 px rule on its bottom edge |
-| Screen name and turn | 16, 8, 240, 24 | Screen name in Inter 20 px medium, then the turn ("T5") in 16 px |
-| Materials | 384, 8, 256, 24 | Energy, Data and Essence, centred on x 512: each a 16 px icon, a 4 px gap, then 16 px tabular figures, with 24 px between counters. A tick flashes for 240 ms behind the figure |
-| Companion state | 640, 8, 368, 24 | Right-aligned to x 1008, 16 px, with its 8 px lamp to the left of the words |
+| Top bar | 0, 0, 1024, 40 | Chrome ground (`bar`), with a 1 px rule on its bottom edge |
+| Title | 16, 8, 232, 24 | The room's mark 24×24, then the title, 20 px medium (*corrected by the UI designer, 2026-10-08, after the owner: "the header and the footer, just as we did with the Companion, require a language, a structure" and "somewhere in the screen you must indicate what you're looking at"*: was "Screen name and turn", 16, 8, 240, 24: the name in 20 px, then the turn "T5" in 16 px) |
+| Materials | 384, 8, 256, 24 | As above (unchanged) |
+| Companion | 816, 8, 64, 24 | The glyph, its lamp and the face (*corrected by the UI designer, 2026-10-08, after the owner: "the header and the footer, just as we did with the Companion, require a language, a structure" and "somewhere in the screen you must indicate what you're looking at"*: was "Companion state", 640, 8, 368, 24: words right-aligned to x 1008 with an 8 px lamp, "Companion away · since 16:05 · with Dot") |
+| When (the world turn) | 904, 8, 104, 24 | The sun mark and the figure, right-aligned to x 1008 (*corrected by the UI designer, 2026-10-08, after the owner: "the header and the footer, just as we did with the Companion, require a language, a structure" and "somewhere in the screen you must indicate what you're looking at"*: new; the turn moves here from beside the screen name) |
+| Top rules | x 256 and x 888, y 8 to 32 | 1 px hairlines (*corrected by the UI designer, 2026-10-08, after the owner: "the header and the footer, just as we did with the Companion, require a language, a structure" and "somewhere in the screen you must indicate what you're looking at"*: new) |
 | Stage | 0, 40, 1024, 522 | The screen's own layout |
 | Bottom line | 0, 562, 1024, 38 | Chrome ground, with a 1 px rule on its top edge |
-| Action | 16, 570, 376, 24 | `✓ verb · price · ← where`, 16 px. The ✓ cap is drawn only when ✓ does something |
-| Subject | 400, 570, 224, 24 | Centred on x 512, 16 px, mist. May end in "…" |
-| What needs you | 632, 570, 376, 24 | Right-aligned to x 1008, 16 px, amber |
+| Action | 16, 570, 376, 24 | ✓ cap, verb, price, ← cap, where (*corrected by the UI designer, 2026-10-08, after the owner: "the header and the footer, just as we did with the Companion, require a language, a structure" and "somewhere in the screen you must indicate what you're looking at"*: was "`✓ verb · price · ← where`, 16 px", the verb in `bone`, the parts joined by dots) |
+| Context (subject) | 400, 570, 224, 24 | Centred on x 512, 16 px, `mist`. May end in "…" |
+| Notice (what needs you) | 632, 570, 376, 24 | Right-aligned to x 1008, 16 px, `amber`, with its 12×12 lamp (*corrected by the UI designer, 2026-10-08, after the owner: "the header and the footer, just as we did with the Companion, require a language, a structure" and "somewhere in the screen you must indicate what you're looking at"*: the lamp is new) |
 | Separators | x 396 and x 628, y 571 to 591 | 1 px hairlines |
 | Message plate | centred on x 512, at most 640 wide, 16 + 20 px per line tall | 16 px type, shown for 4 s. Its bottom edge sits at y 550. If that would cover the screen's focal box, its top edge sits at y 112 instead |
 

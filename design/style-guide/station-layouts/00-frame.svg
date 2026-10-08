@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Station frame at 1×: the top bar and the bottom line, their zones, rules and marks. Wireframe; the words are slots.</title>
+<rect width="1024" height="600" fill="#ffffff"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#34383f" stroke="#222" stroke-width="1"/>
+<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#111"/>
+<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="8.5" width="23" height="23" rx="4" fill="#c6c4d8" stroke="#c6c4d8" stroke-width="1"/>
+<text x="48" y="27" font-size="20" fill="#f1ebdf">Title</text>
+<text x="116" y="26" font-size="9" fill="#c6c4d8">title, 20 px medium · room mark 24</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#3c4b57"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#3c4b57"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="432" y="12" width="16" height="16" fill="#f2c94c"/>
+<text x="452" y="27" font-size="16" fill="#f1ebdf">9</text>
+<rect x="496" y="12" width="16" height="16" fill="#5aa6e8"/>
+<text x="516" y="27" font-size="16" fill="#f1ebdf">4</text>
+<rect x="560" y="12" width="16" height="16" fill="#6cc070"/>
+<text x="580" y="27" font-size="16" fill="#f1ebdf">6</text>
+<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="816.5" y="8.5" width="15" height="23" rx="3" fill="none" stroke="#c6c4d8"/>
+<rect x="836" y="16" width="8" height="8" fill="#5d5974"/>
+<circle cx="868" cy="20" r="11.5" fill="#8d8aa6" stroke="#2bb3a3" stroke-width="2"/>
+<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="975" cy="20" r="7" fill="#f2c94c"/>
+<text x="987" y="27" font-size="16" fill="#f1ebdf">5</text>
+<text x="268" y="26" font-size="9" fill="#8d8aa6">rule x 256</text>
+<text x="720" y="26" font-size="9" fill="#8d8aa6">rule x 888 →</text>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="#f4f6f8" stroke="#ccc" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="380" y="200" font-size="14" fill="#999">stage: the screen's own layout</text>
+<text x="32" y="72" font-size="11" fill="#333">TOP BAR, 40 px: where you are | what you hold | who is out, when</text>
+<text x="32" y="92" font-size="11" fill="#333">Title 16,8 232×24: room mark 24×24 at 16,8; title from x 48, 20 px medium bone; one word</text>
+<text x="32" y="112" font-size="11" fill="#333">Holdings 384,8 256×24: Energy, Data, Essence centred on 512; icon 16, gap 4, figures 16 px</text>
+<text x="32" y="132" font-size="11" fill="#333">Companion 816,8 64×24: glyph 16×24 (outline when away), lamp 8×8 at 836,16 (mint docked, stone away),</text>
+<text x="32" y="148" font-size="11" fill="#333">   face 24×24 on its teal ring at 856,8: the mibi out with it; no words</text>
+<text x="32" y="168" font-size="11" fill="#333">When 904,8 104×24: sun mark 16, 4 px, the turn's figure, right-aligned to 1008</text>
+<text x="32" y="360" font-size="11" fill="#333">BOTTOM LINE, 38 px: the one action | the context | the notice</text>
+<text x="32" y="380" font-size="11" fill="#333">Action 16,570 376×24: ✓ cap 16 orange at 16,574, verb orange (4 words or fewer), price icon + figures,</text>
+<text x="32" y="396" font-size="11" fill="#333">   ← cap 16 stone, where (one word, fog)</text>
+<text x="32" y="416" font-size="11" fill="#333">Context 400,570 224×24: centred on 512, mist, a label of six words or fewer; the only part that shrinks</text>
+<text x="32" y="436" font-size="11" fill="#333">Notice 632,570 376×24: right-aligned to 1008, amber, a sentence of six words or fewer, its 12×12 lamp 8 px to its left</text>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#34383f" stroke="#222" stroke-width="1"/>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#111"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="24" cy="582" r="8" fill="#f08a24"/>
+<text x="38" y="587" font-size="16" fill="#f08a24">Verb</text>
+<rect x="88" y="574" width="16" height="16" fill="#5aa6e8"/>
+<text x="108" y="587" font-size="16" fill="#f1ebdf">3</text>
+<circle cx="144" cy="582" r="8" fill="#5d5974"/>
+<text x="158" y="587" font-size="16" fill="#c6c4d8">Where</text>
+<line x1="396.5" y1="571" x2="396.5" y2="591" stroke="#3c4b57"/><line x1="628.5" y1="571" x2="628.5" y2="591" stroke="#3c4b57"/>
+<rect x="400.5" y="570.5" width="223" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="452" y="587" font-size="16" fill="#8d8aa6">context slot</text>
+<rect x="632.5" y="570.5" width="375" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="828" y="576" width="12" height="12" fill="#f2b13c"/>
+<text x="848" y="587" font-size="16" fill="#f2b13c">notice slot</text>
+</svg>
