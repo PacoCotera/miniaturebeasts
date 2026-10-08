@@ -9,302 +9,317 @@
    "status": "plain",
    "attempts": [
     {
-     "callId": "be08f28e-b826-4bf6-a116-3347f1a7995a",
+     "callId": "dd8f5052-9a33-4dfd-95c9-355139567ef8",
      "step": 1,
      "status": "ok",
-     "costUSD": 0.18744,
-     "seconds": 22.5,
+     "costUSD": 0.18056,
+     "seconds": 21.2,
      "checks": {
-      "silhouetteIoU": 0.346,
-      "silhouetteIoUInPlace": 0.328,
+      "silhouetteIoU": 0.452,
+      "silhouetteIoUInPlace": 0.601,
       "parts": {
        "region-0": {
-        "span": 1.0,
-        "coverage": 0.93
+        "span": 0.782,
+        "coverage": 0.714
        },
        "region-1": {
-        "span": 1.0,
-        "coverage": 0.947
+        "span": 0.804,
+        "coverage": 0.699
        },
        "region-2": {
-        "span": 0.266,
-        "coverage": 0.0
+        "span": 1.0,
+        "coverage": 1.0
        },
        "head": {
         "span": 1.0,
-        "coverage": 0.506
+        "coverage": 0.808
        },
        "eye": {
-        "span": 1.0,
-        "coverage": 0.272
+        "span": 0.948,
+        "coverage": 0.558
        },
        "antenna": {
-        "span": 0.127,
-        "coverage": 0.143
+        "span": 0.724,
+        "coverage": 0.294
        },
        "leg-0": {
-        "span": 0.41,
-        "coverage": 0.396
+        "span": 0.529,
+        "coverage": 0.521
        },
        "leg-1": {
-        "span": 0.312,
-        "coverage": 0.0
+        "span": 1.0,
+        "coverage": 0.662
        },
        "leg-2": {
-        "span": 0.0,
-        "coverage": 0.0
+        "span": 0.92,
+        "coverage": 0.251
        },
        "flap": {
-        "span": 0.622,
-        "coverage": 0.366
+        "span": 0.913,
+        "coverage": 0.651
        }
       },
       "proportions": {
        "region-0": {
         "drawn": 0.306,
-        "painted": 0.626,
-        "ok": false
+        "painted": 0.363,
+        "ok": true
        },
        "region-1": {
         "drawn": 0.212,
-        "painted": 0.476,
-        "ok": false
+        "painted": 0.23,
+        "ok": true
        },
        "head": {
         "drawn": 0.273,
-        "painted": 0.575,
-        "ok": false
+        "painted": 0.367,
+        "ok": true
        },
        "antenna": {
         "drawn": 0.377,
-        "painted": 0.418,
+        "painted": 0.413,
         "ok": true
        },
        "leg-0": {
         "drawn": 0.615,
-        "painted": 0.986,
-        "ok": false
+        "painted": 0.609,
+        "ok": true
        },
        "leg-1": {
         "drawn": 0.227,
-        "painted": 0.415,
-        "ok": false
+        "painted": 0.315,
+        "ok": true
        },
        "leg-2": {
         "drawn": 0.26,
-        "painted": 0.0,
-        "ok": false
+        "painted": 0.291,
+        "ok": true
        },
        "flap": {
         "drawn": 0.265,
-        "painted": 0.344,
+        "painted": 0.274,
         "ok": true
        }
       },
       "slots": {
        "body@region-0": {
-        "agreement": 0.292,
-        "median": "#e4c48c",
-        "nearest": "#fff0b8",
-        "ok": false
-       },
-       "body@region-1": {
-        "agreement": 0.005,
-        "median": "#e5d2a5",
-        "nearest": "#fff0b8",
-        "ok": false
-       },
-       "body@head": {
-        "agreement": 0.551,
-        "median": "#ebcb68",
-        "nearest": "#e8b83f",
-        "ok": true
-       },
-       "body@antenna": {
-        "agreement": 0.0,
-        "median": "#f9e2a1",
-        "nearest": "#fff0b8",
-        "ok": false
-       },
-       "second@leg-0": {
-        "agreement": 0.351,
-        "median": "#dccb8f",
-        "nearest": "#fff0b8",
-        "ok": true
-       },
-       "second@flap": {
-        "agreement": 0.9,
-        "median": "#e4d3a8",
-        "nearest": "#fff0b8",
-        "ok": true
-       }
-      },
-      "reasons": [
-       "paint lies well outside the drawn body (21% of the body beyond a 19 px band): a part was added, moved or re-laid",
-       "a part is missing or moved from where the part map puts it: region-2 (painted along 27% of its length), antenna (painted along 13% of its length), leg-0 (painted along 41% of its length), leg-1 (painted along 31% of its length), leg-2 (painted along 0% of its length)",
-       "the proportions are off: the region-0 is larger than drawn (0.63 of the body against 0.31), the region-1 is larger than drawn (0.48 of the body against 0.21), the head is larger than drawn (0.57 of the body against 0.27), the leg-0 is larger than drawn (0.99 of the body against 0.61), the leg-1 is larger than drawn (0.41 of the body against 0.23), the leg-2 is smaller than drawn (0.00 of the body against 0.26)",
-       "a pigment slot is painted in another slot's colour: the body slot on the region-0 (painted #e4c48c, the colour of second), the body slot on the region-1 (painted #e5d2a5, the colour of second), the body slot on the antenna (painted #f9e2a1, the colour of second)"
-      ],
-      "outside": 0.208,
-      "missing": 0.097,
-      "bandTolerancePx": 19,
-      "slotAgreement": 0.344,
-      "passed": false,
-      "proportionTolerance": 0.25
-     },
-     "responseId": "c5zHasu3DuvU_uMP5q258Ak"
-    },
-    {
-     "callId": "695d5bb7-81a3-4773-8b87-089939297e00",
-     "step": 1,
-     "status": "ok",
-     "costUSD": 0.18169,
-     "seconds": 20.7,
-     "checks": {
-      "silhouetteIoU": 0.445,
-      "silhouetteIoUInPlace": 0.211,
-      "parts": {
-       "region-0": {
-        "span": 1.0,
-        "coverage": 0.984
-       },
-       "region-1": {
-        "span": 1.0,
-        "coverage": 0.925
-       },
-       "region-2": {
-        "span": 0.156,
-        "coverage": 0.037
-       },
-       "head": {
-        "span": 1.0,
-        "coverage": 0.929
-       },
-       "eye": {
-        "span": 0.935,
-        "coverage": 0.933
-       },
-       "antenna": {
-        "span": 0.525,
-        "coverage": 0.644
-       },
-       "leg-0": {
-        "span": 0.519,
-        "coverage": 0.406
-       },
-       "leg-1": {
-        "span": 0.394,
-        "coverage": 0.011
-       },
-       "leg-2": {
-        "span": 0.0,
-        "coverage": 0.0
-       },
-       "flap": {
-        "span": 0.465,
-        "coverage": 0.097
-       }
-      },
-      "proportions": {
-       "region-0": {
-        "drawn": 0.306,
-        "painted": 0.601,
-        "ok": false
-       },
-       "region-1": {
-        "drawn": 0.212,
-        "painted": 0.455,
-        "ok": false
-       },
-       "head": {
-        "drawn": 0.273,
-        "painted": 0.549,
-        "ok": false
-       },
-       "antenna": {
-        "drawn": 0.377,
-        "painted": 0.39,
-        "ok": true
-       },
-       "leg-0": {
-        "drawn": 0.615,
-        "painted": 0.877,
-        "ok": false
-       },
-       "leg-1": {
-        "drawn": 0.227,
-        "painted": 0.412,
-        "ok": false
-       },
-       "leg-2": {
-        "drawn": 0.26,
-        "painted": 0.11,
-        "ok": false
-       },
-       "flap": {
-        "drawn": 0.265,
-        "painted": 0.325,
-        "ok": true
-       }
-      },
-      "slots": {
-       "body@region-0": {
-        "agreement": 0.732,
-        "median": "#d69e40",
+        "agreement": 0.894,
+        "median": "#ebbc4a",
         "nearest": "#e8b83f",
         "ok": true
        },
        "body@region-1": {
-        "agreement": 0.754,
-        "median": "#d69c3b",
-        "nearest": "#e8b83f",
-        "ok": true
-       },
-       "body@head": {
-        "agreement": 0.396,
-        "median": "#eec988",
-        "nearest": "#fff0b8",
-        "ok": true
-       },
-       "body@antenna": {
-        "agreement": 0.012,
-        "median": "#fde79e",
+        "agreement": 0.23,
+        "median": "#eed39a",
         "nearest": "#fff0b8",
         "ok": false
        },
+       "body@head": {
+        "agreement": 0.679,
+        "median": "#e5b645",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@antenna": {
+        "agreement": 0.535,
+        "median": "#d5ae65",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
        "second@leg-0": {
-        "agreement": 0.205,
-        "median": "#d4c277",
+        "agreement": 0.253,
+        "median": "#d5b576",
         "nearest": "#fff0b8",
         "ok": true
        },
        "second@leg-1": {
-        "agreement": 0.25,
-        "median": "#bea574",
+        "agreement": 0.591,
+        "median": "#ecd297",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@leg-2": {
+        "agreement": 0.641,
+        "median": "#e6d3a8",
         "nearest": "#fff0b8",
         "ok": true
        },
        "second@flap": {
-        "agreement": 0.0,
-        "median": "#70815e",
-        "nearest": "#f1eddc",
+        "agreement": 0.752,
+        "median": "#eadbad",
+        "nearest": "#fff0b8",
         "ok": true
        }
       },
       "reasons": [
        "paint lies well outside the drawn body (17% of the body beyond a 19 px band): a part was added, moved or re-laid",
-       "a part is missing or moved from where the part map puts it: region-2 (painted along 16% of its length), antenna (painted along 52% of its length), leg-0 (painted along 52% of its length), leg-1 (painted along 39% of its length), leg-2 (painted along 0% of its length), flap (painted along 46% of its length)",
-       "the proportions are off: the region-0 is larger than drawn (0.60 of the body against 0.31), the region-1 is larger than drawn (0.45 of the body against 0.21), the head is larger than drawn (0.55 of the body against 0.27), the leg-0 is larger than drawn (0.88 of the body against 0.61), the leg-1 is larger than drawn (0.41 of the body against 0.23), the leg-2 is smaller than drawn (0.11 of the body against 0.26)",
-       "a pigment slot is painted in another slot's colour: the body slot on the antenna (painted #fde79e, the colour of second)"
+       "a part is missing or moved from where the part map puts it: leg-0 (painted along 53% of its length)",
+       "a pigment slot is painted in another slot's colour: the body slot on the region-1 (painted #eed39a, the colour of second)"
       ],
-      "outside": 0.175,
-      "missing": 0.045,
+      "outside": 0.165,
+      "missing": 0.031,
       "bandTolerancePx": 19,
-      "slotAgreement": 0.56,
+      "slotAgreement": 0.664,
       "passed": false,
       "proportionTolerance": 0.25
      },
-     "responseId": "qZzHas-9HdfBsOIPgIDAsQk"
+     "responseId": "HJ3HasisNZSZ_uMP457VsAk"
+    },
+    {
+     "callId": "b1ba95c8-39a5-491f-b461-638e803dec63",
+     "step": 1,
+     "status": "ok",
+     "costUSD": 0.17267,
+     "seconds": 18.9,
+     "checks": {
+      "silhouetteIoU": 0.532,
+      "silhouetteIoUInPlace": 0.594,
+      "parts": {
+       "region-0": {
+        "span": 0.946,
+        "coverage": 0.923
+       },
+       "region-1": {
+        "span": 0.882,
+        "coverage": 0.822
+       },
+       "region-2": {
+        "span": 1.0,
+        "coverage": 0.955
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.979
+       },
+       "eye": {
+        "span": 1.0,
+        "coverage": 0.967
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 0.624
+       },
+       "leg-0": {
+        "span": 0.556,
+        "coverage": 0.593
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.693
+       },
+       "leg-2": {
+        "span": 0.952,
+        "coverage": 0.299
+       },
+       "flap": {
+        "span": 1.0,
+        "coverage": 0.566
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.306,
+        "painted": 0.348,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.212,
+        "painted": 0.237,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.273,
+        "painted": 0.352,
+        "ok": true
+       },
+       "antenna": {
+        "drawn": 0.377,
+        "painted": 0.417,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.615,
+        "painted": 0.6,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.227,
+        "painted": 0.306,
+        "ok": true
+       },
+       "leg-2": {
+        "drawn": 0.26,
+        "painted": 0.287,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.265,
+        "painted": 0.338,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.744,
+        "median": "#deb34d",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 0.362,
+        "median": "#edd088",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.932,
+        "median": "#e7b43f",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@antenna": {
+        "agreement": 0.526,
+        "median": "#ebc570",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.289,
+        "median": "#decebb",
+        "nearest": "#f1eddc",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.363,
+        "median": "#ddcca7",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@leg-2": {
+        "agreement": 0.137,
+        "median": "#ddcdbd",
+        "nearest": "#f1eddc",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.752,
+        "median": "#f4d991",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "paint lies well outside the drawn body (20% of the body beyond a 19 px band): a part was added, moved or re-laid",
+       "a part is missing or moved from where the part map puts it: leg-0 (painted along 56% of its length)"
+      ],
+      "outside": 0.199,
+      "missing": 0.003,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.68,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "VJ3HaqrQBfyV_uMPmuqb0Qg"
     }
    ],
    "steps": []
@@ -333,7 +348,7 @@
   "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
   "name": "rich-plain-300x310.png"
  },
- "startedAt": "2026-10-08T13:36:49Z",
+ "startedAt": "2026-10-08T13:39:39Z",
  "outputs": {
   "station-portrait-600x620.png": "0ef33ac4e7416cfaaa99b041a85129f14008961702f1afdaccb46cc8a6acd468",
   "station-portrait-300x310.png": "1998e4ae47f9c1c14dc7ad9cd3ef08f64cdb0f67368a09e4f86210d57da70d5f",
@@ -341,7 +356,7 @@
   "token-48.png": "03f8226f7469931e9cc50148df5a52c6d11b296361f9ce9672e31c07ef3ba471"
  },
  "calls": 2,
- "costUSD": 0.36913,
- "seconds": 43.2,
- "finishedAt": "2026-10-08T13:38:36Z"
+ "costUSD": 0.35323,
+ "seconds": 40.1,
+ "finishedAt": "2026-10-08T13:41:27Z"
 }

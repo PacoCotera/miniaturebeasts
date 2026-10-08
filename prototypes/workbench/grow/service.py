@@ -54,6 +54,7 @@ PART_MIN = 0.60                                       # a gated part must hold p
 BAND_TOL, BAND_MAX = 0.04, 0.10                       # the tolerance band round the drawn body (share of its size) and how much of the body may lie outside it or be left inside it
 PROPORTION_AREA_MIN, PROPORTION_TOL = 0.05, 0.15      # the parts whose proportions are gated (share of the body) and the tolerance on their extent
 DRAWING_TOL = 0.25                                    # variant B's step 1 is a drawing, not a repaint: a wider proportion tolerance
+DRAWING_BAND_MAX, DRAWING_PART_MIN = 0.18, 0.50       # and a drawing's band and part tolerances, tuned on the v8 type specimens under the prompt's framing: a good drawing lands at 3–5 % outside the band (the Loika, the Belatz) or 16 % when the notes ask for feathered antennae over the rig's sticks (the Peplos); a re-laid wing pair lands at 18–21 % with a leg pair at 0 % span
 SLOT_MARGIN = (1.5, 8)                                # a slot fails when its paint is clearly nearer another slot's pigment: own distance > 1.5 × nearest + 8 (Lab)
 PART_AREA_MIN, SLOT_AREA_MIN, CELL_AREA_MIN = 0.02, 0.01, 0.05             # parts, slots and part-by-slot cells smaller than this share of the body are not gated (eyes, feelers, feet)
 LOG_LOCK = threading.Lock()
@@ -203,7 +204,7 @@ def ImageChops_subtract(a, b):
     return ImageChops.subtract(a.convert("L"), b.convert("L")).point(lambda v: 255 if v > 127 else 0).convert("1")
 
 
-def check(painted_large, ctrl, legend, proportion_tol=PROPORTION_TOL):
+def check(painted_large, ctrl, legend, proportion_tol=PROPORTION_TOL, band_max=BAND_MAX, part_min=PART_MIN):
     """The checks of a painting at 600×620 against its controls {silhouette, index, slots} (paths): the
     structure (every part present where the part map puts it; the paint within a tolerance band of the
     drawn body), the proportions (each part's painted extent against the drawn extent, relative to the
@@ -220,8 +221,9 @@ def check(painted_large, ctrl, legend, proportion_tol=PROPORTION_TOL):
     outside = count(ImageChops_subtract(fm, dilate(sil, tol))) / body
     missing = count(ImageChops_subtract(erode(sil, tol), fm)) / body
     res["outside"] = round(outside, 3); res["missing"] = round(missing, 3); res["bandTolerancePx"] = tol
-    if outside > BAND_MAX: res["reasons"].append(f"paint lies well outside the drawn body ({outside:.0%} of the body beyond a {tol} px band): a part was added, moved or re-laid")
-    if missing > BAND_MAX: res["reasons"].append(f"part of the drawn body is left unpainted ({missing:.0%} of the body inside a {tol} px band): a part was dropped or moved")
+    res["tolerances"] = {"bandMax": band_max, "partMin": part_min, "proportion": proportion_tol}
+    if outside > band_max: res["reasons"].append(f"paint lies well outside the drawn body ({outside:.0%} of the body beyond a {tol} px band): a part was added, moved or re-laid")
+    if missing > band_max: res["reasons"].append(f"part of the drawn body is left unpainted ({missing:.0%} of the body inside a {tol} px band): a part was dropped or moved")
     # the part check: each part of the index pass must have paint where the map puts it: along the drawn
     # part's longer axis, the share of positions where the tolerance band round the part holds paint (its
     # span), so a part painted thinner or rounder passes and a part dropped, moved or re-laid fails; the
@@ -245,7 +247,7 @@ def check(painted_large, ctrl, legend, proportion_tol=PROPORTION_TOL):
                 if strip.getbbox(): have += 1
             span = round(have / n, 3) if n else 1.0
         res["parts"][name] = {"span": span, "coverage": cov}
-        if span < PART_MIN: low.append(f"{name} (painted along {span:.0%} of its length)")
+        if span < part_min: low.append(f"{name} (painted along {span:.0%} of its length)")
     if low: res["reasons"].append("a part is missing or moved from where the part map puts it: " + ", ".join(low))
     # the proportion check: each large part's painted extent (the paint within the tolerance band round the
     # drawn part) over the painted body's extent, against the drawn part's over the drawn body's, within
@@ -551,7 +553,7 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
         text = "\n\n".join(x for x in [fields["artDirection1"], species_words, description] if x)
         if reasons: text += "\n\nA previous drawing was rejected because " + "; ".join(reasons) + ". This time keep every part as Image 1 places it, part for part, at its size and place." + (" " + " ".join(plan_lines(legend)) if plan_lines(legend) else "")
         rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step1", "step": 1, "attempt": attempt, "fields": fields, "reasonsGiven": reasons}, os.path.join(d, "raw"), f"{view}-step1-{attempt}.png")
-        if im is not None: rec["checks"] = {**check(im, ctrl, legend, DRAWING_TOL), "proportionTolerance": DRAWING_TOL}
+        if im is not None: rec["checks"] = {**check(im, ctrl, legend, DRAWING_TOL, DRAWING_BAND_MAX, DRAWING_PART_MIN), "proportionTolerance": DRAWING_TOL}
         log_call(rec)
         man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
         vrec["attempts"].append({"callId": rec["id"], "step": 1, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
@@ -839,7 +841,7 @@ def cmd_recheck(a):
                     if at.get("step") == 1 and at["status"] == "ok":
                         raw = os.path.join(d, "raw", f"{view}-step1-{at.get('attempt', 1)}.png")
                         if not os.path.exists(raw): continue
-                        im = raw_image(raw); at.setdefault("checksAsRun", at.get("checks")); at["checks"] = {**check(im, ctrl, legend, DRAWING_TOL), "proportionTolerance": DRAWING_TOL}
+                        im = raw_image(raw); at.setdefault("checksAsRun", at.get("checks")); at["checks"] = {**check(im, ctrl, legend, DRAWING_TOL, DRAWING_BAND_MAX, DRAWING_PART_MIN), "proportionTolerance": DRAWING_TOL}
                         if at["checks"]["passed"] and step1_ok is None: step1_ok = (at, im)
                 step2 = next((at for at in vrec["attempts"] if at.get("step") == 2 and at["status"] == "ok"), None)
                 if step1_ok and step2 and os.path.exists(os.path.join(d, "raw", f"{view}-step2.png")):
