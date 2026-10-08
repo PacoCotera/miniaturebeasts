@@ -29,8 +29,14 @@ def comp_bboxes(alpha, thr=128, minarea=20000):
     return out
 
 # ---- bench stage 1024x522 at (0,40)
+def bench_grade(im):
+    """Darken to the candidate's values: a tone curve that tames the cone, and a vignette that darkens the corners (centred on the pod's axis)."""
+    a = np.asarray(im).astype(float) / 255; a = 0.82 * a ** 1.55
+    yy, xx = np.mgrid[0:522, 0:1024]; r = np.sqrt(((xx - 632) / 620.0) ** 2 + ((yy - 250) / 420.0) ** 2)
+    v = np.clip(1 - 0.62 * np.clip(r - 0.25, 0, 1.2) ** 1.4, 0.18, 1)
+    return Image.fromarray(np.clip(a * v[..., None] * 255, 0, 255).astype(np.uint8))
 def bench():
-    save("room-bench-stage", bench_grade(bench_window("bench-e2.jpg", 1374, 1244, 0.31)), [0, 40, 1024, 522], "the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (712, 424)", "bench-e2")
+    save("room-bench-stage", bench_grade(bench_window("bench-e2.jpg", 1374, 1244, 0.31, target=(632, 384))), [0, 40, 1024, 522], "the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (632, 424)", "bench-e2")
 def opaque_cut(path, thr=9, soft=14, closing=10):
     """Cut an object off its flat ground as an opaque silhouette (holes closed), keeping its own colours."""
     im = load(path); bg = border_median(im); a = np.asarray(im).astype(float); diff = np.abs(a - bg).max(2)
@@ -47,7 +53,7 @@ def cradle():
     k = opaque_cut("dish-lowa.jpg"); bb = bbox_alpha(k, 120); d = k.crop(bb)
     f = min(224 / d.width, 96 / d.height); d = d.resize((round(d.width * f), round(d.height * f)), Image.LANCZOS)
     c = Image.new("RGBA", (224, 96), (0, 0, 0, 0)); c.alpha_composite(d, ((224 - d.width) // 2, 96 - d.height))
-    save("room-cradle", c, [600, 328, 224, 96], "the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is %d px wide), bottom on the last row" % d.width, "dish-lowa")
+    save("room-cradle", c, [520, 328, 224, 96], "the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is %d px wide), bottom on the last row" % d.width, "dish-lowa")
     x = np.asarray(c).astype(float).copy(); H, W = 96, 224
     # the near rim's own contour, read off the bowl's lit rim edge: both near side walls from their top edge (row ~19), the dip's U
     pts = [(11, 19), (25, 24), (40, 27), (52, 30), (58, 34), (63, 41), (70, 52), (80, 62), (95, 69), (112, 72), (130, 69), (142, 62), (150, 52), (155, 41), (160, 34), (166, 30), (178, 27), (195, 23), (210, 19), (224, 19)]
@@ -64,13 +70,13 @@ def cradle():
     inside = np.clip(yc[None, :] - 0.0 - (rows - 0), 0, 1)                # above the contour: the dip's interior
     mask = np.maximum(below, tuft * (rows < yc[None, :] + 0.5))
     x[..., 3] = x[..., 3] * np.clip(mask, 0, 1); x = x.astype(np.uint8)
-    save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 328, 224, 96], "the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip", "dish-lowa")
-    SH = (592, 368, 240, 72)
+    save("room-cradle-front", Image.fromarray(x, "RGBA"), [520, 328, 224, 96], "the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip", "dish-lowa")
+    SH = (488, 368, 288, 72)
     im = load("slab4b.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); k = k.crop(bbox_alpha(k, 60))
     f = min(SH[2] / k.width, SH[3] / k.height); k = k.resize((round(k.width * f), round(k.height * f)), Image.LANCZOS); k = dim(k, 0.9)
     c = Image.new("RGBA", SH[2:], (0, 0, 0, 0)); c.alpha_composite(k, ((SH[2] - k.width) // 2, SH[3] - k.height))
     # the bowl's contact shadow on the top face: a soft dark ellipse under the bowl's footprint (the bowl is 201 wide, centred on x 712, its front lip at y 424)
-    yy, xx = np.mgrid[0:SH[3], 0:SH[2]].astype(float); cx = 712 - SH[0]; cy = 424 - SH[1] - 14
+    yy, xx = np.mgrid[0:SH[3], 0:SH[2]].astype(float); cx = 632 - SH[0]; cy = 424 - SH[1] - 14
     e = np.clip(1 - (((xx - cx) / 112.0) ** 2 + ((yy - cy) / 16.0) ** 2), 0, 1) ** 1.3 * 0.55
     a = np.asarray(c).astype(float); a[..., :3] = a[..., :3] * (1 - e[..., None]) + np.array([4, 10, 14.0]) * e[..., None]; a[..., 3] = np.maximum(a[..., 3], e * 255 * (a[..., 3] > 0))
     save("room-shelf", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGBA"), list(SH), "the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly", "slab4b")
@@ -78,14 +84,17 @@ def cradle():
 def listcol():
     im = load("list-column.jpg"); im = im.crop((1536 - 735, 0, 1536, 2400)).resize((160, 522), Image.LANCZOS)
     save("ring-column", im, [0, 40, 160, 522], "cut: right part of list-column, bottom leak cropped", "list-column")
+    im2 = load("list-column.jpg"); im2 = im2.crop((1536 - 515, 0, 1536, 2400)).resize((112, 522), Image.LANCZOS)
+    save("ring-column-112x522", im2, [0, 40, 112, 522], "the list column at the concept's 112 px: the right part of list-column (its lit hairline on the right edge), bottom leak cropped", "list-column")
     im = load("well-rings2.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.06)
-    for nm, box in (("ring-well-empty", (0, 0, 1024, 2048)), ("ring-well-current", (1024, 0, 2048, 2048))):
+    for nm, box in (("ring-well-empty", (0, 0, 1024, 2048)),):
         sk = k.crop(box); bb = bbox_alpha(sk, 90); cx, cy = (bb[0] + bb[2]) // 2, (bb[1] + bb[3]) // 2; side = int(max(bb[2] - bb[0], bb[3] - bb[1]) * (1.0 if "empty" in nm else 1.12))
         c = sk.crop((cx - side // 2, cy - side // 2, cx + side // 2, cy + side // 2)).resize((64, 64), Image.LANCZOS)
         save(nm, c, [40, 52, 64, 64], "colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow)", "well-rings2")
     im = load("hatch-leaf.jpg"); bg = border_median(im); h = color_to_alpha(im, bg, 0.05); bb = bbox_alpha(h, 60)
     pad = 10; lf = h.crop((bb[0] - pad, bb[1] - pad, bb[2] + pad, bb[3] + pad)); sc = 28 / lf.height; lf = lf.resize((max(1, round(lf.width * sc)), 28), Image.LANCZOS)
     cv = Image.new("RGBA", (112, 56), (0, 0, 0, 0)); cv.alpha_composite(lf, ((112 - lf.width) // 2, 14)); save("ring-hatch", cv, [24, 488, 112, 56], "a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box", "hatch-leaf")
+    cv = Image.new("RGBA", (80, 56), (0, 0, 0, 0)); cv.alpha_composite(lf, ((80 - lf.width) // 2, 14)); save("ring-hatch-80x56", cv, [24, 488, 80, 56], "the hatch at the 112 px column's width: the same etched leaf centred in 80x56", "hatch-leaf")
 # ---- rail tab plates
 def tabs():
     """Tabs hang from the top bar: parallelograms leaning 16 px right over 40 px, a full tab 136 wide (slice 152x40) and a
@@ -114,16 +123,16 @@ def pages():
     im = load("page-pane.jpg"); W, H = im.size
     a = np.asarray(im.convert("L")).astype(float)
     pane = im.crop((70, 62, 2331, 1733)); s = 480 / pane.width
-    for nm, w in (("page-pane-408x440", 408),):
+    for nm, w, px in (("page-pane-408x440", 408, 176), ("page-pane-256x440", 256, 152)):
         p = nine(pane.convert("RGBA"), w, 440, 70, 70, 70, 70, ls=s); arr = np.asarray(p).astype(float).copy()
         yy, xx = np.mgrid[0:440, 0:w]; dist = np.minimum(np.minimum(xx, w - 1 - xx), np.minimum(yy, 439 - yy)).astype(float)
         k = np.clip((dist - 2.0) / 4.0, 0, 1)                      # 0 on the lit hairline edge, 1 inside
         arr[..., :3] = arr[..., :3] * (1 - k[..., None]) + (arr[..., :3] * 0.30 + np.array([4.0, 10.0, 14.0]) * 0.8) * k[..., None]
-        save(nm, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [176, 112, w, 440], "9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge", "page-pane")
+        save(nm, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [px, 112, w, 440], "9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge", "page-pane")
 # ---- picture frames
 def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
-    sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96)]
+    sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96), (224, 352), (224, 160), (104, 160), (104, 96), (104, 64)]
     s = 1536 / k.width * 0 + 0.19
     fr = dim(load("frost-dark.jpg").convert("RGBA"), 0.7).convert("RGB"); sl = dim(load("slats-frost.jpg").convert("RGBA"), 0.5, 8).convert("RGB")
     frost = fr.resize((int(fr.width * 0.25), int(fr.height * 0.25)), Image.LANCZOS)
@@ -177,12 +186,12 @@ def plates():
     pln = dim(pl, 0.6)
     tv = round(8 / s)
     for w in range(80, 225, 16):
-        save(f"plate-name-{w}x24", round_alpha(nine(pln, w, 24, 60, tv, 60, tv, ls=s), 4), [712 - w // 2, 456, w, 24], "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712", "plate-thin2")
+        save(f"plate-name-{w}x24", round_alpha(nine(pln, w, 24, 60, tv, 60, tv, ls=s), 4), [632 - w // 2, 456, w, 24], "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712", "plate-thin2")
     plo = dim(pl, 0.55)
     for h in (36, 56, 76):
         save(f"plate-message-640x{h}", round_alpha(nine(plo, 640, h, 60, 60, 60, 60, ls=s), 6), [192, 550 - h, 640, h], "thin frosted label: 9-slice, rounded", "plate-thin2")
     lb = load("label-plate.jpg"); m = (np.asarray(lb).astype(int).min(2) < 240); ys, xs = np.where(m); bb = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)
-    save("stamp-label-120x120", lb.crop(bb).resize((120, 120), Image.LANCZOS), [888, 248, 120, 120], "cut, 120x120", "label-plate")
+    save("stamp-label-120x120", lb.crop(bb).resize((120, 120), Image.LANCZOS), [872, 248, 120, 120], "cut, 120x120", "label-plate")
 def wellrings():
     """The list's rings as masters from the concept: the selected well's thick warm ivory band with its soft glow, the idle well's thin dark-glass
     double ring, the progress arcs (a track and one segment per chapter, 4 to 8 chapters) and the glint star. 80x80, centred on the well's centre."""
@@ -190,7 +199,7 @@ def wellrings():
         im = load(path); bg = border_median(im); k = color_to_alpha(im, bg, 0.04); a = np.asarray(k)[..., 3]
         ys, xs = np.where(a > thr); cx, cy = (xs.min() + xs.max()) / 2, (ys.min() + ys.max()) / 2; dia = max(xs.max() - xs.min(), ys.max() - ys.min()) + 1
         f = d_out / dia; side = 80 / f; box = (round(cx - side / 2), round(cy - side / 2), round(cx + side / 2), round(cy + side / 2))
-        out = k.crop(box).resize((80, 80), Image.LANCZOS); save(name, out, [None, None, 80, 80], made, path.replace(".jpg", ""))
+        out = k.crop(box).resize((80, 80), Image.LANCZOS); save(name, out, [24, 44, 80, 80], made, path.replace(".jpg", ""))
     ring("ring-selected.jpg", 66, 170, "ring-well-selected-80x80", "the selected well's thick warm ivory band (7 px, bone to sand, lit top left) with its soft glow about 4 px outward; colour-to-alpha, scaled so the band's outer diameter is 66, centred in 80x80")
     ring("ring-idle.jpg", 66, 120, "ring-well-idle-80x80", "the idle well's thin dark-glass double ring, outer diameter 66, hairlines about 5 px apart; colour-to-alpha, centred in 80x80")
     S = 8; R_ARC = 24.0
@@ -201,7 +210,7 @@ def wellrings():
     def over(top, bot):
         a1 = bot[..., 3:4] / 255; a2 = top[..., 3:4] / 255; ao = a2 + a1 * (1 - a2)
         col = np.where(ao > 0, (top[..., :3] * a2 + bot[..., :3] * a1 * (1 - a2)) / np.maximum(ao, 1e-6), 0); return np.concatenate([col, ao * 255], 2)
-    def out(arr, name, made): save(name, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [None, None, 80, 80], made, "procedural, supersampled 8x")
+    def out(arr, name, made): save(name, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [24, 44, 80, 80], made, "procedural, supersampled 8x")
     for st, line_col, line_alpha, groove_alpha in (("selected", np.array([255.0, 240.0, 206.0]), 1.0, 0.62), ("idle", np.array([190.0, 150.0, 108.0]), 0.55, 0.42)):
         groove = rgba(cover((rr >= R_ARC - 1.6) & (rr <= R_ARC + 1.6)), np.array([6.0, 12.0, 18.0]), groove_alpha)
         lip = rgba(cover((rr > R_ARC + 1.6) & (rr <= R_ARC + 2.3) & (xx + yy > 0)), np.array([110.0, 140.0, 156.0]), 0.28)
@@ -242,6 +251,24 @@ def stampcase():
     out[7:321, 0, :3] = (96, 126, 138); out[7:321, 0, 3] = 120; out[7:321, 1, 3] = np.maximum(out[7:321, 1, 3], 50)
     save("room-stamp-case", Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA"), [848, 144, 176, 328], "the dim unlit glass case: translucent (the wall's seams show through), a faint diagonal sheen, dim brushed-metal rails, open at the right", "case2")
 
+def stampcase152():
+    """The stamp's case at its new size (856,232,152,152), closed on all four sides: translucent unlit glass over the wall, a faint diagonal sheen,
+    dim brushed-metal rails top and bottom, a faint hairline on the left and the right."""
+    W_, H_ = 152, 152; im = load("case2.jpg"); W, H = im.size; y0, y1 = int(H * 0.075), int(H * 0.925); x0 = int(W * 0.108)
+    src = np.asarray(im.crop((x0, y0, x0 + (y1 - y0), y1)).resize((W_, H_), Image.LANCZOS)).astype(float)
+    yy, xx = np.mgrid[0:H_, 0:W_].astype(float)
+    lumv = src @ np.array([0.3, 0.59, 0.11]); var = (lumv - np.median(lumv)) / 40.0
+    sheen = np.exp(-(((xx * 0.9 + yy * 0.9) - 120) / 30.0) ** 2) * 0.10 + np.exp(-(((xx * 0.9 + yy * 0.9) - 205) / 12.0) ** 2) * 0.05
+    alpha = np.clip(0.27 + sheen + 0.02 * var, 0.18, 0.45); col = np.array([88.0, 124.0, 138.0]) + sheen[..., None] * 140
+    out = np.dstack([np.broadcast_to(col, (H_, W_, 3)).copy(), alpha * 255]); rng = np.random.RandomState(3)
+    for r0, r1 in ((0, 6), (H_ - 6, H_)):
+        n = smooth1d(rng.uniform(-6, 6, (r1 - r0, W_)), 6, 1); base = np.array([58.0, 70.0, 78.0])
+        for y in range(r1 - r0):
+            k = (y / max(1, r1 - r0 - 1)) if r0 == 0 else 1 - y / max(1, r1 - r0 - 1); out[r0 + y, :, :3] = base * (0.75 + 0.45 * (1 - k)) + n[y][:, None]; out[r0 + y, :, 3] = 235
+    out[1, :, :3] += 16
+    out[6:H_ - 6, 0, :3] = (96, 126, 138); out[6:H_ - 6, 0, 3] = 120; out[6:H_ - 6, 1, 3] = np.maximum(out[6:H_ - 6, 1, 3], 50)
+    out[6:H_ - 6, W_ - 1, :3] = (60, 84, 96); out[6:H_ - 6, W_ - 1, 3] = 110
+    save("room-stamp-case-152x152", Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA"), [856, 232, 152, 152], "the dim unlit glass case at its new size: translucent, a faint diagonal sheen, dim brushed-metal rails, closed on all four sides", "case2")
 def bars():
     im = load("bar-top.jpg"); k = key_magenta(im); bb = bbox_alpha(k, 250); b = im.crop(bb).convert("RGBA")
     b = dim(b, 0.62)
@@ -350,7 +377,7 @@ def pods():
         def put(arr, extra=None):
             im = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA").resize((pw, ph), Image.LANCZOS)
             c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(im, (ox, oy)); return c
-        r = {"large": [640, 216, 144, 176], "medium": [652, 240, 120, 152], "small": [660, 264, 104, 128]}.get(cls, [None, None, w, h])
+        r = {"large": [560, 216, 144, 176], "medium": [572, 240, 120, 152], "small": [580, 264, 104, 128], "well": [48, 60, 32, 48]}.get(cls, [None, None, w, h])
         for nm, arr in masks.items(): save(f"pod-{cls}-{nm}", put(arr), r, "systematic pod layer: " + nm + ", uniform scale, foot on the last row, centred", "pod-identified")
         if cls == "well":
             # legible at 32x40: darken and thicken the band before the downscale, and rebuild the sealed sprite from it
@@ -360,7 +387,7 @@ def pods():
         sw, sh_ = w + 16, 14; yy, xx = np.mgrid[0:sh_, 0:sw].astype(float)
         a = np.clip(1 - (((xx - sw / 2) / (sw / 2)) ** 2 + ((yy - sh_ / 2) / (sh_ / 2)) ** 2), 0, 1) ** 1.2 * 0.6
         sdw = np.dstack([np.full((sh_, sw), 6.0), np.full((sh_, sw), 12.0), np.full((sh_, sw), 18.0), a * 255]).astype(np.uint8)
-        save(f"pod-{cls}-shadow", Image.fromarray(sdw, "RGBA"), [712 - sw // 2, 385, sw, sh_], "contact shadow: centred on x 712 with its middle on the foot line y 392", "procedural ramp")
+        save(f"pod-{cls}-shadow", Image.fromarray(sdw, "RGBA"), [632 - sw // 2, 385, sw, sh_], "contact shadow: centred on x 632 with its middle on the foot line y 392", "procedural ramp")
 
 def well_pinholes():
     """Fill the enclosed pixels of the well pod's accent mask (between the cap and the rib); hold the body mask with it."""
@@ -374,7 +401,7 @@ def well_pinholes():
     save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 32, 48], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
     save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 32, 48], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars", "stampcase", "wellrings", "well_pinholes"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars", "stampcase", "stampcase152", "wellrings", "pods", "well_pinholes"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)

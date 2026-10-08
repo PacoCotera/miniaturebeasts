@@ -82,7 +82,7 @@
     24,
     24
    ],
-   "sha256": "61dd7af2cdbae2672d6fdcffde57165a55d1de0e543ac973897e874a538d8aa4"
+   "sha256": "2aeac7180f2c8c8fd698b7ee5a0c99db6a26d7fa0465dc5c1fbb118f34d870e5"
   },
   "rail-emblem-shape-read-24x24": {
    "rect": [
@@ -91,7 +91,7 @@
     24,
     24
    ],
-   "sha256": "569a95ac8c0829cf6c8feb5871982ad062ab79a3ad41debcdb3c066e9137b217"
+   "sha256": "231e9fe1f509cc30cce2e1b75a834083fac54f9d9801eb8766d4b8ae72e6365f"
   },
   "rail-emblem-shape-sealed-24x24": {
    "rect": [
@@ -100,7 +100,7 @@
     24,
     24
    ],
-   "sha256": "f297be5f2e1380f0af8dfdc369a54d0f81f40cc6444d7e8ce36dc90ca5a2e6af"
+   "sha256": "35e1e8741aa0e5fd16de5109241294abc4d8b6cbf8b2a6ee58849b3d69fc9302"
   },
   "rail-emblem-legs-tail-unread-24x24": {
    "rect": [
@@ -109,7 +109,7 @@
     24,
     24
    ],
-   "sha256": "c0b916bad68731f02a8ad4c9ba7818b53a3c08619f51dfdc588d2b257aaf9f58"
+   "sha256": "d0315481ee84bdf3370b7ce678cda0d7807b08e3c177df3c35ca2bafafaa7a52"
   },
   "rail-emblem-legs-tail-read-24x24": {
    "rect": [
@@ -118,7 +118,7 @@
     24,
     24
    ],
-   "sha256": "bf072027da4ca08bb4dbb937175d06ad63f8aefe5b2aec673d8c1dd66fa4bc12"
+   "sha256": "59fb1928d3d41cfcfe2a72f2a2833db36cfd5eaa98c7ab829a92077c08e26feb"
   },
   "rail-emblem-legs-tail-sealed-24x24": {
    "rect": [
@@ -127,7 +127,7 @@
     24,
     24
    ],
-   "sha256": "fd9d87c839541ac8fe460b36975cb933c0db2702bdd09e0eb1b6ee9a7bee3ae0"
+   "sha256": "8388d7e17a3593b43c990b3ce85c527ef90fe2ae944c30206f1a28e5963bf476"
   },
   "rail-emblem-movement-unread-24x24": {
    "rect": [
@@ -136,7 +136,7 @@
     24,
     24
    ],
-   "sha256": "20b64332ba448145dcf2f27cf9b7563c49a01e8eebfdae74130bf091a8106828"
+   "sha256": "b958b040cddd9cdefd775ddf84cf2449a8271e55a77b660641950b1d714c3242"
   },
   "rail-emblem-movement-read-24x24": {
    "rect": [
@@ -145,7 +145,7 @@
     24,
     24
    ],
-   "sha256": "c3c130b3a17f2edd730db564ab2702dc7843641a6cec7920db291f0b955f2e2a"
+   "sha256": "aad8088107741a8c87802d52f9ed0da06a8e0495bba549d97747670536d36e02"
   },
   "rail-emblem-movement-sealed-24x24": {
    "rect": [
@@ -154,7 +154,7 @@
     24,
     24
    ],
-   "sha256": "69ff8773906b6936bf5aeff6431ff5fe4558a11bafd4492231e3c333a3f011b8"
+   "sha256": "3c2333c4caaa6bb3d2a58c005344fe8a33f78c27c14358f30c70270d60e1b600"
   },
   "rail-emblem-stamina-unread-24x24": {
    "rect": [
@@ -244,7 +244,7 @@
     24,
     24
    ],
-   "sha256": "8fc041e01d2a00fe05d92124a53404795feb3144507868a9990d77971ae9250e"
+   "sha256": "fc814be8c7c19d4722659da2a3e1f857537176e42ca1f4350b18e96942e34f0d"
   },
   "rail-emblem-charge-read-24x24": {
    "rect": [
@@ -253,7 +253,7 @@
     24,
     24
    ],
-   "sha256": "a8f5aad519391b5b34cb0d416ee9fdaaccf60da8bb807711b9d38b53ed4aee1a"
+   "sha256": "36db425c2b69a13d2f3b38dfe824c504f81f1269a37862efee594b486fa41fde"
   },
   "rail-emblem-charge-sealed-24x24": {
    "rect": [
@@ -262,7 +262,7 @@
     24,
     24
    ],
-   "sha256": "6439b6d6ed307d70bce45d232ca03f6ab0606fa99acf16c68963d6fa5a613e43"
+   "sha256": "9567167a5d77d1e6663abed3cfcd38b4fb8b7a6be5b43d044f0e5def35a663fd"
   }
  },
  "manifest": {
@@ -346,7 +346,7 @@
    "rect": null,
    "src": "emblems/source/shape.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "61dd7af2cdbae2672d6fdcffde57165a55d1de0e543ac973897e874a538d8aa4",
+   "sha256": "2aeac7180f2c8c8fd698b7ee5a0c99db6a26d7fa0465dc5c1fbb118f34d870e5",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -358,7 +358,7 @@
    "rect": null,
    "src": "emblems/source/shape.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "569a95ac8c0829cf6c8feb5871982ad062ab79a3ad41debcdb3c066e9137b217",
+   "sha256": "231e9fe1f509cc30cce2e1b75a834083fac54f9d9801eb8766d4b8ae72e6365f",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -370,7 +370,7 @@
    "rect": null,
    "src": "emblems/source/shape.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "f297be5f2e1380f0af8dfdc369a54d0f81f40cc6444d7e8ce36dc90ca5a2e6af",
+   "sha256": "35e1e8741aa0e5fd16de5109241294abc4d8b6cbf8b2a6ee58849b3d69fc9302",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -382,7 +382,7 @@
    "rect": null,
    "src": "emblems/source/legs-tail.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "c0b916bad68731f02a8ad4c9ba7818b53a3c08619f51dfdc588d2b257aaf9f58",
+   "sha256": "d0315481ee84bdf3370b7ce678cda0d7807b08e3c177df3c35ca2bafafaa7a52",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -394,7 +394,7 @@
    "rect": null,
    "src": "emblems/source/legs-tail.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "bf072027da4ca08bb4dbb937175d06ad63f8aefe5b2aec673d8c1dd66fa4bc12",
+   "sha256": "59fb1928d3d41cfcfe2a72f2a2833db36cfd5eaa98c7ab829a92077c08e26feb",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -406,7 +406,7 @@
    "rect": null,
    "src": "emblems/source/legs-tail.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "fd9d87c839541ac8fe460b36975cb933c0db2702bdd09e0eb1b6ee9a7bee3ae0",
+   "sha256": "8388d7e17a3593b43c990b3ce85c527ef90fe2ae944c30206f1a28e5963bf476",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -418,7 +418,7 @@
    "rect": null,
    "src": "emblems/source/movement.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "20b64332ba448145dcf2f27cf9b7563c49a01e8eebfdae74130bf091a8106828",
+   "sha256": "b958b040cddd9cdefd775ddf84cf2449a8271e55a77b660641950b1d714c3242",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -430,7 +430,7 @@
    "rect": null,
    "src": "emblems/source/movement.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "c3c130b3a17f2edd730db564ab2702dc7843641a6cec7920db291f0b955f2e2a",
+   "sha256": "aad8088107741a8c87802d52f9ed0da06a8e0495bba549d97747670536d36e02",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -442,7 +442,7 @@
    "rect": null,
    "src": "emblems/source/movement.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "69ff8773906b6936bf5aeff6431ff5fe4558a11bafd4492231e3c333a3f011b8",
+   "sha256": "3c2333c4caaa6bb3d2a58c005344fe8a33f78c27c14358f30c70270d60e1b600",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -562,7 +562,7 @@
    "rect": null,
    "src": "emblems/source/charge.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "8fc041e01d2a00fe05d92124a53404795feb3144507868a9990d77971ae9250e",
+   "sha256": "fc814be8c7c19d4722659da2a3e1f857537176e42ca1f4350b18e96942e34f0d",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -574,7 +574,7 @@
    "rect": null,
    "src": "emblems/source/charge.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "a8f5aad519391b5b34cb0d416ee9fdaaccf60da8bb807711b9d38b53ed4aee1a",
+   "sha256": "36db425c2b69a13d2f3b38dfe824c504f81f1269a37862efee594b486fa41fde",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -586,7 +586,7 @@
    "rect": null,
    "src": "emblems/source/charge.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "6439b6d6ed307d70bce45d232ca03f6ab0606fa99acf16c68963d6fa5a613e43",
+   "sha256": "9567167a5d77d1e6663abed3cfcd38b4fb8b7a6be5b43d044f0e5def35a663fd",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   }

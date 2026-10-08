@@ -1,6 +1,6 @@
 # Chapter emblems
 
-> **Round 3 (2026-10-08): the nine emblems written by hand at 24×24, three states each, for the art director's sign-off.** Round 2 was code-traced and not signed (see the correction below); round 1 (two options per chapter, brush-drawn) is kept for the record. The sheets below are named `round2/` for the output folder only.
+> **Round 4 (2026-10-08): Shape, Legs & tail, Movement and Charge redrawn by hand after the round 3 verdict (Coat, Face, Stamina, Character and Glow are signed); nine emblems, three states each.** Round 2 was code-traced and not signed (see the correction below); round 1 (two options per chapter, brush-drawn) is kept for the record. The sheets below are named `round2/` for the output folder only.
 
 **Correction (2026-10-08).** The round 2 README said the emblems were hand-edited pixel by pixel. That was false. Round 2's drawings were traced by a script (`trace.py`) from anchor curves, five pixels were cleared by `edits.py`, and the lit edge was placed by a rule on every left and top boundary pixel: code-drawn, as the art director read in `source_gen.py`. None of round 2 was signed.
 
@@ -40,7 +40,11 @@
 - The three states are one drawing in three colourings: the only differences are the base and the lit colour (sealed has no lit colour).
 - No focus cream, amber or orange; the bone emblem is dimmer than the pod's lit shell.
 
-## Known weaknesses, for the art director
+## Round 4 (2026-10-08)
+
+Shape: a distinct rounded head at the left with its top at row 9, a 1 px dip for the neck, the back's peak at row 7, the rump rounding down to the flat base. Legs & tail: a 3 px wedge of thigh going down from the upper left, a sharp backward angle at the hock, the shin forward to a 4 px foot ending in a 1 px toe, the tail a separate open arc up and back to the right. Movement: pads 6×4 with three 2×2 toes in the base colour in an arc above each, the second print up and to the right. Charge: a spark leaning from the upper right to the lower left in three cuts, a short fork leaving the middle cut to the right, 2 px wide at its root, never crossing the main stroke. All hand-written rows as in round 3.
+
+## Known weaknesses, for the art director (round 3, partly addressed in round 4)
 
 - **Character** still reads close to a fin: the ear leans and the head's arc is shallow at 1×; the cup line was left out so the ear stays one curve.
 - **Shape** reads as a small bell or a sitting cat at 1× more than a resting body; the neck dip is two pixels.

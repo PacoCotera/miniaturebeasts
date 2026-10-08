@@ -1,0 +1,1102 @@
+{
+ "room-bench-stage": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": "re-cut to the layout of design-pods-relayout 29b6dc9 (pool on x 632)"
+ },
+ "room-cradle": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "room-cradle-front": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": ""
+ },
+ "room-shelf": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "re-cut for the new rectangle (shelf 488,368,288,72)"
+ },
+ "ring-column": {
+  "status": "signed",
+  "signed_in": "pass 1",
+  "note": ""
+ },
+ "ring-well-empty": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "until the new ring masters are signed"
+ },
+ "ring-hatch": {
+  "status": "signed",
+  "signed_in": "pass 2",
+  "note": "the 112x56 slice of the earlier layout"
+ },
+ "page-pane-408x440": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 1, withdrawn with the page's re-layout (the Read page is 256 wide); Compare still uses 408"
+ },
+ "trait-picture-frame-376x264": {
+  "status": "signed",
+  "signed_in": "pass 3",
+  "note": ""
+ },
+ "trait-picture-frame-376x264-unread": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "trait-picture-frame-376x264-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": ""
+ },
+ "trait-picture-frame-184x256": {
+  "status": "signed",
+  "signed_in": "pass 3",
+  "note": ""
+ },
+ "trait-picture-frame-184x256-unread": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "trait-picture-frame-184x256-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": ""
+ },
+ "trait-picture-frame-184x104": {
+  "status": "signed",
+  "signed_in": "pass 3",
+  "note": ""
+ },
+ "trait-picture-frame-184x104-unread": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "trait-picture-frame-184x104-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": ""
+ },
+ "trait-picture-frame-120x96": {
+  "status": "signed",
+  "signed_in": "pass 3",
+  "note": ""
+ },
+ "trait-picture-frame-120x96-unread": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "trait-picture-frame-120x96-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": ""
+ },
+ "plate-message-640x36": {
+  "status": "signed",
+  "signed_in": "pass 2",
+  "note": ""
+ },
+ "plate-message-640x56": {
+  "status": "signed",
+  "signed_in": "pass 2",
+  "note": ""
+ },
+ "plate-message-640x76": {
+  "status": "signed",
+  "signed_in": "pass 2",
+  "note": ""
+ },
+ "stamp-label-120x120": {
+  "status": "signed",
+  "signed_in": "pass 1",
+  "note": ""
+ },
+ "frame-top-bar-1024x40": {
+  "status": "signed",
+  "signed_in": "pass 1",
+  "note": "excluded from placing (the frame redesign)"
+ },
+ "frame-bottom-line-1024x38": {
+  "status": "signed",
+  "signed_in": "pass 1",
+  "note": "excluded from placing (the frame redesign)"
+ },
+ "pod-large-identified": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-band": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-identified": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-band": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-identified": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-band": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-well-identified": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-well-sealed": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-well-band": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-large-shade": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-mask-body": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-mask-accent": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-pattern-dots": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-pattern-stripes": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-pattern-bands": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-shadow": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-shade": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-mask-body": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-mask-accent": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-pattern-dots": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-pattern-stripes": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-pattern-bands": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-shadow": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-shade": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-mask-body": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-mask-accent": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-pattern-dots": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-pattern-stripes": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-pattern-bands": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-shadow": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-well-shade": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-well-mask-body": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-well-mask-accent": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-well-pattern-dots": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-well-pattern-stripes": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-well-pattern-bands": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-well-shadow": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "pod-large-crack": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-crack": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-crack": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-well-crack": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "re-cut to the 32x48 class (pass 8); awaiting verdict"
+ },
+ "trait-picture-frame-184x304": {
+  "status": "signed",
+  "signed_in": "pass 3",
+  "note": ""
+ },
+ "trait-picture-frame-184x304-unread": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "trait-picture-frame-184x304-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": ""
+ },
+ "trait-picture-frame-184x112": {
+  "status": "signed",
+  "signed_in": "pass 3",
+  "note": ""
+ },
+ "trait-picture-frame-184x112-unread": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "trait-picture-frame-184x112-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": ""
+ },
+ "trait-picture-frame-120x112": {
+  "status": "signed",
+  "signed_in": "pass 3",
+  "note": ""
+ },
+ "trait-picture-frame-120x112-unread": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "trait-picture-frame-120x112-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": ""
+ },
+ "rail-tab-unread-full-152x40": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "rail-tab-unread-compact-72x40": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "rail-tab-read-full-152x40": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "rail-tab-read-compact-72x40": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "rail-tab-focused-full-152x40": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "rail-tab-focused-compact-72x40": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "rail-tab-sealed-full-152x40": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "rail-tab-sealed-compact-72x40": {
+  "status": "signed",
+  "signed_in": "pass 4",
+  "note": ""
+ },
+ "trait-picture-frame-232x312": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "the portrait frame and its states (the plain frame is not named in the consolidated list; signed with its states in pass 6)"
+ },
+ "trait-picture-frame-232x312-unread": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "the portrait frame and its states"
+ },
+ "trait-picture-frame-232x312-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "the portrait frame and its states"
+ },
+ "plate-name-80x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-96x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-112x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-128x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-144x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-160x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-176x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-192x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-208x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-224x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "room-stamp-case": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old 176x328 size; the case is now 152x152"
+ },
+ "rail-emblem-coat-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-coat-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-coat-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-face-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-face-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-face-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-shape-unread-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-shape-read-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-shape-sealed-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-legs-tail-unread-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-legs-tail-read-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-legs-tail-sealed-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-movement-unread-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-movement-read-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-movement-sealed-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-stamina-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-stamina-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-stamina-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-character-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-character-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-character-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-glow-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-glow-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-glow-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-charge-unread-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-charge-read-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "rail-emblem-charge-sealed-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "redrawn in emblems round 4; awaiting verdict"
+ },
+ "ring-well-selected-80x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-well-idle-80x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n4-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n4-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n4-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n4-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n4-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n5-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n5-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n5-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n5-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n5-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n5-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n6-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n6-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n6-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n6-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n6-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n6-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n6-s5": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n7-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n7-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n7-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n7-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n7-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n7-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n7-s5": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n7-s6": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n8-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n8-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n8-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n8-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n8-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n8-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n8-s5": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n8-s6": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-selected-n8-s7": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n4-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n4-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n4-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n4-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n4-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n5-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n5-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n5-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n5-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n5-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n5-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n6-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n6-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n6-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n6-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n6-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n6-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n6-s5": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n7-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n7-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n7-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n7-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n7-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n7-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n7-s5": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n7-s6": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n8-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n8-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n8-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n8-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n8-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n8-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n8-s5": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n8-s6": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-arc-idle-n8-s7": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "glint-star-12x12": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the well rings from the concept; awaiting verdict"
+ },
+ "ring-column-112x522": {
+  "status": "new",
+  "signed_in": null,
+  "note": "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict"
+ },
+ "ring-hatch-80x56": {
+  "status": "new",
+  "signed_in": null,
+  "note": "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict"
+ },
+ "page-pane-256x440": {
+  "status": "new",
+  "signed_in": null,
+  "note": "re-cut for design-pods-relayout 29b6dc9 (the list column at 112, the Read page at 256); awaiting verdict"
+ },
+ "trait-picture-frame-224x352": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-224x352-unread": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-224x352-sealed": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-224x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-224x160-unread": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-224x160-sealed": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-104x160-unread": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-104x160-sealed": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-104x96-unread": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-104x96-sealed": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-104x64-unread": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "trait-picture-frame-104x64-sealed": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+ },
+ "room-stamp-case-152x152": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the case at its new size (design-pods-relayout 29b6dc9); awaiting verdict"
+ }
+}
