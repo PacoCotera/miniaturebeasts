@@ -80,6 +80,16 @@ def prompt_set():
     if b and g and not any(v["id"] == "1BG-anti-artefact-plain" for v in variants):
         para = lambda t: next(p for p in t.split("\n\n") if p.startswith("Markings:"))
         variants.append({"id": "1BG-anti-artefact-plain", "name": "1B's anti-artefact words with 1G's plain-coat paragraph", "change": "Step 1: 1B's limbs sentence (living anatomy, the artefacts to avoid) and 1G's markings paragraph (the plain coat said positively) together; the owner's pick from the Loika sheet.", "imageOrder1": b["imageOrder1"], "step1": b["step1"].replace(para(b["step1"]), para(g["step1"]))})
+    # v7's second condition, synthesised: v7's words with a species reference re-made under v7 itself (the type
+    # specimen's own v7 no-reference painting) as the last image of each step, on the species' second individual,
+    # so the reference mechanism is tested with a reference in the house rendering rather than the old packs.
+    base = next((v for v in variants if "step1" in v and "step2" in v), None)
+    if base and base["id"] == "v7" and not any(v.get("subject") for v in variants):
+        variants.insert(1, {"id": "v7R-reference-remade", "name": "condition 2: v7 with the reference re-made under v7, on the second individual", "subject": "member-1", "referenceFrom": base["id"],
+                            "change": "Condition 2: v7 as written, plus the species reference as Image 3 in both steps, the reference being the type specimen's own v7 painting (condition 1, the sample whose step 2 passed, else the first); the subject is the species' second individual, so this tests the mechanism the owner values: a reference in the house rendering painting an individual.",
+                            "imageOrder1": base["imageOrder1"] + ["reference"], "imageOrder2": base["imageOrder2"] + ["reference"],
+                            "step1": base["step1"].replace("{species}", "Image 3 is the species reference, painted in this same house rendering: its material, finish and eye only, never its shape, pose or framing.\n\n{species}", 1),
+                            "step2": base["step2"].replace("{species}", "Image 3 is the species reference, painted in this same house rendering: match its surface, finish and eye; never its shape, pose or framing.\n\n{species}", 1)})
     return {"variants": variants, "art1": read("art-direction-step1.txt"), "art2": read("art-direction-step2.txt"), "template": read("description-template.txt"), "species": lambda sp: read("species", f"{sp}.txt")}
 
 
@@ -119,15 +129,31 @@ def build_prompts(sp, legend, sheet, variant):
     return {"step1": step1, "step2": step2, "fields": {"artDirection": art, "species": species_words, "description": description, "extra": extra1, "order1": order1, "order2": order2}, "changed": changed}
 
 
-def images_for(d0, legend, sheet, order, drawing=None):
-    """The images a variant's text assumes, in its order: key, index (crisp, padded), board, reference, drawing."""
+def images_for(d0, legend, sheet, order, drawing=None, reference=None):
+    """The images a variant's text assumes, in its order: key, index (crisp, padded), board, reference, drawing.
+    `reference` overrides the species sheet's reference ({name, png})."""
     c = os.path.join(d0, "controls")
+    ref = lambda: reference or reference_for(sheet["species"], sheet)
     src = {"key": lambda: ("key.portrait.large.png", S.png_bytes(S.pad_square(Image.open(os.path.join(c, "key.portrait.large.png")).convert("RGB")))),
            "index": lambda: ("index.portrait.large.png", S.png_bytes(S.pad_square(Image.open(os.path.join(c, "index.portrait.large.png")).convert("RGB")))),
            "board": lambda: ("board:02-miniature-lives.png", S.png_bytes(Image.open(S.BOARD).convert("RGB"))),
-           "reference": lambda: (f"reference:{reference_for(sheet['species'], sheet)['name']}", reference_for(sheet["species"], sheet)["png"]),
+           "reference": lambda: (f"reference:{ref()['name']}", ref()["png"]),
            "drawing": lambda: ("step1-drawing.png", S.png_bytes(S.pad_square(drawing)))}
     return [src[k]() for k in order]
+
+
+def remade_reference(sp, from_id, mkey, samples):
+    """The species reference re-made under the set: the type specimen's own painting by variant `from_id`
+    on this model, the first sample whose step 2 checks passed, else the first with a painting; None if none."""
+    best = None
+    for k in range(1, samples + 1):
+        d = cell_dir(sp, from_id, mkey, k); pj = os.path.join(d, "prompt.json"); p = os.path.join(d, "step2.png")
+        if not (os.path.exists(pj) and os.path.exists(p)): continue
+        r = json.load(open(pj)); passed = (r.get("step2", {}).get("checks") or {}).get("passed")
+        if best is None or passed: best = (p, k, passed)
+        if passed: break
+    if best is None: return None
+    return {"what": f"the type specimen painted by {from_id} on {mkey}, sample {best[1]} ({'checks passed' if best[2] else 'checks failed'})", "name": f"{sp}-{from_id}-{mkey}-s{best[1]}-step2.png", "png": S.png_bytes(Image.open(best[0]).convert("RGB")), "path": os.path.relpath(best[0], HERE)}
 
 
 def cell_dir(sp, vid, mkey, k):
@@ -140,16 +166,21 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
     variants take the shared drawing (the first v5 step 1 sample that passes the checks on that model,
     else v5's first) and run step 2 only. `samples` tries per cell."""
     idx = json.load(open(os.path.join(S.REF, sp, "index.json")))
-    d0 = S.prepare(sp, os.path.join(S.REF, sp, idx["members"][0]["dir"], "genome.json"))["dir"]
-    legend = json.load(open(os.path.join(d0, "controls", "legend.json")))
+    subjects = {}  # member index → (d0, legend, ctrl, fill): the type specimen (0) or another individual of the species
+    def subject(i):
+        if i in subjects: return subjects[i]
+        d0 = S.prepare(sp, os.path.join(S.REF, sp, idx["members"][i]["dir"], "genome.json"))["dir"]
+        legend = json.load(open(os.path.join(d0, "controls", "legend.json")))
+        ctrl = {p: os.path.join(d0, "controls", f"{p}.portrait.large.png") for p in ("silhouette", "index", "slots")}
+        # The description carries the loader's plan lines once (the folded wings of a winged plan, E9), whatever the set's words.
+        fill_fields = {"controls": S.controls_text_two_step(legend, "portrait"), "description": S.with_plan_lines(legend, (pset["template"] or "{description}").replace("{description}", legend["description"]["text"])), "species": pset["species"](sp) or "", "artDirection1": pset["art1"] or "", "artDirection2": pset["art2"] or "", "generate": S.STEP1_WORDS, "transfer": S.STEP2_WORDS}
+        subjects[i] = (d0, legend, ctrl, lambda t: t.format(**fill_fields))
+        return subjects[i]
+    d0, legend, ctrl, fill = subject(0)
     sheet = species_sheet(sp); sheet["species"] = sp; reference = reference_for(sp, sheet)
-    ctrl = {p: os.path.join(d0, "controls", f"{p}.portrait.large.png") for p in ("silhouette", "index", "slots")}
-    variants = pset["variants"]; v5 = next(v for v in variants if v["id"] in ("v5", "v6") and "step1" in v and "step2" in v)
-    # The description carries the loader's plan lines once (the folded wings of a winged plan, E9), whatever the set's words.
-    fill_fields = {"controls": S.controls_text_two_step(legend, "portrait"), "description": S.with_plan_lines(legend, (pset["template"] or "{description}").replace("{description}", legend["description"]["text"])), "species": pset["species"](sp) or "", "artDirection1": pset["art1"] or "", "artDirection2": pset["art2"] or "", "generate": S.STEP1_WORDS, "transfer": S.STEP2_WORDS}
-    fill = lambda t: t.format(**fill_fields)
+    variants = pset["variants"]; v5 = next(v for v in variants if "step1" in v and "step2" in v)  # the set's baseline (v5, v6, v7…): its step 2 serves the step 2-less variants
     only_models = [m for m in MODELS if m in (opt_models or MODELS)]
-    base_id = next((v["id"] for v in variants if "step1" in v and "step2" in v), "v5")  # the set's baseline: v5 or v6
+    base_id = v5["id"]
     shared = {}  # (model) → the shared step 1 drawing for step 2 variants
     def shared_drawing(mkey):
         if mkey in shared: return shared[mkey]
@@ -165,17 +196,23 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
     order = [v for v in variants if "step1" in v] + [v for v in variants if "step1" not in v]  # step 1 variants first, so v5's drawing exists for the step 2 ones
     for v in order:
         if variant_ids and v["id"] not in variant_ids: continue
+        d0, legend, ctrl, fill = subject({"member-1": 1}.get(v.get("subject"), 0))
         for mkey in only_models:
             model = MODELS[mkey]
+            ref = reference
+            if v.get("referenceFrom"):  # the reference re-made under the set: the type specimen's own painting by the named variant
+                ref = remade_reference(sp, v["referenceFrom"], mkey, samples)
+                if ref is None: print(sp, v["id"], mkey, "skipped: no", v["referenceFrom"], "painting of the type specimen on", mkey, "yet"); continue
             for k in range(1, samples + 1):
                 out = cell_dir(sp, v["id"], mkey, k); os.makedirs(out, exist_ok=True)
                 if os.path.exists(os.path.join(out, "prompt.json")) and "--force" not in sys.argv: print(sp, v["id"], mkey, f"s{k}", "done already"); continue
                 common = {"lab": {"species": sp, "variant": v["id"], "name": v["name"], "model": mkey, "sample": k, "set": SET_NAME}, "controlVariant": "twostep", "species": sp, "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"]}
-                result = {"species": sp, "variant": {k2: v2 for k2, v2 in v.items() if k2 not in ("step1", "step2")}, "model": model, "sample": k, "changed": v.get("change", ""), "costUSD": 0.0}
+                result = {"species": sp, "variant": {k2: v2 for k2, v2 in v.items() if k2 not in ("step1", "step2")}, "model": model, "sample": k, "changed": v.get("change", ""), "costUSD": 0.0, "subject": {"member": idx["members"][{"member-1": 1}.get(v.get("subject"), 0)]["dir"], "genomeDigest": legend["genomeDigest"], "controls": os.path.relpath(d0, HERE)}}
+                if v.get("referenceFrom"): result["reference"] = {k2: v2 for k2, v2 in ref.items() if k2 != "png"}
                 drawing = None
                 if "step1" in v:
                     text1 = fill(v["step1"]); order1 = v.get("imageOrder1") or ["index", "reference", "key"]
-                    rec1, im1 = S.call_logged(text1, images_for(d0, legend, sheet, order1), {**common, "purpose": "lab-step1", "step": 1, "attempt": 1, "fields": {"text": text1, "imageOrder": order1, "planLines": S.plan_lines(legend)}}, os.path.join(out, "raw"), "step1.png", model)
+                    rec1, im1 = S.call_logged(text1, images_for(d0, legend, sheet, order1, reference=ref), {**common, "purpose": "lab-step1", "step": 1, "attempt": 1, "fields": {"text": text1, "imageOrder": order1, "planLines": S.plan_lines(legend)}, **({"referenceImage": {"what": ref["what"], "name": ref["name"], "sha256": S.sha_bytes(ref["png"])}} if "reference" in order1 else {})}, os.path.join(out, "raw"), "step1.png", model)
                     result["step1"] = {"callId": rec1["id"], "status": rec1["status"], "costUSD": rec1.get("costUSD"), "seconds": rec1.get("seconds"), "imageOrder": order1}
                     if im1 is not None:
                         rec1["checks"] = {**S.check(im1, ctrl, legend, S.DRAWING_TOL), "gated": False}; result["step1"]["checks"] = rec1["checks"]
@@ -187,7 +224,7 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
                     if drawing is not None: drawing.save(os.path.join(out, "step1.png")); S.fit_to_control(drawing, os.path.join(d0, "controls", "silhouette.portrait.station.png"), (300, 310)).save(os.path.join(out, "step1-300x310.png"))
                 if drawing is not None:
                     text2 = fill(v.get("step2") or v5["step2"]); order2 = v.get("imageOrder2") or v5.get("imageOrder2") or ["drawing", "reference", "key"]
-                    rec2, im2 = S.call_logged(text2, images_for(d0, legend, sheet, order2, drawing), {**common, "purpose": "lab-step2", "step": 2, "attempt": 1, "fields": {"text": text2, "imageOrder": order2}, "referenceImage": {"what": reference["what"], "name": reference["name"], "sha256": S.sha_bytes(reference["png"])}}, os.path.join(out, "raw"), "step2.png", model)
+                    rec2, im2 = S.call_logged(text2, images_for(d0, legend, sheet, order2, drawing, reference=ref), {**common, "purpose": "lab-step2", "step": 2, "attempt": 1, "fields": {"text": text2, "imageOrder": order2}, **({"referenceImage": {"what": ref["what"], "name": ref["name"], "sha256": S.sha_bytes(ref["png"])}} if "reference" in order2 else {})}, os.path.join(out, "raw"), "step2.png", model)
                     result["step2"] = {"callId": rec2["id"], "status": rec2["status"], "costUSD": rec2.get("costUSD"), "seconds": rec2.get("seconds"), "imageOrder": order2}
                     if im2 is not None:
                         rec2["checks"] = {**S.check(im2, ctrl, legend), "gated": False}; result["step2"]["checks"] = rec2["checks"]
@@ -196,7 +233,7 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
                     print(sp, v["id"], mkey, f"s{k}", "step 2", rec2["status"], f"${rec2.get('costUSD', 0) or 0:.3f}", flush=True)
                 result["costUSD"] = round(result["costUSD"], 4)
                 json.dump(result, open(os.path.join(out, "prompt.json"), "w"), indent=1)
-    sheet_set(sp, d0, pset); sheet_consistency(pset)
+    sheet_set(sp, subject(0)[0], pset); sheet_consistency(pset)
 
 
 def sheet_set(sp, d0, pset):
@@ -230,7 +267,9 @@ def sheet_set(sp, d0, pset):
     ctl = os.path.join(d0, "controls", "shaded.portrait.station.png")
     for r, (v, cells) in enumerate(rows):
         y = 38 + r * rowh; x = gap
-        if os.path.exists(ctl): sheet.paste(Image.open(ctl).convert("RGB").resize(T, Image.LANCZOS), (x, y))
+        subj = next((c[0]["subject"]["controls"] for c in cells.values() if c[0].get("subject")), None)  # another individual's controls, when the row's subject is not the type specimen
+        row_ctl = os.path.join(HERE, subj, "controls", "shaded.portrait.station.png") if subj else ctl
+        if os.path.exists(row_ctl): sheet.paste(Image.open(row_ctl).convert("RGB").resize(T, Image.LANCZOS), (x, y))
         x += T[0] + gap
         for _, mkey, k, step in cols:
             if (mkey, k) in cells:
@@ -287,7 +326,7 @@ def sheet_consistency(pset, species=CONSISTENCY_SPECIES, mkey="pro"):
     sheet = Image.new("RGB", (W, H), (255, 255, 255)); d = ImageDraw.Draw(sheet)
     names = {sp: species_sheet(sp)["name"] for sp in species}
     spent = sum(c[0]["costUSD"] for _, cells in rows for per in cells.values() for c in per.values())
-    d.text((gap, 6), f"The consistency test: the {SET_NAME} prompt set (grow/prompt-lab/{SET_NAME}) on the three type specimens, {MODELS[mkey]} only, two samples a cell; the paintings large, their drawings small. One row, one style? ${spent:.2f} on this sheet. Checks logged, not gated.", fill=ink)
+    d.text((gap, 6), f"The consistency test: the {SET_NAME} prompt set (grow/prompt-lab/{SET_NAME}) on the three type specimens (condition 2 on each species' second individual), {MODELS[mkey]} only, two samples a cell; the paintings large, their drawings small, as returned, not fitted to the control. One row, one style? ${spent:.2f} on this sheet. Checks logged, not gated.", fill=ink)
     for i, sp in enumerate(species):
         x = gap + i * (groupw + gap)
         d.text((x, 24), f"{sp} {names[sp]}: s1 painting, s2 painting, the two drawings", fill=ink)
@@ -296,16 +335,17 @@ def sheet_consistency(pset, species=CONSISTENCY_SPECIES, mkey="pro"):
         y = 44 + r * rowh
         for i, sp in enumerate(species):
             x = gap + i * (groupw + gap); per = cells.get(sp, {})
+            # the paintings and drawings as returned (not fitted to the control), so size and place on the ground are judged too
             for k in (1, 2):
                 if k in per:
-                    p = os.path.join(per[k][1], "step2-300x310.png")
+                    p = os.path.join(per[k][1], "step2.png")
                     if os.path.exists(p): sheet.paste(Image.open(p).convert("RGB").resize(P, Image.LANCZOS), (x, y))
                     else: d.text((x + 80, y + 115), "no painting", fill=grey)
                 else: d.text((x + 90, y + 115), "not run", fill=grey)
                 x += P[0] + gap
             for k in (1, 2):
                 if k in per:
-                    p = os.path.join(per[k][1], "step1-300x310.png")
+                    p = os.path.join(per[k][1], "step1.png")
                     if os.path.exists(p): sheet.paste(Image.open(p).convert("RGB").resize(D, Image.LANCZOS), (x, y + (k - 1) * (D[1] + 0)))
             def summ(c):
                 c1 = c.get("step1", {}).get("checks") or {}; c2 = c.get("step2", {}).get("checks") or {}
