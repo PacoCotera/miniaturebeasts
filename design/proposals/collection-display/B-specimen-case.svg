@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="system-ui, sans-serif">
+<title>B, the specimen case: a glazed case of unit trays, one per clan, cards on mounts with tags (wireframe, layout only)</title>
+<style>
+.bg{fill:#f7f4ec}
+.bar{fill:#2f3a40}
+.bartx{font-size:15px;fill:#e9e3d3}
+.ok{font-size:15px;fill:#e08a3a}
+.dim{font-size:15px;fill:#a7a49c}
+.ink{stroke:#2e2e2e;stroke-width:1.5;fill:none}
+.hair{stroke:#2e2e2e;stroke-width:1;fill:none}
+.faint{stroke:#b9b2a2;stroke-width:1;fill:none;stroke-dasharray:4 4}
+.cream{fill:#fbf6e8;stroke:#2e2e2e;stroke-width:1.2}
+.paper{fill:#fffdf6;stroke:#2e2e2e;stroke-width:1}
+.linen{fill:#ebe5d6}
+.brass{fill:#c9a24a;stroke:#6e5520;stroke-width:1}
+.wood{fill:#3d3631;stroke:#1e1a17;stroke-width:1.5}
+.shadow{fill:#2e2e2e;opacity:.16}
+.glass{fill:#ffffff;opacity:.35}
+.sketch{stroke:#6f6a5e;stroke-width:1.2;fill:none;stroke-dasharray:3 2}
+.focus{fill:none;stroke:#f0d890;stroke-width:3}
+.name{font-size:11px;fill:#2e2e2e;text-anchor:middle}
+.note{font-size:11px;fill:#a0472c;paint-order:stroke;stroke:#f7f4ec;stroke-width:3px;stroke-linejoin:round}
+.lead{stroke:#a0472c;stroke-width:1;fill:none}
+.h{font-size:13px;font-weight:600;fill:#2e2e2e}
+.cap{font-size:11px;fill:#6f6a5e}
+</style>
+<rect width="1024" height="600" class="bg"/>
+<!-- top bar and bottom line: the Station frame -->
+<rect x="0" y="0" width="1024" height="40" class="bar"/>
+<text x="16" y="26" class="bartx">Library  T5</text>
+<path d="M470 12 l-6 10 h5 l-3 9 l9 -12 h-5 l3 -7z" fill="#e8c23a"/><text x="482" y="26" class="bartx">7</text>
+<path d="M508 14 l6 0 l3 5 l-6 8 l-6 -8z" fill="#5a8fd8"/><text x="522" y="26" class="bartx">3</text>
+<path d="M548 12 q6 8 0 16 q-6 -8 0 -16z" fill="#5aa860"/><text x="558" y="26" class="bartx">2</text>
+<text x="1008" y="26" class="bartx" text-anchor="end">Companion away · with Dot</text>
+<rect x="0" y="562" width="1024" height="38" class="bar"/>
+<text x="16" y="586" class="ok">✓ Open · ← Home</text>
+<text x="512" y="586" class="bartx" text-anchor="middle">Tuikis · Stilbera</text>
+<text x="1008" y="586" class="dim" text-anchor="end">a pod waits in the tray</text>
+<rect x="12" y="44" width="1000" height="454" rx="4" class="wood"/>
+<rect x="20" y="52" width="984" height="440" class="linen"/>
+<rect x="30" y="62" width="116" height="104" class="shadow"/>
+<rect x="26" y="58" width="116" height="104" fill="#f3eddc" stroke="#2e2e2e"/>
+<rect x="29" y="61" width="110" height="98" fill="none" stroke="#cfc6b0"/>
+<rect x="26" y="58" width="116" height="6" fill="#7a9a4a" stroke="#2e2e2e"/>
+<rect x="43" y="72" width="88" height="68" class="shadow"/>
+<rect x="40" y="68" width="88" height="68" class="cream"/>
+<circle cx="84" cy="98" r="18" class="ink" fill="#efe6cf"/><circle cx="78" cy="95" r="2" fill="#2e2e2e"/><circle cx="90" cy="95" r="2" fill="#2e2e2e"/><ellipse cx="84" cy="119" rx="18" ry="3" class="shadow"/>
+<path d="M112 68 h16 v16 z" class="brass"/>
+<rect x="46" y="142" width="76" height="14" class="paper"/><circle cx="51" cy="149" r="2.5" class="brass"/>
+<text x="86" y="153" class="name">Loika</text>
+<rect x="150" y="62" width="116" height="104" class="shadow"/>
+<rect x="146" y="58" width="116" height="104" fill="#f3eddc" stroke="#2e2e2e"/>
+<rect x="149" y="61" width="110" height="98" fill="none" stroke="#cfc6b0"/>
+<rect x="146" y="58" width="116" height="6" fill="#e07a62" stroke="#2e2e2e"/>
+<rect x="163" y="72" width="88" height="68" class="shadow"/>
+<rect x="160" y="68" width="88" height="68" class="cream"/>
+<circle cx="204" cy="98" r="18" class="ink" fill="#efe6cf"/><circle cx="198" cy="95" r="2" fill="#2e2e2e"/><circle cx="210" cy="95" r="2" fill="#2e2e2e"/><ellipse cx="204" cy="119" rx="18" ry="3" class="shadow"/>
+<rect x="166" y="142" width="76" height="14" class="paper"/><circle cx="171" cy="149" r="2.5" class="brass"/>
+<text x="206" y="153" class="name">Untuva</text>
+<rect x="30" y="170" width="116" height="104" class="shadow"/>
+<rect x="26" y="166" width="116" height="104" fill="#f3eddc" stroke="#2e2e2e"/>
+<rect x="29" y="169" width="110" height="98" fill="none" stroke="#cfc6b0"/>
+<rect x="26" y="166" width="116" height="6" fill="#3f9aa0" stroke="#2e2e2e"/>
+<rect x="43" y="180" width="88" height="68" class="shadow"/>
+<rect x="40" y="172" width="88" height="68" class="cream"/>
+<circle cx="84" cy="202" r="18" class="ink" fill="#efe6cf"/><circle cx="78" cy="199" r="2" fill="#2e2e2e"/><circle cx="90" cy="199" r="2" fill="#2e2e2e"/><ellipse cx="84" cy="223" rx="18" ry="3" class="shadow"/>
+<rect x="36" y="168" width="96" height="76" rx="4" class="focus"/>
+<rect x="46" y="250" width="76" height="14" class="paper"/><circle cx="51" cy="257" r="2.5" class="brass"/>
+<text x="86" y="261" class="name">Tuikis</text>
+<rect x="150" y="170" width="116" height="104" class="shadow"/>
+<rect x="146" y="166" width="116" height="104" fill="#f3eddc" stroke="#2e2e2e"/>
+<rect x="149" y="169" width="110" height="98" fill="none" stroke="#cfc6b0"/>
+<rect x="146" y="166" width="116" height="6" fill="#8a7aa8" stroke="#2e2e2e"/>
+<rect x="163" y="180" width="88" height="68" class="shadow"/>
+<rect x="160" y="176" width="88" height="68" class="cream"/>
+<circle cx="204" cy="208" r="18" class="sketch"/><path d="M190 214 q14 8 28 0" class="sketch"/>
+<rect x="166" y="250" width="76" height="14" class="paper"/><circle cx="171" cy="257" r="2.5" class="brass"/>
+<path d="M180 258 h44" class="sketch"/>
+<rect x="270" y="62" width="716" height="212" class="shadow"/>
+<rect x="266" y="58" width="716" height="212" fill="#f3eddc" stroke="#2e2e2e"/>
+<rect x="269" y="61" width="710" height="206" fill="none" stroke="#cfc6b0"/>
+<rect x="280" y="68" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="314" y="130" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="286" y="142" width="76" height="14" class="paper"/><circle cx="291" cy="149" r="2.5" class="brass"/>
+<rect x="400" y="68" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="434" y="130" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="406" y="142" width="76" height="14" class="paper"/><circle cx="411" cy="149" r="2.5" class="brass"/>
+<rect x="520" y="68" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="554" y="130" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="526" y="142" width="76" height="14" class="paper"/><circle cx="531" cy="149" r="2.5" class="brass"/>
+<rect x="640" y="68" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="674" y="130" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="646" y="142" width="76" height="14" class="paper"/><circle cx="651" cy="149" r="2.5" class="brass"/>
+<rect x="760" y="68" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="794" y="130" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="766" y="142" width="76" height="14" class="paper"/><circle cx="771" cy="149" r="2.5" class="brass"/>
+<rect x="880" y="68" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="914" y="130" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="886" y="142" width="76" height="14" class="paper"/><circle cx="891" cy="149" r="2.5" class="brass"/>
+<rect x="280" y="176" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="314" y="238" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="286" y="250" width="76" height="14" class="paper"/><circle cx="291" cy="257" r="2.5" class="brass"/>
+<rect x="400" y="176" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="434" y="238" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="406" y="250" width="76" height="14" class="paper"/><circle cx="411" cy="257" r="2.5" class="brass"/>
+<rect x="520" y="176" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="554" y="238" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="526" y="250" width="76" height="14" class="paper"/><circle cx="531" cy="257" r="2.5" class="brass"/>
+<rect x="640" y="176" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="674" y="238" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="646" y="250" width="76" height="14" class="paper"/><circle cx="651" cy="257" r="2.5" class="brass"/>
+<rect x="760" y="176" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="794" y="238" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="766" y="250" width="76" height="14" class="paper"/><circle cx="771" cy="257" r="2.5" class="brass"/>
+<rect x="880" y="176" width="88" height="68" fill="none" stroke="#b3aa94" stroke-dasharray="2 3"/><rect x="914" y="238" width="20" height="6" fill="#c9bfa6" stroke="#8d887c"/>
+<rect x="886" y="250" width="76" height="14" class="paper"/><circle cx="891" cy="257" r="2.5" class="brass"/>
+<rect x="26" y="274" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="26" y="382" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="146" y="274" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="146" y="382" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="266" y="274" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="266" y="382" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="386" y="274" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="386" y="382" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="506" y="274" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="506" y="382" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="626" y="274" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="626" y="382" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="746" y="274" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="746" y="382" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="866" y="274" width="116" height="104" class="faint" opacity=".6"/>
+<rect x="866" y="382" width="116" height="104" class="faint" opacity=".6"/>
+<path d="M20 52 L260 52 L60 492 L20 492 Z" class="glass"/><path d="M300 52 L340 52 L140 492 L100 492 Z" class="glass" opacity=".5"/>
+<rect x="12" y="500" width="1000" height="56" rx="3" fill="#e7dfcb" stroke="#6e5520"/><rect x="12" y="500" width="1000" height="4" class="brass"/>
+<path d="M36 516 q160 10 330 0" class="hair"/>
+<rect x="40" y="518" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<line x1="43" y1="526" x2="49" y2="526" stroke="#2e2e2e" stroke-width="2"/>
+<rect x="60" y="518" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<line x1="63" y1="526" x2="69" y2="526" stroke="#2e2e2e" stroke-width="2"/>
+<rect x="80" y="519" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<line x1="83" y1="527" x2="89" y2="527" stroke="#2e2e2e" stroke-width="2"/>
+<rect x="100" y="519" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<line x1="103" y1="527" x2="109" y2="527" class="sketch"/>
+<rect x="120" y="520" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="140" y="520" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="160" y="520" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="180" y="520" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="200" y="520" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="220" y="520" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="240" y="520" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="260" y="520" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="280" y="519" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="300" y="519" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="320" y="518" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<rect x="340" y="518" width="12" height="16" fill="#fbf6e8" stroke="#2e2e2e"/>
+<line x1="420" y1="528" x2="700" y2="528" stroke="#6e5520" stroke-width="2"/>
+<line x1="420" y1="522" x2="420" y2="534" stroke="#6e5520"/>
+<line x1="455" y1="522" x2="455" y2="534" stroke="#6e5520"/>
+<line x1="490" y1="522" x2="490" y2="534" stroke="#6e5520"/>
+<line x1="525" y1="522" x2="525" y2="534" stroke="#6e5520"/>
+<line x1="560" y1="522" x2="560" y2="534" stroke="#6e5520"/>
+<line x1="595" y1="522" x2="595" y2="534" stroke="#6e5520"/>
+<line x1="630" y1="522" x2="630" y2="534" stroke="#6e5520"/>
+<line x1="665" y1="522" x2="665" y2="534" stroke="#6e5520"/>
+<line x1="700" y1="522" x2="700" y2="534" stroke="#6e5520"/>
+<rect x="470" y="518" width="10" height="20" class="brass"/>
+<ellipse cx="820" cy="534" rx="48" ry="12" fill="#a08a6a" stroke="#2e2e2e"/>
+<line x1="792" y1="532" x2="792" y2="514" stroke="#6f6a5e"/><circle cx="792" cy="512" r="4" fill="#7a9a4a" stroke="#2e2e2e"/>
+<line x1="810" y1="532" x2="810" y2="514" stroke="#6f6a5e"/><circle cx="810" cy="512" r="4" fill="#e07a62" stroke="#2e2e2e"/>
+<line x1="828" y1="532" x2="828" y2="514" stroke="#6f6a5e"/><circle cx="828" cy="512" r="4" fill="#3f9aa0" stroke="#2e2e2e"/>
+<line x1="846" y1="532" x2="846" y2="514" stroke="#6f6a5e"/><circle cx="846" cy="512" r="4" fill="#8a7aa8" stroke="#2e2e2e"/>
+<path d="M40 296 L80 240" class="lead"/><circle cx="80" cy="240" r="2" fill="#a0472c"/>
+<text x="40" y="300" class="note" text-anchor="start">Clan trays: a tray per clan, its colour along the top edge.</text>
+<text x="40" y="313" class="note" text-anchor="start">A cousin widens its clan tray by one unit. Loika: the</text>
+<text x="40" y="326" class="note" text-anchor="start">portrait with a gilt corner. Hiljan, met: a pencil sketch.</text>
+<path d="M520 296 L600 200" class="lead"/><circle cx="600" cy="200" r="2" fill="#a0472c"/>
+<text x="520" y="300" class="note" text-anchor="start">The plain tray: every unmet species is a bare mount and a</text>
+<text x="520" y="313" class="note" text-anchor="start">blank tag, all alike, no colour, no shape. Met, a card</text>
+<text x="520" y="326" class="note" text-anchor="start">leaves it for its clan tray.</text>
+<text x="40" y="410" class="note" text-anchor="start">Room to grow: bare linen floor, faint tray footprints; the</text>
+<text x="40" y="423" class="note" text-anchor="start">next drops slide in here. Holds 32 at the same 120×108 pitch.</text>
+<path d="M520 406 L560 512" class="lead"/><circle cx="560" cy="512" r="2" fill="#a0472c"/>
+<text x="520" y="410" class="note" text-anchor="start">Ledge: a string of tags (inked found, pencilled met, blank),</text>
+<text x="520" y="423" class="note" text-anchor="start">a brass slider for progress, a cushion of clan pins.</text>
+<text x="520" y="436" class="note" text-anchor="start">Glass: one cool reflection; cards cast short shadows.</text>
+</svg>
