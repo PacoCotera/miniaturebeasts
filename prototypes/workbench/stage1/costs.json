@@ -1,0 +1,42 @@
+{
+ "stationCallUSD": 0.096,
+ "stationCallSeconds": 9.3,
+ "tokenAtSizeUSD": 0.18000000000000002,
+ "geminiCalls": 12,
+ "rdCalls": 3,
+ "spentUSD": 1.692,
+ "cutoffs": {
+  "A. everything at size": {
+   "calls": 3,
+   "perStage": 0.37197500000000006,
+   "note": "Station main and side painted, token painted at size (Companion derived here: painting at size needs a 280 px model)",
+   "perMibi": 1.116,
+   "perMibiWithRetries": 1.339,
+   "perKitYear40": 53.56
+  },
+  "B. down to the Companion": {
+   "calls": 2,
+   "perStage": 0.191975,
+   "note": "Station main and side painted; Companion derived; token generic",
+   "perMibi": 0.576,
+   "perMibiWithRetries": 0.691,
+   "perKitYear40": 27.64
+  },
+  "C. Station main only": {
+   "calls": 1,
+   "perStage": 0.0959875,
+   "note": "Station main painted; Companion derived; side plain; token generic",
+   "perMibi": 0.288,
+   "perMibiWithRetries": 0.346,
+   "perKitYear40": 13.82
+  },
+  "D. adult only": {
+   "calls": 0.3333333333333333,
+   "perStage": 0.031995833333333334,
+   "note": "one call a mibi",
+   "perMibi": 0.096,
+   "perMibiWithRetries": 0.115,
+   "perKitYear40": 4.61
+  }
+ }
+}
