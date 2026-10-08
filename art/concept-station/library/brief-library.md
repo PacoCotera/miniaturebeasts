@@ -1,0 +1,43 @@
+# Station Library: brief for the field-guide screen
+
+Brief for the Library screen, built on the approved [research loop](../../../design/proposals/research-loop.md) (§4 "Species", §5 "Wish", §8 row "Library"), the [Station screens](../../../design/proposals/station-screens.md) ("Library"), the [style guide](../../../design/style-guide/station-screens.md) ("Library": a botanical tome), the [taxonomy](../../../design/proposals/taxonomy.md) (§4 "Relatedness the player can see": shelves by clan, hidden silhouettes; §7 the tome page template) and the approved [species names](../../../design/proposals/species-names.md). Flat screen, 1024×600 at 1×, edge to edge, no bezel. Siblings: `../round3/A-r3-a1-1024x600.png` (approved Home, the device) and the bench screens; the tome plates of [`../../concept-stamp/`](../../concept-stamp/README.md) (`generated/ST-F-r2-a1-canvas.png`, the C03 plate) are the paper's quality bar. The stamp: the styled C03 tome face `../../concept-stamp/renders/glowtail-c03-tome-300.png`, placed after generation. No image generation is part of this brief.
+
+**Owner rules, carried in.** The Library is a **botanical tome**: paper, plates, pressed specimens, a hand that catalogues; cool, even light on the archive and warm light on the portrait only; one device with the rest of the Station (the graphite top bar and bottom line, Inter, the counters, light from the upper left). Knowledge, never material: nothing implies a look or a wish can be taken from here. Silhouettes reveal only what is known; hidden clans and species sit as silhouettes in their places so the world's size shows without giving it away; empty slots say more exist without a number. Never a text page or a school lesson. The chapter rail carries **as many chapters as the species has**, never a fixed four; the temperament chapter is named **Nature**. Species names are **never baked into a generated plate**: the generator leaves the name plates empty and the names are placed afterwards as a text layer (Inter), as the stamp is placed. The stamp is the prototype's cells placed, never redrawn, on its tome plate.
+
+## 1. Purpose and reads first
+Each species' field guide: its frame, the looks found so far, lineage and wishes. **Reads first:** the focused species' portrait and name, within a second at 1×; then the shelf (what is known, what is met, what is hidden); then the open chapter's specimen plates.
+
+## 2. The scenario drawn
+The player knows three species (Loika, Untuva, Tuikis), has met a fourth (S04, Hiljan) in the field without a pod, and has not met the rest. Tuikis (S03, clan Stilbera) is focused: seven chapters (Coat, Face, Shape, Legs & tail, Movement, Stamina, Nature), Coat open, with three colours, two leg colours, two markings and one scale look found so far, each trait row ending in a dotted "more?". One mibi grown from one pod, so the lineage is one short branch with the mibi's stamp on its tome plate; one wish pinned.
+
+## 3. Information hierarchy
+1. The portrait at the left of the page: a Tuikis in the rich treatment, digging, its tail-lamp glowing: the one warm thing.
+2. The shelf across the top: three bright cards, one slate silhouette, hidden silhouettes in mist, a dashed slot; Tuikis lifted in the cream ring.
+3. The open chapter: specimen plates per trait with "more?".
+4. The frame plate, the place stamps, the lineage branch with the stamp, the pinned wish.
+5. Top bar and bottom line.
+
+## 4. Layout at 1024×600
+Unit 4 px, 16 px side gutter, engraved hairlines at y 40 and y 562.
+- Frame: top bar y 0–40 ("Library  T5" from x 16, counters centred on x 512, Companion state right-aligned to x 1008); stage y 40–562; bottom line y 562–600.
+- The shelf y 48–152, x 16–1008: a pale wooden-free shelf of the tome's paper and slate, eight slots at a 124 px pitch (slot centres x 78, 202, 326, 450, 574, 698, 822, 946), cards 96×84 with a spine strip in the clan's anchor colour: slots 1–3 bright cards (Loika: charcoal creature with a leaf crest, spine moss green; Untuva: coral fluff under a cap, spine coral; Tuikis: a lagoon lizard with a glowing tail, spine lagoon), slot 3 lifted 4 px in the cream focus ring; slot 4 a slate silhouette (a cat-like shape, met but unknown); slots 5–7 hidden silhouettes in mist, barely darker than the paper; slot 8 a dashed empty outline, the shelf's edge running off the right. No words on the cards (names are live).
+- The open tome y 164–552, x 16–1008: two cream pages with a soft gutter at x 508, deckled edges, cool even light, a thin clan hairline border on each page.
+- Left page: the **portrait** x 32–292, y 176–446 (260×270): a Tuikis in the rich treatment, a low scaled body in lagoon with marigold plate edges, a crest, four short legs, a long tail ending in a glowing bulb, digging at a burrow mouth, warm key light from the upper left. Beside it the **frame plate** x 308–484, y 176–376: the species pressed like a specimen in sepia ink, its locked silhouette (plan, crest, tail-bulb) drawn once, on a small mounted plate. Under the frame plate, two **place stamps** x 308–484, y 392–444: small round ink stamps, "wood" and "rock field" as pictures only (a tree ring, a stone). Under the portrait the **name plate** x 32–292, y 456–500: an empty paper label (the name "Tuikis" and its line are placed afterwards), and under it an empty hairline for the habit line.
+- Right page: the **chapter rail** y 172–200: seven small paper tabs along the page's top edge at a 68 px pitch from x 524, one small word each: Coat (lifted, open), Face, Shape, Legs & tail, Movement, Stamina, Nature. Below it the **open chapter** x 524–800, y 212–544: four trait rows at a 80 px pitch, each a small italic-free label word at the left (Colour, Leg colour, Markings, Scales) and a row of small pressed-specimen plates of 48×40 (Colour: lagoon, jade, marigold; Leg colour: milk-mint, cream; Markings: plain, stripes; Scales: fine), each row ending in one dotted empty plate reading "more?". The **lineage** x 816–1000, y 212–380: a short branch drawn in ink, a pod sketch at the top joined to a mibi sketch below, and beside the mibi its **stamp plate** x 880–1000, y 260–380: a 120×120 pale plate left completely empty (the real stamp is placed there later). The **wish** x 816–1000, y 396–544: a small card pinned to the page with a sketch of a dream Tuikis (striped, long tail), a pin at its top; no words.
+- Bottom line: orange "✓ Visit · ← Shelf" at left | "Tuikis · from the rock field" centred (placed) | "a pod waits in the tray" right-aligned.
+
+## 5. Light, materials, type
+Cool, even light across the paper and slate; one warm key light on the portrait from the upper left, and the tail-lamp's glow. Paper, ink, pressed specimens, mounted plates, a pin; no wood or felt anywhere; the device's graphite top bar and bottom line unchanged. Inter, smooth: screen name 3×, the chapter words and trait words 2× in ink, the name 3× on its plate (placed), top bar and bottom line 2×.
+**Exact strings, nothing else in the generated art:** top bar "Library  T5", a yellow bolt "7", a blue diamond "3", a green drop "2", "Companion away · with Dot". Tabs "Coat", "Face", "Shape", "Legs & tail", "Movement", "Stamina", "Nature". Trait words "Colour", "Leg colour", "Markings", "Scales"; on each row's last plate "more?". Bottom line: "✓ Visit · ← Shelf" | (empty centre) | "a pod waits in the tray". **Placed afterwards as a text layer:** "Tuikis" on the name plate with "Stilbera · digs burrows · glows at dusk" under it, and "Tuikis · from the rock field" in the bottom line's centre.
+
+## 6. Pass checklist (yes / no)
+1. Knowledge, never material: nothing on the page implies a look or a wish can be taken.
+2. Silhouettes reveal only what is known: the met species a slate shape, the unmet ones hidden in mist, the slot dashed.
+3. The chapter rail has seven tabs for Tuikis, Nature among them; never a fixed four.
+4. Every look found is a picture on a plate, each row ends in "more?", no counts.
+5. The stamp is the prototype's cells placed on its tome plate and decodes from the finished screen.
+6. Two mibis would be told apart by stamp at 40 px (the lineage shows one; judged on the stamp's legibility at the plate size).
+7. Never a text page or a school lesson: pictures lead, a few words.
+8. The portrait is the only warm thing; the archive cool and even; it reads as a botanical tome, not a cottage.
+9. No species name in the generated art; names placed as a text layer; no digits but the counters.
+10. Strings exact (minor fail if garbled, major fail if an object or a light is wrong); flat screen, no bezel.

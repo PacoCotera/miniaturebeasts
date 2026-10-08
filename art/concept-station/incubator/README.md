@@ -69,7 +69,11 @@ What it still lacks: the stamp at the decided 220 px; the code on its plate (liv
 - The tab emblems are the generator's (a garment for Coat, a face, joined rings, a heart) and are not specs.
 - Generated 16:9 canvases trimmed to 1024:600; the model keeps putting the top bar's first word in the trimmed 2 percent; live text is set by the build.
 
-## Three questions for the owner
+## Owner decisions (2026-10-08)
+
+Relayed by the programme lead for the painted master; no new generation here. **Ready keeps the shape glowing inside the bud** so the player cracks the incubator open; nothing is visible before Open. The growing bud is a **cute, generic glowing bean** whose colours may shift as it grows; **no embryo shapes at any stage** (the curled-embryo alternative IN-D-r1-a1 is dropped). The stamp stands alone on the Station, and the code string may also be shown as live text, since it is a shareable "look at my mibi" string. The chapter rail carries as many chapters as the species has, never a fixed four; the temperament chapter is named Nature.
+
+## Three questions for the owner (answered above)
 
 1. **What does Ready show?** The composite keeps the bud, grown bright with the sleeping shape visible inside, so the creature itself first appears on Open; the kept reference IN-R-r3-a1 opens the bud early and shows the newborn asleep in the nest. Shape inside the bud (recommended, it keeps Open as the reveal), or the newborn already visible?
 2. **The embryo's middle stage.** The pick's bud is a plain glowing bean; the alternative IN-D-r1-a1 already curls it into an embryo shape at the same stage. How much of the shape should show before the last leaf?

@@ -1,0 +1,99 @@
+{
+  "id": "library-field-guide",
+  "direction": "D",
+  "round": 1,
+  "attempt": 3,
+  "tag": "LB-D-r1-a3",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY screen (a species' field guide as a page of a botanical tome), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a BOTANICAL TOME, a naturalist's field guide open on a research instrument: cream paper with deckled edges, sepia ink, mounted plates, pressed specimens, small round ink stamps, a pin; cool, even light on the paper and the slate shelf; the only warm light is on the living portrait. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, soft shadows, crisp edges, no noise or dither. No wood, no felt, no leather, no lamp. Pictures lead; a few words in ink, each written once.\nLAYOUT, as the template: a thin graphite top bar and bottom line, the instrument's own. ACROSS THE TOP, THE SHELF: a long slate shelf holding a row of eight small upright cards at an even spacing, like specimen cards on a ledge, each with a thin coloured spine strip along its left edge: the first three cards are bright painted cards, each showing one small creature on cream paper: a round charcoal creature with a cream belly and a three-leaf crest (spine moss green); a round coral fluff under a cap of three flaps (spine coral); a low lagoon-blue lizard with a crest and a tail ending in a glowing bulb (spine lagoon). The third card is lifted a little inside a warm cream focus ring. The fourth card is a dark slate card with only the silhouette of a cat-like creature on it, met but unknown. The fifth, sixth and seventh cards are hidden: faint silhouettes of other creatures barely darker than the misty slate, unreadable shapes. The eighth slot is an empty dashed outline, and the shelf runs off the right edge. No words on any card. BELOW, THE OPEN TOME: two cream pages with deckled edges and a soft gutter between them, a thin ink border on each page with small lantern-and-leaf ornaments at the corners, lit cool and even. LEFT PAGE: the PORTRAIT, large, a living painting set into the page: the lagoon lizard of the third card in the rich sculpted treatment of Image 3, a low scaled body in lagoon blue with marigold plate edges, a small pointed crest, four short legs, a long tail ending in a glowing golden bulb, digging at the mouth of a small burrow, lit by one warm key light from the upper left, the only warm light on the screen. Beside the portrait, the FRAME PLATE: the same species pressed like a specimen, drawn once in sepia ink on a small mounted plate, its silhouette with crest and tail-bulb. Under the frame plate, two small round sepia ink stamps, one with a tree ring, one with a stone, pictures only. Under the portrait, an EMPTY paper name label (nothing written on it) and an empty hairline under it. RIGHT PAGE: along its top edge, seven small paper tabs in a row, the first lifted and open, each with one small ink word. Below them, four rows: each row has a small ink word at the left and a row of small pressed-specimen plates, little square mounted swatches: the first row three plates (a lagoon swatch of scaled skin, a jade one, a marigold one) and a dotted empty plate with its word; the second row two plates (a milk-mint leg, a cream leg) and a dotted plate; the third row two plates (a plain flank, a striped flank) and a dotted plate; the fourth row one plate (fine scales) and a dotted plate. At the right of the page, the LINEAGE: a short ink branch from a small pod sketch at the top down to a small sketch of the lizard, and beside the lizard a small, completely EMPTY, flat, pale square plate, nothing drawn on it (the genome stamp is placed there later). Below the lineage, a small card pinned to the page with a red pin, carrying a loose sepia sketch of a striped lizard with a long tail, a wish; no words on it.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". On the seven small paper tabs along the top of the right page, one word each: \"Coat\", \"Face\", \"Shape\", \"Legs & tail\", \"Movement\", \"Stamina\", \"Nature\". At the left of the four rows on the right page, one word each: \"Colour\", \"Leg colour\", \"Markings\", \"Scales\". On the dotted last plate of each row: \"more?\". Bottom line: orange \"✓ Visit · ← Shelf\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere, no words on the shelf cards, nothing written on the name plate under the portrait or on the small pale plate in the lineage, no other words, no digits except the three counters.\nConstraints: no species name anywhere (the name plate under the portrait is an EMPTY paper label and the bottom line's middle is empty: names are placed later); the small pale square plate beside the lineage stays completely empty and flat (the real genome stamp is placed there later); no letters for genes, ratios, percentages, counts, numbers on plates, DNA helices or codes; the shelf cards carry no words; no paragraphs of text, no handwriting blocks, no fake Latin text; no wood, felt or leather; no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is a plate from the same botanical tome: take its paper, ink and ornament quality. Image 2 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 3 shows the rich creature treatment at Station size: paint the portrait with this quality of light and shading. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+  "imageInputs": [
+    {
+      "path": "art/concept-stamp/generated/ST-F-r2-a1-canvas.png",
+      "role": "the tome's paper and ink quality bar: a plate from the same botanical tome (its lantern ornaments belong to this species' clan and may echo on the page's border); its empty centre is not to be copied",
+      "sha256": "2feaa736e97bf98a87854705ac12fbd95ad290c6ff4800002ce984515cbd32eb"
+    },
+    {
+      "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+      "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only; its vivarium and modules are not on this screen",
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+    },
+    {
+      "path": "art/concept-homepage/station-known-forms.png",
+      "role": "the rich creature treatment at Station size: the portrait is painted with this quality of light and shading (a different species, described below)",
+      "sha256": "024f765fdf470f32cad371583a4067a4fd79bd5ff893d0e9ace9f9fd00db37f3"
+    },
+    {
+      "path": "art/concept-station/library/layout/library-layout-template.png",
+      "role": "layout truth only: flat boxes at 1024x600 showing the shelf of eight slots (three bright, one slate, three misty, one dashed), the open tome's two pages, the portrait, the frame plate, the place stamps, the empty name plate, the seven tabs, the four specimen rows, the lineage with its empty stamp plate, and the pinned wish; not style",
+      "sha256": "b54c3cc5c4cb39195bf32f03a417af1582c27b0d012d2bbd042bef04e8a4a632"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T00:31:40Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/LB-D-r1-a3.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "73a7836fb85ebf87cebfde61a197a511e7ae781a20c9014aa507ec98f761dccf"
+    },
+    "png": {
+      "file": "LB-D-r1-a3-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "5c5c2f957606ca371f0ccbc7d3898051b473d0680fbaf14f3263982b1e8997ec"
+    },
+    "screen": {
+      "file": "LB-D-r1-a3-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "5582cfdff3401a389317288dce54c4b39245061be21fbcb33db681918680da38",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 24.8,
+    "usage": {
+      "promptTokenCount": 2655,
+      "candidatesTokenCount": 1730,
+      "totalTokenCount": 4766,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1623
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1032
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 381,
+      "serviceTier": "standard"
+    }
+  }
+}

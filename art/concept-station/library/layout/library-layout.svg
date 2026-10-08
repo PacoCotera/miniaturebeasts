@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="600" viewBox="0 0 1024 600" font-family="sans-serif" font-size="11" fill="none" stroke="#999">
+<rect width="1024" height="600" fill="#1b1f24" stroke="none"/>
+<rect width="1024" height="40" stroke="#777"/><rect y="562" width="1024" height="38" stroke="#777"/>
+<text x="16" y="26" fill="#ddd" stroke="none" font-size="12">Library  T5</text><text x="446" y="26" fill="#ddd" stroke="none" font-size="12">⚡ 7  ◆ 3  ❀ 2</text><text x="820" y="26" fill="#ddd" stroke="none" font-size="12">Companion away · with Dot</text>
+<!-- shelf -->
+<rect x="16" y="48" width="992" height="104" fill="#2a3036" stroke="#555"/>
+<rect x="30" y="58" width="96" height="84" fill="#e9e2d0" stroke="#5a9a4a" stroke-width="3"/><text x="44" y="104" fill="#333" stroke="none">S01 bright</text>
+<rect x="154" y="58" width="96" height="84" fill="#e9e2d0" stroke="#e98268" stroke-width="3"/><text x="168" y="104" fill="#333" stroke="none">S02 bright</text>
+<rect x="278" y="52" width="96" height="84" fill="#e9e2d0" stroke="#269fa5" stroke-width="3"/><rect x="272" y="46" width="108" height="96" stroke="#eda" stroke-width="2"/><text x="286" y="98" fill="#333" stroke="none">S03 focused</text>
+<rect x="402" y="58" width="96" height="84" fill="#3a4148" stroke="#666"/><text x="412" y="104" fill="#aaa" stroke="none">met · slate</text>
+<rect x="526" y="58" width="96" height="84" fill="#30363c" stroke="#444"/><text x="540" y="104" fill="#666" stroke="none">hidden · mist</text>
+<rect x="650" y="58" width="96" height="84" fill="#30363c" stroke="#444"/><text x="664" y="104" fill="#666" stroke="none">hidden · mist</text>
+<rect x="774" y="58" width="96" height="84" fill="#30363c" stroke="#444"/><text x="788" y="104" fill="#666" stroke="none">hidden · mist</text>
+<rect x="898" y="58" width="96" height="84" stroke="#777" stroke-dasharray="4 4"/><text x="914" y="104" fill="#888" stroke="none">dashed · more</text>
+<!-- tome -->
+<rect x="16" y="164" width="492" height="388" fill="#efe6d2" stroke="#b9a87e"/><rect x="508" y="164" width="500" height="388" fill="#f2eadb" stroke="#b9a87e"/>
+<rect x="32" y="176" width="260" height="270" stroke="#c97" /><text x="60" y="314" fill="#a64" stroke="none" font-size="12">portrait · S03 digging · tail glows · warm</text>
+<rect x="308" y="176" width="176" height="200" stroke="#876"/><text x="330" y="280" fill="#876" stroke="none">frame plate · pressed</text>
+<circle cx="340" cy="418" r="22" stroke="#876"/><circle cx="400" cy="418" r="22" stroke="#876"/><text x="430" y="422" fill="#876" stroke="none">places</text>
+<rect x="32" y="456" width="260" height="44" stroke="#876"/><text x="110" y="482" fill="#876" stroke="none">name plate · empty</text>
+<!-- right page -->
+<rect x="524" y="172" width="60" height="28" fill="#f2eadb" stroke="#654"/><text x="536" y="190" fill="#432" stroke="none">Coat</text>
+<rect x="592" y="176" width="60" height="24" stroke="#876"/><text x="606" y="192" fill="#876" stroke="none">Face</text>
+<rect x="660" y="176" width="60" height="24" stroke="#876"/><text x="670" y="192" fill="#876" stroke="none">Shape</text>
+<rect x="728" y="176" width="60" height="24" stroke="#876"/><text x="730" y="192" fill="#876" stroke="none" font-size="9">Legs &amp; tail</text>
+<rect x="796" y="176" width="60" height="24" stroke="#876"/><text x="800" y="192" fill="#876" stroke="none" font-size="9">Movement</text>
+<rect x="864" y="176" width="60" height="24" stroke="#876"/><text x="870" y="192" fill="#876" stroke="none" font-size="9">Stamina</text>
+<rect x="932" y="176" width="60" height="24" stroke="#876"/><text x="942" y="192" fill="#876" stroke="none">Nature</text>
+<text x="524" y="236" fill="#432" stroke="none">Colour</text><rect x="600" y="216" width="48" height="40" stroke="#654"/><rect x="656" y="216" width="48" height="40" stroke="#654"/><rect x="712" y="216" width="48" height="40" stroke="#654"/><rect x="768" y="216" width="48" height="40" stroke="#654" stroke-dasharray="3 3"/><text x="774" y="240" fill="#654" stroke="none">more?</text>
+<text x="524" y="316" fill="#432" stroke="none">Leg colour</text><rect x="600" y="296" width="48" height="40" stroke="#654"/><rect x="656" y="296" width="48" height="40" stroke="#654"/><rect x="712" y="296" width="48" height="40" stroke="#654" stroke-dasharray="3 3"/><text x="718" y="320" fill="#654" stroke="none">more?</text>
+<text x="524" y="396" fill="#432" stroke="none">Markings</text><rect x="600" y="376" width="48" height="40" stroke="#654"/><rect x="656" y="376" width="48" height="40" stroke="#654"/><rect x="712" y="376" width="48" height="40" stroke="#654" stroke-dasharray="3 3"/><text x="718" y="400" fill="#654" stroke="none">more?</text>
+<text x="524" y="476" fill="#432" stroke="none">Scales</text><rect x="600" y="456" width="48" height="40" stroke="#654"/><rect x="656" y="456" width="48" height="40" stroke="#654" stroke-dasharray="3 3"/><text x="662" y="480" fill="#654" stroke="none">more?</text>
+<!-- lineage and stamp -->
+<path d="M840 220 L840 300" stroke="#654"/><ellipse cx="840" cy="222" rx="12" ry="16" stroke="#654"/><text x="820" y="256" fill="#654" stroke="none">pod</text><circle cx="840" cy="318" r="18" stroke="#654"/><text x="822" y="356" fill="#654" stroke="none">mibi</text>
+<rect x="880" y="260" width="120" height="120" fill="#faf6ee" stroke="#faf6ee"/><text x="896" y="324" fill="#998" stroke="none">stamp · placed</text>
+<rect x="824" y="396" width="176" height="148" stroke="#876"/><circle cx="912" cy="402" r="4" fill="#c33" stroke="none"/><text x="846" y="474" fill="#876" stroke="none">wish · pinned sketch</text>
+<text x="16" y="586" fill="#f06d1e" stroke="none" font-size="12">✓ Visit · ← Shelf</text><text x="440" y="586" fill="#666" stroke="none" font-size="12">(name · placed)</text><text x="860" y="586" fill="#bbb" stroke="none" font-size="12">a pod waits in the tray</text>
+</svg>

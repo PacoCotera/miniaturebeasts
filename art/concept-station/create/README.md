@@ -86,7 +86,11 @@ What it still lacks: the founder as Pip (the generator's creature stands in); th
 - The stamp is the only exact element. The pod, tabs, roll pictures and frost are the generator's reading of the template and brief and are judged, not exact.
 - Generated 16:9 canvases trimmed to 1024:600; the model keeps putting the top bar's first and last words in the trimmed 2 percent despite the brief; live text is set by the build.
 
-## Three questions for the owner
+## Owner decisions (2026-10-08)
+
+Relayed by the programme lead for the painted master; no new generation here. The accepted Pip asset is **placed** into the master, the same drawing on every screen, never regenerated. The roll's pictures are **flank close-ups of the changed part**. Doings chapters that are still sealed are **named in one status-bar line**, not shown as greyed tabs. The chapter rail carries as many chapters as the species has, never a fixed four; the temperament chapter is named Nature.
+
+## Three questions for the owner (answered above)
 
 1. **Place Pip, or keep asking for it?** No generation held Pip's identity for the founder. Should the Create master place the accepted rich Pip asset in the chamber (as the stamp is placed), with the frost as a mask over the unread parts, and stop asking any generator to redraw the species? (Recommended: place it.)
 2. **The roll's three pictures: flank close-ups or whole founders?** The brief and this candidate show the trait's flank, as on Pods' page; one rejected candidate drew three tiny whole founders instead, which reads "this is what you get" at a glance but hides the trait boundary. Which should the master draw?
