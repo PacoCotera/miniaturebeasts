@@ -11,19 +11,19 @@
  ],
  "note": "a lean body, a narrow head with a long pointed muzzle and tall pointed ears, four thin legs, a thick bushy tail carried low",
  "shapes": [
-  {"capsule":[36,58,64,54,12,12]},
-  {"ellipse":[78,44,10,9]},
-  {"polygon":[[84,42],[96,50],[84,52]]},
-  {"polygon":[[70,38],[73,20],[78,38]]},
-  {"polygon":[[79,38],[83,19],[87,38]]},
-  {"capsule":[62,62,64,90,3.2]},
-  {"capsule":[68,62,70,90,3.2]},
-  {"capsule":[38,64,36,90,3.2]},
-  {"capsule":[43,64,44,90,3.2]},
-  {"ellipse":[36,90,5,2.5]},
-  {"ellipse":[44,90,5,2.5]},
-  {"ellipse":[64,90,5,2.5]},
-  {"ellipse":[70,90,5,2.5]},
-  {"capsule":[26,58,5,68,7,4]}
+  {"capsule":[36,58,64,54,12,12],"part":"body"},
+  {"ellipse":[78,44,10,9],"part":"head"},
+  {"polygon":[[84,42],[96,50],[84,52]],"part":"muzzle"},
+  {"polygon":[[70,38],[73,20],[78,38]],"part":"ear"},
+  {"polygon":[[79,38],[83,19],[87,38]],"part":"ear"},
+  {"capsule":[62,62,64,90,3.2],"part":"leg"},
+  {"capsule":[68,62,70,90,3.2],"part":"leg"},
+  {"capsule":[38,64,36,90,3.2],"part":"leg"},
+  {"capsule":[43,64,44,90,3.2],"part":"leg"},
+  {"ellipse":[36,90,5,2.5],"part":"leg"},
+  {"ellipse":[44,90,5,2.5],"part":"leg"},
+  {"ellipse":[64,90,5,2.5],"part":"leg"},
+  {"ellipse":[70,90,5,2.5],"part":"leg"},
+  {"capsule":[26,58,5,68,7,4],"part":"tail"}
  ]
 }

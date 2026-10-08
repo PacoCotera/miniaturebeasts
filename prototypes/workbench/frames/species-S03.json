@@ -55,7 +55,8 @@
    "join": "narrow",
    "wave": true,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B2·L4",
   "rig": "B2",
@@ -1541,7 +1542,11 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: crown.heightOverHeadRz"
+   "guard": "rig: crown.heightOverHeadRz",
+   "typical": [
+    "high",
+    "low"
+   ]
   },
   {
    "id": "appearance.anatomical-covering-extent",
@@ -2511,8 +2516,8 @@
      "wide"
     ],
     "growth.crown-height-ratio": [
-     "low",
-     "high"
+     "high",
+     "low"
     ],
     "appearance.anatomical-covering-extent": [
      "short",

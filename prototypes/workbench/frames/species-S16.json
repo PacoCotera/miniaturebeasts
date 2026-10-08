@@ -55,7 +55,8 @@
    "join": "narrow",
    "wave": true,
    "fins": false,
-   "float": true
+   "float": true,
+   "stand": true
   },
   "code": "Bfan3",
   "rig": "Bfan",
@@ -1891,20 +1892,20 @@
   "brief": "Blikur: 5 body regions (Bfan), a head, 2 eyes; skin; belly, neck head.",
   "bounds": {
    "min": [
-    -1.0205841325047136,
-    -0.9998411425209989,
-    0
+    -0.7779157852283383,
+    -0.22102999999999998,
+    -0.15191795663277619
    ],
    "max": [
-    1.766913107681022,
-    0.9998411425209989,
-    1.0016762728775923
+    0.7779157852283383,
+    0.22102999999999998,
+    2.593687128398906
    ]
   },
   "counts": {
    "nodes": 15,
    "edges": 14,
-   "vertices": 833
+   "vertices": 831
   }
  },
  "viability": {

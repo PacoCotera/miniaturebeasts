@@ -46,7 +46,9 @@ export function planCode(p, extras = {}) {
 
 // Plan facts in the v1 resolver's target vocabulary, so the guards ported from v1 read them
 // unchanged, plus the rig facts. `extras` are the per-species plan switches the key does not
-// carry: join (broad or narrow), wave (axial deformation), fins (fin rooting for a swimmer).
+// carry: join (broad or narrow), wave (axial deformation), fins (fin rooting for a swimmer),
+// float (afloat, no ground contact), stand (a fan plan stands on its up axis: the plant's bulb with
+// leaves on top, the wisp's vertical ribbon; plans.json standingPlans).
 export function planFacts(key, extras = {}) {
   const p = parsePlanKey(key);
   const depth = DEPTH[p.segments], radial = p.symmetry === "radial", fan = p.layout === "fan";
@@ -73,7 +75,7 @@ export function planFacts(key, extras = {}) {
   const flapRegion = p.flaps === "on" ? (depth === 3 ? 1 : 0) : null;
   const states = stateMachine(limbSet, flapSet, posture, extras, p);
   return {
-    key, plan: p, code: planCode(p, extras), rig, depth, radial, fan, join, values, extras: { join, wave: !!extras.wave, fins },
+    key, plan: p, code: planCode(p, extras), rig, depth, radial, fan, join, values, extras: { join, wave: !!extras.wave, fins, float: !!extras.float, stand: !!extras.stand },
     limbSet, posture, ground, stations, links: limbSet === "legs" || limbSet === "rays" ? 2 : links, flapSet, flapRegion,
     tailRegion: fan ? 0 : depth - 1, head: join === "narrow" ? "neck" : "fused", states,
   };

@@ -9,17 +9,16 @@
   100,
   100
  ],
- "note": "a round bulb with leaves fanning up, a face at the front, and three or four root legs it walks on",
+ "note": "a standing bulb with leaves rising from its top, a face at the front, and three root legs it walks on",
  "shapes": [
-  {"ellipse":[50,58,20,18]},
-  {"polygon":[[50,45],[38,20],[52,30]]},
-  {"polygon":[[50,44],[55,16],[60,32]]},
-  {"polygon":[[48,46],[30,36],[40,46]]},
-  {"polygon":[[52,46],[72,38],[62,48]]},
-  {"ellipse":[66,62,6,5]},
-  {"capsule":[40,72,32,92,2.5]},
-  {"capsule":[50,74,50,92,2.5]},
-  {"capsule":[60,72,68,92,2.5]},
-  {"capsule":[46,74,42,92,2]}
+  {"ellipse":[50,56,20,22],"part":"body"},
+  {"polygon":[[50,40],[38,14],[54,26]],"part":"leaf"},
+  {"polygon":[[50,38],[56,10],[62,28]],"part":"leaf"},
+  {"polygon":[[48,42],[28,30],[40,42]],"part":"leaf"},
+  {"polygon":[[52,42],[74,32],[62,44]],"part":"leaf"},
+  {"ellipse":[67,60,7,6],"part":"head"},
+  {"capsule":[42,74,34,92,2.5],"part":"leg"},
+  {"capsule":[50,77,50,92,2.5],"part":"leg"},
+  {"capsule":[58,74,66,92,2.5],"part":"leg"}
  ]
 }

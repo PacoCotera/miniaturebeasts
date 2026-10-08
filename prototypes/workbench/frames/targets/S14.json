@@ -11,12 +11,13 @@
  ],
  "note": "a long low body tapering to the rear with a mantle hump at the front, two eye stalks, a skirt along the ground",
  "shapes": [
-  {"polygon":[[10,82],[20,70],[40,62],[60,60],[80,64],[90,74],[92,84],[10,88]]},
-  {"ellipse":[70,70,16,10]},
-  {"capsule":[84,66,92,52,1.5]},
-  {"capsule":[80,66,84,50,1.5]},
-  {"ellipse":[92,51,2.5,2.5]},
-  {"ellipse":[84,49,2.5,2.5]},
-  {"polygon":[[6,86],[94,86],[94,90],[6,90]]}
+  {"polygon":[[10,82],[20,70],[40,62],[60,60],[80,64],[90,74],[92,84],[10,88]],"part":"body"},
+  {"ellipse":[70,70,16,10],"part":"body"},
+  {"ellipse":[84,74,8,7],"part":"head"},
+  {"capsule":[84,66,92,52,1.5],"part":"antenna"},
+  {"capsule":[80,66,84,50,1.5],"part":"antenna"},
+  {"ellipse":[92,51,2.5,2.5],"part":"antenna"},
+  {"ellipse":[84,49,2.5,2.5],"part":"antenna"},
+  {"polygon":[[6,86],[94,86],[94,90],[6,90]],"part":"skirt"}
  ]
 }

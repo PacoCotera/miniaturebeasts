@@ -12,9 +12,10 @@ import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildIndividual, sampleIndividual, typeSpecimen, rng } from "./species.mjs";
-import { silhouetteMask, maskDistance } from "./raster.mjs";
+import { silhouetteMask, partMasks, maskDistance } from "./raster.mjs";
+import { CLANS } from "./roster.mjs";
 import { encodePNG } from "./png.mjs";
-import { loadTargets, targetScores, TARGET_MARGIN } from "./targets.mjs";
+import { loadTargets, targetScores, TARGET_MARGIN, PART_MARGIN } from "./targets.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const N = Number(process.env.CENSUS_N ?? 200);
@@ -26,7 +27,8 @@ export function runCensus(frames, { n = N, log = () => {}, targets = null } = {}
   for (const frame of frames) {
     const t0 = Date.now();
     const specimen = buildIndividual(frame, typeSpecimen(frame));
-    const specMasks = Object.fromEntries(VIEWS.map((v) => [v, silhouetteMask(specimen.scene, v, 48)]));
+    const specParts = partMasks(specimen.scene, "side", 48); // the side silhouette split by part, for the kind check
+    const specMasks = { "three-quarter": silhouetteMask(specimen.scene, "three-quarter", 48), side: specParts.all };
     const r = rng(`census:${frame.species.id}`);
     const individuals = [];
     let built = 0; const failures = {};
@@ -34,11 +36,11 @@ export function runCensus(frames, { n = N, log = () => {}, targets = null } = {}
       const genome = sampleIndividual(frame, r);
       try {
         const b = buildIndividual(frame, genome);
-        if (b.validation.status === "valid") { built++; individuals.push(Object.fromEntries(VIEWS.map((v) => [v, silhouetteMask(b.scene, v, 48)]))); }
+        if (b.validation.status === "valid") { built++; const side = partMasks(b.scene, "side", 48); individuals.push({ "three-quarter": silhouetteMask(b.scene, "three-quarter", 48), side: side.all, sideParts: side }); }
         else failures[b.validation.problems[0]] = (failures[b.validation.problems[0]] ?? 0) + 1;
       } catch (e) { failures[e.message] = (failures[e.message] ?? 0) + 1; }
     }
-    rows.push({ id: frame.species.id, name: frame.species.name, plan: frame.plan.code, planKey: frame.plan.key, rig: frame.plan.rig, sampled: n, built, failures, specMasks, individuals });
+    rows.push({ id: frame.species.id, name: frame.species.name, clan: frame.taxonomy.clan, parts: CLANS[frame.taxonomy.clan]?.parts ?? ["body"], plan: frame.plan.code, planKey: frame.plan.key, rig: frame.plan.rig, sampled: n, built, failures, specMasks, specParts, individuals });
     log(`${frame.species.name.padEnd(9)} ${frame.plan.code.padEnd(14)} built ${built}/${n} in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
   }
   // Distances between type specimens, per view.
@@ -64,8 +66,8 @@ export function runCensus(frames, { n = N, log = () => {}, targets = null } = {}
   const planPairs = pairs.filter((p) => !p.samePlan);
   const verdict = { margin: MARGIN, plans: new Set(rows.map((r) => r.planKey)).size, closestPair: planPairs[0], closestSamePlan: pairs.find((p) => p.samePlan) ?? null, belowMargin: planPairs.filter((p) => p.distance < MARGIN), allBuilt: rows.every((r) => r.built === r.sampled) };
   // The kind check: each species' side silhouette against the hand-drawn targets (targets.mjs).
-  const kinds = targets ? targetScores(rows, targets) : null;
-  if (kinds) verdict.kinds = { margin: TARGET_MARGIN, pass: kinds.filter((k) => k.pass).length, of: kinds.length, failing: kinds.filter((k) => !k.pass).map((k) => k.id) };
+  const kinds = targets ? targetScores(rows.map((r) => ({ id: r.id, parts: r.parts, specMasks: { side: r.specParts }, individuals: r.individuals.map((i) => ({ side: i.sideParts })) })), targets) : null;
+  if (kinds) verdict.kinds = { margin: TARGET_MARGIN, partMargin: PART_MARGIN, pass: kinds.filter((k) => k.pass).length, of: kinds.length, failing: kinds.filter((k) => !k.pass).map((k) => k.id), coarse: kinds.filter((k) => k.coarse).map((k) => k.id) };
   return { rows, table, family, pairs, verdict, kinds, targets };
 }
 
@@ -81,13 +83,14 @@ export function censusMarkdown(result) {
   rows.forEach((r, i) => lines.push(`| **${short(r.id)}** | ${rows.map((o, j) => (i === j ? "·" : (o.planKey === r.planKey ? "*" : "") + Math.max(table["three-quarter"][i][j], table.side[i][j]).toFixed(2))).join(" | ")} |`));
   lines.push("", `${verdict.plans} distinct plans. Closest pair of plans: ${verdict.closestPair.a} and ${verdict.closestPair.b} at ${verdict.closestPair.distance.toFixed(2)}. ${verdict.belowMargin.length ? `**${verdict.belowMargin.length} pair(s) below the margin.**` : "No pair of plans below the margin."}${verdict.closestSamePlan ? ` Species sharing a plan are not gated; the closest are ${verdict.closestSamePlan.a} and ${verdict.closestSamePlan.b} at ${verdict.closestSamePlan.distance.toFixed(2)}.` : ""}`);
   if (result.kinds) {
-    lines.push("", `Reads as its kind: the type specimen's side silhouette against the hand-drawn 48 px targets (frames/targets/), IoU against its own target and the best wrong one; a species passes when its own target is nearest by ${TARGET_MARGIN}. "Individuals own" is the share of its random individuals nearest their own target.`, "");
-    lines.push(`| Species | Own target | Best wrong target | Margin | Individuals own | Verdict |`, `| --- | ---: | ---: | ---: | ---: | --- |`);
+    lines.push("", `Reads as its kind: the type specimen's side silhouette against the hand-drawn 48 px targets (frames/targets/). Body: IoU against its own target and the best wrong one (the coarse gate, margin ${TARGET_MARGIN}). Parts: the clan's defining parts measured on the silhouette against the targets' tagged parts, own and the best wrong kind; a species passes when its parts score beats every wrong kind by ${PART_MARGIN}. "Individuals own" is the share of its random individuals whose parts score is nearest their own target.`, "");
+    lines.push(`| Species | Body IoU own | best wrong | Parts measured | Parts own | best wrong kind | Parts margin | Individuals own | Verdict |`, `| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |`);
     for (const k of result.kinds) {
       const r = rows.find((x) => x.id === k.id);
-      lines.push(`| ${k.id}${r && r.name !== r.id ? " " + r.name : ""} | ${k.own === null ? "—" : k.own.toFixed(2)} | ${k.bestWrong ? `${k.bestWrong.id} ${k.bestWrong.iou.toFixed(2)}` : "—"} | ${k.margin === null ? "—" : (k.margin >= 0 ? "+" : "") + k.margin.toFixed(2)} | ${k.individualsOwn === null ? "—" : (k.individualsOwn * 100).toFixed(0) + "%"} | ${k.pass ? "reads" : "**does not read**"} |`);
+      if (!k.parts) { lines.push(`| ${k.id} | — | — | — | — | — | — | — | no target |`); continue; }
+      lines.push(`| ${k.id}${r && r.name !== r.id ? " " + r.name : ""} | ${k.own.toFixed(2)}${k.coarse ? "" : " ·"} | ${k.bestWrong.id} ${k.bestWrong.iou.toFixed(2)} | ${k.parts.list.join(", ")} | ${k.parts.own.toFixed(2)} | ${k.parts.bestWrong.id} ${k.parts.bestWrong.score.toFixed(2)} | ${(k.parts.margin >= 0 ? "+" : "") + k.parts.margin.toFixed(2)} | ${(k.individualsOwn * 100).toFixed(0)}% | ${k.pass ? "reads" : "**does not read**"} |`);
     }
-    lines.push("", `${verdict.kinds.pass} of ${verdict.kinds.of} read as their kind${verdict.kinds.failing.length ? `; not yet: ${verdict.kinds.failing.join(", ")}` : ""}.`);
+    lines.push("", `${verdict.kinds.pass} of ${verdict.kinds.of} read as their kind by parts${verdict.kinds.failing.length ? `; not yet: ${verdict.kinds.failing.join(", ")}` : ""}. By the coarse body gate alone: ${verdict.kinds.coarse.length} of ${verdict.kinds.of} (a body IoU marked · is under that gate).`);
   }
   return lines.join("\n") + "\n";
 }

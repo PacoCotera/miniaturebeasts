@@ -55,7 +55,8 @@
    "join": "narrow",
    "wave": false,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B2·L4",
   "rig": "B2",
@@ -783,7 +784,7 @@
    "shapeable": false,
    "copies": [
     "long",
-    "long"
+    "short"
    ],
    "looks": [
     "long"
@@ -1217,11 +1218,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "long",
-    "long"
+    "tall",
+    "tall"
    ],
    "looks": [
-    "long"
+    "tall"
    ],
    "guard": "rig: ears.lengthOverHeadRz",
    "nature": "look"
@@ -1454,7 +1455,7 @@
    "shapeable": false,
    "copies": [
     "crown",
-    "side"
+    "crown"
    ],
    "looks": [
     "crown"
@@ -2033,7 +2034,7 @@
     ],
     "growth.muzzle-projection-ratio": [
      "long",
-     "long"
+     "short"
     ],
     "growth.muzzle-width-ratio": [
      "low",
@@ -2108,8 +2109,8 @@
      "pointed"
     ],
     "growth.auricular-length-ratio": [
-     "long",
-     "long"
+     "tall",
+     "tall"
     ],
     "anatomy.axial-tail-presence": [
      "on",
@@ -2153,7 +2154,7 @@
     ],
     "growth.auricular-set-ratio": [
      "crown",
-     "side"
+     "crown"
     ],
     "growth.auricular-width-ratio": [
      "narrow",
@@ -2180,14 +2181,14 @@
   "brief": "Tepor: 2 body regions (B2), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, neck head.",
   "bounds": {
    "min": [
-    -1.44656101032843,
+    -1.3195044103284301,
     -0.5274814324395275,
     0
    ],
    "max": [
     1.7157862777502004,
     0.5274814324395275,
-    1.8732791737418246
+    2.1213294468345447
    ]
   },
   "counts": {
@@ -2330,7 +2331,7 @@
   ],
   "growth.muzzle-projection-ratio": [
    "long",
-   "long"
+   "short"
   ],
   "growth.muzzle-width-ratio": [
    "low",
@@ -2377,8 +2378,8 @@
    "pointed"
   ],
   "growth.auricular-length-ratio": [
-   "long",
-   "long"
+   "tall",
+   "tall"
   ],
   "anatomy.axial-tail-presence": [
    "on",
@@ -2418,7 +2419,7 @@
   ],
   "growth.auricular-set-ratio": [
    "crown",
-   "side"
+   "crown"
   ],
   "growth.auricular-width-ratio": [
    "narrow",

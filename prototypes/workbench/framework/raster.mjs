@@ -218,6 +218,39 @@ export function silhouetteMask(scene, viewName, n = 48) {
   return mask;
 }
 
+// The part class a node belongs to, for the kind check's part measures (targets.mjs).
+export function partClass(node) {
+  const part = node.part ?? node.id, role = node.role;
+  if (part === "head") return "head";
+  if (part === "muzzle" || part === "beak") return "muzzle";
+  if (part === "ear") return "ear";
+  if (part === "tail") return "tail";
+  if (part.startsWith("leg-") || part === "ray") return "leg";
+  if (part === "crown" || part === "horn") return "crest";
+  if (part === "antenna") return "antenna";
+  if (part === "flap" || part === "cap") return "flap";
+  if (part === "shell" || part === "wing-case") return "shell";
+  if (part === "skirt") return "skirt";
+  if (part === "leaf") return "leaf";
+  if (part === "eye") return "head";
+  if (role === "free-chain" || role === "chain-joint") return "feeler";
+  return "body";
+}
+// The silhouette split by part class: { all, parts: { class: mask } }, fitted like silhouetteMask.
+export function partMasks(scene, viewName, n = 48) {
+  const camera = fitCamera(scene, viewName, [n, n], 0.04);
+  const image = render(scene, camera, "silhouette");
+  const classOf = new Map(scene.nodes.map((node, i) => [i + 1, partClass(node)]));
+  const all = new Uint8Array(n * n), parts = {};
+  for (let i = 0; i < n * n; i++) {
+    if (image.data[i * 4] >= 128) continue;
+    all[i] = 1;
+    const c = classOf.get(image.index[i]) ?? "body";
+    (parts[c] ??= new Uint8Array(n * n))[i] = 1;
+  }
+  return { all, parts };
+}
+
 // Shape distance between two masks: 1 − IoU after each is fitted into the same box. Zero means
 // the same silhouette; two bodies of different kinds sit well above 0.3.
 export function maskDistance(a, b) {

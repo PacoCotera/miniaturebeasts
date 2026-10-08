@@ -113,6 +113,7 @@ const ADDED_ALLELES = {
   "anatomy.contact-terminal-form": { alleles: [{ id: "hoof", label: "hoof", value: "hoof" }, { id: "webbed", label: "webbed", value: "webbed" }, { id: "root", label: "root", value: "root" }], pairMap: dominance(["root", "hoof", "webbed", "wedge", "pad", "rounded"]), why: "a hoof foot (C08), a webbed foot (C10), a root foot (C15)" },
   "anatomy.support-pair-count": { alleles: [{ id: "one", label: "one", value: 1 }], pairMap: { "one|one": 1, "one|two": 2, "one|three": 2, "two|two": 2, "three|two": 3, "three|three": 3 }, why: "one pair of legs for the big bird (C09)" },
   "growth.core-half-length": { alleles: [{ id: "huge", label: "huge", value: 0.92 }], why: "a fourth size class above large, so bear- and deer-size read bigger than the puffball" },
+  "growth.auricular-length-ratio": { alleles: [{ id: "tall", label: "tall", value: 1.4 }], why: "tall ears for the fox (C05): the clan's signature ear clears the head by two thirds of its height, which long (1.0) cannot" },
 };
 
 // v1 records whose consumer lived outside the construction target table (the shared pigments and

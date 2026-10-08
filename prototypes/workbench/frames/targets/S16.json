@@ -9,9 +9,11 @@
   100,
   100
  ],
- "note": "a jagged bolt standing on nothing: a vertical zigzag body with a small head at the top, afloat",
+ "note": "a standing bolt: a tall thin zigzag ribbon with a small head on top and two streamers trailing down from its sides, afloat",
  "shapes": [
-  {"polygon":[[50,10],[40,36],[52,36],[42,62],[56,60],[46,90],[66,52],[54,52],[66,28],[56,30]]},
-  {"ellipse":[52,12,6,6]}
+  {"polygon":[[50,10],[42,34],[52,34],[44,60],[56,58],[48,90],[64,52],[54,52],[64,30],[55,30]],"part":"body"},
+  {"ellipse":[51,12,6,6],"part":"head"},
+  {"polygon":[[46,52],[30,78],[34,80],[50,56]],"part":"body"},
+  {"polygon":[[58,50],[74,74],[70,77],[54,54]],"part":"body"}
  ]
 }
