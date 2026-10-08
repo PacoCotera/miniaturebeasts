@@ -1,0 +1,305 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "7A-no-eye-recipe",
+  "name": "No eye recipe",
+  "change": "Both steps, the Eyes paragraph removed; the species iris colour in the notes stays. Measures what the house eye recipe buys in sameness across species.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "Both steps, the Eyes paragraph removed; the species iris colour in the notes stays. Measures what the house eye recipe buys in sameness across species.",
+ "costUSD": 0.3378,
+ "subject": {
+  "member": "type-specimen",
+  "genomeDigest": "S09-33855bb1",
+  "controls": "out/S09/09e30f12feee02c6"
+ },
+ "step1": {
+  "callId": "d491c55d-c755-44bb-a4cf-9586b3e3ff11",
+  "status": "ok",
+  "costUSD": 0.17107,
+  "seconds": 18.5,
+  "imageOrder": [
+   "index",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.755,
+   "silhouetteIoUInPlace": 0.77,
+   "parts": {
+    "region-0": {
+     "span": 0.993,
+     "coverage": 0.998
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.974
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 0.988
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.939
+    },
+    "beak": {
+     "span": 0.844,
+     "coverage": 0.741
+    },
+    "crown": {
+     "span": 0.707,
+     "coverage": 0.666
+    },
+    "leg-0": {
+     "span": 1.0,
+     "coverage": 0.988
+    },
+    "flap": {
+     "span": 0.971,
+     "coverage": 0.859
+    },
+    "tail": {
+     "span": 0.912,
+     "coverage": 0.914
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.346,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.274,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.356,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.384,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.258,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.388,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.618,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.993,
+     "median": "#4d7bca",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.987,
+     "median": "#4a71ba",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.979,
+     "median": "#4e7dcf",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.963,
+     "median": "#4e7dcf",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.956,
+     "median": "#4c7ccd",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.846,
+     "median": "#d7b483",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.877,
+     "median": "#e1bb79",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.034,
+   "missing": 0.002,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.945,
+   "passed": true,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "f5324899-2400-484c-a9ba-87622e599f08",
+  "status": "ok",
+  "costUSD": 0.16675,
+  "seconds": 19.0,
+  "imageOrder": [
+   "drawing",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.761,
+   "silhouetteIoUInPlace": 0.772,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.972
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.943
+    },
+    "beak": {
+     "span": 0.857,
+     "coverage": 0.768
+    },
+    "crown": {
+     "span": 0.713,
+     "coverage": 0.658
+    },
+    "leg-0": {
+     "span": 1.0,
+     "coverage": 0.979
+    },
+    "flap": {
+     "span": 0.968,
+     "coverage": 0.904
+    },
+    "tail": {
+     "span": 0.892,
+     "coverage": 0.919
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.344,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.276,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.356,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.384,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.258,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.388,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.62,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.896,
+     "median": "#507ab6",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.989,
+     "median": "#496bac",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.963,
+     "median": "#4f7bc4",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.944,
+     "median": "#4d7bc7",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.962,
+     "median": "#4f7ac8",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.846,
+     "median": "#d7be82",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.889,
+     "median": "#d8b26e",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.034,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.918,
+   "passed": true,
+   "gated": false
+  }
+ }
+}
