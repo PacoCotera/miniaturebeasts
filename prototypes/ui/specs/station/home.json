@@ -1,0 +1,34 @@
+{
+ "screen": "home",
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md#home",
+ "frame": "frame.json",
+ "note": "The one home of the Home numbers, transcribed from station-layouts.md (Home §5, §6) and its wireframe 01-home.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What the layout document does not give is listed under `derived`, each waiting for the UI designer.",
+ "derived": {
+  "colours": "derived, UI designer to confirm: the colour roles of the Home regions are the builder's choice from the palette's names (the layout document names none beyond the kit's: the bezel in `metal`, the module boxes in `panel` with a `bevel` top edge, the amber lamp, the cream focus ring); the living window's inside is one flat placeholder plate in `night` with its ground band in `slate` until the Home master exists (no wood, no warm lamp pool)",
+  "rack pods": "derived, UI designer to confirm: the layout lists pods in the Rack as 24×32 in 40×40 wells; the signed placeholder pod sprites have a well size of 32×40, which is the sprite placed (1:1, never scaled), centred in its 40×40 well — OPEN, see the report",
+  "message plate": "derived, UI designer to confirm: ← on the room says Home is the top view; the document gives no exact words, so the string is \"Home is the top view\"",
+  "waiting lamp": "derived, UI designer to confirm: the 12×12 waiting lamp sits at the resident's top right, inset 0 (its right edge on the box's right edge, its top on the box's top)",
+  "bay lift": "derived, UI designer to confirm: the document lifts the Bay module 4 px on arrival, but the chrome lift is 2 px (frame.json focus.lift.chrome) because at y 48 a 4 px lift puts the 4 px focus ring on the top bar's rule at y 40 — OPEN, see the report; the build reads the lift from here"
+ },
+ "regions": {
+  "bezel": { "rect": [16, 48, 656, 504], "inset": 8 },
+  "glass": { "rect": [24, 56, 640, 488], "component": "livingWindow", "ground": [24, 300, 640, 228] },
+  "resident": { "adult": [144, 152], "juvenile": [104, 112], "focus": { "widen": 16, "height": 24 }, "lift": 4, "lamp": [12, 12], "walk": { "ground": [24, 300, 640, 228] } },
+  "bed": { "rect": [520, 472, 128, 56], "mark": [16, 24] },
+  "knob": { "rect": [624, 544, 32, 8], "target": [48, 24] },
+  "bay": { "rect": [688, 48, 320, 120], "component": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "door": [16, 36, 288, 72], "crate": [80, 56], "pitch": 96, "max": 3, "lift": 4 },
+  "rack": { "rect": [688, 176, 320, 120], "component": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "wells": { "at": [24, 40], "size": [40, 40], "pitch": [48, 0], "slots": 6 }, "pod": [24, 32], "star": [12, 12], "starAt": [0, -12] },
+  "incubator": { "rect": [688, 304, 320, 120], "component": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "dome": [16, 24, 80, 80], "leaves": { "at": [112, 40, 192, 40], "leaf": [8, 12], "pitch": 12, "rows": 2, "perRow": 16 } },
+  "probe": { "rect": [688, 432, 320, 120], "component": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "cradle": [16, 24, 128, 80], "shields": { "at": [160, 64], "size": [28, 12], "pitch": 36, "count": 3 }, "slot": [264, 24, 40, 80] },
+  "ribbon": { "rect": [40, 72, 608, 40], "px": 20 },
+  "report": { "rect": [64, 120, 560, 320], "maxHeight": 320 }
+ },
+ "focus": { "fallback": "spatial", "initial": "room", "targets": { "resident": "ellipse", "module": "round", "knob": "round" } },
+ "colours": {
+  "bezel": "metal", "bezelLight": "bevel", "bezelShade": "hairline", "glass": "night", "groundBand": "slate",
+  "module": "panel", "moduleTop": "bevel", "moduleEdge": "hairline", "word": "bone", "lampOn": "amber", "lampOff": "stone",
+  "bed": "panel", "knob": "metal", "slotEmpty": "gold", "ribbonFill": "tealD", "ribbonEdge": "aqua", "ribbonText": "bone"
+ },
+ "strings": { "modules": { "bay": "Bay", "rack": "Rack", "incubator": "Incubator", "probe": "Probe" }, "bayClosed": "closed while the Companion is away", "homeTop": "Home is the top view", "rest": "Rest" }
+}
