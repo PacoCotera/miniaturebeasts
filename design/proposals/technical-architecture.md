@@ -1,6 +1,6 @@
 # Technical architecture: one loop, three screens
 
-**Proposal** from the architect, 2026-10-08, for discussion with the owner. It answers the owner's direction of today: review the technical architecture of the Station and the Caddy (and, with them, the Companion), and choose the tooling and frameworks that draw the screens and handle interaction on hardware we can actually ship. **Decided** marks owner decisions restated here; everything else is **Proposal**. Section 7 holds three decisions for the owner.
+**Decided** 2026-10-08: the three decisions of section 7 were taken as recommended, so this document is the architecture every Station, Companion and Caddy build follows. Written by the architect, 2026-10-08, for the owner. It answers the owner's direction of today: review the technical architecture of the Station and the Caddy (and, with them, the Companion), and choose the tooling and frameworks that draw the screens and handle interaction on hardware we can actually ship. **Decided** marks owner decisions restated here; everything else is **Proposal**. Section 7 holds the three decisions.
 
 **Decided 2026-10-08 (owner).**
 
@@ -229,7 +229,9 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 | Splitting the Companion breaks the playable page | C1 makes no visible change; the smoke and parse checks stay |
 | The Station palette is unsettled (69 in code, 96 in the UI kit, painted art on top) | The renderer takes the palette as data; the UI designer and the art director fix it; the check follows |
 
-## 7. Decisions for the owner
+## 7. Decisions
+
+**Decided** 2026-10-08, all three as recommended:
 
 1. **The Station runs the web page on the Pi and never ports.** *Recommended: yes, behind the P0 measurement.* The rig, rasteriser, validator and derivation must run on the Station, and they exist only in JavaScript. Inter anti-aliasing and painted art are native to a browser. The Pi 4 has the capacity. This replaces "everything through LVGL" for the Station only.
 2. **The sandbox gets its own small, declarative screen layer now** (screen specs as data, a component library, a retained scene, a focus model), built as T1 in place of the pending layout pass and before M5, with the regions check added to CI. *Recommended: yes.* It is the separation of concerns the owner asked for. Adopting LVGL-in-WebAssembly now would move the rules to C before the loop is stable and would copy what must be imported.
