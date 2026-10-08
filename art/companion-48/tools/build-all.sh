@@ -26,3 +26,4 @@ python3 -I tools/beside.py $R/still/beside-concept-and-round1.png $R/still/compa
 python3 -I tools/meadow-check.py $W/ground $W/meadow-mixed
 python3 -I tools/check.py $R/sheets/*.png --fourgray $R/sheets/four-gray
 python3 -I tools/check.py $R/still/companion-place-storm-48.png $R/still/companion-place-storm-48-plain.png $R/still/companion-place-storm-48-cool.png --fourgray $R/still/four-gray
+python3 -I tools/preview.py $W/preview-water-3x.png 3 $W/ground/water1.png $W/ground/water2.png $W/ground/deep1.png $W/ground/deep2.png $W/ground/shallows.png $W/shore/shore-03-1.png $W/shore/shore-01-2.png
