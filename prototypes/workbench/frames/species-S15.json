@@ -772,26 +772,17 @@
    "alleles": [
     "small",
     "medium",
-    "large",
-    "tiny"
+    "large"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
-    "between small and tiny",
     "medium",
     "between medium and large",
-    "between medium and tiny",
-    "large",
-    "between large and tiny",
-    "tiny"
+    "large"
    ],
-   "guard": "rig: head.rxOverCoreRx",
-   "typical": [
-    "medium",
-    "tiny"
-   ]
+   "guard": "rig: head.rxOverCoreRx"
   },
   {
    "id": "growth.head-width-ratio",
@@ -806,16 +797,12 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high",
-    "tiny"
+    "high"
    ],
    "looks": [
     "low",
     "between low and high",
-    "between low and tiny",
-    "high",
-    "between high and tiny",
-    "tiny"
+    "high"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "typical": [
@@ -836,16 +823,12 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high",
-    "tiny"
+    "high"
    ],
    "looks": [
     "low",
     "between low and high",
-    "between low and tiny",
-    "high",
-    "between high and tiny",
-    "tiny"
+    "high"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
@@ -1813,7 +1796,7 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 104,
+  "fieldGuideLooks": 94,
   "stampBitsPerCopy": 35
  },
  "notYet": {
@@ -1898,8 +1881,8 @@
      "medium"
     ],
     "growth.head-length-ratio": [
-     "medium",
-     "tiny"
+     "small",
+     "large"
     ],
     "growth.head-width-ratio": [
      "high",
@@ -2006,7 +1989,7 @@
   "brief": "Lehten: 4 body regions (Rfan2), a head, 2 eyes, 3 rays, 8 flaps; skin; rooted, fused head.",
   "bounds": {
    "min": [
-    -0.9713488461799774,
+    -1.1377139812462644,
     -0.6988569929454036,
     -0.002942618514637285
    ],
@@ -2080,18 +2063,15 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large",
-   "tiny"
+   "large"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high",
-   "tiny"
+   "high"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high",
-   "tiny"
+   "high"
   ],
   "growth.head-lift-ratio": [
    "low",

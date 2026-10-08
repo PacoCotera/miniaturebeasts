@@ -15,6 +15,7 @@
 // survivor set: anything the plan carries is built; what cannot be built throws, and validate.mjs
 // reports it. Nothing is repaired.
 import { add, sub, mul, unit, norm, dot, cross, IDENTITY, localVector, worldPoint, localPoint, frameAlong, rotateFrameZ, lerp, newNode, ringSolid, ellipsoid, segment, sheet, sweep, surfaceAlong, addFace, envelope, sharedWitness, rootOn, longitudinalWeight, inflate } from "./geometry.mjs";
+import { clampRegionLength, clampHead, clampEye, clampMuzzle, clampLeg, clampFoot, BEAK_CAP, MUZZLE_DEPTH_FLOOR } from "./envelope.mjs"; // the cute envelope: rules E1–E7
 
 const EYE_RIM = "#f1eddc", PUPIL = "#273036"; // v1 fixed inks (COMPOSITIONAL_CONTENT.surfaces.fixedEyes)
 
@@ -46,7 +47,7 @@ export function buildBody(resolved) {
   const L = v["core.rx"];
   const radial = plan.radial, depth = plan.depth;
   const bodyPalette = v["appearance.bodyPalette"], secondPalette = radial ? bodyPalette : v["appearance.modulePalette"] ?? bodyPalette;
-  const form = v["region.longitudinalForm"] ?? "ovoid", crossExp = radial ? 2 : v["region.crossExponent"] ?? 2;
+  const form = v["region.longitudinalForm"] ?? "ovoid", crossExp = 2; // E1: an ellipse section whatever the cross-exponent locus says
   const childScale = v["region.childScale"] ?? 1;
   const mass = massScales(v["development.regional-growth"], depth);
   const join = plan.join;
@@ -77,7 +78,7 @@ export function buildBody(resolved) {
     const radii = baseRadii.map((r, i) => r * s * (i === 0 ? along : 1));
     // A region is never a disc: its length is at least 0.85 of its larger cross radius (a wide
     // three-region body is a long one, not three wheels on an axle).
-    if (!radial && !plan.fan) radii[0] = Math.max(radii[0], 0.85 * Math.max(radii[1], radii[2]));
+    if (!radial && !plan.fan) clampRegionLength(radii); // E1: never a disc, never a log
     return radii;
   };
   function primary(id, center, radii, frame, upright = radial) {
@@ -123,7 +124,7 @@ export function buildBody(resolved) {
   const serialRegions = regions.filter((r) => !plan.fan || r === root);
 
   // --- head, neck, face ----------------------------------------------------------------------
-  const headR = [HEAD * v["head.rxOverCoreRx"] * L, HEAD * v["head.ryOverCoreRx"] * L, HEAD * v["head.rzOverCoreRx"] * L];
+  const headR = clampHead([HEAD * v["head.rxOverCoreRx"] * L, HEAD * v["head.ryOverCoreRx"] * L, HEAD * v["head.rzOverCoreRx"] * L], root.radii); // E2
   const lift = (v["head.centerLiftOverCoreRx"] ?? 0.5) * L * (radial ? 0.3 : 1);
   const head = newNode("head", "typed-head", null, "body");
   ellipsoid(head, headR);
@@ -139,15 +140,15 @@ export function buildBody(resolved) {
   const headCenter = head.center;
   connect(root, head, headDir, join, v, push, envOf, L, "neck");
   if (v["beak.enabled"]) {
-    const len = 1.5 * (v["growth.beak-length-ratio"] ?? 0.8) * headR[0]; // a beak as long as the head at the long allele
+    const len = Math.min(BEAK_CAP, 1.5 * (v["growth.beak-length-ratio"] ?? 0.8)) * headR[0]; // a beak as long as the head at the long allele; E4 caps it
     const rt = rootOn(head, headCenter, unit([-1, 0, -0.25]), 0.12 * headR[0], envOf(head));
     const beak = newNode("beak", "beak", head.id, "second"); beak.part = "beak";
     segment(beak, rt.inner, add(rt.surface, add(mul(rt.direction, len), [0, 0, -0.1 * len])), 0.42 * Math.min(headR[1], headR[2]), 0.05 * headR[1]);
     push(beak, head, rt.witness);
   } else if (v["modules.muzzleAndJaw"]) {
     // A long muzzle is a tapered snout (thick at the head, fine at the nose); a short one stays a blunt egg.
-    const proj = v["muzzle.rxOverHeadRx"];
-    const mR = [proj * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], (0.34 - 0.08 * Math.max(0, Math.min(1, (proj - 0.58) / 0.66))) * headR[2]];
+    const proj = clampMuzzle(v["muzzle.rxOverHeadRx"], resolved.species); // E4: by kind
+    const mR = [proj * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], Math.max(MUZZLE_DEPTH_FLOOR, 0.34 - 0.08 * Math.max(0, Math.min(1, (proj - 0.58) / 0.66))) * headR[2]];
     const mC = add(headCenter, [-headR[0] + 0.15 * headR[0] - 0.5 * mR[0], 0, -0.38 * headR[2]]);
     // With a belly field the muzzle and the chin are the underside's pigment too, as Pip's cream snout.
     const muzzleSlot = v["belly.enabled"] ? "belly" : "body";
@@ -159,7 +160,7 @@ export function buildBody(resolved) {
     push(jaw, muzzle);
   }
   if (v["modules.exteriorEyePair"]) for (const side of [-1, 1]) {
-    const y = side * v["eye.anchorYOverHeadRy"] * headR[1], z = (v["growth.exterior-eye-height-ratio"] ?? 0.2) * headR[2], r = v["eye.radiusOverHeadMinYZ"] * Math.min(headR[1], headR[2]); // the eye's height on the head: 0.2 of the half depth above the centre, or the C01 locus (Pip's sit at the middle)
+    const { r, y, z } = clampEye(v["eye.radiusOverHeadMinYZ"] * Math.min(headR[1], headR[2]), side * v["eye.anchorYOverHeadRy"] * headR[1], (v["growth.exterior-eye-height-ratio"] ?? 0.2) * headR[2], headR); // E3; the eye's height: 0.2 of the half depth above the centre, or the C01 locus (Pip's sit at the middle)
     if (Math.abs(y) + 0.82 * r > headR[1] || Math.abs(z) + r > headR[2]) throw new Error("eye does not fit the head (eye size against head size)");
     const analytic = [-headR[0] * Math.sqrt(Math.max(0.01, 1 - (y / headR[1]) ** 2 - (z / headR[2]) ** 2)), y, z];
     const rt = rootOn(head, headCenter, analytic, 0, envOf(head)); // on the actual facet
@@ -176,7 +177,7 @@ export function buildBody(resolved) {
       const height = v["crown.heightOverHeadRz"] * headR[2], radius = 0.36 * Math.min(headR[1], headR[2]);
       const crown = newNode(`crown-${side < 0 ? "L" : side === 0 ? "M" : "R"}`, "crown", head.id, "body"); crown.part = "crown";
       if (v["crown.form"] === "rounded") { crown.center = add(rt.inner, [0, 0, 0.4 * height]); ellipsoid(crown, [radius, radius, 0.6 * height], 2); push(crown, head); }
-      else if (v["crown.form"] === "leaf") {
+      else { // E7: a pointed or leaf crown is a leaf sheet, never a pyramid
         // A leaf sheet, as Pip's crest: the middle leaf up and a little back, the side leaves up and out,
         // each leaning back; the blade faces forward so the leaves show their width in the portrait.
         const len = 1.25 * height, w = 0.62 * len;
@@ -184,19 +185,11 @@ export function buildBody(resolved) {
         // The blade faces forward and a little to its side (the middle leaf to the viewer's left), so the
         // leaves show their width in the portrait and still read from the side.
         const across = unit(cross(upAxis, unit([-0.8, (side === 0 ? -1 : side) * 0.6, 0.1])));
-        const outline = [[-0.1, 0], [-0.5, 0.42], [-0.32, 0.82], [0, 1], [0.32, 0.82], [0.5, 0.42], [0.1, 0]];
+        const outline = v["crown.form"] === "pointed" ? [[-0.1, 0], [-0.42, 0.35], [-0.28, 0.75], [0, 1], [0.28, 0.75], [0.42, 0.35], [0.1, 0]] : [[-0.1, 0], [-0.5, 0.42], [-0.32, 0.82], [0, 1], [0.32, 0.82], [0.5, 0.42], [0.1, 0]];
         const corners = outline.map(([a, b]) => add(rt.inner, add(mul(across, a * w), mul(upAxis, b * len))));
         sheet(crown, corners, cross(across, upAxis), 0.025 * len);
         crown.radii = [w / 2, w / 2, len / 2]; crown.center = add(rt.inner, mul(upAxis, 0.5 * len));
         push(crown, head, rt.inner);
-      }
-      else {
-        crown.center = add(rt.inner, [0, 0, 0.5 * height]); crown.radii = [radius, radius, height / 2];
-        const base = Array.from({ length: 6 }, (_, i) => add(rt.inner, [radius * Math.cos((i * Math.PI) / 3), radius * Math.sin((i * Math.PI) / 3), 0]));
-        for (let i = 0; i < 6; i++) addFace(crown, [base[i], base[(i + 1) % 6], add(rt.inner, [0, 0, height])], [0, 0, 1]);
-        addFace(crown, [...base].reverse(), Array(6).fill(0));
-        crown.shape = { kind: "pyramid" };
-        push(crown, head);
       }
     }
   }
@@ -267,9 +260,9 @@ export function buildBody(resolved) {
     return dist;
   };
   if (plan.limbSet === "legs") {
-    const drop = v["support.rootToEndDropOverCoreRx"] * L, spread = v["support.outwardEndOffsetOverCoreRx"] * L;
-    // Leg girth: 1.6 times v1's ratio, never more than half of the body's smaller cross radius.
-    const radius = Math.min(1.6 * v["support.proximalRadiusOverCoreRx"] * L, 0.6 * Math.min(root.radii[1], root.radii[2]));
+    // Leg girth: 1.6 times v1's ratio; E5 keeps the radius and the drop inside the envelope.
+    const { radius, drop } = clampLeg(1.6 * v["support.proximalRadiusOverCoreRx"] * L, v["support.rootToEndDropOverCoreRx"] * L, root.radii);
+    const spread = v["support.outwardEndOffsetOverCoreRx"] * L;
     const stationCount = plan.stations.length;
     plan.stations.forEach((station, g) => {
       const owner = serialRegions[Math.min(station.region, serialRegions.length - 1)];
@@ -570,7 +563,7 @@ function connect(parent, child, direction, join, v, push, envOf, L, label = null
 function terminal(id, last, end, v, L, push, contactPoints, azimuth) {
   const form = v["terminal.form"] ?? "rounded";
   const PAW = 1.35; // paws 1.35 times v1's ratio: an end a leg can stand on
-  const tr = [PAW * (v["terminal.rxOverCoreRx"] ?? 0.18) * L, PAW * 0.73 * (v["terminal.rxOverCoreRx"] ?? 0.18) * L, PAW * (v["terminal.rzOverCoreRx"] ?? 0.1) * L];
+  const tr = clampFoot([PAW * (v["terminal.rxOverCoreRx"] ?? 0.18) * L, PAW * 0.73 * (v["terminal.rxOverCoreRx"] ?? 0.18) * L, PAW * (v["terminal.rzOverCoreRx"] ?? 0.1) * L], last.sectionRadii[0] / 0.8, L); // E6
   const frame = azimuth === null ? IDENTITY : rotateFrameZ(IDENTITY, azimuth);
   if (form === "root") {
     const spread = 1.2 * tr[0];

@@ -25,7 +25,7 @@ The checks (one named retry, then the placeholder): the painted silhouette again
 paint (the part check, which catches a body turned or a wing re-laid); every pigment slot painted
 in its own colour (the slot check: the median paint under the slot map, not clearly nearer another slot's pigment in Lab).
 """
-import base64, hashlib, io, json, os, subprocess, sys, threading, time, uuid, urllib.request, urllib.error
+import base64, glob, hashlib, io, json, os, subprocess, sys, threading, time, uuid, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor
 from PIL import Image, ImageDraw, ImageFilter
 
@@ -581,7 +581,16 @@ def grow(species, genome=None, digest=None, force=False, variant="crisp", views=
 
 def cmd_paint(a):
     species = a.get("species"); jobs = []
-    if a.get("genome"): jobs.append((species, a["genome"], None))
+    if a.get("extremes") is not None:  # the worst cases rolled by grow/extremes.mjs: --extremes "0,7,37" (case numbers) or --extremes all; distinct genomes only
+        idx = json.load(open(os.path.join(OUT, species, "extremes", "index.json")))
+        want = None if a["extremes"] in ("", "all") else {int(x) for x in a["extremes"].split(",")}
+        seen = set()
+        for i, c in enumerate(idx["cases"]):
+            if want is not None and i not in want: continue
+            g = json.load(open(os.path.join(HERE, c["dir"], "genome.json"))); key = json.dumps(sorted(g["loci"].items()))
+            if key in seen or c["status"] != "built": continue
+            seen.add(key); jobs.append((species, os.path.join(HERE, c["dir"], "genome.json"), None))
+    elif a.get("genome"): jobs.append((species, a["genome"], None))
     elif a.get("digest"): jobs.append((species, None, a["digest"]))
     else:
         n = int(a.get("members", 6))
@@ -837,7 +846,9 @@ def cmd_report(a):
     json.dump(cost, open(os.path.join(HERE, "costs.json"), "w"), indent=1); open(os.path.join(HERE, "costs.json"), "a").write("\n")
     print(json.dumps(cost, indent=1))
     if mans: sheets(mans, cost)
-    if PROMPT_VERSION >= 4: sheet_loika(cost)
+    if PROMPT_VERSION >= 4:
+        sheet_loika(cost)
+        for sp in ("S01", "S09", "S12"): sheet_extremes(sp)
 
 
 def sheet_loika(cost):
@@ -852,9 +863,12 @@ def sheet_loika(cost):
         old = json.load(open(pi))["members"]; new = json.load(open(os.path.join(REF, "S01", "index.json")))["members"]
         for o, n in zip(old, new): prev[n["genomeSha256"][:16]] = os.path.join(OUT, "S01", o["genomeSha256"][:16], "variants", "twostep")
     rows = []
-    for d, m in manifests():
-        if m["species"] != "S01" or m.get("promptVersion", 1) < PROMPT_VERSION: continue
-        if os.path.exists(os.path.join(d, "variants", "twostep", "manifest.json")): rows.append((d, m, os.path.join(d, "variants", "twostep"), json.load(open(os.path.join(d, "variants", "twostep", "manifest.json")))))
+    for d in sorted(glob.glob(os.path.join(OUT, "S01", "*"))):
+        p = os.path.join(d, "variants", "twostep", "manifest.json")
+        if not os.path.exists(p) or os.path.basename(d) == "pip-control": continue
+        tm = json.load(open(p))
+        if tm.get("promptVersion", 1) < PROMPT_VERSION: continue
+        rows.append((d, tm, os.path.join(d, "variants", "twostep"), tm))
     rows.sort(key=lambda r: (r[1]["level"] != "species", r[1]["genomeDigest"]))
     exp = os.path.join(OUT, "S01", "pip-control", "variants", "twostep")
     cols = [("new control: shaded pass, portrait (rig calibrated to Pip)", 300), ("B step 1: the HiBit drawing", 300), ("B step 2: the rich painting", 300), ("previous B (prompt v3, the old rig)", 300), ("B: Companion derived", 280), ("token 1x, 3x", 200)]
@@ -894,6 +908,47 @@ def sheet_loika(cost):
         draw.text((gap, y + 312), f"{who}   |   {label(tm)}", fill=ink)
         if tm["views"]["portrait"]["status"] == "plain": draw.text((gap + 2 * 312, y + 326), "served plain: step 1 rejected twice", fill=(170, 40, 40))
     sheet.save(os.path.join(HERE, "sheets", "S01-pip.png")); print("sheet S01-pip", sheet.size)
+
+
+def sheet_extremes(sp):
+    """The envelope's worst cases for one species: per case the control (the shaded pass, portrait), variant
+    B's step 1 drawing and step 2 painting, with the locus values that produced it; the type specimen first."""
+    ip = os.path.join(OUT, sp, "extremes", "index.json")
+    if not os.path.exists(ip): return
+    idx = json.load(open(ip)); rows = []; seen = set()
+    for i, c in enumerate(idx["cases"]):
+        g = json.load(open(os.path.join(HERE, c["dir"], "genome.json"))); key = json.dumps(sorted(g["loci"].items()))
+        if key in seen: continue
+        from_node = subprocess.run(["node", "-e", "import('./sketch/cli.mjs').then(m=>{const g=JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'));console.log(m.genomeSha256(g))})", os.path.join(HERE, c["dir"], "genome.json")], capture_output=True, text=True, cwd=WB)
+        sha = from_node.stdout.strip()[:16]
+        td = os.path.join(OUT, sp, sha, "variants", "twostep")
+        if not os.path.exists(os.path.join(td, "manifest.json")): continue
+        seen.add(key); rows.append((i, c, os.path.join(OUT, sp, sha), td, json.load(open(os.path.join(td, "manifest.json")))))
+    if not rows: return
+    cols = [("control: shaded pass, portrait (the envelope)", 300), ("B step 1: the HiBit drawing", 300), ("B step 2: the rich painting", 300), ("Companion derived", 280)]
+    gap = 12; rowh = 310 + 58; ink = (40, 40, 50)
+    W = gap + sum(w + gap for _, w in cols) + 420; H = 70 + len(rows) * rowh
+    sheet = Image.new("RGB", (W, H), (255, 255, 255)); draw = ImageDraw.Draw(sheet)
+    name = json.load(open(os.path.join(rows[0][2], "controls", "legend.json")))["name"]
+    draw.text((gap, 8), f"{sp} {name}: the cute envelope's worst cases. Every open proportion locus at its extremes and the corners (grow/extremes.mjs), variant B (two steps, crisp controls, only the named markings, a drawing's tolerance of 25 %), {GEMINI_MODEL}, prompt v{PROMPT_VERSION}, device size at 1x. Open proportion loci: {', '.join(k.split('.')[-1] for k in idx['loci'])}.", fill=ink)
+    x = gap
+    for n, w in cols: draw.text((x, 26), n, fill=ink); x += w + gap
+    draw.text((x, 26), "the locus values of the case (the rest typical)", fill=ink)
+    def put(path, x, y):
+        if os.path.exists(path): sheet.paste(Image.open(path).convert("RGB"), (x, y)); return True
+        return False
+    for r, (i, c, d, td, tm) in enumerate(rows):
+        y = 44 + r * rowh; x = gap
+        put(os.path.join(d, "controls", "shaded.portrait.station.png"), x, y); x += 300 + gap
+        put(os.path.join(td, "step1-portrait-300x310.png"), x, y); x += 300 + gap
+        put(os.path.join(td, "station-portrait-300x310.png"), x, y); x += 300 + gap
+        put(os.path.join(td, "companion-280x300.png"), x, y); x += 280 + gap
+        vals = [f"{k.split('.')[-1].replace('-ratio', '')} = {v}" for k, v in c["set"].items()] or ["(the type specimen)"]
+        for j, v in enumerate(vals[:22]): draw.text((x, y + 4 + 13 * j), v, fill=ink)
+        vr = tm["views"]["portrait"]; s1 = [a for a in vr["attempts"] if a.get("step") == 1]; c1 = (s1[-1].get("checks") or {}) if s1 else {}
+        draw.text((gap, y + 312), f"case #{i} {c['name']}   |   {vr['status']}, {len(vr['attempts'])} calls, ${tm['costUSD']:.3f}   |   step 1: outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {min(v['span'] if isinstance(v, dict) else v for v in c1['parts'].values()) if c1.get('parts') else '-'}, slots {c1.get('slotAgreement', '-')}", fill=ink)
+        if vr["status"] == "plain": draw.text((gap + 2 * 312, y + 326), "served plain: step 1 rejected twice", fill=(170, 40, 40))
+    sheet.save(os.path.join(HERE, "sheets", f"extremes-{sp}-B.png")); print("sheet extremes", sp, sheet.size)
 
 
 def sheets(mans, cost):

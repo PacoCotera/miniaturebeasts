@@ -740,26 +740,17 @@
    "alleles": [
     "small",
     "medium",
-    "large",
-    "tiny"
+    "large"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
-    "between small and tiny",
     "medium",
     "between medium and large",
-    "between medium and tiny",
-    "large",
-    "between large and tiny",
-    "tiny"
+    "large"
    ],
-   "guard": "rig: head.rxOverCoreRx",
-   "typical": [
-    "medium",
-    "tiny"
-   ]
+   "guard": "rig: head.rxOverCoreRx"
   },
   {
    "id": "growth.head-width-ratio",
@@ -774,22 +765,14 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high",
-    "tiny"
+    "high"
    ],
    "looks": [
     "low",
     "between low and high",
-    "between low and tiny",
-    "high",
-    "between high and tiny",
-    "tiny"
+    "high"
    ],
-   "guard": "rig: head.ryOverCoreRx",
-   "typical": [
-    "high",
-    "tiny"
-   ]
+   "guard": "rig: head.ryOverCoreRx"
   },
   {
    "id": "growth.head-depth-ratio",
@@ -804,16 +787,12 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high",
-    "tiny"
+    "high"
    ],
    "looks": [
     "low",
     "between low and high",
-    "between low and tiny",
-    "high",
-    "between high and tiny",
-    "tiny"
+    "high"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
@@ -1841,7 +1820,7 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 75,
+  "fieldGuideLooks": 65,
   "stampBitsPerCopy": 28
  },
  "notYet": {
@@ -1938,12 +1917,12 @@
      "low"
     ],
     "growth.head-length-ratio": [
-     "medium",
-     "tiny"
+     "small",
+     "large"
     ],
     "growth.head-width-ratio": [
-     "high",
-     "tiny"
+     "low",
+     "high"
     ],
     "growth.head-depth-ratio": [
      "high",
@@ -2066,14 +2045,14 @@
   "brief": "Oskol: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, wing cases; scales; splayed, neck head.",
   "bounds": {
    "min": [
-    -0.8645154432970865,
-    -0.7396572774778807,
+    -0.9465123210089483,
+    -0.6635370031903647,
     0
    ],
    "max": [
-    0.9206136131443694,
-    0.7396572774778807,
-    0.9991862399452036
+    0.8862336131443693,
+    0.6635370031903647,
+    0.987012229240865
    ]
   },
   "counts": {
@@ -2106,18 +2085,15 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large",
-   "tiny"
+   "large"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high",
-   "tiny"
+   "high"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high",
-   "tiny"
+   "high"
   ],
   "growth.head-lift-ratio": [
    "low",

@@ -1418,23 +1418,15 @@
    "trait": "legs",
    "shapeable": true,
    "alleles": [
-    "fine",
     "slender",
     "stout"
    ],
    "looks": [
-    "fine",
-    "between fine and slender",
-    "between fine and stout",
     "slender",
     "between slender and stout",
     "stout"
    ],
-   "guard": "rig: support.proximalRadiusOverCoreRx",
-   "typical": [
-    "fine",
-    "slender"
-   ]
+   "guard": "rig: support.proximalRadiusOverCoreRx"
   },
   {
    "id": "growth.terminal-length-ratio",
@@ -2353,7 +2345,7 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 164,
+  "fieldGuideLooks": 161,
   "stampBitsPerCopy": 56
  },
  "notYet": {
@@ -2526,8 +2518,8 @@
      "high"
     ],
     "growth.support-radius-ratio": [
-     "fine",
-     "slender"
+     "slender",
+     "stout"
     ],
     "growth.terminal-length-ratio": [
      "small",
@@ -2631,19 +2623,19 @@
   "bounds": {
    "min": [
     -0.8658885506265219,
-    -0.4300759292837113,
+    -0.43550517928371135,
     0
    ],
    "max": [
     1.191631778505549,
-    0.4300759292837113,
+    0.43550517928371135,
     0.8406953203191188
    ]
   },
   "counts": {
    "nodes": 30,
    "edges": 29,
-   "vertices": 1445
+   "vertices": 1459
   }
  },
  "viability": {
@@ -2744,7 +2736,6 @@
    "long"
   ],
   "growth.support-radius-ratio": [
-   "fine",
    "slender",
    "stout"
   ],
