@@ -163,8 +163,8 @@ ROSTER = [
     ("S12", "C12", "three|serial|bilateral|contact|zero|one|three|on|skin", "small"),    # insect flutterer
     ("S13", "C13", "three|serial|bilateral|contact|zero|one|three|off|scales", "small"), # beetle-like crawler
     ("S14", "C14", "three|serial|bilateral|none|zero|one|two|off|skin", "small"),        # slug
-    ("S15", "C15", "two|fan|radial|contact|zero|one|two|off|skin", "medium"),            # walking plant
-    ("S16", "C16", "three|fan|bilateral|none|zero|one|two|off|skin", "medium"),          # lightning wisp
+    ("S15", "C15", "two|fan|radial|contact|zero|one|one|off|skin", "medium"),            # walking plant: a standing bulb, leaves on top, three root legs (plans.json standingPlans, onePairPlans)
+    ("S16", "C16", "three|fan|bilateral|none|zero|one|two|off|skin", "medium"),          # lightning wisp: a vertical fan, a standing ribbon with two streamers (plans.json standingPlans)
 ]
 
 

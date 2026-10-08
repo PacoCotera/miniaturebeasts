@@ -55,7 +55,8 @@
    "join": "narrow",
    "wave": false,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B2·L4",
   "rig": "B2",
@@ -1275,8 +1276,8 @@
    ],
    "guard": "rig: tail.lengthOverOwnerRx",
    "typical": [
-    "long",
-    "long"
+    "short",
+    "short"
    ]
   },
   {
@@ -2158,8 +2159,8 @@
      "on"
     ],
     "growth.axial-tail-length-ratio": [
-     "long",
-     "long"
+     "short",
+     "short"
     ],
     "growth.axial-tail-width-ratio": [
      "broad",
@@ -2235,9 +2236,9 @@
     0
    ],
    "max": [
-    1.6841468461332496,
+    1.080364741747384,
     0.4562658075035008,
-    1.173743358519764
+    1.2220518140906937
    ]
   },
   "counts": {

@@ -56,7 +56,8 @@
    "join": "narrow",
    "wave": false,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B3·L6·flaps",
   "rig": "B3",
@@ -776,11 +777,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "medium",
+    "short",
     "short"
    ],
    "looks": [
-    "medium"
+    "short"
    ],
    "guard": "rig: support.rootToEndDropOverCoreRx",
    "nature": "look"
@@ -1176,11 +1177,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
-    "short"
+    "long",
+    "long"
    ],
    "looks": [
-    "short"
+    "long"
    ],
    "guard": "rig: antenna length over head depth",
    "nature": "look"
@@ -1264,11 +1265,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "glossy",
-    "glossy"
+    "matte",
+    "matte"
    ],
    "looks": [
-    "glossy"
+    "matte"
    ],
    "guard": "sketch: specular highlight strength (surface texture's first consumer)",
    "nature": "look"
@@ -1306,11 +1307,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
-    "short"
+    "long",
+    "long"
    ],
    "looks": [
-    "short"
+    "long"
    ],
    "guard": "behaviour: how long the glow lasts",
    "nature": "doing"
@@ -1829,7 +1830,7 @@
      "low"
     ],
     "growth.support-drop-ratio": [
-     "medium",
+     "short",
      "short"
     ],
     "growth.support-splay-ratio": [
@@ -1905,8 +1906,8 @@
      "on"
     ],
     "growth.antenna-length-ratio": [
-     "short",
-     "short"
+     "long",
+     "long"
     ],
     "anatomy.antenna-form": [
      "feather",
@@ -1921,16 +1922,16 @@
      "clear"
     ],
     "appearance.sheen": [
-     "glossy",
-     "glossy"
+     "matte",
+     "matte"
     ],
     "appearance.emission-brightness": [
      "bright",
      "bright"
     ],
     "appearance.emission-length": [
-     "short",
-     "short"
+     "long",
+     "long"
     ]
    },
    "origin": {
@@ -1941,14 +1942,14 @@
   "brief": "Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 2 flaps; skin; splayed, neck head.",
   "bounds": {
    "min": [
-    -0.5961108020856885,
-    -0.6526789446404123,
+    -0.9334700317270626,
+    -0.6335063855764995,
     0
    ],
    "max": [
-    0.698574412079709,
-    0.6526789446404123,
-    1.1471620903127817
+    0.7691595923515492,
+    0.6335063855764995,
+    1.2638190163702423
    ]
   },
   "counts": {
@@ -2075,7 +2076,7 @@
    "low"
   ],
   "growth.support-drop-ratio": [
-   "medium",
+   "short",
    "short"
   ],
   "growth.support-splay-ratio": [
@@ -2147,24 +2148,24 @@
    "on"
   ],
   "growth.antenna-length-ratio": [
-   "short",
-   "short"
+   "long",
+   "long"
   ],
   "anatomy.antenna-form": [
    "feather",
    "feather"
   ],
   "appearance.sheen": [
-   "glossy",
-   "glossy"
+   "matte",
+   "matte"
   ],
   "appearance.emission-brightness": [
    "bright",
    "bright"
   ],
   "appearance.emission-length": [
-   "short",
-   "short"
+   "long",
+   "long"
   ]
  },
  "sealed": {}

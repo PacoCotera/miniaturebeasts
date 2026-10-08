@@ -22,7 +22,7 @@
   "speciesNumber": 481,
   "size": "medium",
   "clan": "C15",
-  "planKey": "two|fan|radial|contact|zero|one|two|off|skin",
+  "planKey": "two|fan|radial|contact|zero|one|one|off|skin",
   "planCode": "Rfan2·rays",
   "rig": "Rfan2",
   "tier": "late",
@@ -49,12 +49,13 @@
   }
  },
  "plan": {
-  "key": "two|fan|radial|contact|zero|one|two|off|skin",
+  "key": "two|fan|radial|contact|zero|one|one|off|skin",
   "extras": {
    "join": "broad",
    "wave": false,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": true
   },
   "code": "Rfan2·rays",
   "rig": "Rfan2",
@@ -67,7 +68,7 @@
    {
     "region": 0,
     "u": 0,
-    "rays": 6
+    "rays": 3
    }
   ]
  },
@@ -1975,23 +1976,23 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Lehten: 4 body regions (Rfan2), a head, 2 eyes, 6 rays, 8 flaps; skin; rooted, fused head.",
+  "brief": "Lehten: 4 body regions (Rfan2), a head, 2 eyes, 3 rays, 8 flaps; skin; rooted, fused head.",
   "bounds": {
    "min": [
-    -1.3144987542907807,
-    -1.180517590003432,
-    -0.0029878412845134594
+    -0.9837021216241199,
+    -0.6988569929454036,
+    -0.002942618514637285
    ],
    "max": [
-    1.0302175251228955,
-    1.300191975710964,
-    1.7215050078525356
+    0.7704882915637692,
+    0.7692499890320529,
+    2.5418409525680525
    ]
   },
   "counts": {
-   "nodes": 59,
-   "edges": 58,
-   "vertices": 1687
+   "nodes": 38,
+   "edges": 37,
+   "vertices": 1213
   }
  },
  "viability": {

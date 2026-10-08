@@ -55,7 +55,8 @@
    "join": "broad",
    "wave": false,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B1·L4",
   "rig": "B1",
@@ -1359,7 +1360,11 @@
     "tail",
     "ears"
    ],
-   "guard": "sketch: the fur material on the tail and the ears too"
+   "guard": "sketch: the fur material on the tail and the ears too",
+   "typical": [
+    "body",
+    "body"
+   ]
   },
   {
    "id": "appearance.face-mask",
@@ -1436,11 +1441,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "side",
+    "crown",
     "side"
    ],
    "looks": [
-    "side"
+    "crown"
    ],
    "guard": "rig: the ear root's lateral offset over the head's half width (side or crown)",
    "nature": "look"
@@ -2141,7 +2146,7 @@
      "upright"
     ],
     "growth.auricular-set-ratio": [
-     "side",
+     "crown",
      "side"
     ],
     "growth.auricular-width-ratio": [
@@ -2176,7 +2181,7 @@
    "max": [
     0.8309748325,
     0.6607387732484273,
-    1.7683623036060718
+    1.9077900296591324
    ]
   },
   "counts": {
@@ -2377,7 +2382,7 @@
    "stripes"
   ],
   "growth.auricular-set-ratio": [
-   "side",
+   "crown",
    "side"
   ],
   "growth.auricular-width-ratio": [

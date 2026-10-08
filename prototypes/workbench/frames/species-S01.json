@@ -55,7 +55,8 @@
    "join": "broad",
    "wave": false,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B1·L4",
   "rig": "B1",
@@ -799,11 +800,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "low",
-    "low"
+    "high",
+    "high"
    ],
    "looks": [
-    "low"
+    "high"
    ],
    "guard": "rig: head.centerLiftOverCoreRx",
    "nature": "look"
@@ -1775,8 +1776,8 @@
      "high"
     ],
     "growth.head-lift-ratio": [
-     "low",
-     "low"
+     "high",
+     "high"
     ],
     "growth.muzzle-projection-ratio": [
      "short",
@@ -1867,14 +1868,14 @@
   "brief": "Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head.",
   "bounds": {
    "min": [
-    -1.5190923175031104,
+    -1.2946596624284283,
     -0.7803596143087312,
     0
    ],
    "max": [
     0.68696,
     0.7803596143087311,
-    1.7460680625307918
+    2.206887341162675
    ]
   },
   "counts": {
@@ -2005,8 +2006,8 @@
    "high"
   ],
   "growth.head-lift-ratio": [
-   "low",
-   "low"
+   "high",
+   "high"
   ],
   "growth.muzzle-projection-ratio": [
    "short",

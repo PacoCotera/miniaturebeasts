@@ -11,15 +11,15 @@
  ],
  "note": "one round body with the head fused on top front, a leaf crest, a big folded hind leg and short fore legs; no tail",
  "shapes": [
-  {"ellipse":[50,62,30,25]},
-  {"ellipse":[70,44,15,13]},
-  {"polygon":[[66,32],[69,14],[75,31]]},
-  {"polygon":[[76,31],[84,15],[84,33]]},
-  {"ellipse":[34,80,13,9]},
-  {"ellipse":[40,89,12,3.5]},
-  {"capsule":[66,76,68,90,3.5]},
-  {"capsule":[73,76,75,90,3.5]},
-  {"ellipse":[68,90,6,3]},
-  {"ellipse":[76,90,6,3]}
+  {"ellipse":[50,62,30,25],"part":"body"},
+  {"ellipse":[70,44,15,13],"part":"head"},
+  {"polygon":[[66,32],[69,14],[75,31]],"part":"crest"},
+  {"polygon":[[76,31],[84,15],[84,33]],"part":"crest"},
+  {"ellipse":[34,80,13,9],"part":"leg"},
+  {"ellipse":[40,89,12,3.5],"part":"leg"},
+  {"capsule":[66,76,68,90,3.5],"part":"leg"},
+  {"capsule":[73,76,75,90,3.5],"part":"leg"},
+  {"ellipse":[68,90,6,3],"part":"leg"},
+  {"ellipse":[76,90,6,3],"part":"leg"}
  ]
 }

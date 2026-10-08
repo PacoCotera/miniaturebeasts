@@ -55,7 +55,8 @@
    "join": "narrow",
    "wave": false,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B1·L4",
   "rig": "B1",
@@ -871,7 +872,7 @@
    ],
    "guard": "rig: head.ryOverCoreRx",
    "typical": [
-    "high",
+    "low",
     "low"
    ]
   },
@@ -897,7 +898,7 @@
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
-    "high",
+    "low",
     "low"
    ]
   },
@@ -1963,11 +1964,11 @@
      "small"
     ],
     "growth.head-width-ratio": [
-     "high",
+     "low",
      "low"
     ],
     "growth.head-depth-ratio": [
-     "high",
+     "low",
      "low"
     ],
     "growth.head-lift-ratio": [
@@ -2075,14 +2076,14 @@
   "brief": "Kilpo: 1 body region (B1), a head, a snout, 2 eyes, 4 legs, wing cases; scales; plantigrade, neck head.",
   "bounds": {
    "min": [
-    -1.6880260440541366,
+    -1.6843964363203,
     -0.8601729023399283,
     -0.018273319614091066
    ],
    "max": [
     0.8360000000000001,
     0.8601729023399283,
-    1.1825488746820447
+    1.098974433521969
    ]
   },
   "counts": {

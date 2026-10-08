@@ -54,7 +54,8 @@
    "join": "narrow",
    "wave": false,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B3·L6",
   "rig": "B3",
@@ -843,11 +844,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "medium",
+    "short",
     "short"
    ],
    "looks": [
-    "medium"
+    "short"
    ],
    "guard": "rig: support.rootToEndDropOverCoreRx",
    "nature": "look"
@@ -1042,11 +1043,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "up",
+    "down",
     "up"
    ],
    "looks": [
-    "up"
+    "down"
    ],
    "guard": "rig: region.bendRadians",
    "nature": "look"
@@ -1096,7 +1097,7 @@
    "guard": "rig: region.connectorRadiusRatio",
    "typical": [
     "broad",
-    "thin"
+    "broad"
    ]
   },
   {
@@ -1111,11 +1112,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "round",
-    "round"
+    "rounded-square",
+    "rounded-square"
    ],
    "looks": [
-    "round"
+    "rounded-square"
    ],
    "guard": "rig: region.crossExponent",
    "nature": "look"
@@ -1141,7 +1142,11 @@
     "barrel",
     "tapered"
    ],
-   "guard": "rig: region.longitudinalForm"
+   "guard": "rig: region.longitudinalForm",
+   "typical": [
+    "barrel",
+    "barrel"
+   ]
   },
   {
    "id": "anatomy.contact-terminal-form",
@@ -1176,11 +1181,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "seeking",
-    "seeking"
+    "reserved",
+    "reserved"
    ],
    "looks": [
-    "seeking"
+    "reserved"
    ],
    "guard": "rig: innate.explorationClass",
    "nature": "doing"
@@ -1349,11 +1354,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "matte",
-    "matte"
+    "glossy",
+    "glossy"
    ],
    "looks": [
-    "matte"
+    "glossy"
    ],
    "guard": "sketch: specular highlight strength (surface texture's first consumer)",
    "nature": "look"
@@ -1370,11 +1375,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "bright",
-    "bright"
+    "dim",
+    "dim"
    ],
    "looks": [
-    "bright"
+    "dim"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
    "nature": "doing"
@@ -1922,7 +1927,7 @@
      "low"
     ],
     "growth.support-drop-ratio": [
-     "medium",
+     "short",
      "short"
     ],
     "growth.support-splay-ratio": [
@@ -1958,7 +1963,7 @@
      "coarse"
     ],
     "growth.region-bend": [
-     "up",
+     "down",
      "up"
     ],
     "growth.region-taper": [
@@ -1967,23 +1972,23 @@
     ],
     "growth.join-throat-ratio": [
      "broad",
-     "thin"
+     "broad"
     ],
     "anatomy.region-cross-exponent": [
-     "round",
-     "round"
+     "rounded-square",
+     "rounded-square"
     ],
     "anatomy.region-longitudinal-form": [
-     "ovoid",
-     "ovoid"
+     "barrel",
+     "barrel"
     ],
     "anatomy.contact-terminal-form": [
      "wedge",
      "wedge"
     ],
     "cognition.exploration-tendency": [
-     "seeking",
-     "seeking"
+     "reserved",
+     "reserved"
     ],
     "cognition.arousal-threshold": [
      "low",
@@ -2014,12 +2019,12 @@
      "closed"
     ],
     "appearance.sheen": [
-     "matte",
-     "matte"
+     "glossy",
+     "glossy"
     ],
     "appearance.emission-brightness": [
-     "bright",
-     "bright"
+     "dim",
+     "dim"
     ],
     "appearance.emission-length": [
      "short",
@@ -2034,20 +2039,20 @@
   "brief": "Oskol: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, wing cases; scales; splayed, neck head.",
   "bounds": {
    "min": [
-    -0.504245750502037,
-    -0.6884370608488077,
+    -0.645451461245613,
+    -0.7396572774778807,
     0
    ],
    "max": [
-    0.7109325837243577,
-    0.6884370608488075,
-    0.8518438204699902
+    0.9206136131443694,
+    0.7396572774778807,
+    0.8256723579179857
    ]
   },
   "counts": {
-   "nodes": 43,
-   "edges": 42,
-   "vertices": 1545
+   "nodes": 41,
+   "edges": 40,
+   "vertices": 1513
   }
  },
  "viability": {
@@ -2180,7 +2185,7 @@
    "low"
   ],
   "growth.support-drop-ratio": [
-   "medium",
+   "short",
    "short"
   ],
   "growth.support-splay-ratio": [
@@ -2208,20 +2213,20 @@
    "coarse"
   ],
   "growth.region-bend": [
-   "up",
+   "down",
    "up"
   ],
   "anatomy.region-cross-exponent": [
-   "round",
-   "round"
+   "rounded-square",
+   "rounded-square"
   ],
   "anatomy.contact-terminal-form": [
    "wedge",
    "wedge"
   ],
   "cognition.exploration-tendency": [
-   "seeking",
-   "seeking"
+   "reserved",
+   "reserved"
   ],
   "anatomy.antenna-presence": [
    "on",
@@ -2240,12 +2245,12 @@
    "on"
   ],
   "appearance.sheen": [
-   "matte",
-   "matte"
+   "glossy",
+   "glossy"
   ],
   "appearance.emission-brightness": [
-   "bright",
-   "bright"
+   "dim",
+   "dim"
   ],
   "appearance.emission-length": [
    "short",

@@ -55,7 +55,8 @@
    "join": "narrow",
    "wave": true,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B2·L4",
   "rig": "B2",
@@ -1292,7 +1293,7 @@
    "shapeable": false,
    "copies": [
     "long",
-    "long"
+    "short"
    ],
    "looks": [
     "long"
@@ -2140,7 +2141,7 @@
     ],
     "growth.auricular-length-ratio": [
      "long",
-     "long"
+     "short"
     ],
     "anatomy.axial-tail-presence": [
      "on",
@@ -2210,7 +2211,7 @@
    "max": [
     1.7511800859367963,
     0.36643102812422446,
-    1.8649975157378678
+    1.8789151261293857
    ]
   },
   "counts": {
@@ -2426,7 +2427,7 @@
   ],
   "growth.auricular-length-ratio": [
    "long",
-   "long"
+   "short"
   ],
   "anatomy.axial-tail-presence": [
    "on",

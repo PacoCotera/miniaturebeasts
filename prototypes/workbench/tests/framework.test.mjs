@@ -27,7 +27,7 @@ test("catalogue 7 carries catalogue6 plus the taxonomy's 6 switches · 15 loci a
   assert.equal(kinds.filter((l) => l.switch !== "part").length, 25, "twenty-five new loci");
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
-  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 5, "hoof, webbed, root, one pair, huge");
+  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 6, "hoof, webbed, root, one pair, huge, tall ears");
   assert.equal(PLAN_SWITCHES.size, 23);
   assert.ok([...PART_SWITCHES].every((id) => LOCI.has(id)));
   assert.equal(CATALOGUE.parent.foundationDigest.length, 64);
@@ -139,10 +139,14 @@ test("proportions by kind: the species' measures sit in its genome, and the kind
   const targets = loadTargets(path.resolve(here, "../frames/targets"));
   assert.equal(Object.keys(targets).length, 16);
   for (const t of Object.values(targets)) { assert.equal(t.mask.length, 48 * 48); assert.ok([...t.mask].some((x) => x), `${t.species}: a drawn target`); }
-  assert.deepEqual([...rasterizeTarget(targets.S07)], [...targets.S07.mask], "targets rasterize the same twice");
-  const rows = ["S07", "S11"].map((id) => { const f = frameOf(id); const b = buildIndividual(f, typeSpecimen(f)); return { id, specMasks: { side: silhouetteMask(b.scene, "side", 48) }, individuals: [] }; });
+  assert.deepEqual([...rasterizeTarget(targets.S07).all], [...targets.S07.mask], "targets rasterize the same twice");
+  assert.ok(targets.S04.parts.ear && targets.S04.parts.muzzle && targets.S04.parts.tail, "a target's primitives are tagged by part");
+  const { partMasks } = await import("../framework/raster.mjs");
+  const { CLANS } = await import("../framework/roster.mjs");
+  const rows = ["S07", "S04", "S05", "S06"].map((id) => { const f = frameOf(id); const b = buildIndividual(f, typeSpecimen(f)); return { id, parts: CLANS[f.taxonomy.clan].parts, specMasks: { side: partMasks(b.scene, "side", 48) }, individuals: [] }; });
   const scores = targetScores(rows, targets);
   assert.equal(scores[0].id, "S07");
-  assert.ok(scores[0].own > 0.6 && scores[0].pass, "the bear reads as a bear");
+  assert.ok(scores[0].own > 0.6 && scores[0].coarse, "the bear passes the coarse body gate");
+  for (const s of scores.slice(1)) assert.ok(s.parts.margin > 0, `${s.id}: the cat, the fox and the raccoon each win their own parts score (${s.parts.own} vs ${s.parts.bestWrong.id} ${s.parts.bestWrong.score})`);
   assert.ok(scores.every((s) => s.bestWrong && s.bestWrong.id !== s.id));
 });

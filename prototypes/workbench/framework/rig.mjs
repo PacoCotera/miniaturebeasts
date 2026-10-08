@@ -58,7 +58,13 @@ export function buildBody(resolved) {
   // walker's leading region swells into a chest, and the head is 1.15 times v1's ratio.
   const GIRTH = 1.35, HEAD = 1.15;
   const legged = plan.limbSet === "legs";
-  const baseRadii = radial
+  // A standing fan (plan extra `stand`, plans.json standingPlans): the root stands on its up axis.
+  // Radial: the plant's bulb, its fan arms leaves rising from the top, its rays root legs below.
+  // Bilateral: the wisp's vertical ribbon, its fan arms two streamers zigzagging down.
+  const standing = !!plan.extras?.stand && plan.fan;
+  const baseRadii = standing
+    ? (radial ? [0.85 * L, 0.85 * L, 1.2 * L] : [0.4 * L, 0.2 * L, 1.45 * L])
+    : radial
     ? [L, L, 2 * (v["region.radialCrossRadiusOverAnchorRx"] ?? 0.45) * L] // a dome: round in plan, height from roundness
     : [L, GIRTH * (v["core.ryOverRx"] ?? 0.45) * L, GIRTH * (v["core.rzOverRx"] ?? 0.5) * L];
   // A serial body shares the size class's length among its regions (a two-region mammal is one body
@@ -68,12 +74,16 @@ export function buildBody(resolved) {
   const regionRadii = (level) => {
     const taper = depth > 1 ? lerp(1, childScale, level / (depth - 1)) : 1;
     const s = (mass[Math.min(level, mass.length - 1)] ?? 1) * (level === 0 ? 1 : taper);
-    return baseRadii.map((r, i) => r * s * (i === 0 ? along : 1));
+    const radii = baseRadii.map((r, i) => r * s * (i === 0 ? along : 1));
+    // A region is never a disc: its length is at least 0.85 of its larger cross radius (a wide
+    // three-region body is a long one, not three wheels on an axle).
+    if (!radial && !plan.fan) radii[0] = Math.max(radii[0], 0.85 * Math.max(radii[1], radii[2]));
+    return radii;
   };
-  function primary(id, center, radii, frame) {
+  function primary(id, center, radii, frame, upright = radial) {
     const node = newNode(id, "primary-region", null, "body", frame);
     node.center = center;
-    if (radial) { // a ring solid along the up axis: build with the frame's third axis first
+    if (upright) { // a ring solid along the up axis: build with the frame's third axis first
       node.frame = [frame[2], frame[0], frame[1]];
       ringSolid(node, [radii[2], radii[0], radii[1]], form, 2);
       node.frame = frame; node.radii = radii; node.up = true;
@@ -81,19 +91,22 @@ export function buildBody(resolved) {
     node.part = id;
     return node;
   }
-  const root = push(primary("region-0", [0, 0, 0], regionRadii(0), IDENTITY), null);
+  const root = push(primary("region-0", [0, 0, 0], regionRadii(0), IDENTITY, radial || standing), null);
   regions.push(root);
   const arms = plan.fan ? (radial ? 3 : 2) : 1;
   for (let arm = 0; arm < arms; arm++) {
     let parent = root;
     for (let level = 1; level < depth; level++) {
-      let direction, frame;
-      if (plan.fan && radial) { const a = Math.PI / 3 + (arm * 2 * Math.PI) / 3; direction = [Math.cos(a), Math.sin(a), 0]; frame = rotateFrameZ(IDENTITY, a); }
+      let direction, frame, upright = radial;
+      if (standing && radial) { const a = Math.PI / 3 + (arm * 2 * Math.PI) / 3; direction = unit([0.55 * Math.cos(a), 0.55 * Math.sin(a), 0.83]); frame = frameAlong(direction); upright = false; } // leaves rising from the bulb
+      else if (standing) { const s = arm === 0 ? -1 : 1; direction = level % 2 === 1 ? unit([s * 0.6, 0, -0.8]) : unit([-s * 0.35, 0, -0.95]); frame = frameAlong(direction); } // streamers zigzagging down
+      else if (plan.fan && radial) { const a = Math.PI / 3 + (arm * 2 * Math.PI) / 3; direction = [Math.cos(a), Math.sin(a), 0]; frame = rotateFrameZ(IDENTITY, a); }
       else if (plan.fan) { const a = (v["region.branchAngleRadians"] ?? 0.8) * (arm === 0 ? -1 : 1); direction = [Math.cos(a), Math.sin(a), 0]; frame = rotateFrameZ(IDENTITY, a); }
       else if (radial) { direction = [0, 0, 1]; frame = IDENTITY; }
       else { const b = (v["region.bendRadians"] ?? 0) * level * 0.5; direction = [Math.cos(b), 0, Math.sin(b)]; frame = frameAlong(direction); }
-      const radii = regionRadii(level);
-      const child = primary(`region-${plan.fan ? `${arm}-` : ""}${level}`, [0, 0, 0], radii, frame);
+      const scale = regionRadii(level)[0] / baseRadii[0];
+      const radii = standing ? (radial ? [1.1 * L, 0.1 * L, 0.45 * L] : [0.9 * L, 0.08 * L, 0.3 * L]).map((r) => r * scale) : regionRadii(level); // a leaf or a ribbon: long along its direction, thin across
+      const child = primary(`region-${plan.fan ? `${arm}-` : ""}${level}`, [0, 0, 0], radii, frame, upright);
       child.level = level; child.arm = arm;
       const pe = extentAlong(parent, direction, envOf), ce = extentAlong(child, mul(direction, -1), envOf);
       // A narrow join leaves a gap for the connector; a thick waist (join-throat-ratio) closes it, so a
@@ -118,7 +131,7 @@ export function buildBody(resolved) {
   // Head lift sets the neck's rise (level at a low lift, steeply up at a high one: a deer, a bird); the
   // neck ratio sets its length over the join's extent, up to about two head lengths.
   const rise = Math.max(0, Math.min(1, ((v["head.centerLiftOverCoreRx"] ?? 0.5) - 0.5) / 0.22));
-  const headDir = join === "narrow" ? unit([-1, 0, 0.15 + 1.6 * rise * rise]) : unit([-(L + 0.8 * headR[0]), 0, lift]);
+  const headDir = standing && !radial ? unit([-0.25, 0, 1]) : join === "narrow" ? unit([-1, 0, 0.15 + 1.6 * rise * rise]) : unit([-(L + 0.8 * headR[0]), 0, lift * (1 + 1.5 * rise)]); // a standing ribbon carries its head on top; a fused head with a high lift sits up on the body
   const pe = extentAlong(root, headDir, envOf), he = extentAlong(head, mul(headDir, -1), envOf);
   const neckLength = join === "narrow" ? (0.3 + 1.6 * ((v["structure.join-neck-ratio"] ?? 0.8) - 0.65) / 0.3) * Math.min(pe, he) : -0.25 * Math.min(pe, he);
   moveNode(head, mul(headDir, pe + he + neckLength));
@@ -126,7 +139,7 @@ export function buildBody(resolved) {
   const headCenter = head.center;
   connect(root, head, headDir, join, v, push, envOf, L, "neck");
   if (v["beak.enabled"]) {
-    const len = (v["growth.beak-length-ratio"] ?? 0.8) * headR[0];
+    const len = 1.5 * (v["growth.beak-length-ratio"] ?? 0.8) * headR[0]; // a beak as long as the head at the long allele
     const rt = rootOn(head, headCenter, unit([-1, 0, -0.25]), 0.12 * headR[0], envOf(head));
     const beak = newNode("beak", "beak", head.id, "second"); beak.part = "beak";
     segment(beak, rt.inner, add(rt.surface, add(mul(rt.direction, len), [0, 0, -0.1 * len])), 0.42 * Math.min(headR[1], headR[2]), 0.05 * headR[1]);
@@ -134,13 +147,13 @@ export function buildBody(resolved) {
   } else if (v["modules.muzzleAndJaw"]) {
     // A long muzzle is a tapered snout (thick at the head, fine at the nose); a short one stays a blunt egg.
     const proj = v["muzzle.rxOverHeadRx"];
-    const mR = [proj * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], (0.45 - 0.08 * Math.max(0, Math.min(1, (proj - 0.58) / 0.66))) * headR[2]];
+    const mR = [proj * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], (0.4 - 0.08 * Math.max(0, Math.min(1, (proj - 0.58) / 0.66))) * headR[2]];
     const mC = add(headCenter, [-headR[0] + 0.15 * headR[0] - 0.5 * mR[0], 0, -0.38 * headR[2]]);
     const muzzle = newNode("muzzle", "muzzle", head.id, "body"); muzzle.center = mC; muzzle.part = "muzzle";
     if (proj > 0.9) { muzzle.frame = [[-1, 0, 0], [0, -1, 0], [0, 0, 1]]; ringSolid(muzzle, mR, "tapered", 2); } // the frame faces the nose, so the taper thins forward
     else ellipsoid(muzzle, mR);
     push(muzzle, head);
-    const jaw = newNode("jaw", "lower-jaw", muzzle.id, "body"); jaw.center = add(mC, [0.07 * headR[0], 0, -0.3 * headR[2]]); ellipsoid(jaw, [0.88 * mR[0], 0.89 * mR[1], 0.28 * headR[2]]); jaw.part = "muzzle";
+    const jaw = newNode("jaw", "lower-jaw", muzzle.id, "body"); jaw.center = add(mC, [0.07 * headR[0], 0, -0.26 * headR[2]]); ellipsoid(jaw, [0.85 * mR[0], 0.85 * mR[1], 0.2 * headR[2]]); jaw.part = "muzzle";
     push(jaw, muzzle);
   }
   if (v["modules.exteriorEyePair"]) for (const side of [-1, 1]) {
@@ -172,7 +185,7 @@ export function buildBody(resolved) {
     }
   }
   if (v["horns.enabled"]) for (const side of [-1, 1]) {
-    const curl = v["growth.horn-curl"] ?? 0.6, length = 0.95 * headR[2], baseR = 0.14 * Math.min(headR[1], headR[2]);
+    const curl = v["growth.horn-curl"] ?? 0.6, length = 2.6 * headR[2], baseR = 0.28 * Math.min(headR[1], headR[2]);
     const dir = unit([0.25, side * 0.45, 0.85]);
     const rt = rootOn(head, headCenter, dir, 0.5 * baseR, envOf(head));
     const horn = newNode(`horn-${side < 0 ? "L" : "R"}`, "horn", head.id, "second"); horn.part = "horn";
@@ -187,15 +200,17 @@ export function buildBody(resolved) {
     }
   }
   if (v["ears.enabled"]) for (const side of [-1, 1]) {
-    const length = v["ears.lengthOverHeadRz"] * headR[2], width = (v["growth.auricular-width-ratio"] ?? 0.55) * length;
+    const length = 1.3 * v["ears.lengthOverHeadRz"] * headR[2], width = (v["growth.auricular-width-ratio"] ?? 0.55) * length; // 1.3: a long ear clears the head by two thirds of its height
     const drooping = v["anatomy.ear-tilt"] === "drooping";
     // Ear set: the root's lateral offset over the head's half width; a side-set ear leans outward.
     const set = v["growth.auricular-set-ratio"] ?? 0.62;
     const dir = unit([0, side * set, Math.sqrt(Math.max(0.1, 1 - set * set))]);
     const rt = rootOn(head, headCenter, dir, 0.08 * length, envOf(head));
-    const lean = 0.15 + 0.6 * Math.max(0, Math.min(1, (set - 0.42) / 0.36));
+    const lean = 0.1 + 0.4 * Math.max(0, Math.min(1, (set - 0.42) / 0.36));
     const upAxis = drooping ? unit([-0.1, side * 0.95, -0.4]) : unit([-0.15, side * lean, 1]);
-    const across = unit(cross(upAxis, [-1, 0, 0]));
+    // The ear plane sits at 45° between facing forward and facing out, as a cupped ear does, so the
+    // ear shows its width from the side as well as from the front.
+    const across = unit(cross(upAxis, unit([-0.7, side * 0.7, 0])));
     const pointed = v["ears.form"] === "pointed";
     const outline = pointed ? [[-0.12, 0], [-0.5, 0.38], [-0.36, 0.75], [0, 1], [0.36, 0.75], [0.5, 0.38], [0.12, 0]] : [[-0.12, 0], [-0.5, 0.32], [-0.48, 0.73], [-0.24, 0.96], [0.24, 0.96], [0.48, 0.73], [0.5, 0.32], [0.12, 0]];
     const corners = outline.map(([a, b]) => add(rt.inner, add(mul(across, a * width), mul(upAxis, b * length))));
@@ -204,7 +219,7 @@ export function buildBody(resolved) {
     push(ear, head, rt.inner);
   }
   if (v["antennae.enabled"]) for (const side of [-1, 1]) {
-    const length = v["growth.antenna-length-ratio"] * headR[2], formA = v["anatomy.antenna-form"];
+    const length = 1.6 * v["growth.antenna-length-ratio"] * headR[2], formA = v["anatomy.antenna-form"]; // over the head's half height, so a long antenna clears the head by its height
     const dir = unit([-0.35, side * 0.45, 0.85]);
     const rt = rootOn(head, headCenter, dir, 0.06 * L, envOf(head));
     const joint = add(rt.surface, add(mul(dir, 0.45 * length), [-0.1 * length, 0, 0.1 * length]));
@@ -271,9 +286,12 @@ export function buildBody(resolved) {
     for (let i = 0; i < n; i++) {
       const a = Math.PI / n + (i * 2 * Math.PI) / n; // leave the front for the face
       const out = [Math.cos(a), Math.sin(a), 0];
-      const rt = rootOn(root, add(root.center, [0, 0, -0.15 * root.radii[2]]), unit(add(out, [0, 0, -0.35])), 0.5 * radius, envOf(root));
-      const joint = add(rt.surface, add(mul(out, prox), [0, 0, -0.45 * prox]));
-      const end = add(joint, add(mul(out, 0.35 * distal), [0, 0, -distal]));
+      // Rays on a dome reach out and down; on a standing bulb they are root legs, mostly down.
+      const rt = standing
+        ? rootOn(root, add(root.center, [0, 0, -0.45 * root.radii[2]]), unit(add(mul(out, 0.6), [0, 0, -0.8])), 0.5 * radius, envOf(root))
+        : rootOn(root, add(root.center, [0, 0, -0.15 * root.radii[2]]), unit(add(out, [0, 0, -0.35])), 0.5 * radius, envOf(root));
+      const joint = standing ? add(rt.surface, add(mul(out, 0.5 * prox), [0, 0, -0.6 * prox])) : add(rt.surface, add(mul(out, prox), [0, 0, -0.45 * prox]));
+      const end = standing ? add(joint, add(mul(out, 0.15 * distal), [0, 0, -1.1 * distal])) : add(joint, add(mul(out, 0.35 * distal), [0, 0, -distal]));
       const dist = chain(`ray-${i}`, root, rt, joint, end, radius, "ray");
       terminal(`ray-${i}-foot`, dist, end, v, L, push, contactPoints, a);
     }
@@ -323,10 +341,10 @@ export function buildBody(resolved) {
     if (plan.flapSet === "wings") for (const side of [-1, 1]) {
       const rt = rootOn(owner, worldPoint(owner, [0.15 * owner.radii[0], 0, 0]), localVector(owner.frame, [0, side * 0.55, 0.83]), 0.05 * L, envOf(owner));
       const rootP = rt.surface;
-      const outer = add(rootP, [swp, side * 0.8 * span, 0.6 * span]); // held up in a V, so wings read in every view
+      const outer = add(rootP, [swp, side * 0.65 * span, 0.76 * span]); // held up in a steep V, so wings read in every view
       const corners = [add(rootP, [-0.5 * chord, 0, 0]), add(rootP, [0.5 * chord, 0, 0]), add(outer, [0.3 * chord, 0, 0]), add(outer, [-0.3 * chord, 0, 0])];
       const wing = newNode(`wing-${side < 0 ? "L" : "R"}`, "thin-surface", owner.id, "second"); wing.part = "flap"; wing.opacity = flapOpacity;
-      sheet(wing, corners, unit([0, -side * 0.6, 0.8]), thickness);
+      sheet(wing, corners, unit([0, -side * 0.76, 0.65]), thickness);
       push(wing, owner, rt.inner);
     } else if (plan.flapSet === "fins") {
       const finSpan = (v["structure.fin-span"] ?? 0.4) * L + 0.4 * span;
@@ -356,8 +374,8 @@ export function buildBody(resolved) {
       const hub = regions.at(-1);
       if (v["cap.enabled"]) {
         const cap = newNode("cap", "cap-sheet", hub.id, "cap"); cap.part = "cap";
-        const r = 0.5 * chord + 0.5 * span;
-        cap.center = add(hub.center, [0, 0, 0.78 * hub.radii[2]]); ellipsoid(cap, [r, r, 0.18 * chord + 0.1 * span + 0.12 * hub.radii[2]], 2);
+        const r = 0.7 * chord + 0.7 * span; // a cap wider than its puffball
+        cap.center = add(hub.center, [0, 0, 0.78 * hub.radii[2]]); ellipsoid(cap, [r, r, 0.22 * chord + 0.12 * span + 0.14 * hub.radii[2]], 2);
         push(cap, hub);
       } else for (let i = 0; i < 3; i++) {
         const a = Math.PI / 2 + (i * 2 * Math.PI) / 3;
@@ -388,15 +406,18 @@ export function buildBody(resolved) {
     }
   }
   if (v["wingCases.enabled"]) {
-    const owner = serialRegions[Math.min(1, serialRegions.length - 1)];
+    // The cases root on the thorax (the first region behind the head) and cover the abdomen behind it.
+    const owner = serialRegions[0];
     const extent = v["growth.wing-case-extent"], parted = v["anatomy.wing-case-seam"] === "parted";
     const back = regions.at(-1);
     for (const side of [-1, 1]) {
       const c = newNode(`wing-case-${side < 0 ? "L" : "R"}`, "shell", owner.id, "second"); c.part = "wing-case";
-      const reach = (back.center[0] + extent * back.radii[0] - owner.center[0]) / 2;
-      c.center = add(owner.center, [reach - 0.1 * owner.radii[0], side * (0.5 * owner.radii[1] + (parted ? 0.15 * owner.radii[1] : 0)), 0.5 * owner.radii[2]]);
+      // The cases cover the back from the front of their owner to the end of the last region.
+      const frontX = owner.center[0] - 0.2 * owner.radii[0], backX = back.center[0] + extent * back.radii[0];
+      const ry = Math.max(...serialRegions.map((r) => r.radii[1])), rz = Math.max(...serialRegions.map((r) => r.radii[2]));
+      c.center = [(frontX + backX) / 2, side * (0.5 * ry + (parted ? 0.15 * ry : 0)), owner.center[2] + 0.4 * rz];
       c.frame = parted ? rotateFrameZ(IDENTITY, side * 0.25) : IDENTITY;
-      ellipsoid(c, [reach + 0.15 * owner.radii[0], 0.55 * owner.radii[1], 0.5 * owner.radii[2]]);
+      ellipsoid(c, [(backX - frontX) / 2 + 0.1 * owner.radii[0], 0.65 * ry, 0.7 * rz]);
       push(c, owner);
     }
   }

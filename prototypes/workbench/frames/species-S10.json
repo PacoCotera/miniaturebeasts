@@ -55,7 +55,8 @@
    "join": "broad",
    "wave": true,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B3·L4",
   "rig": "B3",
@@ -944,11 +945,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
+    "long",
     "short"
    ],
    "looks": [
-    "short"
+    "long"
    ],
    "guard": "rig: muzzle.rxOverHeadRx",
    "nature": "look"
@@ -1376,7 +1377,7 @@
    "shapeable": false,
    "copies": [
     "long",
-    "long"
+    "short"
    ],
    "looks": [
     "long"
@@ -1491,7 +1492,11 @@
     "tail",
     "ears"
    ],
-   "guard": "sketch: the fur material on the tail and the ears too"
+   "guard": "sketch: the fur material on the tail and the ears too",
+   "typical": [
+    "body",
+    "body"
+   ]
   },
   {
    "id": "anatomy.ear-tilt",
@@ -2118,7 +2123,7 @@
      "low"
     ],
     "growth.muzzle-projection-ratio": [
-     "short",
+     "long",
      "short"
     ],
     "growth.muzzle-width-ratio": [
@@ -2199,7 +2204,7 @@
     ],
     "growth.axial-tail-length-ratio": [
      "long",
-     "long"
+     "short"
     ],
     "growth.axial-tail-width-ratio": [
      "broad",
@@ -2254,20 +2259,20 @@
   "brief": "Igara: 3 body regions (B3), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, fused head.",
   "bounds": {
    "min": [
-    -0.7647413548059651,
+    -0.9226497150945119,
     -0.4963941018038529,
     0.03954825000000001
    ],
    "max": [
-    1.8332108224977919,
-    0.4963941018038529,
-    1.0266491993651692
+    1.710648162847121,
+    0.496394101803853,
+    1.1015051037695618
    ]
   },
   "counts": {
    "nodes": 29,
    "edges": 28,
-   "vertices": 1507
+   "vertices": 1538
   }
  },
  "viability": {
@@ -2412,7 +2417,7 @@
    "medium"
   ],
   "growth.muzzle-projection-ratio": [
-   "short",
+   "long",
    "short"
   ],
   "growth.muzzle-width-ratio": [
@@ -2481,7 +2486,7 @@
   ],
   "growth.axial-tail-length-ratio": [
    "long",
-   "long"
+   "short"
   ],
   "growth.axial-tail-width-ratio": [
    "broad",

@@ -54,7 +54,8 @@
    "join": "broad",
    "wave": true,
    "fins": false,
-   "float": false
+   "float": false,
+   "stand": false
   },
   "code": "B3",
   "rig": "B3",
@@ -1678,14 +1679,14 @@
   "brief": "Usvel: 3 body regions (B3), a head, 2 eyes, two antennae, a foot skirt; skin; belly, fused head.",
   "bounds": {
    "min": [
-    -0.6539964414863512,
-    -0.2833349625,
+    -0.8509137811869399,
+    -0.31779544344419297,
     -0.005161320000000025
    ],
    "max": [
-    0.5452034985583009,
-    0.2833349625,
-    0.8207863103178924
+    0.6649021957633023,
+    0.31779544344419297,
+    0.988715496619392
    ]
   },
   "counts": {
