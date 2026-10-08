@@ -141,7 +141,7 @@ export class PB {
   blit(o, ox, oy) { for (let y = 0; y < o.h; y++) for (let x = 0; x < o.w; x++) { const c = o.p[y * o.w + x]; if (c >= 0) this.set(ox + x, oy + y, c); } return this; }
   map(fn) { for (let i = 0; i < this.p.length; i++) if (this.p[i] >= 0) this.p[i] = fn(this.p[i], i % this.w, (i / this.w) | 0); return this; }
   // The frost: a cool pale dither over the pixels fn(x, y) selects (what isn't known yet).
-  frost(fn) { return this.map((c, x, y) => (!fn || fn(x, y) ? (bay(x >> 1, y >> 1) < 7 ? C.frost : bay(x >> 1, y >> 1) < 14 ? C.frostD : C.frostS) : c)); }
+  frost(fn) { return this.map((c, x, y) => (!fn || fn(x, y) ? (bay(x, y) < 7 ? C.frost : bay(x, y) < 14 ? C.frostD : C.frostS) : c)); }
   canvas() {
     if (this.cv) return this.cv;
     const cv = document.createElement("canvas"); cv.width = this.w; cv.height = this.h;
@@ -174,51 +174,23 @@ export function cropPB(src, x0, y0, w, h, bg) { const pb = new PB(w, h); if (bg 
 // Nearest-neighbour scale of a buffer to w×h (close-ups, small residents).
 export function scalePB(src, w, h) { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) pb.p[y * w + x] = src.get(Math.floor((x + 0.5) * src.w / w), Math.floor((y + 0.5) * src.h / h)); return pb; }
 
-// ---------- Bitmap font: the Companion's 5×7 caps with 2-row descenders, at 2×, 3× and 4× ----------
-const GLYPHS = {
-  A: ".###.|#...#|#...#|#####|#...#|#...#|#...#", B: "####.|#...#|#...#|####.|#...#|#...#|####.", C: ".###.|#...#|#....|#....|#....|#...#|.###.",
-  D: "####.|#...#|#...#|#...#|#...#|#...#|####.", E: "#####|#....|#....|####.|#....|#....|#####", F: "#####|#....|#....|####.|#....|#....|#....",
-  G: ".###.|#...#|#....|#.###|#...#|#...#|.####", H: "#...#|#...#|#...#|#####|#...#|#...#|#...#", I: "###|.#.|.#.|.#.|.#.|.#.|###",
-  J: "..##|...#|...#|...#|#..#|#..#|.##.", K: "#...#|#..#.|#.#..|##...|#.#..|#..#.|#...#", L: "#...|#...|#...|#...|#...|#...|####",
-  M: "#...#|##.##|#.#.#|#.#.#|#...#|#...#|#...#", N: "#...#|##..#|#.#.#|#..##|#...#|#...#|#...#", O: ".###.|#...#|#...#|#...#|#...#|#...#|.###.",
-  P: "####.|#...#|#...#|####.|#....|#....|#....", Q: ".###.|#...#|#...#|#...#|#.#.#|#..#.|.##.#", R: "####.|#...#|#...#|####.|#.#..|#..#.|#...#",
-  S: ".###.|#...#|#....|.###.|....#|#...#|.###.", T: "#####|..#..|..#..|..#..|..#..|..#..|..#..", U: "#...#|#...#|#...#|#...#|#...#|#...#|.###.",
-  V: "#...#|#...#|#...#|#...#|.#.#.|.#.#.|..#..", W: "#...#|#...#|#...#|#.#.#|#.#.#|##.##|#...#", X: "#...#|#...#|.#.#.|..#..|.#.#.|#...#|#...#",
-  Y: "#...#|#...#|.#.#.|..#..|..#..|..#..|..#..", Z: "#####|....#|...#.|..#..|.#...|#....|#####",
-  a: "....|....|.##.|...#|.###|#..#|.###", b: "#...|#...|###.|#..#|#..#|#..#|###.", c: "....|....|.###|#...|#...|#...|.###",
-  d: "...#|...#|.###|#..#|#..#|#..#|.###", e: "....|....|.##.|#..#|####|#...|.###", f: ".##|#..|###|#..|#..|#..|#..",
-  g: "....|....|.###|#..#|#..#|#..#|.###|...#|.##.", h: "#...|#...|###.|#..#|#..#|#..#|#..#", i: "#|.|#|#|#|#|#",
-  j: "..#|...|..#|..#|..#|..#|..#|#.#|.#.", k: "#...|#...|#..#|#.#.|##..|#.#.|#..#", l: "#.|#.|#.|#.|#.|#.|.#",
-  m: ".....|.....|##.#.|#.#.#|#.#.#|#.#.#|#.#.#", n: "....|....|###.|#..#|#..#|#..#|#..#", o: "....|....|.##.|#..#|#..#|#..#|.##.",
-  p: "....|....|###.|#..#|#..#|#..#|###.|#...|#...", q: "....|....|.###|#..#|#..#|#..#|.###|...#|...#", r: "....|....|#.##|##..|#...|#...|#...",
-  s: "....|....|.###|#...|.##.|...#|###.", t: ".#..|.#..|###.|.#..|.#..|.#..|..##", u: "....|....|#..#|#..#|#..#|#..#|.###",
-  v: ".....|.....|#...#|#...#|.#.#.|.#.#.|..#..", w: ".....|.....|#...#|#.#.#|#.#.#|#.#.#|.#.#.", x: "....|....|#..#|#..#|.##.|#..#|#..#",
-  y: "....|....|#..#|#..#|#..#|#..#|.###|...#|.##.", z: "....|....|####|...#|.##.|#...|####",
-  0: ".##.|#..#|#..#|#..#|#..#|#..#|.##.", 1: ".#.|##.|.#.|.#.|.#.|.#.|###", 2: ".##.|#..#|...#|..#.|.#..|#...|####",
-  3: "###.|...#|...#|.##.|...#|...#|###.", 4: "#..#|#..#|#..#|####|...#|...#|...#", 5: "####|#...|###.|...#|...#|#..#|.##.",
-  6: ".##.|#...|#...|###.|#..#|#..#|.##.", 7: "####|...#|..#.|.#..|.#..|.#..|.#..", 8: ".##.|#..#|#..#|.##.|#..#|#..#|.##.",
-  9: ".##.|#..#|#..#|.###|...#|...#|.##.",
-  " ": "...|...|...|...|...|...|...", ".": ".|.|.|.|.|.|#", ",": ".|.|.|.|.|#|#|#", "!": "#|#|#|#|#|.|#", "?": ".##.|#..#|...#|..#.|.#..|....|.#..",
-  ":": ".|.|.|#|.|.|#", ";": ".|.|.|#|.|.|#|#", "·": ".|.|.|.|#|.|.", "-": "...|...|...|...|###|...|...", "−": "....|....|....|....|####|....|....", "+": "...|...|.#.|.#.|###|.#.|.#.",
-  "'": "#|#|.|.|.|.|.", '"': "#.#|#.#|...|...|...|...|...", "(": ".#|#.|#.|#.|#.|#.|.#", ")": "#.|.#|.#|.#|.#|.#|#.", "/": "..#|..#|.#.|.#.|.#.|#..|#..",
-  "…": ".....|.....|.....|.....|.....|.....|#.#.#", "→": "......|......|...#..|....#.|######|....#.|...#..", "←": "......|......|..#...|.#....|######|.#....|..#...",
-  "▶": "#....|##...|###..|####.|###..|##...|#....", "◀": "....#|...##|..###|.####|..###|...##|....#",
-  "×": ".....|.....|#...#|.#.#.|..#..|.#.#.|#...#", "✓": "......#|.....##|....##.|##.##..|.###...|..#....|.......", "%": "##..#|##.#.|...#.|..#..|.#...|.#.##|#..##", "#": ".#.#.|#####|.#.#.|.#.#.|.#.#.|#####|.#.#.",
-  "⚡": ".......|.......|.......|.......|.......|.......|.......", "◆": ".......|.......|.......|.......|.......|.......|.......", "❀": ".......|.......|.......|.......|.......|.......|.......", "★": ".......|.......|.......|.......|.......|.......|.......",
-  "▲": ".......|...#...|..###..|.#####.|#######|.......|.......", "▼": ".......|#######|.#####.|..###..|...#...|.......|.......", "♥": ".......|.##.##.|#######|#######|.#####.|..###..|...#...",
-};
-const GLYPH_ALIAS = { "’": "'", "‘": "'", "“": '"', "”": '"', "–": "-", "—": "-" };
-const FONT = {};
-for (const ch in GLYPHS) { const rows = GLYPHS[ch].split("|"); FONT[ch] = { w: rows[0].length, rows }; }
-export function glyphOf(ch) { return FONT[ch] || FONT[GLYPH_ALIAS[ch]] || FONT["?"]; }
-export const ICON_GLYPH = { "⚡": "energy", "◆": "data", "❀": "essence", "★": "star" };   // drawn as the material icons, 7 columns wide
-let iconsOf = () => null;   // art.mjs registers the material icons
+// ---------- Type: Inter, anti-aliased, at the style guide's Station sizes (16 px body and readouts, 20 px
+// titles, 28 px names), with tabular figures. The size argument keeps the old scale numbers: 2 body, 3 title, 4 name.
+export const FONT_PX = { 1: 13, 2: 16, 3: 20, 4: 28 };
+export const FONT_FAMILY = '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+export const fontFor = (s) => `${s >= 4 ? 600 : s >= 3 ? 500 : 400} ${FONT_PX[s] || FONT_PX[2]}px ${FONT_FAMILY}`;
+export const ICON_GLYPH = { "⚡": "energy", "◆": "data", "❀": "essence", "★": "star" };   // drawn as the material icons inside text
+let iconsOf = () => null;   // art.mjs registers the material icons (name, px)
 export const setIcons = (fn) => { iconsOf = fn; };
-function glyphCanvas(ch, col, s) {
-  return art("gl" + ch + ":" + col + ":" + s, () => { const gl = glyphOf(ch), pb = new PB(gl.w * s, 9 * s);
-    gl.rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === "#") pb.rect(x * s, y * s, s, s, col); }); return pb; }).canvas();
+const iconPx = (s) => Math.round((FONT_PX[s] || 16) * 0.9);
+const measure = new Map();
+function runs(str) { const out = []; let cur = ""; for (const ch of str) { if (ICON_GLYPH[ch]) { if (cur) out.push(cur); out.push({ icon: ICON_GLYPH[ch] }); cur = ""; } else cur += ch; } if (cur) out.push(cur); return out; }
+export function textW(str, s) {
+  s = s || 2; const key = s + ":" + str; let w = measure.get(key); if (w != null) return w;
+  g.font = fontFor(s); w = 0;
+  for (const r of runs(str)) w += typeof r === "string" ? g.measureText(r).width : iconPx(s) + 2;
+  w = Math.round(w); if (measure.size > 4000) measure.clear(); measure.set(key, w); return w;
 }
-export function textW(str, s) { s = s || 2; let w = 0; for (const ch of str) w += (glyphOf(ch).w + 1) * s; return Math.max(0, w - s); }
 export function wrapText(str, maxW, s) { const words = str.split(" "), lines = []; let cur = "";
   for (const w of words) { const t = cur ? cur + " " + w : w; if (textW(t, s) <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } } if (cur) lines.push(cur); return lines; }
 export function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (str.length > 1 && textW(str + "…", s) > maxW) str = str.slice(0, -1); return str + "…"; }
@@ -229,11 +201,14 @@ export const g = scr.getContext("2d"); g.imageSmoothingEnabled = false;
 export const R = (x, y, w, h, c) => { g.fillStyle = HEX[c]; g.fillRect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); };
 export const blit = (pb, x, y) => g.drawImage(pb.canvas(), Math.round(x), Math.round(y));
 export function text(str, x, y, col, s, align) {
-  s = s || 2; x = Math.round(x); y = Math.round(y); const w = textW(str, s);
+  s = s || 2; x = Math.round(x); y = Math.round(y); const w = textW(str, s), px = FONT_PX[s] || 16;
   if (align === "center") x -= Math.round(w / 2); else if (align === "right") x -= w;
-  for (const ch of str) { const gl = glyphOf(ch); const ic = ICON_GLYPH[ch] ? iconsOf(ICON_GLYPH[ch]) : null;
-    if (ic) g.drawImage(ic.canvas(), x + Math.round((gl.w * s - 14) / 2), y + Math.round((7 * s - 14) / 2));
-    else if (ch !== " ") g.drawImage(glyphCanvas(ch, col, s), x, y); x += (gl.w + 1) * s; }
+  g.font = fontFor(s); g.textBaseline = "alphabetic"; g.textAlign = "left"; g.fillStyle = HEX[col];
+  const base = y + Math.round(px * 0.78);   // the cap top sits at y, as the bitmap face's did
+  for (const r of runs(str)) {
+    if (typeof r === "string") { g.fillText(r, x, base); x += Math.round(g.measureText(r).width); }
+    else { const n = iconPx(s), ic = iconsOf(r.icon, n); if (ic) g.drawImage(ic.canvas(), x + 1, base - n + Math.round(n * 0.12)); x += n + 2; }
+  }
   return w;
 }
 // A panel with cut corners (plates, cards, the ribbon).

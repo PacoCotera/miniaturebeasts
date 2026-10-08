@@ -22,11 +22,12 @@ export const PLACEHOLDERS = [
 ];
 
 // ---------- The material icons ----------
+// The material icons at any pixel size (Energy a bolt, Data a diamond, Essence a drop), the Companion mark, the heart.
 export const ICON = {
-  energy: () => art("i-energy", () => { const pb = new PB(14, 14); pb.poly([[7, 0], [13.5, 7], [7, 14], [0.5, 7]], C.amber); pb.poly([[7, 0], [13.5, 7], [7, 7]], C.yellow); pb.poly([[0.5, 7], [7, 14], [7, 7]], C.orange); return pb; }),
-  data: () => art("i-data", () => { const pb = new PB(14, 14); pb.rect(1, 1, 12, 12, C.sky); pb.rect(0, 2, 14, 10, C.sky); pb.rect(2, 0, 10, 14, C.sky); pb.rect(3, 4, 8, 2, C.white); pb.rect(3, 8, 5, 2, C.white); pb.rect(2, 12, 10, 2, C.river); return pb; }),
-  essence: () => art("i-ess", () => { const pb = new PB(14, 14); pb.ell(7, 7, 6.6, 6.6, C.grass, { sh: [C.lime, C.leaf] }); pb.rect(4, 3, 2, 2, C.white); return pb; }),
-  star: () => starArt(false),
+  energy: (n = 14) => art("i-energy" + n, () => { const pb = new PB(n, n), k = n / 14; pb.poly([[8, 0], [3, 8], [6.5, 8], [5, 14], [11, 5.5], [7.5, 5.5]].map(([x, y]) => [x * k, y * k]), C.amber); pb.poly([[8, 0], [3, 8], [6.5, 8], [6.5, 5.5], [7.5, 5.5]].map(([x, y]) => [x * k, y * k]), C.yellow); pb.outline(() => C.rust); return pb; }),
+  data: (n = 14) => art("i-data" + n, () => { const pb = new PB(n, n), c = n / 2; pb.poly([[c, 0.5], [n - 0.5, c], [c, n - 0.5], [0.5, c]], C.sky); pb.poly([[c, 0.5], [n - 0.5, c], [c, c]], C.ice); pb.poly([[0.5, c], [c, n - 0.5], [c, c]], C.river); pb.outline(() => C.sea); return pb; }),
+  essence: (n = 14) => art("i-ess" + n, () => { const pb = new PB(n, n), c = n / 2; pb.poly([[c, 0.5], [n * 0.85, c * 1.15], [c, n - 0.5], [n * 0.15, c * 1.15]], C.grass); pb.ell(c, c * 1.2, n * 0.3, n * 0.3, C.grass, { sh: [C.lime, C.leaf] }); pb.set(Math.round(c - n * 0.18), Math.round(c * 0.7), C.white); pb.outline(() => C.forest); return pb; }),
+  star: (n = 14) => (n >= 18 ? starArt(true) : starArt(false)),
   comp: () => art("i-comp", () => { const pb = new PB(14, 20); pb.rect(1, 0, 12, 20, C.sand); pb.rect(3, 2, 8, 9, C.ink); pb.ell(9.5, 15, 2, 2, C.orange); pb.ell(4.5, 15, 1.6, 1.6, C.teal); pb.outline(() => C.wood1); return pb; }),
   heart: (full) => art("i-heart" + full, () => { const pb = new PB(30, 28), c = full ? C.coral : C.moss3; pb.ell(9, 9, 7.5, 7.5, c); pb.ell(21, 9, 7.5, 7.5, c); pb.poly([[2, 11], [28, 11], [15, 26]], c); if (full) pb.ell(8, 7, 2.5, 2.5, C.blush); pb.outline(() => (full ? C.wine : C.lampD)); return pb; }),
 };
@@ -251,7 +252,7 @@ export function mistyArt(frame, genome, mistyTraitIds, w, h) {
     const camera = fitCamera(b.scene, "portrait", [w, h], 0.06), boxes = mistyTraitIds.map((id) => partBox(b.scene, camera, partsFor(id)));
     const whole = boxes.some((bx) => bx.whole);
     pb.map((c, x, y) => { const inBox = boxes.some((bx) => !bx.whole && x >= bx.x0 - 4 && x <= bx.x1 + 4 && y >= bx.y0 - 4 && y <= bx.y1 + 4);
-      if (inBox) return bay(x >> 1, y >> 1) < 7 ? C.frost : bay(x >> 1, y >> 1) < 14 ? C.frostD : C.frostS;
+      if (inBox) return bay(x, y) < 7 ? C.frost : bay(x, y) < 14 ? C.frostD : C.frostS;
       if (whole && bay(x, y) < 4) return C.frostD; return c; });
     return pb;
   });

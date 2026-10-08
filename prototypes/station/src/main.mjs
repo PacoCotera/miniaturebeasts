@@ -15,7 +15,7 @@ import { openBook } from "./screens/library.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import { stampArt } from "./art.mjs";
 
-setIcons((name) => ICON[name]?.());
+setIcons((name, px) => ICON[name]?.(px));
 const $ = (id) => document.getElementById(id);
 const vis = $("screen"), vctx = vis.getContext("2d"); vctx.imageSmoothingEnabled = false;
 const stampEl = $("stamp"), bootEl = $("boot");
@@ -119,7 +119,8 @@ fit();
 requestAnimationFrame(frame);
 const bootText = (t) => { vctx.fillStyle = "#121a16"; vctx.fillRect(0, 0, SW, SH); vctx.fillStyle = "#c6c4d8"; vctx.font = "20px system-ui, sans-serif"; vctx.fillText(t, 24, 300); if (bootEl) bootEl.textContent = t; };
 bootText("loading the species frames…");
-const ready = loadFrames().then((info) => {
+const fontsReady = (document.fonts ? Promise.all(["400 16px Inter", "500 20px Inter", "600 28px Inter"].map((f) => document.fonts.load(f))) : Promise.resolve()).catch(() => null);
+const ready = Promise.all([loadFrames(), fontsReady]).then(([info]) => {
   loadSettings(); load();
   // a new species identified opens its Library page: the Pods screen asks for it through this hook
   G.openBook = openBook;

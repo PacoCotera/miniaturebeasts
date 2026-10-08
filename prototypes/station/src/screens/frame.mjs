@@ -1,6 +1,6 @@
 // The frame every screen shares: the top bar (40 px), the bottom line (38 px), the message plate, the
 // stage ground, the lamp pool, spatial focus, and the residents living in the vivarium.
-import { SW, SH, TOP_H, LINE_H, STAGE_Y, STAGE_H, C, R, blit, text, textW, clipText, wrapText, panel, art, PB, upPB, ramp, clock, motion } from "../gfx.mjs";
+import { SW, SH, TOP_H, LINE_H, STAGE_Y, STAGE_H, C, R, blit, text, textW, clipText, wrapText, panel, art, PB, ramp, clock, motion } from "../gfx.mjs";
 import { ICON, mibiArt } from "../art.mjs";
 import { G, FX, UI, ARRIVE_MS, need, docked, hasWorld, bayCrates, effWithId, atHome, mibiById, arriving } from "../game.mjs";
 import * as S from "../state.mjs";
@@ -16,17 +16,16 @@ export function navSpatial(targets, curId, dir) {
     const d = along + Math.abs(vx * dy + vy * dx) * 2.2; if (d < bd) { bd = d; best = t; } }
   return best ? best.id : curId;
 }
-const up2 = (k, f) => art("u2" + k, () => upPB(f(), 2));
 const CNT = {};
 function drawCounter(x, y, key, icon, value) {
   const st = CNT[key] || (CNT[key] = { v: value, last: 0, fl: -1e9 }), NOW = clock.now;
   if (value < st.v || !motion()) { if (value > st.v) st.fl = NOW; st.v = value; }
   else if (value > st.v && NOW - st.last >= 70) { st.v++; st.last = NOW; st.fl = NOW; }
-  blit(up2(icon, ICON[icon]), x, y);
+  blit(ICON[icon](24), x, y + 2);
   const s = String(st.v), fl = NOW - st.fl < 240;
-  if (fl) panel(x + 32, y - 2, textW(s, 3) + 8, 28, C.amber);
-  text(s, x + 36, y + 3, fl ? C.ink : C.creamT, 3);
-  return x + 36 + textW(s, 3) + 22;
+  if (fl) panel(x + 28, y - 1, textW(s, 3) + 10, 28, C.amber);
+  text(s, x + 33, y + 4, fl ? C.ink : C.creamT, 3);
+  return x + 33 + textW(s, 3) + 22;
 }
 export const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
 export function compState() {
