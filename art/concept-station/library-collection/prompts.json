@@ -1,0 +1,510 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Quick visual exploration of two collection-screen directions for the Library (G, the gallery wall; P, the tome's spread of plates), three generations each, for the owner to choose a direction; not a full concept round.",
+  "picks": {
+    "G": "LC-G-r1-a3",
+    "P": "LC-P-r1-a1"
+  },
+  "sideBySide": "side-by-side.png",
+  "budget": "6 generations on gemini-3-pro-image at 2K; no call failed; none retried.",
+  "calls": [
+    {
+      "tag": "LC-G-r1-a1",
+      "direction": "G",
+      "attempt": 1,
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's COLLECTION screen (every species' place seen at once), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a botanical tome's world: cream paper, sepia ink, warm wood and brass only where named, a naturalist's hand; cool, even light from the upper left; nothing layered or gimmicky; it must read as a COLLECTION at a glance, with one clearly dedicated place per species. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, soft shadows, crisp edges, no noise or dither.\nDIRECTION: THE GALLERY WALL. Between the top bar and the bottom line, a long, quiet wall of pale plaster or linen-covered panel, lit evenly, hung with small FRAMED PORTRAIT PLATES like the book's plate in miniature, one hook per species, sixteen hooks in all in two even rows of eight, so every species has one clearly dedicated place. The hooks are grouped by clan: above each pair of hooks a small blank brass clan plaque (nothing written). The first three hooks carry framed portraits in thin dark wood frames with cream mats: a round charcoal creature with a cream belly and a three-leaf crest; a round coral fluff under a cap of three flaps; the lagoon lizard with the glowing tail, this third frame lifted a little inside a warm cream focus ring. The fourth hook carries a frame holding only a soft pencil study of a sitting cat on cream paper, unfinished, grey graphite. Every other hook (twelve) is EMPTY: a small brass hook on the bare wall with a small blank nameless plaque under it, the wall showing a faint pale rectangle where a frame will hang; all twelve identical, nothing of what will hang there. The wall itself is the synopsis: how many frames hang is the whole record. No ledge, no tags, no pins, no glass, no shelf, no furniture; nothing layered.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: plaques, labels and caption lines are blank; no digits except the three counters; no other words.\nConstraints: no digits except the three counters; nothing written on any plaque, frame or caption; the places of unmet species show no silhouette, shape, mist or colour cue of any kind, only an empty place; no tags on pins, no ledge of objects, no glass lid; no people.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+          "role": "the accepted book this collection opens into: take its framed portrait plate (the lagoon lizard digging, tail glowing), its paper, ink and ornaments as the style of every portrait and page here; its layout is not on this screen",
+          "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "raw/LC-G-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "f8ffc9f35cbe87a8ae128968fb650e5f5633c6bb89388799f236da4016dd67dd"
+        },
+        "png": {
+          "file": "LC-G-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "85cb8722910264ab95953d1316eaa2dbee313d7806d90628cb4a8e288753f853"
+        },
+        "screen": {
+          "file": "LC-G-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "98d0156ce89aa6149a6e12d4e9ab48ee59a2a45e0bc267799bd563e7a9454593",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 25.1,
+        "usage": {
+          "promptTokenCount": 1362,
+          "candidatesTokenCount": 1610,
+          "totalTokenCount": 3264,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 846
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 292,
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "tag": "LC-G-r1-a2",
+      "direction": "G",
+      "attempt": 2,
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's COLLECTION screen (every species' place seen at once), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a botanical tome's world: cream paper, sepia ink, warm wood and brass only where named, a naturalist's hand; cool, even light from the upper left; nothing layered or gimmicky; it must read as a COLLECTION at a glance, with one clearly dedicated place per species. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, soft shadows, crisp edges, no noise or dither.\nDIRECTION: THE GALLERY WALL. Between the top bar and the bottom line, a long, quiet wall of pale plaster or linen-covered panel, lit evenly, hung with small FRAMED PORTRAIT PLATES like the book's plate in miniature, one hook per species, sixteen hooks in all in two even rows of eight, so every species has one clearly dedicated place. The hooks are grouped by clan: above each pair of hooks a small blank brass clan plaque (nothing written). The first three hooks carry framed portraits in thin dark wood frames with cream mats: a round charcoal creature with a cream belly and a three-leaf crest; a round coral fluff under a cap of three flaps; the lagoon lizard with the glowing tail, this third frame lifted a little inside a warm cream focus ring. The fourth hook carries a frame holding only a soft pencil study of a sitting cat on cream paper, unfinished, grey graphite. Every other hook (twelve) is EMPTY: a small brass hook on the bare wall with a small blank nameless plaque under it, the wall showing a faint pale rectangle where a frame will hang; all twelve identical, nothing of what will hang there. The wall itself is the synopsis: how many frames hang is the whole record. No ledge, no tags, no pins, no glass, no shelf, no furniture; nothing layered.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: plaques, labels and caption lines are blank; no digits except the three counters; no other words.\nConstraints: no digits except the three counters; nothing written on any plaque, frame or caption; the places of unmet species show no silhouette, shape, mist or colour cue of any kind, only an empty place; no tags on pins, no ledge of objects, no glass lid; no people.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+          "role": "the accepted book this collection opens into: take its framed portrait plate (the lagoon lizard digging, tail glowing), its paper, ink and ornaments as the style of every portrait and page here; its layout is not on this screen",
+          "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "raw/LC-G-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "2afb35e2d39d2fd254c63c93b7e65e794af4bfb008c37517ec5c796cd8662efe"
+        },
+        "png": {
+          "file": "LC-G-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "886ef39f5805149722fbcf20f9e1b8aeaad3a65d1849ec0bc290843a00fa10b7"
+        },
+        "screen": {
+          "file": "LC-G-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "9d7ff8c0e8b5a640061941bd529bdf501dca78e3b78f20711cf77f4244d01d94",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 26.8,
+        "usage": {
+          "promptTokenCount": 1362,
+          "candidatesTokenCount": 1640,
+          "totalTokenCount": 3300,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 846
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 298,
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "tag": "LC-G-r1-a3",
+      "direction": "G",
+      "attempt": 3,
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's COLLECTION screen (every species' place seen at once), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a botanical tome's world: cream paper, sepia ink, warm wood and brass only where named, a naturalist's hand; cool, even light from the upper left; nothing layered or gimmicky; it must read as a COLLECTION at a glance, with one clearly dedicated place per species. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, soft shadows, crisp edges, no noise or dither.\nDIRECTION: THE GALLERY WALL. Between the top bar and the bottom line, a long, quiet wall of pale plaster or linen-covered panel, lit evenly, hung with small FRAMED PORTRAIT PLATES like the book's plate in miniature, one hook per species, sixteen hooks in all in two even rows of eight, so every species has one clearly dedicated place. The hooks are grouped by clan: above each pair of hooks a small blank brass clan plaque (nothing written). The first three hooks carry framed portraits in thin dark wood frames with cream mats: a round charcoal creature with a cream belly and a three-leaf crest; a round coral fluff under a cap of three flaps; the lagoon lizard with the glowing tail, this third frame lifted a little inside a warm cream focus ring. The fourth hook carries a frame holding only a soft pencil study of a sitting cat on cream paper, unfinished, grey graphite. Every other hook (twelve) is EMPTY: a small brass hook on the bare wall with a small blank nameless plaque under it, the wall showing a faint pale rectangle where a frame will hang; all twelve identical, nothing of what will hang there. The wall itself is the synopsis: how many frames hang is the whole record. No ledge, no tags, no pins, no glass, no shelf, no furniture; nothing layered.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: plaques, labels and caption lines are blank; no digits except the three counters; no other words.\nConstraints: no digits except the three counters; nothing written on any plaque, frame or caption; the places of unmet species show no silhouette, shape, mist or colour cue of any kind, only an empty place; no tags on pins, no ledge of objects, no glass lid; no people.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+          "role": "the accepted book this collection opens into: take its framed portrait plate (the lagoon lizard digging, tail glowing), its paper, ink and ornaments as the style of every portrait and page here; its layout is not on this screen",
+          "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "raw/LC-G-r1-a3.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "754733df68b1199d0fe0e0f597c2d7c3a76965bde2c545e263bce82074d78d3b"
+        },
+        "png": {
+          "file": "LC-G-r1-a3-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "e13c1bc8a5eccc6cad11458caf0640cd1f04a4d151fec393e275e71eb5ea44df"
+        },
+        "screen": {
+          "file": "LC-G-r1-a3-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "f8c8992cb770af5d5cc1af76feb2994e28b185981ca53601a7469ba21d3aad34",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 27.8,
+        "usage": {
+          "promptTokenCount": 1362,
+          "candidatesTokenCount": 1611,
+          "totalTokenCount": 3303,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 846
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 330,
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "tag": "LC-P-r1-a1",
+      "direction": "P",
+      "attempt": 1,
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's COLLECTION screen (every species' place seen at once), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a botanical tome's world: cream paper, sepia ink, warm wood and brass only where named, a naturalist's hand; cool, even light from the upper left; nothing layered or gimmicky; it must read as a COLLECTION at a glance, with one clearly dedicated place per species. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, soft shadows, crisp edges, no noise or dither.\nDIRECTION: THE TOME'S SPREAD OF PLATES. Between the top bar and the bottom line, the botanical tome lies open to a double page that fills the whole stage: two cream pages with deckled edges and a soft gutter, a thin ink border on each. On the spread, SIXTEEN RULED FRAMES drawn in sepia ink, eight per page in two rows of four, each the same size, each a species' dedicated place, with a small blank caption rule under it (nothing written). The frames are grouped by clan with a thin CLAN RIBBON, a short coloured silk ribbon laid along the top edge of each frame whose species has been met (moss green, coral, lagoon, slate violet on the first four), the only grouping mark. The first three frames hold TIPPED-IN PORTRAITS, small painted plates pasted into the ruled frame with photo corners: a round charcoal creature with a cream belly and a three-leaf crest; a round coral fluff under a cap of three flaps; the lagoon lizard with the glowing tail, this third frame lifted a little inside a warm cream focus ring. The fourth frame holds a soft pencil study of a sitting cat on the paper itself, unfinished, grey graphite. The other twelve frames are EMPTY ruled frames with empty photo corners and blank caption rules, all identical, nothing of what will go there. No furniture, no shelf, no glass, no tags, no pins, no ledge; paper and ink only.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: plaques, labels and caption lines are blank; no digits except the three counters; no other words.\nConstraints: no digits except the three counters; nothing written on any plaque, frame or caption; the places of unmet species show no silhouette, shape, mist or colour cue of any kind, only an empty place; no tags on pins, no ledge of objects, no glass lid; no people.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+          "role": "the accepted book this collection opens into: take its framed portrait plate (the lagoon lizard digging, tail glowing), its paper, ink and ornaments as the style of every portrait and page here; its layout is not on this screen",
+          "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "raw/LC-P-r1-a1.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "fcaa439192788cd5866e885d2166f807e1d489555a0e651875266f7f8d3aa994"
+        },
+        "png": {
+          "file": "LC-P-r1-a1-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "f88c2f86fadd84e080a166525238c3c3371d9d3328252c36e698f184f7f51668"
+        },
+        "screen": {
+          "file": "LC-P-r1-a1-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "22e9f984d9af87bf8f27ee91987242b177f3be7ab26b6ccf0ee5f788f9c2e4a9",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 23.9,
+        "usage": {
+          "promptTokenCount": 1393,
+          "candidatesTokenCount": 1563,
+          "totalTokenCount": 3250,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 877
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 294,
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "tag": "LC-P-r1-a2",
+      "direction": "P",
+      "attempt": 2,
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's COLLECTION screen (every species' place seen at once), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a botanical tome's world: cream paper, sepia ink, warm wood and brass only where named, a naturalist's hand; cool, even light from the upper left; nothing layered or gimmicky; it must read as a COLLECTION at a glance, with one clearly dedicated place per species. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, soft shadows, crisp edges, no noise or dither.\nDIRECTION: THE TOME'S SPREAD OF PLATES. Between the top bar and the bottom line, the botanical tome lies open to a double page that fills the whole stage: two cream pages with deckled edges and a soft gutter, a thin ink border on each. On the spread, SIXTEEN RULED FRAMES drawn in sepia ink, eight per page in two rows of four, each the same size, each a species' dedicated place, with a small blank caption rule under it (nothing written). The frames are grouped by clan with a thin CLAN RIBBON, a short coloured silk ribbon laid along the top edge of each frame whose species has been met (moss green, coral, lagoon, slate violet on the first four), the only grouping mark. The first three frames hold TIPPED-IN PORTRAITS, small painted plates pasted into the ruled frame with photo corners: a round charcoal creature with a cream belly and a three-leaf crest; a round coral fluff under a cap of three flaps; the lagoon lizard with the glowing tail, this third frame lifted a little inside a warm cream focus ring. The fourth frame holds a soft pencil study of a sitting cat on the paper itself, unfinished, grey graphite. The other twelve frames are EMPTY ruled frames with empty photo corners and blank caption rules, all identical, nothing of what will go there. No furniture, no shelf, no glass, no tags, no pins, no ledge; paper and ink only.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: plaques, labels and caption lines are blank; no digits except the three counters; no other words.\nConstraints: no digits except the three counters; nothing written on any plaque, frame or caption; the places of unmet species show no silhouette, shape, mist or colour cue of any kind, only an empty place; no tags on pins, no ledge of objects, no glass lid; no people.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+          "role": "the accepted book this collection opens into: take its framed portrait plate (the lagoon lizard digging, tail glowing), its paper, ink and ornaments as the style of every portrait and page here; its layout is not on this screen",
+          "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "raw/LC-P-r1-a2.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "53e6e1d276a304a0a414258cb8791bcf4aa9ce80804621abb2518dfd0a7f01c8"
+        },
+        "png": {
+          "file": "LC-P-r1-a2-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "9ba8d149990ce69be639d95645334fc37adac6691d9dd9e14a3274f00ce4ffe3"
+        },
+        "screen": {
+          "file": "LC-P-r1-a2-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "238dda2e0c99f65ce7fa7e8ddf3a31e41975c090979f16422c688dd5107091d2",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 27.9,
+        "usage": {
+          "promptTokenCount": 1393,
+          "candidatesTokenCount": 1592,
+          "totalTokenCount": 3286,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 877
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 301,
+          "serviceTier": "standard"
+        }
+      }
+    },
+    {
+      "tag": "LC-P-r1-a3",
+      "direction": "P",
+      "attempt": 3,
+      "model": "gemini-3-pro-image",
+      "operation": "generate",
+      "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's COLLECTION screen (every species' place seen at once), a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: the Library of a research instrument, a botanical tome's world: cream paper, sepia ink, warm wood and brass only where named, a naturalist's hand; cool, even light from the upper left; nothing layered or gimmicky; it must read as a COLLECTION at a glance, with one clearly dedicated place per species. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, soft shadows, crisp edges, no noise or dither.\nDIRECTION: THE TOME'S SPREAD OF PLATES. Between the top bar and the bottom line, the botanical tome lies open to a double page that fills the whole stage: two cream pages with deckled edges and a soft gutter, a thin ink border on each. On the spread, SIXTEEN RULED FRAMES drawn in sepia ink, eight per page in two rows of four, each the same size, each a species' dedicated place, with a small blank caption rule under it (nothing written). The frames are grouped by clan with a thin CLAN RIBBON, a short coloured silk ribbon laid along the top edge of each frame whose species has been met (moss green, coral, lagoon, slate violet on the first four), the only grouping mark. The first three frames hold TIPPED-IN PORTRAITS, small painted plates pasted into the ruled frame with photo corners: a round charcoal creature with a cream belly and a three-leaf crest; a round coral fluff under a cap of three flaps; the lagoon lizard with the glowing tail, this third frame lifted a little inside a warm cream focus ring. The fourth frame holds a soft pencil study of a sitting cat on the paper itself, unfinished, grey graphite. The other twelve frames are EMPTY ruled frames with empty photo corners and blank caption rules, all identical, nothing of what will go there. No furniture, no shelf, no glass, no tags, no pins, no ledge; paper and ink only.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: plaques, labels and caption lines are blank; no digits except the three counters; no other words.\nConstraints: no digits except the three counters; nothing written on any plaque, frame or caption; the places of unmet species show no silhouette, shape, mist or colour cue of any kind, only an empty place; no tags on pins, no ledge of objects, no glass lid; no people.",
+      "imageInputs": [
+        {
+          "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+          "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only",
+          "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+        },
+        {
+          "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+          "role": "the accepted book this collection opens into: take its framed portrait plate (the lagoon lizard digging, tail glowing), its paper, ink and ornaments as the style of every portrait and page here; its layout is not on this screen",
+          "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+        }
+      ],
+      "requested": {
+        "aspectRatio": "16:9",
+        "imageSize": "2K"
+      },
+      "result": {
+        "status": "success",
+        "original": {
+          "file": "raw/LC-P-r1-a3.jpg",
+          "stored": true,
+          "mimeType": "image/jpeg",
+          "width": 2752,
+          "height": 1536,
+          "sha256": "c1d40d7fa607e9c692a36218c2c93f79a7a6717f17d30c18fcd5d813fcf68377"
+        },
+        "png": {
+          "file": "LC-P-r1-a3-canvas.png",
+          "width": 1536,
+          "height": 864,
+          "sha256": "0126d9034873d86a8a41875ba0b28664a43ba131bf4b8fcadd69e029fc83e9d1"
+        },
+        "screen": {
+          "file": "LC-P-r1-a3-1024x600.png",
+          "width": 1024,
+          "height": 600,
+          "sha256": "a42006b935c7dce48959c1b17df232742b8c3693e0e7cb507475caccd0868e30",
+          "cropRect": {
+            "x": 65,
+            "y": 0,
+            "width": 2621,
+            "height": 1536
+          },
+          "detection": {
+            "method": "centered",
+            "fallback": false
+          },
+          "resample": "LANCZOS"
+        },
+        "finishReason": "STOP",
+        "seconds": 25.1,
+        "usage": {
+          "promptTokenCount": 1393,
+          "candidatesTokenCount": 1709,
+          "totalTokenCount": 3473,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 877
+            },
+            {
+              "modality": "IMAGE",
+              "tokenCount": 516
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "IMAGE",
+              "tokenCount": 1120
+            }
+          ],
+          "thoughtsTokenCount": 371,
+          "serviceTier": "standard"
+        }
+      }
+    }
+  ]
+}
