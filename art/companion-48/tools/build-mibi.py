@@ -3,8 +3,8 @@
 usage:  python3 -I build-mibi.py            (from anywhere)
 
 Reads   ../type/mibi-7x9.txt          one block per glyph, rows of . and #
-Writes  ../type/mibi-7x9.png          the sheet: 16 columns of 7x9 cells, indexed, two palette colours
-        ../type/mibi-7x9.json         the atlas: code point -> cell, ink offset, ink width, advance; the metrics
+Writes  ../type/mibi-7x9.png          the sheet: 16 columns of 7x11 cells (the 7x9 body under 2 rows of headroom), indexed
+        ../type/mibi-7x9.json         the atlas: code point -> cell, ink offset, ink width, advance, above; the metrics
         ../type/contact-1x.png        the full set and the pangrams, set in the face at 1x, 2x and 3x on a 450 px
         ../type/contact-2x.png        wide screen (the Companion's width), in the 48 colours
         ../type/contact-3x.png
@@ -14,11 +14,14 @@ every pixel is a palette index: nothing can be off palette, there is no alpha an
 
 Block format (see the header of the .txt):
     U+0041 A            a header: the code point, the character, optionally adv=N
-    .......             then exactly 9 rows of 7 characters, "." empty and "#" ink
+    .......             then 9 rows of 7 characters, "." empty and "#" ink: rows 0-8, the cap line on row 0
+                        An accented letter may carry its mark above the cap line: 10 rows (1 above, the lower-case
+                        acute, grave, circumflex and tilde) or 11 rows (2 above, the accented capitals). The line
+                        pitch is 11, so those rows are the leading; nothing else may use them.
 Column 0 and column 6 are the side bearings and must be empty. Ink lives in columns 1-5.
 Advance = (last ink column + 1): the ink extent plus one pixel of tracking, unless the header gives adv=N
-(tabular digits and the space). To draw a glyph, put the cell's column 1 on the pen position, then move the pen
-by the advance. The atlas gives the same numbers.
+(tabular digits and the space). To draw a glyph, put the sheet cell's column 1 on the pen position and its row 2
+on the cap line, then move the pen by the advance. The atlas gives the same numbers, and 'above' per glyph.
 """
 import json, os, struct, sys, zlib
 
@@ -26,6 +29,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TYPE = os.path.join(HERE, "..", "type")
 PALETTE = os.path.join(HERE, "..", "palette", "palette.json")
 CW, CH, COLS = 7, 9, 16
+HEAD = 2                                       # rows above the cap line an accented glyph may use (the leading)
+CELL_H = CH + HEAD                             # sheet cell height; the cap line is cell row HEAD
 BG, FG = 1, 7                                  # ink and bone, in the signed palette's index order
 CAP, XH, ASC, DESC, BASE = 7, 5, 7, 2, 7       # baseline = the row just under the last cap row (row 7 is the first descender row)
 
@@ -55,9 +60,10 @@ def parse(path):
             errors.append("line %d: U+%04X row must be %d characters of . and #: %r" % (n, cur["cp"], CW, line))
         cur["rows"].append(line)
     for cp, g in glyphs.items():
-        if len(g["rows"]) != CH:
-            errors.append("U+%04X (line %d): %d rows, need %d" % (cp, g["line"], len(g["rows"]), CH))
+        if len(g["rows"]) not in range(CH, CH + HEAD + 1):
+            errors.append("U+%04X (line %d): %d rows, need %d to %d" % (cp, g["line"], len(g["rows"]), CH, CH + HEAD))
             continue
+        g["above"] = len(g["rows"]) - CH
         for r in g["rows"]:
             if r[0] == "#" or r[CW - 1] == "#":
                 errors.append("U+%04X (line %d): ink in a side bearing column" % (cp, g["line"])); break
@@ -95,7 +101,7 @@ def load_palette():
 def build_sheet(glyphs, palette):
     order = sorted(glyphs)
     nrows = (len(order) + COLS - 1) // COLS
-    W, H = COLS * CW, nrows * CH
+    W, H = COLS * CW, nrows * CELL_H
     pix = [[BG] * W for _ in range(H)]
     atlas = {}
     for i, cp in enumerate(order):
@@ -104,27 +110,29 @@ def build_sheet(glyphs, palette):
         for y, r in enumerate(g["rows"]):
             for x, c in enumerate(r):
                 if c == "#":
-                    pix[row * CH + y][col * CW + x] = FG
-        atlas[str(cp)] = {"char": chr(cp), "hex": "U+%04X" % cp, "cell": [col, row], "x": col * CW, "y": row * CH,
-                          "advance": g["advance"], "ink_x": g["ink_x"], "ink_w": g["ink_w"]}
+                    pix[row * CELL_H + HEAD - g["above"] + y][col * CW + x] = FG
+        atlas[str(cp)] = {"char": chr(cp), "hex": "U+%04X" % cp, "cell": [col, row], "x": col * CW, "y": row * CELL_H,
+                          "advance": g["advance"], "ink_x": g["ink_x"], "ink_w": g["ink_w"], "above": g["above"]}
     png(os.path.join(TYPE, "mibi-7x9.png"), W, H, pix, palette)
     meta = {
         "font": "Mibi 7x9",
         "source": "type/mibi-7x9.txt, built by tools/build-mibi.py",
         "image": "mibi-7x9.png",
         "image_size": [W, H],
-        "cell": {"w": CW, "h": CH},
+        "cell": {"w": CW, "h": CELL_H, "cap_line_row": HEAD},
         "columns": COLS,
         "rows": nrows,
         "count": len(order),
         "palette": {"file": "../palette/palette.json", "background": BG, "ink": FG,
                     "note": "two of the 48 colours; read the sheet as a mask: index %d is ink" % FG},
         "metrics": {"cap_height": CAP, "x_height": XH, "ascender": ASC, "descender": DESC,
-                    "baseline_y": CAP, "line_height": CH, "tracking": 1, "space_advance": glyphs[32]["advance"],
+                    "baseline_y": CAP, "line_height": CH, "headroom": HEAD, "tracking": 1, "space_advance": glyphs[32]["advance"],
                     "digit_advance": glyphs[48]["advance"], "side_bearing": 1,
                     "recommended_line_pitch": 11},
-        "draw": "put the cell's column 1 on the pen x (the cell starts at pen_x - 1), the cell's row 0 on the cap line; "
-                "then pen_x += advance. Scale by whole numbers only (2x or 3x on the Companion).",
+        "draw": "put the cell's column 1 on the pen x (the cell starts at pen_x - 1), the cell's row 2 on the cap line "
+                "(the cell starts 2 font px above it); then pen_x += advance. 'above' is how many of the 2 headroom rows a "
+                "glyph inks (accent marks only): a text slot keeps 2 font px clear above its first cap line. "
+                "Scale by whole numbers only (2x or 3x on the Companion).",
         "glyphs": atlas,
     }
     # glyphs sorted by code point already; keep the file readable
@@ -151,7 +159,7 @@ class Canvas:
         for ry, r in enumerate(g["rows"]):
             for rx, ch in enumerate(r):
                 if ch == "#":
-                    self.rect(x + (rx - 1) * s, y + ry * s, s, s, c)
+                    self.rect(x + (rx - 1) * s, y + (ry - g["above"]) * s, s, s, c)
 
 
 def width(glyphs, text, s):
@@ -193,6 +201,7 @@ ASCII = "".join(chr(c) for c in range(0x21, 0x7F))
 SYMBOLS = "·×÷−–—…’‘“”«»¡¿°§✓✕←→↑↓▶◀▲▼★♥◆❀⚡"
 LOW_ACC = "áàâäéèêëíìîïóòôöúùûüñÿçœ"
 CAP_ACC = "ÁÀÂÄÉÈÊËÍÌÎÏÓÒÔÖÚÙÛÜÑŸÇŒ"
+ACC_WORDS = ["sûr goût fête côte l'âme · comía país año niño · déjà où", "ÉTÉ · Él · ÁRBOL · À bientôt · ÎLE · ÑANDÚ · Ève · ÇA"]
 PANGRAMS = [
     ("English", "The quick brown fox jumps over the lazy dog. Sphinx of black quartz, judge my vow."),
     ("Spanish", "El veloz murciélago hindú comía feliz cardillo y kiwi. ¡Qué ñandú tan ágil! Jovencillo emponzoñado de whisky: ¡qué figurota exhibe!"),
@@ -235,6 +244,9 @@ def contact(glyphs, order, palette, names, s):
     block(LOW_ACC)
     label("Spanish and French, capitals")
     block(CAP_ACC)
+    label("Accents in words")
+    for t in ACC_WORDS:
+        block(t)
     label("Decided symbols")
     block(SYMBOLS)
     for name, t in PANGRAMS:
@@ -247,11 +259,12 @@ def contact(glyphs, order, palette, names, s):
     # layout
     lab_s = 2
     lab_pitch = 11 * lab_s
-    sheet_w, sheet_h = COLS * CW * s, ((len(order) + COLS - 1) // COLS) * CH * s
+    sheet_w, sheet_h = COLS * CW * s, ((len(order) + COLS - 1) // COLS) * CELL_H * s
+    head = HEAD * s                      # the first line under a label keeps its headroom clear of the label
     H = M
     for it in items:
         if it[0] == "label":
-            H += lab_pitch + 4
+            H += lab_pitch + 4 + head
         elif it[0] == "line":
             H += pitch
         else:
@@ -265,7 +278,7 @@ def contact(glyphs, order, palette, names, s):
         if it[0] == "label":
             y += 6 if y > M else 0
             draw_text(cv, glyphs, it[1], M, y, lab_s, mist)
-            y += lab_pitch + 4 - (6 if y > M else 0)
+            y += lab_pitch + 4 + head - (6 if y > M else 0)
         elif it[0] == "line":
             draw_text(cv, glyphs, it[1], M, y, s, it[2])
             y += pitch
@@ -273,13 +286,13 @@ def contact(glyphs, order, palette, names, s):
             # the sheet: cells on alternating night / ink so the grid shows at every scale
             for i, cp in enumerate(order):
                 col, row = i % COLS, i // COLS
-                cx, cy = M + col * CW * s, y + row * CH * s
-                cv.rect(cx, cy, CW * s, CH * s, night if (col + row) % 2 == 0 else ink)
+                cx, cy = M + col * CW * s, y + row * CELL_H * s
+                cv.rect(cx, cy, CW * s, CELL_H * s, night if (col + row) % 2 == 0 else ink)
                 g = glyphs[cp]
                 for ry, r in enumerate(g["rows"]):
                     for rx, ch in enumerate(r):
                         if ch == "#":
-                            cv.rect(cx + rx * s, cy + ry * s, s, s, bone)
+                            cv.rect(cx + rx * s, cy + (HEAD - g["above"] + ry) * s, s, s, bone)
             y += sheet_h + 6
     png(os.path.join(TYPE, "contact-%dx.png" % s), W, H, cv.p, palette)
     return W, H
