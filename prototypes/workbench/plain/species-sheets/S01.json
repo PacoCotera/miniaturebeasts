@@ -1,0 +1,15 @@
+{
+ "placeholder": true,
+ "note": "PLACEHOLDER drawn by the genome engineer for the first plain round; the art director's sheet replaces it. Loika: Pip's orange eyes with a cream ring, a small friendly mouth, skin smooth with a fine grain.",
+ "iris": "#e08a2c",
+ "irisEdge": "#8a4a12",
+ "pupil": "#273036",
+ "catch": "#fff6e8",
+ "eyeScale": 2.0,
+ "mouth": "smile",
+ "material": "skin",
+ "grain": 0.03,
+ "partColours": {
+  "crown": "#5aa65c"
+ }
+}

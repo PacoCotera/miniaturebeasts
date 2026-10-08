@@ -11,8 +11,11 @@ import { sub, cross, dot, unit, mul, add, norm, longitudinalWeight, localPoint }
 export const VIEWS = {
   front: { right: [0, 1, 0], up: [0, 0, 1] },
   side: { right: [-1, 0, 0], up: [0, 0, 1] },
-  "three-quarter": { right: unit([-Math.sqrt(3) / 2, 0.5, 0]), up: unit([0.25 * 0.5, 0.25 * Math.sqrt(3) / 2, Math.sqrt(3) / 2]) },
+  "three-quarter": { right: unit([-Math.sqrt(3) / 2, 0.5, 0]), up: unit([0.25 * 0.5, 0.25 * Math.sqrt(3) / 2, Math.sqrt(3) / 2]) }, // the rear quarter: the back, the flank and the head in profile
   top: { right: [0, 1, 0], up: [-1, 0, 0] },
+  // The portrait: the front quarter from the viewer's left, raised about 20°, the face toward
+  // viewer-left as the accepted Pip stands. The plain renderer's main view (plain.mjs).
+  portrait: { right: unit([0.64, -0.77, 0]), up: unit([0.27, 0.224, 0.938]) },
 };
 for (const view of Object.values(VIEWS)) {
   view.right = unit(view.right);
@@ -105,7 +108,23 @@ export function render(scene, camera, pass = "shaded", options = {}) {
       let colour;
       if (pass === "silhouette") colour = [0, 0, 0];
       else if (pass === "index") colour = partColour(partIds.get(node.part ?? node.id));
-      else {
+      else if (pass === "gbuffer") {
+        // The plain renderer's input (plain.mjs): per pixel the slot (r: the slot's index in slotLegend
+        // order, +64 for the second half of a split slot, +128 where a marking or belly field lies),
+        // the Lambert term (g) and how much the facet faces the viewer (b, for the rim light); the
+        // node is in the index buffer. Same facets, same depth test as the shaded pass.
+        let slot = node.slot, half = palette.length > 1 && meanU >= 0.5, field = false;
+        if (region) {
+          const lp = localPoint(node, centre);
+          const vAngle = (Math.atan2(lp[2] / node.radii[2], lp[1] / node.radii[1]) / (2 * Math.PI) + 1) % 1;
+          if (scene.belly && scene.slots.belly && lp[2] < -0.35 * node.radii[2] && !node.up) { slot = "belly"; half = false; }
+          if (scene.markings && markingAt(scene.markings, meanU, vAngle)) field = true;
+        }
+        if (node.part === "head" && scene.mask && scene.slots.mask) { const lp = localPoint(node, centre); if (scene.mask === "band" ? lp[0] < -0.25 * node.radii[0] && Math.abs(lp[2]) < 0.45 * node.radii[2] : lp[0] < -0.3 * node.radii[0] && Math.abs(lp[1]) < 0.22 * node.radii[1]) { slot = "mask"; half = false; } }
+        if (node.part === "tail" && scene.tailRings && node.role === "axial-tail") { const k = scene.tailRings; if (k === 1 ? meanU > 0.78 : Array.from({ length: k }, (_, i) => (i + 1) / (k + 1)).some((c) => Math.abs(meanU - c) < 0.5 / (k + 1) * 0.45)) { slot = "second"; half = false; } }
+        const si = Math.max(0, slotNames.indexOf(slot));
+        colour = [si + (half ? 64 : 0) + (field ? 128 : 0), Math.round(255 * Math.max(0, dot(n, options.light ?? LIGHT))), Math.round(255 * Math.max(0, facing))];
+      } else {
         let slot = node.slot;
         let pigment = palette.length === 1 ? palette[0] : meanU < 0.5 ? palette[0] : palette[1];
         let slotKey = palette.length === 1 ? slot : `${slot}-${meanU < 0.5 ? 1 : 2}`;
@@ -180,7 +199,7 @@ function fillPolygon(poly, colour, facing, opacity, rgb, depth, index, nodeId, W
           z = l1 * a[2] + l2 * b[2] + (1 - l1 - l2) * c[2];
         }
         const i = y * W + x;
-        if (opacity < 1 && pass !== "silhouette" && BAYER[y & 3][x & 3] / 16 >= opacity) continue;
+        if (opacity < 1 && pass !== "silhouette" && pass !== "gbuffer" && BAYER[y & 3][x & 3] / 16 >= opacity) continue; // the plain renderer reads opacity itself
         if (z > depth[i]) {
           depth[i] = z; index[i] = nodeId;
           rgb[i * 4] = colour[0]; rgb[i * 4 + 1] = colour[1]; rgb[i * 4 + 2] = colour[2]; rgb[i * 4 + 3] = 255;
