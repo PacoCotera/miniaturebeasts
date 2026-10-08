@@ -5,16 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Station Field Test</title>
 <meta name="description" content="Miniature Beasts Station build (M1 Read): a simulated 1024×600 Station screen on the real species frames, sharing its save with the Companion page. Dock, open the bay, identify a pod, read its chapters, compare and return.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Inter:wght@400;500;600&display=swap">
 <style>
-/* ===== Surround tokens (light / dark). The device screen never uses these. ===== */
+/* ===== The device's type: Inter, bundled under the OFL (../ui/fonts/inter/LICENSE.txt), never fetched from the
+   network. Three weights at the three Station sizes: 400 at 16 px, 500 at 20, 600 at 28. Tabular figures for all. ===== */
+@font-face{font-family:"Inter"; font-style:normal; font-weight:400; font-display:block; font-feature-settings:"tnum"; src:url("../ui/fonts/inter/Inter-Regular.woff2") format("woff2")}
+@font-face{font-family:"Inter"; font-style:normal; font-weight:500; font-display:block; font-feature-settings:"tnum"; src:url("../ui/fonts/inter/Inter-Medium.woff2") format("woff2")}
+@font-face{font-family:"Inter"; font-style:normal; font-weight:600; font-display:block; font-feature-settings:"tnum"; src:url("../ui/fonts/inter/Inter-SemiBold.woff2") format("woff2")}
+/* ===== Surround tokens (light / dark). The device screen never uses these; the surround uses the system's fonts. ===== */
 :root{
   color-scheme: light dark;
   --bg:#ece6d8; --bg-2:#e3dccb; --ink:#28302c; --muted:#565d57; --panel:#f7f3ea;
   --line:#d3cab6; --accent:#b84a0c; --focus:#e8641b; --chip:#efe8d8;
-  --font-ui: "Fredoka", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  --font-ui: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
   --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 @media (prefers-color-scheme: dark){

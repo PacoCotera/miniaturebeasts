@@ -21,7 +21,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
-const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown" };
+const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown", ".woff2": "font/woff2" };
 // The Caddy service in mock mode beside the static server (station-build.md §5), its calls proxied under /caddy-api/ as the VM's web server does.
 loadCaddyFrames();
 const caddyData = mkdtempSync(path.join(tmpdir(), "mb-caddy-journey-"));
@@ -48,6 +48,8 @@ const page = await browser.newPage({ viewport: { width: 1360, height: 980 }, dev
 const errors = [], fail = (t) => { errors.push(t); console.error("FAIL " + t); };
 page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
 page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push("console: " + m.text()); });
+// Nothing is fetched from the network but the page's own files and the Caddy service (the fonts are bundled).
+const external = []; page.on("request", (r) => { if (!r.url().startsWith(`http://127.0.0.1:`)) external.push(r.url()); });
 mkdirSync(path.join(here, "../img"), { recursive: true });
 const shot = (name) => page.screenshot({ path: path.join(here, `../img/${name}.png`), fullPage: false });
 const fixture = readFileSync(path.join(here, "../tests/fixtures/save-v8-schema1.json"), "utf8");
@@ -55,6 +57,11 @@ const companionBefore = JSON.stringify({ ...JSON.parse(fixture), st: undefined }
 await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.removeItem("mb-station-dev"); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
+// Inter comes from the bundled OFL files (prototypes/ui/fonts/inter), three weights loaded; no request leaves the page's origin.
+const fonts = await page.evaluate(() => [...document.fonts].filter((f) => f.family.replace(/"/g, "") === "Inter").map((f) => f.weight + ":" + f.status));
+if (!(fonts.length === 3 && fonts.every((f) => f.endsWith(":loaded")))) { errors.push("Inter is not loaded from the bundled files: " + fonts.join(", ")); console.error("FAIL fonts " + fonts.join(", ")); }
+if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
+console.log("fonts: Inter " + fonts.join(", ") + " · external requests " + external.length);
 const st = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.ST)));
 const sv = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.SV)));
 const press = async (k, ms = 120) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(ms); };
