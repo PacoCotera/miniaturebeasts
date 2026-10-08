@@ -83,6 +83,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Chrome.** Presses during the arrival are consumed; focus stays on the room; then `✓ Look at the new pods`.
 - **Motion.** About 3 s per crate: seal 300 ms, each pod's travel 600 ms, ticks at +1 per 90 ms.
 
+**Decided 2026-10-08 (the portrait crate, [the portrait](../proposals/the-portrait.md) §1).** A finished portrait comes to the bay like cargo: while it is painted, a flat crate silhouette waits behind the bay door with its lamp slowly filling (no clock, no digits; "waiting for the cloud" when offline); landed, the bay lamp turns amber, `✓ Open the bay · 1 crate`. The seal breaks, the flat crate slides out, its lid lifts and the portrait stands on the stage in its gilt frame, ribbon "Fig's portrait"; then `✓ Look at Fig` opens Habitat, where Fig is drawn fresh in its painted set. The welcome sitting arrives here too, as a small gift crate ("a sitting, to begin").
+
 **Pass when**
 - [ ] Docking alone shows crates and accepts nothing.
 - [ ] Each crate's arrival reads as one event.
@@ -159,7 +161,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 **Decided 2026-10-08 (concept round).** Reference `art/concept-station/create/`, candidate CR-C2. The painted master places the accepted Pip asset (the same drawing on every Station screen; Pip is not regenerated). Roll pictures are flank close-ups of the changed part, not whole founders. The still-sealed doings chapters are named in one status-bar line ("Face and Stamina stay a surprise"), not as greyed tabs.
 
-**Decided 2026-10-08 (the standard look).** The founder on Create, and every mibi everywhere, is drawn in the **standard look** rendered from the rig (continuous proportions, the species' pools), finished to this guide: that is the game's art, the default and not a placeholder ([art-pipeline](../proposals/art-pipeline.md) §1). A unique cloud-painted render is a prize a mibi may earn later; Create never shows one.
+**Decided 2026-10-08 (the standard look).** The founder on Create, and every mibi everywhere, is drawn in the **standard look** rendered from the rig (continuous proportions, the species' pools), finished to this guide: that is the game's art, the default and not a placeholder ([art-pipeline](../proposals/art-pipeline.md) §1). A unique cloud-painted render is a prize a mibi may earn later; Create never shows one. *2026-10-08, the words:* the prize is the **portrait**, paid with **a sitting** earned by research; the brief for the standard look is [the plain renderer](../proposals/plain-renderer.md).
 
 **Pass when**
 - [ ] Founder, changes, surprises and cost are all visible at once.
@@ -191,7 +193,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 **Decided 2026-10-08 (concept round).** Reference `art/concept-station/incubator/`, candidates IN-D-r1-a3 (growing) and IN-C1 (ready). Ready keeps the shape glowing inside the bud so the player gets to crack the incubator open. The growing bud is a cute, generic glowing bean; colours may shift, shapes never become embryos. The stamp stands alone on the Station; the code string may also show, as a shareable "look at my mibi" string.
 
-**Decided 2026-10-08 (economy and the prize).** Two additions. **Instant grow:** while growing, the chrome offers `✓ Grow now · <price>` beside the read-only wait (the price to be set with the real economy; the first bud ever grows in five minutes, others twenty plus one per shaped trait; all timers sit under the developer-tools toggle for testing). **The prize render state:** the juvenile that steps out wears the standard look, always. When a mibi has been given a jewel (a unique cloud-painted render earned by a research item or the paid tier's allowance), the chamber gets a fourth state after growing and ready: the painted set arriving, shown as a prize with its own small ceremony (the dome lit, the jewel mark on the stamp label), never as "the real art" against a lesser one, and never with a spinner while it is awaited.
+**Decided 2026-10-08 (economy and the prize).** Two additions. **Instant grow:** while growing, the chrome offers `✓ Grow now · <price>` beside the read-only wait (the price to be set with the real economy; the first bud ever grows in five minutes, others twenty plus one per shaped trait; all timers sit under the developer-tools toggle for testing). The juvenile that steps out wears the standard look, always. *Superseded 2026-10-08 ([the portrait](../proposals/the-portrait.md)):* the "prize render state", a fourth chamber state for a painted set arriving, is gone. The incubator has growing and ready, nothing else; a portrait arrives as a crate in the sample bay (Dock and arrival), and the sitting that pays for it is chosen on Habitat (the Sitting, below).
 
 **Pass when**
 - [ ] Time reads as leaves, never digits.
@@ -215,8 +217,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 **Purpose.** The whole collection at a glance. **Reads first:** how much of the record is filled.
 
-- **Living window.** None; the cabinet is quiet. Found species show a small portrait in their box.
-- **Instrument.** A cabinet of boxes, one per species, grouped by clan (the clan's spine colour on the box edge). Found species: a bright box with the portrait and name. Met, not researched: a slate silhouette. Unmet: a faint shape in the mist. Boxes for species not yet released do not exist; the cabinet grows with each drop. A synopsis strip: found and hidden counts as filled boxes, progress, completion, clans met.
+- **Living window.** None; the cabinet is quiet. Found species show a small face in their box (the species' generic picture; "portrait" until 2026-10-08).
+- **Instrument.** A cabinet of boxes, one per species, grouped by clan (the clan's spine colour on the box edge). Found species: a bright box with the face and name; once a mibi of the species is portrayed, its portrait, small, with a gilt frame corner, replaces the face (with several portrayed, the book offers `✓ Make Fig the face`). Met, not researched: a slate silhouette. Unmet: a faint shape in the mist. Boxes for species not yet released do not exist; the cabinet grows with each drop. A synopsis strip: found and hidden counts as filled boxes, progress, completion, clans met.
 - **Composition.** The cabinet fills the screen; sixteen boxes today in a 4×4 or 8×2 grid at a size that stays readable at 32 boxes.
 - **Palette.** Wood and brass or the tome's cream and slate; clan spine colours.
 - **Type.** Species names at 2× under found boxes; nothing under hidden ones.
@@ -236,6 +238,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Type.** 3× species name; one 2× habit line; no paragraphs.
 - **Chrome.** `✓ Visit Fig` on a mibi, `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Cabinet`.
 - **Motion.** Tabs turn in 200 ms; the portrait lives.
+
+**Decided 2026-10-08 ([the portrait](../proposals/the-portrait.md) §1, §7).** The book's living window is the species' **face** (a resident in the standard look, doing its habit) until a mibi of the species has sat for its portrait; then **the portrait replaces the face**: that mibi in its chosen pose and place, alive in the window, the habit line under it. A portrayed mibi returned to the wild keeps its portrait here, marked "released". After the welcome portrait, the gilt frame is drawn faintly over the species' last empty look plate to show where the next sitting comes from.
 
 **Pass when**
 - [ ] The cabinet shows every released species' box at once, no scrolling, and still would at twice the count.
@@ -263,7 +267,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Light.** Warm key light from the top left in the window; cool on the card.
 - **Palette.** The vivarium's greens and earth; card chrome; the heart red, with its shape.
 - **Type.** 4× name; 2× card lines.
-- **Chrome.** `✓ Spend time with Fig`, `✓ Take Fig with you`, `✓ Bond with Fig` (then ✓ again), `✓ Cross Fig`. `← Home`.
+- **Chrome.** `✓ Spend time with Fig`, `✓ Take Fig with you`, `✓ Bond with Fig` (then ✓ again), `✓ Cross Fig`. `← Home`. With a sitting held and Fig eligible: `✓ Portray Fig · 1 sitting` (2026-10-08).
 - **Motion.** The strip swaps the resident in 300 ms; the species moment plays about 2 s.
 
 **Pass when**
@@ -272,6 +276,28 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - [ ] No meters or needs.
 - [ ] The door shows where the mibi with you is.
 - [ ] Spend time rewards nothing and shows nothing like a reward.
+
+---
+
+## Sitting
+
+**Decided 2026-10-08** ([the portrait](../proposals/the-portrait.md) §1). A short section, since the ceremony borrows Habitat and the bay.
+
+**Vibe.** Vivarium light on a plain stage: the one-resident warmth of Habitat, with the instrument reduced to the choices.
+
+**Purpose.** Spend a held sitting on one mibi: choose its pose and its place, confirm, and wait. **Reads first:** the mibi on the stage, then the gilt frame.
+
+- **Where it lives.** The held sitting is a small gilt frame in a slot on Home's instrument beside the Probe dock (one slot, one frame; it pulses "use your sitting first" when a guide is one look from full and a second would be earned). The ceremony starts on **Habitat** with `✓ Portray Fig · 1 sitting` and opens the sitting screen for its three steps; a mibi fresh from the bud is offered nothing ("Fig needs a walk first"); a portrayed mibi shows its portrait instead of the offer.
+- **Living window.** Fig in the standard look on a plain stage, acting out the focused pose.
+- **Instrument.** Step 1, the pose: one small picture per habit the player has watched (dig, glow, puff, sleep curled), in the standard look; `✓ This pose · ← Fig`. Step 2, the place: the places Fig has been as the book's place stamps, the focused one washing the stage in its colours; `✓ This place · ← pose`. Step 3, look and confirm: Fig in the pose, in the place, the gilt frame around it, one line "One sitting each, ever"; first ✓ arms (the frame lights), second ✓ begins: `✓ Begin the sitting · 1 sitting · ← place`.
+- **The wait.** The frame leaves the slot for the sample bay module, where the flat crate waits behind the door with its filling lamp (Dock and arrival). Fig lives on as before. A few hours; no clock, no spinner.
+- **Type.** 4× name; 2× habit and place words; no digits but the price.
+
+**Pass when**
+- [ ] The three choices are made from what the player has seen Fig do and where it has been, nothing else.
+- [ ] Nothing on the stage promises what the portrait will look like beyond pose and place.
+- [ ] The arm-then-confirm state is visible before the sitting is spent.
+- [ ] The wait reads from the bay's crate and lamp, never from a number.
 
 <table><tr><td valign="top"><img src="../proposals/station-screens/08-habitat.svg" width="480" alt="Habitat wireframe"><br><em>Habitat wireframe. Layout only.</em></td>
 <td valign="top"><img src="../../art/concept-homepage/pip-life-stages.png" width="420" alt="Life stages"><br><em>Stage by proportion and bearing. Approved concept, generated.</em></td></tr></table>
