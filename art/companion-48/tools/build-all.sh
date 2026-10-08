@@ -6,7 +6,7 @@
 set -e
 # The outpost (hut B) is made by tools/rd-hut-b.py (Retro Diffusion), tools/hut-b.py (the hand pass) and tools/huts-assemble.sh (Aseprite on the VM), and lives in work/props/outpost-*.png.
 # The pawn studies: tools/pawn-study.py (A to F), tools/rd-pawn-studies.py + tools/pawn-study-snap.py (G, H), tools/pawn-studies-sheet.py (the sheets).
-R=review-place; W=$R/work; P2=$R/round6/work
+R=review-place; W=$R/work; P2=$R/round7/work
 rm -rf $W/candidates; mkdir -p $W/candidates
 for n in tree bush bush-fruit bush-shaken stone stone-plain2 stone-warm1 stone-warm2 stone-charged1 stone-charged2 pod; do
   s=$W/props/$n.png; [ -f $W/props-scripted/$n.png ] && s=$W/props-scripted/$n.png
@@ -24,11 +24,14 @@ for sc in 1 3; do
 python3 -I tools/contact.py $R/contact-sheet-${sc}x.png $sc "Meadow, pond and shallows (ground)=$W/ground=$P2/ground" "Shore set: 16 cardinal masks and 4 diagonal corners, 2 frames=$W/shore=$P2/shore" "Shore test: the 47 neighbourhood classes (mNN cardinal mask, dNN diagonal bits)=$W/shore-test" "Shore test: a random 10 x 10 pond outline, 1 frame=$W/shore-test-pond" "Props and buildings=$W/props=$P2/props" "Ripple overlay sprites (3 sizes x 2 frames; placed over the water, never in a tile)=$W/ripples" "Retro Diffusion candidates (a scripted, b Retro Diffusion before the hand pass; picks in the README)=$W/candidates" "Pawn (4 facings, walk 3, creep 3, react)=$W/pawn=$P2/pawn" "Tokens (Pip as Loika; placeholders)=$W/tokens=$P2/tokens" "Weather (rain, 2 leans x 2 frames)=$W/weather=$P2/weather" "HUD icons, key caps, condition bolts, 9-slices=$W/ui=$P2/ui"
 done
 python3 -I tools/compose-still.py $W $R/still/companion-place-storm-48.png --light storm
-python3 -I tools/beside.py $R/still/beside-concept-and-round6.png $R/still/companion-place-storm-48.png "round 7 still, storm table (450x600, 1x)" $R/round6/still-companion-place-storm-48.png "round 6 still (450x600, 1x)"
+python3 -I tools/ground-forest.py $W/ground $W/ground-forest; python3 -I tools/build-shore.py $W/ground-forest $W/shore-forest
+python3 -I tools/compose-still.py $W $R/still/companion-place-storm-48-forest.png --light storm --ground forest
+python3 -I tools/ground-figure.py $R/still/companion-place-storm-48.png $R/still/companion-place-storm-48-forest.png $R/still/ground-candidates-1x.png
+python3 -I tools/beside.py $R/still/beside-concept-and-round7.png $R/still/companion-place-storm-48.png "round 8 still, storm table (450x600, 1x)" $R/round7/still-companion-place-storm-48.png "round 7 still (450x600, 1x)"
 python3 -I tools/meadow-check.py $W/ground $W/meadow-mixed
 python3 -I tools/preview.py $W/preview-water-3x.png 3 $W/ground/water1.png $W/ground/water1b.png $W/ground/water2.png $W/ground/water2b.png $W/ground/deep1b.png $W/ground/shallows.png $W/shore/shore-03-1.png $W/shore/shore-diag-ne-1.png
 python3 -I tools/check.py $R/sheets/*.png --fourgray $R/sheets/four-gray
-python3 -I tools/check.py $R/still/companion-place-storm-48.png --fourgray $R/still/four-gray
+python3 -I tools/check.py $R/still/companion-place-storm-48.png $R/still/companion-place-storm-48-forest.png --fourgray $R/still/four-gray
 python3 -I tools/preview.py $W/preview-ripples-5x.png 5 $W/ripples/*.png
 python3 -I tools/preview.py $W/preview-stones-5x.png 5 $W/props/stone.png $W/props/stone-plain2.png $W/props/stone-warm1.png $W/props/stone-warm2.png $W/props/stone-charged1.png $W/props/stone-charged2.png $W/props/stone-step.png
 python3 -I tools/preview.py $W/preview-pawn-6x.png 6 $W/pawn/pawn-down-walk1.png $W/pawn/pawn-down-walk2.png $W/pawn/pawn-up-walk1.png $W/pawn/pawn-left-walk1.png $W/pawn/pawn-right-walk1.png $W/pawn/pawn-right-walk3.png $W/pawn/pawn-down-creep1.png $W/pawn/pawn-right-creep2.png $W/pawn/pawn-up-creep3.png $W/pawn/pawn-down-react.png $W/pawn/pawn-right-react.png
@@ -43,6 +46,7 @@ PY
 python3 -I tools/preview.py $W/preview-huts-bushes-6x.png 6 $W/props/outpost-lit.png $W/props/outpost-dark.png $W/props/outpost-dark2.png $W/props/bush.png $W/props/bush-fruit.png $W/props/bush-shaken.png
 
 python3 -I tools/pawn-study.py $W/pawn-studies
+python3 -I tools/pawn-chunky.py $W/pawn-studies
 python3 -I tools/pawn-study-snap.py $R/sources/rd-pawn-studies $W/pawn-studies
 python3 -I tools/pawn-studies-sheet.py $W
 python3 -I tools/hut-b-figure.py $R/sources/rd-huts-b $W/hut-b $W/hut-b-process.png
