@@ -1,0 +1,9 @@
+Image 1 is the part map: one flat label colour per part, for structure, proportion and placement only; never a rendering reference, its flat shapes and hard edges are not the look. Image 2 is the species reference: material and finish only, never its shape, feet or wings. Image 3 is the colour key: the pigment of each area.
+
+Markings: only those the description names, where Image 3 shows them. None named means a plain coat: no pale patches, spots, bands or rings. Only areas Image 3 shows pale are pale.
+
+HiBit pixel art on a 280×300 grid: crisp stepped edges, broad clusters, three or four value masses, light from the top left. Give every form volume and softness. Limbs are living limbs that taper and bend softly inside their drawn place, never boxes, posts or unfinished 3D shapes. Feet planted with weight. Eyes keep their drawn size and read large, wet and lit, with a catch light. Take special care over the surface the species notes name. Miniature Lives: rounded, tactile, saturated, never dull.
+
+Keep every part where Image 1 puts it, at its size, facing viewer-left; each pigment in its area. Invent nothing.
+
+Not: boxes, blocks, facets, planks, boards, unnamed markings, dither, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.
