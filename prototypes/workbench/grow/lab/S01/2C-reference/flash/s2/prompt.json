@@ -1,0 +1,150 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "2C-reference",
+  "name": "Stronger reference",
+  "change": "Step 2, reference strength wording only: Image 2 sets the finish more strongly and is barred from shape more explicitly.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3.1-flash-image",
+ "sample": 2,
+ "changed": "Step 2, reference strength wording only: Image 2 sets the finish more strongly and is barred from shape more explicitly.",
+ "costUSD": 0.096,
+ "step1": {
+  "shared": "v5's drawing"
+ },
+ "step2": {
+  "callId": "90fcb752-6090-43c7-b49e-51b157cdd39f",
+  "status": "ok",
+  "costUSD": 0.09596,
+  "seconds": 8.2,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.962,
+   "silhouetteIoUInPlace": 0.961,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "muzzle": {
+     "span": 0.983,
+     "coverage": 0.986
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.92
+    },
+    "crown": {
+     "span": 0.995,
+     "coverage": 1.0
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.923
+    },
+    "leg-1": {
+     "span": 0.992,
+     "coverage": 0.998
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.64,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.431,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.27,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.38,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.557,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.311,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.254,
+     "median": "#37383e",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.552,
+     "median": "#4d4548",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.879,
+     "median": "#d4c0a2",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.704,
+     "median": "#b89d88",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.0,
+     "median": "#677361",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "belly@region-0": {
+     "agreement": 0.868,
+     "median": "#dcc8a8",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.788,
+     "median": "#ddc6a5",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the leaf slot on the crown (painted #677361, the colour of body)"
+   ],
+   "outside": 0.0,
+   "missing": 0.005,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.506,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

@@ -1,0 +1,159 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "1B-anti-artefact",
+  "name": "Anti-artefact words",
+  "change": "Step 1, anti-artefact words only: the limbs sentence names living anatomy and the artefacts to avoid.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3.1-flash-image",
+ "sample": 1,
+ "changed": "Step 1, anti-artefact words only: the limbs sentence names living anatomy and the artefacts to avoid.",
+ "costUSD": 0.0892,
+ "step1": {
+  "callId": "d4d29f6d-b88a-47cc-9761-b4ffb61c1472",
+  "status": "ok",
+  "costUSD": 0.08842,
+  "seconds": 8.1,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.767,
+   "silhouetteIoUInPlace": 0.543,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.947
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.971
+    },
+    "muzzle": {
+     "span": 0.992,
+     "coverage": 0.999
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.845
+    },
+    "crown": {
+     "span": 0.979,
+     "coverage": 0.473
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.636
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.942
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.769,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.526,
+     "ok": false
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.332,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.5,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.702,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.344,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.24,
+     "median": "#443f45",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.496,
+     "median": "#524b51",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.137,
+     "median": "#3c393f",
+     "nearest": "#273036",
+     "ok": false
+    },
+    "second@leg-1": {
+     "agreement": 0.096,
+     "median": "#423e44",
+     "nearest": "#273036",
+     "ok": false
+    },
+    "leaf@crown": {
+     "agreement": 0.0,
+     "median": "#564e53",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "belly@region-0": {
+     "agreement": 0.419,
+     "median": "#685e5f",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "belly@muzzle": {
+     "agreement": 0.166,
+     "median": "#635b5e",
+     "nearest": "#465459",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "the proportions are off: the head is larger than drawn (0.53 of the body against 0.35)",
+    "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #3c393f, the colour of pupil), the second slot on the leg-1 (painted #423e44, the colour of pupil), the leaf slot on the crown (painted #564e53, the colour of body), the belly slot on the region-0 (painted #685e5f, the colour of body), the belly slot on the muzzle (painted #635b5e, the colour of body)"
+   ],
+   "outside": 0.002,
+   "missing": 0.015,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.282,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "1c47dea4-a6f9-403f-9a18-52b25fccea2e",
+  "status": "no-image",
+  "costUSD": 0.00078,
+  "seconds": 2.0,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ }
+}

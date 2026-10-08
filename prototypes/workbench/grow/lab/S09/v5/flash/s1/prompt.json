@@ -1,0 +1,308 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "v5",
+  "name": "v5 baseline",
+  "change": "The v5 art direction, species notes and description template.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3.1-flash-image",
+ "sample": 1,
+ "changed": "The v5 art direction, species notes and description template.",
+ "costUSD": 0.1908,
+ "step1": {
+  "callId": "8d3dc33e-41cc-498e-9fee-fc8011cb4965",
+  "status": "ok",
+  "costUSD": 0.0938,
+  "seconds": 9.0,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.531,
+   "silhouetteIoUInPlace": 0.668,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.928
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.697
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 0.956
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.836
+    },
+    "beak": {
+     "span": 0.987,
+     "coverage": 0.92
+    },
+    "crown": {
+     "span": 0.66,
+     "coverage": 0.286
+    },
+    "leg-0": {
+     "span": 0.859,
+     "coverage": 0.235
+    },
+    "flap": {
+     "span": 1.0,
+     "coverage": 0.881
+    },
+    "tail": {
+     "span": 0.863,
+     "coverage": 0.761
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.417,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.322,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.372,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.411,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.298,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.374,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.73,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.382,
+     "median": "#c0863c",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@region-1": {
+     "agreement": 0.028,
+     "median": "#f0c13d",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@neck": {
+     "agreement": 0.641,
+     "median": "#0977db",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.985,
+     "median": "#0675f6",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.91,
+     "median": "#0671eb",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.843,
+     "median": "#d0a64a",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.274,
+     "median": "#0571cb",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the body slot on the region-0 (painted #c0863c, the colour of second), the body slot on the region-1 (painted #f0c13d, the colour of second), the second slot on the flap (painted #0571cb, the colour of body)"
+   ],
+   "outside": 0.051,
+   "missing": 0.01,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.626,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "b43b3958-bc3f-41e5-b4d0-6f8067aa9023",
+  "status": "ok",
+  "costUSD": 0.09697,
+  "seconds": 7.9,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.526,
+   "silhouetteIoUInPlace": 0.668,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.926
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.676
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 0.955
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.825
+    },
+    "beak": {
+     "span": 1.0,
+     "coverage": 0.914
+    },
+    "crown": {
+     "span": 0.653,
+     "coverage": 0.257
+    },
+    "leg-0": {
+     "span": 0.864,
+     "coverage": 0.207
+    },
+    "flap": {
+     "span": 1.0,
+     "coverage": 0.879
+    },
+    "tail": {
+     "span": 0.853,
+     "coverage": 0.712
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.418,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.322,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.368,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.412,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.298,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.377,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.73,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.368,
+     "median": "#9a715b",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.006,
+     "median": "#ddba63",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@neck": {
+     "agreement": 0.63,
+     "median": "#55879f",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.986,
+     "median": "#4674b5",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.926,
+     "median": "#7099c3",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 1.0,
+     "median": "#b49462",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.266,
+     "median": "#477796",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the body slot on the region-1 (painted #ddba63, the colour of second), the second slot on the flap (painted #477796, the colour of body)"
+   ],
+   "outside": 0.049,
+   "missing": 0.012,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.625,
+   "passed": false,
+   "gated": false
+  }
+ }
+}
