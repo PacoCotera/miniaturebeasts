@@ -1,9 +1,9 @@
 """Round 1 proof: each emblem at 1x on the signed rail-tab plates (compact and full), and one eight-chapter compact rail. python3 -I proof.py (from emblems/)"""
 import json, os
 from PIL import Image, ImageDraw, ImageFont
-HERE = os.path.dirname(os.path.abspath(__file__)); P = os.path.join(HERE, "..", "slices"); R = os.path.join(HERE, "round1")
+HERE = os.path.dirname(os.path.abspath(__file__)); P = os.path.join(HERE, "..", "slices"); R = os.path.join(HERE, "round2")
 atlas = json.load(open(os.path.join(R, "emblems-atlas.json"))); sheet = Image.open(os.path.join(R, "emblems-sheet.png")).convert("RGBA")
-def emb(cid, opt, st): x, y, w, h = atlas["sprites"][f"rail-emblem-{cid}-{opt.lower()}-{st}-24x24"]["rect"]; return sheet.crop((x, y, x + w, y + h))
+def emb(cid, opt, st): x, y, w, h = atlas["sprites"][f"rail-emblem-{cid}-{st}-24x24"]["rect"]; return sheet.crop((x, y, x + w, y + h))
 def plate(st, form): return Image.open(os.path.join(P, f"rail-tab-{st}-{form}.png")).convert("RGBA")
 CH = [("coat", "Coat"), ("face", "Face"), ("shape", "Shape"), ("legs-tail", "Legs & tail"), ("movement", "Movement"), ("stamina", "Stamina"), ("character", "Character"), ("glow", "Glow"), ("charge", "Charge")]
 f16 = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 16)
@@ -29,13 +29,13 @@ def block(opt):
             tw = d.textlength(word, font=f16); bx = x + 76 - (32 + tw) / 2; im.alpha_composite(emb(cid, opt, "read"), (int(bx), y2 + 8)); d.text((bx + 32, y2 + 14), word, font=f16, fill=(241, 235, 223, 255), anchor="lm"); x += 136
         else: im.alpha_composite(emb(cid, opt, em), (x + 34 - 12, y2 + 4)); x += 56
     return im.convert("RGB")
-for opt in "AB":
-    b = block(opt); b.save(os.path.join(R, f"proof-option-{opt.lower()}-1x.png")); b.resize((b.width * 2, b.height * 2), Image.NEAREST).save(os.path.join(R, f"proof-option-{opt.lower()}-2x.png"))
+for opt in "A":
+    b = block(opt); b.save(os.path.join(R, f"proof-1x.png")); b.resize((b.width * 2, b.height * 2), Image.NEAREST).save(os.path.join(R, f"proof-2x.png"))
 print("ok")
 # the labelled contact sheet at 1x and 2x, on the bench ground
-cols = [(o, s) for o in "AB" for s in ("unread", "read", "sealed")]; lw = 96; pitch = 30
+cols = [("A", s) for s in ("unread", "read", "sealed")]; lw = 96; pitch = 30
 W = lw + len(cols) * pitch + 8; H = 24 + len(CH) * pitch + 8; cs = Image.new("RGBA", (W, H), (22, 38, 50, 255)); d = ImageDraw.Draw(cs); f12 = f16
-for k, (o, s) in enumerate(cols): d.text((lw + k * pitch + 3, 4), f"{o}{s[0]}", font=ImageFont.load_default(), fill=(180, 190, 200, 255))
+for k, (o, s) in enumerate(cols): d.text((lw + k * pitch + 3, 4), f"{s[:3]}", font=ImageFont.load_default(), fill=(180, 190, 200, 255))
 for r, (cid, word) in enumerate(CH):
     d.text((6, 24 + r * pitch + 6), word, font=ImageFont.load_default(), fill=(200, 210, 220, 255))
     for k, (o, s) in enumerate(cols): cs.alpha_composite(emb(cid, o, s), (lw + k * pitch + 3, 24 + r * pitch + 3))
