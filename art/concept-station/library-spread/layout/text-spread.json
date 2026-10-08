@@ -1,0 +1,47 @@
+[
+  {
+    "text": "Loika",
+    "x": 116,
+    "y": 270,
+    "size": 11,
+    "weight": "Medium",
+    "color": "#2b2420",
+    "anchor": "mm"
+  },
+  {
+    "text": "Untuva",
+    "x": 220,
+    "y": 270,
+    "size": 11,
+    "weight": "Medium",
+    "color": "#2b2420",
+    "anchor": "mm"
+  },
+  {
+    "text": "Tuikis",
+    "x": 324,
+    "y": 270,
+    "size": 11,
+    "weight": "Medium",
+    "color": "#2b2420",
+    "anchor": "mm"
+  },
+  {
+    "text": "Hiljan",
+    "x": 428,
+    "y": 270,
+    "size": 11,
+    "weight": "Regular",
+    "color": "#8e877b",
+    "anchor": "mm"
+  },
+  {
+    "text": "Tuikis · Stilbera",
+    "x": 512,
+    "y": 584,
+    "size": 17,
+    "weight": "Regular",
+    "color": "#c3c7cb",
+    "anchor": "mm"
+  }
+]

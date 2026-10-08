@@ -1,0 +1,94 @@
+{
+  "id": "tome-spread",
+  "direction": "P",
+  "round": 1,
+  "attempt": 2,
+  "tag": "SP-P-r1-a2",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's COLLECTION screen as a spread of an old botanical-expedition book, a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a GREAT ILLUSTRATION of an old botanical-expedition book, the kind kept on a voyage, lying open: worn board edges showing around the pages, foxed and deckled cream pages, sepia ink rules, pressed leaves and a few seeds laid between the plates, a dried flower in a margin, a short pencil scribble in the top margin (no readable letters), a silk ribbon marker hanging from the gutter, a tiny inked map vignette with a dotted route in a lower margin: the page's own life and weather. The SPECIMENS ARE THE SPOTLIGHT: the found species are tipped-in FRAMED PLATES in the book's own plate style, exactly the supplied book page's mounted portrait at small size (a thin dark wooden frame, a cream mat, a painted creature), never flat cards. Cool, even light from the upper left over the paper; warmth only inside the painted plates. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen: the same smooth sans-serif type (like Inter), the same bolt, diamond and drop counters, the same bottom-line grammar. Clean painted light, crisp edges, no noise or dither.\nLAYOUT, as the template. Between the top bar and the bottom line, THE BOOK lies open and fills the stage: its worn, scuffed board edges just visible around the pages, two foxed cream pages with deckled edges, a soft shadowed gutter in the middle, a red silk ribbon marker hanging from the top of the gutter. On each page EIGHT RULED FRAMES in two rows of four, drawn in sepia ink with small photo corners, each the same size, exactly where the template puts them, and under each frame a blank caption rule of two fine hairlines. LEFT PAGE, TOP ROW: the first frame holds a tipped-in FRAMED PLATE in the book's own style (a thin dark wooden frame, a cream mat) whose mat is left EMPTY cream with a small gilt triangle at its top right corner; the second frame holds a framed plate painting a round coral fluff under a cap of three flaps; the third frame holds a framed plate painting the lagoon-blue lizard with the glowing tail, and this third frame is lifted a little inside a thin warm cream ring drawn around the frame; the fourth frame holds a soft, unfinished PENCIL STUDY of a sitting cat drawn on the page itself, grey graphite. Over the top-left corner of each of these four frames a short silk CLAN RIBBON lies diagonally as if tipped under the plate, in the template's four colours (moss green, coral, lagoon, slate violet). The other TWELVE frames (the left page's bottom row and all eight of the right page) are EMPTY ruled frames with photo corners and blank caption rules, all identical, nothing inside. THE BOOK'S LIFE, in the margins and between the frames, never over a frame: a pressed leaf and a few small seeds in the left page's lower margin, a dried flower in the right page's outer margin, a short pencil scribble in the top margin, a tiny inked map vignette with a dotted route in the right page's lower margin, foxing spots on the paper, small lantern-and-leaf ornaments at the page corners.\nTEXT, exactly these and nothing else: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: every caption rule under the frames is BLANK (names are placed later); the pencil note in the margin is a scribble with no letters; no digits except the three counters; no other words.\nConstraints: EXACTLY SIXTEEN ruled frames, eight on each page in two rows of four, all the same size and in the template's positions; the first frame's plate is an EMPTY cream mat inside its dark frame with a small gilt triangle at its top right (the creature is placed later); the twelve unmet frames are identical empty ruled frames with photo corners and blank caption rules, showing no silhouette, shape, shadow, colour or hint; clan ribbons only on the first four frames; nothing covers any frame; no digits, no ledge, no furniture, no shelf, no glass, no tags on pins, no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Home screen: same device; take its top bar, bottom line, type and counters only. Image 2 is the accepted book this spread belongs to: take its paper, ink, ornaments and its mounted portrait plate as the model for the found plates at small size. Image 3 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+      "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, type, counters and light direction only",
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+    },
+    {
+      "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+      "role": "the accepted book this spread belongs to: take its paper, ink, deckle, lantern-and-leaf ornaments and above all its MOUNTED PORTRAIT PLATE (the dark frame, the cream mat, the painted lagoon lizard digging with its glowing tail) as the model for every found plate here at small size; its layout is not on this screen",
+      "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+    },
+    {
+      "path": "art/concept-station/library-spread/layout/spread-layout-template.png",
+      "role": "layout truth only: flat boxes at 1024x600 with the exact positions of the sixteen ruled frames (four per row, two rows per page), their caption rules, the three plates and the pencil-study frame, the four clan ribbons on the first four frames' top-left corners, the focus ring on the third frame, the ribbon marker, and where the pressed leaf, pencil note, dried flower and map vignette go; the ribbon colours are the clans' and are to be kept; not style",
+      "sha256": "63bfe2a92445e9ba9802ddfc142658235a5cad5050ddd1b81dde7aaa1c5ba3ad"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T07:07:31Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/SP-P-r1-a2.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "4665f2bd159f59c8211ae5e286c1042c97523160d7e1c756ba200546e32a005a"
+    },
+    "png": {
+      "file": "SP-P-r1-a2-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "ff2634b17bae8a369d9c18ed8ea71eae90f5bdff9babf66311715b21f1d806da"
+    },
+    "screen": {
+      "file": "SP-P-r1-a2-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "02289baf36bc676c4997b2921ab1b120cc3d09fc0db31dd30518f19513588486",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 29.3,
+    "usage": {
+      "promptTokenCount": 2160,
+      "candidatesTokenCount": 1697,
+      "totalTokenCount": 4217,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1386
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 774
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 360,
+      "serviceTier": "standard"
+    }
+  }
+}
