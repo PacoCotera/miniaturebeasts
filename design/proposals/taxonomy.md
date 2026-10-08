@@ -78,7 +78,7 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 | S06 | Pesko | C06 Prosopa | a raccoon | medium | B2·L4 · fur | ambles, climbs | pond edge, wood | early |
 | S07 | Azkon | C07 Skapana | a badger or small bear | large | B1·L4 · fur | lumbers, digs | rock field, cave | mid · Deep ground |
 | S08 | Rupar | C08 Kremnion | a goat or deer | large | B2·L4 · fur | bounds, climbs | rock field, meadow | mid |
-| S09 | Belatz | C09 Aithria | a big bird | large | B2·L4·flaps · fur (feathers to come) | strides, soars | meadow, rock field | late · Weather expeditions |
+| S09 | Belatz | C09 Aithria | a big bird | large | B2·L2·flaps · fur (feathers to come) | strides, soars | meadow, rock field | late · Weather expeditions |
 | S10 | Igara | C10 Kolymba | an otter | medium | B3·L4 · fur | swims, slides | pond, fast water | mid · opens fast water |
 | S11 | Kilpo | C11 Thyreka | a turtle | large | B1·L4 · scales | plods, swims slowly | pond edge | late · beyond fast water |
 | S12 | Peplos | C12 Graptoma | a moth or butterfly | small | B3·L6·flaps · skin | flutters | meadow | early |
