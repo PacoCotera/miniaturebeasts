@@ -6,30 +6,30 @@
  "controlVariant": "twostep",
  "views": {
   "portrait": {
-   "status": "plain",
+   "status": "painted",
    "attempts": [
     {
-     "callId": "40392ee3-f443-4e58-b86b-f347fcfa1ef3",
+     "callId": "1b3f2299-fbdb-4e93-b09b-2496cb7cae04",
      "step": 1,
      "attempt": 1,
      "status": "ok",
-     "costUSD": 0.17721,
-     "seconds": 22.1,
+     "costUSD": 0.17849,
+     "seconds": 21.2,
      "checks": {
-      "silhouetteIoU": 0.825,
-      "silhouetteIoUInPlace": 0.834,
+      "silhouetteIoU": 0.869,
+      "silhouetteIoUInPlace": 0.922,
       "parts": {
        "region-0": {
         "span": 1.0,
-        "coverage": 0.991
+        "coverage": 0.976
        },
        "region-1": {
         "span": 1.0,
-        "coverage": 1.0
+        "coverage": 0.98
        },
        "neck": {
         "span": 1.0,
-        "coverage": 0.998
+        "coverage": 1.0
        },
        "head": {
         "span": 1.0,
@@ -37,100 +37,87 @@
        },
        "beak": {
         "span": 1.0,
-        "coverage": 0.934
+        "coverage": 0.901
        },
        "leg-0": {
-        "span": 0.97,
-        "coverage": 0.988
+        "span": 0.975,
+        "coverage": 0.985
        },
        "flap": {
-        "span": 0.808,
-        "coverage": 0.523
+        "span": 0.98,
+        "coverage": 0.968
        },
        "tail": {
         "span": 1.0,
-        "coverage": 0.994
+        "coverage": 0.924
        }
       },
       "proportions": {
        "region-0": {
         "drawn": 0.363,
-        "painted": 0.45,
+        "painted": 0.448,
         "ok": true
        },
        "region-1": {
         "drawn": 0.264,
-        "painted": 0.339,
+        "painted": 0.337,
         "ok": true
        },
        "neck": {
         "drawn": 0.327,
-        "painted": 0.417,
+        "painted": 0.415,
         "ok": true
        },
        "head": {
         "drawn": 0.288,
-        "painted": 0.353,
+        "painted": 0.355,
         "ok": true
        },
        "leg-0": {
         "drawn": 0.403,
-        "painted": 0.442,
-        "ok": true
-       },
-       "flap": {
-        "drawn": 0.536,
-        "painted": 0.548,
+        "painted": 0.441,
         "ok": true
        },
        "tail": {
         "drawn": 0.194,
-        "painted": 0.244,
+        "painted": 0.242,
         "ok": true
        }
       },
       "slots": {
        "body@region-0": {
-        "agreement": 0.702,
-        "median": "#6988c4",
+        "agreement": 0.985,
+        "median": "#4b77c2",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@head": {
-        "agreement": 0.944,
-        "median": "#5280cd",
+        "agreement": 0.951,
+        "median": "#4c7ac9",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body#2@neck": {
-        "agreement": 0.765,
-        "median": "#6085c8",
+        "agreement": 0.998,
+        "median": "#4c7ac8",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "second@leg-0": {
-        "agreement": 0.832,
-        "median": "#cdbba8",
-        "nearest": "#d9ecf5",
+        "agreement": 0.999,
+        "median": "#ebcaa0",
+        "nearest": "#fff0b8",
         "ok": true
        },
-       "second@flap": {
-        "agreement": 0.379,
-        "median": "#6a89c3",
-        "nearest": "#4d7ed4",
-        "ok": false
-       },
        "second#2@leg-0": {
-        "agreement": 0.809,
-        "median": "#dbbca4",
+        "agreement": 1.0,
+        "median": "#fceca3",
         "nearest": "#fff0b8",
         "ok": true
        }
       },
-      "reasons": [
-       "a pigment slot is painted in another slot's colour: the second colour on the wings (painted #6a89c3, the body colour)"
-      ],
-      "outside": 0.016,
+      "reasons": [],
+      "outside": 0.0,
       "missing": 0.0,
       "bandTolerancePx": 20,
       "tolerances": {
@@ -138,148 +125,133 @@
        "partMin": 0.5,
        "proportion": 0.25
       },
-      "slotAgreement": 0.782,
-      "passed": false,
+      "slotAgreement": 0.983,
+      "passed": true,
       "proportionTolerance": 0.25
      },
-     "responseId": "8qHHapDPG7eT39IP1-idsAY"
+     "responseId": "WajHatC9MrKa_uMPlIKM8Qk"
     },
     {
-     "callId": "3b1da9e5-8039-45f5-95a5-72f5a0b037df",
-     "step": 1,
-     "attempt": 2,
+     "callId": "ea1f73df-b165-4b77-a662-e9cb58af76ef",
+     "step": 2,
      "status": "ok",
-     "costUSD": 0.17056,
-     "seconds": 16.9,
+     "costUSD": 0.16769,
+     "seconds": 18.5,
      "checks": {
-      "silhouetteIoU": 0.438,
-      "silhouetteIoUInPlace": 0.214,
+      "silhouetteIoU": 0.764,
+      "silhouetteIoUInPlace": 0.832,
       "parts": {
        "region-0": {
         "span": 1.0,
-        "coverage": 1.0
+        "coverage": 0.944
        },
        "region-1": {
         "span": 1.0,
-        "coverage": 1.0
+        "coverage": 0.945
        },
        "neck": {
         "span": 1.0,
-        "coverage": 0.999
+        "coverage": 0.992
        },
        "head": {
-        "span": 0.643,
-        "coverage": 0.649
+        "span": 1.0,
+        "coverage": 0.997
        },
        "beak": {
         "span": 1.0,
-        "coverage": 1.0
+        "coverage": 0.793
        },
        "leg-0": {
-        "span": 0.67,
-        "coverage": 0.422
+        "span": 0.995,
+        "coverage": 1.0
        },
        "flap": {
-        "span": 0.771,
-        "coverage": 1.0
+        "span": 0.97,
+        "coverage": 0.924
        },
        "tail": {
         "span": 1.0,
-        "coverage": 1.0
+        "coverage": 0.824
        }
       },
       "proportions": {
        "region-0": {
         "drawn": 0.363,
-        "painted": 0.591,
-        "ok": false
+        "painted": 0.44,
+        "ok": true
        },
        "region-1": {
         "drawn": 0.264,
-        "painted": 0.46,
-        "ok": false
+        "painted": 0.337,
+        "ok": true
        },
        "neck": {
         "drawn": 0.327,
-        "painted": 0.543,
-        "ok": false
+        "painted": 0.407,
+        "ok": true
        },
        "head": {
         "drawn": 0.288,
-        "painted": 0.444,
-        "ok": false
+        "painted": 0.359,
+        "ok": true
        },
        "leg-0": {
         "drawn": 0.403,
-        "painted": 0.465,
-        "ok": true
-       },
-       "flap": {
-        "drawn": 0.536,
-        "painted": 0.57,
+        "painted": 0.442,
         "ok": true
        },
        "tail": {
         "drawn": 0.194,
-        "painted": 0.341,
-        "ok": false
+        "painted": 0.248,
+        "ok": true
        }
       },
       "slots": {
        "body@region-0": {
-        "agreement": 0.383,
-        "median": "#d6ad9e",
-        "nearest": "#fff0b8",
+        "agreement": 0.767,
+        "median": "#5076a7",
+        "nearest": "#4d7ed4",
         "ok": true
        },
        "body@head": {
-        "agreement": 0.768,
-        "median": "#242423",
-        "nearest": "#269fa5",
+        "agreement": 0.861,
+        "median": "#547dc2",
+        "nearest": "#4d7ed4",
         "ok": true
        },
        "body#2@neck": {
-        "agreement": 0.736,
-        "median": "#5984b5",
+        "agreement": 0.804,
+        "median": "#6283c0",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "second@leg-0": {
-        "agreement": 0.0,
-        "median": "#222423",
-        "nearest": "#269fa5",
-        "ok": true
-       },
-       "second@flap": {
-        "agreement": 0.0,
-        "median": "#222222",
-        "nearest": "#269fa5",
+        "agreement": 1.0,
+        "median": "#e0c3a1",
+        "nearest": "#fff0b8",
         "ok": true
        },
        "second#2@leg-0": {
-        "agreement": 0.663,
-        "median": "#d3b885",
+        "agreement": 1.0,
+        "median": "#f8e4a1",
         "nearest": "#fff0b8",
         "ok": true
        }
       },
-      "reasons": [
-       "paint lies well outside the drawn body (48% of the body beyond a 20 px band): a part was added, moved or re-laid",
-       "the proportions are off: the region-0 is larger than drawn (0.59 of the body against 0.36), the region-1 is larger than drawn (0.46 of the body against 0.26), the neck is larger than drawn (0.54 of the body against 0.33), the head is larger than drawn (0.44 of the body against 0.29), the tail is larger than drawn (0.34 of the body against 0.19)"
-      ],
-      "outside": 0.481,
-      "missing": 0.019,
+      "reasons": [],
+      "outside": 0.04,
+      "missing": 0.0,
       "bandTolerancePx": 20,
       "tolerances": {
-       "bandMax": 0.18,
-       "partMin": 0.5,
-       "proportion": 0.25
+       "bandMax": 0.1,
+       "partMin": 0.6,
+       "proportion": 0.15
       },
-      "slotAgreement": 0.557,
-      "passed": false,
-      "proportionTolerance": 0.25
+      "slotAgreement": 0.839,
+      "passed": true,
+      "gated": false
      },
-     "responseId": "RKLHasSGJreT39IP1-idsAY"
+     "responseId": "lKjHasaECIra-8YPj5WzsQ8"
     }
    ],
    "steps": []
@@ -308,15 +280,15 @@
   "what": "the accepted painting of this species' type specimen (the Belatz)",
   "name": "species/S09/portrait-600x620.png"
  },
- "startedAt": "2026-10-08T14:00:16Z",
+ "startedAt": "2026-10-08T14:27:36Z",
  "outputs": {
-  "station-portrait-600x620.png": "5f0dfdfac32fb8b7ce620a36e8400dcfa1fba19eb9ea756f953a21856a26858c",
-  "station-portrait-300x310.png": "76bd36c189f7e641b1627c9d3f0e4045d97d707e2b8c97d2bfde060478ddb074",
-  "companion-280x300.png": "93831d08d1e63d457e45766d907113c6e4c431a0c410f4ea37fb83770c6820ac",
-  "token-48.png": "9a49dee300a542973886a8587584f9d4426aea1c528b6c38918a10e2efb8e0ed"
+  "station-portrait-600x620.png": "85cc02a5325ff073149c61bc9d545b0dbc4981874938b896dd2fed8bd032daac",
+  "station-portrait-300x310.png": "e03cf401915245c3e29aa972bc3c004a94eb74adeccf3a3324e1659ecf4487a3",
+  "companion-280x300.png": "005802cc7cc0e782bdf8799f868d363716b8ec52cb406e3321dbc30db44da9d4",
+  "token-48.png": "0946950b8edd9c1761153305546b5afd91e6663d10b9208ca13b06abedf55d6a"
  },
  "calls": 2,
- "costUSD": 0.34777,
- "seconds": 39.0,
- "finishedAt": "2026-10-08T14:02:59Z"
+ "costUSD": 0.34618,
+ "seconds": 39.7,
+ "finishedAt": "2026-10-08T14:29:28Z"
 }
