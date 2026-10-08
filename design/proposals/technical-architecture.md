@@ -266,3 +266,66 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 3. **The Companion and Caddy port to native C on ESP-IDF with LVGL 9** for chrome and our own indexed renderer for the world view, started only when the loop is stable. *Recommended: yes, with Slint as the fallback.* LVGL is MIT-licensed and proven on the S3. The palette model is the sandbox's own. Slint on embedded is GPLv3 or paid, and younger on the S3.
 
 **Overall recommendation.** Keep the browser as the place where the game is defined, and give it what it lacks: a screen layer between the pure rules and the pixels. Once the loop holds, port all three faces to one LVGL component library in C, with no browser anywhere. The Companion and the Caddy carry specs, assets, fonts, palettes, the save and test vectors as data. The Station keeps its JavaScript logic, headless, behind the same view contract the sandbox uses. The port is then a translation checked by measurement, not a rewrite, and it fits the hardware we have.
+
+## 8. Assessment: the real LVGL face in the sandbox now
+
+**Proposal**, 2026-10-08, at the owner's question "are you even considering the LVGL framework? can we draw that?". **Decided:** the Station's device face is LVGL 9 in C (S1), and the Companion and the Caddy port to LVGL 9. The question here is only *when* the sandbox starts drawing through that same face. Can we? Yes. LVGL compiles to WebAssembly with Emscripten and draws through its SDL driver, or through a small display driver that copies dirty rectangles onto the page's canvas. The existing JavaScript logic drives it through the props-in, intents-out contract of §5.2.
+
+**What it looks like.** The Station page loads `face.wasm`. The views compute Pods' props in JavaScript as they do today, and pass them as JSON. The C face sets LVGL objects from the spec file's rectangles, draws, and sends `{ target, verb }` back when a key is pressed. The rules never leave JavaScript, so the loop's mechanics still change at JavaScript speed.
+
+### 8.1 What carries from T1, and what goes
+
+| Carries unchanged | Re-expressed in C | Thrown away |
+| --- | --- | --- |
+| Spec files (`prototypes/ui/specs/station/*.json`), loaded at run time in the sandbox so a nudge needs no recompile, and compiled into tables for the ESP32s | The components (frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen) as LVGL objects at absolute positions from the spec (not flex, so the numbers stay the spec's) | `scene.mjs`, `render/station-canvas.mjs`, `layout.mjs`, `focus.mjs`, `timeline.mjs`, `type.mjs`, `components/*`: about 900 lines of the layer, written in the last days |
+| Inter's source file and its `lv_font_conv` settings; the atlases are regenerated as LVGL C fonts from the same run | The focus graph as our key handler over LVGL objects (LVGL's own groups only step next and previous) | The atlas PNG and metrics form, replaced by the converter's LVGL output |
+| The asset manifest and every PNG slice of the painted masters, converted at build time to LVGL images (32-bit, lz4 compressed) | The timeline as LVGL animations | The three-canvas compositing |
+| Views, intents, rules, the save, the Caddy client, the journey's key presses | The layer checks, re-pointed at LVGL's framebuffer (below) | |
+| The palette file and the sign-off checks' definitions | | |
+
+**The checks.** LVGL draws one framebuffer, not three layers. In test mode the face renders each screen three times: chrome only, chrome with paintings, everything. That gives the palette check its exact zero on the chrome pass. The type check reads a log written by our label component (face, size, string). Grain and size are measured from the framebuffer as now.
+
+### 8.2 Toolchain, build and speed
+
+| | Today (T1) | LVGL face in the sandbox |
+| --- | --- | --- |
+| Toolchain | None beyond Node | Emscripten SDK pinned in CI and in builders' environments (about 1 GB installed, cached); CMake |
+| Source | About 900 lines of JavaScript | LVGL 9.6.0 unmodified, the 39 MB tree already in the repository (`v1/native/vendor/lvgl`, moved to a shared home, no new download); our face in C |
+| Build | None | Clean build of LVGL plus face, estimated 1–3 minutes in CI; changing one face file, estimated 5–20 seconds |
+| Page weight | Atlases about 1.4 MB as PNG | `face.wasm` estimated 0.6–1 MB with the fonts compiled in (less gzipped); masters as now |
+| Builder's loop for a layout change | Edit, reload | Spec file: edit, reload (no compile). Component: edit, compile, reload |
+| Debugging | Browser tools on JavaScript | C in the browser through source maps and DWARF, clumsier; so the same face also builds natively for Linux with SDL, where a debugger works. That build is S1's Pi face and the H0 proof at once |
+| Fidelity | A JavaScript imitation of the face; the port re-expresses it | **The Station's device face itself**, the same C on the Pi; the same component library on the ESP32s, with only the display format differing |
+
+### 8.3 Risks
+
+| Risk | Assessment |
+| --- | --- |
+| WebAssembly size | Within a page's budget at the estimate above; measured at L0 |
+| Copying 1024×600 to the canvas | 2.4 MB a full frame; LVGL redraws only what changed, and the driver copies only those rectangles. Not a concern on a desktop; checked on a phone at L0 |
+| Debugging C from a browser | Real, which is why the native Linux build comes with L0 |
+| The Companion's indexed renderer inside LVGL | LVGL draws into 16- or 32-bit buffers, not palette indexes. The world view keeps our indexed renderer writing an 8-bit indexed image that LVGL shows. Chrome is drawn with anti-aliasing off, in palette colours, and checked at zero from the framebuffer. Palette enforcement by construction holds for the world view only |
+| LVGL's XML components | Not in the open-source 9.6 tree we vendor, so we don't rely on them; our spec files feed absolute positions |
+| Screens built twice | While the JavaScript layer stays, every new Station screen (T2, M5, M6) is built once in JavaScript and again in C at P1 |
+| Slower iteration while art and layouts still move | Limited: rules, views and spec numbers stay hot-reloadable; only new or changed components compile |
+
+### 8.4 Migration, with Pods working throughout
+
+| | Ships | Days (one builder) |
+| --- | --- | --- |
+| **L0 Toolchain** | Emscripten in CI; the face as an empty 1024×600 LVGL display in the Station page behind `?face=lvgl`, the JavaScript layer still the default; the native Linux build; size and phone checks | 2–3 |
+| **L1 The frame in LVGL** | Top bar, bottom line, message plate, focus ring, panel from `frame.json`, driven by today's views over the bridge; fonts from the converter | 4–5 |
+| **L2 Pods to parity** | List, rail, page, specimen, stamp label; the focus graph and animations; the painted slices as LVGL images; checks on the framebuffer; the journey run against both faces | 5–7 |
+| **L3 Switch** | LVGL becomes the default; the JavaScript layer's drawing modules are deleted; T2, M5 and M6 continue on the LVGL face | 1–2 |
+
+**The price, honestly: 12 to 17 working days**, about three weeks, before the next new Station screen ships. Of those, roughly 9 to 12 are C work P1 needs anyway (the shared face, Station components, fonts and assets through LVGL). The rest, 3 to 5 days, is new: the WebAssembly glue, the bridge and the three-pass checks. Keeping the layer costs nothing now. At P1 it costs rebuilding in C every Station screen made in JavaScript in the meantime (Home, Create, Incubator, Habitat, the Library, Cross, Sitting), plus a period when sandbox and device faces can disagree.
+
+### 8.5 Decision for the owner
+
+**Switch the sandbox's Station face to LVGL now, or keep the JavaScript layer until the loop is stable and port then?** *Recommended: switch now*, through L0 to L3, before T2 and M5 build more screens.
+
+- The device face is already decided as LVGL, so every Station screen built on the JavaScript layer would be built twice.
+- What the owner judges in the sandbox becomes exactly what the Pi will draw.
+- The loop's speed is kept where it matters: rules, views and spec numbers stay in JavaScript and data.
+
+The cost is about three weeks before the next new screen, most of it pulled forward from the port. The Companion follows on the same build at C2, keeping its indexed world view.
