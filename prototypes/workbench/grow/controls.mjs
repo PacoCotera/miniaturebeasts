@@ -11,7 +11,7 @@
 //   controls/<pass>.<view>.<size>.png  shaded, key (each slot flat in its own pigment), slots, index, silhouette; views portrait and side;
 //                                     sizes large 600×620, station 300×310, companion 280×300, tile 48;
 //                                     translucency rendered flat (a tint, never a dither)
-//   controls/legend.json              the species, caption, slots with pigments, parts with index colours, hashes
+//   controls/legend.json              the species, caption, the description in trait words, slots with pigments, parts with index colours, hashes
 //   plain/*.png                       the plain placeholder set (framework/plain.mjs)
 // and prints the directory as JSON.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
@@ -21,6 +21,7 @@ import { fileURLToPath } from "node:url";
 import { buildIndividual, typeSpecimen, brief, genomeDigest, FRAME_VERSION } from "../framework/species.mjs";
 import { render, fitCamera, VIEWS, slotLegend, partLegend, markingFields } from "../framework/raster.mjs";
 import { plainSet, PLAIN_VERSION } from "../framework/plain.mjs";
+import { describeGenome } from "../framework/describe.mjs";
 import { encodePNG } from "../framework/png.mjs";
 import { genomeSha256, genomeByDigest } from "../sketch/cli.mjs";
 
@@ -61,6 +62,7 @@ export function writeControls(frame, genome, outRoot, { palette }) {
     schema: GROW_CONTROLS_VERSION, species: frame.species.id, name: frame.species.name, clan: frame.taxonomy.clan, plan: frame.plan.code, rig: frame.plan.rig,
     level: genome.origin?.kind === "type-specimen" ? "species" : "individual", genomeDigest: genomeDigest(genome), genomeSha256: sha, frameVersion: FRAME_VERSION, catalogue: frame.catalogue,
     caption: brief(scene, frame), covering: scene.covering?.kind ?? null, views: GROW_VIEWS, sizes: SIZES,
+    description: describeGenome(frame, genome, scene, { typeSpecimen: genome.origin?.kind === "type-specimen" }), // the genome in the player's words (describe.mjs)
     slots: slotLegend(scene), parts: partLegend(scene), markingFields: markingFields(scene),
     translucent: scene.nodes.filter((n) => n.opacity !== undefined && n.opacity < 1).map((n) => ({ id: n.id, part: n.part, opacity: n.opacity })),
     plainVersion: PLAIN_VERSION, outputs: hashes,
