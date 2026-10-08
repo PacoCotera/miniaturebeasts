@@ -201,6 +201,7 @@
   ]
  },
  "origin": {
-  "kind": "type-specimen"
+  "kind": "extreme",
+  "name": "type-specimen"
  }
 }
