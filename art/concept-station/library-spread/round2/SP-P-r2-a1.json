@@ -1,0 +1,84 @@
+{
+  "id": "tome-spread",
+  "direction": "P",
+  "round": 2,
+  "attempt": 1,
+  "tag": "SP-P-r2-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the book's boards and pages, all sixteen ruled frames and their caption rules, the four ribbons, the three plates and the pencil cat, the ribbon marker, the pressed leaf and seeds, the dried flower, the pencil scribble and the map vignette.\nONE CHANGE ONLY: the soft cream oval glow around the third plate on the left page (the lizard plate) becomes a thin warm cream rounded-rectangle ring drawn tightly around that plate's dark frame, a few pixels outside its edges, with the plate lifted a little so it casts a slightly longer shadow on the page; the plate, its ribbon and its caption rules stay exactly where they are; nothing is added anywhere else on the spread.\nConstraints: preserve every other pixel of the screen; no new words, no digits; add nothing elsewhere.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/library-spread/round1/SP-P-r1-a2-canvas.png",
+      "role": "edit target: the round 1 pick",
+      "sha256": "ff2634b17bae8a369d9c18ed8ea71eae90f5bdff9babf66311715b21f1d806da"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T07:09:29Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/SP-P-r2-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "ef0dd276131904bbf89e19607fe2ae85ec920e0986528d0dba18d3ca9a05dbeb"
+    },
+    "png": {
+      "file": "SP-P-r2-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "3dc1ee97bf8fa7c55b2fc9a9efe7342d2b1a70fb7435d1aacbd1c38b97e0f2af"
+    },
+    "screen": {
+      "file": "SP-P-r2-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "c51bdd5c53b692ddf9cbcc1b32d0a3809279274facfd70fd21991be205bae69d",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 22.6,
+    "usage": {
+      "promptTokenCount": 504,
+      "candidatesTokenCount": 1281,
+      "totalTokenCount": 2024,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 246
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 239,
+      "serviceTier": "standard"
+    }
+  }
+}

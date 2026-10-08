@@ -62,7 +62,11 @@ What it still lacks: the Untuva and Tuikis faces as the real species (the genera
 - The clan grouping is one species per tray today; a cousin would widen its clan's tray by one unit, which the template does not yet draw.
 - Generated 16:9 canvases trimmed to 1024:600; icons and strings are live and set by the build.
 
-## Three questions for the owner
+## Owner decision (2026-10-08)
+
+Relayed by the programme lead. **The Specimen Case is rejected.** The owner's reasons: it is too gimmicky; it does not communicate a collection; no dedicated space per species is visible; glass plus box plus frame plus paper to show a sketch is boring; and the ledge's tags, gold bars and pins do not say what they are. No new round starts until the owner picks a direction. The three questions above are moot.
+
+## Three questions for the owner (moot)
 
 1. **The pencilled name.** Hiljan's name is placed here in a light graphite grey in the device's type; a truly pencilled name would want a hand-lettered face. Is the grey Inter enough for the master, or should the met tag carry a pencil hand?
 2. **Tray colour: strip or frame?** The recommended case carries the clan colour as a thin strip on the tray's top edge (the brief); the alternative tints the whole tray frame, which reads the clan faster but louder. Which should the master take?

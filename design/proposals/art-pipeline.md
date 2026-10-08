@@ -117,7 +117,7 @@ Decided 4 and 6 draw the line; the cut-off is what §9 tests. The default below 
 | Caddy four-grey and print | the Caddy's sizes, 203 dpi | unique, derived through the signed value table and Bayer | the Station |
 | Field token (world, partner) | 48 px, idle 2 frames, walk 3 | **generic per species**, pigment slots remapped to the individual's pool values | the pixel artist's token rig |
 | Partner face on the HUD ring, list and tree thumbnails | 16–40 px | generic, remapped | the token rig |
-| Cabinet and book faces (generic species pictures; "portraits" until 2026-10-08), field-guide look plates, the misty seed | 120–310 px | generic per species and per look; a portrayed mibi's portrait replaces the face in its cabinet box and book | the species plates |
+| Spread and book faces (generic species pictures; "portraits" until 2026-10-08; the spread was the cabinet until 2026-10-08), field-guide look plates, the misty seed | 120–310 px | generic per species and per look; a portrayed mibi's portrait replaces the face in its spread plate and book | the species plates |
 | Life stages | as the resident | unique per stage, painted ahead of the change | the service |
 | Motion | Companion stepped frames; Station eased | derived by rule from the still (breathing, bob, blink; the walk on the token); never painted frame by frame (the trial's frames boil) | device code on signed rules |
 | Pod, stamp face, frosting | as before | by rule | unchanged |

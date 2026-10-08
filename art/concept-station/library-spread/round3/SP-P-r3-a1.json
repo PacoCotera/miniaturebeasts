@@ -1,0 +1,99 @@
+{
+  "id": "tome-spread",
+  "direction": "P",
+  "round": 3,
+  "attempt": 1,
+  "tag": "SP-P-r3-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: Miniature Beasts Station screen concept, the LIBRARY's COLLECTION screen as a spread of a real naturalist's expedition volume, a flat screen design that fills the whole 16:9 canvas edge to edge; keep every piece of text at least 60 px inside the left and right edges (the outer 2 percent is bleed, trimmed later to 1024x600). Not a device photograph: no bezel, no buttons, no hands. Design at 1024x600 first: large shapes, few words.\nVIBE: a REAL nineteenth-century naturalist's expedition volume lying open, painted as a serious illustration: ink and watercolour on aged, foxed, deckled laid paper, restrained ornament (a single thin ink rule as border, no scrollwork, no lanterns, no storybook flourishes), worn cloth boards showing at the edges, a faded plain cloth marker, a pressed leaf and a few seeds, a dried flower, a short pencil scribble in the margin (no letters), a small inked survey sketch with a dotted route in a lower margin. NOT childish, NOT cute, NOT a children's book: colours aged and natural (sepia, umber, faded indigo, bone), never nursery. THE SPECIMENS ARE THE SPOTLIGHT: the found species are tipped-in framed plates painted with the craft of the supplied creature study (Image 3): sculpted, lit from the upper left, real volume and material, a naturalist's watercolour finish, never a cartoon or a sticker. Cool, even light from the upper left over the paper. The top bar and bottom line are the instrument's own graphite strips, exactly as on the supplied Home screen, in the DEVICE's smooth modern sans-serif type (like Inter), never in the book's serif: the device holds the book, the book does not colour the device. Clean painted light, crisp edges, no noise or dither.\nLAYOUT, as the template. Between the top bar and the bottom line, THE VOLUME lies open and fills the stage: worn cloth boards just visible around the pages, two aged, foxed, deckled laid-paper pages with a single thin ink rule as border, a soft shadowed gutter, a faded plain cloth marker hanging from the top of the gutter. On each page EIGHT RULED FRAMES in two rows of four, drawn in sepia ink with small photo corners, each the same size, exactly where the template puts them, and under each frame a blank caption rule of two fine hairlines. LEFT PAGE, TOP ROW: the first frame holds a tipped-in FRAMED PLATE (a thin dark wooden frame, a cream mat) whose mat is left EMPTY cream with a small gilt corner at its top right; the second frame holds a framed plate with a naturalist's watercolour study of a round, dense coral-furred creature under a cap of three soft flaps, painted with real volume and light like Image 3, no cartoon face; the third frame holds a framed plate with a watercolour study of a low lagoon-blue scaled lizard, a small crest, a long tail ending in a softly glowing bulb, painted with the same craft, and this third frame is lifted a little inside a thin warm cream rounded ring drawn around its frame; the fourth frame holds a real naturalist's PENCIL STUDY of a sitting cat on the page itself: anatomical, hatched graphite, a field sketch with a few construction lines, not cute. Along the top edge of each of these four frames a short INKED RULE in the template's four colours (moss green, coral, lagoon, slate violet), the only clan mark. The other TWELVE frames (the left page's bottom row and all eight of the right page) are EMPTY ruled frames with photo corners and blank caption rules, all identical, nothing inside. THE BOOK'S LIFE, restrained, in the margins and between the frames, never over a frame: a pressed leaf and a few seeds in the left page's lower margin, a dried flower in the right page's outer margin, a short pencil scribble in the top margin, a small inked survey sketch with a dotted route in the right page's lower margin, foxing and a faint water stain; no other ornament.\nTEXT, exactly these and nothing else, all in the device's smooth sans-serif: top bar left \"Library  T5\"; top bar centre a yellow lightning bolt \"7\", a blue diamond \"3\", a green drop \"2\"; top bar right \"Companion away · with Dot\". Bottom line: orange \"✓ Open · ← Home\" at left, the middle left EMPTY, grey \"a pod waits in the tray\" at right. No species names anywhere: every caption rule under the frames is BLANK (names are placed later); the pencil note is a scribble with no letters; no digits except the three counters; no other words.\nConstraints: EXACTLY SIXTEEN ruled frames, eight on each page in two rows of four, all the same size and in the template's positions; the first frame's plate is an EMPTY cream mat inside its dark frame with a small gilt corner at its top right (the creature is placed later); the twelve unmet frames are identical empty ruled frames with photo corners and blank caption rules, showing no silhouette, shape, shadow, colour or hint; the clan marks are small INK marks (a short inked rule in the clan's colour along the top edge of each met frame), no silk ribbons; no corner scrollwork, no lanterns, no cartoon faces, no big eyes, no smiles; nothing covers any frame; no digits, no ledge, no furniture, no glass, no tags on pins, no people.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the approved Home screen: same device; take its top bar, bottom line, smooth sans-serif type and counters only. Image 2 is the accepted book this spread belongs to: take its paper, ink and its mounted portrait plate as the model for the found plates at small size. Image 3 is the accepted creature study: the craft every painted plate must carry. Image 4 is layout truth only: the boxes and labels show where each element sits at 1024x600; it is not a style reference.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/round3/A-r3-a1-1024x600.png",
+      "role": "approved Station Home concept: same device, so take its graphite top bar and bottom line, its smooth sans-serif type, counters and light direction only",
+      "sha256": "bd888eb53b78de07227996aa59f6ca017ca068e99a4b267006e5ad712031d3ae"
+    },
+    {
+      "path": "art/concept-station/library-book/placed/BK-D-r2-a1-stamped-named-1024x600.png",
+      "role": "the accepted book this spread belongs to: take its paper and ink and its MOUNTED PORTRAIT PLATE (dark frame, cream mat) as the model for the found plates at small size; its layout and its lantern ornaments are not on this screen",
+      "sha256": "8721b334d7fda31a6d9cd41d22d33d0787f717c3d1c7e739a5e606e713b1baeb"
+    },
+    {
+      "path": "art/miniature-lives/assets/rich-plain-300x310.png",
+      "role": "the accepted creature study: the level of craft, volume, light and finish every painted plate on this spread must carry; its species is not drawn here",
+      "sha256": "701f64d7faf259222ac9b1c45eff154a93ad905bd6e90453f5f852fc9a1727d8"
+    },
+    {
+      "path": "art/concept-station/library-spread/layout/spread-layout-template.png",
+      "role": "layout truth only: flat boxes at 1024x600 with the exact positions of the sixteen ruled frames, their caption rules, the three plates and the pencil-study frame, the four clan marks on the first four frames (drawn here as ribbons; make them inked rules in the same colours), the focus ring on the third frame, the marker, and where the pressed leaf, pencil note, dried flower and survey sketch go; not style",
+      "sha256": "63bfe2a92445e9ba9802ddfc142658235a5cad5050ddd1b81dde7aaa1c5ba3ad"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T07:14:23Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/SP-P-r3-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "751c01e36f1724283e9e5d455c8da5dc0606674c8c83eb3b5d68e1ae7ce43edb"
+    },
+    "png": {
+      "file": "SP-P-r3-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "200f049ec7075bdb06f9e81a2ec409d3f211669ab2e6b85bb85eeeac5157f082"
+    },
+    "screen": {
+      "file": "SP-P-r3-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "cdcb4dbfaaba02ea720910f47d5627a8325e9b2d17c5bfbee7cb1f2b37f55045",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 30.0,
+    "usage": {
+      "promptTokenCount": 2570,
+      "candidatesTokenCount": 1789,
+      "totalTokenCount": 4675,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1538
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1032
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 316,
+      "serviceTier": "standard"
+    }
+  }
+}
