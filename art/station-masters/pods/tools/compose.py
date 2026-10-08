@@ -35,22 +35,16 @@ for i, (w, st) in enumerate(zip(words, states)):
     for p in range(3): d.rectangle([x + 41 + 10 * p, y + 48, x + 46 + 10 * p, y + 53], fill=(241, 235, 223, 255) if st == "read" or (st == "focused" and p < 2) else None, outline=(93, 89, 116, 255))
 d.rounded_rectangle([176 - 4, 46 - 4, 176 + 112 + 3, 46 + 56 + 3], 6, outline=(255, 232, 190, 255), width=2)
 # pod stage
-put("room-shelf", 576, 392); put("room-cradle", 600, 352); put("pod-large-shadow", 712 - 88, 393); put("pod-large-identified", 632, 208); put("room-cradle-front", 600, 352)
+put("room-shelf", 576, 392); put("room-cradle", 600, 328); put("pod-large-shadow", 712 - 88, 393); put("pod-large-identified", 632, 208); put("room-cradle-front", 600, 328)
 put("plate-name-224x32", 600, 440); text((712, 456), "Loika pod", f28, CREAM, "mm")
-put("plate-origin-224x40", 600, 480); text((712, 491), "rock field ·", f16, MIST, "mm"); text((712, 509), "a Tuikis felt safe", f16, MIST, "mm")
+put("plate-origin-224x40", 600, 480); text((712, 491), "rock field ·", f16, CREAM, "mm"); text((712, 509), "a Tuikis felt safe", f16, CREAM, "mm")
 put("stamp-label-120x120", 888, 248); cv.alpha_composite(cand.crop((830, 238, 976, 386)).resize((104, 104), Image.NEAREST), (896, 256))
 # page, left of the pod
 put("page-pane-408x440", 176, 112)
 text((192, 120), "Coat", f20, CREAM)
-cells = [(192, 160, "read", "Spots", "dots · hides plain"), (384, 160, "read", "Belly", "cream · hides charcoal"), (192, 360, "unread", "Flank", ""), (384, 360, "sealed", "Crest", "")]
-pics = [cand.crop((180, 166, 372, 430)).resize((184, 112), Image.LANCZOS), cand.crop((200, 250, 372, 400)).resize((184, 112), Image.LANCZOS)]
-for k, (x, y, st, nm, ln) in enumerate(cells):
-    if st == "read":
-        cv.alpha_composite(pics[k], (x, y)); put("trait-picture-frame-184x112", x, y)
-    elif st == "unread": put("trait-picture-frame-184x112-unread", x, y)
-    else: put("trait-picture-frame-184x112-sealed", x, y)
-    text((x, y + 120), nm, f16, CREAM)
-    if ln: text((x, y + 140), ln, f16, FOG)
+# the chapter in the concept's state: one large picture, 376x312 (the grid is the second picture)
+pic = cand.crop((180, 166, 372, 430)).resize((376, 312), Image.LANCZOS); cv.alpha_composite(pic, (192, 160)); put("trait-picture-frame-376x312", 192, 160)
+text((192, 480), "Spots", f16, CREAM); text((192, 500), "dots · hides plain", f16, FOG)
 # top bar and bottom line
 put("frame-top-bar-1024x40", 0, 0); put("frame-bottom-line-1024x38", 0, 562)
 text((16, 20), "Pods", f20, CREAM, "lm"); text((72, 20), "T5", f16, MIST, "lm")

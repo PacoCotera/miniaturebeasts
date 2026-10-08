@@ -12,7 +12,7 @@
 
 <img src="composite-vs-candidate.png" width="720" alt="Composite beside the accepted candidate">
 
-*composite-vs-candidate.png: the composite (left) beside the accepted candidate PV-D-r3-a4 (right). The layout differs on purpose: the layout spec puts the pod on the left third and the page on the right, the candidate has them the other way round. Status: proof.*
+*composite-vs-candidate.png: the composite (left) beside the accepted candidate PV-D-r3-a4 (right). The layout follows the concept's composition (the re-layout of branch `design-pods-relayout`): wells at the far left, the page left of centre showing the chapter as one large 376×312 picture, the pod centred on its dish under the cone, the stamp label at the right. The rail is still the old 56 px tabs at y 48 until the UI designer's change to tabs hung from the bar lands. The trait picture, stamp raster, progress arcs, emblems and lamps are stand-ins. Status: proof.*
 
 <img src="contact-sheet-1x.png" width="720" alt="Contact sheet of every slice at 1x">
 
@@ -20,7 +20,7 @@
 
 ## Slices
 
-Each slice is named by the register id it replaces (`room`, `ring`, `page`, `trait-picture`, `stamp`, `pod`); where the register has none, the id is **proposed** (`rail-tab-*`, `plate-*`, `frame-*`, `room-shelf`). Rectangles are the concept's re-layout (branch `design-pods-relayout`, 962f71d): the pod's box is bottom-centred on (712, 400), the dish is (600, 352, 224, 72), the page (176, 112, 408, 440), the stamp label (888, 248). A tab's x is 176 + 120 i (112 wide), 180 + 104 i (96 wide) or its slot in the compact rail; its y is 48. Hashes and sources: [`slices/manifest.json`](slices/manifest.json).
+Each slice is named by the register id it replaces (`room`, `ring`, `page`, `trait-picture`, `stamp`, `pod`); where the register has none, the id is **proposed** (`rail-tab-*`, `plate-*`, `frame-*`, `room-shelf`). Rectangles are the concept's re-layout (branch `design-pods-relayout`, 962f71d) with the dish grown to (600, 328, 224, 96): the pod's box is bottom-centred on (712, 400), the page is (176, 112, 408, 440), the stamp label (888, 248). A tab's x is 176 + 120 i (112 wide), 180 + 104 i (96 wide) or its slot in the compact rail; its y is 48 (the tabs wait for the UI designer's new rectangles). Hashes and sources: [`slices/manifest.json`](slices/manifest.json).
 
 ### Top bar and bottom line (signed)
 
@@ -130,9 +130,9 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
 | `room-bench-stage` | 1024×522 | (0, 40, 1024, 522) | the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (712, 424) |
-| `room-cradle` | 224×72 | (600, 352, 224, 72) | the frosted dish with its moss bed: colour-to-alpha, cut, scaled evenly into 224x72 (the dish is 201 px wide), bottom on the last row |
-| `room-cradle-front` | 224×72 | (600, 352, 224, 72) | the dish's near lip only (rows 44 to 71), drawn over the pod's foot at the foot line y 400 |
-| `room-shelf` | 272×40 | (576, 392, 272, 40) | PROPOSED: the glass shelf under the dish and the name; colour-to-alpha, cut, 272x40 |
+| `room-cradle` | 224×96 | (600, 328, 224, 96) | the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is 201 px wide), bottom on the last row |
+| `room-cradle-front` | 224×96 | (600, 328, 224, 96) | the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 400 (row 72) |
+| `room-shelf` | 272×40 | (576, 392, 272, 40) | PROPOSED: the thick glass slab in perspective with a lit front edge; colour-to-alpha, scaled evenly into 272x40 (79 px wide), bottom on the last row |
 
 ### Stamp label (signed)
 
@@ -169,6 +169,19 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x312-sealed` | 376×312 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-376x312-unread` | 376×312 |  | frost texture at 0.9 alpha under the frame |
 
+## Third pass (2026-10-08)
+
+To the art director's second verdict:
+
+- **The dish (224×96 at (600,328)):** the candidate's deep frosted bowl, seen from a lower angle so it is about 2.07 wide to tall (the candidate's 2.06), tall thick walls, the dipping front lip, a bed of dark grey dust and grit sitting below the rim, and the cool glow of the pool coming up through the front wall. No moss. The near-lip layer starts at row 46, so the pod is sunk into the bed by about a third of its lower height behind it.
+- **The shelf (272×40 at (576,392)):** the thick glass slab in perspective, its top face visible and its front edge lit. The painted slab is 234 px wide inside the 272 slice (the shape's own proportion), wider than the 199 px bowl.
+- **The stage:** darkened to the candidate's values (the mean grey of the area around the dish is 65, the candidate's 65; it was 116), with a vignette toward the corners and the cone softened by a tone curve.
+- **Frames:** sealed is now lighter frosted glass slats with soft seams and no dark gaps (dimmed so it stays under the pod); unread is darker frost at 0.84 alpha, so the picture's colour shows faintly through. The Read page's first picture is now the large 376×312 frame in the composite.
+- **Pods:** `shade` has no ghost of the crack and the cap is whole in `mask-accent` (the crack's hole is closed); the three lowest dots are in `pattern-dots`; the patterns are quiet marks painted on the shell's curvature (fine meridian lines for stripes, two thin feathered hoops for bands, faded toward the edge, multiplied by the shading and kept under the ribs), never bold bars; the band is darker and thicker at well size and `pod-well-sealed` is rebuilt from it. Because `mask-accent` changed, `mask-body`, `pattern-dots` and `crack` changed with it (they were signed on the earlier mask).
+- **Captions and the layering note** describe the new layout.
+
+Not done, waiting on the UI designer: the tabs hung from the top bar at y 40, about 40 tall, abutting along their slants (branch `design-pods-relayout` has not been updated yet); the tab slices are the signed 56 px plates until then.
+
 ## Second pass, step 2: the re-layout (2026-10-08)
 
 On the rectangles of the concept's composition (page left of centre, pod centred under the cone, stamp at the right):
@@ -200,8 +213,8 @@ Known flaws of this step: the two lowest dots touch the rib feet and stay in the
 
 ## Layers, states and how to place them
 
-- **Order on the stage:** `room-bench-stage` (0,40) → `room-shelf` (proposed, 200,300) → `room-cradle` (232,296) → the pod → `room-cradle-front` (same rect, only the near rim, over the pod's foot).
-- **A pod, per size class** (box bottom-centred on (344, 312); `well` is 32×40): `pod-<class>-identified` and `pod-<class>-sealed` are whole sprites; `pod-<class>-body` + `pod-<class>-glyph` + `pod-<class>-band` are the same pod as layers (all box-sized, same origin, so a species' glyph can replace the Loika's). Sealed = body + band minus the crack; identified = body + glyph.
+- **Order on the stage:** `room-bench-stage` (0,40) → `room-shelf` (proposed, 576,392) → `room-cradle` (600,328) → `pod-<class>-shadow` (centred on x 712, middle on y 400) → the pod (box bottom-centred on (712, 400)) → `room-cradle-front` (same rect as the dish, only its near lip and the front of its bed from row 46, over the pod's foot).
+- **A pod, per size class** (box bottom-centred on (712, 400); `well` is 32×40): `pod-<class>-identified` and `pod-<class>-sealed` are the Loika reference sprites; the systematic pod is `shade` (grey, 0.5 neutral: colour × 2 × grey), `mask-body`, `mask-accent`, `pattern-dots` / `-stripes` / `-bands`, `crack`, `band` and `shadow`, all box-sized with the same origin. A species is body colour on `mask-body`, accent colour on `mask-accent` and the pattern, drawn through `shade`; sealed = layers + `band`, without `crack`; identified = layers + `crack` + its glyph (held).
 - **Picture frames** are overlays with a transparent middle: the trait picture is rendered at its size first, the frame is drawn over it. `-unread` is the frost over the whole picture, `-sealed` the slats; the key picture (44×64) and the marks go on top.
 - **Tabs:** plate only; emblem, word, pips, glint star and the cream focus ring are the build's.
 

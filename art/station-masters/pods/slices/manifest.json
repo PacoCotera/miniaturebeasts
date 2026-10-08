@@ -12,37 +12,37 @@
   ],
   "src": "bench-e2",
   "made": "the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (712, 424)",
-  "sha256": "9c89a19357808349d9e902469febf78aceec5b1f126536bde2df499ad91b8672"
+  "sha256": "1f00f9c693c6cab09d8d0e4ba4cbbd638035282b2f057ee8d877496b0d4e6061"
  },
  "room-cradle": {
   "size": [
    224,
-   72
+   96
   ],
   "rect": [
    600,
-   352,
+   328,
    224,
-   72
+   96
   ],
-  "src": "dish-moss1",
-  "made": "the frosted dish with its moss bed: colour-to-alpha, cut, scaled evenly into 224x72 (the dish is 201 px wide), bottom on the last row",
-  "sha256": "f3fbc5a9df1998368db8b13dd586ed7041664a9729733f683d7737438513977e"
+  "src": "dish-lowa",
+  "made": "the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is 201 px wide), bottom on the last row",
+  "sha256": "f7f74e0a57f8cd9af167539408eb55431a2332ae00fe19649fb2a1babf2c0459"
  },
  "room-cradle-front": {
   "size": [
    224,
-   72
+   96
   ],
   "rect": [
    600,
-   352,
+   328,
    224,
-   72
+   96
   ],
-  "src": "dish-moss1",
-  "made": "the dish's near lip only (rows 44 to 71), drawn over the pod's foot at the foot line y 400",
-  "sha256": "245f1f038c91c5a105a83306d0a502e901f25d386b5cf65cc4f360998df435d4"
+  "src": "dish-lowa",
+  "made": "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 400 (row 72)",
+  "sha256": "7a0d746e0208e0837cae66302133a56cf917f3e82a539c808cf9a2580c726bea"
  },
  "room-shelf": {
   "size": [
@@ -55,9 +55,9 @@
    272,
    40
   ],
-  "src": "cradle-shelf",
-  "made": "PROPOSED: the glass shelf under the dish and the name; colour-to-alpha, cut, 272x40",
-  "sha256": "0dc342a12501a076e329c8575191f9b1c41cdf1974eb2f13a0317675ca194483"
+  "src": "slab2a",
+  "made": "PROPOSED: the thick glass slab in perspective with a lit front edge; colour-to-alpha, scaled evenly into 272x40 (79 px wide), bottom on the last row",
+  "sha256": "defc7fd7a6a43830266004a8b93233a1c1f4171bb087afe5a9abcb4ca9369c97"
  },
  "ring-column": {
   "size": [
@@ -332,7 +332,7 @@
   "rect": null,
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "29635f584d8aa40db1fe30f11bd9a0f532f4a8695b36638e62f0492c843b3abc"
+  "sha256": "6d83e4461a7e0dc25830de55242de68f26cc5091eaaf05955669cb029254bffb"
  },
  "trait-picture-frame-376x264-sealed": {
   "size": [
@@ -342,7 +342,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "2aa4132d30c48a2bcbd7f94e303cc793b0bf1de9b64689e1aacdff44d92aa04a"
+  "sha256": "11c6ba589472235746af69cd3481ba2b1345662fc96072aefb7284f8c4315665"
  },
  "trait-picture-frame-184x256": {
   "size": [
@@ -362,7 +362,7 @@
   "rect": null,
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "c54ac745e7d46471c2d918bdee9ce31eb87dbace9225346899a26eb6107a119a"
+  "sha256": "4e6d0f8bb45b2bab8e18c7156330f6676f84951c931c974f3657008383e6e7ed"
  },
  "trait-picture-frame-184x256-sealed": {
   "size": [
@@ -372,7 +372,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "bb35a07f519526f7fc5e8159352ecb532159f5e97a99a8afc2a65d23e823ab8c"
+  "sha256": "eef90e463ad77fb46594928a7ab169b097b17558482a3adc629125d165beb036"
  },
  "trait-picture-frame-184x104": {
   "size": [
@@ -392,7 +392,7 @@
   "rect": null,
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "5194c2d4e68560aa0df60c13f1c81fedb9e5cc494d1636666aa1d926c2dec526"
+  "sha256": "ecf10d9824011d73586ae33c57be934b134e55bf837354a0b8814375994acff2"
  },
  "trait-picture-frame-184x104-sealed": {
   "size": [
@@ -402,7 +402,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "0ac703ab686c5a540503502be820ee31d6fcf77d7ea5236c238f60e13187306e"
+  "sha256": "899b11b553c8eae02fc37108f58e3daf336520680eb19e86abe16c510101e3c4"
  },
  "trait-picture-frame-120x96": {
   "size": [
@@ -422,7 +422,7 @@
   "rect": null,
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "9f023921480aaf5f6e173f75ad094cb10333ef6e94d64dfc886cb273bba78173"
+  "sha256": "eadfe45e3bbc4b64278fa076907d89bdd8328af39d5999970752f115cb4bdaa7"
  },
  "trait-picture-frame-120x96-sealed": {
   "size": [
@@ -432,7 +432,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "6139128ce2263803c760a45038554c86f118c045d23e8412b8ac33e22cfb8d18"
+  "sha256": "f82c4c769c20a359928d223df0be54b439463e80f72514abbf8839daafa7e0f8"
  },
  "plate-message-640x36": {
   "size": [
@@ -687,7 +687,7 @@
   ],
   "src": "pod-band",
   "made": "the Loika reference sprite",
-  "sha256": "ff42aec7d8d26346c90d162e4db3b64cac4fcf3e05f8ae8057349f9ecd36aa7e"
+  "sha256": "ed758253b286d40192bfb4298fbff16a162cc414409373bddc609ead7ea642a3"
  },
  "pod-well-band": {
   "size": [
@@ -702,7 +702,7 @@
   ],
   "src": "pod-band",
   "made": "the sealing band as a layer",
-  "sha256": "6112634531233c537e92bada48d0087030c76bb1f51d6de239730c88c2faea4e"
+  "sha256": "f52d23d50a72593ed89011581a4f887da98ca3c8e2213772509c92259499388c"
  },
  "pod-large-shade": {
   "size": [
@@ -717,7 +717,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "db0bd4d3b0e3218f6fb0a18e1494df37e6c389da49725ae659a15ae1f178843e"
+  "sha256": "9e1c8d48f38c3af4dbf45e7f0f2031b645f0ccd0c3246a65404502075da1356a"
  },
  "pod-large-mask-body": {
   "size": [
@@ -732,7 +732,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "ad7dc317c9f209710bf92ae61e082c14d9ccd76ee259d7194842a9c8133017be"
+  "sha256": "73b555dbed16ede972d908b0c52e618fb1b245dd45c374b9792a171490acfac0"
  },
  "pod-large-mask-accent": {
   "size": [
@@ -747,7 +747,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "f6d6cdd0c2acf9ea4733506c7d9aac1a808cc1d99aa88b71a86389eb6edbd722"
+  "sha256": "1960147b6ff88202941a9f99315d3c1ce5eada1ff1cdfcddbb33821f90687526"
  },
  "pod-large-pattern-dots": {
   "size": [
@@ -762,7 +762,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "c74b8401e7247b5400b3b926db54762d283b137c5cab9b07aeb139325357e571"
+  "sha256": "d16b262f67d22fffb3f62ec592d706015c0eac5914e225429a9b6d06b1237d1b"
  },
  "pod-large-pattern-stripes": {
   "size": [
@@ -777,7 +777,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "f1b6b28e65f743290a11a82abd61fbe5b82f714f3376313df97be8818c630377"
+  "sha256": "92a69c84f759d05c67586744fcc61b11367941789abb4504622e178f3a4791fa"
  },
  "pod-large-pattern-bands": {
   "size": [
@@ -792,7 +792,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "a338998ae784b166e5ec6786ca057d01de83d9e919d5b13c916a4f722660c4d7"
+  "sha256": "c863b8556448a82b2e8df7901212abce32dbeb859608ed4daa68c3286ab380c9"
  },
  "pod-large-shadow": {
   "size": [
@@ -822,7 +822,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "27fe6bbd6130a9ed274ad545aa3055bfd1eacd9d0df0aaf9482fba35f350e8dd"
+  "sha256": "0171edfe1c3ab4eb6ab705d909e71967f480d4f8aff044851e00f06adaf5bc18"
  },
  "pod-medium-mask-body": {
   "size": [
@@ -837,7 +837,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "b7777b30e91ede286120ff521c69b7464be04c1f74e58917302b2c7ab85ccfa4"
+  "sha256": "ebf431676d8c99b3e1835aa4f85057915bc8047f925597bcd6ef93301ef37b5f"
  },
  "pod-medium-mask-accent": {
   "size": [
@@ -852,7 +852,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "33555c9665afda886b42eddeb97e10219209ee2d5b7db39ef75b1d564cd217bf"
+  "sha256": "1f309e305f1672174da34b3ad54d1c9f000854d5138a8be0e61699c30f1f16c9"
  },
  "pod-medium-pattern-dots": {
   "size": [
@@ -867,7 +867,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "7ac681a06d505691899f8380c20d795110c036de37023f5b3fe110df48a49b1c"
+  "sha256": "6755f70be4fc3f7607542e1ca1bf18978e6a107e1fba7db788b4c2d8e4d98f53"
  },
  "pod-medium-pattern-stripes": {
   "size": [
@@ -882,7 +882,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "c98d5791ef28d01183c2d5baf5615f82f09d7fff1b8fe8d85452f09e375d07d8"
+  "sha256": "4258f77d69067df1691d0b2f8d53a80cbf9726dc1b611728f10768d707b72818"
  },
  "pod-medium-pattern-bands": {
   "size": [
@@ -897,7 +897,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "47d63e2481cefa929a37ba45b32e8237cb350d86d2d489f7c21179c9af7aaade"
+  "sha256": "81e757df4d257c668e3b3ea69d496c32304c458deaa4636db89fb426fbc81cdd"
  },
  "pod-medium-shadow": {
   "size": [
@@ -927,7 +927,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "78b7a7118d5f82a8e2c26b1d711429d64ef24bef8f4c0c6eb0cc200e6349d64f"
+  "sha256": "8ff39ac4886961841f376cc174a6d967bfe21d6ce131b9ff513ad4925ee2f450"
  },
  "pod-small-mask-body": {
   "size": [
@@ -942,7 +942,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "28770c95826ea217efc12ae503ade6d7758def67699fbf400f80bccb2d7dc0a0"
+  "sha256": "f2c6967ab38db6bdb7c667301647737af3e5aa36f2aa0b9f245576952c73d57b"
  },
  "pod-small-mask-accent": {
   "size": [
@@ -957,7 +957,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "bf8827fdae70754d68c735827c6a7edf09028f5154e6976790c1753a4fa67c7a"
+  "sha256": "b9b6af19d68c0f9a03d6ce4ee8f172a0b951218341aa3485f9731a7b1ce0e40d"
  },
  "pod-small-pattern-dots": {
   "size": [
@@ -972,7 +972,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "299a9cbc0ba4c443d20c1120a8bab359b321ef3dfbccaaee392c7ef5f03d7b8d"
+  "sha256": "b7c1b4165d1cd9692198416644f5e57bb5c26780a36a23074a6d976bd11a6af0"
  },
  "pod-small-pattern-stripes": {
   "size": [
@@ -987,7 +987,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "703dd41924a64c29cbfb9b17774821c9b8dcbbdf5935e06271e0245451b1a353"
+  "sha256": "b26312a12c6d1a67ba77c225b35ffa4367f1f127a79b1a138389d9cd98c8256b"
  },
  "pod-small-pattern-bands": {
   "size": [
@@ -1002,7 +1002,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "7e9ddc2bfb7997f27b02a639e623693251fe6b228755232560552d6c3f140c6d"
+  "sha256": "5cf5a6cea59334b90abe90ccdd4b6b33fa6af9fa561f666b94be982deaf6bfc9"
  },
  "pod-small-shadow": {
   "size": [
@@ -1032,7 +1032,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "f24ed2723889048d23933cca12507b833f61d5df56647cdded2728dbf0df31df"
+  "sha256": "359ff840ac1a2066e2a8331c6ce7c0e1a36363ca1e2a1ad8061135a0fcbf3995"
  },
  "pod-well-mask-body": {
   "size": [
@@ -1047,7 +1047,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "84652777b22c7a83f2ccf170619540a7ba92ca8bacd8fcb93286fdae377b163e"
+  "sha256": "27081821fd58668d93e20af0406230d83eacbbbf8a32ae94f08f00b5849471c9"
  },
  "pod-well-mask-accent": {
   "size": [
@@ -1062,7 +1062,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "5c92b52d81ceed31315e5ef9292f9df0bf5e312c1244ea69fc89cb698743fd71"
+  "sha256": "147877f4f3453d619bbba144ea47c07dffbe8e4852ce29c71dfa547b7d8740a6"
  },
  "pod-well-pattern-dots": {
   "size": [
@@ -1077,7 +1077,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "f5ed3605ce4476d0755d634695c12825c33c8171f02a11f8e89d7d020512064c"
+  "sha256": "762c51fa0c85c91815f5518e2f163c11ec65add6a0086c5f05a7568d3bd2eee0"
  },
  "pod-well-pattern-stripes": {
   "size": [
@@ -1092,7 +1092,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "71b29d63da7d90630b72a155a0e9585655274f268016bfe277254deea45649a2"
+  "sha256": "d8fd8f55c94f1745e55b84fd9b77f58c1c4e0d26900c6186213aa9b63fd10170"
  },
  "pod-well-pattern-bands": {
   "size": [
@@ -1107,7 +1107,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "3ebb31390a0cb6ca3ba1a2fc75783b6c151533738b3b723f94b2c7b929ed0e54"
+  "sha256": "927ad8a1e81003b4edc028d1fc7a8ca851f440ce34b4db87889f2dfd989ed8b5"
  },
  "pod-well-shadow": {
   "size": [
@@ -1137,7 +1137,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "72be6ecc26c7c209a8854b21930ad22bcb2125cbe33be24544536146c184b6aa"
+  "sha256": "87ea2ff2307092b28c47fb24b7c086ea823c39e7d6b723f022e3e768ec06e2e4"
  },
  "pod-medium-crack": {
   "size": [
@@ -1152,7 +1152,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "2ab357821d3e317c6a76f57a7a140c30715038553423b2b875101fb26920e19a"
+  "sha256": "f72fbf07c3d8b623b9f69999f87725eab6cc2ad67eb4ad1221a3f6edcb722bbf"
  },
  "pod-small-crack": {
   "size": [
@@ -1167,7 +1167,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "7c9186693ddb0a9f0e32f6bc2ffb1628ee5e7e5806d0d5e864789418743c8c99"
+  "sha256": "ac0fecc76f62a96a41bc6c6961cc1b5f4374f68fc34644cfb7786eab715483e6"
  },
  "pod-well-crack": {
   "size": [
@@ -1182,7 +1182,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "be49564bc2dff5856e278159981fa40263dded7c7ab3af9029b95324dbba5b32"
+  "sha256": "b4680ef80f0f127ec98c56bb273f1c981266f2cc38f770d23fcfb3c0cab78e9e"
  },
  "trait-picture-frame-376x312": {
   "size": [
@@ -1202,7 +1202,7 @@
   "rect": null,
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "aaf22e35bd581bb80aca37f314ed7c2828256d11a56d1fc40b2c74e292f1a8d7"
+  "sha256": "644a58862d50685a0950fb81299150fe90e91f205ecc705a457055ef2767a4e6"
  },
  "trait-picture-frame-376x312-sealed": {
   "size": [
@@ -1212,7 +1212,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "0d4cea253cafbd1ed0ca269dbe702dd6d7dd0ddd82da28b03c726eb0a5ef8d11"
+  "sha256": "e47f55d10c46e84835713f6ed6f693cb4e50d983e18679a632cc80551d5c5698"
  },
  "trait-picture-frame-184x304": {
   "size": [
@@ -1232,7 +1232,7 @@
   "rect": null,
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "714f2c6f7a78b36c81bb6602bfd1757dfd12643013b8ca536bc5c1a2bae19a8f"
+  "sha256": "cdbd386f38847b5c8c1d6aefd61249d3e4504f4a6d6940288591157ba9b0f8ef"
  },
  "trait-picture-frame-184x304-sealed": {
   "size": [
@@ -1242,7 +1242,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "9ae7bd3f0f37fec0cdd1fcecb7d2f3421abf3bd51e4b00c531e521b7a3cd3315"
+  "sha256": "6868b4f72aacc2fce365a754b894265cee5b4097e60c7740ffa6ee273b07d7c8"
  },
  "trait-picture-frame-184x112": {
   "size": [
@@ -1262,7 +1262,7 @@
   "rect": null,
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "b867a1f67053315b8f2d8b18a5c370737f2aecba23cd03e24d5278abf90844c0"
+  "sha256": "e4ca733db686e5c30092ffac344319c38554177fed25abddca8ac14dfaea7619"
  },
  "trait-picture-frame-184x112-sealed": {
   "size": [
@@ -1272,7 +1272,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "66d709db3ee999137fa2f7013d79d4fbb66ef847bb968a98a5d36b74b5989835"
+  "sha256": "4690c6e2cc05228769817122490c01d3177cd26d7b53ac3b3b916a48a81e4ad6"
  },
  "trait-picture-frame-120x112": {
   "size": [
@@ -1292,7 +1292,7 @@
   "rect": null,
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "d74506c3c84322d71de924befb8a7a238016658e85e0281b0218afb4dcb8fd50"
+  "sha256": "cc0d743509bebe368b9f08dba92dc74d0701d97b28f04f913ec85b1888b5a77d"
  },
  "trait-picture-frame-120x112-sealed": {
   "size": [
@@ -1302,7 +1302,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "319509334466077c65ca264059abbd771e5d5cf42f02d946dd60ddc37bee0b2f"
+  "sha256": "fdb1554e48a2aca8017c9d62171819b9256dcbae1b1e129eb66fa35bef7aa3c6"
  },
  "plate-name-224x32": {
   "size": [

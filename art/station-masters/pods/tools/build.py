@@ -30,18 +30,36 @@ def comp_bboxes(alpha, thr=128, minarea=20000):
 
 # ---- bench stage 1024x522 at (0,40)
 def bench():
-    save("room-bench-stage", bench_window("bench-e2.jpg", 1374, 1244, 0.31), [0, 40, 1024, 522], "the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (712, 424)", "bench-e2")
+    save("room-bench-stage", bench_grade(bench_window("bench-e2.jpg", 1374, 1244, 0.31)), [0, 40, 1024, 522], "the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (712, 424)", "bench-e2")
+def opaque_cut(path, thr=9, soft=14, closing=10):
+    """Cut an object off its flat ground as an opaque silhouette (holes closed), keeping its own colours."""
+    im = load(path); bg = border_median(im); a = np.asarray(im).astype(float); diff = np.abs(a - bg).max(2)
+    m = (diff > thr)[::4, ::4]
+    m = ~label_dilate(~label_dilate(m, closing).astype(bool), closing).astype(bool) if False else label_dilate(m, closing)
+    # closing = dilate then erode
+    er = ~label_dilate(~m.astype(bool), closing).astype(bool)
+    full = np.kron(er.astype(float), np.ones((4, 4)))[:diff.shape[0], :diff.shape[1]]
+    full = smooth1d(smooth1d(full, 1.5, 0), 1.5, 1)
+    edge = np.clip((diff - thr) / soft, 0, 1)
+    alpha = np.maximum(full * 0.0 + np.clip(full, 0, 1) * 1.0, 0) * 0 + np.where(full > 0.5, 1.0, edge)
+    return Image.fromarray(np.dstack([np.clip(a, 0, 255), alpha * 255]).astype(np.uint8), "RGBA")
 def cradle():
-    im = load("dish-moss1.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05)
-    # the faint ring at the top of the generated image is a halo, not part of the dish: keep the lower component
-    a = np.asarray(k).copy(); a[:int(0.3 * a.shape[0]), :, 3] = 0; k = Image.fromarray(a, "RGBA"); bb = bbox_alpha(k, 40); d = k.crop(bb)
-    f = min(224 / d.width, 72 / d.height); d = d.resize((round(d.width * f), round(d.height * f)), Image.LANCZOS)
-    c = Image.new("RGBA", (224, 72), (0, 0, 0, 0)); c.alpha_composite(d, ((224 - d.width) // 2, 72 - d.height))
-    save("room-cradle", c, [600, 352, 224, 72], "the frosted dish with its moss bed: colour-to-alpha, cut, scaled evenly into 224x72 (the dish is %d px wide), bottom on the last row" % d.width, "dish-moss1")
-    x = np.asarray(c).copy(); yy = np.arange(72)[:, None]; fade = np.clip((yy - 44) / 6.0, 0, 1); x[..., 3] = (x[..., 3] * fade).astype(np.uint8)
-    save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 352, 224, 72], "the dish's near lip only (rows 44 to 71), drawn over the pod's foot at the foot line y 400", "dish-moss1")
-    im = load("cradle-shelf.jpg"); bg = border_median(im); k = color_to_alpha(im, bg); k = k.crop(bbox_alpha(k, 30))
-    save("room-shelf", k.resize((272, 40), Image.LANCZOS), [576, 392, 272, 40], "PROPOSED: the glass shelf under the dish and the name; colour-to-alpha, cut, 272x40", "cradle-shelf")
+    k = opaque_cut("dish-lowa.jpg"); bb = bbox_alpha(k, 120); d = k.crop(bb)
+    f = min(224 / d.width, 96 / d.height); d = d.resize((round(d.width * f), round(d.height * f)), Image.LANCZOS)
+    c = Image.new("RGBA", (224, 96), (0, 0, 0, 0)); c.alpha_composite(d, ((224 - d.width) // 2, 96 - d.height))
+    save("room-cradle", c, [600, 328, 224, 96], "the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is %d px wide), bottom on the last row" % d.width, "dish-lowa")
+    x = np.asarray(c).copy(); yy = np.arange(96)[:, None]; fade = np.clip((yy - 46) / 6.0, 0, 1); x[..., 3] = (x[..., 3] * fade).astype(np.uint8)
+    save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 328, 224, 96], "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 400 (row 72)", "dish-lowa")
+    im = load("slab2a.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); k = k.crop(bbox_alpha(k, 40))
+    f = min(272 / k.width, 40 / k.height); k = k.resize((round(k.width * f), round(k.height * f)), Image.LANCZOS); k = dim(k, 0.8)
+    c = Image.new("RGBA", (272, 40), (0, 0, 0, 0)); c.alpha_composite(k, ((272 - k.width) // 2, 40 - k.height))
+    save("room-shelf", c, [576, 392, 272, 40], "PROPOSED: the thick glass slab in perspective with a lit front edge; colour-to-alpha, scaled evenly into 272x40 (%d px wide), bottom on the last row" % k.width, "slab2a")
+def bench_grade(im):
+    """Darken to the candidate's values: a tone curve that tames the cone, and a vignette that darkens the corners."""
+    a = np.asarray(im).astype(float) / 255; a = 0.82 * a ** 1.55
+    yy, xx = np.mgrid[0:522, 0:1024]; r = np.sqrt(((xx - 712) / 620.0) ** 2 + ((yy - 250) / 420.0) ** 2)
+    v = np.clip(1 - 0.62 * np.clip(r - 0.25, 0, 1.2) ** 1.4, 0.18, 1)
+    return Image.fromarray(np.clip(a * v[..., None] * 255, 0, 255).astype(np.uint8))
 # ---- list column
 def listcol():
     im = load("list-column.jpg"); im = im.crop((1536 - 735, 0, 1536, 2400)).resize((160, 522), Image.LANCZOS)
@@ -77,7 +95,7 @@ def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
     sizes = [(376, 312), (184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96)]
     s = 1536 / k.width * 0 + 0.19
-    fr = load("frost-dark.jpg"); sl = load("slats-light.jpg")
+    fr = dim(load("frost-dark.jpg").convert("RGBA"), 0.7).convert("RGB"); sl = dim(load("slats-frost.jpg").convert("RGBA"), 0.5, 8).convert("RGB")
     frost = fr.resize((int(fr.width * 0.25), int(fr.height * 0.25)), Image.LANCZOS)
     # slats: find the vertical period of the lit lower edges and tile whole slats
     sa = np.asarray(sl.convert("L")).astype(float)[:1300, 600:2200].mean(1)
@@ -92,7 +110,7 @@ def frames():
         L = Image.fromarray(base, "RGBA"); L.alpha_composite(lip)
         save(f"trait-picture-frame-{w}x{h}", L, None, "key magenta lip, 9-slice, with a painted-ramp inner shade", "frame-thin")
         # unread: frost over the whole picture
-        ft = frost.crop((0, 0, w, h)).convert("RGBA"); ft.putalpha(232); F = ft.copy(); F.alpha_composite(L)
+        ft = frost.crop((0, 0, w, h)).convert("RGBA"); ft.putalpha(214); F = ft.copy(); F.alpha_composite(L)
         save(f"trait-picture-frame-{w}x{h}-unread", F, None, "frost texture at 0.9 alpha under the frame", "frost+frame-thin")
         # sealed: slats
         t = slat_tile.resize((w, per * 6 * pitch // per), Image.LANCZOS) if False else slat_tile.resize((w, 6 * pitch), Image.LANCZOS)
@@ -144,13 +162,20 @@ def label_dilate(m, r):
     out = m.astype(float)
     for _ in range(r): out = np.maximum(out, np.maximum.reduce([np.roll(out, 1, 0), np.roll(out, -1, 0), np.roll(out, 1, 1), np.roll(out, -1, 1)]))
     return out
-def stripes_mask(w, h, n=7, curve=0.10, duty=0.5):
-    yy, xx = np.mgrid[0:h, 0:w].astype(float); u = (xx / w - 0.5) * 2
-    v = yy / h + curve * (1 - u * u)          # bands wrap round the shell: they sag at the middle
-    return (np.sin(2 * np.pi * v * n) > np.cos(np.pi * duty)).astype(float)
+def _sphere(w, h):
+    yy, xx = np.mgrid[0:h, 0:w].astype(float); cx, cy = w * 0.5, h * 0.60; rx, ry = w * 0.5, h * 0.40
+    u = (xx - cx) / rx; v = (yy - cy) / ry; z = np.sqrt(np.clip(1 - u * u - v * v * 0.8, 0.0, 1)); lon = np.arctan2(u, np.maximum(z, 1e-3)); lat = np.arcsin(np.clip(v, -1, 1))
+    return lon, lat, z
+def stripes_mask(w, h, n=9):
+    """Fine meridian lines that follow the shell's curvature and fade toward its edge: a quiet mark, never a bold bar."""
+    lon, lat, z = _sphere(w, h); ph = (lon / np.pi * n) % 1.0; d = np.minimum(ph, 1 - ph)
+    return np.clip(1 - d / 0.07, 0, 1) ** 1.5 * np.clip(z * 1.6, 0, 1) * 0.55
 def bands_mask(w, h):
-    yy, xx = np.mgrid[0:h, 0:w].astype(float); u = (xx / w - 0.5) * 2; v = yy / h + 0.10 * (1 - u * u)
-    return (((v > 0.50) & (v < 0.60)) | ((v > 0.68) & (v < 0.74))).astype(float)
+    """Two soft hoops of latitude, thin and feathered."""
+    lon, lat, z = _sphere(w, h); m = 0
+    for c0, wd in ((0.18, 0.045), (0.46, 0.035)):
+        m = np.maximum(m, np.clip(1 - np.abs(lat - c0) / wd, 0, 1) ** 1.4)
+    return m * np.clip(z * 1.6, 0, 1) * 0.55
 def pods():
     BB = (376, 288, 1704, 1760); bw, bh = BB[2] - BB[0], BB[3] - BB[1]
     L, I, B = pod_src("pod-loika"), pod_src("pod-identified"), pod_src("pod-band")
@@ -161,7 +186,18 @@ def pods():
     # structure = the large connected accent (cap and ribs); dots = the separate round marks
     lab, sizes = label(mB > 0.5, 2); big = np.array([0] + [1 if sz > 9000 else 0 for sz in sizes[1:]])
     struct0 = np.where(big[lab] == 1, 1.0, 0.0) * np.clip((l - 120) / 40.0, 0, 1) * sil
-    structure = np.clip(struct0, 0, 1); dots = np.clip(mB - structure, 0, 1)
+    structure = np.clip(struct0, 0, 1)
+    # the dots that touch a rib foot: below row 1200 a dot (found with a lower threshold, because the shading darkens it)
+    # survives an opening that a rib does not
+    mB2 = np.clip((l - 110) / 40.0, 0, 1) * sil
+    m2 = (mB2 > 0.25)[::2, ::2]; er = ~label_dilate(~m2, 8).astype(bool); op = label_dilate(er, 11).astype(bool)
+    core = np.kron(op, np.ones((2, 2), bool))[:mB.shape[0], :mB.shape[1]]; core[:1200] = False
+    low = np.clip(label_dilate(core, 3), 0, 1) * (mB2 > 0.1)
+    structure = np.clip(structure - low, 0, 1)
+    # a crack in the cap is not a hole in the accent: close the cap
+    cap = label_dilate(structure[:380] > 0.5, 6); capc = ~label_dilate(~cap.astype(bool), 6).astype(bool)
+    structure[:380] = np.maximum(structure[:380], capc * sil[:380])
+    dots = np.clip(np.maximum(mB, low * mB2) - structure, 0, 1)
     body = np.clip(sil - structure, 0, 1)
     albA = np.median(l[(mB < 0.05) & (sil > 0.9)]); albB = np.median(l[(mB > 0.95)])
     alb = albA * (1 - mB) + albB * mB
@@ -173,9 +209,13 @@ def pods():
         num = smooth1d(smooth1d(shade * w_ok, sg, 0), sg, 1); den = smooth1d(smooth1d(w_ok, sg, 0), sg, 1)
         ok = (den > 0.08) & (got == 0); fill = np.where(ok, num / np.maximum(den, 1e-6), fill); got = np.where(ok, 1, got)
     shade = shade * (1 - dm) + fill * dm
-    # the crack on the cap is its own layer, so a sealed shell is smooth
-    blur = smooth1d(smooth1d(shade, 7, 0), 7, 1); cr = np.clip((blur - shade) - 0.03, 0, 1) * sil; cr[360:] = 0; cr[:, :int(bw * 0.45)] = 0
-    shade = np.clip(shade + cr, 0, 1)
+    # the crack on the cap is its own layer, so a sealed shell is smooth: find the dark thin line, grow it, fill the shading under it
+    blur = smooth1d(smooth1d(shade, 7, 0), 7, 1); cr = np.clip((blur - shade) - 0.02, 0, 1) * sil; cr[380:] = 0; cr[:, :int(bw * 0.45)] = 0
+    cm = label_dilate(cr > 0.02, 7); w_ok = 1 - cm; fill = np.zeros_like(shade); got = np.zeros_like(shade)
+    for sg in (10, 30):
+        num = smooth1d(smooth1d(shade * w_ok, sg, 0), sg, 1); den = smooth1d(smooth1d(w_ok, sg, 0), sg, 1)
+        ok = (den > 0.1) & (got == 0); fill = np.where(ok, num / np.maximum(den, 1e-6), fill); got = np.where(ok, 1, got)
+    shade = shade * (1 - cm) + fill * cm
     crack = np.dstack([np.full(cr.shape, 26.0), np.full(cr.shape, 20.0), np.full(cr.shape, 18.0), np.clip(cr * 5, 0, 1) * 255])
     h_, w_ = sil.shape
     cap_rows = None
@@ -184,7 +224,7 @@ def pods():
     wh = lambda m: np.dstack([np.full(m.shape + (3,), 255.0), m * 255])
     masks["mask-body"] = wh(body); masks["mask-accent"] = wh(structure); masks["pattern-dots"] = wh(dots)
     inner = body * (1 - np.clip(np.zeros_like(body), 0, 1))
-    masks["pattern-stripes"] = wh(stripes_mask(w_, h_) * body); masks["pattern-bands"] = wh(bands_mask(w_, h_) * body)
+    masks["pattern-stripes"] = wh(stripes_mask(w_, h_) * body * (1 - structure)); masks["pattern-bands"] = wh(bands_mask(w_, h_) * body * (1 - structure))
     # the sealing band, as before
     db = np.clip((lum(I) - lum(B) - 30) / 50, 0, 1); db[:BB[1] + 150] = 0; db[BB[1] + 520:] = 0
     Bd = B.copy(); Bd[..., 3] = db * 255
@@ -196,6 +236,10 @@ def pods():
             c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(im, (ox, oy)); return c
         r = {"large": [632, 208, 160, 192], "medium": [644, 232, 136, 168], "small": [656, 256, 112, 144]}.get(cls, [None, None, w, h])
         for nm, arr in masks.items(): save(f"pod-{cls}-{nm}", put(arr), r, "systematic pod layer: " + nm + ", uniform scale, foot on the last row, centred", "pod-identified")
+        if cls == "well":
+            # legible at 32x40: darken and thicken the band before the downscale, and rebuild the sealed sprite from it
+            bd = flat["band"].copy(); al = label_dilate(bd[..., 3] > 40, 14) * 255; bd[..., :3] = np.minimum(bd[..., :3], 40); bd[..., 3] = np.maximum(bd[..., 3] * 1.6, al * 0.9); flat = dict(flat, band=bd)
+            sealed = flat["sealed"].copy(); m = bd[..., 3:4] / 255.0; sealed[..., :3] = sealed[..., :3] * (1 - m) + bd[..., :3] * m; flat["sealed"] = sealed
         for nm, arr in flat.items(): save(f"pod-{cls}-{nm}", put(arr), r, "the Loika reference sprite" if nm != "band" else "the sealing band as a layer", "pod-loika" if nm == "identified" else "pod-band")
         sw, sh_ = w + 16, 14; yy, xx = np.mgrid[0:sh_, 0:sw].astype(float)
         a = np.clip(1 - (((xx - sw / 2) / (sw / 2)) ** 2 + ((yy - sh_ / 2) / (sh_ / 2)) ** 2), 0, 1) ** 1.2 * 0.6
