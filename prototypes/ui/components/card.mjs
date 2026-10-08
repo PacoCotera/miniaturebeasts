@@ -8,7 +8,7 @@
 import { textRun } from "./text.mjs";
 import { SIZES } from "../type.mjs";
 
-const reachWord = (S, c) => { if (c.dev || !c.of) return ""; const f = c.explored / c.of; return f < 1 / 3 ? S.reach.underThird : f < 2 / 3 ? S.reach.underTwoThirds : f < 1 ? S.reach.underAll : S.reach.all; };
+export const reachWord = (S, c) => { if (c.dev || !c.of) return ""; const f = c.explored / c.of; return f < 1 / 3 ? S.reach.underThird : f < 2 / 3 ? S.reach.underTwoThirds : f < 1 ? S.reach.underAll : S.reach.all; };
 export function reportHeight(L, crates, probe, worldLines) { return 104 + L.rows.h * (crates + (probe ? 1 : 0)) + (worldLines ? 40 + L.rows.h * worldLines : 0); }
 export function card(ctx, id, props) {
   const L = props.layout, S = props.strings, Cc = props.colours, [x, y] = L.rect, w = L.rect[2], crates = props.crates.slice(0, L.crates.max), world = props.world.slice(0, L.world.max);
@@ -50,3 +50,6 @@ export function card(ctx, id, props) {
   }
   return nodes;
 }
+
+// A crate in words, as its row and the arrival's ribbon say it: "First crate" or "Developer crate", then how far the land is explored. No digits.
+export const crateWording = (S, c, i) => (c.dev ? S.devCrate : S.crate[i]) + " home" + (reachWord(S, c) ? " · " + reachWord(S, c) : "");

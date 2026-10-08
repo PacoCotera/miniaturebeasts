@@ -4,6 +4,7 @@
 // 0..1 walk positions. The output is plain JSON; it runs in Node and is tested there.
 import * as S from "../state.mjs";
 import { repeat } from "../../../ui/layout.mjs";
+import { crateWording } from "../../../ui/components/card.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
@@ -87,7 +88,7 @@ export function homeView(m, spec, ctx) {
   view.modules = modules; view.moduleColours = C.module;
 
   // ---- the arrival's ribbon and the report card
-  view.ribbon = arr ? { text: (arr.plays[arr.i].c.dev ? "Developer crate " : "Expedition ") + arr.plays[arr.i].c.n + " home · " + S.plural((arr.plays[arr.i].c.pods || []).length, "pod") + (arr.plays[arr.i].c.of ? " · explored " + arr.plays[arr.i].c.explored + " of " + arr.plays[arr.i].c.of : ""), colours: { fill: C.ribbon.fill, edge: C.ribbon.edge, text: C.ribbon.text } } : null;
+  view.ribbon = arr ? { text: crateWording(spec.strings.report, arr.plays[arr.i].c, arr.i), colours: { fill: C.ribbon.fill, edge: C.ribbon.edge, text: C.ribbon.text } } : null;
   view.report = !arr && m.present?.report ? reportData(m.present.report, m, spec, icon) : null;
 
   // ---- the focus targets: each resident's ring box, the modules, the rest knob

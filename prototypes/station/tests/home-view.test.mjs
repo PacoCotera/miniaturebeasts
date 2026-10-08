@@ -65,7 +65,7 @@ test("an arrival: the ribbon, the Bay lifted by the spec's lift, the crates open
   const m = model(), c = (n) => ({ n, pods: [{ g: "meadow" }], of: 4, explored: 2 });
   const arr = { i: 1, k: 0.6, plays: [{ c: c(7), ids: [] }, { c: c(8), ids: [m.st.tray[0].id] }] };
   const v = view({ ...m, present: { arrival: arr } });
-  assert.match(v.ribbon.text, /Expedition 8 home · 1 pod · explored 2 of 4/); assert.equal(v.modules.bay.lift, R.bay.lift); assert.equal(v.arriving, true);
+  assert.equal(v.ribbon.text, "Second crate home · half the land explored"); assert.ok(!/\d/.test(v.ribbon.text), "no digits on the ribbon"); assert.equal(v.modules.bay.lift, R.bay.lift); assert.equal(v.arriving, true);
   assert.ok(v.modules.bay.items.some((i) => i.id === "crate0" && /crate:open/.test(i.asset)), "the opened crate");
   assert.ok(v.modules.rack.items.some((i) => i.id.startsWith("fly")), "a pod in flight"); assert.ok(!v.modules.rack.items.some((i) => i.id === "pod0"), "its well waits");
   assert.equal(v.line.subject, "the bay opens");

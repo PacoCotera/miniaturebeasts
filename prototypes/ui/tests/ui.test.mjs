@@ -145,8 +145,8 @@ test("the frame components place the spec's regions and set every string in Inte
   assert.equal(messagePlate(ctx, { text: "" }).length, 0);
 });
 
-test("the focus ring is one cream ring 2 px wide, 4 px outside its target, 6 px radius; an ellipse under a creature's feet", () => {
-  const [r] = focusRing("f", [100, 100, 50, 30], spec); assert.deepEqual(r.rect, [96, 96, 58, 38]); assert.equal(r.kind, "nineSlice"); assert.match(r.asset, /^ring:round:cream:2:6$/); assert.deepEqual(assetEntry(r.asset).slice, [8, 8, 8, 8]);
+test("the focus ring is one ring in the focus role 2 px wide, 4 px outside its target, 6 px radius; an ellipse under a creature's feet", () => {
+  const [r] = focusRing("f", [100, 100, 50, 30], spec); assert.deepEqual(r.rect, [96, 96, 58, 38]); assert.equal(r.kind, "nineSlice"); assert.match(r.asset, /^ring:round:focus:2:6$/); assert.deepEqual(assetEntry(r.asset).slice, [8, 8, 8, 8]);
   const [e] = focusRing("f", [264, 120, 160, 192], spec, { shape: "ellipse" }); assert.deepEqual(e.rect, [256, 300, 176, 24]); assert.equal(e.kind, "sprite"); assert.deepEqual([assetEntry(e.asset).w, assetEntry(e.asset).h], [176, 24]);
 });
 
