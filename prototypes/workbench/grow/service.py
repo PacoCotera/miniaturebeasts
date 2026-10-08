@@ -25,7 +25,7 @@ The checks (one named retry, then the placeholder): the painted silhouette again
 paint (the part check, which catches a body turned or a wing re-laid); every pigment slot painted
 in its own colour (the slot check: the median paint under the slot map, not clearly nearer another slot's pigment in Lab).
 """
-import base64, glob, hashlib, io, json, os, subprocess, sys, threading, time, uuid, urllib.request, urllib.error
+import base64, glob, hashlib, http.client, io, json, os, subprocess, sys, threading, time, uuid, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor
 from PIL import Image, ImageDraw, ImageFilter
 
@@ -350,9 +350,14 @@ def gemini_call(parts, record, model=None):
     body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": "1:1", "imageSize": "1K"}}}
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"x-goog-api-key": key, "Content-Type": "application/json"}, method="POST")
     t0 = time.time()
-    try:
-        with urllib.request.urlopen(req, timeout=300) as r: res, status = json.loads(r.read().decode()), r.status
-    except urllib.error.HTTPError as e: res, status = {"error": e.read().decode()[:2000]}, e.code
+    for attempt in (1, 2):  # a dropped connection (no HTTP status) is retried once after a pause; an HTTP error is not
+        try:
+            with urllib.request.urlopen(req, timeout=300) as r: res, status = json.loads(r.read().decode()), r.status
+            break
+        except urllib.error.HTTPError as e: res, status = {"error": e.read().decode()[:2000]}, e.code; break
+        except (urllib.error.URLError, http.client.HTTPException, TimeoutError, ConnectionError) as e:
+            res, status = {"error": f"connection: {e}"}, 0; record["connectionRetry"] = attempt
+            if attempt == 1: time.sleep(15)
     record["seconds"] = round(time.time() - t0, 1); record["httpStatus"] = status
     return status, res
 
