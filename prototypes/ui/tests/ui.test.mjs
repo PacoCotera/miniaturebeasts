@@ -180,7 +180,7 @@ test("the chapter page lays the cells on the grid with the marks inside each pic
   const colours = { pane: "deep", edge: "slate", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white", diff: { edge: "aqua", bracket: "aqua", keyline: "ink" } };
   const marks = { seed: [40, 52], seedSmall: [32, 40], smallUnder: 120, only: [72, 8], asleep: [24, 16], doing: [28, 16], key: [44, 64] };
   const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eye rings", lines: ["shows thin · hides none"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }, { picture: "pic:d", name: "Tail", lines: ["shows long"], marks: [], diff: true }];
-  const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, marks, diffEdge: 2, bracket: "bracket:12x12", frost: "frost:", slats: "slats:", region: "page", cellRegion: "page.cell" });
+  const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, marks, diff: { edge: 2, inset: 8 }, bracket: "bracket:12x12", frost: "frost:", slats: "slats:", region: "page", cellRegion: "page.cell" });
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
   assert.deepEqual(by.page.rect, [528, 112, 480, 440]); assert.deepEqual(by["page.emblem"].rect, [544, 120, 24, 24]); assert.equal(by["page.word"].px, 20);
   assert.deepEqual(by["page.c0.pic"].rect, [544, 160, 216, 112]); assert.deepEqual(by["page.c2.pic"].rect, [544, 360, 216, 112]);
@@ -193,7 +193,7 @@ test("the chapter page lays the cells on the grid with the marks inside each pic
   assert.deepEqual(by["page.c3.diff.t"].rect, [776, 360, 216, 2]); assert.deepEqual(by["page.c3.diff.r"].rect, [776 + 214, 360, 2, 112]); assert.equal(by["page.c3.diff.t"].colour, "aqua");
   assert.deepEqual(by["page.c3.bracket"].rect, [776 + 108 - 6, 360 + 8, 12, 12]); assert.ok(!r.nodes.some((n) => n.kind === "nineSlice"));
   assert.ok(r.nodes.filter((n) => n.kind === "text").every((n) => [16, 20].includes(n.px)));
-  assert.equal(chapterPage(ctx, "p2", region, { heading: null, cells: new Array(7).fill(cells[2]), colours, marks, diffEdge: 2, frost: "f:", slats: "s:" }).overflow, true);
+  assert.equal(chapterPage(ctx, "p2", region, { heading: null, cells: new Array(7).fill(cells[2]), colours, marks, diff: { edge: 2, inset: 8 }, frost: "f:", slats: "s:" }).overflow, true);
 });
 
 test("text runs draw the material symbols as icons, wrap and clip", () => {

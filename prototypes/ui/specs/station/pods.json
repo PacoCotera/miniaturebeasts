@@ -47,7 +47,7 @@
   "ribbon": { "rect": [184, 384, 320, 40], "px": 20, "ms": 6000 }
  },
  "classes": { "pod": { "large": [160, 192], "medium": [136, 168], "small": [112, 144] } },
- "page": { "marks": { "seed": [40, 52], "seedSmall": [32, 40], "smallUnder": 120, "only": [72, 8], "asleep": [24, 16], "doing": [28, 16], "key": [44, 64] }, "diff": { "bracket": [12, 12], "bracketAt": "top centre, 8 px in: [P.x + P.w / 2 - 6, P.y + 8]", "edge": 2 } },
+ "page": { "marks": { "seed": [40, 52], "seedSmall": [32, 40], "smallUnder": 120, "only": [72, 8], "asleep": [24, 16], "doing": [28, 16], "key": [44, 64] }, "diff": { "bracket": [12, 12], "bracketAt": "top centre, `inset` px in: [P.x + P.w / 2 - 6, P.y + inset]", "inset": 8, "edge": 2 } },
  "focus": {
   "list": { "axis": "vertical", "right": "pod", "left": "none" },
   "pod": { "left": "list.current", "up": "rail.last", "right": "none", "down": "none" },

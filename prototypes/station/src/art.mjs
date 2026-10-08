@@ -80,7 +80,8 @@ function partBox(scene, camera, parts) {
   return { x0, y0, x1, y1, whole: !parts || nodes.length === scene.nodes.length };
 }
 const PIC_BG = C.bone;
-// The Pods pictures sit on the page's own pane (deep): a plain flat ground, nothing of a card (PH §0).
+// The Pods pictures sit on the page's own pane (`deep`, as the spec names it): a plain flat ground, nothing of a card (PH §0).
+// Deliberately not the migration table's creamT to bone: the seed pictures key out this ground, and a bone ground is the cream card the art director struck.
 export const PIC_GROUND = C.deep;
 const pictureGround = (w, h) => { const pb = new PB(w, h); pb.rect(0, 0, w, h, PIC_GROUND); return pb; };
 // The rig's scene without its eye parts: a stand-in close-up draws no face (PH §0).

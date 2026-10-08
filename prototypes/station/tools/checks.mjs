@@ -79,9 +79,10 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
     else if (id === "page") must(eq(rect, R.page.rect), `page ${rect} is not ${R.page.rect}`);
     else if (id === "compareA" || id === "compareB") must(eq(rect, R[id].rect), `${id} ${rect} is not ${R[id].rect}`);
     else if (id === "rail.tab") { const i = +r.id.match(/^rail\.(\d+)$/)[1], n = c.pod.chapters, t = railTabs(R.rail, n, c.cmp ? -1 : -1).tabs[i]; must(t && rect[0] === t[0] && rect[2] === t[2] && rect[3] === t[3] && (rect[1] === t[1] || rect[1] === t[1] - frame.focus.lift.chrome), `rail tab ${i} ${rect} is not ${t}`); got.push(i); }
-    else if (id === "page.cell") {
-      const m = r.id.match(/^(page|pageA|pageB)\.c(\d+)\.pic$/), key = m[1] === "page" ? "page" : m[1] === "pageA" ? "compareA" : "compareB", spec = R[key].grid ? R[key] : R.compareA, region = { ...spec, rect: R[key].rect }, traits = c.regions.filter((q) => q.region === "page.cell" && q.id.startsWith(m[1] + ".c")).length, g = pageGrid(region, traits), cell = g.cells[+m[2]];
-      must(cell && rect[0] === cell[0] && rect[1] === cell[1] && rect[2] === g.picture[0] && rect[3] === g.picture[1], `${r.id} ${rect} is not the grid's ${cell} at ${g.picture}`);
+    else if (id === "page.cell" || id === "page.diff" || id === "page.bracket") {
+      const m = r.id.match(/^(page|pageA|pageB)\.c(\d+)\./), key = m[1] === "page" ? "page" : m[1] === "pageA" ? "compareA" : "compareB", spec = R[key].grid ? R[key] : R.compareA, region = { ...spec, rect: R[key].rect }, traits = c.regions.filter((q) => q.region === "page.cell" && q.id.startsWith(m[1] + ".c")).length, g = pageGrid(region, traits), cell = g.cells[+m[2]], [pw, ph] = g.picture, D = pods.page.diff;
+      const want = id === "page.cell" ? [cell[0], cell[1], pw, ph] : id === "page.diff" ? [cell[0], cell[1], pw, D.edge] : [cell[0] + Math.round(pw / 2) - D.bracket[0] / 2, cell[1] + D.inset, D.bracket[0], D.bracket[1]];
+      must(cell && eq(rect, want), `${r.id} ${rect} is not the grid's ${want}`);
     }
     else must(false, `region "${id}" (${r.id}) is not in the spec`);
   }

@@ -238,6 +238,9 @@ expect(needs.includes("they differ here"), "at least one Compare capture shows a
   await page.evaluate(() => { const g = window.__st.ST; window.__keep = { tray: g.tray, waiting: g.waiting }; g.tray = []; g.waiting = []; window.__st.UI.pods.cur = null; window.__st.UI.pods.cmp = null; }); await page.waitForTimeout(300);
   const el = await line(); expect(el.subject === "the rack is empty" && el.need === "take the Companion exploring", "the empty rack's lines: " + JSON.stringify(el));
   await frameShot("pods-empty-rack");
+  await page.evaluate(() => window.__st.seedCrate("S04", 1, 9090)); await page.waitForTimeout(200);   // docked, a crate waiting in the bay
+  const crateLine = await line(); expect(crateLine.need === "open the bay at Home", "the empty rack with a crate in the bay: " + JSON.stringify(crateLine));
+  await page.evaluate(() => { window.__st.ST.devBay.length = 0; });   // the crate is taken away again, unopened
   await page.evaluate(() => { const g = window.__st.ST; g.tray = window.__keep.tray; g.waiting = window.__keep.waiting; window.__st.UI.pods.cur = null; }); await page.waitForTimeout(200);
 }
 s = await st();

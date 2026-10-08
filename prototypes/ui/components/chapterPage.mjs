@@ -5,7 +5,7 @@
 // P.x + 8 for a blend), the "only" base centred on the bottom edge, "asleep" at the top right, "breed to change" at
 // the top left; unread: frost over the whole picture, the name shows, the line stays empty; sealed: slats with what
 // opens it centred, no line. A read in progress wipes the frost away from the top (props.wipe, 0 to 1).
-// props: { marks (the spec's page.marks), diffEdge (px), heading: { emblem, word } | null, cells: [{ picture, name, lines: [], frost, sealed, seals: asset, marks: [{ kind, asset }], wipe }],
+// props: { marks (the spec's page.marks), diff ({ edge, inset } px), heading: { emblem, word } | null, cells: [{ picture, name, lines: [], frost, sealed, seals: asset, marks: [{ kind, asset }], wipe }],
 //          colours: { pane, edge, heading, name, line, lineEmpty, wipe }, frost and slats (the id prefixes of those pictures: `<prefix><w>x<h>`), compact }
 import { pageGrid } from "../layout.mjs";
 import { panel } from "./panel.mjs";
@@ -39,9 +39,9 @@ export function chapterPage(ctx, id, region, props) {
       if (c.wipe != null && c.wipe < 1) { const cut = Math.round(c.wipe * ph); nodes.push({ id: cid + ".wipe", kind: "clip", rect: [cx, cy + cut, pw, ph - cut], children: [{ id: cid + ".wipefrost", kind: "sprite", rect: P, asset: `${props.frost}${pw}x${ph}` }] }, { id: cid + ".wipeline", kind: "rect", rect: [cx + 6, cy + cut, pw - 12, 2], colour: Cc.wipe }); }
     }
     if (c.diff) {   // Compare: a trait that differs wears a 2 px aqua edge on its own rectangle (never the cream ring) and the 12×12 bracket, inside the picture, top centre, 8 px in
-      const D = Cc.diff, e = props.diffEdge;
-      nodes.push({ id: cid + ".diff.t", kind: "rect", rect: [cx, cy, pw, e], colour: D.edge }, { id: cid + ".diff.b", kind: "rect", rect: [cx, cy + ph - e, pw, e], colour: D.edge }, { id: cid + ".diff.l", kind: "rect", rect: [cx, cy, e, ph], colour: D.edge }, { id: cid + ".diff.r", kind: "rect", rect: [cx + pw - e, cy, e, ph], colour: D.edge },
-        { id: cid + ".bracket", kind: "sprite", rect: [cx + Math.round(pw / 2) - 6, cy + 8, 12, 12], asset: props.bracket });
+      const D = Cc.diff, e = props.diff.edge;
+      nodes.push({ id: cid + ".diff.t", kind: "rect", rect: [cx, cy, pw, e], colour: D.edge, region: "page.diff" }, { id: cid + ".diff.b", kind: "rect", rect: [cx, cy + ph - e, pw, e], colour: D.edge }, { id: cid + ".diff.l", kind: "rect", rect: [cx, cy, e, ph], colour: D.edge }, { id: cid + ".diff.r", kind: "rect", rect: [cx + pw - e, cy, e, ph], colour: D.edge },
+        { id: cid + ".bracket", kind: "sprite", rect: [cx + Math.round(pw / 2) - 6, cy + props.diff.inset, 12, 12], asset: props.bracket, region: "page.bracket" });
     }
     const ny = cy + ph + 8, nw = Math.round(ctx.measure(c.name, 16, 400));
     nodes.push({ id: cid + ".name", kind: "text", rect: [cx, ny, nw, 20], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });

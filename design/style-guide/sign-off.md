@@ -64,6 +64,7 @@ Built to the art director's list and the corrected spec; the art director re-che
 - **Message plates on Pods** only for refusals and for the hatch's arming (Identify, a read and the return show none).
 - **Placeholders that drifted**: the close-ups are drawn without the rig's eye parts on the page's own pane (no cream card, no sand band); the seeds follow.
 - **Captured**: Compare with one, two, four and six traits (`pods-compare-*.png`, a difference on the page) and the empty rack (`pods-empty-rack.png`); the journey asserts each line and the checks read them.
+- **Off the migration table, deliberately:** the Pods pictures' ground is `deep` (the page pane), not the table's `creamT` to `bone`; the seed pictures key out that ground, and a bone ground is the cream card the art director struck.
 - **Not mine, listed as departures**: the trait names of two words ("Second colour", "Fur reach", "Cap colour", "Cap spots", "Leg colour") and the trait lines over six words ("off · asleep: patches, if they wake") are the catalogue's; the copy owner settles them. Motion (the 200 ms lift, the page turn, the glint, Compare's slide, the pod's glow) is not built.
 
 ### Section 3, Pods on the screen layer (T1): the art direction column and the layout, by the art director and the UI designer

@@ -112,7 +112,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
   });
   const frost = (w, h) => req({ kind: "frost", id: `frost:${w}x${h}`, w, h }), slats = (w, h) => req({ kind: "slats", id: `slats:${w}x${h}`, w, h });
   for (const c of cells) { if (c.frost || c.wipe != null) frost(pw, ph); if (c.sealed) slats(pw, ph); }
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:24`, chapter: ch.id }), word } : null, cells, overflow: grid.overflow || ch.traits.length > 6, frost: "frost:", slats: "slats:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks, diffEdge: spec.page.diff.edge, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
+  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:24`, chapter: ch.id }), word } : null, cells, overflow: grid.overflow || ch.traits.length > 6, frost: "frost:", slats: "slats:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks, diff: { edge: spec.page.diff.edge, inset: spec.page.diff.inset }, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
 }
 
 function compareView(view, m, spec, ctx, req) {
