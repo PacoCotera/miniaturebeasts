@@ -1,6 +1,6 @@
 # Companion 48 px redraw: handover
 
-State of round 9 on 2026-10-08. Everything below is in this folder; nothing in `prototypes/exploration/index.html` has been touched. Run every script with `python3 -I` from `art/companion-48/`.
+State of round 11b on 2026-10-08. Everything below is in this folder; nothing in `prototypes/exploration/index.html` has been touched. Run every script with `python3 -I` from `art/companion-48/`.
 
 ## Where things are
 

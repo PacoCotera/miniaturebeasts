@@ -28,9 +28,9 @@ The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md)
 
 | Piece | How it was finished |
 | --- | --- |
-| Tree | **Retro Diffusion at final size (136 × 152), from a Gemini painting, then cleaned by code** (palette snap, outline recolour, one component). |
+| Tree | **Retro Diffusion at final size (136 × 152), from a Gemini painting with the concept's canopy as the reference, then cleaned by code** (palette snap, outline recolour, one component). |
 | Charged stone body | **Retro Diffusion at final size (62 × 80), cleaned by code.** |
-| Charged stone crackle (zigzag, four arcs, vein) | **Pixels set by code** (not redrawn by the service). |
+| Charged stone crackle (zigzag, six arcs, vein) | **Placed vertex by vertex by hand-written coordinate lists after the concept, rendered by the script (core and flank); not a generator.** |
 | Hut B, whole (explorer scale, 144 × 152) | **Retro Diffusion at final size from a Gemini painting, cleaned by code** (role colours, outline, one component); the four tufts are set by code; assembled in Aseprite (0 pixels differ). |
 | Pawn: H's head, torso, pack and every frame the service drew | **Retro Diffusion at 48 px (round 9), cleaned by code**, assembled in Aseprite. |
 | Pawn: legs, boots, raised arms, ruff, sleeve swings, leans | **Pixels set by code** (`pawn_limbs.py`), assembled in Aseprite. |
@@ -38,6 +38,19 @@ The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md)
 | Ground tufts | **Pixels set by code** on round 8's tiles. |
 
 Where the art director wants a piece hand-finished, it needs a person in Aseprite (the sources are in [`work/hut-b-aseprite/`](work/hut-b-aseprite/), [`work/pawn-aseprite/`](work/pawn-aseprite/)) or a decision that code-set pixels are acceptable for the listed pieces.
+
+### Round 11b: the art director's verdict on round 11 (signed: hut base, creeps, proofs, canopy value, stone body, light direction and staging, the walks' legs, the front ruff)
+
+The ruling on item 10: deliberate pixel-by-pixel placement and editing of a generated base by scripts counts as hand work when judged at 1×; procedural forms standing in for drawing (parametric curves, zigzag generators, non-integer scaling, an area filled with one dither) do not; Bayer through the palette tables stays the house rule for edge bands and contact shadows. The provenance table below is kept and updated.
+
+1. **Hut base:** no night spur at the left end of the base stones (the interior dark in the stone zone is rock now).
+2. **Porch** (at the explorer's scale): the service's porch shape kept; its roof breaks the wall's outline on the left with a lit top in clay and sand and a shadow row under its lower edge (a measured line); each post has a 1 px foot shadow; the stone step is in front.
+3. **Stone crackle:** the canvas is widened (100 × 79, no clipping); the crackle is placed **vertex by vertex** from the concept's (six arcs, each jagged with two or three forks and broken into segments, two running into the grass; a 1 px white core, a 1 px yellow flank, gold only at the forks) and the zigzag across the face is kept; frame 1 is the faint broken vein (`tools/stone-r11.py`, the vertex lists are the data).
+4. **Tree's shade pool:** the core is **solid** in the shade table and Bayer is only in a 4 px edge band stepping 75, 50 and 25 % (`pool()` in `compose-still.py`); the stone's and the hut's contact shadows use a 3 px band.
+5. **Tree form:** regenerated: a new Gemini painting with the concept's canopy as the reference (leaf-cluster masses with notched, broken edges; [`sources/r11/C48-T-r11-b1`](sources/r11/)), Retro Diffusion at the final size 136 × 152 again (three seeds, seed 52 kept; the piece is 114 × 117 after the clean-up), cleaned as before; the round 11 rain table and the tealD outline are kept.
+6. **Pawn front:** a 1 px clay line between the chin and the ruff; the chin ruff is cream and sand, a step lighter than the skin. **Back:** the ruff is attached to the hood's outline, 1 to 2 px along both lower sides (rows 12 to 17), no floating pixels.
+7. **Side walks' sleeve:** drawn in the coat's orange shade down the hip with the mitten showing 2 px past the coat's edge, forward on one contact and back on the other (and forward in the passing frame).
+8. HANDOVER.md opens with round 11b.
 
 ## The owner's decision on the pawn, and what answers it
 
@@ -327,7 +340,9 @@ Signed, art director, 2026-10-08. The pawn is the owner's pick (study H), built 
 | C48-T-r11-a1 tree painting, round 11 | Pro, 1K | 0.16 |
 | C48-T-r11 tree (3 seeds, 136×152), C48-S-r11 stone (3 seeds at 48×64 and 3 at 62×80), C48-H-r11 hut (3 seeds, 144×152), round 11: 12 calls | Retro Diffusion rd_pro__topdown | 2.16 |
 | C48-H-r11-a1 hut painting, round 11 | Pro, 1K | 0.17 |
-| **Total** | | **18.32** |
+| C48-T-r11-b1 tree painting (round 11b) | Pro, 1K | 0.17 |
+| C48-T-r11 tree, 3 seeds at 136×152 (round 11b) | Retro Diffusion rd_pro__topdown | 0.54 |
+| **Total** | | **19.02** |
 
 Re-summed from the sidecars by `tools/budget.py` into [`sources/budget.json`](sources/budget.json) (the superseded batch in [`sources/extra-spend.json`](sources/extra-spend.json)). The service's balance is topped up automatically, so it is not a limit.
 

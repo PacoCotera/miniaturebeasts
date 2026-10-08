@@ -1,0 +1,41 @@
+{
+ "id": "C48-T-r11-rdb-s51",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "136x152",
+ "prompt": "a round-canopied meadow tree seen from above at an angle, the canopy a mass of overlapping leaf clusters with notched ragged edges, lit from the top left, a very dark blue-green outline, a short sturdy trunk with a small root flare",
+ "remove_bg": true,
+ "seed": 51,
+ "input_image": {
+  "file": "review-place/sources/r11/tree-in-b.png",
+  "sha256": "93a787edd83117923002204839e3cd6fd864e9185b5da9582d2b8b534893a215",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T23:26:31Z",
+ "checkCost": {
+  "created_at": 1791501991,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 44.80000000000002
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "a2ecbd8c-9bcb-4ca1-b62a-3686dd9c5c3b",
+  "seconds": 41.6,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 44.62,
+  "model": "rd_pro",
+  "file": "C48-T-r11-rdb-s51-rd.png",
+  "sha256": "f5de6ad42faec1d1ee89f0310f1121daf3c59a57a1e4bee4309d565ebf951a08"
+ }
+}

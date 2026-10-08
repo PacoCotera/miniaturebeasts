@@ -11,9 +11,11 @@ P = quant.P; C = P.index
 rgba = np.asarray(Image.open(sys.argv[1]).convert("RGBA")).copy()
 allowed = pal.ramp_indices(P, "GWN") + [C["tealD"], C["teal"], C["aqua"], C["mint"]]
 idx = quant.quantize(rgba, allowed, alpha_thresh=110)
-MAP = {C["aqua"]: C["lime"], C["mint"]: C["lime"], C["teal"]: C["sprout"], C["ink"]: C["tealD"], C["night"]: C["tealD"], C["void"]: C["tealD"], C["slate"]: C["tealD"], C["stone"]: C["tealD"],
+MAP = {C["aqua"]: C["sprout"], C["mint"]: C["lime"], C["teal"]: C["grass"], C["ink"]: C["tealD"], C["night"]: C["tealD"], C["void"]: C["tealD"], C["slate"]: C["tealD"], C["stone"]: C["tealD"],
        C["mist"]: C["sprout"], C["fog"]: C["sprout"], C["bone"]: C["lime"], C["white"]: C["lime"], C["paper"]: C["lime"]}
 idx = np.where(idx >= 0, np.vectorize(lambda v: MAP.get(v, v))(idx), -1)
+yy_ = np.mgrid[0:idx.shape[0], 0:idx.shape[1]][0]; low = yy_ >= int(idx.shape[0] * 0.72)               # the trunk: the service's pale bark to the bark ramp
+for a_, b_ in ((C['sand'], C['clay']), (C['clay'], C['bark']), (C['peach'], C['clay']), (C['paper'], C['sand']), (C['cream'], C['sand'])): idx[low & (idx == a_)] = b_
 # the outline is the only tealD; the dark inside the canopy (the gaps and the underside of the clumps) is pine
 bgm = idx < 0; edge = np.zeros(idx.shape, bool); edge[1:] |= bgm[:-1]; edge[:-1] |= bgm[1:]; edge[:, 1:] |= bgm[:, :-1]; edge[:, :-1] |= bgm[:, 1:]
 dark = np.isin(idx, [C["tealD"], C["pine"], C["teal"]])

@@ -80,7 +80,7 @@ FOLIAGE = None   # art director, round 2: under the storm the canopies keep the 
 CAN = P.canopy_rain if RAIN else None                  # the bushes one green step deeper in rain
 TRT = P.tree_rain if RAIN else None                    # the tree's rain canopy: body pine, clumps forest, leaf only on the clumps' top-left edges
 HUT = (OX + int(2.5 * TS), OY + 4 * TS - 2)                 # the hut at the explorer's scale: 144 px = three whole tiles (tile columns 1 to 3), its foot on the bottom of tile row 3
-TREE = at(5, 4, 0, 8); PAWN = (TREE[0] + 34, TREE[1] + 40); LOIKA = (TREE[0] + 78, TREE[1] + 46); RING = (7, 6); STONE = at(8, 7, 4, 6)
+TREE = at(5, 4, 0, 8); PAWN = (TREE[0] + 34, TREE[1] + 40); LOIKA = (TREE[0] + 78, TREE[1] + 46); RING = (7, 6); STONE = at(8, 7, -8, 6)
 things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk2", PAWN, None), ("tokens", "loika-idle1", LOIKA, None), ("props", "tree", TREE, TRT),
           (("huts", f"hut-{hut}-lit", HUT, DARK) if hut else ("props", "outpost-lit", HUT, HUTT)),
           ("props", "bush", at(7, 1), CAN), ("props", "bush-fruit", at(9, 5), CAN), ("props", "bush-shaken", at(1, 9), CAN),
@@ -89,15 +89,19 @@ things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk
 # The tree's pool lies under the canopy and to its lower right; the stone and the hut have contact shadows 2 to 3 rows deep to the lower right.
 SH = np.array(P.dark if RAIN else P.shade_clear)
 BAYER = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]) / 16.0
-def pool(cx, cy, rx, ry, peak=0.95, skew=0.0):
-    for yy_ in range(max(VIEW[0], int(cy - ry)), min(VIEW[1], int(cy + ry) + 1)):
-        for xx_ in range(max(0, int(cx - rx)), min(W, int(cx + rx) + 1)):
+def pool(cx, cy, rx, ry, band=4.0):
+    """a pool through the shade table: the core SOLID, then a band 4 px wide stepping 75 %, 50 %, 25 % by a 4 x 4 Bayer (an even dither over a large area shimmers on the device)"""
+    sc = min(rx, ry)
+    for yy_ in range(max(VIEW[0], int(cy - ry) - 1), min(VIEW[1], int(cy + ry) + 2)):
+        for xx_ in range(max(0, int(cx - rx) - 1), min(W, int(cx + rx) + 2)):
             r = (((xx_ - cx) / rx) ** 2 + ((yy_ - cy) / ry) ** 2) ** .5
-            d = peak * max(0.0, 1.0 - r) ** 0.8
-            if d > BAYER[yy_ % 4, xx_ % 4] and scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
+            e = (1.0 - r) * sc                                   # px inside the rim
+            if e <= 0: continue
+            d = 1.0 if e >= band else (0.75 if e >= band * 0.66 else (0.5 if e >= band * 0.33 else 0.25))
+            if (d >= 1.0 or d > BAYER[yy_ % 4, xx_ % 4]) and scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
 pool(TREE[0] + 38, TREE[1] + 22, 118, 56)
-pool(STONE[0] + 12, STONE[1] - 1, 34, 6.5, 0.98)
-pool(HUT[0] + 16, HUT[1] - 2, 80, 8.0, 0.98)
+pool(STONE[0] + 12, STONE[1] - 1, 34, 6.5, 3.0)
+pool(HUT[0] + 16, HUT[1] - 2, 80, 8.0, 3.0)
 blit(load("props", "strike-warn2"), OX + RING[0] * TS, OY + RING[1] * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
 for group, name, (cx, cy), table in sorted(things, key=lambda t: t[2][1]): sprite(group, name, cx, cy, table)
 # the name tag over Loika, the message box at the view's top, the rain over all of it

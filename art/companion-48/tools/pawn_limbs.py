@@ -129,16 +129,24 @@ def ruff_front(cell):
     ring = np.isin(out, [C["sand"], C["clay"], C["cream"]]) & (yy >= 11) & (yy <= 21)
     for (x, y) in ((17, 14), (17, 17), (16, 19), (31, 13), (31, 16), (31, 19), (21, 10), (25, 10)):            # 1 px tufts on the hood side of the ring
         if out[y, x] in (C["amber"], C["orange"], C["rust"]): out[y, x] = C["clay"] if x >= 28 else C["sand"]
-    for x in range(19, 29):                                                                                      # thicker at the chin: two rows under the chin, a tuft row under them
-        for y, c in ((21, C["sand"] if x < 26 else C["clay"]), (22, C["clay"] if (x + 1) % 2 else C["sand"])):
-            if out[y, x] in (C["orange"], C["amber"], C["sand"], C["clay"], C["rust"]): out[y, x] = c
+    # round 11b: a 1 px clay line between the chin and the ruff, and the chin ruff a step LIGHTER than the skin (it read as a beard): sand and cream under the line, two rows thick
+    for x in range(20, 28):
+        if out[20, x] in (C["clay"], C["sand"], C["peach"], C["amber"], C["orange"], C["rust"]): out[20, x] = C["clay"]
+    for x in range(19, 29):
+        for y, c in ((21, C["cream"] if x < 24 else C["sand"]), (22, C["sand"] if (x + 1) % 2 else C["cream"])):
+            if out[y, x] in (C["orange"], C["amber"], C["sand"], C["clay"], C["rust"], C["cream"]): out[y, x] = c
     for x in (20, 23, 26):
-        if out[23, x] in (C["orange"], C["amber"]): out[23, x] = C["clay"]
+        if out[23, x] in (C["orange"], C["amber"]): out[23, x] = C["sand"]
     return out
 def ruff_back(cell):
     out = cell.copy()
-    for (x, y, c) in ((15, 14, "sand"), (16, 13, "sand"), (16, 15, "cream"), (15, 16, "sand"), (32, 13, "clay"), (31, 12, "clay"), (31, 14, "sand"), (32, 15, "clay")):
-        if out[y, x] < 0 or out[y, x] in (C["amber"], C["orange"], C["rust"]): out[y, x] = C[c]
+    # round 11b: the ruff's edge is attached to the hood's outline, 1 to 2 px along both lower sides of the hood (rows 12 to 17), not floating pixels
+    for y in range(12, 18):
+        for x, c, col in ((16, "sand", "cream"), (31, "clay", "sand")):
+            if out[y, x] >= 0: out[y, x] = C[c if (y % 2) else col]
+    for y in (15, 16, 17):
+        for x, c in ((17, "sand"), (30, "clay")):
+            if out[y, x] in (C["amber"], C["orange"]): out[y, x] = C[c]
     for y in range(8, 17):                                                                                         # the seam
         if out[y, 24] in (C["amber"], C["orange"]): out[y, 24] = C["orange"]
     return out

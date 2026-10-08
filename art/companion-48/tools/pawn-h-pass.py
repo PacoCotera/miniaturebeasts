@@ -86,8 +86,15 @@ bu = upb.copy(); bu[(yy_ >= 19) & ((xx_ <= 16) | (xx_ >= 31))] = -1             
 r = L.fb_pose(bu, **U, body_dy=-2, l_dy=-2, r_dy=-2, arms=(24, 24)); L.limb(r, [(16, 21), (13, 16), (12, 11)], 4); L.limb(r, [(31, 21), (34, 16), (35, 11)], 4); frames[("up", "react")] = r
 # right: the passing pose, the second contact (the near leg forward), the creeps with bent knees and the hood three rows down, and the react from H's own head and torso
 SD = lambda **k: L.side_pose(side, **k)
-def SW(sw, **k):                                                      # a side frame with the near sleeve swung sw px (forward is +) against the near leg
-    r = SD(**k); L.limb(r, [(28, 25 + k.get("body_dy", 0)), (28 + sw, 31 + k.get("body_dy", 0))], 3, 2, edge_all=True); return r
+def SW(sw, **k):                                                      # a side frame with the near sleeve in the coat's orange shade down the hip and the mitten showing 2 px past the coat's edge: forward (+) or back (-)
+    r = SD(**k); by = k.get("body_dy", 0)
+    for y in range(26, 32):
+        for x in (28, 29):
+            if r[y + by, x] >= 0: r[y + by, x] = C["orange"]
+    mx = 32 if sw > 0 else 15
+    for dy in (0, 1):
+        for dx in (0, 1): r[30 + by + dy, mx + dx] = C["bark"] if dy == 0 else C["soil"]
+    return r
 frames[("right", "walk1")] = SW(2, far=[(23, 34), (27, 38), (29, 41)], far_ankle=(29, 41), near=[(22, 34), (18, 38), (17, 41)], near_ankle=(17, 41))   # walk3's open V with the legs swapped, both soles on row 43
 frames[("right", "walk2")] = SW(2, body_dy=-1, far=[(24, 33), (24, 36), (25, 38)], far_ankle=(25, 39), near=[(23, 33), (23, 37), (23, 41)], near_ankle=(23, 41))   # the passing pose: the far foot under the hip, its sole two rows off the ground, behind the planted leg
 frames[("right", "walk3")] = SW(-2, far=[(23, 34), (19, 38), (17, 41)], far_ankle=(17, 41), near=[(22, 34), (26, 38), (29, 41)], near_ankle=(29, 41))
