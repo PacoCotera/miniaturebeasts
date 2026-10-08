@@ -1,1 +1,14 @@
-[{"tag": "C48-S-r2 first sprite batch (twelve calls, superseded by the second batch; the inputs carried a magenta fringe and the four pawn results never came back to the session; its files were removed)", "tool": "retro-diffusion rd_pro__topdown", "usd": 2.16, "evidence": "Retro Diffusion balance $6.36 before the first batch, $2.04 after the second: 24 calls at $0.18"}]
+[
+ {
+  "tag": "C48-S-r2 first sprite batch (twelve calls, superseded by the second batch; the inputs carried a magenta fringe and the four pawn results never came back to the session; its files were removed)",
+  "tool": "retro-diffusion rd_pro__topdown",
+  "usd": 2.16,
+  "evidence": "Retro Diffusion balance $6.36 before the first batch, $2.04 after the second: 24 calls at $0.18"
+ },
+ {
+  "tag": "C48-S-r2 outpost-lit, first result (overwritten by the round 5 re-run; its sidecar replaced)",
+  "tool": "retro-diffusion rd_pro__topdown",
+  "usd": 0.18,
+  "evidence": "a sidecar is overwritten when a piece is re-run; the balance check ($6.36 before round 2's batches) accounts for every call"
+ }
+]

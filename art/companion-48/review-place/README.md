@@ -2,11 +2,17 @@
 
 The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md) (§9 Decided) on one place, the meadow and pond edge in a storm, with every piece it needs at 1× on the 48 ramps of the [signed palette](../palette/README.md). Everything here is **a candidate for the owner's review**: generated sources down-rendered by script, an Aseprite pass for the meadow, scripted chrome and water, Retro Diffusion sprites beside the scripted ones where one was picked, and Pip derived into the Loika token. Nothing is accepted; nothing touches `prototypes/exploration/index.html`.
 
-**State: round 4 ready for the owner.** It answers the owner's five notes on round 1 and their answers on rounds 2 and 3 (below). Rounds 1 to 3 are frozen in [`round1/`](round1/), [`round2/`](round2/) and [`round3/`](round3/). How every group is made and how to rebuild: [`../HANDOVER.md`](../HANDOVER.md) and `sh tools/build-all.sh`.
+**State: round 5 ready for the owner.** It answers the owner's five notes on round 1 and their answers on rounds 2 to 4 (below). Rounds 1 to 4 are frozen in [`round1/`](round1/), [`round2/`](round2/), [`round3/`](round3/) and [`round4/`](round4/). How every group is made and how to rebuild: [`../HANDOVER.md`](../HANDOVER.md) and `sh tools/build-all.sh`.
 
 ![Contact sheet at 3×](contact-sheet-3x.png)
 
-*Every piece at 3× ([1× here](contact-sheet-1x.png)); a piece that changed since round 3 shows round 3 (r3) beside round 4 (r4). The shore test and the Retro Diffusion group are laid out in their own groups. Candidates, not accepted.*
+*Every piece at 3× ([1× here](contact-sheet-1x.png)); a piece that changed since round 4 shows round 4 (r4) beside round 5 (r5). The shore test and the Retro Diffusion group are laid out in their own groups. Candidates, not accepted.*
+
+## The owner's answers on round 4, and what answers each
+
+1. **The pawn's coat yellow-orange, between the concept's orange and round 4's yellow, keeping the four-grey margin.** Measured, then chosen (below): an orange coat with yellow-lit edges.
+2. **Goggles on the hood instead of the dark opening with two eyes.** Two lenses with a strap and a catch-light each, no face, on every facing (below).
+3. **Next hand pass: the hut (all three states) and the bushes (plain, fruit, shaken).** Through the Retro Diffusion recipe, then a hand pass (below).
 
 ## The owner's answers on round 3, and what answers each
 
@@ -76,7 +82,7 @@ What was broken: a land tile with water only on a diagonal had no piece, so the 
 
 ![Four-grey rendering of the still](still/four-gray/companion-place-storm-48-4gray.png)
 
-*The round 4 still in four greys (also [sheets](sheets/four-gray/)). Re-read: the grass body is luma 159 (grey 3 of 4); the pawn's hood and coat are yellow (luma 211, grey 4: 38 % of its pixels), its face, trousers and boots dark (greys 1 and 2: 56 %), only 6 % of its pixels share the ground's grey. In round 1 the pawn's orange body and the darkened grass landed in one grey; in round 3 the pawn sat one step below the ground; now it is the lightest figure on the ground and its dark parts are darker.*
+*The round 5 still in four greys (also [sheets](sheets/four-gray/)). Re-read: the grass body is luma 159 (grey 3 of 4); the pawn's coat and hood are orange (luma 127, grey 2) with a deep rust shade and yellow lit edges, its trousers and boots dark: 62 % of its pixels sit in grey 2, 30 % in grey 1, 5 % in grey 4 and only 2 % in the ground's grey 3. In round 1 the pawn's orange body and the darkened grass landed in one grey; now the pawn is a darker figure on lighter ground, one grey clear, by value as well as by outline. The margin is one grey step, and it holds for the project's check (Rec. 709 luma): the coat's luma is 127.1 against a grey edge at 128, so a different grey conversion would move it (see the pawn section).*
 
 ### The storm light: the art director's decision
 
@@ -91,13 +97,12 @@ Each painted piece was cropped, its key-colour halo and purple ground shadow rem
 | Piece | Pick | Reason |
 | --- | --- | --- |
 | tree | scripted | Retro Diffusion draws a crisper canopy but loses the trunk to a stub and the ground shadow. |
-| bush | scripted | Retro Diffusion's is darker with a grey patch artefact; the scripted bush is lighter and rounder. |
-| bush-fruit | scripted | Retro Diffusion's berries mix with purple specks; the scripted red berries read at once. |
+| bush, bush-fruit, bush-shaken | **Retro Diffusion + hand pass** | The result keeps the leaf texture and the bumpy silhouette of a real shrub, but came back dark with a grey patch artefact. Hand pass: the volume re-lit as a dome from the top left, cut into four steps of the G ramp (forest, leaf, grass, sprout) with pine on the rim and leaf tips and notches from the result's own texture; the fruit redrawn as 3×3 apples (peach catch-light, red, wine shade, a stalk) so they read as fruit; the shaken bush's flying leaves kept as sprout and grass flecks; a shadow. |
 | stone, stone-plain2 | **Retro Diffusion + hand pass** | Facets and a lit top give volume; the scripted stones are smooth slabs with a skirt. Hand pass: a ground shadow. |
 | stone-warm1, stone-warm2 | **Retro Diffusion rock + hand pass** | The owner: a circular glow is wrong on a rock. Both frames are the plain stone (stone-plain2's Retro Diffusion result) with a thin jagged heat vein drawn across it, a branch, and a shadow: frame 1 a dim rust vein with a few orange pixels, frame 2 the same vein a step brighter with amber and a yellow spark at two points. No halo, no round core, no spill. |
 | stone-charged1, stone-charged2 | **Retro Diffusion + hand pass** | Retro Diffusion alone keeps the stone and loses the charge to faint cracks; the hand pass takes out the teal specks and draws a jagged bolt of white with ice beside it, a branch in sky, sparks off the silhouette, a shadow: the state reads at 1×. |
 | stone-step (new, the stepping stone, same family) | **Retro Diffusion + hand pass** | A low flat stone from the plain stone's crop; a dark water line under it so it sits in the water. |
-| outpost-lit | scripted | Retro Diffusion's hut is dark brown with a teal halo; the owner asked for lighter. |
+| outpost-lit, outpost-dark, outpost-dark2 | **Retro Diffusion + hand pass** | The results are round thatched shelters with plank walls and a door, but the palette snap left green and purple strays in the thatch. Hand pass, by role: the roof a dome of thatch in four W-ramp steps with bowed courses and strand ticks, a dark row under the eaves, vertical planks, the door by state. Lit: an open doorway full of light (cream core, yellow, amber, a dark frame) and a spill of light on the ground; dark: a closed plank door with a gold latch; dark2: the dark state one step down the ramp (soil and ink), the night version. |
 | pod | scripted | Retro Diffusion turned the dark pod into a cream egg: a different object. |
 | pawn (down, up, left, right) | **hand-drawn** (neither) | Retro Diffusion drew a different character and only the walk2 frame per facing; the round 3 pawn was a scripted down-render of a painted plush-like figure. Redrawn (below). |
 
@@ -106,6 +111,10 @@ The picks are in [`work/props/`](work/props/) and the sheets; the round 2 script
 ![The seven stones at 5×](work/preview-stones-5x.png)
 
 *The stone family at 5× after the hand pass: stone, stone-plain2, stone-warm1, stone-warm2, stone-charged1, stone-charged2, stone-step. Candidates.*
+
+![The three outpost states and the three bushes at 6×](work/preview-huts-bushes-6x.png)
+
+*The outpost (lit, dark, dark2) and the bushes (plain, fruit, shaken) at 6× after the hand pass (`tools/hand-pass-props.py`). Candidates.* Limit: the Retro Diffusion results are smaller than the painted pieces (the hut is about 40 px wide and 43 tall, one tile; the bushes about 38 px), so the hut stands about as tall as the pawn.
 
 ## The pawn
 
@@ -119,9 +128,24 @@ The picks are in [`work/props/`](work/props/) and the sheets; the round 2 script
 
 *Left, the concept's pawn (cut from companion-storm, scaled to the pawn's 40 px height); then the four facings' walk frames, a down creep and a right react on a meadow green, at 1× and 3×. Candidates.*
 
-The brief: an explorer, not a plush toy; no round belly, no ball head, no single-tone orange blob; a small figure with a hood, a pack and limbs that read; the walk and creep consistent; never childish. What it is: a hooded figure in a yellow slicker (hood of 12 px with a dark opening and two small cream eyes, a red scarf at the neck, straps crossing the chest, a belt with a gold buckle, three-pixel arms with sand mitts, dark trousers, brown boots), a pack on the back with a bedroll across the top and a small amber lantern hung at its side (seen from behind and from the side), a two-row ground shadow in the cell. 37 px tall in the 48 px cell, foot at y 46. Four facings (the left is the right mirrored), walk 3 (contact, passing with the body one pixel higher, contact), creep 3 (the body three to four rows lower, the hood leaning forward and down, shorter strides), react (the body two pixels up, the feet off the ground, an arm raised). The coat is yellow, not the concept's orange: the body is two ramp steps lighter, which is what the four-grey check needs (below). Every part is a hand-set mask shaded by the rim rule (`tools/pawn-draw.py`: coordinates, polygons, pixel-set folds, face, straps, buckle, lantern); the 28 frames are then **assembled in Aseprite on the VM** as one tagged sprite (`tools/aseprite-pawn.lua`: frames in order, tags `down-walk`, `down-creep`, `down-react` and so on, saved as [`work/pawn-aseprite/pawn.aseprite`](work/pawn-aseprite/pawn.aseprite), every frame exported back; 0 pixels differ from the drawn frames). The Retro Diffusion pawn frames stay in [`work/pawn-rd/`](work/pawn-rd/), unused.
+What it is: a hooded explorer in a slicker, a pack with a bedroll and a small amber lantern on the back (seen from behind and from the side), straps across the chest, a belt with a gold buckle, three-pixel arms with sand mitts, dark trousers, brown boots, a two-row ground shadow in the cell. 37 px tall in the 48 px cell, foot at y 46; four facings (the left is the right mirrored), walk 3, creep 3 (the body three to four rows lower, the hood leaning forward and down), react (the body two pixels up, an arm raised).
 
-Limits: the face is a dark opening with two eyes, a deliberate mystery rather than a drawn face; the pawn carries no tool in hand (the lantern is on the pack); the up facing shows the hood's back seam but no expression; the hand pass is code-set pixels assembled in Aseprite, not strokes drawn by hand in its editor.
+**The goggles.** The hood is closed fabric with an explorer's goggles on it: two lenses 4 px wide and 5 tall with a dark brown rim, ice and sky glass with a white catch-light at the top left and river blue below, a two-row strap (bark over soil) round the hood behind them. From the side one lens shows at the front and the strap runs back round the hood; from behind the strap crosses the hood's back with a gold buckle. No mouth, no nose: no face. A collar of orange and rust closes the neck.
+
+**The coat, measured.** Round 4's yellow-orange question, measured on all 28 frames by the project's four-grey rule (Rec. 709 luma in four equal bands; the grass body is luma 159, grey 3):
+
+| Coat | Pawn pixels in the ground's grey | Reads |
+| --- | --- | --- |
+| orange (the concept's), amber lit | 5 % | darker than the ground by one grey |
+| amber (a pure yellow-orange) | **32 %** | falls into the ground's grey: rejected |
+| yellow (round 4) | 6 % | lighter than the ground by one grey |
+| **orange with yellow-lit edges (the pick)** | **2 %** | darker than the ground by one grey, with a bright yellow rim light on the top and left edges and a three-pixel rust shade on the right and bottom |
+
+The pure amber step fails as expected, so the warmest step that stays one grey clear is orange; the yellow comes in as the lit edge (the ramp's own highlight), which is as far between orange and yellow as the margin allows. The honest limit: the orange's luma is 127.06, the grey edge 128, so the margin holds under the project's check and would not under a Rec. 601 conversion (28 % of the pawn's pixels then share the ground's grey; round 4's yellow stays at 7 % under both). If the owner wants the margin robust to any conversion, round 4's yellow is the safe coat.
+
+How it was made: every part is a hand-set mask shaded by the rim rule (`tools/pawn-draw.py --coat glow`: coordinates, polygons, pixel-set folds, goggles, straps, buckle, lantern); the 28 frames are **assembled in Aseprite on the VM** as one tagged sprite (`tools/aseprite-pawn.lua`: tags `down-walk`, `down-creep`, `down-react` and so on, saved as [`work/pawn-aseprite/pawn.aseprite`](work/pawn-aseprite/pawn.aseprite), every frame exported back; 0 pixels differ from the drawn frames). The Retro Diffusion pawn frames stay in [`work/pawn-rd/`](work/pawn-rd/), unused.
+
+Limits: the pawn's pixels are set by code and assembled in Aseprite, not drawn with strokes in its editor; the lenses are 4 px and read as a pair of blue points at 1×; the pawn carries no tool in hand.
 
 ### The hand-clean list
 
@@ -135,7 +159,7 @@ grass2: the long bar, bracket and ramp of dark pixels that repeated on the grid 
 | Water, deep (2 variants × 2 frames each), shallows | Scripted (`tools/build-water.py`) | scripted |
 | Ripple overlay sprites 3 sizes × 2 frames | Scripted (`tools/build-ripples.py`) | scripted |
 | Shore set: 16 cardinal masks and 4 diagonal corners × 2 frames | Cut from grass1, sand, shallows and water along a wavy shoreline; rounded land corners; bone foam (frame 1), white (frame 2) (`tools/build-shore.py`); tested by `tools/shoregrid.py` | scripted |
-| Props | One Pro-painted sheet on magenta ([`sources/C48-P-r1-a1`](sources/C48-P-r1-a1.json)): key, fit, lift 1.18, quantise per ramps, despeckle, outline (`tools/build-props.py`); the six stones and the stepping stone from Retro Diffusion (`tools/rd-sprites.py`, `rd-snap.py`) with the hand pass (`tools/hand-pass.py`; the warm stones as rock with a heat vein) | generated source, scripted down-render; Retro Diffusion stones with a hand pass |
+| Props | One Pro-painted sheet on magenta ([`sources/C48-P-r1-a1`](sources/C48-P-r1-a1.json)): key, fit, lift 1.18, quantise per ramps, despeckle, outline (`tools/build-props.py`); the six stones, the stepping stone, the three bushes and the three outposts from Retro Diffusion (`tools/rd-sprites.py`, `rd-snap.py`) with the hand passes (`tools/hand-pass.py`: the stones, the warm ones as rock with a heat vein; `tools/hand-pass-props.py`: the bushes and the outposts) | generated source, scripted down-render; Retro Diffusion pieces with a hand pass |
 | Warned strike ×2, HUD icons, key caps, condition bolts, 9-slices | Drawn by script on the ramps from the page's own icon forms (`tools/build-ui.py`) | scripted |
 | Pawn: 4 facings × walk 3, creep 3, react | Drawn as masks and pixel sets (`tools/pawn-draw.py`), assembled and exported in Aseprite on the VM (`tools/aseprite-pawn.lua`) | hand-drawn, Aseprite |
 | Tokens: Pip as Loika (idle 2, walk 3); placeholders S02–S04 | The accepted Pip painting, quantised and outlined (`tools/build-tokens.py`) | derived, scripted |
@@ -150,7 +174,7 @@ Sheets: six indexed PNGs (the ground sheet holds the tiles and the whole shore s
 - Meadow joins: the 3×3 figure and the mixed 6×6 above (mean step across joins 4.8 against 13.3 inside the tiles, after grass2's hand pass).
 - Shore joins: `tools/shoregrid.py`, 768 broken pixels over the 256 neighbourhoods, none wider than 4 per join.
 
-## Sign-off checklist, §2 Painted master, art director's column (round 4)
+## Sign-off checklist, §2 Painted master, art director's column (round 5)
 
 From [`design/style-guide/sign-off.md`](../../../design/style-guide/sign-off.md) §2. Yes/no per line; failures listed, not hidden. The capabilities column is the builder's and is not signed here.
 
@@ -158,11 +182,11 @@ From [`design/style-guide/sign-off.md`](../../../design/style-guide/sign-off.md)
 | --- | --- |
 | From the accepted candidate, owner's notes applied (SS Decided) | **Yes**, with limits. The five notes are answered above; the forms, colours and light come from the accepted Companion concept through the painted sources. The owner's answers on round 2 are applied (the mild storm kept, the teal gone, the rings out of the tiles, the shore closed, the stones redone). Limit: the storm reads mild against the concept's dark teal, as the owner chose. |
 | Station: painted light, soft shadows, no dither bands or flat fills (SG) | n/a: Companion pieces. |
-| Companion: hand-pixelled on the 48 ramps, ramp outline never black, no alpha, Bayer only (SG; UK §2) | **Partial.** On the 48 ramps, outlines by the ramp rule, no alpha, no AA, Bayer only (water depth). **Not hand-pixelled:** the terrain, props, pawn and tokens are scripted down-renders of painted or Retro Diffusion sources with despeckling; the meadow had a real Aseprite pass, nothing else did. The stones are Retro Diffusion results with a scripted hand pass; the dew cup and the creep frames are scripted redraws and derivations. The pawn is drawn (masks and pixel sets, assembled in Aseprite). Failures: tree, bushes, hut, pod and tokens remain scripted down-renders without a hand pass; the pawn's pixels are set by code, not drawn with strokes in Aseprite's editor; a pool pattern in the water recurs at a distance. |
+| Companion: hand-pixelled on the 48 ramps, ramp outline never black, no alpha, Bayer only (SG; UK §2) | **Partial.** On the 48 ramps, outlines by the ramp rule, no alpha, no AA, Bayer only (water depth). **Not hand-pixelled:** the terrain, props, pawn and tokens are scripted down-renders of painted or Retro Diffusion sources with despeckling; the meadow had a real Aseprite pass, nothing else did. The stones are Retro Diffusion results with a scripted hand pass; the dew cup and the creep frames are scripted redraws and derivations. The pawn is drawn (masks and pixel sets, assembled in Aseprite); the stones, bushes and outposts are Retro Diffusion results with a scripted hand pass. Failures: the tree, pod and tokens remain scripted down-renders without a hand pass; the pawn's pixels are set by code, not drawn with strokes in Aseprite's editor; a pool pattern in the water recurs at a distance. |
 | Creature at its area, 300×310+ Station, 280×300 Companion, same trait boundaries (SG Creatures) | **Yes** for the one creature present: Loika is the placed Pip, derived from the accepted 280×300 painting, same individual; S02–S04 are labelled placeholders. |
-| Same individual in four-gray and on paper; nothing childish (AD) | **Yes**, with a limit. Four-grey renderings made for every sheet and the still; Pip's token reads as Pip. The round 1 value fail is **fixed**, re-read on the round 4 still: the pawn is the lightest figure on the grass and its dark parts are darker than it (numbers above). Nothing childish: the pawn is a hooded explorer with a pack, set beside the concept's ball-headed figure and judged at 1× and 3× against it; the placeholders are plain grey stones with a code. Limit: not tested on paper (no paper render exists for the Companion); and the coat is yellow where the concept's pawn is orange, which the owner has not yet seen. |
+| Same individual in four-gray and on paper; nothing childish (AD) | **Yes**, with limits. Four-grey renderings made for every sheet and the still; Pip's token reads as Pip. The round 1 value fail is **fixed**, re-read on the round 5 still: the pawn is one grey darker than the grass body (2 % of its pixels in the ground's grey), but the orange's luma sits 1 unit from a grey edge, so the margin depends on the project's Rec. 709 check (above). Nothing childish: the pawn is a hooded explorer with goggles and a pack, judged at 1× and 3× against the concept's ball-headed figure; the huts are built shelters, the bushes shrubs with leaf texture, the fruit apples; the placeholders are plain grey stones with a code. Not tested on paper (no paper render exists for the Companion); the coat is orange-and-yellow where the owner asked for between, which the owner has not yet seen. |
 
-Signed, art director, 2026-10-08. Failures: those listed in line three (no hand pass on the tree, bushes, hut, pod and tokens; the pawn's pixels set by code; the water's pool pattern recurring at a distance).
+Signed, art director, 2026-10-08. Failures: those listed in line three (no hand pass on the tree, pod and tokens; the pawn's pixels set by code; the water's pool pattern recurring at a distance) and the one-unit margin of the pawn's coat.
 
 ## Spend
 
@@ -175,13 +199,15 @@ Signed, art director, 2026-10-08. Failures: those listed in line three (no hand 
 | C48-S-r2 second sprite batch, 12 calls | Retro Diffusion rd_pro__topdown | 2.16 |
 | C48-S-r2 stones batch (stone-plain2, stone-warm2, stone-charged2, stone-step), round 3 | Retro Diffusion rd_pro__topdown | 0.72 |
 | Round 4: no paid call (the pawn, the warm stone and the water variants are scripted) | | 0.00 |
-| **Total** | | **6.29** |
+| C48-S-r2 outposts (lit, dark, dark2) and shaken bush, round 5 (the lit hut's first result, $0.18, was overwritten and is in `extra-spend.json`) | Retro Diffusion rd_pro__topdown | 0.72 |
+| **Total** | | **7.01** |
 
-Re-summed from the sidecars by `tools/budget.py` into [`sources/budget.json`](sources/budget.json) (the superseded batch in [`sources/extra-spend.json`](sources/extra-spend.json)). Retro Diffusion balance left: $1.32.
+Re-summed from the sidecars by `tools/budget.py` into [`sources/budget.json`](sources/budget.json) (the superseded batch in [`sources/extra-spend.json`](sources/extra-spend.json)). Retro Diffusion balance left: $0.60.
 
 ## Limits and what the next round needs
 
-- Only the stones, the dew cup, grass2, the pawn and the meadow had a hand pass or an Aseprite pass; the tree, bushes, hut, pod and tokens are scripted down-renders.
+- Only the stones, the bushes, the outposts, the dew cup, grass2, the pawn and the meadow had a hand pass or an Aseprite pass; the tree, pod and tokens are scripted down-renders. The hand passes are code-set pixels, not strokes in Aseprite's editor (the pawn is assembled there).
+- The Retro Diffusion balance is $0.60: three more calls.
 - Two water variants per frame: a pool pattern still recurs at a distance; a third and fourth variant would break it.
-- The pawn is yellow, the concept's is orange; the face is a dark opening with two eyes.
+- The pawn's coat margin is one luma unit from a grey edge; the lenses are 4 px.
 - The map pawn, the reach variant, bubbles, settle pips, the partner ring, signs, map props, cloud and rim pieces are not in this round (the brief stops at the review place).

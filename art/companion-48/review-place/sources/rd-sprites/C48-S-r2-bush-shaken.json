@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r2-bush-shaken",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "50x48",
+ "prompt": "a small round leafy bush shaking with a few leaves flying off it, from above, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/bush-shaken-in.png",
+  "sha256": "83aec6e5981a828dd4360cdf08b8561dea94b297173ed992981d25e2f42c8ce9",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T20:45:31Z",
+ "checkCost": {
+  "created_at": 1791492331,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 0.780000000000008
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "370f38c7-1476-4d8a-9694-679522a3c8d7",
+  "seconds": 31.4,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 0.6,
+  "model": "rd_pro",
+  "file": "C48-S-r2-bush-shaken-rd.png",
+  "sha256": "9f03b196c6129cb78db1a5e2a268d23642e577f26a79e3f8988fd71fc6a69154"
+ }
+}

@@ -1,7 +1,7 @@
 """The explorer pawn, drawn: a small figure in a hooded slicker with a pack, 4 facings x (walk 3, creep 3, react), 48 px cells,
 the foot at y 46, a ground shadow in the cell. Every part is a hand-set mask (rectangles, ellipses, polygons rasterised without
 anti-aliasing), shaded by the rim rule (lit on the top and left edge, shade on the bottom and right) with the folds and the
-face set pixel by pixel; the outline rule is quant.outline. usage: python3 -I pawn-draw.py OUT_DIR [--coat yellow|amber|orange]"""
+face set pixel by pixel; the outline rule is quant.outline. usage: python3 -I pawn-draw.py OUT_DIR [--coat yellow|amber|orange|glow]"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
@@ -11,12 +11,13 @@ P = quant.P; C = P.index
 out = sys.argv[1]; os.makedirs(out, exist_ok=True)
 coat = sys.argv[sys.argv.index("--coat") + 1] if "--coat" in sys.argv else "yellow"
 N = 48; CX = 24; GY = 46
+WIDE = {"coat": 3, "hood": 2} if coat == "glow" else {}
 RAMPS = {
-    "coat": {"yellow": ("cream", "yellow", "amber", "orange"), "amber": ("yellow", "amber", "orange", "rust"), "orange": ("amber", "orange", "rust", "soil")}[coat],
-    "hood": {"yellow": ("cream", "yellow", "amber", "orange"), "amber": ("yellow", "amber", "orange", "rust"), "orange": ("amber", "orange", "rust", "soil")}[coat], "pants_far": ("slate", "night", "ink", "ink"),
+    "coat": {"yellow": ("cream", "yellow", "amber", "orange"), "amber": ("yellow", "amber", "orange", "rust"), "orange": ("amber", "orange", "rust", "soil"), "glow": ("yellow", "orange", "rust", "soil")}[coat],
+    "hood": {"yellow": ("cream", "yellow", "amber", "orange"), "amber": ("yellow", "amber", "orange", "rust"), "orange": ("amber", "orange", "rust", "soil"), "glow": ("yellow", "orange", "rust", "soil")}[coat], "pants_far": ("slate", "night", "ink", "ink"),
     "pack": ("clay", "bark", "soil", "ink"), "roll": ("paper", "sand", "clay", "bark"),
     "pants": ("stone", "slate", "night", "ink"), "boot": ("bark", "soil", "ink", "void"), "mitt": ("sand", "clay", "bark", "soil"),
-    "face": ("night", "night", "ink", "ink"), "scarf": ("coral", "red", "wine", "wine"),
+    "face": ("night", "night", "ink", "ink"), "scarf": ("coral", "red", "wine", "rust"),
 }
 def mask(draw_fn):
     im = Image.new("L", (N, N), 0); d = ImageDraw.Draw(im); draw_fn(d); return np.asarray(im) > 0
@@ -33,6 +34,9 @@ class Canvas:
         self.idx[m] = base
         if flat: return
         top = m & ~sh(m, 0, 1); left = m & ~sh(m, 1, 0); bot = m & ~sh(m, 0, -1); right = m & ~sh(m, -1, 0)
+        W = WIDE.get(ramp, 1)   # the shade is W pixels wide on the bottom and right edge (the glow coat: 3, a cel-shaded fold)
+        for k in range(2, W + 1):
+            bot = bot | (m & ~sh(m, 0, -k)); right = right | (m & ~sh(m, -k, 0))
         self.idx[(top | left) & ~(bot | right)] = lit
         self.idx[(bot | right) & ~(top | left)] = shade
         self.idx[bot & right] = deep
@@ -75,22 +79,28 @@ def arms_fb(cv, p, back=False, up=False):
         else:
             cv.part(rect(x0, GY - 24 + b + (1 if sw < 0 else 0), x0 + 2, GY - 14 + b - max(sw, 0)), "coat")
             cv.part(rect(x0, GY - 13 + b - max(sw, 0), x0 + 2, GY - 11 + b - max(sw, 0)), "mitt")
+def strap(cv, x0, x1, y, buckle=None):
+    # the goggle strap: two rows round the hood, a lighter row over a dark one
+    cv.put([(x, y) for x in range(x0, x1 + 1)], "bark"); cv.put([(x, y + 1) for x in range(x0, x1 + 1)], "soil")
+    if buckle is not None: cv.put([(buckle, y), (buckle, y + 1)], "gold")
+def lens(cv, x, y):
+    # one lens, 4 x 4: a brass ring round 2 x 2 of glass with a catch-light at its top left
+    cv.put([(x + 1, y - 1), (x + 2, y - 1), (x, y), (x + 3, y), (x, y + 1), (x + 3, y + 1), (x, y + 2), (x + 3, y + 2), (x + 1, y + 3), (x + 2, y + 3)], "soil")   # a dark rim, taller than wide
+    cv.put([(x + 1, y), (x + 2, y)], "ice"); cv.put([(x + 1, y + 1)], "white"); cv.put([(x + 2, y + 1)], "sky"); cv.put([(x + 1, y + 2), (x + 2, y + 2)], "river")
 def hood_front(cv, p):
     b = p["bob"]; l = p["lean"]; hy = p["hood_dy"]
     cv.part(poly([(CX - 7 + l, GY - 25 + b), (CX + 6 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + b + hy), (CX + 5 + l, GY - 35 + b + hy), (CX + 3 + l, GY - 37 + b + hy), (CX - 3 + l, GY - 37 + b + hy), (CX - 6 + l, GY - 34 + b + hy), (CX - 8 + l, GY - 29 + b + hy)]), "hood")
-    cv.part(ell(CX - 4 + l, GY - 33 + b + hy, CX + 4 + l, GY - 26 + b + hy), "face", flat=True)
-    # the rim of the opening: a lit line over its top, a shade line under it
-    cv.px([(CX - 3 + l + i, GY - 34 + b + hy) for i in range(8)], "yellow")
-    cv.px([(CX - 6 + l, GY - 31 + b + hy), (CX - 5 + l, GY - 33 + b + hy)], "yellow")
-    cv.put([(CX - 3 + l, GY - 30 + b + hy), (CX - 2 + l, GY - 30 + b + hy), (CX + 1 + l, GY - 30 + b + hy), (CX + 2 + l, GY - 30 + b + hy)], p["eyes"])
-    cv.put([(CX - 4 + l + i, GY - 25 + b) for i in range(8)], "wine")                                          # the scarf at the neck
-    cv.put([(CX - 3 + l + i, GY - 26 + b) for i in range(6)], "red")
+    ly = GY - 33 + b + hy                                                                                       # the goggles, strap behind the lenses
+    strap(cv, CX - 8 + l, CX + 7 + l, ly + 1)
+    lens(cv, CX - 5 + l, ly); lens(cv, CX + 1 + l, ly)
+    cv.put([(CX - 4 + l + i, GY - 25 + b) for i in range(8)], "rust")                                          # the collar at the neck
+    cv.put([(CX - 3 + l + i, GY - 26 + b) for i in range(6)], "orange")
 def hood_back(cv, p):
     b = p["bob"]; l = p["lean"]; hy = p["hood_dy"]
     cv.part(poly([(CX - 7 + l, GY - 25 + b), (CX + 6 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + b + hy), (CX + 5 + l, GY - 35 + b + hy), (CX + 3 + l, GY - 37 + b + hy), (CX - 3 + l, GY - 37 + b + hy), (CX - 6 + l, GY - 34 + b + hy), (CX - 8 + l, GY - 29 + b + hy)]), "hood")
-    cv.px([(CX - 1 + l, GY - 35 + b + hy + i) for i in range(9)], "orange")                                    # the seam
-    cv.px([(CX - 1 + l + (1 if i % 2 else 0), GY - 28 + b + hy + i) for i in range(3)], "rust")
-    cv.put([(CX - 4 + l + i, GY - 25 + b) for i in range(8)], "wine")
+    cv.px([(CX - 1 + l, GY - 35 + b + hy + i) for i in range(6)], "orange")                                    # the seam, above the strap
+    strap(cv, CX - 8 + l, CX + 7 + l, GY - 32 + b + hy, buckle=CX + l)
+    cv.put([(CX - 4 + l + i, GY - 25 + b) for i in range(8)], "rust")
 def pack_back(cv, p):
     b = p["bob"]; l = p["lean"]
     cv.part(rect(CX - 6 + l, GY - 24 + b, CX + 5 + l, GY - 12 + b), "pack")
@@ -129,17 +139,15 @@ def side_frame(p, up_arm=False):
         cv.part(rect(x0, GY - 24 + b, x0 + 2, GY - 14 + b), "coat"); cv.part(rect(x0, GY - 13 + b, x0 + 2, GY - 11 + b), "mitt")
     # the hood: a dome with a peak that trails back, the opening on the front
     cv.part(poly([(CX - 6 + l, GY - 25 + b), (CX + 5 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + b + hy), (CX + 5 + l, GY - 35 + b + hy), (CX + 1 + l, GY - 38 + b + hy), (CX - 4 + l, GY - 39 + b + hy), (CX - 8 + l, GY - 36 + b + hy), (CX - 8 + l, GY - 30 + b + hy)]), "hood")
-    cv.part(ell(CX + 0 + l, GY - 34 + b + hy, CX + 6 + l, GY - 26 + b + hy), "face", flat=True)
-    cv.px([(CX + 1 + l + i, GY - 35 + b + hy) for i in range(5)], "yellow")
-    cv.put([(CX + 3 + l, GY - 30 + b + hy), (CX + 4 + l, GY - 30 + b + hy)], p["eyes"])
-    cv.put([(CX - 3 + l + i, GY - 25 + b) for i in range(8)], "wine")
+    ly = GY - 33 + b + hy; strap(cv, CX - 8 + l, CX + 6 + l, ly + 1); lens(cv, CX + 3 + l, ly)                       # the goggles in profile: the strap round the hood, one lens at the front
+    cv.put([(CX - 3 + l + i, GY - 25 + b) for i in range(8)], "rust")
     return cv
 # ---------------------------------------------------------------- poses
 def pose(**k):
-    d = dict(bob=0, lean=0, hood_dy=0, lift=(0, 0), arm=(0, 0), stride=0, crouch=0, eyes="cream"); d.update(k); return d
+    d = dict(bob=0, lean=0, hood_dy=0, lift=(0, 0), arm=(0, 0), stride=0, crouch=0); d.update(k); return d
 WALK = [pose(lift=(2, 0), arm=(2, -2), stride=4, bob=0), pose(lift=(0, 0), arm=(0, 0), stride=0, bob=-1), pose(lift=(0, 2), arm=(-2, 2), stride=-4, bob=0)]
 CREEP = [pose(lift=(1, 0), arm=(1, -1), stride=3, bob=3, crouch=0, lean=1, hood_dy=1), pose(lift=(0, 0), arm=(0, 0), stride=0, bob=4, lean=1, hood_dy=1), pose(lift=(0, 1), arm=(-1, 1), stride=-3, bob=3, lean=1, hood_dy=1)]
-REACT = pose(bob=-2, lift=(2, 2), arm=(0, 0), eyes="cream", hood_dy=0)
+REACT = pose(bob=-2, lift=(2, 2), arm=(0, 0), hood_dy=0)
 def frame(facing, p, up_arm=False):
     if facing in ("left", "right"):
         cv = side_frame(p, up_arm)
