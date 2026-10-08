@@ -59,6 +59,7 @@
 <rect x="632.5" y="456.5" width="159" height="23" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="1 2"/>
 <rect x="672.5" y="456.5" width="79" height="23" fill="#eef1f3" stroke="#888" stroke-width="1"/>
 <rect x="600.5" y="496.5" width="223" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="848.5" y="144.5" width="175" height="327" fill="#d9dde2" stroke="#8a929a" stroke-width="1"/>
 <rect x="888.5" y="248.5" width="119" height="119" fill="#e6eef7" stroke="#2f5f8f" stroke-width="1.5"/>
 <line x1="784" y1="306.5" x2="888" y2="306.5" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="20" y="21" font-size="11" fill="#222">Screen name 20px · turn 16px</text>
@@ -114,6 +115,8 @@
 <text x="604" y="492" font-size="8" fill="#777">600,456 224×24 · Unknown pod 632,456 160×24</text>
 <text x="604" y="509" font-size="11" fill="#222">Origin 16px, bone, no plate</text>
 <text x="604" y="521" font-size="9" fill="#777">600,496 224×40</text>
+<text x="852" y="157" font-size="9" fill="#555">stamp case, dim, unlit</text>
+<text x="852" y="168" font-size="9" fill="#777">848,144 176×328 (to 1024)</text>
 <text x="892" y="261" font-size="11" fill="#222">STAMP label 120</text>
 <text x="892" y="273" font-size="9" fill="#777">888,248 120×120</text>
 <text x="808" y="301" font-size="9" fill="#777">104 px</text>

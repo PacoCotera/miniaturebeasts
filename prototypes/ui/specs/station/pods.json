@@ -26,6 +26,7 @@
   "shelf": { "rect": [592, 368, 240, 72], "under": "cradle", "frontEdge": 440, "shape": "trapezoid" },
   "name": { "rect": [600, 456, 224, 24], "px": 20, "weight": 500, "exception": "owner, 2026-10-08: the pod's name label at 20 px", "centre": 712, "noDigits": true, "plate": { "pad": 12, "round": 16, "min": 80, "max": 224, "h": 24 } },
   "origin": { "rect": [600, 496, 224, 40], "px": 16, "lines": 2, "centre": 712, "noDigits": true, "plate": null },
+  "stampCase": { "rect": [848, 144, 176, 328], "under": "stamp", "lit": false, "bleed": "right", "note": "owner, 2026-10-08: the small label inside a dim, unlit glass case, where the concept's case stands" },
   "stamp": { "rect": [888, 248, 120, 120], "component": "stampLabel" },
   "page": {
    "rect": [176, 112, 408, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
