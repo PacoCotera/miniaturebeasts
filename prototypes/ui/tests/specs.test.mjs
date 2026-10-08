@@ -29,8 +29,9 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
   assert.equal(six.run, 832); assert.equal(seven.run, 488); assert.equal(slantTabs(0, 8, 0).run, 544); assert.equal(slantTabs(0, 12, 0).run, 768);
   assert.deepEqual(R.rail.rect, [176, frame.regions.rail.y, 832, frame.regions.rail.h]); assert.equal(frame.regions.rail.y, 40);
   // the page's Picture state (one large picture) and its Grid state (four traits)
-  const pic = R.page.picture; has([R.page.rect[0] + pic.cell[0], R.page.rect[1] + pic.cell[1], pic.picture[0], pic.picture[1]], "the Picture state's picture");
-  assert.deepEqual(pic.picture, [376, 312]); assert.equal(R.page.initial, "picture"); assert.deepEqual(R.page.states, ["picture", "grid"]);
+  const pic = R.page.picture, [px, py] = R.page.rect; has([px + pic.frame[0], py + pic.frame[1], pic.frame[2], pic.frame[3]], "the Picture state's frame"); has([px + pic.at[0], py + pic.at[1], ...pic.picture], "the Picture state's portrait");
+  assert.deepEqual(pic.picture, [200, 280]); assert.deepEqual([pic.at[0] - pic.frame[0], pic.at[1] - pic.frame[1], pic.frame[2] - pic.picture[0], pic.frame[3] - pic.picture[1]], [16, 16, 32, 32]);
+  assert.equal(px + pic.frame[0] + pic.frame[2] / 2, px + R.page.rect[2] / 2, "the frame centred on the page"); assert.ok(pic.picture[1] > pic.picture[0], "portrait"); assert.equal(R.page.initial, "picture"); assert.deepEqual(R.page.states, ["picture", "grid"]);
   const g = pageGrid(R.page, 4); for (const c of g.cells) has([c[0], c[1], g.picture[0], g.picture[1]], "trait picture", gridBoxes);
   assert.deepEqual(g.picture, [184, 112]);
   assert.deepEqual(R.cradle.rect, [600, 328, 224, 96]); assert.deepEqual(R.cradleFront.rect, R.cradle.rect); assert.equal(pods.colours.origin, "bone");
@@ -38,7 +39,9 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
   const pod = R.pod.rect, page = R.page.rect, stamp = R.stamp.rect;
   assert.ok(page[0] + page[2] + 16 <= R.cradle.rect[0] && pod[0] + pod[2] + 96 <= stamp[0] && stamp[0] + stamp[2] === 1008, "page, pod, stamp from left to right");
   assert.deepEqual(page, pods.regions.compareA.rect, "Read's page is Compare's left page");
-  assert.equal(R.cradle.rect[1] + R.cradle.rect[3], R.pod.feet + 24, "the dish's front lip 24 px below the pod's foot line");
+  assert.equal(R.cradle.rect[1] + R.cradle.rect[3], R.pod.feet + 32, "the dish's front lip 32 px below the pod's foot line");
+  assert.ok(R.pod.feet >= R.pod.dipFloor && R.pod.feet - R.pod.dipFloor <= 4, "the foot stands in the bowl's dip");
+  assert.deepEqual(pods.classes.pod, { large: [144, 176], medium: [120, 152], small: [104, 128] }); assert.deepEqual(R.pod.rect, [R.pod.axis - 72, R.pod.feet - 176, 144, 176]);
   assert.ok(R.cradle.rect[1] + R.cradle.rect[3] < R.name.rect[1] && R.name.rect[1] + R.name.rect[3] < R.origin.rect[1], "dish, name, origin do not collide");
 });
 

@@ -45,18 +45,20 @@
 <rect x="528.5" y="128.5" width="7" height="7" fill="#555" stroke="#555" stroke-width="1"/>
 <rect x="544.5" y="128.5" width="7" height="7" fill="#ffffff" stroke="#555" stroke-width="1"/>
 <rect x="560.5" y="128.5" width="7" height="7" fill="#ffffff" stroke="#555" stroke-width="1"/>
-<rect x="192.5" y="160.5" width="375" height="311" fill="#ffffff" stroke="#666" stroke-width="1"/>
-<rect x="520.5" y="412.5" width="39" height="51" fill="#f4f5fa" stroke="#6b6f8a" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="264.5" y="160.5" width="231" height="311" fill="#dfe4e8" stroke="#556" stroke-width="1"/>
+<rect x="280.5" y="176.5" width="199" height="279" fill="#ffffff" stroke="#666" stroke-width="1"/>
+<rect x="432.5" y="396.5" width="39" height="51" fill="#f4f5fa" stroke="#6b6f8a" stroke-width="1" stroke-dasharray="3 2"/>
 <rect x="192.5" y="480.5" width="375" height="63" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="592.5" y="112.5" width="239" height="439" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
 <rect x="592.5" y="104.5" width="239" height="319" fill="none" stroke="#9fb8c8" stroke-width="1" stroke-dasharray="1 3"/>
 <rect x="600.5" y="328.5" width="223" height="95" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="632.5" y="208.5" width="159" height="191" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
-<line x1="600" y1="400.5" x2="824" y2="400.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="640.5" y="216.5" width="143" height="175" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
+<line x1="600" y1="392.5" x2="824" y2="392.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="4 3"/>
 <rect x="600.5" y="440.5" width="223" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="664.5" y="440.5" width="95" height="31" fill="#eef1f3" stroke="#888" stroke-width="1"/>
 <rect x="600.5" y="480.5" width="223" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="888.5" y="248.5" width="119" height="119" fill="#e6eef7" stroke="#2f5f8f" stroke-width="1.5"/>
-<line x1="792" y1="306.5" x2="888" y2="306.5" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="784" y1="306.5" x2="888" y2="306.5" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="20" y="21" font-size="11" fill="#222">Screen name 20px · turn 16px</text>
 <text x="388" y="21" font-size="11" fill="#222">Energy · Data · Essence 16px</text>
 <text x="644" y="21" font-size="11" fill="#222">Companion state 16px, right</text>
@@ -91,23 +93,25 @@
 <text x="880" y="71" font-size="9" fill="#777">856,40 136</text>
 <text x="840" y="96" font-size="9" fill="#777">run 832: six full tabs of 136, slant 16</text>
 <text x="196" y="133" font-size="11" fill="#222">emblem 24 + chapter word 20px</text>
-<text x="440" y="137" font-size="9" fill="#777">marks 8, pitch 16</text>
-<text x="196" y="173" font-size="11" fill="#222">trait picture 376×312 (the shown trait)</text>
-<text x="196" y="185" font-size="9" fill="#777">192,160 376×312</text>
-<text x="196" y="493" font-size="11" fill="#222">name 16px · line, at most two lines</text>
+<text x="420" y="137" font-size="9" fill="#777">marks 8, pitch 16</text>
+<text x="284" y="189" font-size="11" fill="#222">portrait 200×280</text>
+<text x="284" y="201" font-size="9" fill="#777">280,176 200×280</text>
+<text x="268" y="170" font-size="9" fill="#777">frame 264,160 232×312 · inset 16</text>
+<text x="196" y="493" font-size="11" fill="#222">name 16px · line, centred on x 380</text>
 <text x="196" y="505" font-size="9" fill="#777">192,480 376×64</text>
 <text x="196" y="155" font-size="9" fill="#777">page 176,112 408×440 · ✓ on the page: the Grid</text>
 <text x="660" y="125" font-size="9" fill="#6f8ea3">cone of light 592,104 240×320</text>
-<text x="636" y="221" font-size="11" fill="#222">POD 160×192</text>
-<text x="636" y="233" font-size="9" fill="#777">632,208 160×192</text>
-<text x="636" y="245" font-size="9" fill="#777">(focal) axis x 712, foot y 400</text>
+<text x="644" y="229" font-size="11" fill="#222">POD 144×176</text>
+<text x="644" y="241" font-size="9" fill="#777">640,216 144×176</text>
+<text x="644" y="253" font-size="9" fill="#777">(focal) axis x 712, foot y 392</text>
 <text x="604" y="417" font-size="11" fill="#222">dish 224×96 (+ near lip)</text>
 <text x="604" y="345" font-size="9" fill="#777">600,328 224×96</text>
-<text x="604" y="453" font-size="11" fill="#222">Name 28px, bone</text>
+<text x="604" y="453" font-size="11" fill="#222">Name 28px</text>
 <text x="604" y="465" font-size="9" fill="#777">600,440 224×32</text>
+<text x="764" y="453" font-size="9" fill="#777">plate hugs</text>
 <text x="604" y="493" font-size="11" fill="#222">Origin 16px, bone, 2 lines</text>
 <text x="604" y="505" font-size="9" fill="#777">600,480 224×40</text>
 <text x="892" y="261" font-size="11" fill="#222">STAMP label 120</text>
 <text x="892" y="273" font-size="9" fill="#777">888,248 120×120</text>
-<text x="808" y="301" font-size="9" fill="#777">96 px</text>
+<text x="808" y="301" font-size="9" fill="#777">104 px</text>
 </svg>

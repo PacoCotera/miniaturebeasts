@@ -55,12 +55,13 @@
 <rect x="592.5" y="112.5" width="239" height="439" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
 <rect x="592.5" y="104.5" width="239" height="319" fill="none" stroke="#9fb8c8" stroke-width="1" stroke-dasharray="1 3"/>
 <rect x="600.5" y="328.5" width="223" height="95" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="632.5" y="208.5" width="159" height="191" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
-<line x1="600" y1="400.5" x2="824" y2="400.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="640.5" y="216.5" width="143" height="175" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
+<line x1="600" y1="392.5" x2="824" y2="392.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="4 3"/>
 <rect x="600.5" y="440.5" width="223" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="664.5" y="440.5" width="95" height="31" fill="#eef1f3" stroke="#888" stroke-width="1"/>
 <rect x="600.5" y="480.5" width="223" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="888.5" y="248.5" width="119" height="119" fill="#e6eef7" stroke="#2f5f8f" stroke-width="1.5"/>
-<line x1="792" y1="306.5" x2="888" y2="306.5" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="784" y1="306.5" x2="888" y2="306.5" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="20" y="21" font-size="11" fill="#222">Screen name 20px · turn 16px</text>
 <text x="388" y="21" font-size="11" fill="#222">Energy · Data · Essence 16px</text>
 <text x="644" y="21" font-size="11" fill="#222">Companion state 16px, right</text>
@@ -115,16 +116,17 @@
 <text x="388" y="505" font-size="9" fill="#777">384,480 184×64</text>
 <text x="404" y="133" font-size="9" fill="#777">✓ on a cell: Picture · back: Picture</text>
 <text x="660" y="125" font-size="9" fill="#6f8ea3">cone of light 592,104 240×320</text>
-<text x="636" y="221" font-size="11" fill="#222">POD 160×192</text>
-<text x="636" y="233" font-size="9" fill="#777">632,208 160×192</text>
-<text x="636" y="245" font-size="9" fill="#777">(focal) axis x 712, foot y 400</text>
+<text x="644" y="229" font-size="11" fill="#222">POD 144×176</text>
+<text x="644" y="241" font-size="9" fill="#777">640,216 144×176</text>
+<text x="644" y="253" font-size="9" fill="#777">(focal) axis x 712, foot y 392</text>
 <text x="604" y="417" font-size="11" fill="#222">dish 224×96 (+ near lip)</text>
 <text x="604" y="345" font-size="9" fill="#777">600,328 224×96</text>
-<text x="604" y="453" font-size="11" fill="#222">Name 28px, bone</text>
+<text x="604" y="453" font-size="11" fill="#222">Name 28px</text>
 <text x="604" y="465" font-size="9" fill="#777">600,440 224×32</text>
+<text x="764" y="453" font-size="9" fill="#777">plate hugs</text>
 <text x="604" y="493" font-size="11" fill="#222">Origin 16px, bone, 2 lines</text>
 <text x="604" y="505" font-size="9" fill="#777">600,480 224×40</text>
 <text x="892" y="261" font-size="11" fill="#222">STAMP label 120</text>
 <text x="892" y="273" font-size="9" fill="#777">888,248 120×120</text>
-<text x="808" y="301" font-size="9" fill="#777">96 px</text>
+<text x="808" y="301" font-size="9" fill="#777">104 px</text>
 </svg>
