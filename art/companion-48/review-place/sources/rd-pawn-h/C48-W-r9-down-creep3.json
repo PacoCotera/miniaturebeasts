@@ -1,0 +1,41 @@
+{
+ "id": "C48-W-r9-down-creep3",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "48x48",
+ "prompt": "a small explorer in an orange hooded parka, a backpack, dark trousers, brown boots, pixel art sprite on a plain white background, the face in shadow inside the hood showing only two eyes and a nose, no goggles, a thin fur collar at the neck, not too much face, seen from the front, crouching low, creeping forward, the right foot forward",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-pawn-h/inputs/H-down-in.png",
+  "sha256": "3e0d466320e8be5d0b55b7886ddbd06a069224fb98fe3128f89cd9edaeb2df32",
+  "strength": 0.45
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T22:08:51Z",
+ "checkCost": {
+  "created_at": 1791497331,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 50.56000000000001
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "cff26d7d-7cdc-4cfe-acee-c4103720f646",
+  "seconds": 62.1,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 50.38,
+  "model": "rd_pro",
+  "file": "C48-W-r9-down-creep3-rd.png",
+  "sha256": "2f54aca4163e563e15c23e3bf0b7232ded5a07b2ef5b856c46b281c2dd9eedd2"
+ }
+}

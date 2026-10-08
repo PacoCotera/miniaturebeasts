@@ -5,8 +5,9 @@
 # run once after the builders, not here: it derives pieces from others.
 set -e
 # The outpost (hut B) is made by tools/rd-hut-b.py (Retro Diffusion), tools/hut-b.py (the hand pass) and tools/huts-assemble.sh (Aseprite on the VM), and lives in work/props/outpost-*.png.
+# The pawn (study H, the owner's pick): tools/rd-pawn-h.py (Retro Diffusion img2img from H), tools/pawn-h-pass.py (the hand pass), tools/aseprite-pawn.lua (the VM), see the handover.
 # The pawn studies: tools/pawn-study.py (A to F), tools/rd-pawn-studies.py + tools/pawn-study-snap.py (G, H), tools/pawn-studies-sheet.py (the sheets).
-R=review-place; W=$R/work; P2=$R/round7/work
+R=review-place; W=$R/work; P2=$R/round8/work
 rm -rf $W/candidates; mkdir -p $W/candidates
 for n in tree bush bush-fruit bush-shaken stone stone-plain2 stone-warm1 stone-warm2 stone-charged1 stone-charged2 pod; do
   s=$W/props/$n.png; [ -f $W/props-scripted/$n.png ] && s=$W/props-scripted/$n.png
@@ -27,7 +28,7 @@ python3 -I tools/compose-still.py $W $R/still/companion-place-storm-48.png --lig
 python3 -I tools/ground-forest.py $W/ground $W/ground-forest; python3 -I tools/build-shore.py $W/ground-forest $W/shore-forest
 python3 -I tools/compose-still.py $W $R/still/companion-place-storm-48-forest.png --light storm --ground forest
 python3 -I tools/ground-figure.py $R/still/companion-place-storm-48.png $R/still/companion-place-storm-48-forest.png $R/still/ground-candidates-1x.png
-python3 -I tools/beside.py $R/still/beside-concept-and-round7.png $R/still/companion-place-storm-48.png "round 8 still, storm table (450x600, 1x)" $R/round7/still-companion-place-storm-48.png "round 7 still (450x600, 1x)"
+python3 -I tools/beside.py $R/still/beside-concept-and-round8.png $R/still/companion-place-storm-48.png "round 9 still, storm table (450x600, 1x)" $R/round8/still-companion-place-storm-48.png "round 8 still (450x600, 1x)"
 python3 -I tools/meadow-check.py $W/ground $W/meadow-mixed
 python3 -I tools/preview.py $W/preview-water-3x.png 3 $W/ground/water1.png $W/ground/water1b.png $W/ground/water2.png $W/ground/water2b.png $W/ground/deep1b.png $W/ground/shallows.png $W/shore/shore-03-1.png $W/shore/shore-diag-ne-1.png
 python3 -I tools/check.py $R/sheets/*.png --fourgray $R/sheets/four-gray
@@ -50,3 +51,5 @@ python3 -I tools/pawn-chunky.py $W/pawn-studies
 python3 -I tools/pawn-study-snap.py $R/sources/rd-pawn-studies $W/pawn-studies
 python3 -I tools/pawn-studies-sheet.py $W
 python3 -I tools/hut-b-figure.py $R/sources/rd-huts-b $W/hut-b $W/hut-b-process.png
+
+python3 -I tools/pawn-h-figures.py $W $R/sources/rd-pawn-h
