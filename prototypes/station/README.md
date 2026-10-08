@@ -1,8 +1,8 @@
-# Station Field Test (Station stand-in v2)
+# The Station build: milestone 1, Read
 
-Builds the decided [Station loop](../../design/proposals/station-loop.md) (decisions 1–7 of 2026-10-07, with the sealed bay and the genome fingerprint) through the screens of the [Station screens proposal](../../design/proposals/station-screens.md), taking its four recommendations: the bay opens with a press, Create doubles as the review, the incubator shows leaves instead of minutes, and pods that find no free cup wait sealed. The page simulates the Station's 1024×600 screen at 1:1 device pixels inside a depicted handheld with the screen on top and one row of big keys under it (the pad, the four view keys, Back and Confirm), which keep their real size on a phone while the screen scales, and shares one save with the [Companion page](../exploration/README.md) in the same browser.
+The first build of the Station loop on the sandbox, per [the Station build plan](../../design/proposals/station-build.md) (owner-approved 2026-10-08). The page simulates the Station's 1024×600 screen at 1:1 device pixels inside a depicted handheld with one row of big keys under it, and shares one save with the [Companion page](../exploration/README.md) in the same browser. **M1 Read** ships: the modules and the state model; the species frames, the resolver, the placeholder and the stamp imported from the workbench and the genome stamp (no genome model of the Station's own); the save migration; the developer panel with seeds; Pods with Identify, reads at the decided prices, glints, Compare and return. Create, Grow and the incubator come with M2.
 
-The loop it plays: explore on the Companion page → **Head home** seals the hold into a crate in the Companion's bay → here, **Dock** → ✓ **Open the bay** → the pods roll into their cups → **Identify** → **Study** a window → **Shape a founder** (Create, which is also the review) → **Grow it** → the incubator's leaves fill → ✓ **Open** and meet the mibi → Habitat: **Take it with you** → the Companion page has it with you.
+What the owner can play at `/sandbox/station/`: a pod from a walk (dock the Companion, open the bay) or from a developer seed, identified and read chapter by chapter at the decided prices, its stamp filling as chapters are read, pictures of this pod's mibi in the placeholder; two pods of a species compared; a pod returned to the wild.
 
 ## Keys
 
@@ -10,94 +10,73 @@ The Station's depicted keys, mapped to the keyboard. Routine play uses these onl
 
 | Key | Keyboard | Does |
 | --- | --- | --- |
-| Pad | ← ↑ → ↓ | Moves the warm focus ring between drawn things, spatially. On Create, ↑ ↓ roll a studied window through what the pod carries |
+| Pad | ← ↑ → ↓ | Moves the warm focus ring between drawn things. On Pods the order is fixed: ↑ ↓ walk the wells, then the hatch; → from a well to the pod, ← back; ↑ from the pod to the chapter rail, ◀ ▶ among the chapters, ↓ back to the pod |
 | Home (amber) | H | The vivarium and the bench |
 | Research (teal) | R | The pods |
-| Library (violet) | L | Species and lineage |
+| Library (violet) | L | The tome's spread of sixteen frames and a Book per species |
 | Habitat (green) | B | Residents, the with-you door, the bond |
-| ← | Esc / Backspace | Back one view. On Home: focus back to the room; on the room it only says so (Rest is the lamp on the bench, never ←) |
+| ← | Esc / Backspace | Back one view. On Home: focus back to the room; on the room it only says so |
 | ✓ Confirm | Enter / Space | Exactly what the bottom line names, with its price |
 | Caddy: Dock / Lift | D | Prototype only, beside the Station: docks or lifts the Companion. It is not a Station key |
 
-The four middle keys switch views and never spend. Every spend is one deliberate press; returning a pod, bonding and the tier 2 upgrade take two (the first arms).
+The four middle keys switch views and never spend. Every spend is one deliberate press; returning a pod takes two (the first arms).
 
-## The frame
+## The loop, as built in M1
 
-- **Top bar (40 px):** the screen's name in 3× type and the world turn ("T5", flashing when it jumps); the three counters, ⚡ Energy, ◆ Data, ❀ Essence, counting up visibly when they change; the Companion's state on the right ("Companion docked · 2 crates in the bay", "Companion away · since 16:05 · with Dot", "no Companion yet").
-- **Stage (522 px):** one picture to act on.
-- **Bottom line (38 px):** `✓ action · price · ← where` | the subject | what most needs you (amber). Read-only focus leaves the ✓ part empty. Prices show as the material icons inside the line.
-- Messages show in a small wooden plate above the bottom line until the next press (4 s at most).
+- **Arrival** (as built in the stand-in): dock, then `✓ Open the bay`; one arrival per crate, in order; each crate accepted exactly once; the pods land in the rack's six wells, or wait sealed when no well is free. A crate can also come from the developer panel's seeds.
+- **Identify** (1 ⚡, the first ever free): the seal on the cap breaks top-down and the species glyph lights. A new species is learned once (the Library's spread shows its plate; the Companion's `known` index follows for the three species it carries). The stamp appears on its label with every chapter as hairlines.
+- **Read a chapter** (1 ◆ per trait in it; half, rounded up, once that chapter was read on an earlier pod of the species; the very first read ever free; a read chapter is free to look at again): the chapter's frost wipes away over two seconds and its page shows each trait as a picture of this pod's mibi. The words are the frame's own looks: *shows X · hides Y* (with a misty seed holding the hidden look), *only X* (a small base), a blend's two halves as two seeds, *asleep* (a switched-off part with sleeping copies), *breed to change* (a doing, two joined rings). The stamp's sector fills; the progress ring in the list fills one arc, sized by the chapter's traits. A sealed chapter is shut with a notch and the picture of what opens it (the developer panel opens sealed chapters).
+- **Glint** (per chapter): a four-point star on a chapter the species has had read before on some pod, unread on this one, where this pod carries a look the field guide has not seen. It says "new here", never what. A star on the ring in the list, and on the well.
+- **Compare** (free): from a pod's well, walk to another identified pod of the same species; `✓ Compare` lays the two chapter pages side by side; ◀ ▶ change the chapter; traits read on both that differ pulse.
+- **Return to the wild** (the hatch under the wells): `✓ Return to the wild · +1 ❀`, ✓ again. The Companion puts the pod back in its place at the next dock (the `returned` record keeps its shape).
+- **Home, Dock and arrival, the Probe bench, Idle**: as built in the stand-in v2, with residents and pods drawn from the frames.
+- **Library** (M5 builds it whole): the spread of sixteen frames (a found plate, a met pencil study, an empty unmet frame), and a Book stub per species: its face, its habit line, a line per chapter with the looks found so far and "more?".
+- **Habitat** (M2 adds return): one resident large in the placeholder, its card with the stamp at 88 px and the name-code, the with-you door, the bond heart, the strip of six bays. A cool lamp marks a resident whose painting has not landed (every mibi, until M3).
 
-## Screens
+## Architecture (station-build.md §2)
 
-- **Home** (built). The vivarium on the left two thirds: a lit glass terrarium (back wall, plants, rocks, a water dish, a burrow) where residents keep simple species routines: wander (a Loika hops), nap ("z"), eat, and turn toward each other when they pass close. Juveniles are drawn at 2×, grown mibis at 3×. The with-you bed shows a Companion mark and "Dot is out with you" (or "is with you" while docked); when the only mibi is out, the vivarium says so too, and so does the idle view. The bench on the right third, as objects: the **bay door** (closed while away; docked, one sealed crate per consignment slides in), the **pod tray** (six felt cups, shells in their place colours, a star where a pod glints), the **incubator** (glass dome, embryo, leaves) and the **Probe cradle** (the Probe and its plates; a ghost of it while the Companion is away). Under them a status strip of a few words and the reading lamp: ✓ on it rests the screen. Focus rests on the room; the pad moves the ring to a resident or a bench object. ✓ on the room does what most needs you (Open the bay · Open the incubator · Meet Fig · Look at the new pod · Visit Fig); ✓ on a thing opens it.
-- **Dock and arrival** (built). Dock alone accepts nothing: the crates appear in the bay door and the line offers `✓ Open the bay · 2 crates`. Opening plays one arrival per crate, in order, 3 s each: the seal breaks, the pods arc into their cups, the counters tick, the clock shows the turn the Companion brings (it catches up with the Companion at every dock, crates or not), and a ribbon reads "Expedition 4 home · 2 pods · explored 9 of 21". Presses during it are consumed. Then a report card stays on the vivarium until the next press: each crate's line, the materials, the mend ("Shield back to 2 plates · 2 free · 1 ⚡"), and up to three world-turn lines the Companion recorded. Each crate is accepted once (its id is kept); a reload never reopens one. The free mend happens at the dock: a break is mended in full, otherwise the Probe is brought up to two plates, then 1 Energy a plate while "Mend fully on docking" is on (also after each crate's Energy arrives).
-- **Pods** (Research key, built). The tray as a column of cups and a garden gate, with a fixed focus order: ↑ ↓ go cup by cup, then the gate; → goes to the pod, ← from the pod back to its cup, ↑ from the pod to the windows (◀ ▶ among them, ↓ back). The bottom line names the cup ("cup 2 of 6 · Tuikis pod · …") or the gate; the pod in a padded cradle under a lamp, with its place and how it was found ("rock field · a Tuikis felt safe · expedition 4"). Focusing a cup brings its pod into the cradle (looking is free).
-  - **Identify** (1 ⚡, the first pod ever free): the shell turns translucent top-down to the species' silhouette and a "New species" stamp (a known species logs at once). The trait windows rise in an arc, frosted, and the fingerprint whorl appears in plain ridges.
-  - **Study** a window (2 ◆; the first study of each species is free, and the button says so): the frost wipes away top-down in two seconds.
-  - **Compare:** from the tray, ✓ on another identified pod of the same species puts both side by side, windows aligned; windows studied on both that differ pulse. Free; ← closes it.
-  - **Return to the wild** (the gate): `✓ Return to the wild · +1 ❀`, ✓ again. The Companion puts the pod back, buried, in the place it came from at the next dock.
-  - A tray of six: pods that find no free cup wait sealed in the bay and roll in when a cup frees.
-- **Trait windows** (built, all six states). A wooden arched pane with an emblem (swirl, crown, drop, paw) and a word under it. **Frosted** (nothing behind it); **glint** (a twinkling star where this pod carries a look not yet seen in that species, once that window has been studied on some pod; a small star on its cup too); **shows + hides** (a close drawing of that part of this pod's mibi, and a misty seed on the sill holding a ghost of the hidden look: "shows stripes · hides spots"); **through and through** (a small solid base); **family mark** (two joined rings: opens like the others, never rolls at creation); **shutter** (closed slats with a picture of what opens it: the Untuva's colour needs Probe tier 2). Unknown parts of a picture stay under frost; a colour not yet known draws in neutral frost tones.
-- **The fingerprint** (built). A round whorl, one petal per window clockwise from the top left, 3–7 nested ridges per petal with a twist, all from a hash of the genome code; a studied petal fills with the hue of what shows and a seed dot at its base takes the hue of what hides. It appears on the cradle (96 px), on Create (petals flip as windows roll), on the incubator plate and lineage entries (40 px) and on the Habitat card (96 px). The **code** (base-32, eight characters plus a check character, shown as `G7F · CD0 · 3H2`) is shown only for mibis, from the moment of Grow.
-- **Create** (built; it is the review). Studied windows show their picture with "shows X · hides Y" and the misty seed (or the base); unstudied ones a frosted pane; shutter and family marks as on Pods; a "+2◆" tag on each window that can roll. The founder large (8×) in the centre, misty wherever a window is frosted; the pod on the left; the incubator and the whorl on the right. ◀ ▶ move between windows; ▲ ▼ roll a studied, choosable window through what this pod carries (as the pod is → the hidden look through and through → the shown look through and through); a "changed" tag marks it and the price grows by 2 ◆. A window the pod shows through and through offers nothing else. The line always reads the total: `✓ Grow it · 2 ⚡ 4 ❀ 2 ◆` (the first founder ever: `first founder: 2 ⚡`), or what is short, or "the incubator is busy"; with one window studied or none it says "Study more windows to shape more". ✓ Grow stamps the code and moves the pod into the incubator; ← goes back to Pods with nothing spent.
-- **Incubator** (built). The dome with the embryo growing as a seed, a bud, then the species' shape asleep; a row of leaves in an arc over it, **one leaf per minute** filling smoothly over its minute. Minutes: body size (Tuikis 2, Loika 3, Untuva 4) + 1 per window beyond three + 1 per window changed; the first mibi ever takes 1. The misty windows clear one by one as it grows ("cleared as it grew"). The plate shows the whorl and the code. Read-only while growing; ready, the dome glows and `✓ Open` plays the hatch: the glass lifts, the juvenile steps out, "Fig · Tuikis · juvenile", and the screen goes straight to the meet view: Habitat with the new mibi large, "Meet Fig · new", its card, code and fingerprint, focus on the door: `✓ Take Fig with you · ← Home`. A crate arriving does not shorten it (decided). The vivarium holds four; Open waits ("The vivarium is full") until one goes with you.
-- **Library** (built). A shelf of seven slots: known species bright, met-but-unidentified ones as silhouettes, dashed empty slots ("more exist"). The species page: a portrait with its habit line and the places its pods came from as stamps; a **sticker book** with one pocket per window holding every look found so far (from studies, choices and hatched mibis) and a dotted "more?"; and **lineage**: each pod → its mibi, with whorl, code and three skill notches. ✓ on a mibi visits it in Habitat.
-- **Habitat** (built). The focused resident large (7–8×) in its corner of the vivarium; its card (name, species, stage, ability, a memory line, the code and whorl, its windows as small pictures); the **with-you door** (the mibi in the Companion) and the **bond heart**; a strip of all mibis with the free places. ✓ on the resident: Spend time (a species moment, no reward). ✓ on the door: `Take Fig with you · now` while docked (the Companion page picks it up) or `· at the next dock` while away. ✓ on the heart, once offered after a first outing: Bond, then ✓ again (a small heart; no meters).
-- **Probe bench** (built, from Home's cradle). The Probe large in its cradle with its plates; the standing switch "Mend fully on docking" (on by default, free to toggle); the tier 2 slot, lit only when affordable: `✓ Arm tier 2 · 12 ⚡ 4 ◆`, ✓ again installs (4 plates, full). Mending and the upgrade need the Probe docked; the Companion takes them at the dock.
-- **Idle** (built). After a minute without a press (or the lamp on Home) the vivarium fills the screen, residents living their routines, the with-you bed, and one status line ("Companion away · with Dot · an embryo is growing"). Any press wakes it and does what it says (D docks, H/R/L/B go), so no press is swallowed.
+One page, `index.html` (the device, the screen, the keys, the Caddy, the developer panel's markup), and ES modules under `src/`, loaded by one `<script type="module" src>` (the CI parse check reads inline scripts only).
 
-## The trait windows of the stand-in species
+| Module | Holds |
+| --- | --- |
+| `src/state.mjs` | The save's Station part and every rule as a pure function: prices and half price, identify, read, glints, compare, return, the dock and the bay, `need`, the migration, the developer seeds. No drawing; the tests run it in Node |
+| `src/genome.mjs` | The bridge to the imported model: the frames registry, a pod's genome from its seed (sampled from the species' pools until the body builds), a trait's words from `describe.mjs`, the stamp genome and code from `genome-stamp/src/codec.mjs`, the name-code from the genome's SHA-256 |
+| `src/game.mjs` | The live save (the Companion's part read, never written; `st` ours), the developer settings under their own key, the focus state per screen, the presentation events |
+| `src/gfx.mjs` | The pixel graphics core: the 69-colour palette, indexed buffers, the 5×7 font at 2×, 3× and 4×, the 1024×600 frame. A rendered placeholder or stamp is quantised to the palette on its way in |
+| `src/art.mjs` | The placeholder register (`PLACEHOLDERS`) and every drawn stand-in: the mibi placeholder from the plain renderer, the pod from the frame's four parameters and glyph, trait close-ups, seeds, the stamp raster, the progress ring, chapter emblems, the room |
+| `src/screens/*.mjs` | One module per screen (frame, home, pods, library, habitat, bench with idle), drawing from state and turning keys into rule calls |
+| `src/caddy.mjs`, `src/dev.mjs` | The Caddy service's client (M3) and the developer panel |
 
-Placeholder genomes pending phase 2 (made up, consistent, not the bounded trial): two copies per window, the earlier variant in each list shows over the later ones. Gait is inherited-only (the family mark) for every species, as the build scope proposes; every other window rolls once studied.
+**Imported, never copied:** `../workbench/frames/*.json` (fetched beside the page, `mb-species-frame/2` on catalogue 9), `../workbench/framework/{species,describe,catalogue,resolve,rig,raster,plain}.mjs`, `../genome-stamp/src/{codec,stamp,frames}.mjs`. The Companion page's species indexes map 0 to S01 Loika, 1 to S03 Tuikis and 2 to S02 Untuva; a pod or mibi carries its species id (`species`) beside the Companion's index (`sp`, −1 for a species the Companion does not carry).
 
-| Species | Body (minutes) | Windows |
-| --- | --- | --- |
-| Loika | medium (3) | markings: plain · a saddle · pale patches; ears: long · short · lop; gait (family): a springy hop · a long bound |
-| Tuikis | small (2) | markings: stripes · spots · plain; crown: low · tall; colour: teal · gold · violet; gait (family): a scurry · a low glide |
-| Untuva | large (4) | spots: white spots · rings · a bare cap; cap: wide · tall · frilled; colour (shutter until Probe tier 2): amber · rose · sky blue; gait (family): a waddle · a roll |
+## The save and its migration (station-build.md §2.3)
 
-A pod's genome comes from its genome seed (`gs`), fixed on the Companion the first time the pod is taken. Studies never change it; Create commits one individual with the chosen copies, and the incubator and the hatch show that same one.
+The key stays `mb-save-v8`; the Companion's top-level part is untouched; the Station's part `st` carries `schema: 2`. The migration from the stand-in's record runs once on load, forward only, logged: pods keep their seeds and get genomes (`mb-genome/2`, sampled from the frame with the pod's `gs`), their studies start again as chapters (`read: []`); `known` and `met` stay as Companion indexes beside `knownIds` and `metIds`; `readOnce` (chapters read on any pod of a species, for half price) and `guide` (looks seen per trait, rebuilt from mibis and read pods) are new; a mibi keeps `id`, `name`, `sp`, `born`, `from`, `bonded` and becomes a founder from its seed, fully read, with `genome`, `sha`, `code`, `read`, `parents: null`, `bay`, `paint: null`, `released: false`; `inc` becomes `bud`; `bays: 6`; `sitting`, `moments`, `welcomeGiven`, `wish`, `outbox` and `devBay` (the developer's crates) are new. `accepted`, `dockN`, `probe`, `withReq` and `returned` keep their shape.
 
-## Prices and room (station-loop.md §4)
+## Developer panel
 
-Identify 1 ⚡ (first ever free) · study 2 ◆ a window (the first study of each species free) · founder 2 ⚡ + 4 ❀ (the first founder ever 2 ⚡ only), +2 ◆ per window changed · mend 1 ⚡ a plate beyond the free two (a break free) · Probe tier 2 12 ⚡ + 4 ◆ · return a pod +1 ❀. Six cups, four places in the vivarium plus the one with you, one incubator. The Station's store has no cap.
+Under the device, opened by `?dev` or the "Developer tools" button, never a device key. Settings live under `mb-station-dev`, never in the shared save.
 
-## The shared save
+- **Timers:** bud scale (real, ×10, ×60, instant), the first-bud rule, the sitting wait, juvenile to adult, the mock painter's delay (stored now; they apply from M2 and M3).
+- **Economy:** decided prices; loose (decided plus +2 ⚡ +3 ◆ +2 ❀ per crate opened; the default, per the owner's "loose for testing"); free. Add materials.
+- **Limits:** bays (6, 8, 10), rack size, the daily grow cap, the painter mode, sealed chapters open.
+- **Seeds:** a crate of pods (any of the sixteen species, count, seed) into the Station's own dev bay, accepted at the dock like any crate; a pod from a pasted genome, checked whole against its frame. Two adults, two siblings and a held sitting come with their milestones.
+- **Skip to:** the pod under the beam identified, read whole; every pod read.
+- **Inspect:** both copies of every locus of the pod under the beam (bins and values); the Station's record; the placeholder register; the Caddy's status; export the save; import a Station part (this world's only; the Companion's part is never written); reset.
 
-- One localStorage key, `mb-save-v8` (save format v8). The Companion page owns every top-level field; this page owns `st` (its store, tray, waiting pods, accepted crate ids, species known and met, looks seen, studied windows, mibis, incubator, dock state, the Probe as mended, the with-you request, returned pods, a log) and only reads the rest. Each page re-reads the stored save before it writes and keeps the other's part as stored; a `storage` event brings the other page's changes in at once. Species are saved as indexes, never as names, so renaming the species to Loika, Untuva and Tuikis changed no save field and the key stays `mb-save-v8`.
-- What crosses only at the dock: crates (accepted ids), the Probe (a sequence number so each mend or upgrade is applied once), the with-you choice (also sequenced), mibis and species, pods returned to the wild. Memories, outings and skill notches come here from the Companion at the dock.
-- What the Station reads from the Companion's part without a dock: the mibi with you (the bed and the door), the crates only once docked.
-- A v7 save (the previous Companion build) is migrated by whichever page loads first: the old Station store becomes this page's store and tray (genomes are drawn from new seeds), its mibis move here with new genomes and codes, and the bay starts empty.
-- A New world on the Companion page gives the world a new id; this page then starts a fresh Station. **Reset game** on either page erases the shared save (the other page follows).
+## Tests
 
-## Faked or simplified
+- `node --test prototypes/station/tests/*.test.mjs`: a pod's genome from its seed; trait words; the bay; identify; the read prices (1 a trait, half rounded up, the first free, free to look again); the glint; compare and return; the migration on `tests/fixtures/save-v8-schema1.json` (the Companion's part byte-identical); the stamp decoding to the genome; `need`; the developer seeds.
+- `node prototypes/station/tools/journey.mjs` (Playwright; `PW_DIR` names a directory holding `node_modules/playwright`): serves `prototypes/` as the sandbox does, loads the fixture save, seeds a Loika pod, docks, opens the bay, identifies (1 ⚡), reads Coat (1 ◆) and Face (2 ◆), checks a second Loika's Face costs 1, decodes the drawn stamp, compares, returns a pod, draws every screen with every pixel on the palette, round-trips the save, and presses the CI smoke's keys from a fresh world. Screenshots in `img/`.
+- The CI site workflow runs the parse check, the page smoke, these tests and this journey on every push.
 
-- **The Caddy** is a depicted block beside the Station with one key; docking is instant and always reachable (no "Station not answering" state).
-- **Residents' routines** are a few states (walk, nap, eat, turn toward each other), positions are not saved, and no state machine comes from the genome.
-- **Abilities** still come from the species; windows change looks, not behaviour.
-- **Names** are given automatically (Dot, Moss, Bean, Fig, …); no renaming.
-- **The walk** on the Companion is one press, not a five-press scene; **bonding** is a mark only.
-- **Lineage** is a list per species (pod → mibi); families and breeding are out (§6).
-- **Debug strip** under the device, not part of play: +5 of each material, Finish incubation, Show genomes (both copies of every window, codes, the log), Reset game.
+## Placeholders
 
-## Screen and budget assumptions (as if targeting the Raspberry Pi Station)
+Engineers do not do art (decided). Every drawn thing is a stand-in listed in `src/art.mjs` (`PLACEHOLDERS`; the developer panel prints it): the mibi in the plain renderer's placeholder, the pod from the frame's parameters, trait close-ups and seeds, the stamp raster, the progress ring, the chapter emblems, the chapter page, the room and bench as the stand-in v2 drew them, the icons. Nothing in `art/` is touched.
 
-- **Frame.** Offscreen 1024×600 at 1:1 device pixels, drawn with integer coordinates and blitted to the page without smoothing; the depicted device scales to the window and snaps to whole physical pixels when that costs ≤15%.
-- **Palette.** 69 colours as data (`PALETTE`): the Companion's 48 plus 21 for the room (moss), wood, lamp light, glass, frost and felt. Gradients are the 4×4 Bayer dither between palette steps; nothing is alpha-blended or blurred. `__st.offPalette()` counts pixels outside the palette (0 on every screen checked).
-- **Sprites.** The Companion's token shapes drawn at 2–9× with the same ellipses and polygons at full resolution, plus a richer shading pass (a rim of light up-left and a dithered core shadow down-right, read from the silhouette) and a variant overlay per window. Every sprite is built once into an indexed buffer and cached (as an atlas would be).
-- **Text.** The Companion's 5×7 bitmap font at 2× (14 px caps) and 3× for titles; the material icons stand in for ⚡ ◆ ❀ inside text.
-- **Redraw.** The browser redraws every animation frame; the device would redraw on input, on the incubator's minute, and at 2–4 Hz for the vivarium.
+## Known gaps, for the next milestones
 
-## Known issues
-
-- Docking always works, even mid-expedition: the Station never reads the Companion's expedition state. Docked, the Companion takes the mended Probe (also mid-expedition, into its Shield) and the crates already sealed; the expedition simply continues after Lift. Swapping the mibi with you waits until no expedition is under way.
-- The Companion page draws mibis as species tokens, so the looks chosen here don't show there yet.
-- Window pictures are crops of the whole drawing at a fixed scale; a few (the Loika's gait, the Untuva's colour) show more body than the trait.
-- Compare shows only windows studied on both pods; with few studies it says "no studied window differs".
+- A mibi of a species the Companion does not carry (S04–S16) would reach the Companion page at the dock with `sp: -1`, and the Companion indexes its species list by `sp`. Before M2 grows one, the Companion needs to accept species ids (one change on its page; not this build's to make).
+- Trait close-ups crop the placeholder around the part the trait names (head, crown, eyes, snout, ears, legs, tail, flaps, cap, shell) and show the whole body for the rest.
+- The pod renderer's proportion and pattern families are rough; the page reads a frame's `pod` block as it is.
 - Two tabs of the same page are not coordinated (the last write of `st` wins).
-
-## Persistence and tools
-
-- Test hooks: `window.__st` (`SV`, `ST`, `UI`, `act(key)` with the lock released, `press`, `lineFor`, `need`, `dockKey`, `openBay`, `skip(ms)` to move the incubator forward (all of it without an argument), `finishIncubation`, `capture` (the 1024×600 frame as PNG), `msg`, `genomeCode`, `podGenome`, `incProgress`, `wake`, `offPalette`).
-- The build stamp reads `../../build.json` (written by CI); a local copy shows "local build". One self-contained file with no build step.
