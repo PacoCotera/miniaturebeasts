@@ -37,17 +37,17 @@ def nine(name, x, y, w, h, corner=5):
 VIEW = (VIEW_Y, VIEW_Y + VIEW_H)
 # ---- the place: 10 x 12 tiles, pond at the bottom right, cropped to the view
 COLS, ROWS, TS = 10, 12, 48; OX, OY = -15, VIEW_Y - 22
-water = [[(c >= 8 and r >= 9 and not (c == 8 and r == 9)) for c in range(COLS)] for r in range(ROWS)]   # a small pond in the bottom right corner, out of the group's way
+water = [[(c <= 1 and r >= 9 and not (c == 1 and r == 9)) for c in range(COLS)] for r in range(ROWS)]   # a small pond in the bottom right corner, out of the group's way
 rng = np.random.RandomState(7)
 vrng = np.random.RandomState(31)
 var = [["b" if vrng.rand() < 0.5 else "" for c in range(COLS)] for r in range(ROWS)]   # the water variant of each cell, by a seeded hash
-land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "flowers2", (0, 7): "tall1", (4, 9): "flowers1", (5, 11): "tall2", (9, 3): "tall1"}
+land = {(1, 0): "tall1", (6, 1): "tall2", (3, 2): "flowers1", (8, 5): "tall1", (0, 7): "tall1", (4, 9): "flowers1", (5, 11): "tall2", (9, 3): "tall1"}
 GT = DARK = P.rain if RAIN else P.clear
 HUTT = P.ground_rain if RAIN else P.ground_clear    # the outpost's patch of grass takes the ground's state; the thatch and wood do not move
 for r in range(ROWS):
     for c in range(COLS):
         if water[r][c]:
-            t = ("deep1" if (c >= 9 and r >= 10) else "water1") + var[r][c]
+            t = ("deep1" if (c <= 0 and r >= 10) else "water1") + var[r][c]
         else:
             m = (water[r - 1][c] if r > 0 else False) * 1 + (water[r][c + 1] if c < COLS - 1 else False) * 2 + (water[r + 1][c] if r < ROWS - 1 else False) * 4 + (water[r][c - 1] if c > 0 else False) * 8
             t = f"shore-{m:02d}-1" if m else land.get((c, r), f"grass{1 + rng.randint(4)}")
@@ -75,35 +75,82 @@ def at(c, r, dx=0, dy=0): return OX + c * TS + TS // 2 + dx, OY + r * TS + TS - 
 FOLIAGE = None   # art director, round 2: under the storm the canopies keep the G ramp, the lit stones their glow and the outpost its wood and thatch (no cast); the ground, water and plain stones take it
 # the staging, after the concept: ONE focal event, the crackling charged stone (its second frame) and the warned strike's ring beside it, with the pawn
 # a tile away facing them along the same row, Loika by the pawn; everything else is background and kept small and to the edges
-# the event runs on a DIAGONAL, as the concept's does: the pawn at the lower left facing up and to the right, Loika by the pawn, the warned ring on the tile between, the big charged stone
-# at the upper right of the ring with the tree standing over it all
-CAN = P.canopy_rain if RAIN else None                  # the canopies and bushes one green step deeper in rain
-PAWN, LOIKA, STONE, RING, TREE = at(2, 8), at(3, 8, 0, 4), at(5, 6, 0, 6), (4, 7), at(6, 4, 0, 8)
-things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk2", PAWN, None), ("tokens", "loika-idle1", LOIKA, None), ("props", "tree", TREE, CAN),
-          (("huts", f"hut-{hut}-lit", at(1, 2, 0, 6), DARK) if hut else ("props", "outpost-lit", at(1, 2, 0, 8), HUTT)),
-          ("props", "bush", at(4, 1), CAN), ("props", "bush-fruit", at(9, 5), CAN), ("props", "bush-shaken", at(0, 9), CAN),
-          ("props", "dew-cup", at(1, 10), GT), ("props", "reeds", at(7, 10, 0, -6), GT), ("props", "stone-step", at(6, 10, 0, -4), GT)]
-# the shade: the tree's own, one soft ellipse on the grass lying from its foot down to the left over the stone, the ring, the pawn and Loika (the ground's colours darker, the rim dithered);
-# and the stone's shadow, a real one (a flat ellipse under and to the right of it, 3 to 6 rows deep). On the clear ground the shade is two ramp steps below the lit grass, out of the coat's grey.
+# ONE light direction (from the top left: every shadow falls to the lower right). The event is laid on a diagonal by PLACEMENT, as the concept's is: the tree at the upper left, the pawn and Loika
+# at the trunk's edge in the tree's shade, the warned ring on the tile beyond them, the big charged stone at the lower right of the ring
+CAN = P.canopy_rain if RAIN else None                  # the bushes one green step deeper in rain
+TRT = P.tree_rain if RAIN else None                    # the tree's rain canopy: body pine, clumps forest, leaf only on the clumps' top-left edges
+HUT = (398, 168)                                              # the hut at the explorer's scale (144 px wide), at the view's UPPER-RIGHT edge, cut off on its right side, so the porch and the door face the scene (the sprite is not mirrored: the light stays at the top left)
+TREE = (240, 304); PAWN = (TREE[0] + 34, TREE[1] + 40); LOIKA = (TREE[0] + 78, TREE[1] + 46); RING = (6, 8); STONE = at(8, 9, 0, 6)
+CAN = P.canopy_rain if RAIN else None                  # the bushes one green step deeper in rain
+TRT = P.tree_rain if RAIN else None                    # the tree's rain canopy: body pine, clumps forest, leaf only on the clumps' top-left edges
+# the hut in rain has its OWN table (round 11d): the wood and thatch ramps one step down (sand to clay, clay to bark, bark to soil), no cast toward river (it read as a grey silo); the window's
+# yellow, amber and cream stay lit; the base stones go one step down the shade table; the G ramp of its tufts takes the ground's table. In clear only its tufts move.
+_hr = list(range(len(P.names)))
+for _a, _b in (("sand", "clay"), ("clay", "bark"), ("bark", "soil"), ("paper", "sand"), ("cream", "cream"), ("yellow", "yellow"), ("amber", "amber")): _hr[P.index[_a]] = P.index[_b]
+for _n in ("rock", "rockL", "stone"): _hr[P.index[_n]] = P.dark[P.index[_n]]
+for _n in ("pine", "forest", "leaf", "grass", "sprout", "lime"): _hr[P.index[_n]] = P.ground_rain[P.index[_n]]
+HUTT = _hr if RAIN else P.ground_clear
+things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk2", PAWN, None), ("tokens", "loika-idle1", LOIKA, None), ("props", "tree", TREE, TRT),
+          (("huts", f"hut-{hut}-lit", HUT, DARK) if hut else ("props", "outpost-lit", HUT, HUTT)),
+          ("props", "bush", at(1, 1), CAN), ("props", "bush-fruit", at(9, 6), CAN), ("props", "bush-shaken", at(4, 10), CAN),
+          ("props", "dew-cup", at(3, 10), GT), ("props", "reeds", at(2, 10, 0, -6), GT), ("props", "stone-step", at(7, 10, 0, -4), GT)]
+# shades are Bayer-dithered pools through the ground's shade table, never a hard ellipse with a rim: a 4 x 4 ordered dither whose density falls off from the pool's centre.
+# The tree's pool lies under the canopy and to its lower right; the stone and the hut have contact shadows 2 to 3 rows deep to the lower right.
 SH = np.array(P.dark if RAIN else P.shade_clear)
-def darken(test):
+BAYER = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]) / 16.0
+def pool(cx, cy, rx, ry, band=4.0):
+    """a pool through the shade table: the core SOLID, then a band 4 px wide stepping 75 %, 50 %, 25 % by a 4 x 4 Bayer (an even dither over a large area shimmers on the device)"""
+    sc = min(rx, ry)
+    for yy_ in range(max(VIEW[0], int(cy - ry) - 1), min(VIEW[1], int(cy + ry) + 2)):
+        for xx_ in range(max(0, int(cx - rx) - 1), min(W, int(cx + rx) + 2)):
+            r = (((xx_ - cx) / rx) ** 2 + ((yy_ - cy) / ry) ** 2) ** .5
+            e = (1.0 - r) * sc                                   # px inside the rim
+            if e <= 0: continue
+            d = 1.0 if e >= band else (0.75 if e >= band * 0.66 else (0.5 if e >= band * 0.33 else 0.25))
+            if (d >= 1.0 or d > BAYER[yy_ % 4, xx_ % 4]) and scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
+def erode(m): e = m.copy(); e[1:] &= m[:-1]; e[:-1] &= m[1:]; e[:, 1:] &= m[:, :-1]; e[:, :-1] &= m[:, 1:]; e[0] = e[-1] = False; e[:, 0] = e[:, -1] = False; return e
+def dilate(m): d = m.copy(); d[1:] |= m[:-1]; d[:-1] |= m[1:]; d[:, 1:] |= m[:, :-1]; d[:, :-1] |= m[:, 1:]; return d
+def canopy_pool(group, name, foot, band, dx=30, dy=26, sq=0.62):
+    """the tree's shade, its outline taken from the canopy's clumps: the canopy's silhouette thrown to the lower right of the foot and squashed (the light is at the top left), the core solid in the
+    shade table and a dithered band `band` px wide at its rim stepping 75, 50, 25 % (Bayer)"""
+    sp = load(group, name); h_, w_ = sp.shape; ys_, xs_ = np.where((sp >= 0)[:int(h_ * 0.82)]); gm = np.zeros((H, W), bool)
+    for sy, sx in zip(ys_, xs_):
+        gx = foot[0] + (sx - w_ // 2) + dx; gy = foot[1] + dy + int((sy - h_ * 0.45) * sq)
+        if 0 <= gx < W and 0 <= gy < H: gm[gy, gx] = True
+    for _ in range(2): gm = dilate(gm)
+    for _ in range(2): gm = erode(gm)
+    depth = np.zeros((H, W), int); cur = gm; k = 0
+    while cur.any() and k < 60: k += 1; depth[cur] = k; cur = erode(cur)
     for yy_ in range(VIEW[0], VIEW[1]):
-        for xx_ in range(0, W):
-            rr = test(xx_, yy_)
-            if rr is None: continue
-            if rr < 0.8 or (rr < 1.0 and (xx_ + yy_) % 2 == 0):
-                if scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
-tcx, tcy = (TREE[0] + PAWN[0]) / 2 + 4, (TREE[1] + PAWN[1]) / 2 - 10; ux, uy = PAWN[0] - TREE[0], PAWN[1] - TREE[1]; L = (ux * ux + uy * uy) ** .5; ux, uy = ux / L, uy / L
-def tree_shade(x, y):
-    dx, dy = x - tcx, y - tcy; al = dx * ux + dy * uy; pe = -dx * uy + dy * ux
-    return (al / (L / 2 + 46)) ** 2 + (pe / 58.0) ** 2
-darken(tree_shade)
-darken(lambda x, y: ((x - (STONE[0] + 14)) / 34.0) ** 2 + ((y - (STONE[1] - 1)) / 6.5) ** 2)
+        for xx_ in range(W):
+            e = depth[yy_, xx_]
+            if e <= 0: continue
+            d = 1.0 if e >= band else (0.75 if e >= band * 0.66 else (0.5 if e >= band * 0.33 else 0.25))
+            if (d >= 1.0 or d > BAYER[yy_ % 4, xx_ % 4]) and scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
+canopy_pool("props", "tree", TREE, 4.0 if RAIN else 8.0)
+pool(STONE[0] + 12, STONE[1] - 1, 34, 6.5, 3.0)
+pool(HUT[0] + 16, HUT[1] - 2, 80, 8.0, 3.0)
 blit(load("props", "strike-warn2"), OX + RING[0] * TS, OY + RING[1] * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
 for group, name, (cx, cy), table in sorted(things, key=lambda t: t[2][1]): sprite(group, name, cx, cy, table)
 # the name tag over Loika, the message box at the view's top, the rain over all of it
-tag_w = font.width("Loika", 2) + 12; tx, ty = LOIKA[0] - tag_w // 2, LOIKA[1] - 40 - 20
-nine("slice-name-tag", tx, ty, tag_w, 22); font.draw(scr, "Loika", tx + 6, ty + 2, C["amber"], 2)
+# the name tag follows design/style-guide/companion-screens.md, "Name tag placement": the clear zone is the token's whole 48 px cell plus any pixel drawn outside it, plus 4 px; the tag (22 px tall)
+# goes to the first of below, right, left, above, then below slid sideways, that stays inside the view (x 6 to 444, y 38 to 558) and covers no other creature's clear zone, the pawn, the HUD,
+# the bottom line or the message box
+tag_w = font.width("Loika", 2) + 12; TH = 22
+def zone(foot, name, group):
+    sp = load(group, name); ys_, xs_ = np.where(sp >= 0); h_, w_ = sp.shape
+    return (foot[0] - max(24, w_ // 2) - 4, foot[1] - max(48, h_) - 4, foot[0] + max(24, w_ // 2) + 4, foot[1] + 4)
+LZ = zone(LOIKA, "loika-idle1", "tokens"); PZ = zone(PAWN, "pawn-right-walk2", "pawn")
+def hits(r, z): return not (r[2] <= z[0] or r[0] >= z[2] or r[3] <= z[1] or r[1] >= z[3])
+RINGZ = (OX + RING[0] * TS, OY + RING[1] * TS, OX + (RING[0] + 1) * TS, OY + (RING[1] + 1) * TS)      # the warned cell: a tag is never drawn over it or a sign
+MSG = ((W - (font.width("The rain sets in", 2) + 38)) // 2 - 2, VIEW_Y + 6, (W + (font.width("The rain sets in", 2) + 38)) // 2 + 2, VIEW_Y + 42)
+def clear(r): return r[0] >= 6 and r[2] <= 444 and r[1] >= 38 and r[3] <= 558 and not hits(r, LZ) and not hits(r, PZ) and not hits(r, MSG) and not hits(r, RINGZ)
+lcx = LOIKA[0]; cands = [(lcx - tag_w // 2, LZ[3] + 4), (LZ[2] + 4, LOIKA[1] - 24 - TH // 2), (LZ[0] - 4 - tag_w, LOIKA[1] - 24 - TH // 2), (lcx - tag_w // 2, LZ[1] - 4 - TH)]
+for sx in range(-120, 121, 2): cands.append((lcx - tag_w // 2 + sx, LZ[3] + 4))
+tx = ty = None
+for cx_, cy_ in cands:
+    if clear((cx_, cy_, cx_ + tag_w, cy_ + TH)): tx, ty = cx_, cy_; break
+if tx is not None: nine("slice-name-tag", tx, ty, tag_w, 22); font.draw(scr, "Loika", tx + 6, ty + 2, C["amber"], 2)
 rain = load("weather", "rain-left-1")
 for r in range(0, VIEW_H + 96, 96):
     for c in range(0, W + 96, 96):

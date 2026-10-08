@@ -1,0 +1,41 @@
+{
+ "id": "C48-H-r11-rd-s41",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "144x152",
+ "prompt": "a round thatched log hut seen from above at an angle: a tall thatched cone roof with one smooth elliptical eave, continuous bowed horizontal log courses, one small glowing window, a small side porch at the front left with two posts and a plank roof and a stone step, a ring of grey base stones, no grass, no ground shadow",
+ "remove_bg": true,
+ "seed": 41,
+ "input_image": {
+  "file": "review-place/sources/r11/hut-in.png",
+  "sha256": "aa13620e14186fd6283455c2488638b6b051da4f2e1c7f861482ae089e2bb11f",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T23:18:23Z",
+ "checkCost": {
+  "created_at": 1791501503,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 45.34000000000002
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "442ad032-4e51-435f-94c1-b115c34dbdde",
+  "seconds": 52.7,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 45.16,
+  "model": "rd_pro",
+  "file": "C48-H-r11-rd-s41-rd.png",
+  "sha256": "29a30598d324f86801c94adc6b1ebed69054930c7e90c7a9c91687b28073e559"
+ }
+}

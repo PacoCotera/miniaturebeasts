@@ -1,0 +1,52 @@
+{
+ "id": "C48-H-r11-d1",
+ "tag": "C48-H-r11-d1",
+ "model": "gemini-3-pro-image",
+ "operation": "generate",
+ "prompt": "Redraw the small thatched log hut in the reference image with a TALL log wall and a LOW roof. The round log wall is much TALLER than in the reference: SEVEN continuous horizontal log courses stacked high (each course one unbroken line bowed like the front of a cylinder), tall enough that a standing person could walk through the porch door, with ONE small glowing window high on the wall. The roof is LOW and FLAT: a wide shallow cone like a broad straw hat whose apex rises only a little above the eave (the roof from apex to the front of the eave is clearly SHORTER than the log wall below it, a bit less than half of the hut's total height, and the log wall is the dominant part), with exactly ONE thin ring band, plain calm straw thatch in two values (a mid straw and a darker straw, fine strands, no bright highlights), a smooth elliptical eave arc overhanging the wall on both sides with a short ragged fringe. Keep the small side porch at the front left (two wooden posts, its own lean-to plank roof, a stone step, a plank door) and the ring of grey base stones. Flat solid magenta (#FF00FF) background, no grass patch, no cast shadow disc. Warm brown wood and straw colours only. Light from the top left. Dark brown outline, never black. Hand-painted game sprite, flat colour shapes, no text, no people.\n",
+ "imageInputs": [
+  {
+   "path": "review-place/sources/r11/C48-H-r11-a1-canvas.png",
+   "sha256": "81672004c4edbc24c9aa7f8b9c9ffe8b317785897c985ddf44c3aeb49c30f8c0"
+  }
+ ],
+ "requested": {
+  "aspectRatio": "1:1",
+  "imageSize": "1K"
+ },
+ "time": "2026-10-08T23:33:54Z",
+ "result": {
+  "status": "success",
+  "png": {
+   "file": "C48-H-r11-d1-canvas.png",
+   "width": 1024,
+   "height": 1024,
+   "sha256": "5948188e132d7b90c0beac5d113688b5bd5aa244f15c11e73188cd59e5caf6f3"
+  },
+  "finishReason": "STOP",
+  "seconds": 17.5,
+  "usage": {
+   "promptTokenCount": 556,
+   "candidatesTokenCount": 1362,
+   "totalTokenCount": 2226,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 298
+    },
+    {
+     "modality": "IMAGE",
+     "tokenCount": 258
+    }
+   ],
+   "candidatesTokensDetails": [
+    {
+     "modality": "IMAGE",
+     "tokenCount": 1120
+    }
+   ],
+   "thoughtsTokenCount": 308,
+   "serviceTier": "standard"
+  }
+ }
+}
