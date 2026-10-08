@@ -84,11 +84,11 @@
   }
  },
  "glyph": [
-  ".###.",
-  "#...#",
-  "..#..",
-  "#...#",
-  ".###."
+  ".....",
+  ".##..",
+  "#..##",
+  "....#",
+  "....."
  ],
  "pod": {
   "sizeClass": "small",
@@ -1550,7 +1550,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S14",
-   "frameVersion": 2,
+   "frameVersion": 3,
    "loci": {
     "appearance.body-palette": [
      "plum",
