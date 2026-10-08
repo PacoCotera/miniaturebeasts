@@ -35,6 +35,9 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
   const g = pageGrid(R.page, 4); for (const c of g.cells) has([c[0], c[1], g.picture[0], g.picture[1]], "trait picture", gridBoxes);
   assert.deepEqual(g.picture, [184, 112]);
   assert.deepEqual(R.cradle.rect, [600, 328, 224, 96]); assert.deepEqual(R.cradleFront.rect, R.cradle.rect); assert.equal(pods.colours.origin, "bone");
+  assert.deepEqual([R.name.rect, R.name.px, R.name.weight, R.name.plate.h, R.name.plate.min], [[600, 440, 224, 24], 20, 500, 24, 80]); assert.equal(R.name.rect[0] + R.name.rect[2] / 2, 712);
+  has([672, 440, 80, 24], "the name plate hugging Loika"); has([632, 440, 160, 24], "the name plate hugging Unknown pod");
+  const ring = frame.focus.ring.tab; assert.deepEqual([ring.top, ring.slantTo, ring.bottom, ring.box], [42, 80, 84, "x - 4, 42, w + 24, 42"]); assert.equal(16 * (ring.slantTo - 40) / 40 + 4, 20, "the right slant ends at x + w + 20, the box's edge");
   // the concept's way round: the page left of the pod, the pod's box 96 px clear of the stamp label at the right
   const pod = R.pod.rect, page = R.page.rect, stamp = R.stamp.rect;
   assert.ok(page[0] + page[2] + 16 <= R.cradle.rect[0] && pod[0] + pod[2] + 96 <= stamp[0] && stamp[0] + stamp[2] === 1008, "page, pod, stamp from left to right");

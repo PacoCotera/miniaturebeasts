@@ -39,7 +39,7 @@
 <polygon points="480,40 536,40 552,80 496,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <polygon points="536,40 592,40 608,80 552,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <polygon points="592,40 648,40 664,80 608,80" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<path d="M228.8,42 L372.8,42 L389.6,84 L245.6,84 Z" fill="none" stroke="#d29a00" stroke-width="2"/>
+<path d="M228.8,42 L372.8,42 L388,80 L388,84 L244,84 L244,80 Z" fill="none" stroke="#d29a00" stroke-width="2"/>
 <rect x="176.5" y="112.5" width="407" height="439" fill="#eef1f3" stroke="#556" stroke-width="1"/>
 <rect x="192.5" y="120.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="192.5" y="160.5" width="183" height="111" fill="#ffffff" stroke="#666" stroke-width="1"/>
@@ -57,8 +57,9 @@
 <rect x="600.5" y="328.5" width="223" height="95" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <rect x="640.5" y="216.5" width="143" height="175" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
 <line x1="600" y1="392.5" x2="824" y2="392.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="4 3"/>
-<rect x="600.5" y="440.5" width="223" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="664.5" y="440.5" width="95" height="31" fill="#eef1f3" stroke="#888" stroke-width="1"/>
+<rect x="600.5" y="440.5" width="223" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="632.5" y="440.5" width="159" height="23" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="1 2"/>
+<rect x="672.5" y="440.5" width="79" height="23" fill="#eef1f3" stroke="#888" stroke-width="1"/>
 <rect x="600.5" y="480.5" width="223" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="888.5" y="248.5" width="119" height="119" fill="#e6eef7" stroke="#2f5f8f" stroke-width="1.5"/>
 <line x1="784" y1="306.5" x2="888" y2="306.5" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
@@ -121,9 +122,9 @@
 <text x="644" y="253" font-size="9" fill="#777">(focal) axis x 712, foot y 392</text>
 <text x="604" y="417" font-size="11" fill="#222">dish 224×96 (+ near lip)</text>
 <text x="604" y="345" font-size="9" fill="#777">600,328 224×96</text>
-<text x="604" y="453" font-size="11" fill="#222">Name 28px</text>
-<text x="604" y="465" font-size="9" fill="#777">600,440 224×32</text>
-<text x="764" y="453" font-size="9" fill="#777">plate hugs</text>
+<text x="604" y="455" font-size="9" fill="#222">Name 20px</text>
+<text x="676" y="455" font-size="9" fill="#777">672,440 80×24</text>
+<text x="604" y="476" font-size="8" fill="#777">600,440 224×24 · Unknown pod 632,440 160×24</text>
 <text x="604" y="493" font-size="11" fill="#222">Origin 16px, bone, 2 lines</text>
 <text x="604" y="505" font-size="9" fill="#777">600,480 224×40</text>
 <text x="892" y="261" font-size="11" fill="#222">STAMP label 120</text>
