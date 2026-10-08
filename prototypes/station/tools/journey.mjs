@@ -146,7 +146,7 @@ const dec = decode({ width: img.width, height: img.height, data: new Uint8Clampe
 expect(dec.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, dec.stamps[0].genome), "the drawn stamp decodes to the genome");
 expect(dec.stamps.length === 1 && dec.stamps[0].genome.read.join() === "Coat,Face", "the stamp's mask: Coat and Face read");
 // and the stamp as it is on the screen, at the label's size on whole-pixel cells, read back from the art layer's pixels, decodes too
-const lab = await page.evaluate(() => window.__st.region("art", [176, 432, 120, 120]));
+const lab = await page.evaluate(() => window.__st.region("art", window.__st.specs.pods.regions.stamp.rect));
 const onScreen = decode({ width: lab.width, height: lab.height, data: new Uint8ClampedArray(lab.data) });
 expect(onScreen.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, onScreen.stamps[0].genome), "the stamp on its 120 label, as drawn on the screen, decodes to the genome");
 // the second Loika: identify (1 Energy), its Face costs 1 (half of two, rounded up)
