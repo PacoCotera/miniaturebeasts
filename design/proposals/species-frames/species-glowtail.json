@@ -397,8 +397,8 @@
    ]
   },
   {
-   "id": "temperament",
-   "name": "Temperament",
+   "id": "character",
+   "name": "Character",
    "sealed": false,
    "traits": [
     {
@@ -469,7 +469,7 @@
     "loci": 3,
     "traits": 3
    },
-   "Temperament": {
+   "Character": {
     "loci": 2,
     "traits": 2
    }
@@ -497,7 +497,7 @@
   "pending": [
    {
     "trait": "glow",
-    "chapter": "Glow (after Temperament)",
+    "chapter": "Glow (after Character)",
     "kind": "heritable-doing",
     "why": "no emission locus yet; until one exists every Tuikis glows gold at dusk as part of the frame"
    },
@@ -2645,7 +2645,7 @@
    "switch": false,
    "kind": "heritable-doing",
    "nature": "doing",
-   "chapter": "temperament",
+   "chapter": "character",
    "trait": "curiosity",
    "shapeable": false,
    "alleles": [
@@ -2665,7 +2665,7 @@
    "switch": false,
    "kind": "heritable-doing",
    "nature": "doing",
-   "chapter": "temperament",
+   "chapter": "character",
    "trait": "nerve",
    "shapeable": false,
    "alleles": [

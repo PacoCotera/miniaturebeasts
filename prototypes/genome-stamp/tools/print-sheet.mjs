@@ -19,7 +19,7 @@ const fam = trio(G, 77);
 const pm = (g, hex) => ({ ...g, postmark: hex });
 const ROWS = [
   ["Growth, colour, 20 mm: Loika (5 loci), Tuikis (38), Tuikis with a postmark, 150 loci", [[20, "colour", individual(Hp, 9001, { read: open(Hp) })], [20, "colour", individual(G, 9002, { read: open(G) })], [20, "colour", pm(individual(G, 9003, { read: open(G) }), "5eed0f00d1e5a1ad")], [20, "colour", individual(F, 9004, { read: open(F) })]]],
-  ["Colour, other sizes; and a Tuikis with two chapters unread", [[30, "colour", individual(G, 9011, { read: open(G) })], [16, "colour", individual(Hp, 9012, { read: open(Hp) })], [16, "colour", individual(F, 9013, { read: open(F) })], [20, "colour", individual(G, 9014, { read: open(G).filter((n) => !["Legs & tail", "Temperament"].includes(n)) })]]],
+  ["Colour, other sizes; and a Tuikis with two chapters unread", [[30, "colour", individual(G, 9011, { read: open(G) })], [16, "colour", individual(Hp, 9012, { read: open(Hp) })], [16, "colour", individual(F, 9013, { read: open(F) })], [20, "colour", individual(G, 9014, { read: open(G).filter((n) => !["Legs & tail", "Character"].includes(n)) })]]],
   ["Caddy simulation: monochrome dots at 203 dpi (58 mm thermal printer, assumed 8 dots/mm)", [[20, "caddy", individual(Hp, 9021, { read: open(Hp) })], [20, "caddy", individual(G, 9022, { read: open(G) })], [20, "caddy", individual(F, 9023, { read: open(F) })], [16, "caddy", individual(Hp, 9024, { read: open(Hp) })]]],
   ["A family, colour, 20 mm: mother, child, father (the child's cell pairs take one copy from each); and a 16 mm Caddy Tuikis", [[20, "colour", fam.mother, "mother"], [20, "colour", fam.child, "child"], [20, "colour", fam.father, "father"], [16, "caddy", individual(G, 9031, { read: open(G) })]]],
 ];
