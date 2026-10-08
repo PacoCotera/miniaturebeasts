@@ -2110,7 +2110,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S08",
-   "frameVersion": 2,
+   "frameVersion": 3,
    "loci": {
     "structure.attachment-position": [
      "low",
