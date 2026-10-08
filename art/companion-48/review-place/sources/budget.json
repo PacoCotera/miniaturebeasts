@@ -1,6 +1,6 @@
 {
- "successfulCalls": 41,
- "totalUSD": 9.35,
+ "successfulCalls": 52,
+ "totalUSD": 11.33,
  "calls": [
   {
    "tag": "C48-H-r6-a1",
@@ -33,6 +33,55 @@
    "out": 1432,
    "usd": 0.174,
    "seconds": 19.5
+  },
+  {
+   "tag": "C48-H-r7-B-dark-s48",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 31.7
+  },
+  {
+   "tag": "C48-H-r7-B-dark-s50",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 31.3
+  },
+  {
+   "tag": "C48-H-r7-B-dark2-s48",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 31.6
+  },
+  {
+   "tag": "C48-H-r7-B-dark2-s50",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 31.3
+  },
+  {
+   "tag": "C48-H-r7-B-lit-s48",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 57.5
+  },
+  {
+   "tag": "C48-H-r7-B-lit-s49",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 52.1
+  },
+  {
+   "tag": "C48-H-r7-B-lit-s50",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 26.2
   },
   {
    "tag": "C48-H-r6-A-dark",
@@ -115,6 +164,34 @@
    "tag": "C48-H-r6-D",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
+   "usd": 0.18,
+   "seconds": 41.5
+  },
+  {
+   "tag": "C48-W-r7-G-down",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 41.5
+  },
+  {
+   "tag": "C48-W-r7-G-side",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 36.6
+  },
+  {
+   "tag": "C48-W-r7-H-down",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
+   "usd": 0.18,
+   "seconds": 41.8
+  },
+  {
+   "tag": "C48-W-r7-H-side",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x48",
    "usd": 0.18,
    "seconds": 41.5
   },
