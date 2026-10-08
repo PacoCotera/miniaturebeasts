@@ -175,7 +175,7 @@ export function buildBody(resolved) {
       const dir = unit([side === 0 ? -0.12 : 0.06, side * 0.67, 0.74]);
       const rt = rootOn(head, headCenter, dir, 0.06 * headR[2], envOf(head));
       const height = v["crown.heightOverHeadRz"] * headR[2], radius = 0.36 * Math.min(headR[1], headR[2]);
-      const crown = newNode(`crown-${side < 0 ? "L" : side === 0 ? "M" : "R"}`, "crown", head.id, "body"); crown.part = "crown";
+      const crown = newNode(`crown-${side < 0 ? "L" : side === 0 ? "M" : "R"}`, "crown", head.id, v["crown.form"] === "leaf" ? "leaf" : "body"); crown.part = "crown"; // a leaf crest is green (the leaf slot), as Pip's
       if (v["crown.form"] === "rounded") { crown.center = add(rt.inner, [0, 0, 0.4 * height]); ellipsoid(crown, [radius, radius, 0.6 * height], 2); push(crown, head); }
       else { // E7: a pointed or leaf crown is a leaf sheet, never a pyramid
         // A leaf sheet, as Pip's crest: the middle leaf up and a little back, the side leaves up and out,
@@ -524,7 +524,7 @@ export function buildBody(resolved) {
   const slots = {
     body: bodyPalette, second: secondPalette, eyeRim: [EYE_RIM], pupil: [PUPIL],
     cap: v["cap.enabled"] ? v["appearance.cap-palette"] ?? bodyPalette : null,
-    emission: v["tailBulb.enabled"] || v["charged.enabled"] ? ["#ffd166"] : null, leaf: v["leaves.enabled"] ? ["#5aa65c"] : null,
+    emission: v["tailBulb.enabled"] || v["charged.enabled"] ? ["#ffd166"] : null, leaf: v["leaves.enabled"] || (v["modules.crownPair"] && v["crown.form"] === "leaf") ? ["#5aa65c"] : null,
     shell: v["shell.enabled"] ? secondPalette : null, mask: v["mask.enabled"] ? secondPalette : null,
     belly: v["belly.enabled"] ? secondPalette : null,
   };

@@ -93,8 +93,8 @@
    "growth.wing-chord-ratio": "wide",
    "appearance.flap-translucency": "opaque",
    "growth.support-drop-ratio": "long",
-   "growth.support-radius-ratio": "fine",
-   "anatomy.contact-terminal-form": "wedge"
+   "growth.support-radius-ratio": "slender",
+   "anatomy.contact-terminal-form": "rounded"
   }
  },
  "glyph": [
@@ -1559,11 +1559,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "wedge",
-    "wedge"
+    "rounded",
+    "rounded"
    ],
    "looks": [
-    "wedge"
+    "rounded"
    ],
    "guard": "rig: terminal.form",
    "nature": "look"
@@ -2555,8 +2555,8 @@
      "ovoid"
     ],
     "anatomy.contact-terminal-form": [
-     "wedge",
-     "wedge"
+     "rounded",
+     "rounded"
     ],
     "appearance.fur-length": [
      "short",
@@ -2656,7 +2656,7 @@
   "counts": {
    "nodes": 22,
    "edges": 21,
-   "vertices": 815
+   "vertices": 923
   }
  },
  "viability": {
@@ -2890,8 +2890,8 @@
    "rounded-square"
   ],
   "anatomy.contact-terminal-form": [
-   "wedge",
-   "wedge"
+   "rounded",
+   "rounded"
   ],
   "anatomy.axial-tail-presence": [
    "on",
