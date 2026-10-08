@@ -1,6 +1,6 @@
 # Technical architecture: one loop, three screens
 
-**Decided** 2026-10-08: the three decisions of section 7 were taken as recommended, so this document is the architecture every Station, Companion and Caddy build follows. Written by the architect, 2026-10-08, for the owner. It answers the owner's direction of today: review the technical architecture of the Station and the Caddy (and, with them, the Companion), and choose the tooling and frameworks that draw the screens and handle interaction on hardware we can actually ship. **Decided** marks owner decisions restated here; everything else is **Proposal**. Section 7 holds the three decisions.
+**Decided** 2026-10-08: decisions 2 and 3 of section 7 were taken as recommended, so this document is the architecture every Station, Companion and Caddy build follows. **Decision 1 (the Station as a web page on the Pi) was withdrawn by the owner the same day:** the Station's hardware is the Raspberry Pi 4 and will not grow to carry a browser; everything is optimised for underpowered hardware; no hardware prototyping until the loop is complete in software. The Station's device runtime is being re-proposed (section 7, decision 1). Written by the architect, 2026-10-08, for the owner. It answers the owner's direction of today: review the technical architecture of the Station and the Caddy (and, with them, the Companion), and choose the tooling and frameworks that draw the screens and handle interaction on hardware we can actually ship. **Decided** marks owner decisions restated here; everything else is **Proposal**. Section 7 holds the three decisions.
 
 **Decided 2026-10-08 (owner).**
 
@@ -231,7 +231,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 
 ## 7. Decisions
 
-**Decided** 2026-10-08, all three as recommended:
+**Decided** 2026-10-08: 2 and 3 as recommended. Decision 1 withdrawn; a replacement proposal follows.
 
 1. **The Station runs the web page on the Pi and never ports.** *Recommended: yes, behind the P0 measurement.* The rig, rasteriser, validator and derivation must run on the Station, and they exist only in JavaScript. Inter anti-aliasing and painted art are native to a browser. The Pi 4 has the capacity. This replaces "everything through LVGL" for the Station only.
 2. **The sandbox gets its own small, declarative screen layer now** (screen specs as data, a component library, a retained scene, a focus model), built as T1 in place of the pending layout pass and before M5, with the regions check added to CI. *Recommended: yes.* It is the separation of concerns the owner asked for. Adopting LVGL-in-WebAssembly now would move the rules to C before the loop is stable and would copy what must be imported.
