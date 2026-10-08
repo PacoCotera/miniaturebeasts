@@ -1,10 +1,10 @@
 # Companion 48 px redraw: brief and plan
 
-**Proposal**, art-directed. Decided: 48 px tiles ([decisions](decisions/README.md) B), the 32/532/36 frame, Mibi 7×9 and the 48 colours ([ui-kit §6](ui-kit.md)), and Miniature Lives ([style guide](../style-guide/README.md), [Companion screens](../style-guide/companion-screens.md)). The [prototype](../../prototypes/exploration/README.md) still draws code-made 32 px tiles in a 26/540/34 frame. Masters first; the builder then hosts them.
+**Proposal**, art-directed. Decided: 48 px tiles ([decisions](decisions/README.md) B), the 32/532/36 frame, Mibi 7×9 and the 48 colours ([ui-kit §6](ui-kit.md)), and Miniature Lives ([style guide](../style-guide/README.md), [Companion screens](../style-guide/companion-screens.md)). The [prototype](../../prototypes/exploration/README.md) still draws 32 px tiles in a 26/540/34 frame. Sheets first; the builder then hosts them.
 
 ## 1. The brief
 
-HiBit, as the accepted Pip at 280×300: rounded volume, clustered forms, three or four steps of one ramp, one light from the top left, catch-lit eyes. Cute by craft, never childish: no sticker faces, nursery colours or 1 px noise for texture. The [48 px comparison](decisions/tile-size-48.png) sets scale, not finish; companion-storm and companion-map-hands set the look.
+HiBit, as the accepted Pip at 280×300: rounded volume, clustered forms, three or four steps of one ramp, one light from the top left, catch-lit eyes. Never childish: no sticker faces or 1 px noise. The [48 px comparison](decisions/tile-size-48.png) sets scale, not finish; companion-storm and companion-map-hands set the look.
 
 ## 2. Inventory
 
@@ -28,21 +28,23 @@ Sizes at 1×.
 | HUD, bars | icons: Energy, Data, Essence, Shield, Pod, World turn, Call, Storm, Fog bank, Pin, Battery, Radio, plus hollow bolt, Shield gone, free slot, bond; Shield plates; reach-grid dots; key caps ✓ ← Call; condition bolts ◀ ▶; crate icon | 16; plates 10×14, 24×40 |
 | Panels | 9-slices: ink, paper, name tag, message box, menu row; focus brackets; Call ring profile | radius 4 |
 
-Vignettes, the Probe drawing and link marks follow later.
+## 3. Who makes what, and how
 
-## 3. Who makes what
+The **pixel artist** is a role an agent plays, under the art director's sign-off. Paintings and generation come first; the cleaned Aseprite sheet is the master.
 
-- **Hand-drawn masters, by the pixel artist:** everything above except creature tokens, in Aseprite on the indexed palette, sources, exports and atlases kept in `art/companion-48/` with provenance.
-- **Derived from Station paintings:** each mibi's 48 px token (idle 2, walk 3), HUD face and 64 px partner face, by the Station's down-render ([art pipeline](art-pipeline.md) §1.1, §6). Wild creatures and unmet silhouettes take the **generic token per species**, derived the same way from the type specimen. A mibi still waiting for its painting carries the placeholder set. Nothing is painted small or hand-patched.
-- **Generated, then corrected: none.** The [Retro Diffusion trial](../../art/retro-diffusion-trial/README.md) failed seamless tiles, palette lock on tilesets, the outline rule and clean animation. Generated pixels never ship; its A4 cloud bank is a reference only.
+- **Terrain, props, features:** a Pro-painted source at higher resolution, down-rendered onto the 48 ramps. Ground edges may start from a Retro Diffusion Wang tileset (C4), palette-converted.
+- **Cloud, rim, weather pieces:** Retro Diffusion `rd_pro__topdown` with the 48-colour `input_palette` and one concept crop as reference (the trial's A3 and A4), snapped to the palette.
+- **Mibi tokens:** derived on the Station from each mibi's painting: 48 px token (idle 2, walk 3), HUD face, 64 px partner face ([art pipeline](art-pipeline.md) §1.1, §6). Wild creatures and unmet silhouettes take the **generic token per species**, derived from the type specimen; a mibi awaiting its painting carries the placeholder set.
+- **Cleaned in Aseprite** (headless on the VM), where the trial showed generation fails: seamless repeats, the outline rule, the Bayer edges, rain sheet streaks, two-frame idles and stepped cycles (generated frames boil), icons and key caps at 16 px, 9-slices.
+- **Assembled** as indexed sheets with a JSON atlas in `art/companion-48/`; sources, prompts and sidecars kept, generated stages labelled.
+- **Contact sheets** of every asset at 1× and 3× go to the owner at each review.
 
 ## 4. Palette discipline
 
 - The 48 colours of ui-kit §2 as one palette file, identical to the page's `PALETTE`; indexed sheets; nothing added.
-- Ramps as ramps; 1 px outline in the part's darkest step, lighter on the lit side; contact shade, not lines; shadows cool, highlights warm.
+- Ramps as ramps; 1 px outline in the part's darkest step, lighter on the lit side; shadows cool, highlights warm.
 - No alpha, anti-aliasing or gradients. Bayer only in the signed tables and edges (veil, fog, fade, unsurveyed quarters); art shades in clean bands.
 - Storms go blue; fog to pale bone, never lavender; lavender only for the cloud bank; red only for danger and fruit. Pawn and mibis never pass through a table.
-- A land keeps to its ramps, about 10 colours a tile.
 - Every sheet: 0 off-palette pixels and a four-gray value check before review.
 
 ## 5. Page changes (spec for the builder)
@@ -63,9 +65,8 @@ Starts after the other builder's work in `index.html` lands.
 ## 6. Order and reviews
 
 1. Palette file and tables signed.
-2. **Review place:** meadow and pond edge in a storm: meadow and shore sets, tree, bushes, three stones and a warned strike, outpost, pod, pawn, rain, HUD, bottom line, message box; Pip as partner, derived from the accepted painting, and a wild Loika. The builder hosts it meanwhile (§5, 1–6). **Review 1:** the owner sees this one place at 48 px, live at 1× on a true-size screen, beside companion-storm and the 32 px mock-up. Nothing else is drawn until it is signed.
-3. Reach view: cloud, rim, rain sheet, signs, props, pawn. **Review 2:** the concept test (§7).
-4. Wood, rock field, cave, fog bank, veil, full map. **Review 3:** one place per land, then the map.
+2. **Review place:** meadow and pond edge in a storm: meadow and shore sets, tree, bushes, three stones and a warned strike, outpost, pod, pawn, rain, HUD, bottom line, message box, with the creatures of decision 2. The builder hosts it meanwhile (§5, 1–6). **Review 1:** the owner sees this one place at 48 px, live at 1× on a true-size screen beside companion-storm and the 32 px mock-up, with its contact sheets. Nothing else is made until it is signed.
+3. Reach view: cloud, rim, rain sheet, signs, props, pawn. **Review 2:** the concept test (§7).4. Wood, rock field, cave, fog bank, veil, full map. **Review 3:** one place per land, then the map.
 5. HUD, bars, icons, pods, crates, panels. **Review 4:** each screen against its pass list.
 6. Final checks and the sign-off sheet.
 
@@ -73,7 +74,7 @@ The art director critiques each round at 1× first.
 
 ## 7. The concept test
 
-The reach view at 450×600, 1×, beside [companion-map-hands](../../art/concept-homepage/companion-map-hands.png) scaled to 450×600, as in [reach-vs-concept](ui-kit/reach-vs-concept.png), judged at arm's length on the 2.41" panel or a phone at true size. It passes when:
+The reach view at 450×600, 1×, beside [companion-map-hands](../../art/concept-homepage/companion-map-hands.png) scaled to 450×600, as in [reach-vs-concept](ui-kit/reach-vs-concept.png), judged at arm's length at true size. It passes when:
 - the owner still calls it beautiful, and rates it at least level with the accepted mock-up shown unlabelled;
 - the island is a lit clearing in soft, layered cloud with a lit rim, drawn heaps, no circles or slabs;
 - rain is one clean diagonal sheet;
@@ -83,13 +84,12 @@ On failure, cloud and props are redrawn before any other land starts.
 
 ## 8. Risks
 
-- **Cost:** about 2.25 times the pixels per sheet; the review place first caps waste.
-- **Derived tokens may lose HiBit at 48 px.** Only Pip's painting exists; Tuikis and Untuva stay labelled placeholders until their species pieces land.
-- **48 px crops** read as close-ups, not the concept's little scenes (decision 1).
-- **Walking:** a place is about 3×3 screens and a reach already takes 538–845 actions. No rule changes here; place size goes to exploration design after Review 1.
+- **Down-render loses HiBit:** painted sources may turn to mush at 48 px. The review place tests the method first.
+- **Generated drift:** references get copied, tilesets ignore the palette; every output is snapped and checked.
+- **Derived tokens** may lose detail at 48 px. Only Pip's painting exists (decision 2).
+- **Walking:** a place is about 3×3 screens and a reach already takes 538–845 actions. Place size goes to exploration design after Review 1.
 
 ## 9. Owner decisions
 
-1. **Reach-view ground.** *Recommended:* crops of the real ground plus map props at the place's features: true to the place, reads like the concept. *Alternatives:* plain crops (wood reads as a blob); separate cell art (can disagree with the place).
-2. **Who draws.** *Recommended:* commission one pixel artist for the whole Companion sheet under the art director's sign-off, the review place as a paid test. *Alternative:* polishing the kit's script sheets: cheaper, not expert work.
-3. **Review place creatures.** *Recommended:* Pip and wild Loikas, others as labelled placeholders, so Review 1 is not held. *Alternative:* wait for the Tuikis and Untuva species pieces.
+1. **Reach-view ground.** *Recommended:* crops of the real ground plus map props at the place's features. *Alternatives:* plain crops (wood reads as a blob, close-ups not little scenes); separate cell art (can disagree with the place).
+2. **Review place creatures.** *Recommended:* Pip and wild Loikas, others as labelled placeholders, so Review 1 is not held. *Alternative:* wait for the Tuikis and Untuva species pieces.
