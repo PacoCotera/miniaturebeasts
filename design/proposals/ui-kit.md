@@ -82,10 +82,57 @@ brown-grey), **LIGHT** (lamp pools), **veil** (unsurveyed ground in a place: DAR
 dot, 16 px dithered edge), **cloud bank** (unexplored map: lavender masses, no ground drawn
 under them, darkening away from the explored island), **fade** (seen cells: DARK, checker).
 
-**Station palette: 96 colours**: the 48 plus an in-between step for every main ramp (8–11
-steps per hue), the evening room (five deep moss tones), lamp (three warm creams), glass and
-frost (three), and two pinks. The Station shades with dithered bands; the Companion with
-clean bands only.
+**Station palette: 62 colours** (**Working rule**). The numbers live in
+[`prototypes/ui/palettes/station.json`](../../prototypes/ui/palettes/station.json); this section
+shows them and their roles. It is the one palette of the Station's **art layer**: the chrome,
+the pixel art the build draws (material icons, lamps, pips, the glint, the leaf timer, Shield
+plates), placeholders and the living window's frame. Painted art and the anti-aliased type are
+other layers, off palette by decision, and the genome stamp keeps its own colours (the rule:
+[Station screens, palette and layers](../style-guide/station-screens.md#palette-and-layers)).
+The chrome is crisp and flat, lit by a bevel from the top left; it is never shaded in dithered
+bands.
+
+- **The shared core: the Companion's 48,** first in the file and unchanged in name, value and
+  neighbours, as signed in [`art/companion-48/palette/palette.json`](../../art/companion-48/palette/palette.json).
+  On the Station they carry the placeholders' flat slots and outlines in each species' ramps,
+  the material icons (Energy `yellow`, Data `river`, Essence `leaf` ramps), the lamps (`sprout`
+  ready, `amber` needs you, `sky` waiting for a painting), Confirm's verb (`orange`), Call and a
+  read tab's lit rim (`teal`), a ticking counter and the glint (`yellow`), a clash (`red`),
+  whole Shield plates (`white`), drop shadows (`void`), readouts and the stamp label's plate
+  (`bone`), and context and a dimmed ✓ (`mist`).
+- **The Station's 14:** the instrument the accepted concept screens show, a cool ramp from deep
+  blue-teal through graphite and brushed metal to frost, one deep teal, the leaf timer's sage
+  and the cream of the focus ring.
+
+| Name | Hex | Role | Darker · lighter | Seen in |
+| --- | --- | --- | --- | --- |
+| `ground` | `#162a37` | Deep blue-teal ground: the stage behind the chrome, deep panes (the open chapter page) | `void` · `panel` | Home A-r3-a1, between the window and the modules; Pods PV-D-r3-a4; Incubator IN-D-r1-a3 |
+| `panel` | `#2a2e38` | Graphite panels: the module boxes, the list column, cards, a sealed tab's slats | `ground` · `bar` | Home A-r3-a1, the module column |
+| `bar` | `#34383f` | The top bar and the bottom line | `panel` · `hairline` | Every accepted plate's bars: Home, Create CR-C2, Incubator, the Book BK-D-r2-a1 |
+| `hairline` | `#3c4b57` | 1 px rules and edges: the bars' rules, separators, pane and label edges, unread outlines, empty leaves | `bar` · `bevel` | Pods PV-D-r3-a4, the rules and tab edges |
+| `bevel` | `#5a6672` | The lit top-left bevel of panels, tabs and wells | `hairline` · `metal` | Home A-r3-a1, the modules' top edges |
+| `metal` | `#717c86` | Brushed metal: the living window's bezel, cradles, the Probe dock | `bevel` · `enamel` | Home A-r3-a1, the window's bezel; Create CR-C2, the chamber's base |
+| `enamel` | `#8ca0ab` | Enamel bases and plates, and the body of glass where the build draws it | `metal` · `frostS` | Incubator IN-D-r1-a3, the dome's base; the glass of the Pods cradle |
+| `frostS` | `#a9b5c8` | Frost's shade: an unread tab's fill, the shade side of frost on an unread part | `enamel` · `frostD` | Create CR-C2, the founder's frosted head |
+| `frostD` | `#cbd5e2` | Frost: the veil on an unread page or part; glass edges | `frostS` · `frost` | Create CR-C2; Pods PV-D-r3-a4, the glass pane |
+| `frost` | `#eaeff6` | Frost's light and the glint on glass | `frostD` · `white` | Pods PV-D-r3-a4; Incubator IN-D-r1-a3, the dome's highlight |
+| `deepTeal` | `#275663` | A read tab's fill, crate bodies, the bay door's inside | `ground` · `teal` | Home A-r3-a1, the crates and the bay |
+| `sage` | `#84ae78` | The leaf timer: a filled leaf | `sageD` · `sprout` | Incubator IN-D-r1-a3, the leaves over the dome |
+| `sageD` | `#5d7a5f` | A leaf's vein and shade; the line a filling leaf rises to | `forest` · `sage` | Incubator IN-D-r1-a3 |
+| `focus` | `#ffe6ad` | The focus ring, warm cream; with the amber lamp and Confirm's orange, one of the chrome's only warm marks | `sand` · `white` | Home A-r3-a1, the ring under Pip; the Spread SP-P-r4-a1 |
+
+<img src="ui-kit/station-palette-1x.png" width="950" alt="The Station palette as a swatch strip, 1×">
+
+*The Station palette at 1× ([station-palette-1x.png](ui-kit/station-palette-1x.png)), drawn from
+the file by [`strip.py`](../../prototypes/ui/palettes/strip.py). Top row: the Companion's 48 by
+ramp. Bottom row: the Station's 14 in the table's order. Each column shows its lighter neighbour
+above and its darker below. Diagram, Working rule.*
+
+**Not in the palette.** Wood, felt, the evening room's moss greens and warm lamp pools: the
+Station is never a cottage. In-between steps for dithered bands: the chrome is flat, and the
+light is painted. The violet-grey neutrals of the core stay in it for the creatures and type
+shadows; the instrument is drawn in the cool ramp above. Where the layout spec names a slate
+edge or a graphite panel, the colours are `hairline` and `panel`.
 
 **Typography.** *Mibi 7×9*, a custom proportional bitmap font in the kit: cap height 7,
 x-height 5, descenders 2, rounded bowls, tabular 4 px digits, ✓ ← → ▲ ▼ ◀ ▶ ★ ♥ ·, and
@@ -108,7 +155,8 @@ licence, and Silkscreen (OFL) has no true lowercase, so neither is proposed.
   apart, items in a group 2–4 px.
 - Radius 4 px for panels, 3 for tags, 2 for chips (pixel profiles, not curves); Station frames 8.
 - Drop shadow is DARK at (+2, +3). Panels: *ink* (`N1` on an `N0` line, `N2` top bevel),
-  *paper* (`W5`, `W1` line, white top bevel, `W4` foot), *wood* (Station bench, frames).
+  *paper* (`W5`, `W1` line, white top bevel, `W4` foot), and on the Station *instrument*
+  (`panel` on a `hairline` edge, `bevel` top, frames in `metal`).
 
 **Components** (see `components-2x.png`).
 - *Bottom line:* the engraved key as a round cap in its own colour (✓ orange, ← grey, Call
@@ -123,14 +171,14 @@ licence, and Silkscreen (OFL) has no true lowercase, so neither is proposed.
 - *Counters:* +1 per 90 ms with a 260 ms `Y2` flash; a spend drops at once.
 - *Bubbles:* `?` blue, `!` red, white rounded bubble with a tail.
 - *Name tag:* ink tag with a pointer.
-- *Focus:* corner brackets, orange on the Companion, lamp cream on the Station.
+- *Focus:* corner brackets, orange on the Companion; on the Station a cream ring (`focus`).
 - *Flags, pins and signs:* the start flag, the teal pin, pod, bolt and hollow bolt on the map.
 - *Outpost:* flame big, medium and small for 3, 2 and 1 turns, then a dark door.
 - *Beacon:* a dark lamp, or a lit lamp with two-frame sparks.
 
 ![Palettes, storm table and type specimen at 2×](ui-kit/palette-type-2x.png)
 
-*The 48 Companion colours as ramps, the Station's 96, the DARK/LIGHT/veil/fade tables, and the Mibi 7×9 specimen.*
+*The 48 Companion colours as ramps, the DARK/LIGHT/veil/fade tables and the Mibi 7×9 specimen, at 2×. The Companion rows show the kit's first values; the signed values are in [`art/companion-48/palette/`](../../art/companion-48/palette/README.md). The "Station adds 48" rows are superseded by the Station palette above.*
 
 ![Components at 2×: HUD, bottom line, message box, menu, cards, bubbles, tags, focus, signs](ui-kit/components-2x.png)
 
