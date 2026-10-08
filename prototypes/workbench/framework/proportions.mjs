@@ -9,7 +9,7 @@
 // The measures are the animal's, rounded toward the toy proportions of the style guide (bigger
 // heads, shorter legs, fuller bodies), as fractions:
 //   depth  body depth over body length (trunk, no head)      width  body width over body length
-//   head   head length over body length                       shape  head shape: round, long, or mid
+//   head   head length over body length (0.32 is the small allele; a tiny head, 0.12, is the turtle's)   shape  head shape: round, mid, long, or tiny (a turtle)
 //   lift   head centre above the body axis: low, mid, high    neck   neck length over head length
 //   legs   leg length over body depth                         legR   leg thickness over body depth
 //   tail   tail length over body length                       tailR  tail thickness over body depth
@@ -36,16 +36,16 @@ export const KINDS = {
   S04: { resembles: "a cat", fur: "body", mass: "even", carry: "up", stance: "narrow", waist: "thick", depth: 0.55, width: 0.42, head: 0.42, shape: "round", lift: "mid", neck: 0.25, legs: 1.0, legR: 0.22, tail: 0.95, tailR: 0.13, ears: 0.48, set: 0.9, earW: 0.5, muzzle: 0.22, muzzleW: "broad", eyes: "big", eyeSet: "wide" },
   S05: { resembles: "a fox", fur: "tail", mass: "even", carry: "level", stance: "narrow", waist: "thick", depth: 0.46, width: 0.36, head: 0.4, shape: "long", lift: "mid", neck: 0.35, legs: 1.05, legR: 0.18, tail: 1.05, tailR: 0.3, ears: 0.9, set: 0.9, earW: 0.5, muzzle: 0.5, muzzleW: "narrow", eyes: "small", eyeSet: "close" },
   S06: { resembles: "a raccoon", fur: "tail", mass: "central", carry: "down", stance: "narrow", waist: "thick", depth: 0.5, width: 0.44, head: 0.36, shape: "mid", lift: "low", neck: 0.15, legs: 0.75, legR: 0.22, tail: 0.5, tailR: 0.24, ears: 0.3, set: 0.3, earW: 0.75, muzzle: 0.42, muzzleW: "narrow", eyes: "big", eyeSet: "close" },
-  S07: { resembles: "a badger or small bear", fur: "body", stance: "narrow", depth: 0.62, width: 0.6, head: 0.32, shape: "mid", lift: "low", legs: 0.65, legR: 0.3, ears: 0.3, set: 0.4, earW: 0.8, muzzle: 0.42, muzzleW: "broad", eyes: "small", eyeSet: "wide" },
-  S08: { resembles: "a goat or deer", horns: "straight", fur: "body", mass: "even", carry: "up", stance: "narrow", waist: "thick", depth: 0.44, width: 0.34, head: 0.34, shape: "long", lift: "high", neck: 0.9, legs: 1.5, legR: 0.14, tail: 0.3, tailR: 0.08, ears: 0.45, set: 0.2, earW: 0.5, muzzle: 0.65, muzzleW: "narrow", eyes: "small", eyeSet: "wide" },
-  S09: { resembles: "a big bird", crest: 0.55, wings: "big", mass: "central", carry: "level", stance: "narrow", waist: "thick", depth: 0.55, width: 0.5, head: 0.28, shape: "round", lift: "high", neck: 0.9, legs: 1.1, legR: 0.1, tail: 0.55, tailR: 0.22, eyes: "small", eyeSet: "wide" },
-  S10: { resembles: "an otter", fur: "body", form: "barrel", mass: "anterior", carry: "level", stance: "narrow", waist: "thick", depth: 0.3, width: 0.34, head: 0.26, shape: "mid", lift: "low", neck: 0.25, legs: 0.5, legR: 0.2, tail: 0.6, tailR: 0.28, ears: 0.14, set: 0.1, earW: 0.8, muzzle: 0.5, muzzleW: "broad", eyes: "small", eyeSet: "wide" },
-  S11: { resembles: "a turtle", stance: "wide", depth: 0.5, width: 0.64, head: 0.2, shape: "long", lift: "low", neck: 0.5, legs: 0.5, legR: 0.3, muzzle: 0.3, muzzleW: "broad", eyes: "small", eyeSet: "wide" },
-  S12: { resembles: "a moth or butterfly", wings: "big", antennae: "long", mass: "even", stance: "wide", waist: "thin", depth: 0.34, width: 0.34, head: 0.26, shape: "round", lift: "low", neck: 0.1, legs: 0.45, legR: 0.06, eyes: "big", eyeSet: "wide" },
-  S13: { resembles: "a beetle", back: "level", antennae: "short", mass: "central", stance: "wide", waist: "thick", form: "barrel", depth: 0.55, width: 0.6, head: 0.26, shape: "mid", lift: "low", neck: 0.1, legs: 0.35, legR: 0.1, eyes: "small", eyeSet: "wide" },
-  S14: { resembles: "a slug", antennae: "long", form: "barrel", mass: "anterior", waist: "thick", depth: 0.4, width: 0.44, head: 0.3, shape: "round", lift: "low", eyes: "small", eyeSet: "wide" },
-  S15: { resembles: "a walking plant", stance: "wide", head: 0.3, shape: "round", lift: "low", legs: 0.7, legR: 0.12, eyes: "big", eyeSet: "wide" },
-  S16: { resembles: "a wisp of lightning", mass: "even", waist: "thin", depth: 0.34, width: 0.3, head: 0.3, shape: "long", lift: "mid", neck: 0.3, eyes: "big", eyeSet: "close" },
+  S07: { resembles: "a badger or small bear", fur: "body", stance: "narrow", depth: 0.62, width: 0.6, head: 0.32, shape: "mid", lift: "low", legs: 0.65, legR: 0.5, ears: 0.36, set: 0.45, earW: 0.8, muzzle: 0.3, muzzleW: "narrow", eyes: "small", eyeSet: "wide" },
+  S08: { resembles: "a goat or deer", horns: "straight", fur: "body", mass: "even", carry: "up", stance: "narrow", waist: "thick", depth: 0.44, width: 0.34, head: 0.34, shape: "long", lift: "high", neck: 0.9, legs: 1.5, legR: 0.2, tail: 0.3, tailR: 0.08, ears: 0.45, set: 0.2, earW: 0.5, muzzle: 0.65, muzzleW: "narrow", eyes: "small", eyeSet: "wide" },
+  S09: { resembles: "a big bird", crest: 0.55, wings: "big", mass: "central", carry: "level", stance: "narrow", waist: "thick", depth: 0.55, width: 0.5, head: 0.32, shape: "round", lift: "high", neck: 0.9, legs: 1.1, legR: 0.1, tail: 0.55, tailR: 0.22, eyes: "small", eyeSet: "wide" },
+  S10: { resembles: "an otter", fur: "body", form: "barrel", mass: "anterior", carry: "level", stance: "narrow", waist: "thick", depth: 0.3, width: 0.34, head: 0.32, shape: "mid", lift: "low", neck: 0.25, legs: 0.9, legR: 0.35, tail: 0.7, tailR: 0.5, ears: 0.14, set: 0.1, earW: 0.8, muzzle: 0.65, muzzleW: "broad", eyes: "small", eyeSet: "wide" },
+  S11: { resembles: "a turtle", stance: "wide", depth: 0.5, width: 0.64, head: 0.12, shape: "tiny", lift: "low", neck: 0.5, legs: 0.4, legR: 0.3, muzzle: 0.3, muzzleW: "broad", eyes: "small", eyeSet: "wide" },
+  S12: { resembles: "a moth or butterfly", wings: "big", antennae: "long", mass: "even", stance: "wide", waist: "thin", depth: 0.34, width: 0.34, head: 0.32, shape: "round", lift: "low", neck: 0.1, legs: 0.3, legR: 0.06, eyes: "big", eyeSet: "wide" },
+  S13: { resembles: "a beetle", back: "level", antennae: "long", mass: "central", stance: "wide", waist: "thick", form: "barrel", depth: 0.55, width: 0.6, head: 0.32, shape: "mid", lift: "low", neck: 0.1, legs: 0.2, legR: 0.1, eyes: "small", eyeSet: "wide" },
+  S14: { resembles: "a slug", antennae: "long", form: "barrel", mass: "anterior", waist: "thick", depth: 0.4, width: 0.44, head: 0.32, shape: "round", lift: "low", eyes: "small", eyeSet: "wide" },
+  S15: { resembles: "a walking plant", stance: "wide", head: 0.32, shape: "round", lift: "low", legs: 0.7, legR: 0.12, eyes: "big", eyeSet: "wide" },
+  S16: { resembles: "a wisp of lightning", mass: "even", waist: "thin", depth: 0.34, width: 0.3, head: 0.32, shape: "long", lift: "mid", neck: 0.3, eyes: "big", eyeSet: "close" },
 };
 
 // The rig ratios the measures ask for (null where the measure is absent).
@@ -55,7 +55,7 @@ export function rigTargets(k) {
   if (k.width !== undefined) t["growth.core-width-ratio"] = k.width / GIRTH;
   if (rz !== null) t["growth.core-depth-ratio"] = rz;
   if (k.head !== undefined) t["growth.head-length-ratio"] = k.head / HEAD; // head length 2·HEAD·ratio·L over 2L
-  if (k.shape) { t["growth.head-width-ratio"] = { round: 0.46, mid: 0.39, long: 0.31 }[k.shape]; t["growth.head-depth-ratio"] = { round: 0.5, mid: 0.43, long: 0.36 }[k.shape]; } // HEAD 1.15 sits on top
+  if (k.shape) { t["growth.head-width-ratio"] = { round: 0.46, mid: 0.39, long: 0.31, tiny: 0.25 }[k.shape]; t["growth.head-depth-ratio"] = { round: 0.5, mid: 0.43, long: 0.36, tiny: 0.25 }[k.shape]; } // HEAD 1.15 sits on top
   if (k.lift) t["growth.head-lift-ratio"] = { low: 0.5, mid: 0.61, high: 0.72 }[k.lift];
   if (k.neck !== undefined) t["structure.join-neck-ratio"] = 0.65 + 0.3 * Math.min(1, k.neck); // rig: 0.3…0.8 of the join extent
   const depthL = rz !== null ? 2 * GIRTH * rz : 1; // body depth over L

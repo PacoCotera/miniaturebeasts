@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -56,7 +56,9 @@
    "wave": true,
    "fins": false,
    "float": false,
-   "stand": false
+   "stand": false,
+   "flapPairs": 1,
+   "flapRest": "raised"
   },
   "code": "R1·flaps",
   "rig": "R1",
@@ -1734,7 +1736,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S02",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "appearance.body-palette": [
      "coral",

@@ -160,8 +160,8 @@ ROSTER = [
     ("S09", "C09", "two|serial|bilateral|contact|zero|one|one|on|fur", "large"),         # big bird-like flier, one pair of legs (plans.json onePairPlans)
     ("S10", "C10", "three|serial|bilateral|contact|zero|one|two|off|fur", "medium"),     # otter-like swimmer
     ("S11", "C11", "one|serial|bilateral|contact|zero|one|two|off|scales", "large"),     # turtle-like
-    ("S12", "C12", "three|serial|bilateral|contact|zero|one|three|on|skin", "small"),    # insect flutterer
-    ("S13", "C13", "three|serial|bilateral|contact|zero|one|three|off|scales", "small"), # beetle-like crawler
+    ("S12", "C12", "three|serial|bilateral|contact|zero|one|three|on|skin", "small"),    # insect flutterer: two flap pairs laid flat over the back (plans.json twoPairFlapPlans)
+    ("S13", "C13", "three|serial|bilateral|contact|zero|one|three|off|scales", "small"), # beetle-like crawler: one domed case over the back (plans.json caseCovering)
     ("S14", "C14", "three|serial|bilateral|none|zero|one|two|off|skin", "small"),        # slug
     ("S15", "C15", "two|fan|radial|contact|zero|one|one|off|skin", "medium"),            # walking plant: a standing bulb, leaves on top, three root legs (plans.json standingPlans, onePairPlans)
     ("S16", "C16", "three|fan|bilateral|none|zero|one|two|off|skin", "medium"),          # lightning wisp: a vertical fan, a standing ribbon with two streamers (plans.json standingPlans)

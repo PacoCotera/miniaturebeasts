@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -56,7 +56,9 @@
    "wave": false,
    "fins": false,
    "float": false,
-   "stand": false
+   "stand": false,
+   "flapPairs": 1,
+   "flapRest": "raised"
   },
   "code": "B1·L4",
   "rig": "B1",
@@ -834,20 +836,25 @@
    "alleles": [
     "small",
     "medium",
-    "large"
+    "large",
+    "tiny"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
+    "between small and tiny",
     "medium",
     "between medium and large",
-    "large"
+    "between medium and tiny",
+    "large",
+    "between large and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "typical": [
-    "small",
-    "small"
+    "tiny",
+    "tiny"
    ]
   },
   {
@@ -863,17 +870,21 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "typical": [
-    "low",
-    "low"
+    "tiny",
+    "tiny"
    ]
   },
   {
@@ -889,17 +900,21 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
-    "low",
-    "low"
+    "tiny",
+    "tiny"
    ]
   },
   {
@@ -1866,8 +1881,8 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 86,
-  "stampBitsPerCopy": 33
+  "fieldGuideLooks": 96,
+  "stampBitsPerCopy": 35
  },
  "notYet": {
   "domains": [
@@ -1893,7 +1908,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S11",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "structure.attachment-position": [
      "high",
@@ -1960,16 +1975,16 @@
      "low"
     ],
     "growth.head-length-ratio": [
-     "small",
-     "small"
+     "tiny",
+     "tiny"
     ],
     "growth.head-width-ratio": [
-     "low",
-     "low"
+     "tiny",
+     "tiny"
     ],
     "growth.head-depth-ratio": [
-     "low",
-     "low"
+     "tiny",
+     "tiny"
     ],
     "growth.head-lift-ratio": [
      "low",
@@ -2076,20 +2091,20 @@
   "brief": "Kilpo: 1 body region (B1), a head, a snout, 2 eyes, 4 legs, wing cases; scales; plantigrade, neck head.",
   "bounds": {
    "min": [
-    -1.6843964363203,
-    -0.8601729023399283,
-    -0.018273319614091066
+    -1.4213528102172162,
+    -0.8844557265892619,
+    -0.037846698682012625
    ],
    "max": [
-    0.8360000000000001,
-    0.8601729023399283,
-    1.098974433521969
+    0.8892,
+    0.8844557265892619,
+    0.9982313680739243
    ]
   },
   "counts": {
    "nodes": 26,
    "edges": 25,
-   "vertices": 1242
+   "vertices": 1261
   }
  },
  "viability": {
@@ -2140,15 +2155,18 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large"
+   "large",
+   "tiny"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-lift-ratio": [
    "low",

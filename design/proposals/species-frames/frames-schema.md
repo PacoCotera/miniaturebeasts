@@ -50,3 +50,7 @@ Then by kind:
 - Locked copies are homozygous. A pod, founder or child whose locked copies differ from the frame is not this species.
 - A trait's three Create pictures come from the pod's own copies across all the trait's loci: *as the pod is*, *only the first*, *only the second*.
 - Drafts and empty domains are never given copies or a look. They are listed in `notYet`.
+
+## Catalogue ranges beyond catalogue6
+
+The workbench's catalogue (`prototypes/workbench/framework/catalogue.mjs`, pin `mb-genome-framework@8`) keeps every catalogue6 record exact and adds alleles under its own pin, listed in `ADDED_ALLELES` with the reason for each: hoof, webbed and root feet; one pair of legs; a huge size; tall ears; and, since pin 8, a **tiny** allele on the three head ratios (`growth.head-length-ratio` 0.22, `growth.head-width-ratio` 0.25, `growth.head-depth-ratio` 0.25), which lowers the head floor from 0.3–0.36 of a region to a quarter so a turtle's head fits (the programme lead's decision, 2026-10-08). A changed range is a new pin: frames and genomes record the pin and frame version (`frameVersion` 2 from pin 8) they were built against, and a saved mibi keeps its own.

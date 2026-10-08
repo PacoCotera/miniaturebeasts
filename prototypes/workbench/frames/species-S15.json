@@ -40,7 +40,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -55,7 +55,9 @@
    "wave": false,
    "fins": false,
    "float": false,
-   "stand": true
+   "stand": true,
+   "flapPairs": 1,
+   "flapRest": "raised"
   },
   "code": "Rfan2·rays",
   "rig": "Rfan2",
@@ -770,20 +772,25 @@
    "alleles": [
     "small",
     "medium",
-    "large"
+    "large",
+    "tiny"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
+    "between small and tiny",
     "medium",
     "between medium and large",
-    "large"
+    "between medium and tiny",
+    "large",
+    "between large and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "typical": [
-    "small",
-    "small"
+    "medium",
+    "tiny"
    ]
   },
   {
@@ -799,12 +806,16 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "typical": [
@@ -825,12 +836,16 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
@@ -1786,8 +1801,8 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 91,
-  "stampBitsPerCopy": 32
+  "fieldGuideLooks": 101,
+  "stampBitsPerCopy": 34
  },
  "notYet": {
   "domains": [
@@ -1812,7 +1827,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S15",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "structure.attachment-position": [
      "low",
@@ -1871,8 +1886,8 @@
      "medium"
     ],
     "growth.head-length-ratio": [
-     "small",
-     "small"
+     "medium",
+     "tiny"
     ],
     "growth.head-width-ratio": [
      "high",
@@ -1979,7 +1994,7 @@
   "brief": "Lehten: 4 body regions (Rfan2), a head, 2 eyes, 3 rays, 8 flaps; skin; rooted, fused head.",
   "bounds": {
    "min": [
-    -0.9837021216241199,
+    -0.9713488461799774,
     -0.6988569929454036,
     -0.002942618514637285
    ],
@@ -2052,15 +2067,18 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large"
+   "large",
+   "tiny"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-lift-ratio": [
    "low",

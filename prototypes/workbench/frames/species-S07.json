@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -56,7 +56,9 @@
    "wave": false,
    "fins": false,
    "float": false,
-   "stand": false
+   "stand": false,
+   "flapPairs": 1,
+   "flapRest": "raised"
   },
   "code": "B1·L4",
   "rig": "B1",
@@ -797,20 +799,25 @@
    "alleles": [
     "small",
     "medium",
-    "large"
+    "large",
+    "tiny"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
+    "between small and tiny",
     "medium",
     "between medium and large",
-    "large"
+    "between medium and tiny",
+    "large",
+    "between large and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "typical": [
-    "small",
-    "small"
+    "medium",
+    "tiny"
    ]
   },
   {
@@ -826,17 +833,21 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "typical": [
     "high",
-    "low"
+    "tiny"
    ]
   },
   {
@@ -852,12 +863,16 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
@@ -913,7 +928,7 @@
    ],
    "guard": "rig: muzzle.rxOverHeadRx",
    "typical": [
-    "long",
+    "short",
     "short"
    ]
   },
@@ -939,8 +954,8 @@
    ],
    "guard": "rig: muzzle.ryOverHeadRy",
    "typical": [
-    "high",
-    "high"
+    "low",
+    "low"
    ]
   },
   {
@@ -1944,8 +1959,8 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 89,
-  "stampBitsPerCopy": 36
+  "fieldGuideLooks": 99,
+  "stampBitsPerCopy": 38
  },
  "notYet": {
   "domains": [
@@ -1971,7 +1986,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S07",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "structure.attachment-position": [
      "low",
@@ -2038,12 +2053,12 @@
      "low"
     ],
     "growth.head-length-ratio": [
-     "small",
-     "small"
+     "medium",
+     "tiny"
     ],
     "growth.head-width-ratio": [
      "high",
-     "low"
+     "tiny"
     ],
     "growth.head-depth-ratio": [
      "high",
@@ -2054,12 +2069,12 @@
      "low"
     ],
     "growth.muzzle-projection-ratio": [
-     "long",
+     "short",
      "short"
     ],
     "growth.muzzle-width-ratio": [
-     "high",
-     "high"
+     "low",
+     "low"
     ],
     "growth.support-drop-ratio": [
      "long",
@@ -2174,20 +2189,20 @@
   "brief": "Azkon: 1 body region (B1), a head, a snout, 2 eyes, two ears, 4 legs; fur; plantigrade, fused head.",
   "bounds": {
    "min": [
-    -1.4502066425371993,
-    -0.6607387732484273,
+    -1.2988894083595108,
+    -0.6652607732484273,
     0
    ],
    "max": [
     0.8309748325,
-    0.6607387732484273,
-    1.9077900296591324
+    0.6652607732484273,
+    1.8976169085450123
    ]
   },
   "counts": {
    "nodes": 26,
    "edges": 25,
-   "vertices": 1006
+   "vertices": 975
   }
  },
  "viability": {
@@ -2261,15 +2276,18 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large"
+   "large",
+   "tiny"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-lift-ratio": [
    "low",

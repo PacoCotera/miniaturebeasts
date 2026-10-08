@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -56,7 +56,9 @@
    "wave": true,
    "fins": false,
    "float": false,
-   "stand": false
+   "stand": false,
+   "flapPairs": 1,
+   "flapRest": "raised"
   },
   "code": "B3·L4",
   "rig": "B3",
@@ -839,20 +841,25 @@
    "alleles": [
     "small",
     "medium",
-    "large"
+    "large",
+    "tiny"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
+    "between small and tiny",
     "medium",
     "between medium and large",
-    "large"
+    "between medium and tiny",
+    "large",
+    "between large and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "typical": [
-    "small",
-    "small"
+    "medium",
+    "tiny"
    ]
   },
   {
@@ -868,17 +875,21 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "typical": [
     "high",
-    "low"
+    "tiny"
    ]
   },
   {
@@ -894,12 +905,16 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
@@ -987,11 +1002,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
+    "medium",
     "short"
    ],
    "looks": [
-    "short"
+    "medium"
    ],
    "guard": "rig: support.rootToEndDropOverCoreRx",
    "nature": "look"
@@ -1030,7 +1045,7 @@
    "shapeable": false,
    "copies": [
     "fine",
-    "slender"
+    "stout"
    ],
    "looks": [
     "fine"
@@ -1998,8 +2013,8 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 65,
-  "stampBitsPerCopy": 26
+  "fieldGuideLooks": 75,
+  "stampBitsPerCopy": 28
  },
  "notYet": {
   "domains": [
@@ -2024,7 +2039,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S10",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "structure.attachment-position": [
      "high",
@@ -2107,12 +2122,12 @@
      "low"
     ],
     "growth.head-length-ratio": [
-     "small",
-     "small"
+     "medium",
+     "tiny"
     ],
     "growth.head-width-ratio": [
      "high",
-     "low"
+     "tiny"
     ],
     "growth.head-depth-ratio": [
      "high",
@@ -2131,7 +2146,7 @@
      "high"
     ],
     "growth.support-drop-ratio": [
-     "short",
+     "medium",
      "short"
     ],
     "growth.support-splay-ratio": [
@@ -2140,7 +2155,7 @@
     ],
     "growth.support-radius-ratio": [
      "fine",
-     "slender"
+     "stout"
     ],
     "growth.terminal-length-ratio": [
      "narrow",
@@ -2259,14 +2274,14 @@
   "brief": "Igara: 3 body regions (B3), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur; plantigrade, fused head.",
   "bounds": {
    "min": [
-    -0.9226497150945119,
-    -0.4963941018038529,
-    0.03954825000000001
+    -0.9019765737375223,
+    -0.505322101803853,
+    0.03954824999999995
    ],
    "max": [
-    1.710648162847121,
-    0.496394101803853,
-    1.1015051037695618
+    1.7093667263935655,
+    0.505322101803853,
+    1.3098328626779758
    ]
   },
   "counts": {
@@ -2323,15 +2338,18 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large"
+   "large",
+   "tiny"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-lift-ratio": [
    "low",
@@ -2425,7 +2443,7 @@
    "high"
   ],
   "growth.support-drop-ratio": [
-   "short",
+   "medium",
    "short"
   ],
   "growth.support-splay-ratio": [
@@ -2434,7 +2452,7 @@
   ],
   "growth.support-radius-ratio": [
    "fine",
-   "slender"
+   "stout"
   ],
   "growth.terminal-length-ratio": [
    "narrow",

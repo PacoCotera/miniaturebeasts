@@ -571,5 +571,11 @@
  "standingPlans": {
   "two|fan|radial|contact|zero|one|one|off|skin": "S15 Lehten, C15 (plan extra stand): a standing bulb on its up axis, the three fan arms leaves rising from its top, the three rays root legs below; the face in front. Decided by the programme lead 2026-10-08; built by prototypes/workbench/framework/rig.mjs.",
   "three|fan|bilateral|none|zero|one|two|off|skin": "S16 Blikur, C16 (plan extras stand, float, wave): a vertical fan, a tall thin ribbon standing on its up axis with the head on top and the two fan arms as streamers zigzagging down. Decided by the programme lead 2026-10-08; built by prototypes/workbench/framework/rig.mjs."
+ },
+ "twoPairFlapPlans": {
+  "three|serial|bilateral|contact|zero|one|three|on|skin": "S12 Peplos, C12 (plan extras flapPairs 2, flapRest flat): two flap pairs on the thorax, laid broadside over the back like a moth at rest, the hind pair shorter, not one pair in a V. Decided by the programme lead 2026-10-08; built by prototypes/workbench/framework/rig.mjs."
+ },
+ "caseCovering": {
+  "three|serial|bilateral|contact|zero|one|three|off|scales": "S13 Oskol, C13: the wing cases (anatomy.wing-case-presence) are one domed case over the whole back behind the head, drawn like the turtle's shell; a parted seam draws two halves. Decided by the programme lead 2026-10-08; built by prototypes/workbench/framework/rig.mjs."
  }
 }

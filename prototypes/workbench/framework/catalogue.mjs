@@ -1,4 +1,4 @@
-// The genome framework's catalogue, version 7: the v1 authoring catalogue6 (114 validated pairs
+// The genome framework's catalogue, version 8: the v1 authoring catalogue6 (114 validated pairs
 // and six drafts, snapshotted with provenance in catalogue6-data.mjs) plus the records the
 // taxonomy proposal lists as missing for the V1 roster (design/proposals/taxonomy.md §3, "What the
 // catalogue needs": 11 switches · 25 loci + 6 alleles) and the three gaps the species frames list
@@ -114,6 +114,10 @@ const ADDED_ALLELES = {
   "anatomy.support-pair-count": { alleles: [{ id: "one", label: "one", value: 1 }], pairMap: { "one|one": 1, "one|two": 2, "one|three": 2, "two|two": 2, "three|two": 3, "three|three": 3 }, why: "one pair of legs for the big bird (C09)" },
   "growth.core-half-length": { alleles: [{ id: "huge", label: "huge", value: 0.92 }], why: "a fourth size class above large, so bear- and deer-size read bigger than the puffball" },
   "growth.auricular-length-ratio": { alleles: [{ id: "tall", label: "tall", value: 1.4 }], why: "tall ears for the fox (C05): the clan's signature ear clears the head by two thirds of its height, which long (1.0) cannot" },
+  // Catalogue 8: the head-ratio floor lowered to 0.25 of a region so a turtle's head fits (S11, the lead's decision 2026-10-08).
+  "growth.head-length-ratio": { alleles: [{ id: "tiny", label: "tiny", value: 0.22 }], since: 8, why: "a head a quarter of its region long, for the turtle (C11); small (0.3) was the floor" },
+  "growth.head-width-ratio": { alleles: [{ id: "tiny", label: "tiny", value: 0.25 }], since: 8, why: "a head a quarter of its region wide, for the turtle (C11); low (0.31) was the floor" },
+  "growth.head-depth-ratio": { alleles: [{ id: "tiny", label: "tiny", value: 0.25 }], since: 8, why: "a head a quarter of its region deep, for the turtle (C11); low (0.36) was the floor" },
 };
 
 // v1 records whose consumer lived outside the construction target table (the shared pigments and
@@ -144,10 +148,10 @@ function v1Locus(l) {
   const added = ADDED_ALLELES[l.id];
   return {
     ...l, family, status, scope: "trunk", switch: sw, target: l.target ?? V1_TARGETS[l.id] ?? null,
-    ...(added ? { alleles: [...l.alleles, ...added.alleles], pairMap: added.pairMap ?? l.pairMap, version: l.version + 1, addedAlleles: { ids: added.alleles.map((a) => a.id), why: added.why } } : {}),
+    ...(added ? { alleles: [...l.alleles, ...added.alleles], pairMap: added.pairMap ?? l.pairMap, version: l.version + 1, addedAlleles: { ids: added.alleles.map((a) => a.id), why: added.why, since: added.since ?? 7 } } : {}),
     nature: DOING_FAMILIES.has(family) ? "doing" : "look",
     consumer: NEW_CONSUMERS[l.id] ?? (l.target ? `rig: ${l.target}` : DOING_FAMILIES.has(family) ? "behaviour: carried, weighed by the state machine" : null),
-    provenance: { catalogue: `${CATALOGUE6.id}@${CATALOGUE6.version}`, digest: CATALOGUE6.foundationDigest, recordVersion: l.version, ...(added ? { amended: "mb-genome-framework@7 adds alleles; the v1 record stays exact under its own pin" } : {}) },
+    provenance: { catalogue: `${CATALOGUE6.id}@${CATALOGUE6.version}`, digest: CATALOGUE6.foundationDigest, recordVersion: l.version, ...(added ? { amended: `mb-genome-framework@${added.since ?? 7} adds alleles; the v1 record stays exact under its own pin` } : {}) },
   };
 }
 function newLocus(l) {
@@ -160,7 +164,9 @@ function newLocus(l) {
 }
 
 export const CATALOGUE = {
-  id: "mb-genome-framework", version: 7, schema: "mb-catalogue/7",
+  // Pin 8: 7 plus the tiny head alleles (a changed range is a new pin; frames and genomes carry the pin
+  // they were built against, and a saved mibi keeps its own).
+  id: "mb-genome-framework", version: 8, schema: "mb-catalogue/8",
   parent: { id: CATALOGUE6.id, version: CATALOGUE6.version, foundationDigest: CATALOGUE6.foundationDigest, source: CATALOGUE6.source },
   families: CATALOGUE6.families,
   loci: [...CATALOGUE6.loci.map(v1Locus), ...NEW_LOCI.map(newLocus)],

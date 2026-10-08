@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -56,7 +56,9 @@
    "wave": true,
    "fins": false,
    "float": false,
-   "stand": false
+   "stand": false,
+   "flapPairs": 1,
+   "flapRest": "raised"
   },
   "code": "B2·L4",
   "rig": "B2",
@@ -1941,7 +1943,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S04",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "structure.attachment-position": [
      "high",
@@ -2205,12 +2207,12 @@
   "bounds": {
    "min": [
     -1.0337451403621691,
-    -0.3664310281242244,
+    -0.3712360281242244,
     0
    ],
    "max": [
-    1.7511800859367963,
-    0.36643102812422446,
+    1.6785259780311435,
+    0.3712360281242244,
     1.8789151261293857
    ]
   },

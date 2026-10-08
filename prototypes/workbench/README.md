@@ -1,5 +1,17 @@
 # Workbench: stage 0 of the art pipeline
 
+## Stage 0 report
+
+Stage 0 of [art-pipeline.md](../../design/proposals/art-pipeline.md) §2 is closed: a genome framework the generator reads directly, a deterministic structural sketch of every species, and the checks that say a species reads as its kind. This page is the report; the sections below are the detail.
+
+**What the rig does.** `framework/rig.mjs` builds a parametric 3D body from a resolved individual: a plan (the key of `taxonomy/plans.json` plus the per-species extras join, wave, fins, float, stand, flapPairs, flapRest) picks one of seven rigs, a limb set with its stations per region, a posture and a ground contact; the catalogue's loci set every ratio (girth, head, muzzle, ears, legs, tail, flaps, shell, cases, leaves, covering). Bodies are capsule, ellipsoid and ring-solid volumes with sheets and sweeps, every part rooted on its owner's actual facets with a witness inside both, validated against the compositional contract and reported, never repaired. The volume conventions (girth 1.35, head 1.15, legs 1.6, paws 1.35, fur and feathers as silhouette modifiers, regions sharing the size class's length, a neck that rises with head lift, standing fans) are the rig's, versioned with it; the proportions of each species are in its genome (`proportions.mjs`: an artist's measures of the animal it resembles, turned into rig ratios and then into locus copies).
+
+**How a frame becomes a specimen.** A species frame (`frames/species-S??.json`, `framework/species.mjs`) is built species first from the roster (`roster.mjs`: 16 clans with a plan, a signature and its defining parts; 16 species with a size, a tier, a seed, open traits by tier or by hand): the plan's switches say which trunk loci the body can carry, the clan adds its branch, everything else is absent; the signature and the species' measures lock their loci (a locked locus may hold a mixed pair), the open traits get pools and the type specimen's typical copies; two probes mark sleeping parts; 200 random individuals must build or the seed moves. The type specimen is the frame's default genome; any genome is resolved against its frame (`resolve.mjs`) into values the rig reads, built, validated, and rendered by the deterministic rasterizer (`raster.mjs`) at the 48 px tile, the Companion and the Station sizes, same genome same bytes, with a manifest in the cache format (`sketch/`). The page (`index.html`) edits a frame at the level a designer thinks in and re-renders at once.
+
+**The census gates** (`census.mjs`, run on the registry: 3,200 random individuals, all building). Two gates on the 48 px silhouette. The plan gate: every pair of plans' type specimens at a shape distance of at least 0.22 (1 − IoU in the same box; closest S02 and S07 at 0.35), so no plan collapses into another's family. The kind check: each species' side silhouette against the hand-drawn target of what it resembles (`frames/targets/`), the whole body's IoU as the coarse gate and, as the gate that decides, the clan's defining parts measured on the silhouette split by part against the target's tagged parts; a species passes when its parts score beats every wrong kind's target by 0.05, one pixel of one part on a 48 px head. All sixteen pass; cat, fox and raccoon each win their own.
+
+**Left for stage 1: the pipeline's plates from these volumes.** The sketch stops at form and slots: smooth volumes, flat pigment fields, index and marking passes, no craft. Stage 1 takes a species' type specimen and reference set (`sketch/cli.mjs --set N`) and makes the plates the masters draw from: the turnaround at Station and Companion scale with the slot map as the colour key and the marking masks as fields, the 48 px tile as the test every plate must still pass. Three things the rig cannot say are stage 1's to decide: the materials (fur, feathers, scales, the leaf mantle, sheen and the charged body are slot facts and silhouette modifiers here, not surfaces), the face (eyes are fixed inks, the mask a field; expression is a drawing), and the pose (every body stands in its reference pose; the state machine's states exist, its transitions do not). Also open: markings, mask and rings are fields the kind check does not weigh, so a plate's pattern is judged by eye; the behaviour loci are carried and weighed nowhere; and the targets are one person's thumbnails, so a target can be wrong as easily as a body.
+
 The internal authoring tool of [art-pipeline.md](../../design/proposals/art-pipeline.md) §2, stage 0: the genome framework the generator reads directly, the deterministic structural sketch, and the page where a designer locks a species and sees whether its expressions read. It ships no art. Plain Node 22 and ES modules in the browser, no dependencies; served at `/sandbox/workbench/` by the site workflow.
 
 ![The page: a raccoon-like frame (S06 Pesko) with a cross of two rolled individuals](img/page-cross.png)
@@ -58,7 +70,7 @@ Everything in the brief fitted the catalogue as records with owners and consumer
 | File | What it is |
 | --- | --- |
 | `catalogue6-data.mjs` | Snapshot of v1's catalogue6 with its foundation digest, generated by `tools/snapshot-v1-catalogue.mjs` |
-| `catalogue.mjs` | Catalogue 7: catalogue6 plus 47 new records, each tagged trunk or clan branch, with its owner and consumer: two ear proportions no record carried (ear set, ear width; the proportions milestone below) and the revised taxonomy's **11 switches · 25 loci + 5 alleles** (mammal look: fur reach, face mask and shape, tail rings and count, ear tilt; horns with curl and branching and a hoof foot; a beak, feathers, a feather crest and a one-pair allele; a shell with dome and plates; antennae, wing cases, flap markings and translucent flaps; a foot skirt and sheen; leaves, a leaf covering, light feeding and a root foot; a charged body with charge, phase and pull, the first fantastic-physiology loci; a webbed foot; a huge size), emission moved to the trunk, and the three gaps the frames list first (the tail-tip bulb for C03, a top cap sheet with its colour and spots for C02, a belly field and crest leaf count for C01). Six old records get their first consumer (regional growth, attachment position, neck ratio, fin span, fin steering, surface texture) and the transparency and uptake drafts close through flap translucency and light feeding |
+| `catalogue.mjs` | Catalogue 8: catalogue6 plus 47 new records and nine added alleles, each tagged trunk or clan branch, with its owner and consumer: two ear proportions no record carried (ear set, ear width; the proportions milestone below) and the revised taxonomy's **11 switches · 25 loci + 5 alleles** (mammal look: fur reach, face mask and shape, tail rings and count, ear tilt; horns with curl and branching and a hoof foot; a beak, feathers, a feather crest and a one-pair allele; a shell with dome and plates; antennae, wing cases, flap markings and translucent flaps; a foot skirt and sheen; leaves, a leaf covering, light feeding and a root foot; a charged body with charge, phase and pull, the first fantastic-physiology loci; a webbed foot; a huge size), emission moved to the trunk, and the three gaps the frames list first (the tail-tip bulb for C03, a top cap sheet with its colour and spots for C02, a belly field and crest leaf count for C01). Six old records get their first consumer (regional growth, attachment position, neck ratio, fin span, fin steering, surface texture) and the transparency and uptake drafts close through flap translucency and light feeding |
 | `plans.mjs` | The plan key of `taxonomy/plans.json` read into plan facts: the seven body rigs, the limb sets, limb stations per region, link count, posture and ground contact, neck or fused head, the state machine's states; the per-species extras (join, wave, fins, float, stand) |
 | `guards.mjs` | Owner guards ported from v1's resolver and the catalogue's `applicability`; decide what a plan carries and what an individual draws |
 | `resolve.mjs` | A frame and a genome become values and facts: the pan-genome resolver |
@@ -104,51 +116,51 @@ node tools/contact-sheet.mjs --out img/type-specimens.png   # the 16-species she
 
 ## The silhouette census
 
-Every plan's default body, rendered as a 48 px silhouette, must differ from every other plan's by a measured margin (art-pipeline.md §2). Built from the registry on 2026-10-08 (the parts pass), 200 random individuals per species, all 3,200 building and validating. The 16 species sit on 13 distinct plans (S04, S05, S06 and S08 share B2·L4·fur and differ by clan parts, size and finish, as the taxonomy intends), so the gate is between plans: every pair of type specimens on different plans at a shape distance of at least 0.22, where the distance is 1 − IoU of the two masks fitted into the same 48 px box, the larger of the three-quarter and side views. "Own-plan nearest" is the share of a species' individuals whose nearest type specimen is their own; a species with many open shape traits spreads more, by design.
+Every plan's default body, rendered as a 48 px silhouette, must differ from every other plan's by a measured margin (art-pipeline.md §2). Built from the registry on 2026-10-08 (the closing pass of stage 0), 200 random individuals per species, all 3,200 building and validating. The 16 species sit on 13 distinct plans (S04, S05, S06 and S08 share B2·L4·fur and differ by clan parts, size and finish, as the taxonomy intends), so the gate is between plans: every pair of type specimens on different plans at a shape distance of at least 0.22, where the distance is 1 − IoU of the two masks fitted into the same 48 px box, the larger of the three-quarter and side views. "Own-plan nearest" is the share of a species' individuals whose nearest type specimen is their own; a species with many open shape traits spreads more, by design.
 
 ![The 16 type specimens as 48 px silhouettes, three-quarter over side](img/silhouettes-48-2x.png)
 
 | Species | Plan | Rig | Built | Own-plan nearest | Mean distance to own specimen |
 | --- | --- | --- | ---: | ---: | ---: |
 | S01 Loika | B1·L4 | B1 | 200/200 | 76% | 0.07 |
-| S02 Untuva | R1·flaps | R1 | 200/200 | 92% | 0.15 |
-| S03 Tuikis | B2·L4 | B2 | 200/200 | 6% | 0.60 |
-| S04 Hiljan | B2·L4 | B2 | 200/200 | 100% | 0.16 |
-| S05 Tepor | B2·L4 | B2 | 200/200 | 87% | 0.30 |
-| S06 Pesko | B2·L4 | B2 | 200/200 | 39% | 0.44 |
-| S07 Azkon | B1·L4 | B1 | 200/200 | 65% | 0.34 |
-| S08 Rupar | B2·L4 | B2 | 200/200 | 18% | 0.62 |
-| S09 Belatz | B2·L2·flaps | B2 | 200/200 | 34% | 0.57 |
-| S10 Igara | B3·L4 | B3 | 200/200 | 91% | 0.35 |
-| S11 Kilpo | B1·L4 | B1 | 200/200 | 69% | 0.46 |
-| S12 Peplos | B3·L6·flaps | B3 | 200/200 | 100% | 0.08 |
-| S13 Oskol | B3·L6 | B3 | 200/200 | 67% | 0.38 |
-| S14 Usvel | B3 | B3 | 200/200 | 92% | 0.31 |
+| S02 Untuva | R1·flaps | R1 | 200/200 | 91% | 0.15 |
+| S03 Tuikis | B2·L4 | B2 | 200/200 | 13% | 0.62 |
+| S04 Hiljan | B2·L4 | B2 | 200/200 | 93% | 0.17 |
+| S05 Tepor | B2·L4 | B2 | 200/200 | 87% | 0.31 |
+| S06 Pesko | B2·L4 | B2 | 200/200 | 28% | 0.44 |
+| S07 Azkon | B1·L4 | B1 | 200/200 | 66% | 0.34 |
+| S08 Rupar | B2·L4 | B2 | 200/200 | 17% | 0.62 |
+| S09 Belatz | B2·L2·flaps | B2 | 200/200 | 39% | 0.56 |
+| S10 Igara | B3·L4 | B3 | 200/200 | 85% | 0.37 |
+| S11 Kilpo | B1·L4 | B1 | 200/200 | 73% | 0.41 |
+| S12 Peplos | B3·L6·flaps | B3 | 200/200 | 100% | 0.04 |
+| S13 Oskol | B3·L6 | B3 | 200/200 | 67% | 0.33 |
+| S14 Usvel | B3 | B3 | 200/200 | 73% | 0.31 |
 | S15 Lehten | Rfan2·rays | Rfan2 | 200/200 | 100% | 0.26 |
-| S16 Blikur | Bfan3 | Bfan | 200/200 | 100% | 0.31 |
+| S16 Blikur | Bfan3 | Bfan | 200/200 | 100% | 0.26 |
 
 Shape distance between type specimens; `*` marks a pair on the same plan, which the gate does not cover.
 
 | | S01 | S02 | S03 | S04 | S05 | S06 | S07 | S08 | S09 | S10 | S11 | S12 | S13 | S14 | S15 | S16 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **S01** | · | 0.52 | 0.82 | 0.71 | 0.69 | 0.62 | 0.49 | 0.60 | 0.67 | 0.74 | 0.68 | 0.68 | 0.63 | 0.63 | 0.58 | 0.74 |
-| **S02** | 0.52 | · | 0.76 | 0.67 | 0.72 | 0.56 | 0.35 | 0.72 | 0.70 | 0.67 | 0.58 | 0.62 | 0.54 | 0.67 | 0.52 | 0.78 |
-| **S03** | 0.82 | 0.76 | · | 0.67 | 0.71 | 0.68 | 0.81 | 0.80 | 0.80 | 0.49 | 0.76 | 0.78 | 0.67 | 0.76 | 0.77 | 0.88 |
-| **S04** | 0.71 | 0.67 | 0.67 | · | *0.52 | *0.61 | 0.66 | *0.79 | 0.69 | 0.52 | 0.63 | 0.73 | 0.59 | 0.72 | 0.67 | 0.83 |
-| **S05** | 0.69 | 0.72 | 0.71 | *0.52 | · | *0.65 | 0.72 | *0.69 | 0.67 | 0.65 | 0.67 | 0.77 | 0.69 | 0.69 | 0.71 | 0.81 |
-| **S06** | 0.62 | 0.56 | 0.68 | *0.61 | *0.65 | · | 0.61 | *0.71 | 0.72 | 0.54 | 0.54 | 0.66 | 0.49 | 0.72 | 0.60 | 0.77 |
-| **S07** | 0.49 | 0.35 | 0.81 | 0.66 | 0.72 | 0.61 | · | 0.72 | 0.66 | 0.70 | 0.61 | 0.66 | 0.63 | 0.70 | 0.57 | 0.80 |
-| **S08** | 0.60 | 0.72 | 0.80 | *0.79 | *0.69 | *0.71 | 0.72 | · | 0.62 | 0.74 | 0.77 | 0.74 | 0.75 | 0.71 | 0.68 | 0.75 |
-| **S09** | 0.67 | 0.70 | 0.80 | 0.69 | 0.67 | 0.72 | 0.66 | 0.62 | · | 0.72 | 0.74 | 0.77 | 0.74 | 0.76 | 0.64 | 0.77 |
-| **S10** | 0.74 | 0.67 | 0.49 | 0.52 | 0.65 | 0.54 | 0.70 | 0.74 | 0.72 | · | 0.61 | 0.70 | 0.50 | 0.72 | 0.68 | 0.84 |
-| **S11** | 0.68 | 0.58 | 0.76 | 0.63 | 0.67 | 0.54 | 0.61 | 0.77 | 0.74 | 0.61 | · | 0.61 | 0.45 | 0.77 | 0.64 | 0.83 |
-| **S12** | 0.68 | 0.62 | 0.78 | 0.73 | 0.77 | 0.66 | 0.66 | 0.74 | 0.77 | 0.70 | 0.61 | · | 0.63 | 0.56 | 0.72 | 0.84 |
-| **S13** | 0.63 | 0.54 | 0.67 | 0.59 | 0.69 | 0.49 | 0.63 | 0.75 | 0.74 | 0.50 | 0.45 | 0.63 | · | 0.65 | 0.61 | 0.80 |
-| **S14** | 0.63 | 0.67 | 0.76 | 0.72 | 0.69 | 0.72 | 0.70 | 0.71 | 0.76 | 0.72 | 0.77 | 0.56 | 0.65 | · | 0.72 | 0.76 |
-| **S15** | 0.58 | 0.52 | 0.77 | 0.67 | 0.71 | 0.60 | 0.57 | 0.68 | 0.64 | 0.68 | 0.64 | 0.72 | 0.61 | 0.72 | · | 0.72 |
-| **S16** | 0.74 | 0.78 | 0.88 | 0.83 | 0.81 | 0.77 | 0.80 | 0.75 | 0.77 | 0.84 | 0.83 | 0.84 | 0.80 | 0.76 | 0.72 | · |
+| **S01** | · | 0.53 | 0.81 | 0.69 | 0.69 | 0.62 | 0.52 | 0.58 | 0.68 | 0.72 | 0.66 | 0.72 | 0.64 | 0.63 | 0.58 | 0.74 |
+| **S02** | 0.53 | · | 0.75 | 0.65 | 0.72 | 0.55 | 0.36 | 0.72 | 0.70 | 0.64 | 0.52 | 0.76 | 0.63 | 0.67 | 0.52 | 0.78 |
+| **S03** | 0.81 | 0.75 | · | 0.67 | 0.71 | 0.71 | 0.81 | 0.80 | 0.80 | 0.64 | 0.75 | 0.66 | 0.68 | 0.74 | 0.76 | 0.87 |
+| **S04** | 0.69 | 0.65 | 0.67 | · | *0.48 | *0.61 | 0.66 | *0.79 | 0.69 | 0.43 | 0.62 | 0.70 | 0.67 | 0.71 | 0.65 | 0.84 |
+| **S05** | 0.69 | 0.72 | 0.71 | *0.48 | · | *0.65 | 0.76 | *0.70 | 0.67 | 0.64 | 0.66 | 0.70 | 0.72 | 0.69 | 0.71 | 0.81 |
+| **S06** | 0.62 | 0.55 | 0.71 | *0.61 | *0.65 | · | 0.63 | *0.71 | 0.72 | 0.52 | 0.59 | 0.67 | 0.59 | 0.71 | 0.60 | 0.77 |
+| **S07** | 0.52 | 0.36 | 0.81 | 0.66 | 0.76 | 0.63 | · | 0.74 | 0.66 | 0.67 | 0.55 | 0.79 | 0.69 | 0.71 | 0.59 | 0.80 |
+| **S08** | 0.58 | 0.72 | 0.80 | *0.79 | *0.70 | *0.71 | 0.74 | · | 0.66 | 0.76 | 0.75 | 0.73 | 0.73 | 0.69 | 0.68 | 0.73 |
+| **S09** | 0.68 | 0.70 | 0.80 | 0.69 | 0.67 | 0.72 | 0.66 | 0.66 | · | 0.70 | 0.68 | 0.78 | 0.77 | 0.77 | 0.64 | 0.78 |
+| **S10** | 0.72 | 0.64 | 0.64 | 0.43 | 0.64 | 0.52 | 0.67 | 0.76 | 0.70 | · | 0.59 | 0.67 | 0.66 | 0.76 | 0.64 | 0.84 |
+| **S11** | 0.66 | 0.52 | 0.75 | 0.62 | 0.66 | 0.59 | 0.55 | 0.75 | 0.68 | 0.59 | · | 0.76 | 0.63 | 0.76 | 0.59 | 0.81 |
+| **S12** | 0.72 | 0.76 | 0.66 | 0.70 | 0.70 | 0.67 | 0.79 | 0.73 | 0.78 | 0.67 | 0.76 | · | 0.55 | 0.55 | 0.73 | 0.85 |
+| **S13** | 0.64 | 0.63 | 0.68 | 0.67 | 0.72 | 0.59 | 0.69 | 0.73 | 0.77 | 0.66 | 0.63 | 0.55 | · | 0.53 | 0.67 | 0.81 |
+| **S14** | 0.63 | 0.67 | 0.74 | 0.71 | 0.69 | 0.71 | 0.71 | 0.69 | 0.77 | 0.76 | 0.76 | 0.55 | 0.53 | · | 0.72 | 0.76 |
+| **S15** | 0.58 | 0.52 | 0.76 | 0.65 | 0.71 | 0.60 | 0.59 | 0.68 | 0.64 | 0.64 | 0.59 | 0.73 | 0.67 | 0.72 | · | 0.72 |
+| **S16** | 0.74 | 0.78 | 0.87 | 0.84 | 0.81 | 0.77 | 0.80 | 0.73 | 0.78 | 0.84 | 0.81 | 0.85 | 0.81 | 0.76 | 0.72 | · |
 
-Closest pair of plans: S02 Untuva and S07 Azkon at 0.35. No pair of plans below the margin. Species sharing a plan are not gated; the closest are S04 Hiljan and S05 Tepor at 0.52. No plan collapses into another's silhouette family. The spread within a species is widest where its open traits move the most body: S03 Tuikis opens Head and head lift swings the neck's rise; S08 Rupar and S09 Belatz open legs and neck on long-legged, long-necked bodies. `framework/census.md` and `census.json` are the current run.
+Closest pair of plans: S02 Untuva and S07 Azkon at 0.36. No pair of plans below the margin. Species sharing a plan are not gated; the closest are S04 Hiljan and S05 Tepor at 0.48.. No plan collapses into another's silhouette family. The spread within a species is widest where its open traits move the most body: S03 Tuikis opens Head and head lift swings the neck's rise; S08 Rupar and S09 Belatz open legs and neck on long-legged, long-necked bodies. `framework/census.md` and `census.json` are the current run.
 
 ### Reads as its kind
 
@@ -163,9 +175,26 @@ The second check of the census: each species' type specimen, as its 48 px side s
 
 *Per species, left to right: the hand-drawn target, the type specimen's side silhouette, and the overlay (dark where both, red where only the body, blue where only the target). 2×.*
 
+| Species | Body IoU own | best wrong | Parts measured | Parts own | best wrong kind | Parts margin | Individuals own | Verdict |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| S01 Loika | 0.59 | S02 0.45 | crest, leg, head, body | 0.92 | S09 0.80 | +0.12 | 76% | reads |
+| S02 Untuva | 0.80 | S07 0.66 | flap, head | 0.75 | S09 0.68 | +0.07 | 62% | reads |
+| S03 Tuikis | 0.44 | S14 0.39 | tail, crest, leg | 0.73 | S09 0.51 | +0.22 | 83% | reads |
+| S04 Hiljan | 0.45 · | S05 0.52 | ear, muzzle, tail, head | 0.89 | S06 0.81 | +0.08 | 100% | reads |
+| S05 Tepor | 0.42 | S06 0.36 | muzzle, ear, tail | 0.82 | S06 0.63 | +0.18 | 100% | reads |
+| S06 Pesko | 0.42 · | S10 0.43 | muzzle, ear, tail | 0.85 | S04 0.79 | +0.06 | 83% | reads |
+| S07 Azkon | 0.74 | S01 0.66 | muzzle, ear, leg, tail | 0.91 | S06 0.68 | +0.23 | 97% | reads |
+| S08 Rupar | 0.36 · | S09 0.41 | crest, leg, muzzle | 0.69 | S09 0.56 | +0.13 | 27% | reads |
+| S09 Belatz | 0.46 | S06 0.38 | muzzle, leg, crest, tail | 0.64 | S06 0.52 | +0.11 | 58% | reads |
+| S10 Igara | 0.55 · | S03 0.54 | tail, leg, muzzle | 0.84 | S06 0.78 | +0.06 | 12% | reads |
+| S11 Kilpo | 0.38 · | S13 0.63 | shell, leg, head | 0.76 | S13 0.67 | +0.09 | 64% | reads |
+| S12 Peplos | 0.32 · | S14 0.43 | flap, antenna, leg | 0.56 | S09 0.38 | +0.18 | 100% | reads |
+| S13 Oskol | 0.45 · | S14 0.61 | antenna, leg, shell | 0.70 | S11 0.55 | +0.14 | 85% | reads |
+| S14 Usvel | 0.48 | S09 0.38 | antenna, skirt, body | 0.55 | S02 0.27 | +0.28 | 100% | reads |
+| S15 Lehten | 0.56 · | S02 0.56 | leaf, leg, body | 0.49 | S01 0.35 | +0.14 | 78% | reads |
+| S16 Blikur | 0.43 | S15 0.35 | body, head | 0.89 | S15 0.63 | +0.25 | 100% | reads |
 
-
-Ten of sixteen read as their kind by parts, eight by the coarse gate. The lead's test holds: S04 Hiljan, S05 Tepor and S06 Pesko each win their own parts score (the cat by 0.06 over the raccoon target, the raccoon by 0.06 over the cat's, the fox by 0.18), and each is nearest a different wrong kind than before, now that ears, muzzle and tail are measured on their own. Not yet: S07 Azkon scores nearer the raccoon target (its muzzle and legs sit between the two targets); S08 Rupar is 0.03 short against the bird (long legs and a long neck); S10 Igara ties the fox (a low body with a tail); S11 Kilpo's head is twice the target's (the catalogue's smallest head is 0.36 of a region's length, too big for a turtle); S12 Peplos's wings reach 0.41 of its height where the target's reach the whole of it (one pair held in a V, no second pair); S13 Oskol's wing cases cover a third of it where the target's beetle is all case.
+All sixteen read as their kind by parts; eight by the coarse gate alone (the gate stays, reported beside: it says a cat is not a bear, and the parts say it is not a fox). The narrowest margins are S04 Hiljan against the raccoon target and S06 Pesko against the cat's, 0.06–0.08, which is what two clans that share a plan and differ by ears, muzzle and tail should show at 48 px; the widest are the kinds with a part no other has (the slug's skirt, the wisp's standing body, the bear's no-tail).
 
 ## Proportions and parts by kind
 
@@ -173,7 +202,7 @@ The lead's review of the volume rig: the turtle, the slug and the bear read; S04
 
 **Measures by kind** (`proportions.mjs`). For each of the 16 species the taxonomy's "resembles" line gives an animal; `KINDS` holds the measures an artist takes on it in side view, rounded toward the toy proportions of the style guide (bigger heads, shorter legs, fuller bodies): body depth and width over body length, head over body, head shape (round, mid, long), head lift, neck over head length, legs over body depth and their thickness, tail length over body and thickness, how the tail is carried, ear height, set and width, muzzle length and width, eyes, stance, waist, mass and body form. `rigTargets` turns each measure into the rig ratio that draws it (girth over L is 1.35 times the ratio, the head 1.15, legs 1.6, as the volume rig's conventions say), and `nearestPair` picks the copies of the locus that carries the ratio: homozygous, or a mixed pair when the measure falls between two alleles (a cat's legs at 0.80 of L are `short|long`). The result goes into the frame twice: as the locked copies where the species keeps the trait closed, and as the **typical copies** of an open locus, which the type specimen takes instead of the middle of the pool; the pool still varies round them. The frame schema gained `typical` on open loci and mixed `copies` on locked ones; the resolver, crosses and the whole-genome check needed nothing.
 
-**Loci.** Every measure but two had a trunk locus already (core width and depth, head length, width, depth and lift, muzzle projection and width, neck ratio, support drop, radius and splay, tail length, width and bend, ear length and tilt, eye size and spacing, join throat, regional growth, longitudinal form). The two the catalogue lacked are added as trunk records owned by the ears: `growth.auricular-set-ratio` (side or crown: where on the head the ear roots, and how far it leans) and `growth.auricular-width-ratio` (narrow or broad over the ear's height). Catalogue 7 now carries 47 new records.
+**Loci.** Every measure but two had a trunk locus already (core width and depth, head length, width, depth and lift, muzzle projection and width, neck ratio, support drop, radius and splay, tail length, width and bend, ear length and tilt, eye size and spacing, join throat, regional growth, longitudinal form). The two the catalogue lacked are added as trunk records owned by the ears: `growth.auricular-set-ratio` (side or crown: where on the head the ear roots, and how far it leans) and `growth.auricular-width-ratio` (narrow or broad over the ear's height). The catalogue now carries 47 new records.
 
 **Rig changes the measures needed** (`rig.mjs`): a serial body shares the size class's length among its regions (v1 gave every region the full L, which is where the four-to-one bodies came from; a two-region mammal is now one body with a chest and hindquarters), so tails and legs measure against L, not the region; a thick waist closes the gap between regions so they read as one body with a dip; head lift sets the neck's rise (level for a cat, steep for a deer or a bird) and the neck ratio its length up to two head lengths; a long muzzle is a tapered snout; ears take their set and width from the new loci; legs may be up to half the body's cross radius thick; a thin tail keeps a floor at its tip so it survives 48 px.
 
@@ -181,10 +210,12 @@ The lead's review of the volume rig: the turtle, the slug and the bear read; S04
 
 **The kind check** (`targets.mjs`, `frames/targets/`). Sixteen hand-drawn targets, one per species: the animal of the "resembles" line blocked in from ellipses, capsules, polygons and domes on a 100×100 canvas, side view facing right, the way a thumbnail is drawn, every primitive tagged with the part it draws (body, head, muzzle, ear, tail, leg, crest, antenna, flap, shell, skirt, leaf) and a note saying what was drawn. The census rasterizes each into the 48 px box exactly as it fits a body's silhouette, whole and per part, and reports the coarse gate and the parts score above. The first pass of this milestone scored whole-body IoU only and could not tell a cat from a fox from a raccoon (their targets overlap each other at 0.60–0.65); the parts score is the lead's answer to that, and it separates the three.
 
-**More measures the parts asked for** (`proportions.mjs`): fur reach (a brush on the fox and the raccoon, as the type specimen's typical copies, since the trait is open), tail carry, stance, waist, mass, body form, crest height, back line, horn curl, wings and antennae; and one more allele in the catalogue, **tall** on `growth.auricular-length-ratio` (1.4), because the fox's signature ear clears the head by two thirds of its height and the long allele (1.0) cannot. Catalogue 7 carries 47 new records and 6 added alleles.
+**More measures the parts asked for** (`proportions.mjs`): fur reach (a brush on the fox and the raccoon, as the type specimen's typical copies, since the trait is open), tail carry, stance, waist, mass, body form, crest height, back line, horn curl, wings and antennae; and one more allele in the catalogue, **tall** on `growth.auricular-length-ratio` (1.4), because the fox's signature ear clears the head by two thirds of its height and the long allele (1.0) cannot. Catalogue 8 carries 47 new records and 9 added alleles.
 
 **Two rig decisions of the lead's, built here** (`rig.mjs`, plan extra `stand`, `taxonomy/plans.json` `standingPlans`): S15 Lehten is a standing bulb on its up axis, its three fan arms leaves rising from the top, its three rays root legs below (C15's plan is now the one-pair radial fan `two|fan|radial|contact|zero|one|one|off|skin`, 3 rays, listed under `onePairPlans`); S16 Blikur is a vertical fan, a tall thin ribbon standing on its up axis with the head on top and its two fan arms streamers zigzagging down. Both are in taxonomy.py's roster rows; both pass the kind check. Also from this pass: a serial body's regions are never discs (a region is at least 0.85 as long as its larger cross radius, so a wide three-region body is a long one, not three wheels on an axle); a cupped ear shows its width from the side; wing cases root on the thorax and cover the abdomen; a fused head with a high lift sits up on the body (S01); horns, beaks and antennae are long enough to read.
 
+**The closing pass** (catalogue 8). Three more decisions of the lead's: the head-ratio floor lowered to a quarter of a region so a turtle's head fits (a **tiny** allele on `growth.head-length-ratio` 0.22, `growth.head-width-ratio` 0.25 and `growth.head-depth-ratio` 0.25; a changed range is a new pin, so the catalogue is `mb-genome-framework@8` and genomes carry `frameVersion` 2, while a saved mibi keeps the pin and version it was born with; recorded in `species-frames/frames-schema.md`); S12 Peplos's two flap pairs on the thorax, laid broadside over the back like a moth at rest and sloping down past the abdomen, as plan extras `flapPairs: 2` and `flapRest: "flat"` (`plans.json` `twoPairFlapPlans`); S13 Oskol's wing cases as one domed case over the whole back behind the head, drawn like the turtle's shell as a barrel so the body stays under it (`plans.json` `caseCovering`). Then the tuning the parts score named: the bear toward its own target on muzzle and leg bulk and a tail it does not have (a part both body and target lack now counts as a match, which is what "no tail" means), the otter's muzzle and legs, the turtle's shell and legs, and a tail carried up curling up 1.4 times the locus bend. Nine added alleles in all: hoof, webbed and root feet, one pair of legs, a huge size, tall ears, three tiny head ratios.
+
 ## What this does not claim
 
-The sketch stops at form and slots: smooth volumes, flat fields, no craft. Six species do not yet pass the kind check by parts (the table above says which and by how much); the targets are mine, drawn from one line each, and a target can be wrong as easily as a body. The parts score measures what a silhouette carries; markings, the mask and the rings are pigment fields the slot passes show and this check does not weigh. Feathers, the leaf mantle and sheen are labels and slot facts for the masters, not drawn materials. Behaviour loci are carried and weighed nowhere yet; the state machine's states come from the plan, its transitions do not exist. Nothing here is art, and nothing here changes a gene.
+The sketch stops at form and slots: smooth volumes, flat fields, no craft. All sixteen pass the kind check by parts and eight the coarse gate; the targets are mine, drawn from one line each, and a target can be wrong as easily as a body. The parts score measures what a silhouette carries; markings, the mask and the rings are pigment fields the slot passes show and this check does not weigh. Feathers, the leaf mantle and sheen are labels and slot facts for the masters, not drawn materials. Behaviour loci are carried and weighed nowhere yet; the state machine's states come from the plan, its transitions do not exist. Nothing here is art, and nothing here changes a gene.

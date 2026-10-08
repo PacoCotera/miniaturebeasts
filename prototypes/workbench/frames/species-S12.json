@@ -42,7 +42,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -57,7 +57,9 @@
    "wave": false,
    "fins": false,
    "float": false,
-   "stand": false
+   "stand": false,
+   "flapPairs": 2,
+   "flapRest": "flat"
   },
   "code": "B3·L6·flaps",
   "rig": "B3",
@@ -693,11 +695,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "small",
-    "small"
+    "medium",
+    "tiny"
    ],
    "looks": [
-    "small"
+    "medium"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "nature": "look"
@@ -1735,7 +1737,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S12",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "structure.attachment-position": [
      "low",
@@ -1814,8 +1816,8 @@
      "low"
     ],
     "growth.head-length-ratio": [
-     "small",
-     "small"
+     "medium",
+     "tiny"
     ],
     "growth.head-width-ratio": [
      "high",
@@ -1939,23 +1941,23 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 2 flaps; skin; splayed, neck head.",
+  "brief": "Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head.",
   "bounds": {
    "min": [
-    -0.9334700317270626,
-    -0.6335063855764995,
-    0
+    -0.9264922295781635,
+    -0.8207746619633426,
+    -0.1668703527415475
    ],
    "max": [
-    0.7691595923515492,
-    0.6335063855764995,
-    1.2638190163702423
+    1.4707543594035566,
+    0.8207746619633425,
+    1.2220582796251263
    ]
   },
   "counts": {
-   "nodes": 45,
-   "edges": 44,
-   "vertices": 1885
+   "nodes": 47,
+   "edges": 46,
+   "vertices": 1901
   }
  },
  "viability": {
@@ -2060,8 +2062,8 @@
    "low"
   ],
   "growth.head-length-ratio": [
-   "small",
-   "small"
+   "medium",
+   "tiny"
   ],
   "growth.head-width-ratio": [
    "high",

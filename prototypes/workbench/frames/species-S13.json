@@ -40,7 +40,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -55,7 +55,9 @@
    "wave": false,
    "fins": false,
    "float": false,
-   "stand": false
+   "stand": false,
+   "flapPairs": 1,
+   "flapRest": "raised"
   },
   "code": "B3·L6",
   "rig": "B3",
@@ -738,20 +740,25 @@
    "alleles": [
     "small",
     "medium",
-    "large"
+    "large",
+    "tiny"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
+    "between small and tiny",
     "medium",
     "between medium and large",
-    "large"
+    "between medium and tiny",
+    "large",
+    "between large and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "typical": [
-    "small",
-    "small"
+    "medium",
+    "tiny"
    ]
   },
   {
@@ -767,17 +774,21 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "typical": [
     "high",
-    "low"
+    "tiny"
    ]
   },
   {
@@ -793,12 +804,16 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
@@ -1245,11 +1260,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "short",
-    "short"
+    "long",
+    "long"
    ],
    "looks": [
-    "short"
+    "long"
    ],
    "guard": "rig: antenna length over head depth",
    "nature": "look"
@@ -1814,8 +1829,8 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 62,
-  "stampBitsPerCopy": 25
+  "fieldGuideLooks": 72,
+  "stampBitsPerCopy": 27
  },
  "notYet": {
   "domains": [
@@ -1840,7 +1855,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S13",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "structure.attachment-position": [
      "high",
@@ -1911,12 +1926,12 @@
      "low"
     ],
     "growth.head-length-ratio": [
-     "small",
-     "small"
+     "medium",
+     "tiny"
     ],
     "growth.head-width-ratio": [
      "high",
-     "low"
+     "tiny"
     ],
     "growth.head-depth-ratio": [
      "high",
@@ -1999,8 +2014,8 @@
      "on"
     ],
     "growth.antenna-length-ratio": [
-     "short",
-     "short"
+     "long",
+     "long"
     ],
     "anatomy.antenna-form": [
      "thread",
@@ -2039,20 +2054,20 @@
   "brief": "Oskol: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, wing cases; scales; splayed, neck head.",
   "bounds": {
    "min": [
-    -0.645451461245613,
+    -0.8645154432970865,
     -0.7396572774778807,
     0
    ],
    "max": [
     0.9206136131443694,
     0.7396572774778807,
-    0.8256723579179857
+    0.9991862399452036
    ]
   },
   "counts": {
-   "nodes": 41,
-   "edges": 40,
-   "vertices": 1513
+   "nodes": 40,
+   "edges": 39,
+   "vertices": 1475
   }
  },
  "viability": {
@@ -2079,15 +2094,18 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large"
+   "large",
+   "tiny"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-lift-ratio": [
    "low",
@@ -2233,8 +2251,8 @@
    "on"
   ],
   "growth.antenna-length-ratio": [
-   "short",
-   "short"
+   "long",
+   "long"
   ],
   "anatomy.antenna-form": [
    "thread",

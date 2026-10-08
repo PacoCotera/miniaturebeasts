@@ -40,7 +40,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -55,7 +55,9 @@
    "wave": true,
    "fins": false,
    "float": false,
-   "stand": false
+   "stand": false,
+   "flapPairs": 1,
+   "flapRest": "raised"
   },
   "code": "B3",
   "rig": "B3",
@@ -625,11 +627,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "small",
-    "small"
+    "medium",
+    "tiny"
    ],
    "looks": [
-    "small"
+    "medium"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "nature": "look"
@@ -1528,7 +1530,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S14",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "appearance.body-palette": [
      "plum",
@@ -1591,8 +1593,8 @@
      "low"
     ],
     "growth.head-length-ratio": [
-     "small",
-     "small"
+     "medium",
+     "tiny"
     ],
     "growth.head-width-ratio": [
      "high",
@@ -1679,14 +1681,14 @@
   "brief": "Usvel: 3 body regions (B3), a head, 2 eyes, two antennae, a foot skirt; skin; belly, fused head.",
   "bounds": {
    "min": [
-    -0.8509137811869399,
-    -0.31779544344419297,
+    -0.8467725285182318,
+    -0.3170398573749121,
     -0.005161320000000025
    ],
    "max": [
     0.6649021957633023,
-    0.31779544344419297,
-    0.988715496619392
+    0.3170398573749121,
+    0.9867763157801978
    ]
   },
   "counts": {
@@ -1790,8 +1792,8 @@
    "small"
   ],
   "growth.head-length-ratio": [
-   "small",
-   "small"
+   "medium",
+   "tiny"
   ],
   "growth.head-width-ratio": [
    "high",

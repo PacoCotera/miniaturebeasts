@@ -2,7 +2,7 @@
  "schema": "mb-frame-registry/1",
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,

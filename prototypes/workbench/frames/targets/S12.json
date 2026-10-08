@@ -9,16 +9,16 @@
   100,
   100
  ],
- "note": "a small furry body, a small head with two antennae, a big upper wing and a lower wing standing off the body, six thin legs",
+ "note": "a small furry body, a small head with two antennae, two wing pairs laid broadside over the back like a moth at rest, sloping down and back past the abdomen, six short legs",
  "shapes": [
-  {"capsule":[40,66,70,62,7,6],"part":"body"},
+  {"capsule":[36,66,70,62,7,6],"part":"body"},
   {"ellipse":[76,60,5,5],"part":"head"},
   {"capsule":[78,56,85,46,1],"part":"antenna"},
   {"capsule":[76,55,79,44,1],"part":"antenna"},
-  {"polygon":[[44,60],[20,30],[36,22],[66,54]],"part":"flap"},
-  {"polygon":[[36,66],[14,76],[22,88],[50,70]],"part":"flap"},
-  {"capsule":[52,70,50,86,1.2],"part":"leg"},
-  {"capsule":[60,70,62,86,1.2],"part":"leg"},
-  {"capsule":[44,70,40,86,1.2],"part":"leg"}
+  {"polygon":[[66,56],[48,34],[14,44],[10,62],[40,70]],"part":"flap"},
+  {"polygon":[[56,62],[26,66],[16,80],[44,74]],"part":"flap"},
+  {"capsule":[52,70,50,82,1.2],"part":"leg"},
+  {"capsule":[60,70,62,82,1.2],"part":"leg"},
+  {"capsule":[44,70,40,82,1.2],"part":"leg"}
  ]
 }
