@@ -1,0 +1,41 @@
+{
+ "id": "C48-H-r6-B",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "64x58",
+ "prompt": "a small round shelter planted on the ground, a base row of stones meeting the grass, a soft shadow, a calm low thatched roof of two bands with no cupola, a door with a step, a window with a warm light, a hanging lantern, a rope or a bundle against the wall, from above, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-huts/inputs/hut-B-in.png",
+  "sha256": "44237da12fc0e23a73f2999e3d2f3eb86c2b5b4f4e49b33811318e5d304b9fdf",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T21:24:31Z",
+ "checkCost": {
+  "created_at": 1791494671,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 0.4200000000000081
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "ca6a90f8-fbff-4511-aa8a-1aa1566ac0d3",
+  "seconds": 41.7,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 0.24,
+  "model": "rd_pro",
+  "file": "C48-H-r6-B-rd.png",
+  "sha256": "0e516736256a4839a2eb8577f15b5923f5a2238836e22e90e500e2a5a62f1a6d"
+ }
+}

@@ -14,7 +14,7 @@ N = 48; CX = 24; GY = 46
 WIDE = {"coat": 3, "hood": 2} if coat == "glow" else {}
 RAMPS = {
     "coat": {"yellow": ("cream", "yellow", "amber", "orange"), "amber": ("yellow", "amber", "orange", "rust"), "orange": ("amber", "orange", "rust", "soil"), "glow": ("yellow", "orange", "rust", "soil")}[coat],
-    "hood": {"yellow": ("cream", "yellow", "amber", "orange"), "amber": ("yellow", "amber", "orange", "rust"), "orange": ("amber", "orange", "rust", "soil"), "glow": ("yellow", "orange", "rust", "soil")}[coat], "pants_far": ("slate", "night", "ink", "ink"),
+    "hood": {"yellow": ("cream", "yellow", "amber", "orange"), "amber": ("yellow", "amber", "orange", "rust"), "orange": ("amber", "orange", "rust", "soil"), "glow": ("yellow", "orange", "rust", "soil")}[coat], "pants_far": ("slate", "night", "ink", "ink"), "fur": ("bone", "paper", "sand", "clay"), "skin": ("blush", "peach", "coral", "clay"),
     "pack": ("clay", "bark", "soil", "ink"), "roll": ("paper", "sand", "clay", "bark"),
     "pants": ("stone", "slate", "night", "ink"), "boot": ("bark", "soil", "ink", "void"), "mitt": ("sand", "clay", "bark", "soil"),
     "face": ("night", "night", "ink", "ink"), "scarf": ("coral", "red", "wine", "rust"),
@@ -87,20 +87,27 @@ def lens(cv, x, y):
     # one lens, 4 x 4: a brass ring round 2 x 2 of glass with a catch-light at its top left
     cv.put([(x + 1, y - 1), (x + 2, y - 1), (x, y), (x + 3, y), (x, y + 1), (x + 3, y + 1), (x, y + 2), (x + 3, y + 2), (x + 1, y + 3), (x + 2, y + 3)], "soil")   # a dark rim, taller than wide
     cv.put([(x + 1, y), (x + 2, y)], "ice"); cv.put([(x + 1, y + 1)], "white"); cv.put([(x + 2, y + 1)], "sky"); cv.put([(x + 1, y + 2), (x + 2, y + 2)], "river")
+def ruff(cv, x0, y0, x1, y1, tufts):
+    cv.part(ell(x0, y0, x1, y1), "fur")
+    cv.put(tufts, "paper")                                                                                        # tufts of fur breaking the ring's edge
 def hood_front(cv, p):
-    b = p["bob"]; l = p["lean"]; hy = p["hood_dy"]
-    cv.part(poly([(CX - 7 + l, GY - 25 + b), (CX + 6 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + b + hy), (CX + 5 + l, GY - 35 + b + hy), (CX + 3 + l, GY - 37 + b + hy), (CX - 3 + l, GY - 37 + b + hy), (CX - 6 + l, GY - 34 + b + hy), (CX - 8 + l, GY - 29 + b + hy)]), "hood")
-    ly = GY - 33 + b + hy                                                                                       # the goggles, strap behind the lenses
-    strap(cv, CX - 8 + l, CX + 7 + l, ly + 1)
-    lens(cv, CX - 5 + l, ly); lens(cv, CX + 1 + l, ly)
-    cv.put([(CX - 4 + l + i, GY - 25 + b) for i in range(8)], "rust")                                          # the collar at the neck
-    cv.put([(CX - 3 + l + i, GY - 26 + b) for i in range(6)], "orange")
+    b = p["bob"]; l = p["lean"]; hy = p["hood_dy"]; fy = b + hy
+    cv.part(poly([(CX - 7 + l, GY - 25 + b), (CX + 6 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + fy), (CX + 5 + l, GY - 35 + fy), (CX + 3 + l, GY - 37 + fy), (CX - 3 + l, GY - 37 + fy), (CX - 6 + l, GY - 34 + fy), (CX - 8 + l, GY - 29 + fy)]), "hood")
+    # the parka's fur ruff round an open face, the face in a warm skin ramp: two dark eyes, a small nose, a cheek mark each side; no mouth
+    ruff(cv, CX - 7 + l, GY - 33 + fy, CX + 6 + l, GY - 24 + fy, [(CX - 8 + l, GY - 30 + fy), (CX - 8 + l, GY - 27 + fy), (CX + 7 + l, GY - 29 + fy), (CX + 7 + l, GY - 26 + fy), (CX - 4 + l, GY - 34 + fy), (CX + 2 + l, GY - 34 + fy), (CX - 2 + l, GY - 23 + fy), (CX + 3 + l, GY - 23 + fy)])
+    cv.part(ell(CX - 5 + l, GY - 31 + fy, CX + 4 + l, GY - 25 + fy), "skin", flat=True)
+    cv.put([(CX - 4 + l + i, GY - 30 + fy) for i in range(3)], "blush"); cv.put([(CX - 4 + l + i, GY - 25 + fy) for i in range(8)], "clay") if False else None
+    cv.put([(CX - 3 + l, GY - 29 + fy), (CX - 3 + l, GY - 28 + fy), (CX + 2 + l, GY - 29 + fy), (CX + 2 + l, GY - 28 + fy)], "ink")      # the eyes
+    cv.put([(CX - 1 + l, GY - 27 + fy)], "clay"); cv.put([(CX - 4 + l, GY - 27 + fy), (CX + 3 + l, GY - 27 + fy)], "coral")           # the nose, the cheeks
+    # the goggles pushed up on the hood above the ruff: strap round the hood, a lens each side
+    strap(cv, CX - 8 + l, CX + 7 + l, GY - 36 + fy); lens(cv, CX - 5 + l, GY - 36 + fy); lens(cv, CX + 1 + l, GY - 36 + fy)
 def hood_back(cv, p):
-    b = p["bob"]; l = p["lean"]; hy = p["hood_dy"]
-    cv.part(poly([(CX - 7 + l, GY - 25 + b), (CX + 6 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + b + hy), (CX + 5 + l, GY - 35 + b + hy), (CX + 3 + l, GY - 37 + b + hy), (CX - 3 + l, GY - 37 + b + hy), (CX - 6 + l, GY - 34 + b + hy), (CX - 8 + l, GY - 29 + b + hy)]), "hood")
-    cv.px([(CX - 1 + l, GY - 35 + b + hy + i) for i in range(6)], "orange")                                    # the seam, above the strap
-    strap(cv, CX - 8 + l, CX + 7 + l, GY - 32 + b + hy, buckle=CX + l)
-    cv.put([(CX - 4 + l + i, GY - 25 + b) for i in range(8)], "rust")
+    b = p["bob"]; l = p["lean"]; hy = p["hood_dy"]; fy = b + hy
+    cv.part(poly([(CX - 7 + l, GY - 25 + b), (CX + 6 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + fy), (CX + 5 + l, GY - 35 + fy), (CX + 3 + l, GY - 37 + fy), (CX - 3 + l, GY - 37 + fy), (CX - 6 + l, GY - 34 + fy), (CX - 8 + l, GY - 29 + fy)]), "hood")
+    cv.px([(CX - 1 + l, GY - 34 + fy + i) for i in range(7)], "orange")                                         # the seam
+    strap(cv, CX - 8 + l, CX + 7 + l, GY - 36 + fy, buckle=CX + l)                                               # the pushed-up goggles' strap round the back
+    cv.part(rect(CX - 6 + l, GY - 27 + b, CX + 5 + l, GY - 24 + b), "fur")                                      # the ruff's back, a ring of fur at the neck
+    cv.put([(CX - 7 + l, GY - 26 + b), (CX + 6 + l, GY - 26 + b), (CX - 3 + l, GY - 28 + b), (CX + 2 + l, GY - 28 + b), (CX - 5 + l, GY - 23 + b), (CX + 4 + l, GY - 23 + b)], "paper")
 def pack_back(cv, p):
     b = p["bob"]; l = p["lean"]
     cv.part(rect(CX - 6 + l, GY - 24 + b, CX + 5 + l, GY - 12 + b), "pack")
@@ -137,10 +144,14 @@ def side_frame(p, up_arm=False):
     else:
         a = p["arm"][0]; x0 = CX - 1 + l + a
         cv.part(rect(x0, GY - 24 + b, x0 + 2, GY - 14 + b), "coat"); cv.part(rect(x0, GY - 13 + b, x0 + 2, GY - 11 + b), "mitt")
-    # the hood: a dome with a peak that trails back, the opening on the front
-    cv.part(poly([(CX - 6 + l, GY - 25 + b), (CX + 5 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + b + hy), (CX + 5 + l, GY - 35 + b + hy), (CX + 1 + l, GY - 38 + b + hy), (CX - 4 + l, GY - 39 + b + hy), (CX - 8 + l, GY - 36 + b + hy), (CX - 8 + l, GY - 30 + b + hy)]), "hood")
-    ly = GY - 33 + b + hy; strap(cv, CX - 8 + l, CX + 6 + l, ly + 1); lens(cv, CX + 3 + l, ly)                       # the goggles in profile: the strap round the hood, one lens at the front
-    cv.put([(CX - 3 + l + i, GY - 25 + b) for i in range(8)], "rust")
+    # the hood: a dome with a peak that trails back; the fur ruff a crescent at the front round the face in profile
+    fy = b + hy
+    cv.part(poly([(CX - 6 + l, GY - 25 + b), (CX + 5 + l, GY - 25 + b), (CX + 7 + l, GY - 30 + fy), (CX + 5 + l, GY - 35 + fy), (CX + 1 + l, GY - 38 + fy), (CX - 4 + l, GY - 39 + fy), (CX - 8 + l, GY - 36 + fy), (CX - 8 + l, GY - 30 + fy)]), "hood")
+    ruff(cv, CX + 0 + l, GY - 34 + fy, CX + 8 + l, GY - 24 + fy, [(CX + 9 + l, GY - 31 + fy), (CX + 9 + l, GY - 27 + fy), (CX + 4 + l, GY - 35 + fy), (CX + 2 + l, GY - 23 + fy)])
+    cv.part(ell(CX + 2 + l, GY - 32 + fy, CX + 7 + l, GY - 25 + fy), "skin", flat=True)
+    cv.put([(CX + 5 + l, GY - 29 + fy), (CX + 5 + l, GY - 28 + fy)], "ink")                                       # the eye
+    cv.put([(CX + 8 + l, GY - 27 + fy), (CX + 8 + l, GY - 26 + fy)], "peach"); cv.put([(CX + 4 + l, GY - 27 + fy)], "coral")   # the nose, the cheek
+    strap(cv, CX - 8 + l, CX + 6 + l, GY - 36 + fy); lens(cv, CX + 2 + l, GY - 36 + fy)                            # the goggles pushed up
     return cv
 # ---------------------------------------------------------------- poses
 def pose(**k):

@@ -2,7 +2,7 @@
 HUD 32 / view 532 / bottom line 36; the ground and props through the STORM table (round 2: a blue cast, no DARK
 step; --light plain for no table, --light dark for round 1's DARK step), the pawn and the mibis never; rain over
 the view; the message box, the name tag, the key caps and the condition bolts from the ui sheet; the page's
-bitmap font at 2x. usage: python3 -I compose-still.py WORK_DIR OUT.png [--light storm|plain|dark]"""
+bitmap font at 2x. usage: python3 -I compose-still.py WORK_DIR OUT.png [--light storm|plain|dark] [--hut A|B|C|D]"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
@@ -11,6 +11,7 @@ import pal, quant, font
 P = quant.P; C = P.index
 work, outp = sys.argv[1], sys.argv[2]
 light = sys.argv[sys.argv.index("--light") + 1] if "--light" in sys.argv else "storm"
+hut = sys.argv[sys.argv.index("--hut") + 1] if "--hut" in sys.argv else None   # a hut option (A to D) in place of the outpost
 def load(group, name):
     im = Image.open(os.path.join(work, group, name + ".png")).convert("RGBA"); return quant.quantize(np.asarray(im))
 W, H, HUD, LINE = 450, 600, 32, 36; VIEW_Y, VIEW_H = HUD, H - HUD - LINE
@@ -81,7 +82,7 @@ def at(c, r, dx=0, dy=0): return OX + c * TS + TS // 2 + dx, OY + r * TS + TS - 
 FOLIAGE = None if light == "storm" else DARK   # art director, round 2: under the storm the canopies keep the G ramp and the lit stones their glow (no cast); the ground, water, plain stones and huts take it
 things = [("props", "tree", at(2, 3, 0, 8), FOLIAGE), ("props", "bush", at(4, 1), FOLIAGE), ("props", "bush-fruit", at(7, 3), FOLIAGE), ("props", "bush-shaken", at(1, 8), FOLIAGE),
           ("props", "stone", at(5, 4), DARK), ("props", "stone-warm1", at(8, 4), FOLIAGE), ("props", "stone-charged1", at(3, 10), FOLIAGE),
-          ("props", "outpost-lit", at(8, 1, 0, 4), DARK), ("props", "pod", at(1, 5), DARK), ("props", "dew-cup", at(5, 8), DARK), ("props", "reeds", at(9, 7, 0, -6), DARK), ("props", "stone-step", at(7, 10, 0, -4), DARK), ("props", "stone-plain2", at(6, 2, 8, 0), DARK),
+          (("huts", f"hut-{hut}-lit", at(8, 1, 0, 6), DARK) if hut else ("props", "outpost-lit", at(8, 1, 0, 4), DARK)), ("props", "pod", at(1, 5), DARK), ("props", "dew-cup", at(5, 8), DARK), ("props", "reeds", at(9, 7, 0, -6), DARK), ("props", "stone-step", at(7, 10, 0, -4), DARK), ("props", "stone-plain2", at(6, 2, 8, 0), DARK),
           ("pawn", "pawn-down-walk2", at(4, 6), None), ("tokens", "loika-idle1", at(2, 6), None), ("tokens", "placeholder-S02", at(1, 10), None)]
 blit(load("props", "strike-warn1"), OX + 6 * TS, OY + 5 * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
 for group, name, (cx, cy), table in sorted(things, key=lambda t: t[2][1]): sprite(group, name, cx, cy, table)

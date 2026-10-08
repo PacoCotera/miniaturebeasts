@@ -1,7 +1,15 @@
 {
- "successfulCalls": 28,
- "totalUSD": 7.01,
+ "successfulCalls": 31,
+ "totalUSD": 7.55,
  "calls": [
+  {
+   "tag": "C48-H-r6-a1",
+   "tool": "gemini-3-pro-image",
+   "in": 1015,
+   "out": 1435,
+   "usd": 0.1742,
+   "seconds": 18.0
+  },
   {
    "tag": "C48-P-r1-a1",
    "tool": "gemini-3-pro-image",
@@ -25,6 +33,20 @@
    "out": 1432,
    "usd": 0.174,
    "seconds": 19.5
+  },
+  {
+   "tag": "C48-H-r6-A",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 83.7
+  },
+  {
+   "tag": "C48-H-r6-B",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 41.7
   },
   {
    "tag": "C48-S-r2-bush-fruit",
