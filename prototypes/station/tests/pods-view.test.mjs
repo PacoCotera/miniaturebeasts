@@ -41,9 +41,9 @@ test("an empty rack: the empty cradle under the beam and nothing else on the sta
   assert.deepEqual(v.targets, []);
 });
 
-test("an unidentified pod: the sealed pod, 'Unknown pod', its origin, no rail, no page, no stamp; ✓ Identify", () => {
+test("an unidentified pod: the sealed pod, 'Unknown', its origin, no rail, no page, no stamp; ✓ Identify", () => {
   const st = stock(["S01"]), v = view(model(st));
-  assert.equal(v.specimen.name, "Unknown pod"); assert.ok(v.specimen.pod.sealed && !v.specimen.pod.identified);
+  assert.equal(v.specimen.name, "Unknown"); assert.ok(v.specimen.pod.sealed && !v.specimen.pod.identified);
   assert.equal(v.rail, null); assert.equal(v.page, null); assert.equal(v.stamp, null);
   assert.equal(v.line.ok, "Identify"); assert.equal(v.line.price, "free");
   assert.ok(v.specimen.origin.length >= 1 && v.specimen.origin.length <= 2);

@@ -17,8 +17,9 @@ export const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
 export const JUVENILE_TURNS = 2, ELDER_TURNS = 6;
 export const MIBI_NAMES = ["Dot", "Moss", "Bean", "Fig", "Nib", "Tuft", "Pebble", "Wren", "Pip", "Sorrel", "Burr", "Quill"];
 export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock field", wood: "wood", cave: "cave" };
-export const HOW_WORD = { shake: "shook itself dry", calm: "felt safe", curl: "curled up from the rain", meal: "had a full meal", slab: "under a slab", ground: "from the ground", deep: "from the deep", cave: "in the cave" };
-export const HOW_ACT = ["shake", "calm", "curl", "meal"];
+// The origin line is one sentence: "Found <where>, <what happened>." Each half is at most 24 characters with its comma or full stop, so the sentence breaks after the comma (design/style-guide/station-layouts.md, Pods, Origin).
+export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
+export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried" };
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
 export const DEFAULT_SETTINGS = { economy: "loose", topUp: { e: 2, d: 3, s: 2 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "1e2s", instantGrow: { e: 1, d: 0, s: 2 } };
 
@@ -112,7 +113,12 @@ export const atHome = (st, sv) => st.mibis.filter((m) => m.id !== effWithId(st, 
 export function mibiStage(st, m, settings = DEFAULT_SETTINGS) { const age = st.turn - (m.born || 0), j = settings.adultTurns ?? JUVENILE_TURNS; return age < j ? "juvenile" : age >= JUVENILE_TURNS + ELDER_TURNS ? "elder" : "adult"; }
 export const tierNow = (st, sv) => (st.probe && st.probe.tier) || (sv && sv.tier) || 1;
 export const podName = (p) => (p.idd ? spName(p) + " pod" : "unknown pod");
-export function podOrigin(p) { return (PLACE_WORD[p.g] || p.g || "somewhere") + (p.how && HOW_WORD[p.how] ? " · " + (HOW_ACT.includes(p.how) ? (p.idd ? aAn(spName(p)) + " " : "a creature ") : "") + HOW_WORD[p.how] : "") + (p.n ? " · expedition " + p.n : ""); }
+// The sentence in its two halves, which are the two lines under the pod; a pod with no find has one.
+export function podOriginLines(p) {
+  const where = "Found " + (FOUND_WORD[p.g] || "out in the wild"), find = FIND_WORD[p.how];
+  return find ? [where + ",", find.replace("{who}", p.idd ? aAn(spName(p)) : "a creature") + "."] : [where + "."];
+}
+export const podOrigin = (p) => podOriginLines(p).join(" ");
 
 // --- prices ------------------------------------------------------------------------------------------
 export const price = (base, settings = DEFAULT_SETTINGS) => (settings.economy === "free" ? 0 : base);

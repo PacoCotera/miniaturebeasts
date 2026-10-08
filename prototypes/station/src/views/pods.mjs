@@ -16,8 +16,6 @@ const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // No digits where a picture or a word does: a count in a sentence is said in words (the frame's shared need line on Pods); an amount beside a material icon is a price or a shortfall and stays in figures.
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
 export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n) => WORDS[+n] ?? "many");
-// The origin without the expedition's number (a digit would wrap alone onto a second line).
-const originOf = (p) => S.podOrigin(p).replace(/ · expedition \d+$/, "");
 
 // m: { st, settings, docked, ui: { cur, anchor, ci, cmp, wildArm }, focus: id | null, present: { idCut: { pod, p } | null, read: { pod, chapter, p } | null, ribbon: pod id | null } }
 // ctx: the components' context (the spec and the type metrics, to wrap the origin)
@@ -62,7 +60,7 @@ export function podsView(m, spec, ctx) {
     } : null,
     cut: cur && cur.idd ? idCut : null,
     name: cur ? (cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod) : null,
-    origin: cur ? wrap(ctx, originOf(cur), R.origin.rect[2], R.origin.px).slice(0, R.origin.lines) : [],
+    origin: cur ? S.podOriginLines(cur).flatMap((l) => wrap(ctx, l, R.origin.rect[2], R.origin.px)).slice(0, R.origin.lines) : [],
     ribbon: cur && present.ribbon === cur.id ? spec.strings.newSpecies : null,
     ribbonColours: { fill: C.ribbonFill, edge: C.ribbonEdge, text: C.ribbonText },
   };
@@ -155,7 +153,7 @@ function lineOf(m, spec, p, chapters, ci) {
     const i = +f.slice(5), q = st.tray[i]; if (!q) return { back: "Home" };
     const A = S.podById(st, ui.anchor), tail = S.podName(q);
     if (A && A !== q && S.canCompare(st, A, q)) return { ok: "Compare", price: "free", back: "Home", subject: tail + " · " + (S.PLACE_WORD[q.g] || "") };
-    return { ok: "Look at this pod", back: "Home", subject: tail + " · " + originOf(q) };
+    return { ok: "Look at this pod", back: "Home", subject: tail + " · " + (S.PLACE_WORD[q.g] || "") };
   }
   if (f === "list.hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back: "Home", subject: "the hatch · " + S.podName(p) };
   return { back: "Home" };
