@@ -18,6 +18,93 @@
       "silhouetteIoU": 0.932,
       "silhouetteIoUInPlace": 0.941,
       "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.963
+       },
+       "antenna": {
+        "span": 0.984,
+        "coverage": 1.0
+       },
+       "leg-0": {
+        "span": 0.67,
+        "coverage": 0.994
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.943,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.262,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.24,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.471,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.756,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.706,
+        "median": "#e98063",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.711,
+        "median": "#e98062",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.823,
+        "median": "#f3d0aa",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.003,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.789,
+      "passed": true
+     },
+     "responseId": "FhXHarLED8jI-sAPjuji4Qs",
+     "checksAsRun": {
+      "silhouetteIoU": 0.932,
+      "silhouetteIoUInPlace": 0.941,
+      "parts": {
        "region-0": 0.999,
        "region-1": 1.0,
        "head": 0.963,
@@ -75,8 +162,7 @@
       "bandTolerancePx": 20,
       "slotAgreement": 0.789,
       "passed": true
-     },
-     "responseId": "FhXHarLED8jI-sAPjuji4Qs"
+     }
     },
     {
      "callId": "2c32c620-4b19-4c53-b259-5947e414d485",
@@ -85,6 +171,94 @@
      "costUSD": 0.09045,
      "seconds": 9.5,
      "checks": {
+      "silhouetteIoU": 0.932,
+      "silhouetteIoUInPlace": 0.94,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.996
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-0": {
+        "span": 0.67,
+        "coverage": 1.0
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.949,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.26,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.238,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.467,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.754,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.688,
+        "median": "#dc7c5d",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.677,
+        "median": "#df8264",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.808,
+        "median": "#efc397",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.001,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.77,
+      "passed": true,
+      "gated": false
+     },
+     "responseId": "LBXHav6uBbqo_uMP7-iwkA4",
+     "checksAsRun": {
       "silhouetteIoU": 0.932,
       "silhouetteIoUInPlace": 0.94,
       "parts": {
@@ -146,11 +320,12 @@
       "slotAgreement": 0.77,
       "passed": true,
       "gated": false
-     },
-     "responseId": "LBXHav6uBbqo_uMP7-iwkA4"
+     }
     }
    ],
-   "steps": []
+   "steps": [],
+   "servedBy": "step 2",
+   "rechecked": "2026-10-08T04:37:04Z"
   }
  },
  "species": "S12",
@@ -186,5 +361,7 @@
  "calls": 2,
  "costUSD": 0.18679,
  "seconds": 20.2,
- "finishedAt": "2026-10-08T03:59:57Z"
+ "finishedAt": "2026-10-08T03:59:57Z",
+ "rechecked": "2026-10-08T04:37:04Z",
+ "checksVersion": "mb-grow-checks/3"
 }

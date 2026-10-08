@@ -14,6 +14,93 @@
      "costUSD": 0.0957,
      "seconds": 9.1,
      "checks": {
+      "silhouetteIoU": 0.924,
+      "silhouetteIoUInPlace": 0.898,
+      "parts": {
+       "region-0": {
+        "span": 0.991,
+        "coverage": 0.996
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.992
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 0.96
+       },
+       "leg-0": {
+        "span": 0.675,
+        "coverage": 1.0
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-2": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "flap": {
+        "span": 0.946,
+        "coverage": 0.999
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.224,
+        "painted": 0.261,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.238,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.431,
+        "painted": 0.47,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.754,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.998,
+        "median": "#df7c5f",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.964,
+        "median": "#df8063",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.864,
+        "median": "#fad1b7",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.001,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.9,
+      "passed": true
+     },
+     "responseId": "qxPHateZF4OS39IPgd636Qc",
+     "checksAsRun": {
       "silhouetteIoU": 0.931,
       "silhouetteIoUInPlace": 0.952,
       "parts": {
@@ -74,10 +161,11 @@
       "bandTolerancePx": 20,
       "slotAgreement": 0.899,
       "passed": true
-     },
-     "responseId": "qxPHateZF4OS39IPgd636Qc"
+     }
     }
-   ]
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:25:29Z"
   }
  },
  "species": "S12",
@@ -105,13 +193,15 @@
  },
  "startedAt": "2026-10-08T03:53:14Z",
  "outputs": {
-  "station-portrait-600x620.png": "290783ff1447e2f882929267ce5b395eb86c3d49f8f9d1cfa2dbd127fa5699a4",
-  "station-portrait-300x310.png": "74fa7b43d01ffff80e54d7b34008ac33402f15649ddb8cafedc94728beb5ea52",
-  "companion-280x300.png": "b81df4ef3ec4d78645976172cc52bb9e518ce20f9e962aa53ce1e49860958613",
-  "token-48.png": "efd867bfc219d389a595e06761dd4615b26afec9f23127b7690b6e350f392d09"
+  "station-portrait-600x620.png": "169bfadd0fbdc41170c636a857bec401b1a96bd5bb596953f6d7ab7d3c6ca994",
+  "station-portrait-300x310.png": "238e1cac1c5b41207800f464e337473900b6d5ac7659278c8ef6a85f679ace4c",
+  "companion-280x300.png": "40b2e2af6b5537e62000e4c45006300c125c43a8267358a4f22f290457e81f0e",
+  "token-48.png": "a97340aa7d422e581fd9e11fb7f085cd4343cec70f728b2507c43ccf5138bde8"
  },
  "calls": 1,
  "costUSD": 0.0957,
  "seconds": 9.1,
- "finishedAt": "2026-10-08T03:53:47Z"
+ "finishedAt": "2026-10-08T03:53:47Z",
+ "rechecked": "2026-10-08T04:25:30Z",
+ "checksVersion": "mb-grow-checks/3"
 }

@@ -18,6 +18,102 @@
       "silhouetteIoU": 0.754,
       "silhouetteIoUInPlace": 0.743,
       "parts": {
+       "region-0": {
+        "span": 0.982,
+        "coverage": 0.987
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.971
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 0.991
+       },
+       "leg-0": {
+        "span": 0.552,
+        "coverage": 0.39
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.683
+       },
+       "leg-2": {
+        "span": 0.976,
+        "coverage": 0.77
+       },
+       "flap": {
+        "span": 0.954,
+        "coverage": 0.976
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.226,
+        "painted": 0.285,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.265,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.435,
+        "painted": 0.425,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.158,
+        "painted": 0.236,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.752,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.861,
+        "median": "#d65985",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.78,
+        "median": "#d55984",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.317,
+        "median": "#ebe3c7",
+        "nearest": "#f1eddc",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.899,
+        "median": "#fdd1bb",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: leg-0 (painted along 55% of its length)"
+      ],
+      "outside": 0.034,
+      "missing": 0.004,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.866,
+      "passed": false
+     },
+     "responseId": "RxXHapLsFIui1MkP07eL-QM",
+     "checksAsRun": {
+      "silhouetteIoU": 0.754,
+      "silhouetteIoUInPlace": 0.743,
+      "parts": {
        "region-0": 0.987,
        "head": 0.971,
        "antenna": 0.991,
@@ -87,8 +183,7 @@
       "bandTolerancePx": 19,
       "slotAgreement": 0.866,
       "passed": false
-     },
-     "responseId": "RxXHapLsFIui1MkP07eL-QM"
+     }
     },
     {
      "callId": "a0d86b9c-5c8a-4b42-ae9b-ebed43bdd2d3",
@@ -97,6 +192,102 @@
      "costUSD": 0.1029,
      "seconds": 11.9,
      "checks": {
+      "silhouetteIoU": 0.754,
+      "silhouetteIoUInPlace": 0.743,
+      "parts": {
+       "region-0": {
+        "span": 0.982,
+        "coverage": 0.987
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.971
+       },
+       "antenna": {
+        "span": 1.0,
+        "coverage": 0.991
+       },
+       "leg-0": {
+        "span": 0.552,
+        "coverage": 0.39
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.683
+       },
+       "leg-2": {
+        "span": 0.976,
+        "coverage": 0.77
+       },
+       "flap": {
+        "span": 0.954,
+        "coverage": 0.976
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.226,
+        "painted": 0.285,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.187,
+        "painted": 0.265,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.435,
+        "painted": 0.425,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.158,
+        "painted": 0.236,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.713,
+        "painted": 0.752,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.861,
+        "median": "#d65985",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.78,
+        "median": "#d55984",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.317,
+        "median": "#ebe3c7",
+        "nearest": "#f1eddc",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.899,
+        "median": "#fdd1bb",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: leg-0 (painted along 55% of its length)"
+      ],
+      "outside": 0.034,
+      "missing": 0.004,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.866,
+      "passed": false
+     },
+     "responseId": "ZhXHavObJJnO_uMPitLgsAg",
+     "checksAsRun": {
       "silhouetteIoU": 0.629,
       "silhouetteIoUInPlace": 0.706,
       "parts": {
@@ -169,11 +360,12 @@
       "bandTolerancePx": 19,
       "slotAgreement": 0.77,
       "passed": false
-     },
-     "responseId": "ZhXHavObJJnO_uMPitLgsAg"
+     }
     }
    ],
-   "steps": []
+   "steps": [],
+   "servedBy": null,
+   "rechecked": "2026-10-08T04:35:37Z"
   }
  },
  "species": "S12",
@@ -209,5 +401,7 @@
  "calls": 2,
  "costUSD": 0.19731,
  "seconds": 21.9,
- "finishedAt": "2026-10-08T04:00:57Z"
+ "finishedAt": "2026-10-08T04:00:57Z",
+ "rechecked": "2026-10-08T04:35:37Z",
+ "checksVersion": "mb-grow-checks/3"
 }

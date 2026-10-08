@@ -34233,6 +34233,569 @@
     "slotAgreement": 0.937,
     "passed": false
    }
+  },
+  {
+   "id": "b4361762-c876-402b-aaa9-7c23632b5f79",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 3,
+   "controlVariant": "twostep",
+   "species": "S09",
+   "genomeDigest": "S09-e5a177ca",
+   "genomeSha256": "96ee0a1f32b099d275fe910ccfa4ced9552f6001485058243e1cb8487a7923eb",
+   "purpose": "station-portrait-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "artDirection": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.",
+    "transfer": "Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image."
+   },
+   "referenceImage": {
+    "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+    "name": "rich-plain-300x310.png",
+    "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427"
+   },
+   "afterRecheck": true,
+   "prompt": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.\n\nImage 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "step1-portrait-600x620.png",
+     "sha256": "1dc5cdef20311346e54a3617474205bca2261d908aa2da91a2ac4412aca004db",
+     "bytes": 218134
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:30:09Z",
+   "seconds": 10.4,
+   "httpStatus": 200,
+   "responseId": "UhzHapPYDIOS39IPgd636Qc",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1026,
+    "candidatesTokenCount": 1556,
+    "totalTokenCount": 2582,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 510
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09387,
+   "output": {
+    "file": "portrait-step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "ccb026729f749dcd3c71d2973a08f7b05ab54028bbd450b0925afae6ea4f8682"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.848,
+    "silhouetteIoUInPlace": 0.873,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "region-1": {
+      "span": 1.0,
+      "coverage": 0.992
+     },
+     "neck": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.998
+     },
+     "beak": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 0.994
+     },
+     "leg-0": {
+      "span": 0.966,
+      "coverage": 0.92
+     },
+     "flap": {
+      "span": 0.964,
+      "coverage": 0.985
+     },
+     "tail": {
+      "span": 1.0,
+      "coverage": 0.99
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.272,
+      "painted": 0.343,
+      "ok": true
+     },
+     "region-1": {
+      "drawn": 0.211,
+      "painted": 0.297,
+      "ok": true
+     },
+     "neck": {
+      "drawn": 0.248,
+      "painted": 0.337,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.27,
+      "painted": 0.36,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.457,
+      "painted": 0.496,
+      "ok": true
+     },
+     "flap": {
+      "drawn": 0.553,
+      "painted": 0.591,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 1.0,
+      "median": "#385594",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@region-1": {
+      "agreement": 0.993,
+      "median": "#3a5796",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@neck": {
+      "agreement": 0.991,
+      "median": "#3e5fa0",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.694,
+      "median": "#4c6a91",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.999,
+      "median": "#d0b37a",
+      "nearest": "#fff0b8",
+      "ok": true
+     },
+     "second@flap": {
+      "agreement": 1.0,
+      "median": "#b1965e",
+      "nearest": "#fff0b8",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.014,
+    "missing": 0.001,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.945,
+    "passed": true,
+    "gated": false
+   }
+  },
+  {
+   "id": "0cb0d686-44db-47ce-842a-89483c9df31c",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 3,
+   "controlVariant": "twostep",
+   "species": "S09",
+   "genomeDigest": "S09-e5a177ca",
+   "genomeSha256": "96ee0a1f32b099d275fe910ccfa4ced9552f6001485058243e1cb8487a7923eb",
+   "purpose": "station-side-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "artDirection": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.",
+    "transfer": "Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image."
+   },
+   "referenceImage": {
+    "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+    "name": "rich-plain-300x310.png",
+    "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427"
+   },
+   "afterRecheck": true,
+   "prompt": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.\n\nImage 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "step1-side-600x620.png",
+     "sha256": "438e411dff8fc65b8c362c6b310511eae921cde45dc8f736928b9176e770cf6f",
+     "bytes": 222339
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:31:11Z",
+   "seconds": 9.1,
+   "httpStatus": 200,
+   "responseId": "kBzHat6hJO6739IPm_f8KA",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1026,
+    "candidatesTokenCount": 1534,
+    "totalTokenCount": 2560,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 510
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09255,
+   "output": {
+    "file": "side-step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "bd1ddc9864c65cd9059a7a717925745af154bcea1dea67d94f97f0f30bd2224a"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.653,
+    "silhouetteIoUInPlace": 0.704,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "region-1": {
+      "span": 0.988,
+      "coverage": 0.942
+     },
+     "neck": {
+      "span": 1.0,
+      "coverage": 0.763
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.903
+     },
+     "beak": {
+      "span": 0.694,
+      "coverage": 0.404
+     },
+     "crown": {
+      "span": 1.0,
+      "coverage": 0.917
+     },
+     "leg-0": {
+      "span": 1.0,
+      "coverage": 0.995
+     },
+     "flap": {
+      "span": 0.993,
+      "coverage": 0.888
+     },
+     "tail": {
+      "span": 0.93,
+      "coverage": 0.584
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.223,
+      "painted": 0.301,
+      "ok": true
+     },
+     "region-1": {
+      "drawn": 0.17,
+      "painted": 0.248,
+      "ok": true
+     },
+     "neck": {
+      "drawn": 0.286,
+      "painted": 0.364,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.247,
+      "painted": 0.325,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.398,
+      "painted": 0.437,
+      "ok": true
+     },
+     "flap": {
+      "drawn": 0.28,
+      "painted": 0.317,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.974,
+      "median": "#3f65a0",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@region-1": {
+      "agreement": 0.981,
+      "median": "#2d487f",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@neck": {
+      "agreement": 0.894,
+      "median": "#35558c",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.891,
+      "median": "#4e76b1",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.925,
+      "median": "#d9b97f",
+      "nearest": "#fff0b8",
+      "ok": true
+     },
+     "second@flap": {
+      "agreement": 0.998,
+      "median": "#e7cf8d",
+      "nearest": "#fff0b8",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.069,
+    "missing": 0.009,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.95,
+    "passed": true,
+    "gated": false
+   }
+  },
+  {
+   "id": "ed9f0cec-c707-489f-b809-6a7128cb4f41",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "promptVersion": 3,
+   "controlVariant": "twostep",
+   "species": "S12",
+   "genomeDigest": "S12-94f298de",
+   "genomeSha256": "2af58fb73ac5cbbd45f397f78257f06ee8ebb6b61d774a875fa8c73a275d6e33",
+   "purpose": "station-side-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "artDirection": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.",
+    "transfer": "Image 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image."
+   },
+   "referenceImage": {
+    "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+    "name": "rich-plain-300x310.png",
+    "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427"
+   },
+   "afterRecheck": true,
+   "prompt": "Art direction (fixed; from design/style-guide/README.md and design/art-direction.md). The look is Miniature Lives: a sculpted, rounded, tactile creature with soft materials, directional light, expressive eyes and clear markings, alive and physical even when small; saturated, playful colour with clear highlights, never dull brown or grey. The treatment is the Station's: full resolution, one key light from the top left, soft form shading, painted gradients, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face, a fine pixel grain, no dither bands, no flat fills. Art never changes genes: the painter may not add, remove, move, turn or resize a part, change the pose or the proportions, move a pigment out of its slot or change a marking; the painter adds surface, light and life only. The subject stands alone on a flat uniform ground of exactly #f6f3ec: no scene, no ground, no cast shadow, no props, no text, no border, the same size and in the same place as in the form image.\n\nImage 1 is the anatomy, pose and coat-placement authority: the HiBit drawing of this creature. Image 2 is a tactile material reference only: the species' accepted painting. Create the same creature as image 1 in the richer, smoothly modeled illustration treatment of image 2. INVARIANTS FROM IMAGE 1: precisely preserve the silhouette, the body plan, the pose, the gaze, the head-to-body proportion, the limb positions, the crown, the eyes with their rings, every coat colour and the placement of every marking, the scale and the baseline, the upper-left light. No extra individuals, no added anatomy or detail suggesting new traits. CHANGE ONLY RENDERING TREATMENT: replace stepped pixel edges and shade clusters with smooth, rounded modeled ceramic/resin-like surfaces with very restrained fine material texture; preserve tactile warmth, expressive eyes and compact affectionate personality; keep broad stable value masses; markings stay unambiguous and stronger than light. Avoid photographic fur noise, excessive gloss, sharp specular glitter. Image 2 provides the soft modeled personality only, not its subject. The subject alone on a flat uniform ground of exactly #f6f3ec, no scene, no ground, no shadow, no text, no border; the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "step1-side-600x620.png",
+     "sha256": "90f489d959ead3f4d010e67fd2396dbe72250bd610a646f30d6b3c1ac29a4646",
+     "bytes": 204109
+    },
+    {
+     "name": "reference:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T04:34:21Z",
+   "seconds": 8.5,
+   "httpStatus": 200,
+   "responseId": "TR3HapawObau_PUPiLiK-Ao",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1026,
+    "candidatesTokenCount": 1601,
+    "totalTokenCount": 2627,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 510
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.09657,
+   "output": {
+    "file": "side-step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "6cbf8f9b28e9215340a88320300c716934de6bab5e7c445825725257d786dd91"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.643,
+    "silhouetteIoUInPlace": 0.799,
+    "parts": {
+     "region-0": {
+      "span": 0.929,
+      "coverage": 0.825
+     },
+     "region-1": {
+      "span": 1.0,
+      "coverage": 0.776
+     },
+     "head": {
+      "span": 0.948,
+      "coverage": 0.451
+     },
+     "antenna": {
+      "span": 0.624,
+      "coverage": 0.0
+     },
+     "leg-0": {
+      "span": 1.0,
+      "coverage": 0.622
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 0.85
+     },
+     "leg-2": {
+      "span": 1.0,
+      "coverage": 0.811
+     },
+     "flap": {
+      "span": 0.859,
+      "coverage": 0.841
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.199,
+      "painted": 0.291,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.197,
+      "painted": 0.269,
+      "ok": true
+     },
+     "flap": {
+      "drawn": 0.549,
+      "painted": 0.606,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.888,
+      "median": "#dba938",
+      "nearest": "#e8b83f",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.541,
+      "median": "#d3aa4b",
+      "nearest": "#e8b83f",
+      "ok": true
+     },
+     "second@flap": {
+      "agreement": 0.535,
+      "median": "#e3c173",
+      "nearest": "#e8b83f",
+      "ok": true
+     }
+    },
+    "reasons": [],
+    "outside": 0.023,
+    "missing": 0.004,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.599,
+    "passed": true,
+    "gated": false
+   }
   }
  ]
 }
