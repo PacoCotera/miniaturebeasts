@@ -4,7 +4,7 @@ Everything in this folder is **generated concept art** for the Library screen (a
 
 **What is placed, not generated.** Two things are placed after generation, as live assets are placed by the build. The **genome stamp** on the lineage's plate is the real styled tome face from [`../../concept-stamp/`](../../concept-stamp/README.md) (S03 Tuikis, every chapter read, C03 family, tome paper), composited onto the generator's empty plate by [`tools/place-stamp.py`](tools/place-stamp.py) and **decoded from the finished 1024×600 screen**. The **species name** and its lines ("Tuikis", "Stilbera · digs burrows · glows at dusk", and the bottom line's "Tuikis · from the rock field") are a text layer set in Inter by [`tools/place-text.py`](tools/place-text.py) from [`layout/text-tuikis.json`](layout/text-tuikis.json): the generator leaves the name plate and the bottom line's centre empty, so no name is baked into a generated plate (the names were approved on 2026-10-07, [species-names.md](../../../design/proposals/species-names.md)). The generator never draws a cell and never writes a name. The layout went to it as a flat template ([`layout/`](layout/)).
 
-**Scenario.** Three species known (Loika, Untuva, Tuikis as bright cards), one met without a pod (a slate silhouette), the rest hidden in mist with a dashed slot at the shelf's edge; Tuikis focused, its seven chapters on the rail (Coat, Face, Shape, Legs & tail, Movement, Stamina, Nature), Coat open with the looks found so far and a dotted "more?" per row; one mibi in the lineage with its stamp; one wish pinned.
+**Scenario.** Three species known (Loika, Untuva, Tuikis as bright cards), one met without a pod (a slate silhouette), the rest hidden in mist with a dashed slot at the shelf's edge; Tuikis focused, its seven chapters on the rail (Coat, Face, Shape, Legs & tail, Movement, Stamina, Character; the generated tab reads "Nature", see Limits), Coat open with the looks found so far and a dotted "more?" per row; one mibi in the lineage with its stamp; one wish pinned.
 
 ![Contact sheet of all candidates](contact-sheet.png)
 
@@ -49,7 +49,7 @@ Checklist from brief-library.md (section 6), judged on the placed, named screen:
 
 - [x] 1. Knowledge, never material: pictures of looks on plates, a sketch for the wish; nothing takes.
 - [x] 2. Silhouettes reveal only what is known: the met species a slate shape, the unmet ones hidden in mist, the last slot dashed.
-- [x] 3. Seven tabs for Tuikis with Nature among them; never a fixed four.
+- [x] 3. Seven tabs for Tuikis with the temperament chapter among them; never a fixed four (the tab was generated as "Nature"; the chapter's name is Character).
 - [x] 4. Every look found is a picture on a plate; each row ends in "more?"; no counts.
 - [x] 5. The stamp is the prototype's cells placed on its tome plate and decodes from the finished screen.
 - [ ] 6. Two mibis told apart by stamp at 40 px: not tested here (one mibi in the lineage); at 76 px the stamp still decodes, so a 40 px lineage mark must be judged by eye, not by the reader.
@@ -63,6 +63,8 @@ What it still lacks: the Loika card as Pip and the Untuva card as the real speci
 ## Limits
 
 - The stamp and the name are the only exact elements; the shelf cards, portrait, plates and sketches are the generator's reading of the template and brief.
+- **The seventh tab reads "Nature"; the chapter is named Character** (taxonomy §5, decided). The brief carried the wrong word into the generated plate; it stays as generated here, since this is concept art, and the master and every placed text layer use Character.
+- **The Loika card must be Pip in the master.** The generator's first shelf card is a generic black-and-white creature with leaves; the accepted Pip asset is placed there, as on every screen, never regenerated.
 - The plate the generator leaves for the stamp stays small whatever the prompt says (about 60 px fresh, 78 px after two edits); the 25×25-cell Tuikis face still decodes at 76 px here, but a 17×17 face would be safer at that size and the master should reserve 120 px.
 - A placed stamp on cream paper needs a plain plate with no frame around it: the mounted-plate variant (r3-a1) is exactly the nested frame the reader rejects.
 - Edits hold for one change described in words; none here carried a reference image.
