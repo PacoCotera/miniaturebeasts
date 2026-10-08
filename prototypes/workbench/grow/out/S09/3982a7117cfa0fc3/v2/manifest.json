@@ -1,0 +1,175 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 2,
+ "species": "S09",
+ "name": "Belatz",
+ "level": "individual",
+ "genomeDigest": "S09-e8762715",
+ "genomeSha256": "3982a7117cfa0fc3aa4f6dacfff48f8d51f5f0b6b8460adb85ef2d3fa827774e",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Coat: colour cobalt and jade; fluff short and straight; sheen between; feathers between; fur reach bushy tail; second colour cream. Face: head between; beak short; crest between; crown tall; eyes small, close. Shape: waist thick; back line arched; hind body small; body pear; build slim. Legs & tail: tail curl straight; tail between. Proportions: a large body, a short beak, small eyes, a tall crest, long legs, broad feet, a thick waist, an arched back, wide flaps.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Belatz)",
+  "name": "species/S09/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T03:14:57Z",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "accad880-baf0-4fa4-85d8-251d2d3fd47f",
+     "status": "ok",
+     "costUSD": 0.09363,
+     "seconds": 9.0,
+     "checks": {
+      "silhouetteIoU": 0.893,
+      "silhouetteIoUInPlace": 0.896,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "neck": 1.0,
+       "head": 0.998,
+       "leg-0": 1.0,
+       "flap": 0.978
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#456ba9",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.991,
+        "median": "#5179be",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 1.0,
+        "median": "#429373",
+        "nearest": "#38a878",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 1.0,
+        "median": "#dcbf84",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.004,
+        "median": "#4d9593",
+        "nearest": "#38a878",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.774,
+      "passed": true
+     },
+     "responseId": "sgrHasbVCdzh_uMPlcHO8Ag"
+    }
+   ]
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "2a691ca4-336f-498c-8bf7-1152131c0dd7",
+     "status": "ok",
+     "costUSD": 0.09719,
+     "seconds": 9.0,
+     "checks": {
+      "silhouetteIoU": 0.852,
+      "silhouetteIoUInPlace": 0.909,
+      "parts": {
+       "region-0": 0.996,
+       "region-1": 0.957,
+       "neck": 0.979,
+       "head": 0.955,
+       "leg-0": 0.975,
+       "flap": 0.948,
+       "tail": 0.906
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.975,
+        "median": "#476ca7",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.897,
+        "median": "#5078bc",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body#2@region-0": {
+        "agreement": 0.978,
+        "median": "#376085",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 0.982,
+        "median": "#409171",
+        "nearest": "#38a878",
+        "ok": true
+       },
+       "body#2@head": {
+        "agreement": 0.998,
+        "median": "#3d678f",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.975,
+        "median": "#d0b37d",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 1.0,
+        "median": "#e0c795",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.976,
+      "passed": true
+     },
+     "responseId": "vgrHasbAN6O-39IPoqb1gAo"
+    }
+   ]
+  }
+ },
+ "outputs": {
+  "station-portrait-600x620.png": "5bb92848420cbe9ff635df85f3f0eb9568408bbf432a912680aa422004306672",
+  "station-portrait-300x310.png": "94b63e91f52f352a13de75818bcc745729d67a7a10740b0ef114a1089387ca9e",
+  "station-side-600x620.png": "16da778f1d509ebac97be824ecc314bb7eb2514d0e00334c4d2a00cd313222a5",
+  "station-side-300x310.png": "c176b02c09c5903561fde3b0737941acfc5b10cf5ec38ba3912fba449d10e6c9",
+  "companion-280x300.png": "8b6a092a113133799e8af8132c2e4b85d1d2c5e72daae415f68fda501cd2e23c",
+  "token-48.png": "d04db1f941f696d926c3054f15edfede7adf39e572eab40c0ac802b614010887"
+ },
+ "calls": 2,
+ "costUSD": 0.19082,
+ "seconds": 18.0,
+ "finishedAt": "2026-10-08T03:15:21Z"
+}

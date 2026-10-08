@@ -1,0 +1,314 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 2,
+ "species": "S09",
+ "name": "Belatz",
+ "level": "individual",
+ "genomeDigest": "S09-bb2b96cc",
+ "genomeSha256": "e6ce67f233ad191f86d477075c9feaab6d3159b0cc56657ddc8b70280ce33250",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Coat: colour lagoon and periwinkle; fluff long and swept; sheen between; feathers between; fur reach bushy tail and ears; second colour butter and ice. Face: head between; beak short; crest between; crown low; eyes between. Shape: waist thick; back line dipping; hind body small; body pear; build stout. Legs & tail: tail curl straight; tail long, thick. Proportions: a large body, a short beak, a low crest, long legs, broad feet, a thick waist, a dipping back, a long tail, wide flaps, a stout build.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Belatz)",
+  "name": "species/S09/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T03:14:24Z",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "a336850f-a838-41dc-8f8f-f56f41b31152",
+     "status": "ok",
+     "costUSD": 0.09178,
+     "seconds": 8.0,
+     "checks": {
+      "silhouetteIoU": 0.382,
+      "silhouetteIoUInPlace": 0.803,
+      "parts": {
+       "region-0": 0.656,
+       "region-1": 0.709,
+       "neck": 0.925,
+       "head": 0.487,
+       "leg-0": 0.299,
+       "flap": 0.436,
+       "tail": 0.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.852,
+        "median": "#5d8ba7",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.867,
+        "median": "#3b8f9d",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 0.995,
+        "median": "#496693",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 1.0,
+        "median": "#dde9e4",
+        "nearest": "#d9ecf5",
+        "ok": true
+       },
+       "second#2@leg-0": {
+        "agreement": 1.0,
+        "median": "#e2dbaf",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.35,
+        "median": "#8ab1ca",
+        "nearest": "#d9ecf5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "the silhouette does not match the drawing (IoU 0.38): the body was turned, reshaped or re-posed",
+       "a part is missing or moved from where the part map puts it: head (0.49), leg-0 (0.30), flap (0.44), tail (0.00)"
+      ],
+      "slotAgreement": 0.818,
+      "passed": false
+     },
+     "responseId": "kArHasCJM5ia_uMPrpqrwQk"
+    },
+    {
+     "callId": "7fdb8ad6-5bb9-4289-ac71-d8db8a592672",
+     "status": "ok",
+     "costUSD": 0.11181,
+     "seconds": 9.1,
+     "checks": {
+      "silhouetteIoU": 0.929,
+      "silhouetteIoUInPlace": 0.966,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 0.995,
+       "neck": 1.0,
+       "head": 0.996,
+       "leg-0": 0.968,
+       "flap": 0.999,
+       "tail": 0.997
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#2d919e",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.962,
+        "median": "#329aa4",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 1.0,
+        "median": "#827bc9",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 1.0,
+        "median": "#f3d79b",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second#2@leg-0": {
+        "agreement": 1.0,
+        "median": "#d9e9dc",
+        "nearest": "#d9ecf5",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.939,
+        "median": "#cbe1ed",
+        "nearest": "#d9ecf5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.983,
+      "passed": true
+     },
+     "responseId": "mwrHaqqSJeTh_uMPvp6L0Q0"
+    }
+   ]
+  },
+  "side": {
+   "status": "plain",
+   "attempts": [
+    {
+     "callId": "2f32d985-d812-4fdc-bb21-0d169d2b8e17",
+     "status": "ok",
+     "costUSD": 0.10194,
+     "seconds": 8.8,
+     "checks": {
+      "silhouetteIoU": 0.883,
+      "silhouetteIoUInPlace": 0.883,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "neck": 0.949,
+       "head": 0.561,
+       "leg-0": 0.995,
+       "flap": 0.933,
+       "tail": 0.999
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.815,
+        "median": "#7f86c9",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.206,
+        "median": "#ebcc9a",
+        "nearest": "#fff0b8",
+        "ok": false
+       },
+       "body#2@region-0": {
+        "agreement": 0.986,
+        "median": "#6b75b2",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 0.887,
+        "median": "#6a76b2",
+        "nearest": "#8b7dd8",
+        "ok": true
+       },
+       "body#2@head": {
+        "agreement": 0.917,
+        "median": "#39919d",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "second#2@leg-0": {
+        "agreement": 0.998,
+        "median": "#e6cf93",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.977,
+        "median": "#b0ccdb",
+        "nearest": "#d9ecf5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the body slot on the head (painted #ebcc9a, the colour of second)"
+      ],
+      "slotAgreement": 0.9,
+      "passed": false
+     },
+     "responseId": "pwrHasT9EN-X_uMPwJ3oqQQ"
+    },
+    {
+     "callId": "a8b6d2c2-c9b7-45a1-b6ff-f385a9869327",
+     "status": "ok",
+     "costUSD": 0.09675,
+     "seconds": 8.0,
+     "checks": {
+      "silhouetteIoU": 0.401,
+      "silhouetteIoUInPlace": 0.561,
+      "parts": {
+       "region-0": 0.869,
+       "region-1": 0.588,
+       "neck": 0.716,
+       "head": 0.137,
+       "leg-0": 0.465,
+       "flap": 0.224,
+       "tail": 0.248
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.858,
+        "median": "#4a979f",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body#2@region-0": {
+        "agreement": 0.536,
+        "median": "#94a4a8",
+        "nearest": "#d9ecf5",
+        "ok": true
+       },
+       "body#2@neck": {
+        "agreement": 0.917,
+        "median": "#4d829e",
+        "nearest": "#269fa5",
+        "ok": true
+       },
+       "body#2@head": {
+        "agreement": 0.248,
+        "median": "#eed4aa",
+        "nearest": "#fff0b8",
+        "ok": false
+       },
+       "second#2@leg-0": {
+        "agreement": 0.796,
+        "median": "#bcd3dc",
+        "nearest": "#d9ecf5",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 1.0,
+        "median": "#fae6a4",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "the silhouette does not match the drawing (IoU 0.40): the body was turned, reshaped or re-posed",
+       "a part is missing or moved from where the part map puts it: head (0.14), leg-0 (0.47), flap (0.22), tail (0.25)",
+       "a pigment slot is painted in another slot's colour: the body slot on the head (painted #eed4aa, the colour of second)"
+      ],
+      "slotAgreement": 0.787,
+      "passed": false
+     },
+     "responseId": "sgrHauvtFP-939IPha7j4Q4"
+    }
+   ],
+   "lastRejected": "raw/side-2.png"
+  }
+ },
+ "outputs": {
+  "station-portrait-600x620.png": "23cca9538d0e08d9202a6bb7c6f93b55a4c05cb2a3615324c5e9f1c0afea25c2",
+  "station-portrait-300x310.png": "6f494d1d4133f793d8eb6b389f97fe84865df915c3f0ee3acf8860658ad459d7",
+  "station-side-600x620.png": "1000f59cb75afe3ca5722928f48ff59a9d003d871024db1c9062cad7523b004f",
+  "station-side-300x310.png": "413c9612af64dec9f87ec8951c056804ade600e6a0ec25cbcb07d4cea2e33d7a",
+  "companion-280x300.png": "f29abd50a68596b9258972119c41bbdaccd1f2c671f2cf2ac7de1a9e2f4e1711",
+  "token-48.png": "b8fb49e9670a0e89a0d8210371101882dd88e63d804187ddad58bf4be7f467a6"
+ },
+ "calls": 4,
+ "costUSD": 0.40228,
+ "seconds": 33.9,
+ "finishedAt": "2026-10-08T03:15:09Z"
+}
