@@ -31,7 +31,9 @@ import service as S
 
 LAB = os.path.join(HERE, "lab")
 SHEETS = os.path.join(HERE, "species-sheets")
-PROMPT_SET = os.path.join(HERE, "prompt-lab")
+PROMPT_SET = os.path.join(HERE, "prompt-lab", "v6")  # the current prompt set (the art director's v6); a file missing there falls back to the v5 set beside it
+PROMPT_SET_FALLBACK = os.path.join(HERE, "prompt-lab")
+SET_NAME = os.path.basename(PROMPT_SET)
 MODELS = {"flash": "gemini-3.1-flash-image", "pro": "gemini-3-pro-image"}  # every variant runs on both (the owner: if Flash is not up to it, go Pro; the cute-pet bar comes before cost)  # the art prompter's prompt set, when it lands on main (see README: "The prompt lab")
 
 CRAFT = ("Craft rules. Limbs, feet and joints are developed, rounded, finished forms: never boxes, never bare cylinders, never undeveloped 3D artefacts, never facets or flat planes. "
