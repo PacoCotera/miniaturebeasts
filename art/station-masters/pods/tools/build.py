@@ -65,7 +65,7 @@ def cradle():
     mask = np.maximum(below, tuft * (rows < yc[None, :] + 0.5))
     x[..., 3] = x[..., 3] * np.clip(mask, 0, 1); x = x.astype(np.uint8)
     save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 328, 224, 96], "the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip", "dish-lowa")
-    SH = (568, 368, 288, 72)                  # provisional: the UI designer's rectangle is awaited
+    SH = (592, 368, 240, 72)
     im = load("slab4b.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); k = k.crop(bbox_alpha(k, 60))
     f = min(SH[2] / k.width, SH[3] / k.height); k = k.resize((round(k.width * f), round(k.height * f)), Image.LANCZOS); k = dim(k, 0.9)
     c = Image.new("RGBA", SH[2:], (0, 0, 0, 0)); c.alpha_composite(k, ((SH[2] - k.width) // 2, SH[3] - k.height))
@@ -73,7 +73,7 @@ def cradle():
     yy, xx = np.mgrid[0:SH[3], 0:SH[2]].astype(float); cx = 712 - SH[0]; cy = 424 - SH[1] - 14
     e = np.clip(1 - (((xx - cx) / 112.0) ** 2 + ((yy - cy) / 16.0) ** 2), 0, 1) ** 1.3 * 0.55
     a = np.asarray(c).astype(float); a[..., :3] = a[..., :3] * (1 - e[..., None]) + np.array([4, 10, 14.0]) * e[..., None]; a[..., 3] = np.maximum(a[..., 3], e * 255 * (a[..., 3] > 0))
-    save("room-shelf", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGBA"), list(SH), "PROVISIONAL rectangle: the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly", "slab4b")
+    save("room-shelf", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGBA"), list(SH), "the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly", "slab4b")
 # ---- list column
 def listcol():
     im = load("list-column.jpg"); im = im.crop((1536 - 735, 0, 1536, 2400)).resize((160, 522), Image.LANCZOS)
@@ -177,13 +177,18 @@ def plates():
     pln = dim(pl, 0.6)
     tv = round(8 / s)
     for w in range(80, 225, 16):
-        save(f"plate-name-{w}x24", round_alpha(nine(pln, w, 24, 60, tv, 60, tv, ls=s), 4), [712 - w // 2, 440, w, 24], "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712", "plate-thin2")
+        save(f"plate-name-{w}x24", round_alpha(nine(pln, w, 24, 60, tv, 60, tv, ls=s), 4), [712 - w // 2, 456, w, 24], "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712", "plate-thin2")
     plo = dim(pl, 0.55)
-    save("plate-origin-224x40", round_alpha(nine(plo, 224, 40, 60, 60, 60, 60, ls=s), 5), [600, 480, 224, 40], "thin frosted label: colour-to-alpha, 9-slice, rounded", "plate-thin2")
     for h in (36, 56, 76):
         save(f"plate-message-640x{h}", round_alpha(nine(plo, 640, h, 60, 60, 60, 60, ls=s), 6), [192, 550 - h, 640, h], "thin frosted label: 9-slice, rounded", "plate-thin2")
     lb = load("label-plate.jpg"); m = (np.asarray(lb).astype(int).min(2) < 240); ys, xs = np.where(m); bb = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)
     save("stamp-label-120x120", lb.crop(bb).resize((120, 120), Image.LANCZOS), [888, 248, 120, 120], "cut, 120x120", "label-plate")
+def stampcase():
+    """The stamp's dim, unlit glass case (848,144,176,328), open at the screen's right edge."""
+    im = load("case2.jpg"); W, H = im.size; y0, y1 = int(H * 0.075), int(H * 0.925); x0 = int(W * 0.108); h = y1 - y0; w = round(h * 176 / 328)
+    c = im.crop((x0, y0, x0 + w, y1)).resize((176, 328), Image.LANCZOS)
+    a = np.asarray(c).astype(float); a = a * 0.8        # darker than the page's wall: the pod keeps the only light
+    save("room-stamp-case", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)), [848, 144, 176, 328], "the dim unlit glass case, left edge and rails painted, open at the right; cut from case2, scaled evenly, darkened", "case2")
 # ---- bars
 def bars():
     im = load("bar-top.jpg"); k = key_magenta(im); bb = bbox_alpha(k, 250); b = im.crop(bb).convert("RGBA")
@@ -317,7 +322,7 @@ def well_pinholes():
     save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 32, 40], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
     save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 32, 40], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars", "well_pinholes"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars", "stampcase", "well_pinholes"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)

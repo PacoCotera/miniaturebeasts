@@ -42,17 +42,16 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `plate-message-640x36` | 640×36 | (192, 514, 640, 36) | thin frosted label: 9-slice, rounded |
 | `plate-message-640x56` | 640×56 | (192, 494, 640, 56) | thin frosted label: 9-slice, rounded |
 | `plate-message-640x76` | 640×76 | (192, 474, 640, 76) | thin frosted label: 9-slice, rounded |
-| `plate-name-112x24` | 112×24 | (656, 440, 112, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-name-128x24` | 128×24 | (648, 440, 128, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-name-144x24` | 144×24 | (640, 440, 144, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-name-160x24` | 160×24 | (632, 440, 160, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-name-176x24` | 176×24 | (624, 440, 176, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-name-192x24` | 192×24 | (616, 440, 192, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-name-208x24` | 208×24 | (608, 440, 208, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-name-224x24` | 224×24 | (600, 440, 224, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-name-80x24` | 80×24 | (672, 440, 80, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-name-96x24` | 96×24 | (664, 440, 96, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
-| `plate-origin-224x40` | 224×40 | (600, 480, 224, 40) | thin frosted label: colour-to-alpha, 9-slice, rounded |
+| `plate-name-112x24` | 112×24 | (656, 456, 112, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-128x24` | 128×24 | (648, 456, 128, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-144x24` | 144×24 | (640, 456, 144, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-160x24` | 160×24 | (632, 456, 160, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-176x24` | 176×24 | (624, 456, 176, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-192x24` | 192×24 | (616, 456, 192, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-208x24` | 208×24 | (608, 456, 208, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-224x24` | 224×24 | (600, 456, 224, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-80x24` | 80×24 | (672, 456, 80, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-96x24` | 96×24 | (664, 456, 96, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
 
 ### Pods: one systematic pod in layers
 
@@ -137,7 +136,8 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `room-bench-stage` | 1024×522 | (0, 40, 1024, 522) | the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (712, 424) |
 | `room-cradle` | 224×96 | (600, 328, 224, 96) | the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is 201 px wide), bottom on the last row |
 | `room-cradle-front` | 224×96 | (600, 328, 224, 96) | the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip |
-| `room-shelf` | 288×72 | (568, 368, 288, 72) | PROVISIONAL rectangle: the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly |
+| `room-shelf` | 240×72 | (592, 368, 240, 72) | the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly |
+| `room-stamp-case` | 176×328 | (848, 144, 176, 328) | the dim unlit glass case, left edge and rails painted, open at the right; cut from case2, scaled evenly, darkened |
 
 ### Stamp label (signed)
 
@@ -173,17 +173,6 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264` | 376×264 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-376x264-sealed` | 376×264 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-376x264-unread` | 376×264 |  | frost texture at 0.9 alpha under the frame |
-
-## Seventh pass (2026-10-08)
-
-To the art director's verdict on pass 6 (the 33 re-cut pods and shadows, the 8 sealed slats, the portrait frame with its states and the 0.6 name plates are signed and unchanged):
-
-- **Name plate at 20 px (owner):** `plate-name-<w>x24`, 80 to 224 wide in steps of 16, 24 tall, centred on x 712 at y 440; the composites set the name in Inter 20 medium.
-- **`room-cradle-front`:** re-cut along the bowl's own near-rim contour, not a row. The contour was read off the bowl's lit rim edge (from the left wall's top edge at row 19, down the dip's U to row 72 and up to the right wall), so both near side walls from their top edge are in front of the pod, its flanks pass behind them, and the dip's U is the front edge. Inside the dip there is no flat band of bed: five uneven grit tufts (5 to 9 px high, ragged tops) lap the pod's round foot. `room-cradle` is unchanged. *Method note:* the front layer is cut from the cradle's own pixels by that contour and by the tufts' profiles (`tools/build.py`, `cradle`), and checked in the composite with the reference pod in place; it was not painted as a separate assembly with a pod in it.
-- **`room-shelf`:** repainted as the concept's slab: a trapezoid in perspective with a deep top face (about 4 to 1 wide to tall, the far edge shorter than the near), a lit pale-cyan front edge, the bowl's contact shadow on the top face, and about 16 to 20 px of top face in front of the bowl. **Provisional rectangle (568, 368, 288, 72):** it is re-cut when the UI designer's rectangle lands; the composite moves the name and origin down 16 for now.
-- **`page-pane-408x440`:** brought to the stage wall's values (the inside is about 30 percent of its former brightness), thin dark glass inside the lit hairline edge, so the portrait frame is the page's only lit object.
-- **`pod-well-mask-accent`:** the two enclosed pixels at (6,11) and (7,11) are filled; `pod-well-mask-body` is held with it.
-- **Composites:** the emblem slots are empty, only the words and pips show; both composites and the comparison are rebuilt.
 
 ## Sixth pass (2026-10-08)
 

@@ -21,10 +21,10 @@ def compose(state, rail):
         for k in range(4): d.arc([cx - 31, cy - 31, cx + 31, cy + 31], -90 + k * 90 + 6, -90 + k * 90 + 84, fill=(69, 216, 190, 255) if fills[k] else (93, 89, 116, 255), width=3)
     put("ring-hatch", 24, 488)
     # stage
-    put("room-shelf", 576, 392); put("room-cradle", 600, 328); put("pod-large-shadow", 712 - 80, 385); put("pod-large-identified", 640, 216); put("room-cradle-front", 600, 328)
+    put("room-shelf", 592, 368); put("room-cradle", 600, 328); put("pod-large-shadow", 712 - 80, 385); put("pod-large-identified", 640, 216); put("room-cradle-front", 600, 328)
     tw = d.textlength("Loika pod", font=f20); pw = min(224, max(80, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x24", 712 - pw // 2, 456); text((712, 468), "Loika pod", f20, CREAM, "mm")
-    put("plate-origin-224x40", 600, 496); text((712, 507), "rock field ·", f16, BONE, "mm"); text((712, 525), "a Tuikis felt safe", f16, BONE, "mm")
-    put("stamp-label-120x120", 888, 248); cv.alpha_composite(cand.crop((830, 238, 976, 386)).resize((104, 104), Image.NEAREST), (896, 256))
+    text((712, 507), "rock field ·", f16, BONE, "mm"); text((712, 525), "a Tuikis felt safe", f16, BONE, "mm")
+    put("room-stamp-case", 848, 144); put("stamp-label-120x120", 888, 248); cv.alpha_composite(cand.crop((830, 238, 976, 386)).resize((104, 104), Image.NEAREST), (896, 256))
     # page
     put("page-pane-408x440", 176, 112)
     text((192, 120), "Coat" if rail == "six" else "Shape", f20, CREAM)    # the heading is the open chapter's word

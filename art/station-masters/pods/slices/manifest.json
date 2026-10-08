@@ -46,18 +46,18 @@
  },
  "room-shelf": {
   "size": [
-   288,
+   240,
    72
   ],
   "rect": [
-   568,
+   592,
    368,
-   288,
+   240,
    72
   ],
   "src": "slab4b",
-  "made": "PROVISIONAL rectangle: the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly",
-  "sha256": "c382c8d1980968878d82884d751a0930b95982623859a68c73e0bba7662223d6"
+  "made": "the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly",
+  "sha256": "5803fa6aa9b8055ffc61477e5f8deb4478f4afd06b42f6de9c55a8b70b14870b"
  },
  "ring-column": {
   "size": [
@@ -1094,21 +1094,6 @@
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "3834322d8d96c3d1f8b528756a17d428ff36cd26055b3e6fd276b754e9c0cbba"
  },
- "plate-origin-224x40": {
-  "size": [
-   224,
-   40
-  ],
-  "rect": [
-   600,
-   480,
-   224,
-   40
-  ],
-  "src": "plate-thin2",
-  "made": "thin frosted label: colour-to-alpha, 9-slice, rounded",
-  "sha256": "de9e1921c272e414e65d5c859ee979e2c6ea21d1c021ff0bd2e368afb49e16a7"
- },
  "rail-tab-unread-full-152x40": {
   "size": [
    152,
@@ -1281,7 +1266,7 @@
   ],
   "rect": [
    672,
-   440,
+   456,
    80,
    24
   ],
@@ -1296,7 +1281,7 @@
   ],
   "rect": [
    664,
-   440,
+   456,
    96,
    24
   ],
@@ -1311,7 +1296,7 @@
   ],
   "rect": [
    656,
-   440,
+   456,
    112,
    24
   ],
@@ -1326,7 +1311,7 @@
   ],
   "rect": [
    648,
-   440,
+   456,
    128,
    24
   ],
@@ -1341,7 +1326,7 @@
   ],
   "rect": [
    640,
-   440,
+   456,
    144,
    24
   ],
@@ -1356,7 +1341,7 @@
   ],
   "rect": [
    632,
-   440,
+   456,
    160,
    24
   ],
@@ -1371,7 +1356,7 @@
   ],
   "rect": [
    624,
-   440,
+   456,
    176,
    24
   ],
@@ -1386,7 +1371,7 @@
   ],
   "rect": [
    616,
-   440,
+   456,
    192,
    24
   ],
@@ -1401,7 +1386,7 @@
   ],
   "rect": [
    608,
-   440,
+   456,
    208,
    24
   ],
@@ -1416,12 +1401,27 @@
   ],
   "rect": [
    600,
-   440,
+   456,
    224,
    24
   ],
   "src": "plate-thin2",
   "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
   "sha256": "2453edfaed652aeff47100a505d10145c7234fad3140abd1ed83dda3644a5a44"
+ },
+ "room-stamp-case": {
+  "size": [
+   176,
+   328
+  ],
+  "rect": [
+   848,
+   144,
+   176,
+   328
+  ],
+  "src": "case2",
+  "made": "the dim unlit glass case, left edge and rails painted, open at the right; cut from case2, scaled evenly, darkened",
+  "sha256": "9bb2ac297502e4b13cdc184644d3891f7e8de06ca7c843eacf7022a879724844"
  }
 }
