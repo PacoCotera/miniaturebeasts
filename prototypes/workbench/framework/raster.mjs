@@ -118,7 +118,7 @@ export function render(scene, camera, pass = "shaded", options = {}) {
         if (region) {
           const lp = localPoint(node, centre);
           const vAngle = (Math.atan2(lp[2] / node.radii[2], lp[1] / node.radii[1]) / (2 * Math.PI) + 1) % 1;
-          if (scene.belly && scene.slots.belly && lp[2] < -0.35 * node.radii[2] && !node.up) { slot = "belly"; half = false; }
+          if (scene.belly && scene.slots.belly && lp[2] < (2 * (scene.bellyExtent ?? 0.33) - 1) * node.radii[2] && !node.up) { slot = "belly"; half = false; }
           if (scene.markings && markingAt(scene.markings, meanU, vAngle)) field = true;
         }
         if (node.part === "head" && scene.mask && scene.slots.mask) { const lp = localPoint(node, centre); if (scene.mask === "band" ? lp[0] < -0.25 * node.radii[0] && Math.abs(lp[2]) < 0.45 * node.radii[2] : lp[0] < -0.3 * node.radii[0] && Math.abs(lp[1]) < 0.22 * node.radii[1]) { slot = "mask"; half = false; } }
@@ -134,7 +134,7 @@ export function render(scene, camera, pass = "shaded", options = {}) {
         if (region) {
           const lp = localPoint(node, centre);
           const vAngle = (Math.atan2(lp[2] / node.radii[2], lp[1] / node.radii[1]) / (2 * Math.PI) + 1) % 1;
-          if (scene.belly && scene.slots.belly && lp[2] < -0.35 * node.radii[2] && !node.up) { slot = "belly"; pigment = scene.slots.belly[0]; slotKey = "belly"; if (pass === "markings") mark("belly"); }
+          if (scene.belly && scene.slots.belly && lp[2] < (2 * (scene.bellyExtent ?? 0.33) - 1) * node.radii[2] && !node.up) { slot = "belly"; pigment = scene.slots.belly[0]; slotKey = "belly"; if (pass === "markings") mark("belly"); }
           if (scene.markings && markingAt(scene.markings, meanU, vAngle)) mark("coat");
         }
         if (node.role === "thin-surface" && scene.flapMarking && node.part === "flap") {

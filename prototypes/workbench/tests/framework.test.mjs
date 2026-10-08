@@ -14,22 +14,24 @@ const framesDir = path.resolve(here, "../frames");
 const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 const frameOf = (id) => frames.find((f) => f.species.id === id);
 
-test("catalogue 8 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
+test("catalogue 9 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
   const v1 = CATALOGUE.loci.filter((l) => l.provenance.catalogue.startsWith("genomic-compositional-source-experiment"));
   const mine = CATALOGUE.loci.filter((l) => l.provenance.catalogue === "mb-genome-framework@7");
   assert.equal(v1.filter((l) => l.status === "validated").length, 114);
   assert.equal(v1.filter((l) => l.status !== "validated").length, 6);
-  assert.equal(mine.length, 47, "45 taxonomy records plus the two ear proportions");
+  assert.equal(mine.length, 49, "45 taxonomy records plus the two ear proportions");
   const gaps = (l) => ["anatomy.tail-tip-bulb", "anatomy.top-cap-sheet", "appearance.cap-palette", "appearance.cap-spots", "appearance.belly-field", "growth.crest-leaf-count"].includes(l.id);
   const proportions = (l) => ["growth.auricular-set-ratio", "growth.auricular-width-ratio"].includes(l.id);
   const kinds = mine.filter((l) => !gaps(l) && !proportions(l) && l.id !== "energy.light-feeding" && !l.id.startsWith("appearance.emission"));
   assert.equal(kinds.filter((l) => l.switch === "part").length, 11, "eleven new switches");
-  assert.equal(kinds.filter((l) => l.switch !== "part").length, 25, "twenty-five new loci");
+  assert.equal(kinds.filter((l) => l.switch !== "part").length, 27, "twenty-five new loci");
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
-  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 9, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios");
-  assert.equal(CATALOGUE.version, 8, "pin 8: the head floor is a changed range");
+  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 15, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, and the six of the Loika's calibration to Pip");
+  assert.equal(CATALOGUE.version, 9, "pin 9: the Loika calibrated to Pip");
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 8).length === 3);
+  assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 9).length === 6);
+  assert.ok(CATALOGUE.loci.some((l) => l.id === "growth.belly-field-extent") && CATALOGUE.loci.some((l) => l.id === "growth.exterior-eye-height-ratio"), "the two C01 loci of the calibration");
   assert.equal(PLAN_SWITCHES.size, 23);
   assert.ok([...PART_SWITCHES].every((id) => LOCI.has(id)));
   assert.equal(CATALOGUE.parent.foundationDigest.length, 64);

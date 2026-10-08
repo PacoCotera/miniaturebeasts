@@ -19,7 +19,7 @@ const sw = (...ids) => Object.fromEntries(ids.map((id) => [id, "on"]));
 const EYES = sw("anatomy.exterior-eye-presence"); // always a face: a pet has eyes (taxonomy §3)
 
 export const CLANS = {
-  C01: { number: 1, resembles: "a round frog-hare, Pip", parts: ["crest","leg","head","body"], plan: "one|serial|bilateral|contact|zero|one|two|off|skin", extras: { join: "broad" }, anchor: "charcoal", second: "cream", feature: "a leaf crest and a snout; charcoal", features: { ...EYES, ...sw("anatomy.muzzle-presence", "anatomy.crown-presence", "appearance.belly-field") }, finish: { "anatomy.crown-form": "pointed", "growth.crest-leaf-count": "three" }, glyphTop: ["#.#.#", ".###."] },
+  C01: { number: 1, resembles: "a round frog-hare, Pip", parts: ["crest","leg","head","body"], plan: "one|serial|bilateral|contact|zero|one|two|off|skin", extras: { join: "broad" }, anchor: "charcoal", second: "cream", feature: "a leaf crest and a snout; charcoal", features: { ...EYES, ...sw("anatomy.muzzle-presence", "anatomy.crown-presence", "appearance.belly-field") }, finish: { "anatomy.crown-form": "leaf", "growth.crest-leaf-count": "three" }, glyphTop: ["#.#.#", ".###."] },
   C02: { number: 2, resembles: "a puffball under a cap", parts: ["flap","head"], plan: "one|serial|radial|none|zero|one|two|on|fur", extras: { join: "broad", wave: true }, anchor: "coral", second: null, feature: "a cap of flaps, coral, radial bodies; soft, round, sleepy", features: { ...EYES, ...sw("anatomy.top-cap-sheet") }, finish: { "appearance.flap-translucency": "opaque" }, glyphTop: [".###.", "#####"] },
   C03: { number: 3, resembles: "a lizard with a lantern tail", parts: ["tail","crest","leg"], plan: "two|serial|bilateral|contact|zero|one|two|off|scales", extras: { join: "narrow", wave: true }, anchor: "lagoon", second: "milk-mint", feature: "a glowing tail and a crest, lagoon; small lights of wood and rock", features: { ...EYES, ...sw("anatomy.muzzle-presence", "anatomy.crown-presence", "anatomy.axial-tail-presence", "anatomy.tail-tip-bulb") }, finish: { "anatomy.crown-form": "pointed" }, glyphTop: ["..#..", ".###."] },
   C04: { number: 4, resembles: "a cat", parts: ["ear","muzzle","tail","head"], plan: "two|serial|bilateral|contact|zero|one|two|off|fur", extras: { join: "narrow", wave: true }, anchor: "russet", second: "cream", feature: "upright pointed ears, striped fur; quiet hunters of the grass", features: { ...EYES, ...sw("anatomy.muzzle-presence", "anatomy.auricular-presence", "anatomy.axial-tail-presence", "appearance.marking-switch") }, finish: { "anatomy.auricular-form": "pointed", "anatomy.ear-tilt": "upright", "growth.muzzle-projection-ratio": "short", "growth.axial-tail-length-ratio": "long", "appearance.marking-layout": "bands", "appearance.fur-reach": "body", "anatomy.contact-terminal-form": "pad" }, glyphTop: ["#...#", ".#.#."] },
@@ -38,14 +38,20 @@ export const CLANS = {
 };
 
 // The three authored frames, as frames.py defines them (open traits, pools, fixed values).
+// The Loika's fixed measures, taken from the accepted Pip (art/miniature-lives, rich-plain 300×310 and
+// hibit-plain 280×300; catalogue 9): a body 0.92 as tall as long and as round from the front; a head
+// two thirds of the body, carried high and fused to it; eye rings 0.43 of the head's height, set wide
+// and at the head's middle; a stub snout that is the whole lower face, cream like the belly; the belly
+// field half the body's depth; legs a third of the body's height and a third as thick; feet a quarter
+// of the body's length and a tenth of its height, rounded; a crest of three leaf sheets 0.6 of the head.
 const S01_FIXED = {
-  "growth.core-half-length": "medium", "growth.core-width-ratio": "high", "growth.core-depth-ratio": "high",
+  "growth.core-half-length": "medium", "growth.core-width-ratio": "wide", "growth.core-depth-ratio": "deep",
   "growth.head-length-ratio": "large", "growth.head-width-ratio": "high", "growth.head-depth-ratio": "high",
-  "growth.head-lift-ratio": "high", "growth.muzzle-projection-ratio": "short", "growth.muzzle-width-ratio": "high",
-  "growth.exterior-eye-spacing-ratio": "wide", "growth.crown-height-ratio": "high",
+  "growth.head-lift-ratio": "high", "growth.muzzle-projection-ratio": "stub", "growth.muzzle-width-ratio": "full",
+  "growth.exterior-eye-spacing-ratio": "wide", "growth.exterior-eye-height-ratio": "middle", "growth.crown-height-ratio": "high",
   "growth.support-drop-ratio": "short", "growth.support-radius-ratio": "stout", "growth.support-splay-ratio": "low",
-  "growth.terminal-length-ratio": "broad", "growth.terminal-depth-ratio": "high",
-  "anatomy.contact-terminal-form": "pad", "anatomy.region-longitudinal-form": "barrel",
+  "growth.terminal-length-ratio": "narrow", "growth.terminal-depth-ratio": "small", "growth.belly-field-extent": "high",
+  "anatomy.contact-terminal-form": "rounded", "anatomy.region-longitudinal-form": "ovoid", "anatomy.region-cross-exponent": "round",
   "appearance.marking-layout": "patches", "appearance.marking-extent": "high", "appearance.marking-scale": "high",
   "appearance.marking-contrast": "high", "cognition.exploration-tendency": "seeking", "cognition.arousal-threshold": "low",
 };
@@ -66,11 +72,11 @@ const row = (code, clan, size, tier, kind, moves, habitat, gate, diet, ability, 
 export const SPECIES = [
   { ...row("S01", "C01", "medium", "starter", "a round frog-hare, Pip (frame hopper)", "hops", "meadow, pond edge", null, "fruit", "calms wary creatures", "gentle and curious, a little shy"),
     summary: "The starter: Pip as in the approved art. Exactly the five open traits of the Pip proof.",
-    fixed: S01_FIXED, openSwitches: ["appearance.marking-switch", "anatomy.crown-presence"],
+    fixed: S01_FIXED, typical: { "growth.exterior-eye-size-ratio": "huge" }, openSwitches: ["appearance.marking-switch", "anatomy.crown-presence"],
     open: [
       { chapter: "coat", id: "markings", name: "Markings", loci: ["appearance.marking-switch"], looks: ["plain", "pale patches"] },
       { chapter: "face", id: "crown", name: "Crown", loci: ["anatomy.crown-presence"], looks: ["bare head", "leaf crest"] },
-      { chapter: "face", id: "eye-rings", name: "Eye rings", loci: ["growth.exterior-eye-size-ratio"], looks: ["thin rings", "between", "wide pale rings"] },
+      { chapter: "face", id: "eye-rings", name: "Eye rings", loci: ["growth.exterior-eye-size-ratio"], looks: ["thin rings", "between", "wide pale rings"], pool: { "growth.exterior-eye-size-ratio": ["large", "huge"] } },
       { chapter: "movement", id: "drive", name: "Drive", loci: ["movement.cycle-rate"], looks: ["steady", "between", "bursts"] },
       { chapter: "stamina", id: "efficiency", name: "Efficiency", loci: ["energy.action-efficiency"], looks: ["thrifty", "between", "ordinary"] },
     ],
