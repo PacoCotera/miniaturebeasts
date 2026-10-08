@@ -188,8 +188,8 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 | Beam | 224, 104, 240, 232 | A cool cone from above left, ending in a pool on the cradle |
 | **Pod (focal)** | 264, 120, 160, 192 | Bottom-centred on (344, 312). Sized by size class: large 160×192, medium 136×168, small 112×144 |
 | Cradle | 232, 296, 224, 40 | Glass ring |
-| Name | 184, 344, 320, 32 | 28 px, centred on x 344. "Unknown pod" before Identify. No digits |
-| Origin | 184, 384, 320, 40 | 16 px, mist, at most two lines, centred. The place and how it was found ("rock field · a Tuikis felt safe"); no digits, never an expedition number (corrected by the UI designer against the build, 2026-10-08) |
+| Name | 184, 344, 320, 32 | 28 px, centred on x 344. The species name alone ("Loika"); "Unknown" before Identify; never the word "pod". No digits |
+| Origin | 184, 384, 320, 40 | 16 px, mist, at most two lines, centred. One sentence, "Found <where>, <what happened>.", broken after the comma ("Found on the rock field," / "as a Tuikis felt safe."). No digits, no "·", never an expedition number. The pattern and examples are under *Words on Pods* below |
 | **Stamp label** | 176, 432, 120, 120 | 120 px below the pod's box. Appears at Identify with every chapter as hairlines |
 | Open page | 528, 112, 480, 440 | Deep pane, 1 px slate edge |
 | Page heading | 544, 120, 448, 24 | Emblem 24×24, then the chapter's word in 20 px. Nothing at the right |
@@ -226,10 +226,10 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 
 **States.**
 
-- **Unidentified.** No rail, no page and no stamp: only the list, the sealed pod, "Unknown pod" and its origin. `✓ Identify · 1 ⚡`.
+- **Unidentified.** No rail, no page and no stamp: only the list, the sealed pod, "Unknown" and its origin. `✓ Identify · 1 ⚡`.
 - **Identifying.** The seal clears from the top down over 2 s and the glyph lights. "New species" shows for 6 s as a 20 px ribbon in the origin's rectangle (184, 384, 320, 40), then the origin returns. The ribbon is the read tab's cool look (deep teal, aqua rim, bone words), never a warm plate beside the pod; no message plate repeats it (corrected by the UI designer against the build, 2026-10-08).
 - **Reading.** The page's frost wipes away from the top over 2 s, the tab fills, its pips fill, and the stamp's sector and the list ring's arc fill. No message plate: the pictures and the star say what is new (corrected by the UI designer against the build, 2026-10-08). On Pods a message plate shows only a refusal and the hatch's arming.
-- **Read again.** A read chapter is free to look at again. The bottom line has no ✓ cap and the subject says "read".
+- **Read again.** A read chapter is free to look at again. The bottom line has no ✓ cap and the subject says "‹Chapter› is read".
 - **Empty rack.** The empty cradle under the beam and nothing else on the stage. The subject is "the rack is empty"; what needs you is "dock the Companion to bring its crates home". *corrected by the UI designer against the build, 2026-10-08:* away, "dock the Companion for its crates" (six words); docked with crates in the bay, "open the bay at Home"; docked with the bay empty, "take the Companion exploring".
 - **Compare.**
   - The list hides. Two pages sit at (176, 112, 408, 440) and (600, 112, 408, 440).
@@ -253,18 +253,60 @@ The list column on the left (0 to 160). The pod stage in the centre left (168 to
 | ✓ | Unidentified pod | `✓ Identify · 1 ⚡` (the first ever: "free"). Plays the seal clearing; input is held for the 2 s |
 | ✓ | Identified pod, nothing read | `✓ Read its chapters` moves the ring to the first unread tab. No spend |
 | ✓ | Pod with a read chapter | `✓ Shape a founder` opens Create |
-| ✓ | Unread tab | `✓ Read Coat · 3 ◆` (half price shows as "· half" on the bottom line only). Plays the wipe; input is held for 2 s |
-| ✓ | Read tab | No ✓ cap; subject "Coat · read" |
-| ✓ | Sealed tab | No ✓ cap; subject "Coat · sealed". The page shows the picture of what opens it (*corrected by the UI designer against the build, 2026-10-08*: "· opens with ‹what opens it›" ran past the subject's 224 px and was cut with "…") |
+| ✓ | Unread tab | `✓ Read Coat   3 ◆` (a half price shows as the lower number, with no word). Plays the wipe; input is held for 2 s |
+| ✓ | Read tab | No ✓ cap; subject "Coat is read" |
+| ✓ | Sealed tab | No ✓ cap; subject "Coat is sealed". The page shows the picture of what opens it (*corrected by the UI designer against the build, 2026-10-08*: "· opens with ‹what opens it›" ran past the subject's 224 px and was cut with "…") |
 | ✓ | Another well, same species | `✓ Compare · free` when a pod of the same species was under the beam. Opens Compare |
 | ✓ | Another well, other species | `✓ Look at this pod`. No compare is offered |
-| ✓ ✓ | Hatch | First ✓ arms: `✓ Again: return it · +1 ❀`, with a message plate saying what will happen: "Back to the ‹place›? ✓ again" (*set by the UI designer against the build, 2026-10-08*: six words or fewer for every place). The second ✓ returns the pod. Any other key disarms it. The subject is "the hatch · ‹the pod's name›" ("the hatch · Belatz pod"; *set by the UI designer against the build, 2026-10-08*: the plate says where it goes, and the longer subject was cut with "…") |
+| ✓ ✓ | Hatch | First ✓ arms: `✓ Again: return it   +1 ❀`, with a message plate saying what will happen: "Back to the ‹place›? ✓ again" (*set by the UI designer against the build, 2026-10-08*: six words or fewer for every place). The second ✓ returns the pod. Any other key disarms it. The subject is "Back to the ‹place›" ("Back to the rock field"; *set by the UI designer against the build, 2026-10-08*: the plate says where it goes, and the longer subject was cut with "…") |
 | ◀ ▶ | Compare | Step through chapters on both pages |
 | ← | Compare | Closes Compare |
 | ← | Anywhere else | Home |
 | Can't | Short of Data or Energy | Dimmed ✓, the price shows the shortfall, and a message plate on press |
-| Can't | A glint | Says "something new here" on the right of the bottom line, never what it is |
+| Can't | A glint | Says "something new here" (on the pod: "something new waits") on the right of the bottom line, never what it is |
 | Can't | A sealed chapter | Cannot be read; there is no ✓ cap |
+
+### Words on Pods (Working rule, copywriter, 2026-10-08)
+
+**The name** is the species name alone, set as the pod's label ("Loika"); a pod not yet identified reads "Unknown". The word "pod" is never in the label: the picture says it.
+
+**The origin line** is one sentence with two slots.
+
+> Found **‹where›**, **‹what happened›**.
+
+| Slot | Fills with | Words |
+| --- | --- | --- |
+| ‹where› | the place the Companion was standing | "in the meadow", "at the pond edge", "on the rock field", "in the wood", "in the cave"; no place known: "out in the wild" |
+| ‹what happened› | what the carrier noticed | a creature's act, "as ‹a Species› ‹did›" with did: "shook dry", "felt safe", "curled up", "ate well"; or how the pod lay: "it lay under a slab", "it lay buried", "it lay deep below"; no find recorded: the sentence ends after the place ("Found in the wood.") |
+
+Rules:
+
+1. The sentence breaks after the comma: the first half is line one, the second line two. Each half is at most 24 characters with its punctuation (the slot is 224 px; the build measures it).
+2. No digits, no "·", no expedition number, no dot-separated fragments. Two commas never; one full stop, at the end.
+3. Plain verbs in the past tense, one act per find; no adverbs of feeling, no "cute" verbs. The act is what the Companion saw, never what the species is.
+4. An identified pod names its species ("as a Tuikis felt safe", "an" before a vowel: "as an Untuva ate well"); an unidentified pod says "a creature" ("as a creature felt safe"), so the origin never gives the species away.
+5. A find with no creature ("it lay buried") never names a species.
+
+Six examples:
+
+| Pod | Line one | Line two |
+| --- | --- | --- |
+| Loika, meadow | Found in the meadow, | as a Loika shook dry. |
+| Tuikis, rock field | Found on the rock field, | as a Tuikis felt safe. |
+| Untuva, wood | Found in the wood, | as an Untuva ate well. |
+| Tuikis, pond edge | Found at the pond edge, | as a Tuikis curled up. |
+| Pesko, wood, under a slab | Found in the wood, | it lay under a slab. |
+| Unknown, cave | Found in the cave, | it lay deep below. |
+
+Unidentified pod, same pattern with the creature unnamed: "Found on the rock field," / "as a creature felt safe."; "Found at the pond edge," / "as a creature curled up."; "Found in the wood," / "it lay buried.".
+
+**The bottom line,** its three slots. Each is a label or a sentence that stands alone; the separators between slots are the hairlines already there, and inside a slot a gap, never "·". The decided symbols stay (✓, ←, ⚡ ◆ ❀).
+
+| Slot | Pattern | Rules | Examples |
+| --- | --- | --- | --- |
+| Left (action) | `✓ ‹Verb› ‹object›`, then the price as number and icon, then `← ‹where›` | Three groups with a 24 px gap between them, no dot. The price shows only when there is one; "free" and "half" are not shown (a half price is the lower number) | `✓ Identify   1 ⚡   ← Home`; `✓ Read Coat   3 ◆   ← Home`; `✓ Shape a founder   ← Home`; `✓ Return to the wild   +1 ❀   ← Home` |
+| Centre (subject) | A short sentence on the focused thing: "‹Name› is ‹state›", at most 24 characters, no "·" | States: unread, partly read, fully read; a chapter: unread, read, sealed. May end in "…" | Unknown pod: "sealed until identified". Identified, nothing read: "Loika is unread". After a read bought: "Coat is read" on the tab, "Loika is partly read" on the pod. Hatch: "Back to the rock field". Empty: "the rack is empty" |
+| Right (need) | One amber sentence of six words or fewer, only what this screen cannot show; empty when nothing waits (no text and no hairline) | No counts, no "·", no "needs 3 ◆": "needs more ⚡" | Glint on the focused tab: "something new here". Glint elsewhere on the pod: "something new waits". Nothing new: empty. Short of Energy: "needs more ⚡". Empty rack: "dock the Companion for its crates" |
 
 ### Placeholders on Pods (rendered at these sizes)
 
