@@ -9,7 +9,7 @@ import pal, quant
 P = quant.P
 LIFT = 1.18
 rd, outp, outw = sys.argv[1], sys.argv[2], sys.argv[3]; os.makedirs(outp, exist_ok=True); os.makedirs(outw, exist_ok=True)
-ramps = {"tree": "GWN", "bush": "GWN", "bush-fruit": "GWNR", "stone": "NK", "stone-warm1": "NKYO", "stone-charged1": "NKBTW", "outpost-lit": "WYONG", "pod": "NWK"}
+ramps = {"tree": "GWN", "bush": "GWN", "bush-fruit": "GWNR", "stone": "NK", "stone-warm1": "NKYO", "stone-charged1": "NKBTW", "stone-plain2": "NK", "stone-warm2": "NKYO", "stone-charged2": "NKBTW", "stone-step": "NKB", "outpost-lit": "WYONG", "pod": "NWK"}
 for f in sorted(glob.glob(os.path.join(rd, "C48-S-r2-*-rd.png"))):
     name = os.path.basename(f)[len("C48-S-r2-"):-len("-rd.png")]
     rgba = np.asarray(Image.open(f).convert("RGBA")).copy()

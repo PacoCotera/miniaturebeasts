@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r2-stone-plain2",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "32x35",
+ "prompt": "a grey rounded field stone from above, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/stone-plain2-in.png",
+  "sha256": "24ee54bb15a53a88d9315c38fb060f9dcc2c096768fb961f9ac9229c70df4b61",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T19:18:52Z",
+ "checkCost": {
+  "created_at": 1791487132,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 2.0400000000000076
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "2e64349a-85b4-40c9-818f-1250e075b2ec",
+  "seconds": 37.2,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 1.86,
+  "model": "rd_pro",
+  "file": "C48-S-r2-stone-plain2-rd.png",
+  "sha256": "599743352457cba34b653089a2729bdd5ca2ca81c34f20bb61fc17e781771e61"
+ }
+}
