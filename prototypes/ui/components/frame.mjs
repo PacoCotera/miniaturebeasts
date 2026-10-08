@@ -18,3 +18,6 @@ export { chapterPage } from "./chapterPage.mjs";
 export { textRun, runWidth, wrap, clip, iconAsset } from "./text.mjs";
 export { list } from "./list.mjs";
 export { specimen, ribbon } from "./specimen.mjs";
+export { module } from "./module.mjs";
+export { livingWindow } from "./livingWindow.mjs";
+export { card } from "./card.mjs";

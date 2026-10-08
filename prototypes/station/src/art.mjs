@@ -17,7 +17,7 @@ export const PLACEHOLDERS = [
   { id: "ring", what: "the progress ring: a centre dot, one arc per chapter sized by its traits, a star for a glint, a notch for a sealed chapter", until: "the pod list master" },
   { id: "chapter-emblem", what: "one 16 px emblem per chapter", until: "the chapter rail master" },
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
-  { id: "room", what: "Home's room, bench modules, vivarium, crates, cups, dome, leaves, Probe and lamp, as the stand-in v2 drew them", until: "the Home and bench masters (station-screens.md: no wood, felt or lamp-lit bench)" },
+  { id: "room", what: "the bench, the idle screen and the screens not yet moved: vivarium, dome, leaves, Probe, as the stand-in v2 drew them", until: "the Home and bench masters (station-screens.md: no wood, felt or lamp-lit bench)" },
   { id: "icons", what: "the material icons, the Companion mark and the heart", until: "the icon set" },
 ];
 
@@ -178,15 +178,8 @@ export function emblemArt(chapterId, n = 16) { return art("emb" + chapterId + (n
   pb.outline(() => C.panel); return pb; }); }
 
 // ---------- The room and the bench, as the stand-in v2 drew them (until the masters) ----------
-export function cupArt(sel) { return art("cup" + sel, () => { const pb = new PB(52, 24); pb.ell(26, 14, 25, 9.5, C.ground); pb.ell(26, 12, 23, 7.5, sel ? C.panel : C.ground, { sh: [C.panel, C.panel] }); pb.ell(26, 11, 17, 4.5, C.panel); return pb; }); }
 // A well in the rack (the instrument's list): a cool machined ring.
 export function wellArt(sel, r = 34) { return art("well" + sel + r, () => { const pb = new PB(r * 2 + 4, r * 2 + 4), c = r + 2; pb.ell(c, c, r + 1, r + 1, sel ? C.stone : C.slate); pb.ell(c, c, r - 2, r - 2, C.night); pb.ell(c, c + 2, r - 6, r - 6, C.ink); return pb; }); }
-export function crateArt(shell, n) { return art("crate" + shell + n, () => { const pb = new PB(96, 70);
-  pb.rect(2, 6, 92, 62, C.bevel); for (let y = 6; y < 68; y += 12) pb.rect(2, y, 92, 1, C.hairline); pb.rect(2, 6, 92, 3, C.metal); pb.rect(2, 64, 92, 4, C.bar);
-  pb.rect(8, 6, 6, 62, C.hairline); pb.rect(82, 6, 6, 62, C.hairline);
-  pb.ell(48, 30, 15, 15, C[shell], { sh: [lite(C[shell]), shade(C[shell])] }); pb.ring(48, 30, 15, 15, C.bar, 2);
-  for (let i = 0; i < n; i++) pb.ell(30 + i * 18 + (3 - n) * 9, 54, 4.5, 5.5, C.paper);
-  pb.ell(80, 14, 6, 6, C.red, { sh: [C.coral, C.wine] }); pb.outline(() => C.panel); return pb; }); }
 export function probeArt(s) { return art("probe" + s, () => { const pb = new PB(28 * s, 28 * s), E = (x, y, r, c) => pb.ell(x * s, y * s, r * s, r * s, C[c]);
   E(14, 14, 13, "sky"); E(14, 14, 11, "paper"); E(14, 14, 7, "sky"); E(14, 14, 5, "paper"); pb.line(14 * s, 14 * s, 23 * s, 6 * s, C.sea, Math.max(1, s * 2)); pb.rect(18 * s, 17 * s, 3 * s, 3 * s, C.orange);
   pb.rich(s); pb.outline(() => C.ink); return pb; }); }
@@ -201,14 +194,10 @@ export function domeArt(w, h, glow, part) { return art("dome" + w + "x" + h + gl
 // The bud: a glowing bean, never an embryo (decided).
 export function budArt(stage) { return art("bud" + stage, () => { const pb = new PB(70, 70); pb.ell(35, 40, stage ? 22 : 13, stage ? 24 : 15, C.cream, { dith: [C.focus, 6] }); pb.ell(35, 40, stage ? 15 : 8, stage ? 17 : 10, C.amber, { sh: [C.yellow, C.orange] });
   if (stage) { pb.ell(41, 22, 4, 9, C.sprout, { rot: 0.5 }); pb.ell(29, 24, 3, 7, C.sprout, { rot: -0.6 }); } pb.outline(() => C.gold); return pb; }); }
-export const lampArt = () => art("focus", () => { const pb = new PB(40, 72); pb.poly([[6, 30], [34, 30], [28, 10], [12, 10]], C.amber); pb.poly([[12, 10], [28, 10], [26, 4], [14, 4]], C.gold);
-  pb.rect(18, 30, 4, 32, C.hairline); pb.ell(20, 66, 14, 5, C.bevel); pb.ell(20, 33, 9, 3, C.cream); pb.rich(1); pb.outline(() => C.panel); return pb; });
 export const bedArt = () => art("bed", () => { const pb = new PB(150, 44); pb.ell(75, 26, 74, 17, C.ground); pb.ell(75, 22, 70, 14, C.panel, { sh: [C.coral, C.ground] }); pb.ell(75, 22, 52, 8, C.ground); pb.outline(() => C.panel); return pb; });
 export const gateArt = () => art("gate", () => { const pb = new PB(76, 70); pb.rect(4, 8, 68, 58, C.bar); for (let i = 0; i < 6; i++) pb.rect(10 + i * 11, 8, 4, 58, C.bevel); pb.rect(4, 18, 68, 4, C.hairline); pb.rect(4, 50, 68, 4, C.hairline);
   pb.ell(38, 8, 34, 8, C.bevel, { clip: (x, y) => y < 9 }); for (let i = 0; i < 9; i++) pb.ell(6 + i * 8, 64, 4, 5, C.leaf, { sh: [C.sprout, C.forest] }); pb.outline(() => C.panel); return pb; });
 // The return hatch of the rack: a slot with a leaf mark.
-export const hatchArt = () => art("hatch", () => { const pb = new PB(120, 56); pb.rect(2, 4, 116, 48, C.slate); pb.rect(6, 8, 108, 40, C.night); pb.rect(10, 24, 100, 8, C.void);
-  pb.ell(60, 20, 5, 10, C.leaf, { rot: 0.6, sh: [C.sprout, C.forest] }); pb.outline(() => C.ink); return pb; });
 function mulberry32(a) { return function () { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 const ramp = (cols, t, x, y) => { const f = Math.max(0, Math.min(0.999, t)) * (cols.length - 1), i = Math.floor(f); return C[cols[bay(x, y) < (f - i) * 16 ? i + 1 : i]]; };
 export function vivArt(w, h) { return art("viv" + w + "x" + h, () => {

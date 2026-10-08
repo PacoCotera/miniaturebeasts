@@ -12,7 +12,7 @@ import { createTimeline } from "../timeline.mjs";
 import { registerAsset, asset, manifest, placeholders, dropAsset, assetEntry } from "../assets.mjs";
 import { makeCtx } from "../context.mjs";
 import { loadTypeNode } from "../type-node.mjs";
-import { frame, topBar, bottomLine, messagePlate, focusRing, stampLabel, stampCell, chapterRail, chapterPage, textRun, wrap, clip } from "../components/frame.mjs";
+import { frame, topBar, bottomLine, messagePlate, focusRing, stampLabel, stampCell, chapterRail, chapterPage, module as moduleNodes, livingWindow, card, textRun, wrap, clip } from "../components/frame.mjs";
 
 const spec = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8"));
 const type = loadTypeNode(), ctx = makeCtx(spec, type);   // the real atlas metrics, in Node
@@ -203,4 +203,18 @@ test("text runs draw the material symbols as icons, wrap and clip", () => {
   assert.deepEqual(wrap(ctx, "a b c d e f", 48, 16), ["a b c", "d e f"]);
   assert.ok(clip(ctx, "a very long subject indeed", 60, 16).endsWith("…"));
   const c = textRun(ctx, "c", "Loika", 344, 344, { px: 28, weight: 600, colour: "bone", align: "center" }); assert.ok(Math.abs(c.nodes[0].rect[0] + c.nodes[0].rect[2] / 2 - 344) <= 1);
+});
+
+test("the Home components: a module lifts with its objects, the living window draws its residents in the order given, the card is cut to its height", () => {
+  const home = JSON.parse(readFileSync(new URL("../specs/station/home.json", import.meta.url), "utf8")), R = home.regions, C = home.colours;
+  const mod = moduleNodes(ctx, "m", R.bay, { colours: { module: C.module, moduleTop: C.moduleTop, moduleEdge: C.moduleEdge, word: C.word }, word: "Bay", lit: true, lampAssets: { on: "lamp:on", off: "lamp:off" }, lift: 4, items: [{ id: "door", rect: [704, 84, 288, 72], asset: "door" }], region: "module" });
+  const by = Object.fromEntries(mod.map((n) => [n.id, n]));
+  assert.deepEqual(by.m.rect, [688, 44, 320, 120]); assert.deepEqual(by["m.door"].rect, [704, 80, 288, 72]); assert.deepEqual(by["m.lamp"].rect, [984, 56, 12, 12]); assert.equal(by["m.lamp"].asset, "lamp:on");
+  assert.deepEqual(by["m.word"].rect.slice(0, 2), [704, 56]); assert.equal(by["m.word"].text, "Bay");
+  const win = livingWindow(ctx, "w", home, { colours: { bezel: "metal", bezelLight: "bevel", bezelShade: "hairline", glass: "night", groundBand: "slate" }, residents: [{ id: "r2", rect: [100, 300, 104, 112], asset: "a", lamp: "lamp:wait" }, { id: "r1", rect: [200, 340, 144, 152], asset: "b" }], bed: { asset: "bed", mark: "mark" }, knob: "knob" });
+  const ids = win.map((n) => n.id); assert.ok(ids.indexOf("w.r2") < ids.indexOf("w.r1")); assert.deepEqual(win.find((n) => n.id === "w.glass").rect, [24, 56, 640, 488]); assert.deepEqual(win.find((n) => n.id === "w.r2.lamp").rect, [192, 300, 12, 12]);
+  assert.deepEqual(win.find((n) => n.id === "w.bedmark").rect, [576, 488, 16, 24]); assert.deepEqual(win.find((n) => n.id === "w.knob").rect, [624, 544, 32, 8]);
+  const c = card(ctx, "c", [64, 120, 560, 120], { colours: { fill: "panel", edge: "hairline", text: "bone", dim: "stone" }, rows: new Array(20).fill({ text: "a line of the report" }) });
+  assert.ok(c[0].rect[3] <= 120, "the card is at most its height"); assert.ok(c.filter((n) => n.kind === "text").length <= 5);
+  assert.deepEqual(JSON.parse(JSON.stringify([...mod, ...win, ...c])), [...mod, ...win, ...c]);
 });

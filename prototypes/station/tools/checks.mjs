@@ -53,7 +53,7 @@ if (rec.textApiCalls !== 0) fail(`the page called the canvas text API ${rec.text
 
 // ---- 3. regions against the spec files, on the screens on the layer
 console.log("== regions against the spec files");
-const R = pods.regions, F = frame.regions, W = R.well;
+const R = pods.regions, F = frame.regions, W = R.well, home = JSON.parse(readFileSync(path.join(ui, "specs/station/home.json"), "utf8")), H = home.regions;
 const textBox = (n) => { const w = type.measure(n.text, n.px), x = n.align === "center" ? n.rect[0] - Math.round(w / 2) : n.align === "right" ? n.rect[0] - w : n.rect[0]; return [x, n.rect[1], w, type.face(n.px).cap]; };
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 // the scene ids of the text drawn in each region (the page and Compare's two pages); whether a region may hold digits is the spec's `noDigits` flag
@@ -67,6 +67,18 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
     if (id === "top") must(eq(rect, F.top.rect), `top bar ${rect} is not ${F.top.rect}`);
     else if (id === "line") must(eq(rect, F.line.rect), `bottom line ${rect} is not ${F.line.rect}`);
     else if (id === "plate") { const w = rect[2], cx = rect[0] + w / 2; must(Math.abs(cx - F.plate.centre) <= 1 && w <= F.plate.maxWidth && (rect[1] + rect[3] === F.plate.bottom || rect[1] === F.plate.topOverFocal), `message plate ${rect}`); }
+    else if (c.screen === "home") {
+      const lift = (x) => x === 0 || x === H.bay.lift;   // the Bay lifts on an arrival; a focused resident lifts
+      if (id === "bezel") must(eq(rect, H.bezel.rect), `bezel ${rect} is not ${H.bezel.rect}`);
+      else if (id === "glass") must(eq(rect, H.glass.rect), `glass ${rect} is not ${H.glass.rect}`);
+      else if (id === "bed") must(eq(rect, H.bed.rect), `bed ${rect} is not ${H.bed.rect}`);
+      else if (id === "knob") must(eq(rect, H.knob.rect), `rest knob ${rect} is not ${H.knob.rect}`);
+      else if (id === "module") { const key = r.id.split(".")[1], m = H[key]; must(m && rect[0] === m.rect[0] && rect[2] === m.rect[2] && rect[3] === m.rect[3] && lift(m.rect[1] - rect[1]), `module ${key} ${rect} is not ${m && m.rect} (lifted by at most ${H.bay.lift})`); }
+      else if (id === "resident") { const [w, h] = rect.slice(2), band = H.glass.ground, feet = rect[1] + h, ok = [H.resident.adult, H.resident.juvenile].some(([a, b]) => a === w && b === h); must(ok && rect[0] >= H.glass.rect[0] && rect[0] + w <= H.glass.rect[0] + H.glass.rect[2] && feet >= band[1] - H.resident.lift && feet <= band[1] + band[3] + 6, `resident ${rect} is not a 144×152 or 104×112 box with its feet on the ground band ${band}`); }
+      else if (id === "ribbon") must(eq(rect, H.ribbon.rect), `ribbon ${rect} is not ${H.ribbon.rect}`);
+      else if (id === "report") must(rect[0] === H.report.rect[0] && rect[1] === H.report.rect[1] && rect[2] === H.report.rect[2] && rect[3] <= H.report.maxHeight, `report card ${rect} is not at ${H.report.rect.slice(0, 3)} and at most ${H.report.maxHeight} tall`);
+      else must(false, `region "${id}" (${r.id}) is not in the Home spec`);
+    }
     else if (id === "list") must(eq(rect, R.list.rect), `list ${rect} is not ${R.list.rect}`);
     else if (id === "list.well") { const i = +r.id.match(/\.w(\d+)\./)[1]; must(eq(rect, repeat(W.rect, i, W.pitch)), `well slot ${i} ${rect}`); }
     else if (id === "hatch") must(eq(rect, R.hatch.rect), `hatch ${rect} is not ${R.hatch.rect}`);
@@ -88,7 +100,7 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
   }
   // the rail's tab count against the frame; the stamp's size on its label; no digits where a picture does the job
   if (c.screen === "pods" && c.pod && c.pod.idd && !c.cmp) must(got.length === c.pod.chapters, `the rail has ${got.length} tabs for ${c.pod.chapters} chapters`);
-  for (const t of c.texts) if (t.id === "line.subject") must(!t.text.endsWith("…"), `the bottom line's subject "${t.text}" is clipped with "…"`);
+  for (const t of c.texts) if (t.id.startsWith("line.subject")) must(!t.text.endsWith("…"), `the bottom line's subject "${t.text}" is clipped with "…"`);
   for (const t of c.texts) { const key = t.id.startsWith("specimen.name") ? "name" : t.id.startsWith("specimen.origin") ? "origin" : NO_DIGIT_IDS[t.id.split(".")[0]]; if (key && R[key].noDigits && /\d/.test(t.text)) must(false, `a digit in "${t.text}" in region ${key}, which the spec marks noDigits`); }
   console.log(`${s.name.padEnd(24)} ${c.regions.length} drawn regions, rail ${got.length}/${c.pod ? c.pod.chapters : "-"} tabs, placeholders registered ${c.placeholders}`);
 }

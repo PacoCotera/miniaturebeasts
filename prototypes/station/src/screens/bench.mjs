@@ -1,12 +1,17 @@
 // The Probe bench (from Home's cradle) and Idle, as built.
-import { SW, SH, LINE_H, C, R, blit, text, panel, focusRing, art, PB, clock } from "../gfx.mjs";
-import { probeArt, vivArt } from "../art.mjs";
+import { SW, SH, LINE_H, C, R, blit, text, clipText, panel, focusRing, art, PB, clock } from "../gfx.mjs";
+import { probeArt, vivArt, bedArt, ICON } from "../art.mjs";
 import { G, UI, msg, save, goScreen, registerScreen, docked, bayCrates, effWithId, atHome, mibiById } from "../game.mjs";
 import { stageBg, drawTop, lampPool, tgt, navSpatial, DIRS, drawResidents } from "./frame.mjs";
-import { drawBed } from "./home.mjs";
 import * as S from "../state.mjs";
 
 const B = () => UI.bench;
+// The with-you bed of the idle screen (Home's own bed is a sprite from its spec file).
+function drawBed(bx, by) {
+  const w = mibiById(effWithId());
+  blit(bedArt(), bx, by);
+  if (w) { blit(ICON.comp(), bx + 68, by + 4); text(clipText(w.name + (docked() ? " is with you" : " is out with you"), 240, 2), bx + 75, by - 20, C.fog, 2, "center"); }
+}
 const benchTargets = () => [tgt("plate", 120, 380, 300, 60), tgt("switch", 520, 120, 420, 90), tgt("slot", 520, 260, 420, 160)];
 const P2 = () => ({ e: S.price(S.PRICE.tier2E, G.settings), d: S.price(S.PRICE.tier2D, G.settings) });
 function draw() {

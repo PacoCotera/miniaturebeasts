@@ -87,6 +87,7 @@ export function beam(cx, topY, w, h) { blit(beamArt(w, h), cx - w / 2, topY); }
 // ---------- Residents living in the vivarium (presentation only; positions are not saved) ----------
 const RES = new Map();
 export const clearResidents = () => RES.clear();
+export const residentWalk = (m) => resOf(m);
 function mulberry32(a) { return function () { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 function resOf(m) { let r = RES.get(m.id); if (!r) { const R2 = mulberry32(m.id * 7919 + (Date.now() & 0xffff)); r = { u: 0.1 + R2() * 0.8, v: 0.15 + R2() * 0.7, tu: 0, tv: 0, face: R2() < 0.5 ? 1 : -1, st: "idle", until: 0, R2, alertUntil: 0 }; r.tu = r.u; r.tv = r.v; RES.set(m.id, r); } return r; }
 let lastStep = 0;

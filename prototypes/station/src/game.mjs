@@ -9,7 +9,7 @@ import { createFocus } from "../../ui/focus.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, lockUntil: 0, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
-export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { cur: null, anchor: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, "pod"), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
+export const UI = { screen: "home", prev: [], home: { focus: createFocus({ fallback: "spatial" }, null), get f() { return this.focus.cur ?? "room"; }, set f(id) { this.focus.set(id === "room" ? null : id); } }, pods: { cur: null, anchor: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, "pod"), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
   create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", bondArm: 0, wildArm: 0, from: null }, bench: { f: 0, arm: 0 },
   report: null, meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
