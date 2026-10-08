@@ -68,10 +68,10 @@ Characters (pawn, mibis) are never darkened by storm or veil, so they always rea
 | N cool neutral (7) | night, stone, UI chrome, rock | `#0e0c16 #1e1a2b #332e45 #4f4865 #766f8f #a8a2bf #dcd8ea` |
 | W warm neutral (6) | soil, bark, wood, sand, paper | `#2b1b19 #4f3226 #7f5536 #b6844f #e2bd83 #f8ead0` |
 | G grass (6) | meadow, foliage | `#0f3433 #1b5638 #2d823b #56ad45 #94d457 #d4f07f` |
-| T teal (5) | Call, glowtail, deep leaves | `#0a2c38 #0f5559 #188a83 #3cc6ae #a3f2d9` |
+| T teal (5) | Call, Tuikis, deep leaves | `#0a2c38 #0f5559 #188a83 #3cc6ae #a3f2d9` |
 | B blue (5) | water, sky, Data | `#172150 #1d4796 #2c80d4 #5fbbf2 #b4e7ff` |
-| V violet (5) | hopper, dusk | `#2b1850 #50329c #8461d6 #b99bf2 #e6d7ff` |
-| R red (5) | puffcap, hearts, danger | `#4b1230 #9a2242 #dc4450 #ff8c7c #ffd3c4` |
+| V violet (5) | Loika, dusk | `#2b1850 #50329c #8461d6 #b99bf2 #e6d7ff` |
+| R red (5) | Untuva, hearts, danger | `#4b1230 #9a2242 #dc4450 #ff8c7c #ffd3c4` |
 | O orange (4) | pawn, Confirm | `#6e2610 #b5461a #f06d1e #ffa83e` |
 | Y yellow (3) | bolts, lamps, glow | `#c8860e #ffd23f #fff2a1` |
 | P, X | pink accent, white speculars | `#ff7fbf #ffffff` |
@@ -161,7 +161,7 @@ drawn clouds), Pin, Battery, Radio; states: hollow bolt, Shield gone, free pod s
   earth bank where land drops to water, shade under it, foam on the lee sides).
 - **The pawn**, 4 facings × 3 frames: hooded orange suit, antenna lamp, pack, lantern;
   the right facing is rebuilt mirrored so the light stays top-left.
-- **Hopper, glowtail, puffcap** at 32 px, idle 2 frames, as juvenile (bigger head and eyes,
+- **Loika, Tuikis, Untuva** at 32 px, idle 2 frames, as juvenile (bigger head and eyes,
   short ears, small cap) and elder. Elders read calm and dignified, never drooping: eyes
   open, frosted ear tips and a chest ruff, a gold-tipped crest, a wide frilled cap with moss.
 - **Motion frames** (water, shore, flame, crackle, Call ring, veil edge, warm stone) and
@@ -181,8 +181,8 @@ genome-to-sprite pipeline: parts and markings are parameters, and art never chan
 ## 4. Mock-ups
 
 - **Companion place in a storm:** storm light through DARK, slanted rain, a charged stone, a
-  warned strike outline, a lit outpost sheltering puffcaps, a tree that is not shelter, the
-  partner with ring and tag, a curious glowtail, the veil's edge, message box, HUD, line.
+  warned strike outline, a lit outpost sheltering Untuvas, a tree that is not shelter, the
+  partner with ring and tag, a curious Tuikis, the veil's edge, message box, HUD, line.
 
   <img src="ui-kit/companion-place-storm.png" width="450" alt="Companion place in a storm, 450×600 at 1×">
 
@@ -210,11 +210,11 @@ genome-to-sprite pipeline: parts and markings are parameters, and art never chan
   is cool and dark, with thin rules, corner ticks, status lamps and readouts. Inside the window
   is the only warm, lively part: a deep teal-blue ground with a soft dithered vignette, plants
   and hanging stems at the sides, and moss along the base. The residents are drawn in the
-  Miniature Lives treatment at Station size: the focused hopper is about 230 px tall, with
+  Miniature Lives treatment at Station size: the focused Loika is about 230 px tall, with
   rounded volume, dithered bands, top-left light, big catch-lit eyes and an outline in each
-  part's darkest shade. A young glowtail and a puffcap are beside it. An instrument light casts
-  a soft cone on the focused hopper, framed by a lamp-cream bracket. Under it is a label: the
-  name at 4× and "hopper · adult" at 2×. The equipment column has four modules, each with a
+  part's darkest shade. A young Tuikis and an Untuva are beside it. An instrument light casts
+  a soft cone on the focused Loika, framed by a lamp-cream bracket. Under it is a label: the
+  name at 4× and "Loika · adult" at 2×. The equipment column has four modules, each with a
   lamp and a state readout: the bay (two sealed crates, "2 crates"), the pod rack ("4/6"), the
   incubator (a dome and its leaf timer, "growing") and the Probe dock (Shield plates,
   "docked"). The header carries the turn, a Companion lamp and the counters at the top right;
@@ -263,4 +263,4 @@ Adopted as the art standard (ramped palettes, one light, the outline rule, the c
 the 32/532/36 frame, the Mibi 7×9 face on the Companion). The weather was redone against the
 map-hands concept and accepted for the mock-up. The Station Home mock-up here is **rejected**
 and superseded by the [style guide](../style-guide/station-screens.md) and the art-directed
-candidates in `art/concept-station/`. Tile size is **48 px**. The hopper is **Pip**.
+candidates in `art/concept-station/`. Tile size is **48 px**. The Loika is **Pip**.

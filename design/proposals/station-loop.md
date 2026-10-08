@@ -27,7 +27,7 @@ The always-on view. Two thirds of the width is the vivarium: a lit glass terrari
  |  |   Moss naps     Bean digs       |   incubator  [ embryo, 2 min ]   |
  |  |        ~ Dot's bed: with you ~  |   Probe      ▮▮▯  tier 1         |
  |  '---------------------------------'                                 |
- | ✓ Look at Bean        a puffcap pod waits · needs 2 Essence    ←     |
+ | ✓ Look at Bean        an Untuva pod waits · needs 2 Essence    ←     |
  '------------------------------------------------------------------------'
 ```
 
@@ -39,9 +39,9 @@ When the Companion is docked and the Station accepts its sealed cargo (exactly o
 
 ### Pods (Research key): identify, read, create
 
-The pod list up close. Each pod in the list wears its place stamp, its species glyph (or its seal) and a progress ring that fills as its chapters are read. One pod fills the centre, large, with its origin written under it in play words ("rock field · a glowtail felt safe · expedition 4"). The pad moves between pods along the list.
+The pod list up close. Each pod in the list wears its place stamp, its species glyph (or its seal) and a progress ring that fills as its chapters are read. One pod fills the centre, large, with its origin written under it in play words ("rock field · a Tuikis felt safe · expedition 4"). The pad moves between pods along the list.
 
-- **Identify** (1 Energy; the first pod ever is free). ✓ and the seal on the cap breaks: the species glyph shows, then its name. A new species gets a stamp ("New species · glowtail"): its **frame**, every part the species fixes, is learned once and its Library page opens. A pod of a known species is quicker ("Glowtail · logged"). Either way the pod's genome ring draws its grey centre band, and each chapter shows as a sector of hairlines: something is there, not read yet.
+- **Identify** (1 Energy; the first pod ever is free). ✓ and the seal on the cap breaks: the species glyph shows, then its name. A new species gets a stamp ("New species · Tuikis"): its **frame**, every part the species fixes, is learned once and its Library page opens. A pod of a known species is quicker ("Tuikis · logged"). Either way the pod's genome ring draws its grey centre band, and each chapter shows as a sector of hairlines: something is there, not read yet.
 - **Read** (Data, one chapter). An identified pod shows its **chapters** as arcs and as pages: Coat, Face, Movement and so on, each a page of a few **traits**, each trait one picture (markings, crown, gait). Which chapters and traits exist comes from the species frame; the player never sees a locus.
 - **Create** (from this pod): opens Create, below.
 - **Return to the wild** (frees the cup, +1 Essence): the pod goes back to the place it came from; the Companion learns this at the next dock.
@@ -83,7 +83,7 @@ Create shows the founder large, the chapters around it, and the cost.
 - Cost: **2 Energy + 4 Essence** (**Decided**, to tune), **+1 Data per trait changed** (**Decided**). The bottom line always reads the total.
 - ✓ "Review" shows one card: the founder, what was changed, what stays a surprise, the cost. ✓ again creates; ← goes back to choosing. Two presses, as for a Shield patch.
 
-The pod moves into the incubator. The embryo (**Decided** life stage) glows through the shell, and as it grows the unread chapters clear one by one: the surprises reveal themselves while you wait, so the wait has a purpose, and every mibi grown is fully known. **Incubation minutes** (**Decided:** they vary by species and genome complexity): the species' base by body (small 2, medium 3, large 4 minutes) + 1 minute per chapter beyond three + 1 per trait changed at creation. The first mibi ever takes 1 minute. A cargo arriving does not shorten it. The incubator shows the minutes left, and the Station shows the embryo while the Companion is away. When ready, ✓ "Open" (deliberate, **Decided**) and the juvenile steps into the vivarium with a name ("Fig · glowtail · juvenile"). One incubator in V1.
+The pod moves into the incubator. The embryo (**Decided** life stage) glows through the shell, and as it grows the unread chapters clear one by one: the surprises reveal themselves while you wait, so the wait has a purpose, and every mibi grown is fully known. **Incubation minutes** (**Decided:** they vary by species and genome complexity): the species' base by body (small 2, medium 3, large 4 minutes) + 1 minute per chapter beyond three + 1 per trait changed at creation. The first mibi ever takes 1 minute. A cargo arriving does not shorten it. The incubator shows the minutes left, and the Station shows the embryo while the Companion is away. When ready, ✓ "Open" (deliberate, **Decided**) and the juvenile steps into the vivarium with a name ("Fig · Tuikis · juvenile"). One incubator in V1.
 
 ### Library (Library key): species and lineage
 
@@ -136,7 +136,7 @@ The Probe in its cradle with its Shield bars. The Station always mends to at lea
 All rewards for going out, never penalties for staying home, and none timed:
 - **Expeditions only undocked.** Lifting the Companion opens the expedition choice (sealed consignments aboard or not); docked, it shows the mibi with you asleep and "Lift to explore".
 - **The walk.** Once per world turn, undocked, Companion mode offers "✓ Walk with Dot": a short scene of five or so presses in the last place you explored, where the mibi does one thing its species does (digs, sniffs, calms a creature) and you get one creature moment: +1 Data (+2 the first time). Capped at one a turn, so there is nothing to grind and nothing missed.
-- **Skill comes from use.** Each expedition where the partner's ability is actually used gives a skill notch (three in all, shown as marks on its card): a hopper calms from one tile further, a glowtail digs a second burrow, a puffcap sniffs wider. Learning changes behaviour, never genes (**Working rule**). Docked or at home, skill stays as it is.
+- **Skill comes from use.** Each expedition where the partner's ability is actually used gives a skill notch (three in all, shown as marks on its card): a Loika calms from one tile further, a Tuikis digs a second burrow, an Untuva sniffs wider. Learning changes behaviour, never genes (**Working rule**). Docked or at home, skill stays as it is.
 - **Bond is earned out.** Bond (§1 Habitat) is offered after the mibi's first expedition or walk with you.
 - **Memories.** The places and moments it shared go home at the dock and fill its page in Habitat and Library: a keepsake, and the first lineage record.
 
@@ -166,9 +166,9 @@ All rewards for going out, never penalties for staying home, and none timed:
 
 | | Cargo | At the Station | Store after |
 | --- | --- | --- | --- |
-| 1, calm | 2 pods (unknown, unknown), 4 ⚡, 5 ◆, 6 ❀ | Identify hopper (free) and puffcap (1 ⚡). Read the hopper's Coat (free, the first read ever): "shows plain · hides pale"; and its Face (2 ◆): "frill crown · hides bare head", "pale eye rings". Create an only-pale hopper: 2 ⚡ + 4 ❀ + 1 ◆. Puffcap waits: "needs 1 ⚡ + 2 ❀" | 1 ⚡ · 2 ◆ · 2 ❀ |
-| 2, storm | 1 pod (hopper), 11 ⚡, 3 ◆, 3 ❀; Shield 1/3 | Free mend to 2, third bar 1 ⚡. Log the hopper (1 ⚡): its Face arc glints. Create the puffcap unedited (2 ⚡ + 4 ❀). Read the glinting Face at half price (1 ◆): "only plain eyes", new to the field guide | 8 ⚡ · 4 ◆ · 1 ❀ |
-| 3, calm | 1 pod (unknown), 4 ⚡, 4 ◆, 7 ❀ | Identify: glowtail, new (1 ⚡). Now the choice: tier 2 needs 12 ⚡ + 4 ◆ (have 11 ⚡, 8 ◆), or a glowtail founder now (2 ⚡ + 4 ❀) and tier 2 after the next storm | 11 ⚡ · 8 ◆ · 8 ❀ before choosing |
+| 1, calm | 2 pods (unknown, unknown), 4 ⚡, 5 ◆, 6 ❀ | Identify Loika (free) and Untuva (1 ⚡). Read the Loika's Coat (free, the first read ever): "shows plain · hides pale"; and its Face (2 ◆): "frill crown · hides bare head", "pale eye rings". Create an only-pale Loika: 2 ⚡ + 4 ❀ + 1 ◆. Untuva waits: "needs 1 ⚡ + 2 ❀" | 1 ⚡ · 2 ◆ · 2 ❀ |
+| 2, storm | 1 pod (Loika), 11 ⚡, 3 ◆, 3 ❀; Shield 1/3 | Free mend to 2, third bar 1 ⚡. Log the Loika (1 ⚡): its Face arc glints. Create the Untuva unedited (2 ⚡ + 4 ❀). Read the glinting Face at half price (1 ◆): "only plain eyes", new to the field guide | 8 ⚡ · 4 ◆ · 1 ❀ |
+| 3, calm | 1 pod (unknown), 4 ⚡, 4 ◆, 7 ❀ | Identify: Tuikis, new (1 ⚡). Now the choice: tier 2 needs 12 ⚡ + 4 ◆ (have 11 ⚡, 8 ◆), or a Tuikis founder now (2 ⚡ + 4 ❀) and tier 2 after the next storm | 11 ⚡ · 8 ◆ · 8 ❀ before choosing |
 
 Three expeditions, three species met, two mibis, one real choice, and every material had a job.
 
@@ -178,9 +178,9 @@ Three expeditions, three species met, two mibis, one real choice, and every mate
 
 **It gives back:**
 - **Signs.** Identifying a species makes its tracks (paw) show wherever land is revealed (combined design). Reading any chapter of a species makes its pods' slow beat on the map wear that species' shell colour, so the player can go looking for more of one kind. A sealed chapter sends the player out for its find, and a wish for pods that glint. Diet lines on the Companion follow identification, as built.
-- **Partners.** Created mibis become partners when adult; their traits matter in the field (a hopper's long ears calm from further; a glowtail's gait digs faster). Choosing which pod to raise is choosing which partner to have.
+- **Partners.** Created mibis become partners when adult; their traits matter in the field (a Loika's long ears calm from further; a Tuikis's gait digs faster). Choosing which pod to raise is choosing which partner to have.
 - **Reach.** Tier 2 and, later, mods come from the Station's store.
-- **Purpose.** "A puffcap pod waits · needs 2 Essence" is the next expedition's reason (round 2's Station pull).
+- **Purpose.** "An Untuva pod waits · needs 2 Essence" is the next expedition's reason (round 2's Station pull).
 - **The walk and skill** (§3) make the mibi with you a reason to lift the Companion even between expeditions.
 
 ## 6. Deliberately out
@@ -189,17 +189,17 @@ Breeding beyond the minimal same-species cross (eligibility rules, fertility, fa
 
 ## 7. A worked session
 
-The Companion comes back with one consignment sealed ("1 consignment sealed · dock to transfer") and is set on the Caddy; the Station, on Home, accepts the cargo. A glowtail pod rolls into a cup; the counters tick. Bottom line: "✓ Look at the new pods".
+The Companion comes back with one consignment sealed ("1 consignment sealed · dock to transfer") and is set on the Caddy; the Station, on Home, accepts the cargo. A Tuikis pod rolls into a cup; the counters tick. Bottom line: "✓ Look at the new pods".
 
-1. ✓ Research opens on the new pod: "Unknown pod · rock field · a glowtail felt safe". Line: "✓ Identify · 1 ⚡".
-2. ✓ The seal breaks; the glowtail glyph shows. "New species · glowtail". Its frame is learned; the ring draws its grey band and four hairline sectors, one per chapter.
+1. ✓ Research opens on the new pod: "Unknown pod · rock field · a Tuikis felt safe". Line: "✓ Identify · 1 ⚡".
+2. ✓ The seal breaks; the Tuikis glyph shows. "New species · Tuikis". Its frame is learned; the ring draws its grey band and four hairline sectors, one per chapter.
 3. Pad → the Coat arc. "✓ Read Coat · 3 ◆".
 4. ✓ The page turns: stripes on the flank with a seed holding spots ("shows stripes · hides spots"), "only teal", "short fur". The Coat sector fills; the preview redraws with stripes.
 5. ← to the pod, pad to "Create". ✓ Create opens: founder large, three chapters misty, markings showing stripes.
 6. Pad ▼: only spots. The founder redraws spotted. Line: "✓ Review · 2 ⚡ 4 ❀ 1 ◆".
 7. ✓ The review card: spotted; three chapters of surprises; the cost.
 8. ✓ Created. The ring is stamped on the shell, the pod settles into the incubator; the embryo glows; the misty chapters clear one by one as it grows. Home shows it on the bench.
-9. When the incubator glows ready, Home key, pad to the incubator: "✓ Open". ✓ A spotted glowtail steps into the vivarium: "Fig · glowtail · juvenile".
+9. When the incubator glows ready, Home key, pad to the incubator: "✓ Open". ✓ A spotted Tuikis steps into the vivarium: "Fig · Tuikis · juvenile".
 10. Habitat key shows Fig large. "✓ Spend time", and Fig answers.
 
 ## 8. Decisions (Decided 2026-10-07)

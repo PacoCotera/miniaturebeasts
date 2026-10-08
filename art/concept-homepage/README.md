@@ -1,5 +1,7 @@
 # Homepage concept art: generated candidates
 
+> **Names.** The species this folder calls the hopper is now **Loika** (clan Lophessa), the puffcap **Untuva** (Kausida) and the glowtail **Tuikis** (Stilbera). The captions below quote the text baked into the pictures, so they keep the earlier word "Hopper"; the art files keep their names.
+
 Everything in this folder is a **generated candidate** for the shots in
 [`../concept-brief-homepage.md`](../concept-brief-homepage.md). Nothing is accepted
 yet, nothing is placed on the page, and every image is concept art: caption it so

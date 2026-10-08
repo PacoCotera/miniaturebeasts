@@ -49,7 +49,7 @@ The player finds these in three ways, and none of them needs a tutor:
 2. **The game points at the menu when it matters.** The few moments that need a
    menu entry say so once, in the message box that stays until the next action:
    - first pod: "Pods open at the Station · ← Send home when you're ready";
-   - glowtail settling: "Keep still · ← Wait";
+   - Tuikis settling: "Keep still · ← Wait";
    - hold full: "Hold full · swap, or ← Send home";
    - nothing left: "Everything in reach is explored · ← Send home".
 3. **First entry to the map** shows one message: "Walk with the pad · ✓ goes
@@ -133,7 +133,7 @@ Expedition 1, Weather, no partner, 0 Energy.
 | 3 | Confirm | Map, 3×3 revealed. Message: "Walk with the pad · ✓ goes down · ← Wait and Send home". Line: "✓ Go down   wood · tracks   ← Wait · Send home". HUD: `))) pin 1⚡` dimmed |
 | 4 | Pad up | One cell north, fog lifts. Line: "✓ Go down   meadow · slow beat (often a pod)   ← Wait · Send home" |
 | 5 | Confirm | The meadow place. Message: "))) Call sends a signal · things answer". Line: "✓ Nothing here   meadow   ← Wait · Leave". HUD: `))) call` |
-| 6 | Call | A ring spreads. A buried pod glints and a hopper hides. Line unchanged |
+| 6 | Call | A ring spreads. A buried pod glints and a Loika hides. Line unchanged |
 | 7 | Pad right (held) | The Probe walks to the pod. Line: "✓ Dig up the pod   meadow   ← Wait · Leave" |
 | 8 | Confirm | The pod fills an outline in the HUD. Message: "Pods open at the Station · ← Send home when you're ready" |
 | 9 | Back | Menu over the place: Wait (focused), Leave this place, Send home, Probe, Cargo, Companions. Line: "✓ Wait one action   ← close" |

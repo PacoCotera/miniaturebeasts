@@ -331,14 +331,14 @@ const SIGHT_FOG = 4, SIGHT_GLOW = 6;
 // Three wild species. notice = [creep, walk] distance in tiles at which they notice you.
 // how = the shed trigger; ab = what a partner of this species can do.
 const SPECIES = [
-  { name: 'Hopper', plural: 'hoppers', hab: [L.MEADOW, L.POND], notice: [2, 5], flee: 2, eats: true, shedP: .65, how: 'shake',
-    ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared hopper', learn: 'Hoppers shed when they shake dry.',
+  { name: 'Loika', plural: 'Loikas', hab: [L.MEADOW, L.POND], notice: [2, 5], flee: 2, eats: true, shedP: .65, how: 'shake',
+    ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared Loika', learn: 'Loikas shed when they shake dry.',
     col: { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' } },
-  { name: 'Glowtail', plural: 'glowtails', hab: [L.WOOD, L.ROCK], notice: [2, 4], flee: 2, eats: false, shedP: .6, how: 'calm',
-    ab: 'dig', abText: 'digs narrow burrows', born: 'a small burrower', learn: 'Glowtails shed when they feel safe by their burrow.', learnCurl: 'Glowtails shed when they curl up out of the rain.',
+  { name: 'Tuikis', plural: 'Tuikis', hab: [L.WOOD, L.ROCK], notice: [2, 4], flee: 2, eats: false, shedP: .6, how: 'calm',
+    ab: 'dig', abText: 'digs narrow burrows', born: 'a small burrower', learn: 'Tuikis shed when they feel safe by their burrow.', learnCurl: 'Tuikis shed when they curl up out of the rain.',
     col: { body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' } },
-  { name: 'Puffcap', plural: 'puffcaps', hab: [L.WOOD, L.MEADOW, L.POND], notice: [1, 3], flee: 1, eats: true, shedP: .75, how: 'meal',
-    ab: 'nose', abText: 'sniffs out buried pods', born: 'a round puffcap', learn: 'Puffcaps shed after a full meal.',
+  { name: 'Untuva', plural: 'Untuvas', hab: [L.WOOD, L.MEADOW, L.POND], notice: [1, 3], flee: 1, eats: true, shedP: .75, how: 'meal',
+    ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas shed after a full meal.',
     col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' } },
 ];
 const MIBI_NAMES = ['Dot', 'Moss', 'Bean', 'Fig', 'Nib', 'Tuft', 'Pebble', 'Wren'];   // short and species-neutral; never the reference individual's name from the art and website
@@ -482,7 +482,7 @@ function genWorld(seed) {
   const near = cand.filter(c => cdist(c, gate) >= 2 && cdist(c, gate) <= 4);
   if (near.length) G.spawns.push(R.pick(near));
   for (const c of R.shuffle(cand.slice())) { if (G.spawns.length >= 5) break; if (G.spawns.every(s => cdist(s, c) >= 5)) G.spawns.push(c); }
-  // An early burrower: beside every start glint there is a rock or wood cell where glowtails live and
+  // An early burrower: beside every start glint there is a rock or wood cell where Tuikis live and
   // an overhang to shelter under, so a burrower pod is reachable in the first storm without the burrow.
   G.glow = [];
   for (const s of G.spawns) {
@@ -512,14 +512,14 @@ function genLife(seed) {
   }
   for (const c of G.glow) { const have = cr.filter(w => w.c === c && w.sp === 1).length; for (let i = have; i < 3; i++) add(1, c, 0); }
   for (let i = 0; i < 2; i++) add(1, G.gate, 0);
-  for (let i = 0; i < 4; i++) add(1, G.gate, 1);   // glowtails nest under the cliff
+  for (let i = 0; i < 4; i++) add(1, G.gate, 1);   // Tuikis nest under the cliff
   const R = makeRng(hash(seed, 'pods'));
   const homes = R.shuffle([...new Set(cr.filter(w => !w.cv && !G.spawns.includes(w.c) && G.comp[w.c]).map(w => w.c))]);
   for (let i = 0; i < Math.min(7, homes.length); i++) {
     const c = homes[i], here = cr.filter(w => w.c === c);
     pods.push({ id: 'w' + i, k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' });
   }
-  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' }); // a hopper sheltered here once
+  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' }); // a Loika sheltered here once
   return { cr, pods };
 }
 function groundName(land, cave) { return cave ? 'cave' : ['meadow', 'pond', 'rock', 'wood', 'pond', 'rock'][land]; }
@@ -794,7 +794,8 @@ function settleOnce() {
   for (const n of FX.notes) if (n.once && FX.msg.includes(n.text) && !onceDone(n.once, n.local)) {
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once); }
 }
-const spName = sp => S.known.includes(sp) ? SPECIES[sp].name.toLowerCase() : 'creature';
+const spName = sp => S.known.includes(sp) ? SPECIES[sp].name : 'creature';   // species names are proper nouns: never lower-cased
+const aAn = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
 function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW }); }
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
 function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + ms); }
@@ -1127,7 +1128,7 @@ function placeState(c, short) {
   if (q === 4 && !explored(c)) return sv + what + ' · Call to hear below';
   return sv + (n ? what : placeDone(c) ? ' · nothing to take' : '');
 }
-// A fully surveyed place with nothing to take: ← leaves in one press (unless a glowtail is settling and Wait matters).
+// A fully surveyed place with nothing to take: ← leaves in one press (unless a Tuikis is settling and Wait matters).
 function doneEmpty() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const c = layout(P.key).cell;
   return placeDone(c) && !leftTotal(c) && !curLive().cr.some(q => bubbleOf(q) === '…');
@@ -1458,7 +1459,7 @@ function swimBump() {
   FX.bumpAt = NOW; save();
 }
 
-// A glowtail hole is too small to dig; the partner points at the narrow burrow under the cliff (no action spent).
+// A Tuikis hole is too small to dig; the partner points at the narrow burrow under the cliff (no action spent).
 function holeHint() {
   const ex = S.exp; revealCell(G.gate); const fresh = addPin(G.gate, 'burrow');
   const a = cxy(ex.pos), b = cxy(G.gate), dx = b.x - a.x, dy = b.y - a.y, dw = dirWord(dx, dy, Math.max(1, Math.abs(dx) + Math.abs(dy)));
@@ -1470,7 +1471,7 @@ const NOTHING = { label: 'Wait', run: () => waitTick('patch') };
 function patchAction() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive(), f = frontOf(P);
   const o = occupant(key, f.x, f.y, 'player');
-  const nm = sp => S.known.includes(sp) ? ' · ' + SPECIES[sp].name.toLowerCase() : '';
+  const nm = sp => S.known.includes(sp) ? ' · ' + SPECIES[sp].name : '';
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
   if (o && o.type !== 'tile' && o.type !== 'pt' && o.type !== 'cr' && !(o.type === 'fruit' && o.fr.put) && !unveiled(key, f.x, f.y))
@@ -1533,7 +1534,7 @@ function addMat(k, n, x, y) {
   if (got < n) fxMsg(MAT[k] + ' full · the Probe carries 20', 2);
   return got;
 }
-// Who eats fruit here, said when one drops: "A fruit drops · puffcaps eat these".
+// Who eats fruit here, said when one drops: "A fruit drops · Untuvas eat these".
 // Only creatures you can see count, and only identified species are named.
 function eatersHere(live) {
   const seen = live.cr.filter(c => !c.hide && inSight(c.x, c.y)), sps = [...new Set(seen.map(c => c.sp))];
@@ -1647,7 +1648,7 @@ function awardMoment(c, kind, X) {
   ex.spMom = ex.spMom || {}; const firstHere = !ex.spMom[c.sp]; ex.spMom[c.sp] = 1;
   const got = addMat('d', first || firstHere ? 2 : 1, c.x, c.y);
   ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data');
-  const who = S.known.includes(c.sp) ? 'a ' + spName(c.sp) : 'this creature', verb = { eat: 'eat', settle: 'settle' }[kind];
+  const who = S.known.includes(c.sp) ? aAn(spName(c.sp)) : 'this creature', verb = { eat: 'eat', settle: 'settle' }[kind];
   fxMsg(first ? '+' + got + ' Data · first time you saw ' + who + ' ' + verb : '+' + got + ' Data · ' + (kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled'), 2);
 }
 function offer(c) {
@@ -1728,7 +1729,7 @@ function waitChanges(a, b, scope) {
   else if (a.fogIn && !b.fogIn) out.push('the fog bank drifts off');
   else if (b.fogNear && scope === 'map') { const dw = dirWord(ex.fog.dx, ex.fog.dy, Math.hypot(ex.fog.dx, ex.fog.dy) || 1); out.push('the fog bank drifts' + (dw ? ' ' + dw : '')); }
   if (b.cups > a.cups) out.push('dew gathers in a cup');
-  // creatures in view: what each did, grouped ("two hoppers wander"), the more telling changes first
+  // creatures in view: what each did, grouped ("two Loikas wander"), the more telling changes first
   const ev = new Map(), add = (sp, v) => { const k = sp + '|' + v; ev.set(k, (ev.get(k) || 0) + 1); };
   for (const [id, n] of b.cr) { const o = a.cr.get(id);
     if (!o) add(n.sp, 'view');
@@ -1742,7 +1743,7 @@ function waitChanges(a, b, scope) {
     else if (n.x !== o.x || n.y !== o.y) add(n.sp, 'wander'); }
   for (const [id, o] of a.cr) if (!b.cr.has(id)) { const c = curLive().cr.find(q => q.id === id); add(o.sp, c && c.hide ? 'hole' : 'gone'); }
   const crs = [...ev.entries()].map(([k, n]) => { const [sp, v] = k.split('|'), s = +sp, known = S.known.includes(s), vb = v === 'routine' ? ROUTINE[s] : VERB[v];
-    const who = n > 1 ? numWord(n) + ' ' + (known ? SPECIES[s].plural : 'creatures') : (v === 'view' ? 'a ' : 'the ') + spName(s);
+    const who = n > 1 ? numWord(n) + ' ' + (known ? SPECIES[s].plural : 'creatures') : (v === 'view' ? aAn(spName(s)) : 'the ' + spName(s));
     return { t: who + ' ' + vb[n > 1 ? 1 : 0], w: v === 'wander' ? 1 : 0 }; }).sort((x, y) => x.w - y.w).map(o => o.t);
   return out.concat(crs.slice(0, 2));
 }
@@ -1882,12 +1883,12 @@ function nearestHole(X, c, maxD) {
   for (const f of X.lay.feats) if (f.kind === 'n' && !X.live.cr.some(o => o.hide && o.x === f.x && o.y === f.y)) { const d = man(c, f); if (d < bd) { bd = d; best = f; } }
   return best;
 }
-// Flight: a glowtail dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
+// Flight: a Tuikis dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
 function hideOrFlee(X, c) {
   if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = { x: h.x, y: h.y }; return; } }
   c.st = 'flee'; c.t = 2;
 }
-// Shed limits: one hopper and one glowtail rain-curl per place per storm (lulls do not reset it), one glowtail per place per expedition, each creature once.
+// Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once.
 function shedAllowed(c, X) {
   const w = crById.get(c.id);
   if (!c.ready || !w || w.s === S.exp.n) return false;
@@ -1913,13 +1914,13 @@ function shedPod(c, X) {
   const id = 'p' + (S.nextId++);
   S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how });
   const w = crById.get(c.id); if (w) w.s = S.exp.n;
-  S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? 'A ' + SPECIES[c.sp].name.toLowerCase() : 'A creature') + ' shed a pod (' + how + ')');
+  S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(SPECIES[c.sp].name)) : 'A creature') + ' shed a pod (' + how + ')');
   fxGlint(p.x, p.y, 200);
   const verb = { shake: 'shook dry', calm: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal' }[how];
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
   else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose', 1);
 }
-// A hopper shaking dry leaves a tuft of fur on the ground (Essence), once per hopper per expedition.
+// A Loika shaking dry leaves a tuft of fur on the ground (Essence), once per Loika per expedition.
 function dropTuft(c, X) {
   if (c.tufted) return; c.tufted = 1;
   const p = freeAround(X.key, c.x, c.y, null); if (p) X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });
@@ -1974,7 +1975,7 @@ function creatureTick(c, X) {
   if (X.raining) {
     if (!sheltered) { c.wet = 1; if (!['flee', 'dive', 'eat'].includes(c.st)) c.st = 'shelter'; }
     else if (c.wet && c.sp === 0 && c.st !== 'flee') { c.st = 'shake'; return; }
-    // a wet glowtail curls up in shelter; after three curled actions it may drop a pod
+    // a wet Tuikis curls up in shelter; after three curled actions it may drop a pod
     else if (c.wet && c.sp === 1 && c.st !== 'flee') { c.st = 'curl'; c.curl++;
       if (c.curl >= 3 && shedAllowed(c, X)) { shedPod(c, X); c.curl = -99; } return; }
   } else if (c.wet) {
@@ -2014,7 +2015,7 @@ function creatureTick(c, X) {
     default: {
       c.st = 'idle';
       if (X.raining && sheltered) { c.st = 'huddle'; break; }
-      // A glowtail sheds only after a long quiet spell in its cave or by its burrow. A kin or calming
+      // A Tuikis sheds only after a long quiet spell in its cave or by its burrow. A kin or calming
       // partner lets you wait one tile closer; it never makes the wait shorter.
       if (c.sp === 1 && (X.lay.cave || nearestHole(X, c, 2))) {
         const loud = walking, near = !(d >= 3 || (calm && d >= 2)), pulsed = X.pulse && d <= X.reach;
@@ -2143,7 +2144,7 @@ function walk(m) {
   if (!canWalk()) return; S.walkTurn = S.turn; m.outings = (m.outings || 0) + 1;
   const h = S.hold || (S.hold = { e: 0, d: 0, s: 0, pods: [] }); h.d = Math.min(CAP, h.d + 1);
   FX.moment = { id: m.id, at: NOW }; lockInput(400);
-  const did = [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary hopper', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp];
+  const did = [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp];
   fxMsg(did + ' · +1 Data', 3); logEv('Walked with ' + m.name + ' · +1 Data');
 }
 function dirWord(dx, dy, n) {
@@ -2384,7 +2385,7 @@ function buildCreature(sp, pose, fr, s) {
   const Rr = (x, y, w, h, c) => pb.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), C[c]);
   const Pp = (pts, c) => pb.poly(pts.map(([x, y]) => [x * s, y * s]), C[c]);
   const sh = { sh: [k.light, k.shade] };
-  if (sp === 0) { // hopper: long ears, round body, puff tail
+  if (sp === 0) { // Loika: long ears, round body, puff tail
     const ear = { idle: -.32, alert: -.08, approach: -.08, flee: -1.05, huddle: -1.35, shake: -.7, eat: -.4, glow: -.32 }[pose] ?? -.32;
     const by = pose === 'huddle' ? 22 : pose === 'flee' ? 21.5 : 21, brx = pose === 'flee' ? 10 : pose === 'huddle' ? 9.6 : 9, bry = pose === 'huddle' ? 6.4 : pose === 'flee' ? 6.6 : 7.2;
     const earAt = (bx, byy, a) => [bx + Math.sin(a) * 6.5, byy - Math.cos(a) * 6.5];
@@ -2400,7 +2401,7 @@ function buildCreature(sp, pose, fr, s) {
     if (pose === 'eat') Rr(23, ey + 5, 2, fr ? 1 : 2, 'plumD');
     pb.outline();
     if (pose === 'shake') for (const [x, y] of fr ? [[2, 14], [28, 13], [4, 25], [27, 24], [15, 6]] : [[3, 18], [29, 18], [7, 9], [24, 9], [1, 26]]) { Rr(x, y, 1, 2, 'ice'); Rr(x, y, 1, 1, 'white'); }
-  } else if (sp === 1 && (pose === 'curl' || pose === 'settle')) { // glowtail settling: lowers, then curls into a ball, tail round the front
+  } else if (sp === 1 && (pose === 'curl' || pose === 'settle')) { // Tuikis settling: lowers, then curls into a ball, tail round the front
     const curl = pose === 'curl';
     if (!curl) for (let t = 0; t <= 1.001; t += .08) { const x = (1 - t) ** 2 * 10 + 2 * (1 - t) * t * 3 + t * t * 6, y = (1 - t) ** 2 * 24 + 2 * (1 - t) * t * 25 + t * t * 18; E(x, y, 1.8, 1.8, k.body); }
     if (!curl) E(6, 16.5, 3, 3, 'gold', { sh: ['yellow', 'bark'] });
@@ -2412,7 +2413,7 @@ function buildCreature(sp, pose, fr, s) {
     else { Pp([[21, 18], [22.5, 13], [24.5, 17.5]], k.body); Pp([[25, 17.5], [27.5, 13], [28.5, 18]], k.body); E(24, 21, 5, 4.4, k.body, sh);
       Rr(25.5, 20, 2, 1, k.dark); Rr(28, 22, 1, 1, k.dark); }
     pb.outline();
-  } else if (sp === 1) { // glowtail: low body, tail ending in a glowing bulb
+  } else if (sp === 1) { // Tuikis: low body, tail ending in a glowing bulb
     const up = pose === 'alert' || pose === 'approach' ? -1 : 0, flee = pose === 'flee';
     for (let t = 0; t <= 1.001; t += .08) { const x = (1 - t) ** 2 * 10 + 2 * (1 - t) * t * 2 + t * t * 4, y = (1 - t) ** 2 * 22 + 2 * (1 - t) * t * 22 + t * t * 12; E(x, y, 1.8, 1.8, k.body); }
     E(4, 10, 3.4, 3.4, 'yellow', { sh: ['cream', 'gold'] });
@@ -2425,7 +2426,7 @@ function buildCreature(sp, pose, fr, s) {
     pb.outline();
     if (pose === 'glow' || pose === 'nest') { const r0 = fr ? 4.6 : 5.6, r1 = fr ? 7 : 8;
       for (let y = 0; y < 20; y++) for (let x = 0; x < 14; x++) { const d = Math.hypot(x + .5 - 4, y + .5 - 10); if (d > r0 && d < r1 && (x + y) % 2 === 0 && pb.get(x * s, y * s) < 0) Rr(x, y, 1, 1, 'cream'); } }
-  } else { // puffcap: round body under a wide spotted cap
+  } else { // Untuva: round body under a wide spotted cap
     const big = pose === 'eat' && fr;
     E(16, 22, 7.6, 6.8, k.body, sh);
     E(16, 15.5, 11.5, 7, 'amber', { sh: ['cream', 'orange'], clip: (x, y) => y < 16.5 * s });
@@ -2480,9 +2481,9 @@ function podArt(shell, s, sp) {
     pb.ell(8 * s, 10.5 * s, 5.8 * s, 7.8 * s, c, { sh: [lite(c), shade(c)] });
     for (let i = -4; i <= 4; i++) P(8 + i, 12 + (Math.abs(i) > 3 ? 0 : 1), 1, 1, shade(c));
     P(5, 6, 1, 2, C.white);
-    if (sp === 0) { P(7, 4, 1, 3, C.plum); P(10, 4, 1, 3, C.plum); }               // hopper: two ear stripes
-    else if (sp === 1) { P(7, 3, 3, 3, C.gold); P(8, 4, 1, 1, C.cream); }        // glowtail: a glowing dot
-    else if (sp === 2) { P(6, 8, 2, 1, C.red); P(9, 5, 2, 1, C.red); P(11, 9, 1, 2, C.red); } // puffcap: cap spots
+    if (sp === 0) { P(7, 4, 1, 3, C.plum); P(10, 4, 1, 3, C.plum); }               // Loika: two ear stripes
+    else if (sp === 1) { P(7, 3, 3, 3, C.gold); P(8, 4, 1, 1, C.cream); }        // Tuikis: a glowing dot
+    else if (sp === 2) { P(6, 8, 2, 1, C.red); P(9, 5, 2, 1, C.red); P(11, 9, 1, 2, C.red); } // Untuva: cap spots
     pb.outline(() => C.ink); return pb;
   });
 }
@@ -3815,8 +3816,8 @@ function drawActive(t) {
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0;
     if (a < d) flip = true;   // looking the wrong way first
     else { const k = a - d; pose = 'alert'; fr = 0; if (k < 600) y -= Math.round(Math.abs(Math.sin(k / 600 * Math.PI)) * 30); else y += 6; } }
-  if (sp && m.sp === 1) blit(haloArt(), 75, 52);   // a glowtail glows
-  if (sp && m.sp === 0) { y += 10; x += 8; }        // a hopper leans on the glass
+  if (sp && m.sp === 1) blit(haloArt(), 75, 52);   // a Tuikis glows
+  if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 280);
   blit(bigArt(m.sp, pose, fr), x, y, 0, flip);
@@ -3827,7 +3828,7 @@ function drawActive(t) {
   if (list.length > 1) { text('◀', 10, 166, C.mist); text('▶', 440, 166, C.mist, 2, 'right'); }
   text(clipText(m.name, 260, 3), 30, 324, C.bone, 3);
   chip(30 + textW(clipText(m.name, 260, 3), 3) + 14, 323, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone');
-  text(clipText(SPECIES[m.sp].name.toLowerCase() + ' · ' + SPECIES[m.sp].abText + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 362, C.fog);
+  text(clipText(SPECIES[m.sp].name + ' · ' + SPECIES[m.sp].abText + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 362, C.fog);
   wrapText(activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 388 + i * 22, isW ? C.amber : C.mist));
   // the mood slot stays empty until bonding and care exist
   const n = list.length, dx = 16, x0 = Math.round(SCR_W / 2 - (n - 1) * dx / 2);

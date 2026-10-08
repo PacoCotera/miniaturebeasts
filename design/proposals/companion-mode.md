@@ -27,7 +27,7 @@ with you, large:
  |          [   Pip, HiBit, 280×300   ]      |
  |                                           |
  |   Pip   (adult)                           |  name 3×, stage chip
- |   hopper · calms wary creatures           |  one line, species ability
+ |   Loika · calms wary creatures            |  one line, species ability
  |   with you · joins the Probe              |  one line, status
  |   (mood slot: empty until bonding)        |
  | ✓ Spend time with Pip         ← Mibis     |  bottom line 34 px
@@ -47,7 +47,7 @@ with you, large:
 | Button | Does |
 | --- | --- |
 | **Call** | The mibi with you answers: turns, hops to the front, chirps. A juvenile is learning: it sometimes looks the wrong way first. On another mibi's screen, Call brings the view back to the mibi with you, which answers. Free |
-| **Confirm** | One context action. On the mibi with you: "Spend time with Pip", a short species moment (a hopper leans on the glass, a puffcap puffs, a glowtail glows) and one line from its last expedition ("Pip remembers the meadow"). No reward: waking and idling never award anything (**Working rule**). "Feed" joins only when care exists. On a mibi at home: "Take Moss" (§2) |
+| **Confirm** | One context action. On the mibi with you: "Spend time with Pip", a short species moment (a Loika leans on the glass, an Untuva puffs, a Tuikis glows) and one line from its last expedition ("Pip remembers the meadow"). No reward: waking and idling never award anything (**Working rule**). "Feed" joins only when care exists. On a mibi at home: "Take Moss" (§2) |
 | **Pad** | Left/right: the previous/next mibi's screen, same layout (looking is free) |
 | **Back** | Up to the roster ("← Mibis") |
 
@@ -124,7 +124,7 @@ Station's key ← too for consistency, and say "the ← key" in player-facing do
 
 ## 5. Walkthrough: home, Pip, out again
 
-Dot (juvenile) is with you; Pip, a hopper, grows up this world turn. Start: Cargo, in the field.
+Dot (juvenile) is with you; Pip, a Loika, grows up this world turn. Start: Cargo, in the field.
 
 | # | Press | Screen shows afterwards |
 | --- | --- | --- |

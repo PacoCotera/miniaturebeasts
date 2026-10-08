@@ -41,7 +41,7 @@ Prototype only: a depicted Caddy beside the Station on the page has one key, **D
 
 ## The screens
 
-**Home** ([01](station-screens/01-home.svg)). Vivarium on the left two thirds: a lit glass terrarium where residents keep their species' routines; Dot's bed shows the mibi with you (empty with a small Companion mark while away). Bench on the right third, drawn as objects: bay door, pod tray (six cups, shells in place colours), incubator (dome, leaves), Probe cradle (Shield plates). Pad: focus rests on **the room**; the pad moves the ring to a resident or a bench object. ✓ on the room does the one thing that most needs the player, which the right of the bottom line names (Open the bay, Look at the new pods, Open the incubator); ✓ on a thing opens it. ←: Rest. Line: `✓ Look at Bean · ← Rest | Bean · puffcap · adult | a puffcap pod waits · needs 2 ❀`.
+**Home** ([01](station-screens/01-home.svg)). Vivarium on the left two thirds: a lit glass terrarium where residents keep their species' routines; Dot's bed shows the mibi with you (empty with a small Companion mark while away). Bench on the right third, drawn as objects: bay door, pod tray (six cups, shells in place colours), incubator (dome, leaves), Probe cradle (Shield plates). Pad: focus rests on **the room**; the pad moves the ring to a resident or a bench object. ✓ on the room does the one thing that most needs the player, which the right of the bottom line names (Open the bay, Look at the new pods, Open the incubator); ✓ on a thing opens it. ←: Rest. Line: `✓ Look at Bean · ← Rest | Bean · Untuva · adult | an Untuva pod waits · needs 2 ❀`.
 
 ![Home wireframe: vivarium on the left, bench objects on the right (layout only)](station-screens/01-home.svg)
 
@@ -65,7 +65,7 @@ Prototype only: a depicted Caddy beside the Station on the page has one key, **D
 
 *Create wireframe: the founder at centre, chapters in an arc, the cost in the bottom line (layout only).*
 
-**Incubator** ([06](station-screens/06-incubator.svg), from Grow or Home's bench). The glass dome with the embryo glowing as it grows (seed → bud → shape); a ring of leaves around it is the timer, **one leaf per minute** of the decided rule (5 leaves = 5 minutes; the first mibi ever, one leaf), each filling smoothly over its minute. Above, the unread chapter arcs clear one by one while it grows: the surprises arrive during the wait, and the mibi steps out fully known. The plate under the dome carries the ring, filling as chapters clear, and the code. Read-only while growing (✓ empty); ready, the dome glows: `✓ Open` (**Decided:** deliberate). The juvenile steps out into the vivarium: "Fig · glowtail · juvenile". ←: Home; it keeps growing on the bench, and when away the idle view shows it.
+**Incubator** ([06](station-screens/06-incubator.svg), from Grow or Home's bench). The glass dome with the embryo glowing as it grows (seed → bud → shape); a ring of leaves around it is the timer, **one leaf per minute** of the decided rule (5 leaves = 5 minutes; the first mibi ever, one leaf), each filling smoothly over its minute. Above, the unread chapter arcs clear one by one while it grows: the surprises arrive during the wait, and the mibi steps out fully known. The plate under the dome carries the ring, filling as chapters clear, and the code. Read-only while growing (✓ empty); ready, the dome glows: `✓ Open` (**Decided:** deliberate). The juvenile steps out into the vivarium: "Fig · Tuikis · juvenile". ←: Home; it keeps growing on the bench, and when away the idle view shows it.
 
 ![Incubator wireframe: glass dome with the ring of leaves as the timer (layout only)](station-screens/06-incubator.svg)
 
@@ -127,14 +127,14 @@ A child sees a picture of the trait that shows, a misty seed holding what hides,
 The Companion comes home with one consignment; the Station is on Home, focus on the room.
 1. **Dock** (the Caddy key): a crate slides into the bay. `✓ Open the bay · 1 crate`.
 2. **✓** The seal breaks; a pod rolls into a cup; counters tick; the Shield mends to two. `✓ Look at the new pod`.
-3. **✓** Pods, the new pod on its stage: "rock field · a glowtail felt safe". `✓ Identify · 1 ⚡`.
-4. **✓** The seal breaks: a glowtail. "New species". The ring draws its grey band; four chapter arcs rise in hairlines.
+3. **✓** Pods, the new pod on its stage: "rock field · a Tuikis felt safe". `✓ Identify · 1 ⚡`.
+4. **✓** The seal breaks: a Tuikis. "New species". The ring draws its grey band; four chapter arcs rise in hairlines.
 5. **▲** Focus on the Coat arc. `✓ Read Coat · 3 ◆`.
 6. **✓** The page turns: stripes with a misty seed holding spots, "shows stripes · hides spots"; only teal; short fur. The Coat sector fills.
 7. **✓** `Shape a founder`: Create opens, focus on markings; the founder striped, three chapters misty.
 8. **▼** Markings roll to only spots; the founder redraws spotted; "changed". `✓ Grow it · 2 ⚡ 4 ❀ 1 ◆`.
 9. **✓** The ring stamps the shell, the code appears, the pod glides into the dome: four leaves. While they fill, the Face, Movement and Stamina chapters clear.
-10. **✓** The dome glows: `Open`. A spotted glowtail steps into the vivarium: "Fig · glowtail · juvenile".
+10. **✓** The dome glows: `Open`. A spotted Tuikis steps into the vivarium: "Fig · Tuikis · juvenile".
 
 ## Build notes
 

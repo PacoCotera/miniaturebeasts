@@ -17,8 +17,8 @@ The player chooses a Weather expedition and places the Probe on a meadow at the
 edge of known land. A dotted square shows how far the Probe reaches from there.
 They walk the map east, lifting fog, and go down into a wood that shows a slow
 beat. The wood lies under a veil; walking lifts it a little, and a Call lifts much
-more: a buried pod glints, a puffcap comes closer, a hopper hides. They shake a
-bush, set the fruit down and back off; the puffcap eats it (+2 Data, the first
+more: a buried pod glints, an Untuva comes closer, a Loika hides. They shake a
+bush, set the fruit down and back off; the Untuva eats it (+2 Data, the first
 time). A storm moves in. A warned strike charges a stone in the open: +2 Energy.
 One more charge is a gamble on the Shield. They dig up the pod, walk off the
 wood's edge onto the next cell, and head back to the start flag to send home. At
@@ -235,7 +235,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
   an eater comes within a few quiet actions. Offering by hand works with a curious
   creature, a calming partner near, or inside a fog bank (**Built**).
 - **Diet before you offer.** Facing an identified species names its diet
-  ("Hopper · eats fruit"); an unidentified one reads "Unknown creature · watch what
+  ("Loika · eats fruit"); an unidentified one reads "Unknown creature · watch what
   it does" and can't be offered anything (**Built**). A fruit bubble marks eaters
   in view while the player carries fruit (**Decided**).
 - **Moments.** Data comes only when a creature does something because of the
@@ -244,7 +244,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
 - **Pods.** Samples are seed-pods: a pod shows its species if the player knows it,
   otherwise "unknown species"; its contents are found out at the Station
   (**Decided**). Pods lie buried or under slabs, or are shed by creatures (a
-  puffcap after a full meal, a glowtail that feels safe, a hopper shaking dry)
+  Untuva after a full meal, a Tuikis that feels safe, a Loika shaking dry)
   (**Built**). A full hold offers a swap; the pod left behind stays and the map
   remembers it (**Built**).
 
@@ -262,9 +262,9 @@ at 20 carried; Essence never turns into Energy (**Built**).
   one (**Built**). A partner is never hurt (**Decided**).
 - **Partners are optional gates.** A partner opens events, map areas and
   expedition types otherwise unavailable, using its real abilities; without one the
-  player still explores (**Decided**). Built abilities: the glowtail digs narrow
-  burrows and glows (full Call and wider sight in a fog bank); the hopper calms
-  wary creatures; the puffcap sniffs out buried pods and flinches before stray
+  player still explores (**Decided**). Built abilities: the Tuikis digs narrow
+  burrows and glows (full Call and wider sight in a fog bank); the Loika calms
+  wary creatures; the Untuva sniffs out buried pods and flinches before stray
   strikes (**Built**). Abilities come from species for now; from traits later
   (**Proposal**).
 - **Gates** are obstacles drawn as what they are, signed on the map, and not

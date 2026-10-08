@@ -1,5 +1,7 @@
 # Station Pods: generated concept candidates
 
+> **Names.** The species this folder calls the hopper, the puffcap and the glowtail are now **Loika** (clan Lophessa), **Untuva** (Kausida) and **Tuikis** (Stilbera). Captions use the new names; file names, prompts and quoted briefs keep the earlier words.
+
 Everything in this folder is **generated concept art** for the Station's Pods screen, made in rounds against [`brief-pods.md`](brief-pods.md) and the style guide's Pods section ([design/style-guide/station-screens.md](../../../design/style-guide/station-screens.md)). Nothing is a build capture or an authored master, and nothing is accepted until the owner says so. Caption every use as "Concept art, generated". The quality bar and sibling screen is the approved Home candidate [`A-r3-a1`](../round3/A-r3-a1-1024x600.png): Pods has to read as the same device.
 
 ![Contact sheet of all Pods candidates](contact-sheet.png)
@@ -19,7 +21,7 @@ Judged against the brief's checklist, the guide's Pods "Pass when" list, and (fr
 
 **A specimen-stage.** The brief's layout: rack column, arc of four machined viewports, pod on its nest under the beam, whorl on the plate.
 - Pass (a2, Pro): the viewports read as instrument lenses with emblems, lamps and one quiet word; frost shows nothing behind it; the crown's glint is one star; the gait ring wears the joined rings; the whorl is four petals of ridges with the first filled; the pod's top clears to a silhouette; the gate has its leaf; every string is present and spelled right.
-- Fail (a2): five wells; the markings viewport draws a brown-and-white cow hide instead of the hopper's charcoal flank; the right-hand strings run into the trim.
+- Fail (a2): five wells; the markings viewport draws a brown-and-white cow hide instead of the Loika's charcoal flank; the right-hand strings run into the trim.
 - Fail (a1, Flash): the prompt's part names leaked as captions ("RACK COLUMN", "RETURN GATE", "SPECIMEN", "FINGERPRINT WHORL"); five wells; strings clipped.
 
 **B pane-bank.** A straight bank of four glass panes in one brushed housing, the pod in a glass case below.

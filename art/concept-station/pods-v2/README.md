@@ -1,8 +1,10 @@
 # Station Pods v2, Pod list and Read: generated concept candidates
 
+> **Names.** The species this folder calls the hopper, the puffcap and the glowtail are now **Loika** (clan Lophessa), **Untuva** (Kausida) and **Tuikis** (Stilbera). Captions use the new names; file names, prompts and quoted briefs keep the earlier words.
+
 Everything in this folder is **generated concept art** for the research bench's "Pod list and Read" screen, made in rounds against [`../pods/brief-pods-v2.md`](../pods/brief-pods-v2.md), the research loop's §8 rows and the style guide's Pods section. Nothing is a build capture or an authored master; nothing is accepted until the owner says so. The first Pods round ([`../pods/`](../pods/README.md)) was rejected before the research loop existed; this one is built on the loop.
 
-**What is placed, not generated.** The genome stamp on the stage plate is the real styled stamp from [`../../concept-stamp/`](../../concept-stamp/README.md) (the hopper frame, C01 family (the hopper frame's clan), bench paper, 300 px), composited into the screen's empty stage-plate square by [`tools/place-stamp.py`](tools/place-stamp.py) after generation, and then **decoded from the finished 1024×600 screen** with the prototype's decoder. The generator never draws a cell. The pod list's progress rings, the tabs and the page were given to the generator as a flat layout template drawn to the brief's numbers ([`layout/`](layout/)); the generator's rings are judged against it.
+**What is placed, not generated.** The genome stamp on the stage plate is the real styled stamp from [`../../concept-stamp/`](../../concept-stamp/README.md) (the Loika frame, C01 family (the Loika frame's clan), bench paper, 300 px), composited into the screen's empty stage-plate square by [`tools/place-stamp.py`](tools/place-stamp.py) after generation, and then **decoded from the finished 1024×600 screen** with the prototype's decoder. The generator never draws a cell. The pod list's progress rings, the tabs and the page were given to the generator as a flat layout template drawn to the brief's numbers ([`layout/`](layout/)); the generator's rings are judged against it.
 
 **Where this departs from the brief.** The brief's strings include "Hopper pod" and "a hopper felt safe". The taxonomy has since withdrawn the frame names and the names are being revised, so no species name is baked into the art: the plate reads "identified" over "rock field · expedition 4" and the bottom line's subject is "identified · rock field". The species is carried by the glyph on the pod's cap and by the stamp. The brief's "misty seed" is drawn as the taxonomy's "sleeping bud": a pearl bud on the sill with the hidden look inside.
 
@@ -17,7 +19,7 @@ Four generations: the dark modern lab (the owner's bar) twice on Pro and once on
 
 *Round 1 with the stamp placed where the square came out clean. Concept art, generated; the stamp is real.*
 
-**PV-D-r1-a2 (Pro), the pick.** The strongest lab: deep glass, lit edges, a round stage plate carrying a clean pale square, the beam from the upper left pooling on a pod that is the renderer's hopper pod (squat charcoal shell with cream dots, cream seam and cap, the three-leaf glyph lit with its crack, grey dust at the base) on a frosted cradle with its plate; four tabs on an arc with lamps, Coat focused with its hairline to the page, Face wearing the star; the pod list with the current pod lifted inside a cream ring and its progress ring starred, a tall coral pod with a notched hairline ring, a grey sealed pod with an empty ring, the gate with its leaf; every string in place and inside the trim. Fails: five wells, not six; the page's flank is a brown-and-cream hide, not the hopper's charcoal; the progress ring's arcs are not sized by trait count.
+**PV-D-r1-a2 (Pro), the pick.** The strongest lab: deep glass, lit edges, a round stage plate carrying a clean pale square, the beam from the upper left pooling on a pod that is the renderer's Loika pod (squat charcoal shell with cream dots, cream seam and cap, the three-leaf glyph lit with its crack, grey dust at the base) on a frosted cradle with its plate; four tabs on an arc with lamps, Coat focused with its hairline to the page, Face wearing the star; the pod list with the current pod lifted inside a cream ring and its progress ring starred, a tall coral pod with a notched hairline ring, a grey sealed pod with an empty ring, the gate with its leaf; every string in place and inside the trim. Fails: five wells, not six; the page's flank is a brown-and-cream hide, not the Loika's charcoal; the progress ring's arcs are not sized by trait count.
 
 **PV-D-r1-a1 (Pro).** Kept as reference: the same layout with the right charcoal flank and bud, but the tab words are doubled (on the tab and under it), there are five wells, and both edge strings are clipped.
 
@@ -42,7 +44,7 @@ The well count has now resisted every edit across three Station screens (Home, P
 
 *Round 3 with the stamp placed. Concept art, generated; the stamp is real.*
 
-- **PV-D-r3-a1 (fresh, Pro).** Six wells at last, three occupied and three empty under the gate; the flank is the hopper's charcoal with its cream belly edge and the bud on the sill; the tabs carry emblems and Coat is lifted, Face wears its star; the pod has its glyph and crack; the pale square is clean. Spoiled by leaks: the prompt's numbering came through as small digits beside the wells, and two measurement captions appeared under the page and the square. Kept as the near-pass and sent to a clean-up edit.
+- **PV-D-r3-a1 (fresh, Pro).** Six wells at last, three occupied and three empty under the gate; the flank is the Loika's charcoal with its cream belly edge and the bud on the sill; the tabs carry emblems and Coat is lifted, Face wears its star; the pod has its glyph and crack; the pale square is clean. Spoiled by leaks: the prompt's numbering came through as small digits beside the wells, and two measurement captions appeared under the page and the square. Kept as the near-pass and sent to a clean-up edit.
 - **PV-D-r3-a2 (fresh, Pro).** Six wells and a charcoal flank too, but the numerals leaked again, the tabs grew subtitles, and the bottom line broke into two rows. Rejected.
 - **PV-D-r3-a3 (one-change edit of the round-1 pick, Pro).** The flank-only edit held exactly: the page now shows the charcoal flank with its cream edge, and nothing else moved. Five wells remain. Kept as the clean fallback.
 - **PV-D-r3-a4 (one-change clean-up edit of a1, Pro).** The stray numerals and captions are gone and everything else held: six wells, the charcoal flank with its bud, the tabs, the pod, the clean square. One loss: the trait line's small plate under the page came back empty, so "shows plain · hides pale" is missing (live text the build sets, a minor fail). Kept and recommended.
@@ -51,7 +53,7 @@ The well count has now resisted every edit across three Station screens (Home, P
 
 ![PV-D-r3-a4 with the real stamp placed, 1024×600](placed/PV-D-r3-a4-stamped-1024x600.png)
 
-*PV-D-r3-a4 at 1024×600, 1×, with the real hopper stamp (C01 family, bench paper) placed on the stage plate. The decoder reads the stamp from this very image: `S11v1-0F-8898-7EC96C`. Concept art, generated; not a build capture, not accepted.*
+*PV-D-r3-a4 at 1024×600, 1×, with the real Loika stamp (C01 family, bench paper) placed on the stage plate. The decoder reads the stamp from this very image: `S11v1-0F-8898-7EC96C`. Concept art, generated; not a build capture, not accepted.*
 
 Checklist from brief-pods-v2.md (section 11), judged on the placed screen:
 
@@ -63,7 +65,7 @@ Checklist from brief-pods-v2.md (section 11), judged on the placed screen:
 - [x] 6. Never digits of progress, locus counts, letters, ratios or "locked": none on the screen.
 - [x] 7. The genome stamp is the prototype's cells placed, not redrawn, and it decodes from the finished screen.
 - [x] 8. The pod is the warmest, brightest thing; the chrome stays cool.
-- [x] 9. The pod is the renderer's hopper pod (medium, squat, smooth charcoal shell with cream dots, cream seam and cap, the three-leaf glyph with its crack, dust at the base); nothing on the shell says plain or pale.
+- [x] 9. The pod is the renderer's Loika pod (medium, squat, smooth charcoal shell with cream dots, cream seam and cap, the three-leaf glyph with its crack, dust at the base); nothing on the shell says plain or pale.
 - [x] 10. One device with Home (type, counters, bottom-line grammar, light) in a modern digital lab.
 - [x] 11. Labels one quiet word each; captions on plates; no species name.
 - [x] 12. Strings exact and inside the trim except the right edge's last word ("something new" clipped); flat screen, no bezel.

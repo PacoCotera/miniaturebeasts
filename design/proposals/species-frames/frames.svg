@@ -24,7 +24,7 @@
 <rect x="58" y="84" width="6" height="6" fill="#2e2e2e"/>
 <rect x="30" y="96" width="16" height="10" fill="#465459"/>
 <rect x="48" y="96" width="16" height="10" fill="#dfd2ae"/>
-<text x="70" y="70" class="t" style="font-weight:600">Hopper</text>
+<text x="70" y="70" class="t" style="font-weight:600">Loika</text>
 <rect x="120.0" y="52" width="165.6" height="30" fill="#77736a" stroke="#f7f4ec"/>
 <text x="202.8" y="72" class="t" text-anchor="middle" style="fill:#fff">23</text>
 <rect x="285.6" y="52" width="280.8" height="30" fill="#b9b4a8" stroke="#f7f4ec"/>
@@ -58,7 +58,7 @@
 <rect x="51" y="158" width="6" height="6" fill="#2e2e2e"/>
 <rect x="30" y="170" width="16" height="10" fill="#e98268"/>
 <rect x="48" y="170" width="16" height="10" fill="#e8b83f"/>
-<text x="70" y="144" class="t" style="font-weight:600">Puffcap</text>
+<text x="70" y="144" class="t" style="font-weight:600">Untuva</text>
 <rect x="120.0" y="126" width="158.4" height="30" fill="#77736a" stroke="#f7f4ec"/>
 <text x="199.2" y="146" class="t" text-anchor="middle" style="fill:#fff">22</text>
 <rect x="278.4" y="126" width="360.0" height="30" fill="#b9b4a8" stroke="#f7f4ec"/>
@@ -90,7 +90,7 @@
 <rect x="58" y="232" width="6" height="6" fill="#2e2e2e"/>
 <rect x="30" y="244" width="16" height="10" fill="#269fa5"/>
 <rect x="48" y="244" width="16" height="10" fill="#e8b83f"/>
-<text x="70" y="218" class="t" style="font-weight:600">Glowtail</text>
+<text x="70" y="218" class="t" style="font-weight:600">Tuikis</text>
 <rect x="120.0" y="200" width="180.0" height="30" fill="#77736a" stroke="#f7f4ec"/>
 <text x="210.0" y="220" class="t" text-anchor="middle" style="fill:#fff">25</text>
 <rect x="300.0" y="200" width="165.6" height="30" fill="#b9b4a8" stroke="#f7f4ec"/>

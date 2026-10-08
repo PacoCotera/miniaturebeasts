@@ -5,7 +5,7 @@
   "kind": "colour",
   "role": null,
   "cells": 17,
-  "species": "Hopper",
+  "species": "Loika",
   "genome": {
    "species": 11,
    "version": 1,
@@ -46,7 +46,7 @@
   "kind": "colour",
   "role": null,
   "cells": 25,
-  "species": "Glowtail",
+  "species": "Tuikis",
   "genome": {
    "species": 13,
    "version": 1,
@@ -222,7 +222,7 @@
   "kind": "colour",
   "role": "postmark",
   "cells": 29,
-  "species": "Glowtail",
+  "species": "Tuikis",
   "genome": {
    "species": 13,
    "version": 1,
@@ -1024,7 +1024,7 @@
   "kind": "colour",
   "role": null,
   "cells": 25,
-  "species": "Glowtail",
+  "species": "Tuikis",
   "genome": {
    "species": 13,
    "version": 1,
@@ -1200,7 +1200,7 @@
   "kind": "colour",
   "role": null,
   "cells": 17,
-  "species": "Hopper",
+  "species": "Loika",
   "genome": {
    "species": 11,
    "version": 1,
@@ -1866,7 +1866,7 @@
   "kind": "colour",
   "role": null,
   "cells": 25,
-  "species": "Glowtail",
+  "species": "Tuikis",
   "genome": {
    "species": 13,
    "version": 1,
@@ -2040,7 +2040,7 @@
   "kind": "caddy",
   "role": null,
   "cells": 17,
-  "species": "Hopper",
+  "species": "Loika",
   "genome": {
    "species": 11,
    "version": 1,
@@ -2081,7 +2081,7 @@
   "kind": "caddy",
   "role": null,
   "cells": 25,
-  "species": "Glowtail",
+  "species": "Tuikis",
   "genome": {
    "species": 13,
    "version": 1,
@@ -2882,7 +2882,7 @@
   "kind": "caddy",
   "role": null,
   "cells": 17,
-  "species": "Hopper",
+  "species": "Loika",
   "genome": {
    "species": 11,
    "version": 1,
@@ -2923,7 +2923,7 @@
   "kind": "colour",
   "role": "mother",
   "cells": 25,
-  "species": "Glowtail",
+  "species": "Tuikis",
   "genome": {
    "species": 13,
    "version": 1,
@@ -3099,7 +3099,7 @@
   "kind": "colour",
   "role": "child",
   "cells": 25,
-  "species": "Glowtail",
+  "species": "Tuikis",
   "genome": {
    "species": 13,
    "version": 1,
@@ -3275,7 +3275,7 @@
   "kind": "colour",
   "role": "father",
   "cells": 25,
-  "species": "Glowtail",
+  "species": "Tuikis",
   "genome": {
    "species": 13,
    "version": 1,
@@ -3451,7 +3451,7 @@
   "kind": "caddy",
   "role": null,
   "cells": 25,
-  "species": "Glowtail",
+  "species": "Tuikis",
   "genome": {
    "species": 13,
    "version": 1,

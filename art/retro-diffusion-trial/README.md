@@ -1,5 +1,7 @@
 # Retro Diffusion trial
 
+> **Names.** The species this folder calls the hopper, the puffcap and the glowtail are now **Loika** (clan Lophessa), **Untuva** (Kausida) and **Tuikis** (Stilbera). Captions use the new names; file names, prompts and quoted briefs keep the earlier words.
+
 A small paid trial of the [Retro Diffusion](https://retrodiffusion.ai) pixel-art API, run on
 2026-10-07 to learn whether it fits this project's art rules
 ([art-direction.md](../../design/art-direction.md), [ui-kit.md §2 and §4](../../design/proposals/ui-kit.md)).
@@ -11,7 +13,7 @@ name and SHA-256), task id, cost and time. No key material is stored anywhere in
 (refunded).** Balance after the trial: $7.62.
 
 Contents: [API notes](#api-notes) · [A. Weather](#a-weather-for-the-reach-view) ·
-[B. Station Home](#b-station-home-scene) · [C. Tile and sprite](#c-meadow-tile-and-hopper-sprite) ·
+[B. Station Home](#b-station-home-scene) · [C. Tile and sprite](#c-meadow-tile-and-loika-sprite) ·
 [Measurements](#measurements) · [Costs](#costs) · [Recommendation](#recommendation) · [Files](#files)
 
 ## API notes
@@ -120,13 +122,13 @@ bands and the Bayer mist should stay hand-drawn as the kit specifies.
 
 ## B. Station Home scene
 
-Target: a lit glass vivarium with a hopper and a puffcap, warm lamp, moss, about 512×300, in
+Target: a lit glass vivarium with a Loika and an Untuva, warm lamp, moss, about 512×300, in
 the Miniature Lives style. Reference creature: [`hibit-plain-280x300.png`](../miniature-lives/assets/hibit-plain-280x300.png).
 
 **B1. `rd_plus__environment`, 512×304, no references (RD Plus does not take them).** The best
 composition of the trial: a round glass tank with a brass rim, a lamp pool from above, moss,
-a water dish, pot plants and a dark room. The hopper is a generic "cute bunny" with black
-button eyes, not a Miniature Lives creature, and the puffcap is a plain mushroom without a face.
+a water dish, pot plants and a dark room. The Loika is a generic "cute bunny" with black
+button eyes, not a Miniature Lives creature, and the Untuva is a plain mushroom without a face.
 37 colours.
 
 ![B1 vivarium scene 1](b-station/b1-plus-environment-512-1.png)
@@ -143,7 +145,7 @@ button eyes, not a Miniature Lives creature, and the puffcap is a plain mushroom
 
 **B2. `rd_pro__default`, 256×152, with three references (plain Pip at both treatments and the
 UI-kit vivarium crop).** The creature now carries the Miniature Lives look: dark body shading,
-large orange iris with a highlight, cream belly, rounded volume, and the puffcap has a face.
+large orange iris with a highlight, cream belly, rounded volume, and the Untuva has a face.
 The scene is less composed than B1 and the size is capped at 256 by RD Pro.
 
 <img src="previews/b2-pro-refs-256-1-x2.png" width="512" alt="B2 vivarium with references 1">
@@ -155,7 +157,7 @@ The scene is less composed than B1 and the size is capped at 256 by RD Pro.
 **B3. img2img from the UI-kit Station Home mock-up, `rd_plus__environment`, 512×392,
 strength 0.55.** The composition of [`station-home.png`](../../design/proposals/ui-kit/station-home.png)
 survived (frame, mounds, water dish, dark room) but the residents were redrawn as generic
-bunnies and the puffcap was lost. img2img keeps layout, not identity.
+bunnies and the Untuva was lost. img2img keeps layout, not identity.
 
 ![B3 img2img from the Station Home mock-up](b-station/b3-plus-environment-img2img.png)
 
@@ -168,7 +170,7 @@ and furniture from RD Plus at full size, creatures from RD Pro with references, 
 hand. "Art never changes genes" means generated creatures stay concept material until the
 creature pipeline exists.
 
-## C. Meadow tile and hopper sprite
+## C. Meadow tile and Loika sprite
 
 **C1. `rd_tile__single_tile`, 32×32, meadow.** With `tile_x`/`tile_y` the request failed
 three times (`inference_failed`, refunded), with and without the palette. Without the flags it
@@ -200,20 +202,20 @@ colours collapses the soil to 5 colours and bands it.
 
 *C4 quantised to the 48 colours with Pillow, shown 2×: 5 colours, the soil texture is gone.*
 
-**C2. Hopper idle frame, `rd_pro__default`, 32×32, palette, `remove_bg`, references: the
-hopper from the Station Home mock-up and plain Pip.** Four takes, 22–25 colours each, all on
+**C2. Loika idle frame, `rd_pro__default`, 32×32, palette, `remove_bg`, references: the
+Loika from the Station Home mock-up and plain Pip.** Four takes, 22–25 colours each, all on
 the palette within 1/255. Violet body in the V ramp, cream belly, orange iris with a white
 highlight, pink inner ear. The volume and the eye read; the outline is not the kit's 1 px
 "darkest step of the part's own ramp" rule, and the 32 px canvas is tight, so the ears touch
 the top edge in two takes.
 
-<img src="previews/c2-pro-hopper-32-1-x4.png" width="128" alt="C2 hopper take 1"> <img src="previews/c2-pro-hopper-32-2-x4.png" width="128" alt="C2 hopper take 2"> <img src="previews/c2-pro-hopper-32-3-x4.png" width="128" alt="C2 hopper take 3"> <img src="previews/c2-pro-hopper-32-4-x4.png" width="128" alt="C2 hopper take 4">
+<img src="previews/c2-pro-hopper-32-1-x4.png" width="128" alt="C2 Loika take 1"> <img src="previews/c2-pro-hopper-32-2-x4.png" width="128" alt="C2 Loika take 2"> <img src="previews/c2-pro-hopper-32-3-x4.png" width="128" alt="C2 Loika take 3"> <img src="previews/c2-pro-hopper-32-4-x4.png" width="128" alt="C2 Loika take 4">
 
 *C2 (`c2-pro-hopper-32-1..4.png`) at 4×, transparent. $0.72, the most expensive request of the trial.*
 
 **C5. Idle animation of take 3, `rd_advanced_animation__idle`, 8 frames, sprite sheet.** Take
 3 was padded onto a 48×48 transparent canvas (`c5-anim-input-hopper-48.png`) as the docs
-require. The service returned a 192×96 PNG sheet of eight 48×48 frames. The hopper breathes
+require. The service returned a 192×96 PNG sheet of eight 48×48 frames. The Loika breathes
 and the ears move, but every frame is a redraw: eye shape, belly outline and foot positions
 boil from frame to frame. Not a two-frame kit idle; it would need hand cleanup frame by frame.
 
@@ -250,7 +252,7 @@ palette-constrained and are listed for comparison; their Pillow-quantised copies
 | `b-station/b1-plus-environment-512-1.png` | 512×304 | 37 | all | 69 | 28 | Best scene composition; creature generic |
 | `b-station/b1-plus-environment-512-2.png` | 512×304 | 36 | all | 54 | 26 | Good scene; creature generic |
 | `b-station/b2-pro-refs-256-1.png` | 256×152 | 43 | all | 58 | 23 | Creature is Miniature Lives; scene weaker, 256 cap |
-| `b-station/b2-pro-refs-256-2.png` | 256×152 | 42 | all | 61 | 20 | Same; puffcap has a face |
+| `b-station/b2-pro-refs-256-2.png` | 256×152 | 42 | all | 61 | 20 | Same; Untuva has a face |
 | `b-station/b3-plus-environment-img2img.png` | 512×392 | 33 | all | 44 | 25 | Layout kept, identity lost |
 | `c-tiles/c1b-single-tile-palette-noseamless.png` | 32×32 | 6 | 494 / 1024 (48.2%) | 1 | 6 | Uniform meadow, repeats without a seam |
 | `c-tiles/c2-pro-hopper-32-1.png` | 32×32 | 24 | 41 / 452 (9.1%) | 1 | 24 | Rounded, expressive, lit; ears clip the top |

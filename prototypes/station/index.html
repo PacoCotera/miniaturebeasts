@@ -283,14 +283,14 @@ const HOW_ACT = ['shake', 'calm', 'curl', 'meal'];
 // mode 'choose' rolls at creation, 'family' is inherited-only (the bounded trial's movement, as a family mark),
 // lock 'tier2' keeps the window shut (a shutter) until the Probe is tier 2. Weights pick a pod's copies.
 const SPECIES = [
-  { name: 'Hopper', plural: 'hoppers', size: 3, sizeWord: 'medium', abText: 'calms wary creatures', habit: 'shakes dry · long hops',
+  { name: 'Loika', plural: 'Loikas', size: 3, sizeWord: 'medium', abText: 'calms wary creatures', habit: 'shakes dry · long hops',
     col: { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' },
     win: [
       { id: 'markings', word: 'markings', emb: 'swirl', mode: 'choose', w: [5, 3, 2], v: [{ n: 'plain', s: 'plain', hue: 'lavender' }, { n: 'a saddle', s: 'saddle', hue: 'plum' }, { n: 'pale patches', s: 'pale', hue: 'bone' }] },
       { id: 'ears', word: 'ears', emb: 'crown', mode: 'choose', w: [5, 3, 2], v: [{ n: 'long ears', s: 'long', hue: 'pink' }, { n: 'short ears', s: 'short', hue: 'peach' }, { n: 'lop ears', s: 'lop', hue: 'magenta' }] },
       { id: 'gait', word: 'gait', emb: 'paw', mode: 'family', w: [6, 4], v: [{ n: 'a springy hop', s: 'hop', hue: 'sky' }, { n: 'a long bound', s: 'bound', hue: 'river' }] },
     ] },
-  { name: 'Glowtail', plural: 'glowtails', size: 2, sizeWord: 'small', abText: 'digs narrow burrows', habit: 'digs burrows · glows at dusk',
+  { name: 'Tuikis', plural: 'Tuikis', size: 2, sizeWord: 'small', abText: 'digs narrow burrows', habit: 'digs burrows · glows at dusk',
     col: { body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' },
     win: [
       { id: 'markings', word: 'markings', emb: 'swirl', mode: 'choose', w: [4, 4, 2], v: [{ n: 'stripes', s: 'stripes', hue: 'tealD' }, { n: 'spots', s: 'spots', hue: 'lilac' }, { n: 'plain', s: 'plain', hue: 'mint' }] },
@@ -298,7 +298,7 @@ const SPECIES = [
       { id: 'colour', word: 'colour', emb: 'drop', mode: 'choose', w: [5, 3, 2], v: [{ n: 'teal', s: 'teal', hue: 'aqua' }, { n: 'gold', s: 'gold', hue: 'yellow' }, { n: 'violet', s: 'violet', hue: 'lilac' }] },
       { id: 'gait', word: 'gait', emb: 'paw', mode: 'family', w: [6, 4], v: [{ n: 'a scurry', s: 'scurry', hue: 'sky' }, { n: 'a low glide', s: 'glide', hue: 'river' }] },
     ] },
-  { name: 'Puffcap', plural: 'puffcaps', size: 4, sizeWord: 'large', abText: 'sniffs out buried pods', habit: 'eats fruit · sheds when full',
+  { name: 'Untuva', plural: 'Untuvas', size: 4, sizeWord: 'large', abText: 'sniffs out buried pods', habit: 'eats fruit · sheds when full',
     col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' },
     win: [
       { id: 'spots', word: 'spots', emb: 'swirl', mode: 'choose', w: [5, 3, 2], v: [{ n: 'white spots', s: 'spots', hue: 'bone' }, { n: 'rings', s: 'rings', hue: 'cream' }, { n: 'a bare cap', s: 'bare', hue: 'orange' }] },
@@ -445,10 +445,11 @@ function shortText(e, d, s) {
   return 'needs ' + p.join(' ') + ' more';
 }
 const priceText = (e, d, s) => [e ? e + ' ⚡' : '', s ? s + ' ❀' : '', d ? d + ' ◆' : ''].filter(Boolean).join(' ');
-const spWord = sp => SPECIES[sp].name.toLowerCase();
+const spWord = sp => SPECIES[sp].name;   // species names are proper nouns: never lower-cased
+const aAn = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
 const podById = id => ST.tray.find(p => p.id === id) || null;
 const podName = p => p.idd ? spWord(p.sp) + ' pod' : 'unknown pod';
-function podOrigin(p) { return (PLACE_WORD[p.g] || p.g || 'somewhere') + (p.how && HOW_WORD[p.how] ? ' · ' + (HOW_ACT.includes(p.how) ? (p.idd ? 'a ' + spWord(p.sp) + ' ' : 'a creature ') : '') + HOW_WORD[p.how] : '') + (p.n ? ' · expedition ' + p.n : ''); }
+function podOrigin(p) { return (PLACE_WORD[p.g] || p.g || 'somewhere') + (p.how && HOW_WORD[p.how] ? ' · ' + (HOW_ACT.includes(p.how) ? (p.idd ? aAn(spWord(p.sp)) + ' ' : 'a creature ') : '') + HOW_WORD[p.how] : '') + (p.n ? ' · expedition ' + p.n : ''); }
 function fillCups() { while (ST.tray.length < TRAY && ST.waiting.length) { const p = ST.waiting.shift(); p.landAt = Date.now(); ST.tray.push(p); } }
 // The effective "with you" mibi: the Companion's slot, or the Station's pending choice once docked.
 function effWithId() { const r = ST.withReq; if (r && docked() && r.seq > ((SV && SV.withSeen) || 0)) return r.id; return withId(); }
@@ -576,7 +577,7 @@ function grow(cr) {
   ST.inc = { m, start: Date.now(), mins: growMinutes(p.sp, ch.length, first), early: false, g: p.g };
   ST.tray = ST.tray.filter(q => q !== p); fillCups();
   FX.stamp = { at: NOW, code }; lockInput(1500);
-  logEv('Grew a ' + spWord(p.sp) + ' founder · ' + code + ' · ' + plural(ST.inc.mins, 'minute') + (ch.length ? ' · ' + plural(ch.length, 'change') : ''));
+  logEv('Grew ' + aAn(spWord(p.sp)) + ' founder · ' + code + ' · ' + plural(ST.inc.mins, 'minute') + (ch.length ? ' · ' + plural(ch.length, 'change') : ''));
   UI.create = null; UI.pods.cur = null;
   save(); goScreen('incubator', true);
 }
@@ -631,7 +632,7 @@ function need() {
   if (ST.waiting.length) return { text: plural(ST.waiting.length, 'pod') + ' wait sealed · free a cup', act: 'pods', label: 'Look at the pods' };
   const idd = ST.tray.filter(p => p.idd);
   if (idd.length && !ST.inc) { const p = idd[0]; const c = { e: PRICE.growE, s: PRICE.growS };
-    return { text: 'a ' + spWord(p.sp) + ' pod waits' + (canPay(c.e, 0, c.s) ? '' : ' · ' + shortText(c.e, 0, c.s).replace('needs ', 'needs ').replace(' more', '')), act: 'pods', label: 'Look at the pods' }; }
+    return { text: aAn(spWord(p.sp)) + ' pod waits' + (canPay(c.e, 0, c.s) ? '' : ' · ' + shortText(c.e, 0, c.s).replace('needs ', 'needs ').replace(' more', '')), act: 'pods', label: 'Look at the pods' }; }
   const b = ST.mibis.find(bondOffered); if (b) return { text: b.name + ' could bond', act: 'hab', id: b.id, label: 'Visit ' + b.name };
   if (ST.inc) return { text: 'an embryo is growing', act: 'inc', label: 'Look at the incubator' };
   if (!hasWorld()) return { text: 'open the Companion page', act: null };
@@ -837,7 +838,7 @@ function buildMibi(sp, look, pose, fr, s) {
   const E = (x, y, rx, ry, c, o) => pb.ell(x * s, y * s, rx * s, ry * s, C[c], o ? Object.assign({}, o, o.sh ? { sh: o.sh.map(n => C[n]) } : {}, o.clipU ? { clip: (px, py) => o.clipU((px + .5) / s, (py + .5) / s) } : {}) : o);
   const Pp = (pts, c) => pb.poly(pts.map(([x, y]) => [x * s, y * s]), C[c]);
   const eye = (x, y, dark) => { if (pose === 'nap') { E(x, y + .6, 1.2, .35, dark); return; } E(x, y, 1.05, 1.3, dark); E(x - .35, y - .45, .4, .4, 'white'); };
-  if (sp === 0) { // hopper: long ears, round body, puff tail
+  if (sp === 0) { // Loika: long ears, round body, puff tail
     const k = SPECIES[0].col, ears = V(1), mk = V(0), gait = V(2);
     const base = { idle: -.32, alert: -.08, nap: -1.3, eat: -.4 }[pose] ?? -.32, nap = pose === 'nap';
     const by = nap ? 22.4 : 21, brx = nap ? 9.6 : 9, bry = nap ? 6.4 : 7.2;
@@ -857,7 +858,7 @@ function buildMibi(sp, look, pose, fr, s) {
     const ey = pose === 'eat' ? by - 2 : by - 4;
     eye(20, ey + 1.4, 'void'); E(22, ey + 4.5, .9, .5, 'pink'); E(24.4, ey + 2.5, .5, .5, 'pink');
     if (pose === 'eat') E(23.8, ey + 5.6, .9, fr ? .5 : .9, 'plumD');
-  } else if (sp === 1) { // glowtail: low body, tail ending in a glowing bulb
+  } else if (sp === 1) { // Tuikis: low body, tail ending in a glowing bulb
     const k = look[2] == null || look[2] < 0 ? NEUTRAL : GLOW_COL[V(2)], mk = V(0), crown = V(1), gait = V(3), nap = pose === 'nap';
     const up = pose === 'alert' ? -1 : nap ? 1 : 0, glide = gait === 1, brx = glide ? 9.8 : 8.5, bry = glide ? 4.4 : 5, bcy = nap ? 24 : 23;
     for (let t = 0; t <= 1.001; t += .06) { const x = (1 - t) ** 2 * 10 + 2 * (1 - t) * t * 2 + t * t * 4, y = (1 - t) ** 2 * 22 + 2 * (1 - t) * t * 22 + t * t * (nap ? 16 : 12); E(x, y, 1.8, 1.8, k.body); }
@@ -871,7 +872,7 @@ function buildMibi(sp, look, pose, fr, s) {
     E(23.5, 18 + up, 5.2, 4.7, k.body, { sh: [k.light, k.shade] });
     eye(25.8, 17.8 + up, k.dark); E(28.4, 19.6 + up, .55, .55, k.dark);
     if (glide) { E(11, 27.4, 2.1, .9, k.shade); E(21, 27.4, 2.1, .9, k.shade); } else { E(12, 27.6, 1.4, 1.2, k.shade); E(20, 27.6, 1.4, 1.2, k.shade); }
-  } else { // puffcap: round body under a cap
+  } else { // Untuva: round body under a cap
     const k = SPECIES[2].col, cc = look[2] == null || look[2] < 0 ? CAP_NEUTRAL : CAP_COL[V(2)], spots = V(0), capV = V(1), roll = V(3) === 1, nap = pose === 'nap';
     const dy = nap ? 1 : 0, big = pose === 'eat' && fr;
     E(16, 22 + dy, 7.6, 6.8, k.body, { sh: [k.light, k.shade] });

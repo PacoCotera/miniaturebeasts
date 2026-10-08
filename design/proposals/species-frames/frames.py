@@ -4,7 +4,9 @@
 Reads the catalogue and resolves every genome through the generator workbench's own
 resolver (v1/prototype/generator-workbench, catalogue6 / innate profile), so every
 locus id, allele, guard and "switched off" state below comes from the real code.
-Writes species-<id>.json beside this file and prints the counts.
+Writes species-<id>.json beside this file and prints the counts. The file names keep the
+earlier working ids (hopper, puffcap, glowtail); the owner-approved species names (Loika,
+Untuva, Tuikis) and clans (Lophessa, Kausida, Stilbera) are the `name` and `clan` fields.
 
     python3 design/proposals/species-frames/frames.py          # write + check
     python3 design/proposals/species-frames/frames.py --check  # check only
@@ -116,7 +118,7 @@ def h(allele):
 # Each open trait: (chapter, trait id, player name, loci, player looks, species allele
 # pools {locus: [alleles]} or None, shapeable override or None).
 HOPPER = dict(
-    id="hopper", name="Hopper", plural="hoppers", order=1,
+    id="hopper", name="Loika", plural="Loikas", clan="Lophessa", order=1,
     summary="The starter: Pip as in the approved art. Exactly the five open traits of the Pip proof.",
     plan={
         "development.axial-repeat": "single", "development.symmetry": "bilateral",
@@ -164,7 +166,7 @@ HOPPER = dict(
 )
 
 PUFFCAP = dict(
-    id="puffcap", name="Puffcap", plural="puffcaps", order=2,
+    id="puffcap", name="Untuva", plural="Untuvas", clan="Kausida", order=2,
     summary="A radial, capped plan: a round furred body, a face, three flaps for a cap, no legs. It waddles.",
     plan={
         "development.axial-repeat": "single", "development.symmetry": "radial",
@@ -206,7 +208,7 @@ PUFFCAP = dict(
         ("temperament", "curiosity", "Curiosity", ["cognition.exploration-tendency"], ["reserved", "between", "seeking"], None, None),
         ("temperament", "nerve", "Nerve", ["cognition.arousal-threshold"], ["jumpy", "between", "unflappable"], None, None),
     ],
-    sealed={"temperament": "a vybronic crystal, dug up where a puffcap partner sniffs out a buried pod"},
+    sealed={"temperament": "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod"},
     pod=dict(colourPair=["appearance.body-palette:coral", "appearance.body-palette:marigold"]),
     glyph=[".###.", "#####", "#####", ".#.#.", ".###."],
     pending=[
@@ -216,7 +218,7 @@ PUFFCAP = dict(
 )
 
 GLOWTAIL = dict(
-    id="glowtail", name="Glowtail", plural="glowtails", order=3,
+    id="glowtail", name="Tuikis", plural="Tuikis", clan="Stilbera", order=3,
     summary="A tailed, scaled burrower: a low two-part body, four short legs, a crest, a long tail that carries the glow.",
     plan={
         "development.axial-repeat": "chain", "development.symmetry": "bilateral",
@@ -275,12 +277,12 @@ GLOWTAIL = dict(
         ("temperament", "nerve", "Nerve", ["cognition.arousal-threshold"], ["jumpy", "between", "unflappable"], None, None),
     ],
     sealed={},
-    overrides={"claws": "breeding only: the claws are how a glowtail digs, a field ability, so they change like a doing"},
+    overrides={"claws": "breeding only: the claws are how a Tuikis digs, a field ability, so they change like a doing"},
     pod=dict(colourPair=["appearance.body-palette:lagoon", "appearance.body-palette:marigold"]),
     glyph=["..#..", ".###.", "..#..", "..#..", "#####"],
     pending=[
         {"trait": "glow", "chapter": "Glow (after Temperament)", "kind": "heritable-doing",
-         "why": "no emission locus yet; until one exists every glowtail glows gold at dusk as part of the frame"},
+         "why": "no emission locus yet; until one exists every Tuikis glows gold at dusk as part of the frame"},
         {"trait": "a glowing bulb at the tail tip", "why": "the axial tail tapers to a point; a tip bulb is not in the catalogue"},
     ],
 )
@@ -485,7 +487,7 @@ def build(sp, cat, defaults):
                "pending": sp["pending"]}
     return {
         "schema": SCHEMA,
-        "species": {"id": sp["id"], "name": sp["name"], "plural": sp["plural"], "order": sp["order"], "summary": sp["summary"]},
+        "species": {"id": sp["id"], "name": sp["name"], "plural": sp["plural"], "clan": sp["clan"], "order": sp["order"], "summary": sp["summary"]},
         "catalogue": {"id": cat["id"], "version": cat["version"], "foundationDigest": cat["digest"],
                       "pairs": len(loci), "drafts": len(not_yet["drafts"])},
         "glyph": g,

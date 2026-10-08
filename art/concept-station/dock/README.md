@@ -1,5 +1,7 @@
 # Station Dock and arrival: generated concept candidates
 
+> **Names.** The species this folder calls the hopper, the puffcap and the glowtail are now **Loika** (clan Lophessa), **Untuva** (Kausida) and **Tuikis** (Stilbera). Captions use the new names; file names, prompts and quoted briefs keep the earlier words.
+
 Everything in this folder is **generated concept art** for the Station's Dock and arrival moment, made in rounds against [`brief-dock.md`](brief-dock.md) and the style guide's Dock section ([design/style-guide/station-screens.md](../../../design/style-guide/station-screens.md)). Nothing is a build capture or an authored master, and nothing is accepted until the owner says so. Caption every use as "Concept art, generated". The arrival plays on the Home screen, so every candidate is judged against the approved Home candidate [`A-r3-a1`](../round3/A-r3-a1-1024x600.png): same chrome, modules, vivarium, light and type, one moment later.
 
 ![Contact sheet of all Dock candidates](contact-sheet.png)
@@ -55,7 +57,7 @@ Two routes to the same frame: a three-change edit of the round-1 near-pass, and 
 
 *Round 3: the rack-only edit (a no-op), then the three-change edit of composite D-C2, twice. Concept art, generated.*
 
-- **D-E-r3-a1**, kept and recommended: the edit held. The top bar reads "Companion docked · 2 crates", the ribbon "Expedition 4 home · 2 pods" sits as a tab over the vivarium's top bezel, Dot sleeps in the frosted nest as a smaller Pip with its leaves showing, the bottom line reads "✓ Look at the new pods · the room · arrival playing"; the vivarium, Pip, the glowtail, the puffcap and every module are the composite's pixels.
+- **D-E-r3-a1**, kept and recommended: the edit held. The top bar reads "Companion docked · 2 crates", the ribbon "Expedition 4 home · 2 pods" sits as a tab over the vivarium's top bezel, Dot sleeps in the frosted nest as a smaller Pip with its leaves showing, the bottom line reads "✓ Look at the new pods · the room · arrival playing"; the vivarium, Pip, the Tuikis, the Untuva and every module are the composite's pixels.
 - **D-E-r3-a2**, kept as runner-up: the same result with a slightly less clean Dot.
 
 ![Home beside Dock and arrival](round3/before-after-home-dock.png)
@@ -78,7 +80,7 @@ Checklist from the brief (section 7):
 - [x] 6. A still frame tells the story: crates in the lit bay, then the ribbon.
 - [x] 7. The Companion in the dock is the kit's Companion: stone shell, charcoal bumpers, portrait screen, cross pad, orange button, upright.
 - [ ] 8. Six wells, four filled: the rack shows four wells with three pods, plus two pods on the rail. Three edits could not change the count.
-- [ ] 9. Residents react: Dot sleeps in the nest as Pip's species; Pip, the glowtail and the puffcap still face the viewer, not the bay.
+- [ ] 9. Residents react: Dot sleeps in the nest as Pip's species; Pip, the Tuikis and the Untuva still face the viewer, not the bay.
 - [x] 10. The vivarium stays the only warm light; the bay's beam is cool.
 - [x] 11. Labels engraved and quiet; smooth type; chrome crisp.
 - [ ] 12. Strings spelled right and no others: all present and inside the trim, but a stray green drop icon follows "arrival playing"; flat screen, no bezel, fills the canvas.

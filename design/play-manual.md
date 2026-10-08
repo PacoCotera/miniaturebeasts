@@ -120,7 +120,7 @@ A place has four quarters. A quarter is **surveyed** when every tile in it is un
 
 ### Wait
 
-Wait lets one action pass. You find it on ✓ when you face nothing in a place, and in the menu (the menu stays open, so ✓ waits again). A pale band sweeps down the screen and the line tells you what changed: "The storm edges east · two hoppers wander", "Dew gathers in a cup", or "Nothing is moving here". Waiting is how you keep still for a settling creature, let a storm pass, or let an eater find your fruit. The menu (← key), top to bottom:
+Wait lets one action pass. You find it on ✓ when you face nothing in a place, and in the menu (the menu stays open, so ✓ waits again). A pale band sweeps down the screen and the line tells you what changed: "The storm edges east · two Loikas wander", "Dew gathers in a cup", or "Nothing is moving here". Waiting is how you keep still for a settling creature, let a storm pass, or let an eater find your fruit. The menu (← key), top to bottom:
 
 | Where | Menu |
 | --- | --- |
@@ -157,9 +157,9 @@ Your hold carries 2 pods at tier 1 and 3 at tier 2. A pod shows its species if y
 
 The sure way: **put the fruit down and back off** about 3 tiles. An eater comes within a few quiet actions and eats it. Offering from your hand works when the creature is curious, when a calming partner is near, or inside a fog bank.
 
-Who eats what: **hoppers** and **puffcaps** eat fruit; **glowtails** don't, but they settle when you keep still.
+Who eats what: **Loikas** and **Untuvas** eat fruit; **Tuikis** don't, but they settle when you keep still.
 
-Once you have identified a species, facing one tells you its diet ("Hopper · eats fruit"). A creature you have not identified reads "Unknown creature · watch what it does", and you cannot offer it anything until you know it.
+Once you have identified a species, facing one tells you its diet ("Loika · eats fruit"). A creature you have not identified reads "Unknown creature · watch what it does", and you cannot offer it anything until you know it.
 
 ### What a moment earns
 
@@ -167,7 +167,7 @@ When a creature does something **because of you** (eats your fruit, or settles b
 
 ### Shedding
 
-Creatures sometimes leave things behind. A **hopper** shaking itself dry after rain leaves a tuft of fur (+1 Essence). A **puffcap** after a full meal, a **glowtail** that feels safe or curls up out of the rain, or a hopper shaking dry may **shed a pod**.
+Creatures sometimes leave things behind. A **Loika** shaking itself dry after rain leaves a tuft of fur (+1 Essence). An **Untuva** after a full meal, a **Tuikis** that feels safe or curls up out of the rain, or a Loika shaking dry may **shed a pod**.
 
 ## 6. Weather
 
@@ -196,7 +196,7 @@ The exact odds are in the quick reference and on the Probe screen's legend.
 A fog bank is a soft, pale cloud that drifts over the map. Inside it:
 
 - creatures notice you later and creeping never startles them, so wary ones can be fed by hand;
-- you see only 4 tiles around you (6 with a glowtail partner);
+- you see only 4 tiles around you (6 with a Tuikis partner);
 - dew cups fill again every few actions: a good time for Essence;
 - no stray strikes; signs and the map sweep stop; Call reaches only 6 tiles.
 
@@ -252,7 +252,7 @@ This section follows the Station page as built. The next Station build reads a p
 
 The lamp on Home's bench rests the screen (the vivarium plays alone); any press wakes it and acts. The Station's four middle keys switch views and never spend: **Home** (the vivarium and the bench), **Research** (the pods), **Library** and **Habitat**. The pad moves a warm ring between things in the picture; ✓ does what the bottom line names, with its price; ← goes back.
 1. **Identify** a pod (1 Energy; your very first pod is free). Its shell turns clear and shows the species inside. A new species gets a "New species" stamp. Then its **trait windows** rise, frosted: one for each thing about this kind of mibi (its markings, its ears or crown, its colour, its gait).
-2. **Study** a window (2 Data; the first study of each species is free). The frost wipes away and shows that part of this pod's mibi. If the pod also carries a look that doesn't show, a **misty seed** sits on the sill with a ghost of it ("shows stripes · hides spots"). If it carries nothing else, a small solid base sits there instead ("through and through"). A window with two rings is passed on **only through families**. A window with shutters needs something first (the puffcap's colour opens with a tier 2 Probe). A window you studied stays open for good.
+2. **Study** a window (2 Data; the first study of each species is free). The frost wipes away and shows that part of this pod's mibi. If the pod also carries a look that doesn't show, a **misty seed** sits on the sill with a ghost of it ("shows stripes · hides spots"). If it carries nothing else, a small solid base sits there instead ("through and through"). A window with two rings is passed on **only through families**. A window with shutters needs something first (the Untuva's colour opens with a tier 2 Probe). A window you studied stays open for good.
 3. **Glints.** Once you have studied a window on one pod of a species, later pods of that species twinkle with a star on each window where they hold a look you haven't seen yet. No star means nothing new there.
 4. **Compare** (free): from the tray, ✓ on a second pod of the same species puts both side by side; windows studied on both that differ pulse.
 5. **Shape a founder** (Create). The new mibi shows large; frosted windows stay a surprise. On a studied window, ↑ ↓ choose among what **this pod** carries: as it is, the hidden look through and through, or the shown look through and through. A pod that shows a look through and through can't give another. Each change costs 2 Data.
@@ -296,16 +296,16 @@ Between expeditions the Companion shows the mibi with you, large: its name, stag
 
 ### Getting better and bonding
 
-- **Skill**: each expedition where your partner's ability really helped (a hopper's calm let a wary creature eat from your hand, a glowtail dug the burrow, a puffcap sniffed out a pod) gives it a **skill notch** when you Head home, three at most. The Library shows them.
+- **Skill**: each expedition where your partner's ability really helped (a Loika's calm let a wary creature eat from your hand, a Tuikis dug the burrow, an Untuva sniffed out a pod) gives it a **skill notch** when you Head home, three at most. The Library shows them.
 - **Bond**: after a mibi's first expedition or walk with you, its Habitat page offers a **bond**: ✓, then ✓ again. A small heart marks it. Bonding is a choice; nothing else depends on it yet.
 
 ### Partners and what they do
 
 | Species | Ability |
 | --- | --- |
-| **Glowtail** | Digs narrow burrows (the gate to the cave, and Deep ground expeditions). Glows: in a fog bank you see 6 tiles and Call keeps its full reach. |
-| **Hopper** | Calms wary creatures, so they take fruit from your hand. |
-| **Puffcap** | Sniffs out buried pods, and flinches just before a stray strike. |
+| **Tuikis** | Digs narrow burrows (the gate to the cave, and Deep ground expeditions). Glows: in a fog bank you see 6 tiles and Call keeps its full reach. |
+| **Loika** | Calms wary creatures, so they take fruit from your hand. |
+| **Untuva** | Sniffs out buried pods, and flinches just before a stray strike. |
 
 In a place your partner stands on a teal ring with its name above it. Call brings it to you; near the narrow burrow, a digger digs.
 
