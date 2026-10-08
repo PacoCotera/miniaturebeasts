@@ -322,6 +322,28 @@ def framemarks():
     save("frame-face-24x24", ring_img(teal, True), [856, 8, 24, 24], "the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring", "mibi-face")
     save("frame-face-away-24x24", ring_img(teal, True, 0.5), [856, 8, 24, 24], "the Companion away: the mibi out with it, the face full on a dimmed ring", "mibi-face")
     save("frame-face-empty-24x24", ring_img(teal, False), [856, 8, 24, 24], "no mibi with you: an empty teal ring", "procedural, supersampled 8x")
+def framecaps():
+    """The bottom line's key caps, 16x16, art layer (station.json colours only): the confirm tick (orange), the same tick in mist for the unavailable state
+    (its own slice), the back arrow (stone). A flat key: ink keyline, panel face, a 1 px bevel lit edge top and left. Glyph pixels typed by hand: x = glyph, . = face."""
+    tick = ["............", "............", "..........xx", ".........xx.", "........xx..", "xx.....xx...", ".xx...xx....", "..xx.xx.....", "...xxx......", "....x.......", "............", "............"]
+    back = ["............", "............", "....x.......", "...xx.......", "..xxx.......", ".xxxxxxxxxx.", ".xxxxxxxxxx.", "..xxx.......", "...xx.......", "....x.......", "............", "............"]
+    pal = {"i": (0x1a, 0x17, 0x25, 255), "p": (0x2a, 0x2e, 0x38, 255), "l": (0x5a, 0x66, 0x72, 255), ".": (0, 0, 0, 0)}
+    def cap(glyph, col):
+        im = Image.new("RGBA", (16, 16), pal["."])
+        for y in range(16):
+            for x in range(16):
+                if (x in (0, 15)) and (y in (0, 15)): continue
+                if x in (0, 15) or y in (0, 15): c = pal["i"]
+                elif x == 1 or y == 1: c = pal["l"]
+                else: c = pal["p"]
+                im.putpixel((x, y), c)
+        for y, r in enumerate(glyph):
+            for x, ch in enumerate(r):
+                if ch == "x": im.putpixel((x + 2, y + 2), col + (255,))
+        return im
+    save("frame-cap-confirm-16", cap(tick, (0xf2, 0x67, 0x1b)), [16, 574, 16, 16], "the bottom line's confirm key cap: a flat key, an orange tick; at (16,574)", "typed by hand")
+    save("frame-cap-confirm-16-dim", cap(tick, (0x8d, 0x8a, 0xa6)), [16, 574, 16, 16], "the confirm key cap for the unavailable state: the tick in mist (its own slice)", "typed by hand")
+    save("frame-cap-back-16", cap(back, (0x5d, 0x59, 0x74)), [None, 574, 16, 16], "the bottom line's back key cap: a flat key, a stone arrow; before the Back word", "typed by hand")
 def pagemark():
     """page-mark-new-10: the 'new to the field guide' mark as the layout specifies it: a flat engraved bone dot, 10x10, a 1 px lit edge (white, upper left) and an ink
     keyline, art layer (station.json colours only), no specular. Pixel data typed by hand: i = ink, b = bone, w = white, . = empty."""
@@ -522,7 +544,7 @@ def well_pinholes():
     save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 40, 48], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
     save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 40, 48], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "tabfills", "newmark", "pagemark", "framemarks", "plates", "bars", "stampcase", "stampcase152", "stampfront", "wellrings", "pods", "well_pinholes"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "tabfills", "newmark", "pagemark", "framemarks", "framecaps", "plates", "bars", "stampcase", "stampcase152", "stampfront", "wellrings", "pods", "well_pinholes"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)

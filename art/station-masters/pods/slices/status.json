@@ -1258,5 +1258,20 @@
   "status": "new",
   "signed_in": null,
   "note": "the new-to-the-field-guide mark as the layout specifies it (replaces page-new-mark-12x12); awaiting verdict"
+ },
+ "frame-cap-confirm-16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-cap-confirm-16-dim": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-cap-back-16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
  }
 }

@@ -76,10 +76,10 @@ def compose(traits, rail):
     put("frame-companion-outline-16x24", 816, 8); put("frame-lamp-stone-8x8", 836, 16); put("frame-face-away-24x24", 856, 8)
     tw5 = d.textlength("5", font=f16); put("frame-sun-16x16", int(1008 - tw5 - 4 - 16), 12); text((1008, 20), "5", f16, CREAM, "rm")
     # the bottom line: the one action, the context, the notice
-    d.rounded_rectangle([16, 574, 31, 589], 3, fill=ORANGE); d.line([(20, 582), (23, 585), (28, 578)], fill=(40, 20, 10, 255), width=2); text((36, 581), "Read Face", f16, ORANGE, "lm")
+    put('frame-cap-confirm-16', 16, 574); text((36, 581), "Read Face", f16, ORANGE, "lm")
     vw = d.textlength("Read Face", font=f16); gx = int(36 + vw + 24)
     d.polygon([(gx + 4, 575), (gx + 11, 582), (gx + 4, 589), (gx - 3, 582)], fill=(91, 185, 243, 255)); text((gx + 18, 581), "2", f16, CREAM, "lm")
-    hx = gx + 18 + 10 + 24; d.rounded_rectangle([hx, 574, hx + 15, 589], 3, fill=STONE); d.line([(hx + 11, 582), (hx + 4, 582)], fill=(220, 220, 235, 255), width=2); d.line([(hx + 7, 579), (hx + 4, 582), (hx + 7, 585)], fill=(220, 220, 235, 255), width=2); text((hx + 20, 581), "Home", f16, FOG, "lm")
+    hx = gx + 18 + 10 + 24; put('frame-cap-back-16', hx, 574); text((hx + 20, 581), "Home", f16, FOG, "lm")
     text((512, 581), "Loika, Face", f16, MIST, "mm")
     nw = d.textlength("something new in Face", font=f16); put("frame-lamp-amber-12x12", int(1008 - nw - 8 - 12), 575); text((1008, 581), "something new in Face", f16, AMBER, "rm")
     for xx in (396, 628): d.line([(xx, 571), (xx, 591)], fill=HAIR)

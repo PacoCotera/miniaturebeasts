@@ -4184,5 +4184,59 @@
   "status": "new",
   "signed_in": null,
   "status_note": "the new-to-the-field-guide mark as the layout specifies it (replaces page-new-mark-12x12); awaiting verdict"
+ },
+ "frame-cap-confirm-16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": [
+   16,
+   574,
+   16,
+   16
+  ],
+  "src": "typed by hand",
+  "made": "the bottom line's confirm key cap: a flat key, an orange tick; at (16,574)",
+  "sha256": "ebb81bc6761df9c710ea16659552cc0c164dab68d36669b942467770fd44d9bf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-cap-confirm-16-dim": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": [
+   16,
+   574,
+   16,
+   16
+  ],
+  "src": "typed by hand",
+  "made": "the confirm key cap for the unavailable state: the tick in mist (its own slice)",
+  "sha256": "bbc3f2c9eb7a262b5f4bb9609ee392c7d2d9eccad38d9fce9b8dc0384681a639",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "frame-cap-back-16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": [
+   null,
+   574,
+   16,
+   16
+  ],
+  "src": "typed by hand",
+  "made": "the bottom line's back key cap: a flat key, a stone arrow; before the Back word",
+  "sha256": "d518826996a3dda961bb132ef873457667152327c3cbba1c77dce4541a722d20",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
  }
 }

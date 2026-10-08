@@ -27,6 +27,9 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
 | `frame-bottom-line-1024x38` | 1024×38 | (0, 562, 1024, 38) | signed (pass 1): excluded from placing (the frame redesign) | the bar flipped (rule on its top edge), 1024x38 |
+| `frame-cap-back-16` | 16×16 | (·, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's back key cap: a flat key, a stone arrow; before the Back word |
+| `frame-cap-confirm-16` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's confirm key cap: a flat key, an orange tick; at (16,574) |
+| `frame-cap-confirm-16-dim` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the confirm key cap for the unavailable state: the tick in mist (its own slice) |
 | `frame-companion-outline-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, outline (away); painted large and reduced |
 | `frame-companion-solid-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, solid (docked); painted large and reduced |
 | `frame-face-24x24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring |
@@ -330,6 +333,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 9 - the bottom line's key caps
+
+`frame-cap-confirm-16`, `frame-cap-confirm-16-dim` (the tick in mist, its own slice) and `frame-cap-back-16`: 16x16 art-layer key caps, station.json colours only, a flat key with an ink keyline, a panel face and a 1 px bevel edge top and left; the tick orange, the arrow stone (frame.json). Glyph pixels typed by hand (`framecaps` in `tools/build.py`). The composites now place them in place of the stand-ins.
+
 
 ## Pass 8: the d767daa verdict, the frame's marks and the frame language in the composite (2026-10-08)
 

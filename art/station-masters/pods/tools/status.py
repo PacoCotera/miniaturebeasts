@@ -33,7 +33,7 @@ for n in m:
     elif n == "room-stamp-case": sign(n, "withdrawn", None, "the old 176x328 size; the case is now 152x152")
     elif n == "room-stamp-case-152x152": sign(n, "signed", "pass 8 (d767daa verdict)", "with a condition: the front glass over the label (room-stamp-case-152x152-front)")
     elif n == "room-stamp-case-152x152-front": sign(n, "new", None, "the front glass over the label; awaiting verdict")
-    elif re.match(r"frame-(room|companion|sun|lamp|face)-", n): sign(n, "new", None, "a mark of the Station frame (design-station-frame); awaiting verdict")
+    elif re.match(r"frame-(room|companion|sun|lamp|face|cap)-", n): sign(n, "new", None, "a mark of the Station frame (design-station-frame); awaiting verdict")
     elif n == "page-mark-new-10": sign(n, "new", None, "the new-to-the-field-guide mark as the layout specifies it (replaces page-new-mark-12x12); awaiting verdict")
     elif n in ("ring-column-112x522", "ring-hatch-80x56", "page-pane-256x440"): sign(n, "signed", "pass 8 (d767daa verdict)", "re-cut for design-pods-relayout 29b6dc9")
     elif n == "ring-well-empty": sign(n, "withdrawn", None, "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))")
