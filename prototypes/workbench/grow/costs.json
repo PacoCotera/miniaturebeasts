@@ -28,12 +28,12 @@
    "retries": 20
   }
  },
- "spentAllVersionsUSD": 26.508,
- "calls": 57,
- "callsOk": 56,
- "callUSDMean": 0.0963,
- "callSecondsMean": 12.4,
- "spentUSD": 5.391,
+ "spentAllVersionsUSD": 52.041,
+ "calls": 223,
+ "callsOk": 221,
+ "callUSDMean": 0.1399,
+ "callSecondsMean": 17.9,
+ "spentUSD": 30.924,
  "individuals": 0,
  "bySpecies": {}
 }
