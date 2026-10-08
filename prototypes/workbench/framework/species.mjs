@@ -7,6 +7,7 @@
 // species' pools. The three authored frames (the files hopper, puffcap and glowtail in frames.py, here S01, S02
 // and S03: Loika, Untuva and Tuikis) keep their open traits and fixed values.
 import { CATALOGUE, LOCI, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds } from "./catalogue.mjs";
+import { poolBound } from "./envelope.mjs";
 import { planFacts } from "./plans.mjs";
 import { carried, ownerOn, isDoing, isPartSwitch, SWITCH_TARGETS } from "./guards.mjs";
 import { resolveIndividual } from "./resolve.mjs";
@@ -169,7 +170,7 @@ export function buildFrame(spec, options = {}) {
   const pools = {};
   for (const t of traits) for (const id of t.loci) {
     const all = alleleIds(id);
-    pools[id] = t.pool?.[id] ?? (id === "appearance.body-palette" ? colourPool : id === "appearance.underside-palette" ? [fixed["appearance.underside-palette"], ...shuffle(r, SECONDS.filter((p) => p !== fixed["appearance.underside-palette"])).slice(0, 2)] : all);
+    pools[id] = t.pool?.[id] ?? (id === "appearance.body-palette" ? colourPool : id === "appearance.underside-palette" ? [fixed["appearance.underside-palette"], ...shuffle(r, SECONDS.filter((p) => p !== fixed["appearance.underside-palette"])).slice(0, 2)] : poolBound(id, all, { clan: spec.clan, limbSet: plan.limbSet })); // E8
     if (!pools[id].every((a) => all.includes(a))) throw new Error(`${spec.id}: pool of ${id} is not in the catalogue`);
   }
   const openIds = Object.keys(pools);
@@ -356,6 +357,7 @@ export function checkGenome(frame, genome) {
 
 export function buildIndividual(frame, genome) {
   const resolved = resolveIndividual(frame, genome);
+  resolved.species = frame.species.id; // the kind, for the envelope's caps by kind
   const scene = buildBody(resolved);
   const validation = validateBody(scene);
   return { resolved, scene, validation };

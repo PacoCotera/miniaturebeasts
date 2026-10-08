@@ -799,26 +799,17 @@
    "alleles": [
     "small",
     "medium",
-    "large",
-    "tiny"
+    "large"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
-    "between small and tiny",
     "medium",
     "between medium and large",
-    "between medium and tiny",
-    "large",
-    "between large and tiny",
-    "tiny"
+    "large"
    ],
-   "guard": "rig: head.rxOverCoreRx",
-   "typical": [
-    "medium",
-    "tiny"
-   ]
+   "guard": "rig: head.rxOverCoreRx"
   },
   {
    "id": "growth.head-width-ratio",
@@ -833,22 +824,14 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high",
-    "tiny"
+    "high"
    ],
    "looks": [
     "low",
     "between low and high",
-    "between low and tiny",
-    "high",
-    "between high and tiny",
-    "tiny"
+    "high"
    ],
-   "guard": "rig: head.ryOverCoreRx",
-   "typical": [
-    "high",
-    "tiny"
-   ]
+   "guard": "rig: head.ryOverCoreRx"
   },
   {
    "id": "growth.head-depth-ratio",
@@ -863,16 +846,12 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high",
-    "tiny"
+    "high"
    ],
    "looks": [
     "low",
     "between low and high",
-    "between low and tiny",
-    "high",
-    "between high and tiny",
-    "tiny"
+    "high"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
@@ -1034,14 +1013,10 @@
    "trait": "legs",
    "shapeable": true,
    "alleles": [
-    "fine",
     "slender",
     "stout"
    ],
    "looks": [
-    "fine",
-    "between fine and slender",
-    "between fine and stout",
     "slender",
     "between slender and stout",
     "stout"
@@ -1979,7 +1954,7 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 108,
+  "fieldGuideLooks": 95,
   "stampBitsPerCopy": 41
  },
  "notYet": {
@@ -2073,12 +2048,12 @@
      "low"
     ],
     "growth.head-length-ratio": [
-     "medium",
-     "tiny"
+     "small",
+     "large"
     ],
     "growth.head-width-ratio": [
-     "high",
-     "tiny"
+     "low",
+     "high"
     ],
     "growth.head-depth-ratio": [
      "high",
@@ -2209,14 +2184,14 @@
   "brief": "Azkon: 1 body region (B1), a head, a snout, 2 eyes, two ears, 4 legs; fur; plantigrade, fused head.",
   "bounds": {
    "min": [
-    -1.2988894083595108,
-    -0.6652607732484273,
+    -1.5877079454280723,
+    -0.6033435732484271,
     0
    ],
    "max": [
     0.8309748325,
-    0.6652607732484273,
-    1.8976169085450123
+    0.6033435732484271,
+    1.907556195388095
    ]
   },
   "counts": {
@@ -2251,7 +2226,6 @@
    "long"
   ],
   "growth.support-radius-ratio": [
-   "fine",
    "slender",
    "stout"
   ],
@@ -2299,18 +2273,15 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large",
-   "tiny"
+   "large"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high",
-   "tiny"
+   "high"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high",
-   "tiny"
+   "high"
   ],
   "growth.head-lift-ratio": [
    "low",

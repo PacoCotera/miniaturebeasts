@@ -826,20 +826,15 @@
    "alleles": [
     "small",
     "medium",
-    "large",
-    "tiny"
+    "large"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
-    "between small and tiny",
     "medium",
     "between medium and large",
-    "between medium and tiny",
-    "large",
-    "between large and tiny",
-    "tiny"
+    "large"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "typical": [
@@ -860,16 +855,12 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high",
-    "tiny"
+    "high"
    ],
    "looks": [
     "low",
     "between low and high",
-    "between low and tiny",
-    "high",
-    "between high and tiny",
-    "tiny"
+    "high"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "typical": [
@@ -890,16 +881,12 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high",
-    "tiny"
+    "high"
    ],
    "looks": [
     "low",
     "between low and high",
-    "between low and tiny",
-    "high",
-    "between high and tiny",
-    "tiny"
+    "high"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
@@ -2097,7 +2084,7 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 92,
+  "fieldGuideLooks": 82,
   "stampBitsPerCopy": 34
  },
  "notYet": {
@@ -2367,13 +2354,13 @@
   "bounds": {
    "min": [
     -1.2516628231680549,
-    -0.5851565335053606,
-    -0.02462399999999998
+    -0.5021676324571378,
+    -0.04255999999999993
    ],
    "max": [
     1.1410474943527473,
-    0.5851565335053606,
-    3.336374009583585
+    0.5021676324571379,
+    3.3156044557167075
    ]
   },
   "counts": {
@@ -2424,18 +2411,15 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large",
-   "tiny"
+   "large"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high",
-   "tiny"
+   "high"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high",
-   "tiny"
+   "high"
   ],
   "growth.head-lift-ratio": [
    "low",
