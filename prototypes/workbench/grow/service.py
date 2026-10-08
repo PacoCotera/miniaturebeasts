@@ -487,6 +487,50 @@ def crisp(path):
     return png_bytes(pad_square(Image.open(path).convert("RGB")))
 
 
+PART_WORDS = {"region-0": "the body", "head": "the head", "muzzle": "the muzzle", "beak": "the beak", "neck": "the neck", "crown": "the crest", "eye": "the eyes", "antenna": "the antennae", "flap": "the wings", "tail": "the tail", "leg-0": "the front legs", "leg-1": "the hind legs"}
+SLOT_WORDS = {"body": "the body colour", "second": "the second colour", "belly": "the belly colour", "leaf": "the leaf colour", "eyeRim": "the eye ring", "pupil": "the pupil"}
+
+
+def part_word(name, legend):
+    legs = [p["part"] for p in legend["parts"] if p["part"].startswith("leg-")]
+    if name.startswith("leg-") and len(legs) == 3: return {"leg-0": "the front legs", "leg-1": "the middle legs", "leg-2": "the hind legs"}[name]
+    if name.startswith("region-") and name != "region-0": return f"body segment {int(name.split('-')[1]) + 1}"
+    return PART_WORDS.get(name, f"the {name}")
+
+
+def colour_placement(legend, ctrl_dir, view="portrait", min_share=0.01):
+    """The colour placement line for this individual, from its own colour key: for each slot the parts it
+    covers (the slot map crossed with the part map, cells of at least `min_share` of the body), with its
+    pigment, and a note where a coat marking puts the second colour on the body. It replaces the species
+    notes' fixed "Colour placement:" line, so the words and the key agree for every individual and every
+    cell the slot check gates is named."""
+    idx = os.path.join(ctrl_dir, f"index.{view}.large.png"); slm = os.path.join(ctrl_dir, f"slots.{view}.large.png")
+    parts = {p["part"]: tuple(p["flat"]) for p in legend["parts"]}; pmasks = colour_masks(idx, parts)
+    body = sum(count(m) for m in pmasks.values()) or 1
+    flats = {s["slot"]: tuple(s["flat"]) for s in legend["slots"]}; smasks = colour_masks(slm, flats)
+    order = [p["part"] for p in legend["parts"]]; out = []
+    for s in legend["slots"]:
+        m = smasks.get(s["slot"])
+        if m is None or count(m) < min_share * body: continue
+        on = []
+        for pname in order:
+            cell = Image.new("1", m.size, 0); cell.paste(m, mask=pmasks[pname].convert("L"))
+            if count(cell) >= min_share * body: on.append(pname)
+        if not on: continue
+        names = [part_word(p, legend) for p in on]
+        marking = s["slot"] == "second" and any(p.startswith("region-") for p in on) and "coat" in (legend.get("markingFields") or [])
+        out.append(f"{SLOT_WORDS.get(s['slot'], 'the ' + s['slot'] + ' colour')} {s['pigments'][0]} on {', '.join(names[:-1]) + ' and ' + names[-1] if len(names) > 1 else names[0]}" + (" (its coat marking: the patches or bands the key shows, there and nowhere else)" if marking else ""))
+    return "Colour placement, this individual's own, exactly as the colour key shows it: " + "; ".join(out) + "."
+
+
+def species_notes_for(legend, ctrl_dir, species_words):
+    """The species notes with their fixed "Colour placement:" line replaced by this individual's own."""
+    line = colour_placement(legend, ctrl_dir)
+    lines = species_words.split("\n") if species_words else []
+    if any(l.startswith("Colour placement:") for l in lines): return "\n".join(line if l.startswith("Colour placement:") else l for l in lines)
+    return "\n".join(lines[:1] + [line] + lines[1:]) if lines else line
+
+
 def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
     """Variant B for one view on the service's prompt set: step 1 draws the HiBit drawing from the part map
     and the colour key with the set's step 1 block, the species notes and the description (the loader's plan
@@ -495,7 +539,7 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
     the house rendering). Step 2's checks are logged, not gated. Returns (view record, painted master or None)."""
     c = os.path.join(d0, "controls"); vrec = {"status": None, "attempts": [], "steps": []}
     common = {"controlVariant": "twostep", "species": legend["species"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"], "promptSet": os.path.basename(PROMPT_SET)}
-    pset = prompt_set(); species_words = pset["species"](legend["species"])
+    pset = prompt_set(); species_words = species_notes_for(legend, c, pset["species"](legend["species"]))
     description = with_plan_lines(legend, pset["template"].replace("{description}", legend["description"]["text"]))
     reasons = None; drawing = None
     for attempt in (1, 2):
@@ -872,19 +916,71 @@ def cmd_report(a):
         cost["secondsPerIndividualMean"] = round(sum(m["seconds"] for _, m in mans) / len(mans), 1)
         cost["usdPerMibiThreeStages"] = round(cost["usdPerIndividualMean"] * 3, 3)
         cost["usdPerKitYear40"] = round(cost["usdPerMibiThreeStages"] * 40, 2)
-        cost["retries"] = sum(1 for _, m in mans for v in VIEWS for at in m["views"][v]["attempts"][1:])
-        cost["plainServed"] = sum(1 for _, m in mans for v in VIEWS if m["views"][v]["status"] == "plain")
-        cost["firstAttemptPassRate"] = round(sum(1 for _, m in mans for v in VIEWS if m["views"][v]["attempts"] and (m["views"][v]["attempts"][0].get("checks") or {}).get("passed")) / (len(mans) * len(VIEWS)), 3)
+        # the views a run painted (portrait only since v5); a step 1 retry is one attempt with step 1, served plain is a view without a painting
+        vw = lambda m: list(m["views"])
+        s1 = lambda vr: [at for at in vr["attempts"] if at.get("step", 1) == 1]
+        n_views = sum(len(vw(m)) for _, m in mans)
+        cost["views"] = sorted({v for _, m in mans for v in vw(m)})
+        cost["retries"] = sum(max(0, len(s1(m["views"][v])) - 1) for _, m in mans for v in vw(m))
+        cost["plainServed"] = sum(1 for _, m in mans for v in vw(m) if m["views"][v]["status"] == "plain")
+        cost["firstAttemptPassRate"] = round(sum(1 for _, m in mans for v in vw(m) if s1(m["views"][v]) and (s1(m["views"][v])[0].get("checks") or {}).get("passed")) / n_views, 3) if n_views else None
+        cost["paintedRate"] = round(sum(1 for _, m in mans for v in vw(m) if m["views"][v]["status"] == "painted") / n_views, 3) if n_views else None
         for sp in sorted({m["species"] for _, m in mans}):
             ms = [m for _, m in mans if m["species"] == sp]
             cost["bySpecies"][sp] = {"individuals": len(ms), "calls": sum(m["calls"] for m in ms), "usdPerIndividual": round(sum(m["costUSD"] for m in ms) / len(ms), 4),
-                                     "plainServed": sum(1 for m in ms for v in VIEWS if m["views"][v]["status"] == "plain"), "retries": sum(len(m["views"][v]["attempts"]) - 1 for m in ms for v in VIEWS)}
+                                     "plainServed": sum(1 for m in ms for v in vw(m) if m["views"][v]["status"] == "plain"), "retries": sum(max(0, len(s1(m["views"][v])) - 1) for m in ms for v in vw(m)),
+                                     "firstAttemptPassRate": round(sum(1 for m in ms for v in vw(m) if s1(m["views"][v]) and (s1(m["views"][v])[0].get("checks") or {}).get("passed")) / sum(len(vw(m)) for m in ms), 3)}
     json.dump(cost, open(os.path.join(HERE, "costs.json"), "w"), indent=1); open(os.path.join(HERE, "costs.json"), "a").write("\n")
     print(json.dumps(cost, indent=1))
+    if PROMPT_VERSION >= 5:
+        if mans: sheet_validation(mans, cost)
+        return
     if mans: sheets(mans, cost)
     if PROMPT_VERSION >= 4:
         sheet_loika(cost)
         for sp in ("S01", "S09", "S12"): sheet_extremes(sp)
+
+
+def sheet_validation(mans, cost):
+    """The validation run on the service's prompt set: one sheet per species, the accepted Pip in the first row
+    (the bar), then the type specimen and the individuals: the control (the shaded pass, portrait, framed by the
+    prompt's rule), step 1's drawing, step 2's painting, the derived Companion and token, with each one's
+    status, calls, cost and checks. sheets/validation-<species>.png."""
+    os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
+    cols = [("control: shaded pass, portrait (framed by the prompt's rule)", 300), ("step 1: the HiBit drawing (gated, one named retry)", 300), ("step 2: the painting (checks logged)", 300), ("Companion 280x300, derived", 280), ("token 48 at 1x and 3x, derived", 200)]
+    gap = 12; rowh = 310 + 44; ink = (40, 40, 50)
+    for sp in sorted({m["species"] for _, m in mans}):
+        rows = [(d, m) for d, m in mans if m["species"] == sp]
+        rows.sort(key=lambda dm: (dm[1]["level"] != "species", dm[1]["genomeDigest"]))
+        W = gap + sum(w + gap for _, w in cols) + 40; H = 70 + (len(rows) + 1) * rowh
+        sheet = Image.new("RGB", (W, H), (255, 255, 255)); draw = ImageDraw.Draw(sheet)
+        bs = cost["bySpecies"].get(sp, {})
+        draw.text((gap, 8), f"{sp} {rows[0][1]['name']}: the validation run on prompt set {os.path.basename(PROMPT_SET)} (prompt v{cost['promptVersion']}), {cost['model']}, variant B, portrait, device size at 1x. Row 1: the accepted Pip, the bar. Then the type specimen and the individuals. {bs.get('calls')} calls, ${bs.get('usdPerIndividual', 0) or 0:.3f} a mibi, step 1 first-attempt pass {bs.get('firstAttemptPassRate')}, {bs.get('retries')} retries, {bs.get('plainServed')} served plain.", fill=ink)
+        x = gap
+        for name, w in cols: draw.text((x, 26), name, fill=ink); x += w + gap
+        y = 44
+        sheet.paste(flat_rgb(STYLE_REF), (gap + 2 * (300 + gap), y)); sheet.paste(flat_rgb(os.path.join(REPO, "art/miniature-lives/assets/hibit-plain-280x300.png")), (gap + 3 * (300 + gap), y))
+        draw.text((gap, y + 312), "the accepted Pip: rich treatment 300x310 (Station) and HiBit 280x300 (Companion); art/miniature-lives, accepted appearance reference", fill=ink)
+        for r, (d, m) in enumerate(rows):
+            y = 44 + (r + 1) * rowh; x = gap
+            def put(path, zoom=1):
+                nonlocal x
+                if os.path.exists(path):
+                    im = Image.open(path).convert("RGB")
+                    if zoom > 1: im = im.resize((im.width * zoom, im.height * zoom), Image.NEAREST)
+                    sheet.paste(im, (x, y))
+            put(os.path.join(d, "controls", "shaded.portrait.station.png")); x += 300 + gap
+            put(os.path.join(d, "step1-portrait-300x310.png")); x += 300 + gap
+            put(os.path.join(d, "station-portrait-300x310.png")); x += 300 + gap
+            put(os.path.join(d, "companion-280x300.png")); x += 280 + gap
+            x0 = x; put(os.path.join(d, "token-48.png")); x = x0 + 56; put(os.path.join(d, "token-48.png"), 3)
+            vr = m["views"]["portrait"]; a1 = [a for a in vr["attempts"] if a.get("step") == 1]; a2 = [a for a in vr["attempts"] if a.get("step") == 2]
+            c1 = (a1[-1].get("checks") or {}) if a1 else {}; c2 = (a2[-1].get("checks") or {}) if a2 else {}
+            pm = lambda c: min(v["span"] if isinstance(v, dict) else v for v in c["parts"].values()) if c.get("parts") else "-"
+            draw.text((gap, y + 312), f"{m['genomeDigest']}  {'type specimen' if m['level'] == 'species' else 'individual'}  sha256 {m['genomeSha256'][:12]}   {vr['status']}, {len(vr['attempts'])} calls, ${m['costUSD']:.3f}, {m['seconds']} s   |   step 1 ({len(a1)} tr{'y' if len(a1) == 1 else 'ies'}): outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {pm(c1)}, slots {c1.get('slotAgreement', '-')}" + (f"   |   step 2 (not gated): outside {c2.get('outside', '-')}, missing {c2.get('missing', '-')}, parts min {pm(c2)}, slots {c2.get('slotAgreement', '-')}" if c2 else ""), fill=ink)
+            if vr["status"] == "plain": draw.text((gap + 2 * 312, y + 326), "served plain: step 1 rejected twice", fill=(170, 40, 40))
+            if a1 and a1[-1].get("checks") and a1[-1]["checks"].get("reasons"): draw.text((gap, y + 326), "last step 1 reasons: " + "; ".join(a1[-1]["checks"]["reasons"])[:230], fill=(120, 60, 60))
+        sheet.save(os.path.join(HERE, "sheets", f"validation-{sp}.png")); print("sheet validation", sp, sheet.size)
 
 
 def sheet_loika(cost):

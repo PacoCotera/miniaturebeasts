@@ -82216,6 +82216,646 @@
     "passed": false,
     "gated": false
    }
+  },
+  {
+   "id": "65510295-a54b-433b-9f16-9a89604b553a",
+   "service": "gemini",
+   "model": "gemini-3-pro-image",
+   "promptVersion": 5,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-45ff1025",
+   "genomeSha256": "f7a2d788e5827862dad88cc4cf68708f900a69bf626cddd3ed46a8944df26686",
+   "promptSet": "v8",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "artDirection1": "Image 1 is the part map: structure, proportion and placement only, never the look. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light; no markings it does not show.\n\nDraw HiBit pixel art on a 280\u00d7300 grid in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: per colour a lit tone, two shadow steps, one specular cluster on the highest lit form; occlusion where parts touch.\n\nContour: no outline of any colour; edges read by value alone.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere broad smooth clusters, never texture noise.\n\nFinish: a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm.\n\nFraming: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nKeep every part as Image 1 places it, facing viewer-left. Invent nothing.\n\nNot: dither, panels, vignettes, scene, text.",
+    "species": "Species notes: the Loika, a round frog-hare. Only what differs from the house rendering.\nColour placement: charcoal on the body, the head and the upper face; cream on the belly, the muzzle, the lower face and the legs; the crest leaves are green.\nEyes: the house eye, with an orange iris, inside the cream ring.\nMaterial: smooth skin, matte like suede, no hairs. Its touches: a soft sheen across the back and the crown; the cream belly and muzzle a shade warmer where the light reaches; a soft midrib on each leaf.\nVolume: the body is one round mass like a ripe fruit, its back and crown the highest lit form; the head is fused to it with no neck.\nParts: the muzzle is a soft, full-cheeked cream pad that blends into the lower face, with a tiny curved smile; never a bill or a beak. The crest is three broad leaves sprouting together from the crown and fanning outward; leaves, not ears. The four legs are short, plump and padded, ending in rounded feet with small toe bumps.\nPosture: it sits square and low on all four feet, its weight in its haunches, its head up and a little forward.\nCharacter: gentle and curious, a little shy; a pet you want to pick up.",
+    "description": "This creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+    "planLines": [],
+    "imageOrder": [
+     "index",
+     "key"
+    ]
+   },
+   "reasonsGiven": null,
+   "prompt": "Image 1 is the part map: structure, proportion and placement only, never the look. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light; no markings it does not show.\n\nDraw HiBit pixel art on a 280\u00d7300 grid in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: per colour a lit tone, two shadow steps, one specular cluster on the highest lit form; occlusion where parts touch.\n\nContour: no outline of any colour; edges read by value alone.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere broad smooth clusters, never texture noise.\n\nFinish: a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm.\n\nFraming: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nKeep every part as Image 1 places it, facing viewer-left. Invent nothing.\n\nNot: dither, panels, vignettes, scene, text.\n\nSpecies notes: the Loika, a round frog-hare. Only what differs from the house rendering.\nColour placement: charcoal on the body, the head and the upper face; cream on the belly, the muzzle, the lower face and the legs; the crest leaves are green.\nEyes: the house eye, with an orange iris, inside the cream ring.\nMaterial: smooth skin, matte like suede, no hairs. Its touches: a soft sheen across the back and the crown; the cream belly and muzzle a shade warmer where the light reaches; a soft midrib on each leaf.\nVolume: the body is one round mass like a ripe fruit, its back and crown the highest lit form; the head is fused to it with no neck.\nParts: the muzzle is a soft, full-cheeked cream pad that blends into the lower face, with a tiny curved smile; never a bill or a beak. The crest is three broad leaves sprouting together from the crown and fanning outward; leaves, not ears. The four legs are short, plump and padded, ending in rounded feet with small toe bumps.\nPosture: it sits square and low on all four feet, its weight in its haunches, its head up and a little forward.\nCharacter: gentle and curious, a little shy; a pet you want to pick up.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+   "images": [
+    {
+     "name": "index.portrait.large.png",
+     "sha256": "e3c982388419054844cab1f94cf3f99d39787378ae9108bf54c58ed45e2019d3",
+     "bytes": 6403
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "a6a5d951bdc6b65dee5a6209de579b9d98e276da001390d65f4b1dbaa9ad88a3",
+     "bytes": 6595
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T13:32:28Z",
+   "seconds": 19.6,
+   "httpStatus": 200,
+   "responseId": "bJvHap_jKt-X_uMPwJ3oqQQ",
+   "modelVersion": "gemini-3-pro-image",
+   "usage": {
+    "promptTokenCount": 1375,
+    "candidatesTokenCount": 1538,
+    "totalTokenCount": 3135,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 859
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "thoughtsTokenCount": 222,
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.18731,
+   "output": {
+    "file": "portrait-step1-1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "33de64e84e913dc27a0faba9d0bace8ebdacce6003dbfcf3a34507f0c55dedf7"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.681,
+    "silhouetteIoUInPlace": 0.634,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.915
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.9
+     },
+     "muzzle": {
+      "span": 1.0,
+      "coverage": 0.954
+     },
+     "eye": {
+      "span": 0.966,
+      "coverage": 0.816
+     },
+     "crown": {
+      "span": 0.893,
+      "coverage": 0.616
+     },
+     "leg-0": {
+      "span": 0.728,
+      "coverage": 0.513
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 0.795
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.565,
+      "painted": 0.722,
+      "ok": true
+     },
+     "head": {
+      "drawn": 0.353,
+      "painted": 0.485,
+      "ok": true
+     },
+     "muzzle": {
+      "drawn": 0.234,
+      "painted": 0.307,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.377,
+      "painted": 0.422,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.526,
+      "painted": 0.585,
+      "ok": true
+     },
+     "leg-1": {
+      "drawn": 0.238,
+      "painted": 0.357,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.558,
+      "median": "#4e4d58",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.593,
+      "median": "#5f5a55",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@region-0": {
+      "agreement": 0.136,
+      "median": "#46454d",
+      "nearest": "#465459",
+      "ok": false
+     },
+     "second@leg-0": {
+      "agreement": 0.402,
+      "median": "#d6b39c",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "second@leg-1": {
+      "agreement": 0.42,
+      "median": "#4e4e54",
+      "nearest": "#465459",
+      "ok": false
+     },
+     "leaf@crown": {
+      "agreement": 0.855,
+      "median": "#709d5c",
+      "nearest": "#5aa65c",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.541,
+      "median": "#cca68f",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.41,
+      "median": "#7b5c56",
+      "nearest": "#465459",
+      "ok": false
+     }
+    },
+    "reasons": [
+     "a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #46454d, the colour of body), the second slot on the leg-1 (painted #4e4e54, the colour of body), the belly slot on the muzzle (painted #7b5c56, the colour of body)"
+    ],
+    "outside": 0.038,
+    "missing": 0.029,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.513,
+    "passed": false,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "c5f18800-3bdf-48d9-a71c-49a38018a38c",
+   "service": "gemini",
+   "model": "gemini-3-pro-image",
+   "promptVersion": 5,
+   "controlVariant": "twostep",
+   "species": "S01",
+   "genomeDigest": "S01-45ff1025",
+   "genomeSha256": "f7a2d788e5827862dad88cc4cf68708f900a69bf626cddd3ed46a8944df26686",
+   "promptSet": "v8",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 2,
+   "fields": {
+    "artDirection1": "Image 1 is the part map: structure, proportion and placement only, never the look. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light; no markings it does not show.\n\nDraw HiBit pixel art on a 280\u00d7300 grid in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: per colour a lit tone, two shadow steps, one specular cluster on the highest lit form; occlusion where parts touch.\n\nContour: no outline of any colour; edges read by value alone.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere broad smooth clusters, never texture noise.\n\nFinish: a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm.\n\nFraming: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nKeep every part as Image 1 places it, facing viewer-left. Invent nothing.\n\nNot: dither, panels, vignettes, scene, text.",
+    "species": "Species notes: the Loika, a round frog-hare. Only what differs from the house rendering.\nColour placement: charcoal on the body, the head and the upper face; cream on the belly, the muzzle, the lower face and the legs; the crest leaves are green.\nEyes: the house eye, with an orange iris, inside the cream ring.\nMaterial: smooth skin, matte like suede, no hairs. Its touches: a soft sheen across the back and the crown; the cream belly and muzzle a shade warmer where the light reaches; a soft midrib on each leaf.\nVolume: the body is one round mass like a ripe fruit, its back and crown the highest lit form; the head is fused to it with no neck.\nParts: the muzzle is a soft, full-cheeked cream pad that blends into the lower face, with a tiny curved smile; never a bill or a beak. The crest is three broad leaves sprouting together from the crown and fanning outward; leaves, not ears. The four legs are short, plump and padded, ending in rounded feet with small toe bumps.\nPosture: it sits square and low on all four feet, its weight in its haunches, its head up and a little forward.\nCharacter: gentle and curious, a little shy; a pet you want to pick up.",
+    "description": "This creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+    "planLines": [],
+    "imageOrder": [
+     "index",
+     "key"
+    ]
+   },
+   "reasonsGiven": [
+    "a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #46454d, the colour of body), the second slot on the leg-1 (painted #4e4e54, the colour of body), the belly slot on the muzzle (painted #7b5c56, the colour of body)"
+   ],
+   "prompt": "Image 1 is the part map: structure, proportion and placement only, never the look. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light; no markings it does not show.\n\nDraw HiBit pixel art on a 280\u00d7300 grid in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: per colour a lit tone, two shadow steps, one specular cluster on the highest lit form; occlusion where parts touch.\n\nContour: no outline of any colour; edges read by value alone.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere broad smooth clusters, never texture noise.\n\nFinish: a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm.\n\nFraming: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nKeep every part as Image 1 places it, facing viewer-left. Invent nothing.\n\nNot: dither, panels, vignettes, scene, text.\n\nSpecies notes: the Loika, a round frog-hare. Only what differs from the house rendering.\nColour placement: charcoal on the body, the head and the upper face; cream on the belly, the muzzle, the lower face and the legs; the crest leaves are green.\nEyes: the house eye, with an orange iris, inside the cream ring.\nMaterial: smooth skin, matte like suede, no hairs. Its touches: a soft sheen across the back and the crown; the cream belly and muzzle a shade warmer where the light reaches; a soft midrib on each leaf.\nVolume: the body is one round mass like a ripe fruit, its back and crown the highest lit form; the head is fused to it with no neck.\nParts: the muzzle is a soft, full-cheeked cream pad that blends into the lower face, with a tiny curved smile; never a bill or a beak. The crest is three broad leaves sprouting together from the crown and fanning outward; leaves, not ears. The four legs are short, plump and padded, ending in rounded feet with small toe bumps.\nPosture: it sits square and low on all four feet, its weight in its haunches, its head up and a little forward.\nCharacter: gentle and curious, a little shy; a pet you want to pick up.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.\n\nA previous drawing was rejected because a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #46454d, the colour of body), the second slot on the leg-1 (painted #4e4e54, the colour of body), the belly slot on the muzzle (painted #7b5c56, the colour of body). This time keep every part as Image 1 places it, part for part, at its size and place.",
+   "images": [
+    {
+     "name": "index.portrait.large.png",
+     "sha256": "e3c982388419054844cab1f94cf3f99d39787378ae9108bf54c58ed45e2019d3",
+     "bytes": 6403
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "a6a5d951bdc6b65dee5a6209de579b9d98e276da001390d65f4b1dbaa9ad88a3",
+     "bytes": 6595
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T13:33:10Z",
+   "seconds": 19.9,
+   "httpStatus": 200,
+   "responseId": "l5vHapKZIv-939IPha7j4Q4",
+   "modelVersion": "gemini-3-pro-image",
+   "usage": {
+    "promptTokenCount": 1483,
+    "candidatesTokenCount": 1506,
+    "totalTokenCount": 3331,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 967
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "thoughtsTokenCount": 342,
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.18369,
+   "output": {
+    "file": "portrait-step1-2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "9580c3c021ba2b0c684cfd07caf46e2c6c590528c784c3b0467c9825e67769f8"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.729,
+    "silhouetteIoUInPlace": 0.463,
+    "parts": {
+     "region-0": {
+      "span": 0.975,
+      "coverage": 0.997
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.884
+     },
+     "muzzle": {
+      "span": 0.991,
+      "coverage": 0.991
+     },
+     "eye": {
+      "span": 1.0,
+      "coverage": 0.884
+     },
+     "crown": {
+      "span": 0.738,
+      "coverage": 0.464
+     },
+     "leg-0": {
+      "span": 0.843,
+      "coverage": 0.633
+     },
+     "leg-1": {
+      "span": 1.0,
+      "coverage": 0.889
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.565,
+      "painted": 0.83,
+      "ok": false
+     },
+     "head": {
+      "drawn": 0.353,
+      "painted": 0.57,
+      "ok": false
+     },
+     "muzzle": {
+      "drawn": 0.234,
+      "painted": 0.358,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.377,
+      "painted": 0.419,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.526,
+      "painted": 0.74,
+      "ok": false
+     },
+     "leg-1": {
+      "drawn": 0.238,
+      "painted": 0.382,
+      "ok": false
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.362,
+      "median": "#454448",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.489,
+      "median": "#5f574b",
+      "nearest": "#465459",
+      "ok": true
+     },
+     "second@region-0": {
+      "agreement": 0.096,
+      "median": "#413f44",
+      "nearest": "#273036",
+      "ok": false
+     },
+     "second@leg-0": {
+      "agreement": 0.756,
+      "median": "#d0a986",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "second@leg-1": {
+      "agreement": 0.629,
+      "median": "#b89e8a",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "leaf@crown": {
+      "agreement": 0.824,
+      "median": "#618e4e",
+      "nearest": "#5aa65c",
+      "ok": true
+     },
+     "belly@region-0": {
+      "agreement": 0.782,
+      "median": "#d7b090",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "belly@muzzle": {
+      "agreement": 0.386,
+      "median": "#61504a",
+      "nearest": "#465459",
+      "ok": false
+     }
+    },
+    "reasons": [
+     "the proportions are off: the region-0 is larger than drawn (0.83 of the body against 0.56), the head is larger than drawn (0.57 of the body against 0.35), the leg-0 is larger than drawn (0.74 of the body against 0.53), the leg-1 is larger than drawn (0.38 of the body against 0.24)",
+     "a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #413f44, the colour of pupil), the belly slot on the muzzle (painted #61504a, the colour of body)"
+    ],
+    "outside": 0.029,
+    "missing": 0.016,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.506,
+    "passed": false,
+    "proportionTolerance": 0.25
+   }
+  },
+  {
+   "id": "f3bde548-a703-496f-accf-c6fe745df964",
+   "service": "gemini",
+   "model": "gemini-3-pro-image",
+   "promptVersion": 5,
+   "controlVariant": "twostep",
+   "species": "S09",
+   "genomeDigest": "S09-33855bb1",
+   "genomeSha256": "09e30f12feee02c6816f15b3c7e1ac0115900bb96cc15e303da51b324f9c8c28",
+   "promptSet": "v8",
+   "purpose": "station-portrait-step1",
+   "step": 1,
+   "attempt": 1,
+   "fields": {
+    "artDirection1": "Image 1 is the part map: structure, proportion and placement only, never the look. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light; no markings it does not show.\n\nDraw HiBit pixel art on a 280\u00d7300 grid in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: per colour a lit tone, two shadow steps, one specular cluster on the highest lit form; occlusion where parts touch.\n\nContour: no outline of any colour; edges read by value alone.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere broad smooth clusters, never texture noise.\n\nFinish: a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm.\n\nFraming: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nKeep every part as Image 1 places it, facing viewer-left. Invent nothing.\n\nNot: dither, panels, vignettes, scene, text.",
+    "species": "Species notes: the Belatz, a big bird of open sky. Only what differs from the house rendering.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nEyes: the house eye, with a warm amber iris.\nMaterial: feathers in layered groups. The breast, the back, each folded wing and the tail each read as one group, shaded as one form, never feather by feather. Its touches: a lighter scalloped edge along the lower margin of each group; soft down at the throat; a soft sheen along the wing coverts. The beak is smooth horn; the legs are smooth scale.\nVolume: the breast is the fullest form and takes the highlight; the head is round; the shadow steps gather under the breast and the tail.\nParts: the wings lie folded along the body exactly as drawn and are never re-laid, spread or raised; inside the drawn wing, rounded coverts at the shoulder and long flight feathers stepping toward the tip. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are three spread toes and a small back toe gripping the ground inside the drawn foot. The tail is a fan of long overlapping feathers. The head keeps its drawn size; never enlarged into a chick's.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.",
+    "description": "This creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer. The wings are part of the body outline: they lie folded flat along the flanks exactly as Image 1 draws them; never re-laid, lifted or spread.",
+    "planLines": [
+     "The wings are part of the body outline: they lie folded flat along the flanks exactly as Image 1 draws them; never re-laid, lifted or spread."
+    ],
+    "imageOrder": [
+     "index",
+     "key"
+    ]
+   },
+   "reasonsGiven": null,
+   "prompt": "Image 1 is the part map: structure, proportion and placement only, never the look. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light; no markings it does not show.\n\nDraw HiBit pixel art on a 280\u00d7300 grid in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: per colour a lit tone, two shadow steps, one specular cluster on the highest lit form; occlusion where parts touch.\n\nContour: no outline of any colour; edges read by value alone.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere broad smooth clusters, never texture noise.\n\nFinish: a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm.\n\nFraming: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nKeep every part as Image 1 places it, facing viewer-left. Invent nothing.\n\nNot: dither, panels, vignettes, scene, text.\n\nSpecies notes: the Belatz, a big bird of open sky. Only what differs from the house rendering.\nColour placement: the body colour on the chest, the hind body, the neck, the head, the crest and the tail; the second colour on the wings and the legs. The crest stays the body colour.\nEyes: the house eye, with a warm amber iris.\nMaterial: feathers in layered groups. The breast, the back, each folded wing and the tail each read as one group, shaded as one form, never feather by feather. Its touches: a lighter scalloped edge along the lower margin of each group; soft down at the throat; a soft sheen along the wing coverts. The beak is smooth horn; the legs are smooth scale.\nVolume: the breast is the fullest form and takes the highlight; the head is round; the shadow steps gather under the breast and the tail.\nParts: the wings lie folded along the body exactly as drawn and are never re-laid, spread or raised; inside the drawn wing, rounded coverts at the shoulder and long flight feathers stepping toward the tip. The crest is a small plume of pointed feathers. The beak is short, curved and smooth. The legs are slender bird legs with a feathered thigh, a visible knee and a thin scaled shin; the feet are three spread toes and a small back toe gripping the ground inside the drawn foot. The tail is a fan of long overlapping feathers. The head keeps its drawn size; never enlarged into a chick's.\nPosture: it stands tall and upright, chest out, its weight on both feet, its head high and alert.\nCharacter: watchful and lordly, a big bird of the open sky that is still a pet.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is the type of its kind, a big bird: wings and a beak; big birds of open sky. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head between; beak between; crest between; crown tall; eyes small. Shape: waist thick; back line level; hind body between; body egg; build between. Legs & tail: tail curl straight; tail between. Proportions: a large body, the head carried high, small eyes, a tall crest, long legs, broad feet, a thick waist, wide flaps. Posture: standing upright on its two legs, weight on its broad feet, body held level, still, looking at the viewer. The wings are part of the body outline: they lie folded flat along the flanks exactly as Image 1 draws them; never re-laid, lifted or spread.",
+   "images": [
+    {
+     "name": "index.portrait.large.png",
+     "sha256": "e66e87a0d4ee92351b6cf72de77e159b054d7de85e2b00f0550fb5f5ffe8cc1a",
+     "bytes": 7067
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "1b53fe89dd8f02682c680feb19bdca99ad2e6f0f599ead6f2158884fe968af4c",
+     "bytes": 6227
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T13:34:01Z",
+   "seconds": 18.4,
+   "httpStatus": 200,
+   "responseId": "ypvHapL6DOvU_uMP5q258Ak",
+   "modelVersion": "gemini-3-pro-image",
+   "usage": {
+    "promptTokenCount": 1548,
+    "candidatesTokenCount": 1451,
+    "totalTokenCount": 3240,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 1032
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 516
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "thoughtsTokenCount": 241,
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.17722,
+   "output": {
+    "file": "portrait-step1-1.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "9aa769d719a91f4561865560c5b8dcedb08211e976798ade785f96805e7a98c3"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.54,
+    "silhouetteIoUInPlace": 0.332,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.868
+     },
+     "region-1": {
+      "span": 0.953,
+      "coverage": 0.958
+     },
+     "neck": {
+      "span": 1.0,
+      "coverage": 1.0
+     },
+     "head": {
+      "span": 1.0,
+      "coverage": 0.93
+     },
+     "beak": {
+      "span": 0.773,
+      "coverage": 0.678
+     },
+     "crown": {
+      "span": 0.767,
+      "coverage": 0.546
+     },
+     "leg-0": {
+      "span": 0.636,
+      "coverage": 0.222
+     },
+     "flap": {
+      "span": 0.99,
+      "coverage": 0.864
+     },
+     "tail": {
+      "span": 0.99,
+      "coverage": 1.0
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.298,
+      "painted": 0.474,
+      "ok": false
+     },
+     "region-1": {
+      "drawn": 0.216,
+      "painted": 0.35,
+      "ok": true
+     },
+     "neck": {
+      "drawn": 0.274,
+      "painted": 0.443,
+      "ok": false
+     },
+     "head": {
+      "drawn": 0.306,
+      "painted": 0.458,
+      "ok": true
+     },
+     "crown": {
+      "drawn": 0.294,
+      "painted": 0.35,
+      "ok": true
+     },
+     "leg-0": {
+      "drawn": 0.349,
+      "painted": 0.461,
+      "ok": true
+     },
+     "flap": {
+      "drawn": 0.619,
+      "painted": 0.816,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.392,
+      "median": "#926852",
+      "nearest": "#fff0b8",
+      "ok": true
+     },
+     "body@region-1": {
+      "agreement": 0.398,
+      "median": "#a67b5e",
+      "nearest": "#fff0b8",
+      "ok": true
+     },
+     "body@neck": {
+      "agreement": 0.362,
+      "median": "#d6a66b",
+      "nearest": "#fff0b8",
+      "ok": false
+     },
+     "body@head": {
+      "agreement": 0.88,
+      "median": "#3e66a8",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "body@crown": {
+      "agreement": 0.93,
+      "median": "#33549a",
+      "nearest": "#4d7ed4",
+      "ok": true
+     },
+     "second@leg-0": {
+      "agreement": 0.846,
+      "median": "#cebfb2",
+      "nearest": "#fff0b8",
+      "ok": true
+     },
+     "second@flap": {
+      "agreement": 0.197,
+      "median": "#4069a7",
+      "nearest": "#4d7ed4",
+      "ok": false
+     }
+    },
+    "reasons": [
+     "the proportions are off: the region-0 is larger than drawn (0.47 of the body against 0.30), the neck is larger than drawn (0.44 of the body against 0.27)",
+     "a pigment slot is painted in another slot's colour: the body slot on the neck (painted #d6a66b, the colour of second), the second slot on the flap (painted #4069a7, the colour of body)"
+    ],
+    "outside": 0.095,
+    "missing": 0.001,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.568,
+    "passed": false,
+    "proportionTolerance": 0.25
+   }
   }
  ]
 }
