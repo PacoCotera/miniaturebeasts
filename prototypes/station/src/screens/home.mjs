@@ -38,12 +38,11 @@ function residents() {
   });
 }
 function reportOf() {
-  const r = UI.report; if (!r || arriving() || clock.now <= r.at) return null;
+  const r = UI.report; if (!r || r.closed || arriving() || clock.now <= r.at) return null;
   const tot = { e: 0, d: 0, s: 0 }; for (const p of r.plays) { tot.e += (p.c.e | 0) + p.top.e; tot.d += (p.c.d | 0) + p.top.d; tot.s += (p.c.s | 0) + p.top.s; }
-  const lines = r.plays.map((p) => (p.c.dev ? "Developer crate " : "Expedition ") + p.c.n + " home · " + S.plural((p.c.pods || []).length, "pod") + (p.c.of ? " · explored " + p.c.explored + " of " + p.c.of : ""));
-  const paid = r.plays.reduce((a, p) => a + p.paid, 0) + (r.mend ? r.mend.paid : 0), free = r.mend ? r.mend.free : 0, pr = G.st.probe;
-  const mend = pr ? (r.mend && r.mend.broke ? "The Probe is mended free" : free || paid ? "Shield back to " + S.plural(pr.shield, "plate") + (free ? " · " + free + " free" : "") + (paid ? " · " + paid + " ⚡" : "") : "Shield " + pr.shield + " of " + pr.smax) : "";
-  return { lines, tot, top: r.plays.some((p) => p.top.e || p.top.d || p.top.s), mend, world: (r.plays[r.plays.length - 1].c.lines || []).slice(0, 3), turn: G.st.turn + 1 };
+  const paid = r.plays.reduce((a, p) => a + p.paid, 0) + (r.mend ? r.mend.paid : 0), free = r.mend ? r.mend.free : 0, pr = G.st.probe, mended = !!pr && !!r.mend && (r.mend.broke || free > 0 || paid > 0);
+  return { crates: r.plays.map((p) => ({ dev: !!p.c.dev, pods: (p.c.pods || []).length, of: p.c.of, explored: p.c.explored })), gathered: { ...tot, top: r.plays.some((p) => p.top.e || p.top.d || p.top.s) },
+    probe: mended ? { plates: Array.from({ length: pr.smax }, (_, i) => i < pr.shield), paid } : null, world: (r.plays[r.plays.length - 1].c.lines || []).slice(0, 3) };
 }
 function arrivalOf() {
   const a = FX.arr; if (!a || !arriving()) return null;
@@ -82,12 +81,13 @@ function doNeed(nd) {
 }
 function act(k) {
   const F = H().focus; ensure(); if (!last) return;
+  if (UI.report && !UI.report.closed && !arriving() && clock.now > UI.report.at) UI.report.closed = true;   // any press closes the report card and still does what it does
   if (k in DIRS) {   // the pad moves the ring to the nearest drawn thing that way; from the room the first press picks the nearest
     if (F.cur == null) { const room = { id: "room", rect: SPECS.home.focus.roomAt, group: "room" }, n = nearest(last.targets, room, k); F.set(n ? n.id : last.targets[0]?.id ?? null); }
     else F.move(last.targets, k);
     return;
   }
-  if (k === "back") { if (F.cur != null) F.set(null); else msg(SPECS.home.strings.homeTop); return; }
+  if (k === "back") { if (F.cur != null) F.set(null); return; }   // ← on the room does nothing: no plate, no ← where
   if (k !== "confirm") return;
   const f = F.cur;
   if (f == null) doNeed(need());
@@ -106,10 +106,10 @@ function nodes(ctx) {
   out.push({ id: "stage", kind: "rect", rect: SPECS.frame.regions.stage.rect.slice(), colour: SPECS.frame.colours.stageGround });
   out.push(...livingWindow(ctx, "window", spec, v.window));
   for (const key of ["bay", "rack", "incubator", "probe"]) {
-    const md = v.modules[key]; out.push(...moduleNodes(ctx, "mod." + key, R[key], { colours: v.moduleColours, word: md.word, lit: md.lit, lampAssets: md.lampAssets, lift: md.lift, items: md.items, region: "module" }));
+    const md = v.modules[key]; out.push(...moduleNodes(ctx, "mod." + key, R[key], { colours: v.moduleColours, word: md.word, lamp: md.lamp, lift: md.lift, items: md.items, region: "module" }));
   }
   if (v.ribbon) out.push(...ribbon(ctx, "ribbon", spec, v.ribbon.text, v.ribbon.colours));
-  if (v.report) out.push(...card(ctx, "report", R.report.rect, v.report));
+  if (v.report) out.push(...card(ctx, "report", v.report));
   const t = v.targets.find((x) => x.id === F.cur);
   if (t) out.push(...focusRing("focus", t.id === "bay" && v.arriving ? [t.rect[0], t.rect[1] - R.bay.lift, t.rect[2], t.rect[3]] : t.rect, SPECS.frame, { shape: t.shape === "ellipse" ? "ellipse" : "round" }));
   const fp = frameView({ title: "Home", step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { text: compState(), docked: docked() }, line: v.line, need: need().text, message: msgText(), focal: null });

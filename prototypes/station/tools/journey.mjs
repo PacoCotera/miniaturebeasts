@@ -394,12 +394,14 @@ expect(stored.st.schema === 2 && stored.st.tray.length === 1 && stored.st.mibis.
   await setF("room");
   // the pad from the room picks the nearest drawn thing; ← returns to the room; ← on the room says Home is the top view
   await press("right", 80); expect((await homeF()) !== "room", "the pad from the room picks a target: " + (await homeF())); await press("back", 80); expect((await homeF()) === "room", "← returns the focus to the room");
-  await press("back", 80); expect((await page.evaluate(() => window.__st.msg)) === "Home is the top view", "← on the room says Home is the top view");
+  hl = await homeLine(); expect(hl.back === "" && hl.subject === "the room", "the room's bottom line has no ← where: " + JSON.stringify(hl)); const msgBefore = await page.evaluate(() => window.__st.msg); await press("back", 80); expect((await page.evaluate(() => window.__st.msg)) === msgBefore && (await homeF()) === "room", "← on the room does nothing: no plate");
   // an arrival: a crate of two pods opens (the rack has room), the Bay lifts and the ribbon shows; then the report card
   const dockedNow = (await st()).dock.docked; if (!dockedNow) { await press("dock", 300); }
   await page.evaluate(() => { window.__st.seedCrate("S04", 2, 777); window.__st.openBay(); }); await page.waitForTimeout(1500); await frameShot("home-arrival");
   hl = await homeLine(); expect(hl.subject === "the bay opens", "during the arrival: " + JSON.stringify(hl));
   await page.waitForTimeout(3600); await page.evaluate(() => window.__st.unlock()); await frameShot("home-report");
+  expect(await page.evaluate(() => window.__st.check().regions.some((r) => r.region === "report")), "the report card shows after the arrival");
+  await press("back", 100); expect(!(await page.evaluate(() => window.__st.check().regions.some((r) => r.region === "report"))), "any press closes the report card");
 }
 // 8. the CI smoke's presses, from a fresh world with no save
 await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });

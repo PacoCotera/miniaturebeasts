@@ -26,7 +26,7 @@ function model(over = {}) {
 const view = (m) => homeView(m, spec, ctx);
 
 test("the modules sit at the spec's rectangles, the pictures are at the sizes the layout lists", () => {
-  const v = view(model()), sizes = { lamp: [12, 12], door: [288, 72], crate: [80, 56], wellslot: [40, 40], pod: [32, 40], star: [12, 12], dome: [80, 80], leaf: [8, 12], probe: [128, 80], plate: [28, 12], slot: [40, 80], bed: [128, 56], compMark: [16, 24], knob: [32, 8] };
+  const v = view(model()), sizes = { lamp: [12, 12], door: [288, 72], crate: [80, 56], wellslot: [40, 40], pod: [32, 40], glint: [12, 12], dome: [80, 80], leaf: [8, 12], probe: [128, 80], plate: [28, 12], slot: [40, 80], bed: [128, 56], compMark: [16, 24], knob: [32, 8] };
   for (const key of ["bay", "rack", "incubator", "probe"]) assert.equal(v.modules[key].word, spec.strings.modules[key]);
   const items = (k) => v.modules[k].items;
   assert.equal(items("rack").filter((i) => i.id.startsWith("well")).length, 6);
@@ -69,4 +69,12 @@ test("an arrival: the ribbon, the Bay lifted by the spec's lift, the crates open
   assert.ok(v.modules.bay.items.some((i) => i.id === "crate0" && /crate:open/.test(i.asset)), "the opened crate");
   assert.ok(v.modules.rack.items.some((i) => i.id.startsWith("fly")), "a pod in flight"); assert.ok(!v.modules.rack.items.some((i) => i.id === "pod0"), "its well waits");
   assert.equal(v.line.subject, "the bay opens");
+});
+
+test("the report card after an arrival: crates, what was gathered, the Probe's mend and the world's lines, in the spec's colours", () => {
+  const report = { crates: [{ dev: false, pods: 2, of: 4, explored: 1 }], gathered: { e: 3, d: 2, s: 1, top: false }, probe: { plates: [true, false, false], paid: 0 }, world: ["a wind came"] };
+  const v = view(model({ present: { report } }));
+  assert.deepEqual(v.report.layout.rect, [64, 120, 560, 312]); assert.equal(v.report.crates.length, 1); assert.equal(v.report.assets.pod, "icon:pod:16");
+  assert.deepEqual(v.requests.filter((r) => r.kind === "icon").map((r) => r.id).sort(), ["icon:pod:16", "icon:shield:16", "icon:shieldGone:16"]);
+  assert.equal(view(model()).report, null);
 });

@@ -207,14 +207,21 @@ test("text runs draw the material symbols as icons, wrap and clip", () => {
 
 test("the Home components: a module lifts with its objects, the living window draws its residents in the order given, the card is cut to its height", () => {
   const home = JSON.parse(readFileSync(new URL("../specs/station/home.json", import.meta.url), "utf8")), R = home.regions, C = home.colours;
-  const mod = moduleNodes(ctx, "m", R.bay, { colours: { module: C.module, moduleTop: C.moduleTop, moduleEdge: C.moduleEdge, word: C.word }, word: "Bay", lit: true, lampAssets: { on: "lamp:on", off: "lamp:off" }, lift: 4, items: [{ id: "door", rect: [704, 84, 288, 72], asset: "door" }], region: "module" });
+  const mod = moduleNodes(ctx, "m", R.bay, { colours: C.module, word: "Bay", lamp: "lamp:needsYou", lift: 2, items: [{ id: "door", rect: [704, 84, 288, 72], asset: "door" }], region: "module" });
   const by = Object.fromEntries(mod.map((n) => [n.id, n]));
-  assert.deepEqual(by.m.rect, [688, 44, 320, 120]); assert.deepEqual(by["m.door"].rect, [704, 80, 288, 72]); assert.deepEqual(by["m.lamp"].rect, [984, 56, 12, 12]); assert.equal(by["m.lamp"].asset, "lamp:on");
-  assert.deepEqual(by["m.word"].rect.slice(0, 2), [704, 56]); assert.equal(by["m.word"].text, "Bay");
-  const win = livingWindow(ctx, "w", home, { colours: { bezel: "metal", bezelLight: "bevel", bezelShade: "hairline", glass: "night", groundBand: "slate" }, residents: [{ id: "r2", rect: [100, 300, 104, 112], asset: "a", lamp: "lamp:wait" }, { id: "r1", rect: [200, 340, 144, 152], asset: "b" }], bed: { asset: "bed", mark: "mark" }, knob: "knob" });
+  assert.deepEqual(by.m.rect, [688, 46, 320, 120]); assert.deepEqual(by["m.door"].rect, [704, 82, 288, 72]); assert.deepEqual(by["m.lamp"].rect, [984, 58, 12, 12]); assert.equal(by["m.lamp"].asset, "lamp:needsYou");
+  assert.deepEqual(by["m.word"].rect.slice(0, 2), [704, 58]); assert.equal(by["m.word"].text, "Bay");
+  const win = livingWindow(ctx, "w", home, { colours: home.colours, residents: [{ id: "r2", rect: [100, 300, 104, 112], asset: "a", lamp: "lamp:wait" }, { id: "r1", rect: [200, 340, 144, 152], asset: "b" }], bed: { asset: "bed", mark: { asset: "mark", size: [16, 24] } }, knob: "knob" });
   const ids = win.map((n) => n.id); assert.ok(ids.indexOf("w.r2") < ids.indexOf("w.r1")); assert.deepEqual(win.find((n) => n.id === "w.glass").rect, [24, 56, 640, 488]); assert.deepEqual(win.find((n) => n.id === "w.r2.lamp").rect, [192, 300, 12, 12]);
   assert.deepEqual(win.find((n) => n.id === "w.bedmark").rect, [576, 488, 16, 24]); assert.deepEqual(win.find((n) => n.id === "w.knob").rect, [624, 544, 32, 8]);
-  const c = card(ctx, "c", [64, 120, 560, 120], { colours: { fill: "panel", edge: "hairline", text: "bone", dim: "stone" }, rows: new Array(20).fill({ text: "a line of the report" }) });
-  assert.ok(c[0].rect[3] <= 120, "the card is at most its height"); assert.ok(c.filter((n) => n.kind === "text").length <= 5);
+  const assets = { pod: "icon:pod:16", shield: "icon:shield:16", shieldGone: "icon:shieldGone:16", energy: "icon:energy:16", data: "icon:data:16", essence: "icon:essence:16" };
+  const data = { colours: home.colours.report, strings: home.strings.report, layout: R.report, assets, crates: [{ dev: false, pods: 2, of: 4, explored: 3 }, { dev: true, pods: 9 }], gathered: { e: 3, d: 3, s: 4, top: true }, probe: { plates: [true, true, false], paid: 2 }, world: ["a wind came", "the stream rose"] };
+  const c = card(ctx, "c", data), cb = Object.fromEntries(c.map((n) => [n.id, n]));
+  assert.deepEqual(cb.c.rect, [64, 120, 560, 104 + 24 * 3 + 40 + 24 * 2]);   // the spec's height rule
+  assert.deepEqual(cb["c.c0.pod1"].rect, [236, 180, 16, 16]); assert.equal(cb["c.c0.reach.0"].text, "most of the land explored"); assert.equal(cb["c.c0.reach.0"].rect[0], 392);
+  assert.equal(cb["c.c1.lead.0"].text, "Developer crate"); assert.equal(cb["c.c1.many.0"].text, "many pods"); assert.ok(!cb["c.c1.reach.0"], "a developer crate says nothing of its land");
+  assert.deepEqual(cb["c.g.energy"].rect, [216, 236, 16, 16]); assert.equal(cb["c.p.plate2"].asset, "icon:shieldGone:16"); assert.match(cb["c.p.mend.0"].text, /^mended · $/);
+  assert.deepEqual(cb["c.w0.bullet"].rect, [80, 330, 4, 4]); assert.equal(cb["c.w0.0"].rect[0], 96);
+  assert.ok(!c.some((n) => n.kind === "text" && /\d/.test(n.text) && !/^ ?\+?\d+$/.test(n.text)), "digits only as figures beside a material icon");
   assert.deepEqual(JSON.parse(JSON.stringify([...mod, ...win, ...c])), [...mod, ...win, ...c]);
 });
