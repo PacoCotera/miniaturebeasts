@@ -19,8 +19,9 @@ been built or measured yet.
 - **Software stack.** Station runs Linux on a Raspberry Pi; Companion and Caddy are
   ESP32. Firmware is native, with no MicroPython or Arduino. **Revised 2026-10-08**
   ([technical architecture](proposals/technical-architecture.md)): the Station's
-  hardware is the Pi 4 and will not grow, its runtime is being re-proposed (a
-  browser on the Pi was withdrawn), and no hardware prototyping starts until the
+  hardware is the Pi 4 and will not grow, its runtime is an LVGL 9 face in C with the
+  logic run headless by Node beside it, no browser (a browser on the Pi was
+  withdrawn), and no hardware prototyping starts until the
   loop is complete in software; the Companion
   and the Caddy draw through LVGL 9 with an indexed renderer for the world view,
   ported once the loop is stable on the sandbox.
