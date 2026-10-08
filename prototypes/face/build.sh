@@ -9,20 +9,22 @@ what="${1:-all}"
 bld="${FACE_BUILD_DIR:-${TMPDIR:-/tmp}/mb-face-build}"   # outside the tree: the site copies prototypes/* whole
 mkdir -p "$here/dist" "$bld"
 now() { date +%s.%N; }
+log="$bld/build.log"
+run() { "$@" >"$log" 2>&1 || { cat "$log" >&2; echo "build failed: $*" >&2; exit 1; }; }   # quiet unless it fails
 if [[ "$what" == wasm || "$what" == all ]]; then
   if [[ -n "${EMSDK:-}" && -f "$EMSDK/emsdk_env.sh" ]]; then export PATH="$EMSDK/upstream/emscripten:$PATH" EM_CONFIG="$EMSDK/.emscripten"; fi
   command -v emcc >/dev/null || { echo "emcc not found: set EMSDK to the pinned SDK ($(cat "$here/emsdk.version"))" >&2; exit 2; }
   t0=$(now)
-  emcmake cmake -S "$here" -B "$bld/wasm" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-O2" >/dev/null
-  cmake --build "$bld/wasm" --target face_wasm >/dev/null
+  run emcmake cmake -S "$here" -B "$bld/wasm" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-O2"
+  run cmake --build "$bld/wasm" --target face_wasm
   cp "$bld/wasm/face.mjs" "$bld/wasm/face.wasm" "$here/dist/"
   t1=$(now)
   printf 'wasm   build %.1f s   face.wasm %d bytes (%d gzipped)   face.mjs %d bytes\n' "$(echo "$t1 - $t0" | bc)" "$(stat -c %s "$here/dist/face.wasm")" "$(gzip -9 -c "$here/dist/face.wasm" | wc -c)" "$(stat -c %s "$here/dist/face.mjs")"
 fi
 if [[ "$what" == native || "$what" == all ]]; then
   t0=$(now)
-  cmake -S "$here" -B "$bld/native" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-O2" >/dev/null
-  cmake --build "$bld/native" --target face_native >/dev/null
+  run cmake -S "$here" -B "$bld/native" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-O2"
+  run cmake --build "$bld/native" --target face_native
   t1=$(now)
   out="$("$bld/native/face_native" ${FACE_PPM:+"$FACE_PPM"})"
   echo "$out" | sed -n 's/.*hash=\([0-9a-f]*\).*/\1/p' > "$here/dist/native.hash"

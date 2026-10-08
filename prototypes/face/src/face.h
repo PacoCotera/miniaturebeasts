@@ -28,6 +28,18 @@ void face_key(int code, int down);
 int face_key_count(void);
 int face_last_key(void);
 const char *face_version(void);
+
+/* The scene (scene.h): the page sends a frame's nodes in draw order; text, measure and pictures go through the shared buffers. */
+void face_scene_begin(void);
+void face_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b);
+void face_scene_end(void);
+char *face_text(void);
+int face_text_size(void);
+int face_measure(int px);
+uint8_t *face_asset(int handle, int w, int h);
+int face_object_count(void);
+int face_node_refused(void);
+void face_selftest_scene(void);   /* a fixed scene for the parity check (selftest.c) */
 #ifdef __cplusplus
 }
 #endif

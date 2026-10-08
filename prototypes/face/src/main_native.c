@@ -7,6 +7,7 @@
 
 int main(int argc, char **argv) {
   face_init();
+  face_selftest_scene();
   for (uint32_t t = 0; t < 4; t++) face_frame(t * 16);
   face_key(17, 1); face_key(17, 0); face_frame(80);
   printf("%s %dx%d hash=%08x dirty=%d keys=%d last=%d\n", face_version(), face_width(), face_height(), face_hash(), face_dirty_count(), face_key_count(), face_last_key());

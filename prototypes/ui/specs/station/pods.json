@@ -66,7 +66,7 @@
   "wellLit": "stone", "well": "slate", "wellCore": "ink", "wellPit": "night",
   "ringRead": "aqua", "ringUnread": "mist", "ringSealed": "stone", "ringBase": "hairline", "ringDot": "fog",
   "name": "bone", "origin": "mist", "ribbonFill": "tealD", "ribbonEdge": "aqua", "ribbonText": "bone",
-  "rail": { "unreadFill": "frostS", "unreadEdge": "slate", "unreadWord": "ink", "sealedWord": "mist", "readFill": "tealD", "readRim": "aqua", "readWord": "mint", "pip": "aqua", "pipHollow": "stone", "ring": "cream", "changed": "amber" },
+  "rail": { "unreadFill": "frostS", "unreadEdge": "slate", "unreadWord": "ink", "sealedWord": "mist", "readFill": "tealD", "readRim": "aqua", "readWord": "mint", "pip": "aqua", "pipHollow": "stone", "ring": "focus", "changed": "amber" },
   "page": { "pane": "deep", "edge": "slate", "heading": "bone", "name": "bone", "line": "fog", "lineEmpty": "stone", "wipe": "white" },
   "stampLabel": { "fill": "bone", "edge": "slate" },
   "diff": { "edge": "aqua", "bracket": "aqua", "keyline": "ink" },

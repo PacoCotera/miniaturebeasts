@@ -1,7 +1,8 @@
 // The Station's LVGL face in the page (technical-architecture.md §8): `?face=lvgl` loads face.mjs and face.wasm (built by
 // prototypes/face/build.sh and published beside the page), runs LVGL's frames from the page's animation frame, copies the
-// rectangles LVGL redrew onto the screen canvas and passes the keys in. At L0 the display is empty; from L1 the JavaScript
-// views feed it props over the same contract and it sends intents back.
+// rectangles LVGL redrew onto the screen canvas and passes the keys in. From L1 the JavaScript views feed it their scene nodes
+// (the contract the canvas renderer takes) and the face builds them as LVGL objects, placing and styling only; it measures text
+// itself, so the views' centring and clipping use the widths LVGL's font engine gives. Intents come back as keys.
 export const LV_KEYS = { up: 17, down: 18, right: 19, left: 20, confirm: 10, back: 27, home: 2, research: 114, library: 108, habitat: 98, dock: 100 };
 
 export async function bootFace(base = new URL("../../face/dist/", import.meta.url)) {
@@ -22,8 +23,38 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       ctx.putImageData(img, x, y); copied += w * h;
     }
   }
+  const enc = new TextEncoder(), KIND = { rect: 1, text: 2, sprite: 3, ring: 4, feet: 5 };
+  const fnv = (str) => { let h = 2166136261; for (const b of enc.encode(str)) { h ^= b; h = Math.imul(h, 16777619); } return h >>> 0; };
+  const setText = (str) => { const b = enc.encode(str), cap = M._face_text_size() - 1, p = M._face_text(), n = Math.min(b.length, cap); M.HEAPU8.set(b.subarray(0, n), p); M.HEAPU8[p + n] = 0; };
+  const measure = (str, px) => { setText(String(str)); return M._face_measure(px); };
+  // A picture's pixels into the face (RGBA from a canvas, stored as B, G, R, A); once per asset id.
+  const handles = new Map();
+  function handleOf(id, picture) {
+    let h = handles.get(id); if (h != null) return h;
+    const pic = picture(id); if (!pic) return -1;
+    h = handles.size; const p = M._face_asset(h, pic.w, pic.h); if (!p) return -1;
+    const d = pic.data, out = M.HEAPU8.subarray(p, p + pic.w * pic.h * 4);
+    for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
+    handles.set(id, h); return h;
+  }
+  // One frame's nodes in draw order. env: { rgb(name) -> [r, g, b], cap(px), picture(assetId) -> { w, h, data (RGBA) } }.
+  // Returns the nodes the face cannot draw yet (the stage's own content arrives with its screen).
+  function scene(nodes, env) {
+    const left = [], hex = (n) => { const [r, g, b] = env.rgb(n); return (r << 16) | (g << 8) | b; };
+    M._face_scene_begin();
+    for (const n of nodes) {
+      const [x, y, w, h] = n.rect, id = fnv(n.id);
+      if (n.ring) { M._face_node(id, n.shape === "ellipse" ? KIND.feet : KIND.ring, x, y, w, h, hex(n.ring.colour), n.ring.width, n.ring.radius); continue; }
+      if (n.kind === "rect") M._face_node(id, KIND.rect, x, y, w, h, hex(n.colour), 0, 0);
+      else if (n.kind === "text") { setText(n.text); M._face_node(id, KIND.text, x, y, w, h, hex(n.colour), n.px, env.cap(n.px)); }
+      else if (n.kind === "sprite") { const hd = handleOf(n.asset, env.picture); if (hd < 0) left.push(n); else M._face_node(id, KIND.sprite, x, y, w, h, 0, hd, 0); }
+      else left.push(n);
+    }
+    M._face_scene_end(); return left;
+  }
   return {
-    M, version, size: [W, H], loadMs,
+    M, version, measure, scene, objects: () => M._face_object_count(), refused: () => M._face_node_refused(),
+    size: [W, H], loadMs,
     frame: (ms) => { frames++; M._face_frame(Math.floor(ms)); },
     present, forceFull: () => { first = true; },
     key: (name) => { const code = LV_KEYS[name]; if (code == null) return; M._face_key(code, 1); M._face_key(code, 0); },

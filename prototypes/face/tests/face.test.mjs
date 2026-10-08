@@ -27,6 +27,6 @@ test("keys go in and are counted", { skip: !built && "face not built" }, async (
 });
 
 test("the WebAssembly face and the native Linux face draw the same pixels", { skip: !built || !existsSync(path.join(dist, "native.hash")) ? "face not built natively" : false }, async () => {
-  const M = await load(); for (let t = 0; t < 4; t++) M._face_frame(t * 16);
+  const M = await load(); M._face_selftest_scene(); for (let t = 0; t < 4; t++) M._face_frame(t * 16); M._face_key(17, 1); M._face_key(17, 0); M._face_frame(80);
   assert.equal((M._face_hash() >>> 0).toString(16).padStart(8, "0"), readFileSync(path.join(dist, "native.hash"), "utf8").trim());
 });

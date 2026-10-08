@@ -73,6 +73,11 @@ jobs:
         # the native Linux build; the load time, the size on the wire and the cost of a full-frame copy (CPU throttled
         # 4× as a phone's stand-in) are printed.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/face-check.mjs
+      - name: Station frame in LVGL
+        # The top bar, the bottom line, the message plate and the focus ring as LVGL objects: the rules, the separators and the
+        # ground from the frame spec, where each text run's ink lies against the canvas renderer's, the ring in the focus role,
+        # the plate and the counter's tick; no node refused. The captures it checks are written to prototypes/face/img.
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/frame-check.mjs
       - name: Station layer checks
         # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):
         # the art layer at exactly 0 off-palette pixels; the type layer's run log (every string Inter at 16, 20 or 28 px
