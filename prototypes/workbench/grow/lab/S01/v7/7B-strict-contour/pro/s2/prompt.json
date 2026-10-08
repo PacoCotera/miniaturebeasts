@@ -1,0 +1,295 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "7B-strict-contour",
+  "name": "Stricter contour",
+  "change": "Both steps, the Contour paragraph made stricter: no darker step of the body colour along the edge either, and no edge darker than the shadow step beside it. Tests whether the Belatz's line work and the drawings' dark edges need the stronger words.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "Both steps, the Contour paragraph made stricter: no darker step of the body colour along the edge either, and no edge darker than the shadow step beside it. Tests whether the Belatz's line work and the drawings' dark edges need the stronger words.",
+ "costUSD": 0.3462,
+ "subject": {
+  "member": "type-specimen",
+  "genomeDigest": "S01-45ff1025",
+  "controls": "out/S01/f7a2d788e5827862"
+ },
+ "step1": {
+  "callId": "42ac1cc6-8651-4fcf-afc6-9009ba66dbbf",
+  "status": "ok",
+  "costUSD": 0.17675,
+  "seconds": 20.3,
+  "imageOrder": [
+   "index",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.83,
+   "silhouetteIoUInPlace": 0.834,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.98
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.994
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.904
+    },
+    "crown": {
+     "span": 0.948,
+     "coverage": 0.941
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.99
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.836
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.654,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.441,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.28,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.372,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.612,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.324,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.93,
+     "median": "#455258",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.765,
+     "median": "#4b5459",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@region-0": {
+     "agreement": 0.05,
+     "median": "#48545c",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.913,
+     "median": "#ded0ac",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.596,
+     "median": "#a9b0ab",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.931,
+     "median": "#5ba15c",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.587,
+     "median": "#baa692",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.936,
+     "median": "#dfd2af",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #48545c, the colour of body)"
+   ],
+   "outside": 0.044,
+   "missing": 0.001,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.752,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "eb649a24-71c7-4dde-bebb-4a0f8940f02a",
+  "status": "ok",
+  "costUSD": 0.16944,
+  "seconds": 19.9,
+  "imageOrder": [
+   "drawing",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.833,
+   "silhouetteIoUInPlace": 0.835,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.981
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.996
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.962
+    },
+    "crown": {
+     "span": 0.948,
+     "coverage": 0.947
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.987
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.84
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.653,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.44,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.279,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.371,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.612,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.323,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.942,
+     "median": "#465055",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.776,
+     "median": "#4a5156",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@region-0": {
+     "agreement": 0.063,
+     "median": "#48525a",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.935,
+     "median": "#d8caa8",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.675,
+     "median": "#a5aeaa",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.925,
+     "median": "#5d9f5d",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.6,
+     "median": "#b9a490",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.915,
+     "median": "#ddcfac",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #48525a, the colour of body)"
+   ],
+   "outside": 0.043,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.765,
+   "passed": false,
+   "gated": false
+  }
+ }
+}
