@@ -4,12 +4,11 @@
 // The round ring is a nine-slice picture (corners 1:1, the straight edges tiled); the ellipse is a sprite at its size.
 import { registerAsset } from "../assets.mjs";
 import { ringMask } from "../rings.mjs";
-import { maskPicture } from "../render/canvas-assets.mjs";
 
 export function ringAsset(shape, w, h, colour, width, radius) {
   const id = shape === "ellipse" ? `ring:ellipse:${w}x${h}:${colour}:${width}` : `ring:round:${colour}:${width}:${radius}`;
-  if (shape === "ellipse") registerAsset({ id, w, h, status: "master", until: null, build: (e, env) => maskPicture(w, h, ringMask(w, h, width, 0, "ellipse"), env.rgb(colour)) });
-  else { const c = radius + width; registerAsset({ id, w: 2 * c + 4, h: 2 * c + 4, status: "master", slice: [c, c, c, c], build: (e, env) => maskPicture(e.w, e.h, ringMask(e.w, e.h, width, radius), env.rgb(colour)) }); }
+  if (shape === "ellipse") registerAsset({ id, w, h, status: "master", until: null, build: (e, env) => env.mask(w, h, ringMask(w, h, width, 0, "ellipse"), colour) });
+  else { const c = radius + width; registerAsset({ id, w: 2 * c + 4, h: 2 * c + 4, status: "master", slice: [c, c, c, c], build: (e, env) => env.mask(e.w, e.h, ringMask(e.w, e.h, width, radius), colour) }); }
   return id;
 }
 export function focusRing(id, target, spec, { shape = "round", colour = "cream" } = {}) {

@@ -4,38 +4,48 @@
 // glyph coverage in alpha, 4 bits quantised to 16 levels as LVGL's 4 bpp) and a JSON of metrics (placement, advance,
 // kerning). The page blits the glyphs from the PNG and measures from the JSON; no text API draws a pixel.
 //
-//   npm install --prefix <dir> lv_font_conv@1.5.3
-//   node prototypes/ui/tools/bake-type.mjs --lvfc <dir>/node_modules/lv_font_conv --ttf <dir with Inter-Regular.ttf, Inter-Medium.ttf, Inter-SemiBold.ttf>
-//
-// The TTFs are the Inter 4.1 release's extras/ttf (the same release as the bundled web fonts, which the converter cannot read: it takes TTF and
-// WOFF, not WOFF2) with the tnum feature frozen in, so the converter's default figures are Inter's own tabular ones (it applies no OpenType features):
-//   pip install opentype-feature-freezer
-//   for w in Regular Medium SemiBold; do pyftfeatfreeze -f tnum Inter-$w.ttf frozen/Inter-$w.ttf; done     (then --ttf frozen)
-// The bake asserts every digit has one advance; a font whose digits differ is refused.
+//   npm install --prefix /tmp/lvfc lv_font_conv@1.5.3         (the converter; MIT)
+//   pip install opentype-feature-freezer                       (only to regenerate the frozen sources)
+//   node prototypes/ui/tools/bake-type.mjs [--lvfc /tmp/lvfc/node_modules/lv_font_conv] [--freeze <dir of the release's Inter-*.ttf>]
+// The sources are in the repository: prototypes/ui/fonts/inter/src/Inter-<weight>-tnum.ttf, the Inter 4.1 release's Regular, Medium and SemiBold TrueType
+// files (the converter reads TTF and WOFF, not WOFF2) with the tnum feature frozen in, so its default figures are Inter's own tabular ones (it applies no
+// OpenType features). Their hashes are in fonts/inter/src/SHA256SUMS and in each face's metrics. With --freeze the script first regenerates them from the
+// release's files with `pyftfeatfreeze -f tnum`, and says which tool to install if it is missing. The bake asserts every digit has one advance.
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { encodePNG } from "../png.mjs";
 
 const arg = (k) => { const i = process.argv.indexOf("--" + k); return i > 0 ? process.argv[i + 1] : null; };
-const lvfc = arg("lvfc"), ttfDir = arg("ttf");
-if (!lvfc || !ttfDir) { console.error("usage: bake-type.mjs --lvfc <path to node_modules/lv_font_conv> --ttf <dir>"); process.exit(2); }
-const require = createRequire(import.meta.url);
+const require = createRequire(import.meta.url), here = path.dirname(fileURLToPath(import.meta.url));
+const ttfDir = path.join(here, "../fonts/inter/src"), suffix = "-tnum", freeze = arg("freeze");
+let lvfc = arg("lvfc"); if (!lvfc) { try { lvfc = path.dirname(require.resolve("lv_font_conv/package.json")); } catch { /* below */ } }
+if (!lvfc || !existsSync(path.join(lvfc, "lib/collect_font_data.js"))) { console.error("lv_font_conv is not installed: run `npm install --prefix /tmp/lvfc lv_font_conv@1.5.3` and pass --lvfc /tmp/lvfc/node_modules/lv_font_conv"); process.exit(2); }
+if (freeze) {
+  for (const w of ["Regular", "Medium", "SemiBold"]) {
+    try { execFileSync("pyftfeatfreeze", ["-f", "tnum", path.join(freeze, `Inter-${w}.ttf`), path.join(ttfDir, `Inter-${w}${suffix}.ttf`)], { stdio: "pipe" }); }
+    catch (e) { console.error("could not freeze tnum into Inter-" + w + ".ttf: " + (e.code === "ENOENT" ? "pyftfeatfreeze is not installed; run `pip install opentype-feature-freezer`" : String(e.stderr || e.message))); process.exit(2); }
+  }
+  const sums = ["Regular", "Medium", "SemiBold"].map((w) => `${createHash("sha256").update(readFileSync(path.join(ttfDir, `Inter-${w}${suffix}.ttf`))).digest("hex")}  Inter-${w}${suffix}.ttf`).join("\n") + "\n";
+  writeFileSync(path.join(ttfDir, "SHA256SUMS"), sums);
+}
 const collect = require(path.resolve(lvfc, "lib/collect_font_data.js"));
-const here = path.dirname(fileURLToPath(import.meta.url)), out = path.join(here, "../fonts/atlas");
+const out = path.join(here, "../fonts/atlas");
 mkdirSync(out, { recursive: true });
 
 const FACES = [{ weight: 400, px: 16, file: "Inter-Regular.ttf" }, { weight: 500, px: 20, file: "Inter-Medium.ttf" }, { weight: 600, px: 28, file: "Inter-SemiBold.ttf" }];
-// Basic Latin, Latin-1 and Latin Extended-A (the target markets' Spanish and the species names), general punctuation, arrows, the check, the star, the triangles.
-const RANGES = [[0x20, 0x7e], [0xa0, 0x17f], [0x2010, 0x2027], [0x2190, 0x2193], [0x2605, 0x2605], [0x25b2, 0x25b2], [0x25b6, 0x25b6], [0x25bc, 0x25bc], [0x25c0, 0x25c0], [0x2713, 0x2713]];
+// Basic Latin, Latin-1 and Latin Extended-A (the target markets' Spanish and the species names), general punctuation, the minus sign, arrows, the check, the star, the triangles.
+const RANGES = [[0x20, 0x7e], [0xa0, 0x17f], [0x2010, 0x2027], [0x2212, 0x2212], [0x2190, 0x2193], [0x2605, 0x2605], [0x25b2, 0x25b2], [0x25b6, 0x25b6], [0x25bc, 0x25bc], [0x25c0, 0x25c0], [0x2713, 0x2713]];
 const isDigit = (c) => c >= 0x30 && c <= 0x39;   // no kerning between figures: they stay tabular
 const quant = (v) => Math.round((v / 255) * 15) * 17;
 const index = { family: "Inter", release: "4.1", baked: "lv_font_conv " + JSON.parse(readFileSync(path.join(lvfc, "package.json"), "utf8")).version, bpp: 4, faces: [] };
 
 for (const F of FACES) {
-  const bin = readFileSync(path.join(ttfDir, F.file));
+  const bin = readFileSync(path.join(ttfDir, F.file.replace(".ttf", suffix + ".ttf")));
   const data = await collect({ font: [{ source_path: F.file, source_bin: bin, ranges: [{ range: RANGES.flatMap(([a, b]) => [a, b, a]) }] }], size: F.px, bpp: 4, format: "dump", no_kerning: false });
   const glyphs = data.glyphs.filter((g) => g.code !== 0xa0 || true);
   // tabular figures

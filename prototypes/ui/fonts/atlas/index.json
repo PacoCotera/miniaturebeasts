@@ -12,11 +12,11 @@
    "metrics": "inter-400-16.json",
    "cap": 12,
    "pitch": 20,
-   "glyphs": 351,
+   "glyphs": 352,
    "kernPairs": 244,
    "sha256": {
-    "atlas": "5eba840c740768f4fa6da0b342b865a7964ca9512153883d12caba7e92cab2a9",
-    "metrics": "83d9dae590fc50291a536c40f50415a5274d67783519a71da7a174dce1161f1e"
+    "atlas": "1af84174c33a0f2d083721457dca330bff9c6c6ff41437ed5074a523932ff39e",
+    "metrics": "d5f5674b330eeddea41fb6284d21227473d3b123c15fa995703738ca54c5528e"
    }
   },
   {
@@ -27,11 +27,11 @@
    "metrics": "inter-500-20.json",
    "cap": 14,
    "pitch": 28,
-   "glyphs": 351,
+   "glyphs": 352,
    "kernPairs": 252,
    "sha256": {
-    "atlas": "179a2ce480ccea5321cea105183cdad42025f345538b871098b0a80f7557b405",
-    "metrics": "d93d5a510956dccc3d77f7a82885f5cf6049ee2908282b6fefda24ab43fd4e81"
+    "atlas": "3bd3e8d660b149e239dbfe976abef4d45c2bf202d75243c76d9695c62cf2fa22",
+    "metrics": "90b453f2dbae1ef0a7702ff44eb44bbc428cd2f546d6d3c10b3ef910e05dae46"
    }
   },
   {
@@ -42,11 +42,11 @@
    "metrics": "inter-600-28.json",
    "cap": 21,
    "pitch": 36,
-   "glyphs": 351,
+   "glyphs": 352,
    "kernPairs": 253,
    "sha256": {
-    "atlas": "b8e5ccf9eb3cf998043cd94115f8045fcb005c44b0a51873188a981560dde8b3",
-    "metrics": "9764daf45ed994b997a0fdfa7c458b8d6128c568609db45825637a36dedba03a"
+    "atlas": "d002c50da54c1c2241d1bf2a95327dcab33de509cf88bde5db8f406007f5e32c",
+    "metrics": "657df4505888d2e796a961f634951bdf5509361175ff1d93671dfd8e1d26e308"
    }
   }
  ]

@@ -67,6 +67,15 @@ const st = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.ST)))
 const sv = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.SV)));
 const press = async (k, ms = 120) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(ms); };
 const line = () => page.evaluate(() => window.__st.lineFor());
+// The type layer's run log, read back: every run is Inter at 16, 20 or 28 px (the weight of that size) from a bundled atlas, and no character is missing from the atlases.
+const FACES = { 16: [400, "inter-400-16", "inter-400-16.png"], 20: [500, "inter-500-20", "inter-500-20.png"], 28: [600, "inter-600-28", "inter-600-28.png"] };
+const assertType = async (when) => {
+  const log = await page.evaluate(() => window.__st.typeLog()), missing = await page.evaluate(() => window.__st.typeMissing());
+  const bad = log.filter((r) => { const f = FACES[r.px]; return r.family !== "Inter" || !f || r.weight !== f[0] || r.face !== f[1] || r.atlas !== f[2]; });
+  for (const r of bad.slice(0, 3)) fail(`type (${when}): "${r.text}" is ${r.family} ${r.weight}/${r.px} from ${r.atlas}, not a bundled Inter at 16, 20 or 28 px`);
+  if (missing.length) fail(`type (${when}): characters missing from the atlases: ${missing.join(" ")}`);
+  console.log(`type log (${when}): ${log.length} distinct runs, ${bad.length} off-spec, ${missing.length} missing characters`);
+};
 const expect = (cond, what) => { if (!cond) fail(what); };
 const S_stage = (s, m) => { const age = s.turn - (m.born || 0); return age < 2 ? "juvenile" : "adult"; };
 
@@ -275,6 +284,7 @@ expect(stored.st.schema === 2 && stored.st.tray.length === 1 && stored.st.mibis.
 // 8. the CI smoke's presses, from a fresh world with no save
 await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
 
+await assertType("the journey");
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
 expect((await st()).tray.length === 0 && !(await sv()).seed, "a fresh world: no save, no pods");
@@ -282,6 +292,6 @@ await page.keyboard.press("KeyD"); await page.waitForTimeout(150);
 expect(/No Companion world yet/.test(await page.evaluate(() => window.__st.msg)), "docking without a world says so");
 for (const k of ["KeyR", "ArrowRight", "Enter", "KeyL", "KeyB", "KeyD", "KeyH"]) { await page.keyboard.press(k); await page.waitForTimeout(150); }
 await page.waitForTimeout(300); await shot("page-fresh");
-await browser.close(); server.close(); caddy.stop(); caddyServer.close();
+await assertType("the fresh world"); await browser.close(); server.close(); caddy.stop(); caddyServer.close();
 if (errors.length) { console.error("journey failed:\n" + errors.join("\n")); process.exit(1); }
 console.log("journey ok · screenshots in img/");

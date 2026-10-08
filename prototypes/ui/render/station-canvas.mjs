@@ -10,6 +10,7 @@
 // path. No gradients, shadows, filters, transforms, global alpha, text API or smoothing exist here.
 import { asset as assetOf, assetEntry } from "../assets.mjs";
 import { rectIntersect, drawnRect } from "../scene.mjs";
+import { maskPicture } from "./canvas-assets.mjs";
 
 const hexRGB = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
 const makeCanvas = (w, h) => { const c = document.createElement("canvas"); c.width = w; c.height = h; return c; };
@@ -23,7 +24,7 @@ export class StationCanvas {
     this.ok = new Set(palette.colours.map(([, hx]) => { const [r, g, b] = hexRGB(hx); return (r << 16) | (g << 8) | b; }));
     this.layers = {}; this.ctx = {};
     for (const name of ["art", "painted", "type"]) { const c = canvases?.[name] ?? makeCanvas(w, h); this.layers[name] = c; const g = c.getContext("2d", { willReadFrequently: name !== "painted" }); g.imageSmoothingEnabled = false; this.ctx[name] = g; }
-    this.tinted = new Map(); this.env = { hex: (n) => this.colour(n), rgb: (n) => hexRGB(this.colour(n)) };
+    this.tinted = new Map(); this.env = { hex: (n) => this.colour(n), rgb: (n) => hexRGB(this.colour(n)), mask: (w, h, mask, colour) => maskPicture(w, h, mask, hexRGB(this.colour(colour))) };   // what a picture's builder may ask the page for
     this.runs = new Map(); this.frameLog = []; this.sizeErrors = []; this.missing = []; this.painted = 0; this.frame = 0; this.clipNow = null;
   }
   colour(name) { const hx = this.hex[name]; if (!hx) throw new Error("no palette colour named " + name); return hx; }
@@ -102,7 +103,7 @@ export class StationCanvas {
     else if (n.kind === "nineSlice") this.nineSlice(n.asset, n.rect, clip);
     else if (n.kind === "text") this.glyphs(n, clip);
     else if (n.kind === "legacy") { this.clipNow = clip; try { n.draw(clip); } finally { this.clipNow = null; } }
-    // clip: nothing of its own; its children are nodes of the flat list
+    else if (n.kind !== "clip") throw new Error(`unknown scene node kind "${n.kind}" (${n.id})`);   // a clip has nothing of its own: its children are nodes of the flat list
   }
   // The three layers onto a visible context, art under painted under type, on the ground colour.
   composite(target, ground = null) {

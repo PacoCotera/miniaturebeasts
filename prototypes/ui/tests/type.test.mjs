@@ -59,13 +59,31 @@ test("nodes are plain JSON: a frame, a rail and a page survive a round trip unch
   assert.deepEqual([...new Set(all.map((n) => n.kind))].sort(), ["nineSlice", "rect", "sprite", "text"]);
 });
 
-test("the renderer and the components use no canvas path, gradient, shadow, filter, transform, global alpha or text API", () => {
+test("no canvas path, gradient, shadow, filter, transform, global alpha or text API in the renderer, the components or the Station's drawing code", () => {
   const files = [];
-  const walk = (d) => { for (const f of readdirSync(d)) { const p = path.join(d, f); if (statSync(p).isDirectory()) { if (f !== "tests" && f !== "fonts" && f !== "tools" && f !== "node_modules") walk(p); } else if (p.endsWith(".mjs") && !/png\.mjs$|type-node\.mjs$/.test(p)) files.push(p); } };
-  walk(root);
-  const banned = /(fillText|strokeText|measureText|beginPath|moveTo|lineTo|\barc\(|quadraticCurveTo|bezierCurveTo|createLinearGradient|createRadialGradient|createConicGradient|shadowBlur|shadowColor|\.filter\s*=|setTransform|\.translate\(|\.rotate\(|\.scale\(|globalAlpha|\.clip\(|\.stroke\(|strokeRect|imageSmoothingQuality)/;
-  for (const f of files) { const src = readFileSync(f, "utf8").split("\n").filter((l) => !/^\s*\/\//.test(l)).join("\n"); const m = src.match(banned); assert.ok(!m, `${path.relative(root, f)} uses ${m && m[0]}`); }
-  assert.ok(files.length > 15);
+  const walk = (d, skip) => { for (const f of readdirSync(d)) { const p = path.join(d, f); if (statSync(p).isDirectory()) { if (!skip.includes(f)) walk(p, skip); } else if (p.endsWith(".mjs") && !/png\.mjs$|type-node\.mjs$/.test(p)) files.push(p); } };
+  walk(root, ["tests", "fonts", "tools", "node_modules"]);
+  const station = path.join(root, "../station/src"); walk(station, ["views"]);
+  const banned = /(fillText|strokeText|measureText|beginPath|moveTo|lineTo|\b(ctx|g|g2)\.arc\(|quadraticCurveTo|bezierCurveTo|createLinearGradient|createRadialGradient|createConicGradient|shadowBlur|shadowColor|\.filter\s*=|setTransform|\.translate\(|\.rotate\(|\.scale\(|globalAlpha|\.clip\(\)|\.stroke\(|strokeRect)/;
+  const smoothing = /imageSmoothingQuality/;   // allowed only where a landed painting is derived at a smaller size (station/src/art.mjs, the painted layer)
+  for (const f of files) {
+    if (/station\/src\/(dev|caddy)\.mjs$/.test(f)) continue;   // the developer panel and the Caddy client draw no pixel
+    const src = readFileSync(f, "utf8").split("\n").filter((l) => !/^\s*\/\//.test(l)).join("\n"), m = src.match(banned);
+    assert.ok(!m, `${path.relative(root, f)} uses ${m && m[0]}`);
+    if (!/station\/src\/art\.mjs$/.test(f)) assert.ok(!smoothing.test(src), `${path.relative(root, f)} uses imageSmoothingQuality`);
+  }
+  assert.ok(files.length > 25);
+});
+
+test("every character the Station can set is in the atlases (or is one of the icons drawn as a sprite)", () => {
+  const face = T.face(16), icons = new Set(["⚡", "◆", "❀", "★", "✕"]), missing = new Map();
+  const files = []; const walk = (d) => { for (const f of readdirSync(d)) { const p = path.join(d, f); if (statSync(p).isDirectory()) walk(p); else if (/\.(mjs|json)$/.test(f)) files.push(p); } };
+  walk(path.join(root, "../station/src")); walk(path.join(root, "../workbench/frames")); files.push(path.join(root, "../workbench/framework/describe.mjs")); for (const f of readdirSync(path.join(root, "specs/station"))) files.push(path.join(root, "specs/station", f));
+  for (const f of files) for (const line of readFileSync(f, "utf8").split("\n")) {
+    if (/^\s*\/\//.test(line)) continue;
+    for (const m of line.replace(/\/\/.*$/, "").matchAll(/"([^"\\]*(?:\\.[^"\\]*)*)"|`([^`]*)`/g)) for (const ch of m[1] ?? m[2]) if (ch.codePointAt(0) > 126 && !icons.has(ch) && !face.glyphs.has(ch.codePointAt(0))) missing.set(ch, path.basename(f));
+  }
+  assert.deepEqual([...missing], [], "characters in strings that the atlases lack");
 });
 
 test("a PNG is the only picture file in the layer", () => {
