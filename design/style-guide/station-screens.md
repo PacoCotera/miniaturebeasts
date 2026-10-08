@@ -123,7 +123,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 **Decided 2026-10-07 (concept round).** The genome stamp sits on a square label of about 220 px, no plate. The progress ring sits around the pod's shell and carries chapters only; "identified" shows on the pod's seal. The dark glass lab is the bench, and Create and Incubator follow it. Reference: `art/concept-station/pods-v2/`, candidate PV-D-r3-a4.
 
-**Chapter rail (Decided 2026-10-08).** Every research-bench screen shows as many chapters as the species has, in ring order; there is no fixed count. The four-tab rails in the concept plates are legacy concept art. Loika shows seven.
+**Chapter rail (Decided 2026-10-08).** Every research-bench screen shows as many chapters as the species has, in ring order; there is no fixed count. The four-tab rails in the concept plates are legacy concept art. Loika shows seven. *Superseded: catalogue 9 gives the Loika four chapters (art director, 2026-10-08).*
 
 **Pass when**
 - [ ] Unread chapters show nothing; draw only what is known.
