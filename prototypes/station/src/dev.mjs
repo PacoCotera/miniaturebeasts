@@ -5,7 +5,7 @@ import { G, UI, save, saveSettings, loadSettings, resetSave, podById, goScreen }
 import * as S from "./state.mjs";
 import { frameOf, frameIds } from "./genome.mjs";
 import { PLACEHOLDERS } from "./art.mjs";
-import { status as caddyStatus, state as caddy } from "./caddy.mjs";
+import { status as caddyStatus, state as caddy, flush as caddyFlush } from "./caddy.mjs";
 import { binFor, LOCI } from "../../workbench/framework/catalogue.mjs";
 
 const h = (tag, attrs = {}, ...kids) => { const el = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === "class") el.className = v; else if (k.startsWith("on")) el.addEventListener(k.slice(2), v); else if (k === "html") el.innerHTML = v; else el.setAttribute(k, v); } for (const kid of kids) el.append(kid); return el; };
@@ -63,7 +63,7 @@ export function buildDevPanel(container, hooks) {
       h("button", { class: "btn", type: "button", onclick: () => { const p = focused(); if (!p || !p.genome) { show("no pod under the beam"); return; } const fr = frameOf(S.speciesOf(p)); show(inspectText(fr, p)); } }, "Both copies of every locus (this pod)"),
       h("button", { class: "btn", type: "button", onclick: () => show(genomesText()) }, "The Station's record"),
       h("button", { class: "btn", type: "button", onclick: () => show(PLACEHOLDERS.map((p) => "• " + p.id + ": " + p.what + "\n    until " + p.until).join("\n")) }, "The placeholder register"),
-      h("button", { class: "btn", type: "button", onclick: async () => { await caddyStatus(); show(caddy.online ? JSON.stringify(caddy.lastStatus, null, 1) : "The Caddy service is offline (M3 builds it) · outbox " + G.st.outbox.length); } }, "Caddy status")),
+      h("button", { class: "btn", type: "button", onclick: async () => { await caddyStatus(); await caddyFlush(); show((caddy.online ? "The Caddy service answers:\n" + JSON.stringify(caddy.lastStatus, null, 1) : "The Caddy service is offline · " + (caddy.error || "")) + "\noutbox " + G.st.outbox.length + " · landed " + caddy.landed.size + " · pending " + caddy.pending.size + "\n" + G.st.mibis.map((m) => "  " + m.name + " " + m.sha.slice(0, 8) + " " + (m.paint ? m.paint.state : "not sent")).join("\n")); } }, "Caddy status")),
     h("div", { class: "dev-row" },
       h("button", { class: "btn", type: "button", onclick: () => { const blob = new Blob([JSON.stringify(G.sv, null, 1)], { type: "application/json" }); const a = h("a", { href: URL.createObjectURL(blob), download: "mb-save-v8.json" }); a.click(); } }, "Export the save"),
       h("button", { class: "btn", type: "button", onclick: () => { const f = h("input", { type: "file", accept: "application/json" }); f.onchange = async () => { try { const o = JSON.parse(await f.files[0].text()); const st = o.st || o; if (!st || st.wid !== G.st.wid) { show("that Station part belongs to another world (" + (st && st.wid) + " vs " + G.st.wid + ") · only this world's st is imported; the Companion's part is never written"); return; } G.st = S.normalize(S.migrate(st)); G.sv.st = G.st; save(); show("Station part imported"); } catch (e) { show("import failed: " + e.message); } }; f.click(); } }, "Import a Station part"),

@@ -1,7 +1,8 @@
 // Habitat: one resident large (the placeholder from its genome), its card with the stamp and code, the
 // with-you door, the bond heart, the strip of bays. M2 adds return to the wild; the sitting comes in M6.
 import { SW, SH, LINE_H, C, R, blit, text, textW, clipText, wrapText, panel, focusRing, art, PB, cropPB, clock, motion } from "../gfx.mjs";
-import { ICON, mibiArt, stampArt, vivArt, traitPic, gateArt } from "../art.mjs";
+import { ICON, mibiArt, stampArt, vivArt, traitPic, gateArt, paintedArt, waitLamp } from "../art.mjs";
+import { landedSet, lampText } from "../caddy.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, docked, effWithId, mibiById } from "../game.mjs";
 import { stageBg, drawTop, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
 import * as S from "../state.mjs";
@@ -25,8 +26,10 @@ function draw() {
   const isW = m.id === effWithId(), mo = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < 1800 ? NOW - FX.moment.at : -1;
   const st = stageWord(m), size = st === "juvenile" ? 230 : 290, x = 320 - size / 2, y = 420 - size;
   blit(art("hshadow" + size, () => { const pb = new PB(size, 16); pb.ell(size / 2, 8, size * 0.36, 7, C.moss0, { chk: 1 }); return pb; }), x, y + size * 0.86);
-  if (fr && m.genome) blit(mibiArt(fr, m.genome, size, size, "portrait"), x, y - (mo >= 0 ? Math.round(Math.abs(Math.sin(mo / 150)) * 16) : 0));
-  if (m.paint == null) { blit(art("waitlampL", () => { const pb = new PB(14, 14); pb.ell(7, 7, 6, 6, C.sky); pb.ell(5, 5, 2, 2, C.ice); pb.outline(() => C.deep); return pb; }), 40, 400); text("its painting is on its way · placeholder", 60, 400, C.fog, 2); }
+  const set = landedSet(m), painted = set ? paintedArt(set, m.sha, size, Math.round(size * 310 / 300), { sprite: true }) : null;
+  if (painted) blit(painted, x, y - (mo >= 0 ? Math.round(Math.abs(Math.sin(mo / 150)) * 16) : 0));
+  else if (fr && m.genome) blit(mibiArt(fr, m.genome, size, size, "portrait"), x, y - (mo >= 0 ? Math.round(Math.abs(Math.sin(mo / 150)) * 16) : 0));
+  const lamp = lampText(m); if (lamp) { blit(waitLamp(), 40, 402); text(lamp + " · placeholder", 58, 400, C.fog, 2); } else if (m.paint?.state === "failed") text("its painting failed · the placeholder stands", 40, 400, C.mist, 2);
   if (FX.meetId === m.id) { const t = "Meet " + m.name + " · new"; panel(36, 70, textW(t, 3) + 32, 44, C.lamp, C.rust); text(t, 52, 79, C.wood0, 3); }
   else if (isW) { panel(36, 70, 250, 34, C.lamp, C.wood2); text("in the Companion with you", 161, 80, C.wood0, 2, "center"); }
   // the card
@@ -42,7 +45,7 @@ function draw() {
   // the with-you door and the bond heart
   const wm = mibiById(effWithId()), pend = S.pendingWith(G.st, G.sv);
   panel(636, 306, 128, 136, C.wood2, C.wood1); panel(646, 316, 50, 112, C.wood0, C.wood3);
-  const wfr = wm && frameOf(S.speciesOf(wm)); if (wm && wfr && wm.genome) blit(mibiArt(wfr, wm.genome, 44, 44, "portrait"), 649, 350); else blit(ICON.comp(), 664, 360);
+  const wfr = wm && frameOf(S.speciesOf(wm)); if (wm && wfr && wm.genome) { const ws = landedSet(wm); blit(ws ? paintedArt(ws, wm.sha, 44, 44, { sprite: true }) : mibiArt(wfr, wm.genome, 44, 44, "portrait"), 649, 350); } else blit(ICON.comp(), 664, 360);
   text("with you", 730, 330, C.lamp, 2, "center"); wrapText(wm ? wm.name : "no one", 60, 2).slice(0, 2).forEach((l, i) => text(l, 730, 356 + i * 20, C.creamT, 2, "center"));
   if (pend && !docked()) wrapText(pend.name + " next dock", 60, 2).slice(0, 2).forEach((l, i) => text(l, 730, 396 + i * 20, C.amber, 2, "center"));
   panel(774, 306, 118, 136, C.wood2, C.wood1); blit(ICON.heart(!!m.bonded), 818, 322);
@@ -52,7 +55,7 @@ function draw() {
   if (h.wildArm) text("✓ again", 956, 428, C.amber, 2, "center");
   // the strip of bays
   panel(16, 450, 994, 104, C.moss1, C.moss3);
-  habList().forEach((q, i) => { const sx = 24 + i * 140, qf = frameOf(S.speciesOf(q)); panel(sx, 456, 128, 92, q.id === m.id ? C.moss3 : C.moss2, C.wood2); if (qf && q.genome) blit(mibiArt(qf, q.genome, 60, 60, "portrait"), sx + 34, 460); text(clipText(q.name, 120, 2), sx + 64, 526, q.id === effWithId() ? C.amber : C.fog, 2, "center"); });
+  habList().forEach((q, i) => { const sx = 24 + i * 140, qf = frameOf(S.speciesOf(q)); panel(sx, 456, 128, 92, q.id === m.id ? C.moss3 : C.moss2, C.wood2); if (qf && q.genome) { const qs = landedSet(q); blit(qs ? paintedArt(qs, q.sha, 60, 60, { sprite: true }) : mibiArt(qf, q.genome, 60, 60, "portrait"), sx + 34, 460); } text(clipText(q.name, 120, 2), sx + 64, 526, q.id === effWithId() ? C.amber : C.fog, 2, "center"); });
   for (let i = habList().length; i < (G.settings.bays || S.BAYS) + 1 && i < 7; i++) { const sx = 24 + i * 140; for (let k = 0; k < 128; k += 8) { R(sx + k, 456, 4, 2, C.moss4); R(sx + k, 546, 4, 2, C.moss4); } text("free", sx + 64, 496, C.moss4, 2, "center"); }
   const t = targets().find((q) => q.id === h.f); if (t) focusRing(t.x - 3, t.y - 3, t.w + 6, t.h + 6); else h.f = "stage";
 }

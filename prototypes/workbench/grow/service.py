@@ -1156,6 +1156,11 @@ if __name__ == "__main__":
     a = {}; argv = sys.argv[2:]
     for i, t in enumerate(argv):
         if t.startswith("--"): a[t[2:]] = argv[i + 1] if i + 1 < len(argv) and not argv[i + 1].startswith("--") else ""
+    # --out <dir> (or GROW_OUT): the output root, with the call log beside it, so a service on the VM writes its
+    # sets and its log into a data directory outside the release (station-build.md G1); the default stays grow/out
+    out_root = a.get("out") or os.environ.get("GROW_OUT")
+    if out_root:
+        OUT = os.path.abspath(out_root); PROMPTS = os.path.join(OUT, "prompts.json"); os.makedirs(OUT, exist_ok=True)
     if cmd == "paint": cmd_paint(a)
     elif cmd == "calibrate": cmd_calibrate(a)
     elif cmd == "recheck": cmd_recheck(a)

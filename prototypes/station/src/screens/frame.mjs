@@ -1,7 +1,8 @@
 // The frame every screen shares: the top bar (40 px), the bottom line (38 px), the message plate, the
 // stage ground, the lamp pool, spatial focus, and the residents living in the vivarium.
 import { SW, SH, TOP_H, LINE_H, STAGE_Y, STAGE_H, C, R, blit, text, textW, clipText, wrapText, panel, art, PB, ramp, clock, motion } from "../gfx.mjs";
-import { ICON, mibiArt } from "../art.mjs";
+import { ICON, mibiArt, paintedArt, waitLamp } from "../art.mjs";
+import { landedSet, lampText } from "../caddy.mjs";
 import { G, FX, UI, ARRIVE_MS, need, docked, hasWorld, bayCrates, effWithId, atHome, mibiById, arriving } from "../game.mjs";
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
@@ -103,7 +104,7 @@ export function stepResidents() {
   }
 }
 // A resident's placeholder sprite at a size: the mibi from its genome; the three-quarter view faces viewer-right, so facing left flips it.
-export function residentArt(m, size, faceLeft) { const fr = frameOf(S.speciesOf(m)); if (!fr || !m.genome) return null; return mibiArt(fr, m.genome, size, size, "three-quarter", !!faceLeft); }
+export function residentArt(m, size, faceLeft) { const set = landedSet(m); if (set) { const p = paintedArt(set, m.sha, size, size, { sprite: true, flip: !faceLeft }); if (p) return p; } const fr = frameOf(S.speciesOf(m)); if (!fr || !m.genome) return null; return mibiArt(fr, m.genome, size, size, "three-quarter", !!faceLeft); }
 // Draw the residents inside a vivarium placed at (vx, vy) of size w×h. Returns their boxes (for focus).
 export function drawResidents(vx, vy, w, h, big) {
   const NOW = clock.now, gy = Math.round(h * 0.62), boxes = [], list = atHome().map((m) => ({ m, r: resOf(m) })).sort((a, b) => a.r.v - b.r.v);
@@ -113,7 +114,7 @@ export function drawResidents(vx, vy, w, h, big) {
     const walking = r.st === "walk" && motion(), bob = walking ? -Math.round(Math.abs(Math.sin(NOW / 160)) * 5) : 0;
     blit(art("shadow" + size, () => { const pb = new PB(size, 10); pb.ell(size / 2, 5, size * 0.36, 4, C.moss0, { chk: 1 }); return pb; }), x, y + size * 0.86);
     const spr = residentArt(m, size, r.face < 0); if (spr) blit(spr, x, y + bob + (r.st === "nap" ? 6 : 0));
-    if (m.paint == null && m.genome) blit(art("waitlamp", () => { const pb = new PB(8, 8); pb.ell(4, 4, 3, 3, C.sky); pb.ell(3, 3, 1, 1, C.ice); return pb; }), x + size - 10, y + 2);   // the cool waiting lamp: its painting is not here yet (M3)
+    if (lampText(m)) blit(waitLamp(), x + size - 12, y + 2);   // the cool waiting lamp: its painting is not here yet
     if (m.bonded) blit(art("minih", () => { const pb = new PB(9, 8); pb.ell(2.5, 2.5, 2.3, 2.3, C.coral); pb.ell(6.5, 2.5, 2.3, 2.3, C.coral); pb.poly([[0, 3], [9, 3], [4.5, 8]], C.coral); return pb; }), x + size / 2 - 4, y - 10 + bob);
     if (r.st === "nap" && motion()) { const z = Math.floor(NOW / 600) % 3; text("z", x + size * 0.7 + z * 4, y + size * 0.2 - z * 8, C.fog, 2); }
     boxes.push({ m, x, y, w: size, h: size });

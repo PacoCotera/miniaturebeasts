@@ -13,6 +13,7 @@ import { dockKey, openBay } from "./screens/home.mjs";
 import { drawIdle } from "./screens/bench.mjs";
 import { openBook } from "./screens/library.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
+import * as caddy from "./caddy.mjs";
 import { stampArt } from "./art.mjs";
 
 setIcons((name, px) => ICON[name]?.(px));
@@ -53,7 +54,7 @@ function frame(t) {
 export function act(k) {
   if (!G.ready) return;
   clock.now = performance.now(); UI.lastInput = clock.now;
-  if (UI.idle) { UI.idle = false; FX.wake = clock.now; }   // a press wakes the screen and still does what it says
+  if (UI.idle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); }   // a press wakes the screen and still does what it says; a landed painting shows from here
   if (k === "dock") { dockKey(); return; }
   if (clock.now < FX.lockUntil) return;                                  // presses during a reveal or an arrival are consumed
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
@@ -126,13 +127,14 @@ const ready = Promise.all([loadFrames(), fontsReady]).then(([info]) => {
   G.openBook = openBook;
   UI.lastInput = performance.now(); G.ready = true;
   buildDevPanel($("devPanel"), { changed: refreshDev });
+  caddy.startClient();
   if (new URLSearchParams(location.search).has("dev")) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
   return info;
 }).catch((e) => { bootText("the species frames did not load: " + e.message); console.error(e); throw e; });
 
 // Test hooks (not part of play).
-window.__st = { ready, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
+window.__st = { ready, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   act: (k) => { FX.lockUntil = 0; act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
   get msg() { return FX.msg; }, capture: () => scr.toDataURL("image/png"), offPalette, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },

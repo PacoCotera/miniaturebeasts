@@ -23,4 +23,5 @@ chmod -R a+rX "$ROOT/releases/$tag"
 ln -sfn "$ROOT/releases/$tag" "$ROOT/current.new" && mv -T "$ROOT/current.new" "$ROOT/current"
 ls -1dt "$ROOT"/releases/sandbox-* | tail -n +6 | xargs -r rm -rf
 systemctl reload caddy 2>/dev/null || true
+systemctl restart mb-caddy 2>/dev/null || true   # the Caddy service runs from the release: it restarts on the new one (its queue is journaled in its data directory)
 echo "deployed $tag"

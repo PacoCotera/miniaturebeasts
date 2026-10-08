@@ -2,7 +2,8 @@
 // minute), the chapter tabs clearing across the wait, the stamp and the code; ✓ Grow now · price while
 // growing; ready: the shape glows inside and ✓ Open plays the hatch, then the meet view on Habitat.
 import { SW, C, R, blit, text, textW, clipText, panel, focusRing, art, PB, clamp, clock, motion } from "../gfx.mjs";
-import { emblemArt, domeArt, budArt, crackArt, leafArt, stampArt, mibiArt } from "../art.mjs";
+import { emblemArt, domeArt, budArt, crackArt, leafArt, stampArt, mibiArt, paintedArt } from "../art.mjs";
+import { landedSet } from "../caddy.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, mibiById } from "../game.mjs";
 import { benchBg, drawTop } from "./frame.mjs";
 import * as S from "../state.mjs";
@@ -40,7 +41,7 @@ function drawHatch() {
   const h = FX.hatch, m = mibiById(h.id); if (!m) return; const k = clamp((clock.now - h.at) / HATCH_MS, 0, 1), fr = frameOf(S.speciesOf(m));
   const lift = Math.round(Math.min(1, k * 2) * 220); blit(domeArt(300, 300, true, "base"), 362, 180); if (k < 0.5) blit(domeArt(300, 300, true, "glass"), 362, 180 - lift);
   if (k < 0.35) blit(crackArt(), 477, 325);
-  else { const size = 180, x = 512 - size / 2 + Math.round(Math.max(0, k - 0.5) * 2 * 140), y = 230; blit(mibiArt(fr, m.genome, size, size, "portrait"), x, y); }
+  else { const size = 180, x = 512 - size / 2 + Math.round(Math.max(0, k - 0.5) * 2 * 140), y = 230, set = landedSet(m); blit(set ? paintedArt(set, m.sha, size, size, { sprite: true }) : mibiArt(fr, m.genome, size, size, "portrait"), x, y); }
   if (k > 0.45) { const t = m.name + " · " + S.spName(m) + " · juvenile", w = textW(t, 3) + 40; panel(512 - w / 2, 92, w, 48, C.lamp, C.wood2); text(t, 512, 103, C.wood0, 3, "center"); }
 }
 function line() {

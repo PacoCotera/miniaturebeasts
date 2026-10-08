@@ -407,7 +407,7 @@ export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const bay = freeBay(st, settings); if (bay < 0) return { ok: false, msg: "No bay free · return a mibi to the wild first" };
   const B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
   const name = MIBI_NAMES[st.nameN % MIBI_NAMES.length] + (st.nameN >= MIBI_NAMES.length ? " " + (Math.floor(st.nameN / MIBI_NAMES.length) + 1) : ""); st.nameN++;
-  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read: fr.chapters.map((c) => c.id), parents: B.parents, bay, paint: null, released: false, shaped: B.shaped || [] };
+  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read: fr.chapters.map((c) => c.id), parents: B.parents, bay, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
   logEv(st, "Opened · " + m.name + " · " + fr.species.name + " · juvenile · bay " + (bay + 1));

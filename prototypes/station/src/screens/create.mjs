@@ -9,6 +9,7 @@ import { benchBg, drawTop, beam } from "./frame.mjs";
 import { podFrame } from "./home.mjs";
 import * as S from "../state.mjs";
 import { traitState, codeText, genomeDigest } from "../genome.mjs";
+import { flush } from "../caddy.mjs";
 
 const CR = () => UI.create;
 const pod = () => (CR() ? podById(CR().podId) : null);
@@ -71,7 +72,7 @@ function act(k) {
     const i = cr.choices[cur.t.id] || 0, n = (i + (k === "down" ? 1 : opts.length - 1)) % opts.length; if (n) cr.choices[cur.t.id] = n; else delete cr.choices[cur.t.id];
     cr.clash = S.clashTraits(p, cr.choices); }
   else if (k === "confirm") { const r = S.grow(G.st, p, cr.choices, G.settings, Date.now()); if (!r.ok) { msg(r.msg); return; }
-    FX.stamp = { at: clock.now, code: r.bud.code }; lockInput(900); UI.create = null; UI.pods.cur = null; save(); goScreen("incubator"); msg("Grown · " + codeText(r.bud.code) + " · the pod is in the incubator"); }
+    FX.stamp = { at: clock.now, code: r.bud.code }; lockInput(900); UI.create = null; UI.pods.cur = null; save(); goScreen("incubator"); flush().catch(() => {}); msg("Grown · " + codeText(r.bud.code) + " · the pod is in the incubator"); }
   else if (k === "back") { UI.create = null; goScreen("pods"); }
 }
 registerScreen("create", { draw, line, act });
