@@ -116,9 +116,9 @@
     "Legs & tail": 2,
     "Movement": 4,
     "Stamina": 1,
-    "Temperament": 2
+    "Character": 2
    },
-   "sealedChapter": "Temperament",
+   "sealedChapter": "Character",
    "opensWith": "a vybronic crystal",
    "openTraits": [
     "Colour",
@@ -241,7 +241,7 @@
     "Legs & tail": 2,
     "Movement": 4,
     "Stamina": 3,
-    "Temperament": 2
+    "Character": 2
    },
    "sealedChapter": "Stamina",
    "opensWith": "a storm-glass shard",

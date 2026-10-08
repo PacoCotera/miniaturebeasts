@@ -88,9 +88,9 @@ ON = {"appearance.marking-switch": "on", "anatomy.muzzle-presence": "on", "anato
 OFF = {k: "off" for k in ON}
 DOING_FAMILIES = {"mechanics-movement", "energy-nutrition", "cognition-tendencies"}
 FAMILY_ALIAS = {"Structure": "structure", "Appearance": "appearance", "Sensing and signaling": "sensing-signaling"}
-RING = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "temperament"]
+RING = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "character"]
 CHAPTER_NAMES = {"coat": "Coat", "face": "Face", "shape": "Shape", "legs-tail": "Legs & tail",
-                 "movement": "Movement", "stamina": "Stamina", "temperament": "Temperament"}
+                 "movement": "Movement", "stamina": "Stamina", "character": "Character"}
 # The older broader records have no compatible consumer in the current construction;
 # their owner is read from the catalogue's own `applicability` and `requires`.
 APPLICABILITY = {
@@ -205,10 +205,10 @@ PUFFCAP = dict(
         ("movement", "turning", "Turning", ["movement.turn-control"], ["wide turns", "between", "tight turns"], None, None),
         ("movement", "waddle", "Waddle", ["movement.axial-amplitude", "movement.axial-phase"],
          ["slight sway", "between", "big waddle"], None, None),
-        ("temperament", "curiosity", "Curiosity", ["cognition.exploration-tendency"], ["reserved", "between", "seeking"], None, None),
-        ("temperament", "nerve", "Nerve", ["cognition.arousal-threshold"], ["jumpy", "between", "unflappable"], None, None),
+        ("character", "curiosity", "Curiosity", ["cognition.exploration-tendency"], ["reserved", "between", "seeking"], None, None),
+        ("character", "nerve", "Nerve", ["cognition.arousal-threshold"], ["jumpy", "between", "unflappable"], None, None),
     ],
-    sealed={"temperament": "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod"},
+    sealed={"character": "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod"},
     pod=dict(colourPair=["appearance.body-palette:coral", "appearance.body-palette:marigold"]),
     glyph=[".###.", "#####", "#####", ".#.#.", ".###."],
     pending=[
@@ -273,15 +273,15 @@ GLOWTAIL = dict(
         ("stamina", "strength", "Strength", ["energy.actuator-capacity"], ["light", "between", "strong"], None, None),
         ("stamina", "reserve", "Reserve", ["energy.reserve-capacity"], ["tires soon", "between", "goes long"], None, None),
         ("stamina", "thrift", "Thrift", ["energy.action-efficiency"], ["thrifty", "between", "ordinary"], None, None),
-        ("temperament", "curiosity", "Curiosity", ["cognition.exploration-tendency"], ["reserved", "between", "seeking"], None, None),
-        ("temperament", "nerve", "Nerve", ["cognition.arousal-threshold"], ["jumpy", "between", "unflappable"], None, None),
+        ("character", "curiosity", "Curiosity", ["cognition.exploration-tendency"], ["reserved", "between", "seeking"], None, None),
+        ("character", "nerve", "Nerve", ["cognition.arousal-threshold"], ["jumpy", "between", "unflappable"], None, None),
     ],
     sealed={},
     overrides={"claws": "breeding only: the claws are how a Tuikis digs, a field ability, so they change like a doing"},
     pod=dict(colourPair=["appearance.body-palette:lagoon", "appearance.body-palette:marigold"]),
     glyph=["..#..", ".###.", "..#..", "..#..", "#####"],
     pending=[
-        {"trait": "glow", "chapter": "Glow (after Temperament)", "kind": "heritable-doing",
+        {"trait": "glow", "chapter": "Glow (after Character)", "kind": "heritable-doing",
          "why": "no emission locus yet; until one exists every Tuikis glows gold at dusk as part of the frame"},
         {"trait": "a glowing bulb at the tail tip", "why": "the axial tail tapers to a point; a tip bulb is not in the catalogue"},
     ],
@@ -507,7 +507,7 @@ def build(sp, cat, defaults):
 # --- the figure: one bar of 114 per species ----------------------------------------
 COLOURS = {"switch": "#77736a", "owner-off": "#b9b4a8", "fixed": "#d3cdbf", "no-consumer": "#e6e1d6",
            "coat": "#c0558a", "face": "#d08a2a", "shape": "#4f8f5b", "legs-tail": "#2f8f9a",
-           "movement": "#4a6fc0", "stamina": "#8a5cc0", "temperament": "#a0624a"}
+           "movement": "#4a6fc0", "stamina": "#8a5cc0", "character": "#a0624a"}
 LOCK_WORDS = {"switch": "plan switches", "owner-off": "switched off here", "fixed": "fixed by the species",
               "no-consumer": "carried, not drawn yet"}
 
@@ -572,7 +572,7 @@ def figure(frames):
         out.append(f'<rect x="{lx}" y="{y}" width="12" height="12" fill="{COLOURS[key]}"/><text x="{lx + 16}" y="{y + 10}" class="s">{escape(CHAPTER_NAMES[key])}</text>')
         lx += 95
     out.append(f'<rect x="{lx}" y="{y}" width="12" height="12" fill="url(#z-coat)"/><text x="{lx + 16}" y="{y + 10}" class="s">sleeping</text>')
-    out.append(f'<rect x="{lx + 80}" y="{y}" width="12" height="12" fill="url(#z-temperament)" stroke="#2e2e2e" stroke-width="2"/>'
+    out.append(f'<rect x="{lx + 80}" y="{y}" width="12" height="12" fill="url(#z-character)" stroke="#2e2e2e" stroke-width="2"/>'
                f'<text x="{lx + 96}" y="{y + 10}" class="s">sealed</text>')
     y += 30
     out.append(f'<text x="30" y="{y}" class="s">Not in the bars: 6 draft loci and four domains with no loci yet (maintenance, affinities, '

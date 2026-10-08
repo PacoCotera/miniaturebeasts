@@ -29,7 +29,7 @@ export const PAPER = { tome: "#f6efe0", bench: "#eef0f2", print: "#ffffff" };
 export const COPIES = ["#1e5f7c", "#a8432c", "#4f7a2a", "#6f4a94"];
 export const PALE = ["#d3e2ea", "#f0d9d2", "#dfe8d2", "#e4dcef"];
 // Chapter tints by name, so Coat is the same tint on every species.
-export const TINTS = { "Coat": "#f3e8d6", "Face": "#e7efdf", "Shape": "#e3e9f3", "Legs & tail": "#f1e3e8", "Movement": "#e8e4f2", "Stamina": "#dfeeea", "Temperament": "#f1ecd6", "Nature": "#f1ecd6", "Ways": "#f1ecd6", "Glow": "#f7e5d4" };
+export const TINTS = { "Coat": "#f3e8d6", "Face": "#e7efdf", "Shape": "#e3e9f3", "Legs & tail": "#f1e3e8", "Movement": "#e8e4f2", "Stamina": "#dfeeea", "Character": "#f1ecd6", "Temperament": "#f1ecd6", "Nature": "#f1ecd6", "Ways": "#f1ecd6", "Glow": "#f7e5d4" };
 const HAIR = "#cfc8b8", FILL = 0.84;
 
 export function styledGeometry(genome, { family = "neutral", paper = "tome" } = {}) {

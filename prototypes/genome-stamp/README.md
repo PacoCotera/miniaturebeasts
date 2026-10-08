@@ -14,7 +14,7 @@ The decoder is the same code in Node and in the browser.
 ![Growth: Loika, Tuikis, Tuikis with a postmark, 150 loci](img/growth.png)
 *Growth you can see, all at 8 px a cell: Loika (5 open loci) 17×17, Tuikis (38) 25×25, the same Tuikis carrying a postmark 29×29, and a future species with 150 open loci (three chapters unread) 37×37.*
 
-| ![Tuikis, every chapter read](img/station-glowtail.png) | ![Same mibi, Legs & tail and Temperament unread](img/station-glowtail-unread.png) | ![Loika](img/station-hopper.png) |
+| ![Tuikis, every chapter read](img/station-glowtail.png) | ![Same mibi, Legs & tail and Character unread](img/station-glowtail-unread.png) | ![Loika](img/station-hopper.png) |
 | --- | --- | --- |
 | Tuikis at 1× Station size, 300 px | The same mibi with two chapters unread: their blocks are empty outlines and hold nothing | Loika, 17×17, at 300 px |
 

@@ -24,7 +24,7 @@
 
 **Sleeping parts are computed.** The script builds the frame twice, with every open part switch on and with every one off. An open part that is drawn only when a switch is on is **sleeping**: read with its chapter, drawn asleep in an individual whose switch is off, and able to wake in a child. Markings are the only case in these three frames: one switch and five sleeping parts.
 
-**Chapters by what the part is.** Coat: colours, markings, scales, fur. Face: head, muzzle, eyes, crown, ears. Shape: body proportions, regions, flaps. Legs & tail: legs, feet, tail. Movement, Stamina and Temperament: the movement, energy and cognition records. The ring order is fixed (Coat, Face, Shape, Legs & tail, Movement, Stamina, Temperament) and a species shows only the chapters it opens. A species may add one chapter of its own after them (the Tuikis's Glow, §4).
+**Chapters by what the part is.** Coat: colours, markings, scales, fur. Face: head, muzzle, eyes, crown, ears. Shape: body proportions, regions, flaps. Legs & tail: legs, feet, tail. Movement, Stamina and Character: the movement, energy and cognition records. The ring order is fixed (Coat, Face, Shape, Legs & tail, Movement, Stamina, Character) and a species shows only the chapters it opens. A species may add one chapter of its own after them (the Tuikis's Glow, §4).
 
 **Sealed chapters are declared.** A species marks a chapter sealed and names the find that opens it (**Decided** as direction: a crystal, owner 09-27). Its parts are inherited and act from birth, but they can't be read or shaped until the find. The ring keeps a notch there.
 
@@ -73,11 +73,11 @@ A large round furred body in radial symmetry, with a small face (a bilateral hea
 | Coat | Fluff | short and straight · between · long and swept | fur length, fur flow | shapeable |
 | Shape | Roundness · Body · Cap size · Cap sweep | slim to plump · egg, barrel, pear · small to wide cap · straight to swept back | radial cross-radius · longitudinal form · flap span + chord · flap sweep | shapeable |
 | Movement | Pace · Turning · Waddle | steady to brisk · wide to tight turns · slight sway to big waddle | cycle rate · turn control · body-wave amplitude + phase | breeding only |
-| Temperament **(sealed)** | Curiosity · Nerve | reserved to seeking · jumpy to unflappable | exploration tendency · arousal threshold | breeding only |
+| Character **(sealed)** | Curiosity · Nerve | reserved to seeking · jumpy to unflappable | exploration tendency · arousal threshold | breeding only |
 
 - **Locked 94**: 22 switches, 50 switched off, 12 fixed (size, face, cap flutter, stamina), 10 carried, not drawn yet.
-- **Heritable 20** in 12 traits: Coat 9 loci (4 looks, 5 sleeping), Shape 5, Movement 4 doings, Temperament 2 **sealed**. Three chapters can be read: a first pod costs 10 Data.
-- **The sealed chapter: Temperament**, opened by a **vybronic crystal** dug up where an Untuva partner sniffs out a buried pod (its field ability, `prototypes/exploration`). Until then every Untuva still has its curiosity and nerve, and the player can see them differ in the vivarium without reading why. Growing an Untuva and walking it is what opens its own last page.
+- **Heritable 20** in 12 traits: Coat 9 loci (4 looks, 5 sleeping), Shape 5, Movement 4 doings, Character 2 **sealed**. Three chapters can be read: a first pod costs 10 Data.
+- **The sealed chapter: Character**, opened by a **vybronic crystal** dug up where an Untuva partner sniffs out a buried pod (its field ability, `prototypes/exploration`). Until then every Untuva still has its curiosity and nerve, and the player can see them differ in the vivarium without reading why. Growing an Untuva and walking it is what opens its own last page.
 - **Pod:** large, tall, segments, coral and marigold. **Glyph:** a wide cap over a round body.
 
 ```
@@ -104,10 +104,10 @@ A small, low, scaled burrower: two linked tapered body regions, a head with a sn
 | Legs & tail | Legs (short and fine to long and stout) · **Claws** (round feet, pads, digging wedges) · Tail (short and thin to long and thick) · Tail curl (hangs to curls up) | shapeable, except **Claws: breeding only** (override: the claws are how a Tuikis digs, a field ability, so they change like a doing) |
 | Movement | Pace · Stride · Weave (straight scurry to weaving glide) · Turning | breeding only |
 | Stamina | Strength · Reserve · Thrift | breeding only |
-| Temperament | Curiosity · Nerve | breeding only |
+| Character | Curiosity · Nerve | breeding only |
 
 - **Locked 76**: 25 switches, 23 switched off, 10 fixed, 18 carried, not drawn yet.
-- **Heritable 38** in 23 traits: Coat 10 loci (5 sleeping), Face 5, Shape 4, Legs & tail 8, Movement 6, Stamina 3, Temperament 2. 22 looks, 11 doings, no sealed chapter. A first pod costs 23 Data to read in full and a later one 13, so the glints matter here.
+- **Heritable 38** in 23 traits: Coat 10 loci (5 sleeping), Face 5, Shape 4, Legs & tail 8, Movement 6, Stamina 3, Character 2. 22 looks, 11 doings, no sealed chapter. A first pod costs 23 Data to read in full and a later one 13, so the glints matter here.
 - **The glow** has no locus: the catalogue models no emission (the firefly case in `genomic-contract.md` stops at the same gap). Until the genome engineer adds one, every Tuikis glows gold at dusk as part of its frame, and the Library says so. Decision 1 says what it becomes.
 - **Pod:** small, squat, plates, lagoon and marigold. **Glyph:** a glowing bulb raised on a tail over a low body.
 
@@ -145,8 +145,8 @@ The research loop's worked frame (57 locked, 57 heritable) was an illustration o
 
 ## 6. Decisions for the owner
 
-1. **The Tuikis's glow is a doing.** It is how brightly and how long it glows at dusk, inherited only, on a Glow chapter of its own after Temperament once the emission locus exists. Until then it is fixed (gold, every Tuikis). The alternatives are a look shapeable at Create, where a child picks the brightest glow in one press and the pull is gone, or a look changed only by breeding, which works the same as a doing but breaks the default rule. *Recommended: a doing.* Breeding a brighter Tuikis is the first real reason to use the cross that is coming into the first build.
-2. **The Untuva's sealed Temperament chapter is the game's first find.** Its crystal is dug up by an Untuva partner sniffing out a buried pod. This teaches sealing on the third species the player meets, with a find they can work out. The alternative is to leave the Untuva fully open and seal something on a later species. *Recommended: yes, the first find.*
+1. **The Tuikis's glow is a doing.** It is how brightly and how long it glows at dusk, inherited only, on a Glow chapter of its own after Character once the emission locus exists. Until then it is fixed (gold, every Tuikis). The alternatives are a look shapeable at Create, where a child picks the brightest glow in one press and the pull is gone, or a look changed only by breeding, which works the same as a doing but breaks the default rule. *Recommended: a doing.* Breeding a brighter Tuikis is the first real reason to use the cross that is coming into the first build.
+2. **The Untuva's sealed Character chapter is the game's first find.** Its crystal is dug up by an Untuva partner sniffing out a buried pod. This teaches sealing on the third species the player meets, with a find they can work out. The alternative is to leave the Untuva fully open and seal something on a later species. *Recommended: yes, the first find.*
 3. **Pip on the catalogue, with two stand-ins.** Eye rings are carried by eye size: the pale rim grows with the eye, and the trait blends to three looks where Pip's `R` dominated. Drive is carried by pace, because `movement.burst-recruitment` is still a draft. The Loika has four legs as in the approved art, not the proof's six. *Recommended: accept these for the first build.* The genome engineer then adds a ring-pigment locus and validates burst recruitment, and the frame swaps the ids without the player seeing a change.
 4. **Chapter names as the player sees them.** The seven words stay fixed across species, in the same ring order, with at most one species chapter for a signature (Glow). *Recommended:* Coat, Face, Shape, Legs & tail, Movement, Stamina and **Nature** in place of Temperament. Nature is shorter on the ring, a child can read it, and it says "born that way", which is true: training changes behaviour, never genes (**Working rule**).
 

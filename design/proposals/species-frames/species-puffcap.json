@@ -212,8 +212,8 @@
    ]
   },
   {
-   "id": "temperament",
-   "name": "Temperament",
+   "id": "character",
+   "name": "Character",
    "sealed": true,
    "opensWith": "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod",
    "traits": [
@@ -273,7 +273,7 @@
     "loci": 4,
     "traits": 3
    },
-   "Temperament": {
+   "Character": {
     "loci": 2,
     "traits": 2
    }
@@ -2386,7 +2386,7 @@
    "switch": false,
    "kind": "sealed",
    "nature": "doing",
-   "chapter": "temperament",
+   "chapter": "character",
    "trait": "curiosity",
    "shapeable": false,
    "alleles": [
@@ -2406,7 +2406,7 @@
    "switch": false,
    "kind": "sealed",
    "nature": "doing",
-   "chapter": "temperament",
+   "chapter": "character",
    "trait": "nerve",
    "shapeable": false,
    "alleles": [

@@ -431,7 +431,7 @@ def figure(examples, plans):
             out.append(f'<line x1="534" y1="{y + 18}" x2="560" y2="{sy + 14}" stroke="{MUTED}"/>'
                        f'<rect x="560" y="{sy}" width="260" height="26" rx="5" fill="{fill}" stroke="#d8d1c2"{dash}/>')
             label = name if kind else "a later member, same rule"
-            sealed = {"Temperament": "Ways", "Nature": "Ways"}.get(sealed, sealed)
+            sealed = {"Character": "Ways", "Temperament": "Ways", "Nature": "Ways"}.get(sealed, sealed)
             detail = (f"{n} traits" + (f" · {sealed} sealed" if sealed else "")) if kind else ""
             out.append(f'<text x="570" y="{sy + 17}" class="t"{"" if kind else f" style=\"fill:{MUTED}\""}>{escape(label)}</text>'
                        f'<text x="650" y="{sy + 17}" class="s">{escape(detail)}</text>')
