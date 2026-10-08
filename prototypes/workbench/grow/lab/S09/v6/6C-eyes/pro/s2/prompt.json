@@ -1,0 +1,166 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "6C-eyes",
+  "name": "Eyes as the heart of the face",
+  "change": "Step 2, eye words only: the eye is drawn as Pip's is, with a lid line and a second glint, at its drawn size.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "Step 2, eye words only: the eye is drawn as Pip's is, with a lid line and a second glint, at its drawn size.",
+ "costUSD": 0.1654,
+ "step1": {
+  "shared": "v5's drawing"
+ },
+ "step2": {
+  "callId": "89616043-6342-4c86-8e17-65fa837a78ac",
+  "status": "ok",
+  "costUSD": 0.16536,
+  "seconds": 17.5,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.356,
+   "silhouetteIoUInPlace": 0.284,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.767
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.53
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 0.938
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.505
+    },
+    "beak": {
+     "span": 0.104,
+     "coverage": 0.0
+    },
+    "crown": {
+     "span": 0.547,
+     "coverage": 0.475
+    },
+    "leg-0": {
+     "span": 0.701,
+     "coverage": 0.211
+    },
+    "flap": {
+     "span": 0.873,
+     "coverage": 0.835
+    },
+    "tail": {
+     "span": 0.549,
+     "coverage": 0.0
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.471,
+     "ok": false
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.367,
+     "ok": false
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.449,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.469,
+     "ok": false
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.211,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.429,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.685,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.942,
+     "median": "#223c66",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.772,
+     "median": "#446b90",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.774,
+     "median": "#39638e",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.836,
+     "median": "#5279a6",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.0,
+     "median": "#c7b69d",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.274,
+     "median": "#222c4e",
+     "nearest": "#4d7ed4",
+     "ok": false
+    },
+    "second@flap": {
+     "agreement": 1.0,
+     "median": "#a68d6b",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (30% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: beak (painted along 10% of its length), crown (painted along 55% of its length), tail (painted along 55% of its length)",
+    "the proportions are off: the region-0 is larger than drawn (0.47 of the body against 0.30), the region-1 is larger than drawn (0.37 of the body against 0.21), the neck is larger than drawn (0.45 of the body against 0.28), the head is larger than drawn (0.47 of the body against 0.31)",
+    "a pigment slot is painted in another slot's colour: the body slot on the crown (painted #c7b69d, the colour of second), the second slot on the leg-0 (painted #222c4e, the colour of body)"
+   ],
+   "outside": 0.3,
+   "missing": 0.07,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.787,
+   "passed": false,
+   "gated": false
+  }
+ }
+}
