@@ -1,6 +1,6 @@
 {
- "successfulCalls": 31,
- "totalUSD": 7.55,
+ "successfulCalls": 41,
+ "totalUSD": 9.35,
  "calls": [
   {
    "tag": "C48-H-r6-a1",
@@ -35,6 +35,20 @@
    "seconds": 19.5
   },
   {
+   "tag": "C48-H-r6-A-dark",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 41.9
+  },
+  {
+   "tag": "C48-H-r6-A-dark2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 52.1
+  },
+  {
    "tag": "C48-H-r6-A",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
@@ -42,11 +56,67 @@
    "seconds": 83.7
   },
   {
+   "tag": "C48-H-r6-B-dark",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 47.4
+  },
+  {
+   "tag": "C48-H-r6-B-dark2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 36.3
+  },
+  {
    "tag": "C48-H-r6-B",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
    "usd": 0.18,
    "seconds": 41.7
+  },
+  {
+   "tag": "C48-H-r6-C-dark",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 57.2
+  },
+  {
+   "tag": "C48-H-r6-C-dark2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 47.2
+  },
+  {
+   "tag": "C48-H-r6-C",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 67.9
+  },
+  {
+   "tag": "C48-H-r6-D-dark",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 46.8
+  },
+  {
+   "tag": "C48-H-r6-D-dark2",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 114.1
+  },
+  {
+   "tag": "C48-H-r6-D",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "64x58",
+   "usd": 0.18,
+   "seconds": 41.5
   },
   {
    "tag": "C48-S-r2-bush-fruit",

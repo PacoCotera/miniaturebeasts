@@ -1,4 +1,4 @@
-"""Huts C and D, hand-pixelled: two small round shelters, planted on the ground (a patch of grass, a base course that meets it, a
+"""Huts Ch and Dh, hand-pixelled (the earlier C and D): two small round shelters, planted on the ground (a patch of grass, a base course that meets it, a
 shadow to the right), each in three states (lit, dark, dark2), drawn from the painted hut sheet's designs (C48-H-r6-a1: bottom left and
 bottom right) as masks and pixel sets with the rim-rule shading of the pawn; the roof is a low cone of three thatch bands, no cap, no knob;
 the charm is in the walls (a door with a step, a window, a lantern, a bundle). dark2 is dark one DARK step down.
@@ -116,8 +116,8 @@ def hut(kind, state):
     cv.idx = quant.outline(cv.idx)   # the outline rule also rims the patch, which reads as its edge
     for fn, args in late: fn(cv, *args)   # the small props are drawn over the outline, with their own rims
     return finish(cv, state)
-for kind in "CD":
+for kind in ("C", "D"):
     for state in ("lit", "dark", "dark2"):
         idx = hut(kind, state); bb = quant.bbox((idx >= 0) * 255); x0, y0, x1, y1 = bb
-        quant.save_indexed(idx[y0:y1, x0:x1], os.path.join(out, f"hut-{kind}-{state}.png"))
-print("huts C and D, 3 states")
+        quant.save_indexed(idx[y0:y1, x0:x1], os.path.join(out, f"hut-{kind}h-{state}.png"))   # Ch and Dh: the hand-pixelled ones
+print("huts Ch and Dh, 3 states")

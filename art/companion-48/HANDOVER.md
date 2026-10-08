@@ -25,7 +25,7 @@ State of round 6 on 2026-10-08. Everything below is in this folder; nothing in `
 | Warned strike, HUD icons, caps, bolts, 9-slices | scripted | `build-ui.py work/ui work/props` | |
 | Pawn | drawn | `pawn-draw.py DIR --coat glow`, then `aseprite-pawn.lua` on the VM | parka hood with a fur ruff round an open face (eyes, nose, cheeks, no mouth), goggles pushed up on the hood; coat `glow` = orange with yellow-lit edges and a 3-px shade (`yellow` is round 4's, `amber` fails the four-grey check); masks and pixel sets, rim-rule shading; 4 facings (left mirrors right) × walk 3, creep 3, react; `build-pawn.py` (the painted-sheet down-render) is no longer used; `pawn-compare.py` makes the concept side-by-side |
 | Tokens | the accepted Pip painting | `build-tokens.py` | |
-| Hut options A to D (lit, dark, dark2) | painted source `sources/C48-H-r6-a1` (`gemini-gen.py`) | A, B: `rd-huts.py SHEET OUT --run` (lit state, 64 px) then `hut-states.py RD_DIR work/huts` (down to 48 wide, roof recoloured, dark states derived); C, D: `hut-draw.py work/huts` | `compose-still.py --hut A..D` places an option in the still; `hut-figures.py` makes the contact figure and the four-still row; the `huts` sheet; the default outpost in the still is round 5's |
+| Hut options A to D (lit, dark, dark2), and Ch, Dh | painted source `sources/C48-H-r6-a1` (`gemini-gen.py`) | A to D: `rd-huts.py SHEET sources/rd-huts --run` (12 calls), `hut-states.py sources/rd-huts work/huts-pre` (down to 48 wide, roof recoloured, lit kept, dark states derived; each state's own result in `work/huts-pre-rdstates`); Ch, Dh: `hut-draw.py work/huts-pre`; then `sh tools/huts-assemble.sh` (Aseprite on the VM, writes `work/huts` and `work/huts-aseprite`) | `compose-still.py --hut A..D,Ch,Dh` places an option in the still; `hut-figures.py` makes the contact figure and the still rows; the `huts` sheet; the default outpost in the still is round 5's |
 | Rain tile | scripted | `build-weather.py work/weather` | 10 streaks |
 | Still | the pieces | `compose-still.py work OUT --light storm` (canopies and lit stones exempt from the table; diagonal corners over land tiles; ripples as sprites) then `beside.py` | |
 | Meadow joins | the meadow tiles | `meadow-check.py work/ground OUT_PREFIX` | |
@@ -51,11 +51,10 @@ Keep the script's own output and the tar stream in separate calls. Script parame
 
 ## Spend
 
-`python3 -I tools/budget.py review-place/sources` re-sums every sidecar and `extra-spend.json` into `budget.json`: $7.55 in total: round 2 $4.68 (two water tiles, two sprite batches of twelve), round 3 $0.72 (four stone calls), round 4 nothing, round 5 $0.72 (three outposts and the shaken bush), round 6 $0.53 (the painted hut sheet $0.17, Retro Diffusion huts A and B $0.36). A re-run overwrites the piece's sidecar, so `extra-spend.json` carries the overwritten call. Retro Diffusion balance left: $0.24.
+`python3 -I tools/budget.py review-place/sources` re-sums every sidecar and `extra-spend.json` into `budget.json`: $9.35 in total: round 2 $4.68 (two water tiles, two sprite batches of twelve), round 3 $0.72 (four stone calls), round 4 nothing, round 5 $0.72 (three outposts and the shaken bush), round 6 $2.33 (the painted hut sheet $0.17, Retro Diffusion huts, 12 calls, $2.16). A re-run overwrites the piece's sidecar, so `extra-spend.json` carries the overwritten call. The Retro Diffusion balance is topped up automatically.
 
 ## What is open
 
-- The owner's choice among huts A to D (and then the chosen hut's replacement of the outpost in the still, the sheets and the page).
+- The owner's choice among huts A to D (and the hand-pixelled pair Ch, Dh) (and then the chosen hut's replacement of the outpost in the still, the sheets and the page).
 - The pawn's parka face; its coat margin is one luma unit from a grey edge (Rec. 709), and the face puts 8 % of its pixels in the ground's grey.
 - The tree, the pod and the tokens have had no hand pass.
-- Retro Diffusion balance $0.24 (one call).
