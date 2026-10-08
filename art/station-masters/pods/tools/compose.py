@@ -49,7 +49,8 @@ def compose(state, rail):
         full = rail == "six" or i == open_i; w = 136 if full else 56
         put(f"rail-tab-{st}-{'full-152x40' if full else 'compact-72x40'}", x, 40)
         if st == "focused": ring = (x, w)
-        emb = lambda ex, ey: None      # the emblem slot stays empty in the proof
+        CID = {'Coat': 'coat', 'Face': 'face', 'Shape': 'shape', 'Legs & tail': 'legs-tail', 'Legs': 'legs-tail', 'Movement': 'movement', 'Stamina': 'stamina', 'Character': 'character', 'Glow': 'glow', 'Charge': 'charge'}
+        emb = lambda ex, ey: cv.alpha_composite(S(f"rail-emblem-{CID[word]}-{'read' if st in ('read', 'focused') else st}-24x24"), (ex, ey))
         pc = CREAM if st in ("read", "focused") else (150, 168, 184)
         if full:
             tw = d.textlength(word, font=f16); bx = x + 76 - (32 + tw) / 2

@@ -8,7 +8,7 @@
 
 <img src="composite-pods-read-1024x600.png" width="720" alt="Pods Read, composed from the slices">
 
-*composite-pods-read-1024x600.png: the Pods Read page's first state at 1024×600, 1×, from the slices alone with the decided strings typed over them in Inter 16, 20 and 28. **Stand-ins, not masters:** the trait picture (a crop of the candidate's painting), the stamp raster (the candidate's placed stamp), the progress arcs on the list's rings, the tab pips and the trait marks, the focus ring; the emblem slots are empty. A proof, not a deliverable the page uses. Status: proof.*
+*composite-pods-read-1024x600.png: the Pods Read page's first state at 1024×600, 1×, from the slices alone with the decided strings typed over them in Inter 16, 20 and 28. **Stand-ins, not masters:** the trait picture (a crop of the candidate's painting), the stamp raster (the candidate's placed stamp), the progress arcs on the list's rings, the tab pips and the trait marks, the focus ring; the tab emblems are the round 2 slices (`rail-emblem-*`), awaiting sign-off. A proof, not a deliverable the page uses. Status: proof.*
 
 <img src="composite-vs-candidate.png" width="720" alt="Composite beside the accepted candidate">
 
@@ -101,6 +101,38 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `pod-well-sealed` | 32×40 | (·, ·, 32, 40) | the Loika reference sprite |
 | `pod-well-shade` | 32×40 | (·, ·, 32, 40) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
 | `pod-well-shadow` | 48×14 | (688, 385, 48, 14) | contact shadow: centred on x 712 with its middle on the foot line y 392 |
+
+### None
+
+| Slice id | Size | Rect on the screen | Made by |
+| --- | --- | --- | --- |
+| `rail-emblem-character-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-character-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-character-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-charge-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-charge-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-charge-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-coat-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-coat-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-coat-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-face-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-face-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-face-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-glow-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-glow-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-glow-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-movement-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-movement-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-movement-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-shape-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-shape-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-shape-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-stamina-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-stamina-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-stamina-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 
 ### Chapter rail tabs (hanging, slant baked)
 
