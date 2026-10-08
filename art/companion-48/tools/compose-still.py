@@ -85,14 +85,18 @@ def sprite(group, name, cx, cy, table=None):
     blit(idx, cx - idx.shape[1] // 2, cy - fy, table, VIEW)
 def at(c, r, dx=0, dy=0): return OX + c * TS + TS // 2 + dx, OY + r * TS + TS - 2 + dy
 FOLIAGE = None if light == "storm" else DARK   # art director, round 2: under the storm the canopies keep the G ramp, the lit stones their glow and the outpost its wood and thatch (no cast); the ground, water and plain stones take it
-things = [("props", "tree", at(2, 3, 0, 8), FOLIAGE), ("props", "bush", at(4, 1), FOLIAGE), ("props", "bush-fruit", at(7, 3), FOLIAGE), ("props", "bush-shaken", at(1, 8), FOLIAGE),
-          ("props", "stone", at(5, 4), DARK), ("props", "stone-warm1", at(8, 4), FOLIAGE), ("props", "stone-charged1", at(3, 10), FOLIAGE),
-          (("huts", f"hut-{hut}-lit", at(8, 1, 0, 6), DARK) if hut else ("props", "outpost-lit", at(8, 1, 0, 6), FOLIAGE)), ("props", "pod", at(1, 5), DARK), ("props", "dew-cup", at(5, 8), DARK), ("props", "reeds", at(9, 7, 0, -6), DARK), ("props", "stone-step", at(7, 10, 0, -4), DARK), ("props", "stone-plain2", at(6, 2, 8, 0), DARK),
-          ("pawn", "pawn-down-walk2", at(4, 6), None), ("tokens", "loika-idle1", at(2, 6), None), ("tokens", "placeholder-S02", at(1, 10), None)]
-blit(load("props", "strike-warn1"), OX + 6 * TS, OY + 5 * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
+# the staging, after the concept: ONE focal event, the crackling charged stone (its second frame) and the warned strike's ring beside it, with the pawn
+# a tile away facing them along the same row, Loika by the pawn; everything else is background and kept small and to the edges
+FX, FY = 2, 6                                                                                                   # the charged stone's tile; the ring is the next tile, the pawn two tiles on
+things = [("props", "stone-charged2", at(FX, FY), FOLIAGE), ("pawn", "pawn-left-walk2", at(FX + 3, FY), None), ("tokens", "loika-idle1", at(FX + 2, FY + 1, 0, 2), None),
+          ("props", "tree", at(7, 3, 0, 8), FOLIAGE),
+          (("huts", f"hut-{hut}-lit", at(1, 2, 0, 6), DARK) if hut else ("props", "outpost-lit", at(1, 2, 0, 8), FOLIAGE)),
+          ("props", "bush", at(4, 1), FOLIAGE), ("props", "bush-fruit", at(9, 5), FOLIAGE), ("props", "bush-shaken", at(1, 9), FOLIAGE),
+          ("props", "dew-cup", at(5, 8), DARK), ("props", "reeds", at(9, 7, 0, -6), DARK), ("props", "stone-step", at(7, 10, 0, -4), DARK)]
+blit(load("props", "strike-warn2"), OX + (FX + 1) * TS, OY + FY * TS, None, VIEW)   # the warned strike lies on its tile, next to the stone, under everything that stands
 for group, name, (cx, cy), table in sorted(things, key=lambda t: t[2][1]): sprite(group, name, cx, cy, table)
 # the name tag over Loika, the message box at the view's top, the rain over all of it
-tag_w = font.width("Loika", 2) + 12; tx, ty = at(2, 6)[0] - tag_w // 2, at(2, 6)[1] - 40 - 24
+tag_w = font.width("Loika", 2) + 12; tx, ty = at(FX + 2, FY + 1, 0, 2)[0] - tag_w // 2, at(FX + 2, FY + 1, 0, 2)[1] - 40 - 24
 nine("slice-name-tag", tx, ty, tag_w, 22); font.draw(scr, "Loika", tx + 6, ty + 2, C["amber"], 2)
 rain = load("weather", "rain-left-1")
 for r in range(0, VIEW_H + 96, 96):
