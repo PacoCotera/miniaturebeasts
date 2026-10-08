@@ -10,7 +10,7 @@ Stage 0 of [art-pipeline.md](../../design/proposals/art-pipeline.md) §2 is clos
 
 **The census gates** (`census.mjs`, run on the registry: 3,200 random individuals, all building). Two gates on the 48 px silhouette. The plan gate: every pair of plans' type specimens at a shape distance of at least 0.22 (1 − IoU in the same box; closest S02 and S07 at 0.35), so no plan collapses into another's family. The kind check: each species' side silhouette against the hand-drawn target of what it resembles (`frames/targets/`), the whole body's IoU as the coarse gate and, as the gate that decides, the clan's defining parts measured on the silhouette split by part against the target's tagged parts; a species passes when its parts score beats every wrong kind's target by 0.05, one pixel of one part on a 48 px head. All sixteen pass; cat, fox and raccoon each win their own.
 
-**Left for stage 1: the pipeline's plates from these volumes.** The sketch stops at form and slots: smooth volumes, flat pigment fields, index and marking passes, no craft. Stage 1 takes a species' type specimen and reference set (`sketch/cli.mjs --set N`) and makes the plates the masters draw from: the turnaround at Station and Companion scale with the slot map as the colour key and the marking masks as fields, the 48 px tile as the test every plate must still pass. Three things the rig cannot say are stage 1's to decide: the materials (fur, feathers, scales, the leaf mantle, sheen and the charged body are slot facts and silhouette modifiers here, not surfaces), the face (eyes are fixed inks, the mask a field; expression is a drawing), and the pose (every body stands in its reference pose; the state machine's states exist, its transitions do not). Also open: markings, mask and rings are fields the kind check does not weigh, so a plate's pattern is judged by eye; the behaviour loci are carried and weighed nowhere; and the targets are one person's thumbnails, so a target can be wrong as easily as a body.
+**Left for stage 1** (written when the plates were the plan; the owner has since made expression continuous and generated per individual in the cloud from these renders as control images, and the art pipeline proposal is being rewritten; see "the control-image spec" below for what a generation service receives). The sketch stops at form and slots: smooth volumes, flat pigment fields, index and marking passes, no craft. Stage 1 takes a species' type specimen and reference set (`sketch/cli.mjs --set N`) and makes the plates the masters draw from: the turnaround at Station and Companion scale with the slot map as the colour key and the marking masks as fields, the 48 px tile as the test every plate must still pass. Three things the rig cannot say are stage 1's to decide: the materials (fur, feathers, scales, the leaf mantle, sheen and the charged body are slot facts and silhouette modifiers here, not surfaces), the face (eyes are fixed inks, the mask a field; expression is a drawing), and the pose (every body stands in its reference pose; the state machine's states exist, its transitions do not). Also open: markings, mask and rings are fields the kind check does not weigh, so a plate's pattern is judged by eye; the behaviour loci are carried and weighed nowhere; and the targets are one person's thumbnails, so a target can be wrong as easily as a body.
 
 The internal authoring tool of [art-pipeline.md](../../design/proposals/art-pipeline.md) §2, stage 0: the genome framework the generator reads directly, the deterministic structural sketch, and the page where a designer locks a species and sees whether its expressions read. It ships no art. Plain Node 22 and ES modules in the browser, no dependencies; served at `/sandbox/workbench/` by the site workflow.
 
@@ -84,29 +84,63 @@ Everything in the brief fitted the catalogue as records with owners and consumer
 | `build-frames.mjs` | Writes the frame registry `frames/` (schema `mb-species-frame/2`: taxonomy header, plan facts, signature, chapters and traits with verdicts, the carried loci by kind with typical copies where named, the absent loci with reasons, pools, locked copies, counts, pod, the type specimen's brief and bounds, viability) |
 | `census.mjs` | The silhouette census and the kind check below |
 
-## The structural sketch (`sketch/`)
+## The structural sketch (`sketch/`) and the control-image spec
 
-`sketch.mjs` renders one body to the views and passes stage 2 consumes; `cli.mjs` writes them under `out/sketch/<species>/<individual>/` with a manifest.
+`sketch.mjs` renders one body to the views and passes a generation service consumes; `cli.mjs` writes them under `out/sketch/<species>/<genome digest>/` with a manifest, or a whole reference set under `out/reference/<species>/`. The owner's decision (2026-10-08) makes these renders the **control images** of a per-individual generation in the cloud: expression is continuous, no fixed set of looks, no device rendering; each mibi's art is generated while it incubates, from these images. This is what a generation service receives per individual, and what it may rely on.
 
-- **Views:** front, side, three-quarter (lit from the top left), top. **Sizes:** the 48 px tile, the Companion subject at 280×300, the Station at 300×310 and a larger 600×620.
-- **Passes:** `shaded` (flat fills by pigment slot with one light, markings as a lighter field), `slots` (every pigment slot as a flat colour, both halves of a split slot; the legend is in the manifest), `index` (one flat colour per part), `markings-<field>` (one black-and-white mask per marking field: coat, flaps, cap, mask, rings, shell, belly), `silhouette` (black on white at tile, Companion and Station sizes).
-- **One camera rig for the registry:** the Companion and Station subjects share the scale that fits the longest type specimen, each body centred in its own frame; the 48 px token fills its tile. An individual that overflows a fixed frame is clipped and flagged, never rescaled. `speciesCameras` is the per-species fit.
-- **Same genome, same bytes:** integer-exact rasterization, no anti-aliasing; flap translucency and a charged body's phase are an ordered dither. `--verify` renders twice and compares every PNG's SHA-256.
-- **The manifest** follows art-pipeline.md §3: level, id, version, the genome and its digest, frame version, catalogue pin, sketcher version and sketch hash, slot legend, marking fields, states, one entry per output with its SHA-256; prompt, references, model, critique and sign-off are empty slots for later stages. A reference set (`--set N`, or the page's Reference set button) adds `index.json`.
+### What a service receives per individual
+
+One directory, named by the genome digest (`<species>-<8 hex>`, the type specimen's is `type-specimen`), holding:
+
+- `genome.json`: the genome (schema `mb-genome/2`, species, `frameVersion`, two copies at every carried locus, origin: type specimen, random with its seed, or cross with its parents' digests).
+- `manifest.json`: `id` (the digest), `level` (`species` for a type specimen, `individual` otherwise), `species`, `clan`, `plan`, `rig`, the genome and `genomeDigest` (short, 32-bit FNV over the sorted loci: the directory name) and `genomeSha256` (SHA-256 of the canonical genome text, order-free: the strong key), `frameVersion` and the `catalogue` pin, `sketch` (sketcher version, the sketch hash over every output's hash, caption, views, sizes, the slot legend, the marking fields, the body's bounds, the plan's states), one entry per output with its file, pass, field, view, size, SHA-256 and a `clipped` flag, and the empty slots the generation fills later (`prompt`, `references`, `model`, `critique`, `signoff`, `supersedes`); `generated: false`; the licence line.
+- One PNG per pass, view and size, named `<pass>[-<field>].<view>.<size>.png`: 61 images for a species with two marking fields, 49 with none.
+
+### Views, sizes, cameras
+
+- **Views** (orthographic, world X back, Y right, Z up, the head toward −X): `front` (looking along +X at the face), `side` (the head facing right), `three-quarter` (from the front-right, raised 15°), `top`.
+- **Sizes**: `tile` 48×48 (the Companion's field token), `companion` 280×300 (the Companion subject), `station` 300×310 (the Station subject), `large` 600×620.
+- **Cameras**: one rig for the whole registry (`registryCameras`): at `companion`, `station` and `large` every species shares the scale that fits the longest type specimen with a 14 % margin and every body is centred in its own frame, so size classes show (a small S03 is small beside a large S07) and individuals of one species sit in the same place; at `tile` every body is fitted to the box with a 4 % margin, so the token fills its tile. A body that overflows its frame is clipped and flagged in the manifest, never rescaled. `--fit-species` fits the camera to the species' own type specimen instead.
+
+### Passes, pixel by pixel
+
+| Pass | Views × sizes | Background | Pixels |
+| --- | --- | --- | --- |
+| `shaded` | 4 × companion, station, large; three-quarter × tile | `#f6f3ec` | Flat fill per pigment slot (the first and second pigment of a split slot by position along the body) under one Lambert light from the viewer's top left (0.42 + 0.58·cos), the eye rim and pupil as fixed inks, markings and a mask as a lighter field at the marking contrast, a sheen as a specular highlight, a charged body warmed by its emission. The look the generation keeps |
+| `slots` | 4 × companion, station, large | black | One flat colour per pigment slot, the second half of a split slot at 0.7 brightness; the colour of every slot is in `manifest.sketch.slots` (`slot`, `pigments`, `flat`, `secondHalf`). The colour key |
+| `index` | 4 × companion, station, large | black | One flat colour per part (head, muzzle, each ear, each leg, tail, flaps, shell, cases, leaves, body regions), stable across views for one body. The part key |
+| `markings-<field>` | 4 × companion, station, large, one per field in `manifest.sketch.markingFields` | black | White where the field lies: `coat` (bands, patches), `flaps`, `cap`, `mask`, `rings`, `shell`, `belly`. Masks for the pattern pass |
+| `silhouette` | 4 × tile, companion, station | white | Black where the body is, translucency ignored. The shape the kind check measures |
+
+Rules a service may rely on: integer-exact rasterization, no anti-aliasing, no alpha; a translucent flap and a charged body's phase are an ordered 4×4 Bayer dither in the shaded, slot and index passes and solid in the silhouette; the same genome gives the same bytes on Node and in the browser, and `--verify` proves it by rendering twice and comparing every SHA-256; the sketch hash in the manifest changes when any output does. Pixels carry structure and slots only: no material, no face beyond the fixed eyes, no pose but the reference pose. Those are the generation's to add, with the genome and the frame as the brief.
+
+### Producing a set from the CLI
+
+```sh
+node sketch/cli.mjs --species S05                      # the type specimen → out/sketch/S05/type-specimen/
+node sketch/cli.mjs --species S05 --seed 7             # a random individual by seed → out/sketch/S05/<digest>/
+node sketch/cli.mjs --species S05 --set 8              # a reference set: the type specimen and 8 members → out/reference/S05/ with index.json
+node sketch/cli.mjs --species S05 --digest S05-55a4cb76   # that individual again, by digest or a sha256 prefix
+node sketch/cli.mjs --species S05 --genome g.json      # an exported genome
+node sketch/cli.mjs --all                              # every species' type specimen
+```
+
+Deterministic by genome hash: a reference set's members come from the stream `rng("<species>:reference-set")` and a seeded individual from `rng("<species>:<seed>")`, so `--digest` finds a genome again from its saved `genome.json` under `out/`, or, when nothing is saved, by walking the first 256 members of the reference stream and the first 256 seeds and matching the short digest or the SHA-256 prefix; it never guesses, and an unknown digest is an error. The set's `index.json` lists every member with its digest, SHA-256, seed, directory, sketch hash and output count, beside the frame file the set was built against. The same digest gives the same directory and the same bytes whichever way it was reached.
 
 ![The 16 type specimens, three-quarter and side](img/type-specimens.png)
 
-*The 16 type specimens of the registry, three-quarter and side, shaded pass. Structure and slots only; craft is the masters' job.*
+*The 16 type specimens of the registry, three-quarter and side, shaded pass. Structure and slots only; craft is the generation's job.*
 
 ## Run the checks
 
 ```sh
 cd prototypes/workbench
-npm test                                   # node --test tests/*.test.mjs: catalogue, plans, frames, resolver, crosses, bytes, contract, proportions and targets, sketch (12 tests)
+npm test                                   # node --test tests/*.test.mjs: catalogue, plans, frames, resolver, crosses, bytes, contract, proportions and targets, sketch, digest (13 tests)
 node framework/build-frames.mjs --check    # the registry is current (200 random individuals per species, about 35 s)
 node framework/census.mjs                  # the census gate and the kind check; writes framework/census.json, census.md, img/silhouettes-48.png (and 2×) and img/targets-48.png (about 60 s)
 node sketch/cli.mjs --all                  # every species' type specimen sketched under out/sketch/ (about 10 s)
 node sketch/cli.mjs --species S03 --verify # one sketch set rendered twice and compared byte for byte
+node sketch/cli.mjs --species S05 --set 8  # a reference set under out/reference/; --digest <id> brings one member back
 node tools/screenshot.mjs                  # the page headless: fails on any page error, writes img/page-*.png (needs the playwright package and a Chromium)
 node tools/contact-sheet.mjs --species S09 --n 8   # a sheet of random individuals, for a look
 node tools/contact-sheet.mjs --out img/type-specimens.png   # the 16-species sheet; node tools/six-specimens.mjs writes img/six-specimens.png
