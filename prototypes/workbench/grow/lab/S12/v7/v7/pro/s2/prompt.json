@@ -1,0 +1,322 @@
+{
+ "species": "S12",
+ "variant": {
+  "id": "v7",
+  "name": "v7 baseline: the house rendering",
+  "change": "The v7 house rendering in both steps (one light, one shading model, value-only contour, the house eye, the background and contact-shadow rule, two or three surface touches, the vinyl finish, one framing rule), the species notes cut to what differs, and no species reference image in either step: the drawing and the colour key only.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "The v7 house rendering in both steps (one light, one shading model, value-only contour, the house eye, the background and contact-shadow rule, two or three surface touches, the vinyl finish, one framing rule), the species notes cut to what differs, and no species reference image in either step: the drawing and the colour key only.",
+ "costUSD": 0.345,
+ "subject": {
+  "member": "type-specimen",
+  "genomeDigest": "S12-94f298de",
+  "controls": "out/S12/2af58fb73ac5cbbd"
+ },
+ "step1": {
+  "callId": "53a048bf-1e05-4792-a122-db31a5a2ad7e",
+  "status": "ok",
+  "costUSD": 0.16961,
+  "seconds": 17.2,
+  "imageOrder": [
+   "index",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.388,
+   "silhouetteIoUInPlace": 0.102,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.991
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.995
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.514
+    },
+    "eye": {
+     "span": 0.254,
+     "coverage": 0.534
+    },
+    "antenna": {
+     "span": 0.075,
+     "coverage": 0.231
+    },
+    "leg-0": {
+     "span": 0.427,
+     "coverage": 0.649
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.992
+    },
+    "leg-2": {
+     "span": 0.663,
+     "coverage": 0.333
+    },
+    "flap": {
+     "span": 0.447,
+     "coverage": 0.387
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.704,
+     "ok": false
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.54,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.646,
+     "ok": false
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.54,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.504,
+     "ok": false
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.46,
+     "ok": false
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.575,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.438,
+     "median": "#d5af66",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.04,
+     "median": "#d7ba85",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.03,
+     "median": "#ffffff",
+     "nearest": "#f1eddc",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.096,
+     "median": "#ded1a7",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.238,
+     "median": "#ffffff",
+     "nearest": "#f1eddc",
+     "ok": false
+    },
+    "second@leg-2": {
+     "agreement": 0.036,
+     "median": "#ffffff",
+     "nearest": "#f1eddc",
+     "ok": false
+    },
+    "second@flap": {
+     "agreement": 0.522,
+     "median": "#ebe3b6",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (33% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: eye (painted along 25% of its length), antenna (painted along 8% of its length), leg-0 (painted along 43% of its length), flap (painted along 45% of its length)",
+    "the proportions are off: the region-0 is larger than drawn (0.70 of the body against 0.24), the region-1 is larger than drawn (0.54 of the body against 0.17), the head is larger than drawn (0.65 of the body against 0.22), the leg-1 is larger than drawn (0.50 of the body against 0.18), the leg-2 is larger than drawn (0.46 of the body against 0.21)",
+    "a pigment slot is painted in another slot's colour: the body slot on the head (painted #ffffff, the colour of eyeRim), the second slot on the leg-1 (painted #ffffff, the colour of eyeRim), the second slot on the leg-2 (painted #ffffff, the colour of eyeRim)"
+   ],
+   "outside": 0.328,
+   "missing": 0.027,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.296,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "d5bec4c0-04c5-4b7a-a720-72fc4c2692b0",
+  "status": "ok",
+  "costUSD": 0.17537,
+  "seconds": 19.8,
+  "imageOrder": [
+   "drawing",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.356,
+   "silhouetteIoUInPlace": 0.245,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.808
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.965
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.387
+    },
+    "eye": {
+     "span": 0.317,
+     "coverage": 0.061
+    },
+    "antenna": {
+     "span": 0.19,
+     "coverage": 0.091
+    },
+    "leg-0": {
+     "span": 0.427,
+     "coverage": 0.455
+    },
+    "leg-1": {
+     "span": 0.944,
+     "coverage": 0.343
+    },
+    "leg-2": {
+     "span": 0.584,
+     "coverage": 0.163
+    },
+    "flap": {
+     "span": 0.455,
+     "coverage": 0.335
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.617,
+     "ok": false
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.482,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.577,
+     "ok": false
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.482,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.443,
+     "ok": false
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.399,
+     "ok": false
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.514,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.634,
+     "median": "#d6b25b",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.16,
+     "median": "#d8bb87",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.654,
+     "median": "#e2b45c",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.276,
+     "median": "#d1a865",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.857,
+     "median": "#efdba0",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-2": {
+     "agreement": 0.944,
+     "median": "#f3e2a2",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.879,
+     "median": "#e6dba1",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (15% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: eye (painted along 32% of its length), antenna (painted along 19% of its length), leg-0 (painted along 43% of its length), leg-2 (painted along 58% of its length), flap (painted along 46% of its length)",
+    "the proportions are off: the region-0 is larger than drawn (0.62 of the body against 0.24), the region-1 is larger than drawn (0.48 of the body against 0.17), the head is larger than drawn (0.58 of the body against 0.22), the leg-1 is larger than drawn (0.44 of the body against 0.18), the leg-2 is larger than drawn (0.40 of the body against 0.21)"
+   ],
+   "outside": 0.148,
+   "missing": 0.046,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.62,
+   "passed": false,
+   "gated": false
+  }
+ }
+}
