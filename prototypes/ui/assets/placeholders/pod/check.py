@@ -3,7 +3,7 @@
 usage:  python3 -I check.py            (from anywhere; run build.py first)
 
 Standard library only. It decodes the built PNGs itself and tests the pixels, not the source:
-  - off-palette pixels in every PNG (an opaque pixel whose colour is not one of the 62 in station-settled.json): must be 0;
+  - off-palette pixels in every PNG (an opaque pixel whose colour is not one of the 62 in station.json): must be 0;
   - the PNG palette is the 62 colours in file order, plus the one transparent entry; alpha only 0 or 255 (no partial alpha);
   - no pixel in void (black), no outline in black;
   - the atlas rects fit their sheets and the sprites are not empty; sprite sizes equal the class box;

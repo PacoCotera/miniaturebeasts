@@ -5,14 +5,14 @@ usage:  python3 -I build.py            (from anywhere)
 Reads   source/pod-large.txt, pod-medium.txt, pod-small.txt, pod-well.txt   the drawings: pieces body, band, glow
         source/glyphs.txt                                                    the 16 species glyphs, 5x5 cells
         source/layout.json                                                   anchors, ramps, pigments, species
-        ../../../../palettes/station-settled.json                          the 62 colours
+        ../../../../palettes/station.json                          the 62 colours
 Writes  pod-bodies.png      sheet: per class, the sealed pod, the identified pod, the seal band and the glow
         pod-glyphs.png      sheet: per class, the 16 glyphs (cream, one cell = the class's glyph cell)
         pod-atlas.json      sprite rects, anchors, ramps, per-species remaps, how to composite, manifest entries
         contact-1x.png, contact-2x.png
 
 Standard library only. PNGs are written here, indexed: PLTE holds the 62 palette colours in file order (index = position
-in station-settled.json) and entry 62 is the transparent index (tRNS alpha 0, the only alpha there is). A pixel can
+in station.json) and entry 62 is the transparent index (tRNS alpha 0, the only alpha there is). A pixel can
 only be a palette colour or empty: nothing can be off palette, there is no anti-aliasing and no dithering.
 
 Source legend. The drawings use two base ramps that stand for "the species' colour A" and "colour B"; the species'
@@ -288,7 +288,7 @@ def main():
     atlas = {
         "name": "Pod placeholders", "status": layout["status"],
         "note": "Hand-drawn placeholders: one drawing per size class and state, coloured per species by remap. Never a master.",
-        "palette": {"file": "prototypes/ui/palettes/station-settled.json", "colours": 62, "transparentIndex": T,
+        "palette": {"file": "prototypes/ui/palettes/station.json", "colours": 62, "transparentIndex": T,
                     "names": names, "note": "PNG palette index = position in that file; index 62 is transparent (tRNS)"},
         "stage": layout["stage"],
         "ramps": {"A": {"chars": RAMP_CHARS["A"], "names": layout["legend"]["A"], "indices": base_idx["A"]},

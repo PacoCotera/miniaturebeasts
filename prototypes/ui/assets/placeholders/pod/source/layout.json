@@ -1,7 +1,7 @@
 {
  "name": "pod placeholders",
  "status": "signed by the art director, 2026-10-08",
- "palette": "../../../../palettes/station-settled.json",
+ "palette": "../../../../palettes/station.json",
  "stage": {
   "anchor": [
    344,

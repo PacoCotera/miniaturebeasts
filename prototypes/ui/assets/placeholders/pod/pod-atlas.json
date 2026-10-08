@@ -3,7 +3,7 @@
  "status": "signed by the art director, 2026-10-08",
  "note": "Hand-drawn placeholders: one drawing per size class and state, coloured per species by remap. Never a master.",
  "palette": {
-  "file": "prototypes/ui/palettes/station-settled.json",
+  "file": "prototypes/ui/palettes/station.json",
   "colours": 62,
   "transparentIndex": 62,
   "names": [
