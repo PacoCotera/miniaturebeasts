@@ -158,7 +158,7 @@ function lineOf(m, spec, p, chapters, ci) {
     if (b === null) return { back: "Home", subject: fill(Sg.subjectIs, { name: word, state: Sg.states.read }), need: here };
     if (b.startsWith("sealed")) return { back: "Home", subject: fill(Sg.subjectIs, { name: word, state: Sg.states.sealed }) };
     const cost = S.readCost(st, p, ch.id, settings);
-    return { ok: "Read " + ch.name, price: priceOf(cost, "◆"), dim: !!b, back: "Home", subject: fill(Sg.subjectIs, { name: word, state: Sg.states.unread }), need: blockNeed(b, Sg) ?? here };
+    return { ok: "Read " + word, price: priceOf(cost, "◆"), dim: !!b, back: "Home", subject: fill(Sg.subjectIs, { name: word, state: Sg.states.unread }), need: blockNeed(b, Sg) ?? here };
   }
   if (f.startsWith("list.") && f !== "list.hatch") {
     const i = +f.slice(5), q = st.tray[i]; if (!q) return { back: "Home" };

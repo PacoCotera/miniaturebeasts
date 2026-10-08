@@ -51,12 +51,12 @@ test("an unidentified pod: the sealed pod, 'Unknown', its origin, no rail, no pa
   assert.ok(sealedPic && sealedPic.species === null, "the species stays unknown before Identify");
 });
 
-test("the pod is sized by its size class and bottom-centred on (344, 312)", () => {
+test("the pod is sized by its size class and bottom-centred on its axis, its foot on the spec's feet line", () => {
   for (const id of SPECIES) {
     const st = stock([id]); S.identify(st, st.tray[0], settings); const v = view(model(st)), fr = frameOf(id), [w, h] = spec.classes.pod[fr.pod.sizeClass];
-    assert.deepEqual(v.specimen.pod.size, [w, h], id); assert.deepEqual(v.box, [344 - Math.round(w / 2), 312 - h, w, h], id);
+    assert.deepEqual(v.specimen.pod.size, [w, h], id); assert.deepEqual(v.box, [spec.regions.pod.axis - Math.round(w / 2), spec.regions.pod.feet - h, w, h], id);
   }
-  assert.deepEqual(spec.classes.pod.large, [160, 192]);
+  assert.deepEqual(spec.classes.pod.large, spec.regions.pod.rect.slice(2), "the large class is the pod's box");
 });
 
 test("every species: the rail shows all its chapters, one word each, no status words; the stamp label's cell follows its rule", () => {
@@ -64,8 +64,8 @@ test("every species: the rail shows all its chapters, one word each, no status w
     const st = stock([id]), p = st.tray[0]; S.skipIdentify(st, p); const v = view(model(st)), fr = frameOf(id);
     assert.equal(v.rail.tabs.length, fr.chapters.length, id + " rail tabs against the frame");
     assert.ok(fr.chapters.length <= 12);
-    for (const t of v.rail.tabs) { assert.ok(t.word === "Legs & tail" || !/\s/.test(t.word), `${id}: "${t.word}" is one word (the one decided exception is "Legs & tail")`); assert.ok(!/read|sealed|cleared|misty|◆|\d/i.test(t.word)); assert.equal(t.pips, Math.min(6, fr.chapters.find((c) => c.id === t.id).traits.length)); assert.equal(t.filled, 0); }
-    if (fr.chapters.some((c) => c.id === "legs-tail")) assert.ok(v.rail.tabs.some((t) => t.word === "Legs & tail"));
+    for (const t of v.rail.tabs) { assert.ok(t.word === "Legs & Tail" || !/\s/.test(t.word), `${id}: "${t.word}" is one word (the one decided exception is "Legs & Tail")`); assert.ok(!/read|sealed|cleared|misty|◆|\d/i.test(t.word)); assert.equal(t.pips, Math.min(6, fr.chapters.find((c) => c.id === t.id).traits.length)); assert.equal(t.filled, 0); }
+    if (fr.chapters.some((c) => c.id === "legs-tail")) assert.ok(v.rail.tabs.some((t) => t.word === "Legs & Tail"));
     const placed = railTabs(spec.regions.rail, fr.chapters.length); assert.equal(placed.tabs.length, fr.chapters.length); assert.ok(!placed.overflow);
     assert.equal(v.requests.find((r) => r.kind === "stamp").size, v.stamp.size);
   }
@@ -95,7 +95,7 @@ test("a read pod: the page by trait count, every picture at its grid size, no di
       }
       const sizes = new Set(page.cells.filter((c) => c.picture).map((c) => c.picture.split(":").at(-1)));
       assert.ok(sizes.size <= 1, "one picture size on a page: " + [...sizes]);
-      if (sizes.size) assert.ok(["448x312", "216x304", "216x112", "144x112"].includes([...sizes][0]), [...sizes][0]);
+      if (sizes.size) assert.ok(Object.values(spec.regions.page.grid).map((g) => g.picture.join("x")).includes([...sizes][0]), "a picture size from the spec's grid table: " + [...sizes][0]);
       assert.equal(v.rail.tabs[ci].state, sealed ? "sealed" : "read");
     }
     // unread: the frost and the name, no line, no picture
