@@ -1,3 +1,4 @@
 out/*/*/controls/
 out/*/*/plain/
 out/*/*/raw/
+__pycache__/
