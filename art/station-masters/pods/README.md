@@ -29,6 +29,39 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `frame-bottom-line-1024x38` | 1024×38 | (0, 562, 1024, 38) | the bar flipped (rule on its top edge), 1024x38 |
 | `frame-top-bar-1024x40` | 1024×40 | (0, 0, 1024, 40) | key magenta, cut, 1024x40 |
 
+### None
+
+| Slice id | Size | Rect on the screen | Made by |
+| --- | --- | --- | --- |
+| `glint-star-12x12` | 12×12 | (·, ·, 12, 12) | the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30) |
+| `rail-emblem-character-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-character-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-character-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-charge-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-charge-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-charge-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-coat-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-coat-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-coat-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-face-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-face-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-face-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-glow-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-glow-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-glow-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-movement-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-movement-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-movement-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-shape-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-shape-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-shape-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-stamina-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-stamina-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-stamina-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+
 ### Page pane (signed)
 
 | Slice id | Size | Rect on the screen | Made by |
@@ -90,49 +123,17 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `pod-small-sealed` | 104×128 | (660, 264, 104, 128) | the Loika reference sprite |
 | `pod-small-shade` | 104×128 | (660, 264, 104, 128) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
 | `pod-small-shadow` | 120×14 | (652, 385, 120, 14) | contact shadow: centred on x 712 with its middle on the foot line y 392 |
-| `pod-well-band` | 32×40 | (·, ·, 32, 40) | the sealing band as a layer |
-| `pod-well-crack` | 32×40 | (·, ·, 32, 40) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
-| `pod-well-identified` | 32×40 | (·, ·, 32, 40) | the Loika reference sprite |
-| `pod-well-mask-accent` | 32×40 | (·, ·, 32, 40) | systematic pod layer: mask-accent, enclosed pixels filled |
-| `pod-well-mask-body` | 32×40 | (·, ·, 32, 40) | systematic pod layer: mask-body, held with the accent mask |
-| `pod-well-pattern-bands` | 32×40 | (·, ·, 32, 40) | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
-| `pod-well-pattern-dots` | 32×40 | (·, ·, 32, 40) | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
-| `pod-well-pattern-stripes` | 32×40 | (·, ·, 32, 40) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
-| `pod-well-sealed` | 32×40 | (·, ·, 32, 40) | the Loika reference sprite |
-| `pod-well-shade` | 32×40 | (·, ·, 32, 40) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
+| `pod-well-band` | 32×48 | (·, ·, 32, 48) | the sealing band as a layer |
+| `pod-well-crack` | 32×48 | (·, ·, 32, 48) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
+| `pod-well-identified` | 32×48 | (·, ·, 32, 48) | the Loika reference sprite |
+| `pod-well-mask-accent` | 32×48 | (·, ·, 32, 48) | systematic pod layer: mask-accent, enclosed pixels filled |
+| `pod-well-mask-body` | 32×48 | (·, ·, 32, 48) | systematic pod layer: mask-body, held with the accent mask |
+| `pod-well-pattern-bands` | 32×48 | (·, ·, 32, 48) | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
+| `pod-well-pattern-dots` | 32×48 | (·, ·, 32, 48) | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
+| `pod-well-pattern-stripes` | 32×48 | (·, ·, 32, 48) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
+| `pod-well-sealed` | 32×48 | (·, ·, 32, 48) | the Loika reference sprite |
+| `pod-well-shade` | 32×48 | (·, ·, 32, 48) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
 | `pod-well-shadow` | 48×14 | (688, 385, 48, 14) | contact shadow: centred on x 712 with its middle on the foot line y 392 |
-
-### None
-
-| Slice id | Size | Rect on the screen | Made by |
-| --- | --- | --- | --- |
-| `rail-emblem-character-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-character-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-character-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-charge-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-charge-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-charge-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-coat-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-coat-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-coat-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-face-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-face-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-face-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-glow-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-glow-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-glow-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-movement-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-movement-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-movement-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-shape-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-shape-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-shape-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-stamina-read-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-stamina-sealed-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-stamina-unread-24x24` | 24×24 |  | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 
 ### Chapter rail tabs (hanging, slant baked)
 
@@ -147,19 +148,90 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `rail-tab-unread-compact-72x40` | 72×40 | (·, 40, 72, 40) | compact hanging tab, slant baked (9-slice of the full one, slant kept) |
 | `rail-tab-unread-full-152x40` | 152×40 | (·, 40, 152, 40) | hanging tab, slant baked: un-sheared, resized to 136x40, sheared 16 px |
 
+### Wells and hatch
+
+| Slice id | Size | Rect on the screen | Made by |
+| --- | --- | --- | --- |
+| `ring-arc-idle-n4-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n4-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n4-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n4-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n4-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 4 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-arc-idle-n5-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n5-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n5-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n5-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n5-s4` | 80×80 | (·, ·, 80, 80) | chapter 5 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n5-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 5 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-arc-idle-n6-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n6-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n6-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n6-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n6-s4` | 80×80 | (·, ·, 80, 80) | chapter 5 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n6-s5` | 80×80 | (·, ·, 80, 80) | chapter 6 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n6-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 6 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-arc-idle-n7-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n7-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n7-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n7-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n7-s4` | 80×80 | (·, ·, 80, 80) | chapter 5 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n7-s5` | 80×80 | (·, ·, 80, 80) | chapter 6 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n7-s6` | 80×80 | (·, ·, 80, 80) | chapter 7 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n7-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 7 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-arc-idle-n8-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n8-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n8-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n8-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n8-s4` | 80×80 | (·, ·, 80, 80) | chapter 5 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n8-s5` | 80×80 | (·, ·, 80, 80) | chapter 6 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n8-s6` | 80×80 | (·, ·, 80, 80) | chapter 7 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n8-s7` | 80×80 | (·, ·, 80, 80) | chapter 8 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-idle-n8-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 8 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-arc-selected-n4-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n4-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n4-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n4-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n4-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 4 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-arc-selected-n5-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n5-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n5-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n5-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n5-s4` | 80×80 | (·, ·, 80, 80) | chapter 5 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n5-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 5 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-arc-selected-n6-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n6-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n6-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n6-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n6-s4` | 80×80 | (·, ·, 80, 80) | chapter 5 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n6-s5` | 80×80 | (·, ·, 80, 80) | chapter 6 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n6-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 6 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-arc-selected-n7-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n7-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n7-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n7-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n7-s4` | 80×80 | (·, ·, 80, 80) | chapter 5 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n7-s5` | 80×80 | (·, ·, 80, 80) | chapter 6 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n7-s6` | 80×80 | (·, ·, 80, 80) | chapter 7 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n7-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 7 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-arc-selected-n8-s0` | 80×80 | (·, ·, 80, 80) | chapter 1 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n8-s1` | 80×80 | (·, ·, 80, 80) | chapter 2 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n8-s2` | 80×80 | (·, ·, 80, 80) | chapter 3 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n8-s3` | 80×80 | (·, ·, 80, 80) | chapter 4 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n8-s4` | 80×80 | (·, ·, 80, 80) | chapter 5 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n8-s5` | 80×80 | (·, ·, 80, 80) | chapter 6 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n8-s6` | 80×80 | (·, ·, 80, 80) | chapter 7 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n8-s7` | 80×80 | (·, ·, 80, 80) | chapter 8 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps |
+| `ring-arc-selected-n8-track` | 80×80 | (·, ·, 80, 80) | the unlit groove for 8 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side |
+| `ring-hatch` | 112×56 | (24, 488, 112, 56) | a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box |
+| `ring-well-empty` | 64×64 | (40, 52, 64, 64) | colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow) |
+| `ring-well-idle-80x80` | 80×80 | (·, ·, 80, 80) | the idle well's thin dark-glass double ring, outer diameter 66, hairlines about 5 px apart; colour-to-alpha, centred in 80x80 |
+| `ring-well-selected-80x80` | 80×80 | (·, ·, 80, 80) | the selected well's thick warm ivory band (7 px, bone to sand, lit top left) with its soft glow about 4 px outward; colour-to-alpha, scaled so the band's outer diameter is 66, centred in 80x80 |
+
 ### List column plate (signed)
 
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
 | `ring-column` | 160×522 | (0, 40, 160, 522) | cut: right part of list-column, bottom leak cropped |
-
-### Wells and hatch
-
-| Slice id | Size | Rect on the screen | Made by |
-| --- | --- | --- | --- |
-| `ring-hatch` | 112×56 | (24, 488, 112, 56) | a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box |
-| `ring-well-current` | 64×64 | (40, 52, 64, 64) | colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow) |
-| `ring-well-empty` | 64×64 | (40, 52, 64, 64) | colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow) |
 
 ### Bench scene, dish, shelf
 
@@ -207,6 +279,18 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Well rings from the concept (2026-10-08)
+
+The owner's ruling: the concept's rings are right, the composite's were not. Painted layer, 1×, straight alpha, **80×80 slices centred on the well's centre** (the ring's centre is pixel (40,40)); the ring's outer diameter is 66 inside them, so the glow has 7 px of room.
+
+- **`ring-well-selected-80x80`:** the selected well's thick warm ivory band, 7 px thick, bone on its lit upper left to sand on its lower right (not the focus cream), with a soft warm glow about 4 px outward. Painted from the concept's top well.
+- **`ring-well-idle-80x80`:** a thin dark-glass double ring, the hairlines about 5 px apart, from the concept's idle wells (the same painting the signed `ring-well-empty` came from, scaled to 66; `ring-well-empty` is kept as signed, matched to it).
+- **`ring-well-current`** (the cyan rim) is withdrawn and removed.
+- **Arcs:** `ring-arc-{selected,idle}-n{4..8}-track` is the unlit groove (a dark 3 px groove at radius 24 with a faint lit lip on its lower right), and `ring-arc-{selected,idle}-n{4..8}-s{i}` (i from 0) one segment per chapter, clockwise from 12 o'clock on the inner edge, equal arcs with 2 px gaps: a fine bright engraved line on selected (one step lighter on its upper-left half), a dim warm line on idle. They are drawn by `tools/build.py` at 8× and reduced (geometry, not painting), 70 slices.
+- **`glint-star-12x12`:** the concept's soft four-point spark, one master for the well and the rail tab; place it outside the ring at the upper right (about cx + 30, cy − 30).
+- **Pods in the wells:** the `well` class is now a 32×48 box (`pod-well-*`, all layers re-cut, the pod bottom-aligned and centred). The Loika's squat shape fills 32×35 of it, so it fills about 60 percent of the ring's 52 px opening, not 85: a taller species would fill more. The two enclosed pixels of `pod-well-mask-accent` are at (6,19) and (7,19) in the new box.
+- **Rectangles** wait for the UI designer's column (112 wide, 66 px rings on a 72 pitch): the ring slices go at (cx − 40, cy − 40) and the well pod box at (cx − 16, cy − 24).
 
 ## Pass 7c (2026-10-08)
 

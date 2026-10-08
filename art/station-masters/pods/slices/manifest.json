@@ -89,21 +89,6 @@
   "made": "colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow)",
   "sha256": "6fb8007535b9de1183aedb565f3752c5a9ef437f689ac179f9d0bb083e4a7df7"
  },
- "ring-well-current": {
-  "size": [
-   64,
-   64
-  ],
-  "rect": [
-   40,
-   52,
-   64,
-   64
-  ],
-  "src": "well-rings2",
-  "made": "colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow)",
-  "sha256": "33a54a26f235c5d640ee7297c0dc9dc846c35b4da76d5288b4458a81fb12f4b2"
- },
  "ring-hatch": {
   "size": [
    112,
@@ -482,47 +467,47 @@
  "pod-well-identified": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-loika",
   "made": "the Loika reference sprite",
-  "sha256": "63560a76ca559b099b1ccf4d498fee1d76e4e19d584802e883b49ccf55ea75ed"
+  "sha256": "8ff0e176496bbc89961f4f0bcab9e2eeee0a54854a2e45a127b25e0e56a2261f"
  },
  "pod-well-sealed": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-band",
   "made": "the Loika reference sprite",
-  "sha256": "ed758253b286d40192bfb4298fbff16a162cc414409373bddc609ead7ea642a3"
+  "sha256": "271e05d34d473508e2ae80dcf263c108633c3be25fcab2ec2be9f8d207976b1c"
  },
  "pod-well-band": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-band",
   "made": "the sealing band as a layer",
-  "sha256": "f52d23d50a72593ed89011581a4f887da98ca3c8e2213772509c92259499388c"
+  "sha256": "7c128200d9d95cf7382b0a24c1da616fb54b25e6443393f21db9dac6c2c57f61"
  },
  "pod-large-shade": {
   "size": [
@@ -842,92 +827,92 @@
  "pod-well-shade": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
-  "sha256": "359ff840ac1a2066e2a8331c6ce7c0e1a36363ca1e2a1ad8061135a0fcbf3995"
+  "sha256": "748edae2709cca332799034bf859ad616434edb00b1b31d73f1e5b6943d2267a"
  },
  "pod-well-mask-body": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, held with the accent mask",
-  "sha256": "8dfa5828d59ba6a95a7bb92ce3339f08ff1e0a4fade2c45060b2d2d7f82c807b"
+  "sha256": "b778891c541921180c48e8e97d86cae1bf6700809ebc43115192a64f47c9c886"
  },
  "pod-well-mask-accent": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, enclosed pixels filled",
-  "sha256": "6d35aa74f86acd429847e0dca0e129a6ea359093f9d874ca6eff097965866300"
+  "sha256": "a8ba2f5c50787a40be9c0dc95c8c1ad1b31f404bbce74a35a031676f7e0b6e06"
  },
  "pod-well-pattern-dots": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
-  "sha256": "762c51fa0c85c91815f5518e2f163c11ec65add6a0086c5f05a7568d3bd2eee0"
+  "sha256": "dc68f276fc9720d10dc98b60c53064c6df44887133a824bc68b4e9db29f7bbf5"
  },
  "pod-well-pattern-stripes": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
-  "sha256": "d8fd8f55c94f1745e55b84fd9b77f58c1c4e0d26900c6186213aa9b63fd10170"
+  "sha256": "2a7c0de7601522b32f3602d60599a7ed2d49267f3945b59a34984c5fa64c43b7"
  },
  "pod-well-pattern-bands": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
-  "sha256": "927ad8a1e81003b4edc028d1fc7a8ca851f440ce34b4db87889f2dfd989ed8b5"
+  "sha256": "dfc60f78b9dee6e3485973fe93ab0c4d3ccc81dc56daa27e64033bc651e031b2"
  },
  "pod-well-shadow": {
   "size": [
@@ -992,17 +977,17 @@
  "pod-well-crack": {
   "size": [
    32,
-   40
+   48
   ],
   "rect": [
    null,
    null,
    32,
-   40
+   48
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
-  "sha256": "b4680ef80f0f127ec98c56bb273f1c981266f2cc38f770d23fcfb3c0cab78e9e"
+  "sha256": "0b38ff40f2a614df645a07026d550b4853b51a4bf7c22cb54c58fe24b03e0864"
  },
  "trait-picture-frame-184x304": {
   "size": [
@@ -1693,5 +1678,1100 @@
   "src": "emblems/source/charge.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "6439b6d6ed307d70bce45d232ca03f6ab0606fa99acf16c68963d6fa5a613e43"
+ },
+ "ring-well-selected-80x80": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "ring-selected",
+  "made": "the selected well's thick warm ivory band (7 px, bone to sand, lit top left) with its soft glow about 4 px outward; colour-to-alpha, scaled so the band's outer diameter is 66, centred in 80x80",
+  "sha256": "d9de6aa8bb2e70f6b3c65fab3a7434c951f6c435542962244740813f17684eed"
+ },
+ "ring-well-idle-80x80": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "ring-idle",
+  "made": "the idle well's thin dark-glass double ring, outer diameter 66, hairlines about 5 px apart; colour-to-alpha, centred in 80x80",
+  "sha256": "58323b911f752140d9cee0b9fca872731e532eab86897ed094b799945514d46a"
+ },
+ "ring-arc-selected-n4-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 4 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21"
+ },
+ "ring-arc-selected-n4-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "fbc710f139eceb9c5d910d19e0150e5b486785ea7034362a9bbd76724a40dc9d"
+ },
+ "ring-arc-selected-n4-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "0339819ecb2d8ee94f3a976c1fbbae633ec0dec62cd016c193fcfea2ca744a01"
+ },
+ "ring-arc-selected-n4-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "56316bc1311bf0bd78e6ed02cc5e91b6dfaa99da3fd485d05c3c65112bee3cf9"
+ },
+ "ring-arc-selected-n4-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 4: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "492f0e82170d597216cfd9ded9d3ffa1e2cc1b688a13f380c27c9ecb96e8b35d"
+ },
+ "ring-arc-selected-n5-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 5 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21"
+ },
+ "ring-arc-selected-n5-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "00d3a23b1308da7d2ce08d933fd41f1e1913cabbc65511ac679588be664e6620"
+ },
+ "ring-arc-selected-n5-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "e093f0aaa18011b6e19c3e3baf594cc0ae3036c034a0bef1163692c946940047"
+ },
+ "ring-arc-selected-n5-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "44fbe5b625a6eec001ea4f04bada47aa411c80c96ec811bdb86afc4e2745e322"
+ },
+ "ring-arc-selected-n5-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "65ca739cb41d93d2654425779984e917918b6bb69ea17f9f35b2c4a3cf442841"
+ },
+ "ring-arc-selected-n5-s4": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 5: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "c2c37b47792cac6a0b20678ab541f87508f49a2c594f99ee3a800a7fae58d281"
+ },
+ "ring-arc-selected-n6-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 6 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21"
+ },
+ "ring-arc-selected-n6-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "ce71211b245fa386e46fe9c86b0f7d7d43cae12109f0cf0b58bf85cb24c05c93"
+ },
+ "ring-arc-selected-n6-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "ebdddc896cc2e4df1cb03f2e6b28b616e7dbca4477d8e8f1b796f319a9a556b6"
+ },
+ "ring-arc-selected-n6-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "2f0676b7ca58ebcc0e86a11f2004698102277527bdf4d431843d0ecc32c4a2f2"
+ },
+ "ring-arc-selected-n6-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "cef4988a960487c54770513e4d78f1ed7965229e177e3f6013683b59cf71c9ff"
+ },
+ "ring-arc-selected-n6-s4": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "3a684e58d61f869f87307c8a49c6e4b93ce4fb7e7ba673be4c166317c447c4bd"
+ },
+ "ring-arc-selected-n6-s5": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 6: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "09396929fc46391c3735e8afb4fe1ca9d514ff7dd40e4d5b438970123835c84f"
+ },
+ "ring-arc-selected-n7-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 7 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21"
+ },
+ "ring-arc-selected-n7-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "11d7ace7ef10c0791c244d4750fa087e26bb557a46befa3dacd19230c2cbcdbb"
+ },
+ "ring-arc-selected-n7-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "f55e613472925f4f4285fb75745a1500560c36a432d957ea34eabcdccebc40b7"
+ },
+ "ring-arc-selected-n7-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "09f95910336df58860dbb1313bebb1caebe722d0a056e67076ee6b763654f1cc"
+ },
+ "ring-arc-selected-n7-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "5d2ffefe303c6e08c2622404dc019ea3985ded7ab94591686e14e659810570b8"
+ },
+ "ring-arc-selected-n7-s4": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "d0ae32df7ba3f4f8f65d8b63c408c99928b78fef6548824f5170f88dc5a80de2"
+ },
+ "ring-arc-selected-n7-s5": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "fbbcc2ef26cba44a46794a9402e15d40ba5f99dc9aa701e85f6f2aab89d2ed26"
+ },
+ "ring-arc-selected-n7-s6": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 7 of 7: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "25e4262ebc23ee728ddc647bf228c63725c266a64e8f53cd65f308d13fcfcadb"
+ },
+ "ring-arc-selected-n8-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 8 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "edda9fa4ebdea00ce6a11a17c90e2b1ff2fc2c4c7f065363297f3c60aeb34a21"
+ },
+ "ring-arc-selected-n8-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "4d44343c39c571a16d8d18cc3c161ea396a0280b8856ba0f2ff6840310c317c0"
+ },
+ "ring-arc-selected-n8-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "db2cfb4ddc1eafc277a077e09750cb8d7b3dcceb9f8ab7209ca97e034a2c9706"
+ },
+ "ring-arc-selected-n8-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "51cf5616b209569169d5cdfb3430b4b8e08f8e23da0046d8bd4cd895fa24ac84"
+ },
+ "ring-arc-selected-n8-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "1e116ef438cb45ec6a67cc471a998f6f536dae64b4619faa3bd62bc1d0ff261c"
+ },
+ "ring-arc-selected-n8-s4": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "d8ca19b34a41d4f9026e3ecc5237f5dac84736de845a2b454bad68a70eb43ff6"
+ },
+ "ring-arc-selected-n8-s5": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "812017b51905f5e1b8c4021997657e8e289d573414a3ab9f74ba81b4a1435b52"
+ },
+ "ring-arc-selected-n8-s6": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 7 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "27bf498f7a3caa405f15be00235cbfaabf7953dd3917635f76bfbfebb8dd1752"
+ },
+ "ring-arc-selected-n8-s7": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 8 of 8: a 2 px fine bright engraved line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "4828f68a0c15ff118be601e84b481268d2db60522456cbfe4d27e6c287c74cb9"
+ },
+ "ring-arc-idle-n4-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 4 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+ },
+ "ring-arc-idle-n4-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "50b6ed428e312010f0dd045c976c4e5b3af89d6160894e741882787769299487"
+ },
+ "ring-arc-idle-n4-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "a0db353a94e4867a80139a4a62b6b57b2eace7c0682ee04a9b46e098a0e15d6c"
+ },
+ "ring-arc-idle-n4-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "d49332d4601961807227c6d868e61846ba190bf4cd319d209f4c0db9af2e2bb6"
+ },
+ "ring-arc-idle-n4-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 4: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "8ad8ca16f73a3b97d85f9a9df7dcd9d5fcb7571f2a82612656a157231e22c0f7"
+ },
+ "ring-arc-idle-n5-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 5 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+ },
+ "ring-arc-idle-n5-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "fcb068d422d94244574b015bdf1da5b3260eea0fa87049644c57be29676d6b70"
+ },
+ "ring-arc-idle-n5-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "f1b8220765a3424e77bf0fe2a94dbe300ee1d1aa1ebe38b6c4f47aee6efdfdc1"
+ },
+ "ring-arc-idle-n5-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "60a0a58eae7171468d263de81824177a3b8e8e72d2a63f63c973a60818a882f8"
+ },
+ "ring-arc-idle-n5-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "e2c2719dc120977b0e075c7d2ab16807b17d6983af06449e1c2e8b5e20e2e0d1"
+ },
+ "ring-arc-idle-n5-s4": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 5: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "effe613df5fd7202e30714c332f2710936d0891e49b1eb08dde572eab3aee4c6"
+ },
+ "ring-arc-idle-n6-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 6 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+ },
+ "ring-arc-idle-n6-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "a1ee1105f7cd9dea6a4e76badb80daf3b2abe8df391c6d1ed3190262d9d6391e"
+ },
+ "ring-arc-idle-n6-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "4fea1016823ce5ce2567d12395a3cbcaa4172de6fe424875ceb54df606cea617"
+ },
+ "ring-arc-idle-n6-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "6b7a4eba192c73a84e0c00f5c5e5fa38bdce3e2d48aee857dabb7d019f45c763"
+ },
+ "ring-arc-idle-n6-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "1098a3d4f6a737fa5e4926f8ba8db7d20511b79947c66b4b465896a39c2bee96"
+ },
+ "ring-arc-idle-n6-s4": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "48d1752c59d3990c387b77ae768376d7d2f16302227b1cc845cd5c96c97341cf"
+ },
+ "ring-arc-idle-n6-s5": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 6: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "182f8fdbdbbcfc855085662d18edd572c64d63d54d91d19280c9e6c29837aff1"
+ },
+ "ring-arc-idle-n7-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 7 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+ },
+ "ring-arc-idle-n7-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "f741cc832a26bce17ee4c0df35c5631f1de28b8f4baae7be111489a9161eddcf"
+ },
+ "ring-arc-idle-n7-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "34c436bf091ac593b04bd95376d9be1d43004ab8431d1ffe372ca7fb4b8c99c7"
+ },
+ "ring-arc-idle-n7-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "cfcf83eafcf854e2013f484999f054ebf3405d33b06508d0c3a3fa90280f3d01"
+ },
+ "ring-arc-idle-n7-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "86dbd19a862c0d8b202745bb7318040e030e913e8d96d664f7515f595e25499d"
+ },
+ "ring-arc-idle-n7-s4": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "1f6b740755905ac89a54a2d771f1329d823862c8a1eae5e75ea52c3655e7d53f"
+ },
+ "ring-arc-idle-n7-s5": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "961cc8012e50292bdf5621146aa44edbe20d2ac7bfdefc6e9d74ce3d4d20b3e6"
+ },
+ "ring-arc-idle-n7-s6": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 7 of 7: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "ea16f17f35bd4f3cfc40a932453968eb2e0601d47b65f39c2a172c3788033bef"
+ },
+ "ring-arc-idle-n8-track": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unlit groove for 8 chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side",
+  "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+ },
+ "ring-arc-idle-n8-s0": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "894993823c214db340461c5e3322a53969e1083d6c38d4403428ef4a58037cd9"
+ },
+ "ring-arc-idle-n8-s1": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "b0935f79c791b20c7aeca967f391c8e98f9e6a3d4f2c8085130b77af45456b95"
+ },
+ "ring-arc-idle-n8-s2": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "688c5be0cdbe143c16e7ee066bcc465770330ffa9e6e3c8b195c89405a7c6482"
+ },
+ "ring-arc-idle-n8-s3": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "bfc20fe510687e8c177bc2dc0104a61fc3ea8e855d205c0ed789c1b2e62189e5"
+ },
+ "ring-arc-idle-n8-s4": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "8d3c8a081ae7cefaa7f3e5da7fde67b20dff202bc0f823b3fc86f79cdc53f0db"
+ },
+ "ring-arc-idle-n8-s5": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "8b6bea6d0e80551099d12e6466f9c30d1354209a90a2efc6f55b40221b60d781"
+ },
+ "ring-arc-idle-n8-s6": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 7 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "64c855357c05d15865f4aee92ca37d3d0a75b184f2e593d273e8a0e7a2aa32aa"
+ },
+ "ring-arc-idle-n8-s7": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": [
+   null,
+   null,
+   80,
+   80
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 8 of 8: a 2 px dim warm line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps",
+  "sha256": "6cff2127d26d5207ad8f83aec95854d1a208eb5c7294f692a3720e748533a6f0"
+ },
+ "glint-star-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": [
+   null,
+   null,
+   12,
+   12
+  ],
+  "src": "spark",
+  "made": "the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30)",
+  "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc"
  }
 }

@@ -183,6 +183,42 @@ def plates():
         save(f"plate-message-640x{h}", round_alpha(nine(plo, 640, h, 60, 60, 60, 60, ls=s), 6), [192, 550 - h, 640, h], "thin frosted label: 9-slice, rounded", "plate-thin2")
     lb = load("label-plate.jpg"); m = (np.asarray(lb).astype(int).min(2) < 240); ys, xs = np.where(m); bb = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)
     save("stamp-label-120x120", lb.crop(bb).resize((120, 120), Image.LANCZOS), [888, 248, 120, 120], "cut, 120x120", "label-plate")
+def wellrings():
+    """The list's rings as masters from the concept: the selected well's thick warm ivory band with its soft glow, the idle well's thin dark-glass
+    double ring, the progress arcs (a track and one segment per chapter, 4 to 8 chapters) and the glint star. 80x80, centred on the well's centre."""
+    def ring(path, d_out, thr, name, made):
+        im = load(path); bg = border_median(im); k = color_to_alpha(im, bg, 0.04); a = np.asarray(k)[..., 3]
+        ys, xs = np.where(a > thr); cx, cy = (xs.min() + xs.max()) / 2, (ys.min() + ys.max()) / 2; dia = max(xs.max() - xs.min(), ys.max() - ys.min()) + 1
+        f = d_out / dia; side = 80 / f; box = (round(cx - side / 2), round(cy - side / 2), round(cx + side / 2), round(cy + side / 2))
+        out = k.crop(box).resize((80, 80), Image.LANCZOS); save(name, out, [None, None, 80, 80], made, path.replace(".jpg", ""))
+    ring("ring-selected.jpg", 66, 170, "ring-well-selected-80x80", "the selected well's thick warm ivory band (7 px, bone to sand, lit top left) with its soft glow about 4 px outward; colour-to-alpha, scaled so the band's outer diameter is 66, centred in 80x80")
+    ring("ring-idle.jpg", 66, 120, "ring-well-idle-80x80", "the idle well's thin dark-glass double ring, outer diameter 66, hairlines about 5 px apart; colour-to-alpha, centred in 80x80")
+    S = 8; R_ARC = 24.0
+    yy, xx = np.mgrid[0:80 * S, 0:80 * S].astype(float); xx = (xx + 0.5) / S - 40; yy = (yy + 0.5) / S - 40
+    rr = np.hypot(xx, yy); th = (np.degrees(np.arctan2(xx, -yy)) + 360) % 360            # clockwise from 12 o'clock
+    def cover(mask): return mask.reshape(80, S, 80, S).mean((1, 3))
+    def rgba(cov, col, alpha): out = np.zeros((80, 80, 4)); out[..., :3] = col; out[..., 3] = np.clip(cov * alpha, 0, 1) * 255; return out
+    def over(top, bot):
+        a1 = bot[..., 3:4] / 255; a2 = top[..., 3:4] / 255; ao = a2 + a1 * (1 - a2)
+        col = np.where(ao > 0, (top[..., :3] * a2 + bot[..., :3] * a1 * (1 - a2)) / np.maximum(ao, 1e-6), 0); return np.concatenate([col, ao * 255], 2)
+    def out(arr, name, made): save(name, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [None, None, 80, 80], made, "procedural, supersampled 8x")
+    for st, line_col, line_alpha, groove_alpha in (("selected", np.array([255.0, 240.0, 206.0]), 1.0, 0.62), ("idle", np.array([190.0, 150.0, 108.0]), 0.55, 0.42)):
+        groove = rgba(cover((rr >= R_ARC - 1.6) & (rr <= R_ARC + 1.6)), np.array([6.0, 12.0, 18.0]), groove_alpha)
+        lip = rgba(cover((rr > R_ARC + 1.6) & (rr <= R_ARC + 2.3) & (xx + yy > 0)), np.array([110.0, 140.0, 156.0]), 0.28)
+        track = over(lip, groove)
+        for n in range(4, 9):
+            out(track, f"ring-arc-{st}-n{n}-track", f"the unlit groove for {n} chapters: a dark 3 px groove at radius 24 with a faint lit lip on its lower-right side")
+            gap = np.degrees(2.0 / R_ARC)
+            for i in range(n):
+                a0 = i * 360.0 / n + gap / 2; a1 = (i + 1) * 360.0 / n - gap / 2
+                seg = rgba(cover((rr >= R_ARC - 1.0) & (rr <= R_ARC + 1.0) & (th >= a0) & (th <= a1)), line_col, line_alpha)
+                if st == "selected":                       # engraved: the upper-left half of the line is one step lighter
+                    lit = rgba(cover((rr >= R_ARC - 1.0) & (rr <= R_ARC) & (th >= a0) & (th <= a1) & (xx + yy < 0)), np.array([255.0, 250.0, 236.0]), 1.0)
+                    seg = over(lit, seg)
+                out(seg, f"ring-arc-{st}-n{n}-s{i}", f"chapter {i + 1} of {n}: a 2 px {'fine bright engraved' if st == 'selected' else 'dim warm'} line on the inner edge at radius 24, clockwise from 12 o'clock, equal segments with 2 px gaps")
+    im = load("spark.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.04); bb = bbox_alpha(k, 40); c = k.crop(bb); side = max(c.size); sq = Image.new("RGBA", (side, side), (0, 0, 0, 0)); sq.paste(c, ((side - c.width) // 2, (side - c.height) // 2))
+    save("glint-star-12x12", sq.resize((12, 12), Image.LANCZOS), [None, None, 12, 12], "the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30)", "spark")
+
 def stampcase():
     """The stamp's case (848,144,176,328): translucent unlit glass over the wall (the wall's seams show through, one step above it),
     a faint diagonal sheen, dim brushed-metal rails top and bottom, a faint left edge, open at the screen's right edge."""
@@ -213,7 +249,7 @@ def bars():
     save("frame-bottom-line-1024x38", b.transpose(Image.FLIP_TOP_BOTTOM).resize((1024, 38), Image.LANCZOS), [0, 562, 1024, 38], "the bar flipped (rule on its top edge), 1024x38", "bar-top")
 
 # ---- pods
-POD_BOX = {"large": (144, 176), "medium": (120, 152), "small": (104, 128), "well": (32, 40)}
+POD_BOX = {"large": (144, 176), "medium": (120, 152), "small": (104, 128), "well": (32, 48)}
 def pod_src(n):
     k = key_magenta(load(n + ".jpg"), lo=26, hi=70); a = np.asarray(k).astype(float).copy(); a[1775:, 3] = 0
     edge = a[..., 3] < 250; g = a[..., 1]
@@ -330,15 +366,15 @@ def well_pinholes():
     """Fill the enclosed pixels of the well pod's accent mask (between the cap and the rib); hold the body mask with it."""
     A = np.asarray(Image.open("slices/pod-well-mask-accent.png").convert("RGBA")).copy(); Bd = np.asarray(Image.open("slices/pod-well-mask-body.png").convert("RGBA")).copy()
     al = A[..., 3].astype(int); sil = np.asarray(Image.open("slices/pod-well-shade.png").convert("RGBA"))[..., 3] > 128
-    enc = np.zeros_like(al, bool)
-    for (px, py) in ((6, 11), (7, 11)):          # the two enclosed pixels between the cap and the rib named by the art director
-        if al[py, px] < 160 and sil[py, px]: enc[py, px] = True
+    enc = np.zeros_like(al, bool)           # the two enclosed pixels between the cap and the rib the art director named, at (6,11),(7,11) of the old 32x40 box = (6,19),(7,19) of the 32x48 box
+    for (px, py) in ((6, 19), (7, 19)):
+        if sil[py, px] and al[py, px] < 160: enc[py, px] = True
     print("well pinholes filled at", [tuple(map(int, p[::-1])) for p in np.argwhere(enc)])
     A[enc, 3] = 255; Bd[enc, 3] = 0
-    save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 32, 40], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
-    save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 32, 40], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
+    save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 32, 48], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
+    save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 32, 48], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars", "stampcase", "well_pinholes"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "plates", "bars", "stampcase", "wellrings", "well_pinholes"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)
