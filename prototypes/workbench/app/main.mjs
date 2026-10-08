@@ -5,7 +5,7 @@
 // model.
 import { CATALOGUE, LOCI, PART_SWITCHES, alleleIds } from "../framework/catalogue.mjs";
 import { parsePlanKey, planKeyOf, planFacts } from "../framework/plans.mjs";
-import { buildFrame, buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, checkGenome, specFromFrame, chapterFor, rng, RING, CHAPTER_NAMES, FINDS, genomeDigest } from "../framework/species.mjs";
+import { buildFrame, buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, checkGenome, specFromFrame, chapterFor, rng, RING, CHAPTER_NAMES, FINDS, genomeDigest , FRAME_VERSION} from "../framework/species.mjs";
 import { CLANS, CLAN_NAMES, specOf, SPECIES } from "../framework/roster.mjs";
 import { render, fitCamera, markingFields } from "../framework/raster.mjs";
 import { sketchIndividual, manifest, speciesCameras, registryCameras, SKETCHER_VERSION } from "../sketch/sketch.mjs";
@@ -324,7 +324,7 @@ function currentFrameJSON() {
 async function exportSketches(individuals, { setName = null } = {}) {
   status("rendering the export…");
   const entries = [];
-  const index = { schema: "mb-reference-set/1", species: state.frame.species.id, frameVersion: 1, catalogue: state.frame.catalogue, sketcher: SKETCHER_VERSION, members: [] };
+  const index = { schema: "mb-reference-set/1", species: state.frame.species.id, frameVersion: FRAME_VERSION, catalogue: state.frame.catalogue, sketcher: SKETCHER_VERSION, members: [] };
   for (const ind of individuals) {
     const sketch = sketchIndividual(state.frame, ind.genome, { cameras: state.cameras, which: setName && ind.genome.origin?.kind !== "type-specimen" ? ({ size }) => size !== "large" : ({ size }) => size !== "large" });
     if (sketch.status !== "sketched") { log(`${ind.label}: not sketched (${sketch.problems.join("; ")})`, "warn"); continue; }

@@ -137,12 +137,14 @@ export function partMeasures(masks, n = 48) {
 }
 
 // The parts score of body measures against target measures over the clan's defining parts: per part
-// 1 − mean |difference| / TAU (floored at zero), zero when one side lacks the part; the mean over parts.
+// 1 − mean |difference| / TAU (floored at zero), zero when one side lacks the part, one when neither has
+// it; the mean over parts.
 export function partScore(body, target, parts) {
   if (!parts.length) return 0;
   let sum = 0;
   for (const name of parts) {
     const a = body[name], b = target[name];
+    if (!a && !b) { sum += 1; continue; } // a part both lack is a match (a bear has no tail, and neither does its target)
     if (!a || !b) continue;
     const keys = Object.keys(b);
     const diff = keys.reduce((s, k) => s + Math.abs((a[k] ?? 0) - b[k]), 0) / keys.length;

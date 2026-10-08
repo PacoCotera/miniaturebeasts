@@ -14,6 +14,9 @@ import { buildBody } from "./rig.mjs";
 import { validateBody } from "./validate.mjs";
 
 export const SCHEMA = "mb-species-frame/2";
+// The frame version a genome is built against: 2 since catalogue 8 (the tiny head alleles); a saved
+// mibi keeps the version it was born with.
+export const FRAME_VERSION = 2;
 export const RING = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "character", "glow", "charge"];
 export const CHAPTER_NAMES = { coat: "Coat", face: "Face", shape: "Shape", "legs-tail": "Legs & tail", movement: "Movement", stamina: "Stamina", character: "Character", glow: "Glow", charge: "Charge" };
 export const WHEEL = ["marigold", "coral", "raspberry", "plum", "periwinkle", "cobalt", "lagoon", "jade", "russet", "charcoal"];
@@ -197,7 +200,7 @@ export function buildFrame(spec, options = {}) {
     species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "" },
     taxonomy: { ...spec.taxonomy, clan: spec.clan, planKey: spec.plan.key, planCode: plan.code, rig: plan.rig, tier: spec.tier ?? "authored", seed: spec.seed ?? null, states: plan.states },
     catalogue: { id: CATALOGUE.id, version: CATALOGUE.version, parent: CATALOGUE.parent },
-    plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float, stand: !!spec.plan.extras?.stand }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations },
+    plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float, stand: !!spec.plan.extras?.stand, flapPairs: plan.extras.flapPairs, flapRest: plan.extras.flapRest }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations },
     signature: { anchor: spec.anchor, second: spec.second ?? null, feature: spec.feature, features: switchesOn, finish: spec.finish ?? {} },
     glyph: spec.glyph, pod: null, chapters: [], loci: [], absent, counts: null, notYet: null, typeSpecimen: null, viability: null,
     _pools: pools, _locked: locked, _traits: traits, _sealed: spec.sealed ?? {}, _typical: typical,
@@ -314,12 +317,12 @@ export function typeSpecimen(frame) {
     const op = LOCI.get(l.id).operator;
     loci[l.id] = op === "copy-mean" && l.alleles.length > 1 ? [l.alleles[0], l.alleles.at(-1)] : [l.alleles[0], l.alleles[0]];
   }
-  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: 1, loci, origin: { kind: "type-specimen" } };
+  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin: { kind: "type-specimen" } };
 }
 export function sampleIndividual(frame, r, origin = { kind: "random" }) {
   const loci = {};
   for (const l of frame.loci) loci[l.id] = l.kind === "locked" ? [...l.copies] : [pick(r, l.alleles), pick(r, l.alleles)];
-  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: 1, loci, origin };
+  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin };
 }
 export function crossIndividuals(frame, a, b, r) {
   if (a.species !== frame.species.id || b.species !== frame.species.id) throw new Error("breeding is same-species only");
@@ -328,7 +331,7 @@ export function crossIndividuals(frame, a, b, r) {
     if (l.kind === "locked") { if (a.loci[l.id][0] !== l.copies[0] || b.loci[l.id][0] !== l.copies[0]) throw new Error(`${l.id}: a parent's locked copy differs from the frame`); loci[l.id] = [...l.copies]; continue; }
     loci[l.id] = [a.loci[l.id][r() < 0.5 ? 0 : 1], b.loci[l.id][r() < 0.5 ? 0 : 1]];
   }
-  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: 1, loci, origin: { kind: "cross", parents: [genomeDigest(a), genomeDigest(b)] } };
+  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin: { kind: "cross", parents: [genomeDigest(a), genomeDigest(b)] } };
 }
 // Shape a trait: pick one of three pictures (as it is, only the first copy, only the second).
 export function shapeTrait(frame, genome, traitId, choice) {

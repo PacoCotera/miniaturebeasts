@@ -14,7 +14,7 @@ const framesDir = path.resolve(here, "../frames");
 const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 const frameOf = (id) => frames.find((f) => f.species.id === id);
 
-test("catalogue 7 carries catalogue6 plus the taxonomy's 6 switches · 15 loci and the three clan gaps", () => {
+test("catalogue 8 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
   const v1 = CATALOGUE.loci.filter((l) => l.provenance.catalogue.startsWith("genomic-compositional-source-experiment"));
   const mine = CATALOGUE.loci.filter((l) => l.provenance.catalogue === "mb-genome-framework@7");
   assert.equal(v1.filter((l) => l.status === "validated").length, 114);
@@ -27,7 +27,9 @@ test("catalogue 7 carries catalogue6 plus the taxonomy's 6 switches · 15 loci a
   assert.equal(kinds.filter((l) => l.switch !== "part").length, 25, "twenty-five new loci");
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
-  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 6, "hoof, webbed, root, one pair, huge, tall ears");
+  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 9, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios");
+  assert.equal(CATALOGUE.version, 8, "pin 8: the head floor is a changed range");
+  assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 8).length === 3);
   assert.equal(PLAN_SWITCHES.size, 23);
   assert.ok([...PART_SWITCHES].every((id) => LOCI.has(id)));
   assert.equal(CATALOGUE.parent.foundationDigest.length, 64);

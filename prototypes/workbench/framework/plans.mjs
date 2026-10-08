@@ -48,7 +48,9 @@ export function planCode(p, extras = {}) {
 // unchanged, plus the rig facts. `extras` are the per-species plan switches the key does not
 // carry: join (broad or narrow), wave (axial deformation), fins (fin rooting for a swimmer),
 // float (afloat, no ground contact), stand (a fan plan stands on its up axis: the plant's bulb with
-// leaves on top, the wisp's vertical ribbon; plans.json standingPlans).
+// leaves on top, the wisp's vertical ribbon; plans.json standingPlans), flapPairs (1 or 2 pairs on the
+// flap region) and flapRest ("raised", a V that reads in every view, or "flat", broadside over the
+// back like a moth at rest; plans.json twoPairFlapPlans).
 export function planFacts(key, extras = {}) {
   const p = parsePlanKey(key);
   const depth = DEPTH[p.segments], radial = p.symmetry === "radial", fan = p.layout === "fan";
@@ -75,7 +77,7 @@ export function planFacts(key, extras = {}) {
   const flapRegion = p.flaps === "on" ? (depth === 3 ? 1 : 0) : null;
   const states = stateMachine(limbSet, flapSet, posture, extras, p);
   return {
-    key, plan: p, code: planCode(p, extras), rig, depth, radial, fan, join, values, extras: { join, wave: !!extras.wave, fins, float: !!extras.float, stand: !!extras.stand },
+    key, plan: p, code: planCode(p, extras), rig, depth, radial, fan, join, values, extras: { join, wave: !!extras.wave, fins, float: !!extras.float, stand: !!extras.stand, flapPairs: extras.flapPairs === 2 ? 2 : 1, flapRest: extras.flapRest === "flat" ? "flat" : "raised" },
     limbSet, posture, ground, stations, links: limbSet === "legs" || limbSet === "rays" ? 2 : links, flapSet, flapRegion,
     tailRegion: fan ? 0 : depth - 1, head: join === "narrow" ? "neck" : "fused", states,
   };

@@ -5,7 +5,7 @@
 // and size) and reused for every individual, so individuals keep their relative size and sit in
 // the same place in the frame. A body that overflows that frame is clipped and flagged in the
 // manifest, never rescaled.
-import { buildIndividual, typeSpecimen, genomeDigest, brief } from "../framework/species.mjs";
+import { buildIndividual, typeSpecimen, genomeDigest, brief , FRAME_VERSION} from "../framework/species.mjs";
 import { render, fitCamera, resolveCamera, SCALES, VIEWS, markingFields, slotLegend } from "../framework/raster.mjs";
 
 export const SKETCHER_VERSION = "mb-sketch/1";
@@ -92,7 +92,7 @@ export function manifest(frame, genome, sketch, hashes = {}, extra = {}) {
     schemaVersion: 1, level: genome.origin?.kind === "type-specimen" ? "species" : "individual",
     id: genome.origin?.kind === "type-specimen" ? frame.species.id : sketch.genomeDigest,
     version: 1, species: frame.species.id, clan: frame.taxonomy.clan, plan: frame.plan.code, rig: frame.plan.rig,
-    genome: genome.loci, genomeDigest: sketch.genomeDigest, frameVersion: 1, catalogue: frame.catalogue,
+    genome: genome.loci, genomeDigest: sketch.genomeDigest, frameVersion: FRAME_VERSION, catalogue: frame.catalogue,
     sketch: { sketcherVersion: SKETCHER_VERSION, hash: hashes.sketch ?? null, caption: sketch.caption, views: TURNAROUND, sizes: SIZES, slots: sketch.legend, markingFields: sketch.fields, bounds: sketch.built.scene.bounds, states: frame.plan.states ?? frame.taxonomy.states },
     outputs: sketch.images.map((im) => ({ file: `${im.key}.png`, pass: im.pass, field: im.field, view: im.view, size: im.size, sha256: hashes[im.key] ?? null, clipped: im.clipped })),
     prompt: null, references: [], model: null, critique: null, signoff: null, supersedes: null,

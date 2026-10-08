@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 7,
+  "version": 8,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -56,7 +56,9 @@
    "wave": false,
    "fins": false,
    "float": false,
-   "stand": false
+   "stand": false,
+   "flapPairs": 1,
+   "flapRest": "raised"
   },
   "code": "B2·L4",
   "rig": "B2",
@@ -816,15 +818,20 @@
    "alleles": [
     "small",
     "medium",
-    "large"
+    "large",
+    "tiny"
    ],
    "looks": [
     "small",
     "between small and medium",
     "between small and large",
+    "between small and tiny",
     "medium",
     "between medium and large",
-    "large"
+    "between medium and tiny",
+    "large",
+    "between large and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rxOverCoreRx",
    "typical": [
@@ -845,12 +852,16 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.ryOverCoreRx",
    "typical": [
@@ -871,12 +882,16 @@
    "shapeable": true,
    "alleles": [
     "low",
-    "high"
+    "high",
+    "tiny"
    ],
    "looks": [
     "low",
     "between low and high",
-    "high"
+    "between low and tiny",
+    "high",
+    "between high and tiny",
+    "tiny"
    ],
    "guard": "rig: head.rzOverCoreRx",
    "typical": [
@@ -1006,11 +1021,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "fine",
+    "slender",
     "slender"
    ],
    "looks": [
-    "fine"
+    "slender"
    ],
    "guard": "rig: support.proximalRadiusOverCoreRx",
    "nature": "look"
@@ -2062,8 +2077,8 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 73,
-  "stampBitsPerCopy": 29
+  "fieldGuideLooks": 83,
+  "stampBitsPerCopy": 31
  },
  "notYet": {
   "domains": [
@@ -2088,7 +2103,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S08",
-   "frameVersion": 1,
+   "frameVersion": 2,
    "loci": {
     "structure.attachment-position": [
      "low",
@@ -2195,7 +2210,7 @@
      "low"
     ],
     "growth.support-radius-ratio": [
-     "fine",
+     "slender",
      "slender"
     ],
     "growth.terminal-length-ratio": [
@@ -2332,13 +2347,13 @@
   "bounds": {
    "min": [
     -1.2516628231680549,
-    -0.5778605335053606,
+    -0.5851565335053606,
     -0.02462399999999998
    ],
    "max": [
-    1.1920235038792244,
-    0.5778605335053606,
-    3.288233986132848
+    1.1410474943527473,
+    0.5851565335053606,
+    3.336374009583585
    ]
   },
   "counts": {
@@ -2386,15 +2401,18 @@
   "growth.head-length-ratio": [
    "small",
    "medium",
-   "large"
+   "large",
+   "tiny"
   ],
   "growth.head-width-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-depth-ratio": [
    "low",
-   "high"
+   "high",
+   "tiny"
   ],
   "growth.head-lift-ratio": [
    "low",
@@ -2501,7 +2519,7 @@
    "low"
   ],
   "growth.support-radius-ratio": [
-   "fine",
+   "slender",
    "slender"
   ],
   "growth.terminal-length-ratio": [

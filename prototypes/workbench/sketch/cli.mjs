@@ -13,7 +13,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { sketchIndividual, manifest, speciesCameras, registryCameras } from "./sketch.mjs";
-import { typeSpecimen, sampleIndividual, rng } from "../framework/species.mjs";
+import { typeSpecimen, sampleIndividual, rng , FRAME_VERSION} from "../framework/species.mjs";
 import { encodePNG } from "../framework/png.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -53,7 +53,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       const n = Number(opt("set"));
       const r = rng(`${frame.species.id}:reference-set`);
       const members = [typeSpecimen(frame), ...Array.from({ length: n }, (_, i) => sampleIndividual(frame, r, { kind: "random", seed: i + 1 }))];
-      const index = { schema: "mb-reference-set/1", species: frame.species.id, frameVersion: 1, catalogue: frame.catalogue, members: [] };
+      const index = { schema: "mb-reference-set/1", species: frame.species.id, frameVersion: FRAME_VERSION, catalogue: frame.catalogue, members: [] };
       for (const genome of members) {
         const { dir, manifest: m } = writeSketch(frame, genome, { out: path.resolve(here, "../out/reference"), cameras: cameras ?? speciesCameras(frame) });
         index.members.push({ id: m.id, level: m.level, dir: path.relative(path.resolve(here, "../out/reference", frame.species.id), dir), sketch: m.sketch.hash, outputs: m.outputs.length });

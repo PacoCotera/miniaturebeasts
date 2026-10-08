@@ -147,13 +147,13 @@ export function buildBody(resolved) {
   } else if (v["modules.muzzleAndJaw"]) {
     // A long muzzle is a tapered snout (thick at the head, fine at the nose); a short one stays a blunt egg.
     const proj = v["muzzle.rxOverHeadRx"];
-    const mR = [proj * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], (0.4 - 0.08 * Math.max(0, Math.min(1, (proj - 0.58) / 0.66))) * headR[2]];
+    const mR = [proj * headR[0], v["muzzle.ryOverHeadRy"] * headR[1], (0.34 - 0.08 * Math.max(0, Math.min(1, (proj - 0.58) / 0.66))) * headR[2]];
     const mC = add(headCenter, [-headR[0] + 0.15 * headR[0] - 0.5 * mR[0], 0, -0.38 * headR[2]]);
     const muzzle = newNode("muzzle", "muzzle", head.id, "body"); muzzle.center = mC; muzzle.part = "muzzle";
     if (proj > 0.9) { muzzle.frame = [[-1, 0, 0], [0, -1, 0], [0, 0, 1]]; ringSolid(muzzle, mR, "tapered", 2); } // the frame faces the nose, so the taper thins forward
     else ellipsoid(muzzle, mR);
     push(muzzle, head);
-    const jaw = newNode("jaw", "lower-jaw", muzzle.id, "body"); jaw.center = add(mC, [0.07 * headR[0], 0, -0.26 * headR[2]]); ellipsoid(jaw, [0.85 * mR[0], 0.85 * mR[1], 0.2 * headR[2]]); jaw.part = "muzzle";
+    const jaw = newNode("jaw", "lower-jaw", muzzle.id, "body"); jaw.center = add(mC, [0.07 * headR[0], 0, -0.22 * headR[2]]); ellipsoid(jaw, [0.85 * mR[0], 0.85 * mR[1], 0.17 * headR[2]]); jaw.part = "muzzle";
     push(jaw, muzzle);
   }
   if (v["modules.exteriorEyePair"]) for (const side of [-1, 1]) {
@@ -185,7 +185,7 @@ export function buildBody(resolved) {
     }
   }
   if (v["horns.enabled"]) for (const side of [-1, 1]) {
-    const curl = v["growth.horn-curl"] ?? 0.6, length = 2.6 * headR[2], baseR = 0.28 * Math.min(headR[1], headR[2]);
+    const curl = v["growth.horn-curl"] ?? 0.6, length = 2.8 * headR[2], baseR = 0.34 * Math.min(headR[1], headR[2]);
     const dir = unit([0.25, side * 0.45, 0.85]);
     const rt = rootOn(head, headCenter, dir, 0.5 * baseR, envOf(head));
     const horn = newNode(`horn-${side < 0 ? "L" : "R"}`, "horn", head.id, "second"); horn.part = "horn";
@@ -253,7 +253,7 @@ export function buildBody(resolved) {
   if (plan.limbSet === "legs") {
     const drop = v["support.rootToEndDropOverCoreRx"] * L, spread = v["support.outwardEndOffsetOverCoreRx"] * L;
     // Leg girth: 1.6 times v1's ratio, never more than half of the body's smaller cross radius.
-    const radius = Math.min(1.6 * v["support.proximalRadiusOverCoreRx"] * L, 0.5 * Math.min(root.radii[1], root.radii[2]));
+    const radius = Math.min(1.6 * v["support.proximalRadiusOverCoreRx"] * L, 0.6 * Math.min(root.radii[1], root.radii[2]));
     const stationCount = plan.stations.length;
     plan.stations.forEach((station, g) => {
       const owner = serialRegions[Math.min(station.region, serialRegions.length - 1)];
@@ -269,7 +269,7 @@ export function buildBody(resolved) {
         } else if (plan.posture === "splayed") {
           const s = Math.max(spread, 0.45 * L);
           joint = add(rt.surface, [0.05 * L * (g - 1), side * 0.6 * s, 0.35 * drop]);
-          end = add(joint, [0.08 * L * (g - 1), side * 0.55 * s, -1.25 * drop]);
+          end = add(joint, [0.08 * L * (g - 1), side * 0.55 * s, -1.0 * drop]);
         } else {
           const knee = (front ? -0.14 : 0.12) * L;
           joint = add(rt.surface, [knee, side * (0.35 * spread + 0.15 * radius), -0.5 * drop]);
@@ -338,14 +338,24 @@ export function buildBody(resolved) {
     const span = v["wing.outwardSpanOverCoreRx"] * L, chord = v["wing.longitudinalChordOverCoreRx"] * L, swp = v["wing.posteriorSweepOverSpan"] * span;
     const thickness = 0.015 * L;
     const owner = serialRegions[Math.min(plan.flapRegion ?? 0, serialRegions.length - 1)];
-    if (plan.flapSet === "wings") for (const side of [-1, 1]) {
-      const rt = rootOn(owner, worldPoint(owner, [0.15 * owner.radii[0], 0, 0]), localVector(owner.frame, [0, side * 0.55, 0.83]), 0.05 * L, envOf(owner));
-      const rootP = rt.surface;
-      const outer = add(rootP, [swp, side * 0.65 * span, 0.76 * span]); // held up in a steep V, so wings read in every view
-      const corners = [add(rootP, [-0.5 * chord, 0, 0]), add(rootP, [0.5 * chord, 0, 0]), add(outer, [0.3 * chord, 0, 0]), add(outer, [-0.3 * chord, 0, 0])];
-      const wing = newNode(`wing-${side < 0 ? "L" : "R"}`, "thin-surface", owner.id, "second"); wing.part = "flap"; wing.opacity = flapOpacity;
-      sheet(wing, corners, unit([0, -side * 0.76, 0.65]), thickness);
-      push(wing, owner, rt.inner);
+    if (plan.flapSet === "wings") {
+      // One pair held up in a V (reads in every view), or, on a plan with flapRest "flat", one or two
+      // pairs laid broadside over the back like a moth at rest: the fore pair ahead, the hind pair
+      // behind and shorter, both sloping down and back from the thorax.
+      const flat = plan.extras?.flapRest === "flat", pairs = plan.extras?.flapPairs ?? 1;
+      for (let pair = 0; pair < pairs; pair++) for (const side of [-1, 1]) {
+        const u = pairs === 2 ? (pair === 0 ? -0.15 : 0.35) : 0.15;
+        const rt = rootOn(owner, worldPoint(owner, [u * owner.radii[0], 0, 0]), localVector(owner.frame, [0, side * 0.55, 0.83]), 0.05 * L, envOf(owner));
+        const rootP = rt.surface;
+        const k = (pair === 0 ? 1 : 0.75) * (flat ? 1.5 : 1); // wings at rest reach past the body: 1.5 times the span and chord the loci say
+        const outer = flat ? add(rootP, [swp + 0.6 * chord * k, side * 0.7 * span * k, -0.75 * span * k]) : add(rootP, [swp, side * 0.65 * span, 0.76 * span]); // flat: a roof sloping down and back over the flanks
+        const corners = flat
+          ? [add(rootP, [-0.4 * chord * k, 0, 0]), add(rootP, [0.5 * chord * k, 0, 0]), add(outer, [0.9 * chord * k, 0, 0]), add(outer, [-0.3 * chord * k, 0, 0])]
+          : [add(rootP, [-0.5 * chord, 0, 0]), add(rootP, [0.5 * chord, 0, 0]), add(outer, [0.3 * chord, 0, 0]), add(outer, [-0.3 * chord, 0, 0])];
+        const wing = newNode(`wing-${pairs === 2 ? (pair === 0 ? "fore-" : "hind-") : ""}${side < 0 ? "L" : "R"}`, "thin-surface", owner.id, "second"); wing.part = "flap"; wing.opacity = flapOpacity;
+        sheet(wing, corners, flat ? unit([0, side * 0.4, 0.9]) : unit([0, -side * 0.76, 0.65]), thickness);
+        push(wing, owner, rt.inner);
+      }
     } else if (plan.flapSet === "fins") {
       const finSpan = (v["structure.fin-span"] ?? 0.4) * L + 0.4 * span;
       const dorsalOwner = serialRegions[0];
@@ -406,18 +416,19 @@ export function buildBody(resolved) {
     }
   }
   if (v["wingCases.enabled"]) {
-    // The cases root on the thorax (the first region behind the head) and cover the abdomen behind it.
-    const owner = serialRegions[0];
+    // The wing cases are one domed case over the whole back behind the head, drawn like the turtle's
+    // shell (the lead's decision): from the thorax to as far back as the extent says; a parted seam
+    // draws it as two halves standing slightly apart.
+    const owner = serialRegions[0], back = regions.at(-1);
     const extent = v["growth.wing-case-extent"], parted = v["anatomy.wing-case-seam"] === "parted";
-    const back = regions.at(-1);
-    for (const side of [-1, 1]) {
-      const c = newNode(`wing-case-${side < 0 ? "L" : "R"}`, "shell", owner.id, "second"); c.part = "wing-case";
-      // The cases cover the back from the front of their owner to the end of the last region.
-      const frontX = owner.center[0] - 0.2 * owner.radii[0], backX = back.center[0] + extent * back.radii[0];
-      const ry = Math.max(...serialRegions.map((r) => r.radii[1])), rz = Math.max(...serialRegions.map((r) => r.radii[2]));
-      c.center = [(frontX + backX) / 2, side * (0.5 * ry + (parted ? 0.15 * ry : 0)), owner.center[2] + 0.4 * rz];
-      c.frame = parted ? rotateFrameZ(IDENTITY, side * 0.25) : IDENTITY;
-      ellipsoid(c, [(backX - frontX) / 2 + 0.1 * owner.radii[0], 0.65 * ry, 0.7 * rz]);
+    const frontX = owner.center[0] - 0.55 * owner.radii[0], backX = back.center[0] + (0.6 + 0.5 * extent) * back.radii[0];
+    const ry = Math.max(...serialRegions.map((r) => r.radii[1])), rz = Math.max(...serialRegions.map((r) => r.radii[2]));
+    const zc = Math.max(...serialRegions.map((r) => r.center[2]));
+    for (const side of parted ? [-1, 1] : [0]) {
+      const c = newNode(`wing-case${side ? (side < 0 ? "-L" : "-R") : ""}`, "shell", owner.id, "second"); c.part = "wing-case";
+      c.center = [(frontX + backX) / 2, side * 0.12 * ry, zc + 0.12 * rz];
+      c.frame = side ? rotateFrameZ(IDENTITY, side * 0.12) : IDENTITY;
+      ringSolid(c, [(backX - frontX) / 2 + 0.08 * L, side ? 1.05 * ry : 1.2 * ry, 1.2 * rz], "barrel", 2); // the case is the body's whole flank and back, domed above it
       push(c, owner);
     }
   }
@@ -426,8 +437,9 @@ export function buildBody(resolved) {
     const minX = Math.min(...xs), maxX = Math.max(...xs);
     const dome = v["growth.shell-dome-ratio"] ?? 0.8;
     const shell = newNode("shell", "shell", root.id, "shell"); shell.part = "shell";
-    shell.center = [(minX + maxX) / 2 + 0.05 * L, 0, root.center[2] + 0.2 * root.radii[2]];
-    ellipsoid(shell, [(maxX - minX) / 2 + 0.05 * L, 1.15 * Math.max(...serialRegions.map((r) => r.radii[1])), dome * root.radii[2]], 2);
+    // The shell is the body's whole flank and back: a dome that reaches down to the belly line.
+    shell.center = [(minX + maxX) / 2 + 0.05 * L, 0, root.center[2] + 0.08 * root.radii[2]];
+    ringSolid(shell, [(maxX - minX) / 2 + 0.12 * L, 1.2 * Math.max(...serialRegions.map((r) => r.radii[1])), Math.max(dome, 0.92) * root.radii[2]], "barrel", 2); // a barrel: flat-topped, full-depth over the middle, so the body stays under it
     push(shell, root);
   }
   if (v["skirt.enabled"]) {
@@ -451,11 +463,11 @@ export function buildBody(resolved) {
     const owner = plan.fan ? root : serialRegions[plan.tailRegion];
     const bushy = v["covering.furEnabled"] && (v["appearance.fur-reach"] ?? "body") !== "body";
     // Tail length over the body's L (v1's owner region was L long; a shared-length region is not).
-    const length = v["tail.lengthOverOwnerRx"] * L, baseR = (bushy ? 2.2 : 1.9) * v["tail.baseRadiusOverOwnerCross"] * Math.min(owner.radii[1], owner.radii[2]);
+    const length = v["tail.lengthOverOwnerRx"] * L, baseR = (bushy ? 2.2 : 2.1) * v["tail.baseRadiusOverOwnerCross"] * Math.min(owner.radii[1], owner.radii[2]);
     const dirW = radial ? unit([1, 0, -0.2]) : unit(add(owner.frame[0], [0, 0, 0.15]));
     const rt = rootOn(owner, owner.center, dirW, 0.3 * baseR, envOf(owner));
     const tail = newNode("tail", "axial-tail", owner.id, "body"); tail.part = "tail";
-    sweep(tail, rt.inner, radial ? IDENTITY : frameAlong(dirW), length, baseR, v["tail.bendRadians"], 6, v["tailBulb.enabled"] ? 0.35 : bushy ? 0.5 : 0.3);
+    sweep(tail, rt.inner, radial ? IDENTITY : frameAlong(dirW), length, baseR, 1.4 * v["tail.bendRadians"] /* carried up means up: 1.4 times the locus bend */, 6, v["tailBulb.enabled"] ? 0.35 : bushy ? 0.5 : 0.3);
     push(tail, owner, add(rt.inner, mul(tail.stations[0].tangent, 0.12 * baseR))); // just inside the first station, still inside the owner
     if (v["tailBulb.enabled"]) {
       const bulb = newNode("tail-bulb", "tail-bulb", tail.id, "emission"); bulb.part = "tail";
