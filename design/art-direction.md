@@ -6,6 +6,8 @@ understand what changed without reading a label. The art carries the game.
 
 ## Miniature Lives
 
+**Owner rule, 2026-10-08.** Never drift to childish art. The look is cute by charm and craft, as the accepted Pip is: tactile, softly modelled, grounded, real weight and real anatomy under the charm. Not cartoon simplification, not sticker faces, not toy-like rendering, not nursery colours, not storybook ornament. Every brief, prompt and sign-off checks against this line.
+
 **Decided.** Miniature Lives is the accepted look.
 
 - **Creatures:** sculpted, rounded bodies, soft tactile materials, directional
