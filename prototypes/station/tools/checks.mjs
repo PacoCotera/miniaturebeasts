@@ -56,6 +56,8 @@ console.log("== regions against the spec files");
 const R = pods.regions, F = frame.regions, W = R.well;
 const textBox = (n) => { const w = type.measure(n.text, n.px), x = n.align === "center" ? n.rect[0] - Math.round(w / 2) : n.align === "right" ? n.rect[0] - w : n.rect[0]; return [x, n.rect[1], w, type.face(n.px).cap]; };
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
+// the scene ids of the text drawn in each region (the page and Compare's two pages); whether a region may hold digits is the spec's `noDigits` flag
+const NO_DIGIT_IDS = { page: "page", pageA: "compareA", pageB: "compareB" };
 let regionsChecked = 0;
 for (const s of rec.shots.filter((x) => x.check.layered)) {
   const c = s.check, got = [];
@@ -85,10 +87,13 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
   }
   // the rail's tab count against the frame; the stamp's size on its label; no digits where a picture does the job
   if (c.screen === "pods" && c.pod && c.pod.idd && !c.cmp) must(got.length === c.pod.chapters, `the rail has ${got.length} tabs for ${c.pod.chapters} chapters`);
-  for (const t of c.texts) if (/^page[AB]?\./.test(t.id) && /\d/.test(t.text)) must(false, `a digit in "${t.text}" on a page marked noDigits`);
+  for (const t of c.texts) { const key = NO_DIGIT_IDS[t.id.split(".")[0]]; if (key && R[key].noDigits && /\d/.test(t.text)) must(false, `a digit in "${t.text}" in region ${key}, which the spec marks noDigits`); }
   console.log(`${s.name.padEnd(24)} ${c.regions.length} drawn regions, rail ${got.length}/${c.pod ? c.pod.chapters : "-"} tabs, placeholders registered ${c.placeholders}`);
 }
 console.log(`regions: ${regionsChecked} boxes compared with the spec files`);
+const onLayer = rec.shots.filter((x) => x.check.layered).map((x) => x.name), adapter = rec.shots.filter((x) => !x.check.layered).map((x) => x.name);
+console.log(`on the screen layer (${onLayer.length}): ${onLayer.join(", ")}`);
+console.log(`through the adapter, palette and type checked, regions not (${adapter.length}): ${adapter.join(", ")}`);
 if (!rec.shots.some((x) => x.check.layered)) fail("no screen on the layer was recorded");
 console.log(fails.length ? `${fails.length} failure(s)` : "layer checks ok");
 process.exit(fails.length ? 1 : 0);

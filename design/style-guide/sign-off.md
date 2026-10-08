@@ -52,7 +52,7 @@ Departures from the layout document, each to be settled by the UI designer or th
 - **Type:** the converter carries only the font's legacy kerning pairs (about 250 a face; none between figures, which stay tabular); the Mibi 7×9 atlas waits for the type designer's glyph sheet.
 - **Close-ups** are placeholders rendered by the rig's camera at their size, centred on the part the trait names; the part table is the old one.
 - **The Station palette** is the page's 69 colours until the palette commit renames to the settled 62.
-- **The Node tests of the screen layer** (`prototypes/ui/tests`) are not yet in the site workflow (the approved new checks are the four named; adding them is the lead's call).
+- **What the checks cover:** the palette, the type and the frame size are measured on every screen at every screenshot point; the regions check only on the screens on the layer (Pods, ten points); the job log names which points go through the adapter.
 
 ## 4. Companion screen build
 
