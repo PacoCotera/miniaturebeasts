@@ -247,6 +247,8 @@
 - **Chrome.** Call's slot reads `))) call Dot`. `✓ Spend time with Dot · ← Mibis`, or `✓ Walk with Dot · +1 ◆` once a world turn, undocked.
 - **Motion.** Idle 2 frames at 2 Hz; Call: a hop to the front and a chirp; docked, the mibi sleeps and the line says "Lift to explore".
 
+**Decided 2026-10-08 ([the portrait](../proposals/the-portrait.md) §5).** The Companion calls nothing; it learns at the dock. **The delivery notice:** when a portrait's crate lands while docked, the docked screen shows a message box, "**Fig's portrait** has come · see it at the Station", the name in orange; away, the notice waits for the next dock and joins the link sheet ("The Station has them · a portrait for Fig"). One notice per portrait, never repeated. At that dock the Companion takes Fig's painted set, derived to HiBit on the Station, if Fig is one it carries; the field token stays generic. **The card:** on a portrayed mibi this screen adds `✓ Show Fig's card`: the portrait card at 450×600, Fig's portrait in HiBit, its name and place, and the postmark large enough for a phone camera; the phone opens Fig's page on the website. A plain mibi has no card.
+
 **Pass when**
 - [ ] The mibi is the same individual as at the Station: anatomy, markings, eyes.
 - [ ] The ground never competes with the mibi.
@@ -295,6 +297,7 @@ The menu entry and screen read **Head home**: it seals the hold into the bay.
   - *Docked, done:* the crates are gone, a ✓ beside the Station mark; "The Station has them · 3 pods".
   - *Docked, not answering:* the crates stay, the link mark broken; "Docked · the Station isn't answering · the bay stays sealed".
   - *Docked, idle:* the mibi with you asleep; "Lift to explore".
+  - *Docked, a portrait waiting* (2026-10-08): the done line gains the notice, "The Station has them · a portrait for Fig", once per portrait.
 - **Lively / quiet.** Lively only while crates move. Otherwise quiet.
 - **Light and weather.** None.
 - **Palette.** Teal for a live link, grey for none, orange seal tags; never colour alone.

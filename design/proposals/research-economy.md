@@ -8,9 +8,9 @@
 
 ## 1. The day and the week
 
-**A day** is one **walk** and one **bench sitting**.
+**A day** is one **walk** and one turn at **the bench** (called a "bench sitting" until 2026-10-08; "sitting" now names the right to a portrait, [the portrait](the-portrait.md) §4).
 - **The walk** (10–20 minutes, Companion lifted): one expedition over one or two places in reach, bringing home about **one pod**, the day's Data, Energy and Essence, and now and then a find. Head home seals it in a crate; the dock hands it over.
-- **The sitting** (5–15 minutes): identify the pod, read the chapter or two the day's Data pays for, shape and grow when something is worth growing, watch and compare the residents (the bench trickle), open yesterday's bud. A pod is rarely read whole on its day; the player picks the chapter that glints.
+- **The bench** (5–15 minutes): identify the pod, read the chapter or two the day's Data pays for, shape and grow when something is worth growing, watch and compare the residents (the bench trickle), open yesterday's bud. A pod is rarely read whole on its day; the player picks the chapter that glints.
 
 **A week** is the unit for a species: about seven pods of it, hunted on purpose once a chapter is read (its pods wear the species' shell colour on the map). By the week's end every chapter is read, the guide shows nearly every look, two or three members live in the vivarium, and a first child is crossed. The last looks pull into the next week.
 
@@ -97,11 +97,11 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 
 **Decided:** a bud grows **twenty minutes plus one minute per shaped trait**, replacing the rule by body size and chapter count (station-loop §1); a cross incubates the same.
 
-**Meanwhile** the sitting carries on: other pods are read and residents watched (the trickle's minutes and the bud's are the same minutes), and the bud's unread chapters clear across the wait, one every few minutes. The Station is always on: a player who leaves finds the bud ready next sitting; Open waits for a press (**Decided**); a cargo never shortens it; one incubator (**Decided**), so one bud at a time.
+**Meanwhile** the bench carries on: other pods are read and residents watched (the trickle's minutes and the bud's are the same minutes), and the bud's unread chapters clear across the wait, one every few minutes. The Station is always on: a player who leaves finds the bud ready at the next bench; Open waits for a press (**Decided**); a cargo never shortens it; one incubator (**Decided**), so one bud at a time.
 
 **The generation budget.** Twenty minutes is the art pipeline's latency budget (v2 §2): at 20–105 seconds a call the full unique set of four calls fits with retries at one and five minutes, so a connected kit opens a unique juvenile almost every time. One incubator, one or two buds a day in practice and six to ten bays bound the spend at about 40–60 mibis a kit-year, the pipeline's cost assumption. Returning a mibi and growing another costs twenty minutes, 2 Energy and a net 2 Essence, so a render is never free to churn; the Caddy's monthly call cap is the backstop.
 
-**Decided 2026-10-08.** *The paragraph above is superseded:* no render is painted at Grow. Every mibi opens in the standard look rendered from the rig; the unique cloud-painted render is a prize earned by a research item, so the spend is bounded by prizes, not by buds ([art-pipeline](art-pipeline.md) §1). **The first bud ever grows in five minutes** (§8.2, decided). **An instant grow exists, for a cost** (the price to be set with the real economy; for testing it sits under the developer-tools toggle with every other timer).
+**Decided 2026-10-08.** *The paragraph above is superseded:* no render is painted at Grow. Every mibi opens in the standard look rendered from the rig; the unique cloud-painted render is a prize earned by a research item, so the spend is bounded by prizes, not by buds ([art-pipeline](art-pipeline.md) §1). **The first bud ever grows in five minutes** (§8.2, decided). **An instant grow exists, for a cost** (the price to be set with the real economy; for testing it sits under the developer-tools toggle with every other timer). *2026-10-08, the words:* the prize is the **portrait**, paid with **a sitting** earned by research ([the portrait](the-portrait.md)); the sitting's wait is its own, a few hours, and never the bud's.
 
 ## 6. Vivarium capacity and the return
 
@@ -114,7 +114,7 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 - **A field-guide note** on its species page: name, ring, where and when it was released; its lineage stays as a leaf that ends.
 - **A place that remembers it.** It goes to the cell it came from (a founder's pod's place; a child, its mother's) and lives there as a wild individual with its name: met on a later walk it comes to the Probe curious, and it can shed one pod of its own, a world turn later, under the arrival guard. That pod carries its real copies, so a shaped look returned to the wild can be found there again; knowing still grants nothing.
 
-**It costs the mibi:** no longer a partner, never taken back (no wild capture, **Decided**); a **bonded** mibi cannot be returned; a juvenile not until adult.
+**It costs the mibi:** no longer a partner, never taken back (no wild capture, **Decided**); a **bonded** mibi cannot be returned; a juvenile not until adult. **Decided 2026-10-08:** a **portrayed** mibi may be returned, after the arm-then-confirm; its portrait stays in the book and on its card ("released"), and met again in its place it wears its painted look ([the portrait](the-portrait.md) §7).
 
 ## 7. What must be built and delivered
 
@@ -127,5 +127,5 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 All three **Decided 2026-10-08** as recommended.
 
 1. **Six bays, not eight.** Six keeps pods precious (**Decided:** no multitude of mibis) and makes the first shelf a goal inside the Pip week; eight pushes the first return and upgrade to week three. *Recommended: six.* **Decided: six.**
-2. **The first bud ever grows in five minutes, not twenty,** so the first sitting ends with a meet (r7's best moment); it opens plain and swaps later, as the pipeline allows. *Recommended: yes.* **Decided: yes** (it opens in the standard look, which is the game's art; nothing swaps unless a prize render is earned).
+2. **The first bud ever grows in five minutes, not twenty,** so the first turn at the bench ends with a meet (r7's best moment); it opens plain and swaps later, as the pipeline allows. *Recommended: yes.* **Decided: yes** (it opens in the standard look, which is the game's art; nothing swaps unless the mibi sits for its portrait, [the portrait](the-portrait.md)).
 3. **A returned mibi's place can shed a pod of its lineage.** It makes the return a meaning, not a refund, and is the one way a player's shaping reaches the wild. The limits: one pod per returned mibi, a turn later, every read still paid. *Recommended: yes.* **Decided: yes.**

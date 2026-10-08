@@ -144,7 +144,7 @@ This is a brief for the art director: the art director draws the renderer's mast
 - **Compare:** overlay two rings, and the spokes that differ pulse.
 - **Trade:** see exactly what you would get before agreeing (consent rules **Decided**).
 - **Verify lineage:** the Station checks the child's tracks against both parents' rings.
-- **Website and cloud:** a scanned ring opens the mibi's public page. Certified lineage would need the cloud's signature (**Open**).
+- **Website and cloud:** a scanned ring opens the mibi's public page. Certified lineage would need the cloud's signature (**Open**). **Decided 2026-10-08** ([the portrait](the-portrait.md) §1, §3): the signature is the **postmark**, signed by the cloud when a mibi sits for its **portrait** (the unique cloud-painted render, earned with a sitting); a plain mibi's stamp carries an unsigned postmark and its scan shows and grants nothing; only portrayed mibis trade.
 
 ## 8. The loop, step by step: the brief screens are judged against
 
