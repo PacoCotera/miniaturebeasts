@@ -157,8 +157,9 @@ def portrait():
 def plates():
     im = load("plate-thin2.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); bb = bbox_alpha(k, 140); pl = k.crop(bb); s = 320 / pl.width
     pln = dim(pl, 0.6)
-    for w in range(96, 225, 16):
-        save(f"plate-name-{w}x32", round_alpha(nine(pln, w, 32, 60, 60, 60, 60, ls=s), 5), [712 - w // 2, 440, w, 32], "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712", "plate-thin2")
+    tv = round(8 / s)
+    for w in range(80, 225, 16):
+        save(f"plate-name-{w}x24", round_alpha(nine(pln, w, 24, 60, tv, 60, tv, ls=s), 4), [712 - w // 2, 440, w, 24], "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712", "plate-thin2")
     plo = dim(pl, 0.55)
     save("plate-origin-224x40", round_alpha(nine(plo, 224, 40, 60, 60, 60, 60, ls=s), 5), [600, 480, 224, 40], "thin frosted label: colour-to-alpha, 9-slice, rounded", "plate-thin2")
     for h in (36, 56, 76):

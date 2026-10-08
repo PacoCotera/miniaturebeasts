@@ -22,7 +22,7 @@ def compose(state, rail):
     put("ring-hatch", 24, 488)
     # stage
     put("room-shelf", 576, 392); put("room-cradle", 600, 328); put("pod-large-shadow", 712 - 80, 385); put("pod-large-identified", 640, 216); put("room-cradle-front", 600, 328)
-    tw = d.textlength("Loika pod", font=f28); pw = min(224, max(96, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x32", 712 - pw // 2, 440); text((712, 456), "Loika pod", f28, CREAM, "mm")
+    tw = d.textlength("Loika pod", font=f20); pw = min(224, max(80, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x24", 712 - pw // 2, 440); text((712, 452), "Loika pod", f20, CREAM, "mm")
     put("plate-origin-224x40", 600, 480); text((712, 491), "rock field ·", f16, BONE, "mm"); text((712, 509), "a Tuikis felt safe", f16, BONE, "mm")
     put("stamp-label-120x120", 888, 248); cv.alpha_composite(cand.crop((830, 238, 976, 386)).resize((104, 104), Image.NEAREST), (896, 256))
     # page

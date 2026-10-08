@@ -1094,21 +1094,6 @@
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "3834322d8d96c3d1f8b528756a17d428ff36cd26055b3e6fd276b754e9c0cbba"
  },
- "plate-name-224x32": {
-  "size": [
-   224,
-   32
-  ],
-  "rect": [
-   600,
-   440,
-   224,
-   32
-  ],
-  "src": "plate-thin2",
-  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
-  "sha256": "a7053a2ee4e9f902f840f62683bdccb98320f6b4ef2aac6f9d1128dd1dcfea51"
- },
  "plate-origin-224x40": {
   "size": [
    224,
@@ -1289,124 +1274,154 @@
   "made": "translucent glass slats in the opening, under the deep frame",
   "sha256": "47f53375bded70cd5455710829bc32554d26efac07538eb89df8f3662a2cb284"
  },
- "plate-name-96x32": {
+ "plate-name-80x24": {
+  "size": [
+   80,
+   24
+  ],
+  "rect": [
+   672,
+   440,
+   80,
+   24
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "c5d249822e5c02ae07015c2d000b2996f488117553d33923318fd5ee0146f323"
+ },
+ "plate-name-96x24": {
   "size": [
    96,
-   32
+   24
   ],
   "rect": [
    664,
    440,
    96,
-   32
+   24
   ],
   "src": "plate-thin2",
-  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
-  "sha256": "245f7c47aea3f5794bfb018cfe385b0d8bfa90810c44d69ffce39280b188e80d"
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "0342e35131e5131f35c1b55d7af656838e55927ad2465b83f2b0424382ceb580"
  },
- "plate-name-112x32": {
+ "plate-name-112x24": {
   "size": [
    112,
-   32
+   24
   ],
   "rect": [
    656,
    440,
    112,
-   32
+   24
   ],
   "src": "plate-thin2",
-  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
-  "sha256": "f26cb7ccc27688858bf577e79f5cc487f6dcf367d16e5b29ae0bb577ab263bb6"
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "6232526688c52dec4806df6494edb59dcc1889604b27d9741007694e965b118a"
  },
- "plate-name-128x32": {
+ "plate-name-128x24": {
   "size": [
    128,
-   32
+   24
   ],
   "rect": [
    648,
    440,
    128,
-   32
+   24
   ],
   "src": "plate-thin2",
-  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
-  "sha256": "a5590e0264bb1fd3d024889749fe8a3a59337e3ed55130bedae5817db90a4315"
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "b939a7c978f1621612e44c2c2d0f1da67553373743ac44092ba624f001860649"
  },
- "plate-name-144x32": {
+ "plate-name-144x24": {
   "size": [
    144,
-   32
+   24
   ],
   "rect": [
    640,
    440,
    144,
-   32
+   24
   ],
   "src": "plate-thin2",
-  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
-  "sha256": "3217c8b23e5796979d7a83b22497355085ac9bb53a93bbbc464000193a5bd2b2"
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "00e7086c5147e962dec8ef636f833756e5be0d2f2bdc6dc65cfc1a39bd2efc02"
  },
- "plate-name-160x32": {
+ "plate-name-160x24": {
   "size": [
    160,
-   32
+   24
   ],
   "rect": [
    632,
    440,
    160,
-   32
+   24
   ],
   "src": "plate-thin2",
-  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
-  "sha256": "9501e20e7dc230f9391366af65a0fcdaa624fe4549e2bd3649284c41bc48148e"
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "a3731c896b5362d972164666ef8b5232821834df54c14e4741fd8f5e2898cd65"
  },
- "plate-name-176x32": {
+ "plate-name-176x24": {
   "size": [
    176,
-   32
+   24
   ],
   "rect": [
    624,
    440,
    176,
-   32
+   24
   ],
   "src": "plate-thin2",
-  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
-  "sha256": "2e124400635fc90cd0f9a4ff477dee1856375f17081b5d70ba8c960c6b1fef84"
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "c6f91b05a938b290bea46442b32b6db54808e73f9cc3cfd8f86acf8783ed0c01"
  },
- "plate-name-192x32": {
+ "plate-name-192x24": {
   "size": [
    192,
-   32
+   24
   ],
   "rect": [
    616,
    440,
    192,
-   32
+   24
   ],
   "src": "plate-thin2",
-  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
-  "sha256": "89cb53d00b11861f287f70f5a3a921439274045bd80cc0d11f9d6ca093799a73"
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "cc39683c42448db5bcc2416df020ef1a29fb49043d340839a2db6652110b2f40"
  },
- "plate-name-208x32": {
+ "plate-name-208x24": {
   "size": [
    208,
-   32
+   24
   ],
   "rect": [
    608,
    440,
    208,
-   32
+   24
   ],
   "src": "plate-thin2",
-  "made": "thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712",
-  "sha256": "46899762fff840c88b9a457cd2f6e658c93853ba58b46a91124e17982e18fb0b"
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "087f6276eed23c5e0ffbaf6ae791a3ea8d851263da5ab39cb84fc1310f82ee38"
+ },
+ "plate-name-224x24": {
+  "size": [
+   224,
+   24
+  ],
+  "rect": [
+   600,
+   440,
+   224,
+   24
+  ],
+  "src": "plate-thin2",
+  "made": "thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712",
+  "sha256": "2453edfaed652aeff47100a505d10145c7234fad3140abd1ed83dda3644a5a44"
  }
 }

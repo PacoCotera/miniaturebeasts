@@ -20,7 +20,7 @@
 
 ## Slices
 
-Each slice is named by the register id it replaces (`room`, `ring`, `page`, `trait-picture`, `stamp`, `pod`); where the register has none, the id is **proposed** (`rail-tab-*`, `plate-*`, `frame-*`, `room-shelf`). Rectangles follow the layout spec of branch `design-pods-relayout` (637fb1e): the pod's box is bottom-centred on (712, 392), the dish is (600, 328, 224, 96), the page (176, 112, 408, 440) with the portrait frame (264, 160, 232, 312), the stamp label (888, 248). A tab hangs from the top bar's rule at y 40: a full tab (slice 152×40) at x0 + 136 i, a compact tab (slice 72×40) at its place in the run. The name plate is a 9-slice delivered at every 16 px from 96 to 224 wide. Hashes and sources: [`slices/manifest.json`](slices/manifest.json).
+Each slice is named by the register id it replaces (`room`, `ring`, `page`, `trait-picture`, `stamp`, `pod`); where the register has none, the id is **proposed** (`rail-tab-*`, `plate-*`, `frame-*`, `room-shelf`). Rectangles follow the layout spec of branch `design-pods-relayout` (637fb1e): the pod's box is bottom-centred on (712, 392), the dish is (600, 328, 224, 96), the page (176, 112, 408, 440) with the portrait frame (264, 160, 232, 312), the stamp label (888, 248). A tab hangs from the top bar's rule at y 40: a full tab (slice 152×40) at x0 + 136 i, a compact tab (slice 72×40) at its place in the run. The name plate is a 9-slice delivered at every 16 px from 80 to 224 wide, 24 tall. Hashes and sources: [`slices/manifest.json`](slices/manifest.json).
 
 ### Top bar and bottom line (signed)
 
@@ -42,15 +42,16 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `plate-message-640x36` | 640×36 | (192, 514, 640, 36) | thin frosted label: 9-slice, rounded |
 | `plate-message-640x56` | 640×56 | (192, 494, 640, 56) | thin frosted label: 9-slice, rounded |
 | `plate-message-640x76` | 640×76 | (192, 474, 640, 76) | thin frosted label: 9-slice, rounded |
-| `plate-name-112x32` | 112×32 | (656, 440, 112, 32) | thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712 |
-| `plate-name-128x32` | 128×32 | (648, 440, 128, 32) | thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712 |
-| `plate-name-144x32` | 144×32 | (640, 440, 144, 32) | thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712 |
-| `plate-name-160x32` | 160×32 | (632, 440, 160, 32) | thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712 |
-| `plate-name-176x32` | 176×32 | (624, 440, 176, 32) | thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712 |
-| `plate-name-192x32` | 192×32 | (616, 440, 192, 32) | thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712 |
-| `plate-name-208x32` | 208×32 | (608, 440, 208, 32) | thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712 |
-| `plate-name-224x32` | 224×32 | (600, 440, 224, 32) | thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712 |
-| `plate-name-96x32` | 96×32 | (664, 440, 96, 32) | thin frosted label, 9-slice (insets 14 px) from 96 to 224 wide in steps of 16, centred on x 712 |
+| `plate-name-112x24` | 112×24 | (656, 440, 112, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-128x24` | 128×24 | (648, 440, 128, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-144x24` | 144×24 | (640, 440, 144, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-160x24` | 160×24 | (632, 440, 160, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-176x24` | 176×24 | (624, 440, 176, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-192x24` | 192×24 | (616, 440, 192, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-208x24` | 208×24 | (608, 440, 208, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-224x24` | 224×24 | (600, 440, 224, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-80x24` | 80×24 | (672, 440, 80, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
+| `plate-name-96x24` | 96×24 | (664, 440, 96, 24) | thin frosted label, 9-slice (insets 14 px across, 8 px down) from 80 to 224 wide in steps of 16, 24 tall, centred on x 712 |
 | `plate-origin-224x40` | 224×40 | (600, 480, 224, 40) | thin frosted label: colour-to-alpha, 9-slice, rounded |
 
 ### Pods: one systematic pod in layers
