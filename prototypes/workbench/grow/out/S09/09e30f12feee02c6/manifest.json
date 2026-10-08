@@ -9,172 +9,173 @@
    "status": "plain",
    "attempts": [
     {
-     "callId": "7284f44b-b7c0-4faa-ba6d-242fd03cdfa0",
+     "callId": "7aaf1469-8f42-43a4-a6ea-bf39af092342",
      "step": 1,
      "attempt": 1,
      "status": "ok",
-     "costUSD": 0.17866,
-     "seconds": 19.4,
+     "costUSD": 0.17674,
+     "seconds": 20.3,
      "checks": {
-      "silhouetteIoU": 0.449,
-      "silhouetteIoUInPlace": 0.275,
+      "silhouetteIoU": 0.484,
+      "silhouetteIoUInPlace": 0.44,
       "parts": {
        "region-0": {
         "span": 1.0,
-        "coverage": 0.789
+        "coverage": 1.0
        },
        "region-1": {
-        "span": 0.981,
+        "span": 1.0,
         "coverage": 1.0
        },
        "neck": {
-        "span": 0.883,
-        "coverage": 0.951
+        "span": 1.0,
+        "coverage": 1.0
        },
        "head": {
         "span": 1.0,
-        "coverage": 0.704
+        "coverage": 0.779
        },
        "beak": {
-        "span": 0.747,
-        "coverage": 0.716
+        "span": 0.24,
+        "coverage": 0.0
        },
        "crown": {
-        "span": 0.578,
-        "coverage": 0.132
+        "span": 0.864,
+        "coverage": 0.784
        },
        "leg-0": {
-        "span": 0.676,
-        "coverage": 0.28
+        "span": 1.0,
+        "coverage": 0.606
        },
        "flap": {
-        "span": 1.0,
-        "coverage": 0.666
+        "span": 0.886,
+        "coverage": 0.954
        },
        "tail": {
-        "span": 0.92,
-        "coverage": 0.97
+        "span": 0.19,
+        "coverage": 0.092
        }
       },
       "proportions": {
        "region-0": {
         "drawn": 0.296,
-        "painted": 0.456,
-        "ok": false
+        "painted": 0.376,
+        "ok": true
        },
        "neck": {
         "drawn": 0.276,
-        "painted": 0.412,
+        "painted": 0.356,
         "ok": true
        },
        "head": {
         "drawn": 0.306,
-        "painted": 0.466,
-        "ok": false
+        "painted": 0.386,
+        "ok": true
        },
        "crown": {
         "drawn": 0.296,
-        "painted": 0.278,
+        "painted": 0.348,
         "ok": true
        },
        "leg-0": {
         "drawn": 0.349,
-        "painted": 0.449,
+        "painted": 0.388,
         "ok": true
        }
       },
       "slots": {
        "body@region-0": {
-        "agreement": 0.489,
-        "median": "#685a85",
+        "agreement": 0.948,
+        "median": "#2e509a",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@neck": {
-        "agreement": 0.861,
-        "median": "#5382c9",
+        "agreement": 0.964,
+        "median": "#4b79c6",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@head": {
-        "agreement": 0.916,
-        "median": "#4d77bd",
+        "agreement": 0.808,
+        "median": "#4b7ac2",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@crown": {
-        "agreement": 0.884,
-        "median": "#3e5ca6",
+        "agreement": 0.945,
+        "median": "#4b7ac8",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "second@leg-0": {
-        "agreement": 0.995,
-        "median": "#ddd3c7",
-        "nearest": "#fff0b8",
-        "ok": true
+        "agreement": 0.499,
+        "median": "#564e65",
+        "nearest": "#4d7ed4",
+        "ok": false
        }
       },
       "reasons": [
-       "paint lies well outside the drawn body (21% of the body beyond a 20 px band): a part was added, moved or re-laid",
-       "the proportions are off: the region-0 is larger than drawn (0.46 of the body against 0.30), the head is larger than drawn (0.47 of the body against 0.31)"
+       "paint lies well outside the drawn body (20% of the body beyond a 20 px band): a part was added, moved or re-laid",
+       "a part is missing or moved from where the part map puts it: beak (painted along 24% of its length), tail (painted along 19% of its length)",
+       "a pigment slot is painted in another slot's colour: the second colour on the front legs (painted #564e65, the body colour)"
       ],
-      "outside": 0.214,
-      "missing": 0.038,
+      "outside": 0.199,
+      "missing": 0.04,
       "bandTolerancePx": 20,
       "tolerances": {
        "bandMax": 0.18,
        "partMin": 0.5,
        "proportion": 0.25
       },
-      "slotAgreement": 0.787,
+      "slotAgreement": 0.843,
       "passed": false,
       "proportionTolerance": 0.25
      },
-     "responseId": "QKbHav7KNI--39IPm979kAg"
+     "responseId": "FafHas7NG9GU_uMPicyq6Qw"
     },
     {
-     "callId": "34d04fe1-210f-4d57-9253-225025178811",
+     "callId": "9b9344b6-b8a8-4437-b12e-05cef2bd28bf",
      "step": 1,
      "attempt": 2,
      "status": "ok",
-     "costUSD": 0.17902,
-     "seconds": 19.7,
+     "costUSD": 0.17235,
+     "seconds": 19.1,
      "checks": {
-      "silhouetteIoU": 0.532,
-      "silhouetteIoUInPlace": 0.417,
+      "silhouetteIoU": 0.578,
+      "silhouetteIoUInPlace": 0.405,
       "parts": {
        "region-0": {
         "span": 1.0,
-        "coverage": 0.967
+        "coverage": 0.985
        },
        "region-1": {
         "span": 1.0,
-        "coverage": 0.483
+        "coverage": 0.628
        },
        "neck": {
         "span": 1.0,
-        "coverage": 0.982
+        "coverage": 1.0
        },
        "head": {
         "span": 1.0,
-        "coverage": 0.834
+        "coverage": 0.964
        },
        "beak": {
-        "span": 0.413,
-        "coverage": 0.147
+        "span": 0.72,
+        "coverage": 0.61
        },
        "crown": {
-        "span": 0.83,
-        "coverage": 0.725
+        "span": 0.864,
+        "coverage": 0.766
        },
        "leg-0": {
-        "span": 0.884,
-        "coverage": 0.656
+        "span": 0.861,
+        "coverage": 0.69
        },
        "flap": {
-        "span": 0.619,
-        "coverage": 0.511
+        "span": 0.676,
+        "coverage": 0.682
        },
        "tail": {
         "span": 0.0,
@@ -184,78 +185,79 @@
       "proportions": {
        "region-0": {
         "drawn": 0.296,
-        "painted": 0.409,
+        "painted": 0.417,
         "ok": true
        },
        "neck": {
         "drawn": 0.276,
-        "painted": 0.37,
+        "painted": 0.395,
         "ok": true
        },
        "head": {
         "drawn": 0.306,
-        "painted": 0.42,
+        "painted": 0.424,
         "ok": true
        },
        "crown": {
         "drawn": 0.296,
-        "painted": 0.328,
+        "painted": 0.342,
         "ok": true
        },
        "leg-0": {
         "drawn": 0.349,
-        "painted": 0.403,
+        "painted": 0.411,
         "ok": true
        }
       },
       "slots": {
        "body@region-0": {
-        "agreement": 0.832,
-        "median": "#254a8f",
+        "agreement": 0.745,
+        "median": "#365691",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@neck": {
-        "agreement": 0.951,
-        "median": "#3d6ab8",
+        "agreement": 0.91,
+        "median": "#4e76bf",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@head": {
-        "agreement": 0.833,
-        "median": "#3d6aa8",
+        "agreement": 0.875,
+        "median": "#4f74be",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@crown": {
-        "agreement": 0.953,
-        "median": "#27498d",
+        "agreement": 0.966,
+        "median": "#395ba0",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "second@leg-0": {
-        "agreement": 0.538,
-        "median": "#937f85",
-        "nearest": "#4d7ed4",
+        "agreement": 0.674,
+        "median": "#cd9b7e",
+        "nearest": "#fff0b8",
         "ok": true
        }
       },
       "reasons": [
-       "a part is missing or moved from where the part map puts it: beak (painted along 41% of its length), tail (painted along 0% of its length)"
+       "paint lies well outside the drawn body (18% of the body beyond a 20 px band): a part was added, moved or re-laid",
+       "a part is missing or moved from where the part map puts it: tail (painted along 0% of its length)"
       ],
-      "outside": 0.164,
-      "missing": 0.018,
+      "outside": 0.184,
+      "missing": 0.001,
       "bandTolerancePx": 20,
       "tolerances": {
        "bandMax": 0.18,
        "partMin": 0.5,
        "proportion": 0.25
       },
-      "slotAgreement": 0.817,
+      "slotAgreement": 0.822,
       "passed": false,
       "proportionTolerance": 0.25
      },
-     "responseId": "dKbHau_CAZSZ_uMP457VsAk"
+     "responseId": "R6fHaoDyKYao_uMPvJ7j6Ag"
     }
    ],
    "steps": []
@@ -284,7 +286,7 @@
   "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
   "name": "rich-plain-300x310.png"
  },
- "startedAt": "2026-10-08T14:18:39Z",
+ "startedAt": "2026-10-08T14:22:11Z",
  "outputs": {
   "station-portrait-600x620.png": "6d256eb1c219073db42803209bfecae4b8e741a8c126413cc21806f702aaac20",
   "station-portrait-300x310.png": "d00aeaee7cdee4224dad33b95962d2ce537b3fd42ce177e23af1e43013d29858",
@@ -292,7 +294,7 @@
   "token-48.png": "a5c25d8e45bd710c633365d34918402b3a44bad68b59ec5329199bb1f9f23d84"
  },
  "calls": 2,
- "costUSD": 0.35768,
- "seconds": 39.1,
- "finishedAt": "2026-10-08T14:20:20Z"
+ "costUSD": 0.34909,
+ "seconds": 39.4,
+ "finishedAt": "2026-10-08T14:23:54Z"
 }
