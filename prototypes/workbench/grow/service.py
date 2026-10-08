@@ -35,7 +35,9 @@ REPO = os.path.dirname(os.path.dirname(WB))
 OUT = os.path.join(HERE, "out")
 PROMPTS = os.path.join(HERE, "prompts.json")
 ART_DIRECTION = open(os.path.join(HERE, "art-direction.txt")).read().strip()
-PROMPT_VERSION = 2  # 1: the stage 1 template over the controls; 2: art direction, controls, the genome's description and the species reference as separate fields
+PROMPT_VERSION = 3  # 1: the stage 1 template over the controls; 2: art direction, controls, the genome's description and the species reference as separate fields; 3: the controls named as structure only, structural checks in place of the silhouette gate, control variants
+CONTROL_VARIANTS = ("blurred", "crisp", "lowres")  # how the shaded control is sent: blurred so its facets cannot be copied (the default), as rendered, or at a quarter of the pixels
+BLUR_RADIUS, LOWRES_SIZE = 5, 256
 SPECIES_DIR = os.path.join(HERE, "species")  # the species' type specimen painting, the reference image of every individual's call
 REF = os.path.join(WB, "out", "reference")
 BG = (246, 243, 236)
@@ -45,7 +47,9 @@ GEMINI_MODEL = os.environ.get("GROW_GEMINI_MODEL", "gemini-3.1-flash-image")
 # USD per million tokens, ai.google.dev/gemini-api/docs/pricing on 2026-10-08 (standard tier).
 GEMINI_PRICES = {"gemini-3.1-flash-image": {"input": 0.50, "output": 60.0}, "gemini-3.1-flash-lite-image": {"input": 0.25, "output": 30.0}, "gemini-3-pro-image": {"input": 2.00, "output": 120.0}, "gemini-2.5-flash-image": {"input": 0.30, "output": 30.0}}
 VIEWS = ["portrait", "side"]
-SIL_MIN, PART_MIN = 0.85, 0.50                        # the gates (calibrated on the stage 1 paintings: see README)
+PART_MIN = 0.50                                       # a gated part must be covered this much by paint (calibrated on the stage 1 paintings)
+BAND_TOL, BAND_MAX = 0.04, 0.10                       # the tolerance band round the drawn body (share of its size) and how much of the body may lie outside it or be left inside it
+PROPORTION_AREA_MIN, PROPORTION_TOL = 0.05, 0.15      # the parts whose proportions are gated (share of the body) and the tolerance on their extent
 SLOT_MARGIN = (1.5, 8)                                # a slot fails when its paint is clearly nearer another slot's pigment: own distance > 1.5 × nearest + 8 (Lab)
 PART_AREA_MIN, SLOT_AREA_MIN, CELL_AREA_MIN = 0.02, 0.01, 0.05             # parts, slots and part-by-slot cells smaller than this share of the body are not gated (eyes, feelers, feet)
 LOG_LOCK = threading.Lock()
@@ -181,22 +185,45 @@ def count(mask):
     return sum(1 for v in mask.getdata() if v)
 
 
+def dilate(mask, r):
+    return mask.convert("L").filter(ImageFilter.MaxFilter(2 * r + 1)).point(lambda v: 255 if v > 127 else 0).convert("1")
+
+
+def bbox_size(mask):
+    b = mask.getbbox(); return (b[2] - b[0], b[3] - b[1]) if b else (0, 0)
+
+
+def ImageChops_subtract(a, b):
+    """a AND NOT b for two "1" masks."""
+    from PIL import ImageChops
+    return ImageChops.subtract(a.convert("L"), b.convert("L")).point(lambda v: 255 if v > 127 else 0).convert("1")
+
+
 def check(painted_large, ctrl, legend):
-    """The three checks of a painting at 600×620 against its controls {silhouette, index, slots} (paths).
-    Returns the scores and the reasons it fails, named for the retry."""
+    """The checks of a painting at 600×620 against its controls {silhouette, index, slots} (paths): the
+    structure (every part present where the part map puts it; the paint within a tolerance band of the
+    drawn body), the proportions (each part's painted extent against the drawn extent, relative to the
+    body, within 15 %), the slots (each slot painted in its own pigment). The silhouette IoU is reported,
+    not gated: the painter owns the volume. Returns the scores and the reasons it fails, named for the retry."""
     sil = silhouette_mask(ctrl["silhouette"]); body = count(sil)
     pm = mask_of(painted_large)
     fitted = fit_to_control(painted_large, ctrl["silhouette"], painted_large.size)
     fm = mask_of(fitted)
-    res = {"silhouetteIoU": round(iou(fm, sil), 3), "silhouetteIoUInPlace": round(iou(pm, sil), 3), "parts": {}, "slots": {}, "reasons": []}
-    if res["silhouetteIoU"] < SIL_MIN: res["reasons"].append(f"the silhouette does not match the drawing (IoU {res['silhouetteIoU']:.2f}): the body was turned, reshaped or re-posed")
+    size = max(bbox_size(sil))
+    res = {"silhouetteIoU": round(iou(fm, sil), 3), "silhouetteIoUInPlace": round(iou(pm, sil), 3), "parts": {}, "proportions": {}, "slots": {}, "reasons": []}
+    # the band check: paint outside the drawn body dilated by the tolerance, and drawn body eroded by it left unpainted, each as a share of the body
+    tol = max(2, round(BAND_TOL * size))
+    outside = count(ImageChops_subtract(fm, dilate(sil, tol))) / body
+    missing = count(ImageChops_subtract(erode(sil, tol), fm)) / body
+    res["outside"] = round(outside, 3); res["missing"] = round(missing, 3); res["bandTolerancePx"] = tol
+    if outside > BAND_MAX: res["reasons"].append(f"paint lies well outside the drawn body ({outside:.0%} of the body beyond a {tol} px band): a part was added, moved or re-laid")
+    if missing > BAND_MAX: res["reasons"].append(f"part of the drawn body is left unpainted ({missing:.0%} of the body inside a {tol} px band): a part was dropped or moved")
     # the part check: each part of the index pass, eroded 2 px, must be covered by paint
     parts = {p["part"]: tuple(p["flat"]) for p in legend["parts"]}
     pmasks = colour_masks(ctrl["index"], parts)
     fmp = fm.load(); low = []
-    for name, m in pmasks.items():
-        area = count(m)
-        if area < PART_AREA_MIN * body: continue
+    gated_parts = {name: m for name, m in pmasks.items() if count(m) >= PART_AREA_MIN * body}
+    for name, m in gated_parts.items():
         em = erode(m, 2); ep = em.load(); w, h = em.size; hit = tot = 0
         for y in range(h):
             for x in range(w):
@@ -205,6 +232,18 @@ def check(painted_large, ctrl, legend):
         res["parts"][name] = cov
         if cov < PART_MIN: low.append(f"{name} ({cov:.2f})")
     if low: res["reasons"].append("a part is missing or moved from where the part map puts it: " + ", ".join(low))
+    # the proportion check: each large part's painted extent (the paint within the tolerance band round the
+    # drawn part) over the painted body's extent, against the drawn part's over the drawn body's, within
+    # 15 % plus the band's own width
+    psize = max(bbox_size(fm)) or 1; csize = size or 1; off = []
+    for name, m in gated_parts.items():
+        if count(m) < PROPORTION_AREA_MIN * body: continue
+        within = Image.new("1", fm.size, 0); within.paste(fm, mask=dilate(m, tol).convert("L"))
+        rc = max(bbox_size(m)) / csize; rp = max(bbox_size(within)) / psize
+        ok = abs(rp - rc) <= PROPORTION_TOL * rc + 2 * tol / csize
+        res["proportions"][name] = {"drawn": round(rc, 3), "painted": round(rp, 3), "ok": ok}
+        if not ok: off.append(f"the {name} is {'larger' if rp > rc else 'smaller'} than drawn ({rp:.2f} of the body against {rc:.2f})")
+    if off: res["reasons"].append("the proportions are off: " + ", ".join(off))
     # the slot check: under each slot of the slot map (eroded 3 px), the paint's median colour must not
     # be clearly nearer (in Lab) another gated slot's pigment than its own: a slot painted in another
     # slot's colour fails; a pastel or darkened rendering of its own pigment passes. The per-pixel
@@ -263,7 +302,9 @@ def controls_text(legend, view):
     t = ("Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present, no part added, nothing turned. "
          "Image 1 is its form under one light from the top left. Image 2 is the colour key: the same body with every area flat in the exact pigment it must be painted in; paint each area in a ramp of that colour and no other, never moved, never swapped: "
          f"{slots}. Image 3 is the part map: its colours are labels, not paint; each flat colour is one part of the same body ({parts}); keep every part exactly where it is, at the same size, facing the same way. "
-         f"The creature stands still, seen {VIEW_PHRASE[view]}.")
+         f"The creature stands still, seen {VIEW_PHRASE[view]}. "
+         "The drawings show structure and proportion only: where each part is, how big it is and which colour it carries. Their flat facets, hard edges and small eyes are not the look: "
+         "render the volume, the softness, the face and the finish as image 4 does, over this structure.")
     if legend.get("translucent"):
         names = sorted({n["part"] for n in legend["translucent"]})
         t += f" Its {' and '.join(names)}s are thin membranes, lightly translucent: paint them opaque as a flat pale tint of their slot colour with a soft edge, as in image 1, not as glass, with no reflections and nothing showing through."
@@ -302,19 +343,28 @@ def gemini_call(parts, record):
     return status, res
 
 
-def paint_view(d, legend, view, attempt, reasons, reference, portrait_png):
+def control_image(path, pass_name, variant):
+    """A control image as the call sends it: padded to the 620 square; the shaded pass blurred (the facets
+    gone, the form kept) or every control at a quarter of the pixels, by variant."""
+    im = pad_square(Image.open(path).convert("RGB"))
+    if variant == "blurred" and pass_name == "shaded": im = im.filter(ImageFilter.GaussianBlur(BLUR_RADIUS))
+    if variant == "lowres": im = im.resize((LOWRES_SIZE, LOWRES_SIZE), Image.LANCZOS)
+    return png_bytes(im)
+
+
+def paint_view(d, legend, view, attempt, reasons, reference, portrait_png, variant="blurred"):
     """One paid call for one view; returns (record, painted 600×620 image or None). `reference` is the
     species' reference painting {what, name, png}: the accepted Pip for S01 and for a species' own type
     specimen, else the species' type specimen painting."""
     c = os.path.join(d, "controls")
-    imgs = [(f"{p}.{view}.large.png", png_bytes(pad_square(Image.open(os.path.join(c, f"{p}.{view}.large.png")).convert("RGB")))) for p in ("shaded", "key", "index")]
+    imgs = [(f"{p}.{view}.large.png:{variant}", control_image(os.path.join(c, f"{p}.{view}.large.png"), p, variant)) for p in ("shaded", "key", "index")]
     imgs.append((f"reference:{reference['name']}", reference["png"]))
     with_portrait = bool(view == "side" and portrait_png)
     if with_portrait: imgs.append(("station-portrait-600x620.png", png_bytes(pad_square(Image.open(io.BytesIO(portrait_png)).convert("RGB")))))
     fields = {"artDirection": ART_DIRECTION, "controls": controls_text(legend, view), "description": legend["description"]["text"], "reference": reference_text(reference, view, with_portrait)}
     text = template(fields, reasons)
     parts = [{"text": text}] + [{"inline_data": {"mime_type": "image/png", "data": b64(b)}} for _, b in imgs]
-    rec = {"id": str(uuid.uuid4()), "service": "gemini", "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "purpose": f"station-{view}", "attempt": attempt, "species": legend["species"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"],
+    rec = {"id": str(uuid.uuid4()), "service": "gemini", "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "controlVariant": variant, "purpose": f"station-{view}", "attempt": attempt, "species": legend["species"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"],
            "fields": fields, "referenceImage": {"what": reference["what"], "name": reference["name"], "sha256": sha_bytes(reference["png"])}, "prompt": text,
            "images": [{"name": n, "sha256": sha_bytes(b), "bytes": len(b)} for n, b in imgs], "generationConfig": {"responseModalities": ["IMAGE"], "aspectRatio": "1:1", "imageSize": "1K"}, "startedAt": now()}
     status, res = gemini_call(parts, rec)
@@ -351,56 +401,70 @@ def species_reference(species, legend):
     r = pip_reference(); r["what"] += " (this species' own type specimen painting is not made yet)"; return r
 
 
-def grow(species, genome=None, digest=None, force=False):
-    info = prepare(species, genome, digest); d = info["dir"]
+OUTPUT_FILES = ["station-portrait-600x620.png", "station-portrait-300x310.png", "station-side-600x620.png", "station-side-300x310.png", "companion-280x300.png", "token-48.png"]
+
+
+def grow(species, genome=None, digest=None, force=False, variant="blurred", views=VIEWS, sub=None):
+    """One mibi: the controls, the calls per view with one retry, the derived sizes, the manifest. `sub`
+    names a variant trial kept under variants/<sub>/ beside the main outputs (portrait only, no reference
+    painting kept); the main run keeps the previous prompt version's outputs under v<n>/ for the sheet."""
+    info = prepare(species, genome, digest); d0 = info["dir"]
+    d = d0 if sub is None else os.path.join(d0, "variants", sub)
+    os.makedirs(d, exist_ok=True)
     mpath = os.path.join(d, "manifest.json")
-    if os.path.exists(mpath) and not force:
+    if os.path.exists(mpath):
         m = json.load(open(mpath))
-        if m.get("promptVersion") == PROMPT_VERSION and all(m["views"].get(v, {}).get("status") in ("painted", "plain") for v in VIEWS): return m
-    legend = json.load(open(os.path.join(d, "controls", "legend.json")))
+        if m.get("promptVersion") == PROMPT_VERSION and not force and all(m["views"].get(v, {}).get("status") in ("painted", "plain") for v in views): return m
+        if sub is None and m.get("promptVersion", 1) < PROMPT_VERSION:  # keep the previous run beside the new one
+            keep = os.path.join(d, f"v{m.get('promptVersion', 1)}"); os.makedirs(keep, exist_ok=True)
+            for f in OUTPUT_FILES + ["manifest.json"]:
+                if os.path.exists(os.path.join(d, f)): os.replace(os.path.join(d, f), os.path.join(keep, f))
+    legend = json.load(open(os.path.join(d0, "controls", "legend.json")))
     reference = species_reference(species, legend)
-    man = {"schema": "mb-grow/1", "service": "grow/service.py", "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "species": species, "name": legend["name"], "level": legend["level"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"],
+    man = {"schema": "mb-grow/1", "service": "grow/service.py", "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "controlVariant": variant, "views": {}, "species": species, "name": legend["name"], "level": legend["level"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"],
            "frameVersion": legend["frameVersion"], "catalogue": legend["catalogue"], "controls": legend["schema"], "plainVersion": legend["plainVersion"], "description": legend["description"]["text"], "reference": {"what": reference["what"], "name": reference["name"]},
-           "startedAt": now(), "views": {}, "outputs": {}, "calls": 0, "costUSD": 0.0, "seconds": 0.0}
+           "startedAt": now(), "outputs": {}, "calls": 0, "costUSD": 0.0, "seconds": 0.0}
     portrait_png = None
-    for view in VIEWS:
-        ctrl = {p: os.path.join(d, "controls", f"{p}.{view}.large.png") for p in ("silhouette", "index", "slots")}
+    for view in views:
+        ctrl = {p: os.path.join(d0, "controls", f"{p}.{view}.large.png") for p in ("silhouette", "index", "slots")}
         vrec = {"status": None, "attempts": []}
         reasons = None; painted = None
         for attempt in (1, 2):
-            rec, im = paint_view(d, legend, view, attempt, reasons, reference, portrait_png)
+            rec, im = paint_view(d0, legend, view, attempt, reasons, reference, portrait_png, variant)
+            if sub is not None and im is not None: os.makedirs(os.path.join(d, "raw"), exist_ok=True); im.save(os.path.join(d, "raw", f"{view}-{attempt}.png"))
             rec["reasonsGiven"] = reasons
             if im is not None:
                 rec["checks"] = check(im, ctrl, legend)
             log_call(rec)
             man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
             vrec["attempts"].append({"callId": rec["id"], "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
-            print(species, legend["genomeDigest"], view, f"attempt {attempt}", rec["status"], (f"IoU {rec['checks']['silhouetteIoU']} parts {min(rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+            print(species, legend["genomeDigest"], sub or variant, view, f"attempt {attempt}", rec["status"], (f"IoU {rec['checks']['silhouetteIoU']} parts {min(rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
             if im is not None and rec["checks"]["passed"]: painted = im; break
             reasons = rec["checks"]["reasons"] if im is not None else ["the service returned no image"]
             if attempt == 2 and im is not None: vrec["lastRejected"] = f"raw/{view}-2.png"
         if painted is not None:
             vrec["status"] = "painted"
             painted.save(os.path.join(d, f"station-{view}-600x620.png"))
-            fit_to_control(painted, os.path.join(d, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"station-{view}-300x310.png"))
+            fit_to_control(painted, os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"station-{view}-300x310.png"))
             if view == "portrait": portrait_png = png_bytes(painted)
         else:
             vrec["status"] = "plain"  # twice rejected: the placeholder is served for this view
             for size in ("600x620", "300x310"):
-                open(os.path.join(d, f"station-{view}-{size}.png"), "wb").write(open(os.path.join(d, "plain", f"plain-{view}-{size}.png"), "rb").read())
+                open(os.path.join(d, f"station-{view}-{size}.png"), "wb").write(open(os.path.join(d0, "plain", f"plain-{view}-{size}.png"), "rb").read())
         man["views"][view] = vrec
     # the Companion and the token derive from the portrait (painted or placeholder)
     palette = load_palette()
     if man["views"]["portrait"]["status"] == "painted":
         large = Image.open(os.path.join(d, "station-portrait-600x620.png")).convert("RGB")
-        fit_to_control(large, os.path.join(d, "controls", "silhouette.portrait.companion.png"), (280, 300), palette).save(os.path.join(d, "companion-280x300.png"))
-        fit_to_control(large, os.path.join(d, "controls", "silhouette.portrait.tile.png"), (48, 48), palette).save(os.path.join(d, "token-48.png"))
+        fit_to_control(large, os.path.join(d0, "controls", "silhouette.portrait.companion.png"), (280, 300), palette).save(os.path.join(d, "companion-280x300.png"))
+        fit_to_control(large, os.path.join(d0, "controls", "silhouette.portrait.tile.png"), (48, 48), palette).save(os.path.join(d, "token-48.png"))
     else:
-        for f, src in (("companion-280x300.png", "plain-companion-280x300.png"), ("token-48.png", "plain-token-48.png")): open(os.path.join(d, f), "wb").write(open(os.path.join(d, "plain", src), "rb").read())
-    for f in ["station-portrait-600x620.png", "station-portrait-300x310.png", "station-side-600x620.png", "station-side-300x310.png", "companion-280x300.png", "token-48.png"]: man["outputs"][f] = sha_file(os.path.join(d, f))
+        for f, src in (("companion-280x300.png", "plain-companion-280x300.png"), ("token-48.png", "plain-token-48.png")): open(os.path.join(d, f), "wb").write(open(os.path.join(d0, "plain", src), "rb").read())
+    for f in OUTPUT_FILES:
+        if os.path.exists(os.path.join(d, f)): man["outputs"][f] = sha_file(os.path.join(d, f))
     man["finishedAt"] = now()
     json.dump(man, open(mpath, "w"), indent=1); open(mpath, "a").write("\n")
-    if legend["level"] == "species" and species != "S01":  # the species' reference painting, kept once
+    if sub is None and legend["level"] == "species" and species != "S01":  # the species' reference painting, kept once
         os.makedirs(os.path.join(SPECIES_DIR, species), exist_ok=True)
         for view in VIEWS:
             if man["views"][view]["status"] == "painted":
@@ -423,21 +487,37 @@ def cmd_paint(a):
                 seen.add(m["genomeSha256"]); jobs.append((sp, os.path.join(REF, sp, m["dir"], "genome.json"), None))
                 if len(seen) == n: break
     force = a.get("force") is not None
+    variant = a.get("control", "blurred"); assert variant in CONTROL_VARIANTS, f"--control one of {CONTROL_VARIANTS}"
+    views = a["views"].split(",") if a.get("views") else VIEWS
+    sub = a.get("sub")  # a variant trial kept beside the main outputs, e.g. --control crisp --views portrait --sub crisp
     # the species' type specimen painting first (the reference image of every other call of that species)
     for sp in sorted({j[0] for j in jobs}):
-        if sp == "S01" or (os.path.exists(os.path.join(SPECIES_DIR, sp, "portrait-600x620.png")) and not force): continue
+        if sub is not None or sp == "S01" or (os.path.exists(os.path.join(SPECIES_DIR, sp, "portrait-600x620.png")) and not force): continue
         spec = os.path.join(REF, sp, "type-specimen", "genome.json")
-        man = grow(sp, spec, None, force); print(sp, "type specimen", {v: man["views"][v]["status"] for v in VIEWS}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
+        man = grow(sp, spec, None, force, variant); print(sp, "type specimen", {v: man["views"][v]["status"] for v in VIEWS}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
         jobs = [j for j in jobs if not (j[0] == sp and j[1] == spec)]
     with ThreadPoolExecutor(max_workers=int(a.get("workers", 3))) as ex:
-        for man in ex.map(lambda j: grow(j[0], j[1], j[2], force), jobs):
-            print(man["species"], man["genomeDigest"], {v: man["views"][v]["status"] for v in VIEWS}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
+        for man in ex.map(lambda j: grow(j[0], j[1], j[2], force, variant, views, sub), jobs):
+            print(man["species"], man["genomeDigest"], sub or variant, {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
 
 
 # --- calibration on the stage 1 paintings (no calls) --------------------------------------------------------
 def cmd_calibrate(a):
-    """The three checks on the twelve stage 1 paintings (three-quarter view, the old dithered controls),
-    beside the stage 1 silhouette IoU, so the gates rest on evidence."""
+    """The checks on the twelve stage 1 paintings (three-quarter view, the old dithered controls), beside
+    the stage 1 silhouette IoU, so the gates rest on evidence; with --previous, on the last attempt of
+    every view of the previous Grow run under out/ (its raw outputs), beside the verdict that run gave."""
+    if "previous" in a:
+        for d, m in manifests():
+            legend = json.load(open(os.path.join(d, "controls", "legend.json")))
+            for view in VIEWS:
+                att = m["views"][view]["attempts"]; n = len(att)
+                raw = os.path.join(d, "raw", f"{view}-{n}.png")
+                if not os.path.exists(raw): continue
+                im = Image.open(raw).convert("RGB").resize((620, 620), Image.LANCZOS).crop((10, 0, 610, 620))
+                r = check(im, {p: os.path.join(d, "controls", f"{p}.{view}.large.png") for p in ("silhouette", "index", "slots")}, legend)
+                was = att[-1].get("checks") or {}
+                print(m["species"], m["genomeDigest"], view, "was", "PASS" if was.get("passed") else "FAIL", f"IoU {r['silhouetteIoU']}", "now", "PASS" if r["passed"] else "FAIL", f"out {r['outside']} miss {r['missing']} parts {min(r['parts'].values()) if r['parts'] else '-'}", "|", "; ".join(r["reasons"])[:220], flush=True)
+        return
     rows = []
     for sp in ["S01", "S09", "S12"]:
         idx = json.load(open(os.path.join(WB, "stage1", "controls", sp, "index.json")))
@@ -468,11 +548,31 @@ def manifests():
     return out
 
 
+def variant_manifests():
+    out = {}
+    for d, _ in manifests():
+        vd = os.path.join(d, "variants")
+        if not os.path.exists(vd): continue
+        for v in sorted(os.listdir(vd)):
+            p = os.path.join(vd, v, "manifest.json")
+            if os.path.exists(p): out.setdefault(v, []).append((os.path.join(vd, v), json.load(open(p))))
+    return out
+
+
+def variant_stats(mans, views):
+    calls = sum(m["calls"] for _, m in mans); cost = sum(m["costUSD"] for _, m in mans)
+    first = sum(1 for _, m in mans for v in views if m["views"].get(v, {}).get("attempts") and (m["views"][v]["attempts"][0].get("checks") or {}).get("passed"))
+    return {"individuals": len(mans), "calls": calls, "usdPerIndividual": round(cost / len(mans), 4) if mans else None, "firstAttemptPassRate": round(first / (len(mans) * len(views)), 3) if mans else None,
+            "plainServed": sum(1 for _, m in mans for v in views if m["views"].get(v, {}).get("status") == "plain"), "retries": sum(len(m["views"][v]["attempts"]) - 1 for _, m in mans for v in views if v in m["views"])}
+
+
 def cmd_report(a):
     calls = [c for c in read_log() if c.get("service") == "gemini" and c.get("promptVersion", 1) == PROMPT_VERSION]
     ok = [c for c in calls if c.get("status") == "ok"]
     mans = [(d, m) for d, m in manifests() if m.get("promptVersion", 1) == PROMPT_VERSION]
-    cost = {"model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "spentAllVersionsUSD": round(sum(c.get("costUSD") or 0 for c in read_log()), 3), "calls": len(calls), "callsOk": len(ok), "callUSDMean": round(sum(c["costUSD"] for c in ok) / len(ok), 4) if ok else None, "callSecondsMean": round(sum(c["seconds"] for c in ok) / len(ok), 1) if ok else None,
+    variants = {v: variant_stats(ms, ["portrait"]) for v, ms in variant_manifests().items()}
+    main_variant = mans[0][1].get("controlVariant") if mans else None
+    cost = {"model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "controlVariant": main_variant, "variantTrials": variants, "spentAllVersionsUSD": round(sum(c.get("costUSD") or 0 for c in read_log()), 3), "calls": len(calls), "callsOk": len(ok), "callUSDMean": round(sum(c["costUSD"] for c in ok) / len(ok), 4) if ok else None, "callSecondsMean": round(sum(c["seconds"] for c in ok) / len(ok), 1) if ok else None,
             "spentUSD": round(sum(c.get("costUSD") or 0 for c in calls), 3), "individuals": len(mans), "bySpecies": {}}
     if mans:
         cost["callsPerIndividualMean"] = round(sum(m["calls"] for _, m in mans) / len(mans), 2)
@@ -494,7 +594,8 @@ def cmd_report(a):
 
 def sheets(mans, cost):
     os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
-    cols = [("painted Station, portrait 300x310", 300), ("painted Station, side 300x310", 300), ("Companion 280x300, derived", 280), ("token 48 at 1x and 3x, derived", 200), ("plain placeholder, portrait", 300), ("control: shaded pass, portrait", 300)]
+    vm = variant_manifests(); trial_names = sorted(vm)
+    cols = [("previous run (prompt v2), portrait", 300), (f"painted Station, portrait ({cost.get('controlVariant')} control)", 300), ("painted Station, side", 300), ("Companion 280x300, derived", 280), ("token 48 at 1x and 3x, derived", 200), ("control: shaded pass as sent, portrait", 300)] + [(f"trial: {t} control, portrait", 300) for t in trial_names]
     gap = 12; rowh = 310 + 44; ink = (40, 40, 50)
     for sp in sorted({m["species"] for _, m in mans}):
         rows = [(d, m) for d, m in mans if m["species"] == sp]
@@ -502,7 +603,7 @@ def sheets(mans, cost):
         W = gap + sum(w + gap for _, w in cols); H = 70 + (len(rows) + 1) * rowh
         sheet = Image.new("RGB", (W, H), (255, 255, 255)); draw = ImageDraw.Draw(sheet)
         bs = cost["bySpecies"].get(sp, {})
-        draw.text((gap, 8), f"{sp} {rows[0][1]['name']}: the Grow painting service, {cost['model']}, prompt v{cost['promptVersion']}, device size at 1x. Row 1: the accepted Pip, the bar. Then the type specimen and five individuals. {bs.get('calls')} calls, ${bs.get('usdPerIndividual', 0):.3f} an individual (two views, retries included), {bs.get('retries')} retries, {bs.get('plainServed')} views served plain.", fill=ink)
+        draw.text((gap, 8), f"{sp} {rows[0][1]['name']}: the Grow painting service, {cost['model']}, prompt v{cost['promptVersion']}, {cost.get('controlVariant')} control, structural checks, device size at 1x. Row 1: the accepted Pip, the bar. Then the type specimen and five individuals. {bs.get('calls')} calls, ${bs.get('usdPerIndividual', 0):.3f} an individual (two views, retries included), {bs.get('retries')} retries, {bs.get('plainServed')} views served plain.", fill=ink)
         x = gap
         for name, w in cols: draw.text((x, 26), name, fill=ink); x += w + gap
         y = 44
@@ -516,18 +617,24 @@ def sheets(mans, cost):
                     im = Image.open(path).convert("RGB")
                     if zoom > 1: im = im.resize((im.width * zoom, im.height * zoom), Image.NEAREST)
                     sheet.paste(im, (x, y))
+            put(os.path.join(d, "v2", "station-portrait-300x310.png")); x += 300 + gap
             put(os.path.join(d, "station-portrait-300x310.png")); x += 300 + gap
             put(os.path.join(d, "station-side-300x310.png")); x += 300 + gap
             put(os.path.join(d, "companion-280x300.png")); x += 280 + gap
             x0 = x; put(os.path.join(d, "token-48.png")); x = x0 + 56; put(os.path.join(d, "token-48.png"), 3); x = x0 + 200 + gap
-            put(os.path.join(d, "plain", "plain-portrait-300x310.png")); x += 300 + gap
-            put(os.path.join(d, "controls", "shaded.portrait.station.png"))
+            sent = Image.open(io.BytesIO(control_image(os.path.join(d, "controls", "shaded.portrait.station.png"), "shaded", m.get("controlVariant", "crisp")))).convert("RGB")
+            sent = sent.resize((310, 310), Image.NEAREST) if sent.width != 310 else sent
+            sheet.paste(sent.crop((5, 0, 305, 310)), (x, y)); x += 300 + gap
+            for t in trial_names:
+                td = next((td for td, tm in vm[t] if tm["genomeSha256"] == m["genomeSha256"]), None)
+                if td: put(os.path.join(td, "station-portrait-300x310.png")); tm = next(tm for td2, tm in vm[t] if td2 == td); tc = (tm["views"]["portrait"]["attempts"][-1].get("checks") or {}); draw.text((x, y + 326), f"{t}: {tm['views']['portrait']['status']}, {len(tm['views']['portrait']['attempts'])} call(s), parts min {min(tc['parts'].values()) if tc.get('parts') else '-'}", fill=ink)
+                x += 300 + gap
             def vtxt(v):
                 vr = m["views"][v]; last = vr["attempts"][-1].get("checks") or {}
-                return f"{v}: {vr['status']}, {len(vr['attempts'])} call{'s' if len(vr['attempts']) > 1 else ''}, IoU {last.get('silhouetteIoU', '-')}, parts min {min(last['parts'].values()) if last.get('parts') else '-'}, slots {last.get('slotAgreement', '-')}"
+                return f"{v}: {vr['status']}, {len(vr['attempts'])} call{'s' if len(vr['attempts']) > 1 else ''}, outside {last.get('outside', '-')}, missing {last.get('missing', '-')}, parts min {min(last['parts'].values()) if last.get('parts') else '-'}, slots {last.get('slotAgreement', '-')} (IoU {last.get('silhouetteIoU', '-')}, not gated)"
             draw.text((gap, y + 312), f"{m['genomeDigest']}  {'type specimen' if m['level'] == 'species' else 'individual'}  sha256 {m['genomeSha256'][:12]}   ${m['costUSD']:.3f}, {m['seconds']} s   |   {vtxt('portrait')}   |   {vtxt('side')}", fill=ink)
             for v in VIEWS:
-                if m["views"][v]["status"] == "plain": draw.text((gap + (0 if v == "portrait" else 312), y + 326), "served plain: rejected twice", fill=(170, 40, 40))
+                if m["views"][v]["status"] == "plain": draw.text((gap + (312 if v == "portrait" else 624), y + 326), "served plain: rejected twice", fill=(170, 40, 40))
         sheet.save(os.path.join(HERE, "sheets", f"{sp}.png")); print("sheet", sp, sheet.size)
 
 
