@@ -92,6 +92,7 @@ export function render(scene, camera, pass = "shaded", options = {}) {
   for (const node of scene.nodes) if (!partIds.has(node.part ?? node.id)) partIds.set(node.part ?? node.id, partIds.size + 1);
   const partColour = (id) => [(id * 53) % 256, (id * 97 + 40) % 256, (id * 151 + 90) % 256];
   const nodeIndex = new Map(scene.nodes.map((n, i) => [n.id, i + 1]));
+  const flat = options.translucency === "flat"; // every pass solid; the shaded pass tints a translucent flap instead of dithering it
   for (const node of scene.nodes) {
     const palette = scene.slots[node.slot] ?? scene.slots.body;
     const region = node.role === "primary-region";
@@ -153,6 +154,7 @@ export function render(scene, camera, pass = "shaded", options = {}) {
         if (node.part === "shell" && scene.shellPlates) { const lp = localPoint(node, centre); if ((Math.floor((lp[0] / node.radii[0] + 1) * 3) + Math.floor((lp[1] / node.radii[1] + 1) * 3)) % 2 === 0) mark("shell"); }
         if (node.part === "cap" && scene.capSpots) { const lp = localPoint(node, centre); if (Math.abs(((lp[0] / node.radii[0]) * 3) % 1 - 0.5) < 0.2 && Math.abs(((lp[1] / node.radii[1]) * 3 + 0.5) % 1 - 0.5) < 0.2) mark("cap"); }
         if (pass === "slots") colour = slotColours[slot] ? slotColours[slot].map((c, i) => (slotKey.endsWith("-2") ? Math.round(c * 0.7) : c)) : [128, 128, 128];
+        else if (pass === "key") colour = node.ink ? hex(node.ink) : hex(pigment); // the colour key for a painting service: each slot flat in its own pigment, unshaded
         else if (pass === "markings") colour = marked && (!options.field || field === options.field) ? [255, 255, 255] : [0, 0, 0];
         else {
           const base = node.ink ? hex(node.ink) : hex(pigment);
@@ -161,9 +163,12 @@ export function render(scene, camera, pass = "shaded", options = {}) {
           colour = base.map((c) => Math.min(255, Math.round(c * shade)));
           if (scene.covering?.charged && node.opacity < 1) colour = colour.map((c, i) => Math.min(255, Math.round(c + ([255, 240, 160][i] - c) * 0.45 * (scene.covering.emission ?? 0.5))));
           if (marked) colour = colour.map((c) => Math.round(c + (232 - c) * (scene.markings?.contrast ?? 0.6)));
+          // A control for a painting service: a translucent flap drawn solid as a flat tint toward the
+          // ground, not a dither (a dither paints as glass; the Grow service, grow/controls.mjs).
+          if (flat && opacity < 1) colour = colour.map((c, i) => Math.round(c + (bg[i] - c) * 0.5 * (1 - opacity)));
         }
       }
-      fillPolygon(pts.map(project), colour, facing, opacity, rgb, depth, index, nodeIndex.get(node.id), W, H, pass);
+      fillPolygon(pts.map(project), colour, facing, flat ? 1 : opacity, rgb, depth, index, nodeIndex.get(node.id), W, H, pass);
     }
   }
   return { width: W, height: H, data: rgb, depth, index, pass, view: camera.view };
@@ -228,6 +233,12 @@ export function slotLegend(scene) {
   return names.map((name, i) => ({ slot: name, pigments: scene.slots[name], flat: flat[i % 8], secondHalf: scene.slots[name].length > 1 ? flat[i % 8].map((c) => Math.round(c * 0.7)) : null }));
 }
 
+// The parts a body carries, with the flat colours the index pass draws them in (ids in node order).
+export function partLegend(scene) {
+  const ids = new Map();
+  for (const node of scene.nodes) if (!ids.has(node.part ?? node.id)) ids.set(node.part ?? node.id, ids.size + 1);
+  return [...ids].map(([part, id]) => ({ part, flat: [(id * 53) % 256, (id * 97 + 40) % 256, (id * 151 + 90) % 256] }));
+}
 // Silhouette as a bit mask (1 = body), fitted and centred in a square of `n` pixels.
 export function silhouetteMask(scene, viewName, n = 48) {
   const camera = fitCamera(scene, viewName, [n, n], 0.04);

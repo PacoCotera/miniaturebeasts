@@ -1,0 +1,154 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 2,
+ "species": "S12",
+ "name": "Peplos",
+ "level": "individual",
+ "genomeDigest": "S12-0b5843e8",
+ "genomeSha256": "9587cfdd7ad5944492853b31a51d4ecd1ed94a65a0e19a54949c559c6fdf91e8",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Coat: colour marigold and coral; translucency between; flap markings spots; second colour peach and cream. Shape: hind body between. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives) (this species' own type specimen painting is not made yet)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:15:24Z",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "12920a46-8809-4419-a1f1-f87de554bf88",
+     "status": "ok",
+     "costUSD": 0.09623,
+     "seconds": 10.7,
+     "checks": {
+      "silhouetteIoU": 0.952,
+      "silhouetteIoUInPlace": 0.962,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 1.0,
+       "antenna": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#ca5a3f",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.993,
+        "median": "#ef876a",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.967,
+        "median": "#fbc3a8",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.976,
+      "passed": true
+     },
+     "responseId": "zArHatv0N-TK_uMP-6O_oA4"
+    }
+   ]
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "367f54aa-3c4d-46e8-bebc-4247ef93c064",
+     "status": "ok",
+     "costUSD": 0.11251,
+     "seconds": 9.0,
+     "checks": {
+      "silhouetteIoU": 0.934,
+      "silhouetteIoUInPlace": 0.932,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 0.994,
+       "antenna": 0.994,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#e97e61",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.888,
+        "median": "#e98568",
+        "nearest": "#e98268",
+        "ok": true
+       },
+       "body#2@region-0": {
+        "agreement": 1.0,
+        "median": "#e3ac3b",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body#2@head": {
+        "agreement": 1.0,
+        "median": "#db9a3b",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.969,
+        "median": "#fad7c1",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.972,
+      "passed": true
+     },
+     "responseId": "2wrHaqbDIqW1_PUPqJqjuA4"
+    }
+   ]
+  }
+ },
+ "outputs": {
+  "station-portrait-600x620.png": "2393c966fba4abcbffda8ade124a3c64838b025935d47e5cf0d17cc234d83c8c",
+  "station-portrait-300x310.png": "1e2c08d8da08999b96a5bbea6f94f6c55194f558aec3c8ab4ea4220981a185f4",
+  "station-side-600x620.png": "970d09f4199e442f6b7f49e2fefab76784379081e4e844efc69f982ce85d25c3",
+  "station-side-300x310.png": "9bbe6f6b7e73cff52670f643d040c69f26a00ff9eaecc9d75c80d18f85d91f03",
+  "companion-280x300.png": "39bb0b706d9c836e51b778973e4dc41d55b95aeb8d0c26f5098173c3fdbb5aee",
+  "token-48.png": "2cf7f52f0b0650aba2e1d4d29f8dd00d241c5f38d8630a9c92609890b33a0640"
+ },
+ "calls": 2,
+ "costUSD": 0.20874,
+ "seconds": 19.7,
+ "finishedAt": "2026-10-08T03:15:50Z"
+}
