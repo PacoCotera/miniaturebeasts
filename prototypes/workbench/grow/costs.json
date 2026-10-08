@@ -20,57 +20,57 @@
    "retries": 4
   },
   "twostep": {
-   "individuals": 19,
-   "calls": 45,
-   "usdPerIndividual": 0.2313,
-   "firstAttemptPassRate": 0.368,
+   "individuals": 24,
+   "calls": 57,
+   "usdPerIndividual": 0.2261,
+   "firstAttemptPassRate": 0.417,
    "plainServed": 12,
-   "retries": 21
+   "retries": 28
   }
  },
- "spentAllVersionsUSD": 54.356,
- "calls": 13,
- "callsOk": 13,
- "callUSDMean": 0.178,
- "callSecondsMean": 20.4,
- "spentUSD": 2.314,
- "individuals": 3,
+ "spentAllVersionsUSD": 60.422,
+ "calls": 47,
+ "callsOk": 47,
+ "callUSDMean": 0.1783,
+ "callSecondsMean": 21.3,
+ "spentUSD": 8.38,
+ "individuals": 18,
  "bySpecies": {
   "S01": {
-   "individuals": 1,
-   "calls": 2,
-   "usdPerIndividual": 0.359,
-   "plainServed": 0,
-   "retries": 0,
-   "firstAttemptPassRate": 1.0
+   "individuals": 6,
+   "calls": 13,
+   "usdPerIndividual": 0.389,
+   "plainServed": 3,
+   "retries": 4,
+   "firstAttemptPassRate": 0.333
   },
   "S09": {
-   "individuals": 1,
-   "calls": 2,
-   "usdPerIndividual": 0.3486,
-   "plainServed": 0,
-   "retries": 0,
-   "firstAttemptPassRate": 1.0
+   "individuals": 6,
+   "calls": 12,
+   "usdPerIndividual": 0.3496,
+   "plainServed": 4,
+   "retries": 4,
+   "firstAttemptPassRate": 0.333
   },
   "S12": {
-   "individuals": 1,
-   "calls": 2,
-   "usdPerIndividual": 0.3532,
-   "plainServed": 1,
-   "retries": 1,
+   "individuals": 6,
+   "calls": 13,
+   "usdPerIndividual": 0.3904,
+   "plainServed": 5,
+   "retries": 6,
    "firstAttemptPassRate": 0.0
   }
  },
- "callsPerIndividualMean": 2.0,
- "usdPerIndividualMean": 0.3536,
- "secondsPerIndividualMean": 41.9,
- "usdPerMibiThreeStages": 1.061,
- "usdPerKitYear40": 42.44,
+ "callsPerIndividualMean": 2.11,
+ "usdPerIndividualMean": 0.3763,
+ "secondsPerIndividualMean": 45.6,
+ "usdPerMibiThreeStages": 1.129,
+ "usdPerKitYear40": 45.16,
  "views": [
   "portrait"
  ],
- "retries": 1,
- "plainServed": 1,
- "firstAttemptPassRate": 0.667,
- "paintedRate": 0.667
+ "retries": 14,
+ "plainServed": 12,
+ "firstAttemptPassRate": 0.222,
+ "paintedRate": 0.333
 }

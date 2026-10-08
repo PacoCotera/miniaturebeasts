@@ -992,8 +992,8 @@ def sheet_validation(mans, cost):
             c1 = (a1[-1].get("checks") or {}) if a1 else {}; c2 = (a2[-1].get("checks") or {}) if a2 else {}
             pm = lambda c: min(v["span"] if isinstance(v, dict) else v for v in c["parts"].values()) if c.get("parts") else "-"
             draw.text((gap, y + 312), f"{m['genomeDigest']}  {'type specimen' if m['level'] == 'species' else 'individual'}  sha256 {m['genomeSha256'][:12]}   {vr['status']}, {len(vr['attempts'])} calls, ${m['costUSD']:.3f}, {m['seconds']} s   |   step 1 ({len(a1)} tr{'y' if len(a1) == 1 else 'ies'}): outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {pm(c1)}, slots {c1.get('slotAgreement', '-')}" + (f"   |   step 2 (not gated): outside {c2.get('outside', '-')}, missing {c2.get('missing', '-')}, parts min {pm(c2)}, slots {c2.get('slotAgreement', '-')}" if c2 else ""), fill=ink)
-            if vr["status"] == "plain": draw.text((gap + 2 * 312, y + 326), "served plain: step 1 rejected twice", fill=(170, 40, 40))
-            if a1 and a1[-1].get("checks") and a1[-1]["checks"].get("reasons"): draw.text((gap, y + 326), "last step 1 reasons: " + "; ".join(a1[-1]["checks"]["reasons"])[:230], fill=(120, 60, 60))
+            if vr["status"] == "plain": draw.text((gap, y + 340), "served plain: step 1 rejected twice", fill=(170, 40, 40))
+            if a1 and a1[-1].get("checks") and a1[-1]["checks"].get("reasons"): draw.text((gap, y + 326), "last step 1 reasons: " + "; ".join(a1[-1]["checks"]["reasons"])[:260], fill=(120, 60, 60))
         sheet.save(os.path.join(HERE, "sheets", f"validation-{sp}.png")); print("sheet validation", sp, sheet.size)
 
 
