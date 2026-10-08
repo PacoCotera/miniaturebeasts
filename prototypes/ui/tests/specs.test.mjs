@@ -21,8 +21,8 @@ const slantTabs = (x0, n, open, r = frame.regions.rail) => { const out = []; let
 
 test("the Pods spec file agrees with the Pods wireframe, region by region", () => {
   const R = pods.regions, w = R.well;
-  for (let i = 0; i < R.list.slots; i++) { has(repeat(w.rect, i, w.pitch), "well slot " + i); const ring = repeat([w.rect[0] + w.ring.slice[0], w.rect[1] + w.ring.slice[1], ...w.ring.slice.slice(2)], i, w.pitch); assert.equal(ring[0] + 40, 64); assert.equal(ring[1] + 40, 84 + 72 * i); has([48, 60 + 72 * i, ...w.pod.size], "the list pod in well " + i); }
-  assert.equal(w.place, null, "no place stamps in the list"); assert.deepEqual(R.list.rect, [0, 40, 112, 522]); assert.deepEqual(w.pod.size, [32, 48]); assert.equal(w.ring.outer, 33); assert.equal(w.focus.radius, w.ring.outer + 4);
+  for (let i = 0; i < R.list.slots; i++) { has(repeat(w.rect, i, w.pitch), "well slot " + i); const ring = repeat([w.rect[0] + w.ring.slice[0], w.rect[1] + w.ring.slice[1], ...w.ring.slice.slice(2)], i, w.pitch); assert.equal(ring[0] + 40, 64); assert.equal(ring[1] + 40, 84 + 72 * i); has([44, 60 + 72 * i, ...w.pod.size], "the list pod in well " + i); assert.equal(44 + w.pod.size[0] / 2, 64); }
+  assert.equal(w.place, null, "no place stamps in the list"); assert.deepEqual(R.list.rect, [0, 40, 112, 522]); assert.deepEqual(w.pod.size, [40, 48]); assert.deepEqual([R.page.newMark.slice, R.page.newMark.size, R.page.newMark.specular], ["page-mark-new-10", [10, 10], false]); assert.equal(w.ring.outer, 33); assert.equal(w.focus.radius, w.ring.outer + 4);
   has(R.hatch.rect, "hatch"); has(R.stage.rect, "stage"); has(R.beam.rect, "beam"); has(R.pod.rect, "pod"); has(R.cradle.rect, "cradle"); has(R.name.rect, "name"); has(R.origin.rect, "origin"); has(R.stamp.rect, "stamp"); has(R.page.rect, "page"); has(R.list.rect, "list");
   // the rail: six full tabs in the Picture wireframe, seven compact (the second open) in the Grid wireframe
   const six = slantTabs(R.rail.rect[0], 6, 1), seven = slantTabs(R.rail.rect[0], 7, 1), P6 = polys(svg), P7 = polys(svgGrid);
@@ -46,7 +46,7 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
   assert.deepEqual(page, [152, 112, 256, 440]); assert.ok(R.stampCase.rect[0] - (page[0] + page[2]) > page[2], "the pod's room is wider than the page"); assert.ok(R.stampCase.rect[2] < page[2], "the stamp case narrower than the page");
   assert.equal(R.cradle.rect[1] + R.cradle.rect[3], R.pod.feet + 32, "the dish's front lip 32 px below the pod's foot line");
   assert.ok(R.pod.feet >= R.pod.dipFloor && R.pod.feet - R.pod.dipFloor <= 4, "the foot stands in the bowl's dip");
-  assert.deepEqual(pods.classes.pod, { large: [144, 176], medium: [120, 152], small: [104, 128], list: [32, 48] }); assert.deepEqual(R.pod.rect, [R.pod.axis - 72, R.pod.feet - 176, 144, 176]);
+  assert.deepEqual(pods.classes.pod, { large: [144, 176], medium: [120, 152], small: [104, 128], list: [40, 48] }); assert.deepEqual(R.pod.rect, [R.pod.axis - 72, R.pod.feet - 176, 144, 176]);
   assert.ok(R.cradle.rect[1] + R.cradle.rect[3] < R.name.rect[1] && R.name.rect[1] + R.name.rect[3] < R.origin.rect[1], "dish, name, origin do not collide");
 });
 
