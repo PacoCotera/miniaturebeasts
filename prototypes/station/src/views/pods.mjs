@@ -69,7 +69,7 @@ export function podsView(m, spec, ctx) {
   // the rail, the page and the stamp: only once identified
   view.rail = null; view.page = null; view.stamp = null;
   if (cur && cur.idd && fr) {
-    view.rail = { colours: C.rail, ground: C.ground, focused: focusRail, tabs: chapters.map((c, i) => {
+    view.rail = { colours: C.rail, ground: C.ground, focused: focusRail, open: ci, tabs: chapters.map((c, i) => {
       const read = cur.read.includes(c.id), sealed = !!c.sealed && !settings.sealedOpen, n = Math.min(c.traits.length, 6), wipe = present.read && present.read.pod === cur.id && present.read.chapter === c.id ? present.read.p : null;
       return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", pips: n, filled: read ? (wipe == null ? n : Math.ceil(wipe * n)) : 0, glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:24`, chapter: c.id }) };
     }), star: req({ kind: "star", id: "star:12" }) };

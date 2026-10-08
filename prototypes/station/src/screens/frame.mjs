@@ -9,11 +9,11 @@ import { frameOf } from "../genome.mjs";
 import { frame as frameNodes } from "../../../ui/components/frame.mjs";
 import { frameView } from "../views/frame.mjs";
 
-// The title of each screen's top bar, and the frame's nodes for a screen: the presenter's counters and flashes, the Companion's state, the screen's bottom line and the message plate while the timeline holds it.
-export const TITLES = { home: "Home", pods: "Pods", create: "Create", incubator: "Incubator", habitat: "Habitat", library: "Library", cross: "Cross", bench: "Probe bench" };
+// The frame's nodes for a screen: the title and room mark from the frame spec, the presenter's counters and flashes, who is out and whether a mibi is with the Companion,
+// the screen's bottom line and the message plate while the timeline holds it.
 export const plateText = () => (FX.msg && TL.progress("plate", "msg") != null && TL.progress("plate", "msg") < 1 ? FX.msg : "");
 export function frameFor(ctx, screen, line, { need: needText = need().text, focal = null } = {}) {
-  return frameNodes(ctx, frameView({ title: TITLES[screen], step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { text: compState(), docked: docked() }, line, need: needText, message: plateText(), focal }));
+  return frameNodes(ctx, frameView({ screen, title: ctx.spec.strings.titles[screen], step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { docked: docked(), withMibi: hasWorld() ? S.withId(G.sv) : null }, line, need: needText, message: plateText(), focal }));
 }
 export const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 export const tgt = (id, x, y, w, h) => ({ id, x, y, w, h });

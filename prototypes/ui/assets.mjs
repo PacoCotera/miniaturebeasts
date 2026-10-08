@@ -12,7 +12,11 @@ const hits = { built: 0, cached: 0 };
 export function registerAsset({ id, w, h, policy = "stationChrome", status = "placeholder", until = null, file = null, hash = null, slice = null, build }) {
   if (file && !/\.png$/i.test(file)) throw new Error(`asset ${id}: ${file} is not a PNG (PNG only)`);
   const have = ENTRIES.get(id);
-  if (have) { if (have.w !== w || have.h !== h) throw new Error(`asset ${id} registered twice at different sizes: ${have.w}×${have.h} and ${w}×${h}`); return have; }
+  if (have) {
+    if (have.w !== w || have.h !== h) throw new Error(`asset ${id} registered twice at different sizes: ${have.w}×${have.h} and ${w}×${h}`);
+    if (have.status === "empty" && build) { Object.assign(have, { policy, status, until, file, hash, slice, build }); return have; }   // a stand-in fills an empty slot
+    return have;
+  }
   const e = { id, w, h, policy, status, until, file, hash, slice, build };
   ENTRIES.set(id, e); return e;
 }
@@ -27,13 +31,24 @@ export function placeMaster({ id, w, h, file, hash, policy = "painted", signed =
   ENTRIES.set(id, { id, w, h, policy: have?.policy === "type" ? "type" : policy, status: "master", until: null, file, hash, slice: have?.slice ?? null, signed, build: () => picture });
   BUILT.delete(id); return ENTRIES.get(id);
 }
+// A slot: a place the design needs a picture where none is signed yet (a mark, a key cap, a face). It is in the manifest as status `empty` at its
+// exact size, with what it waits for; nothing is drawn there, and the layout does not move when it fills. A placed master of the same id and
+// size (placeMaster) or a registered stand-in fills it, with no change to the component.
+export function registerSlot({ id, w, h, policy = "stationChrome", until }) {
+  const have = ENTRIES.get(id);
+  if (have) { if (have.w !== w || have.h !== h) throw new Error(`slot ${id} registered twice at different sizes: ${have.w}×${have.h} and ${w}×${h}`); return have; }
+  const e = { id, w, h, policy, status: "empty", until, file: null, hash: null, slice: null, build: null };
+  ENTRIES.set(id, e); return e;
+}
+export const isFilled = (id) => { const e = ENTRIES.get(id); return !!e && e.status !== "empty"; };
+export const empties = () => manifest().filter((e) => e.status === "empty");
 export const hasAsset = (id) => ENTRIES.has(id);
 export const assetEntry = (id) => ENTRIES.get(id) ?? null;
 // The built picture (anything with w, h and canvas()) or null when the id is unknown. `env` reaches the builder (palette lookup).
 export function asset(id, env = null) {
   let b = BUILT.get(id); if (b) { hits.cached++; return b; }
   const e = ENTRIES.get(id); if (!e) return null;
-  b = e.build(e, env); if (!b) return null;
+  if (!e.build) return null; b = e.build(e, env); if (!b) return null;
   if (b.w !== e.w || b.h !== e.h) throw new Error(`asset ${id} built at ${b.w}×${b.h}, registered at ${e.w}×${e.h}`);
   hits.built++; BUILT.set(id, b); return b;
 }
