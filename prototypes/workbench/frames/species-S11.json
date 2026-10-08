@@ -142,7 +142,7 @@
     },
     {
      "id": "shell-plates",
-     "name": "Shell plates",
+     "name": "Scutes",
      "loci": [
       "appearance.shell-plates"
      ],
@@ -171,7 +171,7 @@
     },
     {
      "id": "second-colour",
-     "name": "Second colour",
+     "name": "Trim",
      "loci": [
       "appearance.underside-palette"
      ],

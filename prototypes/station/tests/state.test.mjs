@@ -6,7 +6,8 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameOf, podGenome, traitState, stampGenome, stampFrameOf, genomeSha, nameCode, sha256, speciesIndex } from "../src/genome.mjs";
+import { LOCI } from "../../workbench/framework/catalogue.mjs";
+import { setFrames, frameOf, frameIds, podGenome, traitState, stampGenome, stampFrameOf, genomeSha, nameCode, sha256, speciesIndex } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { decode } from "../../genome-stamp/src/decode.mjs";
@@ -48,9 +49,36 @@ test("a trait reads as shows and hides, only, a blend's halves, or breed to chan
       assert.ok(!/\./.test(s.line), s.line);
       if (t.nature === "doing") assert.equal(s.sub, "breed to change");
       if (s.kind === "hides") { assert.notEqual(s.shows, s.hides); assert.equal(s.carried.length, 2); }
-      if (s.kind === "blend") assert.equal(s.carried.length, 3);
+      if (s.kind === "blend") { assert.equal(s.carried.length, 3); assert.match(s.line, / to /); }
+      assert.ok(!/^shows /.test(s.line) && !/if they wake/.test(s.line), s.line);
     }
   }
+});
+
+test("no Pods trait line is longer than six words, over every pair of looks in all sixteen frames", () => {
+  const words = (line) => line.split(/\s+/).filter((w) => /[a-z]/i.test(w)).length;
+  const pairs = (list) => list.flatMap((x, i) => list.slice(i).map((y) => [x, y]));
+  let checked = 0, longest = { n: 0, line: "" };
+  const kinds = new Set();
+  for (const id of frameIds()) {
+    const fr = frameOf(id);
+    for (const ch of fr.chapters) for (const t of ch.traits) {
+      const poolOf = (lid) => fr.pools?.[lid] ?? LOCI.get(lid).alleles.map((a) => a.id);
+      const base = podGenome(fr, 3);
+      const first = t.loci[0], second = t.loci[1];
+      for (const pa of pairs(poolOf(first))) for (const pb of (second ? pairs(poolOf(second)) : [null])) {
+        const g = structuredClone(base); g.loci[first] = [...pa]; if (pb) g.loci[second] = [...pb];
+        const st = traitState(fr, t, g);
+        kinds.add(st.kind); checked++;
+        const n = words(st.line);
+        if (n > longest.n) longest = { n, line: `${id} ${t.name}: ${st.line}` };
+        assert.ok(n <= 6, `${id} ${t.name}: "${st.line}" is ${n} words`);
+        assert.ok(!/^shows /.test(st.line) && !/if they wake/.test(st.line) && !/ and /.test(st.line) || /(tail and ears|bars and spots)/.test(st.line), st.line);
+      }
+    }
+  }
+  assert.ok(checked > 1000 && ["only", "hides", "blend", "asleep"].every((k) => kinds.has(k)), `${checked} lines over ${[...kinds]}`);
+  assert.ok(longest.n <= 6, longest.line);
 });
 
 test("the bay: one crate accepted once, the loose economy tops up, pods land in the wells and then wait", () => {

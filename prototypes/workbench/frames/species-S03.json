@@ -140,7 +140,7 @@
     },
     {
      "id": "second-colour",
-     "name": "Leg colour",
+     "name": "Trim",
      "loci": [
       "appearance.underside-palette"
      ],
@@ -184,9 +184,9 @@
       "appearance.anatomical-scale-size"
      ],
      "looks": [
-      "a few fine scales",
+      "few, fine",
       "between",
-      "many coarse scales"
+      "many, coarse"
      ],
      "nature": "look",
      "shapeable": true,
@@ -271,7 +271,7 @@
     },
     {
      "id": "hind-body",
-     "name": "Hind body",
+     "name": "Haunch",
      "loci": [
       "growth.region-taper"
      ],
@@ -286,7 +286,7 @@
     },
     {
      "id": "back-line",
-     "name": "Back line",
+     "name": "Topline",
      "loci": [
       "growth.region-bend"
      ],
@@ -358,7 +358,7 @@
     },
     {
      "id": "tail-curl",
-     "name": "Tail curl",
+     "name": "Carriage",
      "loci": [
       "growth.axial-tail-bend"
      ],
@@ -553,12 +553,12 @@
     },
     {
      "id": "glow-length",
-     "name": "Glow length",
+     "name": "Duration",
      "loci": [
       "appearance.emission-length"
      ],
      "looks": [
-      "a flicker",
+      "flicker",
       "between",
       "all evening"
      ],

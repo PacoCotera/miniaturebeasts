@@ -375,12 +375,12 @@
    "traits": [
     {
      "id": "glow-length",
-     "name": "Glow length",
+     "name": "Duration",
      "loci": [
       "appearance.emission-length"
      ],
      "looks": [
-      "a flicker",
+      "flicker",
       "between",
       "all evening"
      ],

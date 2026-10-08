@@ -193,7 +193,7 @@
    "traits": [
     {
      "id": "back-line",
-     "name": "Back line",
+     "name": "Topline",
      "loci": [
       "growth.region-bend"
      ],
@@ -208,7 +208,7 @@
     },
     {
      "id": "hind-body",
-     "name": "Hind body",
+     "name": "Haunch",
      "loci": [
       "growth.region-taper"
      ],

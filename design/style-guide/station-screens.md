@@ -117,7 +117,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Lively / quiet.** Lively: the pod's glow, glints, the page turn. Quiet: list, arcs, plate.
 - **Light.** The beam from above-left on the pod; a read page lit warm from inside; arcs and list cool.
 - **Palette.** Pods from one renderer: the species' colour pair and shell pattern, the place's dust or moss; frost pale blue-white; seeds pearl with a ghost inside; the ring's band grey, its tracks in the looks' hues.
-- **Type.** Pod name at 4×; origin at 2× ("rock field · a Tuikis felt safe"); one word per chapter; one short line per trait ("shows stripes · hides spots", "only teal", "breed to change").
+- **Type.** Pod name at 4×; origin at 2× ("rock field · a Tuikis felt safe"); one word per chapter; one short line per trait ("stripes · hides spots", "only teal", "breed to change"; at most six words).
 - **Chrome.** `✓ Identify · 1 ⚡`, `✓ Read Coat · 3 ◆`, `✓ Shape a founder`, `✓ Compare`, `✓ Return to the wild · +1 ❀`.
 - **Motion.** The seal breaks and the glyph lights in about 2 s; the page turns in 2 s and its sector fills; glints 2 Hz; compare slides the second pod in at 300 ms.
 
@@ -159,7 +159,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Lively / quiet.** Lively: the founder (breathing, a blink) and its redraw when a trait rolls. Quiet: arcs, pod, chamber.
 - **Light.** Warm key light on the founder from the top left; the rest cool.
 - **Palette.** The founder's own colours; frost pale blue-white; the price icons in their hues.
-- **Type.** 2× trait lines ("shows stripes · hides spots", "only spots"); the total in the bottom line.
+- **Type.** 2× trait lines ("stripes · hides spots", "only spots"; at most six words, a blend "A to B", an asleep line "bare · asleep: bands or patches"); the total in the bottom line.
 - **Chrome.** `✓ Grow it · 2 ⚡ 4 ❀ 1 ◆ · ← Pods`.
 - **Motion.** A roll swaps the trait's picture, the founder's part and the stamp's cells in 200 ms; on Grow the stamp prints on its label, the code appears, the pod glides into the chamber in 600 ms.
 

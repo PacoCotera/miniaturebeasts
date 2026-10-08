@@ -144,7 +144,7 @@
     },
     {
      "id": "second-colour",
-     "name": "Second colour",
+     "name": "Trim",
      "loci": [
       "appearance.underside-palette"
      ],
@@ -240,7 +240,7 @@
     },
     {
      "id": "hind-body",
-     "name": "Hind body",
+     "name": "Haunch",
      "loci": [
       "growth.region-taper"
      ],
@@ -255,7 +255,7 @@
     },
     {
      "id": "wing-cases",
-     "name": "Wing cases",
+     "name": "Sheaths",
      "loci": [
       "growth.wing-case-extent",
       "anatomy.wing-case-seam"

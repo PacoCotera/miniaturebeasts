@@ -43,16 +43,18 @@ export const traitCount = (chapter) => chapter.traits.length;
 // What a chapter needs to be read: nothing, or the find that opens it (a sealed chapter).
 export const chapterSeal = (frame, chapter) => (chapter.sealed ? chapter.opensWith ?? frame.sealed?.[chapter.id] ?? "a find" : null);
 
-// A trait as the player reads it (research-loop.md §4): shows X, shows X · hides Y, only X, asleep,
+// A trait as the player reads it (research-loop.md §4): X, X · hides Y, only X, asleep, A to B for a blend,
 // breed to change (a doing), and for a blended trait the two halves it carries.
 // Read states are memoised per genome object (a pod's genome is never edited in place; a changed genome is a new object): the screen asks every frame.
 const MEMO = new WeakMap();
 const memo = (genome, key, fn) => { let m = MEMO.get(genome); if (!m) MEMO.set(genome, (m = new Map())); if (!m.has(key)) m.set(key, fn()); return m.get(key); };
 export const traitState = (frame, trait, genome) => memo(genome, "t:" + frame.species.id + ":" + trait.id, () => traitStateOf(frame, trait, genome));
+// The Pods line stays within six words (trait-names.md §2): a pair of colours is written with a comma, no leading "shows" on a hides line, a blend is "A to B", no apology on an asleep line.
+const LINE_LOOKS = { pairSep: ", " };
 function traitStateOf(frame, trait, genome) {
-  const shows = lookOf(frame, trait, genome);
-  const a = lookOf(frame, trait, shapeTrait(frame, genome, trait.id, 1));
-  const b = lookOf(frame, trait, shapeTrait(frame, genome, trait.id, 2));
+  const shows = lookOf(frame, trait, genome, LINE_LOOKS);
+  const a = lookOf(frame, trait, shapeTrait(frame, genome, trait.id, 1), LINE_LOOKS);
+  const b = lookOf(frame, trait, shapeTrait(frame, genome, trait.id, 2), LINE_LOOKS);
   const doing = trait.nature === "doing";
   const first = trait.loci[0], row = frame.loci.find((l) => l.id === first), locus = LOCI.get(first);
   let asleep = null;
@@ -63,12 +65,12 @@ function traitStateOf(frame, trait, genome) {
   const carried = [...new Set([shows, a, b].filter(Boolean))];
   let kind, hides = null, line;
   if (a === b) { kind = "only"; line = `only ${shows}`; }
-  else if (shows === a || shows === b) { kind = "hides"; hides = shows === a ? b : a; line = `shows ${shows} · hides ${hides}`; }
-  else { kind = "blend"; line = `shows ${shows}`; }
-  if (asleep) { kind = "asleep"; line = `${shows} · asleep: ${asleep}, if they wake`; }
+  else if (shows === a || shows === b) { kind = "hides"; hides = shows === a ? b : a; line = `${shows} · hides ${hides}`; }
+  else { kind = "blend"; line = `${a} to ${b}`; }
+  if (asleep) { kind = "asleep"; line = `${shows} · asleep: ${asleep}`; }
   // hiddenChoice: the shapeTrait choice (1: only the first copy, 2: only the second) that shows the hidden look
   return { id: trait.id, name: trait.name, shows, hides, halves: kind === "blend" ? [a, b] : null, hiddenChoice: hides == null ? null : shows === a ? 2 : 1, kind, doing, shapeable: !!trait.shapeable && !doing, asleep, carried, line,
-    sub: doing ? "breed to change" : kind === "blend" ? `half ${a}, half ${b}` : null };
+    sub: doing ? "breed to change" : kind === "blend" ? line : null };
 }
 // Every look a pod carries in a chapter (shows and hides of each trait), for the field guide and the glint.
 export const chapterLooks = (frame, chapter, genome) => memo(genome, "c:" + frame.species.id + ":" + chapter.id, () => chapterLooksOf(frame, chapter, genome));

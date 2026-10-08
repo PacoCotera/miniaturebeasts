@@ -155,9 +155,9 @@
       "appearance.fur-flow"
      ],
      "looks": [
-      "short and straight",
+      "short, straight",
       "between",
-      "long and swept"
+      "long, swept"
      ],
      "nature": "look",
      "shapeable": true,
@@ -195,14 +195,14 @@
     },
     {
      "id": "fur-reach",
-     "name": "Fur reach",
+     "name": "Tufts",
      "loci": [
       "appearance.fur-reach"
      ],
      "looks": [
       "body only",
-      "bushy tail",
-      "bushy tail and ears"
+      "tail",
+      "tail and ears"
      ],
      "nature": "look",
      "shapeable": true,
@@ -210,7 +210,7 @@
     },
     {
      "id": "second-colour",
-     "name": "Second colour",
+     "name": "Trim",
      "loci": [
       "appearance.underside-palette"
      ],
@@ -336,7 +336,7 @@
     },
     {
      "id": "back-line",
-     "name": "Back line",
+     "name": "Topline",
      "loci": [
       "growth.region-bend"
      ],
@@ -351,7 +351,7 @@
     },
     {
      "id": "hind-body",
-     "name": "Hind body",
+     "name": "Haunch",
      "loci": [
       "growth.region-taper"
      ],
@@ -404,7 +404,7 @@
    "traits": [
     {
      "id": "tail-curl",
-     "name": "Tail curl",
+     "name": "Carriage",
      "loci": [
       "growth.axial-tail-bend"
      ],
