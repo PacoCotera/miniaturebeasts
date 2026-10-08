@@ -6,568 +6,251 @@
  "controlVariant": "twostep",
  "views": {
   "portrait": {
-   "status": "painted",
+   "status": "plain",
    "attempts": [
     {
-     "callId": "01b53deb-165b-4427-995b-41d34ab73cfd",
+     "callId": "c831a735-f6f0-4472-bb33-a090d53b9b64",
      "step": 1,
+     "attempt": 1,
      "status": "ok",
-     "costUSD": 0.18542,
-     "seconds": 25.5,
+     "costUSD": 0.17218,
+     "seconds": 17.9,
      "checks": {
-      "silhouetteIoU": 0.757,
-      "silhouetteIoUInPlace": 0.763,
+      "silhouetteIoU": 0.477,
+      "silhouetteIoUInPlace": 0.391,
       "parts": {
        "region-0": {
         "span": 1.0,
-        "coverage": 0.965
+        "coverage": 0.859
        },
        "region-1": {
         "span": 1.0,
-        "coverage": 0.993
+        "coverage": 0.415
        },
        "neck": {
-        "span": 1.0,
-        "coverage": 1.0
+        "span": 0.978,
+        "coverage": 0.994
        },
        "head": {
         "span": 1.0,
-        "coverage": 0.997
+        "coverage": 0.78
        },
        "beak": {
-        "span": 0.933,
-        "coverage": 0.993
+        "span": 0.707,
+        "coverage": 0.553
        },
        "crown": {
-        "span": 0.856,
-        "coverage": 0.986
+        "span": 0.571,
+        "coverage": 0.079
        },
        "leg-0": {
-        "span": 1.0,
-        "coverage": 0.996
+        "span": 0.734,
+        "coverage": 0.293
        },
        "flap": {
-        "span": 0.984,
-        "coverage": 0.983
+        "span": 0.867,
+        "coverage": 0.597
        },
        "tail": {
-        "span": 0.96,
-        "coverage": 0.992
+        "span": 0.0,
+        "coverage": 0.0
        }
       },
       "proportions": {
        "region-0": {
-        "drawn": 0.298,
-        "painted": 0.362,
-        "ok": true
-       },
-       "region-1": {
-        "drawn": 0.216,
-        "painted": 0.297,
-        "ok": true
+        "drawn": 0.296,
+        "painted": 0.461,
+        "ok": false
        },
        "neck": {
-        "drawn": 0.274,
-        "painted": 0.356,
+        "drawn": 0.276,
+        "painted": 0.416,
         "ok": true
        },
        "head": {
         "drawn": 0.306,
-        "painted": 0.388,
-        "ok": true
+        "painted": 0.468,
+        "ok": false
        },
        "crown": {
-        "drawn": 0.294,
-        "painted": 0.301,
+        "drawn": 0.296,
+        "painted": 0.271,
         "ok": true
        },
        "leg-0": {
         "drawn": 0.349,
-        "painted": 0.39,
-        "ok": true
-       },
-       "flap": {
-        "drawn": 0.619,
-        "painted": 0.651,
+        "painted": 0.453,
         "ok": true
        }
       },
       "slots": {
        "body@region-0": {
-        "agreement": 0.968,
-        "median": "#517ecc",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@region-1": {
-        "agreement": 0.993,
-        "median": "#507dca",
+        "agreement": 0.682,
+        "median": "#335781",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@neck": {
-        "agreement": 0.986,
-        "median": "#507fcf",
+        "agreement": 0.669,
+        "median": "#5682b1",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@head": {
-        "agreement": 0.969,
-        "median": "#507fd0",
+        "agreement": 0.908,
+        "median": "#517ab3",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@crown": {
-        "agreement": 0.987,
-        "median": "#446dbc",
+        "agreement": 0.763,
+        "median": "#3e619b",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "second@leg-0": {
-        "agreement": 0.878,
-        "median": "#dcbf8f",
-        "nearest": "#fff0b8",
-        "ok": true
-       },
-       "second@flap": {
-        "agreement": 0.971,
-        "median": "#e7c488",
-        "nearest": "#fff0b8",
-        "ok": true
+        "agreement": 0.431,
+        "median": "#40578f",
+        "nearest": "#4d7ed4",
+        "ok": false
        }
       },
-      "reasons": [],
-      "outside": 0.087,
-      "missing": 0.0,
+      "reasons": [
+       "a part is missing or moved from where the part map puts it: tail (painted along 0% of its length)",
+       "the proportions are off: the region-0 is larger than drawn (0.46 of the body against 0.30), the head is larger than drawn (0.47 of the body against 0.31)",
+       "a pigment slot is painted in another slot's colour: the second colour on the front legs (painted #40578f, the body colour)"
+      ],
+      "outside": 0.147,
+      "missing": 0.022,
       "bandTolerancePx": 20,
       "tolerances": {
        "bandMax": 0.18,
        "partMin": 0.5,
        "proportion": 0.25
       },
-      "slotAgreement": 0.957,
-      "passed": true,
+      "slotAgreement": 0.731,
+      "passed": false,
       "proportionTolerance": 0.25
      },
-     "responseId": "953HaqSlBfyV_uMPmuqb0Qg",
-     "checksAsRun": {
-      "silhouetteIoU": 0.757,
-      "silhouetteIoUInPlace": 0.763,
-      "parts": {
-       "region-0": {
-        "span": 1.0,
-        "coverage": 0.965
-       },
-       "region-1": {
-        "span": 1.0,
-        "coverage": 0.993
-       },
-       "neck": {
-        "span": 1.0,
-        "coverage": 1.0
-       },
-       "head": {
-        "span": 1.0,
-        "coverage": 0.997
-       },
-       "beak": {
-        "span": 0.933,
-        "coverage": 0.993
-       },
-       "crown": {
-        "span": 0.856,
-        "coverage": 0.986
-       },
-       "leg-0": {
-        "span": 1.0,
-        "coverage": 0.996
-       },
-       "flap": {
-        "span": 0.984,
-        "coverage": 0.983
-       },
-       "tail": {
-        "span": 0.96,
-        "coverage": 0.992
-       }
-      },
-      "proportions": {
-       "region-0": {
-        "drawn": 0.298,
-        "painted": 0.362,
-        "ok": true
-       },
-       "region-1": {
-        "drawn": 0.216,
-        "painted": 0.297,
-        "ok": true
-       },
-       "neck": {
-        "drawn": 0.274,
-        "painted": 0.356,
-        "ok": true
-       },
-       "head": {
-        "drawn": 0.306,
-        "painted": 0.388,
-        "ok": true
-       },
-       "crown": {
-        "drawn": 0.294,
-        "painted": 0.301,
-        "ok": true
-       },
-       "leg-0": {
-        "drawn": 0.349,
-        "painted": 0.39,
-        "ok": true
-       },
-       "flap": {
-        "drawn": 0.619,
-        "painted": 0.651,
-        "ok": true
-       }
-      },
-      "slots": {
-       "body@region-0": {
-        "agreement": 0.968,
-        "median": "#517ecc",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@region-1": {
-        "agreement": 0.993,
-        "median": "#507dca",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@neck": {
-        "agreement": 0.986,
-        "median": "#507fcf",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@head": {
-        "agreement": 0.969,
-        "median": "#507fd0",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@crown": {
-        "agreement": 0.987,
-        "median": "#446dbc",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "second@leg-0": {
-        "agreement": 0.878,
-        "median": "#dcbf8f",
-        "nearest": "#fff0b8",
-        "ok": true
-       },
-       "second@flap": {
-        "agreement": 0.971,
-        "median": "#e7c488",
-        "nearest": "#fff0b8",
-        "ok": true
-       }
-      },
-      "reasons": [],
-      "outside": 0.087,
-      "missing": 0.0,
-      "bandTolerancePx": 20,
-      "tolerances": {
-       "bandMax": 0.18,
-       "partMin": 0.5,
-       "proportion": 0.25
-      },
-      "slotAgreement": 0.957,
-      "passed": true,
-      "proportionTolerance": 0.25
-     }
+     "responseId": "faXHataNLt6t_PUPipWKgQ4"
     },
     {
-     "callId": "f27f2d6d-c4a7-4696-9f16-279a63a75209",
-     "step": 2,
+     "callId": "6d828a90-5132-496c-9821-fe56faa62c48",
+     "step": 1,
+     "attempt": 2,
      "status": "ok",
-     "costUSD": 0.16322,
-     "seconds": 19.9,
+     "costUSD": 0.17319,
+     "seconds": 17.1,
      "checks": {
-      "silhouetteIoU": 0.756,
-      "silhouetteIoUInPlace": 0.762,
+      "silhouetteIoU": 0.283,
+      "silhouetteIoUInPlace": 0.21,
       "parts": {
        "region-0": {
         "span": 1.0,
-        "coverage": 0.968
+        "coverage": 0.947
        },
        "region-1": {
         "span": 1.0,
-        "coverage": 0.985
+        "coverage": 1.0
        },
        "neck": {
+        "span": 0.701,
+        "coverage": 0.35
+       },
+       "head": {
+        "span": 0.0,
+        "coverage": 0.0
+       },
+       "beak": {
+        "span": 0.0,
+        "coverage": 0.0
+       },
+       "crown": {
+        "span": 0.0,
+        "coverage": 0.0
+       },
+       "leg-0": {
+        "span": 0.821,
+        "coverage": 0.652
+       },
+       "flap": {
         "span": 1.0,
         "coverage": 1.0
        },
-       "head": {
-        "span": 1.0,
-        "coverage": 0.999
-       },
-       "beak": {
-        "span": 0.933,
-        "coverage": 0.991
-       },
-       "crown": {
-        "span": 0.856,
-        "coverage": 0.996
-       },
-       "leg-0": {
-        "span": 1.0,
-        "coverage": 0.99
-       },
-       "flap": {
-        "span": 0.984,
-        "coverage": 0.962
-       },
        "tail": {
-        "span": 0.949,
-        "coverage": 0.985
+        "span": 0.78,
+        "coverage": 0.802
        }
       },
       "proportions": {
        "region-0": {
-        "drawn": 0.298,
-        "painted": 0.361,
-        "ok": true
-       },
-       "region-1": {
-        "drawn": 0.216,
-        "painted": 0.296,
+        "drawn": 0.296,
+        "painted": 0.395,
         "ok": true
        },
        "neck": {
-        "drawn": 0.274,
-        "painted": 0.355,
+        "drawn": 0.276,
+        "painted": 0.269,
         "ok": true
        },
        "head": {
         "drawn": 0.306,
-        "painted": 0.387,
-        "ok": true
+        "painted": 0.0,
+        "ok": false
        },
        "crown": {
-        "drawn": 0.294,
-        "painted": 0.3,
-        "ok": true
+        "drawn": 0.296,
+        "painted": 0.002,
+        "ok": false
        },
        "leg-0": {
         "drawn": 0.349,
-        "painted": 0.391,
-        "ok": true
-       },
-       "flap": {
-        "drawn": 0.619,
-        "painted": 0.649,
+        "painted": 0.423,
         "ok": true
        }
       },
       "slots": {
        "body@region-0": {
-        "agreement": 0.952,
-        "median": "#4f70ad",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@region-1": {
-        "agreement": 0.99,
-        "median": "#4363a2",
+        "agreement": 0.612,
+        "median": "#42698a",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "body@neck": {
-        "agreement": 0.904,
-        "median": "#6587c0",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@head": {
-        "agreement": 0.889,
-        "median": "#5d83bd",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@crown": {
-        "agreement": 0.97,
-        "median": "#4769a6",
+        "agreement": 0.699,
+        "median": "#466dab",
         "nearest": "#4d7ed4",
         "ok": true
        },
        "second@leg-0": {
-        "agreement": 0.876,
-        "median": "#d3b387",
-        "nearest": "#fff0b8",
-        "ok": true
-       },
-       "second@flap": {
-        "agreement": 0.856,
-        "median": "#c5a377",
+        "agreement": 0.596,
+        "median": "#ac8171",
         "nearest": "#fff0b8",
         "ok": true
        }
       },
-      "reasons": [],
-      "outside": 0.087,
-      "missing": 0.0,
+      "reasons": [
+       "paint lies well outside the drawn body (40% of the body beyond a 20 px band): a part was added, moved or re-laid",
+       "part of the drawn body is left unpainted (19% of the body inside a 20 px band): a part was dropped or moved",
+       "a part is missing or moved from where the part map puts it: head (painted along 0% of its length), beak (painted along 0% of its length), crown (painted along 0% of its length)",
+       "the proportions are off: the head is smaller than drawn (0.00 of the body against 0.31), the crown is smaller than drawn (0.00 of the body against 0.30)"
+      ],
+      "outside": 0.398,
+      "missing": 0.192,
       "bandTolerancePx": 20,
       "tolerances": {
-       "bandMax": 0.1,
-       "partMin": 0.6,
-       "proportion": 0.15
+       "bandMax": 0.18,
+       "partMin": 0.5,
+       "proportion": 0.25
       },
-      "slotAgreement": 0.91,
-      "passed": true,
-      "gated": false
+      "slotAgreement": 0.621,
+      "passed": false,
+      "proportionTolerance": 0.25
      },
-     "responseId": "K57HaqCjFbHTjMcPyvaU8Qo",
-     "checksAsRun": {
-      "silhouetteIoU": 0.756,
-      "silhouetteIoUInPlace": 0.762,
-      "parts": {
-       "region-0": {
-        "span": 1.0,
-        "coverage": 0.968
-       },
-       "region-1": {
-        "span": 1.0,
-        "coverage": 0.985
-       },
-       "neck": {
-        "span": 1.0,
-        "coverage": 1.0
-       },
-       "head": {
-        "span": 1.0,
-        "coverage": 0.999
-       },
-       "beak": {
-        "span": 0.933,
-        "coverage": 0.991
-       },
-       "crown": {
-        "span": 0.856,
-        "coverage": 0.996
-       },
-       "leg-0": {
-        "span": 1.0,
-        "coverage": 0.99
-       },
-       "flap": {
-        "span": 0.984,
-        "coverage": 0.962
-       },
-       "tail": {
-        "span": 0.949,
-        "coverage": 0.985
-       }
-      },
-      "proportions": {
-       "region-0": {
-        "drawn": 0.298,
-        "painted": 0.361,
-        "ok": true
-       },
-       "region-1": {
-        "drawn": 0.216,
-        "painted": 0.296,
-        "ok": true
-       },
-       "neck": {
-        "drawn": 0.274,
-        "painted": 0.355,
-        "ok": true
-       },
-       "head": {
-        "drawn": 0.306,
-        "painted": 0.387,
-        "ok": true
-       },
-       "crown": {
-        "drawn": 0.294,
-        "painted": 0.3,
-        "ok": true
-       },
-       "leg-0": {
-        "drawn": 0.349,
-        "painted": 0.391,
-        "ok": true
-       },
-       "flap": {
-        "drawn": 0.619,
-        "painted": 0.649,
-        "ok": true
-       }
-      },
-      "slots": {
-       "body@region-0": {
-        "agreement": 0.952,
-        "median": "#4f70ad",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@region-1": {
-        "agreement": 0.99,
-        "median": "#4363a2",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@neck": {
-        "agreement": 0.904,
-        "median": "#6587c0",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@head": {
-        "agreement": 0.889,
-        "median": "#5d83bd",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "body@crown": {
-        "agreement": 0.97,
-        "median": "#4769a6",
-        "nearest": "#4d7ed4",
-        "ok": true
-       },
-       "second@leg-0": {
-        "agreement": 0.876,
-        "median": "#d3b387",
-        "nearest": "#fff0b8",
-        "ok": true
-       },
-       "second@flap": {
-        "agreement": 0.856,
-        "median": "#c5a377",
-        "nearest": "#fff0b8",
-        "ok": true
-       }
-      },
-      "reasons": [],
-      "outside": 0.087,
-      "missing": 0.0,
-      "bandTolerancePx": 20,
-      "tolerances": {
-       "bandMax": 0.1,
-       "partMin": 0.6,
-       "proportion": 0.15
-      },
-      "slotAgreement": 0.91,
-      "passed": true,
-      "gated": false
-     }
+     "responseId": "rqXHaof8MI_V-8YPoMHQKQ"
     }
    ],
-   "steps": [],
-   "servedBy": "step 2",
-   "rechecked": "2026-10-08T13:47:54Z"
+   "steps": []
   }
  },
  "species": "S09",
@@ -593,17 +276,15 @@
   "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
   "name": "rich-plain-300x310.png"
  },
- "startedAt": "2026-10-08T13:43:17Z",
+ "startedAt": "2026-10-08T14:15:24Z",
  "outputs": {
-  "station-portrait-600x620.png": "3a2c86968f1ee58e7e393f0931fe9d8d7618ac276d35730d74dc597b372186d1",
-  "station-portrait-300x310.png": "6b8100b3d97a9eacf139aa86d466ec04d645fb37acfb23f4aaa5bd1d41b14dd4",
-  "companion-280x300.png": "25eaa8e20874aab2bcb0474ea78cb7f1a741b8b5a1f0b1a6e09d060e0d4d59f8",
-  "token-48.png": "5364d5664d88659d0f43d7355c8076d6301578e4d61e65f7a7683f7670c79493"
+  "station-portrait-600x620.png": "6d256eb1c219073db42803209bfecae4b8e741a8c126413cc21806f702aaac20",
+  "station-portrait-300x310.png": "d00aeaee7cdee4224dad33b95962d2ce537b3fd42ce177e23af1e43013d29858",
+  "companion-280x300.png": "0c19aa275f534cd6849bda9069a2a67814805903e5c6e0f3f350b0de98baa93a",
+  "token-48.png": "a5c25d8e45bd710c633365d34918402b3a44bad68b59ec5329199bb1f9f23d84"
  },
  "calls": 2,
- "costUSD": 0.34864,
- "seconds": 45.4,
- "finishedAt": "2026-10-08T13:45:02Z",
- "rechecked": "2026-10-08T13:47:54Z",
- "checksVersion": "mb-grow-checks/3"
+ "costUSD": 0.34537,
+ "seconds": 35.0,
+ "finishedAt": "2026-10-08T14:16:58Z"
 }
