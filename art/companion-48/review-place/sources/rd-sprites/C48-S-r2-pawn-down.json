@@ -1,0 +1,31 @@
+{
+ "id": "C48-S-r2-pawn-down",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "48x48",
+ "prompt": "a small explorer in an orange hooded suit with a lantern, facing down, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/pawn-down-in.png",
+  "sha256": "33a428a3abf309a25f9047e6c2d43180c4522083b74d3d1817ee9a8b9ccd20ce",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T17:49:40Z",
+ "checkCost": {
+  "created_at": 1791481781,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 6.360000000000006
+ }
+}

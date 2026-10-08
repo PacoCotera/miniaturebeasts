@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r2-stone-charged1",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "44x48",
+ "prompt": "a grey field stone crackling with blue-white electric charge, from above, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/stone-charged1-in.png",
+  "sha256": "2797b0fa14bbccbb2ae90d7601223ef055a205139fcfa5c74f36a84865ec66ce",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T17:53:48Z",
+ "checkCost": {
+  "created_at": 1791482028,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 5.460000000000007
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "b46e5711-698e-47c3-836c-c2821f1d2a40",
+  "seconds": 47.0,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 5.28,
+  "model": "rd_pro",
+  "file": "C48-S-r2-stone-charged1-rd.png",
+  "sha256": "add9c1e3cdba4403407482df153632df6a8b6dd4785961de6277b89bdf25bc7f"
+ }
+}

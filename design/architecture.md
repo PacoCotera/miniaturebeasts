@@ -99,9 +99,13 @@ last-write-wins. The service itself is not yet designed or built.
 
 **Decided 2026-10-08** ([technical architecture](proposals/technical-architecture.md)):
 the loop is defined first on the browser sandbox at each device's true
-resolution and colour depth, then ported. The Station runs the web page itself
-on the Raspberry Pi in kiosk mode and never ports, behind a measured proof on a
-Pi 4 with the 7" panel. The Companion and the Caddy port to native C on
+resolution and colour depth, then ported. The Station's hardware is the Raspberry
+Pi 4 and will not grow; everything is optimised for underpowered hardware, and
+no hardware prototyping starts until the loop is complete in software. The
+Station's runtime: an LVGL 9 face in C sharing the Companion's and Caddy's
+component library, with the Station's logic (rules, genome, rig, stamp, the
+Caddy client, the save) as the sandbox's own JavaScript run headless by Node
+beside it; no browser (a browser on the Pi was withdrawn). The Companion and the Caddy port to native C on
 ESP-IDF with LVGL 9 for chrome and an indexed renderer for the world view,
 once the loop is stable. Screens are a spec file, a pure view and an intent
 table on a shared screen layer; rules stay pure functions; the layout numbers

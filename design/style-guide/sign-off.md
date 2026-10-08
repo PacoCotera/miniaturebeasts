@@ -31,7 +31,7 @@ Every art and screen delivery carries its kind's checklist, filled in. Each cell
 | --- | --- |
 | Reads first what the guide names, within a second (SG checklist) | 1024×600 at native 1× grain; no 2× upscaled chrome or text (SG Station; grain check) |
 | The room's vibe; one warm living window; no wood, felt or lamp-lit bench (SS) | Inter, smooth: 16 px body, 20 titles, 28 names, tabular figures (SG Type; DC A; type check) |
-| Fine grain on creatures and world only; chrome and type crisp (SG Decided 3) | Pixel art on the 48 ramps (UK §2); off-palette pixels only in the text layer |
+| Fine grain on creatures and world only; chrome and type crisp (SG Decided 3) | Art layer on the Station palette's 62 colours, 0 off palette (UK §2; SS Palette and layers); off palette only on the painted and type layers and the stamp |
 | Creature areas 300×310 or larger; never upscaled tokens (SS) | Placeholder only where no master exists, registered and labelled, waiting lamp shown (SB §3; PH §0) |
 | All chapters shown, in ring order (SS Chapter rail) | Strings as decided: `✓ verb · price · ← where` \| subject \| what needs you (SS Frame) |
 | No digits where a picture does: ring, leaves, seeds, Library (SS) | Device keys only; one press per spend; arm-then-confirm where decided (PS Keys) |

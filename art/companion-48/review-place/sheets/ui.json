@@ -1,0 +1,304 @@
+{
+ "schemaVersion": 1,
+ "sheet": "ui.png",
+ "kind": "chrome",
+ "palette": "../palette/palette.json",
+ "transparentIndex": 48,
+ "size": [
+  500,
+  26
+ ],
+ "frames": {
+  "cap-back": {
+   "x": 1,
+   "y": 1,
+   "w": 24,
+   "h": 24,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "cap-call": {
+   "x": 26,
+   "y": 1,
+   "w": 44,
+   "h": 24,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "cap-confirm": {
+   "x": 71,
+   "y": 1,
+   "w": 26,
+   "h": 24,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "cond-fog-left": {
+   "x": 98,
+   "y": 1,
+   "w": 10,
+   "h": 18,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "cond-fog-right": {
+   "x": 109,
+   "y": 1,
+   "w": 10,
+   "h": 18,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "cond-storm-left": {
+   "x": 120,
+   "y": 1,
+   "w": 10,
+   "h": 18,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "cond-storm-right": {
+   "x": 131,
+   "y": 1,
+   "w": 10,
+   "h": 18,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-battery": {
+   "x": 142,
+   "y": 1,
+   "w": 16,
+   "h": 10,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-bond": {
+   "x": 159,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-call": {
+   "x": 176,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-crate": {
+   "x": 193,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-data": {
+   "x": 210,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-energy": {
+   "x": 227,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-essence": {
+   "x": 244,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-fog-bank": {
+   "x": 261,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-free-slot": {
+   "x": 278,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-hollow-bolt": {
+   "x": 295,
+   "y": 1,
+   "w": 14,
+   "h": 17,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-pin": {
+   "x": 310,
+   "y": 1,
+   "w": 16,
+   "h": 22,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-pod": {
+   "x": 327,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-radio": {
+   "x": 344,
+   "y": 1,
+   "w": 10,
+   "h": 10,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-shield-gone": {
+   "x": 355,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-shield": {
+   "x": 372,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-storm-peak": {
+   "x": 389,
+   "y": 1,
+   "w": 12,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-storm": {
+   "x": 402,
+   "y": 1,
+   "w": 12,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "icon-world-turn": {
+   "x": 415,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "slice-message-box-danger": {
+   "x": 432,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "slice-message-box": {
+   "x": 449,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "slice-name-tag": {
+   "x": 466,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "slice-paper": {
+   "x": 483,
+   "y": 1,
+   "w": 16,
+   "h": 16,
+   "anchor": [
+    0,
+    0
+   ]
+  }
+ },
+ "note": "Indexed PNG: palette indices 0-47 as signed, 48 transparent. anchor: the foot point (sprites) or the top-left (tiles, chrome), in frame pixels."
+}

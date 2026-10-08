@@ -1,0 +1,72 @@
+{
+  "id": "pawn",
+  "direction": "W",
+  "round": 1,
+  "attempt": 1,
+  "tag": "C48-W-r1-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "generate",
+  "prompt": "Use case: painted-source. Asset type: Miniature Beasts Companion, painted SOURCE art for pixel tiles and sprites, to be down-rendered later to 48 px on a 48-colour palette; a square canvas. Style: Miniature Lives, the accepted look of the supplied Companion concept: a top-down three-quarter view of a small living world, sculpted rounded forms, clustered leaf and grass masses, one light from the top left, clean painted shading in three or four steps with crisp edges, saturated playful but natural colour (grass greens, warm earth, slate stone, blue water); NOT childish, no cartoon faces, no outlines in black, no noise, no text, no labels, no watermark.\nA CHARACTER SPRITE SHEET on a flat pure magenta background (#ff00ff): the Companion's PAWN exactly as in the concept, a small round orange explorer figure with a stubby body, two short legs, a round head with a single antenna ending in a small ball, sculpted and lit from the top left; seven columns and four rows, each cell the same size with magenta around the figure. Row one, the pawn FACING DOWN (toward the viewer): walk frame one (left leg forward), walk frame two (standing, both legs under), walk frame three (right leg forward), creep frame one (crouched low, stepping carefully), creep frame two (crouched, standing), creep frame three (crouched, other step), react (startled: body leaned back, antenna ball lifted). Row two the same seven poses FACING UP (away from the viewer, its back shown). Row three the same seven FACING LEFT (in profile). Row four the same seven FACING RIGHT. Every frame the same size and in the same place in its cell; no text.\nTEXT: none at all. No labels, numbers or letters anywhere on the canvas.\nConstraints: fill every cell fully; keep every cell's content inside its cell; no text; no people; the background colour where stated is a flat pure magenta (#ff00ff) with no shading so it can be keyed out later.",
+  "preamble": "Reference images follow; their roles are stated. Image 1 is the accepted Companion concept: take its forms, colours and light. Image 2 shows the decided 48 px scale.",
+  "imageInputs": [
+    {
+      "path": "art/concept-homepage/companion-storm.png",
+      "role": "the accepted Companion look: its grass, tree, bushes, stone, pawn and creature set the forms, colours and light; it is a style reference, its screen and chrome are not to be drawn",
+      "sha256": "77dd683caec7f3c444844c6f70ff0e51de9355812a53a4876e0ee01e5ec0d450"
+    },
+    {
+      "path": "design/proposals/decisions/tile-size-48.png",
+      "role": "the decided scale: how much detail one 48 px tile and a 48 px sprite carry; a scale reference only",
+      "sha256": "226b530db15f0da0652cff4be326c60b20660f906ed28b71cad4b8e6e52620c4"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+  },
+  "targetSize": "1024x1024",
+  "screenCrop": "none",
+  "time": "2026-10-08T17:15:32Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/C48-W-r1-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "bf030a3bde2cef10396c5a17d96465a369fa2fcc7b07f62794d5eaedea2ddc9e"
+    },
+    "png": {
+      "file": "C48-W-r1-a1-canvas.png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "24f85b28dd15531fccc0ace90127b0b15ac9dfbeb15ba90e1a16afd53031da4c"
+    },
+    "finishReason": "STOP",
+    "seconds": 19.5,
+    "usage": {
+      "promptTokenCount": 1070,
+      "candidatesTokenCount": 1432,
+      "totalTokenCount": 2795,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 554
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 516
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 293,
+      "serviceTier": "standard"
+    }
+  }
+}

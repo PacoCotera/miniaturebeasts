@@ -1,0 +1,37 @@
+{
+ "id": "C48-R-r2-water2",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "48x48",
+ "prompt": "seamless top-down pixel art tile of a pond's deep water, gentle ripples, dark blue with a few light blue glints, no shore, no objects",
+ "remove_bg": false,
+ "seed": 8,
+ "input_image": null,
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T17:48:34Z",
+ "checkCost": {
+  "created_at": 1791481714,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 6.540000000000005
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "fe180221-850a-4b7d-ba6e-2e31e5b09e31",
+  "seconds": 41.9,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 6.36,
+  "model": "rd_pro",
+  "file": "C48-R-r2-water2-rd.png",
+  "sha256": "cbf62c10b5732091683cfd4aef30d1aefb131dd8dfe8acb4c4aa8ac4d7282c9a"
+ }
+}

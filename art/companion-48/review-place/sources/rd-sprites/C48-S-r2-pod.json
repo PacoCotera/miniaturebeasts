@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r2-pod",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "32x30",
+ "prompt": "a small pale egg-shaped pod lying on the ground, from above, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/pod-in.png",
+  "sha256": "e8e49beb528c5911c833611e1ef527acf761a3ebe93ccb439afdf8cf4cac96a4",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T17:55:07Z",
+ "checkCost": {
+  "created_at": 1791482107,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 5.100000000000008
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "97f1e188-b0d9-4804-b15d-dc531464a77a",
+  "seconds": 83.4,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 4.92,
+  "model": "rd_pro",
+  "file": "C48-S-r2-pod-rd.png",
+  "sha256": "150faf212729f714296bbcc3b42bbb70b81e72ddc8f3e5f11882482c30d120ec"
+ }
+}

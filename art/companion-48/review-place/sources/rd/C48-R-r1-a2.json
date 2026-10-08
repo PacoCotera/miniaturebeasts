@@ -1,0 +1,35 @@
+{
+ "id": "C48-R-r1-a2",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "96x96",
+ "prompt": "pixel art rain only: thin pale diagonal rain streaks falling to the left, evenly scattered, isolated on a transparent background, seamless tile, no sky, no ground, no lightning",
+ "remove_bg": true,
+ "seed": 48,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T17:29:28Z",
+ "checkCost": {
+  "created_at": 1791480568,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 6.900000000000005
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "400ba5e7-3f29-4f8a-bd72-39a6d100f328",
+  "seconds": 52.7,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 6.72,
+  "model": "rd_pro",
+  "file": "C48-R-r1-a2-rd.png",
+  "sha256": "0315488fa8f6d733325fd5ec58ddf1aa257a21dee47624304cfe52e92d1581cc"
+ }
+}

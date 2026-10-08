@@ -1,0 +1,194 @@
+{
+ "schemaVersion": 1,
+ "sheet": "props.png",
+ "kind": "sprite",
+ "palette": "../palette/palette.json",
+ "transparentIndex": 48,
+ "size": [
+  512,
+  171
+ ],
+ "frames": {
+  "tree": {
+   "x": 1,
+   "y": 1,
+   "w": 94,
+   "h": 112,
+   "anchor": [
+    47,
+    112
+   ]
+  },
+  "bush-fruit": {
+   "x": 96,
+   "y": 1,
+   "w": 48,
+   "h": 42,
+   "anchor": [
+    24,
+    42
+   ]
+  },
+  "bush-shaken": {
+   "x": 145,
+   "y": 1,
+   "w": 51,
+   "h": 48,
+   "anchor": [
+    25,
+    48
+   ]
+  },
+  "bush": {
+   "x": 197,
+   "y": 1,
+   "w": 48,
+   "h": 42,
+   "anchor": [
+    24,
+    42
+   ]
+  },
+  "stone-charged1": {
+   "x": 246,
+   "y": 1,
+   "w": 44,
+   "h": 48,
+   "anchor": [
+    22,
+    48
+   ]
+  },
+  "stone-charged2": {
+   "x": 291,
+   "y": 1,
+   "w": 44,
+   "h": 47,
+   "anchor": [
+    22,
+    47
+   ]
+  },
+  "stone-plain2": {
+   "x": 336,
+   "y": 1,
+   "w": 32,
+   "h": 36,
+   "anchor": [
+    16,
+    36
+   ]
+  },
+  "stone-warm1": {
+   "x": 369,
+   "y": 1,
+   "w": 44,
+   "h": 45,
+   "anchor": [
+    22,
+    45
+   ]
+  },
+  "stone-warm2": {
+   "x": 414,
+   "y": 1,
+   "w": 44,
+   "h": 48,
+   "anchor": [
+    22,
+    48
+   ]
+  },
+  "stone": {
+   "x": 459,
+   "y": 1,
+   "w": 32,
+   "h": 36,
+   "anchor": [
+    16,
+    36
+   ]
+  },
+  "strike-warn1": {
+   "x": 1,
+   "y": 114,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    47
+   ]
+  },
+  "strike-warn2": {
+   "x": 50,
+   "y": 114,
+   "w": 48,
+   "h": 48,
+   "anchor": [
+    24,
+    47
+   ]
+  },
+  "outpost-dark": {
+   "x": 99,
+   "y": 114,
+   "w": 48,
+   "h": 51,
+   "anchor": [
+    24,
+    51
+   ]
+  },
+  "outpost-dark2": {
+   "x": 148,
+   "y": 114,
+   "w": 48,
+   "h": 51,
+   "anchor": [
+    24,
+    51
+   ]
+  },
+  "outpost-lit": {
+   "x": 197,
+   "y": 114,
+   "w": 48,
+   "h": 56,
+   "anchor": [
+    24,
+    56
+   ]
+  },
+  "pod": {
+   "x": 246,
+   "y": 114,
+   "w": 32,
+   "h": 30,
+   "anchor": [
+    16,
+    30
+   ]
+  },
+  "reeds": {
+   "x": 279,
+   "y": 114,
+   "w": 40,
+   "h": 48,
+   "anchor": [
+    20,
+    48
+   ]
+  },
+  "dew-cup": {
+   "x": 320,
+   "y": 114,
+   "w": 24,
+   "h": 14,
+   "anchor": [
+    12,
+    14
+   ]
+  }
+ },
+ "note": "Indexed PNG: palette indices 0-47 as signed, 48 transparent. anchor: the foot point (sprites) or the top-left (tiles, chrome), in frame pixels."
+}

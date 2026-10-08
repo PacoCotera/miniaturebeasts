@@ -1,6 +1,6 @@
 # Technical architecture: one loop, three screens
 
-**Decided** 2026-10-08: the three decisions of section 7 were taken as recommended, so this document is the architecture every Station, Companion and Caddy build follows. Written by the architect, 2026-10-08, for the owner. It answers the owner's direction of today: review the technical architecture of the Station and the Caddy (and, with them, the Companion), and choose the tooling and frameworks that draw the screens and handle interaction on hardware we can actually ship. **Decided** marks owner decisions restated here; everything else is **Proposal**. Section 7 holds the three decisions.
+**Decided** 2026-10-08: decisions 2 and 3 of section 7 were taken as recommended, so this document is the architecture every Station, Companion and Caddy build follows. **Decision 1 (the Station as a web page on the Pi) was withdrawn by the owner the same day:** the Station's hardware is the Raspberry Pi 4 and will not grow to carry a browser; everything is optimised for underpowered hardware; no hardware prototyping until the loop is complete in software. The replacement for the Station's device runtime is proposed in section 4.3 and is decision 1 of section 7 (**Proposal**). Written by the architect, 2026-10-08, for the owner. It answers the owner's direction of today: review the technical architecture of the Station and the Caddy (and, with them, the Companion), and choose the tooling and frameworks that draw the screens and handle interaction on hardware we can actually ship. **Decided** marks owner decisions restated here; everything else is **Proposal**. Section 7 holds the three decisions.
 
 **Decided 2026-10-08 (owner).**
 
@@ -61,17 +61,17 @@ The architecture has three jobs:
 
 | Carries across unchanged | Re-expressed on a device | Thrown away |
 | --- | --- | --- |
-| Screen specs (regions, components, focus graph, strings) as data files | Rules and state, in C, checked against shared test vectors (the same inputs must give the same outputs as the JavaScript reference) | The depicted device shells and side panels |
-| Palettes, fonts (Mibi 7×9 glyph sheets, Inter OFL), the asset manifest and every asset at its pixel size | The component library: same names, same behaviour, the device toolkit's code | The page's fit and scale code, Google Fonts, `localStorage` |
-| The save schema, migration ids and fixture saves | The renderer (indexed buffer, flush to the panel) | Playwright hooks (replaced by a host build of the device code) |
-| Species frames, catalogue, genome and stamp formats | Input (GPIO keys to the same key events) and storage (flash or SD, same save layout) | The developer panel's HTML (its settings contract carries; the device gets a hidden menu) |
+| Screen specs (regions, components, focus graph, strings) as data files | Companion and Caddy rules and state, in C, checked against shared test vectors (the same inputs must give the same outputs as the JavaScript reference) | The depicted device shells and side panels |
+| Palettes, fonts (Mibi 7×9 glyph sheets, Inter baked to glyph atlases from the OFL file), the asset manifest and every asset at its pixel size | The component library, once, in C on LVGL for all three devices: same names, same behaviour | The page's fit and scale code, Google Fonts, `localStorage` |
+| The save schema, migration ids and fixture saves | The renderer (indexed buffer on the ESP32s; layered 32-bit frame on the Pi) | Playwright hooks (replaced by a host build of the device code) |
+| Species frames, catalogue, genome and stamp formats; **on the Station, the rules, genome, rig, stamp and Caddy client as code** (§4.3) | Input (GPIO keys to the same key events) and storage (flash or SD on the ESP32s, a file on the Pi; same save layout) | The developer panel's HTML (its settings contract carries; the device gets a hidden menu) |
 | The Caddy service's four routes and their contracts | The Caddy service itself, as ESP-IDF firmware | |
 
 **What guarantees fidelity:**
 
 - **Device-pixel surfaces.** Each target draws into a buffer of exactly its size: 1024×600, 450×600, 792×272, and 384 dots a line for the printer. The page may enlarge the finished frame by whole numbers for viewing, but never the drawing.
 - **Palette enforced by construction.** The Companion and Caddy renderers write palette indexes, not colours, so an off-palette pixel cannot exist. On the Station, layers are kept apart (palette chrome and pixel art; painted art; type), so the art layer is checked at exactly 0, not under 8%.
-- **A closed primitive set** on the palette devices: rectangles, indexed sprites, nine-slices, bitmap glyphs and the dither and shade tables. Each is defined exactly, so a device renderer can produce the same pixels.
+- **A closed primitive set** on all three devices: rectangles, sprites (indexed, or 32-bit with straight alpha on the Station's painted layer), nine-slices, glyph runs from baked atlases, and the dither and shade tables. Each is defined exactly, so the device renderer can produce the same pixels, Inter included, since the sandbox and the device draw the same baked glyphs.
 - **Measured in CI,** with the sign-off's checks (grain, type, palette, size), plus the scene-level checks in §5.6.
 
 ## 4. Options per device
@@ -80,11 +80,11 @@ The architecture has three jobs:
 
 Arithmetic from the reference hardware, to be measured on boards (**Proposal**):
 
-| | Companion (ESP32-S3R8: 512 KB SRAM, 8 MB PSRAM, 16 MB flash) | Caddy (ESP32-S3) | Station (Pi 4) |
+| | Companion (ESP32-S3R8: 512 KB SRAM, 8 MB PSRAM, 16 MB flash) | Caddy (ESP32-S3) | Station (Pi 4, the ceiling: 2 GB or less, no GPU-accelerated browser) |
 | --- | --- | --- | --- |
-| Panel | 450×600 AMOLED, RM690B0 controller over quad SPI, 16-bit colour in | 792×272 e-paper, four grays; 58 mm printer, 384 dots a line | 1024×600 over HDMI |
-| One frame | 270 KB as palette indexes (PSRAM); 540 KB as 16-bit; a 60-row strip to the panel is 54 KB | 54 KB at 2 bits a pixel; one printer line is 48 bytes | 2.4 MB at 32 bits |
-| Assets | One byte a pixel: a 48 px tile is 2.3 KB, a 280×300 resident 84 KB. v1's 942 KB of RGBA art would be about 235 KB | Four-gray sets; paintings on the SD card | Paintings at full colour; the rig and rasteriser run here (art pipeline §11) |
+| Panel | 450×600 AMOLED, RM690B0 controller over quad SPI, 16-bit colour in | 792×272 e-paper, four grays; 58 mm printer, 384 dots a line | 1024×600 over HDMI, drawn in software to the kernel's display (DRM) |
+| One frame | 270 KB as palette indexes (PSRAM); 540 KB as 16-bit; a 60-row strip to the panel is 54 KB | 54 KB at 2 bits a pixel; one printer line is 48 bytes | 2.4 MB at 32 bits; two buffers 4.8 MB |
+| Assets | One byte a pixel: a 48 px tile is 2.3 KB, a 280×300 resident 84 KB. v1's 942 KB of RGBA art would be about 235 KB | Four-gray sets; paintings on the SD card | Paintings at full colour, 372 KB each at 300×310 decoded; the rig, rasteriser, validator and derivation run here (art pipeline §11) |
 | Lesson from v1 | The 1.4 MB image was 1.1 MB of flash data, mostly RGBA art and anti-aliased font tables. Indexed assets and bitmap type remove most of it | 470 KB Caddy UI compiled | Never ran on a Pi |
 
 The Companion's pixel model (a 48-entry palette, indexes in memory, a lookup to 16-bit on the way to the panel) is the same model the sandbox already uses. The device enforces the palette for free.
@@ -95,15 +95,32 @@ The Companion's pixel model (a 48-entry palette, indexes in memory, a lookup to 
 | --- | --- | --- | --- |
 | **(a) LVGL in C on all three, and LVGL compiled to WebAssembly for the sandbox** | One UI codebase; the sandbox shows exactly the device's pixels; MIT licence; v1 compiled for the ESP32-S3 | The rules would move to C now, so the workbench, rig and stamp (JavaScript) would have to be copied or bridged, which breaks "imported, never copied". The compile-and-debug loop is slow just when the loop is still changing. LVGL is a widget toolkit: our vocabulary (rail, stamp label, message plate) still has to be built on top. The rig would need a native port for the Station | Not now. It pays the port cost before the loop is stable, against the owner's order of work |
 | **(b) Browser now, with a declarative, data-driven screen layer, and a documented port later** | Fastest iteration; the imports stay imports; the journey and sign-off checks already run here; the spec becomes data a port can use | We build and keep the screen layer ourselves. Discipline is needed so it stays small | **Recommended for the sandbox,** for all three screens |
-| **(c) A web runtime on the Station itself** (Chromium in kiosk mode on the Pi), so the Station never ports; Companion and Caddy ported to an embedded toolkit | The Station page is the product: Inter anti-aliasing, painted art and the JavaScript rig run as they do today. The single most expensive port (rig, rasteriser, validator, derivation) disappears. The Pi 4 has the memory for it | Boot time, kiosk hardening, keeping a browser up to date, power. Not yet measured on a Pi 4 with the 7" panel | **Recommended for the Station,** behind a measured gate (§6, P0) |
+| **(c) A browser on the Station** (Chromium in kiosk mode on the Pi) | The Station would never port | A full browser on underpowered hardware, with no GPU acceleration to lean on | **Withdrawn by the owner, 2026-10-08.** Replaced by §4.3 |
 | **(d1) Slint** (declarative markup; Linux and ESP32-S3) | Declarative screens, close to our spec-as-data idea; Espressif component tested on the S3 | Rust or C++ toolchain; on embedded it is GPLv3 or a paid licence (the royalty-free licence excludes embedded); younger on the S3 than LVGL | Credible fallback for the Companion and Caddy |
 | **(d2) Embedded Rust** (embedded-graphics and similar) | Safe, small | Drawing primitives only: the same hand-drawing problem in a new language | No |
-| **(d3) Flutter on the Pi** (flutter-pi) or **Qt Quick** | Mature retained UIs on Linux | Neither runs on the ESP32; the JavaScript models would be ported or bridged; a second UI stack beside the device one | No: (c) does the Station's job with the code we have |
+| **(d3) Flutter on the Pi** (flutter-pi) or **Qt Quick** | Mature retained UIs on Linux | Neither runs on the ESP32; the JavaScript models would be ported or bridged; a second UI stack beside the device one | No: a second, heavier UI stack beside LVGL (see §4.3) |
 | **(d4) MicroPython** (excluded earlier) | Quick to write | Slower and heavier on 270 KB frames; the reasons for the earlier exclusion still hold | Not reopened |
 
-**Companion and Caddy on the device (Proposal):** native C on ESP-IDF, with **LVGL 9** for chrome, lists and menus, and our own indexed renderer for the Companion's world view (tile map and sprites) inside it. The world view is a game renderer, not a widget. LVGL is MIT-licensed, proven on the S3 in v1, and can drive an e-paper through a custom flush. Recent LVGL releases can also describe components in XML, which could later take our spec files directly. The Caddy firmware is mostly service work (Wi-Fi, TLS to the cloud, SD storage, a small HTTP server for the Station, the printer), with a quiet four-gray UI. The toolkit choice matters less there than the service contract, which carries over from the Node service.
+**Companion and Caddy on the device (Proposal):** native C on ESP-IDF, with **LVGL 9** for chrome, lists and menus, and our own indexed renderer for the Companion's world view (tile map and sprites) inside it. The world view is a game renderer, not a widget. LVGL is MIT-licensed, proven on the S3 in v1, and drives an e-paper through a custom flush. The Caddy firmware is mostly service work (Wi-Fi, TLS, SD storage, a small HTTP server for the Station, the printer) with a quiet four-gray UI, so its service contract matters more than the toolkit.
 
 **Wi-Fi between Station and Caddy:** the four HTTP routes of the Caddy service stay the contract (**Decided:** the Caddy brokers over Wi-Fi). The Station's client already queues in `outbox`, so the kit plays on when the Caddy is unreachable.
+
+### 4.3 The Station's runtime, within the Pi 4
+
+**Decided (owner, 2026-10-08):** the Pi 4 is the ceiling and the hardware won't grow; optimise for underpowered hardware.
+
+The Station has two halves. **The face** (screens, focus, animation, drawing) must be light on a CPU-only Pi. **The logic** (rules, genome model, cross, stamp, rig, rasteriser, controls, derivation, Caddy client) is JavaScript imported from the workbench and the stamp: about 3,600 dense lines, still changing. Its heavy work runs in the background (a controls-and-placeholder set took about five seconds a mibi on the VM, while a bud grows for twenty minutes).
+
+| Option | RAM (resident, Proposal) | CPU and boot | Upkeep | Verdict |
+| --- | --- | --- | --- | --- |
+| **S1 LVGL 9 face in C + the logic in a headless Node process beside it** (no browser): the face renders from the spec files and the view props the logic sends over a local socket, and sends back intents | Face: 4.8 MB of buffers plus an image cache of 20–40 MB. Node: about 45 MB idle, published figure, plus the rig's working set. Under 300 MB with the OS | LVGL on DRM held 30 fps at 4–6% CPU on a Pi 3B at 800×480 (LVGL forum figure); it redraws only what changed. Node starts in about a second. The system boot dominates: 15–20 s typical on Raspberry Pi OS, about 4–10 s on a trimmed Buildroot image (forum figures) | **One C face for all three devices**; the Station's logic stays the sandbox's own modules, imported, never copied; one seam (props in, intents out); Node's long-term releases | **Recommended** |
+| **S2 LVGL face in C + the logic ported to C** (one process) | The lightest: tens of MB | The same face; the rig in C is faster | The genome, rig, stamp and cross exist twice, JavaScript in the workbench and C on the Station. Every workbench change is ported and re-verified with test vectors, forever | **Fallback,** if a JavaScript runtime on the device is ruled out |
+| **S3 As S1 with QuickJS for the logic** | About 7 MB for the runtime (published figure) | An interpreter, about 17–25 times slower than Node in published comparisons: the rig would take minutes a mibi, and Create's close-ups seconds | As S1 | No, unless RAM ever drops below 512 MB |
+| **S4 The sandbox's own JavaScript renderer, headless in Node, with a native canvas library writing to DRM** | 100–150 MB (estimate) | Every frame drawn in JavaScript | Saves the Station screen port; an uncommon path with few users; the Station on a different face from the other two devices; not an established framework | No: the owner asked for established frameworks |
+| **S5 SDL2 + our own C renderer** | Light | Light | We write anti-aliased text, images and the face ourselves, apart from the ESP32s' LVGL: the hand-drawing problem again | No |
+| **S6 Slint on Linux** | Light; software renderer | Light | A device counts as embedded, so GPLv3 or paid; a different toolkit from the ESP32s unless all three move | Only as the all-device fallback named in decision 3 |
+
+**Proposal: S1.** The face is LVGL 9 in C on the Linux DRM driver, drawing in software, with the Companion's and Caddy's component library. It adds two layers: painted art as 32-bit images with straight alpha, and anti-aliased Inter at 16, 20 and 28 px from atlases baked from the bundled OFL file. The logic is the sandbox's own modules, run headless by Node as a service. It writes the save to a file atomically, talks to the Caddy over Wi-Fi, and puts rig renders and the stamp into an image cache the face reads by asset id. The seam is §5.2's view contract. **Fallback: S2**, at the price of a second genome model.
 
 ## 5. The structure
 
@@ -126,9 +143,9 @@ The Companion's pixel model (a 48-entry palette, indexes in memory, a lookup to 
 | **Layout** (`ui/layout.mjs`) | Reads a spec; places regions; applies the few rules the style guide states (rail compaction, page grid by trait count, message plate position) | A general layout engine |
 | **Components** (`ui/components/`) | Each piece of the vocabulary once: frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport | Read the save |
 | **Scene** (`ui/scene.mjs`) | A retained tree of nodes on layers (art, painted, type), with dirty rectangles | Pixels |
-| **Renderers** (`ui/render/`) | `station-canvas` (layered), `indexed` (48 colours or four grays), `print` (1 bit, 384 dots) | Game logic |
+| **Renderers** (`ui/render/`) | `station-canvas` (layered), `indexed` (48 colours or four grays), `print` (1 bit, 384 dots); on the devices, the same three in C on LVGL | Game logic |
 | **Input and focus** (`ui/focus.mjs`, `ui/timeline.mjs`) | Key events, the focus graph with spatial fallback, arm-then-confirm, input holds during reveals | Rule calls (it emits intents) |
-| **Edges** | `storage` (the save adapter: `localStorage` in the sandbox, a file service on the Pi, flash on the ESP32), `caddy` client, `art` placeholder register, `dev` tools, the asset manifest | Mix with each other |
+| **Edges** | `storage` (the save adapter: `localStorage` in the sandbox, a file written by the logic process on the Pi, flash on the ESP32), `caddy` client, `art` placeholder register, `dev` tools, the asset manifest | Mix with each other |
 
 ### 5.2 Contracts and data shapes
 
@@ -152,8 +169,8 @@ The other contracts:
 - **View:** `view(state, focus) → props`, for example `{ pod: { asset, sealed }, rail: { chapters: [{ id, read, glint, sealed }] }, line: { ok, price, back, subject, need } }`. Pure and tested in Node.
 - **Intent:** a key goes through the focus graph, which gives either a focus move or `{ target, verb }`. The screen's intent table maps it to one rule call, which returns `{ st, events }`.
 - **Event:** `{ kind: "wipe", target: "page", ms: 2000, hold: true }`. The timeline plays it and holds input. No global timestamps.
-- **Scene node:** `{ kind: rect | sprite | nineSlice | text | ring | clip, layer, rect, asset?, font?, colour }`. Colours are palette names, except on the painted and type layers.
-- **Asset:** `{ id, file, w, h, policy: palette48 | stationChrome | painted | gray4 | print1, status: placeholder | master, until, hash }`.
+- **Scene node:** `{ kind: rect | sprite | nineSlice | glyphs | clip, layer, rect, asset?, font?, colour }`. Colours are palette names, except on the painted and type layers. `font` names a baked atlas (`inter-16`, `mibi-7x9@2`), never a CSS font string.
+- **Asset:** `{ id, file, w, h, policy: palette48 | stationChrome | painted | gray4 | print1, status: placeholder | master, until, hash }`. Files are PNG: indexed for the palette policies, 32-bit with straight alpha for `painted`. A build tool converts them to LVGL's binary formats.
 
 ### 5.3 How the layout spec becomes code
 
@@ -216,25 +233,36 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 | **M6 Sitting and the whole journey** | As planned, on the layer; Cross and Sitting once their specs exist | Unchanged in scope |
 | **C1 Companion split** | The inline script into modules (rules, world, state, renderer, screens) with no visible change | Independent of the Station; can run beside T2 |
 | **C2 Companion on the layer** | HUD 32, view 532, line 36; Mibi 7×9; the map viewport for 48 px tiles, with the art redraw | Lands with the 48 px redraw |
-| **P0 Hardware proofs** (hardware track, in parallel) | The sandbox Station page in kiosk mode on a Pi 4 and the 7" panel (frame time on the heaviest screen, a rig render, boot time); a 450×600 indexed frame flushed to the board; a four-gray refresh | Gates decision 1. Doesn't block T1 to M6 |
-| **P1 Port** | Companion and Caddy firmware from the specs, assets and test vectors; a host build in CI compares frames with the sandbox's | **After the loop is stable** (owner's order) |
+| **H0 Host-build proof** (software only, optional, after T2) | The C component library on LVGL, built for Linux in CI, draws Pods and the Companion's HUD and bottom line from the specs and the props the journey records; its frames are compared with the sandbox's (exact on the palette and type layers, since both draw the same atlases) | No hardware (**Decided:** none until the loop is complete in software). A new check, so it needs the owner's approval when proposed |
+| **P1 Port** | In order: the shared C face on Linux (the host build grown), then the **Station** (S1: the face on the Pi, the logic process, the image cache, the save file, GPIO keys), then the Companion and the Caddy firmware from the specs, assets and test vectors | **After the loop is stable** (owner's order). Hardware work starts here |
+
+**The price of the Station decision.** With the withdrawn browser, the Station's port was a system image, a save service and key input, with no screens. Under S1, P1 adds the Station's eleven screens on the C component library, about as much screen work again as the Companion's nine or so. On top come the Station-only components (chapter rail, chapter page, stamp label, specimen, living window, the Library's spread and Book), the painted and type layers, and the props-and-intents seam. Against S2, it avoids porting the genome, rig, stamp, cross and Caddy client and keeping them twice. The face is built once for three devices.
+
+**What T1 does now so this port stays cheap** (T1 stands as commissioned; these are additions for its builder):
+
+1. **Type from baked atlases, not `fillText`.** Bake Inter at 16, 20 and 28 px (and Mibi 7×9) with LVGL's font converter, which runs in Node, into one atlas format with its metrics and kerning. The sandbox's type layer blits those glyphs and measures text from the atlas metrics. The device then draws the same pixels, and the type check reads the run log.
+2. **A closed primitive set on the Station too.** Components use only rect, sprite, nine-slice, glyph runs and clip. No canvas paths, gradients, shadows, filters, transforms or `globalAlpha`. The focus ring and rounded panels become nine-slices or sprites. Painted light is an asset, never code.
+3. **Image formats.** PNG only, indexed or 32-bit with straight alpha, registered at their pixel size; no WebP or run-time SVG.
+4. **Rig renders through the asset cache.** Components ask for `{ kind: placeholder | closeUp | stamp, sha, w, h }` by asset id and never call the rasteriser themselves. This is where the device's logic process plugs in.
+5. **Views, layout and scene run in Node.** No DOM or canvas imports outside the renderer. Props, intents and events are plain JSON. The journey can then record them, which H0 needs.
 
 | Risk | Mitigation |
 | --- | --- |
 | The screen layer grows into a framework project | Its vocabulary is closed (station-layouts.md); rectangles are absolute from the spec; no general layout engine |
 | T1 delays M5 | T1 replaces the layout pass rather than adding to it; M5 then builds faster on shared components |
 | Spec files and the document drift apart | One home for the numbers; tables and wireframes generated from it |
-| Chromium kiosk on the Pi is too slow or fragile | P0 measures it before anything depends on it; fallback is LVGL with SDL on the Pi plus a native rig, at the cost (a) carries |
+| Node's memory or the rig's speed on the Pi 4 proves too much | Rig work is background and cached by genome hash; the seam lets S2 replace the logic process without touching the face; measured when hardware work starts |
+| Inter from LVGL's atlases reads differently from the browser's today | T1 moves the sandbox to the same atlases now, so the owner judges the type the device will draw |
 | The device port differs from the sandbox's pixels | A closed, exact primitive set; frame comparison from a host build |
 | Splitting the Companion breaks the playable page | C1 makes no visible change; the smoke and parse checks stay |
 | The Station palette is unsettled (69 in code, 96 in the UI kit, painted art on top) | The renderer takes the palette as data; the UI designer and the art director fix it; the check follows |
 
 ## 7. Decisions
 
-**Decided** 2026-10-08, all three as recommended:
+**Decided** 2026-10-08: 2 and 3 as recommended. The first decision 1 (a browser on the Pi) was withdrawn by the owner; decision 1 below replaces it and is open.
 
-1. **The Station runs the web page on the Pi and never ports.** *Recommended: yes, behind the P0 measurement.* The rig, rasteriser, validator and derivation must run on the Station, and they exist only in JavaScript. Inter anti-aliasing and painted art are native to a browser. The Pi 4 has the capacity. This replaces "everything through LVGL" for the Station only.
+1. **The Station's runtime. Decided 2026-10-08: S1.** The face is LVGL 9 in C on the Pi's display, the same component library as the Companion and the Caddy, with painted art and anti-aliased Inter from baked atlases. The logic (rules, genome, rig, stamp, Caddy client, the save) is the sandbox's own JavaScript, run headless by Node beside it as a service, with no browser. *Recommended: yes, with the logic ported to C as the fallback.* It fits well within a Pi 4 of 2 GB or less (under 300 MB resident, a few per cent of CPU at rest). It gives three devices one face. It keeps the genome model in one language, imported, never copied. Its price is the Station's screens in the port (§6); the fallback adds a second genome model to maintain.
 2. **The sandbox gets its own small, declarative screen layer now** (screen specs as data, a component library, a retained scene, a focus model), built as T1 in place of the pending layout pass and before M5, with the regions check added to CI. *Recommended: yes.* It is the separation of concerns the owner asked for. Adopting LVGL-in-WebAssembly now would move the rules to C before the loop is stable and would copy what must be imported.
 3. **The Companion and Caddy port to native C on ESP-IDF with LVGL 9** for chrome and our own indexed renderer for the world view, started only when the loop is stable. *Recommended: yes, with Slint as the fallback.* LVGL is MIT-licensed and proven on the S3. The palette model is the sandbox's own. Slint on embedded is GPLv3 or paid, and younger on the S3.
 
-**Overall recommendation.** Keep the browser as the place where the game is defined, and give it what it lacks: a screen layer between the pure rules and the pixels. Make the Station's product the page itself on the Pi. Port the Companion and the Caddy to LVGL in C once the loop holds, carrying specs, assets, fonts, palettes, the save and test vectors as data, so the port is a translation checked by measurement, not a rewrite.
+**Overall recommendation.** Keep the browser as the place where the game is defined, and give it what it lacks: a screen layer between the pure rules and the pixels. Once the loop holds, port all three faces to one LVGL component library in C, with no browser anywhere. The Companion and the Caddy carry specs, assets, fonts, palettes, the save and test vectors as data. The Station keeps its JavaScript logic, headless, behind the same view contract the sandbox uses. The port is then a translation checked by measurement, not a rewrite, and it fits the hardware we have.

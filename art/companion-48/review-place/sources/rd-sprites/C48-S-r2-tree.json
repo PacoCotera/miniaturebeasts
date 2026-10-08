@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r2-tree",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "96x111",
+ "prompt": "a round-canopied meadow tree from above, trunk visible below the canopy, pixel art sprite on a plain white background",
+ "remove_bg": true,
+ "seed": 48,
+ "input_image": {
+  "file": "review-place/sources/rd-sprites/inputs/tree-in.png",
+  "sha256": "71e620c3a2f69e1cddd54374c58e09a9f39cd42bcd10cfd2332f6ed02444f811",
+  "strength": 0.5
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T17:50:20Z",
+ "checkCost": {
+  "created_at": 1791481820,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 6.360000000000006
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "54a69e43-a070-4147-9dfe-4eb34d9eb111",
+  "seconds": 47.1,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 6.18,
+  "model": "rd_pro",
+  "file": "C48-S-r2-tree-rd.png",
+  "sha256": "f65926f9b6439a264dd9f64f2b2ae16c92bf483892eddcab17498f1f2418a9c7"
+ }
+}

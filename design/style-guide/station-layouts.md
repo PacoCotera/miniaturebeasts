@@ -67,7 +67,7 @@ The rail is the same object on all three bench screens. It sits at the same heig
 - **Nine to twelve chapters:** compact tabs 56×56 hold the emblem and pips only, and the focused tab widens to 112 to show its word. Twelve chapters take 11 × 56 + 112 + 11 × 8 = 816 px.
 - **More than twelve** comes back to the UI designer.
 - **Never** a second row, a scroll, a "more" arrow or a clipped word.
-- **One word per tab.** "Legs & tail" is three, so the rail needs a one-word name for that chapter from the copywriter ("Limbs" is offered). Until it is settled, the rail shows "Legs" and the page heading shows "Legs & tail".
+- **One word per tab,** with one decided exception: the "Legs & tail" tab shows "Legs & tail" (owner, 2026-10-08); at 16 px Inter it fits the 112 px tab.
 - **No status words or prices on a tab.** The build's "read", "cleared", "misty" and "1 ◆" go: the tab's fill and pips show the state, and the price is on the bottom line.
 
 | Tab state | How it is drawn (shape first, colour second) |
@@ -854,7 +854,6 @@ The Book is each species' field guide: its face, the looks found so far, its lin
 - The stub's text lines ("Coat: plain, … · more?") become plates.
 - "clan … · 4 chapters" goes: the clan shows on the spread's rule, and the chapters show as tabs.
 - The plate's lanterns at the page corners go (storybook).
-- The "Legs & tail" tab needs one word.
 
 ### 3. Placement
 
@@ -951,5 +950,4 @@ The build stub has ← only; the rest arrives with M5.
   - more looks in a trait than its row holds.
 - A master whose silhouette needs a different focal box, or any focal box shrinking below its listed size (300×310 where the guide asks).
 - Any change to the reading order, or a second warm or bright object competing with the specimen.
-- The one-word name for "Legs & tail" (with the copywriter).
 - Screens not covered here: Dock and arrival beyond its Home state, the Probe bench, Idle, Cross, Sitting.
