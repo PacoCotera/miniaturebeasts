@@ -1,0 +1,30 @@
+{
+ "screen": "frame",
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md#shared-frame-and-rules",
+ "size": [1024, 600],
+ "grid": 8,
+ "regions": {
+  "top": { "rect": [0, 0, 1024, 40], "component": "topBar", "rule": "bottom" },
+  "title": { "rect": [16, 8, 240, 24], "px": 20, "weight": 500, "turnPx": 16 },
+  "materials": { "rect": [384, 8, 256, 24], "centre": 512, "icon": 16, "gap": 4, "between": 24, "px": 16, "flashMs": 240 },
+  "companion": { "rect": [640, 8, 368, 24], "right": 1008, "lamp": 8, "px": 16 },
+  "stage": { "rect": [0, 40, 1024, 522] },
+  "line": { "rect": [0, 562, 1024, 38], "component": "bottomLine", "rule": "top" },
+  "action": { "rect": [16, 570, 376, 24], "px": 16 },
+  "subject": { "rect": [400, 570, 224, 24], "centre": 512, "px": 16 },
+  "need": { "rect": [632, 570, 376, 24], "right": 1008, "px": 16 },
+  "separators": { "x": [396, 628], "y0": 571, "y1": 591 },
+  "plate": { "centre": 512, "maxWidth": 640, "pad": 16, "line": 20, "lead": 16, "bottom": 550, "topOverFocal": 112, "showMs": 4000, "px": 16 }
+ },
+ "type": { "body": 16, "title": 20, "name": 28, "pitch": { "16": 20, "20": 28, "28": 36 }, "weight": { "16": 400, "20": 500, "28": 600 } },
+ "focus": { "ring": { "width": 2, "outside": 4, "radius": 6 }, "feet": { "widen": 16, "height": 24 }, "lift": { "chrome": 2, "creature": 4, "ms": 200 } },
+ "colours": {
+  "chrome": "moss1", "rule": "moss0", "title": "creamT", "turn": "lampD", "figure": "creamT", "flash": "amber", "flashInk": "ink",
+  "companion": "fog", "companionDocked": "mint", "lampOn": "mint", "lampOff": "stone",
+  "tick": "orange", "verb": "creamT", "dim": "moss5", "price": "lamp", "dot": "moss4", "back": "fog", "subject": "mist", "need": "amber",
+  "plate": "wood1", "plateEdge": "lampD", "plateShadow": "moss0", "plateText": "creamT",
+  "ring": "cream", "stageGround": "deep"
+ },
+ "strings": { "turn": "T{n}", "backArrow": "← ", "tick": "✓", "dot": " · " }
+}
