@@ -92,6 +92,32 @@ other layers, off palette by decision, and the genome stamp keeps its own colour
 The chrome is crisp and flat, lit by a bevel from the top left; it is never shaded in dithered
 bands.
 
+**Migration from the 69 the build read before** (the code looks colours up by name):
+
+| Old | Change | New name | Note |
+| --- | --- | --- | --- |
+| moss0 | removed | `void` | drop shadows |
+| moss1 | removed | `ground` | |
+| moss2 | removed | `panel` | |
+| moss3 | removed | `bar` | |
+| moss4 | removed | `hairline` | separators, rules |
+| moss5 | renamed | `sageD` (same hex) | where it was dimmed text, use `mist` |
+| wood0 | removed | `panel` | wooden frames become graphite chrome |
+| wood1 | removed | `bar` | |
+| wood2 | removed | `hairline` | |
+| wood3 | removed | `bevel` | |
+| wood4 | removed | `metal` | |
+| felt | removed | `panel` | cups become wells; the bed is painted |
+| feltD | removed | `ground` | |
+| lamp | renamed | `focus` (same hex) | the focus ring's cream |
+| lampD | removed | `sand` | as text, use `mist` or `bone` by role |
+| glass | removed | `frostD` | |
+| glassD | removed | `enamel` | |
+| creamT | removed | `bone` | readout and title text |
+| frost, frostD, frostS | kept | same names | `frostS`'s darker neighbour is now `enamel` |
+| (new) | added | `ground` #162a37, `panel` #2a2e38, `bar` #34383f, `hairline` #3c4b57, `bevel` #5a6672, `metal` #717c86, `enamel` #8ca0ab, `deepTeal` #275663, `sage` #84ae78 | roles and concept screens in the table above |
+
+
 - **The shared core: the Companion's 48,** first in the file and unchanged in name, value and
   neighbours, as signed in [`art/companion-48/palette/palette.json`](../../art/companion-48/palette/palette.json).
   On the Station they carry the placeholders' flat slots and outlines in each species' ramps,
