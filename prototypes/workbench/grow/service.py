@@ -33,7 +33,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 WB = os.path.dirname(HERE)
 REPO = os.path.dirname(os.path.dirname(WB))
 OUT = os.path.join(HERE, "out")
-LOG = os.path.join(HERE, "log.jsonl")
+PROMPTS = os.path.join(HERE, "prompts.json")
+ART_DIRECTION = open(os.path.join(HERE, "art-direction.txt")).read().strip()
+PROMPT_VERSION = 2  # 1: the stage 1 template over the controls; 2: art direction, controls, the genome's description and the species reference as separate fields
+SPECIES_DIR = os.path.join(HERE, "species")  # the species' type specimen painting, the reference image of every individual's call
 REF = os.path.join(WB, "out", "reference")
 BG = (246, 243, 236)
 STYLE_REF = os.path.join(REPO, "art/miniature-lives/assets/rich-plain-300x310.png")
@@ -67,14 +70,16 @@ def pad_square(im, size=620):
     canvas = Image.new("RGB", (size, size), BG); canvas.paste(im, ((size - im.width) // 2, (size - im.height) // 2)); return canvas
 
 
+def read_log():
+    if os.path.exists(PROMPTS): return json.load(open(PROMPTS))["calls"]
+    return []
+
+
 def log_call(rec):
     with LOG_LOCK:
-        with open(LOG, "a") as f: f.write(json.dumps(rec) + "\n")
-
-
-def read_log():
-    if not os.path.exists(LOG): return []
-    return [json.loads(l) for l in open(LOG) if l.strip()]
+        calls = read_log(); calls.append(rec)
+        doc = {"schemaVersion": 1, "purpose": "The Grow painting service: every paid call with its three prompt fields (artDirection, description, reference) beside the controls text and the assembled prompt, its image inputs by name and SHA-256, response id, usage, cost, seconds and checks. No key material.", "calls": calls}
+        tmp = PROMPTS + ".tmp"; json.dump(doc, open(tmp, "w"), indent=1); open(tmp, "a").write("\n"); os.replace(tmp, PROMPTS)
 
 
 # --- the controls (Node) ----------------------------------------------------------------------------------
@@ -251,21 +256,36 @@ def check(painted_large, ctrl, legend):
 VIEW_PHRASE = {"portrait": "from the front quarter, its face toward the viewer's left, as in image 1", "side": "in profile from its right side, the head facing right, as in image 1"}
 
 
-def template(legend, view, reasons=None, with_portrait=False):
+def controls_text(legend, view):
+    """The controls field: what each control image is and what it locks."""
     slots = ", ".join(f"{s['slot']} → {' and '.join(s['pigments'])}" for s in legend["slots"])
     parts = ", ".join(p["part"] for p in legend["parts"])
     t = ("Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present, no part added, nothing turned. "
          "Image 1 is its form under one light from the top left. Image 2 is the colour key: the same body with every area flat in the exact pigment it must be painted in; paint each area in a ramp of that colour and no other, never moved, never swapped: "
          f"{slots}. Image 3 is the part map: its colours are labels, not paint; each flat colour is one part of the same body ({parts}); keep every part exactly where it is, at the same size, facing the same way. "
-         "Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. ")
-    if with_portrait: t += "Image 5 is the same creature already painted from the front quarter: match its colours, surfaces, markings and face exactly, so the two views are one creature. "
-    t += f"The creature is a {legend['caption']} It is a juvenile {legend['name']}, standing still, seen {VIEW_PHRASE[view]}. "
+         f"The creature stands still, seen {VIEW_PHRASE[view]}.")
     if legend.get("translucent"):
         names = sorted({n["part"] for n in legend["translucent"]})
-        t += f"Its {' and '.join(names)}s are thin membranes, lightly translucent: paint them opaque as a flat pale tint of their slot colour with a soft edge, as in image 1, not as glass, with no reflections and nothing showing through. "
-    if reasons: t += "A previous painting of this creature was rejected because " + "; ".join(reasons) + ". This time keep the silhouette of image 1 and the parts of image 3 exactly, part for part. "
-    t += "Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image."
+        t += f" Its {' and '.join(names)}s are thin membranes, lightly translucent: paint them opaque as a flat pale tint of their slot colour with a soft edge, as in image 1, not as glass, with no reflections and nothing showing through."
     return t
+
+
+def reference_text(reference, view, with_portrait):
+    if reference.get("ownKind"):
+        t = (f"Image 4 is {reference['what']}: the finished look to match exactly, its treatment, its materials, its face and how the light falls on it. "
+             "This creature is one of that kind and differs from it only as the description and the drawings say.")
+    else:
+        t = (f"Image 4 is {reference['what']}: the treatment to match exactly. This creature is a different species, to be painted in the same hand: "
+             "the same materials, the same light, the same kind of face and eyes, the same finish, at the same scale of detail.")
+    if with_portrait: t += " Image 5 is this same creature already painted from the front quarter: match its colours, surfaces, markings and face exactly, so the two views are one creature."
+    return t
+
+
+def template(fields, reasons=None):
+    """The assembled prompt from its logged fields: artDirection, controls, description, reference."""
+    t = fields["artDirection"] + "\n\n" + fields["controls"] + "\n\n" + "The creature: " + fields["description"] + "\n\n" + fields["reference"]
+    if reasons: t += "\n\nA previous painting of this creature was rejected because " + "; ".join(reasons) + ". This time keep the silhouette of image 1 and the parts of image 3 exactly, part for part."
+    return t + "\n\nOutput one square image."
 
 
 def gemini_call(parts, record):
@@ -282,16 +302,21 @@ def gemini_call(parts, record):
     return status, res
 
 
-def paint_view(d, legend, view, attempt, reasons, style_png, portrait_png):
-    """One paid call for one view; returns (record, painted 600×620 image or None)."""
+def paint_view(d, legend, view, attempt, reasons, reference, portrait_png):
+    """One paid call for one view; returns (record, painted 600×620 image or None). `reference` is the
+    species' reference painting {what, name, png}: the accepted Pip for S01 and for a species' own type
+    specimen, else the species' type specimen painting."""
     c = os.path.join(d, "controls")
     imgs = [(f"{p}.{view}.large.png", png_bytes(pad_square(Image.open(os.path.join(c, f"{p}.{view}.large.png")).convert("RGB")))) for p in ("shaded", "key", "index")]
-    imgs.append(("style:rich-plain-300x310.png", style_png))
-    if view == "side" and portrait_png: imgs.append(("station-portrait-600x620.png", png_bytes(pad_square(Image.open(io.BytesIO(portrait_png)).convert("RGB")))))
-    text = template(legend, view, reasons, with_portrait=bool(view == "side" and portrait_png))
+    imgs.append((f"reference:{reference['name']}", reference["png"]))
+    with_portrait = bool(view == "side" and portrait_png)
+    if with_portrait: imgs.append(("station-portrait-600x620.png", png_bytes(pad_square(Image.open(io.BytesIO(portrait_png)).convert("RGB")))))
+    fields = {"artDirection": ART_DIRECTION, "controls": controls_text(legend, view), "description": legend["description"]["text"], "reference": reference_text(reference, view, with_portrait)}
+    text = template(fields, reasons)
     parts = [{"text": text}] + [{"inline_data": {"mime_type": "image/png", "data": b64(b)}} for _, b in imgs]
-    rec = {"id": str(uuid.uuid4()), "service": "gemini", "model": GEMINI_MODEL, "purpose": f"station-{view}", "attempt": attempt, "species": legend["species"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"],
-           "prompt": text, "images": [{"name": n, "sha256": sha_bytes(b), "bytes": len(b)} for n, b in imgs], "generationConfig": {"responseModalities": ["IMAGE"], "aspectRatio": "1:1", "imageSize": "1K"}, "startedAt": now()}
+    rec = {"id": str(uuid.uuid4()), "service": "gemini", "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "purpose": f"station-{view}", "attempt": attempt, "species": legend["species"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"],
+           "fields": fields, "referenceImage": {"what": reference["what"], "name": reference["name"], "sha256": sha_bytes(reference["png"])}, "prompt": text,
+           "images": [{"name": n, "sha256": sha_bytes(b), "bytes": len(b)} for n, b in imgs], "generationConfig": {"responseModalities": ["IMAGE"], "aspectRatio": "1:1", "imageSize": "1K"}, "startedAt": now()}
     status, res = gemini_call(parts, rec)
     if status != 200:
         rec["status"] = "failed"; rec["error"] = res.get("error", res); return rec, None
@@ -311,23 +336,39 @@ def paint_view(d, legend, view, attempt, reasons, style_png, portrait_png):
 
 
 # --- one mibi ---------------------------------------------------------------------------------------------
+def pip_reference():
+    return {"what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)", "name": "rich-plain-300x310.png", "png": png_bytes(flat_rgb(STYLE_REF)), "ownKind": False}
+
+
+def species_reference(species, legend):
+    """The reference image for an individual's call: the accepted Pip for S01; for another species its
+    type specimen painting under grow/species/<species>/, painted once with Pip as its reference (the
+    type specimen's own call); Pip again, noted, while that painting is missing."""
+    if species == "S01": return {**pip_reference(), "ownKind": True}
+    if legend["level"] == "species": return pip_reference()
+    p = os.path.join(SPECIES_DIR, species, "portrait-600x620.png")
+    if os.path.exists(p): return {"what": f"the accepted painting of this species' type specimen (the {legend['name']})", "name": f"species/{species}/portrait-600x620.png", "png": png_bytes(Image.open(p).convert("RGB")), "ownKind": True}
+    r = pip_reference(); r["what"] += " (this species' own type specimen painting is not made yet)"; return r
+
+
 def grow(species, genome=None, digest=None, force=False):
     info = prepare(species, genome, digest); d = info["dir"]
     mpath = os.path.join(d, "manifest.json")
     if os.path.exists(mpath) and not force:
         m = json.load(open(mpath))
-        if all(m["views"].get(v, {}).get("status") in ("painted", "plain") for v in VIEWS): return m
+        if m.get("promptVersion") == PROMPT_VERSION and all(m["views"].get(v, {}).get("status") in ("painted", "plain") for v in VIEWS): return m
     legend = json.load(open(os.path.join(d, "controls", "legend.json")))
-    style_png = png_bytes(flat_rgb(STYLE_REF))
-    man = {"schema": "mb-grow/1", "service": "grow/service.py", "model": GEMINI_MODEL, "species": species, "name": legend["name"], "level": legend["level"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"],
-           "frameVersion": legend["frameVersion"], "catalogue": legend["catalogue"], "controls": legend["schema"], "plainVersion": legend["plainVersion"], "startedAt": now(), "views": {}, "outputs": {}, "calls": 0, "costUSD": 0.0, "seconds": 0.0}
+    reference = species_reference(species, legend)
+    man = {"schema": "mb-grow/1", "service": "grow/service.py", "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "species": species, "name": legend["name"], "level": legend["level"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"],
+           "frameVersion": legend["frameVersion"], "catalogue": legend["catalogue"], "controls": legend["schema"], "plainVersion": legend["plainVersion"], "description": legend["description"]["text"], "reference": {"what": reference["what"], "name": reference["name"]},
+           "startedAt": now(), "views": {}, "outputs": {}, "calls": 0, "costUSD": 0.0, "seconds": 0.0}
     portrait_png = None
     for view in VIEWS:
         ctrl = {p: os.path.join(d, "controls", f"{p}.{view}.large.png") for p in ("silhouette", "index", "slots")}
         vrec = {"status": None, "attempts": []}
         reasons = None; painted = None
         for attempt in (1, 2):
-            rec, im = paint_view(d, legend, view, attempt, reasons, style_png, portrait_png)
+            rec, im = paint_view(d, legend, view, attempt, reasons, reference, portrait_png)
             rec["reasonsGiven"] = reasons
             if im is not None:
                 rec["checks"] = check(im, ctrl, legend)
@@ -359,6 +400,12 @@ def grow(species, genome=None, digest=None, force=False):
     for f in ["station-portrait-600x620.png", "station-portrait-300x310.png", "station-side-600x620.png", "station-side-300x310.png", "companion-280x300.png", "token-48.png"]: man["outputs"][f] = sha_file(os.path.join(d, f))
     man["finishedAt"] = now()
     json.dump(man, open(mpath, "w"), indent=1); open(mpath, "a").write("\n")
+    if legend["level"] == "species" and species != "S01":  # the species' reference painting, kept once
+        os.makedirs(os.path.join(SPECIES_DIR, species), exist_ok=True)
+        for view in VIEWS:
+            if man["views"][view]["status"] == "painted":
+                open(os.path.join(SPECIES_DIR, species, f"{view}-600x620.png"), "wb").write(open(os.path.join(d, f"station-{view}-600x620.png"), "rb").read())
+        json.dump({"species": species, "genomeSha256": legend["genomeSha256"], "views": {v: man["views"][v]["status"] for v in VIEWS}, "description": legend["description"]["text"], "madeAt": man["finishedAt"], "manifest": os.path.relpath(mpath, HERE)}, open(os.path.join(SPECIES_DIR, species, "reference.json"), "w"), indent=1)
     return man
 
 
@@ -370,8 +417,18 @@ def cmd_paint(a):
         n = int(a.get("members", 6))
         for sp in ([species] if species else ["S01", "S09", "S12"]):
             idx = json.load(open(os.path.join(REF, sp, "index.json")))
-            for m in idx["members"][:n]: jobs.append((sp, os.path.join(REF, sp, m["dir"], "genome.json"), None))
+            seen = set()  # the first n distinct genomes (two members of a reference set can share one)
+            for m in idx["members"]:
+                if m["genomeSha256"] in seen: continue
+                seen.add(m["genomeSha256"]); jobs.append((sp, os.path.join(REF, sp, m["dir"], "genome.json"), None))
+                if len(seen) == n: break
     force = a.get("force") is not None
+    # the species' type specimen painting first (the reference image of every other call of that species)
+    for sp in sorted({j[0] for j in jobs}):
+        if sp == "S01" or (os.path.exists(os.path.join(SPECIES_DIR, sp, "portrait-600x620.png")) and not force): continue
+        spec = os.path.join(REF, sp, "type-specimen", "genome.json")
+        man = grow(sp, spec, None, force); print(sp, "type specimen", {v: man["views"][v]["status"] for v in VIEWS}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
+        jobs = [j for j in jobs if not (j[0] == sp and j[1] == spec)]
     with ThreadPoolExecutor(max_workers=int(a.get("workers", 3))) as ex:
         for man in ex.map(lambda j: grow(j[0], j[1], j[2], force), jobs):
             print(man["species"], man["genomeDigest"], {v: man["views"][v]["status"] for v in VIEWS}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
@@ -412,10 +469,10 @@ def manifests():
 
 
 def cmd_report(a):
-    calls = [c for c in read_log() if c.get("service") == "gemini"]
+    calls = [c for c in read_log() if c.get("service") == "gemini" and c.get("promptVersion", 1) == PROMPT_VERSION]
     ok = [c for c in calls if c.get("status") == "ok"]
-    mans = manifests()
-    cost = {"model": GEMINI_MODEL, "calls": len(calls), "callsOk": len(ok), "callUSDMean": round(sum(c["costUSD"] for c in ok) / len(ok), 4) if ok else None, "callSecondsMean": round(sum(c["seconds"] for c in ok) / len(ok), 1) if ok else None,
+    mans = [(d, m) for d, m in manifests() if m.get("promptVersion", 1) == PROMPT_VERSION]
+    cost = {"model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "spentAllVersionsUSD": round(sum(c.get("costUSD") or 0 for c in read_log()), 3), "calls": len(calls), "callsOk": len(ok), "callUSDMean": round(sum(c["costUSD"] for c in ok) / len(ok), 4) if ok else None, "callSecondsMean": round(sum(c["seconds"] for c in ok) / len(ok), 1) if ok else None,
             "spentUSD": round(sum(c.get("costUSD") or 0 for c in calls), 3), "individuals": len(mans), "bySpecies": {}}
     if mans:
         cost["callsPerIndividualMean"] = round(sum(m["calls"] for _, m in mans) / len(mans), 2)
@@ -445,7 +502,7 @@ def sheets(mans, cost):
         W = gap + sum(w + gap for _, w in cols); H = 70 + (len(rows) + 1) * rowh
         sheet = Image.new("RGB", (W, H), (255, 255, 255)); draw = ImageDraw.Draw(sheet)
         bs = cost["bySpecies"].get(sp, {})
-        draw.text((gap, 8), f"{sp} {rows[0][1]['name']}: the Grow painting service, {cost['model']}, device size at 1x. Row 1: the accepted Pip, the bar. Then the type specimen and five individuals. {bs.get('calls')} calls, ${bs.get('usdPerIndividual', 0):.3f} an individual (two views, retries included), {bs.get('retries')} retries, {bs.get('plainServed')} views served plain.", fill=ink)
+        draw.text((gap, 8), f"{sp} {rows[0][1]['name']}: the Grow painting service, {cost['model']}, prompt v{cost['promptVersion']}, device size at 1x. Row 1: the accepted Pip, the bar. Then the type specimen and five individuals. {bs.get('calls')} calls, ${bs.get('usdPerIndividual', 0):.3f} an individual (two views, retries included), {bs.get('retries')} retries, {bs.get('plainServed')} views served plain.", fill=ink)
         x = gap
         for name, w in cols: draw.text((x, 26), name, fill=ink); x += w + gap
         y = 44
