@@ -19,7 +19,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildIndividual, typeSpecimen, brief, genomeDigest, FRAME_VERSION } from "../framework/species.mjs";
-import { render, fitCamera, VIEWS, slotLegend, partLegend, markingFields } from "../framework/raster.mjs";
+import { render, fitCamera, frameCamera, VIEWS, slotLegend, partLegend, markingFields } from "../framework/raster.mjs";
 import { plainSet, PLAIN_VERSION } from "../framework/plain.mjs";
 import { describeGenome } from "../framework/describe.mjs";
 import { encodePNG } from "../framework/png.mjs";
@@ -31,15 +31,15 @@ const SIZES = { large: [600, 620], station: [300, 310], companion: [280, 300], t
 const here = path.dirname(fileURLToPath(import.meta.url));
 const wb = path.resolve(here, "..");
 
-// The species' camera rig for Grow: fitted to the type specimen per view and size and shared by its
-// individuals, so the subject fills the frame as the accepted Pip does and individuals keep their
-// relative size.
-export function growCameras(frame) {
-  const specimen = buildIndividual(frame, typeSpecimen(frame)).scene;
+// The camera rig for Grow: every individual framed by the painting prompt's framing rule (the creature
+// spans four fifths of the frame at its larger dimension, centred, its feet on a ground line one tenth
+// above the bottom), per view and size, so the controls, the painter's words and the structural checks
+// agree on where the creature is. The 48 px tile keeps its own fit (the token fills its tile).
+export function growCameras(frame, scene = buildIndividual(frame, typeSpecimen(frame)).scene) {
   const cameras = {};
   for (const view of GROW_VIEWS) {
     cameras[view] = {};
-    for (const [name, size] of Object.entries(SIZES)) cameras[view][name] = { ...fitCamera(specimen, view, size, name === "tile" ? 0.04 : 0.09), fixed: true };
+    for (const [name, size] of Object.entries(SIZES)) cameras[view][name] = name === "tile" ? { ...fitCamera(scene, view, size, 0.04), fixed: true } : frameCamera(scene, view, size);
   }
   return cameras;
 }
@@ -50,7 +50,7 @@ export function writeControls(frame, genome, outRoot, { palette }) {
   const scene = built.scene, sha = genomeSha256(genome);
   const dir = path.join(outRoot, frame.species.id, sha.slice(0, 16));
   mkdirSync(path.join(dir, "controls"), { recursive: true }); mkdirSync(path.join(dir, "plain"), { recursive: true });
-  const cameras = growCameras(frame);
+  const cameras = growCameras(frame, scene);
   const hashes = {};
   const put = (file, img) => { const buf = encodePNG(img); writeFileSync(path.join(dir, file), buf); hashes[file] = createHash("sha256").update(buf).digest("hex"); };
   for (const view of GROW_VIEWS) for (const [size, cam] of Object.entries(cameras[view])) {

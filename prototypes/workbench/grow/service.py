@@ -35,7 +35,8 @@ REPO = os.path.dirname(os.path.dirname(WB))
 OUT = os.path.join(HERE, "out")
 PROMPTS = os.path.join(HERE, "prompts.json")
 ART_DIRECTION = open(os.path.join(HERE, "art-direction.txt")).read().strip()
-PROMPT_VERSION = 4  # 1: the stage 1 template over the controls; 2: art direction, controls, the genome's description and the species reference as separate fields; 3: the controls named as structure only, structural checks in place of the silhouette gate, control variants; 4: the Loika's rig calibrated to Pip, variant B with only the named markings and a drawing's tolerance in step 1, crisp controls
+PROMPT_VERSION = 5  # 1: the stage 1 template over the controls; 2: art direction, controls, the genome's description and the species reference as separate fields; 3: the controls named as structure only, structural checks in place of the silhouette gate, control variants; 4: the Loika's rig calibrated to Pip, variant B with only the named markings and a drawing's tolerance in step 1, crisp controls; 5: the v8 prompt set (the house rendering with the naturalist's finish, no species reference), the controls framed by its framing rule, Pro
+PROMPT_SET = os.path.join(HERE, "prompt-lab", "v8")  # the service's prompt set: variant B's two steps read their words from it (README there)
 CONTROL_VARIANTS = ("blurred", "crisp", "lowres", "twostep")  # how the shaded control is sent: blurred so its facets cannot be copied (the default), as rendered, or at a quarter of the pixels; twostep: variant B, a HiBit drawing from the softened key and index passes, then a style transfer
 BOARD = os.path.join(REPO, "art/visual-directions/02-miniature-lives.png")  # the Miniature Lives concept board, the material reference of the Loika's own making
 BLUR_RADIUS, LOWRES_SIZE = 5, 256
@@ -44,7 +45,7 @@ REF = os.path.join(WB, "out", "reference")
 BG = (246, 243, 236)
 STYLE_REF = os.path.join(REPO, "art/miniature-lives/assets/rich-plain-300x310.png")
 PALETTE_48 = os.path.join(REPO, "art/retro-diffusion-trial/companion-palette-48.json")
-GEMINI_MODEL = os.environ.get("GROW_GEMINI_MODEL", "gemini-3.1-flash-image")
+GEMINI_MODEL = os.environ.get("GROW_GEMINI_MODEL", "gemini-3-pro-image")  # the owner's pick after the prompt lab: the cute-pet bar before cost
 # USD per million tokens, ai.google.dev/gemini-api/docs/pricing on 2026-10-08 (standard tier).
 GEMINI_PRICES = {"gemini-3.1-flash-image": {"input": 0.50, "output": 60.0}, "gemini-3.1-flash-lite-image": {"input": 0.25, "output": 30.0}, "gemini-3-pro-image": {"input": 2.00, "output": 120.0}, "gemini-2.5-flash-image": {"input": 0.30, "output": 30.0}}
 VIEWS = ["portrait", "side"]
@@ -432,7 +433,7 @@ def controls_text_two_step(legend, view):
     return t
 
 
-WING_LINE = "The wings stay folded along the body exactly as drawn; never re-laid, lifted or spread."
+WING_LINE = "The wings are part of the body outline: they lie folded flat along the flanks exactly as Image 1 draws them; never re-laid, lifted or spread."
 
 
 def plan_lines(legend):
@@ -474,20 +475,34 @@ def call_logged(text, imgs, rec_fields, d_raw, raw_name, model=None):
     return rec, im.resize((620, 620), Image.LANCZOS).crop((10, 0, 610, 620))
 
 
+def prompt_set():
+    """The service's prompt set (PROMPT_SET, the v8 README): the two art direction blocks, the description
+    template and the species notes, read as written."""
+    read = lambda *p: open(os.path.join(PROMPT_SET, *p)).read().strip()
+    return {"name": os.path.basename(PROMPT_SET), "art1": read("art-direction-step1.txt"), "art2": read("art-direction-step2.txt"), "template": read("description-template.txt"),
+            "species": lambda sp: read("species", f"{sp}.txt") if os.path.exists(os.path.join(PROMPT_SET, "species", f"{sp}.txt")) else ""}
+
+
+def crisp(path):
+    return png_bytes(pad_square(Image.open(path).convert("RGB")))
+
+
 def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
-    """Variant B for one view: step 1 generates the HiBit drawing from the softened key and index passes, the
-    description and the Loika's own generate words (checked for structure, one named retry); step 2 style-
-    transfers it to the rich treatment with the invariants in words and the species reference as image 2
-    (treatment only: its checks are logged, not gated). Returns (view record, painted master or None)."""
+    """Variant B for one view on the service's prompt set: step 1 draws the HiBit drawing from the part map
+    and the colour key with the set's step 1 block, the species notes and the description (the loader's plan
+    lines appended once); checked for structure, one named retry. Step 2 paints the drawing with the colour key
+    and the set's step 2 block, the same notes and description; no species reference image (the words carry
+    the house rendering). Step 2's checks are logged, not gated. Returns (view record, painted master or None)."""
     c = os.path.join(d0, "controls"); vrec = {"status": None, "attempts": [], "steps": []}
-    common = {"controlVariant": "twostep", "species": legend["species"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"]}
-    board = png_bytes(Image.open(BOARD).convert("RGB"))
+    common = {"controlVariant": "twostep", "species": legend["species"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"], "promptSet": os.path.basename(PROMPT_SET)}
+    pset = prompt_set(); species_words = pset["species"](legend["species"])
+    description = with_plan_lines(legend, pset["template"].replace("{description}", legend["description"]["text"]))
     reasons = None; drawing = None
     for attempt in (1, 2):
-        imgs = [(f"key.{view}.large.png:softened", soften(os.path.join(c, f"key.{view}.large.png"))), (f"index.{view}.large.png:softened", soften(os.path.join(c, f"index.{view}.large.png"))), ("board:02-miniature-lives.png", board)]
-        fields = {"controls": controls_text_two_step(legend, view), "description": with_plan_lines(legend, legend["description"]["text"]), "planLines": plan_lines(legend), "generate": STEP1_WORDS}
-        text = fields["controls"] + "\n\nThe creature: " + fields["description"] + "\n\n" + fields["generate"]
-        if reasons: text += "\n\nA previous drawing was rejected because " + "; ".join(reasons) + ". This time keep the parts of image 2 exactly, part for part."
+        imgs = [(f"index.{view}.large.png", crisp(os.path.join(c, f"index.{view}.large.png"))), (f"key.{view}.large.png", crisp(os.path.join(c, f"key.{view}.large.png")))]
+        fields = {"artDirection1": pset["art1"], "species": species_words, "description": description, "planLines": plan_lines(legend), "imageOrder": ["index", "key"]}
+        text = "\n\n".join(x for x in [fields["artDirection1"], species_words, description] if x)
+        if reasons: text += "\n\nA previous drawing was rejected because " + "; ".join(reasons) + ". This time keep every part as Image 1 places it, part for part, at its size and place."
         rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step1", "step": 1, "attempt": attempt, "fields": fields, "reasonsGiven": reasons}, os.path.join(d, "raw"), f"{view}-step1-{attempt}.png")
         if im is not None: rec["checks"] = {**check(im, ctrl, legend, DRAWING_TOL), "proportionTolerance": DRAWING_TOL}
         log_call(rec)
@@ -499,11 +514,11 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
     if drawing is None: return vrec, None
     drawing.save(os.path.join(d, f"step1-{view}-600x620.png"))
     fit_to_control(drawing, os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"step1-{view}-300x310.png"))
-    imgs = [(f"step1-{view}-600x620.png", png_bytes(pad_square(drawing))), (f"reference:{reference['name']}", reference["png"])]
-    fields = {"artDirection": ART_DIRECTION, "transfer": STEP2_WORDS}
-    text = fields["artDirection"] + "\n\n" + fields["transfer"]
-    if view == "side" and portrait_png: imgs.append(("station-portrait-600x620.png", png_bytes(pad_square(Image.open(io.BytesIO(portrait_png)).convert("RGB"))))); text += " Image 3 is this same creature already painted from the front quarter: match its colours, surfaces, markings and face exactly, so the two views are one creature."
-    rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step2", "step": 2, "attempt": 1, "fields": fields, "referenceImage": {"what": reference["what"], "name": reference["name"], "sha256": sha_bytes(reference["png"])}}, os.path.join(d, "raw"), f"{view}-step2.png")
+    imgs = [(f"step1-{view}-600x620.png", png_bytes(pad_square(drawing))), (f"key.{view}.large.png", crisp(os.path.join(c, f"key.{view}.large.png")))]
+    fields = {"artDirection2": pset["art2"], "species": species_words, "description": description, "imageOrder": ["drawing", "key"]}
+    text = "\n\n".join(x for x in [fields["artDirection2"], species_words, description] if x)
+    if view == "side" and portrait_png: imgs.append(("station-portrait-600x620.png", png_bytes(pad_square(Image.open(io.BytesIO(portrait_png)).convert("RGB"))))); text += "\n\nImage 3 is this same creature already painted from the front quarter: match its colours, surfaces, markings and face exactly, so the two views are one creature."
+    rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step2", "step": 2, "attempt": 1, "fields": fields}, os.path.join(d, "raw"), f"{view}-step2.png")
     if im is not None: rec["checks"] = {**check(im, ctrl, legend), "gated": False}
     log_call(rec)
     man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)

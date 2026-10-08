@@ -39,6 +39,19 @@ export function fitCamera(scene, viewName, size, margin = 0.08) {
 // A camera for a plan: fitted to a reference body and reused, so individuals keep their relative size.
 export const cameraFrom = (reference, viewName, size, margin) => ({ ...fitCamera(reference, viewName, size, margin), fixed: true });
 
+// The painting prompt's framing rule (grow/prompt-lab/v8): the whole creature spans `share` of the frame
+// at its larger dimension, centred across, its lowest point on a ground line `ground` of the height above
+// the bottom. The Grow controls are framed by it, so the painter and the checks see the same framing.
+export function frameCamera(scene, viewName, size, { share = 0.8, ground = 0.1 } = {}) {
+  const fit = fitCamera(scene, viewName, size, 0);
+  const [w, h] = fit.extent;
+  const scale = share * Math.min(size[0] / w, size[1] / h);
+  const minY = fit.center[1] - h / 2;
+  // render() puts view-up y at H/2 − (y − center)·scale: the lowest point lands at (1 − ground)·H
+  const centerY = minY + (0.5 - ground) * size[1] / scale;
+  return { view: viewName, scale, center: [fit.center[0], centerY], size, extent: [w, h], framing: { share, ground }, fixed: true };
+}
+
 const hex = (s) => [parseInt(s.slice(1, 3), 16), parseInt(s.slice(3, 5), 16), parseInt(s.slice(5, 7), 16)];
 const BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
 

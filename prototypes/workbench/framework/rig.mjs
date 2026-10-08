@@ -356,13 +356,19 @@ export function buildBody(resolved) {
         const u = pairs === 2 ? (pair === 0 ? -0.15 : 0.35) : 0.15;
         const rt = rootOn(owner, worldPoint(owner, [u * owner.radii[0], 0, 0]), localVector(owner.frame, [0, side * 0.55, 0.83]), 0.05 * L, envOf(owner));
         const rootP = rt.surface;
-        // E9 (the cute envelope): a wing pair at rest folds along the body, a tent over the back whose
-        // blades lie against the flanks and reach back past the abdomen, not a flat plane standing out
-        // from the thorax; the hind pair tucks under the fore pair.
-        const k = (pair === 0 ? 1 : 0.8) * (flat ? 1.25 : 1); // wings at rest reach past the body: 1.25 times the span and chord the loci say
-        const outer = flat ? add(rootP, [swp + 0.9 * chord * k, side * 0.32 * span * k, -0.55 * span * k]) : add(rootP, [swp, side * 0.65 * span, 0.76 * span]); // flat: a tent sloping down the flanks and back along the body
+        // E9 (the cute envelope): a wing pair at rest is part of the body outline: each blade lies tucked
+        // along its flank from the shoulder ridge down to the body's widest line and back to the body's
+        // end (a little past it at most), the hind pair under the fore pair; never a plane standing out
+        // from the thorax or a plank reaching past the abdomen. The painter's control then has nothing
+        // to spread, and the flap still reads as its own part on the flank in the index and key passes.
+        const k = pair === 0 ? 1 : 0.85;
+        const ry = owner.radii[1], rz = owner.radii[2];
+        const rear = Math.max(...serialRegions.map((r) => r.center[0] + r.radii[0])); // the body's end, world X
+        const behind = rear - rootP[0]; // the body behind the shoulder: the blade runs along it to the end
+        const reach = flat ? Math.min(Math.max(swp + 0.9 * chord, 0.8 * behind), behind + 0.06 * L) * k : 0;
+        const outer = flat ? add(rootP, [0.55 * reach, side * 0.5 * ry, -0.95 * rz + (pair === 0 ? 0 : -0.1 * rz)]) : add(rootP, [swp, side * 0.65 * span, 0.76 * span]); // flat: the outer edge on the flank's widest line
         const corners = flat
-          ? [add(rootP, [-0.3 * chord * k, 0, 0]), add(rootP, [0.4 * chord * k, 0, 0]), add(outer, [0.9 * chord * k, side * 0.05 * span, 0]), add(outer, [-0.2 * chord * k, side * 0.05 * span, 0])]
+          ? [add(rootP, [-0.2 * chord * k, side * 0.02 * ry, 0.02 * rz]), add(rootP, [Math.min(0.3 * chord * k, 0.35 * reach), side * 0.02 * ry, 0.02 * rz]), add(outer, [0.45 * reach, side * 0.06 * ry, 0.1 * rz]), add(outer, [-0.45 * reach, side * 0.06 * ry, 0])]
           : [add(rootP, [-0.5 * chord, 0, 0]), add(rootP, [0.5 * chord, 0, 0]), add(outer, [0.3 * chord, 0, 0]), add(outer, [-0.3 * chord, 0, 0])];
         const wing = newNode(`wing-${pairs === 2 ? (pair === 0 ? "fore-" : "hind-") : ""}${side < 0 ? "L" : "R"}`, "thin-surface", owner.id, "second"); wing.part = "flap"; wing.opacity = flapOpacity;
         sheet(wing, corners, flat ? unit([0, side * 0.85, 0.5]) : unit([0, -side * 0.76, 0.65]), thickness);
