@@ -165,6 +165,17 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x312-sealed` | 376×312 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-376x312-unread` | 376×312 |  | frost texture at 0.9 alpha under the frame |
 
+## Fifth pass (2026-10-08)
+
+The 14 slices the art director returned, plus the Grid proof's title. The 43 slices signed in the fourth pass are byte-identical (checked against the committed files).
+
+- **`room-cradle-front`:** below the dip the front wall is frosted glass: the dark bed pixels that showed the foot through the wall are replaced, from row 58, by the wall's own colour (row 80) and a milk tone, so the dip is the only edge that opens onto the bed.
+- **`room-shelf`:** the full 272 px slab (top face with a soft reflection, a lit front edge), scaled evenly from a new painting (the old one was 70 px visible); its halo is trimmed to the 40-row rectangle. It stands 35 px clear of the 201 px bowl on each side.
+- **`trait-picture-frame-*-sealed` (8):** translucent glass slats: the slat texture tinted toward the stage's teal at 0.34 to 0.9 alpha with the top edges lit, no dark gaps, the middle open for the 44×64 key.
+- **`pod-*-mask-accent` (4), with `pod-*-mask-body` held with it:** the two pinholes where the crack met the cap are closed (a wider closing and a smoothing pass on the cap rows). The signed layers still derive from the earlier closing, so they did not change.
+- **Grid proof:** the page heading is the open chapter's word ("Shape").
+- **Not done, waiting on the UI designer** (branch `design-pods-relayout` is still at 6b5bfea): the large pod class at about 144 or a larger dish, the foot line against the dip's floor, the portrait picture in a deep frame, the smaller name label. When the branch moves, the pod boxes and frames are re-cut to its rectangles.
+
 ## Fourth pass (2026-10-08)
 
 - **Tabs (8 slices, replacing the 12):** the rail's tabs hang from the top bar's rule, y 40 to 80, each a parallelogram leaning exactly 16 px over its 40 px height (measured on the slices: 0.4 px per row), with the slant and the transparent corners baked. Two forms times four states (unread, read, focused, sealed): full 152×40 (a 136 tab and its slant) and compact 72×40 (a 56 tab). The painted plate is un-sheared to a rectangle, resized and sheared back, so the lit rim follows the slant. Emblem, word, pips, the glint star under the tab and the focus ring are the build's. The twelve slices of the old plates (112, 96, 56 by 56) are removed.

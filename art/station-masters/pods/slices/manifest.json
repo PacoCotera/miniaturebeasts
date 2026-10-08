@@ -42,7 +42,7 @@
   ],
   "src": "dish-lowa",
   "made": "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 400 (row 72)",
-  "sha256": "7a0d746e0208e0837cae66302133a56cf917f3e82a539c808cf9a2580c726bea"
+  "sha256": "52a188e2a9aca18356d832392ffb3826ff3079186c0ff13e0bb6b9f6722a17d3"
  },
  "room-shelf": {
   "size": [
@@ -55,9 +55,9 @@
    272,
    40
   ],
-  "src": "slab2a",
-  "made": "PROPOSED: the thick glass slab in perspective with a lit front edge; colour-to-alpha, scaled evenly into 272x40 (79 px wide), bottom on the last row",
-  "sha256": "defc7fd7a6a43830266004a8b93233a1c1f4171bb087afe5a9abcb4ca9369c97"
+  "src": "slab3a",
+  "made": "PROPOSED: the thick glass slab, the full 272 px, top face and lit front edge; colour-to-alpha, scaled evenly to 272 wide (its halo trimmed to 40 rows)",
+  "sha256": "07e7ea678ba7f0bb468cc9779ce54fabd5b1ca53aff63a1f740caf8ca4c7c3e2"
  },
  "ring-column": {
   "size": [
@@ -162,7 +162,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "11c6ba589472235746af69cd3481ba2b1345662fc96072aefb7284f8c4315665"
+  "sha256": "acb6caad79807907205a56ff3dfd7579c8004905fd2d081edddad9b8722527e1"
  },
  "trait-picture-frame-184x256": {
   "size": [
@@ -192,7 +192,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "eef90e463ad77fb46594928a7ab169b097b17558482a3adc629125d165beb036"
+  "sha256": "f7995a4989e7e647af0d4d980d387729577765f31416469ce264e790980e6e6b"
  },
  "trait-picture-frame-184x104": {
   "size": [
@@ -222,7 +222,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "899b11b553c8eae02fc37108f58e3daf336520680eb19e86abe16c510101e3c4"
+  "sha256": "cfe830b107e6560da5ecccd21c5ae6ccf3394dbe4851ada5a4c0201e4f966fc4"
  },
  "trait-picture-frame-120x96": {
   "size": [
@@ -252,7 +252,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "f82c4c769c20a359928d223df0be54b439463e80f72514abbf8839daafa7e0f8"
+  "sha256": "7d64f88e7d022d9f9a69e438ac33cbed3fe62d641c7460c8cd64f9d02ca3d9ad"
  },
  "plate-message-640x36": {
   "size": [
@@ -552,7 +552,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "73b555dbed16ede972d908b0c52e618fb1b245dd45c374b9792a171490acfac0"
+  "sha256": "6ac5adfc6924540d34af57be0a0eae2adba9c76fe8c62b5a3c954c75e4dc234f"
  },
  "pod-large-mask-accent": {
   "size": [
@@ -567,7 +567,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "1960147b6ff88202941a9f99315d3c1ce5eada1ff1cdfcddbb33821f90687526"
+  "sha256": "ed5cd2ad5391b31d4c9cf2d67235331f183514f8805c713be4310a6594304821"
  },
  "pod-large-pattern-dots": {
   "size": [
@@ -657,7 +657,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "ebf431676d8c99b3e1835aa4f85057915bc8047f925597bcd6ef93301ef37b5f"
+  "sha256": "427c31390d91ab646c5c718f271969d33dd1bb5e49a54e5fab16f660ed6eb676"
  },
  "pod-medium-mask-accent": {
   "size": [
@@ -672,7 +672,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "1f309e305f1672174da34b3ad54d1c9f000854d5138a8be0e61699c30f1f16c9"
+  "sha256": "983033c961d843fdb11d3e314cf1fc22c5e0479bc2a897a83e808df6122a3cb8"
  },
  "pod-medium-pattern-dots": {
   "size": [
@@ -762,7 +762,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "f2c6967ab38db6bdb7c667301647737af3e5aa36f2aa0b9f245576952c73d57b"
+  "sha256": "205940b1c19e5a7998e736892f35bb96dfa2adfed49abba24136da1ef6bd6b5a"
  },
  "pod-small-mask-accent": {
   "size": [
@@ -777,7 +777,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "b9b6af19d68c0f9a03d6ce4ee8f172a0b951218341aa3485f9731a7b1ce0e40d"
+  "sha256": "522aae1c545e02818798ce681d5c127dee78a5a3d7b750b358c5d325b42265de"
  },
  "pod-small-pattern-dots": {
   "size": [
@@ -867,7 +867,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
-  "sha256": "27081821fd58668d93e20af0406230d83eacbbbf8a32ae94f08f00b5849471c9"
+  "sha256": "f35d573d1ee65bc5d3488473d270c500aec377baed7f1ce979cae2eb9835f75b"
  },
  "pod-well-mask-accent": {
   "size": [
@@ -882,7 +882,7 @@
   ],
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
-  "sha256": "147877f4f3453d619bbba144ea47c07dffbe8e4852ce29c71dfa547b7d8740a6"
+  "sha256": "d799d422c27994d920ec85881ff605bff84bb2b5ddf368a5577a9881579ca1f5"
  },
  "pod-well-pattern-dots": {
   "size": [
@@ -1032,7 +1032,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "e47f55d10c46e84835713f6ed6f693cb4e50d983e18679a632cc80551d5c5698"
+  "sha256": "885a29b42ad44144c2ad4031fad0912052472ff12d9e0e7eafaa2cafb4bb4b6f"
  },
  "trait-picture-frame-184x304": {
   "size": [
@@ -1062,7 +1062,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "6868b4f72aacc2fce365a754b894265cee5b4097e60c7740ffa6ee273b07d7c8"
+  "sha256": "ebaea936365f2fefea77f027f7e59e6636371f99a4b48f53585ddbc444a10109"
  },
  "trait-picture-frame-184x112": {
   "size": [
@@ -1092,7 +1092,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "4690c6e2cc05228769817122490c01d3177cd26d7b53ac3b3b916a48a81e4ad6"
+  "sha256": "d028b791fb01c0ab1c31527f7cfb24d8714ccca796981c9514ce61d139e5b139"
  },
  "trait-picture-frame-120x112": {
   "size": [
@@ -1122,7 +1122,7 @@
   "rect": null,
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "fdb1554e48a2aca8017c9d62171819b9256dcbae1b1e129eb66fa35bef7aa3c6"
+  "sha256": "3834322d8d96c3d1f8b528756a17d428ff36cd26055b3e6fd276b754e9c0cbba"
  },
  "plate-name-224x32": {
   "size": [

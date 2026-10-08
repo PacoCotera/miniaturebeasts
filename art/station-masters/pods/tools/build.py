@@ -48,18 +48,18 @@ def cradle():
     f = min(224 / d.width, 96 / d.height); d = d.resize((round(d.width * f), round(d.height * f)), Image.LANCZOS)
     c = Image.new("RGBA", (224, 96), (0, 0, 0, 0)); c.alpha_composite(d, ((224 - d.width) // 2, 96 - d.height))
     save("room-cradle", c, [600, 328, 224, 96], "the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is %d px wide), bottom on the last row" % d.width, "dish-lowa")
-    x = np.asarray(c).copy(); yy = np.arange(96)[:, None]; fade = np.clip((yy - 46) / 6.0, 0, 1); x[..., 3] = (x[..., 3] * fade).astype(np.uint8)
+    x = np.asarray(c).astype(float).copy(); yy = np.arange(96)[:, None]
+    # below the dip the wall must read as frosted glass, not as a window on the bed: from row 60 down, dark bed pixels take the wall's own colour from row 80
+    lum = x[..., :3] @ np.array([0.3, 0.59, 0.11]); ref = x[80, :, :3].copy(); ref = smooth1d(ref, 3, 0)
+    dark = np.clip((95 - lum) / 35.0, 0, 1) * np.clip((yy - 58) / 4.0, 0, 1) * (x[..., 3] > 128)
+    milk = np.array([150.0, 178.0, 190.0])
+    for ch in range(3): x[..., ch] = x[..., ch] * (1 - dark) + (0.55 * ref[None, :, ch] + 0.45 * milk[ch]) * dark
+    fade = np.clip((yy - 46) / 6.0, 0, 1); x[..., 3] = x[..., 3] * fade; x = x.astype(np.uint8)
     save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 328, 224, 96], "the bowl's near lip and the front of its bed (rows 46 to 95), drawn over the pod's foot at the foot line y 400 (row 72)", "dish-lowa")
-    im = load("slab2a.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); k = k.crop(bbox_alpha(k, 40))
-    f = min(272 / k.width, 40 / k.height); k = k.resize((round(k.width * f), round(k.height * f)), Image.LANCZOS); k = dim(k, 0.8)
-    c = Image.new("RGBA", (272, 40), (0, 0, 0, 0)); c.alpha_composite(k, ((272 - k.width) // 2, 40 - k.height))
-    save("room-shelf", c, [576, 392, 272, 40], "PROPOSED: the thick glass slab in perspective with a lit front edge; colour-to-alpha, scaled evenly into 272x40 (%d px wide), bottom on the last row" % k.width, "slab2a")
-def bench_grade(im):
-    """Darken to the candidate's values: a tone curve that tames the cone, and a vignette that darkens the corners."""
-    a = np.asarray(im).astype(float) / 255; a = 0.82 * a ** 1.55
-    yy, xx = np.mgrid[0:522, 0:1024]; r = np.sqrt(((xx - 712) / 620.0) ** 2 + ((yy - 250) / 420.0) ** 2)
-    v = np.clip(1 - 0.62 * np.clip(r - 0.25, 0, 1.2) ** 1.4, 0.18, 1)
-    return Image.fromarray(np.clip(a * v[..., None] * 255, 0, 255).astype(np.uint8))
+    im = load("slab3a.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); k = k.crop(bbox_alpha(k, 60))
+    f = 272 / k.width; k = k.resize((272, round(k.height * f)), Image.LANCZOS); k = dim(k, 0.85)
+    c = Image.new("RGBA", (272, 40), (0, 0, 0, 0)); c.alpha_composite(k, (0, -max(0, (k.height - 40) // 2)) if k.height > 40 else (0, 40 - k.height))
+    save("room-shelf", c, [576, 392, 272, 40], "PROPOSED: the thick glass slab, the full 272 px, top face and lit front edge; colour-to-alpha, scaled evenly to 272 wide (its halo trimmed to 40 rows)", "slab3a")
 # ---- list column
 def listcol():
     im = load("list-column.jpg"); im = im.crop((1536 - 735, 0, 1536, 2400)).resize((160, 522), Image.LANCZOS)
@@ -124,11 +124,14 @@ def frames():
         # unread: frost over the whole picture
         ft = frost.crop((0, 0, w, h)).convert("RGBA"); ft.putalpha(214); F = ft.copy(); F.alpha_composite(L)
         save(f"trait-picture-frame-{w}x{h}-unread", F, None, "frost texture at 0.9 alpha under the frame", "frost+frame-thin")
-        # sealed: slats
-        t = slat_tile.resize((w, per * 6 * pitch // per), Image.LANCZOS) if False else slat_tile.resize((w, 6 * pitch), Image.LANCZOS)
-        S = Image.new("RGB", (w, h)); y = 0
-        while y < h: S.paste(t, (0, y)); y += t.height
-        S = S.convert("RGBA"); S.alpha_composite(L)
+        # sealed: translucent glass slats, the stage's teal faintly through them, the top edges lit
+        t = slat_tile.resize((w, 6 * pitch), Image.LANCZOS); S0 = Image.new("RGB", (w, h)); y = 0
+        while y < h: S0.paste(t, (0, y)); y += t.height
+        g = np.asarray(S0).astype(float); lm = g @ np.array([0.3, 0.59, 0.11]); lm = (lm - lm.min()) / max(np.ptp(lm), 1)
+        teal = np.array([46.0, 92.0, 108.0]); col = 0.45 * g + 0.55 * teal
+        edge = np.clip(np.abs(np.diff(lm, axis=0, prepend=lm[:1])) * 4, 0, 1)
+        al = np.clip(0.34 + 0.30 * lm + 0.30 * edge, 0, 0.9)
+        S = Image.fromarray(np.dstack([np.clip(col, 0, 255), al * 255]).astype(np.uint8), "RGBA"); S.alpha_composite(L)
         save(f"trait-picture-frame-{w}x{h}-sealed", S, None, "slats texture tiled by whole slats, under the frame", "slats+frame-thin")
 # ---- plates
 def plates():
@@ -206,10 +209,14 @@ def pods():
     core = np.kron(op, np.ones((2, 2), bool))[:mB.shape[0], :mB.shape[1]]; core[:1200] = False
     low = np.clip(label_dilate(core, 3), 0, 1) * (mB2 > 0.1)
     structure = np.clip(structure - low, 0, 1)
-    # a crack in the cap is not a hole in the accent: close the cap
+    # a crack in the cap is not a hole in the accent: close the cap. `structure_old` is the closing the signed layers
+    # (shade, dots, patterns, crack) were built on; `structure` (mask-accent) closes the remaining pinholes too
     cap = label_dilate(structure[:380] > 0.5, 6); capc = ~label_dilate(~cap.astype(bool), 6).astype(bool)
+    structure[:380] = np.maximum(structure[:380], capc * sil[:380]); structure_old = structure.copy()
+    cap = label_dilate(structure[:380] > 0.5, 14); capc = ~label_dilate(~cap.astype(bool), 14).astype(bool)
     structure[:380] = np.maximum(structure[:380], capc * sil[:380])
-    dots = np.clip(np.maximum(mB, low * mB2) - structure, 0, 1)
+    sm = smooth1d(smooth1d(structure[:380], 5, 0), 5, 1); structure[:380] = np.maximum(structure[:380], (sm > 0.55) * sil[:380])
+    dots = np.clip(np.maximum(mB, low * mB2) - structure_old, 0, 1)
     body = np.clip(sil - structure, 0, 1)
     albA = np.median(l[(mB < 0.05) & (sil > 0.9)]); albB = np.median(l[(mB > 0.95)])
     alb = albA * (1 - mB) + albB * mB
@@ -236,7 +243,7 @@ def pods():
     wh = lambda m: np.dstack([np.full(m.shape + (3,), 255.0), m * 255])
     masks["mask-body"] = wh(body); masks["mask-accent"] = wh(structure); masks["pattern-dots"] = wh(dots)
     inner = body * (1 - np.clip(np.zeros_like(body), 0, 1))
-    masks["pattern-stripes"] = wh(stripes_mask(w_, h_) * body * (1 - structure)); masks["pattern-bands"] = wh(bands_mask(w_, h_) * body * (1 - structure))
+    masks["pattern-stripes"] = wh(stripes_mask(w_, h_) * (sil - structure_old).clip(0, 1) * (1 - structure_old)); masks["pattern-bands"] = wh(bands_mask(w_, h_) * (sil - structure_old).clip(0, 1) * (1 - structure_old))
     # the sealing band, as before
     db = np.clip((lum(I) - lum(B) - 30) / 50, 0, 1); db[:BB[1] + 150] = 0; db[BB[1] + 520:] = 0
     Bd = B.copy(); Bd[..., 3] = db * 255

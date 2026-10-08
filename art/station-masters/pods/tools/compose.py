@@ -27,7 +27,7 @@ def compose(state, rail):
     put("stamp-label-120x120", 888, 248); cv.alpha_composite(cand.crop((830, 238, 976, 386)).resize((104, 104), Image.NEAREST), (896, 256))
     # page
     put("page-pane-408x440", 176, 112)
-    text((192, 120), "Coat", f20, CREAM)
+    text((192, 120), "Coat" if rail == "six" else "Shape", f20, CREAM)    # the heading is the open chapter's word
     for k in range(4):                                   # the 8x8 trait marks, right-aligned at y 128 (stand-ins)
         x = 568 - 8 - 12 * (3 - k); d.rectangle([x, 128, x + 7, 135], fill=CREAM if k < 2 else None, outline=MIST)
     if state == "picture":
