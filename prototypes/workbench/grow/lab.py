@@ -67,7 +67,14 @@ def prompt_set():
     to the lab's own."""
     if not os.path.exists(os.path.join(PROMPT_SET, "variants.json")): return None
     read = lambda *p: open(os.path.join(PROMPT_SET, *p)).read().strip() if os.path.exists(os.path.join(PROMPT_SET, *p)) else None
-    return {"variants": json.load(open(os.path.join(PROMPT_SET, "variants.json"))), "art1": read("art-direction-step1.txt"), "art2": read("art-direction-step2.txt"), "template": read("description-template.txt"), "species": lambda sp: read("species", f"{sp}.txt")}
+    variants = json.load(open(os.path.join(PROMPT_SET, "variants.json")))
+    # The owner's pick after the Loika sheet: 1B's anti-artefact words with 1G's positive plain-coat paragraph
+    # folded in (the lab synthesises it from the two, so the prompter's files stay as written).
+    b = next((v for v in variants if v["id"] == "1B-anti-artefact"), None); g = next((v for v in variants if v["id"] == "1G-markings-positive"), None)
+    if b and g and not any(v["id"] == "1BG-anti-artefact-plain" for v in variants):
+        para = lambda t: next(p for p in t.split("\n\n") if p.startswith("Markings:"))
+        variants.append({"id": "1BG-anti-artefact-plain", "name": "1B's anti-artefact words with 1G's plain-coat paragraph", "change": "Step 1: 1B's limbs sentence (living anatomy, the artefacts to avoid) and 1G's markings paragraph (the plain coat said positively) together; the owner's pick from the Loika sheet.", "imageOrder1": b["imageOrder1"], "step1": b["step1"].replace(para(b["step1"]), para(g["step1"]))})
+    return {"variants": variants, "art1": read("art-direction-step1.txt"), "art2": read("art-direction-step2.txt"), "template": read("description-template.txt"), "species": lambda sp: read("species", f"{sp}.txt")}
 
 
 def build_from_set(sp, legend, sheet, variant, pset):
