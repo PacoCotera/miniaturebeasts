@@ -18,7 +18,7 @@ import { openBook } from "./screens/library.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
 import { stampArt } from "./art.mjs";
-import { manifest as manifestOf } from "../../ui/assets.mjs";
+import { manifest as manifestOf, registerAsset } from "../../ui/assets.mjs";
 
 setIcons((name, px) => ICON[name]?.(px));
 const $ = (id) => document.getElementById(id);
@@ -138,6 +138,8 @@ const bootLayer = async () => {
   for (const k of ["frame"]) SPECS[k] = await spec(k + ".json");
   SC = canvas; bindCanvas(SC); CTX = LAYER.ctx = makeCtx(SPECS.frame, type);
 };
+// The icons the text runs inline (⚡ ◆ ❀ ✕ at the 16 px body size) are registered in the manifest as type assets.
+for (const name of ["energy", "data", "essence", "cross"]) registerAsset({ id: `icon:${name}:16`, w: 16, h: 16, policy: "type", status: "placeholder", until: "the icon set", build: () => ICON[name](16) });
 const ready = Promise.all([loadFrames(), bootLayer()]).then(([info]) => {
   loadSettings(); load();
   // a new species identified opens its Library page: the Pods screen asks for it through this hook

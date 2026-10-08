@@ -2,7 +2,7 @@
 // (⚡ ◆ ❀ are drawn as the 16 px icons, never as glyphs). The component measures through the renderer's
 // context (ctx.measure) so a centred or right-aligned run lands where the spec says.
 import { SIZES } from "../type.mjs";
-export const ICON_GLYPH = { "⚡": "energy", "◆": "data", "❀": "essence" };
+export const ICON_GLYPH = { "⚡": "energy", "◆": "data", "❀": "essence", "✕": "cross" };
 export const iconAsset = (name, px) => `icon:${name}:${px}`;
 
 // Split a string into text pieces and icons.
