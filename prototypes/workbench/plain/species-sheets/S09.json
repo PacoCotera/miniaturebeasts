@@ -1,0 +1,16 @@
+{
+ "placeholder": true,
+ "note": "PLACEHOLDER drawn by the genome engineer for the first plain round; the art director's sheet replaces it. Belatz: a bird's round dark eye with a thin cream ring, no mouth (the beak), feathers as soft scallops over the fur covering.",
+ "iris": "#3d2a1f",
+ "irisEdge": "#1d130c",
+ "pupil": "#120c0a",
+ "catch": "#fff6e8",
+ "eyeScale": 1.5,
+ "mouth": "none",
+ "material": "feathers",
+ "grain": 0.05,
+ "partColours": {
+  "beak": "#d9a441",
+  "crown": "#e5d08a"
+ }
+}

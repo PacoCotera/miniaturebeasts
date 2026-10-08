@@ -9,7 +9,7 @@ import { buildIndividual, typeSpecimen, genomeDigest, brief , FRAME_VERSION} fro
 import { render, fitCamera, resolveCamera, SCALES, VIEWS, markingFields, slotLegend } from "../framework/raster.mjs";
 
 export const SKETCHER_VERSION = "mb-sketch/1";
-export const TURNAROUND = ["front", "side", "three-quarter", "top"];
+export const TURNAROUND = ["front", "side", "three-quarter", "top", "portrait"]; // portrait: the front quarter, the plain renderer's main view
 // Companion: the 48 px tile and the 280×300 subject. Station: 300×310 and a larger 600×620.
 export const SIZES = { tile: SCALES.tile, companion: SCALES.companion, station: SCALES.station, large: SCALES.large };
 const MARGIN = 0.14;
