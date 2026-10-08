@@ -82,5 +82,6 @@ export function describeGenome(frame, genome, scene, { typeSpecimen = false } = 
   if (typeSpecimen) text += ` It is the type of its kind, ${frame.taxonomy.resembles}: ${frame.signature.feature}.`;
   for (const ch of chapters) text += ` ${ch.name}: ${ch.looks.map((l) => `${l.name.toLowerCase()} ${l.look.startsWith("between ") ? "between" : l.look}`).join("; ")}.`;
   if (proportions.length) text += ` Proportions: ${proportions.join(", ")}.`;
-  return { chapters, proportions, caption, text };
+  text += ` Posture: ${posture}, still, looking at the viewer.`;
+  return { chapters, proportions, caption, posture, text };
 }
