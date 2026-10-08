@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S01",
-  "name": "S01",
-  "plural": "S01",
+  "name": "Loika",
+  "plural": "Loika",
   "order": 1,
   "summary": "The starter: Pip as in the approved art. Exactly the five open traits of the Pip proof."
  },
@@ -16,6 +16,7 @@
   "diet": "fruit",
   "ability": "calms wary creatures",
   "character": "gentle and curious, a little shy",
+  "clanName": "Lophessa",
   "clanNumber": 1,
   "member": 1,
   "speciesNumber": 33,
@@ -1851,7 +1852,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S01: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head.",
+  "brief": "Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head.",
   "bounds": {
    "min": [
     -1.5190923175031104,

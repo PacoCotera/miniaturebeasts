@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S02",
-  "name": "S02",
-  "plural": "S02",
+  "name": "Untuva",
+  "plural": "Untuva",
   "order": 2,
   "summary": "A radial, capped plan: a round furred body, a face, a cap on top, no legs. It waddles."
  },
@@ -16,6 +16,7 @@
   "diet": "fruit",
   "ability": "sniffs out buried pods; sheds after a full meal",
   "character": "a sleepy glutton nothing startles",
+  "clanName": "Kausida",
   "clanNumber": 2,
   "member": 1,
   "speciesNumber": 65,
@@ -1904,7 +1905,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S02: 1 body region (R1), a head, 2 eyes, a cap on top; fur, bands; belly, fused head.",
+  "brief": "Untuva: 1 body region (R1), a head, 2 eyes, a cap on top; fur, bands; belly, fused head.",
   "bounds": {
    "min": [
     -1.2440288297174664,

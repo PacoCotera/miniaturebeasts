@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S03",
-  "name": "S03",
-  "plural": "S03",
+  "name": "Tuikis",
+  "plural": "Tuikis",
   "order": 3,
   "summary": "A tailed, scaled burrower: a low two-part body, four short legs, a crest, a long tail that carries the glow."
  },
@@ -16,6 +16,7 @@
   "diet": "dew",
   "ability": "digs narrow burrows; lights fog and Night",
   "character": "a brave little torchbearer",
+  "clanName": "Stilbera",
   "clanNumber": 3,
   "member": 1,
   "speciesNumber": 97,
@@ -2539,7 +2540,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S03: 2 body regions (B2), a head, a snout, 2 eyes, a 2-leaf crest, 4 legs, a tail with a glowing bulb; scales, bands; plantigrade, neck head.",
+  "brief": "Tuikis: 2 body regions (B2), a head, a snout, 2 eyes, a 2-leaf crest, 4 legs, a tail with a glowing bulb; scales, bands; plantigrade, neck head.",
   "bounds": {
    "min": [
     -1.1961151294164125,

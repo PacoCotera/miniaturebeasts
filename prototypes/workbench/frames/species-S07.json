@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S07",
-  "name": "S07",
-  "plural": "S07",
+  "name": "Azkon",
+  "plural": "Azkon",
   "order": 7,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "fruit, roots",
   "ability": "digs through to Deep ground",
   "character": "slow, stubborn, protective",
+  "clanName": "Skapana",
   "clanNumber": 7,
   "member": 1,
   "speciesNumber": 225,
@@ -2071,7 +2072,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S07: 1 body region (B1), a head, a snout, 2 eyes, two ears, 4 legs; fur; plantigrade, fused head.",
+  "brief": "Azkon: 1 body region (B1), a head, a snout, 2 eyes, two ears, 4 legs; fur; plantigrade, fused head.",
   "bounds": {
    "min": [
     -1.778764161466078,

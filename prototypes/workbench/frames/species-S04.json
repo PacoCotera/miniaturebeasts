@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S04",
-  "name": "S04",
-  "plural": "S04",
+  "name": "Hiljan",
+  "plural": "Hiljan",
   "order": 4,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "fruit",
   "ability": "creeps up without startling anything",
   "character": "aloof at first, then devoted",
+  "clanName": "Lathreta",
   "clanNumber": 4,
   "member": 1,
   "speciesNumber": 129,
@@ -2141,7 +2142,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S04: 2 body regions (B2), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur, bands; plantigrade, neck head.",
+  "brief": "Hiljan: 2 body regions (B2), a head, a snout, 2 eyes, two ears, 4 legs, a tail; fur, bands; plantigrade, neck head.",
   "bounds": {
    "min": [
     -1.7533387921817534,

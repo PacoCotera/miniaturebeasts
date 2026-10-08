@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S12",
-  "name": "S12",
-  "plural": "S12",
+  "name": "Peplos",
+  "plural": "Peplos",
   "order": 12,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "dew",
   "ability": "finds dew (Essence)",
   "character": "flighty and bright",
+  "clanName": "Graptoma",
   "clanNumber": 12,
   "member": 1,
   "speciesNumber": 385,
@@ -1929,7 +1930,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S12: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 2 flaps; skin; splayed, neck head.",
+  "brief": "Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 2 flaps; skin; splayed, neck head.",
   "bounds": {
    "min": [
     -0.9867000454727111,

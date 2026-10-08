@@ -1,21 +1,21 @@
 | Species | Plan | Rig | Built | Own-plan nearest | Mean distance to own specimen |
 | --- | --- | --- | ---: | ---: | ---: |
-| S01 | B1·L4 | B1 | 200/200 | 100% | 0.06 |
-| S02 | R1·flaps | R1 | 200/200 | 100% | 0.14 |
-| S03 | B2·L4 | B2 | 200/200 | 46% | 0.37 |
-| S04 | B2·L4 | B2 | 200/200 | 100% | 0.23 |
-| S05 | B2·L4 | B2 | 200/200 | 97% | 0.22 |
-| S06 | B2·L4 | B2 | 200/200 | 69% | 0.34 |
-| S07 | B1·L4 | B1 | 200/200 | 89% | 0.27 |
-| S08 | B2·L4 | B2 | 200/200 | 86% | 0.30 |
-| S09 | B2·L4·flaps | B2 | 200/200 | 77% | 0.36 |
-| S10 | B3·L4 | B3 | 200/200 | 56% | 0.39 |
-| S11 | B1·L4 | B1 | 200/200 | 91% | 0.23 |
-| S12 | B3·L6·flaps | B3 | 200/200 | 100% | 0.14 |
-| S13 | B3·L6 | B3 | 200/200 | 100% | 0.18 |
-| S14 | B3 | B3 | 200/200 | 70% | 0.28 |
-| S15 | Rfan2·rays | Rfan2 | 200/200 | 85% | 0.30 |
-| S16 | Bfan3 | Bfan | 200/200 | 98% | 0.19 |
+| S01 Loika | B1·L4 | B1 | 200/200 | 100% | 0.06 |
+| S02 Untuva | R1·flaps | R1 | 200/200 | 100% | 0.14 |
+| S03 Tuikis | B2·L4 | B2 | 200/200 | 46% | 0.37 |
+| S04 Hiljan | B2·L4 | B2 | 200/200 | 100% | 0.23 |
+| S05 Tepor | B2·L4 | B2 | 200/200 | 97% | 0.22 |
+| S06 Pesko | B2·L4 | B2 | 200/200 | 69% | 0.34 |
+| S07 Azkon | B1·L4 | B1 | 200/200 | 89% | 0.27 |
+| S08 Rupar | B2·L4 | B2 | 200/200 | 86% | 0.30 |
+| S09 Belatz | B2·L4·flaps | B2 | 200/200 | 77% | 0.36 |
+| S10 Igara | B3·L4 | B3 | 200/200 | 56% | 0.39 |
+| S11 Kilpo | B1·L4 | B1 | 200/200 | 91% | 0.23 |
+| S12 Peplos | B3·L6·flaps | B3 | 200/200 | 100% | 0.14 |
+| S13 Oskol | B3·L6 | B3 | 200/200 | 100% | 0.18 |
+| S14 Usvel | B3 | B3 | 200/200 | 70% | 0.28 |
+| S15 Lehten | Rfan2·rays | Rfan2 | 200/200 | 85% | 0.30 |
+| S16 Blikur | Bfan3 | Bfan | 200/200 | 98% | 0.19 |
 
 Shape distance between type specimens (1 − IoU of the fitted 48 px masks; the larger of the three-quarter and side views). Gate: every pair ≥ 0.22.
 

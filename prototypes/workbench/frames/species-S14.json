@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S14",
-  "name": "S14",
-  "plural": "S14",
+  "name": "Usvel",
+  "plural": "Usvel",
   "order": 14,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "moss",
   "ability": "leaves a sheen trail back to the start",
   "character": "unhurried and sweet",
+  "clanName": "Kapnis",
   "clanNumber": 14,
   "member": 1,
   "speciesNumber": 449,
@@ -1650,7 +1651,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S14: 3 body regions (B3), a head, 2 eyes, two antennae, a foot skirt; skin; belly, fused head.",
+  "brief": "Usvel: 3 body regions (B3), a head, 2 eyes, two antennae, a foot skirt; skin; belly, fused head.",
   "bounds": {
    "min": [
     -0.9299244695634257,

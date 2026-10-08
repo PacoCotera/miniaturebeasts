@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S15",
-  "name": "S15",
-  "plural": "S15",
+  "name": "Lehten",
+  "plural": "Lehten",
   "order": 15,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "light and dew",
   "ability": "roots for a turn; a bush grows where it stood",
   "character": "patient, faintly wise",
+  "clanName": "Phyllaxa",
   "clanNumber": 15,
   "member": 1,
   "speciesNumber": 481,
@@ -1938,7 +1939,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S15: 4 body regions (Rfan2), a head, 2 eyes, 6 rays, 8 flaps; skin; rooted, fused head.",
+  "brief": "Lehten: 4 body regions (Rfan2), a head, 2 eyes, 6 rays, 8 flaps; skin; rooted, fused head.",
   "bounds": {
    "min": [
     -1.3144987542907807,

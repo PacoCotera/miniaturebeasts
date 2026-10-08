@@ -56,7 +56,7 @@ export function runCensus(frames, { n = N, log = () => {} } = {}) {
     return { id: row.id, meanToOwn: Number((own / k).toFixed(3)), nearestOwnShare: Number((nearestOwn / k).toFixed(3)), confusions };
   });
   const pairs = [];
-  for (let i = 0; i < rows.length; i++) for (let j = i + 1; j < rows.length; j++) pairs.push({ a: rows[i].name, b: rows[j].name, samePlan: rows[i].planKey === rows[j].planKey, distance: Math.max(table["three-quarter"][i][j], table.side[i][j]) });
+  for (let i = 0; i < rows.length; i++) for (let j = i + 1; j < rows.length; j++) pairs.push({ a: rows[i].id, b: rows[j].id, samePlan: rows[i].planKey === rows[j].planKey, distance: Math.max(table["three-quarter"][i][j], table.side[i][j]) });
   pairs.sort((p, q) => p.distance - q.distance);
   // The gate is between plans. Species on one plan (the four B2·L4·fur mammals) differ by clan parts, size
   // and finish, not by silhouette family; their distances are reported, not gated.
@@ -71,10 +71,10 @@ export function censusMarkdown(result) {
   // * marks a pair on the same plan (not gated)
   const lines = [];
   lines.push(`| Species | Plan | Rig | Built | Own-plan nearest | Mean distance to own specimen |`, `| --- | --- | --- | ---: | ---: | ---: |`);
-  rows.forEach((r, i) => lines.push(`| ${r.name} | ${r.plan} | ${r.rig} | ${r.built}/${r.sampled} | ${(family[i].nearestOwnShare * 100).toFixed(0)}% | ${family[i].meanToOwn.toFixed(2)} |`));
+  rows.forEach((r, i) => lines.push(`| ${r.id}${r.name !== r.id ? " " + r.name : ""} | ${r.plan} | ${r.rig} | ${r.built}/${r.sampled} | ${(family[i].nearestOwnShare * 100).toFixed(0)}% | ${family[i].meanToOwn.toFixed(2)} |`));
   lines.push("", `Shape distance between type specimens (1 − IoU of the fitted 48 px masks; the larger of the three-quarter and side views). Gate: every pair ≥ ${MARGIN}.`, "");
-  lines.push(`| | ${rows.map((r) => short(r.name)).join(" | ")} |`, `| --- | ${rows.map(() => "---:").join(" | ")} |`);
-  rows.forEach((r, i) => lines.push(`| **${short(r.name)}** | ${rows.map((o, j) => (i === j ? "·" : (o.planKey === r.planKey ? "*" : "") + Math.max(table["three-quarter"][i][j], table.side[i][j]).toFixed(2))).join(" | ")} |`));
+  lines.push(`| | ${rows.map((r) => short(r.id)).join(" | ")} |`, `| --- | ${rows.map(() => "---:").join(" | ")} |`);
+  rows.forEach((r, i) => lines.push(`| **${short(r.id)}** | ${rows.map((o, j) => (i === j ? "·" : (o.planKey === r.planKey ? "*" : "") + Math.max(table["three-quarter"][i][j], table.side[i][j]).toFixed(2))).join(" | ")} |`));
   lines.push("", `${verdict.plans} distinct plans. Closest pair of plans: ${verdict.closestPair.a} and ${verdict.closestPair.b} at ${verdict.closestPair.distance.toFixed(2)}. ${verdict.belowMargin.length ? `**${verdict.belowMargin.length} pair(s) below the margin.**` : "No pair of plans below the margin."}${verdict.closestSamePlan ? ` Species sharing a plan are not gated; the closest are ${verdict.closestSamePlan.a} and ${verdict.closestSamePlan.b} at ${verdict.closestSamePlan.distance.toFixed(2)}.` : ""}`);
   return lines.join("\n") + "\n";
 }

@@ -2,8 +2,8 @@
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S11",
-  "name": "S11",
-  "plural": "S11",
+  "name": "Kilpo",
+  "plural": "Kilpo",
   "order": 11,
   "summary": ""
  },
@@ -16,6 +16,7 @@
   "diet": "moss, fruit",
   "ability": "carries one more pod",
   "character": "an old soul, patient",
+  "clanName": "Thyreka",
   "clanNumber": 11,
   "member": 1,
   "speciesNumber": 353,
@@ -2023,7 +2024,7 @@
    }
   },
   "rule": "every open part switch on, numeric loci at the middle of their pool, categorical loci at the first allele",
-  "brief": "S11: 1 body region (B1), a head, a snout, 2 eyes, 4 legs, wing cases; scales; plantigrade, neck head.",
+  "brief": "Kilpo: 1 body region (B1), a head, a snout, 2 eyes, 4 legs, wing cases; scales; plantigrade, neck head.",
   "bounds": {
    "min": [
     -1.9835327924135582,
