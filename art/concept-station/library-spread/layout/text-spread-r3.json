@@ -1,0 +1,7 @@
+[
+  {"text": "Loika", "x": 102, "y": 247, "size": 11, "weight": "Medium", "color": "#2b2420", "anchor": "mm"},
+  {"text": "Untuva", "x": 209, "y": 247, "size": 11, "weight": "Medium", "color": "#2b2420", "anchor": "mm"},
+  {"text": "Tuikis", "x": 317, "y": 247, "size": 11, "weight": "Medium", "color": "#2b2420", "anchor": "mm"},
+  {"text": "Hiljan", "x": 426, "y": 247, "size": 11, "weight": "Regular", "color": "#8e877b", "anchor": "mm"},
+  {"text": "Tuikis · Stilbera", "x": 512, "y": 584, "size": 17, "weight": "Regular", "color": "#c3c7cb", "anchor": "mm"}
+]
