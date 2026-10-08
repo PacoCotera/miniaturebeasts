@@ -76641,6 +76641,230 @@
     "passed": false,
     "gated": false
    }
+  },
+  {
+   "id": "0369c3ea-f73b-4346-95e9-67436d98166e",
+   "service": "gemini",
+   "model": "gemini-3-pro-image",
+   "promptVersion": 4,
+   "lab": {
+    "species": "S12",
+    "variant": "v7R-reference-remade",
+    "name": "condition 2: v7 with the reference re-made under v7, on the second individual",
+    "model": "pro",
+    "sample": 2,
+    "set": "v7"
+   },
+   "controlVariant": "twostep",
+   "species": "S12",
+   "genomeDigest": "S12-0b5843e8",
+   "genomeSha256": "9587cfdd7ad5944492853b31a51d4ecd1ed94a65a0e19a54949c559c6fdf91e8",
+   "purpose": "lab-step2",
+   "step": 2,
+   "attempt": 1,
+   "fields": {
+    "text": "Image 1 is the HiBit drawing: structure, proportion, pose, colour and eye placement only, never the finish. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light.\n\nPaint it in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: soft volume shading: a lit tone, two shadow steps, one soft specular on the highest lit form; occlusion where parts meet.\n\nContour: no ink outline of any colour; edges are value: the form against the ground, and the rim.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere smooth value, never texture noise.\n\nFinish: a soft vinyl collectible, matte with one highlight; never clay, glossy plastic, paper or brushwork.\n\nFraming: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nChange only the rendering; add nothing.\n\nNot: strand-by-strand texture, panels, vignettes, scene, text.\n\nImage 3 is the species reference, painted in this same house rendering: match its surface, finish and eye; never its shape, pose or framing.\n\nSpecies notes: the Peplos, a moth of the flowers. Only what differs from the house rendering.\nColour placement: the body colour on the head and the body; the second colour on the wings and the legs.\nEyes: its two compound eyes are drawn as the house eye, with a deep teal iris: round, wet, a lid line, two glints. Never insect eyes: no facets, no mesh, no black dot in a white ball.\nMaterial: dusted translucent membranes on the wings, the second colour with visible veins a shade deeper, the body showing faintly through near the base; a fuzzy thorax; the rest of the body smooth. Its two touches: a powdery pale dust on the wing near its base, and a soft ring of fuzz at the collar between head and thorax.\nVolume: the thorax is the fullest form, round behind the head; its top takes the highlight and its underside both shadow steps. The abdomen is soft segments, each turning from a lit top to a shadowed underside, narrowing to the tip. Each wing curls slightly along its leading edge, lit along the curl and shaded beneath it, so no wing is a flat sheet.\nParts: the head is round, with two feathered antennae that curl a little at their tips. The four wings lie folded along the body where Image 1 lays them, rounded at their tips, never a plank or a board. The six legs are fine and jointed, each ending in a small soft foot, never balls or pegs.\nPosture: it perches lightly on its six feet, its head a little low and forward, its antennae up, its wings resting quietly.\nCharacter: flighty and bright, a small flier of the flowers.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Coat: colour marigold and coral; translucency between; flap markings spots; second colour peach and cream. Shape: hind body between. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build. Posture: standing low on splayed legs, weight on all its feet, belly just off the ground, still, looking at the viewer. The wings stay folded along the body exactly as drawn; never re-laid, lifted or spread.",
+    "imageOrder": [
+     "drawing",
+     "key",
+     "reference"
+    ]
+   },
+   "referenceImage": {
+    "what": "the type specimen painted by v7 on pro, sample 1 (checks failed)",
+    "name": "S12-v7-pro-s1-step2.png",
+    "sha256": "324be14a2c430f26b74571248c00684f285a1eb1965d95a8455838fc07f742b2"
+   },
+   "prompt": "Image 1 is the HiBit drawing: structure, proportion, pose, colour and eye placement only, never the finish. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light.\n\nPaint it in the house rendering, which every species obeys whatever its material:\n\nLight: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.\n\nShading: soft volume shading: a lit tone, two shadow steps, one soft specular on the highest lit form; occlusion where parts meet.\n\nContour: no ink outline of any colour; edges are value: the form against the ground, and the rim.\n\nEyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.\n\nSurface: the material in the two or three touches the species notes name, where the light falls; elsewhere smooth value, never texture noise.\n\nFinish: a soft vinyl collectible, matte with one highlight; never clay, glossy plastic, paper or brushwork.\n\nFraming: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.\n\nGround: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.\n\nChange only the rendering; add nothing.\n\nNot: strand-by-strand texture, panels, vignettes, scene, text.\n\nImage 3 is the species reference, painted in this same house rendering: match its surface, finish and eye; never its shape, pose or framing.\n\nSpecies notes: the Peplos, a moth of the flowers. Only what differs from the house rendering.\nColour placement: the body colour on the head and the body; the second colour on the wings and the legs.\nEyes: its two compound eyes are drawn as the house eye, with a deep teal iris: round, wet, a lid line, two glints. Never insect eyes: no facets, no mesh, no black dot in a white ball.\nMaterial: dusted translucent membranes on the wings, the second colour with visible veins a shade deeper, the body showing faintly through near the base; a fuzzy thorax; the rest of the body smooth. Its two touches: a powdery pale dust on the wing near its base, and a soft ring of fuzz at the collar between head and thorax.\nVolume: the thorax is the fullest form, round behind the head; its top takes the highlight and its underside both shadow steps. The abdomen is soft segments, each turning from a lit top to a shadowed underside, narrowing to the tip. Each wing curls slightly along its leading edge, lit along the curl and shaded beneath it, so no wing is a flat sheet.\nParts: the head is round, with two feathered antennae that curl a little at their tips. The four wings lie folded along the body where Image 1 lays them, rounded at their tips, never a plank or a board. The six legs are fine and jointed, each ending in a small soft foot, never balls or pegs.\nPosture: it perches lightly on its six feet, its head a little low and forward, its antennae up, its wings resting quietly.\nCharacter: flighty and bright, a small flier of the flowers.\n\nThis creature, in the frame's shorthand. Read it this way: \"between\" is a middle value and adds nothing to draw; \"flaps\" are wings; \"regions\" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; \"markings plain\" or \"flap markings plain\" means no markings at all. A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Coat: colour marigold and coral; translucency between; flap markings spots; second colour peach and cream. Shape: hind body between. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build. Posture: standing low on splayed legs, weight on all its feet, belly just off the ground, still, looking at the viewer. The wings stay folded along the body exactly as drawn; never re-laid, lifted or spread.",
+   "images": [
+    {
+     "name": "step1-drawing.png",
+     "sha256": "18338d89d955a0116b097cc58df161704c174dd7a9fd1d9cd46d17eebf89d1bb",
+     "bytes": 359400
+    },
+    {
+     "name": "key.portrait.large.png",
+     "sha256": "67aaf34aa7e230d69ac83b38212469ddd8231e7a0e7a4341b0483d2ace16a9a5",
+     "bytes": 6807
+    },
+    {
+     "name": "reference:S12-v7-pro-s1-step2.png",
+     "sha256": "324be14a2c430f26b74571248c00684f285a1eb1965d95a8455838fc07f742b2",
+     "bytes": 376785
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T07:32:15Z",
+   "seconds": 18.9,
+   "httpStatus": 200,
+   "responseId": "AEfHaozsD67N_PUP9KXniAE",
+   "modelVersion": "gemini-3-pro-image",
+   "usage": {
+    "promptTokenCount": 1736,
+    "candidatesTokenCount": 1310,
+    "totalTokenCount": 3318,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 962
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 774
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "thoughtsTokenCount": 272,
+    "serviceTier": "standard"
+   },
+   "costUSD": 0.16067,
+   "output": {
+    "file": "step2.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "d51d610c6bc788af4e4f6c9e705ab4ed7928e644d209606f83b8fb2ae72630e4"
+   },
+   "status": "ok",
+   "checks": {
+    "silhouetteIoU": 0.365,
+    "silhouetteIoUInPlace": 0.277,
+    "parts": {
+     "region-0": {
+      "span": 1.0,
+      "coverage": 0.876
+     },
+     "region-1": {
+      "span": 1.0,
+      "coverage": 0.857
+     },
+     "region-2": {
+      "span": 1.0,
+      "coverage": 0.938
+     },
+     "head": {
+      "span": 0.943,
+      "coverage": 0.334
+     },
+     "eye": {
+      "span": 0.238,
+      "coverage": 0.0
+     },
+     "antenna": {
+      "span": 0.204,
+      "coverage": 0.201
+     },
+     "leg-0": {
+      "span": 0.427,
+      "coverage": 0.544
+     },
+     "leg-1": {
+      "span": 0.775,
+      "coverage": 0.165
+     },
+     "leg-2": {
+      "span": 0.129,
+      "coverage": 0.01
+     },
+     "flap": {
+      "span": 0.508,
+      "coverage": 0.285
+     }
+    },
+    "proportions": {
+     "region-0": {
+      "drawn": 0.242,
+      "painted": 0.621,
+      "ok": false
+     },
+     "region-1": {
+      "drawn": 0.167,
+      "painted": 0.477,
+      "ok": false
+     },
+     "head": {
+      "drawn": 0.216,
+      "painted": 0.5,
+      "ok": false
+     },
+     "leg-0": {
+      "drawn": 0.487,
+      "painted": 0.477,
+      "ok": true
+     },
+     "leg-1": {
+      "drawn": 0.181,
+      "painted": 0.434,
+      "ok": false
+     },
+     "leg-2": {
+      "drawn": 0.206,
+      "painted": 0.375,
+      "ok": false
+     },
+     "flap": {
+      "drawn": 0.501,
+      "painted": 0.566,
+      "ok": true
+     }
+    },
+    "slots": {
+     "body@region-0": {
+      "agreement": 0.721,
+      "median": "#e58462",
+      "nearest": "#e98268",
+      "ok": true
+     },
+     "body@region-1": {
+      "agreement": 0.62,
+      "median": "#d4856c",
+      "nearest": "#e98268",
+      "ok": true
+     },
+     "body@head": {
+      "agreement": 0.002,
+      "median": "#ebd5af",
+      "nearest": "#dfd2ae",
+      "ok": false
+     },
+     "second@leg-0": {
+      "agreement": 0.575,
+      "median": "#d7c5b5",
+      "nearest": "#dfd2ae",
+      "ok": true
+     },
+     "second@flap": {
+      "agreement": 0.928,
+      "median": "#ead1ae",
+      "nearest": "#dfd2ae",
+      "ok": true
+     }
+    },
+    "reasons": [
+     "a part is missing or moved from where the part map puts it: eye (painted along 24% of its length), antenna (painted along 20% of its length), leg-0 (painted along 43% of its length), leg-2 (painted along 13% of its length), flap (painted along 51% of its length)",
+     "the proportions are off: the region-0 is larger than drawn (0.62 of the body against 0.24), the region-1 is larger than drawn (0.48 of the body against 0.17), the head is larger than drawn (0.50 of the body against 0.22), the leg-1 is larger than drawn (0.43 of the body against 0.18), the leg-2 is larger than drawn (0.38 of the body against 0.21)",
+     "a pigment slot is painted in another slot's colour: the body slot on the head (painted #ebd5af, the colour of second)"
+    ],
+    "outside": 0.067,
+    "missing": 0.054,
+    "bandTolerancePx": 20,
+    "slotAgreement": 0.663,
+    "passed": false,
+    "gated": false
+   }
   }
  ]
 }
