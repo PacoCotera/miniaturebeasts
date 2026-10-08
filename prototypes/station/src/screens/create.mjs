@@ -3,7 +3,8 @@
 // pictures from the pod's own copies (▲▼); changed tags; doings say breed to change; a clash marks its
 // traits and withholds Grow; the total on the bottom line. ← goes back to Pods with nothing spent.
 import { SW, C, R, blit, text, textW, clipText, wrapText, panel, focusRing, art, PB, clamp, clock, motion } from "../gfx.mjs";
-import { podArt, emblemArt, traitPic, frostPic, famArt, stampArt, domeArt, mistyArt } from "../art.mjs";
+import { podSprite } from "../podsprites.mjs";
+import { emblemArt, traitPic, frostPic, famArt, stampArt, domeArt, mistyArt } from "../art.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, podById } from "../game.mjs";
 import { benchBg, drawTop, beam } from "./frame.mjs";
 import { podFrame } from "./home.mjs";
@@ -32,7 +33,7 @@ function draw() {
   blit(mistyArt(fr, genome, misty, 300, 310), fx, fy + bob);
   if (clash.length) { panel(fx + 40, fy + 10, 220, 30, C.wine, C.red); text("this shape won't grow", fx + 150, fy + 17, C.blush, 2, "center"); }
   // the opened pod at the left; the empty chamber and the stamp at the right
-  const pa = podArt(fr, p.g, 4, "identified"); blit(pa, 150 - pa.w / 2, 130); text("from the pod", 150, 250, C.fog, 2, "center");
+  const pa = podSprite(fr.species.id, "well", "identified"); blit(pa, 150 - pa.w / 2, 130); text("from the pod", 150, 250, C.fog, 2, "center");
   wrapText(S.podOrigin(p), 220, 2).slice(0, 3).forEach((l, i) => text(l, 150, 274 + i * 22, C.mist, 2, "center"));
   blit(domeArt(140, 140, false), 820, 110); text(G.st.bud ? "busy" : "empty", 890, 258, G.st.bud ? C.amber : C.fog, 2, "center");
   const stamp = stampArt(fr, genome, fr.chapters.filter((c) => p.read.includes(c.id) || changed.some((id) => c.traits.some((t) => t.id === id))).map((c) => c.id), 120);

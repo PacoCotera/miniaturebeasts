@@ -18,6 +18,7 @@ import { openBook } from "./screens/library.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
 import { stampArt } from "./art.mjs";
+import { loadPodSprites } from "./podsprites.mjs";
 import { manifest as manifestOf, registerAsset } from "../../ui/assets.mjs";
 
 setIcons((name, px) => ICON[name]?.(px));
@@ -136,6 +137,7 @@ const bootLayer = async () => {
   const { canvas, type } = await bootStationCanvas({ base: new URL("../../ui/", import.meta.url) });
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
   for (const k of ["frame", "pods"]) SPECS[k] = await spec(k + ".json");
+  await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   SC = canvas; bindCanvas(SC); CTX = LAYER.ctx = makeCtx(SPECS.frame, type);
 };
 // The icons the text runs inline (⚡ ◆ ❀ ✕ at the 16 px body size) are registered in the manifest as type assets.

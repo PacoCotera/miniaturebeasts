@@ -10,7 +10,7 @@ import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
   { id: "mibi", what: "every mibi and founder: the placeholder of the plain renderer (flat slots, outline, no face, no material), quantised to the palette", until: "the Grow painting lands (M3), and the rig's own placeholder brief is finished" },
-  { id: "pod", what: "the pod drawn by code from the frame's four parameters (size class, proportion, shell pattern, colour pair) and its glyph on the cap", until: "the pod renderer's masters (research-loop.md §6)" },
+  { id: "pod", what: "the pod placeholder sprites: hand-drawn, per size class and state, coloured per species by remap (prototypes/ui/assets/placeholders/pod)", until: "the pod renderer's masters (research-loop.md §6)" },
   { id: "trait-picture", what: "a trait's picture: a close-up of this pod's mibi in the placeholder, cropped around the part the trait names", until: "the Grow painting's close-ups" },
   { id: "seed", what: "the misty seed: the hidden look as a frosted close-up in a pearl", until: "the seed master" },
   { id: "stamp", what: "the genome stamp rastered by genome-stamp/src/stamp.mjs and quantised to the palette", until: "the stamp's label art (PV-D-r3-a4)" },
@@ -141,40 +141,6 @@ export function stampArt(frame, genome, readIds, side = 200) {
 export const stampSize = (frame) => stampFrameOf(frame) ? stampFrameOf(frame).payloadBits : 0;
 
 // ---------- Pods from one renderer: the frame's four parameters and the glyph ----------
-const SIZE_U = { small: 13, medium: 16, large: 19 };
-const PLACE_DUST = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
-// state: "sealed" (the shell, the cap sealed), "identified" (the glyph lit on the cap), "hatched"; frame null: a quiet grey pod.
-// fit: [w, h] draws the shell to fill that box (the scale from its height, the shell as wide as the box allows); without it the shell keeps the frame's proportion.
-export function podArt(frame, place, s, state = "sealed", fit = null) {
-  const key = "pod" + (frame ? frame.species.id : "none") + ":" + (place || "") + ":" + s + ":" + state + (fit ? ":" + fit.join("x") : "");
-  return art(key, () => {
-    const u = frame ? SIZE_U[frame.pod?.sizeClass] || 16 : 15, prop = frame?.pod?.proportion;
-    let rx = u * 0.38 * (prop === "squat" ? 1.2 : prop === "tall" ? 0.86 : 1), ry = u * 0.5 * (prop === "tall" ? 1.15 : prop === "squat" ? 0.9 : 1);
-    if (fit) { s = (fit[1] - 2) / (ry * 2 + 3); rx = (fit[0] / s - 2) / 2; }   // the stem's top on row 1, the shell's foot on the last row of the box
-    const W = fit ? fit[0] : Math.ceil((rx * 2 + 2) * s), H = fit ? fit[1] : Math.ceil((ry * 2 + 8) * s), pb = new PB(W, H), cx = W / 2, cy = fit ? ry * s + 3 * s + 2 : ry * s + 5 * s;
-    const c0 = frame ? nearestHex(frame.pod.colourPair[0].hex) : C.mist, c1 = frame ? nearestHex(frame.pod.colourPair[1].hex) : C.fog;
-    pb.ell(cx, cy, rx * s, ry * s, c0, { sh: [lite(c0), shade(c0)] });
-    const inShell = (x, y) => ((x + 0.5 - cx) / (rx * s)) ** 2 + ((y + 0.5 - cy) / (ry * s)) ** 2 <= 0.96;
-    const pat = frame?.pod?.shellPattern || "smooth dots";
-    if (state === "sealed") { /* a sealed shell is plain: its pattern shows when the pod is identified */ }
-    else if (pat.includes("rib")) { for (let i = -3; i <= 3; i++) pb.ell(cx + i * rx * s * 0.3, cy + ry * s * 0.1, rx * s * 0.12, ry * s * 0.75, c1, { clip: (x, y) => inShell(x, y) && bay(x, y) < 10 }); }
-    else if (pat.includes("plate") || pat.includes("scale")) { for (let j = 0; j < 4; j++) for (let i = -2; i <= 2; i++) pb.ring(cx + (i + (j % 2) * 0.5) * rx * s * 0.45, cy - ry * s * 0.5 + j * ry * s * 0.4, rx * s * 0.26, ry * s * 0.2, c1, Math.max(1, s / 2), 0, inShell); }
-    else if (pat.includes("segment")) { for (let j = -2; j <= 2; j++) pb.ell(cx, cy + j * ry * s * 0.36, rx * s, ry * s * 0.06, c1, { clip: inShell }); }
-    else { for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) if ((i + j) % 2 === 0) pb.ell(cx + i * rx * s * 0.42, cy + j * ry * s * 0.36, s * 0.9, s * 0.9, c1, { clip: inShell }); }
-    pb.ell(cx, cy + ry * s * 0.55, rx * s * 0.7, ry * s * 0.1, shade(c0), { clip: inShell });                // the seam
-    pb.ell(cx - rx * s * 0.4, cy - ry * s * 0.45, rx * s * 0.18, ry * s * 0.12, C.white, { chk: 1 });        // a highlight
-    // the cap, sealed or lit with the glyph
-    const capR = rx * s * 0.6, capY = cy - ry * s - 1;
-    pb.ell(cx, capY + 2 * s, capR, 3.2 * s, state === "identified" ? C.bone : C.slate, { sh: state === "identified" ? [C.white, C.fog] : [C.stone, C.night] });
-    pb.rect(cx - 1.5 * s, capY - 2 * s, 3 * s, 3 * s, C.forest); pb.rect(cx - 0.8 * s, capY - 3 * s, 1.6 * s, 1.5 * s, C.leaf);  // the short stem
-    if (state === "identified" && frame?.glyph && s >= 2) { const gs = Math.max(1, Math.round(s / 2)), gw = 5 * gs;
-      frame.glyph.forEach((row, y) => [...row].forEach((ch, x) => { if (ch === "#") pb.rect(cx - gw / 2 + x * gs, capY + 2 * s - 2.5 * gs + y * gs, gs, gs, C.ink); })); }
-    else if (state === "sealed") pb.rect(cx - 2.5 * s, capY + 1.3 * s, 5 * s, 1.4 * s, C.night);   // the seal: a plain dark band
-    if (place && PLACE_DUST[place]) for (let i = 0; i < 6 * s; i++) { const a = (i / (6 * s)) * Math.PI, x = cx + Math.cos(a) * rx * s * (0.4 + (i % 3) * 0.2), y = cy + ry * s * 0.95 - (i % 2) * s; if (bay(Math.round(x), Math.round(y)) < 7) pb.rect(x, y, Math.max(1, s / 2), Math.max(1, s / 2), C[PLACE_DUST[place]]); }
-    if (s >= 3) pb.rich(Math.round(s / 3));
-    pb.outline(() => C.ink); return pb;
-  });
-}
 // The progress ring around a pod in the list: the centre at Identify; an arc per chapter sized by its traits;
 // filled when read, a hairline when not; a star for a glint; a notch for a sealed chapter. No digits.
 export function ringArt(frame, pod, chapterFlags, r = 30) {

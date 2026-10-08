@@ -43,7 +43,7 @@ export function podsView(m, spec, ctx) {
     const f = q.idd ? podFrame(q) : null, flags = q.idd ? flagsOf(q) : [];
     wells.push({
       base,
-      pod: req({ kind: "pod", id: `pod:${q.id}:${q.idd ? "i" : "s"}:32x40`, species: shellFrame(st, q) ? S.speciesOf(q) : null, place: q.g, state: q.idd ? "identified" : "sealed", size: R.well.pod.size }),
+      pod: req({ kind: "pod", id: `pod:${shellFrame(st, q) ? S.speciesOf(q) : "-"}:${q.idd ? "i" : "s"}:32x40`, species: shellFrame(st, q) ? S.speciesOf(q) : null, state: q.idd ? "identified" : "sealed", size: R.well.pod.size }),
       ring: req({ kind: "ring", id: `ring:${q.idd ? S.speciesOf(q) : "-"}:${q.idd ? 1 : 0}:${flags.map((x) => x.read + (x.glint ? "g" : "") + (x.sealed ? "s" : "") + x.traits).join(",")}`, species: f ? S.speciesOf(q) : null, idd: q.idd ? 1 : 0, flags }),
       place: PLACE_KEYS.includes(q.g) ? req({ kind: "place", id: `place:${q.g}`, place: q.g }) : null,
     });
@@ -57,8 +57,8 @@ export function podsView(m, spec, ctx) {
     colours: { name: C.name, origin: C.origin, cut: "white" }, beam: req({ kind: "beam", id: "beam:240x232" }), cradle: req({ kind: "cradle", id: "cradle:224x40" }),
     pod: cur ? {
       size: box,
-      sealed: req({ kind: "pod", id: `pod:${cur.id}:s:${box.join("x")}`, species: shellFrame(st, cur) ? S.speciesOf(cur) : null, place: cur.g, state: "sealed", size: box }),
-      identified: cur.idd ? req({ kind: "pod", id: `pod:${cur.id}:i:${box.join("x")}`, species: S.speciesOf(cur), place: cur.g, state: "identified", size: box }) : null,
+      sealed: req({ kind: "pod", id: `pod:${shellFrame(st, cur) ? S.speciesOf(cur) : "-"}:s:${box.join("x")}`, species: shellFrame(st, cur) ? S.speciesOf(cur) : null, state: "sealed", size: box }),
+      identified: cur.idd ? req({ kind: "pod", id: `pod:${S.speciesOf(cur)}:i:${box.join("x")}`, species: S.speciesOf(cur), state: "identified", size: box }) : null,
     } : null,
     cut: cur && cur.idd ? idCut : null,
     name: cur ? (cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod) : null,
@@ -122,7 +122,7 @@ function compareView(view, m, spec, ctx, req) {
   const both = A.read.includes(ch.id) && B.read.includes(ch.id), ids = both ? diff : [];
   const side = (p, region, key) => {
     const page = pageView(m, spec, p, fr, ch, null, region, req, present, ids, key);
-    page.heading = { pod: req({ kind: "pod", id: `pod:${p.id}:i:32x40`, species: S.speciesOf(p), place: p.g, state: "identified", size: R.compareA.pod }), place: PLACE_KEYS.includes(p.g) ? req({ kind: "place", id: `place:${p.g}`, place: p.g }) : null };
+    page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:32x40`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }), place: PLACE_KEYS.includes(p.g) ? req({ kind: "place", id: `place:${p.g}`, place: p.g }) : null };
     return page;
   };
   const compareRegion = (key) => ({ ...R[key === "compareB" ? "compareA" : key], rect: R[key].rect });

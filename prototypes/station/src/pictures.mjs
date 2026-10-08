@@ -5,7 +5,8 @@
 // stamp on whole-pixel cells. Nothing is ever cropped and enlarged.
 import { registerAsset, hasAsset } from "../../ui/assets.mjs";
 import { PB, C, art, fromRGBA, bay, nearestHex } from "./gfx.mjs";
-import { podArt, ringArt, wellArt, emblemArt, closeUpPB, ICON, PIC_GROUND } from "./art.mjs";
+import { podSprite, classOfBox } from "./podsprites.mjs";
+import { ringArt, wellArt, emblemArt, closeUpPB, ICON, PIC_GROUND } from "./art.mjs";
 import { beamArt } from "./screens/frame.mjs";
 import { shapeTrait, stampGenome, stampSizing } from "./genome.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
@@ -13,9 +14,8 @@ import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
 
-// The pod at the exact size of its box: the shell is drawn to fill it (the pod renderer's own parameters at the scale
-// that fits the box), never an image enlarged.
-function podPicture(frame, place, state, [bw, bh]) { return podArt(frame, place, 1, state, [bw, bh]); }
+// The pod at the exact size of its box: the placeholder sprite of its class (podsprites.mjs), placed 1:1, never scaled.
+function podPicture(species, state, [bw, bh]) { return podSprite(species, classOfBox(bw, bh), state); }
 const cradlePB = () => { const pb = new PB(224, 40); pb.ell(112, 24, 110, 15, C.slate); pb.ell(112, 20, 100, 12, C.stone, { sh: [C.mist, C.night] }); pb.outline(() => C.ink); return pb; };
 const hatchPB = () => { const pb = new PB(112, 56); pb.rect(0, 2, 112, 52, C.slate); pb.rect(4, 6, 104, 44, C.night); pb.rect(8, 24, 96, 8, C.void); pb.ell(56, 28, 5.5, 11.5, C.leaf, { rot: 0.6, sh: [C.sprout, C.forest] }); pb.outline(() => C.ink); return pb; };
 const placePB = (place) => { const pb = new PB(16, 16), c = C[PLACE_COL[place] || "mist"]; pb.rect(1, 1, 14, 14, c); pb.rect(3, 3, 10, 10, C.ink); pb.rect(5, 5, 6, 6, c); return pb; };
@@ -55,7 +55,7 @@ export function registerPictures(reqs, env) {
   for (const r of reqs) {
     const until = r.until || "the Pods masters (station-layouts.md, Placeholders on Pods)";
     switch (r.kind) {
-      case "pod": put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species ? env.frameOf(r.species) : null, r.place, r.state, r.size)); break;
+      case "pod": put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size)); break;
       case "well": put(r.id, 64, 64, "the pod list master", () => wellArt(r.current, 30)); break;
       case "ring": put(r.id, 64, 64, "the pod list master", () => ringArt(r.species ? env.frameOf(r.species) : null, { idd: r.idd }, r.flags, 31)); break;
       case "place": put(r.id, 16, 16, "the place stamp set", () => placePB(r.place)); break;

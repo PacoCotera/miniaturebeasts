@@ -1,7 +1,8 @@
 // Home: the vivarium (the living window) and the bench's modules; Dock and arrival; the report card.
 // As the stand-in v2 built it, drawing residents and pods from the frames now.
 import { SW, SH, LINE_H, C, R, blit, text, textW, clipText, panel, focusRing, art, PB, clamp, clock, motion, bay } from "../gfx.mjs";
-import { ICON, podArt, crateArt, cupArt, domeArt, budArt, leafArt, probeArt, lampArt, bedArt, vivArt, starArt } from "../art.mjs";
+import { podSprite } from "../podsprites.mjs";
+import { ICON, crateArt, cupArt, domeArt, budArt, leafArt, probeArt, lampArt, bedArt, vivArt, starArt } from "../art.mjs";
 import { G, FX, UI, ARRIVE_MS, msg, lockInput, save, goScreen, registerScreen, need, docked, hasWorld, bayCrates, effWithId, atHome, mibiById, arriving } from "../game.mjs";
 import { stageBg, drawTop, lampPool, drawResidents, stepResidents, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
 import * as S from "../state.mjs";
@@ -29,7 +30,7 @@ export const shellFrame = (p) => (G.st.knownIds.includes(S.speciesOf(p)) ? podFr
 function drawTray(x, y, w, hideIds) {   // six cups in a row (the bench)
   const rack = G.settings.rack || S.RACK, step = Math.floor(w / rack);
   for (let i = 0; i < rack; i++) { const cx = x + i * step + (step - 52) / 2, p = G.st.tray[i]; blit(cupArt(false), cx, y + 40);
-    if (p && !(hideIds && hideIds.has(p.id))) { const a = podArt(shellFrame(p), p.g, 2, podState(p)); blit(a, cx + 26 - a.w / 2, y + 50 - a.h); if (S.podGlints(G.st, p)) blit(starArt(false), cx + 36, y + 2); } }
+    if (p && !(hideIds && hideIds.has(p.id))) { const a = podSprite(shellFrame(p)?.species.id ?? null, "well", podState(p)); blit(a, cx + 26 - a.w / 2, y + 50 - a.h); if (S.podGlints(G.st, p)) blit(starArt(false), cx + 36, y + 2); } }
 }
 function drawIncSmall(x, y) {
   const B = G.st.bud, ready = S.budReady(G.st, G.settings); blit(domeArt(120, 120, ready), x + 24, y + 22);
@@ -64,7 +65,7 @@ function drawArrivingPods() {
   const rack = G.settings.rack || S.RACK, step = Math.floor(346 / rack);
   p.ids.forEach((id, j) => { const pod = G.st.tray.find((q) => q.id === id); if (!pod) return; const ci = G.st.tray.indexOf(pod), f = clamp((k - 0.4 - j * 0.08) / 0.35, 0, 1);
     const sx = BENCH.bay[0] + 60 + i * 110, sy = BENCH.bay[1] + 50, ex = BENCH.tray[0] + ci * step + (step - 52) / 2 + 10, ey = BENCH.tray[1] + 4;
-    blit(podArt(shellFrame(pod), pod.g, 2, "sealed"), sx + (ex - sx) * f, sy + (ey - sy) * f - Math.sin(f * Math.PI) * 30); });
+    blit(podSprite(shellFrame(pod)?.species.id ?? null, "well", "sealed"), sx + (ex - sx) * f, sy + (ey - sy) * f - Math.sin(f * Math.PI) * 30); });
 }
 function drawArrivalRibbon() {
   const a = FX.arr; if (!a || !arriving()) return; const i = Math.floor((clock.now - a.at) / ARRIVE_MS), c = a.plays[i].c;
