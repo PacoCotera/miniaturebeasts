@@ -90,7 +90,18 @@ def prompt_set():
                             "imageOrder1": base["imageOrder1"] + ["reference"], "imageOrder2": base["imageOrder2"] + ["reference"],
                             "step1": base["step1"].replace("{species}", "Image 3 is the species reference, painted in this same house rendering: its material, finish and eye only, never its shape, pose or framing.\n\n{species}", 1),
                             "step2": base["step2"].replace("{species}", "Image 3 is the species reference, painted in this same house rendering: match its surface, finish and eye; never its shape, pose or framing.\n\n{species}", 1)})
-    return {"variants": variants, "art1": read("art-direction-step1.txt"), "art2": read("art-direction-step2.txt"), "template": read("description-template.txt"), "species": lambda sp: read("species", f"{sp}.txt")}
+    art1, art2 = read("art-direction-step1.txt"), read("art-direction-step2.txt")
+    # 7D, the owner's warning against childish art ("never cartoon simplification, sticker faces, toy-like rendering
+    # or nursery colours"): v7 with its Finish line ("a soft vinyl collectible") replaced by the naturalist's line in
+    # both steps, everything else identical, so the two finishes sit on one consistency sheet.
+    if base and base["id"] == "v7" and art1 and art2 and not any(v["id"].startswith("7D") for v in variants):
+        nat = "a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm"
+        f1, f2 = "Finish: a soft vinyl collectible, matte with one highlight.", "Finish: a soft vinyl collectible, matte with one highlight; never clay, glossy plastic, paper or brushwork."
+        if f1 in art1 and f2 in art2:
+            variants.append({"id": "7D-naturalist-finish", "name": "Naturalist's finish, not a vinyl collectible", "change": f"Both steps, the Finish line replaced: \"{nat}\" (step 2 keeps the never-list). The owner's warning: cute by charm and craft as Pip is, never cartoon simplification, sticker faces, toy-like rendering or nursery colours; the lab synthesises it from v7.",
+                             "imageOrder1": base["imageOrder1"], "imageOrder2": base["imageOrder2"],
+                             "step1": base["step1"].replace("{artDirection1}", art1.replace(f1, f"Finish: {nat}.")), "step2": base["step2"].replace("{artDirection2}", art2.replace(f2, f"Finish: {nat}; never clay, glossy plastic, paper or brushwork."))})
+    return {"variants": variants, "art1": art1, "art2": art2, "template": read("description-template.txt"), "species": lambda sp: read("species", f"{sp}.txt")}
 
 
 def build_from_set(sp, legend, sheet, variant, pset):
