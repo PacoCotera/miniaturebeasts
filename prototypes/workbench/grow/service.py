@@ -536,6 +536,21 @@ def species_notes_for(legend, ctrl_dir, species_words):
     return "\n".join(lines[:1] + [line] + lines[1:]) if lines else line
 
 
+def step2_call(d, d0, legend, view, drawing, common, ctrl, portrait_png=None, extra=None):
+    """Variant B's step 2 on the service's prompt set: the drawing and the colour key with the set's step 2
+    block, the species notes (this individual's colour placement) and the description; checks logged."""
+    c = os.path.join(d0, "controls"); pset = prompt_set()
+    species_words = species_notes_for(legend, c, pset["species"](legend["species"]))
+    description = with_plan_lines(legend, pset["template"].replace("{description}", legend["description"]["text"]))
+    imgs = [(f"step1-{view}-600x620.png", png_bytes(pad_square(drawing))), (f"key.{view}.large.png", crisp(os.path.join(c, f"key.{view}.large.png")))]
+    fields = {"artDirection2": pset["art2"], "species": species_words, "description": description, "imageOrder": ["drawing", "key"]}
+    text = "\n\n".join(x for x in [fields["artDirection2"], species_words, description] if x)
+    if view == "side" and portrait_png: imgs.append(("station-portrait-600x620.png", png_bytes(pad_square(Image.open(io.BytesIO(portrait_png)).convert("RGB"))))); text += "\n\nImage 3 is this same creature already painted from the front quarter: match its colours, surfaces, markings and face exactly, so the two views are one creature."
+    rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step2", "step": 2, "attempt": 1, "fields": fields, **(extra or {})}, os.path.join(d, "raw"), f"{view}-step2.png")
+    if im is not None: rec["checks"] = {**check(im, ctrl, legend), "gated": False}
+    return rec, im
+
+
 def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
     """Variant B for one view on the service's prompt set: step 1 draws the HiBit drawing from the part map
     and the colour key with the set's step 1 block, the species notes and the description (the loader's plan
@@ -556,19 +571,14 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
         if im is not None: rec["checks"] = {**check(im, ctrl, legend, DRAWING_TOL, DRAWING_BAND_MAX, DRAWING_PART_MIN), "proportionTolerance": DRAWING_TOL}
         log_call(rec)
         man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
-        vrec["attempts"].append({"callId": rec["id"], "step": 1, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
+        vrec["attempts"].append({"callId": rec["id"], "step": 1, "attempt": attempt, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
         print(legend["species"], legend["genomeDigest"], "twostep", view, f"step 1 attempt {attempt}", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
         if im is not None and rec["checks"]["passed"]: drawing = im; break
         reasons = rec["checks"]["reasons"] if im is not None else ["the service returned no image"]
     if drawing is None: return vrec, None
     drawing.save(os.path.join(d, f"step1-{view}-600x620.png"))
     fit_to_control(drawing, os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"step1-{view}-300x310.png"))
-    imgs = [(f"step1-{view}-600x620.png", png_bytes(pad_square(drawing))), (f"key.{view}.large.png", crisp(os.path.join(c, f"key.{view}.large.png")))]
-    fields = {"artDirection2": pset["art2"], "species": species_words, "description": description, "imageOrder": ["drawing", "key"]}
-    text = "\n\n".join(x for x in [fields["artDirection2"], species_words, description] if x)
-    if view == "side" and portrait_png: imgs.append(("station-portrait-600x620.png", png_bytes(pad_square(Image.open(io.BytesIO(portrait_png)).convert("RGB"))))); text += "\n\nImage 3 is this same creature already painted from the front quarter: match its colours, surfaces, markings and face exactly, so the two views are one creature."
-    rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step2", "step": 2, "attempt": 1, "fields": fields}, os.path.join(d, "raw"), f"{view}-step2.png")
-    if im is not None: rec["checks"] = {**check(im, ctrl, legend), "gated": False}
+    rec, im = step2_call(d, d0, legend, view, drawing, common, ctrl, portrait_png)
     log_call(rec)
     man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
     vrec["attempts"].append({"callId": rec["id"], "step": 2, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
@@ -828,7 +838,8 @@ def cmd_recheck(a):
     complete = "complete" in a
     targets = [(d, d, m) for d, m in manifests() if m.get("promptVersion", 1) == PROMPT_VERSION]
     for v, ms in variant_manifests().items():
-        for d, m in ms: targets.append((d, os.path.dirname(os.path.dirname(d)), m))
+        for d, m in ms:
+            if m.get("promptVersion", 1) == PROMPT_VERSION: targets.append((d, os.path.dirname(os.path.dirname(d)), m))
     for d, d0, m in targets:
         legend = json.load(open(os.path.join(d0, "controls", "legend.json")))
         changed = False
@@ -849,12 +860,9 @@ def cmd_recheck(a):
                     painted = im2; served_by = "step 2"
                     step1_ok[1].save(os.path.join(d, f"step1-{view}-600x620.png")); fit_to_control(step1_ok[1], os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"step1-{view}-300x310.png"))
                 elif step1_ok and complete:
-                    reference = species_reference(m["species"], legend)
                     drawing = step1_ok[1]; drawing.save(os.path.join(d, f"step1-{view}-600x620.png")); fit_to_control(drawing, os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"step1-{view}-300x310.png"))
-                    imgs = [(f"step1-{view}-600x620.png", png_bytes(pad_square(drawing))), (f"reference:{reference['name']}", reference["png"])]
-                    fields = {"artDirection": ART_DIRECTION, "transfer": STEP2_WORDS}
-                    rec, im2 = call_logged(fields["artDirection"] + "\n\n" + fields["transfer"], imgs, {"controlVariant": "twostep", "species": m["species"], "genomeDigest": m["genomeDigest"], "genomeSha256": m["genomeSha256"], "purpose": f"station-{view}-step2", "step": 2, "attempt": 1, "fields": fields, "referenceImage": {"what": reference["what"], "name": reference["name"], "sha256": sha_bytes(reference["png"])}, "afterRecheck": True}, os.path.join(d, "raw"), f"{view}-step2.png")
-                    if im2 is not None: rec["checks"] = {**check(im2, ctrl, legend), "gated": False}
+                    common = {"controlVariant": "twostep", "species": m["species"], "genomeDigest": m["genomeDigest"], "genomeSha256": m["genomeSha256"], "promptSet": os.path.basename(PROMPT_SET)}
+                    rec, im2 = step2_call(d, d0, legend, view, drawing, common, ctrl, extra={"afterRecheck": True})
                     log_call(rec); m["calls"] += 1; m["costUSD"] = round(m["costUSD"] + (rec.get("costUSD") or 0), 5); m["seconds"] = round(m["seconds"] + rec.get("seconds", 0), 1)
                     vrec["attempts"].append({"callId": rec["id"], "step": 2, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId"), "afterRecheck": True})
                     print(m["species"], m["genomeDigest"], "twostep", view, "step 2 after recheck", rec["status"], f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
