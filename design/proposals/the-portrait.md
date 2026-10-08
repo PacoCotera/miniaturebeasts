@@ -31,7 +31,7 @@ A juvenile may sit; later stages are painted ahead of each change (v2 §5). A mi
 
 | Where | Before | After |
 | --- | --- | --- |
-| Cabinet box | the species' generic face | Fig's portrait, small, with the gilt frame corner. With several portrayed, the book offers `✓ Make Fig the face` |
+| Spread plate (the cabinet box until 2026-10-08; the Library's collection screen is now the tome's spread) | the species' generic face | Fig's portrait, small, with the gilt frame corner. With several portrayed, the book offers `✓ Make Fig the face` |
 | Library book | a resident in rich treatment | Fig in its pose and place, alive in the living window; the habit line under it |
 | Vivarium and Habitat | the standard look, motion by rule | the full painted moving set (main and side views, every stage) |
 | Companion | the standard look derived for HiBit | the painted set derived for HiBit, at the next dock |
