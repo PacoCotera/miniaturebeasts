@@ -15,6 +15,8 @@ Optional browser-validation installations, including Playwright and Chromium, re
 
 The native UI vendors the unmodified Bitstream Vera Sans font and derived glyph masks. Its original copyright and redistribution terms are preserved in [the font license](v1/native/shared/fonts/LICENSE.txt); [provenance and regeneration](v1/native/shared/fonts/README.md) records the exact source hash and tool version. These font assets retain those terms rather than being relicensed as original game art.
 
+The Station page's type is Inter 4.1 by The Inter Project Authors, bundled unmodified under the SIL Open Font License 1.1 as `prototypes/ui/fonts/inter/` (the Regular, Medium and SemiBold web fonts from the upstream release at https://github.com/rsms/inter/releases/tag/v4.1), with the upstream licence text beside the files in [LICENSE.txt](prototypes/ui/fonts/inter/LICENSE.txt). The fonts retain the OFL's terms, including its reserved font name, and are not relicensed with the project.
+
 LVGL is vendored unchanged under `v1/native/vendor/lvgl`, with its upstream
 `LICENCE.txt`, source provenance and retained-file hashes. Its MIT copyright and
 permission notice is also included in the packaged presenter HTML alongside the
