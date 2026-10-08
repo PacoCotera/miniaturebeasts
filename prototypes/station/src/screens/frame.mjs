@@ -60,8 +60,8 @@ export function drawTop(title) {
 export function drawLine(o) {
   const y = SH - LINE_H, ty = y + 12; R(0, y, SW, LINE_H, C.ground); R(0, y, SW, 1, C.void);
   let x = 16;
-  if (o.ok) { x += text("✓", x, ty, C.orange) + 8; x += text(o.ok, x, ty, o.dim ? C.mist : C.bone); if (o.price) { x += text(" · ", x, ty, C.hairline); x += text(o.price, x, ty, o.dim ? C.mist : C.focus); } }
-  if (o.back) { if (o.ok) x += text(" · ", x, ty, C.hairline); x += text("← ", x, ty, C.fog); x += text(o.back, x, ty, C.fog); }
+  if (o.ok) { x += text("✓", x, ty, C.orange) + 8; x += text(o.ok, x, ty, o.dim ? C.mist : C.bone); if (o.price) { x += 24; x += text(o.price, x, ty, o.dim ? C.mist : C.focus); } }
+  if (o.back) { if (o.ok) x += 24; x += text("← ", x, ty, C.fog); x += text(o.back, x, ty, C.fog); }
   const nd = o.need != null ? o.need : need().text, nw = nd ? textW(nd, 2) : 0;
   const mx = x + 18, avail = SW - 16 - (nw ? nw + 34 : 0) - mx;
   if (o.subject && avail > 40) { R(x + 8, y + 9, 1, 20, C.bar); text(clipText(o.subject, avail, 2), mx, ty, C.mist); }

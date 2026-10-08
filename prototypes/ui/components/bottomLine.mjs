@@ -1,5 +1,5 @@
-// The bottom line (station-layouts.md, "The frame"): chrome ground with a 1 px rule on its top edge; three regions
-// with hairlines at x 396 and 628: the action `✓ verb · price · ← where` at the left in 16 px (the ✓ cap drawn
+// The bottom line (station-layouts.md, "The frame", "Words on Pods"): chrome ground with a 1 px rule on its top edge; three regions
+// with hairlines at x 396 and 628: the action `✓ verb object   price   ← where`, its groups a 24 px gap apart (no dot), at the left in 16 px (the ✓ cap drawn
 // only when ✓ does something; dimmed in mist when the player cannot pay), the subject centred on x 512 in mist
 // (the one string that may end in "…"), and what needs you right-aligned to 1008 in amber.
 // props: { ok, price, dim, back, subject, need }
@@ -13,8 +13,8 @@ export function bottomLine(ctx, o) {
   // the action
   const A = R.action, ty = A.rect[1] + 2; let ax = A.rect[0], k = 0;
   const piece = (str, colour) => { const r = textRun(ctx, "line.a." + k++, str, ax, ty, { px: A.px, colour }); nodes.push(...r.nodes); ax = r.end; };
-  if (o?.ok) { piece(St.tick, Cc.tick); ax += 8; piece(o.ok, o.dim ? Cc.dim : Cc.verb); if (o.price) { piece(St.dot, Cc.dot); piece(o.price, o.dim ? Cc.dim : Cc.price); } }
-  if (o?.back) { if (o.ok) piece(St.dot, Cc.dot); piece(St.backArrow + o.back, Cc.back); }
+  if (o?.ok) { piece(St.tick, Cc.tick); ax += 8; piece(o.ok, o.dim ? Cc.dim : Cc.verb); if (o.price) { ax += A.gap; piece(o.price, o.dim ? Cc.dim : Cc.price); } }
+  if (o?.back) { if (o.ok) ax += A.gap; piece(St.backArrow + o.back, Cc.back); }
   // the subject, centred on 512, clipped with "…" to its region
   const Sj = R.subject;
   if (o?.subject) nodes.push(...textRun(ctx, "line.subject", clip(ctx, o.subject, Sj.rect[2], Sj.px), Sj.centre, Sj.rect[1] + 2, { px: Sj.px, colour: Cc.subject, align: "center" }).nodes);

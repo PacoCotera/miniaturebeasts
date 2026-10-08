@@ -131,31 +131,41 @@ function compareView(view, m, spec, ctx, req) {
   return view;
 }
 
-// The bottom line: the one action and its price, where ← goes, the subject, what needs you.
+// The bottom line (station-layouts.md, "Words on Pods"): the left slot's action, its price as a number and an icon (nothing for free, and a half price is the lower number),
+// and where ← goes; the centre slot's short sentence on the focused thing, "<name> is <state>"; the right slot's one amber sentence, empty when nothing is new.
+const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => o[k]);
+const iconsOf = (b) => [...new Set((b.match(/[⚡◆❀]/g) || []))].join(" ");
+// What a blocked action says on the right: a shortage as "needs more <icons>", any other reason as its own short words (no "·").
+const blockNeed = (b, strings) => (!b ? null : /^needs/.test(b) ? fill(strings.needMore, { icons: iconsOf(b) }) : b.replace(/ · /g, ", "));
+const priceOf = (cost, icon) => (cost ? cost + " " + icon : "");
 function lineOf(m, spec, p, chapters, ci) {
-  const { st, settings, ui, docked } = m, f = m.focus ?? "pod", glintNeed = S.podGlints(st, p || {}) ? "something new here" : null;
-  if (!p) return { back: "Home", subject: spec.strings.empty, need: !docked ? spec.strings.dockToBring : m.crates > 0 ? spec.strings.openBay : spec.strings.explore };
-  const subj = S.podName(p) + " · " + (S.PLACE_WORD[p.g] || "");
+  const { st, settings, ui, docked } = m, f = m.focus ?? "pod", Sg = spec.strings, glintAny = p ? S.podGlints(st, p) : false;
+  const state = (q) => {
+    if (!q.idd) return Sg.unknownSubject;
+    const fr = podFrame(q), open = fr ? fr.chapters.filter((c) => !c.sealed || settings.sealedOpen) : [], n = open.filter((c) => q.read.includes(c.id)).length;
+    return fill(Sg.subjectIs, { name: S.spName(q), state: Sg.states[!n ? "unread" : n < open.length ? "partly" : "fully"] });
+  };
+  if (!p) return { back: "Home", subject: Sg.empty, need: !docked ? Sg.dockToBring : m.crates > 0 ? Sg.openBay : Sg.explore };
+  const subj = state(p), glintPod = glintAny ? Sg.glintPod : null;
   if (f === "pod") {
-    if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: cost ? cost + " ⚡" : "free", dim: st.e < cost, back: "Home", subject: subj }; }
-    if (!p.read.length) return { ok: chapters.length ? "Read its chapters" : "", back: "Home", subject: subj, need: glintNeed };
-    const b = S.growBlock(st, p, {}, settings, []); return { ok: "Shape a founder", price: b && !/needs/.test(b) ? b : "", dim: !!b && !/needs/.test(b), back: "Home", subject: subj, need: glintNeed };
+    if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: priceOf(cost, "⚡"), dim: st.e < cost, back: "Home", subject: subj, need: st.e < cost ? fill(Sg.needMore, { icons: "⚡" }) : null }; }
+    if (!p.read.length) return { ok: chapters.length ? "Read its chapters" : "", back: "Home", subject: subj, need: glintPod };
+    const b = S.growBlock(st, p, {}, settings, []); return { ok: "Shape a founder", price: "", dim: !!b, back: "Home", subject: subj, need: blockNeed(b, Sg) ?? glintPod };
   }
   if (f.startsWith("rail.")) {
     const ch = chapters[+f.slice(5)]; if (!ch) return { back: "Home" };
-    const b = S.readBlock(st, p, ch.id, settings), fr = podFrame(p);
-    if (b === null) return { back: "Home", subject: ch.name + " · read", need: glintNeed };
-    if (b.startsWith("sealed")) return { back: "Home", subject: railWord(ch, spec) + " · sealed" };
-    const cost = S.readCost(st, p, ch.id, settings), half = (st.readOnce[fr.species.id] || []).includes(ch.id) && cost > 0;
-    return { ok: "Read " + ch.name, price: b ? b : cost === 0 ? "free" : cost + " ◆" + (half ? " · half" : ""), dim: !!b, back: "Home", subject: subj, need: S.glint(st, p, ch.id) ? "something new here" : null };
+    const b = S.readBlock(st, p, ch.id, settings), fr = podFrame(p), word = railWord(ch, spec), here = S.glint(st, p, ch.id) ? Sg.glintHere : glintPod;
+    if (b === null) return { back: "Home", subject: fill(Sg.subjectIs, { name: word, state: Sg.states.read }), need: here };
+    if (b.startsWith("sealed")) return { back: "Home", subject: fill(Sg.subjectIs, { name: word, state: Sg.states.sealed }) };
+    const cost = S.readCost(st, p, ch.id, settings);
+    return { ok: "Read " + ch.name, price: priceOf(cost, "◆"), dim: !!b, back: "Home", subject: fill(Sg.subjectIs, { name: word, state: Sg.states.unread }), need: blockNeed(b, Sg) ?? here };
   }
   if (f.startsWith("list.") && f !== "list.hatch") {
     const i = +f.slice(5), q = st.tray[i]; if (!q) return { back: "Home" };
-    const A = S.podById(st, ui.anchor), tail = S.podName(q);
-    if (A && A !== q && S.canCompare(st, A, q)) return { ok: "Compare", price: "free", back: "Home", subject: tail + " · " + (S.PLACE_WORD[q.g] || "") };
-    return { ok: "Look at this pod", back: "Home", subject: tail + " · " + (S.PLACE_WORD[q.g] || "") };
+    const A = S.podById(st, ui.anchor), canCompare = A && A !== q && S.canCompare(st, A, q);
+    return { ok: canCompare ? "Compare" : "Look at this pod", back: "Home", subject: state(q), need: glintPod };
   }
-  if (f === "list.hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back: "Home", subject: "the hatch · " + S.podName(p) };
+  if (f === "list.hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back: "Home", subject: fill(Sg.backTo, { place: S.PLACE_WORD[p.g] || "wild" }) };
   return { back: "Home" };
 }
 

@@ -11,7 +11,7 @@
   "companion": { "rect": [640, 8, 368, 24], "right": 1008, "lamp": 8, "px": 16 },
   "stage": { "rect": [0, 40, 1024, 522] },
   "line": { "rect": [0, 562, 1024, 38], "component": "bottomLine", "rule": "top" },
-  "action": { "rect": [16, 570, 376, 24], "px": 16 },
+  "action": { "rect": [16, 570, 376, 24], "px": 16, "gap": 24 },
   "subject": { "rect": [400, 570, 224, 24], "centre": 512, "px": 16 },
   "need": { "rect": [632, 570, 376, 24], "right": 1008, "px": 16 },
   "separators": { "x": [396, 628], "y0": 571, "y1": 591 },

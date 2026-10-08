@@ -45,7 +45,7 @@ test("an unidentified pod: the sealed pod, 'Unknown', its origin, no rail, no pa
   const st = stock(["S01"]), v = view(model(st));
   assert.equal(v.specimen.name, "Unknown"); assert.ok(v.specimen.pod.sealed && !v.specimen.pod.identified);
   assert.equal(v.rail, null); assert.equal(v.page, null); assert.equal(v.stamp, null);
-  assert.equal(v.line.ok, "Identify"); assert.equal(v.line.price, "free");
+  assert.equal(v.line.ok, "Identify"); assert.equal(v.line.price, "");   // free is not shown
   assert.ok(v.specimen.origin.length >= 1 && v.specimen.origin.length <= 2);
   const sealedPic = v.requests.find((r) => r.kind === "pod" && r.id.endsWith(":s:" + v.specimen.pod.size.join("x")));
   assert.ok(sealedPic && sealedPic.species === null, "the species stays unknown before Identify");
@@ -110,13 +110,13 @@ test("the props are plain JSON; every picture asked for is registered once at on
   assert.ok(v.requests.some((r) => r.kind === "trait") && v.requests.some((r) => r.kind === "emblem" && r.id.endsWith(":24")));
 });
 
-test("the bottom line: the one action and its price, 'half' only on the line, strings as decided", () => {
+test("the bottom line: the one action and its price as a number and an icon (no 'free', no 'half'), strings as decided", () => {
   const st = stock(["S01"], 3), p = st.tray[0], m = (f, extra = {}) => model(st, { focus: f, ...extra });
   S.skipIdentify(st, p); st.d = 10;
   assert.equal(view(m("pod")).line.ok, "Read its chapters"); assert.equal(view(m("rail.0")).line.ok, "Read Coat");
   st.readEver = true; assert.equal(view(m("rail.0")).line.price, "1 ◆");
-  st.readOnce.S01 = ["face"]; st.d = 10; assert.equal(view(m("rail.1")).line.price, "1 ◆ · half");
-  S.read(st, p, "coat", settings); assert.equal(view(m("rail.0")).line.ok, undefined); assert.equal(view(m("rail.0")).line.subject, "Coat · read");
+  st.readOnce.S01 = ["face"]; st.d = 10; assert.equal(view(m("rail.1")).line.price, "1 ◆");   // a half price is the lower number, with no word
+  S.read(st, p, "coat", settings); assert.equal(view(m("rail.0")).line.ok, undefined); assert.equal(view(m("rail.0")).line.subject, "Coat is read");
   assert.equal(view(m("pod")).line.ok, "Shape a founder");
   assert.equal(view(m("list.hatch", { ui: { cur: p.id, anchor: null, ci: 0, cmp: null, wildArm: 0 } })).line.ok, "Return to the wild");
   assert.equal(view(m("list.hatch", { ui: { cur: p.id, anchor: null, ci: 0, cmp: null, wildArm: 1 } })).line.ok, "Again: return it");
@@ -161,9 +161,30 @@ test("the hatch's arming plate is six words or fewer for every place", () => {
   for (const p of Object.keys(spec.strings.hatchPlace)) assert.ok(spec.strings.hatchArm.replace("{place}", spec.strings.hatchPlace[p]).split(" ").length <= 6, p);
 });
 
-test("the bottom line's subjects: a sealed tab's \"<chapter> · sealed\", the hatch's \"the hatch · <pod name>\"", () => {
+test("the bottom line's subjects: a sealed tab's \"<chapter> is sealed\", the hatch's \"Back to the <place>\"", () => {
   const st = stock(["S02"], 11), p = st.tray[0]; S.skipRead(st, p, settings);
   const fr = frameOf("S02"), ci = fr.chapters.findIndex((c) => c.sealed);
-  assert.equal(view(model(st, { ui: { cur: p.id, anchor: null, ci, cmp: null, wildArm: 0 }, focus: "rail." + ci })).line.subject, fr.chapters[ci].name + " · sealed");
-  assert.equal(view(model(st, { focus: "list.hatch" })).line.subject, "the hatch · " + S.podName(p));
+  assert.equal(view(model(st, { ui: { cur: p.id, anchor: null, ci, cmp: null, wildArm: 0 }, focus: "rail." + ci })).line.subject, fr.chapters[ci].name + " is sealed");
+  assert.equal(view(model(st, { focus: "list.hatch" })).line.subject, "Back to the " + S.PLACE_WORD[p.g]);
+});
+
+test("the bottom line's three slots follow the Words on Pods table: groups without dots, a short sentence in the centre, one amber sentence of six words or fewer on the right", () => {
+  const words = (t) => t.trim().split(/\s+/).length;
+  for (const id of SPECIES) {
+    const st = stock([id], 7), p = st.tray[0], base = { ui: { cur: p.id, anchor: null, ci: 0, cmp: null, wildArm: 0 } };
+    const check = (what, l) => {
+      for (const k of ["ok", "price", "back", "subject", "need"]) if (l[k]) assert.ok(!/·/.test(l[k]), `${id} ${what}: no "·" in ${k}: ${l[k]}`);
+      if (l.subject) assert.ok(l.subject.length <= 24 || /…$/.test(l.subject), `${id} ${what}: the subject fits 24 characters: ${l.subject}`);
+      if (l.need) assert.ok(words(l.need) <= 6, `${id} ${what}: the need is six words or fewer: ${l.need}`);
+      assert.ok(!/free|half/.test(l.price || ""), `${id} ${what}: no free or half`);
+    };
+    check("unidentified", view(model(st, base)).line);
+    S.skipIdentify(st, p); st.d = 20; st.e = 20;
+    for (const f of ["pod", "rail.0", "rail.1", "list.0", "list.hatch"]) check(f, view(model(st, { ...base, focus: f })).line);
+  }
+  const st = stock(["S01"], 3), p = st.tray[0], line = (f) => view(model(st, { focus: f })).line;
+  assert.equal(line("pod").subject, "sealed until identified");
+  S.skipIdentify(st, p); assert.equal(line("pod").subject, S.spName(p) + " is unread");
+  st.d = 10; S.read(st, p, "coat", settings); assert.equal(line("pod").subject, S.spName(p) + " is partly read");
+  st.d = 0; st.readEver = true; assert.equal(line("rail.1").need, "needs more ◆"); assert.equal(line("rail.1").dim, true);
 });

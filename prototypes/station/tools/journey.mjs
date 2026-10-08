@@ -153,7 +153,7 @@ expect(onScreen.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.versio
 await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika2.id);
 await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
 await press("up", 100); await press("left", 100); await press("left", 100); await press("right", 100);   // the rail remembers the last chapter: back to Coat, then Face
-l = await line(); expect(/Read Face/.test(l.ok) && l.price === "1 ◆ · half", "a second Loika's Face costs 1, half price shown on the bottom line: " + JSON.stringify(l));
+l = await line(); expect(/Read Face/.test(l.ok) && l.price === "1 ◆", "a second Loika's Face costs 1: the lower number, no word, on the bottom line: " + JSON.stringify(l));
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 // a glint on the first Loika? (only when the second carried something new: not asserted); the need line never shows digits of progress
 // 5. Compare: from the second Loika's pod, ← to its well, walk to the first Loika's well, ✓
@@ -190,9 +190,9 @@ await walk(["right", "right"], "rail.2", "▶ steps the chapters"); await walk([
 await walk(["down", "left"], "list." + s.tray.findIndex((p) => p.id === untuva.id), "back to the well");
 for (let i = 0; i < 8; i++) await press("down", 40); await walk([], "list.hatch", "▼ through the wells ends on the hatch, and stops there");
 await press("right", 60); expect((await focusNow()) === "pod", "→ from the hatch to the pod");
-// a sealed chapter (the Untuva's Character): no ✓ cap, the subject "Character · sealed", the slats on its page; the page's traits unread: frost
+// a sealed chapter (the Untuva's Character): no ✓ cap, the subject "Character is sealed", the slats on its page; the page's traits unread: frost
 await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.3"; }, untuva.id); await page.waitForTimeout(300);
-l = await line(); expect(!l.ok && l.subject === "Character · sealed", "a sealed chapter has no ✓ cap: " + JSON.stringify(l)); await frameShot("pods-sealed");
+l = await line(); expect(!l.ok && l.subject === "Character is sealed", "a sealed chapter has no ✓ cap: " + JSON.stringify(l)); await frameShot("pods-sealed");
 // the Tuikis: eight chapters, tabs 96 on a 104 pitch; the Coat has four traits (216×112 pictures)
 await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.0"; }, tuikisPod.id); await page.waitForTimeout(300); await frameShot("pods-eight-chapters");
 // the Large pod with six Coat traits (144×112 pictures), read whole by the developer
@@ -303,7 +303,7 @@ await page.evaluate(() => window.__st.seedAdults("S01", 77, 4));
 s = await st(); expect(s.mibis.filter((m) => !m.released).length === 6, "six bays taken");
 await press("research", 200);
 await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika2.id);
-l = await line(); expect(/no bay free/.test(l.price), "a full vivarium refuses before payment: " + JSON.stringify(l));
+l = await line(); expect(/no bay free/.test(l.need), "a full vivarium refuses before payment: " + JSON.stringify(l));
 const e2 = (await st()).e; await press("confirm", 200); expect((await st()).e === e2 && !(await st()).bud, "nothing paid, nothing grown");
 await press("habitat", 200);
 const adult = s.mibis.find((m) => m.name !== "Moss" && m.name !== "Dot");
