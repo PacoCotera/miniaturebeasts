@@ -1,0 +1,84 @@
+{
+  "id": "library-field-guide",
+  "direction": "D",
+  "round": 3,
+  "attempt": 1,
+  "tag": "LB-D-r3-a1",
+  "model": "gemini-3-pro-image",
+  "operation": "edit",
+  "prompt": "Use case: precise-object-edit. Asset type: Miniature Beasts Station screen concept, 16:9, flat screen design filling the canvas. Edit the supplied screen (Image 1) and preserve every other pixel: the top bar and bottom line and all their text, the shelf and its cards, the whole left page (portrait, frame plate, round stamps, empty name label), the seven tabs and their words, the four specimen rows with their words and plates.\nONE CHANGE ONLY, in the right-hand column of the right page (to the right of the specimen rows): replace the small pale square plate in the lineage with a LARGE flat, completely empty, pale square plate, about as large as the pinned wish card below it and square, filling the column's width between the last row of plates and the page's right border, with straight edges and nothing drawn on it (the genome stamp is placed there later); move the small pod sketch, the branch line and the small lizard sketch above the plate into one short horizontal row so they still read pod to lizard to plate; the pinned wish card stays where it is.\nConstraints: preserve every other pixel of the screen; no new words, no digits, nothing drawn on the pale plate or the name label.",
+  "preamble": "One reference image follows: Image 1 is the screen to edit.",
+  "imageInputs": [
+    {
+      "path": "art/concept-station/library/round2/LB-D-r2-a2-canvas.png",
+      "role": "edit target: the round 2 pick (with the name label)",
+      "sha256": "6c390d5793d90c88dd9cc80597540d9c9e6f5471d0307c4a421e99cf9bbc8cc5"
+    }
+  ],
+  "requested": {
+    "aspectRatio": "16:9",
+    "imageSize": "2K"
+  },
+  "targetSize": "1536x864",
+  "screenCrop": "centered",
+  "time": "2026-10-08T00:34:38Z",
+  "result": {
+    "status": "success",
+    "original": {
+      "file": "raw/LB-D-r3-a1.jpg",
+      "stored": true,
+      "mimeType": "image/jpeg",
+      "width": 2752,
+      "height": 1536,
+      "sha256": "39ace0ba7ea84f2feecca3141a7a6eacccd51fcfbce124d4ffea83b1827d4825"
+    },
+    "png": {
+      "file": "LB-D-r3-a1-canvas.png",
+      "width": 1536,
+      "height": 864,
+      "sha256": "75d05ab8c3e41fc26da5bcfd5e39ea3fd4d2ec566827195cddcfbe903ad92ac8"
+    },
+    "screen": {
+      "file": "LB-D-r3-a1-1024x600.png",
+      "width": 1024,
+      "height": 600,
+      "sha256": "1472f07862706636183fb8e366841153de447e21eefe325099fd32f409f9449f",
+      "cropRect": {
+        "x": 65,
+        "y": 0,
+        "width": 2621,
+        "height": 1536
+      },
+      "detection": {
+        "method": "centered",
+        "fallback": false
+      },
+      "resample": "LANCZOS"
+    },
+    "finishReason": "STOP",
+    "seconds": 23.0,
+    "usage": {
+      "promptTokenCount": 552,
+      "candidatesTokenCount": 1357,
+      "totalTokenCount": 2159,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 294
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1120
+        }
+      ],
+      "thoughtsTokenCount": 250,
+      "serviceTier": "standard"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "text": "Tuikis",
+    "x": 185,
+    "y": 503,
+    "size": 22,
+    "weight": "Medium",
+    "color": "#2b2420",
+    "anchor": "mm"
+  },
+  {
+    "text": "Stilbera · digs burrows · glows at dusk",
+    "x": 185,
+    "y": 528,
+    "size": 12,
+    "weight": "Regular",
+    "color": "#6b5f52",
+    "anchor": "ms"
+  },
+  {
+    "text": "Tuikis · from the rock field",
+    "x": 512,
+    "y": 582,
+    "size": 17,
+    "weight": "Regular",
+    "color": "#c3c7cb",
+    "anchor": "mm"
+  }
+]

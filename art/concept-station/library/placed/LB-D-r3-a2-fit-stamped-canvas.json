@@ -1,0 +1,19 @@
+{
+  "screen": "art/concept-station/library/round3/LB-D-r3-a2-canvas.png",
+  "stamp": "art/concept-station/library/layout/stamp-s03-tome-300.png",
+  "detectedSquare": [
+    1265,
+    470,
+    1422,
+    583
+  ],
+  "pasted": {
+    "x": 1288,
+    "y": 471,
+    "side": 110
+  },
+  "outputs": {
+    "canvas": "art/concept-station/library/placed/LB-D-r3-a2-fit-stamped-canvas.png",
+    "screen": "art/concept-station/library/placed/LB-D-r3-a2-fit-stamped-1024x600.png"
+  }
+}
