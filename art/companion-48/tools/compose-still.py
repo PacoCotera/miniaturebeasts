@@ -75,30 +75,28 @@ def at(c, r, dx=0, dy=0): return OX + c * TS + TS // 2 + dx, OY + r * TS + TS - 
 FOLIAGE = None   # art director, round 2: under the storm the canopies keep the G ramp, the lit stones their glow and the outpost its wood and thatch (no cast); the ground, water and plain stones take it
 # the staging, after the concept: ONE focal event, the crackling charged stone (its second frame) and the warned strike's ring beside it, with the pawn
 # a tile away facing them along the same row, Loika by the pawn; everything else is background and kept small and to the edges
-# the event runs on a DIAGONAL, as the concept's does: the pawn at the lower left facing up and to the right, Loika by the pawn, the warned ring on the tile between, the big charged stone
-# at the upper right of the ring with the tree standing over it all
-CAN = P.canopy_rain if RAIN else None                  # the canopies and bushes one green step deeper in rain
-PAWN, LOIKA, STONE, RING, TREE = at(2, 8), at(3, 8, 0, 4), at(5, 6, 0, 6), (4, 7), at(6, 4, 0, 8)
-things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk2", PAWN, None), ("tokens", "loika-idle1", LOIKA, None), ("props", "tree", TREE, CAN),
-          (("huts", f"hut-{hut}-lit", at(1, 2, 0, 6), DARK) if hut else ("props", "outpost-lit", at(1, 2, 0, 8), HUTT)),
-          ("props", "bush", at(4, 1), CAN), ("props", "bush-fruit", at(9, 5), CAN), ("props", "bush-shaken", at(0, 9), CAN),
-          ("props", "dew-cup", at(1, 10), GT), ("props", "reeds", at(7, 10, 0, -6), GT), ("props", "stone-step", at(6, 10, 0, -4), GT)]
-# the shade: the tree's own, one soft ellipse on the grass lying from its foot down to the left over the stone, the ring, the pawn and Loika (the ground's colours darker, the rim dithered);
-# and the stone's shadow, a real one (a flat ellipse under and to the right of it, 3 to 6 rows deep). On the clear ground the shade is two ramp steps below the lit grass, out of the coat's grey.
+# ONE light direction (from the top left: every shadow falls to the lower right). The event is laid on a diagonal by PLACEMENT, as the concept's is: the tree at the upper left, the pawn and Loika
+# at the trunk's edge in the tree's shade, the warned ring on the tile beyond them, the big charged stone at the lower right of the ring
+CAN = P.canopy_rain if RAIN else None                  # the bushes one green step deeper in rain
+TRT = P.tree_rain if RAIN else None                    # the tree's rain canopy: body pine, clumps forest, leaf only on the clumps' top-left edges
+TREE = at(4, 4, 0, 8); PAWN = (TREE[0] + 34, TREE[1] + 40); LOIKA = (TREE[0] + 78, TREE[1] + 46); RING = (6, 6); STONE = at(7, 7, 14, 6)
+things = [("props", "stone-charged2", STONE, FOLIAGE), ("pawn", "pawn-right-walk2", PAWN, None), ("tokens", "loika-idle1", LOIKA, None), ("props", "tree", TREE, TRT),
+          (("huts", f"hut-{hut}-lit", at(1, 2, 0, 6), DARK) if hut else ("props", "outpost-lit", at(1, 1, 8, 8), HUTT)),
+          ("props", "bush", at(6, 1), CAN), ("props", "bush-fruit", at(9, 5), CAN), ("props", "bush-shaken", at(1, 9), CAN),
+          ("props", "dew-cup", at(2, 10), GT), ("props", "reeds", at(7, 10, 0, -6), GT), ("props", "stone-step", at(6, 10, 0, -4), GT)]
+# shades are Bayer-dithered pools through the ground's shade table, never a hard ellipse with a rim: a 4 x 4 ordered dither whose density falls off from the pool's centre.
+# The tree's pool lies under the canopy and to its lower right; the stone and the hut have contact shadows 2 to 3 rows deep to the lower right.
 SH = np.array(P.dark if RAIN else P.shade_clear)
-def darken(test):
-    for yy_ in range(VIEW[0], VIEW[1]):
-        for xx_ in range(0, W):
-            rr = test(xx_, yy_)
-            if rr is None: continue
-            if rr < 0.8 or (rr < 1.0 and (xx_ + yy_) % 2 == 0):
-                if scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
-tcx, tcy = (TREE[0] + PAWN[0]) / 2 + 4, (TREE[1] + PAWN[1]) / 2 - 10; ux, uy = PAWN[0] - TREE[0], PAWN[1] - TREE[1]; L = (ux * ux + uy * uy) ** .5; ux, uy = ux / L, uy / L
-def tree_shade(x, y):
-    dx, dy = x - tcx, y - tcy; al = dx * ux + dy * uy; pe = -dx * uy + dy * ux
-    return (al / (L / 2 + 46)) ** 2 + (pe / 58.0) ** 2
-darken(tree_shade)
-darken(lambda x, y: ((x - (STONE[0] + 14)) / 34.0) ** 2 + ((y - (STONE[1] - 1)) / 6.5) ** 2)
+BAYER = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]) / 16.0
+def pool(cx, cy, rx, ry, peak=0.95, skew=0.0):
+    for yy_ in range(max(VIEW[0], int(cy - ry)), min(VIEW[1], int(cy + ry) + 1)):
+        for xx_ in range(max(0, int(cx - rx)), min(W, int(cx + rx) + 1)):
+            r = (((xx_ - cx) / rx) ** 2 + ((yy_ - cy) / ry) ** 2) ** .5
+            d = peak * max(0.0, 1.0 - r) ** 0.8
+            if d > BAYER[yy_ % 4, xx_ % 4] and scr[yy_, xx_] != C["ink"]: scr[yy_, xx_] = SH[scr[yy_, xx_]]
+pool(TREE[0] + 38, TREE[1] + 22, 118, 56)
+pool(STONE[0] + 12, STONE[1] - 1, 34, 6.5, 0.98)
+hx, hy = at(1, 1, 8, 8); pool(hx + 12, hy - 1, 34, 6.0, 0.98)
 blit(load("props", "strike-warn2"), OX + RING[0] * TS, OY + RING[1] * TS, None, VIEW)   # the warned strike lies on its tile, under everything that stands
 for group, name, (cx, cy), table in sorted(things, key=lambda t: t[2][1]): sprite(group, name, cx, cy, table)
 # the name tag over Loika, the message box at the view's top, the rain over all of it

@@ -2,11 +2,42 @@
 
 The [Companion 48 px redraw](../../../design/proposals/companion-48px-redraw.md) (§9 Decided) on one place, the meadow and pond edge in a storm, with every piece it needs at 1× on the 48 ramps of the [signed palette](../palette/README.md). Everything here is **a candidate for the owner's review**: generated sources down-rendered by script, an Aseprite pass for the meadow, scripted chrome and water, Retro Diffusion sprites beside the scripted ones where one was picked, and Pip derived into the Loika token. Nothing is accepted; nothing touches `prototypes/exploration/index.html`.
 
-**State: round 9 ready for the owner.** It answers the owner's five notes on round 1 and their answers on rounds 2 to 8 (below). Rounds 1 to 8 are frozen in [`round1/`](round1/) to [`round8/`](round8/).
+**State: round 11 ready for the art director.** It answers the owner's five notes on round 1 and their answers on rounds 2 to 8 (below). Rounds 1 to 8 and 10 are frozen in [`round1/`](round1/) to [`round8/`](round8/) and [`round10/`](round10/).
 
 ![Contact sheet at 3×](contact-sheet-3x.png)
 
-*Every piece at 3× ([1× here](contact-sheet-1x.png)); a piece that changed since round 8 shows round 8 (r8) beside round 9 (r9). The shore test and the Retro Diffusion group are laid out in their own groups. Candidates, not accepted.*
+*Every piece at 3× ([1× here](contact-sheet-1x.png)); a piece that changed since round 10 shows round 10 (r10) beside round 11 (r11). The shore test and the Retro Diffusion group are laid out in their own groups. Candidates, not accepted.*
+
+## Round 11: the art director's verdict on round 10 (the rain still reads as the storm concept), and what answers each
+
+![The concept, the round 10 still and the round 11 still, rain, at 1×](still/beside-concept-and-round11.png)
+
+*The accepted concept, the round 10 still and the round 11 still (rain), 1×; the clear pair is [`still/beside-concept-and-round11-clear.png`](still/beside-concept-and-round11-clear.png). Candidates.*
+
+1. **Hut base: no baked disc.** The grass patch and the baked shadow are out of the piece (it is transparent around the stones); the service's base stones stay; **four tufts overlap the front edge of the stones**; the contact shadow is drawn by the still, **Bayer-dithered, 2 to 3 rows deep under the base and to its lower right, through the ground's shade table** (`compose-still.py`). The hut's size is not changed (it is with the owner).
+2. **Hut porch:** the service's own porch from raw seed 50 is back (its small roof, its two posts, a step), the tarp in the wood and thatch colours (planks: clay, soil, sand), moved 6 px left of where the service had it so round wall shows at its right; a plank door in the doorway.
+3. **Big charged stone:** redrawn at its final size by Retro Diffusion (62 × 80 canvas, img2img from the earlier generated stone, three seeds, seed 32 kept; the stone body is 48 × 64, 1.6 times the pawn's 40), **no nearest-neighbour scaling**, cleaned (the service's cyan flecks to the stone's greys, one component, despeckled). The zigzag is kept; the crackle is **four arcs of unequal length hugging the outline** (50, 40, 70 and 35 degrees), **two running on into the grass** at the foot; frame 1 is a faint broken vein of cream and gold only. No evenly spaced arms (`tools/stone-r11.py`).
+4. **One light direction (the top left; every shadow falls to the lower right).** The tree's shade is a **Bayer-dithered pool** under the canopy and to its lower right through the ground's shade table, no rim, no hard ellipse; the pawn and Loika stand at the trunk's edge inside it; the stone and the hut have their own contact shadows. **The diagonal is carried by placement** (tree at the upper left, pawn and Loika, the ring, the stone at the lower right), not by a false shadow.
+5. **Tree, through the pipeline:** a Gemini painting of a clumped canopy lit from the top left ([`sources/r11/C48-T-r11-a1`](sources/r11/)), Retro Diffusion img2img at the final size 136 × 152 (three seeds; seed 12 kept: seeds 11 and 13 came back as a saloon and as a top-down mess), cleaned (`tools/tree-r11.py`): outline in tealD, never black; the gaps and undersides pine; a short root flare. **Rain canopy** (`P.tree_rain`): body pine, clumps forest, leaf only on the top-left edges of the clumps, no grass and no sprout; the clear canopy is unchanged; the bushes stay one step deeper in rain.
+6. **Pawn ruff (front and back):** the front ruff is the side view's cream fur (sand, a cream light at the top left, clay in the shade) in place of the silver ring, its outer edge broken with 1 px tufts and two rows thick at the chin; the back view has ruff tufts at both sides of the hood and a 1 px seam down its middle. Every other pixel of H is as it was (`ruff_front`, `ruff_back` in `tools/pawn_limbs.py`).
+7. **Left and right walks:** the far leg is one ramp step darker than the near leg (night with an ink edge against slate with night); in the passing frame the far foot is under the hip, its sole two rows off the ground (row 41), behind the planted leg; the near sleeve is swung 2 px against the near leg on every side frame.
+8. **Creeps, all facings:** the side views lean the top half 3 px (2 on creep2) toward the facing with the hood three rows down and the knees bent forward of the ankles; the front view leans the head a row toward the viewer; knees are no longer drawn out; **creep2 sits one row higher than creep1 and creep3** (the bob).
+9. **Proof:** [`still/beside-concept-and-round11.png`](still/beside-concept-and-round11.png) and [`...-clear.png`](still/beside-concept-and-round11-clear.png): the concept beside the round 10 and round 11 stills at 1×; the round 10 stills and pieces are frozen in [`round10/`](round10/).
+10. **How each piece was finished (the honest record).** The brief asks for pieces finished by hand in Aseprite or redrawn by Retro Diffusion at final size and cleaned, and nothing left as pixels set by code. I cannot draw by hand: I have no pointer in Aseprite, only its scripting and my own code. So the record is:
+
+| Piece | How it was finished |
+| --- | --- |
+| Tree | **Retro Diffusion at final size (136 × 152), from a Gemini painting, then cleaned by code** (palette snap, outline recolour, one component). |
+| Charged stone body | **Retro Diffusion at final size (62 × 80), cleaned by code.** |
+| Charged stone crackle (zigzag, four arcs, vein) | **Pixels set by code** (not redrawn by the service). |
+| Hut B thatch, base stones, porch | **The service's own pixels (seed 50, 64 px), recoloured by code.** |
+| Hut B wall (log courses), window, step, tufts | **Pixels set by code**; assembled in Aseprite (0 pixels differ). |
+| Pawn: H's head, torso, pack and every frame the service drew | **Retro Diffusion at 48 px (round 9), cleaned by code**, assembled in Aseprite. |
+| Pawn: legs, boots, raised arms, ruff, sleeve swings, leans | **Pixels set by code** (`pawn_limbs.py`), assembled in Aseprite. |
+| Shades and contact shadows | **Drawn by the still's script** (Bayer-dithered through the ground's shade table). |
+| Ground tufts | **Pixels set by code** on round 8's tiles. |
+
+Where the art director wants a piece hand-finished, it needs a person in Aseprite (the sources are in [`work/hut-b-aseprite/`](work/hut-b-aseprite/), [`work/pawn-aseprite/`](work/pawn-aseprite/)) or a decision that code-set pixels are acceptable for the listed pieces.
 
 ## The owner's decision on the pawn, and what answers it
 
@@ -104,7 +135,7 @@ One tile set (the lime meadow, pond and shallows in `work/ground`) in two light 
 
 ![The review place in a storm, 450×600 at 1×](still/companion-place-storm-48.png)
 
-*450×600 at 1×, **one event, now on a diagonal as the concept's runs**: the pawn at the lower left facing up and to the right, Loika by the pawn, the warned strike's ring on the tile between, and the **big charged stone** at the upper right of the ring (`tools/stone-big.py`: its body 60 px, 1.5 times the pawn's 40, with a **big yellow-white crackle**: a thick zigzag bolt across its face and eight long arms off the whole silhouette, white core, yellow flank, gold tips; frame 1 is the charge building, a thin vein and four short arms; the two frames share one canvas) with **a real shadow** (a flat ellipse on the grass under and to its right, dithered rim, drawn by the still) instead of the 1 px bar. **The tree** (135 × 151, no grey disc under its trunk) stands over the group and its shade lies down the diagonal, a soft ellipse in the ground's own colours, over the stone, the ring, the pawn and Loika. The outpost, two bushes and a small pond are at the edges. HUD 32, view 532, bottom line 36. `compose-still.py --state rain` (the default) or `--state clear` (no rain, no storm bolts, "The rain has passed"): the ground's table on ground, shore, water and ripples; the canopies and bushes one step deeper in rain; the pawn and mibis untouched. 0 off-palette pixels. "Loika" is a text layer, never baked. Candidate.*
+*450×600 at 1×, **one event, now on a diagonal as the concept's runs**: the pawn at the lower left facing up and to the right, Loika by the pawn, the warned strike's ring on the tile between, and the **big charged stone** at the upper right of the ring (`tools/stone-r11.py`: its body 64 px, 1.6 times the pawn's 40; see round 11) with **a real shadow** (a flat ellipse on the grass under and to its right, dithered rim, drawn by the still) instead of the 1 px bar. **The tree** (round 11, 136 × 152, through the pipeline) stands at the upper left with its dithered shade pool at its lower right over the pawn and Loika. The outpost, two bushes and a small pond are at the edges. HUD 32, view 532, bottom line 36. `compose-still.py --state rain` (the default) or `--state clear` (no rain, no storm bolts, "The rain has passed"): the ground's table on ground, shore, water and ripples; the canopies and bushes one step deeper in rain; the pawn and mibis untouched. 0 off-palette pixels. "Loika" is a text layer, never baked. Candidate.*
 
 ![Beside the accepted concept and the round 3 still](still/beside-concept-and-round3.png)
 
@@ -114,7 +145,7 @@ One tile set (the lime meadow, pond and shallows in `work/ground`) in two light 
 
 *The round 5 still in four greys (also [sheets](sheets/four-gray/)). Re-read: the grass body is luma 159 (grey 3 of 4); the pawn's coat and hood are orange (luma 127, grey 2) with a deep rust shade and yellow lit edges, its trousers and boots dark: 62 % of its pixels sit in grey 2, 30 % in grey 1, 5 % in grey 4 and only 2 % in the ground's grey 3. In round 1 the pawn's orange body and the darkened grass landed in one grey; now the pawn is a darker figure on lighter ground, one grey clear, by value as well as by outline. The margin is one grey step, and it holds for the project's check (Rec. 709 luma): the coat's luma is 127.1 against a grey edge at 128, so a different grey conversion would move it (see the pawn section).*
 
-**Four greys, re-read on both grounds (round 10).** One amber coat for both grounds, no table (body amber, luma 179, grey 3; shade orange 127; light yellow 211). **Rain:** the ground body is forest (luma 82, grey 2) and the shade under the tree two steps darker still (pine, grey 1): the pawn is two greys off the ground in the shade and one outside it. **Clear:** the ground body is sprout (193, grey 4); the tree's shade was grass green (159) and shared the amber's grey, so on the clear ground the shade table is now **two ramp steps below the lit ground** (`P.shade_clear`: sprout to leaf, 120, grey 2), which puts the pawn (grey 3) on a grey 2 shade and the lit ground at grey 4. The pawn's pixels over all 28 frames: 34 / 29 / 31 / 6 % in greys 1 to 4. Renderings: [`still/four-gray/`](still/four-gray/) for both stills, [`sheets/four-gray/`](sheets/four-gray/).
+**Four greys, re-read on both grounds (round 10).** One amber coat for both grounds, no table (body amber, luma 179, grey 3; shade orange 127; light yellow 211). **Rain:** the ground body is forest (luma 82, grey 2) and the shade under the tree two steps darker still (pine, grey 1): the pawn is two greys off the ground in the shade and one outside it. **Clear:** the ground body is sprout (193, grey 4); the tree's shade was grass green (159) and shared the amber's grey, so on the clear ground the shade table is now **two ramp steps below the lit ground** (`P.shade_clear`: sprout to leaf, 120, grey 2), which puts the pawn (grey 3) on a grey 2 shade and the lit ground at grey 4. The pawn's pixels over all 28 frames: see the sheet's four-grey rendering. Renderings: [`still/four-gray/`](still/four-gray/) for both stills, [`sheets/four-gray/`](sheets/four-gray/).
 
 ### The storm light: the art director's decision
 
@@ -293,7 +324,9 @@ Signed, art director, 2026-10-08. The pawn is the owner's pick (study H), built 
 | Round 10: no paid call (the strides are drawn by hand, no more service calls for poses) | | 0.00 |
 | Round 9, hut B and the ground states: no paid call (seed 50's own pixels edited; the tree refit from the painted sheet; the tables scripted) | | 0.00 |
 | C48-W-r9 the pawn from H: 19 calls at 0.45 and 6 repeats at 0.32, 25 calls, round 9 | Retro Diffusion rd_pro__topdown 48×48 | 4.50 |
-| **Total** | | **15.83** |
+| C48-T-r11-a1 tree painting, round 11 | Pro, 1K | 0.16 |
+| C48-T-r11 tree (3 seeds, 136×152), C48-S-r11 stone (3 seeds at 48×64 and 3 at 62×80), round 11: 9 calls | Retro Diffusion rd_pro__topdown | 1.62 |
+| **Total** | | **17.61** |
 
 Re-summed from the sidecars by `tools/budget.py` into [`sources/budget.json`](sources/budget.json) (the superseded batch in [`sources/extra-spend.json`](sources/extra-spend.json)). The service's balance is topped up automatically, so it is not a limit.
 

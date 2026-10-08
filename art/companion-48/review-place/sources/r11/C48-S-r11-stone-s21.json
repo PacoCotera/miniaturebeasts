@@ -1,0 +1,41 @@
+{
+ "id": "C48-S-r11-stone-s21",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__topdown",
+ "size": "48x64",
+ "prompt": "a tall rounded grey standing field stone seen from above at an angle, lit from the top left, a darker lower right, chipped facets, no vegetation",
+ "remove_bg": true,
+ "seed": 21,
+ "input_image": {
+  "file": "review-place/sources/r11/stone-in.png",
+  "sha256": "c63ec8b122d6a864bf939751e7aa5f340b9a3ff00679ec4a461be5945f894185",
+  "strength": 0.45
+ },
+ "reference_image": null,
+ "input_palette": {
+  "file": "palette/palette.png",
+  "sha256": "1dd132edd2fa01f2042a4b708ff45a620a628643a0b79c5f4446ec5333227653"
+ },
+ "time": "2026-10-08T23:07:40Z",
+ "checkCost": {
+  "created_at": 1791500860,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 46.420000000000016
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "6c527dc0-1304-4412-93a7-c17ef48b7d3c",
+  "seconds": 36.6,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 46.24,
+  "model": "rd_pro",
+  "file": "C48-S-r11-stone-s21-rd.png",
+  "sha256": "3fed4b9d0b9c46e209b89e3811e5d94406574b379e3d93232aea9cf8ba60ae70"
+ }
+}

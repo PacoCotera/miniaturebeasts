@@ -1,0 +1,43 @@
+{
+ "id": "C48-T-r11-a1",
+ "tag": "C48-T-r11-a1",
+ "model": "gemini-3-pro-image",
+ "operation": "generate",
+ "prompt": "A single round-canopied meadow tree for a cosy top-down 3/4 pixel-art game, painted large and clean on a flat solid magenta (#FF00FF) background. The canopy is built of distinct rounded CLUMPS of leaves (five to seven big clumps and smaller ones between them), each clump lit from the TOP LEFT: its top-left edge a bright fresh green, its body a mid green, its underside and the gaps between clumps a very deep blue-green. One light direction only (top left); the lower right of the canopy is the darkest. The outline of the whole canopy and trunk is a very dark blue-green, never black. The trunk is short and sturdy, seen below the canopy, with a SHORT root flare (two small roots at its foot, no wide spreading base), warm brown bark lit from the left. No ground, no shadow, no grass under it, no text. The tree fills most of the square. Flat colour shapes with a few highlight strokes, like a hand-painted game sprite, not a photograph and not a 3D render.\n",
+ "imageInputs": [],
+ "requested": {
+  "aspectRatio": "1:1",
+  "imageSize": "1K"
+ },
+ "time": "2026-10-08T23:05:00Z",
+ "result": {
+  "status": "success",
+  "png": {
+   "file": "C48-T-r11-a1-canvas.png",
+   "width": 1024,
+   "height": 1024,
+   "sha256": "75dfa0cc29cbf84bc11183d854c28246b2c656e9c2183e9e80beb18f9684bf7e"
+  },
+  "finishReason": "STOP",
+  "seconds": 19.4,
+  "usage": {
+   "promptTokenCount": 228,
+   "candidatesTokenCount": 1403,
+   "totalTokenCount": 1962,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 228
+    }
+   ],
+   "candidatesTokensDetails": [
+    {
+     "modality": "IMAGE",
+     "tokenCount": 1120
+    }
+   ],
+   "thoughtsTokenCount": 331,
+   "serviceTier": "standard"
+  }
+ }
+}

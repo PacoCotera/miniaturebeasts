@@ -1,6 +1,6 @@
 {
- "successfulCalls": 77,
- "totalUSD": 15.83,
+ "successfulCalls": 87,
+ "totalUSD": 17.61,
  "calls": [
   {
    "tag": "C48-H-r6-a1",
@@ -33,6 +33,77 @@
    "out": 1432,
    "usd": 0.174,
    "seconds": 19.5
+  },
+  {
+   "tag": "C48-S-r11-stone-L-s31",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "62x80",
+   "usd": 0.18,
+   "seconds": 31.3
+  },
+  {
+   "tag": "C48-S-r11-stone-L-s32",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "62x80",
+   "usd": 0.18,
+   "seconds": 36.5
+  },
+  {
+   "tag": "C48-S-r11-stone-L-s33",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "62x80",
+   "usd": 0.18,
+   "seconds": 57.1
+  },
+  {
+   "tag": "C48-S-r11-stone-s21",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x64",
+   "usd": 0.18,
+   "seconds": 36.6
+  },
+  {
+   "tag": "C48-S-r11-stone-s22",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x64",
+   "usd": 0.18,
+   "seconds": 26.1
+  },
+  {
+   "tag": "C48-S-r11-stone-s23",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "48x64",
+   "usd": 0.18,
+   "seconds": 36.5
+  },
+  {
+   "tag": "C48-T-r11-a1",
+   "tool": "gemini-3-pro-image",
+   "in": 228,
+   "out": 1403,
+   "usd": 0.1688,
+   "seconds": 19.4
+  },
+  {
+   "tag": "C48-T-r11-rd-s11",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "136x152",
+   "usd": 0.18,
+   "seconds": 31.5
+  },
+  {
+   "tag": "C48-T-r11-rd-s12",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "136x152",
+   "usd": 0.18,
+   "seconds": 41.8
+  },
+  {
+   "tag": "C48-T-r11-rd-s13",
+   "tool": "retro-diffusion rd_pro__topdown",
+   "size": "136x152",
+   "usd": 0.18,
+   "seconds": 41.7
   },
   {
    "tag": "C48-H-r7-B-dark-s48",

@@ -22,7 +22,7 @@ def shift_block(src, dst, rows, dy, cols=None):
             m = src[y] >= 0
             if cols is not None: m = m & cols
             dst[y + dy][m] = src[y][m]
-def fb_pose(base, leg_top, left_x, right_x, boot_rows=(42, 44), body_dy=0, l_dy=0, r_dy=0, l_dx=0, r_dx=0, knee=0.0, arm_l=0, arm_r=0, arms=(24, 35), win_l=(16, 22), win_r=(25, 33)):
+def fb_pose(base, leg_top, left_x, right_x, boot_rows=(42, 44), body_dy=0, l_dy=0, r_dy=0, l_dx=0, r_dx=0, knee=0.0, arm_l=0, arm_r=0, top_dy=0, top_split=26, arms=(24, 35), win_l=(16, 22), win_r=(25, 33)):
     """front/back stride on the placed cell of the standing frame `base`.
     leg_top: the first leg row of the standing frame; left_x/right_x: the leftmost column of each leg (4 wide: three of the trouser's body, one of its shade);
     body_dy: the upper block (everything above the legs, and the arms) moves down by it (a contact pose drops the body, a creep drops it three rows);
@@ -34,9 +34,9 @@ def fb_pose(base, leg_top, left_x, right_x, boot_rows=(42, 44), body_dy=0, l_dy=
     sides = (xx < left_x - 1) | (xx > right_x + 4)                      # the arm columns (the figure outside the legs' columns)
     # upper block: everything above leg_top inside the legs' columns, plus the arms on both sides (stretched below)
     inner = ~sides
-    for y in range(0, leg_top):
-        m = (base[y] >= 0) & inner[y]
-        if 0 <= y + body_dy < H: out[y + body_dy][m] = base[y][m]
+    for y in sorted(range(0, leg_top), key=lambda r: -r):          # the lower rows are drawn last, so the lean's one lost row is the upper block's
+        m = (base[y] >= 0) & inner[y]; yd = y + body_dy + (top_dy if y < top_split else 0)
+        if 0 <= yd < H: out[yd][m] = base[y][m]
     a0, a1 = arms
     for cols, dh in ((xx[0] < left_x - 1, arm_l), (xx[0] > right_x + 4, arm_r)):
         # the arm from the shoulder row a0 to the hand's last row (a1 + hand step): nearest rows of the standing arm
@@ -82,16 +82,20 @@ def side_boot(out, ax, ay, lift_toe=0):
     for j, row in enumerate(SBOOT):
         for i, c in enumerate(row):
             if c != "." and 0 <= ay + j < 48 and 0 <= ax - 1 + i < 48: out[ay + j, ax - 1 + i] = C[BOOT_C[c]]
-def side_pose(base, upper_rows=34, body_dy=0, far=None, near=None, far_ankle=None, near_ankle=None):
+def side_pose(base, upper_rows=34, body_dy=0, far=None, near=None, far_ankle=None, near_ankle=None, lean=0):
     out = np.full_like(base, -1)
+    ys_ = np.where((base >= 0).any(1))[0]; top = ys_.min()
     for y in range(0, upper_rows):
-        if 0 <= y + body_dy < 48: out[y + body_dy] = base[y]
+        if 0 <= y + body_dy < 48:
+            d = int(round(lean * max(0.0, (upper_rows - 6 - y) / max(1.0, upper_rows - 6 - top))))        # the rows lean forward, the more the higher they are
+            row = np.roll(base[y], d) if d else base[y]
+            out[y + body_dy] = row
     if far: leg_path(out, far, C["night"], C["ink"]); side_boot(out, *far_ankle)
     if near: leg_path(out, near, C["slate"], C["night"]); side_boot(out, *near_ankle)
     return shadow(out, 24)
 
 # ---- raised arms (the react poses): a sleeve is a thick polyline in the coat's amber with an orange edge on the side that meets the air, and a glove at its end (bark with a soil edge)
-def limb(out, pts, w=3, hand=2):
+def limb(out, pts, w=3, hand=2, edge_all=False):
     mask = np.zeros(out.shape, bool); g = np.zeros(out.shape, bool)
     for (xa, ya), (xb, yb) in zip(pts[:-1], pts[1:]):
         n = max(abs(xb - xa), abs(yb - ya), 1)
@@ -110,5 +114,31 @@ def limb(out, pts, w=3, hand=2):
         for y, x in zip(*np.where(arr)):
             for dy, dx in ((-1, 0), (1, 0), (0, -1), (0, 1)):
                 ny, nx = y + dy, x + dx
-                if not (0 <= ny < 48 and 0 <= nx < 48) or not (mask[ny, nx] or g[ny, nx]) and out[ny, nx] < 0: new[y, x] = C[col]; break
+                if not (0 <= ny < 48 and 0 <= nx < 48) or not (mask[ny, nx] or g[ny, nx]) and (out[ny, nx] < 0 or edge_all): new[y, x] = C[col]; break
     m = new >= 0; out[m] = new[m]
+
+
+# ---- the ruff (round 11). Front: the silver ring round the face becomes the side view's cream fur (sand, a cream light at the top left, clay in the shade), its outer edge broken with 1 px tufts and
+# thicker at the chin. Back: ruff tufts at both sides of the hood and a 1 px seam down the middle. Every other pixel stays.
+def ruff_front(cell):
+    out = cell.copy(); yy, xx = np.mgrid[0:48, 0:48]
+    fog = (out == C["fog"])
+    out[fog] = C["sand"]
+    out[fog & ((xx >= 28) | (yy >= 19))] = C["clay"]
+    out[fog & (xx <= 20) & (yy <= 17)] = C["cream"]
+    ring = np.isin(out, [C["sand"], C["clay"], C["cream"]]) & (yy >= 11) & (yy <= 21)
+    for (x, y) in ((17, 14), (17, 17), (16, 19), (31, 13), (31, 16), (31, 19), (21, 10), (25, 10)):            # 1 px tufts on the hood side of the ring
+        if out[y, x] in (C["amber"], C["orange"], C["rust"]): out[y, x] = C["clay"] if x >= 28 else C["sand"]
+    for x in range(19, 29):                                                                                      # thicker at the chin: two rows under the chin, a tuft row under them
+        for y, c in ((21, C["sand"] if x < 26 else C["clay"]), (22, C["clay"] if (x + 1) % 2 else C["sand"])):
+            if out[y, x] in (C["orange"], C["amber"], C["sand"], C["clay"], C["rust"]): out[y, x] = c
+    for x in (20, 23, 26):
+        if out[23, x] in (C["orange"], C["amber"]): out[23, x] = C["clay"]
+    return out
+def ruff_back(cell):
+    out = cell.copy()
+    for (x, y, c) in ((15, 14, "sand"), (16, 13, "sand"), (16, 15, "cream"), (15, 16, "sand"), (32, 13, "clay"), (31, 12, "clay"), (31, 14, "sand"), (32, 15, "clay")):
+        if out[y, x] < 0 or out[y, x] in (C["amber"], C["orange"], C["rust"]): out[y, x] = C[c]
+    for y in range(8, 17):                                                                                         # the seam
+        if out[y, 24] in (C["amber"], C["orange"]): out[y, 24] = C["orange"]
+    return out

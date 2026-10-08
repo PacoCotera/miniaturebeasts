@@ -61,6 +61,9 @@ class Palette:
             self.ground_clear[self.index[n]] = self.index[step(n, 1)]       # clear: warmed one step
             self.canopy_rain[self.index[n]] = self.index[step(n, -1)]       # the canopies and bushes in rain: one step deeper
             self.shade_clear[self.index[n]] = self.index[step(n, -2)]       # the shade under the tree on the clear ground: two steps below the lit ground, out of the amber coat's grey
+        # the tree's rain canopy (round 11): body pine, clumps forest, leaf only on the top-left edges of clumps; no grass or sprout. Bushes use canopy_rain.
+        self.tree_rain = list(range(len(names)))
+        for n, t in (('pine', 'pine'), ('forest', 'pine'), ('leaf', 'forest'), ('grass', 'forest'), ('sprout', 'leaf'), ('lime', 'leaf')): self.tree_rain[self.index[n]] = self.index[t]
         self.rain = list(self.storm); self.clear = list(range(len(names)))
         for n in ramp: self.rain[self.index[n]] = self.ground_rain[self.index[n]]; self.clear[self.index[n]] = self.ground_clear[self.index[n]]
 

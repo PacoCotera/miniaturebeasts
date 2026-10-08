@@ -28,11 +28,9 @@ TARP = {C[n] for n in ("tealD", "teal", "forest", "aqua", "mist")}
 def ell(x, c=31.0, r=20.5): return float(np.sqrt(max(0.0, 1 - ((x - c) / r) ** 2)))
 def build(lit):
     s = np.full((HH, N), -1, dtype=np.int64)
-    # ---- the patch of grass under the whole base (the lime ramp), the service's stones, the shadow on the grass to the right
-    patch = mask(lambda d: d.ellipse([2, 41, 62, 57], fill=255)); s[patch] = C["grass"]
-    s[patch & ~np.roll(patch, -1, 0)] = C["leaf"]; s[patch & ~np.roll(patch, -1, 1)] = C["leaf"]
+    # ---- the base stones: the service's (the K ramp and mist along the base at the front left); no patch of grass and no baked shadow (the still draws the contact shadow, Bayer-dithered,
+    # through the ground's shade table, and the ground shows between the stones)
     stones = np.isin(a, [C["rock"], C["rockL"], C["stone"], C["mist"]]) & (yy >= 44) & (xx <= 36); s[stones] = a[stones]
-    shadow = mask(lambda d: d.ellipse([44, 47, 62, 56], fill=255)) & patch & ~stones; s[shadow] = C["leaf"]
     # ---- the wall: log courses, each ONE continuous line bowed 3 px (rows follow d(x)), 4 px pitch: a soil gap, a light edge, two rows of body; lit on the left, shaded on the right
     X0, X1 = 11, 51
     for x in range(X0, X1 + 1):
@@ -54,22 +52,19 @@ def build(lit):
         if x in (X1, X1 - 1):
             for y in range(31, wb - 2):
                 if (y - 30 - d) % 4 in (1, 2): s[y, x] = C["bark"]
-    # ---- the porch: small, at the right; round wall shows on both sides of it (4 px or more at the right)
-    P0, P1 = 35, 46
-    for y in range(38, 51):
-        for x in range(P0 + 1, P1):
-            s[y, x] = C["night"]
-    for x in (P0 + 1, P0 + 2):
-        for y in range(37, 50): s[y, x] = C["sand"] if x == P0 + 1 else C["clay"]                    # the left post
-    for x in (P1 - 2, P1 - 1):
-        for y in range(37, 50): s[y, x] = C["clay"] if x == P1 - 2 else C["bark"]                    # the right post
-    for y in range(40, 50):                                                                             # a plank door between the posts
-        for x in range(P0 + 4, P1 - 3): s[y, x] = C["bark"] if (x - P0) % 2 else C["soil"]
-    s[45, P1 - 4] = C["gold"]
-    s[50, P0:P1 + 1] = C["rockL"]; s[51, P0:P1 + 1] = C["rock"]; s[49, P0 + 1:P1] = np.where(s[49, P0 + 1:P1] >= 0, s[49, P0 + 1:P1], C["rock"])
-    roofp = mask(lambda d: d.polygon([(P0 - 1, 34), (P1 + 1, 34), (P1 + 2, 39), (P0 - 2, 39)], fill=255))
-    for y, x in zip(*np.where(roofp)): s[y, x] = C["bark"] if (y - 34) % 2 == 0 else C["soil"]
-    s[39, P0 - 2:P1 + 3] = C["clay"]; s[40, P0 - 1:P1 + 2] = C["soil"]
+    # ---- the porch: the service's own (raw seed 50: two posts, its own small roof, a step), the teal tarp taken to planks and the dark to the wood's night, moved 6 px left so round wall shows at its right
+    PM = {C["tealD"]: C["soil"], C["teal"]: C["clay"], C["forest"]: C["bark"], C["aqua"]: C["sand"], C["mist"]: C["sand"], C["slate"]: C["night"], C["ink"]: C["night"], C["void"]: C["soil"], C["yellow"]: C["sand"], C["leaf"]: C["bark"]}
+    SKIP = {C["grass"], C["sprout"], C["pine"], C["stone"], C["rock"], C["rockL"], C["lime"]}
+    def porch_px(y, x):
+        v = int(a[y, x])
+        if v < 0 or v in SKIP: return
+        s[y, x - 6] = PM.get(v, v)
+    for y in range(28, 39):                                                                              # its own small roof (the service's tarp, as planks)
+        for x in range(34, 52): porch_px(y, x)
+    for y in range(39, 51):                                                                              # the two posts, the dark doorway between them
+        for x in list(range(35, 38)) + list(range(48, 51)): porch_px(y, x)
+        for x in range(38, 48): s[y, x - 6] = (C["bark"] if (x % 2) else C["soil"]) if y >= 41 else C["night"]       # a plank door in the doorway under a shadow row
+    s[50, 28:41] = C["rockL"]; s[51, 28:41] = C["rock"]                                              # the step
     # ---- one small window, left of the porch
     s[38:45, 19:26] = C["soil"]; s[39:44, 20:25] = C["yellow"] if lit else C["night"]
     if lit: s[39:41, 20:22] = C["cream"]; s[43, 20:25] = C["amber"]
@@ -107,10 +102,10 @@ def build(lit):
             s[y, x] = col[r0] if (x + y) % 3 else col[max(rows[0], r0 - 1)] if col[max(rows[0], r0 - 1)] >= 0 else col[r0]
         s[yb, x] = C["soil"] if x % 2 else C["bark"]
         if yb + 1 < HH and s[yb + 1, x] >= 0: s[yb + 1, x] = C["soil"]                                      # the shade the eave throws on the logs
-    # tufts in the grass: darker than the grass
-    for x, y in ((5, 49), (8, 53), (57, 45), (59, 52), (13, 55), (52, 55), (21, 56), (4, 46)):
-        for dx, dy, c in ((0, 0, "forest"), (-1, -1, "leaf"), (1, -1, "leaf")):
-            if s[y + dy, x + dx] == C["grass"]: s[y + dy, x + dx] = C[c]
+    # three or four tufts overlapping the front edge of the base stones (a root in forest, blades in leaf and grass)
+    for x, y in ((9, 55), (19, 57), (31, 55), (41, 52)):
+        for dx, dy, c in ((0, 0, "forest"), (-1, -1, "leaf"), (0, -1, "grass"), (1, -1, "leaf"), (0, -2, "grass")):
+            if 0 <= y + dy < HH and 0 <= x + dx < N: s[y + dy, x + dx] = C[c]
     return quant.outline(s)
 lit = build(True); dark = build(False)
 def save(arr, n): bb = quant.bbox((arr >= 0) * 255); x0, y0, x1, y1 = bb; quant.save_indexed(arr[y0:y1, x0:x1], os.path.join(out, n))
