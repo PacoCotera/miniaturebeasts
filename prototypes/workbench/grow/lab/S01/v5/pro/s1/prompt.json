@@ -1,0 +1,280 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "v5",
+  "name": "v5 baseline",
+  "change": "The v5 art direction, species notes and description template.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "The v5 art direction, species notes and description template.",
+ "costUSD": 0.3254,
+ "step1": {
+  "callId": "4373d46c-3167-41fc-9b76-e34c27a01abc",
+  "status": "ok",
+  "costUSD": 0.16746,
+  "seconds": 17.1,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.975,
+   "silhouetteIoUInPlace": 0.975,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.995
+    },
+    "muzzle": {
+     "span": 0.983,
+     "coverage": 1.0
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.918
+    },
+    "crown": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "leg-0": {
+     "span": 0.836,
+     "coverage": 1.0
+    },
+    "leg-1": {
+     "span": 0.992,
+     "coverage": 1.0
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.64,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.431,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.27,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.38,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.553,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.313,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.665,
+     "median": "#49565a",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.861,
+     "median": "#4a5559",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 1.0,
+     "median": "#e0d1af",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 1.0,
+     "median": "#cdaf94",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.0,
+     "median": "#495458",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "belly@region-0": {
+     "agreement": 0.589,
+     "median": "#dcb191",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.998,
+     "median": "#e1d3b0",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the leaf slot on the crown (painted #495458, the colour of body)"
+   ],
+   "outside": 0.0,
+   "missing": 0.002,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.693,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "16dff9ec-1281-4ba4-a5a6-83adaac3d15b",
+  "status": "ok",
+  "costUSD": 0.15793,
+  "seconds": 16.9,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.966,
+   "silhouetteIoUInPlace": 0.963,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "muzzle": {
+     "span": 0.983,
+     "coverage": 1.0
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.982
+    },
+    "crown": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.999
+    },
+    "leg-1": {
+     "span": 0.983,
+     "coverage": 1.0
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.64,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.431,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.27,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.382,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.559,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.313,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.184,
+     "median": "#403a3a",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.358,
+     "median": "#403c3e",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.895,
+     "median": "#c6ad8f",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.747,
+     "median": "#bb9e83",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.764,
+     "median": "#677d41",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.511,
+     "median": "#9e765b",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.984,
+     "median": "#d1b492",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.0,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.498,
+   "passed": true,
+   "gated": false
+  }
+ }
+}

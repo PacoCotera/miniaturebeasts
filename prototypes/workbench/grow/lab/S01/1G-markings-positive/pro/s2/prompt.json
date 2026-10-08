@@ -1,0 +1,278 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "1G-markings-positive",
+  "name": "Plain coat said positively",
+  "change": "Step 1, markings words only: the markings paragraph says what the coat is instead of naming the patches it must not have, since naming them may prime them.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "Step 1, markings words only: the markings paragraph says what the coat is instead of naming the patches it must not have, since naming them may prime them.",
+ "costUSD": 0.3241,
+ "step1": {
+  "callId": "c87c2b0f-4ff8-470e-baee-4c9977214c19",
+  "status": "ok",
+  "costUSD": 0.16557,
+  "seconds": 18.0,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.959,
+   "silhouetteIoUInPlace": 0.959,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.958
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "muzzle": {
+     "span": 0.992,
+     "coverage": 0.991
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.96
+    },
+    "crown": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.988
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.639,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.43,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.271,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.383,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.554,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.31,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.878,
+     "median": "#444e53",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.846,
+     "median": "#475155",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.765,
+     "median": "#e1d3b1",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.867,
+     "median": "#ded0ad",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.0,
+     "median": "#465155",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "belly@region-0": {
+     "agreement": 0.78,
+     "median": "#e5d5b3",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.844,
+     "median": "#dfd1ae",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the leaf slot on the crown (painted #465155, the colour of body)"
+   ],
+   "outside": 0.0,
+   "missing": 0.019,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.741,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "7e68fa4c-2fe4-4cdc-bebe-377a837be78c",
+  "status": "ok",
+  "costUSD": 0.15853,
+  "seconds": 16.6,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.712,
+   "silhouetteIoUInPlace": 0.815,
+   "parts": {
+    "region-0": {
+     "span": 0.972,
+     "coverage": 0.804
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.921
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.991
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.968
+    },
+    "crown": {
+     "span": 0.75,
+     "coverage": 0.347
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.603
+    },
+    "leg-1": {
+     "span": 0.835,
+     "coverage": 0.781
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.732,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.514,
+     "ok": false
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.326,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.369,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.685,
+     "ok": false
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.27,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.307,
+     "median": "#433d3f",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.418,
+     "median": "#413d41",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.476,
+     "median": "#ab8f81",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.076,
+     "median": "#dfdbd3",
+     "nearest": "#f1eddc",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.0,
+     "median": "#514d4e",
+     "nearest": "#465459",
+     "ok": false
+    },
+    "belly@region-0": {
+     "agreement": 0.645,
+     "median": "#c3a790",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.726,
+     "median": "#be9b84",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "the proportions are off: the region-0 is larger than drawn (0.73 of the body against 0.56), the head is larger than drawn (0.51 of the body against 0.35), the leg-0 is larger than drawn (0.69 of the body against 0.53)",
+    "a pigment slot is painted in another slot's colour: the leaf slot on the crown (painted #514d4e, the colour of body)"
+   ],
+   "outside": 0.0,
+   "missing": 0.052,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.419,
+   "passed": false,
+   "gated": false
+  }
+ }
+}
