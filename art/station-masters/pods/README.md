@@ -20,7 +20,7 @@
 
 ## Slices
 
-Each slice is named by the register id it replaces (`room`, `ring`, `page`, `trait-picture`, `stamp`, `pod`); where the register has none, the id is **proposed** (`rail-tab-*`, `plate-*`, `frame-*`, `room-shelf`). A tab's x is 176 + 120 i (112 wide), 180 + 104 i (96 wide) or its slot in the compact rail; its y is 48. Hashes and sources: [`slices/manifest.json`](slices/manifest.json). Second pass, step 1 (2026-10-08): tabs, plates, wells, hatch, frames and pods repainted to the art director's directions; the bench, cradle and shelf wait for the re-layout.
+Each slice is named by the register id it replaces (`room`, `ring`, `page`, `trait-picture`, `stamp`, `pod`); where the register has none, the id is **proposed** (`rail-tab-*`, `plate-*`, `frame-*`, `room-shelf`). Rectangles are the concept's re-layout (branch `design-pods-relayout`, 962f71d): the pod's box is bottom-centred on (712, 400), the dish is (600, 352, 224, 72), the page (176, 112, 408, 440), the stamp label (888, 248). A tab's x is 176 + 120 i (112 wide), 180 + 104 i (96 wide) or its slot in the compact rail; its y is 48. Hashes and sources: [`slices/manifest.json`](slices/manifest.json).
 
 ### Top bar and bottom line (signed)
 
@@ -29,60 +29,59 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `frame-bottom-line-1024x38` | 1024×38 | (0, 562, 1024, 38) | the bar flipped (rule on its top edge), 1024x38 |
 | `frame-top-bar-1024x40` | 1024×40 | (0, 0, 1024, 40) | key magenta, cut, 1024x40 |
 
-### Page panes (signed)
+### Page pane (signed)
 
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
-| `page-pane-408x440` | 408×440 | (·, 112, 408, 440) | 9-slice of the generated pane, corners kept at 1x |
-| `page-pane-480x440` | 480×440 | (528, 112, 480, 440) | 9-slice of the generated pane, corners kept at 1x |
+| `page-pane-408x440` | 408×440 | (176, 112, 408, 440) | 9-slice of the generated pane, corners kept at 1x |
 
 ### Name, origin and message plates
 
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
-| `plate-message-640x36` | 640×36 | (192, ·, 640, 36) | thin frosted label: 9-slice, rounded |
-| `plate-message-640x56` | 640×56 | (192, ·, 640, 56) | thin frosted label: 9-slice, rounded |
-| `plate-message-640x76` | 640×76 | (192, ·, 640, 76) | thin frosted label: 9-slice, rounded |
-| `plate-name-320x32` | 320×32 | (184, 344, 320, 32) | thin frosted label: colour-to-alpha, 9-slice, rounded |
-| `plate-origin-320x40` | 320×40 | (184, 384, 320, 40) | thin frosted label: colour-to-alpha, 9-slice, rounded |
+| `plate-message-640x36` | 640×36 | (192, 514, 640, 36) | thin frosted label: 9-slice, rounded |
+| `plate-message-640x56` | 640×56 | (192, 494, 640, 56) | thin frosted label: 9-slice, rounded |
+| `plate-message-640x76` | 640×76 | (192, 474, 640, 76) | thin frosted label: 9-slice, rounded |
+| `plate-name-224x32` | 224×32 | (600, 440, 224, 32) | thin frosted label: colour-to-alpha, 9-slice, rounded |
+| `plate-origin-224x40` | 224×40 | (600, 480, 224, 40) | thin frosted label: colour-to-alpha, 9-slice, rounded |
 
 ### Pods: one systematic pod in layers
 
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
-| `pod-large-band` | 160×192 | (·, ·, 160, 192) | the sealing band as a layer |
-| `pod-large-crack` | 160×192 | (·, ·, 160, 192) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
-| `pod-large-identified` | 160×192 | (·, ·, 160, 192) | the Loika reference sprite |
-| `pod-large-mask-accent` | 160×192 | (·, ·, 160, 192) | systematic pod layer: mask-accent, uniform scale, foot on the last row, centred |
-| `pod-large-mask-body` | 160×192 | (·, ·, 160, 192) | systematic pod layer: mask-body, uniform scale, foot on the last row, centred |
-| `pod-large-pattern-bands` | 160×192 | (·, ·, 160, 192) | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
-| `pod-large-pattern-dots` | 160×192 | (·, ·, 160, 192) | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
-| `pod-large-pattern-stripes` | 160×192 | (·, ·, 160, 192) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
-| `pod-large-sealed` | 160×192 | (·, ·, 160, 192) | the Loika reference sprite |
-| `pod-large-shade` | 160×192 | (·, ·, 160, 192) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
-| `pod-large-shadow` | 176×14 | (·, ·, 176, 14) | contact shadow: place centred on x 344 with its middle on the foot line y 312 |
-| `pod-medium-band` | 136×168 | (·, ·, 136, 168) | the sealing band as a layer |
-| `pod-medium-crack` | 136×168 | (·, ·, 136, 168) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
-| `pod-medium-identified` | 136×168 | (·, ·, 136, 168) | the Loika reference sprite |
-| `pod-medium-mask-accent` | 136×168 | (·, ·, 136, 168) | systematic pod layer: mask-accent, uniform scale, foot on the last row, centred |
-| `pod-medium-mask-body` | 136×168 | (·, ·, 136, 168) | systematic pod layer: mask-body, uniform scale, foot on the last row, centred |
-| `pod-medium-pattern-bands` | 136×168 | (·, ·, 136, 168) | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
-| `pod-medium-pattern-dots` | 136×168 | (·, ·, 136, 168) | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
-| `pod-medium-pattern-stripes` | 136×168 | (·, ·, 136, 168) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
-| `pod-medium-sealed` | 136×168 | (·, ·, 136, 168) | the Loika reference sprite |
-| `pod-medium-shade` | 136×168 | (·, ·, 136, 168) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
-| `pod-medium-shadow` | 152×14 | (·, ·, 152, 14) | contact shadow: place centred on x 344 with its middle on the foot line y 312 |
-| `pod-small-band` | 112×144 | (·, ·, 112, 144) | the sealing band as a layer |
-| `pod-small-crack` | 112×144 | (·, ·, 112, 144) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
-| `pod-small-identified` | 112×144 | (·, ·, 112, 144) | the Loika reference sprite |
-| `pod-small-mask-accent` | 112×144 | (·, ·, 112, 144) | systematic pod layer: mask-accent, uniform scale, foot on the last row, centred |
-| `pod-small-mask-body` | 112×144 | (·, ·, 112, 144) | systematic pod layer: mask-body, uniform scale, foot on the last row, centred |
-| `pod-small-pattern-bands` | 112×144 | (·, ·, 112, 144) | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
-| `pod-small-pattern-dots` | 112×144 | (·, ·, 112, 144) | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
-| `pod-small-pattern-stripes` | 112×144 | (·, ·, 112, 144) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
-| `pod-small-sealed` | 112×144 | (·, ·, 112, 144) | the Loika reference sprite |
-| `pod-small-shade` | 112×144 | (·, ·, 112, 144) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
-| `pod-small-shadow` | 128×14 | (·, ·, 128, 14) | contact shadow: place centred on x 344 with its middle on the foot line y 312 |
+| `pod-large-band` | 160×192 | (632, 208, 160, 192) | the sealing band as a layer |
+| `pod-large-crack` | 160×192 | (632, 208, 160, 192) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
+| `pod-large-identified` | 160×192 | (632, 208, 160, 192) | the Loika reference sprite |
+| `pod-large-mask-accent` | 160×192 | (632, 208, 160, 192) | systematic pod layer: mask-accent, uniform scale, foot on the last row, centred |
+| `pod-large-mask-body` | 160×192 | (632, 208, 160, 192) | systematic pod layer: mask-body, uniform scale, foot on the last row, centred |
+| `pod-large-pattern-bands` | 160×192 | (632, 208, 160, 192) | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
+| `pod-large-pattern-dots` | 160×192 | (632, 208, 160, 192) | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
+| `pod-large-pattern-stripes` | 160×192 | (632, 208, 160, 192) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
+| `pod-large-sealed` | 160×192 | (632, 208, 160, 192) | the Loika reference sprite |
+| `pod-large-shade` | 160×192 | (632, 208, 160, 192) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
+| `pod-large-shadow` | 176×14 | (624, 393, 176, 14) | contact shadow: centred on x 712 with its middle on the foot line y 400 |
+| `pod-medium-band` | 136×168 | (644, 232, 136, 168) | the sealing band as a layer |
+| `pod-medium-crack` | 136×168 | (644, 232, 136, 168) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
+| `pod-medium-identified` | 136×168 | (644, 232, 136, 168) | the Loika reference sprite |
+| `pod-medium-mask-accent` | 136×168 | (644, 232, 136, 168) | systematic pod layer: mask-accent, uniform scale, foot on the last row, centred |
+| `pod-medium-mask-body` | 136×168 | (644, 232, 136, 168) | systematic pod layer: mask-body, uniform scale, foot on the last row, centred |
+| `pod-medium-pattern-bands` | 136×168 | (644, 232, 136, 168) | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
+| `pod-medium-pattern-dots` | 136×168 | (644, 232, 136, 168) | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
+| `pod-medium-pattern-stripes` | 136×168 | (644, 232, 136, 168) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
+| `pod-medium-sealed` | 136×168 | (644, 232, 136, 168) | the Loika reference sprite |
+| `pod-medium-shade` | 136×168 | (644, 232, 136, 168) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
+| `pod-medium-shadow` | 152×14 | (636, 393, 152, 14) | contact shadow: centred on x 712 with its middle on the foot line y 400 |
+| `pod-small-band` | 112×144 | (656, 256, 112, 144) | the sealing band as a layer |
+| `pod-small-crack` | 112×144 | (656, 256, 112, 144) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
+| `pod-small-identified` | 112×144 | (656, 256, 112, 144) | the Loika reference sprite |
+| `pod-small-mask-accent` | 112×144 | (656, 256, 112, 144) | systematic pod layer: mask-accent, uniform scale, foot on the last row, centred |
+| `pod-small-mask-body` | 112×144 | (656, 256, 112, 144) | systematic pod layer: mask-body, uniform scale, foot on the last row, centred |
+| `pod-small-pattern-bands` | 112×144 | (656, 256, 112, 144) | systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred |
+| `pod-small-pattern-dots` | 112×144 | (656, 256, 112, 144) | systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred |
+| `pod-small-pattern-stripes` | 112×144 | (656, 256, 112, 144) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
+| `pod-small-sealed` | 112×144 | (656, 256, 112, 144) | the Loika reference sprite |
+| `pod-small-shade` | 112×144 | (656, 256, 112, 144) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
+| `pod-small-shadow` | 128×14 | (648, 393, 128, 14) | contact shadow: centred on x 712 with its middle on the foot line y 400 |
 | `pod-well-band` | 32×40 | (·, ·, 32, 40) | the sealing band as a layer |
 | `pod-well-crack` | 32×40 | (·, ·, 32, 40) | systematic pod layer: crack, uniform scale, foot on the last row, centred |
 | `pod-well-identified` | 32×40 | (·, ·, 32, 40) | the Loika reference sprite |
@@ -93,7 +92,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `pod-well-pattern-stripes` | 32×40 | (·, ·, 32, 40) | systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred |
 | `pod-well-sealed` | 32×40 | (·, ·, 32, 40) | the Loika reference sprite |
 | `pod-well-shade` | 32×40 | (·, ·, 32, 40) | systematic pod layer: shade, uniform scale, foot on the last row, centred |
-| `pod-well-shadow` | 48×14 | (·, ·, 48, 14) | contact shadow: place centred on x 344 with its middle on the foot line y 312 |
+| `pod-well-shadow` | 48×14 | (688, 393, 48, 14) | contact shadow: centred on x 712 with its middle on the foot line y 400 |
 
 ### Chapter rail tab plates
 
@@ -126,49 +125,61 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `ring-well-current` | 64×64 | (40, 52, 64, 64) | colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow) |
 | `ring-well-empty` | 64×64 | (40, 52, 64, 64) | colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow) |
 
-### Bench scene, cradle, shelf (held for the re-layout; first pass)
+### Bench scene, dish, shelf
 
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
-| `room-bench-stage` | 1024×522 | (0, 40, 1024, 522) | cut: bench-d2 window, bottom extended |
-| `room-cradle` | 224×40 | (232, 296, 224, 40) | color-to-alpha on flat ground, cut, resampled 224x40 |
-| `room-cradle-front` | 224×40 | (232, 296, 224, 40) | the cradle's near rim only (rows 16 to 39), drawn over the pod's foot |
-| `room-shelf` | 288×48 | (200, 304, 288, 48) | PROPOSED: the glass shelf under the cradle; color-to-alpha, cut, 288x48 |
+| `room-bench-stage` | 1024×522 | (0, 40, 1024, 522) | the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (712, 424) |
+| `room-cradle` | 224×72 | (600, 352, 224, 72) | the frosted dish with its moss bed: colour-to-alpha, cut, scaled evenly into 224x72 (the dish is 201 px wide), bottom on the last row |
+| `room-cradle-front` | 224×72 | (600, 352, 224, 72) | the dish's near lip only (rows 44 to 71), drawn over the pod's foot at the foot line y 400 |
+| `room-shelf` | 272×40 | (576, 392, 272, 40) | PROPOSED: the glass shelf under the dish and the name; colour-to-alpha, cut, 272x40 |
 
 ### Stamp label (signed)
 
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
-| `stamp-label-120x120` | 120×120 | (176, 432, 120, 120) | cut, 120x120 |
+| `stamp-label-120x120` | 120×120 | (888, 248, 120, 120) | cut, 120x120 |
 
 ### Picture frames (overlay, transparent inside)
 
 | Slice id | Size | Rect on the screen | Made by |
 | --- | --- | --- | --- |
+| `trait-picture-frame-120x112` | 120×112 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-120x112-sealed` | 120×112 |  | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-120x112-unread` | 120×112 |  | frost texture at 0.9 alpha under the frame |
 | `trait-picture-frame-120x96` | 120×96 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-120x96-sealed` | 120×96 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-120x96-unread` | 120×96 |  | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-144x112` | 144×112 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-144x112-sealed` | 144×112 |  | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-144x112-unread` | 144×112 |  | frost texture at 0.9 alpha under the frame |
 | `trait-picture-frame-184x104` | 184×104 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-184x104-sealed` | 184×104 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-184x104-unread` | 184×104 |  | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-184x112` | 184×112 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-184x112-sealed` | 184×112 |  | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-184x112-unread` | 184×112 |  | frost texture at 0.9 alpha under the frame |
 | `trait-picture-frame-184x256` | 184×256 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-184x256-sealed` | 184×256 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-184x256-unread` | 184×256 |  | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-216x112` | 216×112 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-216x112-sealed` | 216×112 |  | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-216x112-unread` | 216×112 |  | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-216x304` | 216×304 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-216x304-sealed` | 216×304 |  | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-216x304-unread` | 216×304 |  | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-184x304` | 184×304 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-184x304-sealed` | 184×304 |  | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-184x304-unread` | 184×304 |  | frost texture at 0.9 alpha under the frame |
 | `trait-picture-frame-376x264` | 376×264 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-376x264-sealed` | 376×264 |  | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-376x264-unread` | 376×264 |  | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-448x312` | 448×312 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-448x312-sealed` | 448×312 |  | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-448x312-unread` | 448×312 |  | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-376x312` | 376×312 |  | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-376x312-sealed` | 376×312 |  | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-376x312-unread` | 376×312 |  | frost texture at 0.9 alpha under the frame |
+
+## Second pass, step 2: the re-layout (2026-10-08)
+
+On the rectangles of the concept's composition (page left of centre, pod centred under the cone, stamp at the right):
+
+- **Bench (`room-bench-stage`, 1024×522 at (0,40)):** the candidate's dark teal glass wall with fine vertical panel seams, the cone of light centred on x 712 ending in a soft pool at y 424, **no horizon line** (the generator's floor step is flattened out of the image and the wall's own strips extend its sides and bottom).
+- **Dish (`room-cradle`, `room-cradle-front`, 224×72 at (600,352)):** the candidate's thick frosted bowl with its dipping front lip and a bed of dark moss with fine dust and lichen specks inside, scaled evenly (never one axis); the dish is 197 px wide in its 224 px slice. The front layer is the near lip from row 44, drawn over the pod's foot at y 400.
+- **Shelf (`room-shelf`, proposed, 272×40 at (576,392)):** the candidate's glass slab under the dish, clear of the name at y 440.
+- **Frames at the four new Read sizes** (376×312, 184×304, 184×112, 120×112) and Compare's four, each plain, unread and sealed; the old widths are removed. **Page pane:** only the signed 408×440 remains (the 480 is gone). **Plates:** name 224×32 at (600,440), origin 224×40 at (600,480), message unchanged. **Stamp label** at (888,248), unchanged. **Pods** carry the new boxes; the contact shadow is centred on x 712.
+- The composite now follows that layout, beside the candidate.
+
+Known flaws of this step: the pod sits in the dish's rim rather than sunk into a deep bowl (the 72 px rectangle holds a flatter bowl than the candidate's); the moss bed is small and the pod's foot only half hides behind the near lip; the pool's glow is mostly hidden behind the dish; the bench is a stretched window of a larger image, so its seams are slightly wider-spaced than the candidate's; the proof's tab words, emblems, lamps, progress arcs, stamp raster and trait pictures are stand-ins.
 
 ## Second pass, step 1: what changed (2026-10-08)
 

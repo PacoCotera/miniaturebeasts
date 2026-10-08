@@ -30,24 +30,18 @@ def comp_bboxes(alpha, thr=128, minarea=20000):
 
 # ---- bench stage 1024x522 at (0,40)
 def bench():
-    im = load("bench-d2.jpg"); W, H = im.size
-    s = 0.39; x0 = 42; top = 543; h = int(522 / s) + 1; w = int(1024 / s) + 1
-    arr = np.asarray(im).astype(float); need = top + h - H
-    row = smooth1d(arr[-40:].mean(0), 25, 0); padv = np.repeat(row[None], need, 0) * np.linspace(1, 0.82, need)[:, None, None]
-    pad = np.concatenate([arr, padv], 0)
-    win = Image.fromarray(np.clip(pad, 0, 255).astype(np.uint8)).crop((x0, top, x0 + w, top + h)).resize((1024, 522), Image.LANCZOS)
-    save("room-bench-stage", win, [0, 40, 1024, 522], "cut: bench-d2 window, bottom extended", "bench-d2")
-# ---- cradle 224x40 (+ front rim), shelf
+    save("room-bench-stage", bench_window("bench-e2.jpg", 1374, 1244, 0.31), [0, 40, 1024, 522], "the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (712, 424)", "bench-e2")
 def cradle():
-    im = load("cradle3.jpg"); bg = border_median(im); k = color_to_alpha(im, bg)
-    bb = bbox_alpha(k, 30); k = k.crop(bb)
-    c = k.resize((224, 40), Image.LANCZOS); save("room-cradle", c, [232, 296, 224, 40], "color-to-alpha on flat ground, cut, resampled 224x40", "cradle3")
-    a = np.asarray(c).copy(); yy = np.arange(40)[:, None]
-    # near rim: the lower part of the ring, below the pod's foot line (y 312 -> row 16 of the cradle)
-    fade = np.clip((yy - 15) / 4.0, 0, 1); a[..., 3] = (a[..., 3] * fade).astype(np.uint8)
-    save("room-cradle-front", Image.fromarray(a, "RGBA"), [232, 296, 224, 40], "the cradle's near rim only (rows 16 to 39), drawn over the pod's foot", "cradle3")
+    im = load("dish-moss1.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05)
+    # the faint ring at the top of the generated image is a halo, not part of the dish: keep the lower component
+    a = np.asarray(k).copy(); a[:int(0.3 * a.shape[0]), :, 3] = 0; k = Image.fromarray(a, "RGBA"); bb = bbox_alpha(k, 40); d = k.crop(bb)
+    f = min(224 / d.width, 72 / d.height); d = d.resize((round(d.width * f), round(d.height * f)), Image.LANCZOS)
+    c = Image.new("RGBA", (224, 72), (0, 0, 0, 0)); c.alpha_composite(d, ((224 - d.width) // 2, 72 - d.height))
+    save("room-cradle", c, [600, 352, 224, 72], "the frosted dish with its moss bed: colour-to-alpha, cut, scaled evenly into 224x72 (the dish is %d px wide), bottom on the last row" % d.width, "dish-moss1")
+    x = np.asarray(c).copy(); yy = np.arange(72)[:, None]; fade = np.clip((yy - 44) / 6.0, 0, 1); x[..., 3] = (x[..., 3] * fade).astype(np.uint8)
+    save("room-cradle-front", Image.fromarray(x, "RGBA"), [600, 352, 224, 72], "the dish's near lip only (rows 44 to 71), drawn over the pod's foot at the foot line y 400", "dish-moss1")
     im = load("cradle-shelf.jpg"); bg = border_median(im); k = color_to_alpha(im, bg); k = k.crop(bbox_alpha(k, 30))
-    save("room-shelf", k.resize((288, 48), Image.LANCZOS), [200, 304, 288, 48], "PROPOSED: the glass shelf under the cradle; color-to-alpha, cut, 288x48", "cradle-shelf")
+    save("room-shelf", k.resize((272, 40), Image.LANCZOS), [576, 392, 272, 40], "PROPOSED: the glass shelf under the dish and the name; colour-to-alpha, cut, 272x40", "cradle-shelf")
 # ---- list column
 def listcol():
     im = load("list-column.jpg"); im = im.crop((1536 - 735, 0, 1536, 2400)).resize((160, 522), Image.LANCZOS)
@@ -76,12 +70,12 @@ def pages():
     im = load("page-pane.jpg"); W, H = im.size
     a = np.asarray(im.convert("L")).astype(float)
     pane = im.crop((70, 62, 2331, 1733)); s = 480 / pane.width
-    for nm, w in (("page-pane-480x440", 480), ("page-pane-408x440", 408)):
-        save(nm, nine(pane.convert("RGBA"), w, 440, 70, 70, 70, 70, ls=s), [528 if w == 480 else None, 112, w, 440], "9-slice of the generated pane, corners kept at 1x", "page-pane")
+    for nm, w in (("page-pane-408x440", 408),):
+        save(nm, nine(pane.convert("RGBA"), w, 440, 70, 70, 70, 70, ls=s), [176, 112, w, 440], "9-slice of the generated pane, corners kept at 1x", "page-pane")
 # ---- picture frames
 def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
-    sizes = [(448, 312), (216, 304), (216, 112), (144, 112), (376, 264), (184, 256), (184, 104), (120, 96)]
+    sizes = [(376, 312), (184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96)]
     s = 1536 / k.width * 0 + 0.19
     fr = load("frost-dark.jpg"); sl = load("slats-light.jpg")
     frost = fr.resize((int(fr.width * 0.25), int(fr.height * 0.25)), Image.LANCZOS)
@@ -109,12 +103,14 @@ def frames():
 # ---- plates
 def plates():
     im = load("plate-thin2.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); bb = bbox_alpha(k, 140); pl = k.crop(bb); s = 320 / pl.width
-    save("plate-name-320x32", round_alpha(nine(pl, 320, 32, 60, 60, 60, 60, ls=s), 5), [184, 344, 320, 32], "thin frosted label: colour-to-alpha, 9-slice, rounded", "plate-thin2")
-    save("plate-origin-320x40", round_alpha(nine(pl, 320, 40, 60, 60, 60, 60, ls=s), 5), [184, 384, 320, 40], "thin frosted label: colour-to-alpha, 9-slice, rounded", "plate-thin2")
+    pln = dim(pl, 0.8)
+    save("plate-name-224x32", round_alpha(nine(pln, 224, 32, 60, 60, 60, 60, ls=s), 5), [600, 440, 224, 32], "thin frosted label: colour-to-alpha, 9-slice, rounded", "plate-thin2")
+    plo = dim(pl, 0.55)
+    save("plate-origin-224x40", round_alpha(nine(plo, 224, 40, 60, 60, 60, 60, ls=s), 5), [600, 480, 224, 40], "thin frosted label: colour-to-alpha, 9-slice, rounded", "plate-thin2")
     for h in (36, 56, 76):
-        save(f"plate-message-640x{h}", round_alpha(nine(pl, 640, h, 60, 60, 60, 60, ls=s), 6), [192, None, 640, h], "thin frosted label: 9-slice, rounded", "plate-thin2")
+        save(f"plate-message-640x{h}", round_alpha(nine(plo, 640, h, 60, 60, 60, 60, ls=s), 6), [192, 550 - h, 640, h], "thin frosted label: 9-slice, rounded", "plate-thin2")
     lb = load("label-plate.jpg"); m = (np.asarray(lb).astype(int).min(2) < 240); ys, xs = np.where(m); bb = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)
-    save("stamp-label-120x120", lb.crop(bb).resize((120, 120), Image.LANCZOS), [176, 432, 120, 120], "cut, 120x120", "label-plate")
+    save("stamp-label-120x120", lb.crop(bb).resize((120, 120), Image.LANCZOS), [888, 248, 120, 120], "cut, 120x120", "label-plate")
 # ---- bars
 def bars():
     im = load("bar-top.jpg"); k = key_magenta(im); bb = bbox_alpha(k, 250); b = im.crop(bb).convert("RGBA")
@@ -198,13 +194,13 @@ def pods():
         def put(arr, extra=None):
             im = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA").resize((pw, ph), Image.LANCZOS)
             c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(im, (ox, oy)); return c
-        r = [None, None, w, h]
+        r = {"large": [632, 208, 160, 192], "medium": [644, 232, 136, 168], "small": [656, 256, 112, 144]}.get(cls, [None, None, w, h])
         for nm, arr in masks.items(): save(f"pod-{cls}-{nm}", put(arr), r, "systematic pod layer: " + nm + ", uniform scale, foot on the last row, centred", "pod-identified")
         for nm, arr in flat.items(): save(f"pod-{cls}-{nm}", put(arr), r, "the Loika reference sprite" if nm != "band" else "the sealing band as a layer", "pod-loika" if nm == "identified" else "pod-band")
         sw, sh_ = w + 16, 14; yy, xx = np.mgrid[0:sh_, 0:sw].astype(float)
         a = np.clip(1 - (((xx - sw / 2) / (sw / 2)) ** 2 + ((yy - sh_ / 2) / (sh_ / 2)) ** 2), 0, 1) ** 1.2 * 0.6
         sdw = np.dstack([np.full((sh_, sw), 6.0), np.full((sh_, sw), 12.0), np.full((sh_, sw), 18.0), a * 255]).astype(np.uint8)
-        save(f"pod-{cls}-shadow", Image.fromarray(sdw, "RGBA"), [None, None, sw, sh_], "contact shadow: place centred on x 344 with its middle on the foot line y 312", "procedural ramp")
+        save(f"pod-{cls}-shadow", Image.fromarray(sdw, "RGBA"), [712 - sw // 2, 393, sw, sh_], "contact shadow: centred on x 712 with its middle on the foot line y 400", "procedural ramp")
 
 if __name__ == "__main__":
     which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "plates", "bars"]

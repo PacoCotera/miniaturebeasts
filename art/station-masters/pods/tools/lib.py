@@ -57,3 +57,25 @@ def smooth1d(a, sigma, axis=0):
     a = np.moveaxis(a, axis, 0); pad = [(k // 2, k // 2)] + [(0, 0)] * (a.ndim - 1)
     p = np.pad(a, pad, mode="edge"); out = sum(g[i] * p[i:i + a.shape[0]] for i in range(k))
     return np.moveaxis(out, 0, axis)
+def bench_window(path, poolx, pooly, s, target=(712, 384), size=(1024, 522)):
+    """The stage window of a generated bench: the horizon step removed (column-independent profile flattened), the sides
+    extended by mirroring the wall's own left strip, the bottom by repeating its last rows with their seams."""
+    im = load(path); a = np.asarray(im).astype(float); H, W, _ = a.shape
+    far = np.concatenate([a[:, :450], a[:, 2300:]], 1).mean(1)
+    ratio = np.clip(smooth1d(far, 120, 0) / np.maximum(smooth1d(far, 3, 0), 1), 0.7, 1.5)
+    b = np.clip(a * ratio[:, None, :], 0, 255)
+    x0 = poolx - target[0] / s; top = pooly - target[1] / s; w = size[0] / s; h = size[1] / s
+    padl = int(max(0, -x0)) + 20; padr = int(max(0, x0 + w - W)) + 20; padt = int(max(0, -top)) + 20; padb = int(max(0, top + h - H)) + 20
+    row = b[-30:].mean(0); bot = np.repeat(row[None], padb, 0) * np.linspace(1, 0.9, padb)[:, None, None]
+    b = np.concatenate([b, bot], 0)
+    strip = b[:, :450]; left = []
+    k = 0
+    while sum(p.shape[1] for p in left) < padl:
+        left.insert(0, strip[:, ::-1] if k % 2 == 0 else strip); k += 1
+    left = np.concatenate(left, 1)[:, -padl:]
+    right = np.concatenate([b[:, -450:][:, ::-1]] * (padr // 450 + 1), 1)[:, :padr]
+    big = np.concatenate([left, b, right], 1)
+    big = np.concatenate([np.repeat(big[:1], padt, 0), big], 0)
+    x = int(round(x0)) + padl; y = int(round(top)) + padt
+    win = big[y:y + int(round(h)), x:x + int(round(w))]
+    return Image.fromarray(np.clip(win, 0, 255).astype(np.uint8)).resize(size, Image.LANCZOS)
