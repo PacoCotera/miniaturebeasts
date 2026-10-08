@@ -42,7 +42,7 @@ The frame is the same on every Station screen and speaks one language, the Compa
 | --- | --- | --- | --- |
 | **Title: where you are** | 16, 8, 232, 24 | The room's mark, 24×24 at (16, 8), the same glyph as the device key that leads there (Home, Research, Library, Habitat), then the screen's title from x 48, 20 px medium, `bone` | One word, the title; title case. The first thing in the bar, and the only word in it |
 | **What you hold** | 384, 8, 256, 24 | Energy, Data and Essence, centred on x 512: each a 16 px icon, a 4 px gap, then 16 px tabular figures in `bone`, 24 px between counters | Marks with figures; the figures are the frame's exception to "no digits" |
-| **Who is out, and with whom** | 816, 8, 64, 24 | The Companion's glyph, 16×24 at (816, 8), with its 8×8 lamp at (836, 16); the mibi with you as a 24 px face on its `teal` ring at (856, 8), the same face as on the Companion's HUD (an empty ring when no mibi is with you) | Marks only, no words. Docked: the glyph solid, its lamp `mint`, the face full. Away: the glyph in outline, its lamp `stone`, the face on a dimmed ring: the mibi is out with it |
+| **Who is out, and with whom** | 816, 8, 64, 24 | The Companion's glyph, 16×24 at (816, 8), with its 8×8 lamp at (836, 16); the mibi with you as a 24 px face on its `teal` ring at (856, 8), the same face as on the Companion's HUD (an empty ring when no mibi is with you) | Marks only, no words. Docked: the glyph solid, its lamp `mint`, the face full. Away: the glyph in outline, its lamp `stone`, the face's ring in `stone` ("dimmed" is `stone`, the same role as the lamp off; *decided by the UI designer, 2026-10-08, for the builder's derived values*): the mibi is out with it |
 | **When** | 904, 8, 104, 24 | The world turn: a 16 px sun mark, 4 px, then its figure, right-aligned to x 1008 | A mark with a figure, as on the Companion ("☀ 5"), not "T5" |
 
 The Probe's tier is not in the top bar: Home's Probe module shows it by its Shield plates (three or four), as the Companion shows it on its own Shield plates.
@@ -77,7 +77,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | The Companion's glyph | `frame-companion-solid-16x24` (docked), `frame-companion-outline-16x24` (away) | 16×24 |
 | Lamps | `frame-lamp-8` (the Companion's: `mint` docked, `stone` away), `frame-lamp-12` (the notice's, `amber`) | 8×8, 12×12 |
 | The sun (the world turn) | `frame-sun-16` | 16×16 |
-| Key caps | `frame-cap-confirm-16` (✓, `orange`), `frame-cap-back-16` (←, `stone`) | 16×16 |
+| Key caps | `frame-cap-confirm-16` (✓, `orange`), `frame-cap-confirm-16-dim` (✓ when the action cannot be paid, `mist`), `frame-cap-back-16` (←, `stone`) | 16×16. The dimmed ✓ is a state of the cap drawn as its own slice, not a tint of the orange one: the build never recolours art (*decided by the UI designer, 2026-10-08, for the builder's derived values*) |
 | The mibi's face | `face-<mibi>-24`, one per mibi: a Station master painted at 24, never the Companion's face scaled | 24×24, on its `teal` ring |
 
 The material icons are the kit's 16 px icons, as on the Companion.
