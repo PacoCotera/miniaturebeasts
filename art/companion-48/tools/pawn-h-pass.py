@@ -14,6 +14,8 @@ import quant, pal
 P = quant.P; C = P.index; rd, out = sys.argv[1], sys.argv[2]; os.makedirs(out, exist_ok=True)
 allowed = pal.ramp_indices(P, "OWNYRB")
 TROU = [C["stone"], C["slate"], C["night"]]   # one trouser ramp in every facing, lighter than the service's navy so the legs read against the shadow
+# round 9: the coat one step lighter so it leaves the ground's grey on both light states (orange, luma 127, shared the rain ground's grey): amber body, orange shade, yellow light
+COAT = list(range(len(P.names))); COAT[C["orange"]] = C["amber"]; COAT[C["rust"]] = C["orange"]; COAT[C["amber"]] = C["yellow"]
 def largest(idx):
     m = idx >= 0; seen = np.zeros_like(m); comps = []
     for y0, x0 in zip(*np.where(m)):
@@ -31,6 +33,7 @@ def process(f):
     rgba = np.asarray(Image.open(f).convert("RGBA")).copy()
     idx = quant.quantize(rgba, allowed, alpha_thresh=110)
     idx = np.where(largest(idx), idx, -1)
+    idx = np.where(idx >= 0, np.array(COAT)[np.maximum(idx, 0)], -1)
     idx = quant.despeckle(idx, 1); idx = quant.outline(idx)
     ys, xs = np.where(idx >= 0); y1 = ys.max() + 1
     # the trousers: every dark cool pixel in the legs' rows (the lower 30 % of the figure, above the boots) one colour set, by luminance
