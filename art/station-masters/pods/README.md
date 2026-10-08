@@ -1,6 +1,6 @@
 # Pods masters: the painted layer of the Pods screen
 
-> Painted from the accepted candidate PV-D-r3-a4 ([`art/concept-station/pods-v2/`](../../concept-station/pods-v2/README.md)), cut to the rectangles of [`design/style-guide/station-layouts.md`](../../../design/style-guide/station-layouts.md) (Pods). One PNG per piece and state, 1×, straight alpha, text slots empty, placed 1:1 by the builder. **Status: second pass judged by the art director 2026-10-08: not yet the concept (the dish and its bed); 51 more slices signed; the dish grows to 224×96 (UI designer); the rest returned (see the art director's column, second pass, below).**
+> Painted from the accepted candidate PV-D-r3-a4 ([`art/concept-station/pods-v2/`](../../concept-station/pods-v2/README.md)), cut to the rectangles of [`design/style-guide/station-layouts.md`](../../../design/style-guide/station-layouts.md) (Pods). One PNG per piece and state, 1×, straight alpha, text slots empty, placed 1:1 by the builder. **Status: fourth pass judged by the art director 2026-10-08: not yet the concept (the bowl's front and the slab, at the centre of the screen); 43 more slices signed, the eight tabs among them; 14 returned (see the art director's column, fourth pass, below).**
 
 **How they were made.** The image tool painted each family from the candidate as the reference (the prompts, references, hashes, seconds and outcome of every call are in [`log/calls.jsonl`](log/calls.jsonl): 27 calls, all succeeded, none retried by the tool; 14 of the generations are used, the rest were rejected tries). Each result was keyed off its flat ground (magenta key, or colour-to-alpha on the glass), cut, cleaned and resampled down to the exact rectangle by [`tools/build.py`](tools/build.py); the plates, tabs, panes and frames are 9-sliced from one painted master so their corners are painted once and never stretched. Retro Diffusion was not used: these are soft painted materials, outside the trial's rules. Everything is in the Station's painted layer, so it is full colour and off the 62-colour chrome palette by design; type and the progress arcs are the build's.
 
@@ -330,6 +330,38 @@ Judged at 1×. I compared `composite-vs-candidate.png` first, then each slice on
 - Captions: the composite-vs-candidate caption and the layering note still describe the old layout. Bring them up to date.
 
 **To the owner:** not yet. This is no longer neglect, and the gaps are narrow. After the dish rectangle, the bowl, the slab, the stage values and the frame states, this goes as the first Pods masters composite, with the stand-ins listed.
+
+## Sign-off §2, art director's column, fourth pass (2026-10-08)
+
+Judged at 1×. I compared `composite-vs-candidate.png` first, then the dish beside the candidate's, then each slice on a flat dark ground and in a recolour test of the pod layers. These are stand-ins and do not count against the masters: the tab emblems and pips, the trait marks, the focus ring, the progress arcs, the stamp raster and the picture.
+
+**Against the concept: not yet.** The owner would now recognise the rail, the wall, the beam, the page, the wells and the stamp as theirs. They would not recognise the centre. In the candidate, the pod sits in a frosted bowl behind a dipping front lip, on a wide glass slab. In the composite it stands in a glass jar: its lower body shows through the front wall below the dip, and there is no slab. Remaining differences:
+
+- **Painting:** the slab, which is a 70 px sliver hidden behind the bowl; the bowl's front wall, which is see-through where it covers the foot.
+- **Layout (UI designer):**
+  - The pod is 0.79 of the bowl's width; the candidate's is 0.71 (the large class is 160 in a 201 px bowl). Shrink the class on the dish to about 144, or grow the dish.
+  - The foot line at y 400 sits below the dip's floor at about y 388.
+  - The candidate's picture is a portrait in a deep frame, not a landscape one.
+  - The name plate is bigger and bolder than the candidate's label.
+  - The Grid proof titles the page "Coat" while Shape is the open tab.
+
+**Grid:** the compact rail with the open tab full reads at a glance. The emblems will carry the compact tabs.
+
+**Signed this pass (43):**
+
+- `rail-tab-{unread,read,focused,sealed}-{full-152x40,compact-72x40}` (8). The slant, the lit rim and the abutting run match the candidate.
+- `room-bench-stage` (the values hold: 89 around the pod against the candidate's 86) and `room-cradle` (the bowl, its dip and its grit are right).
+- `trait-picture-frame-*-unread` (8).
+- `pod-{large,medium,small,well}-{shade,pattern-stripes,pattern-bands,band,pattern-dots,crack}` (24) and `pod-well-sealed`. The meridians and hoops are quiet and not childish, and the band reads at well size.
+
+**Returned, with directions (14):**
+
+- `room-cradle-front`: make the front wall frosted enough to hide the pod's foot. The dipping lip is the only edge the eye should see.
+- `room-shelf`: the candidate's slab, painted to the full 272 px. Show the top face and a lit front edge, standing about 24 px clear of the bowl on each side.
+- `trait-picture-frame-*-sealed` (8): these read as a grey metal shutter. Make them glass slats: translucent, with the stage's teal faintly through and the top edges lit from the top left.
+- `pod-*-mask-accent` (4; `pod-*-mask-body` is held with it): close the two pinholes where the crack met the cap. Body colour shows through them.
+
+**To the owner:** not yet. The rest of the screen is now art, not neglect. But the pod's bowl is the first thing the owner sees and the slab was directed twice. One narrow pass on these 14 and the layout points above, then it goes as the Pods masters composite beside the concept, with the stand-ins listed.
 
 ## Departures from the candidate, and why
 
