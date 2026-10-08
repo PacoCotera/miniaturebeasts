@@ -3,6 +3,8 @@
 import { SW, SH, LINE_H, C, R, blit, text, textW, clipText, wrapText, panel, focusRing, art, PB, cropPB, clock, motion } from "../gfx.mjs";
 import { ICON, mibiArt, stampArt, vivArt, traitPic, gateArt, paintedArt, waitLamp } from "../art.mjs";
 import { landedSet, lampText } from "../caddy.mjs";
+import { openCross } from "./cross.mjs";
+import { emblemArt } from "../art.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, docked, effWithId, mibiById } from "../game.mjs";
 import { stageBg, drawTop, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
 import * as S from "../state.mjs";
@@ -13,7 +15,10 @@ const habList = () => G.st.mibis.filter((m) => !m.released);
 function shown() { const l = habList(); return l.find((m) => m.id === H().id) || l.find((m) => m.id !== effWithId()) || l[0] || null; }
 function targets() {
   const t = [tgt("stage", 30, 66, 576, 360), tgt("door", 636, 306, 128, 136), tgt("heart", 774, 306, 118, 136), tgt("wild", 902, 306, 108, 136)];
-  habList().forEach((m, i) => t.push(tgt("s" + m.id, 24 + i * 140, 456, 128, 92)));
+  const m = shown(), fr = m && frameOf(S.speciesOf(m));
+  if (m && fr) fr.chapters.forEach((c, i) => t.push(tgt("ch" + i, 650 + (i % 4) * 88, 184 + Math.floor(i / 4) * 44, 80, 40)));
+  if (m && S.isAdult(G.st, m, G.settings)) t.push(tgt("cross", 636, 250, 374, 46));
+  habList().forEach((q, i) => t.push(tgt("s" + q.id, 24 + i * 140, 456, 128, 92)));
   return t;
 }
 function draw() {
@@ -35,13 +40,16 @@ function draw() {
   // the card
   panel(636, 50, 374, 246, C.paper, C.wood2);
   text(clipText(m.name, 220, 3), 654, 62, C.wood0, 3); if (m.bonded) blit(ICON.heart(true), 654 + textW(clipText(m.name, 220, 3), 3) + 10, 60);
-  text(S.spName(m) + " · " + st, 654, 98, C.bark, 2); text(m.shaped && m.shaped.length ? "shaped: " + clipText(m.shaped.join(", "), 170, 2) : "grown as its pod was", 654, 120, C.bark, 2);
-  text(clipText(m.mem ? "remembers the " + m.mem : m.from.g ? "from the " + (S.PLACE_WORD[m.from.g] || m.from.g) : "hasn’t been out yet", 236, 2), 654, 142, C.clay, 2);
+  text(S.spName(m) + " · " + st, 654, 98, C.bark, 2); text(m.parents ? "bred · " + (S.mibiFullyRead(m, G.settings) ? "fully read" : "one of these until read") : m.shaped && m.shaped.length ? "shaped: " + clipText(m.shaped.join(", "), 170, 2) : "grown as its pod was", 654, 120, C.bark, 2);
+  text(clipText(m.parents ? "of " + m.parents.map((p) => p.name).join(" and ") : m.mem ? "remembers the " + m.mem : m.from.g ? "from the " + (S.PLACE_WORD[m.from.g] || m.from.g) : "hasn’t been out yet", 236, 2), 654, 142, C.clay, 2);
   text(codeText(m.code), 654, 164, C.wood2, 2);
   if (fr && m.genome) { const sp = stampArt(fr, m.genome, m.read, 88); if (sp) blit(sp, 904, 58); }
-  if (fr && m.genome) fr.chapters.slice(0, 4).forEach((ch, i) => { const px = 650 + i * 88, py = 184; panel(px, py, 80, 72, C.wood3, C.wood1);
-    const t = ch.traits[0]; if (t) blit(art("minipic" + m.sha + t.id, () => cropPB(traitPic(fr, m.genome, t.id, 150, 110), 38, 24, 74, 62)), px + 3, py + 5);
-    text(clipText(ch.name, 84, 2), px + 40, py + 76, C.bark, 2, "center"); });
+  // the chapters as tabs: read ones show, unread ones (a bred child) name their price; ✓ on one reads it
+  if (fr && m.genome) fr.chapters.forEach((ch, i) => { const px = 650 + (i % 4) * 88, py = 184 + Math.floor(i / 4) * 44, read = m.read.includes(ch.id), cost = read ? 0 : S.mibiReadCost(G.st, m, ch.id, G.settings);
+    panel(px, py, 80, 40, read ? C.wood3 : C.sand, C.wood1); blit(emblemArt(ch.id), px + 4, py + 4);
+    text(clipText(ch.name, 54, 1), px + 24, py + 4, read ? C.creamT : C.wood0, 1); text(read ? "read" : ch.sealed && !G.settings.sealedOpen ? "sealed" : cost === 0 ? "free" : cost + " ◆", px + 24, py + 21, read ? C.lampD : C.rust, 1); });
+  if (S.isAdult(G.st, m, G.settings)) { panel(636, 250, 374, 46, C.tealD, C.aqua); text("✕ cross " + m.name + " with another adult " + S.spName(m), 823, 262, C.mint, 2, "center"); }
+  else text(S.mibiStage(G.st, m, G.settings) === "juvenile" ? "crosses once adult" : "", 823, 262, C.clay, 2, "center");
   // the with-you door and the bond heart
   const wm = mibiById(effWithId()), pend = S.pendingWith(G.st, G.sv);
   panel(636, 306, 128, 136, C.wood2, C.wood1); panel(646, 316, 50, 112, C.wood0, C.wood3);
@@ -66,6 +74,11 @@ function line() {
   if (h.f === "door") { if (isW) return { back, subject: m.name + " is with you" + (docked() ? "" : " · away") }; return { ok: "Take " + m.name + " with you", price: docked() ? "now" : "at the next dock", back, subject: subj }; }
   if (h.f === "heart") { if (m.bonded) return { back, subject: m.name + " is bonded" }; if (!S.bondOffered(m)) return { back, subject: "bond is offered after a first outing" }; return { ok: h.bondArm ? "Again: bond with " + m.name : "Bond with " + m.name, back, subject: "a small heart · no meters" }; }
   if (h.f === "wild") { const b = S.returnMibiBlock(G.st, G.sv, m); if (b) return { back, subject: "return to the wild · " + b }; return { ok: h.wildArm ? "Again: return " + m.name : "Return " + m.name + " to the wild", price: "+2 ❀", back, subject: "its place remembers it · never taken back" }; }
+  if (h.f === "cross") { const ps = S.crossPartners(G.st, G.sv, m, G.settings); return ps.length ? { ok: "Cross " + m.name, back, subject: subj, need: S.plural(ps.length, "adult " + S.spName(m)) + " to pair" } : { back, subject: subj, need: "no other adult " + S.spName(m) + " to pair" }; }
+  if (h.f.startsWith("ch")) { const fr = frameOf(S.speciesOf(m)), ch = fr?.chapters[+h.f.slice(2)]; if (!ch) return { back };
+    if (m.read.includes(ch.id)) return { back, subject: m.name + " · " + ch.name + " · read" };
+    if (ch.sealed && !G.settings.sealedOpen) return { back, subject: m.name + " · " + ch.name + " · sealed" };
+    const cost = S.mibiReadCost(G.st, m, ch.id, G.settings); return { ok: "Read " + ch.name, price: cost === 0 ? "free" : cost + " ◆", dim: G.st.d < cost, back, subject: m.name + " · " + ch.name + " · one of these until read" }; }
   return { back };
 }
 function act(k) {
@@ -76,6 +89,8 @@ function act(k) {
   if (h.f === "stage" || (h.f[0] === "s" && h.f !== "stage")) { FX.moment = { id: m.id, at: clock.now }; lockInput(300); msg(m.name + " leans on the glass · " + (m.mem ? "it remembers the " + m.mem : m.from.g ? "it came from the " + (S.PLACE_WORD[m.from.g] || m.from.g) : "it hasn’t been out yet")); }
   else if (h.f === "door") { if (m.id !== effWithId()) { const r = S.takeWith(G.st, G.sv, m); if (r.ok) { msg(r.msg); save(); } } }
   else if (h.f === "wild") { if (S.returnMibiBlock(G.st, G.sv, m)) { msg(S.returnMibi(G.st, G.sv, m, G.settings).msg); return; } if (!h.wildArm) { h.wildArm = 1; msg("Return " + m.name + " to the wild? Never taken back · ✓ again"); } else { h.wildArm = 0; const r = S.returnMibi(G.st, G.sv, m, G.settings); msg(r.msg); if (r.ok) { h.id = null; h.f = "stage"; save(); } } }
+  else if (h.f === "cross") { if (S.crossPartners(G.st, G.sv, m, G.settings).length) openCross(m); else msg("No other adult " + S.spName(m) + " to pair with " + m.name); }
+  else if (h.f.startsWith("ch")) { const fr = frameOf(S.speciesOf(m)), ch = fr?.chapters[+h.f.slice(2)]; if (!ch) return; const r = S.readMibi(G.st, m, ch.id, G.settings); if (r.ok) { msg((r.first ? "The first read is free · " : "") + ch.name + " read" + (r.newLooks.length ? " · new: " + r.newLooks.slice(0, 3).join(", ") : "")); save(); } else if (r.msg) msg(r.msg); }
   else if (h.f === "heart" && S.bondOffered(m)) { if (!h.bondArm) { h.bondArm = 1; msg("Bond with " + m.name + "? A deliberate choice · ✓ again"); } else { h.bondArm = 0; msg(S.bond(G.st, m).msg); save(); } }
 }
 registerScreen("habitat", { draw, line, act });

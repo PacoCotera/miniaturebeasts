@@ -55,7 +55,7 @@ const blobArt = (w, h) => { const pb = new PB(w, h); pb.ell(w / 2, h / 2, w * 0.
 export function mibiArt(frame, genome, w, h, view = "portrait", flip = false) {
   const key = "mb" + genomeDigest(genome) + ":" + w + "x" + h + ":" + view;
   const pb = art(key, () => { const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") return blobArt(w, h);
-    return renderPB(b.scene, fitCamera(b.scene, view, [w, h], 0.06), w >= 200 ? "station" : "companion"); });
+    return renderPB(b.scene, fitCamera(b.scene, view, [w, h], 0.06), "station"); });   // the Station's pass at every size: its ground stays the plain ground, so it clears to a sprite
   return flip ? art(key + "f", () => flipPB(pb)) : pb;
 }
 // The species' face: its type specimen (the frame's typical body) in the placeholder.
@@ -288,3 +288,6 @@ export function paintedArt(set, sha, w, h, { sprite = false, flip = false } = {}
   p = new Painted(cv); if (PAINTED.size > 200) PAINTED.clear(); PAINTED.set(key, p); return p;
 }
 export const waitLamp = () => art("waitlamp", () => { const pb = new PB(10, 10); pb.ell(5, 5, 4, 4, C.sky); pb.ell(3.5, 3.5, 1.3, 1.3, C.ice); pb.outline(() => C.deep); return pb; });
+
+// A whole body under frost: the child to be on the Cross screen, never a promise.
+export function ghostArt(frame, genome, w, h) { return art("ghost" + genomeDigest(genome) + ":" + w + "x" + h, () => { const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p); return pb.frost(); }); }

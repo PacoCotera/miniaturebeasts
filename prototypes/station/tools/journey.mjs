@@ -60,6 +60,7 @@ const sv = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.SV)))
 const press = async (k, ms = 120) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(ms); };
 const line = () => page.evaluate(() => window.__st.lineFor());
 const expect = (cond, what) => { if (!cond) fail(what); };
+const S_stage = (s, m) => { const age = s.turn - (m.born || 0); return age < 2 ? "juvenile" : "adult"; };
 
 // 1. the fixture migrated: pods carry genomes from their seeds, the mibi keeps its id and name, the Companion's part is byte-identical
 let s = await st();
@@ -214,11 +215,55 @@ for (let i = 0; i < 40 && !caddy.state.jobs.some((j) => j.sha === later.sha && j
 await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(400);
 await press("home", 300);
 expect((await page.evaluate((sha) => window.__st.caddy.landed(sha), later.sha)), "the second painting landed after the service returned");
+// M4. Cross: free a bay, pair Dot with an unrelated adult Loika, see four seeds for the switches and a range for the blends at kinship 0, cross, open, read the child; then siblings at a quarter
+await press("habitat", 200);
+s = await st(); const adult2 = s.mibis.find((m) => !m.released && m.name !== "Dot" && m.name !== "Moss" && m.name !== "Pebble" && S_stage(s, m) === "adult");
+await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "wild"; }, adult2.id);
+await press("confirm", 150); await press("confirm", 300);
+s = await st(); expect(s.mibis.find((m) => m.id === adult2.id).released, "a second adult returned to free a bay");
+const dot = s.mibis.find((m) => m.name === "Dot"), adult3 = s.mibis.find((m) => !m.released && m.id !== dot.id && S_stage(s, m) === "adult");
+await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; }, dot.id);
+l = await line(); expect(/Cross Dot/.test(l.ok), "the cross mark on an adult: " + JSON.stringify(l));
+await press("confirm", 300);
+expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "on the Cross screen");
+await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(600);
+l = await line(); expect(l.ok === "Cross them" && /2 ⚡ 4 ❀/.test(l.price) && /wild founders/.test(l.need), "the cross offered at 2 Energy 4 Essence, kinship 0: " + JSON.stringify(l));
+const fc = await page.evaluate(([a, b]) => window.__st.forecastOf(a, b), [dot.id, adult3.id]);
+expect(fc.traits.filter((t) => t.kind === "switch").length === 2 && fc.traits.filter((t) => t.kind === "blend").length === 3, "four seeds for markings and crown, a range for eye rings, drive and efficiency");
+expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length === 4), "four seeds each");
+await shot("page-cross");
+const e3 = (await st()).e, s3 = (await st()).s;
+await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
+s = await st(); expect(s.bud && s.bud.kind === "cross" && s.bud.parents.length === 2 && s.bud.parents[0].id === dot.id, "the child grows in the bud with its real parents");
+expect(s.e === e3 - 2 && s.s === s3 - 4, "paid 2 ⚡ 4 ❀");
+await page.evaluate(() => window.__st.skipBud("ready")); await press("confirm", 300); await page.waitForTimeout(2800); await page.evaluate(() => window.__st.unlock());
+s = await st(); const child = s.mibis.at(-1);
+expect(child.parents && child.parents.length === 2 && child.parents[1].genome, "the parents field: two snapshots with their genomes");
+expect(child.read.length < 4, "the child is known only where the switch parents matched: " + child.read.join(","));
+expect((await page.evaluate(([a, b]) => window.__st.kinshipOf(a, b), [child.id, dot.id])) === 0.25, "child and parent: kinship a quarter");
+// reading the child on Habitat's card
+await press("habitat", 300);
+const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.find((x) => x.id === id), fr = window.__st.frameOf(m.species); return fr.chapters.findIndex((c) => !m.read.includes(c.id)); }, child.id);
+await page.evaluate(([id, i]) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "ch" + i; }, [child.id, chIndex]);
+l = await line(); expect(/Read /.test(l.ok) && /◆|free/.test(l.price), "a child's unread chapter is offered at a price: " + JSON.stringify(l));
+await shot("page-child");
+const d3 = (await st()).d; await press("confirm", 300);
+s = await st(); expect(s.mibis.find((m) => m.id === child.id).read.length === child.read.length + 1 && s.d <= d3, "the child's chapter read");
+// siblings: kinship a quarter, the forecast narrowed and more seeds showing the hidden look
+await page.evaluate(() => { window.__st.settings.bays = 12; });   // room for the siblings and their parents, and a bay for their child
+const sib = await page.evaluate(() => window.__st.seedSiblings("S01", 4242));
+expect(sib.ok, "two siblings seeded: " + sib.msg);
+expect((await page.evaluate(([a, b]) => window.__st.kinshipOf(a, b), [sib.mibis[0].id, sib.mibis[1].id])) === 0.25, "siblings: kinship a quarter");
+await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; }, sib.mibis[0].id);
+await press("confirm", 300); await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, sib.mibis[1].id); await page.waitForTimeout(600);
+l = await line(); expect(/close kin/.test(l.need), "the siblings' cross says close kin: " + JSON.stringify(l));
+await shot("page-cross-siblings");
+await press("back", 200); await press("home", 200);
 // 7. the other screens draw without errors; the save round-trips
 for (const k of ["library", "confirm", "back", "habitat", "home", "left", "confirm", "back"]) await press(k, 150);
 await press("library", 200); await shot("page-library"); await press("habitat", 300); await shot("page-habitat"); await press("home", 200);
 const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("mb-save-v8")));
-expect(stored.st.schema === 2 && stored.st.tray.length === 1 && stored.st.mibis.length === 7 && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
+expect(stored.st.schema === 2 && stored.st.tray.length === 1 && stored.st.mibis.length === (await st()).mibis.length && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
 // 8. the CI smoke's presses, from a fresh world with no save
 await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
 

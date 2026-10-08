@@ -248,3 +248,40 @@ test("six bays: a full vivarium refuses Grow before payment and Open until one i
   assert.equal(S.grow(st, st.tray[0], {}, settings, 5000).ok, true);
   assert.equal(S.openBud(st, { with: null }, settings, 5000 + 21 * 60000).mibi.bay, m.bay, "the freed bay is taken");
 });
+
+// --- M4 Cross ---
+test("the cross: refusals before cost; a child of two founders with real parents, known only where switch parents match; the forecast's quarters and range", () => {
+  const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
+  const r = S.seedAdults(st, "S01", 31, 2, settings), [a, b] = r.mibis, fr = frameOf("S01");
+  assert.equal(S.crossBlock(st, null, a, a, settings), "one mibi is not a pair");
+  const young = { ...b, born: st.turn }; assert.equal(S.crossBlock(st, null, a, young, settings), "not adult");
+  const tuikis = S.seedAdults(st, "S03", 5, 1, settings).mibis[0]; assert.equal(S.crossBlock(st, null, a, tuikis, settings), "another species");
+  assert.deepEqual(S.crossPartners(st, null, a, settings).map((m) => m.id), [b.id]);
+  assert.equal(S.kinshipOf(st, a, b), 0, "two founders are unrelated");
+  const fc = S.forecastOf(st, a, b, settings);
+  assert.equal(fc.kinship, 0); assert.equal(fc.traits.length, 5);
+  for (const t of fc.traits) { if (t.kind === "switch") { assert.equal(t.seeds.length, 4); assert.ok(Math.abs(t.seeds.reduce((s2, x) => s2 + x.weight, 0) - 1) < 1e-6); } else { assert.equal(t.kind, "blend"); assert.ok(t.range[0] <= t.range[1]); assert.equal(t.firm, false); } }
+  const e0 = st.e, s0 = st.s;
+  let seed = 7; const rng = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x80000000; };
+  const c = S.doCross(st, null, a, b, settings, 1000, rng); assert.equal(c.ok, true, c.msg);
+  assert.equal(st.e, e0 - 2); assert.equal(st.s, s0 - 4);
+  const B = st.bud; assert.equal(B.kind, "cross"); assert.equal(B.parents.length, 2); assert.equal(B.parents[0].id, a.id); assert.ok(B.parents[1].genome); assert.equal(B.minutes, 20); assert.equal(B.kinship, 0);
+  assert.deepEqual(B.read, S.childKnownChapters(fr, fc), "known only where every trait of the chapter is firm");
+  for (const l of fr.loci) if (l.kind !== "locked") { const [x, y] = B.genome.loci[l.id]; const cont = typeof x === "number"; if (!cont) { assert.ok(a.genome.loci[l.id].includes(x) && b.genome.loci[l.id].includes(y), "one copy from each parent at " + l.id); } else assert.equal(x, y, "a blend's copies are equal"); }
+  assert.match(S.crossBlock(st, null, a, b, settings), /busy/);
+  const o = S.openBud(st, null, settings, 1000 + 20 * 60000); assert.equal(o.ok, true); const child = o.mibi;
+  assert.equal(child.parents.length, 2); assert.deepEqual(child.read, B.read); assert.equal(S.mibiStage(st, child), "juvenile");
+  // reading the child: a blended chapter costs as a pod's would, half once read on the species before
+  const unread = fr.chapters.find((ch) => !child.read.includes(ch.id)); assert.ok(unread, "a chapter stays unread on the child");
+  const cost = S.mibiReadCost(st, child, unread.id, settings); assert.ok(cost >= 1);
+  const rr = S.readMibi(st, child, unread.id, settings); assert.equal(rr.ok, true); assert.ok(child.read.includes(unread.id)); assert.equal(S.readMibi(st, child, unread.id, settings).again, true);
+  // kinship: the child to a parent is a quarter; siblings a quarter; the penalty surfaces more
+  assert.equal(S.kinshipOf(st, child, a), 0.25);
+  child.born = st.turn - 2;
+  const fc2 = S.forecastOf(st, child, a, settings); assert.equal(fc2.kinship, 0.25);
+  const sib = S.seedSiblings(st, "S01", 99, { ...settings, bays: 10 }); assert.equal(sib.ok, true, sib.msg);
+  assert.equal(S.kinshipOf(st, sib.mibis[0], sib.mibis[1]), 0.25, "full siblings");
+  assert.equal(S.kinshipOf(st, sib.mibis[0], sib.parents[0]), 0.25);
+  assert.equal(S.kinshipOf(st, sib.mibis[0], a), 0, "unrelated lines");
+  assert.match(S.kinshipWord(0.25), /close kin/); assert.match(S.kinshipWord(0), /wild founders/);
+});

@@ -407,8 +407,10 @@ export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const bay = freeBay(st, settings); if (bay < 0) return { ok: false, msg: "No bay free · return a mibi to the wild first" };
   const B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
   const name = MIBI_NAMES[st.nameN % MIBI_NAMES.length] + (st.nameN >= MIBI_NAMES.length ? " " + (Math.floor(st.nameN / MIBI_NAMES.length) + 1) : ""); st.nameN++;
-  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read: fr.chapters.map((c) => c.id), parents: B.parents, bay, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
-  for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
+  // a founder opens fully known; a bred child only where the Station could be sure (switch parents matched), the rest read later
+  const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.map((c) => c.id);
+  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, bay, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
+  for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
   logEv(st, "Opened · " + m.name + " · " + fr.species.name + " · juvenile · bay " + (bay + 1));
   return { ok: true, mibi: m };
@@ -442,4 +444,85 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
     st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
   st.firstMibi = false; logEv(st, "Developer: " + plural(made.length, "adult " + fr.species.name) + " · seed " + (seed >>> 0));
   return { ok: !!made.length, mibis: made, msg: made.length ? made.map((m) => m.name).join(" and ") + " live in the vivarium" : "no bay free" };
+}
+
+// --- The cross (the-cross.md, decided; station-build.md M4): two adults of one species make one child --------
+import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, identity as genomeIdentity } from "./genome.mjs";
+export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.growE, settings), s: price(PRICE.growS, settings), d: 0 });
+// The pedigree: a digest names a mibi's genome, in the vivarium or in a child's parent snapshot.
+export function genomeLookup(st) {
+  const byDigest = new Map();
+  for (const m of st.mibis) { if (m.genome) byDigest.set(genomeDigest(m.genome), m.genome); for (const p of m.parents || []) if (p.genome) byDigest.set(genomeDigest(p.genome), p.genome); }
+  return (d) => byDigest.get(d) ?? null;
+}
+export const isAdult = (st, m, settings) => mibiStage(st, m, settings) === "adult";
+// Refused before cost, on the pick itself: the same individual, another species, not adult, released.
+export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
+  if (!a || !b) return "pick two";
+  if (a === b || a.id === b.id) return "one mibi is not a pair";
+  if (speciesOf(a) !== speciesOf(b)) return "another species";
+  if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
+  if (a.released || b.released) return "gone to the wild";
+  if (st.bud) return "the incubator is busy";
+  if (bayFull(st, settings)) return "no bay free · return one";
+  return "";
+}
+export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings));
+export function kinshipOf(st, a, b) { const k = pedigreeKinship(a.genome, b.genome, genomeLookup(st)); return k; }
+export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
+// The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match.
+export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
+  const fr = frameFor(a); if (!fr || crossBlock(st, null, a, b, settings) === "another species") return null;
+  const k = kinshipOf(st, a, b);
+  return { ...crossForecast(fr, a.genome, b.genome, { kinship: k, lookup: genomeLookup(st) }), kinship: k, identity: genomeIdentity(fr, a.genome, b.genome) };
+}
+// Chapters a child is known in before any read: every trait firm (switch parents match); a blend is never firm.
+export function childKnownChapters(fr, fc) { return fr.chapters.filter((c) => !c.sealed && c.traits.every((t) => fc.traits.find((x) => x.trait === t.id)?.firm)).map((c) => c.id); }
+// The cross: one draw, validated whole before anything is spent (not re-rolled: a child that cannot be built never exists and the clashing traits are named); then paid, the child in the bud with its real parents.
+export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.now(), rng = Math.random) {
+  const block = crossBlock(st, sv, a, b, settings); if (block) return { ok: false, msg: "Cross them · " + block };
+  const cost = crossCost(settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { ok: false, msg: "Cross them · " + shortText(st, cost.e, cost.d, cost.s) };
+  const fr = frameFor(a), k = kinshipOf(st, a, b);
+  const genome = crossGenomes(fr, a.genome, b.genome, { rng, kinship: k, lookup: genomeLookup(st) });
+  const problems = genomeProblems(fr, genome);
+  if (problems.length) { const clash = fr.chapters.flatMap((c) => c.traits).filter((t) => problems.some((p) => t.loci.some((id) => p.includes(id)))).map((t) => t.id); return { ok: false, clash, msg: "This child would not build · " + (clash.length ? clash.join(", ") : problems[0]) + " · nothing spent" }; }
+  st.e -= cost.e; st.s -= cost.s;
+  const sha = genomeSha(genome), fc = crossForecast(fr, a.genome, b.genome, { kinship: k }), read = childKnownChapters(fr, fc);
+  const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
+  const minutes = budMinutes(st, 0, settings);
+  st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
+  st.firstMibi = false;
+  st.outbox.push({ sha, species: fr.species.id, genome, at: now });
+  logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · −" + priceText(cost.e, cost.d, cost.s));
+  return { ok: true, bud: st.bud, cost };
+}
+// Reading a child (or any mibi with chapters still unread): the same prices as a pod's chapters.
+export function mibiReadCost(st, m, chapterId, settings = DEFAULT_SETTINGS) { return readCost(st, { ...m, idd: 1, read: m.read }, chapterId, settings); }
+export function readMibi(st, m, chapterId, settings = DEFAULT_SETTINGS) {
+  const fr = frameFor(m), ch = fr && chapterOf(fr, chapterId); if (!ch) return { ok: false };
+  if (m.read.includes(chapterId)) return { ok: false, again: true };
+  if (ch.sealed && !settings.sealedOpen) return { ok: false, msg: "Read " + ch.name + " · sealed · opens with " + chapterSeal(fr, ch) };
+  const cost = mibiReadCost(st, m, chapterId, settings); if (st.d < cost) return { ok: false, msg: "Read " + ch.name + " · " + shortText(st, 0, cost, 0) };
+  const first = !st.readEver; st.d -= cost; st.readEver = true; m.read.push(chapterId);
+  const once = st.readOnce[fr.species.id] || (st.readOnce[fr.species.id] = []); if (!once.includes(chapterId)) once.push(chapterId);
+  const newLooks = []; for (const [t, ls] of chapterLooks(fr, ch, m.genome)) { const had = guideLooks(st, fr.species.id, t); for (const l of ls) if (!had.includes(l)) newLooks.push(l); guideAdd(st, fr.species.id, t, ls); }
+  logEv(st, "Read " + m.name + "'s " + ch.name + (first ? " · free (the first read ever)" : cost ? " · −" + cost + " Data" : " · free") + (newLooks.length ? " · new: " + newLooks.join(", ") : ""));
+  return { ok: true, cost, first, chapter: ch, newLooks };
+}
+export const mibiFullyRead = (m, settings = DEFAULT_SETTINGS) => { const fr = frameFor(m); return !fr || fr.chapters.every((c) => m.read.includes(c.id) || (c.sealed && !settings.sealedOpen)); };
+// Developer: two siblings of two unrelated adults, born adult.
+export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
+  const r = seedAdults(st, species, seed, 2, settings); if (!r.ok || r.mibis.length < 2) return { ok: false, msg: r.msg };
+  const [a, b] = r.mibis, fr = frameOf(species), made = [];
+  let x = seed >>> 0; const rng = () => { x = (Math.imul(x ^ (x >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return (x >>> 8) / 16777216; };
+  for (let i = 0; i < 2 && !bayFull(st, settings); i++) {
+    let genome = null; for (let t = 0; t < 8 && !genome; t++) { const g = crossGenomes(fr, a.genome, b.genome, { rng, kinship: 0 }); if (!genomeProblems(fr, g).length) genome = g; }
+    if (!genome) break;
+    const sha = genomeSha(genome), id = st.nextMibi++, name = MIBI_NAMES[st.nameN % MIBI_NAMES.length] + (st.nameN >= MIBI_NAMES.length ? " " + (Math.floor(st.nameN / MIBI_NAMES.length) + 1) : ""); st.nameN++;
+    const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
+    const m = { id, name, sp: a.sp, species, gs: null, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: a.from.g, how: "cross", podId: null, of: [a.name, b.name] }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: fr.chapters.map((c) => c.id), parents: [snap(a), snap(b)], bay: freeBay(st, settings), paint: null, released: false, shaped: [] };
+    st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls);
+  }
+  logEv(st, "Developer: siblings " + made.map((m) => m.name).join(" and ") + " of " + a.name + " and " + b.name);
+  return { ok: made.length === 2, parents: [a, b], mibis: made, msg: made.length === 2 ? made.map((m) => m.name).join(" and ") + ", siblings of " + a.name + " and " + b.name : "no bay free for both siblings" };
 }

@@ -3,10 +3,10 @@
 // the test hooks. Rules are in state.mjs, drawing in the screens.
 import { SW, SH, STAGE_Y, STAGE_H, scr, g, RGB, clock, motion, ditherFill, setIcons, offPalette, artSize } from "./gfx.mjs";
 import { ICON } from "./art.mjs";
-import { G, FX, UI, IDLE_MS, msg, save, load, loadSettings, storageChanged, goScreen, screenOf, lineFor, need, docked, hasWorld, bayCrates, arriving, onChange, podById } from "./game.mjs";
+import { G, FX, UI, IDLE_MS, msg, save, load, loadSettings, storageChanged, goScreen, screenOf, lineFor, need, docked, hasWorld, bayCrates, arriving, onChange, podById, mibiById } from "./game.mjs";
 import * as S from "./state.mjs";
 import { setFrames, frameOf, frameIds, stampGenome } from "./genome.mjs";
-import "./screens/home.mjs"; import "./screens/pods.mjs"; import "./screens/create.mjs"; import "./screens/incubator.mjs"; import "./screens/library.mjs"; import "./screens/habitat.mjs"; import "./screens/bench.mjs";
+import "./screens/home.mjs"; import "./screens/pods.mjs"; import "./screens/create.mjs"; import "./screens/incubator.mjs"; import "./screens/cross.mjs"; import "./screens/library.mjs"; import "./screens/habitat.mjs"; import "./screens/bench.mjs";
 import { HATCH_MS } from "./screens/incubator.mjs";
 import { drawLine, drawMsg, stepResidents, clearResidents, hm } from "./screens/frame.mjs";
 import { dockKey, openBay } from "./screens/home.mjs";
@@ -139,5 +139,5 @@ window.__st = { ready, caddy: { state: caddy.state, status: caddy.status, flush:
   get msg() { return FX.msg; }, capture: () => scr.toDataURL("image/png"), offPalette, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },
-  grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; }, openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; },
+  grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; }, openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; }, forecastOf: (aId, bId) => S.forecastOf(G.st, podById ? mibiById(aId) : null, mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };

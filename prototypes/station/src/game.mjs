@@ -7,7 +7,7 @@ import { clock } from "./gfx.mjs";
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, lockUntil: 0, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { f: "pod", cur: null, anchor: null, ci: 0, cmp: null, wildArm: 0 },
-  create: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", bondArm: 0, wildArm: 0, from: null }, bench: { f: 0, arm: 0 },
+  create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", bondArm: 0, wildArm: 0, from: null }, bench: { f: 0, arm: 0 },
   report: null, meet: null, lastInput: 0, idle: false };
 export const IDLE_MS = 60000, READ_MS = 2000, ID_MS = 1800, ARRIVE_MS = 3000;
 
@@ -79,7 +79,7 @@ export const screenOf = (name) => SCREENS[name];
 export function goScreen(name) {
   const fresh = UI.screen !== name; if (fresh) FX.transAt = clock.now;
   UI.screen = name;
-  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.wildArm = 0; UI.hab.bondArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null;
+  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.wildArm = 0; UI.hab.bondArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
   if (name === "habitat" && UI.meet != null && UI.hab.id === UI.meet) UI.meet = null;
 }

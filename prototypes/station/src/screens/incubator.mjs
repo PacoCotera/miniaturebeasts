@@ -33,7 +33,7 @@ function draw() {
   // the stamp on its label and the code as live text
   const stamp = stampArt(fr, B.genome, fr.chapters.filter((c) => S.budChapterKnown(G.st, c.id, G.settings)).map((c) => c.id), 120);
   if (stamp) { panel(830, 300, stamp.w + 12, stamp.h + 12, C.bone, C.slate); blit(stamp, 836, 306); }
-  text(codeText(B.code), 896, 452, C.lamp, 2, "center"); text(S.spName(B) + " founder", 896, 476, C.fog, 2, "center");
+  text(codeText(B.code), 896, 452, C.lamp, 2, "center"); text(B.kind === "cross" ? "child of " + B.parents.map((p) => p.name).join(" and ") : S.spName(B) + " founder", 896, 476, C.fog, 2, "center");
   if (FX.stamp && NOW - FX.stamp.at < 1500) { panel(362, 120, 300, 50, C.lamp, C.wood2); text(codeText(FX.stamp.code), 512, 134, C.wood0, 3, "center"); }
   if (ready && motion() && Math.floor(NOW / 400) % 2) focusRing(358, 176, 308, 308);
 }
@@ -47,7 +47,7 @@ function drawHatch() {
 function line() {
   const B = G.st.bud; if (hatching()) return { back: "Home", subject: "a new mibi" };
   if (!B) return { back: "Home", subject: "the incubator is empty" };
-  if (S.budReady(G.st, G.settings)) return { ok: "Open", back: "Home", subject: S.spName(B) + " bud · ready" + (S.bayFull(G.st, G.settings) ? " · no bay free" : ""), dim: S.bayFull(G.st, G.settings) };
+  if (S.budReady(G.st, G.settings)) return { ok: "Open", back: "Home", subject: (B.kind === "cross" ? "the child of " + B.parents.map((p) => p.name).join(" and ") : S.spName(B) + " bud") + " · ready" + (S.bayFull(G.st, G.settings) ? " · no bay free" : ""), dim: S.bayFull(G.st, G.settings) };
   const c = S.instantGrowCost(G.settings), can = S.canPay(G.st, c.e, c.d, c.s);
   return { ok: "Grow now", price: can ? S.priceText(c.e, c.d, c.s) : S.shortText(G.st, c.e, c.d, c.s), dim: !can, back: "Home", subject: S.spName(B) + " bud · growing", need: "surprises clear as it grows" };
 }
