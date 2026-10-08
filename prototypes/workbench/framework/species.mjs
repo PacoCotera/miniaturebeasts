@@ -16,9 +16,10 @@ import { buildBody } from "./rig.mjs";
 import { validateBody } from "./validate.mjs";
 
 export const SCHEMA = "mb-species-frame/2";
-// The frame version a genome is built against: 2 since catalogue 8 (the tiny head alleles); a saved
-// mibi keeps the version it was born with.
-export const FRAME_VERSION = 2;
+// The frame version a genome is built against: 2 since catalogue 8 (the tiny head alleles); 3 since the
+// sixteen species glyphs were redrawn as abstract marks (2026-10-08, the owner's decision; the stamp
+// carries a glyph, so a changed glyph is a new frame). A saved mibi keeps the version it was born with.
+export const FRAME_VERSION = 3;
 export const RING = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "character", "glow", "charge"];
 export const CHAPTER_NAMES = { coat: "Coat", face: "Face", shape: "Shape", "legs-tail": "Legs & tail", movement: "Movement", stamina: "Stamina", character: "Character", glow: "Glow", charge: "Charge" };
 export const WHEEL = ["marigold", "coral", "raspberry", "plum", "periwinkle", "cobalt", "lagoon", "jade", "russet", "charcoal"];

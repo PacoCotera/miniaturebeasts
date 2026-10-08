@@ -83,10 +83,10 @@
  },
  "glyph": [
   ".###.",
-  "#####",
-  "#####",
-  ".#.#.",
-  ".###."
+  "#...#",
+  "#...#",
+  ".....",
+  "#...."
  ],
  "pod": {
   "sizeClass": "large",
@@ -1744,7 +1744,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S02",
-   "frameVersion": 2,
+   "frameVersion": 3,
    "loci": {
     "appearance.body-palette": [
      "coral",

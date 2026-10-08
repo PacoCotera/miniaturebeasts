@@ -187,7 +187,7 @@ test("the stamp: a read pod's stamp decodes to its genome; the mask follows the 
   assert.equal(d.stamps.length, 1);
   assert.equal(sameGenome(stampFrameOf(fr), sg, d.stamps[0].genome), true);
   assert.equal(d.stamps[0].genome.unread.length, 2);
-  assert.match(S.stampCodeOf(p), /^S1v2-03-/);
+  assert.match(S.stampCodeOf(p), new RegExp(`^S1v${stampFrameOf(fr).version}-03-`), "the code names the frame version the registry builds now");
 });
 
 test("need: crates, then new pods, then glints, then unread pods", () => {
