@@ -6,7 +6,7 @@ import { FRAMES_LIST } from "../src/frames.mjs";
 const lands = {};
 for (const f of FRAMES_LIST) for (const postmark of [false, true]) {
   const N = sizeFor(f, { postmark })?.N;
-  if (N) (lands[N] ??= []).push(`${f.name.replace(/^Future, /, "")}${postmark ? " + postmark" : ""}`);
+  if (N) (lands[N] ??= []).push(`${`${f.id} ${f.name}`.replace(/^Future, /, "")}${postmark ? " + postmark" : ""}`);
 }
 const rows = ["| Cells | Codeword bytes (parity; corrects) | Bits for read mask + genome: plain / postmarked | Cell at 20 mm | Dots per cell, 20 mm at 203 dpi | Px per cell at 300 px | Lands here |", "| --- | --- | --- | --- | --- | --- | --- |"];
 for (const N of SIZES) {

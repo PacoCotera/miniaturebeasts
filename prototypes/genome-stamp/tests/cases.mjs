@@ -6,8 +6,8 @@ import { stampGeometry, rasterize, imageSize } from "../src/stamp.mjs";
 import { decode } from "../src/decode.mjs";
 import { blank, cameraH, warp, gaussianBlur, lighting, monochrome, noise, jpeg, dotGain } from "./distort.mjs";
 
-export const SPECIES = ["hopper", "glowtail", "glowtail-pm", "future150"];
-// ids are the frames' working ids (hopper = Loika, glowtail = Tuikis). "glowtail-pm": a Tuikis carrying a 64-bit postmark
+export const SPECIES = ["S01", "S03", "S03-pm", "future150"];
+// ids are the registry's (S01 = Loika, S03 = Tuikis); the legacy ids hopper, puffcap and glowtail still decode. "S03-pm": a Tuikis carrying a 64-bit postmark
 export const frameOf = (sp) => byName(sp.replace(/-pm$/, ""));
 
 // Screen conditions at side D px (blur "scaled" = 1.5 px at 300 px)

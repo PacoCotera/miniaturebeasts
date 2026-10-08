@@ -38,23 +38,24 @@ The face is a grid of square cells, N×N with N in a size series, chosen by payl
 - **One Reed–Solomon codeword** over GF(256) (the same code family as QR, but not QR's layout) covers the header, CRC, mask and every data cell. About 30% of it is parity, which corrects about 15% of the bytes. Bytes run along the cells, so a local smudge costs few bytes.
 - **Chase retry.** If Reed–Solomon fails, the reader flips up to 4 of the 12 least certain cells and tries again (cells under glare count as uncertain). Any result must still pass the CRC-16.
 - **Verified only.** A read is shown only after RS correction and the CRC both pass. The RS decoder can mis-correct when overwhelmed, and the CRC catches that. A failed frame never shows a species: the page says "no read yet" and what to try.
-- **Frame registry.** The species frames (`design/proposals/species-frames/*.json`, snapshot in `src/frames-data.mjs`) ship inside every reader and are append-only, so an old print decodes for as long as its frame is carried.
+- **Frame registry.** The species frames ship inside every reader (`src/frames-data.mjs`, built by `tools/extract-frames.mjs`) and are append-only, so an old print decodes for as long as its frame is carried. Since 2026-10-08 the registry is the workbench's (`prototypes/workbench/frames/*.json`, `mb-species-frame/2` on catalogue `mb-genome-framework@9`): the sixteen species S01 Loika to S16 Blikur, species number = the species' order, frame version 2; the three legacy frames (species 11 to 13, version 1, on catalogue 6: the working ids `hopper`, `puffcap`, `glowtail`) stay beside them. A copy is packed as its index among the catalogue's alleles; a continuous locus carries its alleles' values too, so a blended copy from the cross (a number) is stamped as its bin, the nearest named allele: scanning shows, never grants.
 
 ## Size series
 
-N steps by 4. Each species lands on the smallest size its read mask and genome fit; a postmark adds 64 bits:
-- **Loika:** 17×17 (1.18 mm cells at 20 mm, 9.4 dots at 203 dpi).
-- **Tuikis:** 25×25 (0.80 mm, 6.4 dots); 29×29 with a postmark.
+N steps by 4. Each species lands on the smallest size its read mask and genome fit; a postmark adds 64 bits (the registry's frames, `node tools/size-table.mjs`):
+- **Loika** (5 open loci): 17×17 (1.18 mm cells at 20 mm, 9.4 dots at 203 dpi); 25×25 with a postmark.
+- **Hiljan, Peplos** (8 and 7 open loci): 21×21.
+- **Untuva, Tuikis, Tepor, Pesko, Azkon, Rupar, Belatz, Igara, Kilpo, Oskol, Usvel, Lehten, Blikur** (11 to 40 open loci): 25×25 (0.80 mm, 6.4 dots); the Tuikis, Azkon, Belatz, Kilpo and Blikur go to 29×29 with a postmark.
 - **150 open loci:** 37×37 (0.54 mm, 4.3 dots).
 
-Chapters are whole-column blocks, so a frame can need a size more than its bit count suggests. The Untuva (48 bits, 4 chapters) does not pack into 21×21 and lands on 25.
+Chapters are whole-column blocks, so a frame can need a size more than its bit count suggests.
 
 | Cells | Codeword bytes (parity; corrects) | Bits for read mask + genome: plain / postmarked | Cell at 20 mm | Dots per cell, 20 mm at 203 dpi | Px per cell at 300 px | Lands here |
 | --- | --- | --- | --- | --- | --- | --- |
 | 17×17 | 12 (4; 2) | 17 / – | 1.18 mm | 9.4 | 17.6 | Loika |
-| 21×21 | 23 (8; 4) | 73 / 9 | 0.95 mm | 7.6 | 14.3 | – |
-| 25×25 | 40 (12; 6) | 177 / 113 | 0.80 mm | 6.4 | 12.0 | Loika + postmark; Untuva; Untuva + postmark; Tuikis |
-| 29×29 | 61 (20; 10) | 281 / 217 | 0.69 mm | 5.5 | 10.3 | Tuikis + postmark |
+| 21×21 | 23 (8; 4) | 73 / 9 | 0.95 mm | 7.6 | 14.3 | Hiljan; Peplos |
+| 25×25 | 40 (12; 6) | 177 / 113 | 0.80 mm | 6.4 | 12.0 | Loika + postmark; Hiljan + postmark; Peplos + postmark; Untuva, Tuikis, Tepor, Pesko, Azkon, Rupar, Belatz, Igara, Kilpo, Oskol, Usvel, Lehten, Blikur; Untuva, Tepor, Pesko, Rupar, Igara, Oskol, Usvel, Lehten + postmark |
+| 29×29 | 61 (20; 10) | 281 / 217 | 0.69 mm | 5.5 | 10.3 | Tuikis, Azkon, Belatz, Kilpo, Blikur + postmark |
 | 33×33 | 86 (26; 13) | 433 / 369 | 0.61 mm | 4.8 | 9.1 | 100 open loci; 100 open loci + postmark |
 | 37×37 | 115 (36; 18) | 585 / 521 | 0.54 mm | 4.3 | 8.1 | 150 open loci; 150 open loci + postmark |
 | 41×41 | 148 (46; 23) | 769 / 705 | 0.49 mm | 3.9 | 7.3 | – |
@@ -205,11 +206,11 @@ On the Caddy everything is plain black dots: the decoration lives on screen.
 
 | Path | What |
 | --- | --- |
-| `encode.mjs` | Frame ids and file names keep the earlier working words (`hopper` is the Loika, `puffcap` the Untuva, `glowtail` the Tuikis); the species registry shows the names. `node encode.mjs examples/glowtail.json --size 300 --out stamp` → SVG and PNG. `--mm 20 --dpi 203` gives the monochrome print; `--random 7 --species future150` a random individual |
+| `encode.mjs` | Frame ids are the registry's (`S01` the Loika, `S02` the Untuva, `S03` the Tuikis); the legacy working words (`hopper`, `puffcap`, `glowtail`) still name the version 1 frames, and the examples carry them. `node encode.mjs examples/glowtail.json --size 300 --out stamp` → SVG and PNG. `--mm 20 --dpi 203` gives the monochrome print; `--random 7 --species future150` a random individual |
 | `decode.mjs` | `node decode.mjs photo.jpg [--all] [--expect genome.json]` → species, frame version, read and unread chapters, every copy, the check, the bytes corrected. Formats other than PNG go through ImageMagick if installed |
 | `src/codec.mjs`, `rs.mjs` | Layout per size, header, CRC-16, the cells ↔ codeword mapping; Reed–Solomon (BM, Chien, Forney) |
 | `src/stamp.mjs`, `decode.mjs` | Marks → SVG/raster; the reader (frame lines, perforation timing, glyph/border orientation, local-contrast cells) |
-| `src/frames.mjs`, `frames-data.mjs` | The frame registry: Loika, Untuva and Tuikis from `species-frames`, plus synthetic 100 and 150 loci. `examples/glowtail-postmark.json` carries a postmark |
+| `src/frames.mjs`, `frames-data.mjs` | The frame registry: the sixteen species from the workbench registry (frame version 2), the three legacy frames (version 1), plus synthetic 100 and 150 loci. `examples/glowtail-postmark.json` carries a postmark |
 | `tests/run.mjs`, `cases.mjs`, `distort.mjs` | The harness. The distortions and print pipeline are carried over from the ring |
 | `tests/scan.html`, `scan-check.mjs`, `print-manifest.json` | The scan page, its headless check, and the sheet's expected genomes |
 | `tools/` | Frame snapshot, size table, print sheet, scan-page bundler, README images |

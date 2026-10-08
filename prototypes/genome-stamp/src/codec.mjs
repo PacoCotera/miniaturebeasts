@@ -135,6 +135,18 @@ export function sizeFor(frame, { postmark = false } = {}) {
 // a postmark is 64 bits, given as 16 hex digits
 const postmarkBits = (genome) => (genome.postmark ? [...genome.postmark.padStart(16, "0")].flatMap((h) => toBits(parseInt(h, 16), 4)) : null);
 
+// A copy's index among the locus's alleles: a named look by its id; a blended copy (a number, the
+// cross's continuous loci) as its bin, the nearest named allele by value (scanning shows, never grants).
+export function copyIndex(l, copy) {
+  if (typeof copy === "number" && l.values) {
+    let best = -1, d = Infinity;
+    l.values.forEach((v, i) => { const e = Math.abs(v - copy); if (e < d) { d = e; best = i; } });
+    return best;
+  }
+  return l.alleles.indexOf(copy);
+}
+export const copyLook = (l, copy) => l.alleles[copyIndex(l, copy)];
+
 export function readMask(frame, genome) {
   if (typeof genome.readMask === "number") return genome.readMask;
   const read = genome.read ?? frame.chapters.filter((c) => !c.sealed).map((c) => c.name);
@@ -158,7 +170,7 @@ export function encodeCells(frame, genome, L = sizeFor(frame, { postmark: !!geno
       for (let k = 0; k < l.copies; k++) {
         let idx = 0;
         if (read) {
-          idx = l.alleles.indexOf(pair?.[k]);
+          idx = copyIndex(l, pair?.[k]);
           if (idx < 0) throw new Error(`${l.id} copy ${k + 1}: unknown look ${pair?.[k]}`);
         }
         const bits = toBits(idx, l.bits);
@@ -241,7 +253,7 @@ export function stampCode(frame, genome) {
   let h = 0x811c9dc5;
   for (const l of frame.heritable) {
     if (!(Math.floor(mask / 2 ** l.chapter) & 1)) continue; // only what the stamp shows
-    for (const v of genome.copies?.[l.id] ?? []) for (const ch of `${l.id}=${v};`) h = Math.imul(h ^ ch.charCodeAt(0), 0x01000193) >>> 0;
+    for (const v of genome.copies?.[l.id] ?? []) for (const ch of `${l.id}=${copyLook(l, v) ?? v};`) h = Math.imul(h ^ ch.charCodeAt(0), 0x01000193) >>> 0;
   }
   const hex = (v, n) => v.toString(16).toUpperCase().padStart(n, "0");
   return `S${frame.species}v${frame.version}-${hex(mask, 2)}-${hex(crc, 4)}-${hex(h >>> 8, 6)}`;
@@ -254,7 +266,7 @@ export function sameGenome(frame, a, b) {
     const read = Math.floor(mask / 2 ** ci) & 1;
     if (read !== (b.read.includes(ch.name) ? 1 : 0)) return false;
     if (!read) continue;
-    for (const l of ch.loci) if (String(a.copies[l.id]) !== String(b.copies[l.id])) return false;
+    for (const l of ch.loci) if (a.copies[l.id].map((c) => copyLook(l, c)).join() !== b.copies[l.id].map((c) => copyLook(l, c)).join()) return false;
   }
   return true;
 }

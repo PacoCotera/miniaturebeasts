@@ -15,10 +15,10 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] : d; };
 const file = args.find((a, i) => !a.startsWith("--") && !args[i - 1]?.startsWith("--"));
 if (!file && opt("random") === undefined) {
-  console.error("usage: node encode.mjs <genome.json> | --random <seed> [--species hopper|puffcap|glowtail|future100|future150]  (frame ids: Loika, Untuva, Tuikis)  [--size 300] [--out stamp] [--mm 20 --dpi 203]");
+  console.error("usage: node encode.mjs <genome.json> | --random <seed> [--species S01…S16|future100|future150|hopper|puffcap|glowtail]  (frame ids: the registry's S01 Loika … S16 Blikur, the two synthetic future species, and the legacy ids; Tuikis)  [--size 300] [--out stamp] [--mm 20 --dpi 203]");
   process.exit(2);
 }
-const genome = file ? JSON.parse(readFileSync(file, "utf8")) : individual(byName(opt("species", "glowtail")), Number(opt("random")));
+const genome = file ? JSON.parse(readFileSync(file, "utf8")) : individual(byName(opt("species", "S03")), Number(opt("random")));
 const frame = frameFor(genome.species, genome.version);
 if (!frame) throw new Error(`no frame for species ${genome.species} v${genome.version}`);
 const out = opt("out", "stamp"), mm = opt("mm");

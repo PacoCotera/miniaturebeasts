@@ -1,8 +1,11 @@
 // The frame registry: species frames pinned to the catalogue, append-only,
 // shipped with every reader (the stamp never carries the catalogue, only the
-// species number and frame version that pin it). Real frames come from
-// design/proposals/species-frames (snapshot in frames-data.mjs); two synthetic
-// future species test growth.
+// species number and frame version that pin it). Real frames come from the
+// workbench registry, prototypes/workbench/frames (snapshot in frames-data.mjs by
+// tools/extract-frames.mjs: S01 Loika = species 1 … S16 = 16, frame version 2, on
+// catalogue mb-genome-framework@9), beside the three legacy frames of version 1
+// (species 11–13 on catalogue 6) kept so old prints decode; two synthetic future
+// species test growth.
 import { FRAME_DATA } from "./frames-data.mjs";
 
 const bitsFor = (n) => (n <= 1 ? 0 : Math.ceil(Math.log2(n)));
@@ -32,7 +35,8 @@ function finish(f) {
 
 const REAL = FRAME_DATA.frames.map((d) => finish(structuredClone(d)));
 
-// Synthetic future species: the Tuikis's (frame id glowtail) allele mix, scaled, plus an 8th chapter.
+// Synthetic future species: the legacy Tuikis's (frame id glowtail, version 1) allele mix, scaled, plus
+// an 8th chapter; pinned to the legacy frame so the synthetic frames never change (append-only).
 const GLOW = REAL.find((f) => f.id === "glowtail");
 const CH = [["Coat", 10], ["Face", 5], ["Shape", 4], ["Legs & tail", 8], ["Movement", 6], ["Stamina", 3], ["Nature", 2], ["Glow", 3]];
 export function synthetic(nOpen, species, name, glyph) {

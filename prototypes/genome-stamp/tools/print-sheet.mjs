@@ -14,7 +14,7 @@ import { individual, trio } from "../tests/cases.mjs";
 const here = (p) => new URL(`../${p}`, import.meta.url);
 const PT = 72 / 25.4, PAGE = [595.28, 841.89];
 const open = (f) => f.chapters.filter((c) => !c.sealed).map((c) => c.name);
-const G = byName("glowtail"), F = byName("future150"), Hp = byName("hopper");
+const G = byName("S03"), F = byName("future150"), Hp = byName("S01");
 const fam = trio(G, 77);
 const pm = (g, hex) => ({ ...g, postmark: hex });
 const ROWS = [

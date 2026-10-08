@@ -7,8 +7,8 @@
   "cells": 17,
   "species": "Loika",
   "genome": {
-   "species": 11,
-   "version": 1,
+   "species": 1,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -25,8 +25,8 @@
      "off"
     ],
     "growth.exterior-eye-size-ratio": [
-     "small",
-     "small"
+     "large",
+     "large"
     ],
     "movement.cycle-rate": [
      "low",
@@ -38,7 +38,7 @@
     ]
    }
   },
-  "code": "S11v1-0F-7793-2C482A"
+  "code": "S1v2-0F-7C01-86A577"
  },
  {
   "n": 2,
@@ -48,8 +48,8 @@
   "cells": 25,
   "species": "Tuikis",
   "genome": {
-   "species": 13,
-   "version": 1,
+   "species": 3,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -57,7 +57,8 @@
     "Legs & tail",
     "Movement",
     "Stamina",
-    "Character"
+    "Character",
+    "Glow"
    ],
    "copies": {
     "appearance.body-palette": [
@@ -105,7 +106,7 @@
      "low"
     ],
     "growth.exterior-eye-size-ratio": [
-     "large",
+     "huge",
      "small"
     ],
     "growth.exterior-eye-spacing-ratio": [
@@ -113,20 +114,20 @@
      "wide"
     ],
     "growth.muzzle-projection-ratio": [
-     "long",
-     "long"
+     "stub",
+     "stub"
     ],
     "growth.muzzle-width-ratio": [
      "low",
      "low"
     ],
     "growth.core-width-ratio": [
-     "low",
+     "high",
      "low"
     ],
     "growth.core-depth-ratio": [
-     "low",
-     "high"
+     "high",
+     "deep"
     ],
     "growth.region-taper": [
      "gentle",
@@ -141,12 +142,12 @@
      "short"
     ],
     "growth.support-radius-ratio": [
-     "fine",
+     "slender",
      "stout"
     ],
     "anatomy.contact-terminal-form": [
-     "rounded",
-     "wedge"
+     "pad",
+     "webbed"
     ],
     "growth.terminal-length-ratio": [
      "narrow",
@@ -211,10 +212,18 @@
     "cognition.arousal-threshold": [
      "high",
      "high"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "long"
     ]
    }
   },
-  "code": "S13v1-7F-2672-1CAAEA"
+  "code": "S3v2-FF-76F5-8CCD4C"
  },
  {
   "n": 3,
@@ -224,8 +233,8 @@
   "cells": 29,
   "species": "Tuikis",
   "genome": {
-   "species": 13,
-   "version": 1,
+   "species": 3,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -233,7 +242,8 @@
     "Legs & tail",
     "Movement",
     "Stamina",
-    "Character"
+    "Character",
+    "Glow"
    ],
    "copies": {
     "appearance.body-palette": [
@@ -281,20 +291,20 @@
      "low"
     ],
     "growth.exterior-eye-size-ratio": [
-     "large",
-     "large"
+     "huge",
+     "huge"
     ],
     "growth.exterior-eye-spacing-ratio": [
      "close",
      "close"
     ],
     "growth.muzzle-projection-ratio": [
-     "short",
+     "long",
      "long"
     ],
     "growth.muzzle-width-ratio": [
      "low",
-     "low"
+     "high"
     ],
     "growth.core-width-ratio": [
      "low",
@@ -317,11 +327,11 @@
      "short"
     ],
     "growth.support-radius-ratio": [
-     "fine",
-     "slender"
+     "slender",
+     "stout"
     ],
     "anatomy.contact-terminal-form": [
-     "wedge",
+     "root",
      "rounded"
     ],
     "growth.terminal-length-ratio": [
@@ -387,11 +397,19 @@
     "cognition.arousal-threshold": [
      "high",
      "high"
+    ],
+    "appearance.emission-brightness": [
+     "bright",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "long",
+     "short"
     ]
    },
    "postmark": "5eed0f00d1e5a1ad"
   },
-  "code": "S13v1-7F-BE3D-FF6AA2"
+  "code": "S3v2-FF-8709-701225"
  },
  {
   "n": 4,
@@ -1026,8 +1044,8 @@
   "cells": 25,
   "species": "Tuikis",
   "genome": {
-   "species": 13,
-   "version": 1,
+   "species": 3,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -1035,7 +1053,8 @@
     "Legs & tail",
     "Movement",
     "Stamina",
-    "Character"
+    "Character",
+    "Glow"
    ],
    "copies": {
     "appearance.body-palette": [
@@ -1083,16 +1102,16 @@
      "high"
     ],
     "growth.exterior-eye-size-ratio": [
-     "large",
-     "large"
+     "huge",
+     "huge"
     ],
     "growth.exterior-eye-spacing-ratio": [
      "close",
      "close"
     ],
     "growth.muzzle-projection-ratio": [
-     "short",
-     "short"
+     "long",
+     "long"
     ],
     "growth.muzzle-width-ratio": [
      "high",
@@ -1103,7 +1122,7 @@
      "low"
     ],
     "growth.core-depth-ratio": [
-     "high",
+     "deep",
      "low"
     ],
     "growth.region-taper": [
@@ -1123,7 +1142,7 @@
      "stout"
     ],
     "anatomy.contact-terminal-form": [
-     "rounded",
+     "pad",
      "rounded"
     ],
     "growth.terminal-length-ratio": [
@@ -1189,10 +1208,18 @@
     "cognition.arousal-threshold": [
      "low",
      "low"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "dim"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "long"
     ]
    }
   },
-  "code": "S13v1-7F-E88E-1E732E"
+  "code": "S3v2-FF-A79E-CF0093"
  },
  {
   "n": 6,
@@ -1202,8 +1229,8 @@
   "cells": 17,
   "species": "Loika",
   "genome": {
-   "species": 11,
-   "version": 1,
+   "species": 1,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -1220,8 +1247,8 @@
      "on"
     ],
     "growth.exterior-eye-size-ratio": [
-     "large",
-     "large"
+     "huge",
+     "huge"
     ],
     "movement.cycle-rate": [
      "low",
@@ -1233,7 +1260,7 @@
     ]
    }
   },
-  "code": "S11v1-0F-9D7A-188E6C"
+  "code": "S1v2-0F-D385-4B4BFC"
  },
  {
   "n": 7,
@@ -1868,14 +1895,15 @@
   "cells": 25,
   "species": "Tuikis",
   "genome": {
-   "species": 13,
-   "version": 1,
+   "species": 3,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
     "Shape",
     "Movement",
-    "Stamina"
+    "Stamina",
+    "Glow"
    ],
    "copies": {
     "appearance.body-palette": [
@@ -1924,27 +1952,27 @@
     ],
     "growth.exterior-eye-size-ratio": [
      "small",
-     "large"
+     "huge"
     ],
     "growth.exterior-eye-spacing-ratio": [
      "close",
      "wide"
     ],
     "growth.muzzle-projection-ratio": [
-     "long",
+     "stub",
      "short"
     ],
     "growth.muzzle-width-ratio": [
      "low",
-     "low"
+     "high"
     ],
     "growth.core-width-ratio": [
-     "high",
-     "high"
+     "wide",
+     "wide"
     ],
     "growth.core-depth-ratio": [
-     "low",
-     "high"
+     "high",
+     "deep"
     ],
     "growth.region-taper": [
      "strong",
@@ -1963,8 +1991,8 @@
      "stout"
     ],
     "anatomy.contact-terminal-form": [
-     "pad",
-     "wedge"
+     "hoof",
+     "webbed"
     ],
     "growth.terminal-length-ratio": [
      "broad",
@@ -2029,10 +2057,18 @@
     "cognition.arousal-threshold": [
      "low",
      "low"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "long",
+     "long"
     ]
    }
   },
-  "code": "S13v1-37-B757-3DCC60"
+  "code": "S3v2-B7-3E34-514B4B"
  },
  {
   "n": 9,
@@ -2042,8 +2078,8 @@
   "cells": 17,
   "species": "Loika",
   "genome": {
-   "species": 11,
-   "version": 1,
+   "species": 1,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -2060,8 +2096,8 @@
      "on"
     ],
     "growth.exterior-eye-size-ratio": [
-     "large",
-     "small"
+     "huge",
+     "large"
     ],
     "movement.cycle-rate": [
      "high",
@@ -2073,7 +2109,7 @@
     ]
    }
   },
-  "code": "S11v1-0F-4863-67079F"
+  "code": "S1v2-0F-CD35-EBEB5F"
  },
  {
   "n": 10,
@@ -2083,8 +2119,8 @@
   "cells": 25,
   "species": "Tuikis",
   "genome": {
-   "species": 13,
-   "version": 1,
+   "species": 3,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -2092,7 +2128,8 @@
     "Legs & tail",
     "Movement",
     "Stamina",
-    "Character"
+    "Character",
+    "Glow"
    ],
    "copies": {
     "appearance.body-palette": [
@@ -2140,7 +2177,7 @@
      "high"
     ],
     "growth.exterior-eye-size-ratio": [
-     "large",
+     "huge",
      "small"
     ],
     "growth.exterior-eye-spacing-ratio": [
@@ -2149,18 +2186,18 @@
     ],
     "growth.muzzle-projection-ratio": [
      "long",
-     "long"
+     "stub"
     ],
     "growth.muzzle-width-ratio": [
-     "high",
+     "full",
      "low"
     ],
     "growth.core-width-ratio": [
      "high",
-     "high"
+     "wide"
     ],
     "growth.core-depth-ratio": [
-     "high",
+     "deep",
      "low"
     ],
     "growth.region-taper": [
@@ -2177,11 +2214,11 @@
     ],
     "growth.support-radius-ratio": [
      "stout",
-     "fine"
+     "slender"
     ],
     "anatomy.contact-terminal-form": [
-     "pad",
-     "rounded"
+     "hoof",
+     "pad"
     ],
     "growth.terminal-length-ratio": [
      "small",
@@ -2246,10 +2283,18 @@
     "cognition.arousal-threshold": [
      "high",
      "high"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "short"
     ]
    }
   },
-  "code": "S13v1-7F-534B-B24CA7"
+  "code": "S3v2-FF-C1CD-52B5BA"
  },
  {
   "n": 11,
@@ -2884,8 +2929,8 @@
   "cells": 17,
   "species": "Loika",
   "genome": {
-   "species": 11,
-   "version": 1,
+   "species": 1,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -2902,8 +2947,8 @@
      "on"
     ],
     "growth.exterior-eye-size-ratio": [
-     "large",
-     "small"
+     "huge",
+     "large"
     ],
     "movement.cycle-rate": [
      "low",
@@ -2915,7 +2960,7 @@
     ]
    }
   },
-  "code": "S11v1-0F-0B14-A4EA52"
+  "code": "S1v2-0F-865D-6A7C53"
  },
  {
   "n": 13,
@@ -2925,8 +2970,8 @@
   "cells": 25,
   "species": "Tuikis",
   "genome": {
-   "species": 13,
-   "version": 1,
+   "species": 3,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -2934,7 +2979,8 @@
     "Legs & tail",
     "Movement",
     "Stamina",
-    "Character"
+    "Character",
+    "Glow"
    ],
    "copies": {
     "appearance.body-palette": [
@@ -2994,11 +3040,11 @@
      "short"
     ],
     "growth.muzzle-width-ratio": [
-     "high",
+     "full",
      "high"
     ],
     "growth.core-width-ratio": [
-     "low",
+     "high",
      "high"
     ],
     "growth.core-depth-ratio": [
@@ -3019,11 +3065,11 @@
     ],
     "growth.support-radius-ratio": [
      "slender",
-     "fine"
+     "slender"
     ],
     "anatomy.contact-terminal-form": [
-     "rounded",
-     "pad"
+     "pad",
+     "hoof"
     ],
     "growth.terminal-length-ratio": [
      "small",
@@ -3088,10 +3134,18 @@
     "cognition.arousal-threshold": [
      "low",
      "low"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "dim"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "short"
     ]
    }
   },
-  "code": "S13v1-7F-6CF9-0BECD3"
+  "code": "S3v2-FF-3F6C-56EA1E"
  },
  {
   "n": 14,
@@ -3101,8 +3155,8 @@
   "cells": 25,
   "species": "Tuikis",
   "genome": {
-   "species": 13,
-   "version": 1,
+   "species": 3,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -3110,7 +3164,8 @@
     "Legs & tail",
     "Movement",
     "Stamina",
-    "Character"
+    "Character",
+    "Glow"
    ],
    "copies": {
     "appearance.body-palette": [
@@ -3167,19 +3222,19 @@
     ],
     "growth.muzzle-projection-ratio": [
      "short",
-     "long"
+     "stub"
     ],
     "growth.muzzle-width-ratio": [
-     "high",
-     "low"
+     "full",
+     "high"
     ],
     "growth.core-width-ratio": [
      "high",
-     "high"
+     "wide"
     ],
     "growth.core-depth-ratio": [
      "low",
-     "high"
+     "deep"
     ],
     "growth.region-taper": [
      "strong",
@@ -3194,12 +3249,12 @@
      "short"
     ],
     "growth.support-radius-ratio": [
-     "fine",
-     "fine"
+     "slender",
+     "slender"
     ],
     "anatomy.contact-terminal-form": [
-     "rounded",
-     "pad"
+     "pad",
+     "wedge"
     ],
     "growth.terminal-length-ratio": [
      "broad",
@@ -3264,10 +3319,18 @@
     "cognition.arousal-threshold": [
      "low",
      "high"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "long"
     ]
    }
   },
-  "code": "S13v1-7F-7EE2-DBC766"
+  "code": "S3v2-FF-9D38-C3F0EC"
  },
  {
   "n": 15,
@@ -3277,8 +3340,8 @@
   "cells": 25,
   "species": "Tuikis",
   "genome": {
-   "species": 13,
-   "version": 1,
+   "species": 3,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -3286,7 +3349,8 @@
     "Legs & tail",
     "Movement",
     "Stamina",
-    "Character"
+    "Character",
+    "Glow"
    ],
    "copies": {
     "appearance.body-palette": [
@@ -3342,20 +3406,20 @@
      "close"
     ],
     "growth.muzzle-projection-ratio": [
-     "short",
-     "long"
+     "long",
+     "stub"
     ],
     "growth.muzzle-width-ratio": [
-     "low",
-     "high"
-    ],
-    "growth.core-width-ratio": [
      "high",
      "high"
     ],
+    "growth.core-width-ratio": [
+     "wide",
+     "wide"
+    ],
     "growth.core-depth-ratio": [
      "low",
-     "high"
+     "deep"
     ],
     "growth.region-taper": [
      "gentle",
@@ -3370,11 +3434,11 @@
      "short"
     ],
     "growth.support-radius-ratio": [
-     "fine",
-     "fine"
+     "slender",
+     "slender"
     ],
     "anatomy.contact-terminal-form": [
-     "pad",
+     "wedge",
      "rounded"
     ],
     "growth.terminal-length-ratio": [
@@ -3440,10 +3504,18 @@
     "cognition.arousal-threshold": [
      "high",
      "high"
+    ],
+    "appearance.emission-brightness": [
+     "bright",
+     "dim"
+    ],
+    "appearance.emission-length": [
+     "long",
+     "long"
     ]
    }
   },
-  "code": "S13v1-7F-5066-F5B565"
+  "code": "S3v2-FF-75C6-1DBC16"
  },
  {
   "n": 16,
@@ -3453,8 +3525,8 @@
   "cells": 25,
   "species": "Tuikis",
   "genome": {
-   "species": 13,
-   "version": 1,
+   "species": 3,
+   "version": 2,
    "read": [
     "Coat",
     "Face",
@@ -3462,7 +3534,8 @@
     "Legs & tail",
     "Movement",
     "Stamina",
-    "Character"
+    "Character",
+    "Glow"
    ],
    "copies": {
     "appearance.body-palette": [
@@ -3519,19 +3592,19 @@
     ],
     "growth.muzzle-projection-ratio": [
      "short",
-     "long"
+     "stub"
     ],
     "growth.muzzle-width-ratio": [
      "low",
      "high"
     ],
     "growth.core-width-ratio": [
-     "low",
+     "high",
      "low"
     ],
     "growth.core-depth-ratio": [
-     "high",
-     "low"
+     "deep",
+     "high"
     ],
     "growth.region-taper": [
      "gentle",
@@ -3546,12 +3619,12 @@
      "short"
     ],
     "growth.support-radius-ratio": [
-     "slender",
-     "slender"
+     "stout",
+     "stout"
     ],
     "anatomy.contact-terminal-form": [
-     "pad",
-     "pad"
+     "wedge",
+     "wedge"
     ],
     "growth.terminal-length-ratio": [
      "narrow",
@@ -3616,9 +3689,17 @@
     "cognition.arousal-threshold": [
      "high",
      "high"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "long"
     ]
    }
   },
-  "code": "S13v1-7F-0D9D-4D323A"
+  "code": "S3v2-FF-5600-82780D"
  }
 ]
