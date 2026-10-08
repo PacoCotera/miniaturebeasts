@@ -54,18 +54,28 @@ mkdirSync(path.join(here, "../img"), { recursive: true });
 const shot = (name) => page.screenshot({ path: path.join(here, `../img/${name}.png`), fullPage: false });
 const fixture = readFileSync(path.join(here, "../tests/fixtures/save-v8-schema1.json"), "utf8");
 const companionBefore = JSON.stringify({ ...JSON.parse(fixture), st: undefined });
+await page.addInitScript(() => { window.__fillTextCalls = 0; for (const f of ["fillText", "strokeText", "measureText"]) { const o = CanvasRenderingContext2D.prototype[f]; CanvasRenderingContext2D.prototype[f] = function (...a) { window.__fillTextCalls++; return o.apply(this, a); }; } });
 await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.removeItem("mb-station-dev"); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
-// Inter comes from the bundled OFL files (prototypes/ui/fonts/inter), three weights loaded; no request leaves the page's origin.
-const fonts = await page.evaluate(() => [...document.fonts].filter((f) => f.family.replace(/"/g, "") === "Inter").map((f) => f.weight + ":" + f.status));
-if (!(fonts.length === 3 && fonts.every((f) => f.endsWith(":loaded")))) { errors.push("Inter is not loaded from the bundled files: " + fonts.join(", ")); console.error("FAIL fonts " + fonts.join(", ")); }
+// The type is baked atlases of Inter (prototypes/ui/fonts/atlas), blitted as glyph runs: no font is loaded by the page, and no request leaves the page's origin.
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
-console.log("fonts: Inter " + fonts.join(", ") + " · external requests " + external.length);
+const fillText = await page.evaluate(() => window.__fillTextCalls);
+if (fillText !== 0) { errors.push("the page called the canvas text API " + fillText + " times"); console.error("FAIL fillText " + fillText); }
+console.log("type: glyph runs from the Inter atlases · text API calls " + fillText + " · external requests " + external.length);
 const st = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.ST)));
 const sv = () => page.evaluate(() => JSON.parse(JSON.stringify(window.__st.SV)));
 const press = async (k, ms = 120) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(ms); };
 const line = () => page.evaluate(() => window.__st.lineFor());
+// The type layer's run log, read back: every run is Inter at 16, 20 or 28 px (the weight of that size) from a bundled atlas, and no character is missing from the atlases.
+const FACES = { 16: [400, "inter-400-16", "inter-400-16.png"], 20: [500, "inter-500-20", "inter-500-20.png"], 28: [600, "inter-600-28", "inter-600-28.png"] };
+const assertType = async (when) => {
+  const log = await page.evaluate(() => window.__st.typeLog()), missing = await page.evaluate(() => window.__st.typeMissing());
+  const bad = log.filter((r) => { const f = FACES[r.px]; return r.family !== "Inter" || !f || r.weight !== f[0] || r.face !== f[1] || r.atlas !== f[2]; });
+  for (const r of bad.slice(0, 3)) fail(`type (${when}): "${r.text}" is ${r.family} ${r.weight}/${r.px} from ${r.atlas}, not a bundled Inter at 16, 20 or 28 px`);
+  if (missing.length) fail(`type (${when}): characters missing from the atlases: ${missing.join(" ")}`);
+  console.log(`type log (${when}): ${log.length} distinct runs, ${bad.length} off-spec, ${missing.length} missing characters`);
+};
 const expect = (cond, what) => { if (!cond) fail(what); };
 const S_stage = (s, m) => { const age = s.turn - (m.born || 0); return age < 2 ? "juvenile" : "adult"; };
 
@@ -110,8 +120,8 @@ l = await line(); expect(/Read Face/.test(l.ok) && l.price === "2 ◆", "Face co
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.d === d0 - 3, "Face read for 2 Data");
 await shot("page-read");
-// the type is Inter, anti-aliased (the style guide); art and chrome stay on the palette, so off-palette pixels are few
-expect((await page.evaluate(() => window.__st.offPalette())) < 1024 * 600 * 0.08, "art and chrome on the palette; only the type is anti-aliased");
+// the art layer is on the palette exactly; the type is its own layer, anti-aliased by decision
+expect((await page.evaluate(() => window.__st.offPalette())) === 0, "the art layer has 0 off-palette pixels");
 // the drawn stamp decodes to the pod's genome
 const img = await page.evaluate((id) => { const r = window.__st.stampRGBA(id, 200); return { width: r.width, height: r.height, data: Array.from(r.data) }; }, loika.id);
 const sg = await page.evaluate((id) => window.__st.stampGenome(id), loika.id);
@@ -274,6 +284,7 @@ expect(stored.st.schema === 2 && stored.st.tray.length === 1 && stored.st.mibis.
 // 8. the CI smoke's presses, from a fresh world with no save
 await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
 
+await assertType("the journey");
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
 expect((await st()).tray.length === 0 && !(await sv()).seed, "a fresh world: no save, no pods");
@@ -281,6 +292,6 @@ await page.keyboard.press("KeyD"); await page.waitForTimeout(150);
 expect(/No Companion world yet/.test(await page.evaluate(() => window.__st.msg)), "docking without a world says so");
 for (const k of ["KeyR", "ArrowRight", "Enter", "KeyL", "KeyB", "KeyD", "KeyH"]) { await page.keyboard.press(k); await page.waitForTimeout(150); }
 await page.waitForTimeout(300); await shot("page-fresh");
-await browser.close(); server.close(); caddy.stop(); caddyServer.close();
+await assertType("the fresh world"); await browser.close(); server.close(); caddy.stop(); caddyServer.close();
 if (errors.length) { console.error("journey failed:\n" + errors.join("\n")); process.exit(1); }
 console.log("journey ok · screenshots in img/");

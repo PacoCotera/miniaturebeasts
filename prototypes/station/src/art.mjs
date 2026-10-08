@@ -261,7 +261,7 @@ export function mistyArt(frame, genome, mistyTraitIds, w, h) {
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.lamp, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });
 
 // ---------- A landed painting: drawn as it came (the Station may be anti-aliased), its flat ground cleared for a sprite ----------
-class Painted { constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } }
+class Painted { layer = "painted"; constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } }
 const PAINTED = new Map();
 // The ground of a painting cleared by a flood from its corners (the painter's plain ground, the derived sizes' white), so the mibi stands free in the vivarium.
 function clearGround(img, w, h) {
@@ -284,7 +284,7 @@ export function paintedArt(set, sha, w, h, { sprite = false, flip = false } = {}
   let cv;
   if (sprite) { cv = clearGround(src, Math.round(w), Math.round(h)); }
   else { cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high"; ctx.drawImage(src, 0, 0, w, h); }
-  if (flip) { const f = document.createElement("canvas"); f.width = cv.width; f.height = cv.height; const ctx = f.getContext("2d"); ctx.translate(f.width, 0); ctx.scale(-1, 1); ctx.drawImage(cv, 0, 0); cv = f; }
+  if (flip) { const w2 = cv.width, h2 = cv.height, src = cv.getContext("2d").getImageData(0, 0, w2, h2), out = new ImageData(w2, h2); for (let y = 0; y < h2; y++) for (let x = 0; x < w2; x++) { const a = (y * w2 + x) * 4, b = (y * w2 + (w2 - 1 - x)) * 4; out.data[b] = src.data[a]; out.data[b + 1] = src.data[a + 1]; out.data[b + 2] = src.data[a + 2]; out.data[b + 3] = src.data[a + 3]; } const f = document.createElement("canvas"); f.width = w2; f.height = h2; f.getContext("2d").putImageData(out, 0, 0); cv = f; }   // the facing is a pre-flipped picture in the cache, never a canvas transform
   p = new Painted(cv); if (PAINTED.size > 200) PAINTED.clear(); PAINTED.set(key, p); return p;
 }
 export const waitLamp = () => art("waitlamp", () => { const pb = new PB(10, 10); pb.ell(5, 5, 4, 4, C.sky); pb.ell(3.5, 3.5, 1.3, 1.3, C.ice); pb.outline(() => C.deep); return pb; });

@@ -1,0 +1,53 @@
+{
+ "family": "Inter",
+ "release": "4.1",
+ "baked": "lv_font_conv 1.5.3",
+ "bpp": 4,
+ "faces": [
+  {
+   "id": "inter-400-16",
+   "weight": 400,
+   "px": 16,
+   "atlas": "inter-400-16.png",
+   "metrics": "inter-400-16.json",
+   "cap": 12,
+   "pitch": 20,
+   "glyphs": 352,
+   "kernPairs": 244,
+   "sha256": {
+    "atlas": "1af84174c33a0f2d083721457dca330bff9c6c6ff41437ed5074a523932ff39e",
+    "metrics": "d5f5674b330eeddea41fb6284d21227473d3b123c15fa995703738ca54c5528e"
+   }
+  },
+  {
+   "id": "inter-500-20",
+   "weight": 500,
+   "px": 20,
+   "atlas": "inter-500-20.png",
+   "metrics": "inter-500-20.json",
+   "cap": 14,
+   "pitch": 28,
+   "glyphs": 352,
+   "kernPairs": 252,
+   "sha256": {
+    "atlas": "3bd3e8d660b149e239dbfe976abef4d45c2bf202d75243c76d9695c62cf2fa22",
+    "metrics": "90b453f2dbae1ef0a7702ff44eb44bbc428cd2f546d6d3c10b3ef910e05dae46"
+   }
+  },
+  {
+   "id": "inter-600-28",
+   "weight": 600,
+   "px": 28,
+   "atlas": "inter-600-28.png",
+   "metrics": "inter-600-28.json",
+   "cap": 21,
+   "pitch": 36,
+   "glyphs": 352,
+   "kernPairs": 253,
+   "sha256": {
+    "atlas": "d002c50da54c1c2241d1bf2a95327dcab33de509cf88bde5db8f406007f5e32c",
+    "metrics": "657df4505888d2e796a961f634951bdf5509361175ff1d93671dfd8e1d26e308"
+   }
+  }
+ ]
+}
