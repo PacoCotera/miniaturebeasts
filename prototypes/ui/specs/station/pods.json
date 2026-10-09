@@ -69,6 +69,7 @@
      "closed": "ring-collection-closed-176x176",
      "track": "ring-arc-collection-n{N}-track-176x176",
      "segment": "ring-arc-collection-n{N}-s{i}-176x176",
+     "segmentFrom": 1,
      "chapters": [
       1,
       8
@@ -1057,16 +1058,50 @@
  ],
  "initial": "collection",
  "podLayers": {
+  "order": [
+   "shade",
+   "relief",
+   "mask-body",
+   "mask-accent",
+   "pattern",
+   "band"
+  ],
   "patterns": {
-   "dots": "dots",
-   "stripes": "stripes",
-   "bands": "bands"
+   "smooth dots": "dots",
+   "soft ribs": "ribs",
+   "segments": "segments",
+   "plates": "plates"
   },
-  "note": "art director, 2026-10-09: the pattern layer per species is the frames' data: a shell pattern of dots, stripes or bands uses that layer directly; any other word (soft ribs, segments, plates) has no layer yet and draws none, and comes to the art director for a new layer, never forced onto the nearest. The unknown pod is the signed pod-<class>-unknown picture placed by id; the shadow is the signed slice per class (160×14, 136×14, 120×14), centred on the foot line, none for the list pod."
+  "unused": [
+   "stripes",
+   "bands"
+  ],
+  "pattern": {
+   "id": "pod-{class}-pattern-{name}",
+   "light": "white with alpha, tinted by the species' second colour, multiplied by the shade (and the relief)",
+   "dark": false
+  },
+  "relief": {
+   "id": "pod-{class}-pattern-{name}-relief",
+   "optional": true,
+   "convention": "as the shade: grey, 0.5 neutral, colour × 2 × grey",
+   "above": "shade",
+   "for": [
+    "segments",
+    "plates"
+   ],
+   "none": [
+    "dots",
+    "ribs"
+   ],
+   "carries": "the pattern's dark lip and lit crest"
+  },
+  "compose": "colour = (A · body · (1 − pattern) + B · min(1, accent + pattern)) × 2 · shade × 2 · relief (missing relief = 0.5)",
+  "note": "art director, 2026-10-09: the pattern layer stays light only; the relief layer carries the dark; a word with no mapped layer draws none, never forced onto the nearest (design/proposals/ui-kit.md, The pod's layers)"
  },
  "shadow": {
   "widen": 16,
   "h": 14,
-  "note": "derived, UI designer to confirm: the contact shadow layer is the class box + 16 wide and 14 tall, its middle on the foot line"
+  "note": "the signed contact-shadow slices per class (art director, 2026-10-09): large 160×14, medium 136×14, small 120×14, centred on the foot line; none for the list pod in its ring"
  }
 }

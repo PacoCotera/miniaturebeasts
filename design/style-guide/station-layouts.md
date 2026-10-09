@@ -59,6 +59,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | Library spread | Library | Library |
 | Book | Library | Library (the species' name is the page's own 28 px name) |
 | Habitat | Habitat | Habitat |
+| Cross | Habitat (the key it opens from; it takes Habitat's mark, `frame-room-habitat-24`) | Cross (the copywriter, the decided term) |
 
 **The bottom line (38 px): the one action, the context, the notice, and the way back at the right edge.** As on the Companion, the way back has one place: the ← cap and its word right-aligned to x 1008. Rules at x 404 and x 620 (y 571 to 591) separate the action, the context and the notice; the notice and the way back are grouped by their 24 px gap, with no rule (*corrected by the UI designer, 2026-10-08, at the art director's signature: one place for the way back, as on the Companion*: was three zones with the way back inside the action, rules at x 396 and x 628).
 
