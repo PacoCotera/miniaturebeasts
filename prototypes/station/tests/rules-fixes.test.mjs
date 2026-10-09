@@ -156,3 +156,14 @@ test("the frame hook watches only the shown resident, on Habitat, awake; Idle an
   assert.equal(watchFrame({ ...base, screen: "home", idle: false }), null); assert.equal(watchFrame({ ...base, screen: "habitat", idle: true }), null); assert.equal(st.bench, undefined);
   for (let i = 0; i < 240; i++) watchFrame({ ...base, screen: "habitat", idle: false }); assert.equal(st.d, 1); assert.deepEqual(Object.keys(st.bench.watchMs), [String(a.id)]);
 });
+
+// ---- 5. who may cross: adults and elders, never a juvenile ----
+test("each stage at the cross: a juvenile is barred, an adult and an elder may cross, and partners list the adults and elders", () => {
+  const st = fresh(); S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis;
+  assert.equal(S.mibiStage(st, a, settings), "adult");
+  assert.equal(S.crossBlock(st, null, a, b, settings), "", "two adults cross");
+  b.born = st.turn; assert.equal(S.mibiStage(st, b, settings), "juvenile"); assert.equal(S.crossBlock(st, null, a, b, settings), "not adult", "a juvenile does not");
+  assert.deepEqual(S.crossPartners(st, null, a, settings), [], "and is not a partner");
+  b.born = st.turn - S.JUVENILE_TURNS - S.ELDER_TURNS; assert.equal(S.mibiStage(st, b, settings), "elder"); assert.equal(S.crossBlock(st, null, a, b, settings), "", "an elder crosses");
+  assert.deepEqual(S.crossPartners(st, null, a, settings), [b]);
+});

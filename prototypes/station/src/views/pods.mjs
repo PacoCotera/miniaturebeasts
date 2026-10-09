@@ -229,7 +229,7 @@ function lineOf(m, spec, p, chapters, ci, view) {
     return { ok: "Read " + word, price: priceOf(cost, "◆"), dim: !!b, back, subject, need: blockNeed(b, Sg) ?? here };
   }
   if (f && f.startsWith("kin.")) { const q = S.podById(st, view.kin[+f.slice(4)]?.id); return q ? { ok: "Compare", back, subject: state(q), need: glintOf(q) } : { back }; }
-  if (f === "hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back, subject: fill(Sg.backTo, { place: S.PLACE_WORD[p.g] || "wild" }) };
+  if (f === "hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: S.gainText(1), back, subject: fill(Sg.backTo, { place: S.PLACE_WORD[p.g] || "wild" }) };
   return { back };
 }
 

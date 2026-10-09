@@ -189,6 +189,9 @@ export function shortText(st, e, d, s) {
   const p = []; if (e > st.e) p.push("⚡ " + (e - st.e)); if (d > st.d) p.push("◆ " + (d - st.d)); if (s > st.s) p.push("❀ " + (s - st.s));   // the icon before its figure
   return "needs " + p.join(" ") + " more";
 }
+// The two forms of a log line or a button: what is gained and what is spent. One place, so the answer on the wording is a one-line change (forms PLACEHOLDER until the UI designer and copywriter answer).
+export const gainText = (s) => "+" + s + " ❀";
+export const spendText = (txt) => "−" + txt;
 export const priceText = (e, d, s) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : ""].filter(Boolean).join(" ") || "free";
 
 // --- dock and the bay ------------------------------------------------------------------------------
@@ -390,7 +393,7 @@ export function returnPod(st, p, settings = DEFAULT_SETTINGS, now = Date.now()) 
   st.tray = st.tray.filter((q) => q !== p); st.s += PRICE.wild;
   st.returned.push({ id: p.id, sp: p.sp, g: p.g, k: p.k || null }); if (st.returned.length > 30) st.returned.shift();
   logEv(st, "Returned " + aAn(podName(p)) + " to the wild · +1 Essence"); fillWells(st, settings, now);
-  return { ok: true, msg: "Back to the " + (PLACE_WORD[p.g] || "wild") + " · +1 ❀ · the Companion learns at the next dock" };
+  return { ok: true, msg: "Back to the " + (PLACE_WORD[p.g] || "wild") + " · " + gainText(1) + " · the Companion learns at the next dock" };
 }
 
 // --- residents and the Probe (as built) --------------------------------------------------------------
@@ -528,7 +531,7 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   st.firstMibi = false;
   st.tray = st.tray.filter((q) => q !== p); fillWells(st, settings, now);
   st.outbox.push({ sha, species: fr.species.id, genome, at: now });
-  logEv(st, "Grew " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · −" + priceText(cost.e, cost.d, cost.s));
+  logEv(st, "Grew " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(priceText(cost.e, cost.d, cost.s)));
   return { ok: true, bud: st.bud, cost };
 }
 // A chapter that is sealed and still shut stays unknown to a founder: it opens known in every chapter but that one.
@@ -552,7 +555,7 @@ export function instantGrowCost(st, settings = DEFAULT_SETTINGS, now = Date.now(
 export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.bud || budReady(st, settings, now)) return { ok: false };
   const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Grow now · " + shortText(st, c.e, c.d, c.s) };
-  st.e -= c.e; st.d -= c.d; st.s -= c.s; st.bud.early = true; logEv(st, "Grew the bud now · −" + priceText(c.e, c.d, c.s)); return { ok: true };
+  st.e -= c.e; st.d -= c.d; st.s -= c.s; st.bud.early = true; logEv(st, "Grew the bud now · " + spendText(priceText(c.e, c.d, c.s))); return { ok: true };
 }
 // Open: a press; the juvenile steps out fully known, into a free bay, wearing the placeholder until its painting lands (M3).
 export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
@@ -584,7 +587,7 @@ export function returnMibi(st, sv, m, settings = DEFAULT_SETTINGS) {
   st.releases.push({ id: m.id, name: m.name, sp: m.sp, species: m.species, k: m.from?.k ?? null, g: m.from?.g ?? null, code: m.code, turn: st.turn }); if (st.releases.length > 30) st.releases.shift();
   const notes = st.guideNotes || (st.guideNotes = {}); (notes[m.species] || (notes[m.species] = [])).push({ name: m.name, code: m.code, g: m.from?.g ?? null, turn: st.turn });
   logEv(st, "Returned " + m.name + " to the wild · +2 Essence · its place remembers it");
-  return { ok: true, msg: m.name + " goes back to the " + (PLACE_WORD[m.from?.g] || "wild") + " · +2 ❀ · the Companion takes it at the next dock" };
+  return { ok: true, msg: m.name + " goes back to the " + (PLACE_WORD[m.from?.g] || "wild") + " · " + gainText(2) + " · the Companion takes it at the next dock" };
 }
 // Developer skips for M2.
 export function skipBud(st, settings = DEFAULT_SETTINGS, how = "ready") { const B = st.bud; if (!B) return; if (how === "ready") B.early = true; else { B.early = false; B.start = Date.now() - (B.minutes * 60000) / 2; } logEv(st, "Developer: bud " + how); }
@@ -673,7 +676,7 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
   st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
   st.firstMibi = false;
   st.outbox.push({ sha, species: fr.species.id, genome, at: now });
-  logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · −" + priceText(cost.e, cost.d, cost.s));
+  logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(priceText(cost.e, cost.d, cost.s)));
   return { ok: true, bud: st.bud, cost };
 }
 // Reading a child (or any mibi with chapters still unread): the same prices as a pod's chapters.
