@@ -3,7 +3,7 @@
   "runs": [
     {
       "time": "2026-10-08T06:59:53Z",
-      "plan": "/tmp/claude-0/-home-user-miniaturebeasts/b951398d-74c3-50ba-be6f-9ba22988419a/scratchpad/plan-collection-r1-flat.json",
+      "plan": "plan-collection-r1-flat.json",
       "ids": null,
       "success": 6,
       "error": 0

@@ -16,7 +16,6 @@
  "model": "gemini-3-pro-image",
  "sample": 1,
  "changed": "Both steps, the Finish line replaced: \"a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm\" (step 2 keeps the never-list). The owner's warning: cute by charm and craft as Pip is, never cartoon simplification, sticker faces, toy-like rendering or nursery colours; the lab synthesises it from v7.",
- "costUSD": 0.3397,
  "subject": {
   "member": "type-specimen",
   "genomeDigest": "S01-45ff1025",
@@ -25,7 +24,6 @@
  "step1": {
   "callId": "91801afb-0c24-4e55-9c88-e1713387e316",
   "status": "ok",
-  "costUSD": 0.17483,
   "seconds": 143.8,
   "imageOrder": [
    "index",
@@ -160,7 +158,6 @@
  "step2": {
   "callId": "7a26d6f3-9c76-4877-9d64-3c95cfec474d",
   "status": "ok",
-  "costUSD": 0.16487,
   "seconds": 18.1,
   "imageOrder": [
    "drawing",

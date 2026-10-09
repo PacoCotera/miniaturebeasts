@@ -1,5 +1,5 @@
 {
-  "screen": "/home/user/miniaturebeasts/art/concept-station/library-spread/round3/SP-P-r3-a5-canvas.png",
+  "screen": "art/concept-station/library-spread/round3/SP-P-r3-a5-canvas.png",
   "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
   "detectedCard": [
     126,
@@ -14,7 +14,7 @@
     "h": 101
   },
   "outputs": {
-    "canvas": "/home/user/miniaturebeasts/art/concept-station/library-spread/placed/SP-P-r3-a5-pip-canvas.png",
-    "screen": "/home/user/miniaturebeasts/art/concept-station/library-spread/placed/SP-P-r3-a5-pip-1024x600.png"
+    "canvas": "art/concept-station/library-spread/placed/SP-P-r3-a5-pip-canvas.png",
+    "screen": "art/concept-station/library-spread/placed/SP-P-r3-a5-pip-1024x600.png"
   }
 }

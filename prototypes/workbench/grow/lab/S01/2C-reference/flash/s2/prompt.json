@@ -13,14 +13,12 @@
  "model": "gemini-3.1-flash-image",
  "sample": 2,
  "changed": "Step 2, reference strength wording only: Image 2 sets the finish more strongly and is barred from shape more explicitly.",
- "costUSD": 0.096,
  "step1": {
   "shared": "v5's drawing"
  },
  "step2": {
   "callId": "90fcb752-6090-43c7-b49e-51b157cdd39f",
   "status": "ok",
-  "costUSD": 0.09596,
   "seconds": 8.2,
   "imageOrder": [
    "drawing",

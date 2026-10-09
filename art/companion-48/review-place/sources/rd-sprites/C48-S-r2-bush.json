@@ -19,21 +19,16 @@
  "time": "2026-10-08T18:02:16Z",
  "checkCost": {
   "created_at": 1791482536,
-  "credit_cost": 0,
-  "balance_cost": 0.18,
   "output_images": [],
   "base64_images": [],
   "output_urls": [],
   "model": "check_cost",
-  "remaining_credits": 0,
-  "remaining_balance": 4.020000000000009
+  "remaining_credits": 0
  },
  "result": {
   "status": "succeeded",
   "task_id": "93a11ab1-7a81-4202-baf1-0781943c25a7",
   "seconds": 31.2,
-  "balanceCostUSD": 0.18,
-  "remainingBalanceUSD": 3.84,
   "model": "rd_pro",
   "file": "C48-S-r2-bush-rd.png",
   "sha256": "e2080af80e2d9c89fe227c8ea29dd46b7ad05bc65ec254cff7a00c9a8e67f44f"

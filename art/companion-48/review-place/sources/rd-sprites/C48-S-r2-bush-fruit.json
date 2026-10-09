@@ -19,21 +19,16 @@
  "time": "2026-10-08T18:02:47Z",
  "checkCost": {
   "created_at": 1791482568,
-  "credit_cost": 0,
-  "balance_cost": 0.18,
   "output_images": [],
   "base64_images": [],
   "output_urls": [],
   "model": "check_cost",
-  "remaining_credits": 0,
-  "remaining_balance": 3.840000000000009
+  "remaining_credits": 0
  },
  "result": {
   "status": "succeeded",
   "task_id": "03eb9912-4715-43b7-939d-97011da28cc1",
   "seconds": 52.0,
-  "balanceCostUSD": 0.18,
-  "remainingBalanceUSD": 3.66,
   "model": "rd_pro",
   "file": "C48-S-r2-bush-fruit-rd.png",
   "sha256": "c3b88fb41b892a409afb181751e648d51bb2bb6b22c83c08a0c608d7f9c407a7"

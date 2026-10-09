@@ -13,14 +13,12 @@
  "model": "gemini-3-pro-image",
  "sample": 2,
  "changed": "Step 2, the style paragraph removed: measures what the explicit style statement buys over v5's adjectives.",
- "costUSD": 0.1651,
  "step1": {
   "shared": "v5's drawing"
  },
  "step2": {
   "callId": "7709e712-f5a8-4013-9149-80639e79344c",
   "status": "ok",
-  "costUSD": 0.16512,
   "seconds": 17.2,
   "imageOrder": [
    "drawing",
