@@ -9742,7 +9742,7 @@
   "rect": null,
   "src": "source/raw/sitting-backdrop-meadow.jpg (gemini-3-pro-image)",
   "made": "the Sitting's meadow backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [142, 208, 1058, 895]), reduced x0.594 with Lanczos to 544x408, nothing else changed (pass 85)",
-  "sha256": "fd96a370f610d19d449c84cc1788090aee9b3f4c144c0eae201e22933d54e028",
+  "sha256": "e81f991e41f1f6c2a60a52900fd380c9c7ed9b0ee7a3f92f457090777d9299ad",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
