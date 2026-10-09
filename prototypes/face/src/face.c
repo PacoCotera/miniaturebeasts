@@ -1,6 +1,6 @@
 #define _POSIX_C_SOURCE 200809L
 /* The Station's face: a 1024x600 LVGL display that draws into a retained framebuffer, reports the rectangles it redrew,
-   takes key input and builds the page's scene (scene.c). This file is the platform-neutral core: nothing in it knows
+   takes key input and builds the page's scene (prim/prim.c) and speaks the bridge (bridge/wire.c). This file is the platform-neutral core: nothing in it knows
    JavaScript, SDL or a device. */
 #include "face.h"
 #include "prim/prim.h"

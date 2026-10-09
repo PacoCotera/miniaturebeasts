@@ -32,6 +32,7 @@ int prim_count(void);           /* objects alive */
 int prim_pictures(void);        /* pictures resident (assets with pixels, composed pictures) */
 int prim_unknown(void);         /* nodes refused this frame (an unknown kind, a missing asset, a size that is not the asset's, a full table) */
 int prim_object_limit(void);
+int prim_lvgl_objects(void);    /* the LVGL objects alive: the table plus nine parts for each nine-slice */
 
 /* The palette, by name, from the host's `palette` message: composed pictures name their colours, the palette pass checks the framebuffer against it. */
 void prim_palette_clear(void);
@@ -45,6 +46,6 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops);
 
 /* Test mode: which layers show (1: chrome; 2: chrome and art; 3: all), and the logs the checks read. */
 void prim_set_pass(int pass);
-/* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region"}...],"refused":n,"objects":n,"pictures":n} into buf; returns its length, or -1 if it does not fit. */
+/* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region"}...],"refused":n,"objects":n,"table":n,"pictures":n} into buf (a clip's children count only where the clip shows them; objects are LVGL's, table is the face's node table); returns its length, or -1 if it does not fit. */
 int prim_log_json(char *buf, int cap);
 #endif

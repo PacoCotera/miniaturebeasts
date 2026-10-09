@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #define JSMN_STATIC
+#define JSMN_STRICT
 #include "../vendor/jsmn.h"
+#include "../spec/jnum.h"
 
 extern const lv_font_t face_inter_16, face_inter_20, face_inter_28;
 #define MAX_OBJ 1024            /* the table is larger than the 400-object budget so a breach is measured, not refused (lvgl-switch.md §2.2) */
@@ -44,6 +46,7 @@ int prim_count(void) { return g_n; }
 int prim_unknown(void) { return g_unknown; }
 int prim_asset_limit(void) { return MAX_ASSET; }
 int prim_object_limit(void) { return MAX_OBJ; }
+int prim_lvgl_objects(void) { int n = g_n; for (int i = 0; i < g_n; i++) if (g_o[i].kind == FN_NINE) n += NINE_PARTS; return n; }
 int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
 static const lv_font_t *font_of(int px) { return px == 16 ? &face_inter_16 : px == 20 ? &face_inter_20 : px == 28 ? &face_inter_28 : NULL; }
 int prim_measure(int px) {
@@ -73,12 +76,15 @@ static void put(uint8_t *px, int w, int h, int x, int y, uint32_t rgb) {
   if (x < 0 || y < 0 || x >= w || y >= h) return;
   uint8_t *q = px + (y * w + x) * 4; q[0] = (uint8_t)rgb; q[1] = (uint8_t)(rgb >> 8); q[2] = (uint8_t)(rgb >> 16); q[3] = 255;
 }
-static int tokint(const char *s, const jsmntok_t *t) { return t->type == JSMN_PRIMITIVE ? atoi(s + t->start) : 0; }
+static int g_bad;   /* set when an op argument is not a JSON integer: prim_compose refuses the picture */
+static int tokint(const char *s, const jsmntok_t *t) { int v = 0; if (t->type != JSMN_PRIMITIVE || !json_int(s + t->start, t->end - t->start, &v)) { g_bad = 1; return 0; } return v; }
 static int skip(const jsmntok_t *t, int i) { int n = t[i].size; i++; for (; n > 0; n--) i = skip(t, i); return i; }   /* the token after the one at i, with its children */
 int prim_compose(uint8_t *px, int w, int h, const char *ops) {
-  jsmn_parser p; jsmntok_t tok[2048]; jsmn_init(&p);
+  jsmn_parser p; jsmntok_t tok[2048]; jsmn_init(&p); g_bad = 0;
+  if (!json_clean(ops, (int)strlen(ops))) return -1;
   int n = jsmn_parse(&p, ops, strlen(ops), tok, 2048);
   if (n < 1 || tok[0].type != JSMN_ARRAY) return -1;
+  { size_t e = strlen(ops); while (e > 0 && (ops[e - 1] == ' ' || ops[e - 1] == '\n' || ops[e - 1] == '\t' || ops[e - 1] == '\r')) e--; if ((size_t)tok[0].end != e) return -1; }
   int drawn = 0, i = 1;
   for (int op = 0; op < tok[0].size; op++) {
     if (tok[i].type != JSMN_ARRAY || tok[i].size < 1) return -1;
@@ -106,6 +112,7 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops) {
     } else return -1;
 #undef A
 #undef COL
+    if (g_bad) return -1;
     drawn++; i = e;
   }
   return drawn;
@@ -174,25 +181,27 @@ void prim_begin(void) { for (int i = 0; i < g_n; i++) g_o[i].seen = 0; g_unknown
 static uint32_t hash_str(const char *s) { uint32_t h = 2166136261u; for (; *s; s++) { h ^= (uint8_t)*s; h *= 16777619u; } return h ? h : 1; }
 static void show(node_t *n) { lv_obj_set_hidden(n->obj, n->layer > (g_pass >= 3 ? LAYER_TYPE : g_pass - 1)); }   /* pass 1 shows chrome, 2 adds art, 3 everything */
 void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) {
-  if (kind < FN_RECT || kind > FN_COMPOSED) { g_unknown++; return; }
-  if (kind == FN_TEXT && !font_of(a)) { g_unknown++; return; }
-  /* inside a clip: the clip's children are placed relative to it, and a clip does not hold a clip */
-  uint32_t parent = 0; lv_obj_t *pobj = lv_screen_active(); int ox = 0, oy = 0;
+  /* the clip's bookkeeping comes first: a node sent while a clip is open counts against it whether or not it is drawn, so a refused child never leaves the next root node inside the clip;
+     a refused clip refuses the children it announced. A clip does not hold a clip. */
+  uint32_t parent = 0; lv_obj_t *pobj = lv_screen_active(); int ox = 0, oy = 0, in_clip = 0;
+#define REFUSE() do { g_unknown++; if (kind == FN_CLIP && !in_clip) { g_clip_left = a > 0 ? a : 0; g_clip_id = 0; } return; } while (0)
   if (g_clip_left > 0) {
-    node_t *c = find_node(g_clip_id);
-    if (kind == FN_CLIP || !c) { g_unknown++; g_clip_left--; return; }
-    parent = g_clip_id; pobj = c->obj; ox = g_clip_x; oy = g_clip_y; g_clip_left--;
+    in_clip = 1; g_clip_left--;
+    node_t *c = g_clip_id ? find_node(g_clip_id) : NULL;
+    if (kind == FN_CLIP || !c) REFUSE();
+    parent = g_clip_id; pobj = c->obj; ox = g_clip_x; oy = g_clip_y;
   }
-  /* a picture placed 1:1; with a crop (rgb = source x << 16 | source y) the node shows that window of a larger picture, as a view into its pixels */
+  if (kind < FN_RECT || kind > FN_COMPOSED) REFUSE();
+  if (kind == FN_TEXT && !font_of(a)) REFUSE();
   int sx = (int)(rgb >> 16), sy = (int)(rgb & 0xffff);
-  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) { g_unknown++; return; }
+  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) REFUSE();
   int nl = (int)(rgb >> 24), nt = (int)((rgb >> 16) & 255), nr = (int)((rgb >> 8) & 255), nb = (int)(rgb & 255);   /* a nine-slice: its insets l, t, r, b in rgb, its tile in b */
-  if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) { g_unknown++; return; }
-  if (kind == FN_COMPOSED && (w <= 0 || h <= 0 || (long)w * h > 1024L * 600)) { g_unknown++; return; }
+  if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) REFUSE();
+  if (kind == FN_COMPOSED && (w <= 0 || h <= 0 || (long)w * h > 1024L * 600)) REFUSE();
   int i = find(id);
   if (i >= 0 && (g_o[i].kind != kind || g_o[i].parent != parent)) { drop(i); i = -1; }
   if (i < 0) {
-    if (g_n >= MAX_OBJ) { g_unknown++; return; }
+    if (g_n >= MAX_OBJ) REFUSE();
     i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].obj = make(&g_o[i], a, pobj);
   }
   node_t *n = &g_o[i]; lv_obj_t *o = n->obj; n->seen = 1; g_seq[g_nseq++] = id; n->layer = g_layer; n->region = g_region;
@@ -274,8 +283,9 @@ int prim_log_json(char *buf, int cap) {
     int x0 = 1 << 30, y0 = 1 << 30, x1 = -(1 << 30), y1 = -(1 << 30), any = 0;
     for (int i = 0; i < g_n; i++) {
       node_t *nd = &g_o[i]; if (!nd->seen || nd->region != r || nd->layer != l || nd->kind == FN_CLIP) continue;
-      int ax = nd->x, ay = nd->y; if (nd->parent) { node_t *c = find_node(nd->parent); if (c) { ax += c->x; ay += c->y; } }
+      int ax = nd->x, ay = nd->y; node_t *c = nd->parent ? find_node(nd->parent) : NULL; if (c) { ax += c->x; ay += c->y; }
       int ex = ax + (nd->kind == FN_TEXT ? lv_obj_get_width(nd->obj) : nd->w), ey = ay + (nd->kind == FN_TEXT ? lv_obj_get_height(nd->obj) : nd->h);
+      if (c) { if (ax < c->x) ax = c->x; if (ay < c->y) ay = c->y; if (ex > c->x + c->w) ex = c->x + c->w; if (ey > c->y + c->h) ey = c->y + c->h; if (ex <= ax || ey <= ay) continue; }   /* a clip's child counts only where the clip shows it */
       if (ax < x0) x0 = ax; if (ay < y0) y0 = ay; if (ex > x1) x1 = ex; if (ey > y1) y1 = ey; any = 1;
     }
     if (!any) continue;
@@ -287,7 +297,7 @@ int prim_log_json(char *buf, int cap) {
     node_t *nd = &g_o[i]; if (!nd->seen || nd->kind != FN_TEXT) continue;
     PUT("%s{\"text\":", first ? "" : ","); STR(lv_label_get_text(nd->obj)); PUT(",\"px\":%d,\"region\":", nd->a); STR(g_reg[nd->region]); PUT("}"); first = 0;
   }
-  PUT("],\"refused\":%d,\"objects\":%d,\"pictures\":%d}", g_unknown, g_n, prim_pictures());
+  PUT("],\"refused\":%d,\"objects\":%d,\"table\":%d,\"pictures\":%d}", g_unknown, prim_lvgl_objects(), g_n, prim_pictures());   /* objects: the LVGL objects alive (a nine-slice is nine); table: the face's own, one a node */
 #undef PUT
 #undef STR
   return n;

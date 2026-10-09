@@ -1,6 +1,6 @@
-/* The spec loader (lvgl-switch.md §2.3): the Station's spec files (the files of prototypes/ui/specs/station) parsed at run time into tokens the words read by path, so a nudge needs no
-   compile. A spec is kept whole, as the host sent it, and read by dotted path ("regions.stage.rect.2": object keys and array indexes). Nothing here knows what a region or a word is: the
-   words read their own numbers, and a rule that is not in the face is refused by the word that wants it. */
+/* The spec loader (lvgl-switch.md §2.3): the Station's spec files (the files of prototypes/ui/specs/station) parsed at run time, so a nudge needs no compile. The loader holds a spec
+   whole, strict JSON, as the host sent it, read by dotted path ("regions.stage.rect.2": object keys and array indexes); numbers are integers exactly. The rule it will enforce with the
+   words (B3) is §2.3's: a region names its word, build or rule, and one that is not in the face is refused at load, never improvised; states hide regions, they do not destroy them. */
 #ifndef SPEC_H
 #define SPEC_H
 #include <stddef.h>

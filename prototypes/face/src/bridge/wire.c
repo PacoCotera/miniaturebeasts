@@ -6,19 +6,22 @@
 #include <stdlib.h>
 #include <string.h>
 #define JSMN_STATIC
+#define JSMN_STRICT
 #include "../vendor/jsmn.h"
+#include "../spec/jnum.h"
 
 #define QCAP 64
 #define MAX_IDS 256
 static char *g_in;
 static char *g_q[QCAP]; static int g_qh, g_qn;
 static char *g_out;   /* the message poll last returned */
+static int g_dropped, g_unreported;   /* messages lost to a full queue, in all and not yet reported */
 static int g_hello, g_test, g_last_asset = -1, g_dirty_log, g_nprops, g_nevents;
 static uint32_t g_seq; static int g_seq_set;
 static char g_props_screen[32]; static char *g_props;
 static char g_ids[MAX_IDS][96]; static int g_nids;
 
-void wire_init(void) { if (!g_in) g_in = (char *)malloc(WIRE_IN_CAP + 1); g_hello = 0; g_test = 0; g_qh = g_qn = 0; g_last_asset = -1; g_nprops = g_nevents = 0; g_seq_set = 0; g_nids = 0; }
+void wire_init(void) { g_dropped = g_unreported = 0; if (!g_in) g_in = (char *)malloc(WIRE_IN_CAP + 1); g_hello = 0; g_test = 0; g_qh = g_qn = 0; g_last_asset = -1; g_nprops = g_nevents = 0; g_seq_set = 0; g_nids = 0; }
 char *wire_in_buf(void) { return g_in; }
 int wire_test_mode(void) { return g_test; }
 void wire_changed(void) { g_dirty_log = 1; }
@@ -30,7 +33,13 @@ const char *wire_props_json(void) { return g_props ? g_props : ""; }
 int wire_event_count(void) { return g_nevents; }
 int wire_pending(void) { return g_qn; }
 
-static void push(char *m) { if (g_qn >= QCAP) { free(m); return; } g_q[(g_qh + g_qn) % QCAP] = m; g_qn++; }
+static void enq(char *m) { g_q[(g_qh + g_qn) % QCAP] = m; g_qn++; }
+/* A full queue drops the message and counts it; when room returns the host is told how many were lost (an `error`), and every `log` carries the running total. */
+static void push(char *m) {
+  if (g_qn >= QCAP) { g_dropped++; g_unreported++; free(m); return; }
+  if (g_unreported && g_qn + 2 <= QCAP) { char *e = (char *)malloc(64); if (e) { snprintf(e, 64, "{\"t\":\"error\",\"what\":\"queue: %d messages dropped\"}", g_unreported); g_unreported = 0; enq(e); } }
+  enq(m);
+}
 const char *wire_poll(void) {
   free(g_out); g_out = NULL;
   if (!g_qn) return NULL;
@@ -54,9 +63,23 @@ static int key(const msg_t *m, const char *name) {   /* the value token of a top
   int k = 1; for (int c = m->tok[0].size; c > 0; c--) { if ((int)strlen(name) == m->tok[k].end - m->tok[k].start && strncmp(m->js + m->tok[k].start, name, strlen(name)) == 0) return k + 1; k = skip(m, k + 1); }
   return -1;
 }
-static int num(const msg_t *m, int i, int *out) { if (i < 0 || m->tok[i].type != JSMN_PRIMITIVE) return 0; char c = m->js[m->tok[i].start]; if (!((c >= '0' && c <= '9') || c == '-')) return 0; *out = atoi(m->js + m->tok[i].start); return 1; }
+static int num(const msg_t *m, int i, int *out) { return i >= 0 && m->tok[i].type == JSMN_PRIMITIVE && json_int(m->js + m->tok[i].start, m->tok[i].end - m->tok[i].start, out); }
 static int str(const msg_t *m, int i, char *buf, int cap) { if (i < 0 || m->tok[i].type != JSMN_STRING) return 0; int l = m->tok[i].end - m->tok[i].start; if (l >= cap) return 0; memcpy(buf, m->js + m->tok[i].start, (size_t)l); buf[l] = 0; return 1; }
-static int flag(const msg_t *m, int i) { return i >= 0 && m->tok[i].type == JSMN_PRIMITIVE && m->js[m->tok[i].start] == 't'; }
+/* the first top-level key that appears twice, or NULL (a message with two answers to one question is refused, not resolved) */
+static const char *dup_key(const msg_t *m) {
+  static char name[48]; if (m->tok[0].type != JSMN_OBJECT) return NULL;
+  int k = 1;
+  for (int a = m->tok[0].size; a > 0; a--) {
+    int j = skip(m, k + 1);
+    for (int b = a - 1; b > 0; b--) {
+      if (m->tok[k].end - m->tok[k].start == m->tok[j].end - m->tok[j].start && strncmp(m->js + m->tok[k].start, m->js + m->tok[j].start, (size_t)(m->tok[k].end - m->tok[k].start)) == 0) { int l = m->tok[k].end - m->tok[k].start; if (l > 47) l = 47; memcpy(name, m->js + m->tok[k].start, (size_t)l); name[l] = 0; return name; }
+      j = skip(m, j + 1);
+    }
+    k = skip(m, k + 1);
+  }
+  return NULL;
+}
+static int flag(const msg_t *m, int i) { return i >= 0 && m->tok[i].type == JSMN_PRIMITIVE && m->tok[i].end - m->tok[i].start == 4 && strncmp(m->js + m->tok[i].start, "true", 4) == 0; }
 static int hex(const char *s, uint32_t *rgb) { if (s[0] != '#' || strlen(s) != 7) return 0; for (int i = 1; i < 7; i++) if (!((s[i] >= '0' && s[i] <= '9') || (s[i] >= 'a' && s[i] <= 'f') || (s[i] >= 'A' && s[i] <= 'F'))) return 0; *rgb = (uint32_t)strtoul(s + 1, NULL, 16); return 1; }
 
 /* ---- the messages in ---- */
@@ -133,7 +156,11 @@ int wire_send(const char *json, int len) {
   jsmntok_t *tok = (jsmntok_t *)malloc(sizeof *tok * (size_t)n); if (!tok) return fail("message: out of memory");
   jsmn_init(&p);
   if (jsmn_parse(&p, json, (size_t)len, tok, (unsigned)n) != n) { free(tok); return fail("message: not valid JSON"); }
-  msg_t m = { json, tok, n }; int t = key(&m, "t"), rc = 0; char type[16] = "";
+  if (!json_clean(json, len)) { free(tok); return fail("message: not valid JSON"); }
+  { int e = len; while (e > 0 && (json[e - 1] == ' ' || json[e - 1] == '\n' || json[e - 1] == '\t' || json[e - 1] == '\r')) e--; if (tok[0].end != e) { free(tok); return fail("message: not valid JSON (bytes after the object)"); } }
+  msg_t m = { json, tok, n };
+  { const char *dup = dup_key(&m); if (dup) { char b[96]; snprintf(b, sizeof b, "message: the key %.40s appears twice", dup); free(tok); return fail(b); } }
+  int t = key(&m, "t"), rc = 0; char type[16] = "";
   if (tok[0].type != JSMN_OBJECT || !str(&m, t, type, sizeof type)) rc = fail("message: an object with a string t is required");
   else if (strcmp(type, "hello") == 0) rc = on_hello(&m);
   else if (!g_hello) rc = fail("message before hello");
@@ -152,6 +179,6 @@ void wire_after_frame(double frame_ms) {
   char *b = (char *)malloc(65536); if (!b) return;
   int n = prim_log_json(b, 60000);
   if (n < 0) { free(b); wire_error("log: more than 60000 bytes of regions and type"); return; }
-  char tail[96]; int k = snprintf(tail, sizeof tail, ",\"frameMs\":%.3f,\"t\":\"log\"}", frame_ms); memcpy(b + n - 1, tail, (size_t)k + 1);
+  char tail[128]; int k = snprintf(tail, sizeof tail, ",\"dropped\":%d,\"frameMs\":%.3f,\"t\":\"log\"}", g_dropped, frame_ms); memcpy(b + n - 1, tail, (size_t)k + 1);
   push(b);
 }

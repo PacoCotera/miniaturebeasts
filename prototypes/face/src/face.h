@@ -29,7 +29,7 @@ int face_key_count(void);
 int face_last_key(void);
 const char *face_version(void);
 
-/* The scene (scene.h): the page sends a frame's nodes in draw order; text, measure and pictures go through the shared buffers. */
+/* The scene (prim/prim.h): the page sends a frame's nodes in draw order; text, measure and pictures go through the shared buffers. */
 void face_scene_begin(void);
 void face_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b);
 void face_scene_end(void);
