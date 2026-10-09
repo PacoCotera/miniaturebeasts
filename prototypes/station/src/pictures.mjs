@@ -22,8 +22,10 @@ const centred = ([w, h], pic) => { const pb = new PB(w, h); pb.blit(pic, Math.ro
 // The pod at the exact size of its box, never scaled: the stage's three classes from the signed layers recoloured by the species' pair (podmasters.mjs); the list's 40×48
 // box holds the 32×40 placeholder sprite placed 1:1 in its middle until its master is re-cut; a class whose layers are not placed is an empty (transparent) picture.
 const UNKNOWN_PAIR = () => [HEX[C[SPECS.pods.podLayers.unknown.A]], HEX[C[SPECS.pods.podLayers.unknown.B]]];
+const podClass = ([bw, bh]) => { const classes = SPECS.pods.classes.pod; return Object.keys(classes).find((k) => classes[k][0] === bw && classes[k][1] === bh); };
+const podComposed = (size) => { const cls = podClass(size); return !!cls && cls !== "list" && layersPlaced(cls); };   // a pod from the signed layers is painted art, not the palette's
 function podPicture(species, state, [bw, bh], env) {
-  const classes = SPECS.pods.classes.pod, cls = Object.keys(classes).find((k) => classes[k][0] === bw && classes[k][1] === bh);
+  const cls = podClass([bw, bh]);
   if (cls === "list") { const pb = new PB(bw, bh), sp = podSprite(species, "well", state); pb.blit(sp, Math.round((bw - sp.w) / 2), Math.round((bh - sp.h) / 2)); return pb; }
   if (cls && layersPlaced(cls)) {
     const frame = species ? env.frameOf(species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
@@ -70,7 +72,7 @@ export function registerPictures(reqs, env) {
   for (const r of reqs) {
     const until = r.until || "the Pods masters (station-layouts.md, Placeholders on Pods)";
     switch (r.kind) {
-      case "pod": put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env)); break;
+      case "pod": { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { policy: "painted", status: "master" } : {}); break; }
       case "well": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, wellArt(r.current, 30))); break;
       case "ring": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, ringArt(r.species ? env.frameOf(r.species) : null, { idd: r.idd }, r.flags, 31))); break;
       case "place": put(r.id, 16, 16, "the place stamp set", () => placePB(r.place)); break;
