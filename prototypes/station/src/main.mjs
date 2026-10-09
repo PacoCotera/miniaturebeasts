@@ -21,6 +21,7 @@ import { openTop as habitatTop } from "./screens/habitat.mjs";
 import { roomTop } from "./nav.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
+import { watchFrame, compareAfterKey } from "./trickle.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
 import { loadMasters } from "./masters.mjs";
@@ -67,10 +68,11 @@ function render() {
   if (ta >= 0 && ta < 180 && motion()) nodes.push(legacy("trans", () => ditherFill(0, STAGE_Y, SW, STAGE_H, "void", 16 - Math.floor((ta / 180) * 16))));
   scene.set(nodes); SC.paint(scene); SC.composite(vctx);
 }
-let errN = 0;
+let errN = 0, lastT = null;
 function frame(t) {
-  clock.now = t;
+  clock.now = t; const dt = lastT == null ? 0 : t - lastT; lastT = t;
   if (G.ready) {
+    const w = watchFrame({ st: G.st, sv: G.sv, settings: G.settings, screen: UI.screen, idle: UI.idle, habId: UI.hab.id, dt, now: Date.now() }); if (w && w.earned) save();   // the bench trickle (before the Idle check: Idle watches nothing)
     if (FX.hatch && FX.hatch.go && t - FX.hatch.at >= HATCH_MS) { FX.hatch.go = false; UI.hab.id = FX.hatch.id; UI.hab.f = "door"; goScreen("habitat"); }   // meet the mibi
     if (!UI.idle && t - UI.lastInput > IDLE_MS && !arriving() && t > FX.lockUntil) UI.idle = true;   // the vivarium plays alone
     try { render(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
@@ -102,6 +104,7 @@ export function act(k) {
   if (UI.report && !arriving() && UI.screen === "home") UI.report = null;
   if (roomTop(k)) { openRoom(k); return; }
   screenOf(UI.screen).act(k);
+  if (UI.screen === "cross") { const c = compareAfterKey({ st: G.st, sv: G.sv, settings: G.settings, cross: UI.cross, now: Date.now() }); if (c && c.earned) save(); }   // the bench trickle: a pair compared
 }
 const stationEl = $("station");
 function bindKeys(root) {

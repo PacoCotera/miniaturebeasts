@@ -110,3 +110,49 @@ test("N6 the three callers draw as drawName does", () => {
   S.seedAdults(st, "S01", 5, 2, settings); names.push(...st.mibis.slice(3).map((m) => m.name)); S.seedSiblings(st, "S01", 9, settings); names.push(...st.mibis.slice(5).map((m) => m.name));
   const ref = S.freshSt("w1", 1, T0); assert.deepEqual(names, names.map(() => S.drawName(ref)), "the same sequence"); assert.equal(new Set(names.map(S.nameKey)).size, names.length);
 });
+
+// ---- 4. the bench Data trickle ----
+import { watchFrame, compareAfterKey, habitatShown } from "../src/trickle.mjs";
+const NOON = new Date(2026, 9, 9, 12, 0).getTime(), sv0 = { with: null, wid: "w1", seed: 7 };
+const watchFor = (st, m, ms, s = settings, now = NOON) => { let r, left = ms; while (left > 0) { const dt = Math.min(250, left); r = S.benchWatch(st, sv0, m, dt, s, now); left -= dt; } return r; };
+const bench = () => { const st = fresh(); S.seedAdults(st, "S01", 3, 2, settings); st.d = 0; return st; };
+test("T1 a minute earns +1 Data once a resident a day: 59,999 ms nothing, 60,000 earns, a second minute nothing", () => {
+  const st = bench(), [m] = st.mibis; let r = watchFor(st, m, 59999); assert.equal(r.earned, 0); assert.equal(st.d, 0);
+  r = S.benchWatch(st, sv0, m, 1, settings, NOON); assert.equal(r.earned, 1); assert.equal(st.d, 1); assert.match(st.log.at(-1), /Bench · watched Dot · \+1 Data/);
+  r = watchFor(st, m, 60000); assert.equal(r.earned, 0); assert.equal(st.d, 1); assert.deepEqual(S.benchToday(st, NOON, settings), { d: 1, cap: 2, full: false });
+});
+test("T2 a minute split over two visits earns; T3 a released or with-you resident earns nothing; T4 dt is clamped to 250 ms", () => {
+  const st = bench(), [a, b] = st.mibis; watchFor(st, a, 30000); watchFor(st, b, 1000); assert.equal(st.d, 0); assert.equal(watchFor(st, a, 30000).earned, 1, "30 s and 30 s");
+  const s2 = bench(), [c, d] = s2.mibis; d.released = true; assert.equal(watchFor(s2, d, 120000).earned, 0); const sv = { with: c.id }; let e = 0; for (let i = 0; i < 400; i++) e += S.benchWatch(s2, sv, c, 250, settings, NOON).earned; assert.equal(e, 0);
+  const s3 = bench(); S.benchWatch(s3, sv0, s3.mibis[0], 10000, settings, NOON); assert.equal(s3.bench.watchMs[s3.mibis[0].id], 250);
+});
+test("T5 and T6 a compare: state 0 nothing, state 1 +1, B × A the same day nothing; a pair with nothing read on both earns nothing", () => {
+  const st = bench(), [a, b] = st.mibis, mk = (x, y, state) => ({ st, sv: sv0, settings, cross: { aId: x.id, bId: y.id, state }, now: NOON });
+  assert.equal(compareAfterKey(mk(a, b, 0)), null); assert.equal(st.d, 0); assert.equal(compareAfterKey(mk(a, b, 1)).earned, 1); assert.equal(st.d, 1); assert.match(st.log.at(-1), /Bench · compared/);
+  assert.equal(compareAfterKey(mk(b, a, 1)).earned, 0, "B × A is the same pair"); assert.equal(compareAfterKey(mk(a, b, 2)).earned, 0); assert.equal(st.d, 1);
+  const s2 = bench(), [c, d] = s2.mibis; c.read = ["coat"]; d.read = ["face"]; assert.equal(S.benchCompare(s2, sv0, c, d, settings, NOON).earned, 0, "nothing read on both"); d.read = ["coat"]; assert.equal(S.benchCompare(s2, sv0, c, d, settings, NOON).earned, 1);
+});
+test("T7 the cap stops a third earn, and then nothing is earned; T9 a cap of 0 is off", () => {
+  const st = bench(); S.seedAdults(st, "S01", 4, 2, settings); const [a, b, c] = st.mibis; assert.equal(watchFor(st, a, 60000).earned, 1); assert.equal(S.benchCompare(st, sv0, a, b, settings, NOON).earned, 1);
+  assert.deepEqual(S.benchToday(st, NOON, settings), { d: 2, cap: 2, full: true }); assert.equal(watchFor(st, c, 60000).earned, 0); assert.equal(st.d, 2);
+  const off = bench(), s0 = { ...settings, trickleCap: 0 }; assert.equal(watchFor(off, off.mibis[0], 120000, s0).earned, 0); assert.equal(off.d, 0); assert.equal(S.benchCompare(off, sv0, off.mibis[0], off.mibis[1], s0, NOON).earned, 0);
+});
+test("T8 the day is the local date: 23:59 then 00:00 resets; moving the clock back keeps the ledger", () => {
+  const st = bench(), [a] = st.mibis, late = new Date(2026, 9, 9, 23, 59).getTime(), next = new Date(2026, 9, 10, 0, 0).getTime();
+  watchFor(st, a, 60000, settings, late); assert.equal(st.bench.d, 1); assert.equal(S.benchToday(st, late, settings).d, 1);
+  assert.equal(S.benchToday(st, next, settings).d, 0, "a new day"); assert.equal(st.bench.day, "2026-10-10");
+  assert.equal(watchFor(st, a, 60000, settings, next).earned, 1, "earns again on the new day");
+  assert.equal(S.benchToday(st, late, settings).d, 1, "an earlier date keeps the ledger"); assert.equal(st.bench.day, "2026-10-10");
+});
+test("T10 to T12 the watch records the first unseen habit at the minute; with every habit seen it still earns; a full cap still records it", () => {
+  const st = bench(), [a] = st.mibis, fr = frameOf("S01"); assert.ok(fr.habits.length >= 2); a.habits = [];
+  watchFor(st, a, 59000); assert.deepEqual(a.habits, []); const r = watchFor(st, a, 1000); assert.equal(r.earned, 1); assert.deepEqual(a.habits, [fr.habits[0]], "the first unseen, in frame order");
+  const s2 = bench(), [b] = s2.mibis; b.habits = [...fr.habits]; assert.equal(watchFor(s2, b, 60000).earned, 1); assert.deepEqual(b.habits, fr.habits, "all seen: nothing to record");
+  const s3 = bench(); s3.bench = { day: "2026-10-09", d: 2, watchMs: {}, watched: [], compared: [] }; const [c] = s3.mibis; c.habits = [fr.habits[0]]; const f = watchFor(s3, c, 60000); assert.equal(f.earned, 0); assert.equal(s3.d, 0); assert.deepEqual(c.habits, [fr.habits[0], fr.habits[1]], "a full cap still records the habit");
+});
+test("the frame hook watches only the shown resident, on Habitat, awake; Idle and other screens accumulate nothing", () => {
+  const st = bench(), [a, b] = st.mibis, base = { st, sv: sv0, settings, habId: null, dt: 250, now: NOON };
+  assert.equal(habitatShown(st, sv0, null).id, a.id); assert.equal(habitatShown(st, sv0, b.id).id, b.id); assert.equal(habitatShown(st, { with: a.id }, null).id, b.id, "the first not with you");
+  assert.equal(watchFrame({ ...base, screen: "home", idle: false }), null); assert.equal(watchFrame({ ...base, screen: "habitat", idle: true }), null); assert.equal(st.bench, undefined);
+  for (let i = 0; i < 240; i++) watchFrame({ ...base, screen: "habitat", idle: false }); assert.equal(st.d, 1); assert.deepEqual(Object.keys(st.bench.watchMs), [String(a.id)]);
+});
