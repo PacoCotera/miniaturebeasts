@@ -31,5 +31,5 @@
   "plate": "bar", "plateEdge": "sand", "plateShadow": "void", "plateText": "bone",
   "ring": "focus", "stageGround": "deep"
  },
- "strings": { "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "habitat": "Habitat" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" }
+ "strings": { "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "habitat": "Habitat", "bench": "Probe", "cross": "Cross" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" }
 }
