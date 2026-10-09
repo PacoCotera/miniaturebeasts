@@ -194,7 +194,7 @@ test("the chapter page lays the cells on the grid with the marks inside each pic
   assert.deepEqual(by["page.c0.m0"].rect, [544 + 108 - 36, 160 + 112 - 8, 72, 8]);   // the base centred on the bottom edge
   assert.deepEqual(by["page.c1.m0"].rect, [776 + 216 - 40, 160 + 112 - 48, 32, 40]);   // the small seed (32×40 under a 120 px picture) at the bottom right
   assert.deepEqual(by["page.c1.m1"].rect, [776 + 8, 160 + 8, 28, 16]);   // breed to change at the top left
-  assert.equal(by["page.c2.frost"].asset, "frost:216x112"); assert.ok(!by["page.c2.l0"] || by["page.c2.l0"].text === "");
+  assert.equal(by["page.c2.frost"].kind, "rect"); assert.equal(by["page.c2.frost"].colour, "frost"); assert.ok(!by["page.c2.l0"] || by["page.c2.l0"].text === "");
   assert.deepEqual(by["page.c0.wipe"].rect, [544, 216, 216, 56]); assert.equal(by["page.c0.name"].rect[1], 160 + 112 + 8);
   // Compare: the difference is a 2 px aqua edge on the picture's own rectangle and the bracket 8 px in at the top centre; never the cream ring
   assert.deepEqual(by["page.c3.diff.t"].rect, [776, 360, 216, 2]); assert.deepEqual(by["page.c3.diff.r"].rect, [776 + 214, 360, 2, 112]); assert.equal(by["page.c3.diff.t"].colour, "aqua");

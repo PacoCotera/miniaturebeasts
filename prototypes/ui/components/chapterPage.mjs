@@ -33,7 +33,7 @@ export function chapterPage(ctx, id, region, props) {
     if (c.picture && !c.sealed && !c.frost) nodes.push({ id: cid + ".pic", kind: "sprite", rect: P, asset: c.picture, region: props.cellRegion ?? null });
     else nodes.push({ id: cid + ".pic", kind: "rect", rect: P, colour: Cc.pane, region: props.cellRegion ?? null });   // nothing of an unread trait is drawn: the ground, then frost or slats
     if (c.sealed) { nodes.push({ id: cid + ".slats", kind: "sprite", rect: P, asset: `${props.slats}${pw}x${ph}` }); if (c.seals) nodes.push({ id: cid + ".key", kind: "sprite", rect: [cx + Math.round(pw / 2) - 22, cy + Math.round(ph / 2) - 32, 44, 64], asset: c.seals }); }
-    else if (c.frost) nodes.push({ id: cid + ".frost", kind: "sprite", rect: P, asset: `${props.frost}${pw}x${ph}` });
+    else if (c.frost) nodes.push({ id: cid + ".frost", kind: "rect", rect: P, colour: Cc.frostFill || "frost" });   // the spec's unread cell: frost fill, no picture, nothing requested
     else {
       for (const [k, m] of (c.marks || []).entries()) {
         const M = props.marks, small = ph < M.smallUnder, [sw, sh] = small ? M.seedSmall : M.seed;
