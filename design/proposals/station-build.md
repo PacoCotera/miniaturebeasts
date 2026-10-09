@@ -28,7 +28,7 @@ The first build lets a tester play one pod from the dock to a meet, then a cross
 The Station stays `prototypes/station/index.html`: the depicted device, the 1024×600 screen at 1×, the row of keys below. Its single inline script splits into ES modules under `prototypes/station/src/`, loaded by one `<script type="module" src>` (the CI parse check reads inline scripts only, and an inline `import` would fail it). Three layers, and nothing else holds state:
 
 - **State** (`state.mjs`): the save's Station part and every rule as a pure function (prices, reads, glints, shaping, bud, refusal, forecast, kinship). No drawing; testable in Node.
-- **Screens** (`screens/*.mjs`): one module per screen, drawing from state and turning keys into rule calls.
+- **Screens**: a spec file (`prototypes/ui/specs/station/<screen>.json`), a view that turns state into props (`views/<screen>.mjs`) and an intent table that turns the face's intents into rule calls (`intents/<screen>.mjs`), drawn by the LVGL face (`prototypes/face`; [technical-architecture.md §5.4](technical-architecture.md#54-how-a-builder-adds-a-screen), [lvgl-switch.md §2](lvgl-switch.md#2-target-architecture-of-the-face)). The screens not yet moved still draw through the frozen JavaScript layer (`screens/*.mjs`, `gfx.mjs`) until their milestone; nothing new is built there (lvgl-switch.md §5).
 - **Edges**: `caddy.mjs` (the client of the Caddy service), `art.mjs` (the placeholder register: every drawn stand-in listed, so masters replace them one by one), `dev.mjs` (the developer tools).
 
 ### 2.2 Imported, never copied
@@ -158,6 +158,8 @@ Each milestone pushes to main, passes CI, deploys to the sandbox and is playable
 | **M4 Cross** | The Cross screen, eligibility, forecast seeds and ranges, the `parents` field, reading a child | Two Loikas crossed and a child whose hidden looks surface; siblings crossed showing the penalty |
 | **M5 Library** | The spread, the Book, looks found and "more?", the stamp at 120 px, a pinned wish | The collection as a tome, a species page filling as pods are read |
 | **M6 Sitting and the whole journey** | Home's sitting slot, the welcome sitting, the ceremony, the crate; the CI journey complete; the README | The whole loop from a walk to a sitting's crate, every step playable |
+
+**Decided** (owner, 2026-10-09 11:27): every screen from here is built on the LVGL face, never on the JavaScript drawing layer. M5's Library is L2.1 of [lvgl-switch.md](lvgl-switch.md) §3, and M6's Sitting screen is built on the face at L2.5 or when its spec lands.
 
 ## 7. Risks
 
