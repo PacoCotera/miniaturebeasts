@@ -2538,5 +2538,10 @@
   "status": "new",
   "signed_in": null,
   "note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
+ },
+ "cell-outline-unread-24x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: the unread picture's dotted outline, a nine-slice (8 px insets), 1 px mist dots; awaiting verdict"
  }
 }

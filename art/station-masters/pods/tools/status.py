@@ -7,6 +7,7 @@ def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "
 for n in m:
     if n.startswith("trait-picture-frame-") or n.startswith("trait-picture-standin-"): sign(n, "withdrawn", "pass 59", "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)")
     elif re.match(r"trait-S\d\d-", n): sign(n, "new", None, "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)")
+    elif n == "cell-outline-unread-24x24": sign(n, "new", None, "pass 59: the unread picture's dotted outline, a nine-slice (8 px insets), 1 px mist dots; awaiting verdict")
     elif n.startswith("mark-line-"): sign(n, "new", None, "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict")
     elif re.match(r"trait-picture-frame-(128x160|376x264|184x256|184x104|120x96)(-unread|-sealed)?$", n): sign(n, "new", None, "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict")
     elif n in ("trait-S09-crown-tall-128x160", ) : sign(n, "new", None, "pass 58: rows 140 to 159 set to the ground (the faint body ran to row 147); awaiting verdict")

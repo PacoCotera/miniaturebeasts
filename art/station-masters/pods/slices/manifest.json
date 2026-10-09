@@ -8286,5 +8286,28 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
+ },
+ "cell-outline-unread-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the unread picture's dotted outline: a nine-slice (insets 8 px on every side; edges tile at 8 px, the middle fully transparent) of a 1 px line in mist #8d8aa6, one dot lit and one gap, dots where the coordinate from the top left is even; for even cell sizes; the corner pixel is off at three corners so no dots touch",
+  "nine": {
+   "insets": {
+    "left": 8,
+    "top": 8,
+    "right": 8,
+    "bottom": 8
+   },
+   "edgeTile": 8,
+   "middle": "transparent"
+  },
+  "sha256": "d639e562eb4eb2a76ae5c322fb308f4b410c51d708c486c1dcefdd6ab8fc4df2",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: the unread picture's dotted outline, a nine-slice (8 px insets), 1 px mist dots; awaiting verdict"
  }
 }
