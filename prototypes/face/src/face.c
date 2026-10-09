@@ -1,8 +1,12 @@
+#define _POSIX_C_SOURCE 200809L
 /* The Station's face: a 1024x600 LVGL display that draws into a retained framebuffer, reports the rectangles it redrew,
    takes key input and builds the page's scene (scene.c). This file is the platform-neutral core: nothing in it knows
    JavaScript, SDL or a device. */
 #include "face.h"
-#include "scene.h"
+#include "prim/prim.h"
+#include "bridge/wire.h"
+#include "spec/spec.h"
+#include <time.h>
 #include "lvgl.h"
 #include <string.h>
 
@@ -43,14 +47,17 @@ void face_init(void) {
   /* the display under the scene is black until the page names its ground (face_background: a palette colour from the spec) */
   lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(0x000000), 0);
   lv_obj_set_style_bg_opa(lv_screen_active(), LV_OPA_COVER, 0);
-  scene_init();
+  prim_init(); wire_init();
 }
 void face_frame(uint32_t ms) {
   static uint32_t last; static int started;
   if (!started) { started = 1; last = ms; }
   lv_tick_inc(ms - last); last = ms;
   g_ndirty = 0;
+  struct timespec t0, t1; clock_gettime(CLOCK_MONOTONIC, &t0);
   lv_timer_handler();
+  clock_gettime(CLOCK_MONOTONIC, &t1);
+  wire_after_frame((double)(t1.tv_sec - t0.tv_sec) * 1000.0 + (double)(t1.tv_nsec - t0.tv_nsec) / 1e6);
 }
 uint8_t *face_fb(void) { return g_fb; }
 int face_width(void) { return FACE_W; }
@@ -73,14 +80,36 @@ const char *face_version(void) {
   return v;
 }
 
-void face_scene_begin(void) { scene_begin(); }
-void face_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) { scene_node(id, kind, x, y, w, h, rgb, a, b); }
-void face_scene_end(void) { scene_end(); }
-char *face_text(void) { return scene_text(); }
-int face_text_size(void) { return scene_text_size(); }
-int face_measure(int px) { return scene_measure(px); }
-uint8_t *face_asset(int handle, int w, int h) { return scene_asset(handle, w, h); }
-int face_object_count(void) { return scene_count(); }
-int face_node_refused(void) { return scene_unknown(); }
+void face_scene_begin(void) { prim_begin(); }
+void face_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) { prim_node(id, kind, x, y, w, h, rgb, a, b); }
+void face_scene_end(void) { prim_end(); wire_changed(); }
+char *face_text(void) { return prim_text(); }
+int face_text_size(void) { return prim_text_size(); }
+int face_measure(int px) { return prim_measure(px); }
+uint8_t *face_asset(int handle, int w, int h) { return prim_asset(handle, w, h); }
+int face_object_count(void) { return prim_count(); }
+int face_node_refused(void) { return prim_unknown(); }
 void face_background(uint32_t rgb) { lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(rgb), 0); }
-int face_asset_limit(void) { return scene_asset_limit(); }
+int face_asset_limit(void) { return prim_asset_limit(); }
+
+/* ---- the bridge, the tags and test mode ---- */
+char *face_in_buf(void) { return wire_in_buf(); }
+int face_in_cap(void) { return WIRE_IN_CAP; }
+int face_send(int len) { return wire_send(wire_in_buf(), len); }
+const char *face_poll(void) { return wire_poll(); }
+int face_pending(void) { return wire_pending(); }
+int face_last_asset(void) { return wire_last_asset(); }
+uint8_t *face_asset_pixels(int handle) { return prim_asset_ptr(handle); }
+int face_props_count(void) { return wire_props_count(); }
+unsigned face_props_seq(void) { return wire_props_seq(); }
+int face_event_count(void) { return wire_event_count(); }
+int face_spec_int(const char *screen, const char *path, int dflt) { return spec_int(screen, path, dflt); }
+static char g_region[48];
+char *face_region(void) { return g_region; }
+void face_node_tag(int layer) { prim_tag(layer, g_region); }
+void face_test_pass(int pass) { prim_set_pass(pass); lv_refr_now(g_disp); }   /* now, not on the next refresh tick: a pass is measured at once */
+int face_test_offpalette(void) {
+  int bad = 0;
+  for (int i = 0; i < FACE_W * FACE_H; i++) { const uint8_t *p = g_fb + i * 4; if (!prim_palette_has(((uint32_t)p[2] << 16) | ((uint32_t)p[1] << 8) | p[0])) bad++; }
+  return bad;
+}
