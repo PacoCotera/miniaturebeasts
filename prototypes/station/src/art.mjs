@@ -2,7 +2,7 @@
 // stands in for a master the art director has not made yet, stays plainly a placeholder, and is listed
 // in PLACEHOLDERS so masters replace them one by one. The mibi itself is the placeholder of the
 // placeholder brief (plain.mjs, the stylised rig pass), rendered from the genome through the workbench.
-import { PB, C, RGB, art, fromRGBA, cropPB, scalePB, flipPB, upPB, bay, lite, shade, clock, motion } from "./gfx.mjs";
+import { PB, C, RGB, art, fromRGBA, cropPB, scalePB, flipPB, upPB, bay, lite, shade, clock, motion } from "./pixels.mjs";
 import { buildIndividual, shapeTrait, genomeDigest, stampGenome, stampFrameOf } from "./genome.mjs";
 import { fitCamera, resolveCamera, VIEWS } from "../../workbench/framework/raster.mjs";
 import { plainRender, BG } from "../../workbench/framework/plain.mjs";
