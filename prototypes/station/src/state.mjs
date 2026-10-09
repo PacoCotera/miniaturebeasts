@@ -190,8 +190,8 @@ export function shortText(st, e, d, s) {
   return "needs " + p.join(" ") + " more";
 }
 // The two forms of a log line or a button: what is gained and what is spent. One place, so the answer on the wording is a one-line change (forms PLACEHOLDER until the UI designer and copywriter answer).
-export const gainText = (s) => "+" + s + " ❀";
-export const spendText = (txt) => "−" + txt;
+export const gainText = (s) => "❀ +" + s;
+export const spendText = (e, d, s) => [e ? "⚡ −" + e : "", s ? "❀ −" + s : "", d ? "◆ −" + d : ""].filter(Boolean).join(" ") || "free";
 export const priceText = (e, d, s) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : ""].filter(Boolean).join(" ") || "free";
 
 // --- dock and the bay ------------------------------------------------------------------------------
@@ -203,7 +203,7 @@ export function probeNow(st, sv) {
 export function payMend(st, settings = DEFAULT_SETTINGS) {
   let paid = 0; const cost = price(PRICE.mend, settings);
   while (st.probe.shield < st.probe.smax && st.e >= cost) { st.e -= cost; st.probe.shield++; paid++; }
-  if (paid) { st.probe.seq++; logEv(st, "Mended " + plural(paid, "plate") + (cost ? " · −" + paid * cost + " Energy" : "")); }
+  if (paid) { st.probe.seq++; logEv(st, "Mended " + plural(paid, "plate") + (cost ? " · " + spendText(paid * cost, 0, 0) : "")); }
   return paid;
 }
 // Dock or lift: docking always works; it brings the crates and the Probe (a break mended free, else up to two plates, then 1 Energy a plate while the switch is on).
@@ -330,7 +330,7 @@ export function identify(st, p, settings = DEFAULT_SETTINGS) {
   if (!st.freeId) st.freeId = true; st.e -= cost;
   if (!known) st.knownIds.push(fr.species.id); if (!st.metIds.includes(fr.species.id)) st.metIds.push(fr.species.id); syncKnown(st);
   p.idd = 1; p.fresh = 0; p.newSp = known ? 0 : 1;
-  logEv(st, (known ? "Logged · " : "New species · ") + fr.species.name + (cost ? " · −" + cost + " Energy" : " (free)"));
+  logEv(st, (known ? "Logged · " : "New species · ") + fr.species.name + (cost ? " · " + spendText(cost, 0, 0) : " (free)"));
   return { ok: true, free: !cost, newSp: !known, species: fr.species.id };
 }
 // A chapter's read price: 1 Data a trait; half, rounded up, once it was read on an earlier pod of the species;
@@ -409,7 +409,7 @@ export function bond(st, m) { m.bonded = true; logEv(st, "Bonded with " + m.name
 export function mendPlate(st, settings = DEFAULT_SETTINGS) {
   const pr = st.probe; if (!docked(st) || !pr || pr.shield >= pr.smax) return { ok: false };
   const cost = price(PRICE.mend, settings); if (st.e < cost) return { ok: false, msg: "Mend a plate · " + shortText(st, cost, 0, 0) };
-  st.e -= cost; pr.shield++; pr.seq++; logEv(st, "Mended a plate" + (cost ? " · −" + cost + " Energy" : "")); return { ok: true };
+  st.e -= cost; pr.shield++; pr.seq++; logEv(st, "Mended a plate" + (cost ? " · " + spendText(cost, 0, 0) : "")); return { ok: true };
 }
 export const tier2Ready = (st, settings = DEFAULT_SETTINGS) => docked(st) && !!st.probe && st.probe.tier < 2 && canPay(st, price(PRICE.tier2E, settings), price(PRICE.tier2D, settings), 0);
 export function installTier2(st, settings = DEFAULT_SETTINGS) {
@@ -504,7 +504,8 @@ export function clashTraits(p, choices = {}, problemsOf = genomeProblems) {
 export function growCost(st, choices = {}, settings = DEFAULT_SETTINGS) {
   return { e: price(PRICE.growE, settings), s: st.firstMibi ? 0 : price(PRICE.growS, settings), d: price(PRICE.change, settings) * changedTraits(choices).length };
 }
-export const bayCount = (st, settings = DEFAULT_SETTINGS) => settings.bays || st.bays || BAYS;
+export const BAYS_MAX = 12;   // 12 mibis per vivarium for V1 (the owner)
+export const bayCount = (st, settings = DEFAULT_SETTINGS) => Math.max(1, Math.min(BAYS_MAX, settings.bays || st.bays || BAYS));
 export const housed = (st) => st.mibis.filter((m) => !m.released);
 export const bayFull = (st, settings = DEFAULT_SETTINGS) => housed(st).length >= bayCount(st, settings);
 export const freeBay = (st, settings = DEFAULT_SETTINGS) => { const taken = new Set(housed(st).map((m) => m.bay)); for (let i = 0; i < bayCount(st, settings); i++) if (!taken.has(i)) return i; return -1; };
@@ -531,7 +532,7 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   st.firstMibi = false;
   st.tray = st.tray.filter((q) => q !== p); fillWells(st, settings, now);
   st.outbox.push({ sha, species: fr.species.id, genome, at: now });
-  logEv(st, "Grew " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(priceText(cost.e, cost.d, cost.s)));
+  logEv(st, "Grew " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
   return { ok: true, bud: st.bud, cost };
 }
 // A chapter that is sealed and still shut stays unknown to a founder: it opens known in every chapter but that one.
@@ -555,7 +556,7 @@ export function instantGrowCost(st, settings = DEFAULT_SETTINGS, now = Date.now(
 export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.bud || budReady(st, settings, now)) return { ok: false };
   const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Grow now · " + shortText(st, c.e, c.d, c.s) };
-  st.e -= c.e; st.d -= c.d; st.s -= c.s; st.bud.early = true; logEv(st, "Grew the bud now · " + spendText(priceText(c.e, c.d, c.s))); return { ok: true };
+  st.e -= c.e; st.d -= c.d; st.s -= c.s; st.bud.early = true; logEv(st, "Grew the bud now · " + spendText(c.e, c.d, c.s)); return { ok: true };
 }
 // Open: a press; the juvenile steps out fully known, into a free bay, wearing the placeholder until its painting lands (M3).
 export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
@@ -676,7 +677,7 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
   st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
   st.firstMibi = false;
   st.outbox.push({ sha, species: fr.species.id, genome, at: now });
-  logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(priceText(cost.e, cost.d, cost.s)));
+  logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(cost.e, cost.d, cost.s));
   return { ok: true, bud: st.bud, cost };
 }
 // Reading a child (or any mibi with chapters still unread): the same prices as a pod's chapters.

@@ -167,3 +167,13 @@ test("each stage at the cross: a juvenile is barred, an adult and an elder may c
   b.born = st.turn - S.JUVENILE_TURNS - S.ELDER_TURNS; assert.equal(S.mibiStage(st, b, settings), "elder"); assert.equal(S.crossBlock(st, null, a, b, settings), "", "an elder crosses");
   assert.deepEqual(S.crossPartners(st, null, a, settings), [b]);
 });
+
+// ---- 7. twelve mibis a vivarium ----
+test("the bays clamp to 12 (1 at least), whatever the setting or the save holds", () => {
+  const st = fresh();
+  for (const [bays, want] of [[6, 6], [12, 12], [20, 12], [99, 12], [1, 1]]) assert.equal(S.bayCount(st, { ...settings, bays }), want, "bays " + bays);
+  st.bays = 30; assert.equal(S.bayCount(st, { ...settings, bays: 0 }), 12, "a save that holds more than 12");
+});
+test("the forms: gains read '❀ +1', spends '⚡ −1 ❀ −2' with a true minus on the figure", () => {
+  assert.equal(S.gainText(2), "❀ +2"); assert.equal(S.spendText(1, 0, 2), "⚡ −1 ❀ −2"); assert.equal(S.spendText(0, 3, 0), "◆ −3"); assert.equal(S.spendText(0, 0, 0), "free");
+});

@@ -128,7 +128,7 @@ test("the bottom line: the one action and its price as a number and an icon (no 
   assert.equal(view(m("pod")).line.ok, "Shape a founder");
   assert.equal(view(m("hatch", { ui: { wildArm: 0 } })).line.ok, "Return to the wild");
   assert.equal(view(m("hatch", { ui: { wildArm: 1 } })).line.ok, "Again: return it");
-  assert.equal(view(m("hatch")).line.price, "+1 ❀");
+  assert.equal(view(m("hatch")).line.price, "❀ +1");
 });
 
 test("the focus graph over the targets: the collection's grid; the overview's pod, rail, kin and hatch; the page's rail", () => {

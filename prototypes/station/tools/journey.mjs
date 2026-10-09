@@ -223,7 +223,7 @@ await page.evaluate(() => window.__st.seedCrate("S01", 1, 31337)); await page.ev
 s = await st(); expect(s.waiting.length === 1, "the rack is full: the new pod waits for a well");
 await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, coatSix.id);
 // the hatch: the first ✓ arms with a plate, any other key disarms, the second ✓ returns
-l = await line(); expect(l.ok === "Return to the wild" && l.price === "+1 ❀", "the hatch offers the return: " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Return to the wild" && l.price === "❀ +1", "the hatch offers the return: " + JSON.stringify(l));
 await press("confirm", 150); l = await line(); expect(l.ok === "Again: return it", "armed: " + JSON.stringify(l)); await frameShot("pods-hatch-armed");
 await press("up", 100); l = await line(); expect(l.ok !== "Again: return it", "any other key disarms the hatch"); expect((await page.evaluate(() => window.__st.UI.pods.wildArm)) === 0, "the disarm cleared the armed state"); await page.evaluate(() => window.__st.podsGo(window.__st.UI.pods.cur, "hatch"));
 const sBefore = (await st()).s; await press("confirm", 100); await press("confirm", 300); s = await st();
