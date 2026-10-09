@@ -550,19 +550,19 @@
   "note": ""
  },
  "rail-emblem-legs-tail-unread-24x24": {
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "note": "Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict"
+  "note": "Legs & tail: eight hand rounds failed; the tapered tail was not signed; the method changes to the pixel pipeline (pass 15); the tab shows its word"
  },
  "rail-emblem-legs-tail-read-24x24": {
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "note": "Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict"
+  "note": "Legs & tail: eight hand rounds failed; the tapered tail was not signed; the method changes to the pixel pipeline (pass 15); the tab shows its word"
  },
  "rail-emblem-legs-tail-sealed-24x24": {
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "note": "Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict"
+  "note": "Legs & tail: eight hand rounds failed; the tapered tail was not signed; the method changes to the pixel pipeline (pass 15); the tab shows its word"
  },
  "rail-emblem-movement-unread-24x24": {
   "status": "signed",

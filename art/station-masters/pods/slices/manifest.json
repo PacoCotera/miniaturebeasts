@@ -1838,9 +1838,9 @@
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "e5bfe4c030b7c62b0895cc0d4c629c424bfdcc00fec65e2639089803f918b165",
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "status_note": "Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict"
+  "status_note": "Legs & tail: eight hand rounds failed; the tapered tail was not signed; the method changes to the pixel pipeline (pass 15); the tab shows its word"
  },
  "rail-emblem-legs-tail-read-24x24": {
   "size": [
@@ -1851,9 +1851,9 @@
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "118efe56bc2a0eb379b72b8ff77ab5c61f026159fdcf71d017490d9c2efa5a8a",
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "status_note": "Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict"
+  "status_note": "Legs & tail: eight hand rounds failed; the tapered tail was not signed; the method changes to the pixel pipeline (pass 15); the tab shows its word"
  },
  "rail-emblem-legs-tail-sealed-24x24": {
   "size": [
@@ -1864,9 +1864,9 @@
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "9bd3406a724e3c7801d1ef39eb274125ef93e46dec2fffe98e862b467912f98f",
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "status_note": "Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict"
+  "status_note": "Legs & tail: eight hand rounds failed; the tapered tail was not signed; the method changes to the pixel pipeline (pass 15); the tab shows its word"
  },
  "rail-emblem-movement-unread-24x24": {
   "size": [

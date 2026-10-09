@@ -3,6 +3,7 @@ On the layout of design-pods-relayout 29b6dc9: the well column at 112 with 80x80
 one to eight traits), the pod the protagonist on axis x 632, the stamp a detail in a 152 px case.
 Writes composite-pods-read-1024x600.png (a chapter of four traits, six full tabs), composite-pods-grid-1024x600.png (a chapter of one trait, a seven-chapter
 compact rail) and composite-vs-candidate.png."""
+import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 FD = "/usr/share/fonts/opentype/inter/"
 f16 = ImageFont.truetype(FD + "Inter-Regular.otf", 16); f20 = ImageFont.truetype(FD + "Inter-Medium.otf", 20)
@@ -10,6 +11,15 @@ CREAM = (241, 235, 223); FOG = (198, 196, 216); MIST = (141, 138, 166); AMBER = 
 cand = Image.open("source/raw/ref-PV-D-r3-a4-1024x600.png").convert("RGBA")
 def S(n): return Image.open(f"slices/{n}.png").convert("RGBA")
 CID = {'Coat': 'coat', 'Face': 'face', 'Shape': 'shape', 'Legs & Tail': 'legs-tail', 'Legs': 'legs-tail', 'Movement': 'movement', 'Stamina': 'stamina', 'Character': 'character', 'Glow': 'glow', 'Charge': 'charge'}
+def recol(cls, A, B, pattern):
+    """One painted pod in a species' colour pair: the shade layer lit through the body and accent masks (and a pattern), then the band and crack layers on top (tools/recolour.py's method)."""
+    L = lambda n: np.asarray(Image.open(f"slices/pod-{cls}-{n}.png").convert("RGBA")).astype(float) / 255
+    sh = L("shade")[..., 0:1]; body = L("mask-body")[..., 3:4]; acc = L("mask-accent")[..., 3:4]; pat = L("pattern-" + pattern)[..., 3:4] if pattern else 0 * body
+    A = np.array(A) / 255; B = np.array(B) / 255; col = np.clip((A * body * (1 - pat) + B * np.clip(acc + pat, 0, 1)) * sh * 2, 0, 1)
+    out = Image.fromarray((np.concatenate([col, L("shade")[..., 3:4]], 2) * 255).astype(np.uint8), "RGBA")
+    for n in ("band", "crack"): out.alpha_composite(Image.open(f"slices/pod-{cls}-{n}.png").convert("RGBA"))
+    return out
+TUIKIS = ((0x26, 0x9f, 0xa5), (0xe8, 0xb8, 0x3f), "bands")      # S03: lagoon and marigold (its plates pattern is not painted; bands stand in)
 def compose(traits, rail):
     cv = Image.new("RGBA", (1024, 600), (16, 26, 36, 255)); d = ImageDraw.Draw(cv)
     def put(n, x, y): cv.alpha_composite(S(n), (x, y))
@@ -18,19 +28,20 @@ def compose(traits, rail):
         d.text(xy, s, font=font, fill=fill, anchor=anchor)
     put("room-bench-stage", 0, 40); put("ring-column-112x522", 0, 40)
     # the wells: a ring slice at (24, 44 + 72 i), the pod 32x48 centred in it, the arcs on the inner edge; a glint star at the selected ring's upper right
-    pods = {0: "pod-well-identified", 1: "pod-well-identified", 2: "pod-well-sealed"}; lit = {0: (6, 3), 1: (5, 1), 2: (4, 0)}
+    pods = {0: "pod-well-identified", 1: "pod-well-identified", 2: "pod-well-sealed"}; lit = {0: (6, 3), 1: (5, 1), 2: (4, 0)} if rail == "six" else {0: (8, 3), 1: (5, 1), 2: (4, 0)}
     for i in range(6):
         y = 44 + 72 * i; sel = i == 0; st = "selected" if sel else "idle"
         put("ring-well-selected-80x80" if sel else "ring-well-idle-80x80", 24, y)
         if i in lit:
             n, k = lit[i]; put(f"ring-arc-{st}-n{n}-track", 24, y)       # selected: the open channel over the solid band; idle: the groove
             for j in range(k): put(f"ring-arc-{st}-n{n}-s{j}", 24, y)    # a read chapter: the solid band (selected) or the dim line (idle)
-        if i in pods: put(pods[i], 44, 60 + 72 * i)
+        if i == 0 and rail == "compact": cv.alpha_composite(recol("well", *TUIKIS), (44, 60))
+        elif i in pods: put(pods[i], 44, 60 + 72 * i)
     put("glint-star-12x12", 24 + 40 + 30 - 6, 44 + 40 - 30 - 6)
     put("ring-hatch-80x56", 24, 488)
     # the stage: the pod the protagonist on axis x 632
-    put("room-shelf", 488, 368); put("room-cradle", 520, 328); put("pod-large-shadow", 632 - 80, 385); put("pod-large-identified", 560, 216); put("room-cradle-front", 520, 328)
-    tw = d.textlength("Loika", font=f20); pw = min(224, max(80, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x24", 632 - pw // 2, 456); text((632, 468), "Loika", f20, CREAM, "mm")
+    put("room-shelf", 488, 368); put("room-cradle", 520, 328); (put("pod-large-shadow", 632 - 80, 385), put("pod-large-identified", 560, 216)) if rail == "six" else (put("pod-small-shadow", 632 - Image.open("slices/pod-small-shadow.png").width // 2, 385), cv.alpha_composite(recol("small", *TUIKIS), (580, 264))); put("room-cradle-front", 520, 328)
+    NAME = "Loika" if rail == "six" else "Kesi"; tw = d.textlength(NAME, font=f20); pw = min(224, max(80, -(-int(tw + 24) // 16) * 16)); put(f"plate-name-{pw}x24", 632 - pw // 2, 456); text((632, 468), NAME, f20, CREAM, "mm")
     text((632, 498), "Found on the rock field,", f16, BONE, "mm"); text((632, 518), "as a Tuikis felt safe.", f16, BONE, "mm")
     put("room-stamp-case-152x152", 856, 232); put("stamp-label-120x120", 872, 248); cv.alpha_composite(Image.open("../../concept-station/pods-v2/layout/stamp-hopper-bench-300.png").convert("RGBA").resize((104, 104), Image.NEAREST), (880, 256)); put("room-stamp-case-152x152-front", 856, 232)
     # the page, 256 wide: one state, a grid of the chapter's traits
@@ -54,7 +65,7 @@ def compose(traits, rail):
             (namenew((cx + 52, cy + 164), "Build" if rail == "compact" else "Spots") if k == 0 else text((cx, cy + 164), (("Build", "Haunch", "Topline") if rail == "compact" else ("Spots", "Belly", "Flank", "Crest"))[k], f16, CREAM))
     # the rail: tabs hang from the bar at y 40 and touch along their slants
     if rail == "six": tabs = [("Coat", "focused", 3), ("Face", "read", 3), ("Shape", "unread", 4), ("Legs & Tail", "unread", 3), ("Movement", "sealed", 0), ("Stamina", "unread", 3)]; open_i = None
-    else: tabs = [("Coat", "read", 3), ("Face", "read", 3), ("Shape", "focused", 3), ("Legs", "unread", 3), ("Movement", "unread", 3), ("Stamina", "sealed", 0), ("Character", "unread", 3)]; open_i = 2
+    else: tabs = [("Coat", "read", 4), ("Face", "read", 3), ("Shape", "focused", 3), ("Legs", "unread", 4), ("Movement", "unread", 4), ("Stamina", "unread", 3), ("Character", "unread", 2), ("Glow", "unread", 2)]; open_i = 2      # the eight chapters of a Tuikis (S03)
     x = 152; ring = None
     for i, (word, st, pips) in enumerate(tabs):
         full = rail == "six" or i == open_i; w = 136 if full else 56
@@ -64,10 +75,11 @@ def compose(traits, rail):
         pc = CREAM if st in ("read", "focused") else (150, 168, 184)
         if full:
             tw = d.textlength(word, font=f16); bx = x + 76 - (32 + tw) / 2
-            cv.alpha_composite(S(f"rail-emblem-{CID[word]}-{es}-24x24"), (int(bx), 48)); text((bx + 32, 54), word, f16, pc if st != "sealed" else MIST, "lm")
-            for p in range(pips): px = int(x + 80 - pips * 4 + 8 * p); d.rectangle([px, 68, px + 5, 73], fill=pc if st in ("read", "focused") and p < 2 else None, outline=pc)
+            if word == "Legs & Tail": text((x + 76, 54), word, f16, pc if st != "sealed" else MIST, "mm")      # no emblem until Legs & Tail is picked: the word alone
+            else: cv.alpha_composite(S(f"rail-emblem-{CID[word]}-{es}-24x24"), (int(bx), 48)); text((bx + 32, 54), word, f16, pc if st != "sealed" else MIST, "lm")
+            for p in range(pips): px = int(x + 80 - pips * 4 + 8 * p); d.rectangle([px, 68, px + 5, 73], fill=pc if st in ("read", "focused") and p < (pips if rail == "compact" else 2) else None, outline=pc)
         else:
-            cv.alpha_composite(S(f"rail-emblem-{CID[word]}-{es}-24x24"), (x + 34 - 12, 44))
+            if word != "Legs": cv.alpha_composite(S(f"rail-emblem-{CID[word]}-{es}-24x24"), (x + 34 - 12, 44))        # pips only on the Legs & Tail tab
             for p in range(min(pips, 4)): px = int(x + 42 - min(pips, 4) * 4 + 8 * p); d.rectangle([px, 72, px + 5, 77], fill=pc if st in ("read", "focused") else None, outline=pc)
         x += w
     if ring:

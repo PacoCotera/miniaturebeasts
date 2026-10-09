@@ -49,9 +49,9 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `rail-emblem-glow-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | new: Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | new: Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | new: Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | withdrawn: Legs & tail: eight hand rounds failed; the tapered tail was not signed; the method changes to the pixel pipeline (pass 15); the tab shows its word | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | withdrawn: Legs & tail: eight hand rounds failed; the tapered tail was not signed; the method changes to the pixel pipeline (pass 15); the tab shows its word | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | withdrawn: Legs & tail: eight hand rounds failed; the tapered tail was not signed; the method changes to the pixel pipeline (pass 15); the tab shows its word | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-read-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-sealed-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-unread-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
@@ -335,6 +335,13 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 14d - the Grid composite for a Tuikis, the tail off the tab
+
+- The tapered tail was not signed after eight hand rounds: `rail-emblem-legs-tail-*` withdrawn; it is off the rail in both composites (the word on the full tab, pips only on the compact tab). Legs & Tail goes through the pixel pipeline next (pass 15).
+- The Grid composite's pod is now a Tuikis (S03; a Loika has no Shape chapter): the small-class pod recoloured in S03's lagoon and marigold (`recol` in `tools/compose.py`, `tools/recolour.py`'s method with the band and crack layers on top; the plates pattern is not painted, so bands stand in), its name plate (the name "Kesi" is a stand-in), its rail of eight chapters (Coat 4, Face 3, Shape 3, Legs & Tail 4, Movement 4, Stamina 3, Character 2, Glow 2 traits) with Shape open and read, the selected well showing the same pod, and the corrected page pane (64x64 top-left piece, fill 21). Shape traits Build, Haunch, Topline; the pictures are still Coat crops of the mibi painting (stand-ins, no Shape pictures exist).
+- The Read composite is still a Loika with Coat, Face, Shape and Stamina tabs and four invented Coat traits; a Loika has Coat (Markings), Face (Crown, Eyes), Movement (Drive) and Stamina (Efficiency) only. It is not corrected here and is not claimed to be the right page for that pod.
+
 
 ## Pass 14c - the page pane keeps the house's light
 
