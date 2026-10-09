@@ -211,11 +211,11 @@ The measured layout, states and timeline are [Station layouts, Dock and arrival]
 **Purpose.** Watch the bud grow and open it. **Reads first:** the glowing bud, then how many leaves remain.
 
 - **Living window.** Inside the dome: a cute, generic glowing bean in a nest, brighter as it grows, with no drift toward the species' hue, with the species' shape glowing inside it when ready. Never an embryo shape at any stage. Warm, slow, alive.
-- **Instrument.** The incubation chamber: a glass dome on a machined base, two arcs of leaves as the timer (one leaf a minute, each filling smoothly), the stamp on its label at the right, its code under it as live text. On a founder's bud the unread chapter tabs above clear one by one, except a sealed chapter that is still shut, and the stamp's chapters fill with them.
+- **Instrument.** The incubation chamber: a glass dome on a machined base, two arcs of leaves as the timer (one leaf a minute, the current leaf filling from its foot in whole rows, a row every 3 s), the stamp on its label at the right, its code under it as live text. On a founder's bud the unread chapter tabs above clear one by one, except a sealed chapter that is still shut, and the stamp's chapters fill with them.
 - **Composition.** The dome centred and large, a bell jar 304 px wide on its 336 px base; the leaves in two arcs over it; the chapter rail above; the plaque on the base.
 - **Lively / quiet.** Lively: the bud's glow and the filling leaf. Quiet: everything else. Ready: the dome glows, the shape visible inside the bud, and nothing steps out until the player opens it.
 - **Light.** Warm light from inside the dome; cool chrome around.
-- **Palette.** Leaf greens for the timer, pale glass, the bud's warm glow.
+- **Palette.** Leaf greens for the timer, pale glass; the bud's glow in its own two pictures, early and late, never drifting toward the species' hue.
 - **Type.** Inter 16 px: the plaque's one word; no digits for time.
 - **Chrome.** Growing: `✓ Grow now   ❀ 7`; ready: `✓ Open`; empty: `✓ Choose a pod`; `← Home`.
 - **Motion.** A leaf fills over its minute; Open lifts the glass in 600 ms, the bud cracks and the juvenile steps out, the ribbon "Fig, a young Loika".
@@ -326,21 +326,22 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 
 **Vibe.** Vivarium: cozy, warm, the pet happy at home.
 
-**Purpose.** One resident up close: spend time, take it with you, bond, cross. **Reads first:** the resident.
+**Purpose.** One mibi up close: name it, spend time with it, take it with you, bond, cross, have it sit for its portrait, or return it to the wild. **Reads first:** the mibi, then its name.
 
-- **Living window.** The resident large (300×310 or larger) in its corner of the vivarium, rich treatment, doing its species moment on Spend time.
-- **Instrument.** A card at the right: name, stage, species, ability, a memory line, the genome ring as a seal with the code, its chapters as small plates. Under it the with-you door (the Companion dock module, with the mibi with you or "away"), the bond heart and, on an adult, the cross mark. A strip of residents along the foot with the free places.
-- **Composition.** Window the left 60%; card the right 40%; strip 72 px.
-- **Lively / quiet.** Lively: the resident. Quiet: card, door, strip.
+- **Living window.** The mibi at 304×312 in the vivarium's light, its standard painting or its placeholder with the waiting lamp, doing its species moment on Spend time. Its name on a tag under its feet, 20 px.
+- **Instrument.** A card at the right: "your Loika, adult" (the species word, with `mark-guide-16`, is the door to the guide), where it came from and what it remembers, its code, the stamp on its 120 label (the stamp is the genome code), and one plate a chapter. Under it five modules, one engraved word each: Companion, Bond, Portrait, Cross, Wild. The strip of bays along the foot, thumbnails only.
+- **Composition.** The window at the left (16 to 576), the card and modules in a 416 px column at the right, the strip 64 px along the foot.
+- **Lively / quiet.** Lively: the mibi. Quiet: card, modules, strip.
 - **Light.** Warm key light from the top left in the window; cool on the card.
-- **Palette.** The vivarium's greens and earth; card chrome; the heart red, with its shape.
-- **Type.** 4× name; 2× card lines.
-- **Chrome.** `✓ Spend time with Fig`, `✓ Take Fig with you`, `✓ Bond with Fig` (then ✓ again), `✓ Cross Fig`. `← Home`. With a sitting held and Fig eligible: `✓ Portray Fig · 1 sitting`.
-- **Your Loika.** The card's first line reads "your Loika, adult"; the species word, with `mark-guide-16`, is a focus target: `✓ Open the guide`, a jump to the Book's guide spread, where ← reads Library.
-- **Motion.** The strip swaps the resident in 300 ms; the species moment plays about 2 s.
+- **Palette.** The vivarium's greens and earth; card chrome; the heart a small enamel heart in the house light. Nothing on Habitat is amber.
+- **Type.** Inter: the name 20 px medium on its tag; the card's lines 16 px.
+- **Chrome.** The four zones, the price icon first, no dots: `✓ Spend time with Fig`; `✓ Rename Fig`; `✓ Take Fig with you` | "goes at the next dock"; `✓ Bond with Fig`, then `✓ Again: bond with Fig`; `✓ Cross Fig`; `✓ Portray Fig` | "one sitting each, ever"; `✓ Return Fig   ❀ +2` | "goes back to the wild", then `✓ Again: return Fig` | "never taken back"; `← Home`.
+- **Motion.** Walking the strip dithers the mibi shown in 200 ms; the species moment plays about 2 s.
+
+The measured layout, the focus graph and the states (rest, the meet, empty) are [Station layouts, Habitat](station-layouts.md#habitat).
 
 **Pass when**
-- [ ] The resident is the same individual as on the Companion.
+- [ ] The mibi is the same individual as on the Companion.
 - [ ] Stage reads from proportion and bearing; elders calm and dignified.
 - [ ] No meters or needs.
 - [ ] The door shows where the mibi with you is.
@@ -350,26 +351,11 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 
 ## Sitting
 
-A short section, since the ceremony borrows Habitat and the bay.
+A sitting is spent in a ceremony on the Station: the player chooses the one mibi, a pose from its habits and a place it has been. It takes real time, longer than a bud, and the portrait arrives as a crate at the dock. The words are sitting, portrait, portrait card and `✓ Portray`. One sitting a mibi, ever; a sitting earned while one is held is not given, and the Station warns ahead. Its rules are in `prototypes/station/src/sitting.mjs`.
 
-**Vibe.** Vivarium light on a plain stage: the one-resident warmth of Habitat, with the instrument reduced to the choices.
+On Habitat, the Portrait module offers `✓ Portray Fig` while a sitting is held and the mibi can sit ([Station layouts, Habitat](station-layouts.md#habitat)).
 
-**Purpose.** Spend a held sitting on one mibi: choose its pose and its place, confirm, and wait. **Reads first:** the mibi on the stage, then the gilt frame.
-
-- **Where it lives.** The held sitting is a small gilt frame in a slot on Home's instrument beside the Probe dock (one slot, one frame; it pulses "use your sitting first" when a guide is one look from full and a second would be earned). The ceremony starts on **Habitat** with `✓ Portray Fig · 1 sitting` and opens the sitting screen for its three steps; a mibi fresh from the bud is offered nothing ("Fig needs a walk first"); a portrayed mibi shows its portrait instead of the offer.
-- **Living window.** Fig in the standard look on a plain stage, acting out the focused pose.
-- **Instrument.** Step 1, the pose: one small picture per habit the player has watched (dig, glow, puff, sleep curled), in the standard look; `✓ This pose · ← Fig`. Step 2, the place: the places Fig has been as the book's place stamps, the focused one washing the stage in its colours; `✓ This place · ← pose`. Step 3, look and confirm: Fig in the pose, in the place, the gilt frame around it, one line "One sitting each, ever"; first ✓ arms (the frame lights), second ✓ begins: `✓ Begin the sitting · 1 sitting · ← place`.
-- **The wait.** The frame leaves the slot for the sample bay module, where the flat crate waits behind the door with its filling lamp (Dock and arrival). Fig lives on as before. A few hours; no clock, no spinner.
-- **Type.** 4× name; 2× habit and place words; no digits but the price.
-
-**Pass when**
-- [ ] The three choices are made from what the player has seen Fig do and where it has been, nothing else.
-- [ ] Nothing on the stage promises what the portrait will look like beyond pose and place.
-- [ ] The arm-then-confirm state is visible before the sitting is spent.
-- [ ] The wait reads from the bay's crate and lamp, never from a number.
-
-<table><tr><td valign="top"><img src="../proposals/station-screens/08-habitat.svg" width="480" alt="Habitat wireframe"><br><em>Habitat wireframe. Layout only.</em></td>
-<td valign="top"><img src="../../art/concept-homepage/pip-life-stages.png" width="420" alt="Life stages"><br><em>Stage by proportion and bearing. Approved concept, generated.</em></td></tr></table>
+The sitting is its own screen under Habitat, opened from the Portrait module, with three steps: the pose, the place, then look and confirm. Its layout is to come in [Station layouts](station-layouts.md).
 
 ---
 
@@ -409,33 +395,24 @@ Wireframes: [09a-cross-overview.png](station-layouts/09a-cross-overview.png) and
 
 **Vibe.** Research bench: a modern digital lab, the Probe on a service cradle.
 
-**Purpose.** Mend and upgrade the Probe. **Reads first:** the Shield plates.
+**Purpose.** Keep the Probe ready: mend its Shield plates, set whether the dock mends every plate, fit the upgrade. **Reads first:** the Probe, then its plates.
 
-- **Instrument.** The Probe large in its dock, Shield plates beside it, the standing switch "Mend fully on docking", the tier 2 slot (lit only when affordable). The one screen whose subject is a machine.
-- **Living window.** A small porthole at the left: the mibi with you beside the dock when docked, its empty bed while away. Small and quiet here.
-- **Composition.** Probe centred left of centre (about 360 px); plates to its right; switch and slot in a column at the right.
-- **Lively / quiet.** Lively: the mibi in the porthole. Quiet: everything else until a press.
-- **Light.** Cool, even light on the dock; a cool beam on the Probe; warm only in the porthole.
-- **Palette.** Slate and graphite; plates white when whole, outlined when missing; the slot's lamp amber when affordable.
-- **Type.** 3× name; 2× labels.
-- **Chrome.** `✓ Mend a plate · 1 ⚡`; the switch toggles free; `✓ Arm tier 2 · 12 ⚡ 4 ◆`, then ✓ installs.
-- **Motion.** A plate seats in 300 ms; the upgrade a short mechanical sequence under 1 s.
+- **Instrument.** The Probe large in its cradle, its Shield plates standing under it (the tier's count). At the right, the Mend module (a switch and a picture of what it means: the dock, then the plates it leaves whole) and the Upgrade module (the socket and part, what it adds as pictures, lit only when affordable). The one screen whose subject is a machine.
+- **Composition.** The cradle and the column form one group centred on the screen: the Probe on the axis x 296, the two modules at the right.
+- **Lively / quiet.** Quiet until a press.
+- **Light.** A cool key light from the top left, as on Create and the Incubator; the Probe the brightest object. No warm field on this screen.
+- **Palette.** Slate and graphite; plates white when whole, outlined when gone; lamps on (`sprout`) or off. Nothing on the bench is amber.
+- **Type.** Inter 16 px: the modules' engraved words.
+- **Chrome.** The four zones, the price icon first, no dots: `✓ Mend a plate   ⚡ 1` | "one plate to mend"; `✓ Switch on` | "the dock mends two, free"; `✓ Fit the upgrade   ⚡ 12 ◆ 4`, then `✓ Again: fit the upgrade`; `← Home`.
+- **Motion.** A plate seats in 300 ms; the switch's knob slides in 200 ms; the upgrade fits in 900 ms.
+
+The measured layout is [Station layouts, Probe bench](station-layouts.md#probe-bench).
 
 **Pass when**
 - [ ] Shield state reads from the plates alone.
 - [ ] The armed state is visible before the second press.
 - [ ] The Probe is the same device the Companion draws.
-- [ ] The porthole stays the only warm thing.
-- [ ] Away, the dock shows the Probe is out, not missing.
-
-No wireframe; the layout reference is the sketch in the [Station screens proposal](../proposals/station-screens.md):
-
-```
- | Probe bench  T7                ⚡ 12  ◆ 5  ❀ 13                Companion docked |
- |        [  Probe in cradle  ]   plates ▮▮▯       ( ) Mend fully on docking: on   |
- |                                                  [ tier 2 slot · lit ]            |
- | ✓ Mend a plate · 1 ⚡ · ← Home | Probe · tier 1 | one plate to mend               |
-```
+- [ ] Away, the cradle shows the Probe is out, not missing.
 
 ---
 

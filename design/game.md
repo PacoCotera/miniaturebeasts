@@ -107,7 +107,7 @@ These hold across every mechanic.
 | **Partners** | One mibi at a time is "with you" on the Companion. An adult or elder with you is a partner on expeditions; a juvenile is not. Partners use their species' abilities to open events, places and finds. They gate the higher tiers of exploring and never block exploring alone ([world and exploration](world-and-exploration.md#partners-and-gates)) |
 | **Breeding** | Two adults or elders of one species make one child with real parents; the forecast shows pictures of what is read; a wish guides it ([research and breeding](research-and-breeding.md#the-cross), [genomics](creatures-and-genomics.md)) |
 | **Supplies** | Three supplies in whole units, each spent for its function: Energy runs the machines, Data reads genomes, Essence grows bodies. Energy comes from struck and warm stones and stays scarce; Data from creature moments the player causes; Essence from dew, pressed fruit and tufts ([world and exploration](world-and-exploration.md#materials), [research and breeding](research-and-breeding.md#data-and-the-other-supplies)) |
-| **The vivarium** | The player keeps as many mibis as the vivarium holds: six bays. Returning a grown, unbonded mibi to the wild frees its bay and gives 2 Essence; its place remembers it and later sheds one pod of its line. More room comes from more vivariums |
+| **The vivarium** | The player keeps as many mibis as the vivarium holds: six bays at the start; upgrades add two at a time, up to twelve, the most one vivarium holds. Returning a grown, unbonded mibi to the wild frees its bay and gives 2 Essence; its place remembers it and later sheds one pod of its line. More room comes from more vivariums |
 | **Crafting** | Discovery with clues. Recipes are personal once learned; a failure wastes the ingredients or returns a fraction. It runs deep over the long term and stays simple at first |
 | **Wild capture** | Not in the game |
 | **Upgrades** | Tiered upgrades for the Station, the Probe and the Companion. The tier 2 Probe reaches further and carries 3 pods. The Station takes virtual research chips, which are found, crafted, traded or dropped by rare mibis |
@@ -127,3 +127,4 @@ These hold across every mechanic.
 - The real transfer of crates between devices.
 - Research and breeding's open questions, prices among them, are in
   [research and breeding](research-and-breeding.md#not-designed-yet).
+- Vivariums beyond the first as living ecosystems: food, light and environmental constraints that shape a mibi population.

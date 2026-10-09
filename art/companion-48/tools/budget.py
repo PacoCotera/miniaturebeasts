@@ -1,23 +1,17 @@
-"""Sum every paid call's sidecar under sources/ into budget.json: Gemini calls priced from their token usage,
-Retro Diffusion calls from the balance_cost in their results. usage: python3 -I budget.py SOURCES_DIR"""
+"""Count every paid call's sidecar under sources/ into calls.json: per call its tag, tool, size and seconds.
+No cost: the dollar total is in the ledger outside this repository
+(MB_LEDGER=... python3 ops/ledger/ledger.py sum --tool companion-48). usage: python3 -I budget.py SOURCES_DIR"""
 import glob, json, os, sys
 src = sys.argv[1]
-PRICES = {"gemini-3-pro-image": (2.0, 120.0), "gemini-3.1-flash-image": (0.5, 60.0)}   # USD per M tokens, standard tier, ai.google.dev pricing 2026-10-08
-calls, total = [], 0.0
+calls = []
 for p in sorted(glob.glob(os.path.join(src, "**", "*.json"), recursive=True)):
-    if os.path.basename(p) in ("budget.json", "extra-spend.json"): continue
+    if os.path.basename(p) in ("calls.json", "budget.json", "extra-spend.json"): continue
     d = json.load(open(p))
     if d.get("tool") == "retro-diffusion":
-        c = (d.get("result") or {}).get("balanceCostUSD")
-        if c is None: continue
-        calls.append({"tag": d["id"], "tool": "retro-diffusion " + d["style"], "size": d["size"], "usd": c, "seconds": d["result"].get("seconds")}); total += c
+        if not d.get("result"): continue   # a dry run (check_cost) is no call
+        calls.append({"tag": d["id"], "tool": "retro-diffusion " + d["style"], "size": d["size"], "seconds": d["result"].get("seconds")})
     elif "model" in d and "result" in d and "usage" in d["result"]:
-        u = d["result"]["usage"]; pi, po = PRICES[d["model"]]
-        c = u["promptTokenCount"] * pi / 1e6 + u["candidatesTokenCount"] * po / 1e6
-        calls.append({"tag": d["tag"], "tool": d["model"], "in": u["promptTokenCount"], "out": u["candidatesTokenCount"], "usd": round(c, 4), "seconds": d["result"]["seconds"]}); total += c
-ex = os.path.join(src, "extra-spend.json")
-if os.path.exists(ex):
-    for e in json.load(open(ex)): calls.append(e); total += e["usd"]
-out = {"successfulCalls": len(calls), "totalUSD": round(total, 2), "calls": calls,
-       "pricing": "gemini-3-pro-image standard tier: $2.00/M input, $120/M output tokens (ai.google.dev pricing, 2026-10-08); Retro Diffusion rd_pro: $0.18 per image (balance_cost in the task result)"}
-json.dump(out, open(os.path.join(src, "budget.json"), "w"), indent=1); print("calls", len(calls), "total USD", out["totalUSD"])
+        req = d.get("requested") or {}
+        calls.append({"tag": d["tag"], "tool": d["model"], "size": req.get("imageSize"), "seconds": d["result"]["seconds"]})
+out = {"successfulCalls": len(calls), "calls": calls}
+json.dump(out, open(os.path.join(src, "calls.json"), "w"), indent=1); print("calls", len(calls))
