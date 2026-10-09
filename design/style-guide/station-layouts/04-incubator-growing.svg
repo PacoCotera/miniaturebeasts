@@ -1,68 +1,114 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Incubator · growing wireframe, 1024×600, measured. Layout only, no art.</title>
-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><pattern id="g40" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e2e2e2" stroke-width="0.6"/></pattern></defs>
+<title>Incubator, growing: 22 leaves on two arcs, 9 full and the tenth filling, three chapters known and one a surprise, no ring, ✓ Grow now, 1024×600 at 1×, measured. Layout only, no art. Status: Proposal (UI designer, 2026-10-09 13:04).</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
-<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444"/><line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="96.5" y="40.5" width="831" height="39" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
+<polygon points="232,40 368,40 384,80 248,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="250.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
+<text x="282" y="60" font-size="11" fill="#222">Coat</text>
+<rect x="311.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<polygon points="368,40 504,40 520,80 384,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="386.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
+<text x="418" y="60" font-size="11" fill="#222">Face</text>
+<rect x="443.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<rect x="451.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<polygon points="504,40 640,40 656,80 520,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="522.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
+<text x="554" y="60" font-size="11" fill="#222">Movement</text>
+<rect x="583.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<polygon points="640,40 776,40 792,80 656,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#bbb" stroke-width="1"/>
+<text x="690" y="60" font-size="11" fill="#8d8aa6">Stamina</text>
+<rect x="719.5" y="71.5" width="5" height="5" fill="#fff" stroke="#8d8aa6" stroke-width="1"/>
+<rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="844" y="310" font-size="10" fill="#222">STAMP label 120</text>
+<text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
+<text x="844" y="334" font-size="9" fill="#777">176 from the dome</text>
+<rect x="808.5" y="424.5" width="183" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q · 4MX · P2D</text>
+<text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
+<rect x="256.5" y="88.5" width="511" height="215" fill="none" stroke="#9cc08f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="260" y="100" font-size="9" fill="#5d7a5f">leaves 256,88 512×216</text>
+<ellipse cx="302" cy="292" rx="11.5" ry="5.5" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<ellipse cx="312" cy="263" rx="11.5" ry="5.5" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<ellipse cx="325" cy="236" rx="11.5" ry="5.5" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<ellipse cx="342" cy="211" rx="11.5" ry="5.5" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<ellipse cx="362" cy="189" rx="11.5" ry="5.5" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<ellipse cx="385" cy="169" rx="11.5" ry="5.5" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<ellipse cx="411" cy="153" rx="11.5" ry="5.5" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<ellipse cx="438" cy="141" rx="11.5" ry="5.5" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<ellipse cx="467" cy="133" rx="11.5" ry="5.5" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<ellipse cx="497" cy="129" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<rect x="487.5" y="130.5" width="19" height="4" fill="#84ae78" stroke="none" stroke-width="1"/>
+<ellipse cx="527" cy="129" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="557" cy="133" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="586" cy="141" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="613" cy="153" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="639" cy="169" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="662" cy="189" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="682" cy="211" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="699" cy="236" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="712" cy="263" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="722" cy="292" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="495" cy="97" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<ellipse cx="529" cy="97" rx="11.5" ry="5.5" fill="none" stroke="#3c4b57" stroke-width="1"/>
+<path d="M 360.5 471.5 L 360.5 328 A 151.5 151.5 0 0 1 663.5 328 L 663.5 471.5" fill="#f4f7f9" stroke="#8ca0ab" stroke-width="1.5"/>
+<rect x="360.5" y="176.5" width="303" height="295" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+<text x="368" y="464" font-size="9" fill="#777">dome glass 360,176 304×296 · half circle r152 on 512,328</text>
+<rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
+<text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
+<rect x="328.5" y="464.5" width="367" height="79" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+<text x="332" y="478" font-size="9" fill="#555">base 328,464 368×80 · enamel</text>
+<rect x="448.5" y="488.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<rect x="448.5" y="264.5" width="127" height="159" fill="#ffe2c4" stroke="#c45f12" stroke-width="2"/>
+<text x="452" y="280" font-size="10" fill="#222">BUD 128×160</text>
+<text x="452" y="291" font-size="9" fill="#777">448,264 128×160</text>
+<text x="452" y="303" font-size="9" fill="#777">(focal) early</text>
+<text x="512" y="509" font-size="13" fill="#c6c4d8" text-anchor="middle">growing</text>
+<text x="24" y="104" font-size="10" fill="#2b6cb0">Leaves: one a minute; inner arc</text>
+<text x="24" y="117" font-size="10" fill="#2b6cb0">r216 first (to 20), then outer r248,</text>
+<text x="24" y="130" font-size="10" fill="#2b6cb0">each run centred on the top</text>
+<text x="24" y="143" font-size="10" fill="#2b6cb0">(leafArc, for the architect).</text>
+<text x="24" y="156" font-size="10" fill="#2b6cb0">The current leaf fills from its</text>
+<text x="24" y="169" font-size="10" fill="#2b6cb0">foot, a row every 5 s (props).</text>
+<text x="24" y="182" font-size="10" fill="#2b6cb0"></text>
+<text x="24" y="195" font-size="10" fill="#2b6cb0">No ring: one subject; ✓ acts</text>
+<text x="24" y="208" font-size="10" fill="#2b6cb0">on the room. Pad: nothing.</text>
+<text x="24" y="221" font-size="10" fill="#2b6cb0"></text>
+<text x="24" y="234" font-size="10" fill="#2b6cb0">Tabs clear in ring order as the</text>
+<text x="24" y="247" font-size="10" fill="#2b6cb0">wait passes (k+1)/(u+1); each</text>
+<text x="24" y="260" font-size="10" fill="#2b6cb0">fills its pips in 1000 ms.</text>
+<text x="760" y="512" font-size="9" fill="#5d7a5f">arcs centred on the bud, 512,344</text>
+<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
-<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Incubator</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
+<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
 <rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
 <rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="836.5" y="16.5" width="7" height="7" fill="#9a96ae" stroke="#444" stroke-width="1"/>
+<circle cx="868" cy="20" r="11" fill="#eee" stroke="#9a96ae" stroke-width="2"/>
 <rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888"/><line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888"/>
 <rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="96.5" y="48.5" width="831" height="55" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
-<rect x="96.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="216.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="336.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="456.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="576.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="696.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="816.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<path d="M312.0 320 A200 200 0 0 1 712.0 320" fill="none" stroke="#5a8a3a" stroke-width="1" stroke-dasharray="5 3"/>
-<rect x="360.5" y="176.5" width="303" height="295" fill="#eef1f3" stroke="#556" stroke-width="1"/>
-<rect x="448.5" y="264.5" width="127" height="159" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
-<rect x="408.5" y="400.5" width="207" height="47" fill="#ffffff" stroke="#666" stroke-width="1"/>
-<rect x="328.5" y="464.5" width="367" height="79" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="448.5" y="488.5" width="127" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef7" stroke="#2f5f8f" stroke-width="1.5"/>
-<rect x="824.5" y="424.5" width="151" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="44" y="21" font-size="11" fill="#222">Title 20px (room mark)</text>
-<text x="388" y="21" font-size="11" fill="#222">Energy · Data · Essence 16px</text>
-<text x="820" y="21" font-size="9" fill="#222">Comp. face</text>
-<text x="908" y="21" font-size="11" fill="#222">☀ turn, right</text>
-<text x="20" y="583" font-size="11" fill="#222">✓ verb  price</text>
-<text x="412" y="583" font-size="11" fill="#222">context, centred</text>
-<text x="628" y="583" font-size="11" fill="#222">notice, right to 904</text>
-<text x="932" y="583" font-size="11" fill="#222">← where</text>
-<text x="100" y="61" font-size="11" fill="#222">Coat</text>
-<text x="100" y="73" font-size="9" fill="#777">96,48 112×56</text>
-<text x="220" y="61" font-size="11" fill="#222">Face</text>
-<text x="220" y="73" font-size="9" fill="#777">216,48 112×56</text>
-<text x="340" y="61" font-size="11" fill="#222">Shape</text>
-<text x="340" y="73" font-size="9" fill="#777">336,48 112×56</text>
-<text x="460" y="61" font-size="11" fill="#222">Legs*</text>
-<text x="460" y="73" font-size="9" fill="#777">456,48 112×56</text>
-<text x="580" y="61" font-size="11" fill="#222">Movement</text>
-<text x="580" y="73" font-size="9" fill="#777">576,48 112×56</text>
-<text x="700" y="61" font-size="11" fill="#222">Stamina</text>
-<text x="700" y="73" font-size="9" fill="#777">696,48 112×56</text>
-<text x="820" y="61" font-size="11" fill="#222">Character</text>
-<text x="820" y="73" font-size="9" fill="#777">816,48 112×56</text>
-<text x="304" y="304" font-size="11" fill="#222" text-anchor="end">Leaf arc r200 · ≤26 leaves 24×12</text>
-<text x="304" y="316" font-size="9" fill="#777" text-anchor="end">296,120 432×224</text>
-<text x="452" y="277" font-size="11" fill="#222">BUD 128×160 (focal)</text>
-<text x="452" y="289" font-size="9" fill="#777">448,264 128×160</text>
-<text x="412" y="413" font-size="11" fill="#222">nest 208×48</text>
-<text x="412" y="425" font-size="9" fill="#777">408,400 208×48</text>
-<text x="452" y="501" font-size="11" fill="#222">plaque · growing</text>
-<text x="452" y="513" font-size="9" fill="#777">448,488 128×32</text>
-<text x="844" y="309" font-size="11" fill="#222">STAMP label 120</text>
-<text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
-<text x="828" y="437" font-size="11" fill="#222">code 16px</text>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
+<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="587" font-size="14" fill="#c4500f">Grow now</text>
+<text x="127.2" y="587" font-size="13" fill="#222">❀ 7</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">a Loika bud, growing</text>
+<circle cx="962.4" cy="582" r="8" fill="#5d5974"/>
+<text x="962.4" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
 </svg>

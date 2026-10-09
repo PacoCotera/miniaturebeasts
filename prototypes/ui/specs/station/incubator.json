@@ -1,0 +1,144 @@
+{
+ "screen": "incubator",
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md#incubator-growing-and-ready",
+ "frame": "frame.json",
+ "status": "Proposal (UI designer, 2026-10-09 13:04, America/Mexico_City): the L2.4 spec, one milestone ahead of the build (lvgl-switch.md §3, §4 L2.4). Every drawn region names its word (`component`) or composition (`build`) from the closed vocabulary; the bud's two states, growing and ready (decided 2026-10-08: no prize render state), with the screen's empty state and the hatch; the dome, bud and leaves stepped per minute from props; tabs clearing; stamp and code; Grow now; the hatch event (2.6 s) and the hand-off to Habitat's meet; focus as data; colour roles from the palette. One derived rule, leafArc, is not in the closed list and is listed for the architect (open question 1). The structure goes to the owner's structure check; the details are the UI designer's",
+ "wireframes": ["design/style-guide/station-layouts/04-incubator-growing.png", "design/style-guide/station-layouts/05-incubator-ready.png", "design/style-guide/station-layouts/05b-incubator-hatch.png", "design/style-guide/station-layouts/05c-incubator-empty.png", "design/style-guide/station-layouts/05d-incubator-nav.png"],
+ "note": "The one home of the Incubator numbers, transcribed from station-layouts.md (Incubator: growing and ready) and its wireframes 04-incubator-growing.svg to 05d-incubator-nav.svg. Rectangles are [x, y, w, h] in screen pixels. The bud in its dome is the one warm, living thing; the leaves arc over it and say how much of the wait is left; the rail above clears its surprises; the stamp and its code stand at the right.",
+ "derived": {
+  "no ring": "UI designer, 2026-10-09: no focus ring in any state (was a steady ring round the dome when ready, 324, 172, 376, 376). The screen has one subject and nothing to choose, so ✓ acts on the room, as on Home's room; ready reads from the glow, the full leaves, the plaque and the ✓ cap. A ring round the dome and its base would cross the leaf arcs at x 313 to 345",
+  "leaf arcs": "UI designer, 2026-10-09: two arcs centred on the bud's centre (512, 344), inner radius 216 and outer 248, each at most 20 leaves of 24×12 on an 8° pitch across ±76°; the inner fills first. Was one half circle of radius 200 centred on (512, 320) holding 26, then a second of 176: at 26 leaves of 24 the half circle's pitch was 24.2 px (leaves touching) and the second arc ran into the dome's sides",
+  "leaf fill": "UI designer, 2026-10-09: the current leaf fills from its foot in 12 whole rows, a row every 5 s (a twelfth of the minute), carried in props (leaves.rows), never an event, so a still frame and reduced motion both show the true wait",
+  "glass lift": "UI designer, 2026-10-09: the glass lifts 384 px, out of sight under the rail (clipped to 0, 88, 1024, 474), so it never hangs over the juvenile (was 220 px, which left the glass's foot over the juvenile's head and its top over the top bar)",
+  "juvenile": "UI designer, 2026-10-09: 304×312 at (360, 160), its feet on the base's top at y 472 (was 360, 232: the feet on the base's front edge); the same box as Habitat's resident, so the meet reads as the same creature",
+  "code": "UI designer, 2026-10-09: 184 wide at (808, 424), centred on the stamp's x 900 (was 152 at 824): the widest code is 168 px at 16 px",
+  "bench": "UI designer, 2026-10-09: the frame word's stage with room-bench-stage, as on Pods and Create; open question 4 (architect)",
+  "empty": "UI designer, 2026-10-09: the screen with no bud (Home's Incubator module opens it). Kept as the 10-08 layout had it; a structure question for the owner (open question 9)"
+ },
+ "rules": {
+  "used": ["railCompaction", "slantTabs"],
+  "closedList": "lvgl-switch.md §2.2 layout/: railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups",
+  "needed": [{ "rule": "leafArc", "for": "regions.leaves", "why": "the leaves' places depend on their count (a centred run on a curve); no rule in the closed list does this", "proposal": "regions.leaves.leafArc: index arithmetic over the two slot tables in this file, no trigonometry at run time", "decides": "architect (open question 1)" }]
+ },
+ "states": ["empty", "growing", "ready", "hatch"],
+ "initial": "by the save: no bud, empty; a bud short of its minutes, growing; else ready",
+ "stateRule": "growing and ready are the bud's two states (decided 2026-10-08: the chamber has growing and ready, nothing else). empty: no bud. hatch: from ✓ Open until the screen changes to Habitat (events.hatch), input held. A region with `inStates` exists only in those states",
+ "regions": {
+  "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage" },
+  "rail": {
+   "rect": [96, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail", "layout": ["railCompaction", "slantTabs"], "inStates": ["growing", "ready", "hatch"], "focusable": false, "glint": false, "open": null,
+   "tabs": { "read": "known: read before Grow, or cleared while growing", "unread": "still a surprise (a sealed chapter shows as unread here and clears like the rest)" },
+   "pips": { "read": "filled", "unread": "hollow" },
+   "clearing": "the bud's unread chapters clear in ring order, one at a time, chapter k of u when the wait passes (k + 1) / (u + 1) (state.budChapterKnown); each clears by events.wipe"
+  },
+  "leaves": {
+   "rect": [256, 88, 512, 216], "build": "leaves", "form": "arc", "inStates": ["growing", "ready"], "leaf": [24, 12], "max": 40,
+   "states": { "empty": "a 1 px outline", "filling": "the current leaf: its lowest `rows` rows filled, of 12", "full": "filled, with its vein" },
+   "props": "leaves: { total, full, rows }: total the bud's minutes, full the whole minutes passed, rows 0 to 11 of the current leaf, stepped every 5 s by the view; ready: full = total",
+   "leafArc": {
+    "centre": [512, 344], "arcs": { "inner": 216, "outer": 248 }, "span": [-76, 76], "pitch": 8, "half": 4, "perArc": 20, "fill": ["inner", "outer"],
+    "rule": "inner holds a = min(n, 20) leaves, outer b = n − a. On an arc holding k leaves, leaf j (0 to k − 1, left to right) takes slot 19 − (k − 1) + 2j of that arc's table, so every run is centred on the top. Fill order: the inner arc left to right, then the outer. More than 40 comes back to the UI designer",
+    "slots": "the 39 half-pitch places of each arc, the leaf box's top left, from −76° to +76° in 4° steps: round(512 + r sin a) − 12, round(344 − r cos a) − 6 for the angle a",
+    "inner": [[290,286],[295,271],[300,257],[306,243],[313,230],[321,217],[330,205],[339,193],[350,183],[361,173],[373,163],[386,155],[399,147],[412,141],[426,135],[440,130],[455,127],[470,124],[485,123],[500,122],[515,123],[530,124],[545,127],[560,130],[574,135],[588,141],[601,147],[614,155],[627,163],[639,173],[650,183],[661,193],[670,205],[679,217],[687,230],[694,243],[700,257],[705,271],[710,286]],
+    "outer": [[259,278],[264,261],[270,245],[277,229],[285,214],[294,199],[305,185],[316,172],[328,160],[341,148],[354,137],[369,128],[384,119],[399,111],[415,105],[432,100],[448,95],[465,92],[483,91],[500,90],[517,91],[535,92],[552,95],[568,100],[585,105],[601,111],[616,119],[631,128],[646,137],[659,148],[672,160],[684,172],[695,185],[706,199],[715,214],[723,229],[730,245],[736,261],[741,278]]
+   },
+   "clearance": "measured on the tables: every slot lies 10 px or more below the rail (the outer arc's top leaf at y 90) and 38 px or more outside the dome's glass (its top a half circle of radius 152 on 512, 328); neighbours' boxes are 6 px apart at the top and 2 px apart on the inner arc between 30° and 45° (open question 11)"
+  },
+  "dome": { "rect": [360, 176, 304, 296], "component": "livingWindow", "part": "inside", "shape": "a bell jar: a half circle of radius 152 on (512, 328) over a body 304 wide to y 472; no ink outside it", "note": "the glass's back; no words" },
+  "nest": { "rect": [408, 400, 208, 48], "component": "livingWindow", "part": "inside", "asset": "nest-208x48" },
+  "bud": {
+   "rect": [448, 264, 128, 160], "component": "specimen", "focal": true, "inStates": ["growing", "ready", "hatch"], "centre": [512, 344],
+   "pictures": { "early": "bud-early-128x160 (the wait's first half)", "late": "bud-late-128x160 (the second half: its glow drifting toward the species' hue)", "ready": "bud-ready-128x160" },
+   "shape": { "rect": [456, 288, 112, 112], "inStates": ["ready"], "asset": "bud-shape-{species}-112x112", "note": "the species' shape glowing inside the ready bud; never an embryo, never the individual's render" },
+   "crack": { "assets": ["bud-crack-1-128x160", "bud-crack-2-128x160"], "inStates": ["hatch"] }
+  },
+  "domeFront": { "rect": [360, 176, 304, 296], "component": "livingWindow", "part": "frame", "states": { "growing": "the glass edge and highlight", "ready": "the glass glowing: its edge lit", "empty": "as growing" }, "note": "drawn over the nest and the bud" },
+  "base": { "rect": [328, 464, 368, 80], "component": "livingWindow", "part": "frame", "plate": [448, 488, 128, 32], "lamp": { "rect": [664, 498, 12, 12], "when": "ready and hatch, while the new mibi's painting has not landed (props.painting: waiting or offline)", "note": "the waiting lamp, cool, never a word on the stage" }, "note": "machined enamel, not wood; the glass stands in it" },
+  "plaque": { "rect": [448, 488, 128, 32], "component": "text", "px": 16, "weight": 400, "align": "centre", "centre": 512, "lineTop": 494, "words": 1, "noDigits": true, "text": { "empty": "strings.plaque.empty", "growing": "strings.plaque.growing", "ready": "strings.plaque.ready", "hatch": "" } },
+  "stamp": { "rect": [840, 296, 120, 120], "component": "stampLabel", "inStates": ["growing", "ready", "hatch"], "live": "the founder's stamp, its chapters filling as they clear", "fromDome": 176 },
+  "code": { "rect": [808, 424, 184, 24], "component": "text", "inStates": ["growing", "ready", "hatch"], "px": 16, "weight": 400, "align": "centre", "centre": 900, "lineTop": 426, "text": "the bud's code (genome.codeText), live text, shareable" },
+  "ribbon": { "rect": [312, 104, 400, 40], "component": "ribbon", "inStates": ["hatch"], "px": 20, "align": "centre", "lines": 1, "words": "strings.hatchRibbon" },
+  "juvenile": { "rect": [360, 160, 304, 312], "component": "specimen", "inStates": ["hatch"], "axis": 512, "feet": 472, "asset": "the new mibi in its standard painting if it has landed, else its placeholder (the stylised rig pass)", "lift": 4 }
+ },
+ "drawOrder": ["bench", "rail", "leaves", "dome", "nest", "bud", "domeFront", "base", "plaque", "base lamp", "juvenile", "stamp", "code", "ribbon", "frame (top bar, bottom line)", "message plate"],
+ "events": {
+  "wipe": { "kind": "wipe", "target": "rail.<i>", "hold": false, "ms": 1000, "do": "the tab turns from unread to read: its word and emblem at once, its pips filling left to right over 1000 ms (the rail word's wipe, as on Pods, with no page); the stamp redraws with the chapter at the end" },
+  "growNow": { "kind": "growNow", "target": "room", "hold": true, "holdMs": 400, "do": "the leaves still to fill fill one whole leaf a step, left to right, inner then outer, over 400 ms; then every tab still unread turns read (a cut), the stamp redraws, and the state is ready" },
+  "hatch": {
+   "kind": "hatch", "target": "room", "hold": true, "holdMs": 2780, "ms": 2600,
+   "steps": [
+    { "at": 0, "do": "the leaves and the plaque's word go (a cut)" },
+    { "at": 0, "ms": 600, "do": "the glass (dome and domeFront) lifts 384 px, eased, whole pixels, clipped to (0, 88, 1024, 474): out of sight under the rail" },
+    { "at": 600, "do": "the bud cracks (bud-crack-1)" },
+    { "at": 800, "do": "the crack opens (bud-crack-2)" },
+    { "at": 1000, "do": "the bud goes; the juvenile stands in its box on the base (a cut), in its painting or its placeholder" },
+    { "at": 1200, "do": "the ribbon shows the new mibi's words" },
+    { "at": 1400, "ms": 200, "do": "the juvenile steps out: the creature lift, 4 px up and down" },
+    { "at": 1800, "ms": 200, "do": "a second step" },
+    { "at": 2600, "ms": 180, "do": "the screen transition (16-level Bayer dither) to Habitat, the meet (handoff)" }
+   ]
+  }
+ },
+ "handoff": {
+  "to": "habitat", "state": "meet", "mibi": "the new mibi (the juvenile)", "focus": "the resident", "back": "Home", "transition": { "kind": "dither", "ms": 180, "levels": 16 },
+  "note": "Habitat's meet is L2.5's spec (station-layouts.md, Habitat: the meet ribbon at 168, 72, 304, 40, the first meeting only). The juvenile's 304×312 box here is the resident's box there. After the jump, ← on Habitat reads Home (frame.json navigation.jumps, stack navigation); the Incubator is then empty"
+ },
+ "focus": {
+  "initial": "room",
+  "roomKey": "room",
+  "roomAt": [496, 328, 32, 32],
+  "room": "the ring on nothing, in every state: no ring is drawn; ✓ does the bottom line's action (Grow now while growing, Open when ready, nothing when empty)",
+  "fallback": "none",
+  "graph": { "room": { "up": "none", "down": "none", "left": "none", "right": "none" } },
+  "targets": {},
+  "held": "while events.growNow or events.hatch holds, the face moves no focus and sends no intent",
+  "vectors": [
+   { "from": "room", "key": "up", "to": "room" },
+   { "from": "room", "key": "right", "to": "room" },
+   { "from": "room", "key": "confirm", "intent": "confirm", "target": "room" }
+  ]
+ },
+ "keys": {
+  "pad": "nothing: the screen has one subject",
+  "confirm": "growing: Grow now (state.instantGrow), a dimmed cap when short; ready: Open (state.openBud), a dimmed cap when no bay is free (✓ shows a message plate, nothing happens); empty: no ✓ cap",
+  "back": "Home, the ring on Home's Incubator module (home.json, ← on a child of Home)",
+  "room": "as everywhere (frame.json navigation.roomKeys)"
+ },
+ "bottomLine": {
+  "growing": { "action": "✓ Grow now, then the price (state.instantGrowCost: Essence, 1 for every 2 minutes left, rounded up)", "context": "strings.growing", "notice": "the frame's notice", "back": "Home" },
+  "ready": { "action": "✓ Open, no price", "context": "strings.ready", "notice": "no bay free (strings.noBay, the amber lamp), else the frame's notice", "back": "Home" },
+  "hatch": { "action": "none (input held)", "context": "strings.painting while the painting is on its way, strings.offline while offline, else none", "back": "Home" },
+  "empty": { "action": "no ✓ cap", "context": "strings.empty", "back": "Home" }
+ },
+ "colours": {
+  "dome": { "back": "ground", "glassEdge": "frostD", "glassLight": "frost", "readyEdge": "frost", "readyLight": "white" },
+  "nest": { "fill": "sand", "shade": "clay", "twig": "bark" },
+  "bud": { "bean": "peach", "light": "cream", "edge": "rust", "late": "blush", "shape": "amber" },
+  "base": { "fill": "enamel", "light": "frost", "shade": "bevel", "edge": "hairline", "plate": "panel", "plateEdge": "hairline" },
+  "plaque": { "growing": "fog", "ready": "bone", "empty": "mist" },
+  "leaves": { "full": "sage", "vein": "sageD", "empty": "hairline" },
+  "waitingLamp": { "fill": "sky", "rim": "void" },
+  "stampLabel": { "fill": "bone", "edge": "slate" },
+  "code": "bone",
+  "ribbon": { "fill": "tealD", "edge": "aqua", "text": "bone" }
+ },
+ "strings": {
+  "title": "Incubator",
+  "grow": "Grow now",
+  "open": "Open",
+  "back": "Home",
+  "plaque": { "empty": "empty", "growing": "growing", "ready": "ready" },
+  "growing": "a {species} bud, growing",
+  "ready": "the {species} bud is ready",
+  "crossGrowing": "{a} and {b}'s bud, growing",
+  "empty": "the incubator is empty",
+  "noBay": "no bay free",
+  "noBayPlate": "No bay free. Return a mibi first.",
+  "painting": "its painting is on its way",
+  "offline": "waiting for the cloud",
+  "hatchRibbon": "{name}, a young {species}",
+  "hatchRibbonExamples": ["Fig, a young Loika"],
+  "by": "slots and today's words; the copywriter's to confirm (open question 8)"
+ }
+}

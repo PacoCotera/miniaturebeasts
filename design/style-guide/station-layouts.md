@@ -143,7 +143,7 @@ The rail is the same object on all three bench screens. It hangs from the top ba
   - **Seven to twelve chapters:** compact tabs on a 56 px pitch, with the open chapter's tab full (136), so the tabs after it sit 80 px further on. The run is 56 (n − 1) + 152: 488 for seven, 544 for eight, 768 for twelve. The open chapter's word shows on its tab and on the page heading; the other tabs show their emblem and pips. Seven and eight chapters (S03, S07, S09, S15 and S16 today) are compact because a full tab with its emblem and the longest word needs about 130 px, and seven of them do not fit 832. The open chapter is the focused tab while the ring is on the rail, and otherwise the chapter on the page.
   - **More than twelve** comes back to the UI designer.
 - **Where the run sits.** On every bench screen (Pods' overview and chapter page, Create, Incubator) the run is centred on x 512, at x = 512 − run / 2 rounded down to the 8 px grid (96 for six chapters, 264 for seven, 240 for eight). Pods' collection shows no rail. (*corrected by the UI designer, 2026-10-09, with Pods in three states: was "on Pods it starts at x 152, on the page's left edge"; before that x 176, to the right of the list. Moving from Pods to Create the rail no longer slides.*)
-- **What Create and Incubator inherit:** all of the above (the hanging at y 40, the 40 px height, the 16 px slant, the touching tabs, the two forms and their widths, the count rule, the 8 px pip pitch, the slanted focus ring and no lift), centred as stated. Their own pip marks (changed, clash, the focused trait) sit on the 8 px pitch. Their regions below the rail start at y 104 or lower and do not move.
+- **What Create and Incubator inherit:** all of the above (the hanging at y 40, the 40 px height, the 16 px slant, the touching tabs, the two forms and their widths, the count rule, the 8 px pip pitch), centred as stated. On both the rail is not a focus target and shows no glint, so nothing hangs under it: their regions below the rail start at y 88, 8 px under it, and do not move (*L2.4, UI designer, 2026-10-09*: was y 104 or lower, with the slanted focus ring). Create's own pip marks (changed, clash, the focused trait) sit on the 8 px pitch.
 - **Cross inherits it too** (*set by the UI designer, 2026-10-09, with the splice*). On the chapter view, centred as stated: a tab is read when both parents have read the chapter, and unread when either has not. Its pips are filled where the trait's forecast is drawn and hollow where it is missing. Its glint slot carries `cross-wish-lit-12x12` on a chapter holding a pinned trait a child can reach ([Cross: the splice](#cross-the-splice)).
 - **Never** a second row, a scroll, a "more" arrow or a clipped word.
 - **One word per tab,** with one decided exception: the "Legs & Tail" tab shows "Legs & Tail" (owner, 2026-10-08; every word capitalised, Type; *corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was "Legs & tail"); at 16 px Inter (78 px) it fits the 136 px full tab (was the 112 px tab).
@@ -166,8 +166,8 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 | Other mark | How it is drawn |
 | --- | --- |
 | Glint | A four-point star, 12×12, hanging 2 px under the tab's bottom edge, centred on it: (tab.x + 16 + w / 2 − 6, 82) (*corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*: was at the tab's top right (tab.x + 92, tab.y + 4); inside a 40 px tab the star met the word or the emblem) |
-| Cleared while growing (Incubator) | Unread turns to read one tab at a time, the pips filling left to right across the bud's minutes |
-| Trait states on Create | Filled pip: read. Amber dot in the pip: changed. ✕ in place of the pip: clashes. A ring in the `focus` role round the pip: the focused trait |
+| Cleared while growing (Incubator) | Unread turns to read one tab at a time, in ring order, as the wait passes (k + 1) / (u + 1); its pips fill left to right over 1000 ms (the rail word's wipe, as on Pods, with no page) |
+| Trait states on Create | Filled pip: read. Filled `amber`: changed. A 6×6 `red` ✕ in place of the pip: clashes. The focused trait's pip lifted 2 px, y 69 to 75: the focused thing lifts, as everywhere (*L2.4, UI designer, 2026-10-09*: was an amber dot in the pip, and a ring in the `focus` role round the focused pip, a second ring) |
 
 ### States shared by every screen
 
@@ -180,7 +180,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
   - A focus with nothing to confirm still draws the ring. The bottom line then has no ✓ cap.
 - **Dimmed ✓.** When the player cannot pay, the ✓ cap and verb show in mist, and the price names what is short. The press is refused with a message plate. Nothing is spent.
 - **Glint.** The same four-point star, 12×12, everywhere: on the list ring's arc, on the rail tab and above the Home rack's well. It twinkles at 2 Hz, but a still frame still shows the star.
-- **Clash** (Create): a 2 px red ring around the clashing roll picture and a 12×12 ✕ at its top right; the trait's pip becomes a ✕; the trait line turns red and says "Clash". The ✓ cap is withheld.
+- **Clash** (Create): a 2 px `red` edge on the clashing roll picture's own rectangle, never a second ring; the trait line turns `red`, starts with the inline ✕ and says "Clash"; the trait's pip becomes a ✕. The ✓ cap is withheld and the notice says why (*L2.4, UI designer, 2026-10-09, after the owner's 2026-10-08 rule that marks leave the picture*: was a 2 px red ring round the picture and a 12×12 ✕ at its top right).
 - **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
 - **No words in a living window.** The vivarium, the Habitat window, the specimen chamber and the dome carry no text. Two exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting), and on Home the focused resident's name tag, under the creature, only while it is focused (the owner's decision of 2026-10-07, in force: the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
 
@@ -198,6 +198,9 @@ The LVGL face draws every screen from one closed set of words, one C module a wo
 - **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's four modules are the only modules.
 - **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the Habitat window, the specimen chamber and the dome.
 - **Compositions, not words:** the **rest knob** (a chrome sprite on the living window's frame, with its focus target), the **with-you bed** (sprites inside the living window: the bed, then the sleeping mibi or the Companion mark) and the **report card** (a panel holding rows of type and 16 px icons). Each is used on Home alone, so none earns a word. If a second screen needs one, it comes back to the UI designer.
+- **Compositions of L2.4** (*UI designer, 2026-10-09, Proposal*): the **roll** (Create: the focused trait's pictures, one or three, with the ▲ ▼ notches; its chosen picture is the screen's one focus target), the **trait line** (Create: the text word, with a changed tag built as Home's name tag is) and the **leaves** (the bud's timer, one leaf a minute: on Create a grid by pitch, on the Incubator two arcs by `leafArc`). The leaves are also drawn inside Home's Incubator module, so with Create and the Incubator they have three users: the architect decides whether they become a word (open question 5 of [Create and the Incubator](#open-questions-for-l24)).
+
+**The derived rules (closed).** Where a spec names a rule instead of a rectangle, the face calls the C function of that name, and `ui/specs/derive.mjs` holds the same rule as the oracle ([lvgl-switch.md §2.2 and §2.3](../proposals/lvgl-switch.md)): `railCompaction`, `slantTabs`, `pageGrid`, `platePosition`, `listPitch`, `splicePlan`, `guideColumns`, `pipGroups`. A rule not in this list is refused when the spec loads; a screen that needs one lists it for the architect, never improvises it (transcribed from lvgl-switch.md §2.2 by the UI designer, 2026-10-09). Proposed and not yet in the list: `leafArc` (the Incubator, open question 1).
 
 ### The two levels: species and mibi
 
@@ -940,52 +943,64 @@ None open. Answered on 2026-10-09 and written into the sections above:
 
 ## Create
 
-Concept plate: `art/concept-station/create/placed/CR-C2-stamped-1024x600.png`. Wireframe: [03-create.svg](station-layouts/03-create.svg).
+Concept plate: `art/concept-station/create/placed/CR-C2-stamped-1024x600.png`. Wireframes, 1×: [03-create](station-layouts/03-create.svg), [03b-create-clash](station-layouts/03b-create-clash.svg), [03c-create-grow](station-layouts/03c-create-grow.svg), [03d-create-nav](station-layouts/03d-create-nav.svg), each with its PNG.
 
-<img src="station-layouts/03-create.svg" width="720" alt="Create wireframe">
+**L2.4 spec** (UI designer, 2026-10-09 13:04, America/Mexico_City). **Proposal**, one milestone ahead of the build ([lvgl-switch.md](../proposals/lvgl-switch.md) §3, §4 L2.4). Every drawn region names its word or composition; Create's two states (shape, grow); the roll among three pictures as a ▲ ▼ stepper; changed tags, clash marks and the total on the bottom line; Create's focus as data; the roll and grow events. The numbers live in `prototypes/ui/specs/station/create.json`. The structure (the states and the navigation) goes to the owner's structure check; sizes, keys, timings and words are settled by their disciplines ([open questions](#open-questions-for-l24)).
 
-*Create. Wireframe, layout only, measured.*
+<img src="station-layouts/03-create.png" width="1024" alt="Create, shaping, a changed trait">
+
+*03. Create, shaping: Loika with Coat and Face read, Markings changed to "only pale", the ring on the chosen picture, the total on the bottom line. 1×, measured. Status: Proposal.*
+
+<img src="station-layouts/03b-create-clash.png" width="1024" alt="Create, a clash">
+
+*03b. Create, a clash: the red edge on the chosen picture, the ✕ in the line and on the pip, no ✓ cap, the notice says why. 1×, measured. Status: Proposal.*
+
+<img src="station-layouts/03c-create-grow.png" width="1024" alt="Create, the grow event">
+
+*03c. Create, the grow event at 600 ms: the stamp printed, the code on the rule, the pod travelling behind the chamber into the dome; input held 1080 ms. 1×, measured. Status: Proposal.*
+
+<img src="station-layouts/03d-create-nav.png" width="1024" alt="Create's navigation map">
+
+*03d. Create: how it opens, what each key does, where ✓ and ← lead. 1×. Status: Proposal.*
 
 ### 1. Purpose
 
-Create is where the player shapes a founder from a read pod and sees what it will cost. The player leaves either having grown it (paid, the stamp pressed, the bud in the chamber) or knowing exactly what they would get: which looks they changed, which chapters stay a surprise, and the price.
+Create is where the player shapes a founder from a read pod and sees what it will cost. The player leaves either having grown it (paid, the stamp pressed, the pod gone into the incubator) or knowing exactly what they would get: which looks they changed, which chapters stay a surprise, and the price.
 
 ### 2. Elements
 
 | Element | Why it is here |
 | --- | --- |
-| **The founder** in the specimen chamber, 304×312, misty where unread | The subject: what will grow |
-| **The three roll pictures** for the focused trait (as the pod is, and each single copy), the chosen one ringed, with ▲▼ notches and a "changed" tag | The choice itself, as close-ups of the part, never whole founders |
-| **The trait line** (16 px), with "Clash" when it clashes | One line naming the chosen look |
+| **The founder** in the specimen chamber, 304×312, frosted where unread | The subject: what will grow |
+| **The roll** of the focused trait: its looks as close-ups of the part (as the pod is, only the hidden look, only the shown look), the chosen one ringed, with ▲ ▼ notches | The choice itself, never whole founders |
+| **The trait line** (16 px): the trait and its chosen look; a "changed" tag, or "Clash" | One line naming the choice |
 | **The chapter rail** with trait pips | Where the focused trait sits; what is read, changed, clashing or still a surprise, with no digits |
-| **The opened pod** with its origin | Where the founder comes from |
-| **The empty chamber** with the leaves it will take, drawn as hairlines | Where it goes, and how long it will grow, as a picture |
+| **The pod** on its dish, with its origin | Where the founder comes from |
+| **The incubation dome** with the leaves the bud will take, drawn as hairlines | Where it goes, and how long it will grow, as a picture |
 | **Stamp label** (120) and a **blank code rule** | The stamp fills with the changes; the code prints on the rule at Grow |
-| **Bottom line** | `✓ Grow it · price · ← Loika`; the subject; what stays a surprise |
+| **Bottom line** | `✓ Grow it` and the total; what stays a surprise; what blocks Grow; `← Loika` |
 
 **Cut:**
 
 - "◀ ▶ 3 of 3 read traits" and "changed: eye-rings": the pips show both.
-- "the code appears at Grow": the blank rule shows it.
-- "grows in 21 leaves": the hairline leaves show it.
-- "from the pod": the opened pod shows it.
-- The plate's "founder", "chamber" and "identified" label plates.
+- "the code appears at Grow": the blank rule shows it. "grows in 21 leaves": the hairline leaves show it. "from the pod": the pod shows it.
+- The plate's "founder", "chamber" and "identified" label plates, and the build's "busy" and "empty" under the dome.
 - The 185 px stamp becomes the 120 label.
+- The build's clash plate on the founder ("this shape won't grow"): no words in a living window; the line, the pip and the notice say it.
+- (*L2.4*) The "nothing read" state: Pods opens Create only once a chapter is read (✓ on an identified pod with nothing read opens its first chapter), so it cannot show ([open question 7](#open-questions-for-l24)).
 
 ### 3. Placement
 
 **Reading order:**
 
 1. **The founder**, centred and lowest-set, the one warm thing in its glass chamber.
-2. **The roll pictures** directly above it, with the chosen one ringed.
+2. **The roll** directly above it, the chosen picture ringed, and the trait line under it.
 3. **The rail**: where this trait sits and what else is changed.
-4. **The pod at the left and the chamber at the right**, balancing the founder.
-5. **The stamp label**, low right.
+4. **The pod at the left and the dome at the right**, balancing the founder.
+5. **The stamp label**, low right, with the code rule under it.
 6. **The bottom line** for the total.
 
-**At the edges:** pod (left), chamber and stamp (right), rail (top).
-
-The left and right columns are centred on x 160 and x 864, the same 352 px either side of the founder's axis.
+**At the edges:** pod (left), dome, leaves and stamp (right), rail (top). The left and right columns are centred on x 160 and x 864, the same 352 px either side of the founder's axis.
 
 ### 4. Art direction
 
@@ -993,78 +1008,156 @@ The left and right columns are centred on x 160 and x 864, the same 352 px eithe
 - **The founder is warm**, with its own colours and a warm key light from the top left. Where a chapter is unread, it is frosted in cool pale blue-white, never a guess.
 - **Everything else is cool:** the glass, the slate and the empty dome.
 - **The founder is the placeholder** (decided for Create, since nothing is painted before Grow), and the roll pictures are placeholder close-ups of the part.
-- **Clash marks** are red with a ✕, so they read without colour.
+- **Clash marks** are red with a ✕, so they read without colour. **No mark on a picture** (owner, 2026-10-08 21:55: the marks leave the picture): the changed tag and the ✕ sit in the trait line, and a clash is an edge on the picture's own rectangle.
+
+**Colour roles** (UI designer, 2026-10-09; palette names from [ui-kit §2](../proposals/ui-kit.md#2-the-kit), the one home is `create.json` `colours`):
+
+| Region | Roles | Why |
+| --- | --- | --- |
+| Rail | The frame's rail states; a changed pip `amber`, a clash ✕ `red` | The kit's states; amber is the changed mark decided for the rail |
+| Roll | Picture ground `ground`; notches `bone`; a clash's 2 px edge `red`; the ring `focus` | As the chapter page's cells; the ring is the focus's alone |
+| Trait line | Line `bone`; a clash `red`; the tag `panel` with a `hairline` edge and its word `amber` | A readout; the tag is the kit's small plate, as Home's name tag |
+| Specimen chamber | Back `ground`, glass edge `frostD`, highlight `frost`, floor `enamel` with a `bevel` edge | Cool glass around the one warm thing |
+| Founder | Its own colours; unread parts `frostS` with a `frostD` texture | As Pods' unread frost |
+| Origin | `mist` | Context, quiet |
+| Dome | Back `ground`, base `enamel`, glass edge `frostD`, highlight `frost`; a busy bud `peach` lit `cream`, edge `rust` | The Incubator's dome, small and empty |
+| Leaves | Empty, a 1 px `hairline` outline | The leaf timer's empty role, as on Home |
+| Stamp label, code | `bone` label with a `slate` edge; the code `bone` on a `hairline` rule | The stamp label rule; a readout |
 
 ### 5. Composition
 
-The rail is centred across the top. The three roll pictures sit in a row under it. The founder fills a glass chamber in the lower centre. The opened pod stands to the left and the empty dome to the right, with the stamp label under the dome.
+The rail is centred across the top. The roll sits under it, the trait line under the roll. The founder fills a glass chamber in the lower centre. The pod stands on its dish to the left and the empty dome to the right, its leaves and the stamp label under it.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| Rail | 96, 40, 832, 40 | Hanging from the top bar by the rail's rule, its run centred on x 512 (x 96 for six chapters), with trait pips (*corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*: was 96, 48, 832, 56, tabs at x 96 + 120i) |
-| Roll picture 1 (as the pod is) | 304, 112, 128, 88 | Close-up of the part, rendered at size |
-| Roll picture 2 | 448, 112, 128, 88 | |
-| Roll picture 3 | 592, 112, 128, 88 | |
-| ▲ and ▼ notches | 12×6, centred over and under the chosen picture, at y 104 and 202 | |
-| "changed" tag | 72×20 at the chosen picture's bottom left (x + 4, 176) | One word, 16 px |
-| Trait line | 304, 208, 416, 20 | 16 px, centred on x 512 |
-| Specimen chamber | 344, 232, 336, 320 | Glass, cool |
+| Rail | 96, 40, 832, 40 | Hanging from the top bar, its run centred on x 512 (232 for Loika's four chapters); not a focus target; no glint |
+| Roll | 296, 88, 432, 104 | Three pictures of 128×72 at (304, 104), (448, 104), (592, 104), 16 px apart; one picture at (448, 104) when the trait does not roll (*L2.4*: was 128×88 at y 112) |
+| ▲ and ▼ notches | 12×6 at (chosen.x + 58, 90) and (chosen.x + 58, 184) | 4 px outside the ring, only when the trait rolls (*L2.4*: were at y 104 and 202, inside the ring) |
+| Ring | 4 px outside the chosen picture: (x − 4, 100, 136, 80) | The screen's one focus ring |
+| Trait line | 296, 200, 432, 24 | 16 px, its line box 202 to 222, centred on x 512; with the changed tag, 24 tall and 88 wide, 8 px before the words, the group centred (*L2.4*: was 304, 208, 416, 20, with the tag on the picture) |
+| Specimen chamber | 344, 232, 336, 320 | Glass; floor 344, 536, 336, 16 |
 | **Founder (focal)** | 360, 240, 304, 312 | At least 300×310, feet at y 536 |
-| Opened pod | 96, 264, 128, 160 | Rendered at size |
-| Pod cradle | 72, 408, 176, 32 | |
-| Origin | 40, 448, 240, 40 | 16 px, at most two lines, centred on x 160 |
-| Empty dome | 776, 120, 176, 208 | While a bud grows, its glow shows here and Grow is refused |
-| Leaves to grow | 768, 336, 192, 40 | Hairline leaves 8×12 on a 12 px pitch, two rows of 16: one per minute it will take |
-| **Stamp label** | 804, 400, 120, 120 | 140 px from the founder's box |
-| Code rule | 788, 528, 152, 20 | A 1 px blank rule; at Grow the code prints here in 16 px |
+| Pod | 88, 232, 144, 176 | The pod by its species' size class, bottom-centred on (160, 408), as on Pods (*L2.4*: was a 128×160 box at 96, 264) |
+| Dish | 48, 344, 224, 96 | The signed `room-cradle`, and `room-cradle-front` over the pod's foot, as on Pods' overview (*L2.4*: was a 176×32 cradle at 72, 408) |
+| Origin | 40, 456, 240, 40 | 16 px `mist`, at most two lines, centred on x 160 |
+| Dome | 776, 120, 176, 208 | The incubation chamber, empty; its floor at y 296. While a bud grows its glow shows here (a 64×80 bud at 832, 216) and Grow is refused |
+| Leaves to grow | 768, 336, 192, 48 | Hairline leaves 8×12 on a 12 px pitch, rows of 16 on a 16 px row pitch, up to three rows (48): one per minute it will take, changing as the rolls change (*L2.4*: was two rows, 32; a bud takes up to 38 minutes today) |
+| **Stamp label** | 804, 400, 120, 120 | 140 px from the founder's box; x 804 centres it on the column's axis, 4 px off the grid, as Home's juvenile and the medium pod are |
+| Code rule | 776, 528, 176, 24 | A 1 px `hairline` rule at y 549; at Grow the code prints on it in 16 px, centred on x 864 (*L2.4*: was 152 wide; the widest code is 168 px) |
+| Travel (grow only) | 88, 120, 848, 288 | The pod's path from its box to (792, 120), feet (864, 296), behind the chamber and the roll |
 
-**States.**
+**Regions and their words** (*L2.4, UI designer, 2026-10-09, Proposal*). Every drawn region names its word from the closed vocabulary (`component`) or its composition (`build`), so the face's spec loader can refuse anything else ([lvgl-switch.md](../proposals/lvgl-switch.md) §2.3, lint). States: **shape** (at rest and while rolling) and **grow** (from `✓ Grow it` until the screen changes, input held).
 
-- **Nothing read:** the founder fully frosted and no roll row. The trait line says "Read a chapter first"; there is no ✓ cap.
-- **Changed:** the tag and an amber pip.
-- **Clash:** the ✕ marks; the ✓ cap is withheld; what needs you says "these looks clash".
-- **Grow:** the stamp prints in 300 ms, the code appears on the rule, and the pod glides into the chamber in 600 ms. Then the screen changes to the Incubator.
+| Region (`create.json`) | Rectangle | Word or build | Only in | States it shows |
+| --- | --- | --- | --- | --- |
+| `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage`) | | — |
+| `rail` | 96, 40, 832, 40 | chapter rail (rules `railCompaction`, `slantTabs`) | | open tab: the focused trait's chapter; pips read, unread, changed, clash, focused (lifted 2 px) |
+| `roll` | 296, 88, 432, 104 | build `roll` | | roll (three pictures, notches) or single (one picture, no notches); chosen 0, 1 or 2; clash edge |
+| `traitLine` | 296, 200, 432, 24 | text, build `traitLine` (its tag a panel) | | plain; changed (the tag); clash (red, the inline ✕); doing (the breed mark); one look |
+| `chamber` | 344, 232, 336, 320 | living window, part inside | | — |
+| `founder` | 360, 240, 304, 312 | specimen (focal) | | frosted where unread; the roll's change |
+| `chamberFront` | 344, 232, 336, 320 | living window, part frame | | — |
+| `pod` | 88, 232, 144, 176 | specimen | | at rest; grow: travelling, then gone |
+| `cradle`, `cradleFront` | 48, 344, 224, 96 | specimen, parts cradle and cradleFront | | — |
+| `origin` | 40, 456, 240, 40 | text | | — |
+| `dome`, `domeFront` | 776, 120, 176, 208 | living window, parts inside and frame | | empty; busy (the bud) |
+| `bud` | 832, 216, 64, 80 | specimen | | only while another bud grows |
+| `leaves` | 768, 336, 192, 48 | build `leaves` (form empty, a pitch table) | | the count of minutes |
+| `stamp` | 804, 400, 120, 120 | stamp label | | live: the read and changed chapters; grow: printing |
+| `code` | 776, 528, 176, 24 | text, with its rule | | blank; grow: the code |
+| `travel` | 88, 120, 848, 288 | specimen, part travel | grow | the pod's path |
+
+The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. **Draw order:** bench, rail, dish, dome, its bud, pod, the dish's front, origin, chamber, founder, the chamber's front, roll, trait line, the dome's front, leaves, stamp, code, ring, frame, message plate. So the travelling pod passes behind the chamber and the roll and ends inside the dome, with no change of order during the event.
+
+**Clearance** (as on Home: 8 px from a word's baseline to an object's first ink): the trait line's baseline at y 218, the chamber's first ink at 232 (14 px); the tab words' baselines at about y 62, the notch at 90; the code's baseline at 546, on its rule at 549 by design. Nothing in the roll touches the ring: the notches sit 4 px outside it, the neighbours 8 px.
+
+**States and conditions** (`create.json` `states`, `bottomLine.conditions`):
+
+- **Shape, as the pod is:** no tag, every pip filled or hollow, the total `✓ Grow it · 2 ⚡ 4 ❀` (no Essence for the first founder).
+- **Changed:** the tag in the line, the pip `amber`, the founder's part and the stamp's cells redrawn, the price +1 ◆ a change, the leaves +1 a change.
+- **Clash:** the chosen picture's red edge, the line red with the ✕, the pip a ✕; no ✓ cap, the verb and the total in `mist` so the total still reads; the notice "these looks clash" with its amber lamp.
+- **Busy or no bay:** as a clash without the marks: no ✓ cap; the notice "the incubator is busy" or "no bay free"; while busy the bud glows in the dome.
+- **Short:** the frame's dimmed ✓; the short material's figure `amber`; ✓ shows a message plate naming what is short.
+- **Grow:** the event below, then the Incubator, growing.
 
 ### 6. Interactions
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| ◀ ▶ | Walk the read traits in ring order, skipping unread chapters; the focused trait's tab wears the slanted ring (no lift; *corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*: was "lifts") and its pip is ringed; the roll row and trait line change |
-| ▲ ▼ | Roll the focused trait among its three pictures; the founder's part and the stamp's cells redraw in 200 ms; the price updates (+1 ◆ a change) |
-| ▲ ▼ on a doing | No roll; the picture wears the two joined rings and the line says "breed to change" |
-| ▲ ▼ where the pod carries one look | No roll; the line says "one look here"; a message plate on press |
-| ✓ | `✓ Grow it · 2 ⚡ 4 ❀ 1 ◆ · ← Loika`, checked whole and then paid. Refused before paying when the incubator is busy, a bay is not free, or the shape clashes (no ✓ cap, and the reason on the right) |
-| ← | Back to the pod's overview with nothing spent: the way back reads the pod's name, "← Loika" (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "← Pods") |
+| ◀ ▶ | `step:left`, `step:right`: the previous or next read trait in ring order, skipping unread chapters; the ends stop. The ring stays on the roll; the pictures, the trait line, the open tab and the lifted pip change on the frame of the key |
+| ▲ ▼ | `step:up`, `step:down`: the focused trait's look among its three, wrapping; the ring and notches move to the chosen picture; the founder's part changes over 200 ms (the `roll` event), the stamp's cells, the pip, the price and the leaves at once |
+| ▲ ▼ on a doing, or a trait the pod carries one look of | Nothing: one picture, no notches, and the line already says why ("Drive, breed to change" with the two joined rings after the name; "Crown, one look here"). No message plate (*L2.4*: was a plate on press) |
+| ✓ | `✓ Grow it · 2 ⚡ 4 ❀ 1 ◆`, checked whole and then paid: the `grow` event, then the Incubator. Blocked (clash, busy, no bay): no ✓ cap and nothing happens. Short: the dimmed cap and a plate |
+| ← | Back to the pod's overview with the ring on the pod, nothing spent and the choices dropped: the way back reads the pod's name, "← Loika" |
+| A room key | Drops the unpaid choices; coming back starts fresh (owner, 2026-10-09: "forget") |
+| During the grow event | Presses are consumed (1080 ms) |
+
+### Create's focus as data
+
+*L2.4, UI designer, 2026-10-09, Proposal.* `create.json` `focus`: one target, `roll`, in group `roll`, its box the chosen picture's rectangle as the roll drew it, round ring, no lift (it never leaves the roll). The group is a **stepper** on all four keys: each sends the intent `step:<key>` ([lvgl-switch.md §2.1](../proposals/lvgl-switch.md)) and the ring stays, as on Cross ("the focus ring stays on the partner's head; ◀ ▶ change what it holds"). The rail is not a target: its open tab follows the focused trait, as Cross's open chapter is "the rail's open tab, not a second ring". `fallback` none. Vectors: from `roll`, each of ◀ ▶ ▲ ▼ sends its step and the ring stays on `roll`; ✓ sends `confirm` on `roll`. The spec form `"stepper": ["left", "right", "up", "down"]` is the architect's to confirm ([open question 2](#open-questions-for-l24)).
+
+### Create's events
+
+| Event | Hold | What plays |
+| --- | --- | --- |
+| `roll` (200 ms) | no | The founder's picture changes to the new choice in its own box by the 16-level Bayer dither clipped to the founder's rectangle ([open question 3](#open-questions-for-l24); until answered, a cut). Everything else changes on the frame of the key |
+| `grow` (1080 ms) | yes | 0 to 300 ms: the stamp prints, its cells drawn row by row from the top, whole rows. 300: the code appears on the rule. 300 to 900: the pod travels in a straight line, whole pixels, eased, from its box to the dome (feet 160, 408 → 864, 296), behind the chamber and the roll; the dish stays, empty. 900 to 1080: the screen transition (16-level Bayer dither) to the Incubator, growing. The counters tick the price at 0 (the top bar's own tick) |
+
+With `motion: false` both jump to their ends.
 
 ### Placeholders on Create
 
 | Thing | Pixel size |
 | --- | --- |
-| Founder | 304×312 (the decided placeholder) |
-| Roll close-ups | 128×88 |
-| Opened pod | 128×160 |
-| Dome | 176×208 |
+| Founder | 304×312 (the decided placeholder: the stylised rig pass) |
+| Roll close-ups | 128×72 (*was 128×88*) |
+| Pod | the species' size class: 144×176, 120×152 or 104×128 (the signed pod sprites) |
+| Dish | 224×96 (the signed `room-cradle` and `room-cradle-front`) |
+| Specimen chamber | 336×320, its floor 336×16 |
+| Dome | 176×208; a busy bud 64×80 |
+| Notches | 12×6 |
 | Hairline leaves | 8×12 |
+| Clash pip | 6×6 ✕ |
 | Stamp | on the 120 label |
 
 ### Changes from the current build
 
-- The rail moves from y 50, 40 tall, to hang from y 40, 40 tall, with slanted touching tabs and pips (*corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*: was to y 48, 56 tall).
-- The founder moves from (362, 150) to (360, 240).
-- The roll pictures grow from 88×60 to 128×88 and move above the founder.
-- The pod moves from (150 centre, 130) to (96, 264).
-- The stamp label moves from (824, 286) to (804, 400).
-- The status texts on the right are cut, and the dome's wooden base becomes enamel.
+- The rail moves from y 50, 40 tall, tabs from x 190 with 8 px gaps and status-less words, to hang from y 40, centred, slanted and touching, with pips; it is not a focus target.
+- The founder moves from (362, 150) to (360, 240) and stops bobbing in the build's 2 px sine; its clash plate ("this shape won't grow") goes.
+- The roll moves from a strip at y 468 under everything (88×60 pictures with amber and slate frames and ▲ ▼ glyphs) to the top, above the founder, at 128×72 with drawn notches; the legacy amber ring round the strip (184, 484, 300, 72) becomes the cream ring on the chosen picture.
+- The pod (the well sprite at 150, 130) becomes the pod by size class on Pods' dish at the left; "from the pod" goes; the origin keeps two lines.
+- The dome (140×140 at 820, 110, with "busy" or "empty") becomes the 176×208 dome with its hairline leaves; the stamp label moves from (824, 286) to (804, 400); "the code appears at Grow" becomes the blank rule.
+- The status texts on the right ("◀ ▶ n of m read traits", the surprises, "changed: …") go: the pips, the tag and the context say them.
+- The bottom line: the subject's "Loika · looks" becomes what stays a surprise; "grows in n leaves" leaves the notice (the leaves show it); "first founder:" leaves the price (the missing Essence shows it).
+- Grow's 900 ms lock and its message plate ("Grown · code · the pod is in the incubator") become the 1080 ms `grow` event; the code shows on the rule, not in a plate.
 
 ---
 
 ## Incubator: growing and ready
 
-Concept plates: `art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x600.png` (growing) and `IN-C1-stamped-1024x600.png` (ready). Wireframes: [04-incubator-growing.svg](station-layouts/04-incubator-growing.svg), [05-incubator-ready.svg](station-layouts/05-incubator-ready.svg).
+Concept plates: `art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x600.png` (growing) and `IN-C1-stamped-1024x600.png` (ready). Wireframes, 1×: [04-incubator-growing](station-layouts/04-incubator-growing.svg), [05-incubator-ready](station-layouts/05-incubator-ready.svg), [05b-incubator-hatch](station-layouts/05b-incubator-hatch.svg), [05c-incubator-empty](station-layouts/05c-incubator-empty.svg), [05d-incubator-nav](station-layouts/05d-incubator-nav.svg), each with its PNG.
 
-<table><tr><td><img src="station-layouts/04-incubator-growing.svg" width="420" alt="Incubator growing wireframe"></td><td><img src="station-layouts/05-incubator-ready.svg" width="420" alt="Incubator ready wireframe"></td></tr></table>
+**L2.4 spec** (UI designer, 2026-10-09 13:04, America/Mexico_City). **Proposal**, one milestone ahead of the build. Every drawn region names its word or composition; the bud's two states, growing and ready (decided 2026-10-08: the chamber has growing and ready, nothing else; the portrait arrives as a crate), with the screen's empty state and the hatch; leaves stepped per minute from props; tabs clearing; stamp and code; Grow now; the hatch (2.6 s) and the hand-off to Habitat's meet. The numbers live in `prototypes/ui/specs/station/incubator.json`. One derived rule, `leafArc`, is not in the closed list and goes to the architect ([open question 1](#open-questions-for-l24)).
 
-*Incubator, growing and ready. Wireframes, layout only, measured.*
+<img src="station-layouts/04-incubator-growing.png" width="1024" alt="Incubator, growing">
+
+*04. Incubator, growing: a 22-minute bud, nine leaves full and the tenth filling, three chapters known and Stamina still a surprise, `✓ Grow now · ❀ 7`. 1×, measured. Status: Proposal.*
+
+<img src="station-layouts/05-incubator-ready.png" width="1024" alt="Incubator, ready">
+
+*05. Incubator, ready: every leaf full, every chapter known, the dome glowing, the species' shape in the bud, the plaque says ready, `✓ Open`; the waiting lamp while the painting is on its way. 1×, measured. Status: Proposal.*
+
+<img src="station-layouts/05b-incubator-hatch.png" width="1024" alt="Incubator, the hatch">
+
+*05b. The hatch at 1500 ms: the glass lifted out of sight, the bud gone, the juvenile on the base, the ribbon; input held 2780 ms, then Habitat's meet. 1×, measured. Status: Proposal.*
+
+<img src="station-layouts/05c-incubator-empty.png" width="1024" alt="Incubator, empty">
+
+*05c. Incubator, empty: the dome, nest and base alone; no ✓ cap. 1×, measured. Status: Proposal (a structure question for the owner, open question 9).*
+
+<img src="station-layouts/05d-incubator-nav.png" width="1024" alt="Incubator's navigation map">
+
+*05d. Incubator: how it opens, how its states follow each other, where Open leads. 1×. Status: Proposal.*
 
 ### 1. Purpose
 
@@ -1075,19 +1168,21 @@ The Incubator is where the player watches the bud grow and opens it when it is r
 | Element | Why it is here |
 | --- | --- |
 | **The bud** in its nest inside the dome | The subject. A glowing bean, never an embryo; when ready, the species' shape glows inside it |
-| **The ring of leaves** over the dome | Time as leaves, one a minute, filling smoothly. Never digits |
-| **The rail** with pips clearing | The surprises clearing one by one across the wait |
+| **The leaves** in two arcs over the dome, one a minute | Time as leaves, the current one filling. Never digits |
+| **The rail** with tabs clearing | The surprises clearing one by one across the wait |
 | **The plaque** on the base, one word ("growing", "ready") | The state, for across a table |
 | **Stamp label** (120) and the **code** as live text | The founder's stamp, filling with the rail, and its shareable code |
-| **Bottom line** | `✓ Grow now · price` while growing; `✓ Open` when ready |
+| **Bottom line** | `✓ Grow now` and its price while growing; `✓ Open` when ready |
 
 **Cut:**
 
-- "and n more leaves": a second arc holds them.
+- "and n more leaves": the second arc holds them.
 - The tabs' "read", "cleared" and "misty" words.
-- "Loika founder" under the code, which is already on the bottom line.
-- The wooden base.
-- The plate's embryo inside the ready bud (decided: never an embryo).
+- "Loika founder" and "child of …" under the code: the context says it.
+- The wooden base; the plate's embryo inside the ready bud (decided: never an embryo).
+- The build's cream code plate shown for 1.5 s on arrival from Create: the code already printed on Create's rule.
+- (*L2.4*) The ready ring (was a steady ring round the dome): the screen has one subject and nothing to choose, so ✓ acts on the room, and a ring round the dome and its base would cross the leaf arcs.
+- The empty screen's two text lines ("The incubator is empty", "Shape a founder from a read pod at Research"): the plaque and the context say it.
 
 ### 3. Placement
 
@@ -1099,71 +1194,155 @@ The Incubator is where the player watches the bud grow and opens it when it is r
 4. **The rail**: which surprises remain.
 5. **The stamp label** at the right, then the code under it.
 
-The left of the stage stays empty and dark (the plate's lamp may hang there as chrome), so the dome reads alone.
+The left of the stage stays empty and dark, so the dome reads alone.
 
 ### 4. Art direction
 
 - **Room:** the research bench, with the chamber's glow as the one warm thing.
 - **Pale glass, a machined enamel base,** and leaf greens for the timer.
-- **The bud's warm glow** drifts toward the species' hue as it grows.
+- **The bud's warm glow** drifts toward the species' hue as it grows (two pictures: the first half of the wait, the second).
 - **Ready:** the dome glows and the species' shape is visible inside the bud. Nothing steps out until the player opens it.
 - **Calm:** only the glow and the filling leaf move.
 
+**Colour roles** (UI designer, 2026-10-09; the one home is `incubator.json` `colours`):
+
+| Region | Roles | Why |
+| --- | --- | --- |
+| Dome | Back `ground`; glass edge `frostD`, highlight `frost`; ready: edge `frost`, highlight `white` | The palette's dome roles, as Home's module; ready brightens the glass, it does not ring it |
+| Nest | `sand`, shade `clay`, twigs `bark` | Warm, inside the living window |
+| Bud (placeholder) | Bean `peach`, lit `cream`, edge `rust`; late `blush`; the ready shape `amber` | The one warm thing |
+| Base | `enamel`, lit top `frost`, shade `bevel`, edge `hairline`; the plaque's plate `panel` with a `hairline` edge | Machined enamel, as Home's knob and dome |
+| Plaque | growing `fog`, ready `bone`, empty `mist` | Ready is the brightest word, for across a table |
+| Leaves | Full `sage` with a `sageD` vein; empty a 1 px `hairline` outline; the current leaf `sage` rows from its foot | The palette's leaf timer |
+| Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role |
+| Stamp label, code | `bone` label with a `slate` edge; code `bone` | A readout (*was the code in the warm `focus` role*: warm marks on the chrome are signals only) |
+| Ribbon | Fill `tealD`, rim `aqua`, words `bone` | The one ribbon look, as on Home and Pods (*was a cream plate*) |
+
 ### 5. Composition
 
-The dome stands centred and large. The leaves arc over it at a radius of 200 px. The rail is centred across the top. The stamp label sits at the right, level with the bud.
+The dome stands centred and large. The leaves arc over it in two arcs centred on the bud. The rail is centred across the top. The stamp label sits at the right, level with the bud.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| Rail | 96, 40, 832, 40 | Hanging from the top bar by the rail's rule, its run centred on x 512. Pips fill as chapters clear (*corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*: was 96, 48, 832, 56) |
-| Leaf arc | 296, 120, 432, 224 | A half circle centred on (512, 320), radius 200. Up to 26 leaves of 24×12. From 27 to 52 leaves, a second arc at radius 176 holds the rest. More than 52 comes back to the UI designer |
-| Dome glass | 360, 176, 304, 296 | |
-| **Bud (focal)** | 448, 264, 128, 160 | Rendered at size. When ready, the founder's own silhouette glows inside it at 112×112, never a curled embryo |
+| Rail | 96, 40, 832, 40 | Hanging, its run centred on x 512; not a focus target; no glint |
+| Leaves | 256, 88, 512, 216 | Two arcs centred on the bud's centre (512, 344): inner radius 216, outer 248, each up to 20 leaves of 24×12 on an 8° pitch across ±76°, the run centred on the top; the inner fills first. Up to 40; more comes back to the UI designer ([the leaf arcs](#the-leaf-arcs) below; *L2.4*: was one half circle of radius 200 on (512, 320) holding 26, then a second of 176) |
+| Dome glass | 360, 176, 304, 296 | A bell jar: a half circle of radius 152 on (512, 328) over a body to y 472 |
+| **Bud (focal)** | 448, 264, 128, 160 | Rendered at size, centred on (512, 344). Ready: the species' shape glows inside it at 456, 288, 112×112, never an embryo, never the individual's render |
 | Nest | 408, 400, 208, 48 | |
-| Base | 328, 464, 368, 80 | Enamel, not wood |
-| Plaque | 448, 488, 128, 32 | One word, 16 px |
+| Base | 328, 464, 368, 80 | Enamel, not wood; the plaque's plate at 448, 488, 128, 32 |
+| Plaque | 448, 488, 128, 32 | One word, 16 px, centred on x 512, its line box 494 to 514 |
+| Waiting lamp | 664, 498, 12, 12 | On the base, ready and hatch only, while the new mibi's painting has not landed (*was at 680, 496, 4 px from the base's edge*) |
 | **Stamp label** | 840, 296, 120, 120 | 176 px from the dome's edge |
-| Code | 824, 424, 152, 20 | 16 px, centred on x 900 |
-| Ready focus | 324, 172, 376, 376 | A steady ring around the dome, never blinking |
-| Hatch ribbon | 312, 112, 400, 40 | "Fig · Tuikis · juvenile", 20 px, after Open |
-| Juvenile, after Open | 360, 232, 304, 312 | Reads young by proportion inside the box |
+| Code | 808, 424, 184, 24 | 16 px, centred on x 900, line box 426 to 446 (*L2.4*: was 152 wide at 824; the widest code is 168 px) |
+| Hatch ribbon | 312, 104, 400, 40 | The new mibi's words, 20 px, hatch only (*L2.4*: was at y 112 over the leaves; the leaves go at the hatch's start) |
+| Juvenile, after Open | 360, 160, 304, 312 | Its feet on the base's top at y 472, reading young by proportion inside the box; Habitat's resident box, so the meet reads as the same creature (*L2.4*: was 360, 232, the feet on the base's front edge) |
 
-**States.**
+**Regions and their words** (*L2.4, UI designer, 2026-10-09, Proposal*). States: **empty** (no bud), **growing** and **ready** (the bud's two), **hatch** (from `✓ Open` until the screen changes, input held).
 
-- **Growing:** no focus ring, read-only. The bottom line offers `✓ Grow now · price`.
-- **Ready:** every leaf full, the dome glows, the plaque reads "ready", the ring is on the dome, `✓ Open`.
-- **Open:** the glass lifts 220 px in 600 ms, the bud cracks, and the juvenile steps out (2.6 s). Then the meet view on Habitat.
-- **Waiting for its painting:** a 12×12 cool lamp on the base at (680, 496), and "its painting is on its way" on the bottom line.
-- **Empty:** the dome alone, with no rail and no stamp. The subject says "the incubator is empty"; there is no ✓ cap.
+| Region (`incubator.json`) | Rectangle | Word or build | Only in | States it shows |
+| --- | --- | --- | --- | --- |
+| `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage`) | | — |
+| `rail` | 96, 40, 832, 40 | chapter rail (rules `railCompaction`, `slantTabs`) | growing, ready, hatch | tabs read or unread; clearing by the `wipe` event |
+| `leaves` | 256, 88, 512, 216 | build `leaves` (form arc, rule `leafArc`, proposed) | growing, ready | each leaf empty, filling (rows of 12) or full |
+| `dome` | 360, 176, 304, 296 | living window, part inside | | lifting in the hatch |
+| `nest` | 408, 400, 208, 48 | living window, part inside | | — |
+| `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape); cracking |
+| `domeFront` | 360, 176, 304, 296 | living window, part frame | | growing; ready (glowing); lifting |
+| `base` | 328, 464, 368, 80 | living window, part frame | | the waiting lamp |
+| `plaque` | 448, 488, 128, 32 | text | | empty, growing, ready; blank in the hatch |
+| `stamp` | 840, 296, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
+| `code` | 808, 424, 184, 24 | text | growing, ready, hatch | — |
+| `ribbon` | 312, 104, 400, 40 | ribbon | hatch | — |
+| `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting or its placeholder; the step lift |
+
+**Draw order:** bench, rail, leaves, dome, nest, bud, the dome's front, base, plaque, the base's lamp, juvenile, stamp, code, ribbon, frame, message plate. The juvenile stands in front of the base's top lip; the lifting glass is clipped to (0, 88, 1024, 474), under the rail.
+
+**Clearance:** every leaf lies 10 px or more under the rail (the outer arc's top leaf at y 90) and 38 px or more outside the dome's glass, measured on the slot tables; neighbouring leaves' boxes are 6 px apart at the top and 2 px apart on the inner arc between 30° and 45°, where the leaf's empty corners keep the ink clear ([open question 11](#open-questions-for-l24)). The code's line box starts 10 px under the stamp label; the ribbon ends 16 px above the juvenile's box.
+
+**States:**
+
+- **Empty:** the dome, nest and base alone; no rail, leaves, stamp or code; the plaque "empty"; the context "the incubator is empty"; no ✓ cap.
+- **Growing:** no ring; the leaves filling; the plaque "growing"; `✓ Grow now · ❀ 7` (1 Essence for every 2 minutes left, rounded up, falling as the bud grows; decided 2026-10-09), the frame's dimmed cap when short; the context "a Loika bud, growing".
+- **Ready:** every leaf full, the dome glowing, the shape in the bud, the plaque "ready", `✓ Open`; with no bay free the dimmed cap, a plate on press and the notice "no bay free"; while the painting is on its way the waiting lamp on the base.
+- **Hatch:** the event below; the context "its painting is on its way" (offline "waiting for the cloud") while it has not landed. Afterwards the Incubator is empty.
 
 ### 6. Interactions
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| ✓ while growing | `✓ Grow now · 1 ⚡ 2 ❀` (the price set with the economy); the leaves fill in 400 ms and the screen turns ready |
-| ✓ when ready | `✓ Open`. Refused when no bay is free: dimmed ✓, subject "no bay free", nothing spent |
-| Pad | Nothing to move to: the screen has one subject |
-| ← | Home |
-| During the hatch | Presses are consumed |
+| ✓ while growing | `✓ Grow now · ❀ 7`: the `growNow` event (the leaves fill in 400 ms), then ready |
+| ✓ when ready | `✓ Open`: the `hatch` event, then Habitat's meet. No bay free: the dimmed cap; ✓ shows a plate, nothing opens |
+| ✓ when empty | No ✓ cap: nothing |
+| Pad | Nothing: the screen has one subject, and no ring is drawn |
+| ← | Home, with the ring on Home's Incubator module |
+| During Grow now or the hatch | Presses are consumed |
+
+### The Incubator's focus as data
+
+*L2.4, UI designer, 2026-10-09, Proposal.* `incubator.json` `focus`: the room only, as on Home (`roomKey` room, the ring on nothing, its point roomAt's centre, the bud's centre 512, 344). No targets; every edge none; fallback none. ✓ sends `confirm` on the room and the intent table does what the bottom line says. Holds: while `growNow` or `hatch` plays the face moves no focus and sends no intent. Vectors: room ▲ room; room ▶ room; room ✓ `confirm`.
+
+### The leaf arcs
+
+*L2.4, UI designer, 2026-10-09, Proposal; the rule is the architect's ([open question 1](#open-questions-for-l24)).* The bud takes 20 minutes plus one a shaped trait (5 for the first bud), up to 38 today. One leaf a minute; the leaves' places depend on their count, so they need a rule, `leafArc`, which is not in the closed list:
+
+- **Slots.** Each arc has 39 half-pitch places from −76° to +76° in 4° steps, stored in `incubator.json` as the leaf box's top left: (round(512 + r sin a) − 12, round(344 − r cos a) − 6) for the angle a, r 216 (inner) and 248 (outer). The face does no trigonometry: the tables are data.
+- **Runs.** n leaves: the inner arc holds a = min(n, 20), the outer b = n − a. On an arc holding k leaves, leaf j (0 to k − 1, left to right) takes slot 19 − (k − 1) + 2j, so every run is centred on the top (five leaves make a crown, as on the concept plate).
+- **Fill.** The inner arc left to right, then the outer. `props.leaves`: `total` (the bud's minutes), `full` (whole minutes passed) and `rows` (0 to 11, the current leaf's filled rows from its foot), stepped every 5 s by the view. A still frame and reduced motion both show the true wait; no event plays the fill.
+
+### The Incubator's events, the hatch and the hand-off
+
+| Event | Hold | What plays |
+| --- | --- | --- |
+| `wipe` (1000 ms), a tab clearing | no | The tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
+| `growNow` (400 ms) | yes | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then every tab still unread turns read (a cut), the stamp redraws, and the state is ready |
+| `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the glass lifts 384 px, eased, whole pixels, out of sight under the rail (*was 220 px*). 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to Habitat |
+
+**The hand-off.** The hatch ends on Habitat in its meet ([Habitat](#habitat), L2.5's spec): the new mibi in the resident's box (168, 136, 304, 312), the same 304×312 the juvenile stood in, the ring on the resident, the meet ribbon "Meet Fig" (168, 72, 304, 40) for the first meeting. Open is a jump: on Habitat ← reads Home (stack navigation). With `motion: false` the hatch jumps to its end, Habitat's meet.
 
 ### Placeholders on the Incubator
 
 | Thing | Pixel size |
 | --- | --- |
-| Dome glass | 304×296 |
-| Base | 368×80 |
-| Bud | 128×160 |
-| Shape inside the bud | 112×112 |
-| Leaves | 24×12 |
+| Dome glass | 304×296, back and front |
+| Base | 368×80, with its plaque plate 128×32 |
+| Bud | 128×160: early, late, ready; two crack steps |
+| Shape inside the bud | 112×112, one per species |
+| Leaves | 24×12: empty, full, and the fill by rows |
 | Nest | 208×48 |
+| Waiting lamp | 12×12 |
+| Juvenile | 304×312: the new mibi's painting, or its placeholder |
 
 ### Changes from the current build
 
-- The bud grows from 70×70 to 128×160.
-- The dome becomes glass plus a base.
-- The leaves become 24×12 on an arc of radius 200, with a second arc in place of the words.
-- The stamp label moves from (830, 300) to (840, 296).
-- The tab status words go, the hatch's wooden ribbon becomes chrome, and the blinking ready ring becomes steady.
+- The bud grows from the build's 70×70 bean (bobbing 3 px) to 128×160 in two growth pictures; the ready bud shows the species' shape at 112×112, not the founder's own 120×120 render.
+- The dome becomes glass plus a base, the glass a bell jar, with the plaque.
+- The leaves go from at most 21 on an ellipse (rx 196, ry 170 on 512, 360) with "and n more leaves" to two arcs of 20 on the bud's centre, the current leaf filling by rows from props.
+- The tabs (y 50, 54 tall, with "read", "cleared" and "misty") hang from y 40 and clear by their pips.
+- The stamp label moves from (830, 300) to (840, 296); the code, cream at y 452 with "Loika founder" under it, becomes a `bone` readout at (808, 424); the 1.5 s cream code plate on arrival goes.
+- The blinking ready ring (358, 176, 308, 308, every 400 ms) goes: no ring.
+- The hatch: the glass lifts 384 px (was 220), the juvenile stands at 360, 160 at 304×312 (was a 180×180 render sliding 140 px right), and the cream ribbon "Fig · Tuikis · juvenile" becomes the `tealD` ribbon with the copywriter's words.
+- The empty screen's 28 px "The incubator is empty" and its second line go; the plaque and the context say it.
+- The bottom line: "surprises clear as it grows" leaves the notice (the rail shows it); "· no bay free" moves from the subject to the notice.
+
+---
+
+## Open questions for L2.4
+
+Numbered, each with the discipline that decides it and the UI designer's recommendation. Structure (states, navigation) goes to the owner; the rest is settled by its discipline (the owner's standing rule of 2026-10-09 12:20).
+
+1. **`leafArc`, a derived rule not in the closed list** (architect). The Incubator's leaves are a count-dependent run on two arcs. *Recommendation:* add `leafArc` to `layout/` and `derive.mjs` as specified in [the leaf arcs](#the-leaf-arcs): index arithmetic over the slot tables in `incubator.json`, no trigonometry at run time, so WebAssembly, x86-64 and aarch64 give the same pixels. If refused, the leaves become a pitch table like Create's, and the concept's arc is lost.
+2. **The stepper's form in the spec** (architect). *Recommendation:* `"stepper": ["left", "right", "up", "down"]` on a focus group: those keys send `step:<key>` and the ring stays; the loader refuses a group that has both a stepper key and an edge for it. Cross's ◀ ▶ partner and Compare's ◀ ▶ chapters can use the same form.
+3. **The founder's change in 200 ms** (architect). *Recommendation:* the screen transition's 16-level Bayer lattice pictures, clipped to the founder's box with the clip primitive, so no opacity is used on the art layer. Until answered, a cut.
+4. **The bench ground's word** (architect). *Recommendation:* the frame word's stage part with the screen's room master (`room-bench-stage` on Create and the Incubator); Pods' bench regions gain the same names at L2.0.
+5. **The leaves: a composition with three users, or a word** (architect, with the UI designer). Home's Incubator module, Create and the Incubator all draw the bud's leaves with the same states. *Recommendation:* a Station word `leaves` (props total, full, rows; the spec gives a pitch table or `leafArc`), since a third user brings a composition back.
+6. **The roll pictures** (art director). *Recommendation:* the same per-look sources as the chapter page, re-cut at 128×72 by the 75% rule, so a look reads the same on Pods and Create; the rig placeholder close-ups until then.
+7. **Create with no chapter read** (game designer). The decided "unedited founder" would need Create to open on an identified pod with nothing read. *Recommendation:* as built: Create opens after the first read, and has no "nothing read" state.
+8. **The words** (copywriter). The slots in `create.json` and `incubator.json` `strings`, with today's words, measured in Inter 16 (20 for the ribbon): Create's context, what stays a surprise, in 208 px ("Face stays a surprise" 160 px; "two stay a surprise" 143; "Face and Stamina stay a surprise" is 249, too wide); the trait line ("Markings, only pale", "Drive, breed to change", "✕ Clash, Eyes only rings"), the tag "changed" and the notices ("these looks clash", "the incubator is busy", "no bay free"); the Incubator's context ("a Loika bud, growing", "the Loika bud is ready", "the incubator is empty"), the plaque ("growing", "ready", "empty"), the no-bay plate, and the hatch ribbon ("Fig, a young Loika", 173 px of the ribbon's 400), which Habitat's "Meet Fig" follows about 1.6 s later. *Recommendation:* these words, no dot-joined fragments.
+9. **The Incubator's empty state, and the hatch as a held state** (owner, structure check). *Recommendation:* keep both. Home's Incubator module opens the screen whatever it holds, and the empty dome says where a bud will grow; the decision "growing and ready, nothing else" is about the bud. The hatch is the Open event, held like Home's arrival, ending on Habitat's meet.
+10. **The ready bud's shape** (art director). *Recommendation:* the species' silhouette from the Pods figure's source, painted at 112×112, one per species: the shape says what will hatch, and the individual is revealed at the hatch.
+11. **The leaf on the arcs** (art director). The 24×12 boxes are 2 px apart on the inner arc between 30° and 45°. *Recommendation:* one pointed leaf with empty corners, upright on every slot as on the concept plate; tilted leaves per slot only if the art director wants them (the slot table can carry a sprite id).
+
+**For Home, with L2.4's build** (UI designer, follow-up, not in this change): Home's Incubator module holds 32 leaves (two rows of 16) and a bud takes up to 38 minutes. Three rows of 16 on a 14 px row pitch fill the same 192×40 box (12 + 14 + 14); `home.json` `regions.incubator.leaves` takes it when the leaves' word lands.
 
 ---
 
