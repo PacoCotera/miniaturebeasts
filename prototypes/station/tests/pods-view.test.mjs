@@ -163,10 +163,15 @@ test("no digits where a word does: the origin drops the expedition's number, a p
   assert.ok(v.specimen.origin.every((l) => !/\d/.test(l)), v.specimen.origin.join("|")); assert.ok(!/\d/.test(c.line.subject), c.line.subject); assert.ok(c.list.places.every((w) => !/\d/.test(w.name || "")));
   assert.equal(inWords("3 new pods wait"), "three new pods wait"); assert.equal(inWords("2 crates in the bay"), "two crates in the bay"); assert.equal(inWords("a Belatz pod waits · needs 3 ◆"), "a Belatz pod waits · needs 3 ◆"); assert.equal(inWords("14 pods wait"), "many pods wait");
 });
-test("Compare holds its notice until the Differs row is answered: no need line, whatever the chapter holds", () => {
+test("Compare's need line follows the spec's strings: here, in another chapter, or none; the Differs mark is the studio's, by id, on the traits read on both that differ", () => {
   const st = stock(["S01", "S01"], 11); S.skipRead(st, st.tray[0], settings); S.skipRead(st, st.tray[1], settings);
-  const A = st.tray[0], B = st.tray[1], chs = frameOf("S01").chapters;
-  for (let ci = 0; ci < chs.length; ci++) assert.equal(view(model(st, { ui: { view: "overview", cur: A.id, ci: 0, cmp: { a: A.id, b: B.id, ci }, wildArm: 0 }, focus: null })).line.need, null);
+  const A = st.tray[0], B = st.tray[1], diff = S.compareDiff(st, A, B), chs = frameOf("S01").chapters;
+  const at = (ci) => view(model(st, { ui: { view: "overview", cur: A.id, ci: 0, cmp: { a: A.id, b: B.id, ci }, wildArm: 0 }, focus: null }));
+  for (let ci = 0; ci < chs.length; ci++) {
+    const v = at(ci); assert.equal(v.line.need, !diff.length ? spec.strings.compareSame : chs[ci].traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere);
+    const marked = v.pages[0].cells.filter((c) => c.diff).length; assert.equal(marked, chs[ci].traits.filter((t) => diff.includes(t.id)).length, "a mark on each trait that differs");
+    assert.match(v.pages[0].differs, /^compare-mark-differs-12x12:12x12$/, "the slot by the studio's id"); assert.equal(v.pages[1].differs, v.pages[0].differs, "the same mark on both pages");
+  }
 });
 
 test("the hatch's arming plate says only \"✓ again\": the bottom line already names the place", () => {

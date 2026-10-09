@@ -320,16 +320,30 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | --- | --- | --- |
 | Rail | 96, 40, 832, 40 | The open tab lighter; the focus on the rail |
 | Pod, dish, slab, cone | pod 144, 216, 144, 176; dish 104, 328, 224, 96; slab 72, 368, 288, 72; cone 96, 104, 240, 320 | The bench `room-bench-stage-chapter` at (0, 40, 1024, 522), its cone centred on x 216 and its pool at (216, 424) (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*). The pod's room shrunk to what the pod and the dish need: the axis at x 216, the foot on y 392. The name label under it; no figure, no stamp, no hatch |
-| Open page | 424, 112, 584, 440 (248 tall for one to four traits) | Deep pane, 1 px slate edge, a nine-slice; its top at y 112. Was 152, 112, 256, 440 |
-| Page heading | 440, 120, 552, 24 | Emblem 24×24, then the chapter's word in 20 px. Was 168, 120, 224, 24 |
+| Open page | 424, 112, w, h by the trait count (the size table below); at most 584×440 | Deep pane, 1 px slate edge, the nine-slice `page-pane-256x440` drawn at its size, never scaled. Left-aligned: its left edge at x 424 and its top at y 112 fixed, the right edge coming in (*corrected by the UI designer, 2026-10-09, after the art director's fourth look*: was 584 wide at every count, so one trait sat in a 580 px pane). Was 152, 112, 256, 440 |
+| Page heading | 440, 120, w − 32, 24 | Emblem 24×24, then the chapter's word in 20 px. On the narrowest pane it has 144 px: "Legs & Tail", the longest word, is 103 px after the emblem and 8 px. Was 168, 120, 224, 24 |
 | Trait cells | the grid below | In the chapter's order, row by row: the picture, 4 px, the one-word name (16 px `bone`, centred); the field-guide mark 4 px after the name |
 
-**Page grid,** by the open chapter's trait count. Four columns of 128 with 8 px gaps and 24 px insets; every picture 128×160 (under the pod's 144×176), rendered at its size. A sealed chapter is shut, with one 112×112 picture of the find that opens it, centred at (660, 276) (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: was two columns of 104 on the 256 px page, pictures from 144×176 to 104×64).
+**Page grid,** by the open chapter's trait count. Columns of 128 with 8 px gaps and 24 px insets; every picture 128×160 (under the pod's 144×176), rendered at its size. A sealed chapter is shut, with one 112×112 picture of the find that opens it, centred in the one-trait pane at (512, 252), its rectangle (456, 196, 112, 112) (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: was two columns of 104 on the 256 px page, pictures from 144×176 to 104×64; *and after the art director's fourth look*: was centred at (660, 276) on the 584 pane, which ran past the 248 pane's foot).
+
+**The pane's size, one rule** (*set by the UI designer, 2026-10-09, after the art director's fourth look; the owner: "wasted real estate"*). The pane hugs its cells. Columns are the count up to four, then half the count rounded up; the width is 24 + columns × 128 + (columns − 1) × 8 + 24, that is 40 + 136 × columns; the height is 248 for one row and 440 for two. The pane is left-aligned at x 424, beside the pod, so the heading and the first cell stay put as the rail steps and only the right edge moves; the bench shows to its right. A sealed chapter takes the one-trait pane, whatever its count. Every width is over the slice's 128 (insets 64, 64, 16, 16). `pods.json` `regions.chapter.page.sizeByCount`.
+
+| Traits | Columns × rows | Pane (w × h) | Pane rectangle |
+| --- | --- | --- | --- |
+| 1, and sealed | 1 × 1 | 176 × 248 | 424, 112, 176, 248 |
+| 2 | 2 × 1 | 312 × 248 | 424, 112, 312, 248 |
+| 3 | 3 × 1 | 448 × 248 | 424, 112, 448, 248 |
+| 4 | 4 × 1 | 584 × 248 | 424, 112, 584, 248 |
+| 5 | 3 × 2 (3, then 2) | 448 × 440 | 424, 112, 448, 440 |
+| 6 | 3 × 2 | 448 × 440 | 424, 112, 448, 440 |
+| 7 | 4 × 2 (4, then 3) | 584 × 440 | 424, 112, 584, 440 |
+| 8 | 4 × 2 | 584 × 440 | 424, 112, 584, 440 |
 
 | Traits | Cells (x, y, w, h) | Picture | Was |
 | --- | --- | --- | --- |
 | 1–4 | 448, 584, 720 or 856, at y 160; each 128×184 | 128×160 | on the 256 px page: one 144×176; two 104×160 side by side; three or four 104×160 in two rows |
-| 5–8 | 448, 584, 720 or 856, at y 160 and 360; each 128×184 | 128×160 | on the 256 px page: 104×96 (five or six), 104×64 (seven or eight) |
+| 5–6 | 448, 584 or 720, at y 160 and 360; each 128×184 | 128×160 | on the 584 pane, four columns; on the 256 px page: 104×96 |
+| 7–8 | 448, 584, 720 or 856, at y 160 and 360; each 128×184 | 128×160 | on the 256 px page: 104×64 |
 | 9 or more | none today | comes back to the UI designer | |
 
 **The page, one state.**
@@ -349,8 +363,8 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Breed to change (two joined rings) | P.x + 8, P.y + 8, 28×16 | Top left |
 | New to the field guide | on the name's line: 4 px after the trait's name, the name and the dot centred together in the cell; the dot's centre on the line's middle (line y + 10) | Slice `page-mark-new-10`: a flat `bone` dot, 6×6, with a 1 px lit edge in `white` at its top left, on the art layer; no keyline, no gradient, no specular. It marks the word, not the picture, so it reads as a note on the trait and never as a pin. One mark where this pod brought a look first (the owner is asked whether one mark is enough). The kind marks are the existing set: the seed with the hidden look as a small picture inside it for a switch with a hidden copy, the base for a one-look switch, two seeds with the shown look between for a blend, the sleep mark for asleep, the joined rings for breed-to-change. On pictures under 120 tall the seed is 32×40 (*corrected by the UI designer, 2026-10-09, after the art director's 6 px dot (at the picture's top centre it read as a pin)*: was 10×10 at the picture's top centre, P.x + P.w / 2 − 5, P.y + 8, with an `ink` keyline) |
 | Unread | the picture's frame with plain frost inside, no picture | No mark, no painting under the frost: the cell is clearly empty and the trait's name shows, nothing else. Stand-ins and composites follow it (*corrected by the UI designer, 2026-10-09, after the owner on the empty state*: was "frost over the whole picture") |
-| Sealed | the whole page shut, with one picture of the find that opens it, 112×112 at (224, 296) | No names, no cells (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was slats over each picture with what opens it, 44×64, centred) |
-| Differs (Compare) | a 2 px aqua edge on P itself, and a 12×12 bracket at P.x + P.w / 2 − 6, P.y + 8 | Aqua on a 1 px ink keyline, on both pages. Never the focus ring: the `focus` role is the ring's alone (was "the cream ring"; corrected by the UI designer against the build, 2026-10-08) |
+| Sealed | the whole page shut, at the one-trait size (176×248), with one picture of the find that opens it, 112×112 at (32, 84) on the page | No names, no cells (*the size and place set by the UI designer, 2026-10-09*; *corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was slats over each picture with what opens it, 44×64, centred) |
+| Differs (Compare) | on the name's line, not on P: the master `compare-mark-differs-12x12` placed 1:1, 4 px after the trait's name (x = cell.x + name width + 4; the names are left-aligned on Compare), its centre on the line's middle (y = line y + 4) | Painted by the studio: aqua on a 1 px ink keyline, art layer, a small "not the same" sign (two short strokes, the lower one stepped right), never a pin or a tick. On both pages, only on a trait read on both pods whose looks differ. It fits the narrowest cell: "Translucency" 101 px + 4 + 12 = 117 ≤ 120. The build draws nothing (*decided by the UI designer, 2026-10-09, after the art director's fourth look rejected build-drawn marks*: was a 2 px aqua edge on P and a 12×12 bracket at P.x + P.w / 2 − 6, P.y + 8, drawn by the build; before that the cream ring) |
 
 **States.**
 
@@ -366,7 +380,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
   - Each heading shows its pod at the 40×48 list class at (12, 4) on the page, centred where the 32×40 pod was, and its place picture 16×16 at (56, 20) (*corrected by the UI designer, 2026-10-09: was 32×40 at (16, 8); the masters exist at 40×48 only*).
   - The page grid is the same as Read, scaled to 408 px wide: two columns of 184 with an 8 px gap, pictures 184×104 for three or four traits; three columns of 120, pictures 120×96, for five or six.
   - *corrected by the UI designer against the build, 2026-10-08:* one trait: one cell (16, 56, 376, 376), picture 376×264; two traits: cells (16, 56, 184, 376) and (208, 56, 184, 376), pictures 184×256. The rows sit at y 56 and 248 on the page, cells 184 tall, so the heading's 40 px pod clears the first row by 8 px (the rows were Read's 48 and 248, and the pod touched the pictures).
-  - Traits that differ wear the cream ring and a 12×12 bracket mark on both pages, so the difference shows without the pulse. *corrected by the UI designer against the build, 2026-10-08:* not the focus ring, whose `focus` role is its alone; a 2 px aqua edge on the picture and the bracket at its top centre, 8 px in (Marks on a picture, "Differs").
+  - Traits that differ carry the signed mark `compare-mark-differs-12x12` on their name's line, 4 px after the name, on both pages (Marks on a picture, "Differs"), so the notice "they differ here" points at something on the page. *Decided by the UI designer, 2026-10-09, after the art director's fourth look:* a master rather than no mark, because with five or six traits a page cannot be scanned for the one difference, and the notice keeps its job of sending the player along the rail ("they differ in another chapter"). Was a 2 px aqua edge on the picture and a bracket at its top centre, both drawn by the build; before that the cream ring.
   - The bottom line: `← Pods` | "two Loika pods" | "they differ here" when the open chapter holds a difference, "they differ in another chapter" when only another does, "no read trait differs". Never a count.
   - The rail stays.
 
@@ -448,6 +462,8 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 | Chapter emblem | 24×24 (the build draws 16; redraw at 24, never enlarge) | The chapter rail master |
 | Trait pictures | 224×352, 224×160, 104×160, 104×96, 104×64 by trait count (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*); Compare 376×264, 184×256, 184×104, 120×96 | The painting's close-ups |
 | Seed | 40×52 or 32×40 | The seed master |
+| Compare's difference mark | `compare-mark-differs-12x12`, 12×12, placed 1:1 on the name's line (*set by the UI designer, 2026-10-09, after the art director's fourth look*) | A new master for the studio: aqua on a 1 px ink keyline, a small "not the same" sign; replaces the build-drawn edge and bracket |
+| Page pane | `page-pane-256x440`, a nine-slice (insets 64, 64, 16, 16), drawn 176 to 584 wide and 248 or 440 tall by the size table | The existing master; no new cut |
 | Place stamp | not drawn in the list (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 16×16) (*dropped with the well column, 2026-10-09*) | The place stamp set |
 | Stamp | whole-pixel cells, at most 104 px, on the 120 label | The stamp's label art |
 | Collection pod | 88×112 (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*) | The pod renderer's masters |

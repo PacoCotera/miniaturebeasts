@@ -1,6 +1,6 @@
 // The spec files against the layout document's wireframes and the palette: the one home of the numbers must agree
 // with the measured wireframe (station-layouts/*.svg) and name only palette colours.
-import { pageHeight } from "../layout.mjs";
+import { pageSize } from "../layout.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -46,15 +46,18 @@ test("the pod overview: the pod first and largest, the figure beside it suggesti
 
 test("the chapter page: the pod's room shrunk to the pod and the dish, the page taking the rest, no picture larger than the pod", () => {
   const C = pods.regions.chapter, pg = C.page, pod = C.pod.rect;
-  assert.equal(C.pod.axis, 216); assert.ok(pg.rect[0] >= C.shelf.rect[0] + C.shelf.rect[2] + 16, "the page clear of the slab"); assert.equal(pg.rect[0] + pg.rect[2], 1008);
+  assert.equal(C.pod.axis, 216); assert.ok(pg.rect[0] >= C.shelf.rect[0] + C.shelf.rect[2] + 16, "the page clear of the slab"); assert.equal(pg.rect[0] + pageSize(pg, 8)[0], 1008, "the widest pane ends at the right margin");
   for (const g of Object.values(pg.grid)) assert.ok(g.picture[0] * g.picture[1] <= pod[2] * pod[3], "no page picture larger than the pod's box");
-  for (const [n, g] of Object.entries(pg.grid)) { const low = Math.max(...g.cells.map((c) => c[1] + c[3])); assert.ok(low + 8 <= pg.heightByCount[n], "the pane holds its cells"); }
-  assert.deepEqual(Object.keys(pg.grid), ["1-4", "5-8"]); assert.equal(pg.unread.picture, null); assert.deepEqual(pg.newMark.size, [6, 6]);
+  for (const [k, g] of Object.entries(pg.grid)) { const n = Number(k.split("-").at(-1)), low = Math.max(...g.cells.map((c) => c[1] + c[3])); assert.ok(low + 8 <= pageSize(pg, n)[1], "the pane holds its cells"); }
+  // the pane's one rule: columns are the count up to four, then half the count rounded up; width 40 + 136 per column; 248 for one row, 440 for two
+  for (let n = 1; n <= 8; n++) { const cols = n <= 4 ? n : Math.ceil(n / 2); assert.deepEqual(pageSize(pg, n), [40 + 136 * cols, n <= 4 ? 248 : 440], `${n} traits`); }
+  assert.deepEqual([1, 2, 3, 4, 5, 6, 7, 8].map((n) => pageSize(pg, n)[0]), [176, 312, 448, 584, 448, 448, 584, 584]); assert.deepEqual(pageSize(pg, 0), [176, 248], "a shut chapter is the one-trait size"); assert.deepEqual(pg.sealedFind, [32, 84, 112, 112]);
+  assert.deepEqual(Object.keys(pg.grid), ["1-4", "5-6", "7-8"]); assert.equal(pg.unread.picture, null); assert.deepEqual(pg.newMark.size, [6, 6]);
 });
 
 test("the grid tables follow the layout document: cells inside the page, none touching, a picture inside its cell", () => {
   for (const reg of [pods.regions.chapter.page, pods.regions.compareA]) for (const [count, t] of Object.entries(reg.grid)) {
-    const n = Number(count.split("-").at(-1)), page = reg.heightByCount ? [...reg.rect.slice(0, 3), pageHeight(reg, n)] : reg.rect, cells = t.cells;   // the height for the table's largest count
+    const n = Number(count.split("-").at(-1)), page = reg.sizeByCount ? [...reg.rect.slice(0, 2), ...pageSize(reg, n)] : reg.rect, cells = t.cells;   // the size for the table's largest count
     for (const [i, c] of cells.entries()) {
       assert.ok(c[0] >= 16 && c[0] + c[2] <= page[2] - 16 && c[1] >= 48 && c[1] + c[3] <= page[3] - 8, `${count} cell ${i} inside the page`);
       assert.ok(t.picture[0] <= c[2] && t.picture[1] <= c[3], `${count} picture fits`);
@@ -65,7 +68,7 @@ test("the grid tables follow the layout document: cells inside the page, none to
 
 test("every colour a spec file names is in the palette; every region is on the 8 px grid but the frame's edges (the stage, 40 and 522)", () => {
   const names = new Set(palette.colours.map(([n]) => n)), bad = [];
-  const walk = (o) => { for (const v of Object.values(o)) { if (typeof v === "string") { if (!names.has(v)) bad.push(v); } else if (v && typeof v === "object") walk(v); } };
+  const walk = (o) => { for (const [k, v] of Object.entries(o)) { if (k === "note") continue; if (typeof v === "string") { if (!names.has(v)) bad.push(v); } else if (v && typeof v === "object") walk(v); } };
   walk(pods.colours); walk(Object.fromEntries(Object.entries(frame.colours)));
   assert.deepEqual(bad, []);
   const off = []; const rects = (o, path) => { for (const [k, v] of Object.entries(o)) { if (k === "rect" && Array.isArray(v)) { if (!path.endsWith(".bench") && v.some((n) => n % 8)) off.push(path); } else if (v && typeof v === "object" && !Array.isArray(v)) rects(v, path + "." + k); } };
@@ -83,8 +86,8 @@ test("the focus graphs, one per state, name only groups and selectors the screen
 
 test("the page grid in pods.json is the table of station-layouts.md, cell by cell and picture by picture", () => {
   const md = readFileSync(new URL("../../../design/style-guide/station-layouts.md", import.meta.url), "utf8");
-  const start = md.indexOf("**Page grid,**"), table = md.slice(start, md.indexOf("**Marks on a picture,**", start)).split("\n").filter((l) => /^\| (\d)/.test(l) && !/9 or more/.test(l));
-  assert.equal(table.length, 2, "two rows in the document's table");
+  const start = md.indexOf("**Page grid,**"), table = md.slice(start, md.indexOf("**Marks on a picture,**", start)).split("\n").filter((l) => /^\| (\d)/.test(l) && !/9 or more/.test(l) && /^\d+×\d+$/.test(l.split("|")[3].trim()));   // the grid's rows (their third column is the picture, "128×160"), not the size table's
+  assert.equal(table.length, 3, "three rows in the document's table (1–4, 5–6, 7–8)");
   const rect = (a) => a.join(",");
   for (const row of table) {
     const [, traits, cellsText, picText] = row.split("|").map((c) => c.trim()), key = traits.replace("–", "-"), picture = picText.match(/(\d+)×(\d+)/).slice(1).map(Number);

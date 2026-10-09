@@ -49,16 +49,12 @@ export function slantTabs(rail, n, open = 0, where = "pods") {
 // taken at the row's centre and floored, so every row of a tab is the same width.
 export const slantAt = (rail, r) => Math.floor((rail.slant * (r + 0.5)) / rail.h);
 
-// The page's height by its trait count: the spec's table of ranges ("1-4", "5-8"), else the region's own height.
-export function pageHeight(page, n) {
-  const key = Object.keys(page.heightByCount || {}).find((k) => { const [a, b] = k.split("-").map(Number); return n >= a && n <= (b ?? a); });
-  return key ? page.heightByCount[key] : page.rect[3];
+// The page's size by its trait count: the spec's table (page.sizeByCount, [w, h] by count 1 to 8; a shut chapter is the one-trait size), else the region's own rectangle.
+export function pageSize(page, n) {
+  const t = page.sizeByCount; if (!t) return page.rect.slice(2);
+  return t[String(Math.max(1, Math.min(n, Object.keys(t).length)))].slice();
 }
-// The find's rectangle on a shut chapter's page (a shut page is as short as a one-trait page): centred across the page and down the room under the heading, which ends where the grid's first row begins.
-export function sealedFindRect(page, n = 1) {
-  const [px, py] = page.rect, h = pageHeight(page, n), top = Object.values(page.grid)[0].cells[0][1], [, , fw, fh] = page.sealedFind;
-  return [px + Math.round((page.rect[2] - fw) / 2), py + top + Math.round((h - top - fh) / 2), fw, fh];
-}
+export const pageHeight = (page, n) => pageSize(page, n)[1];
 // The chapter page's grid by the focused chapter's trait count: the spec's grid table names the cells and the picture
 // size per count ("1", "2", "3-4", "5-6"); more than the table holds comes back to the UI designer (overflow).
 export function pageGrid(page, n) {

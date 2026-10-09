@@ -10,14 +10,14 @@
   "colours": "derived, UI designer to confirm: the colour roles of the Pods regions are the builder's choice from the palette's names (the layout document names none beyond the cream focus ring, the bone stamp label with a slate edge, the frost unread page, the deep pane and the slate edge) — UI designer, 2026-10-08: confirmed but five: the ribbon (a lamp-yellow plate with rust words under the pod was a second warm, bright object beside the specimen) is the read tab's cool look, tealD with an aqua rim and creamT words; the page pane is `deep`, as the document names it (night read as dusk, not the bench's deep pane); the unread tab fill is `frostS` (rail); a sealed tab's word is `mist` (ink on the slats did not read); the difference mark is `aqua` on an `ink` keyline (diff). The frame's own roles (moss bars, the wood message plate) wait for the palette commit's migration table",
   "strings.openBay": "derived, UI designer to confirm: the empty rack's need line when the Companion is docked (open the bay at Home to bring pods in); the document gives only the undocked one — UI designer, 2026-10-08: corrected: docked with crates in the bay, \"open the bay at Home\" (strings.openBay); docked with the bay empty, \"take the Companion exploring\" (strings.explore); away, \"dock the Companion for its crates\" (strings.dockToBring, six words; the document's eight-word line was over the six-word rule)",
   "tab fills": "derived, UI designer to confirm: the unread and read tab colours (colours.rail), as the previous builder chose: unread frost with a slate hairline and ink word, read deep teal with an aqua rim and mint word, the cream ring — UI designer, 2026-10-08: read confirmed; unread corrected to a frostS fill (frostD out-shone the pod; the pod is the brightest thing on the bench), slate hairline and ink word; sealed: slats, the word in mist, the notch in the ground colour; the focused tab lifts 2 px (the chrome lift; at 4 px its ring met the top bar's rule at y 40)",
-  "compare difference mark": "derived, UI designer to confirm: the 12×12 bracket sits centred on the picture's top edge (the document gives its size, not its place) — UI designer, 2026-10-08: corrected: inside the picture, top centre, 8 px in (P.x + P.w / 2 − 6, P.y + 8), like the other marks, in aqua on a 1 px ink keyline (a cream bracket vanished on the pictures' pale ground; the build draws it at P.y + 4); a differing picture also wears a 2 px aqua edge on its own rectangle, never the cream ring, which is the focus's alone (one ring per screen)",
+  "compare difference mark": "derived, UI designer to confirm: the 12×12 bracket sits centred on the picture's top edge (the document gives its size, not its place) — UI designer, 2026-10-08: corrected: inside the picture, top centre, 8 px in (P.x + P.w / 2 − 6, P.y + 8), like the other marks, in aqua on a 1 px ink keyline (a cream bracket vanished on the pictures' pale ground; the build draws it at P.y + 4); a differing picture also wears a 2 px aqua edge on its own rectangle, never the cream ring, which is the focus's alone (one ring per screen) — UI designer, 2026-10-09, after the art director's fourth look: superseded, no build-drawn mark; the signed master compare-mark-differs-12x12 on the name line (regions.compareA.differs)",
   "collection ring colours": "derived, UI designer to confirm: the arcs follow the layout document (filled `bone` when read, `bevel` when not, 2 px apart, the band closing when every chapter is read); the `colours.ringRead`/`ringUnread` entries of the file name the old well ring's roles (bevel, hairline) and are not used; an empty place is the base band alone in `ringBase`",
   "can-grow mark": "derived, UI designer to confirm: the mark shows on an identified pod that can be shaped into a founder while its ring is not closed (the ring closed says it already); one 16×16 mark, a placeholder until its master",
   "figure cross-fade": "derived (design lead, 2026-10-09): the figure is two slices per species, mibi-halo-<SNN>-128x160-mist and -clear, laid one over the other with the clear layer's alpha = chapters read / total chapters; the build composes the two, no blur; before Identify the empty halo",
   "chapter back label": "derived, UI designer to confirm: on the chapter page the bottom line's way back says the pod's species name (← Loika), on the overview ← Pods, on the collection ← Home",
   "overview tab focus": "derived, UI designer to confirm: with a tab focused on the overview the bottom line says `✓ Open <Chapter>` with no price (the page opens free); the read and its price sit on the chapter page",
   "kin of an unidentified pod": "derived, UI designer to confirm: an unidentified pod's species is unknown, so no kin ring is drawn for it (a frosted ring would still tell how many share the species)",
-  "page pane master": "derived, UI designer to confirm: the page's pane is the one nine-slice master page-pane-256x440 (insets 64, 64, 16, 16, edges tiled), drawn at any width and at the height the trait count gives, never scaled",
+  "page pane master": "derived, UI designer to confirm: the page's pane is the one nine-slice master page-pane-256x440 (insets 64, 64, 16, 16, edges tiled), drawn at any width and at the height the trait count gives, never scaled — UI designer, 2026-10-09: confirmed; the width by count is page.sizeByCount (176 to 584, all ≥ 128, the slice's insets)",
   "compare name line": "derived, UI designer to confirm: Compare's trait names sit 8 px under the picture on a 20 px line (nameGap, nameLine), as the chapter page's cell does at 4 px (cell.gap, cell.name.line)",
   "compare heading place": "derived, UI designer to confirm: Compare's heading shows the pod's find as a 16×16 place picture 40 px right of the heading's pod and 12 px lower (compareA.place), as the build had it",
   "kin ring band": "derived, UI designer to confirm: the kin ring's stand-in is a 2 px `hairline` band (kin.band) until ring-kin-56x56 is the studio's",
@@ -561,16 +561,49 @@
      144,
      176
     ],
-    "heightByCount": {
-     "1-4": 248,
-     "5-8": 440
+    "sizeByCount": {
+     "1": [
+      176,
+      248
+     ],
+     "2": [
+      312,
+      248
+     ],
+     "3": [
+      448,
+      248
+     ],
+     "4": [
+      584,
+      248
+     ],
+     "5": [
+      448,
+      440
+     ],
+     "6": [
+      448,
+      440
+     ],
+     "7": [
+      584,
+      440
+     ],
+     "8": [
+      584,
+      440
+     ]
     },
+    "sizeRule": "UI designer, 2026-10-09, after the art director's fourth look (the owner: \"wasted real estate\" on a one-trait page): the pane hugs its cells. Columns = the count up to four, then half the count rounded up (5 and 6 in three columns, 7 and 8 in four); width = 24 + columns × 128 + (columns − 1) × 8 + 24 = 40 + 136 × columns (176, 312, 448, 584); height 248 for one row (1–4), 440 for two (5–8). The pane is left-aligned: x 424 and its top at y 112 fixed, so the heading and the first cell never move as the rail steps; the right edge comes in. A sealed chapter takes the one-trait size, 176×248, whatever its count. The heading's word fits the narrowest pane: 144 px for the emblem (24), 8 px and the word ('Legs & Tail' 103 px at 20 px medium). Was 584 wide at every count (heightByCount { 1-4: 248, 5-8: 440 })",
+    "align": "left",
     "sealedFind": [
-     236,
-     164,
+     32,
+     84,
      112,
      112
     ],
+    "sealedFindNote": "UI designer, 2026-10-09: the find centred in the one cell's rectangle (24, 48, 128, 184) of the 176×248 sealed pane, screen (456, 196); was (236, 164) on the 584 pane, which ran 28 px past the 248 pane's foot",
     "grid": {
      "1-4": {
       "cells": [
@@ -602,9 +635,55 @@
       "picture": [
        128,
        160
-      ]
+      ],
+      "columns": "the count"
      },
-     "5-8": {
+     "5-6": {
+      "cells": [
+       [
+        24,
+        48,
+        128,
+        184
+       ],
+       [
+        160,
+        48,
+        128,
+        184
+       ],
+       [
+        296,
+        48,
+        128,
+        184
+       ],
+       [
+        24,
+        248,
+        128,
+        184
+       ],
+       [
+        160,
+        248,
+        128,
+        184
+       ],
+       [
+        296,
+        248,
+        128,
+        184
+       ]
+      ],
+      "picture": [
+       128,
+       160
+      ],
+      "columns": 3
+     },
+     "7-8": {
       "cells": [
        [
         24,
@@ -658,7 +737,8 @@
       "picture": [
        128,
        160
-      ]
+      ],
+      "columns": 4
      }
     },
     "pane": "page-pane-256x440"
@@ -838,6 +918,24 @@
      "glyph",
      "clan"
     ]
+   },
+   "differs": {
+    "slice": "compare-mark-differs-12x12",
+    "size": [
+     12,
+     12
+    ],
+    "on": "name line",
+    "gapAfterName": 4,
+    "nameAlign": "left",
+    "x": "cell.x + name width + 4",
+    "centreY": "line y + 10",
+    "y": "line y + 4",
+    "layer": "art",
+    "onBothPages": true,
+    "onlyWhen": "the trait is read on both pods and their looks differ",
+    "fit": "the longest trait name, 'Translucency' 101 px at 16 px, + 4 + 12 = 117 ≤ the narrowest Compare cell, 120",
+    "decided": "UI designer, 2026-10-09, after the art director's fourth look: build-drawn marks are out, so the difference is a signed master placed 1:1 on the name line, 4 px after the trait's name, on both pages; the notice \"they differ here\" points at it. Was a 2 px aqua edge on the picture and a 12×12 bracket at its top centre, drawn by the build"
    }
   },
   "compareB": {
@@ -903,13 +1001,16 @@
    ]
   },
   "diff": {
-   "bracket": [
-    12,
-    12
-   ],
-   "bracketAt": "top centre, `inset` px in: [P.x + P.w / 2 - 6, P.y + inset]",
-   "inset": 8,
-   "edge": 2
+   "slice": "compare-mark-differs-12x12",
+   "see": "regions.compareA.differs",
+   "was": {
+    "bracket": [
+     12,
+     12
+    ],
+    "bracketAt": "[P.x + P.w / 2 - 6, P.y + 8]",
+    "edge": 2
+   }
   }
  },
  "focus": {
@@ -1031,9 +1132,12 @@
    "edge": "slate"
   },
   "diff": {
-   "edge": "aqua",
-   "bracket": "aqua",
-   "keyline": "ink"
+   "note": "painted into compare-mark-differs-12x12 (aqua on a 1 px ink keyline, the master's own); the build fills nothing",
+   "was": {
+    "edge": "aqua",
+    "bracket": "aqua",
+    "keyline": "ink"
+   }
   },
   "beam": "tealD",
   "place": "panel",

@@ -234,7 +234,7 @@ const compareShot = async (species, seed, ci, name, grid) => {
   await page.evaluate(([a, b, c]) => { const u = window.__st.UI.pods; u.cur = a; u.cmp = { a, b, ci: c }; }, [pair[0].id, pair[1].id, ci]); await page.waitForTimeout(300);
   const cl = await line(), cells = await page.evaluate(() => window.__st.check().regions.filter((r) => r.region === "page.cell" && r.id.startsWith("pageA.")).length);
   expect(cells === grid, `${name}: ${grid} traits on Compare's page: ${cells}`);
-  expect(cl.need == null, `${name}: Compare holds its notice until the Differs row is answered: ` + JSON.stringify(cl));
+  expect(["they differ here", "they differ in another chapter", "no read trait differs"].includes(cl.need), `${name}: Compare's need line is one of the spec's strings: ` + JSON.stringify(cl));
   expect(!/\d/.test(cl.subject || "") && !/well \d/.test(cl.subject || ""), `${name}: no digits in the line`);
   const differs = await page.evaluate(([a, b]) => window.__st.compareDiff(a, b).length, [pair[0].id, pair[1].id]);
   await frameShot(name);
