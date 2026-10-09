@@ -328,27 +328,30 @@ def framemarks():
     save("face-belatz-24-away", ring_img(teal, True, 0.5, face_b), [856, 8, 24, 24], "Belatz, the Companion away: the face full on a dimmed ring", "belatz-portrait")
     save("face-24-empty", ring_img(teal, False), [856, 8, 24, 24], "no mibi with you: an empty teal ring", "procedural, supersampled 8x")
 def framecaps():
-    """The bottom line's key caps, 16x16, art layer (station.json colours only): the confirm tick (orange), the same tick in mist for the unavailable state
-    (its own slice), the back arrow (stone). A flat key: ink keyline, panel face, a 1 px bevel lit edge top and left. Glyph pixels typed by hand: x = glyph, . = face."""
+    """The bottom line's key caps, 16 px discs like the Companion's caps, art layer (station.json colours only). The role names the cap's FACE, not the glyph:
+    confirm = orange face, bone tick; confirm-dim = mist face, slate tick; back = stone face, fog arrow. An ink keyline and a 1 px bevel lit edge upper left.
+    Glyph pixels typed by hand: x = glyph, . = face."""
     tick = ["............", "............", "..........xx", ".........xx.", "........xx..", "xx.....xx...", ".xx...xx....", "..xx.xx.....", "...xxx......", "....x.......", "............", "............"]
     back = ["............", "............", "....x.......", "...xx.......", "..xxx.......", ".xxxxxxxxxx.", ".xxxxxxxxxx.", "..xxx.......", "...xx.......", "....x.......", "............", "............"]
-    pal = {"i": (0x1a, 0x17, 0x25, 255), "p": (0x2a, 0x2e, 0x38, 255), "l": (0x5a, 0x66, 0x72, 255), ".": (0, 0, 0, 0)}
-    def cap(glyph, col):
-        im = Image.new("RGBA", (16, 16), pal["."])
+    INK, BEV = (0x1a, 0x17, 0x25, 255), (0x5a, 0x66, 0x72, 255)
+    def inside(x, y): return 0 <= x < 16 and 0 <= y < 16 and (x + .5 - 8) ** 2 + (y + .5 - 8) ** 2 <= 8.0 ** 2
+    def cap(glyph, face, ink):
+        im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        edge = lambda x, y: inside(x, y) and not all(inside(x + dx, y + dy) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
         for y in range(16):
             for x in range(16):
-                if (x in (0, 15)) and (y in (0, 15)): continue
-                if x in (0, 15) or y in (0, 15): c = pal["i"]
-                elif x == 1 or y == 1: c = pal["l"]
-                else: c = pal["p"]
+                if not inside(x, y): continue
+                if edge(x, y): c = INK
+                elif (x + .5 - 8) + (y + .5 - 8) < 0 and any(edge(x + dx, y + dy) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))): c = BEV
+                else: c = face + (255,)
                 im.putpixel((x, y), c)
         for y, r in enumerate(glyph):
             for x, ch in enumerate(r):
-                if ch == "x": im.putpixel((x + 2, y + 2), col + (255,))
+                if ch == "x": im.putpixel((x + 2, y + 2), ink + (255,))
         return im
-    save("frame-cap-confirm-16", cap(tick, (0xf2, 0x67, 0x1b)), [16, 574, 16, 16], "the bottom line's confirm key cap: a flat key, an orange tick; at (16,574)", "typed by hand")
-    save("frame-cap-confirm-16-dim", cap(tick, (0x8d, 0x8a, 0xa6)), [16, 574, 16, 16], "the confirm key cap for the unavailable state: the tick in mist (its own slice)", "typed by hand")
-    save("frame-cap-back-16", cap(back, (0x5d, 0x59, 0x74)), [None, 574, 16, 16], "the bottom line's back key cap: a flat key, a stone arrow; before the Back word", "typed by hand")
+    save("frame-cap-confirm-16", cap(tick, (0xf2, 0x67, 0x1b), (0xf1, 0xeb, 0xdf)), [16, 574, 16, 16], "the bottom line's confirm key cap: a 16 px disc, orange face, bone tick, ink keyline, 1 px bevel", "typed by hand")
+    save("frame-cap-confirm-16-dim", cap(tick, (0x8d, 0x8a, 0xa6), (0x3d, 0x39, 0x54)), [16, 574, 16, 16], "the confirm key cap for the unavailable state: mist face, slate tick (its own slice)", "typed by hand")
+    save("frame-cap-back-16", cap(back, (0x5d, 0x59, 0x74), (0xc6, 0xc4, 0xd8)), [None, 574, 16, 16], "the bottom line's back key cap: a 16 px disc, stone face, fog arrow", "typed by hand")
 def pagemark():
     """page-mark-new-10: the 'new to the field guide' mark as the layout specifies it: a flat engraved bone dot, 10x10, a 1 px lit edge (white, upper left) and an ink
     keyline, art layer (station.json colours only), no specular. Pixel data typed by hand: i = ink, b = bone, w = white, . = empty."""

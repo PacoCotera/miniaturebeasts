@@ -3999,8 +3999,8 @@
    16
   ],
   "src": "typed by hand",
-  "made": "the bottom line's confirm key cap: a flat key, an orange tick; at (16,574)",
-  "sha256": "ebb81bc6761df9c710ea16659552cc0c164dab68d36669b942467770fd44d9bf",
+  "made": "the bottom line's confirm key cap: a 16 px disc, orange face, bone tick, ink keyline, 1 px bevel",
+  "sha256": "c0f9568865dc612d3450bf0ba3169916b810f5cba725bef231b2e8486efa5558",
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
@@ -4017,8 +4017,8 @@
    16
   ],
   "src": "typed by hand",
-  "made": "the confirm key cap for the unavailable state: the tick in mist (its own slice)",
-  "sha256": "bbc3f2c9eb7a262b5f4bb9609ee392c7d2d9eccad38d9fce9b8dc0384681a639",
+  "made": "the confirm key cap for the unavailable state: mist face, slate tick (its own slice)",
+  "sha256": "06e96d5e1a12bf938007aeae54ca2f7728a70c4948d1b34452b722875c723cce",
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
@@ -4035,8 +4035,8 @@
    16
   ],
   "src": "typed by hand",
-  "made": "the bottom line's back key cap: a flat key, a stone arrow; before the Back word",
-  "sha256": "d518826996a3dda961bb132ef873457667152327c3cbba1c77dce4541a722d20",
+  "made": "the bottom line's back key cap: a 16 px disc, stone face, fog arrow",
+  "sha256": "1f21328e7dad2eb3edaa360d477f2ec2425701f7c44a39bf77ef90602875b9d5",
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"

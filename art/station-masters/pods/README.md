@@ -67,9 +67,9 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
 | `frame-bottom-line-1024x38` | 1024×38 | (0, 562, 1024, 38) | signed (pass 1): excluded from placing (the frame redesign) | the bar flipped (rule on its top edge), 1024x38 |
-| `frame-cap-back-16` | 16×16 | (·, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's back key cap: a flat key, a stone arrow; before the Back word |
-| `frame-cap-confirm-16` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's confirm key cap: a flat key, an orange tick; at (16,574) |
-| `frame-cap-confirm-16-dim` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the confirm key cap for the unavailable state: the tick in mist (its own slice) |
+| `frame-cap-back-16` | 16×16 | (·, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's back key cap: a 16 px disc, stone face, fog arrow |
+| `frame-cap-confirm-16` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the bottom line's confirm key cap: a 16 px disc, orange face, bone tick, ink keyline, 1 px bevel |
+| `frame-cap-confirm-16-dim` | 16×16 | (16, 574, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the confirm key cap for the unavailable state: mist face, slate tick (its own slice) |
 | `frame-companion-outline-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, outline (away); painted large and reduced |
 | `frame-companion-solid-16x24` | 16×24 | (816, 8, 16, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's glyph, solid (docked); painted large and reduced |
 | `frame-lamp-12-amber` | 12×12 | (·, ·, 12, 12) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the notice's 12x12 amber lamp (the same lamp as Home's modules) |
@@ -335,6 +335,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 10 - caps as discs, the composite without the withdrawn pieces
+
+The three key caps are now 16 px discs, the role naming the face: confirm = orange face, bone tick; confirm-dim = mist face, slate tick; back = stone face, fog arrow; ink keyline and a 1 px bevel edge upper left kept. The Read composite has the new caps, no new-mark, no emblem on the Legs & tail tab (the word alone), "Home" with its cap at the right end (back region right-aligned to 1008, the notice's right edge at 904, separators at 404 and 620). Stand-ins still drawn in it: the holdings icons, the pictures, the pips, the trait marks, the focus ring, the arc progress, the stamp raster.
+
 
 ## Pass 9 - frame ids as the spec names them, and the key caps
 
