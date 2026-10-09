@@ -9,12 +9,12 @@ RUN_MIN, WIDTH = 8, 12
 def _smooth(t): t = np.clip(t, 0, 1); return t * t * (3 - 2 * t)
 def _box1d(v, r):
     k = np.ones(2 * r + 1); return np.clip(np.convolve(v, k, mode="same"), 0, 1)
-def fade_cut(img, ground):
+def fade_cut(img, ground, only=None):
     a = np.asarray(img.convert("RGB")).astype(float); h, w = a.shape[:2]; g = np.array(ground, float); m = np.abs(a - g).max(2) > 6; keep = np.ones((h, w)); edges = []
     sides = {"top": (m[0, :], 0, 1), "bottom": (m[h - 1, :], 0, -1), "left": (m[:, 0], 1, 1), "right": (m[:, w - 1], 1, -1)}
     for name, (line, axis, sgn) in sides.items():
         run = int(line.sum())
-        if run < RUN_MIN: continue
+        if run < RUN_MIN or (only is not None and name not in only): continue
         edges.append({"edge": name, "run_px": run})
         lateral = _box1d(line.astype(float), WIDTH)                        # 1 along the run, tapering to 0 over WIDTH px either side
         n = h if axis == 0 else w

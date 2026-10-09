@@ -395,12 +395,16 @@
   "curiosity",
   "nerve"
  ],
- "plates_waiting": {
-  "face/feather-crest": "the crest alone, close up against deep",
-  "face/eyes": "one eye close up filling the cell: iris, ring, lid; no beak",
-  "legs-tail/tail-curl": "the whole hind body and tail in silhouette, small in the cell, showing how the tail is held",
-  "coat/feathers": "the feather surface of the coat as a quality: a close patch of the plumage in this look, filling the cell, no wing or outline",
-  "coat/fur-reach": "the tufts as a quality: how far the fur reaches, a close patch of the coat edge in this look, filling the cell, no wing"
- },
+ "plates_painted": [
+  "trait-S09-carriage-straight-128x160",
+  "trait-S09-colour-cobalt-128x160",
+  "trait-S09-crest-between-128x160",
+  "trait-S09-eyes-small-128x160",
+  "trait-S09-feathers-between-128x160",
+  "trait-S09-fluff-between-128x160",
+  "trait-S09-sheen-between-128x160",
+  "trait-S09-tufts-body-only-128x160"
+ ],
+ "plates_waiting": {},
  "rule": "a distinct visible part is a crop (Beak, Crown, Tail, Feathers, Tufts, Head); a quality, a surface material, a small part or a posture is a per-look plate (Colour, Fluff, Sheen, Markings, Scales, Feathers, Tufts, Crest, Eyes, Carriage); the surface materials (Fluff, Sheen, Feathers, Tufts) count as qualities: no crop is cut from the flap box or the fur-reach box, because it would read as a Wings picture; each trait's kind is recorded here"
 }

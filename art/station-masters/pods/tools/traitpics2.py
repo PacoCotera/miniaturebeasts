@@ -133,7 +133,8 @@ for key_, (why, rect, kind, pad, limit, feather) in BOX.items():
     doc["traits"][key_] = ent
 for k_, nm_ in (("coat/feathers", "Feathers"), ("coat/fur-reach", "Tufts")): doc["traits"][k_] = {"chapter": "coat", "trait": nm_, "look": looks[k_]["look"], "kind": "plate", "box": None, "source": "a surface material: a per-look plate painted as a quality after the quota, no crop", "crops": {}}
 doc["quality_traits_waiting"] = [k for k, v in R["traits"].items() if v["whole"]]
-doc["plates_waiting"] = PLATES
+PAINTED = sorted(f[:-4] for f in os.listdir("slices") if re.match(r"trait-S09-(colour|fluff|sheen|feathers|tufts|crest|eyes|carriage)-.*-128x160\.png$", f))     # pass 65: the per-look plates painted (tools/plates75.py)
+doc["plates_painted"] = PAINTED; doc["plates_waiting"] = {} if len(PAINTED) >= 8 else PLATES
 doc["rule"] = "a distinct visible part is a crop (Beak, Crown, Tail, Feathers, Tufts, Head); a quality, a surface material, a small part or a posture is a per-look plate (Colour, Fluff, Sheen, Markings, Scales, Feathers, Tufts, Crest, Eyes, Carriage); the surface materials (Fluff, Sheen, Feathers, Tufts) count as qualities: no crop is cut from the flap box or the fur-reach box, because it would read as a Wings picture; each trait's kind is recorded here"
 json.dump(doc, open("traitpics/trait-regions-S09-round2.json", "w"), indent=1); json.dump(man, open("slices/manifest.json", "w"), indent=1)
 # drop the round 1 slices for the traits redone here (their ids carried the old looks)

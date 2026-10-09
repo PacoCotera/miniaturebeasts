@@ -8415,5 +8415,109 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
+ },
+ "trait-S09-colour-cobalt-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/plate-S09-colour.jpg (gemini-3-pro-image)",
+  "made": "the Colour plate of the Belatz (cobalt): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.151) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "9bb05b4f3eacc4fb87d9f7371387c0f7d4d7123e42d0658eb29df5701e541e27",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+ },
+ "trait-S09-fluff-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/plate-S09-fluff.jpg (gemini-3-pro-image)",
+  "made": "the Fluff plate of the Belatz (between): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.110) into the centred 96x120 at (16, 20), no frame; the object ran off the painting's top edge: a keyed fade (smoothstep, 12 px) along it",
+  "sha256": "b8559cacf2965c2b652b87632ec78d3420873fd228d0a544857bac729e897340",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+ },
+ "trait-S09-sheen-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/plate-S09-sheen.jpg (gemini-3-pro-image)",
+  "made": "the Sheen plate of the Belatz (between): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.119) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "02002406ef348847e14cd49d139e71c9b1e9fd6c6a9b49143d1e56def314e9ce",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+ },
+ "trait-S09-feathers-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/plate-S09-feathers.jpg (gemini-3-pro-image)",
+  "made": "the Feathers plate of the Belatz (between): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.124) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "36190da9a96d71b715b1c384f9e883fa844d977c49c7c651743581c70cd35957",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+ },
+ "trait-S09-tufts-body-only-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/plate-S09-tufts.jpg (gemini-3-pro-image)",
+  "made": "the Tufts plate of the Belatz (body only): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.134) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "f5cefd818d6eda5154e149ea8f55a8efd466984231adfd91e8225df5b7169642",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+ },
+ "trait-S09-crest-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/plate-S09-crest.jpg (gemini-3-pro-image)",
+  "made": "the Crest plate of the Belatz (between): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.150) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "b7195edc6d6cd03c0ba7a13866ad78b3457ccba69e802d666ab330fca1e3cea9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+ },
+ "trait-S09-eyes-small-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/plate-S09-eyes.jpg (gemini-3-pro-image)",
+  "made": "the Eyes plate of the Belatz (small): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.127) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "72d9175c740917d5516aa2b28cbd3ca65c427e298346d1ee9cbf64b9bb10e889",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+ },
+ "trait-S09-carriage-straight-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/plate-S09-carriage.jpg (gemini-3-pro-image)",
+  "made": "the Carriage plate of the Belatz (straight): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.129) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "c6dd1bfa50b5b961e38cc01b8ed555aaab7c7900e9fd878bd5c6b4f46151b169",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
  }
 }
