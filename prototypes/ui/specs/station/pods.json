@@ -45,7 +45,10 @@
      240
     ],
     "radius": 6,
-    "component": "panel"
+    "component": "panel",
+    "slice": "panel-place-320x224",
+    "nineSlice": false,
+    "on": "room-bench-stage-collection"
    },
    "ring": {
     "centre": [
@@ -54,7 +57,32 @@
     ],
     "outer": 80,
     "band": 8,
-    "arcs": "one per chapter, filled when read, closed when all read"
+    "arcs": "one per chapter, filled when read, closed when all read",
+    "slice": [
+     8,
+     24,
+     176,
+     176
+    ],
+    "masters": {
+     "idle": "ring-collection-idle-176x176",
+     "closed": "ring-collection-closed-176x176",
+     "track": "ring-arc-collection-n{N}-track-176x176",
+     "segment": "ring-arc-collection-n{N}-s{i}-176x176",
+     "chapters": [
+      1,
+      8
+     ],
+     "placed": "1:1 on the slice's origin",
+     "closedReplaces": "track and segments"
+    },
+    "paint": "colours.collectionRingPaint: the paint reference for the masters; the build draws no arcs",
+    "focus": {
+     "shape": "circle",
+     "radius": 84,
+     "width": 2,
+     "colour": "focus"
+    }
    },
    "pod": {
     "size": [
@@ -81,7 +109,8 @@
      "max": 224,
      "h": 24
     },
-    "noDigits": true
+    "noDigits": true,
+    "slice": "plate-name (the hugging nine-slice series)"
    },
    "place": {
     "at": [
@@ -89,7 +118,8 @@
      104,
      48,
      48
-    ]
+    ],
+    "slice": "place-{place}-48x48"
    },
    "grow": {
     "at": [
@@ -98,7 +128,8 @@
      16,
      16
     ],
-    "only": "where the ring and the seal do not say it"
+    "only": "where the ring and the seal do not say it",
+    "slice": "mark-can-grow-16"
    },
    "glint": {
     "at": [
@@ -106,7 +137,8 @@
      40,
      12,
      12
-    ]
+    ],
+    "slice": "glint-star-12x12"
    },
    "waiting": {
     "rect": [
@@ -115,7 +147,18 @@
      24,
      24
     ],
-    "noDigits": true
+    "noDigits": true,
+    "slice": "mark-waiting-24"
+   },
+   "bench": {
+    "rect": [
+     0,
+     40,
+     1024,
+     522
+    ],
+    "slice": "room-bench-stage-collection",
+    "cone": null
    }
   },
   "overview": {
@@ -253,7 +296,9 @@
      120,
      64,
      64
-    ]
+    ],
+    "slice": "place-{place}-64x64",
+    "note": "a new master painted from the same painting at 64, never scaled"
    },
    "origin": {
     "rect": [
@@ -292,7 +337,8 @@
      40,
      48
     ],
-    "role": "the Compare targets"
+    "role": "the Compare targets",
+    "ring": "ring-kin-56x56"
    },
    "hatch": {
     "rect": [
@@ -351,6 +397,19 @@
     ],
     "px": 20,
     "ms": 6000
+   },
+   "bench": {
+    "rect": [
+     0,
+     40,
+     1024,
+     522
+    ],
+    "slice": "room-bench-stage-overview",
+    "pool": [
+     256,
+     424
+    ]
    }
   },
   "chapter": {
@@ -590,6 +649,19 @@
       ]
      }
     }
+   },
+   "bench": {
+    "rect": [
+     0,
+     40,
+     1024,
+     522
+    ],
+    "slice": "room-bench-stage-chapter",
+    "pool": [
+     216,
+     424
+    ]
    }
   },
   "compareA": {
@@ -876,12 +948,6 @@
  },
  "colours": {
   "ground": "deep",
-  "ringRead": "bevel",
-  "ringCurrent": "bone",
-  "ringUnread": "hairline",
-  "ringSealed": "hairline",
-  "ringBase": "hairline",
-  "ringDot": "bone",
   "name": "bone",
   "origin": "bone",
   "ribbonFill": "tealD",
@@ -932,7 +998,12 @@
   "placeEdge": "hairline",
   "figureHalo": "frostD",
   "figureSilhouette": "enamel",
-  "kinRing": "hairline"
+  "kinRing": "hairline",
+  "collectionRingPaint": {
+   "read": "bone",
+   "unread": "bevel",
+   "edge": "hairline"
+  }
  },
  "strings": {
   "unknownPod": "Unknown",
@@ -969,7 +1040,15 @@
   "backTo": "Back to the {place}",
   "needMore": "needs more {icons}",
   "glintHere": "something new here",
-  "glintPod": "something new waits"
+  "glintPod": "something new waits",
+  "openChapter": "Open {chapter}",
+  "wayBack": {
+   "collection": "Home",
+   "overview": "Pods",
+   "chapter": "{name}",
+   "chapterFallback": "Back",
+   "compare": "{name}"
+  }
  },
  "states": [
   "collection",

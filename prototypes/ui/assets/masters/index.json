@@ -1,12 +1,138 @@
 {
  "schema": "mb-masters/1",
  "masters": {
+  "face-24-empty": {
+   "file": "pods/face-24-empty.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "31a32690a97334cef6e50fb1f88592b765a6a8f43e82672d2e3a653507d892e8",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "face-belatz-24": {
+   "file": "pods/face-belatz-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "a6c5fd2a48598ce79f8a1227905c3482ee9e3fef47da73169b7fde7d644b845e",
+   "signed": "signed, pass 11 (verdict)"
+  },
+  "face-belatz-24-away": {
+   "file": "pods/face-belatz-24-away.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "79ffd8beeb87e9abcc2516b9beba16f3a7f67b62fa7ace352b94881bf845f0ad",
+   "signed": "signed, pass 11 (verdict)"
+  },
+  "face-loika-24": {
+   "file": "pods/face-loika-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "103830c29ebd70ce2ff262f837e79427b631a8bd0c6ce19bdd7d0c8df735925f",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "face-loika-24-away": {
+   "file": "pods/face-loika-24-away.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
   "frame-bottom-line-1024x38": {
    "file": "pods/frame-bottom-line-1024x38.png",
    "w": 1024,
    "h": 38,
    "sha256": "1322d4e5234ce0ce4999bf7e6bf37bd97615b7e7969a3987065cacadfbd644c2",
    "signed": "signed, pass 1"
+  },
+  "frame-cap-back-16": {
+   "file": "pods/frame-cap-back-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "1f21328e7dad2eb3edaa360d477f2ec2425701f7c44a39bf77ef90602875b9d5",
+   "signed": "signed, pass 10 (verdict)"
+  },
+  "frame-cap-confirm-16": {
+   "file": "pods/frame-cap-confirm-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "c0f9568865dc612d3450bf0ba3169916b810f5cba725bef231b2e8486efa5558",
+   "signed": "signed, pass 10 (verdict)"
+  },
+  "frame-cap-confirm-16-dim": {
+   "file": "pods/frame-cap-confirm-16-dim.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "06e96d5e1a12bf938007aeae54ca2f7728a70c4948d1b34452b722875c723cce",
+   "signed": "signed, pass 10 (verdict)"
+  },
+  "frame-companion-outline-16x24": {
+   "file": "pods/frame-companion-outline-16x24.png",
+   "w": 16,
+   "h": 24,
+   "sha256": "390ee6f7c05da87c416b0ef686c1cedfcdb7b1dc3dd137bfde2ce8312162fd66",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "frame-companion-solid-16x24": {
+   "file": "pods/frame-companion-solid-16x24.png",
+   "w": 16,
+   "h": 24,
+   "sha256": "6fc434b6d4c8a66cc99f5a33f6dd6c5e62d8cbca6505932b4447a9e9071bb233",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "frame-lamp-12-amber": {
+   "file": "pods/frame-lamp-12-amber.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "7b2f7f70d0baca088268b9c09139d5a3ba57f3e92f0f5ca4500fc292a21693e5",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "frame-lamp-8-mint": {
+   "file": "pods/frame-lamp-8-mint.png",
+   "w": 8,
+   "h": 8,
+   "sha256": "e19fee66d66e53ffad6ea55c1796660a4840cfdff66f808d577cd09c79ba3ddb",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "frame-lamp-8-stone": {
+   "file": "pods/frame-lamp-8-stone.png",
+   "w": 8,
+   "h": 8,
+   "sha256": "7732c769d62f375be1b8a2721675f9ed81c09d5d211ed9f9b312b5e6af94bb2d",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "frame-room-habitat-24": {
+   "file": "pods/frame-room-habitat-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "fe744992d97e78b1018beff76bf1d928f53d1b0397419e0e44f53d1e958c9b08",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "frame-room-home-24": {
+   "file": "pods/frame-room-home-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "de9371c0b273375c856335554ca9741221698a349a6f135ce09f808d828c2dc0",
+   "signed": "signed, pass 12 (verdict)"
+  },
+  "frame-room-library-24": {
+   "file": "pods/frame-room-library-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "42512e0c14391bbf4752b977a499acaf31466209f54f724a263e9ac471a3e680",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "frame-room-research-24": {
+   "file": "pods/frame-room-research-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "14916cda830a5702bd2b145b94a6ae18dae68d3b916eccf99db91260bfc5d6ee",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "frame-sun-16": {
+   "file": "pods/frame-sun-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "59cf47153ed146c66d607da6f4cc0f588e899633813d7986b4aa9d7900faf9f7",
+   "signed": "signed, passes 8 and 9 (verdict)"
   },
   "frame-top-bar-1024x40": {
    "file": "pods/frame-top-bar-1024x40.png",
@@ -218,6 +344,13 @@
    "sha256": "8df26245d7b30976c0378df8dfbb165563ec75fee4a913d35b25e387eab111dd",
    "signed": "placeholder, not final: placeholder, re-cut from the standard painting when it lands"
   },
+  "page-mark-new-10": {
+   "file": "pods/page-mark-new-10.png",
+   "w": 6,
+   "h": 6,
+   "sha256": "0e12dd402268ed52bfbfb61538f7fe3164d5a23d1b321fce6d004f771c41146d",
+   "signed": "signed, pass 10 (verdict)"
+  },
   "page-pane-256x440": {
    "file": "pods/page-pane-256x440.png",
    "w": 256,
@@ -232,19 +365,40 @@
    ],
    "tile": 32
   },
+  "place-cave-48x48": {
+   "file": "pods/place-cave-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "5260edf77a2d46b9f3ff088c202de35758f99d6c0c3cb42597aa8d335d73e19e",
+   "signed": "signed, places round 1 (meadow, pond) and round 2 (rock, wood, cave)"
+  },
   "place-meadow-48x48": {
    "file": "pods/place-meadow-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "a1a6dcbf600a44bf8e952c5c68594947c9d4fe6f89a8e0f89327e26542e56733",
-   "signed": "signed, places round 1"
+   "signed": "signed, places round 1 (meadow, pond) and round 2 (rock, wood, cave)"
   },
   "place-pond-48x48": {
    "file": "pods/place-pond-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "7e44aa1254c0eb9e49811be69d161ee872d775f514f13f1cdd74e0932eb50c14",
-   "signed": "signed, places round 1"
+   "signed": "signed, places round 1 (meadow, pond) and round 2 (rock, wood, cave)"
+  },
+  "place-rock-48x48": {
+   "file": "pods/place-rock-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "a3e585738f8180863894eeb5db2de0a1d9498d1a2a42cb91bb5232c97068e329",
+   "signed": "signed, places round 1 (meadow, pond) and round 2 (rock, wood, cave)"
+  },
+  "place-wood-48x48": {
+   "file": "pods/place-wood-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "673d78a5141073ff3e7a1d433f2a018ffe281eab3155bab58e1b8e194879fd79",
+   "signed": "signed, places round 1 (meadow, pond) and round 2 (rock, wood, cave)"
   },
   "plate-message-640x36": {
    "file": "pods/plate-message-640x36.png",
@@ -589,6 +743,83 @@
    "sha256": "d394efb849f88bcdc23846b5f66e711dd4f361059f9444bff9803f16c3da5244",
    "signed": "signed, pass 24 (signed on delivery)"
   },
+  "pod-well-band": {
+   "file": "pods/pod-well-band.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "6968e2fa959f8a3c69ef59e1af276288247e9fadb97e0855628f5df570b0a02d",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-crack": {
+   "file": "pods/pod-well-crack.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "d32a99fc6c672a57965797d177fc4821be099b56ecbc3fce028d23bd8331ff2c",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-identified": {
+   "file": "pods/pod-well-identified.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "1def9aa52197d5dff7755d2b6f8ae71dfbffc498ffc6c2d4e6b08e086974426c",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-mask-accent": {
+   "file": "pods/pod-well-mask-accent.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "2236fa0afe54c90eccbe22a55f0861209641132041b8f5e923135de4d1fe86ae",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-mask-body": {
+   "file": "pods/pod-well-mask-body.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "ed6c5626f1ff3e74f50ec3674a1af844ae585fba844d47bde7ffad4a3eab1a56",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-pattern-bands": {
+   "file": "pods/pod-well-pattern-bands.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "bc43435d4fca6bc4c628c8830e81ff002ed4e5114aab575a6dddd23a49553ad7",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-pattern-dots": {
+   "file": "pods/pod-well-pattern-dots.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "dca28c8ee4a97cc5cba1652d6f0cef0bc5985475fc8ae504074d8b4c36d9fdce",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-pattern-stripes": {
+   "file": "pods/pod-well-pattern-stripes.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "e631f0f010b5d2ce0bd486e5f6a9b7c1e4eeb64ca9198a8763387ece878ee147",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-sealed": {
+   "file": "pods/pod-well-sealed.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "c57634f8f3735888659c0de006931b5b65d8599f303c665d967200308668b1d5",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-shade": {
+   "file": "pods/pod-well-shade.png",
+   "w": 40,
+   "h": 48,
+   "sha256": "c40fd8f578ee4403b4fad2973c0ce3f2b7ff09bc079287e953d72218726c6e1b",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
+  "pod-well-shadow": {
+   "file": "pods/pod-well-shadow.png",
+   "w": 56,
+   "h": 14,
+   "sha256": "e250f80ed856145e2b6252291f31cee3ff3543eda23a6f51d157ac8c73f67094",
+   "signed": "signed, passes 8 and 9 (verdict)"
+  },
   "pod-well-unknown": {
    "file": "pods/pod-well-unknown.png",
    "w": 40,
@@ -784,6 +1015,62 @@
    "h": 24,
    "sha256": "87a1dd57ed7ef2ce89fb766094fea0fd176c8d39c787d46a760bcb4a1ed85bdc",
    "signed": "signed, emblems round 3"
+  },
+  "rail-tab-fill-open-compact-72x40": {
+   "file": "pods/rail-tab-fill-open-compact-72x40.png",
+   "w": 72,
+   "h": 40,
+   "sha256": "c9716f7c35e7f00d7af4617908e44999536eb90aa67e7447ed63535b91425947",
+   "signed": "signed, pass 8 (verdict on 55944fb)"
+  },
+  "rail-tab-fill-open-full-152x40": {
+   "file": "pods/rail-tab-fill-open-full-152x40.png",
+   "w": 152,
+   "h": 40,
+   "sha256": "66d692a7d95fa61dc4c78799a685571daa63b7ecedec1fd471a7719518ab97da",
+   "signed": "signed, pass 8 (verdict on 55944fb)"
+  },
+  "rail-tab-fill-read-compact-72x40": {
+   "file": "pods/rail-tab-fill-read-compact-72x40.png",
+   "w": 72,
+   "h": 40,
+   "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
+   "signed": "signed, pass 8 (verdict on 55944fb)"
+  },
+  "rail-tab-fill-read-full-152x40": {
+   "file": "pods/rail-tab-fill-read-full-152x40.png",
+   "w": 152,
+   "h": 40,
+   "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
+   "signed": "signed, pass 8 (verdict on 55944fb)"
+  },
+  "rail-tab-fill-sealed-compact-72x40": {
+   "file": "pods/rail-tab-fill-sealed-compact-72x40.png",
+   "w": 72,
+   "h": 40,
+   "sha256": "af0c823e9bd9f97b4d31719243ee92c4e6cfb923ebd23b9336227dd79deae76d",
+   "signed": "signed, pass 8 (verdict on 55944fb)"
+  },
+  "rail-tab-fill-sealed-full-152x40": {
+   "file": "pods/rail-tab-fill-sealed-full-152x40.png",
+   "w": 152,
+   "h": 40,
+   "sha256": "fa6d3290988ca481e815a8fb6030a955221c85c659dc42e2f12fc8738db56cad",
+   "signed": "signed, pass 8 (verdict on 55944fb)"
+  },
+  "rail-tab-fill-unread-compact-72x40": {
+   "file": "pods/rail-tab-fill-unread-compact-72x40.png",
+   "w": 72,
+   "h": 40,
+   "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
+   "signed": "signed, pass 8 (verdict on 55944fb)"
+  },
+  "rail-tab-fill-unread-full-152x40": {
+   "file": "pods/rail-tab-fill-unread-full-152x40.png",
+   "w": 152,
+   "h": 40,
+   "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
+   "signed": "signed, pass 8 (verdict on 55944fb)"
   },
   "rail-tab-focused-compact-72x40": {
    "file": "pods/rail-tab-focused-compact-72x40.png",
@@ -1086,6 +1373,251 @@
    "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
    "signed": "signed, well rings verdict"
   },
+  "ring-arc-selected-n4-s0": {
+   "file": "pods/ring-arc-selected-n4-s0.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "068bbb8bf1fb828cba419fc219824aae58ef470728f0eac1c652251bee9cc19d",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n4-s1": {
+   "file": "pods/ring-arc-selected-n4-s1.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "6b61ab4beb4dcecd0158447f7197e7a7afb66827b5f3fff4c5179be2bb6fa035",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n4-s2": {
+   "file": "pods/ring-arc-selected-n4-s2.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "c5e155e9df75e208b63b4a5f5d9be56153fcea4f314869c297d4e02047bc584b",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n4-s3": {
+   "file": "pods/ring-arc-selected-n4-s3.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "ccce4cc66663230e3064b7a8fb59356e1fb261952ef3a47458aed1c0b26f9005",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n4-track": {
+   "file": "pods/ring-arc-selected-n4-track.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "a7ad1a5f51622d076a937f7eaa4d68e31fd1fc5e38c9a1bcca9ff61a8c3408b2",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n5-s0": {
+   "file": "pods/ring-arc-selected-n5-s0.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "f65c0b2930c4b23058b9dbdb0ed45a256ef1aafdbe136b814d05bfd5ab1cc3ab",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n5-s1": {
+   "file": "pods/ring-arc-selected-n5-s1.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "60e69b8e98c1118d677c27c911434300e93183722ea7a77d82b98dfe190912a8",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n5-s2": {
+   "file": "pods/ring-arc-selected-n5-s2.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "8d3ed6f2d42d0ef47b1faa24d4b3532b74a4f57bc9be1bd9ad15969ef520dfdd",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n5-s3": {
+   "file": "pods/ring-arc-selected-n5-s3.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "bfff8099145c03ac04955cbff9a8f350121a7b70ae756799b395be5b5b108733",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n5-s4": {
+   "file": "pods/ring-arc-selected-n5-s4.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "74c378b89180851da449f8d1fec5fe334c04efb242f9538e3366813bfbce0f43",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n5-track": {
+   "file": "pods/ring-arc-selected-n5-track.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "800b21b19de75dd213da1ec05382b251b45dc28a867a67196ab401c3eb5ca9ac",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n6-s0": {
+   "file": "pods/ring-arc-selected-n6-s0.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "7e6f21b9b349782b7584b63b1917c5ab8dad42395c20d2dfcb61fc6b61b5d137",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n6-s1": {
+   "file": "pods/ring-arc-selected-n6-s1.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "23b7a6045da1244cfa887d0a6bf32f329095d5b17ccb0364f2cff9351442a144",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n6-s2": {
+   "file": "pods/ring-arc-selected-n6-s2.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "e5e42aac48540a80282b5a0127f5dbdb99de787c1f10756462dbb80470771de6",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n6-s3": {
+   "file": "pods/ring-arc-selected-n6-s3.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "69dd493d9733873ff22439262c51cbd2841a2d48ba8f6049a1c8af80ecbb376b",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n6-s4": {
+   "file": "pods/ring-arc-selected-n6-s4.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "b867f7fbdb9ee0b47a74ad60532f92e0154cb1b8bc3537b575c05f1c7c396f55",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n6-s5": {
+   "file": "pods/ring-arc-selected-n6-s5.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "791c64a7f90d37cf2110b3d0dcce27105024f44dd75e4f2c34ff52791ef8d536",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n6-track": {
+   "file": "pods/ring-arc-selected-n6-track.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "4a8f184b41d2ebcbd64188c7a84809bf6d4b11df64f2b97524cba228a12bfaae",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n7-s0": {
+   "file": "pods/ring-arc-selected-n7-s0.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "88218cf229ccb36eeb4b42aac5059dae47f399de50bd23f7010da33e31fb4cc3",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n7-s1": {
+   "file": "pods/ring-arc-selected-n7-s1.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "d0d0c15bafd16ecd7d1f24f0b114c5ea67b043c163b44d3f7876cca477a4db80",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n7-s2": {
+   "file": "pods/ring-arc-selected-n7-s2.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "b6c7910935f88fbc2a364a5de527595eaf8559029ef8da8c368d0103c7e9f4c4",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n7-s3": {
+   "file": "pods/ring-arc-selected-n7-s3.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "3bcc0d2b49642824e4e0773515b25de5d2857a98c6ea0a7080bc35a84c3081f3",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n7-s4": {
+   "file": "pods/ring-arc-selected-n7-s4.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "98f4efb9b8aedb903758dd2ffb0d6da38b7f91d860b6b92e42bb4fb65289e873",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n7-s5": {
+   "file": "pods/ring-arc-selected-n7-s5.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "77ddd025aa9dd8d7bf7de276a045069afcd1ed7f9f23f36512edec533fac5966",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n7-s6": {
+   "file": "pods/ring-arc-selected-n7-s6.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "de37e8578c124185ba70c2b657122bab3435bfc0da109f75fb04b6a38c4056ec",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n7-track": {
+   "file": "pods/ring-arc-selected-n7-track.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "78d3529dba705c2946933645e1f17a6d48436a9786ef9496f6382fa600382b20",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n8-s0": {
+   "file": "pods/ring-arc-selected-n8-s0.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "092e81713eddbb24311367ca83945d0067b89b8d3f25961cad125121e7c014ee",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n8-s1": {
+   "file": "pods/ring-arc-selected-n8-s1.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "2be7f10c2caa7b916ccd6c0b5a70e5bb6d1c9861e292809af2f16fa8be7c881b",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n8-s2": {
+   "file": "pods/ring-arc-selected-n8-s2.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "ccd56f0c6d8e103dde3b7ce85a185b15db1ea5411ba00473844b6bd6e501da4f",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n8-s3": {
+   "file": "pods/ring-arc-selected-n8-s3.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "3f0777a85cb3b44cc5473a460dd82e922a5e8d0ea361b58e31705d782fed14af",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n8-s4": {
+   "file": "pods/ring-arc-selected-n8-s4.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "d32811299947b640af3d8b498a90deb7b59c8f7353dee9887350836e1a96895f",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n8-s5": {
+   "file": "pods/ring-arc-selected-n8-s5.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "e1cd66ad372760040847015e94311a9c699971254cc7146afe6a5698336de5f4",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n8-s6": {
+   "file": "pods/ring-arc-selected-n8-s6.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "f76b8760b730cd12165834b527c0158518b830cdad0754ae7cc6eb9742eb095c",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n8-s7": {
+   "file": "pods/ring-arc-selected-n8-s7.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "b591c0e411682b50269dc29ef510df94066a9f6f32f0f836b592b8ba353f283d",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
+  "ring-arc-selected-n8-track": {
+   "file": "pods/ring-arc-selected-n8-track.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "eed42ea9a69ff11f6fb6a53c5e40bb3dde3add689cfa024cb716a5ed97d69ab9",
+   "signed": "signed, pass 17 (the painted gauge, verdict)"
+  },
   "ring-column": {
    "file": "pods/ring-column.png",
    "w": 160,
@@ -1113,6 +1645,13 @@
    "h": 56,
    "sha256": "3ebdddd988510d13e2e974a351a5d24597e5dee085f24b0073a36fe80da9b7dc",
    "signed": "signed, pass 8 (d767daa verdict)"
+  },
+  "ring-well-empty-80x80": {
+   "file": "pods/ring-well-empty-80x80.png",
+   "w": 80,
+   "h": 80,
+   "sha256": "932445e687b4c22fa962799655c5f4b292a2ddf3bbc210bff7ee5a1caef0ae12",
+   "signed": "signed, 55944fb verdict"
   },
   "ring-well-idle-80x80": {
    "file": "pods/ring-well-idle-80x80.png",
@@ -1162,6 +1701,13 @@
    "h": 152,
    "sha256": "f966465a22ed2105be71980b68daa508ce7fcfdc307833c2d044d0f92704ca78",
    "signed": "signed, pass 8 (d767daa verdict)"
+  },
+  "room-stamp-case-152x152-front": {
+   "file": "pods/room-stamp-case-152x152-front.png",
+   "w": 152,
+   "h": 152,
+   "sha256": "00feb9883f5994caba3592385bc637c05f88567140c0a388809d5b8be54f0a1e",
+   "signed": "signed, passes 8 and 9 (verdict)"
   },
   "stamp-label-120x120": {
    "file": "pods/stamp-label-120x120.png",
@@ -1232,6 +1778,13 @@
    "h": 96,
    "sha256": "771f6fde9092992257d565c107c71c5e35f6e78c01c7db09754be6ee6dc83eca",
    "signed": "signed, pass 8 (d767daa verdict)"
+  },
+  "trait-picture-frame-112x112": {
+   "file": "pods/trait-picture-frame-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "dd28fe01ea86d19fd133c143deaa4a0f3d6d02a7597a522820d4154588b7ee31",
+   "signed": "signed, 55944fb verdict"
   },
   "trait-picture-frame-120x112": {
    "file": "pods/trait-picture-frame-120x112.png",
