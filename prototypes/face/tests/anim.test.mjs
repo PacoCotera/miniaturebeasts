@@ -86,3 +86,16 @@ test("events are checked: an unknown kind, a target that is not a string and a f
   for (let i = 0; i < 24; i++) assert.equal(f.send({ t: "event", kind: "seal", target: "p" + i, ms: 5000 }), 0);
   assert.equal(f.send({ t: "event", kind: "seal", target: "one more", ms: 5000 }), -1); assert.match(f.errors().join(), /24 events/);
 });
+
+test("a screen change: a Bayer dither of void over the stage clears in 16 levels over 180 ms, whole pixels from the palette, the bars untouched", { skip }, async () => {
+  const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5], c = find("collection", /four identified pods/), f = await start(c);
+  const snap = () => new Uint32Array(f.M.HEAPU8.slice(f.M._face_fb(), f.M._face_fb() + 1024 * 600 * 4).buffer), base = snap(), offBase = f.offPalette();
+  const voidRgb = (() => { const h = palette.find(([n]) => n === "void")[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); })(), VOID = ((0xff << 24) | (voidRgb[0] << 16) | (voidRgb[1] << 8) | voidRgb[2]) >>> 0;
+  send(f, { kind: "dither", target: "stage", ms: 180 });
+  for (const ms of [0, 11, 12, 45, 90, 135, 179]) {
+    at(f, ms); const L = 16 - Math.floor((16 * ms) / 180), cur = snap(); let bad = 0, covered = 0;
+    for (let y = 0; y < 600; y++) for (let x = 0; x < 1024; x++) { const stage = y >= 40 && y < 562, want = stage && BAYER[(y & 3) * 4 + (x & 3)] < L ? VOID : base[y * 1024 + x]; if (cur[y * 1024 + x] !== want) bad++; if (stage && want === VOID) covered++; }
+    assert.equal(bad, 0, `at ${ms} ms, level ${L}: ${bad} pixels differ`); assert.ok(L < 16 || covered === 1024 * 522, "level 16 covers the stage whole"); assert.equal(f.offPalette() <= offBase, true, "the dither adds no colour the palette lacks (only the type layer blends)");
+  }
+  at(f, 180); assert.deepEqual(snap().every((v, i) => v === base[i]), true, "clear when the event ends"); assert.equal(msgs(f, "done").length, 1);
+});

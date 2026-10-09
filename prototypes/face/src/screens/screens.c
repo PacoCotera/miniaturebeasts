@@ -15,10 +15,22 @@ static void frame_words(void) {
   if (spec_len("props", "frame.line") >= 0) word_bottomLine();
   if (spec_len("props", "frame.plate") >= 0) word_messagePlate();
 }
+/* The screen change (180 ms): a Bayer dither of `void` laid over the stage and cleared in 16 levels, whole pixels, no opacity (§2.7). Level L = 16 - floor(16 t / ms); a pixel is covered where BAYER[(y & 3) * 4 + (x & 3)] < L. */
+static void stage_dither(void) {
+  static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
+  anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) return;
+  int level = 16 - (16 * t.elapsed) / t.ms, r[4]; if (level <= 0 || !v_spec_rect("frame", "regions.stage.rect", r)) return;
+  char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
+  for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
+  snprintf(ops + n, sizeof ops - (size_t)n, "],\"void\"]]");
+  snprintf(prim_text(), (size_t)prim_text_size(), "%s", ops);
+  v_region("stage", LAYER_ART); prim_node(v_id("stage.dither"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
+}
 static void draw(void) {
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();   /* a screen draws its words when the props carry its regions */ }
   frame_words();
+  stage_dither();
   prim_end();
   wire_changed();
 }
