@@ -21,7 +21,7 @@ Browser tab: 28, Title: "Critter Lab · Genome authoring", URL: "http://127.0.0.
 			20 link Generation batch
 				21 text Generation batch
 			22 text 117  proposed records · 111 defined copy contracts  · 6 draft candidates
-			23 link Description: Character art studies, Value: github.com/PacoCotera/critter-lab/blob/codex/genome-art-reset/prototype/generator-workbench/evidence/art-reset/README.md
+			23 link Description: Character art studies, Value: github.com/PacoCotera/miniaturebeasts/blob/main/v1/prototype/generator-workbench/evidence/art-reset/README.md
 		24 container
 			25 text Digest replay verified from inputs. Embedded output/SVG/prompt was not trusted.
 			26 heading Genome, Value: 2

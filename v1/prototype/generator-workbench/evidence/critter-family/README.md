@@ -32,13 +32,13 @@ Both workflows received the same frozen [3,040-character prompt](prompt.txt), en
 | Workflow | Actual result | Review |
 | --- | --- | --- |
 | Gemini web Images / Pro | [Original PNG](gemini-family-01.png), [run metadata](gemini-family-01.json) | **Anatomy FAIL:** left and middle have ten fins rather than six. Intermediate roots and swept fin shapes are invented; the middle contour becomes angular. Broad skin/skin/scales and facial roles remain, but do not override that failure. |
-| GPT-6.1 Sol High-directed built-in image tool | [Original PNG](builtin-family-01.png), [run metadata](builtin-family-01.json) | **Broad source-semantic PASS:** intended part counts, related proportions and skin/scales contrast survive. Exact registered geometry is unmeasured. Stronger contour/material hierarchy in this pair, but glossy skin and tiny faces do not establish the desired pet mood. |
+| ChatGPT built-in image tool (gpt-image, per the PNG's Content Credentials) | [Original PNG](builtin-family-01.png), [run metadata](builtin-family-01.json) | **Broad source-semantic PASS:** intended part counts, related proportions and skin/scales contrast survive. Exact registered geometry is unmeasured. Stronger contour/material hierarchy in this pair, but glossy skin and tiny faces do not establish the desired pet mood. |
 
 ![Gemini matched output](gemini-family-01.png)
 
 ![Built-in matched output](builtin-family-01.png)
 
-The web workflow exposes Pro, not a verified raster backend model. Sol High directed the built-in tool; the raster backend is also unverified. Built-in tool wall time was 20.004 seconds; Gemini was first observed complete within 109.152 seconds. These different observation methods are not comparable provider latency benchmarks. Costs are unavailable, and one pair cannot establish a general quality ranking.
+The web workflow exposes Pro, not a verified raster backend model. The built-in tool's backend is named only by the PNG's Content Credentials (gpt-image). Built-in tool wall time was 20.004 seconds; Gemini was first observed complete within 109.152 seconds. These different observation methods are not comparable provider latency benchmarks. Costs are unavailable, and one pair cannot establish a general quality ranking.
 
 ## Learnings and issues to fix
 

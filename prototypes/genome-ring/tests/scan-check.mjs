@@ -12,7 +12,7 @@ import { rng } from "../src/codec.mjs";
 
 const require = createRequire(process.env.PW_DIR ? process.env.PW_DIR + "/" : import.meta.url);
 let chromium;
-try { ({ chromium } = require("playwright")); } catch { ({ chromium } = require("/opt/node-tools/node_modules/playwright")); }
+({ chromium } = require("playwright"));   // PW_DIR names a directory whose node_modules holds playwright, when it is not local
 
 const n = Number(process.argv[2] ?? 4);
 const manifest = JSON.parse(readFileSync(new URL("./print-manifest.json", import.meta.url)));

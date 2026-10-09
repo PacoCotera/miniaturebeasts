@@ -999,7 +999,7 @@ function Workbench() {
           </Text>
           <Button
             component="a"
-            href="https://github.com/PacoCotera/critter-lab/blob/codex/genome-art-reset/prototype/generator-workbench/evidence/art-reset/README.md"
+            href="https://github.com/PacoCotera/miniaturebeasts/blob/main/v1/prototype/generator-workbench/evidence/art-reset/README.md"
             target="_blank"
             rel="noopener noreferrer"
             variant="subtle"

@@ -310,7 +310,20 @@
      "docs-standard.md"
     ]
    },
-   "tree": [],
+   "tree": [
+    "design/README.md",
+    "design/creatures-and-genomics.md",
+    "design/research-and-breeding.md",
+    "design/game.md",
+    "design/art-direction.md",
+    "design/architecture.md",
+    "design/proposals/technical-architecture.md",
+    "design/proposals/lvgl-switch.md",
+    "design/style-guide/station-layouts.md",
+    "design/style-guide/companion-screens.md",
+    "design/style-guide/README.md",
+    "design/style-guide/station-screens.md"
+   ],
    "patterns": [
     [
      "\\*\\*(?:Decided|Working rule|Proposal|Amended|Parked|Revised|Retitled|Approved)\\b",

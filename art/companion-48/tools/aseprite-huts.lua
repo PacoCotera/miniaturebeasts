@@ -1,4 +1,4 @@
--- The hut options assembled in Aseprite, headless on the VM: each hut (A to D, and the hand-pixelled Ch and Dh) as one 64 x 64 sprite of
+-- The hut options assembled in Aseprite, headless: each hut (A to D, and the hand-pixelled Ch and Dh) as one 64 x 64 sprite of
 -- three frames (lit, dark, dark2), every piece set at the bottom centre of its frame, tagged lit/dark/dark2, saved as hut-X.aseprite, and each
 -- frame exported back to a PNG (trimmed to its pixels afterwards). Parameters: indir, outdir, huts (comma list).
 --   aseprite -b --script-param indir=in --script-param outdir=out --script-param huts=A,B,C,D,Ch,Dh --script aseprite-huts.lua

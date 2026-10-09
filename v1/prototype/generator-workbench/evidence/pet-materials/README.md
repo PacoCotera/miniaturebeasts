@@ -24,7 +24,7 @@ Both requests used the same [frozen 3,236-character prompt](prompt.txt), source 
 
 | Workflow | Actual result | Assessment |
 | --- | --- | --- |
-| Sol High-directed built-in image tool | [Original raster](builtin-pet-01.png), [metadata](builtin-pet-01.json) | Broad anatomy/material groups retained; extra feather subdivisions. Smooth painted shading fails requested HiBit craft; repeats weak source contour. Exact registration unmeasured. |
+| ChatGPT built-in image tool (gpt-image, per the PNG's Content Credentials) | [Original raster](builtin-pet-01.png), [metadata](builtin-pet-01.json) | Broad anatomy/material groups retained; extra feather subdivisions. Smooth painted shading fails requested HiBit craft; repeats weak source contour. Exact registration unmeasured. |
 | Gemini web Images / Pro | [Original SVG response](gemini-pet-01.svg), [metadata](gemini-pet-01.json), [browser capture](gemini-web-response.jpg) | Returned code instead of raster. Matches totals but rewrites body/root/material placement. Strict source fidelity and requested modality fail. |
 
 ![Built-in failed game-art calibration](builtin-pet-01.png)

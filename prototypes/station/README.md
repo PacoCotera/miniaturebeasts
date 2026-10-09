@@ -184,7 +184,7 @@ The body of the Cross screen is the splice ([cross.json](../ui/specs/station/cro
 - **Never drawn:** a copy, look, seed or range of a chapter either parent has not read (its child's column is frost with "read {parent}'s {chapter}", and only the parent that read it shows its own copies, on the chapter view), anything of a sealed chapter but its find, the child's actual draw, odds, percentages or counts.
 - **Tests:** `tests/cross-splice.test.mjs` (the geometry on all frames, the routing from the forecast, nothing unread drawn, the sealed find, the heads and the line, the wish), `tests/cross-read.test.mjs` (the forecast's mask), and the journey (the overview, ▼ into a chapter, ▲ back, ◀ ▶), whose captures are `img/cross-overview.png` and `img/cross-chapter.png`.
 
-## The field guide: rules and spec, drawing pending (lvgl-switch.md §6 Q3 a)
+## The field guide: rules and spec, drawing pending
 
 The Book's second spread (every chapter a column, every trait a cell with its pips, a detail band with the look plates and "Carried by") was first built on the JavaScript drawing layer on the frozen `field-guide` branch (5927d91d). `main` carries only its data and rules; the drawing is built on the LVGL face at L2.1.
 

@@ -196,10 +196,11 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 The LVGL face draws every screen from one closed set of words, one C module a word under the face's `vocab/`, shared with the Companion and the Caddy where they are common ([lvgl-switch.md §2.2](../proposals/lvgl-switch.md), after [technical architecture §5.1](../proposals/technical-architecture.md)): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport, and **leaves** (a Station word, `vocab/station`: the bud's timer, one leaf a minute, as a grid by pitch on Home's Incubator module and Create, or as two arcs by `leafArc` on the Incubator; props `{ total, full, rows }`). The set is closed: a screen that needs a new word lists it under [Not designed yet](#not-designed-yet). What a screen builds from them, bound in the face's `screens/` table:
 
 - **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's four modules, Habitat's five and the Probe bench's two are the modules; on Habitat a module has no lamp.
-- **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the Habitat window, the specimen chamber and the dome.
+- **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the Habitat window, the specimen chamber and the dome. Its parts are `frame`, `inside` and an optional third, `gilt`: a painted sprite placed 1:1 over the frame, slices `{ rest, armed }`, region props `{ lit: bool }`. The Sitting's gilt frame is its one user.
 - **Compositions, not words:** the **rest knob** (a chrome sprite on the living window's frame, with its focus target), the **with-you bed** (sprites inside the living window: the bed, then the sleeping mibi or the Companion mark) and the **report card** (a panel holding rows of type and 16 px icons). Each is used on Home alone, so none is a word. A second screen that needs one is not designed yet.
 - **Compositions on Create:** the **roll** (Create: the focused trait's pictures, one or three, with the ▲ ▼ notches; it registers the focus target `roll` at the chosen picture's rectangle) and the **trait line** (Create: the text word, with a changed tag built as Home's name tag is). Both are used on Create alone. The bud's leaves are the word `leaves` above.
-- **Compositions on Habitat and the Probe bench:** the **name tag** (Home's and Habitat's: a `panel` and the text, its h, px, weight, pad, round and min from each spec); the **chapter plates** (Habitat's card: a `list` with `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblem 24×24 at (8, 8)); the **bay strip** (Habitat: a `list` with `listPitch` forms, each tile a `panel` rect and its thumbnail, a free bay a composed `dash` outline, 1 px `hairline`, dash 2 and 2); the **Shield plates** (the Probe bench: one sprite a place, the places a table by tier); and the **module** with its lamp rect, or null. A further screen using one of them is not designed yet.
+- **Compositions on Habitat and the Probe bench:** the **name tag** (Home's, Habitat's and the Sitting's: a `panel` and the text, its h, px, weight, pad, round and min from each spec); the **chapter plates** (Habitat's card: a `list` with `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblem 24×24 at (8, 8)); the **bay strip** (Habitat: a `list` with `listPitch` forms, each tile a `panel` rect and its thumbnail, a free bay a composed `dash` outline, 1 px `hairline`, dash 2 and 2); the **Shield plates** (the Probe bench: one sprite a place, the places a table by tier); and the **module** with its lamp rect, or null. A further screen using one of them is not designed yet.
+- **Compositions on the Sitting:** the **choice cards** (`choiceCards`: a `list` with `listPitch` of `panel` rects, each holding one 96×96 sprite; used by the cards, a 3×2 grid of at most six, and the chosen pair, a 2×1 grid of exactly two; props `{ items: [{ picture: "<96 id>", chosen: bool }] }`; it refuses more items than its grid holds; its focus targets are `card.<i>`) and the **step tiles** (`stepTiles`: a `list` with `listPitch` of exactly three `panel` rects, each with its word as text and, once done, a 48×48 sprite; props `{ items: [{ state: "current" | "done" | "ahead", word, picture: "<48 id>" | null }] }`, the picture only when done). Both are used on the Sitting alone.
 
 **The derived rules (closed).** Where a spec names a rule instead of a rectangle, the face calls the C function of that name ([lvgl-switch.md §2.2 and §2.3](../proposals/lvgl-switch.md)): `railCompaction`, `slantTabs`, `pageGrid`, `platePosition`, `listPitch`, `splicePlan`, `guideColumns`, `pipGroups`, `leafArc`. Their JavaScript oracle is `ui/specs/derive.mjs` from L2.0, and `leafArc`'s from L2.4. Until then the spec tests hold them: `prototypes/ui/tests/specs.test.mjs` refuses any rule not in this list, and the JavaScript layout of today is in `ui/layout.mjs`, `ui/components/list.mjs`, `station/src/cross-layout.mjs` and `station/src/guide.mjs`. A rule not in this list is refused when the spec loads; a screen that needs one lists it under [Not designed yet](#not-designed-yet), never improvises it. `leafArc`, the ninth, places the Incubator's leaves on two arcs from the slot tables in `incubator.json` ([the leaf arcs](#the-leaf-arcs)).
 
@@ -1415,7 +1416,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | ✓ on a plate | A bred child's unread chapter: `✓ Read Coat   ◆ 1` (no price when it costs nothing): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, the context names it ("Coat, read", "Coat, sealed") |
 | ✓ on Companion | `✓ Take Fig with you`, the context "goes with you now" (docked) or "goes at the next dock" (away). On the mibi with you: no ✓ cap, "already with you" |
 | ✓ ✓ on Bond | Before its first expedition: no ✓ cap, "bonds after an expedition". Offered: the first ✓ arms (the heart half fills, `Again: bond with Burr`), the second bonds (the heart full, its moment plays). Bonded: no ✓ cap, "bonded for good" |
-| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting, its own screen under Habitat (its section to come; ← there reads Habitat). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
+| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting, its own screen under Habitat ([Sitting](#sitting); ← there reads Habitat). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
 | ✓ on Cross | An adult or an elder with a partner: `✓ Cross Burr` opens Cross; ← there reads Habitat and lands on the Cross module. A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
 | ✓ ✓ on Wild | `✓ Return Burr   ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it (the mibi dithers out to the next in bay order, its tile frees, the plate "Burr goes back to the rock field"). Refused with no ✓ cap and the reason as the context: "a bonded mibi stays", "not until it is adult", "already with you" |
 | Any key but ✓ | Clears an arm. In the meet, ends the meet with the default name kept, and does what it does |
@@ -1436,7 +1437,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | `low` | the nearest of `low` to the left, else `name`, else `resident` | the nearest of `low` to the right, else none | `nearestIn: top` | `tile.shown` |
 | `tile` | the previous tile (axis; the first stops) | the next tile (the last stops) | `resident` | none |
 
-"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings** (each target's `ring`, frame.json `focus.ring.forms`): the mibi's `feet` ring (136, 380, 320, 24) with the 4 px lift; `round` rings 4 px outside the name tag, the species line, a plate, a module or a tile, with the 2 px chrome lift on plates, modules and tiles. **Opens on:** the mibi (the Habitat key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; after the namer, on the mibi (from the meet) or the name (from Rename); empty, the room (no ring). **Held:** while the moment, a read, the bond or a release holds, the face moves no focus and sends no intent; while the namer is open its own graph takes every key. **Vectors** are in `habitat.json` `focus.vectors` (for example resident ▶ name, plate.0 ▼ door, door ▲ plate.1, cross ◀ name, wild ▼ the shown tile).
+"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings** (each target's `ring`, frame.json `focus.ring.forms`): the mibi's `feet` ring (136, 380, 320, 24) with the 4 px lift; `round` rings 4 px outside the name tag, the species line, a plate, a module or a tile, with the 2 px chrome lift on plates, modules and tiles. **Opens on:** the mibi (the Habitat key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; from the sitting, ← and its begin land on the Portrait module, which is always a target (read-only, the context saying why, unless a sitting is held and the mibi can sit); after the namer, on the mibi (from the meet) or the name (from Rename); empty, the room (no ring). **Held:** while the moment, a read, the bond or a release holds, the face moves no focus and sends no intent; while the namer is open its own graph takes every key. **Vectors** are in `habitat.json` `focus.vectors` (for example resident ▶ name, plate.0 ▼ door, door ▲ plate.1, cross ◀ name, wild ▼ the shown tile).
 
 ### Habitat's states and events
 
@@ -1477,7 +1478,6 @@ Where the build departs from this layout is listed in `habitat.json` `buildChang
 
 ### Not designed yet
 
-- The sitting's screen: its own section, to come.
 - Ecosystem dynamics for later vivariums: food, light and environmental constraints that shape mibi populations. In V1 a vivarium holds at most twelve mibis.
 
 ---
@@ -1626,6 +1626,178 @@ Where the build departs from this layout is listed in `bench.json` `buildChanges
 ### Not designed yet
 
 - The journey has no capture of the bench; the gate's region and pixel checks need one for each state.
+
+---
+
+## Sitting
+
+The screen where a held sitting is spent on one mibi: its own screen under Habitat, opened from the Portrait module. Wireframes, 1×: [14-sitting-pose](station-layouts/14-sitting-pose.svg), [14b-sitting-place](station-layouts/14b-sitting-place.svg), [14c-sitting-confirm](station-layouts/14c-sitting-confirm.svg) and the map [14d-sitting-nav](station-layouts/14d-sitting-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/sitting.json`; the rules in `prototypes/station/src/sitting.mjs`.
+
+<img src="station-layouts/14-sitting-pose.png" width="1024" alt="Sitting, the pose">
+
+*14. The pose: the deck at the right, a card for each habit Fig has been seen doing, the ring on one, `✓ Pick this pose`, `← Habitat`.*
+
+<img src="station-layouts/14b-sitting-place.png" width="1024" alt="Sitting, the place">
+
+*14b. The place: a card for each place Fig has been, the pod's place first, the backdrop the focused place's, `✓ Pick this place`, `← Pose`.*
+
+<img src="station-layouts/14c-sitting-confirm.png" width="1024" alt="Sitting, look and confirm, armed">
+
+*14c. Look and confirm, armed: the gilt frame lit round the window, the chosen pose and place, `✓ Again: portray Fig`, "one sitting each, ever".*
+
+<img src="station-layouts/14d-sitting-nav.png" width="1024" alt="The sitting's navigation map">
+
+*14d. The sitting's map: how it opens, its three steps, where ✓ and ← lead, and what Habitat and Home show after begin.*
+
+### 1. Purpose
+
+The sitting is where the player spends a held sitting on one mibi: picks a pose from the habits it has been seen doing and a place it has been, looks at the choice, and confirms. The player comes away knowing that the portrait is on its way, in the pose and place they chose, and that this mibi has had its one sitting. Nothing is spent until the last ✓.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The mibi** in Habitat's living window, with its name tag | The one being portrayed, where it stood on Habitat |
+| **The backdrop** behind it | The stage of the portrait: plain while the pose is chosen, the place's from the place step |
+| **The deck**, the right column's panel | The choices as one instrument, in the frame Habitat's card and modules and the namer stand in |
+| **The heading** | Which choice this step asks for, in one line |
+| **The cards**: one a habit seen, or one a place been | The choice, as pictures |
+| **The gilt frame** round the window (look and confirm) | The portrait to be; it lights when the confirm is armed |
+| **The steps** along the foot: Pose, Place, Portray | Where the player is in the three steps, and what was chosen |
+| **Bottom line** | `✓ Pick this pose`, `✓ Pick this place`, `✓ Portray Fig`; the way back a step |
+
+**Not on the stage:** a price, a clock or a promise of how the portrait will look beyond its pose and place. The held sitting is the only thing spent.
+
+### 3. Placement
+
+**Reading order:**
+
+1. **The mibi**, warm, in the window at the left, as on Habitat.
+2. **The heading**, then **the cards**, in the deck at the right.
+3. **The steps** along the foot.
+4. On look and confirm, **the gilt frame** round the window first, then the chosen cards.
+
+**At the edges:** the deck is the 416 px column at the right (592 to 1008, y 48 to 472), the same rectangle as Habitat's card and modules and the namer's panel, so the screen change keeps both columns where they stood.
+
+### 4. Art direction
+
+- **Room:** the vivarium's light on a plain stage: Habitat's warmth with the instrument reduced to the choices. The deck, the cards, the heading and the steps are the instrument's cool chrome.
+- **The mibi** is its standard painting; the portrait is never shown before it is painted.
+- **The pose cards** are the species' pose pictures, `pose-{species}-{habit}-96x96`, one a habit of the species frame, never this mibi acting. **The place cards** are `place-{place}-96x96`.
+- **The backdrops** are `sitting-backdrop-plain-544x408` and one a place, `sitting-backdrop-{meadow,pond,rock,wood,cave}-544x408`.
+- **The gilt frame**, `sitting-gilt-560x424` and lit `sitting-gilt-lit-560x424`, is a modelled moulding 16 px deep on every side: from the outside, a 3 px bead, an 8 px leaf face lit from the top left, a 3 px inner shade lip and a 2 px sight edge. Lit is the leaf one value brighter with a 2 px warm sight edge. Its gold is the sitting's, never the focus colour. The wireframes draw it as a stand-in in palette colours: rest, bead `soil`, leaf `gold` lit top and left and `bark` bottom and right, lip `soil`, sight edge `bark`; lit, the leaf `yellow` and `gold`, the sight edge `sand`.
+
+**Colour roles** (the one home is `sitting.json` `colours`; the backdrops, the gilt frame and the card pictures are painted masters, `sitting.json` `masters`):
+
+| Region | Roles | Why |
+| --- | --- | --- |
+| Bezel, glass | As Habitat | The same window |
+| Name tag | `panel` fill, `hairline` edge, the name `bone` | As Habitat |
+| Deck | `panel` fill, `hairline` edge, `bevel` top | The namer's panel, the instrument's |
+| Heading | `bone`, 20 px medium | A page heading |
+| Cards | `ground` fill, `hairline` edge, on the deck; the card chosen before `hairline` fill | The focus ring is the only highlight |
+| Steps | Strip `ground`; tile `panel`, the current `hairline`; words `bone`, the steps ahead `mist` | As Habitat's strip |
+
+### 5. Composition
+
+The left half is Habitat's: the window, the mibi and its tag at the same places, so the screen change keeps the mibi where it stood. At the right the deck holds the heading and the cards; along the foot, in Habitat's strip's place, the three steps. Every rectangle is on the 8 px grid.
+
+| Region | Rectangle | Notes |
+| --- | --- | --- |
+| Bezel | 16, 48, 560, 424 | As Habitat; the gilt frame covers it on look and confirm |
+| **Glass (backdrop)** | 24, 56, 544, 408 | The plain backdrop on the pose step; the focused place's on the place step; the chosen place's on look and confirm, seen through the gilt frame's opening |
+| **The mibi (focal)** | 144, 80, 304, 312 | As Habitat: axis x 296, feet y 392 |
+| Name tag | in 184, 416, 224, 32 | As Habitat; not a target here |
+| Gilt frame | 16, 48, 560, 424 | Look and confirm only. The moulding is 16 px on every side; its opening is 32, 64, 528, 392 (local 16, 16), 8 px inside the glass on every side, the mibi and its tag inside it. Bead local 0 to 3, leaf face 3 to 11, shade lip 11 to 14, sight edge 14 to 16 |
+| **Deck** | 592, 48, 416, 424 | `panel`, every state; 16 px inside it on every side |
+| Heading | 608, 64, 384, 32 | 20 px medium, its line from y 66 |
+| Cards | 608 + 136c, 112 + 136r, 112, 112 | Three columns, two rows (c 0 to 2, r 0 to 1), at most six; 24 px between cards; the picture 96×96 at (8, 8). The row ends at x 992 and the second row at y 360 |
+| Chosen | 608 and 744, 112, 112, 112 | Look and confirm: the pose's card, then the place's; not targets |
+| Steps strip | 16, 488, 992, 64 | `panel` |
+| Step tiles | 32 + 320i, 496, 312, 48 | Pose, Place, Portray: the word 16 px at (16, 14); once chosen, its picture 48×48 at (256, 0) |
+
+**The order of the cards is the frame's.** Poses follow the species frame's habit order, the habits this mibi has been seen doing. Places put the pod's place first, then the places in the order the mibi walked to them; a bred mibi has no pod place, so it shows only the places it walked to.
+
+**Regions and their words.** States: **pose**, **place**, **confirm** and **begin**.
+
+| Region (`sitting.json`) | Rectangle | Word or build | Only in | States it shows |
+| --- | --- | --- | --- | --- |
+| `stage` | 0, 40, 1024, 522 | frame, part stage (Habitat's) | | — |
+| `bezel` | 16, 48, 560, 424 | living window, part frame | | — |
+| `glass` | 24, 56, 544, 408 | living window, part inside | | plain, a place's backdrop; the backdrop dither |
+| `resident` | 144, 80, 304, 312 | specimen (focal) | | the standard painting |
+| `nameTag` | 184, 416, 224, 32 | panel and text, build `nameTag` | | the name |
+| `gilt` | 16, 48, 560, 424 | living window, part gilt (slices `rest`, `armed`; props `{ lit }`, set from `focus.armed === "room"`) | confirm, begin | rest, lit (armed); dithering out (begin) |
+| `deck` | 592, 48, 416, 424 | panel | | — |
+| `heading` | 608, 64, 384, 32 | text | | the step's heading |
+| `cards` | 608, 112, 384, 248 | list, build `choiceCards` (rule `listPitch`, grid 3×2) | pose, place | the cards; the one chosen before; focused |
+| `chosen` | 608, 112, 248, 112 | list, build `choiceCards` (rule `listPitch`, grid 2×1) | confirm, begin | the two chosen cards |
+| `strip` | 16, 488, 992, 64 | panel | | — |
+| `steps` | 32, 496, 952, 48 | list, build `stepTiles` (rule `listPitch`) | | current, done (with its picture), ahead |
+
+The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 2 px chrome lift: on card 1, (740, 106, 120, 120). **Draw order:** stage, bezel, glass, resident, name tag, gilt frame, deck, heading, cards or chosen, strip, steps, ring, frame, message plate.
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| Opens | From Habitat's Portrait module, `✓ Portray Fig`, only while a sitting is held and Fig can sit (a habit seen and a place been). Always the pose step, the ring on `card.0`, no choice made |
+| Pad | Pose and place: the ring to the nearest card that way; the ends stop. Look and confirm: nothing |
+| ✓ on a pose | `✓ Pick this pose`, the context the habit ("calm"): the place step, the ring on the place chosen before in this visit, else `card.0` |
+| ✓ on a place | `✓ Pick this place`, the context the place ("the rock field"): look and confirm |
+| ✓ ✓ on look and confirm | `✓ Portray Fig`, "one sitting each, ever": the first ✓ arms (the gilt frame lights, `Again: portray Fig`); the second begins the sitting |
+| ← | A step back, the choice made there kept and ringed: look and confirm to the place (`← Place`), the place to the pose (`← Pose`); from the pose, Habitat with the ring on the Portrait module (`← Habitat`). Nothing is spent |
+| Any key but ✓ | Clears the arm |
+| A room key | Leaves the screen; nothing is spent |
+| During begin | Presses are consumed (480 ms) |
+
+**A visit.** Inside the screen, ← keeps every choice made. Leaving the screen, by ← from the pose step or by a room key, drops every choice; coming back starts on the pose step with the ring on `card.0`.
+
+**The ← cap.** The cap's x is 1008 − the word's width − 20 (16 for the cap, 4 to the word): 934 for Habitat (54 px), 950 for Pose (38 px), 946 for Place (42 px).
+
+### The sitting's focus as data
+
+`sitting.json` `focus`, one graph a state. **Pose and place:** targets `card.<i>` in group `card`, each edge `[{ "nearestIn": "card", "ahead": true }, "none"]`, so the ring goes to the nearest card that way and stops at the ends; `initial` is "the card chosen before in this visit, else card.0". **Look and confirm:** no target; the ring on nothing (`room`); every edge none; ✓ sends `confirm` and arms, then begins; `focus.armed === "room"` sets the gilt's `lit`. **Held:** while begin holds, the face moves no focus and sends no intent. Vectors are in `sitting.json` (for example card.0 ▶ card.1, card.4 ▲ card.1, card.2 ▶ card.2).
+
+### The sitting's events
+
+| Event | Hold | What plays |
+| --- | --- | --- |
+| `backdrop`: `{ kind: dither, target: glass, ms: 200, levels: 16 }` | no | The place step: the backdrop cross-dithers to the focused place's. The place backdrops load on entering the place step and are dropped on leaving the screen |
+| `step` | no | A step forward or back: the heading, the cards, the steps' tiles and the bottom line change at once; the gilt frame shows on look and confirm |
+| `begin`, the host timeline | 480 ms, presses consumed | At 0, `{ kind: dither, target: gilt, from: sitting-gilt-lit-560x424, to: null, ms: 300, levels: 16 }`: the lit gilt frame dithers out (the frame leaves for the bay). At 300, the standard 180 ms screen transition (`{ kind: dither, levels: 16 }`) to Habitat, the ring on `portrait`, the module in its painting state, and the message plate |
+
+With `motion: false` every event jumps to its end.
+
+### After begin: Habitat and Home
+
+- **The message plate on Habitat:** "Fig's portrait is on its way", one line, 16 + 20 = 36 tall, its bottom at y 550. When a welcome sitting was waiting for the slot, begin gives it at once (`beginSitting`), and the same plate takes a second line, "Another sitting is yours": 16 + 40 = 56 tall, (399, 494, 226, 56) for Fig: the longer line, 193 px, plus 16 each side, rounded up to an even width so it centres on x 512. It covers the strip, not the mibi's box or the Portrait module, so it keeps its bottom edge at y 550.
+- **Home's sitting slot** (the Probe module, 952, 464, 40, 80) shows empty after begin, or held when the welcome sitting was given.
+- **Home's Bay** holds the sitting's crate from begin until it is opened:
+
+| What | Rectangle or rule | Shows |
+| --- | --- | --- |
+| The sitting crate | The door's slots from the right: the first at 904, 92, 80, 56, a second at 808, 92. Walk crates fill from the left (712 + 96i); at most three crates show, walk crates first | `crate-sitting-80x56`; until it is painted, the walk crate's roles (`deepTeal`, `teal` lit top, `hairline` outline) with no seal tag |
+| Its lamp | 12×12 at (crate x + 34, 128), 1 px `void` rim, ten inner rows | The rows lit from the bottom: floor(10 × `crateLamp`) in `sky`, the rest `hairline`. It holds at nine rows while the portrait is painted or waits for the cloud (`LAMP_SHORT`), and fills all ten when ready. Never amber |
+| The door | 704, 84, 288, 72 | Open while a sitting crate is in the bay, docked or away; shut only on an empty bay with the Companion away |
+| The Bay's lamp | 984, 60, 12, 12 | `amber` only when a crate is ready to open (`bayState`: a ready sitting crate, or walk crates waiting while docked); otherwise off |
+
+### Placeholders on the sitting
+
+| Master | Pixel size |
+| --- | --- |
+| `sitting-backdrop-plain-544x408` and `sitting-backdrop-meadow-544x408`, `-pond-`, `-rock-`, `-wood-`, `-cave-` | 544×408 |
+| `sitting-gilt-560x424`, `sitting-gilt-lit-560x424` | 560×424 |
+| `pose-{species}-{habit}-96x96`, one a habit of each species frame, and `pose-{species}-{habit}-48x48` for the step tiles, hand-passed from the 96 | 96×96, 48×48 |
+| `place-{place}-96x96`, with the existing `place-{place}-48x48` for the step tiles | 96×96, 48×48 |
+| `crate-sitting-80x56` (Home's Bay) | 80×56 |
+
+Where the build departs from this layout is listed in `sitting.json` `buildChanges`.
+
+### Not designed yet
+
+- More than six poses or places: the cards refuse a seventh.
+- Opening a sitting's crate on Home: the portrait's arrival.
 
 ---
 
