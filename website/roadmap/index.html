@@ -232,7 +232,9 @@ footer { padding-bottom: 32px; }
 .build { text-align: right; margin-top: 24px; max-width: none; color: rgb(229 234 221 / .45) !important; }
 
 /* Phone (§8) */
+#board { padding-bottom: 64px; }
 @media (max-width: 760px) {
+  #board { padding-bottom: 40px; }
   :root { --gutter: 16px; --pad: 64px; }
   .masthead nav a:not(.button) { display: none; }
   .head { grid-template-columns: 1fr; gap: 12px; }
@@ -419,6 +421,7 @@ footer { padding-bottom: 32px; }
   }
 
   function failed() {
+    document.getElementById('updated').hidden = true;
     document.getElementById('modules').replaceChildren(
       el('div', { class: 'mod' }, el('div', { class: 'wrap' }, el('p', { class: 'copy' },
         'The roadmap did not load. ',
