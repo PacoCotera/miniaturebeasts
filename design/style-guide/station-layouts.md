@@ -20,7 +20,7 @@ Pods comes first because it sets the pattern the other screens follow.
 
 ### Grid, margins and spacing
 
-- **Grid 8 px.** Every region's x, y, w and h is a multiple of 8. The frame's own edges are the only exceptions: the stage runs from y 40 to 562 (522 px) and the bottom line is 38 px.
+- **Grid 8 px.** Every region's x, y, w and h is a multiple of 8. The frame's own edges are the exceptions, and a region centred on an axis may sit 4 px off in x (Home's juvenile, the medium pod, Create's stamp label, the namer's inner column). The stage runs from y 40 to 562 (522 px) and the bottom line is 38 px.
 - **Margins.** 16 px from the left and right screen edges to any text or region. Content inside the stage starts at y 48 and ends at y 552.
 - **Gaps.** 8 px between related things (a tab and its neighbour, a picture and its words). 16 px between groups. At least 8 px between regions; no region touches another.
 - **Text lines.** 16 px type on a 20 px line pitch, 20 px type on 28, 28 px type on 36. Each line's cap top sits on the grid.
@@ -1275,7 +1275,7 @@ One mibi up close, in the vivarium's light. Wireframes, 1×: [06-habitat](statio
 
 <img src="station-layouts/06c-habitat-child.png" width="1024" alt="Habitat, a bred child">
 
-*06c. A bred child with two chapters still a surprise: the ring on an unread plate, `✓ Read Coat · ◆ 1`.*
+*06c. A bred child with two chapters still a surprise: the ring on an unread plate, `✓ Read Coat   ◆ 1`.*
 
 <img src="station-layouts/06d-habitat-armed.png" width="1024" alt="Habitat, the bond armed">
 
@@ -1407,12 +1407,12 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | ✓ on the mibi or a tile | `✓ Spend time with Burr`: its species moment (input held 300 ms, about 1.8 s); it rewards nothing and shows nothing like a reward. In the meet, `✓ Name Moss` |
 | ✓ on the name tag | `✓ Rename Burr`: the namer opens over the right column; when it closes, the ring is on the name |
 | ✓ on the species line | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads Library |
-| ✓ on a plate | A bred child's unread chapter: `✓ Read Coat · ◆ 1` (no price when it costs nothing): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, the context names it ("Coat, read", "Coat, sealed") |
+| ✓ on a plate | A bred child's unread chapter: `✓ Read Coat   ◆ 1` (no price when it costs nothing): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, the context names it ("Coat, read", "Coat, sealed") |
 | ✓ on Companion | `✓ Take Fig with you`, the context "goes with you now" (docked) or "goes at the next dock" (away). On the mibi with you: no ✓ cap, "already with you" |
 | ✓ ✓ on Bond | Before its first expedition: no ✓ cap, "bonds after an expedition". Offered: the first ✓ arms (the heart half fills, `Again: bond with Burr`), the second bonds (the heart full, its moment plays). Bonded: no ✓ cap, "bonded for good" |
 | ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting (its screen is not designed yet). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
 | ✓ on Cross | An adult or an elder with a partner: `✓ Cross Burr` opens Cross; ← there reads Habitat and lands on the Cross module. A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
-| ✓ ✓ on Wild | `✓ Return Burr · ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it (the mibi dithers out to the next in bay order, its tile frees, the plate "Burr goes back to the rock field"). Refused with no ✓ cap and the reason as the context: "a bonded mibi stays", "not until it is adult", "already with you" |
+| ✓ ✓ on Wild | `✓ Return Burr   ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it (the mibi dithers out to the next in bay order, its tile frees, the plate "Burr goes back to the rock field"). Refused with no ✓ cap and the reason as the context: "a bonded mibi stays", "not until it is adult", "already with you" |
 | Any key but ✓ | Clears an arm. In the meet, ends the meet with the default name kept, and does what it does |
 | ← | Home, however Habitat was opened; Home's ring lands on that mibi when it is at home, else on the room. While the namer is open, ← is the namer's |
 | The Habitat key | On Habitat, the ring back on the mibi; from anywhere, Habitat on the mibi last seen |
@@ -1484,11 +1484,11 @@ The one screen whose subject is a machine: the Probe in its service cradle. Reac
 
 <img src="station-layouts/11-bench.png" width="1024" alt="Probe bench, docked">
 
-*11. Docked, tier 1, one plate gone: the ring on the plates, `✓ Mend a plate · ⚡ 1`; the switch off, its picture showing the dock mending two plates.*
+*11. Docked, tier 1, one plate gone: the ring on the plates, `✓ Mend a plate   ⚡ 1`; the switch off, its picture showing the dock mending two plates.*
 
 <img src="station-layouts/11b-bench-armed.png" width="1024" alt="Probe bench, the upgrade armed">
 
-*11b. The upgrade armed: the part lifted 8 px out of its socket, `✓ Again: fit the upgrade · ⚡ 12 ◆ 4`.*
+*11b. The upgrade armed: the part lifted 8 px out of its socket, `✓ Again: fit the upgrade   ⚡ 12 ◆ 4`.*
 
 <img src="station-layouts/11c-bench-away.png" width="1024" alt="Probe bench, away">
 
@@ -1571,9 +1571,9 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | Input | What happens, and how it shows |
 | --- | --- |
 | Pad | Moves the ring by the bench's focus (below) |
-| ✓ on the plates | A plate gone: `✓ Mend a plate · ⚡ 1`, the context "one plate to mend": the first gone plate from the left seats (300 ms, held). Short: the frame's dimmed cap. Every plate whole: no ✓ cap, "every plate whole" |
+| ✓ on the plates | A plate gone: `✓ Mend a plate   ⚡ 1`, the context "one plate to mend": the first gone plate from the left seats (300 ms, held). Short: the frame's dimmed cap. Every plate whole: no ✓ cap, "every plate whole" |
 | ✓ on the switch | `✓ Switch on` or `✓ Switch off`, no price: the knob slides from x 16 to 56 (200 ms), the picture's plates and the lamp change; the context "the dock mends all" (on) or "the dock mends two, free" (off). Set at any time, docked or away |
-| ✓ ✓ on the slot | Docked, tier 1, affordable: `✓ Fit the upgrade · ⚡ 12 ◆ 4`, "the Probe reaches further": the first ✓ arms (the part lifts 8 px, `Again: fit the upgrade`), the second fits it (900 ms, held). Short: the dimmed cap. Away: no ✓ cap, "dock the Probe first". Fitted: no ✓ cap, "the upgrade is fitted" |
+| ✓ ✓ on the slot | Docked, tier 1, affordable: `✓ Fit the upgrade   ⚡ 12 ◆ 4`, "the Probe reaches further": the first ✓ arms (the part lifts 8 px, `Again: fit the upgrade`), the second fits it (900 ms, held). Short: the dimmed cap. Away: no ✓ cap, "dock the Probe first". Fitted: no ✓ cap, "the upgrade is fitted" |
 | Any key but ✓ | Clears the arm |
 | ← | Home, the ring on the Probe module |
 

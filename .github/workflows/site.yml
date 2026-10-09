@@ -156,6 +156,8 @@ jobs:
         run: |
           set -euo pipefail
           touch _site/.nojekyll
+          # the copied prototypes carry their own .gitignore files (prototypes/face/.gitignore ignores dist/), which git add would honour
+          find _site -name .gitignore -delete
           cd _site
           git init -q -b gh-pages
           git config user.name "sandbox-ci"
