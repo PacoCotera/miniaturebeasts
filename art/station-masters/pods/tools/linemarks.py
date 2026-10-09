@@ -7,7 +7,7 @@ import os, json, hashlib
 from PIL import Image, ImageDraw, ImageFont
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
 pal = {n: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for n, h in json.load(open("../../../prototypes/ui/palettes/station.json"))["colours"]}
-C = {"i": pal["ink"], "b": pal["fog"], "w": pal["bone"], "f": pal["frostS"], "s": pal["frostS"], "g": pal["fog"], "m": pal["mist"], "k": pal["stone"]}      # pass 60 (the art director): white -> bone, bone -> fog, the frost body -> frostS, so the seeds sit one step below the 16 px bone name; the mist ghost kept
+C = {"i": pal["ink"], "b": pal["fog"], "w": pal["bone"], "f": pal["frostS"], "s": pal["mist"], "g": pal["fog"], "m": pal["mist"], "k": pal["stone"]}      # pass 60 (the art director): white -> bone, bone -> fog, the frost body -> frostS, so the seeds sit one step below the 16 px bone name; the mist ghost kept; pass 61: the dark half (the body above and right of the fog diagonal, the 's' pixels) steps down from frostS to mist
 SEED = ["....b.......",     # the stalk, 3 rows
         "....b.......",
         "....b.......",

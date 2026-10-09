@@ -49,6 +49,9 @@
        "edge": "right",
        "run_px": 70
       }
+     ],
+     "pass_61": [
+      "the same 12 px smoothstep along the hard polygon silhouette segments [[(19, 51), (31, 41), (84, 37)]]"
      ]
     },
     "144x176": {
@@ -147,7 +150,8 @@
        "edge": "right",
        "run_px": 22
       }
-     ]
+     ],
+     "pass_61": []
     },
     "144x176": {
      "window": [
@@ -253,6 +257,9 @@
        "edge": "right",
        "run_px": 44
       }
+     ],
+     "pass_61": [
+      "the same 12 px smoothstep along the hard polygon silhouette segments [[(70, 30), (93, 80)]]"
      ]
     },
     "144x176": {

@@ -1,6 +1,6 @@
 """Pass 60: cell-outline-unread-128x160, the open chapter page's unread picture (pods.json: a dotted 1 px `bevel` outline round P, 1 px on, 2 off, nothing inside), typed at its size (no nine-slice).
 `bevel` #5a6672 = (90, 102, 114); alpha 0 or 255; the middle fully transparent. All four corners are lit; from each corner the dots run inward on a 3 px period (one on, two off); each side's remainder is taken up
-as one gap at the side's middle; no two dots touch (not even diagonally). Top and bottom: dots at x = 0, 3 ... 60 and 127, 124 ... 67 (the gap between 60 and 67); left and right: y = 0, 3 ... 78 and 159, 156 ... 81 (period 3 all along, the
+as one gap at the side's middle; no two dots touch (not even diagonally). Top and bottom: dots at x = 0, 3 ... 60 and 127, 124 ... 67 (then x 63, so the break is x 64 to 66); left and right: y = 0, 3 ... 78 and 159, 156 ... 81 (period 3 all along, the
 middle gap is the ordinary 2 off). The earlier cell-outline-unread-24x24 (a nine-slice of 1-on-1-off mist dots, off spec) is withdrawn. python3 -I tools/cell_outline.py -> slices/cell-outline-unread-128x160.png, marks/cell-outline-proof-1x.png"""
 import os, json, hashlib
 import numpy as np
@@ -13,6 +13,7 @@ def run(length, a):
     """Dot positions along one side of the given length: from the first corner 0, 3 ... 3a; from the far corner length-1, length-4 ... length-1-3a."""
     return [3 * k for k in range(a + 1)] + [length - 1 - 3 * k for k in range(a + 1)]
 for x in run(W, 20): on(x, 0); on(x, H - 1)           # top and bottom: 21 + 21 dots, the gap between x 60 and 67 at the middle
+on(63, 0); on(63, H - 1)                                  # pass 61: one more dot at x 63 on the top and the bottom, so the middle break is x 64 to 66 (3 px) and the run reads continuous
 for y in run(H, 26): on(0, y); on(W - 1, y)           # left and right: 27 + 27 dots, the 3 px period unbroken (the middle gap is 2 off)
 im.save("slices/cell-outline-unread-128x160.png", optimize=True)
 a = np.asarray(im)[..., 3] > 0; ys, xs = np.where(a); touch = 0
