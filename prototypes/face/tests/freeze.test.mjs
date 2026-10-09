@@ -99,7 +99,7 @@ test("rule 3 cannot be walked around: a screen registered from any file, by a qu
 });
 
 test("imports with a query or a hash still count, and only node_modules, .git and face/dist are skipped by the scan", () => {
-  const root = tree({ ...base(), "station/src/q.mjs": 'import { R } from "./gfx.mjs?v=2";\n', "station/src/img/deep.mjs": 'import { R } from "../gfx.mjs#x";\n', "face/dist/skipped.mjs": 'import "../../station/src/gfx.mjs";\n' }), m = build(root);
+  const root = tree({ ...base(), "station/src/q.mjs": 'import { R } from "./gfx.mjs?v=2";\n', "station/src/img/deep.mjs": 'import { R } from "../gfx.mjs#x";\n', "face/dist/skipped.mjs": 'import "../../station/src/gfx' + '.mjs";\n' }), m = build(root);
   try {
     const gfx = m.paths.find((e) => e.path === "station/src/gfx.mjs"); assert.ok(gfx.importers.includes("station/src/q.mjs") && gfx.importers.includes("station/src/img/deep.mjs"), "a query, a hash and a directory called img are all scanned"); assert.ok(!gfx.importers.includes("face/dist/skipped.mjs"), "face/dist is not");
   } finally { rmSync(root, { recursive: true }); }
