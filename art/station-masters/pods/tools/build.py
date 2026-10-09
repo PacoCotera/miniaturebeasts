@@ -429,6 +429,16 @@ def homemark():
         for x, ch in enumerate(r):
             if ch != ".": im.putpixel((x, y), col + (amax if ch == "x" else int(amax * 0.55),))
     save("frame-room-home-24", im, [16, 8, 24, 24], "the home room's mark: the living window, typed by hand: a square-topped window with a cross mullion, and a two-leaf sprout 5 px tall rising from the sill into the lower-left pane; at (16,8) in the title zone", "typed by hand")
+def places():
+    """place-{meadow,pond,rock,wood,cave}-48x48: the collection overview's place pictures. Each is a painted miniature vignette (Gemini, from the Companion's pixel-map tiles as a colour and
+    character reference, source/raw/place-*.jpg), reduced to 48x48 with Lanczos (a painting reduced, never pixel art enlarged), muted a little (saturation x0.85) and graded so its mean grey
+    sits at 88 (the pods' mean is about 111-115), the brightest pixel capped at 170. No creatures, text or baked frame."""
+    for k in ("meadow", "pond", "rock", "wood", "cave"):
+        im = load(f"place-{k}.jpg"); side = min(im.size); im = im.crop(((im.width - side) // 2, (im.height - side) // 2, (im.width - side) // 2 + side, (im.height - side) // 2 + side)).resize((48, 48), Image.LANCZOS)
+        a = np.asarray(im).astype(float); lum = a @ np.array([0.299, 0.587, 0.114]); g = lum[..., None]; a = g + (a - g) * 0.85
+        lum = a @ np.array([0.299, 0.587, 0.114]); a = a * (88.0 / lum.mean()); a = np.minimum(a, a * 0 + 255) ; mx = (a @ np.array([0.299, 0.587, 0.114])).max()
+        if mx > 170: a = a * (170.0 / mx) * 0.5 + a * 0.5      # soften the brightest pixels without flattening the picture
+        save(f"place-{k}-48x48", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB"), [None, None, 48, 48], f"the {k} place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey 88", f"place-{k}")
 def pagemark():
     """page-mark-new-10: the 'new to the field guide' mark as the layout now specifies it (pods.json page.newMark): a flat bone dot 6x6 with a 1 px white lit edge
     top left, no keyline, no specular, art layer (station.json colours only), placed on the trait's name line 4 px after the name. (The id keeps its 10; the art is 6x6.)

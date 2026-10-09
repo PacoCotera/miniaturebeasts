@@ -39,6 +39,8 @@ for n in m:
     elif n == "page-pane-256x440": sign(n, "new", None, "re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one")
     elif n in ("ring-column-112x522", "ring-hatch-80x56"): sign(n, "signed", "pass 8 (d767daa verdict)", "re-cut for design-pods-relayout 29b6dc9")
     elif n == "ring-well-empty": sign(n, "withdrawn", None, "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))")
+    elif n.startswith("mibi-halo-"): sign(n, "new", None, "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks")
+    elif n.startswith("place-") and n.endswith("-48x48"): sign(n, "new", None, "the collection overview place picture, round 1; awaiting verdict")
     elif n == "ring-well-empty-80x80": sign(n, "new", None, "re-export of the signed ring-well-empty only, padded to 80x80; awaiting verdict")
     elif n == "page-new-mark-12x12": sign(n, "withdrawn", None, "superseded by page-mark-new-10 (now a 6x6 flat bone dot)")
     elif re.match(r"ring-well-(selected|idle)", n) or n == "glint-star-12x12" or re.match(r"ring-arc-idle-", n): sign(n, "signed", "well rings verdict")

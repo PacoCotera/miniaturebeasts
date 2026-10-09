@@ -1,0 +1,62 @@
+[
+ {
+  "name": "place-meadow",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A MEADOW: low bright-green grass ground with a few tiny pale flowers and a couple of taller grass tufts, seen from slightly above, open and calm. A single painted miniature vignette that fills the whole square canvas edge to edge: soft painterly shapes, a few big simple masses that stay readable when the picture is shrunk to 48 pixels, lit softly from the upper left, muted natural colours (nothing saturated, nothing bright), gentle depth. NOT pixel art, NOT a detailed postcard, no creatures, no people, no buildings, no text, no frame, no border, no vignette frame. The reference strip shows the same place as it appears in the game's pixel map; keep its colours and character but paint it as a soft miniature painting.",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/placeref-meadow.png",
+    "The same place in the game's pixel map (reference for colours and character only):"
+   ]
+  ]
+ },
+ {
+  "name": "place-pond",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A POND: a small round pool of blue water in the middle with a pale sand shore ring and green meadow grass around it, seen from slightly above. A single painted miniature vignette that fills the whole square canvas edge to edge: soft painterly shapes, a few big simple masses that stay readable when the picture is shrunk to 48 pixels, lit softly from the upper left, muted natural colours (nothing saturated, nothing bright), gentle depth. NOT pixel art, NOT a detailed postcard, no creatures, no people, no buildings, no text, no frame, no border, no vignette frame. The reference strip shows the same place as it appears in the game's pixel map; keep its colours and character but paint it as a soft miniature painting.",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/placeref-pond.png",
+    "The same place in the game's pixel map (reference for colours and character only):"
+   ]
+  ]
+ },
+ {
+  "name": "place-rock",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A ROCK FIELD: a cluster of two or three grey-lilac boulders on bare ground with a little sparse grass, seen from slightly above, soft shadows falling to the lower right. A single painted miniature vignette that fills the whole square canvas edge to edge: soft painterly shapes, a few big simple masses that stay readable when the picture is shrunk to 48 pixels, lit softly from the upper left, muted natural colours (nothing saturated, nothing bright), gentle depth. NOT pixel art, NOT a detailed postcard, no creatures, no people, no buildings, no text, no frame, no border, no vignette frame. The reference strip shows the same place as it appears in the game's pixel map; keep its colours and character but paint it as a soft miniature painting.",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/placeref-rock.png",
+    "The same place in the game's pixel map (reference for colours and character only):"
+   ]
+  ]
+ },
+ {
+  "name": "place-wood",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A WOOD: the crowns of two or three round leafy trees in deep greens with dappled shade on the ground between them, seen from slightly above. A single painted miniature vignette that fills the whole square canvas edge to edge: soft painterly shapes, a few big simple masses that stay readable when the picture is shrunk to 48 pixels, lit softly from the upper left, muted natural colours (nothing saturated, nothing bright), gentle depth. NOT pixel art, NOT a detailed postcard, no creatures, no people, no buildings, no text, no frame, no border, no vignette frame. The reference strip shows the same place as it appears in the game's pixel map; keep its colours and character but paint it as a soft miniature painting.",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/placeref-wood.png",
+    "The same place in the game's pixel map (reference for colours and character only):"
+   ]
+  ]
+ },
+ {
+  "name": "place-cave",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A CAVE: a rocky grey-brown hillside with a dark rounded cave mouth in the lower middle, a few stones and a little grass at its foot, seen from the front. A single painted miniature vignette that fills the whole square canvas edge to edge: soft painterly shapes, a few big simple masses that stay readable when the picture is shrunk to 48 pixels, lit softly from the upper left, muted natural colours (nothing saturated, nothing bright), gentle depth. NOT pixel art, NOT a detailed postcard, no creatures, no people, no buildings, no text, no frame, no border, no vignette frame. The reference strip shows the same place as it appears in the game's pixel map; keep its colours and character but paint it as a soft miniature painting.",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/placeref-cave.png",
+    "The same place in the game's pixel map (reference for colours and character only):"
+   ]
+  ]
+ }
+]

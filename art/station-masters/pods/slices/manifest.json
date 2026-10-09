@@ -4296,5 +4296,173 @@
   "status": "new",
   "signed_in": null,
   "status_note": "the new-to-the-field-guide mark as pods.json now specifies it: a flat bone dot 6x6, 1 px white lit edge, no keyline; awaiting verdict"
+ },
+ "place-meadow-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": [
+   null,
+   null,
+   48,
+   48
+  ],
+  "src": "place-meadow",
+  "made": "the meadow place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey 88",
+  "sha256": "fd29246bfb19f378be9a8799e15905d86b4e8244c994bddaf52da5294b2c7beb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview place picture, round 1; awaiting verdict"
+ },
+ "place-pond-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": [
+   null,
+   null,
+   48,
+   48
+  ],
+  "src": "place-pond",
+  "made": "the pond place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey 88",
+  "sha256": "f262bcfb254cb1cb8bad3765196c4b549cd428d4fbfdd9689a00cd3a12a0ffce",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview place picture, round 1; awaiting verdict"
+ },
+ "place-rock-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": [
+   null,
+   null,
+   48,
+   48
+  ],
+  "src": "place-rock",
+  "made": "the rock place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey 88",
+  "sha256": "bb10aac6afd2d84bd232c304725b014a4516c7d26514ed0d7d50e6881c0a1994",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview place picture, round 1; awaiting verdict"
+ },
+ "place-wood-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": [
+   null,
+   null,
+   48,
+   48
+  ],
+  "src": "place-wood",
+  "made": "the wood place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey 88",
+  "sha256": "354e4da1e45244cc360045252d0f2ce8103cede310a7d91c1a3a754691200f18",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview place picture, round 1; awaiting verdict"
+ },
+ "place-cave-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": [
+   null,
+   null,
+   48,
+   48
+  ],
+  "src": "place-cave",
+  "made": "the cave place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey 88",
+  "sha256": "665a194658378fb1f1c0e1bd5bd3d0004d726de62fd4ecc3f5c21999e0821df9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview place picture, round 1; awaiting verdict"
+ },
+ "mibi-halo-S01-128x160-clear": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "station-side-600x620.png",
+  "made": "the S01 halo figure, clear: a soft glow figure from the species' silhouette alone, cool light brightest along the top-left contour, falling inward and downward, a soft outer halo of about 6 px",
+  "sha256": "6e16a7ca1e733fa54097912d57cd77a1ba412fa38da75ffec77f0c550a3b78fa",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+ },
+ "mibi-halo-S01-128x160-mist": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "station-side-600x620.png",
+  "made": "the S01 halo figure, mist: the same silhouette diffused to a soft cloud, barely guessable; the build cross-fades mist to clear by the share of chapters read",
+  "sha256": "ddddb39a16ed7936537a1d35f42249d7ca05a3ade2a04168a3cc91286c06866b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+ },
+ "mibi-halo-S09-128x160-clear": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "station-side-600x620.png",
+  "made": "the S09 halo figure, clear: a soft glow figure from the species' silhouette alone, cool light brightest along the top-left contour, falling inward and downward, a soft outer halo of about 6 px",
+  "sha256": "03f84795fe8b35e2e1ef35421d398f4bfd527d7254c9dd2053843f68d1d3c284",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+ },
+ "mibi-halo-S09-128x160-mist": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "station-side-600x620.png",
+  "made": "the S09 halo figure, mist: the same silhouette diffused to a soft cloud, barely guessable; the build cross-fades mist to clear by the share of chapters read",
+  "sha256": "af6fead9e823b583eacec74f9a0d35226d31d8a7e101f00ac6b8815b671a5e04",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+ },
+ "mibi-halo-S12-128x160-clear": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "station-portrait-600x620.png",
+  "made": "the S12 halo figure, clear: a soft glow figure from the species' silhouette alone, cool light brightest along the top-left contour, falling inward and downward, a soft outer halo of about 6 px",
+  "sha256": "cdd65bed3bb69b6ec75d7d0a9ab6c6e58728dee339528eb65f53acdbea985768",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+ },
+ "mibi-halo-S12-128x160-mist": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "station-portrait-600x620.png",
+  "made": "the S12 halo figure, mist: the same silhouette diffused to a soft cloud, barely guessable; the build cross-fades mist to clear by the share of chapters read",
+  "sha256": "f0b998ba8b1288b4d52d7224a70aeb207ac8b93c903daee19bb4fd5cfe3329a4",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
  }
 }
