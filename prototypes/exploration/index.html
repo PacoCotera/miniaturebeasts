@@ -209,8 +209,8 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
         <li>The dots top left are your reach, one per cell: a dot fills once you have been in that place and Called there; your cell is framed. Fill them all and everything in reach is explored. The map's quarters show how fully each place is surveyed.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
-        <li>One mibi is <b>with you</b> in the Companion. Grown, it is your Probe partner; a juvenile comes along in the Companion but is too young for the Probe. The others live at the Station: choose who goes with you in its Habitat (or, while docked, ✓ on Mibis here).</li>
-        <li>Between expeditions the Companion shows the mibi with you, large. ))) and it answers; ✓ <b>Walk</b> with it once per world turn (a moment together, undocked; its Data is part of the expedition's field yield), then ✓ spends time with it; the pad looks at the others; ← goes up to Mibis.</li>
+        <li>Up to three mibis are <b>with you</b> in the Companion; the others are at home at the Station. The partner joins the Probe: the lead if it is grown, otherwise the first grown mibi with you. While docked, ✓ <b>Take</b> a mibi at home or <b>Leave</b> one at home on Mibis (the Companion is full at three); the Station's Vivarium can ask for a mibi too, applied at the dock.</li>
+        <li>Between expeditions the Companion shows a mibi with you, large. ))) and it answers; ✓ <b>Walk together</b> once per world turn, undocked, with all of them (a moment together; its Data is part of the expedition's field yield), then ✓ <b>Tend</b> each one once a day. Three Tends earn the bond; a bonded juvenile grows up with care. The pad looks at the others; ← goes up to Mibis.</li>
         <li>Bubbles: <b>!</b> startled, stop or it runs · <b>?</b> curious, it comes closer · <b>fruit</b> it eats what you carry · <b>…</b> settling, keep still.</li>
       </ul>
     </details>
@@ -924,7 +924,7 @@ function migrateCarried(S) {
   S.carried = S.with != null && S.mibis.some(m => m.id === S.with) ? [S.with] : []; S.lead = S.with ?? null;
   S.carrySeen = 0; delete S.with; return S;
 }
-// Every load and after every dock read: defaults for the additive fields, idempotent; old Habitat bonds back-filled once.
+// Every load and after every dock read: defaults for the additive fields, idempotent; old Vivarium bonds back-filled once.
 // A carried id the Companion does not know, or one the Station has released (`released`, the ids released in st), is dropped.
 function normalizeCare(S, released) {
   if (!Array.isArray(S.carried)) S.carried = [];
@@ -957,7 +957,6 @@ function carryApply(S, st) {
   }
   return done;
 }
-function mibiWith(ab) { return S.mibis.find(m => SPECIES[m.sp].ab === ab && isAdult(m)) || null; }
 const tierOf = () => TIER[S.tier] || TIER[1];
 
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
@@ -2262,12 +2261,13 @@ function endExpedition(reason) {
   const ex = S.exp; if (!ex) return;
   const broke = reason === 'break'; S.ui.lastPos = ex.pos;
   const explored = exploredAny(ex), rc = reachCounts();
+  const notchLines = [];   // a notch earned is named on Head home (and logged), never with a count
   { const n = {}; for (const c of new Set(ex.trail)) if (S.visited[c] && passable(c)) n[G.land[c]] = (n[G.land[c]] || 0) + 1;   // every mibi with you remembers where you went most
     const best = Object.keys(n).sort((a, b) => n[b] - n[a] || a - b)[0];
     for (const w of carriedMibis()) { if (best != null) w.mem = LAND_NAME[best];
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
-      if (ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) logEv(CARE_TEXT.notch(w.name)); } } }   // notches: the bonded partner only
-  const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], explored: rc.surveyed, of: rc.total };
+      if (ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notchLines.push(CARE_TEXT.notch(w.name)); } } } }   // notches: the bonded partner only
+  const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: notchLines.slice(), explored: rc.surveyed, of: rc.total };
   if (explored && !broke) {   // the field yield: the walk brings home its tier's Data; moments brought part of it in early, the rest arrives now
     const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
     rep.yield = { tier, data: want, moments: ex.moments.length, early: ex.dField - got, late: got };
@@ -2286,12 +2286,12 @@ function endExpedition(reason) {
     S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
-  rep.lines = worldTurn(pending);   // the world turns once per Head home, on the Companion
+  const worldLines = worldTurn(pending); rep.lines = notchLines.concat(worldLines);   // the world turns once per Head home, on the Companion
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n, n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: rep.lines.slice() };
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice() };   // the crate carries the world's lines only
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Headed home · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
@@ -3744,7 +3744,7 @@ function drawSetup(t) {
   text(clipText(strip, 420, 2), SCR_W / 2, 34, hurt ? C.amber : C.mist, 2, 'center');
   if (isDocked()) { panel(70, 506, 310, 26, C.ink, C.mint); text('Docked · lift at the Station', SCR_W / 2, 511, C.mint, 2, 'center'); }
   else if (S.bay.length) { const n = S.bay.length; panel(70, 488, 310, 48, C.ink, C.amber); text(n + ' consignment' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 494, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 514, C.amber, 2, 'center'); }
-  const sel = S.ui.sel, dig = digPartner(), digHome = !dig && mibiWith('dig'), deepOk = !!dig;
+  const sel = S.ui.sel, dig = digPartner(), deepOk = !!dig;
   // Weather: a storm cloud with a flickering bolt
   card(20, 58, 410, 84, sel === 0, true);
   disc(32, 68, 32, 'sand', 'clay'); blit(ICON.cloud(1), 49, 82); blit(ICON.bolt(fr ? 'cream' : 'yellow'), 62 + fr, 96);
@@ -3754,7 +3754,7 @@ function drawSetup(t) {
   disc(32, 162, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 56, 186);
   if (deepOk && fr) { R(70, 186, 2, 2, C.cream); R(69, 187, 4, 1, C.yellow); }
   text('Deep ground', 112, 162, deepOk ? C.ink : C.mist, 3);
-  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : digHome ? 'Caves · take ' + digHome.name + ' at the Station' : 'Caves · needs a digging partner', 306, 2), 112, 200, deepOk ? C.stone : C.fog);
+  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : 'Caves · needs a digging partner', 306, 2), 112, 200, deepOk ? C.stone : C.fog);
   // the partner, as a card (the partner, or the first mibi with you when none is grown)
   const pm = partnerMibi(), w = pm || carriedMibis()[0] || null;
   card(20, 246, 410, 92, sel === 2, true);
@@ -3763,15 +3763,13 @@ function drawSetup(t) {
     text(clipText(w.name, 200, 3), 112, 254, C.ink, 3);
     let cx = 112; cx += chip(cx, 286, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone') + 6; chip(cx, 286, 'with you', 'orange', 'bone');
     text(clipText(pm ? SPECIES[pm.sp].abText[0].toUpperCase() + SPECIES[pm.sp].abText.slice(1) : 'Too young for the Probe', 306, 2), 112, 314, pm ? C.stone : C.rust); }
-  else if (S.mibis.length) { emptyPodSmall(52, 292); text('No one with you', 112, 258, C.ink, 3); text(clipText('take one at the Station · ' + S.mibis.length + ' at home', 306, 2), 112, 300, C.stone); }
+  else if (S.mibis.length) { emptyPodSmall(52, 292); text('No one with you', 112, 258, C.ink, 3); text(clipText('take one at the Station', 306, 2), 112, 300, C.stone); }
   else { emptyPodSmall(52, 292); text('No partner yet', 112, 258, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 296 + i * 20, C.stone)); }
   // the world preview: the whole map small, the last start flagged, and the count
   const iy = 354, u = 6; drawWorldInset(24, iy, t, u);
   const all = MW * MH; let seen = 0, done = 0; for (let c = 0; c < all; c++) { if (S.revealed[c]) seen++; if (explored(c)) done++; }
   text('Your world', 136, iy + 2, C.mist); text('Explored ' + done + ' of ' + all + ' cells', 136, iy + 26, C.bone); text('Seen ' + seen + ' · fog ' + (all - seen), 136, iy + 50, C.fog);
   if (S.ui.lastPos != null) { blit(ICON.flag(), 136, iy + 76); text('last start', 154, iy + 78, C.fog); }
-  const home = homeMibis().map(q => q.name);
-  if (home.length) text(clipText(home.join(', ') + ' at home', 290, 2), 136, iy + 104, C.mist);
 }
 function emptyPodSmall(cx, cy) { for (let a = 0; a < 6.28; a += .2) R(cx + Math.round(Math.cos(a) * 18), cy + Math.round(Math.sin(a) * 24), 2, 2, C.stone); }
 // The whole world small, between expeditions: fog, seen land faded, visited land in colour, pins, outposts, skulls, the last start.
@@ -4131,7 +4129,7 @@ function lineFor() {
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
     case 'setup': if (S.ui.sel === 2) return S.mibis.length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
-      if (S.ui.sel === 1 && !digPartner()) { const d = mibiWith('dig'); return d ? L1('Needs a digger', 'take ' + d.name + ' at the Station', 'menu', true) : L1('Needs a digger', 'Deep ground', 'menu', true); }
+      if (S.ui.sel === 1 && !digPartner()) return L1('Needs a digger', 'Deep ground', 'menu', true);   // a mibi at home is never named
       { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked at the Station' : 'dock: mended free', 'menu', true); }
       return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), bayLine(), 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
@@ -4217,7 +4215,7 @@ function startBlock() {
 }
 function chooseType() {
   { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; return; } }
-  if (S.ui.sel === 1 && !digPartner()) { const d = mibiWith('dig'); fxMsg(d ? 'Deep ground needs a digging partner · take ' + d.name + ' with you at the Station' : 'Deep ground needs a digging partner'); FX.bumpAt = NOW; return; }
+  if (S.ui.sel === 1 && !digPartner()) { fxMsg('Deep ground needs a digging partner'); FX.bumpAt = NOW; return; }
   S.ui.type = S.ui.sel === 1 ? 'deep' : 'weather';
   const first = firstPlacement();
   let cur = S.ui.lastPos != null ? S.ui.lastPos : null;

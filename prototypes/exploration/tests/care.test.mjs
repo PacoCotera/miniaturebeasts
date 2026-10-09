@@ -216,7 +216,7 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 function ending(S, ex) {
   const t = vm.createContext({ console, S, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 6,
     exploredAny: () => true, reachCounts: () => ({ surveyed: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, dropPods: () => {},
-    worldTurn: () => { S.turn++; S.expN++; return []; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
+    worldTurn: () => { S.turn++; S.expN++; return ["The world turned."]; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
   const names = ["endExpedition", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
   vm.runInContext(names.map(source).join("\n") + "\n;endExpedition('home');", Object.assign(t, { __ex: ex }));
 }
@@ -229,8 +229,10 @@ test("an expedition: an outing to every carried mibi, notches to the bonded part
   for (const m of [dot, moss, fig]) { assert.equal(m.outings, 1); assert.equal(m.care, 0, "an expedition is not care"); }
   assert.equal(pip.outings, 0); assert.equal(dot.notches, 0, "an unbonded partner earns no notch");
   assert.deepEqual(plain(S.trips.at(-1)), { v: 1, n: 5, partner: 1, places: ["meadow"], storm: false, carried: [1, 2, 3] });
-  dot.bonded = true; dot.bondCare = 0; S.exp = Object.assign(ex(6), { pt: { id: 1 } }); ending(S, S.exp);
+  dot.bonded = true; dot.bondCare = 0; S.exp = Object.assign(ex(6), { pt: { id: 1 }, cargo: { e: 1, d: 0, s: 0, pods: [] } }); ending(S, S.exp);
   assert.equal(dot.notches, 1, "the bonded partner"); assert.equal(moss.notches, 0);
+  assert.equal(S.report.lines[0], "Dot gains a skill notch", "named on Head home, with no count");
+  assert.deepEqual(plain(S.bay.at(-1).lines), ["The world turned."], "the crate keeps the world's lines only");
   moss.bonded = true; S.exp = Object.assign(ex(7), { pt: { id: 1 } }); ending(S, S.exp); assert.equal(moss.notches, 0, "a bonded mibi that is not the partner");
   const t = world(save()); const rec = t.tripRecord({ n: 3 }, S.carried); S.carried.push(9);
   assert.deepEqual(plain(rec.carried), [1, 2, 3], "a copy"); assert.deepEqual(plain(t.tripRecord({ n: 3 }).carried), []);
@@ -360,6 +362,7 @@ test("the dock: `bonded` flows in by OR; no care field is read from the Station;
 test("T2 fixture: both migrations; the carried set and every stage agree for turns 4–14", { skip: station("carriedIds", "stageAt", "normalize", "migrate") }, () => {
   const sv = FIXTURE(), t = world(sv); t.migrateCarried(sv); t.normalizeCare(sv);
   const st = ST.normalize(ST.migrate(sv.st, 1000, sv), 1000);
+  const twice = JSON.stringify(st); assert.equal(JSON.stringify(ST.normalize(ST.migrate(st, 1000, sv), 1000)), twice, "the Station's migration run twice gives the same JSON");
   assert.deepEqual(plain(ST.carriedIds(st, sv)), plain(sv.carried));
   assert.deepEqual(plain(st.carryReqs), [{ seq: 1, op: "add", id: 3 }]); assert.ok(!("withReq" in st));
   for (let turn = 4; turn <= 14; turn++) { sv.turn = turn; st.turn = turn;
@@ -438,4 +441,60 @@ test("after a dock, normalizeCare drops released ids from the carried set; witho
   // the page passes the released ids of the Station's part after every dock read
   t.env.st = { mibis: [{ id: 3, released: true }, { id: 1, released: false }] };
   t.normalizeCare(S, t.releasedIds()); assert.deepEqual(plain(S.carried), [1]);
+});
+
+// ---- Undocked, a mibi at home is never named (K3) ----
+test("the expedition choice never names a mibi at home: no list, no count, no digger to fetch", () => {
+  const S = save({ carried: [], turn: 3, expN: 2, tier: 1, bay: [], revealed: [0], ui: { sel: 1, lastPos: null }, shield: 3 });
+  S.mibis[1].sp = 2;   // a grown digger at home
+  const said = [], noop = () => {}, id = x => x;
+  const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 6, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
+    SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs narrow burrows" }],
+    viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
+    panel: noop, card: noop, disc: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false });
+  const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "mibiById", "isAdult", "mibiStage", "stageAt"];
+  vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
+  const home = S.mibis.map(m => m.name);
+  for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
+  assert.ok(said.includes("take one at the Station") && said.includes("Caves · needs a digging partner"));
+  assert.ok(!said.some(l => /at home/.test(l)), "no at-home list or count");
+  for (const fn of ["lineFor", "drawSetup"]) assert.ok(!/mibiWith|homeMibis/.test(source(fn)));
+  assert.ok(!/take ' \+ d\.name/.test(PAGE), "the digger at home is never named on a refusal");
+});
+test("the page's help: the carried set, Walk together and Tend; no Spend time and no Habitat", () => {
+  const help = PAGE.slice(0, PAGE.indexOf("<script"));
+  assert.match(help, /Up to three mibis are <b>with you<\/b>/); assert.match(help, /<b>Tend<\/b> each one once a day/);
+  assert.ok(!/spends time|One mibi is|Habitat/.test(PAGE), "retired words");
+});
+
+// ---- The Station's half, switched on when it lands ----
+const stationWorld = (S, docked = true) => { S.seed = 7; S.wid = "w7"; S.cr = []; S.bay = []; S.v = 8;
+  const st = ST.normalize(Object.assign(ST.freshSt("w7", S.turn, 1000), { mibis: S.mibis.map((m, i) => ({ id: m.id, name: m.name, sp: m.sp, gs: 100 + m.id, born: m.born, bonded: !!m.bonded, outings: 0, notches: 0, from: { n: 0, g: "", how: "" }, bay: i, released: false })) }), 1000);
+  if (docked) ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 1000); return st; };
+const reload = x => JSON.parse(JSON.stringify(x));
+test("T7, the Station's half: a full refusal shows once, null after it is seen, after a lift and redock and after a reload; other reasons show nothing",
+  { skip: station("carryRefusal", "seenCarryRefusal", "carryAdd", "dockKey") }, () => {
+  const S = save({ carried: [1, 2], turn: 3 }), t = world(S, { docked: true }); let st = stationWorld(S);
+  assert.equal(ST.carryAdd(st, S, st.mibis[2]).ok, true);   // Fig queued on the Station
+  t.takeMibi(S.mibis[3]);                                    // the Companion takes Pip first: full
+  t.carryApply(S, st); assert.deepEqual(plain(S.carryRefused), [{ seq: 1, id: 3, why: "full" }]);
+  assert.deepEqual(plain(ST.carryRefusal(st, S)), { seq: 1, id: 3, name: "Fig" });
+  ST.seenCarryRefusal(st, S); assert.equal(ST.carryRefusal(st, S), null);
+  ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 2000); ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 3000); assert.equal(ST.carryRefusal(st, S), null, "a lift and a redock");
+  st = ST.normalize(reload(st), 4000); assert.equal(ST.carryRefusal(st, reload(S)), null, "a reload of either page");
+  for (const why of ["carried", "released", "unknown"]) { const sv = reload(S); sv.carryRefused = [{ seq: 9, id: 1, why }]; assert.equal(ST.carryRefusal(st, sv), null, why); }
+  const sv = reload(S); sv.carryRefused = [{ seq: 10, id: 2, why: "full" }, { seq: 11, id: 4, why: "released" }];
+  assert.equal(ST.carryRefusal(st, sv).id, 2, "a later refusal never hides the full one"); ST.seenCarryRefusal(st, sv); assert.equal(ST.carryRefusal(st, sv), null, "both seen");
+});
+test("T4 with a lift, a redock and a reload: the Station's care mirror does not move", { skip: station("mergeCare", "dockKey", "normalize") }, () => {
+  const S = save({ carried: [1], turn: 3 }), t = world(S); const dot = S.mibis[0]; dot.tends = 2; dot.outings = 1; t.tend(dot); t.walkAll();
+  let st = stationWorld(S); ST.mergeCare(st, S); const care = s => JSON.stringify(s.mibis.map(q => [q.id, q.care, q.tends, q.outings, q.notches, q.bonded, q.bondCare ?? null, q.grownTurn ?? null]));
+  const once = care(st);
+  ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 2000); ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 3000); ST.mergeCare(st, S); assert.equal(care(st), once, "lift and redock");
+  st = ST.normalize(reload(st), 4000); ST.mergeCare(st, reload(S)); assert.equal(care(st), once, "reload");
+});
+test("T5: C8 marks only the partner; a carried mibi that is not the partner gets none", { skip: station("tripCarried", "dockKey") || (!("tripSeen" in ST.freshSt("w", 0, 0)) && "C8 has not landed on main") }, () => {
+  const S = save({ carried: [1, 2, 3], turn: 4 }); S.trips = [{ v: 1, n: 3, partner: 1, places: ["cave", "wood", "meadow"], storm: true, carried: [1, 2, 3] }];
+  const st = stationWorld(S, false); ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 1000);
+  for (const q of st.mibis.filter(q => q.id !== 1)) assert.ok(!q.marks || Object.values(q.marks).every(k => !k.steps), q.name + " gets no marks");
 });

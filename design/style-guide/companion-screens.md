@@ -307,7 +307,7 @@ Wireframes, 450×600 at 1×, measured boxes and slot labels only, no art: [`wire
 
 **Placement.** The partner first, because it is what the next expedition depends on; then the three places, always three, so "the Companion is full" is visible before it is said; then, docked, the mibis to take. Undocked the screen stops after the places.
 
-**Alignment with the art direction.** Paper cards on ink, as on the expedition choice. The partner stands on the teal ring, the same ring it wears in the field and in the HUD. The heart is a small HiBit enamel heart, the same object as Habitat's heart drawn for the Companion's palette. The free place is a dashed outline, as on Habitat's Companion module.
+**Alignment with the art direction.** Paper cards on ink, as on the expedition choice. The partner stands on the teal ring, the same ring it wears in the field and in the HUD. The heart is a small HiBit enamel heart, the same object as the Vivarium's heart drawn for the Companion's palette. The free place is a dashed outline, as on the Vivarium's Companion module.
 
 **Composition.** <img src="wireframes/companion-care/01-roster-docked-take.png" width="225" alt="Mibis docked, Take Fig"> <img src="wireframes/companion-care/03-roster-docked-full.png" width="225" alt="Mibis docked, three with you, Take refused">
 
@@ -346,7 +346,7 @@ The list scrolls inside the view, the Lead card with it: the offset is the least
 
 The pad: ▲ ▼ move between cards; ▶ on any mibi's row opens its page (the same as ✓ Visit undocked; docked, it is the way to a page, since ✓ arranges). ← goes back where Mibis was opened from, as built. **Call:** the focused mibi with you answers on its row (the hop and chirp, free); on the Lead card or a mibi at home, the partner answers, or the first mibi with you when there is no partner. With no mibi with you, Call does nothing.
 
-Swaps happen only while docked. A request made on the Station's Habitat is applied at the dock, before this screen draws, and shows here as the result: the rows are already where they belong.
+Swaps happen only while docked. A request made on the Station's Vivarium is applied at the dock, before this screen draws, and shows here as the result: the rows are already where they belong.
 
 The three counts, as the wireframes show them:
 
@@ -381,7 +381,7 @@ The section [Companion mode / active mibi](#companion-mode--active-mibi) above s
 | Page dots | centred, y 452 | 6×6 at a 16 px pitch; a mibi with you ringed (10×10 `amber`); docked, 16 px more between the last mibi with you and the first at home |
 | Message box | centred, foot at 556 | As built: up to three 2× lines; never reaches the dots (its top is at least 484) |
 
-Status lines: `with you · leads the Probe` (the partner), `with you · can lead the Probe` (grown, not the partner), `with you · too young for the Probe` (an unbonded juvenile), `with you · grows with care` (a bonded juvenile), `at home`, `at home · grows on the Companion` (a bonded juvenile at home, the words Habitat uses). The status line is exactly one of these, with nothing appended: no world turns left to grow up (a countdown on the clock would make growing up a thing to wait for, beside a bonded juvenile that shows none), no skill count (skill is drawn only as filled notches on the Station's Habitat card; on the Companion it is named only when a notch is earned at Head home, `‹name› gains a skill notch`, with no count), no "walked this turn" (the ✓ already says whether the Walk is there) and no "docked" (the link states say it). The longest, `with you · too young for the Probe`, is 314 px at 2× in the 390 px line.
+Status lines: `with you · leads the Probe` (the partner), `with you · can lead the Probe` (grown, not the partner), `with you · too young for the Probe` (an unbonded juvenile), `with you · grows with care` (a bonded juvenile), `at home`, `at home · grows on the Companion` (a bonded juvenile at home, the words the Vivarium uses). The status line is exactly one of these, with nothing appended: no world turns left to grow up (a countdown on the clock would make growing up a thing to wait for, beside a bonded juvenile that shows none), no skill count (skill is drawn only as filled notches on the Station's Vivarium card; on the Companion it is named only when a notch is earned at Head home, `‹name› gains a skill notch`, with no count), no "walked this turn" (the ✓ already says whether the Walk is there) and no "docked" (the link states say it). The longest, `with you · too young for the Probe`, is 314 px at 2× in the 390 px line.
 
 **The ✓ on a mibi with you,** the first that applies:
 
@@ -407,7 +407,7 @@ Status lines: `with you · leads the Probe` (the partner), `with you · can lead
 3. The heart, `c-heart-24` drawn at 2× (48×48, pixel for pixel), rises beside the mibi's head from (362, 140) to (362, 60) in four 20 px steps of 150 ms, holds 900 ms, and is gone. At that moment the 24×24 heart appears in the name row, and stays.
 4. The message box takes the bond line, `‹name› is bonded with you`, which stays until the next action.
 
-Input is held to the end. Under reduced motion the heart stands at (362, 60) for 1.5 s, without the rise. No other screen plays the bond; Mibis, the expedition choice and the Station's Habitat show the heart as a state from then on.
+Input is held to the end. Under reduced motion the heart stands at (362, 60) for 1.5 s, without the rise. No other screen plays the bond; Mibis, the expedition choice and the Station's Vivarium show the heart as a state from then on.
 
 **The grow-up line** ([12](wireframes/companion-care/12-active-grow.png)). A bonded juvenile grows up at the first Tend or Walk after its bond (never at the same press). After the action's moment the view is on that mibi's page (several in carried order, as for the bond), the art cuts from the juvenile to the adult, the chip changes, and the message box takes `‹name› is grown · it leads the Probe now` when it is now the partner, or else `‹name› is grown · it can lead the Probe`. Nothing rises and nothing else plays: the line is the event.
 
@@ -448,7 +448,7 @@ Bottom line: `✓ Open Mibis · ← menu` (as built) (Mibis opens on the Lead ca
 | The walk moment, per species | the 280×300 stage | The Walk (the built walk moment stands in) |
 | Faces at 64 and the HUD ring face (24), field tokens at 48 | as listed in [Companion mode / active mibi](#companion-mode--active-mibi) | Lead card, partner card, rows, the walk |
 
-The heart is the same object as Habitat's enamel heart, drawn for the Companion: no face, no sparkle, never a flat emoji heart. Dashed outlines, rings, chips and the open mark are composed, not assets.
+The heart is the same object as the Vivarium's enamel heart, drawn for the Companion: no face, no sparkle, never a flat emoji heart. Dashed outlines, rings, chips and the open mark are composed, not assets.
 
 **Pass when**
 - [ ] Undocked, no mibi at home appears anywhere: not a row, a page or a dot.
