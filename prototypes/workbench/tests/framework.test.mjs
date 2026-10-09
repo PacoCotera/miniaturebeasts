@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
-import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest } from "../framework/species.mjs";
+import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS } from "../framework/species.mjs";
 import { cross, forecast, kinship, identity, relatedness, children, SPREAD } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
@@ -76,6 +76,17 @@ test("every frame carries only trunk loci its plan owns plus its clan's branch; 
   assert.ok(s03.chapters.some((c) => c.id === "glow" && c.traits.every((t) => !t.shapeable)), "the glow is a doing");
   assert.ok(frameOf("S16").chapters.some((c) => c.id === "charge" && c.sealed), "the lightning kind's Charge chapter is sealed");
   assert.ok(frameOf("S04").loci.some((l) => l.id === "appearance.fur-reach"), "mammal look loci are trunk");
+});
+
+test("every sealed chapter names its find's kind beside its words: crystal, pearl or shard, or none", () => {
+  const kinds = Object.fromEntries(frames.flatMap((f) => f.chapters.filter((c) => c.sealed).map((c) => [`${f.species.id}.${c.id}`, c.findKind])));
+  assert.deepEqual(kinds, { "S02.character": "crystal", "S09.movement": "pearl", "S11.stamina": "shard", "S15.stamina": "shard", "S16.charge": "shard" });
+  for (const f of frames) for (const c of f.chapters) {
+    if (c.sealed) assert.equal(c.findKind, findKindOf(c.opensWith), `${f.species.id} ${c.id}: the picture is the find the words name`);
+    else assert.ok(!("findKind" in c) && !("opensWith" in c), `${f.species.id} ${c.id}: an open chapter names no find`);
+  }
+  for (const words of Object.values(FINDS)) assert.ok(findKindOf(words), `every chapter's default find is one the studio paints (${words})`);
+  assert.equal(findKindOf("a find"), null, "a chapter sealed with no named find has no kind: the page keeps the stand-in card");
 });
 
 test("an individual resolves against its frame: sleeping parts, absent parts, foreign loci", () => {

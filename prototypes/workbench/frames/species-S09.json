@@ -440,6 +440,7 @@
    "name": "Movement",
    "sealed": true,
    "opensWith": "a tide pearl",
+   "findKind": "pearl",
    "traits": [
     {
      "id": "flap",

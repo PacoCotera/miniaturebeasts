@@ -312,6 +312,7 @@
    "name": "Character",
    "sealed": true,
    "opensWith": "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod",
+   "findKind": "crystal",
    "traits": [
     {
      "id": "curiosity",

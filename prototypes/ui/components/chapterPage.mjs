@@ -27,6 +27,7 @@ export function chapterPage(ctx, id, region, props) {
   if (props.sealedFind && region.sealedFind) {   // a shut chapter: the one picture of the find that opens it (a flat tone until it is painted), no cells, no names
     const F = [px + region.sealedFind[0], py + region.sealedFind[1], region.sealedFind[2], region.sealedFind[3]];
     nodes.push({ id: id + ".find", kind: "rect", rect: F, colour: Cc.cell, region: "page.seal" });
+    nodes.push(...layer(id + ".findpic", F, props.sealedPicture));   // the studio's picture of the find, 1:1, once signed
     return { nodes, cells: [], picture: null, overflow: false };
   }
   const grid = pageGrid(region, props.cells.length);

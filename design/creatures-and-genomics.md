@@ -126,6 +126,18 @@ creature remains and the failure is shown; art can never change a gene.
   are heritable copies switched off in this individual; they can wake in a child.
   *Sealed* parts are a heritable chapter that needs a find to read. "Looks
   shapeable, doings by breeding" is the default; each species may override it.
+- **Finds.** A sealed chapter opens with one find, and there are three kinds,
+  each a picture on the shut chapter's page: a **crystal** (a vybronic crystal,
+  dug up from the ground), a **pearl** (a tide pearl, from water) and a
+  **shard** (a storm-glass shard, left by a storm). A find's kind is what its
+  words name, so the picture and the words never disagree: S02 Character opens
+  with a crystal, S09 Movement with a pearl, and S11 Stamina, S15 Stamina and
+  S16 Charge with a shard. Only a doings chapter is sealed. By default Character
+  takes a crystal, Movement a pearl, and Stamina, Glow and Charge a shard. A
+  chapter sealed with words that name none of the three (the workbench's "a
+  find") has no kind. Its page keeps the stand-in card in the signed frame and
+  says "opens with a find", and never guesses a picture. Each frame records the
+  kind as `findKind` beside `opensWith`.
 - **Chapters are navigation, not chromosomes.** Research is read a chapter at a
   time (Coat, Face, Movement…): a page of a few traits, each one picture, with
   loci under the hood. One read gives both copies of every trait in one chapter
