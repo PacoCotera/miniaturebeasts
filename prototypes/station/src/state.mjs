@@ -248,7 +248,7 @@ export const fullyRead = (p, settings) => p.idd && progress(p, settings) >= 1;
 export function compareDiff(st, a, b) {
   if (!a || !b || a === b || !a.idd || !b.idd || speciesOf(a) !== speciesOf(b)) return null;
   const fr = frameFor(a), diff = [];
-  for (const ch of fr.chapters) if (a.read.includes(ch.id) && b.read.includes(ch.id)) for (const t of ch.traits) if (t.loci.some((id) => JSON.stringify([...a.genome.loci[id]].sort()) !== JSON.stringify([...b.genome.loci[id]].sort()))) diff.push(t.id);
+  for (const ch of fr.chapters) if (a.read.includes(ch.id) && b.read.includes(ch.id)) for (const t of ch.traits) if (traitState(fr, t, a.genome).line !== traitState(fr, t, b.genome).line) diff.push(t.id);   // what each pod reads as: the mark never sits on two identical lines
   return diff;
 }
 export const canCompare = (st, a, b) => compareDiff(st, a, b) !== null;

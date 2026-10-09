@@ -27,7 +27,12 @@ export function chapterPage(ctx, id, region, props) {
     nodes.push({ id: id + ".word", kind: "text", rect: [px + H[0] + 32, py + H[1], Math.round(ctx.measure(props.heading.word, 20, 500)), 24], text: props.heading.word, px: 20, weight: 500, colour: Cc.heading, align: "left" });
     for (const [k, extra] of (props.heading.extra || []).entries()) nodes.push({ id: `${id}.hx${k}`, kind: "sprite", rect: [px + H[0] + 32 + Math.round(ctx.measure(props.heading.word, 20, 500)) + 12 + extra.dx, py + H[1] + (extra.dy || 0), extra.w, extra.h], asset: extra.asset });
   }
-  if (props.sealedFind && region.sealedFind) { nodes.push({ id: id + ".find", kind: "sprite", rect: [px + region.sealedFind[0], py + region.sealedFind[1], region.sealedFind[2], region.sealedFind[3]], asset: props.sealedFind, region: "page.seal" }); return { nodes, cells: [], picture: null, overflow: false }; }   // a shut chapter: the one picture of the find that opens it, no cells, no names
+  if (props.sealedFind && region.sealedFind) {   // a shut chapter: the one picture of the find that opens it (its stand-in card, the signed frame over it, the word), no cells, no names
+    const F = [px + region.sealedFind[0], py + region.sealedFind[1], region.sealedFind[2], region.sealedFind[3]];
+    nodes.push(...layer(id + ".findcard", F, props.sealedCard), { id: id + ".find", kind: "sprite", rect: F, asset: props.sealedFind, region: "page.seal" });
+    if (props.standIn && props.sealedCard) { const w = Math.round(ctx.measure(props.standIn, 16, 400)); nodes.push({ id: id + ".findword", kind: "text", rect: [F[0] + Math.round((F[2] - w) / 2), F[1] + Math.floor((F[3] - ctx.cap(16)) / 2), w, ctx.line(16)], text: props.standIn, px: 16, weight: 400, colour: Cc.standIn, align: "left" }); }
+    return { nodes, cells: [], picture: null, overflow: false };
+  }
   const grid = pageGrid(region, props.cells.length);
   grid.cells.forEach((cell, i) => {
     const c = props.cells[i], [cx, cy] = cell, [pw, ph] = grid.picture, cid = `${id}.c${i}`, P = [cx, cy, pw, ph];
@@ -37,7 +42,7 @@ export function chapterPage(ctx, id, region, props) {
       if (crop.length) nodes.push(...crop, ...layer(cid + ".frame", P, c.frame)); else {
       const card = layer(cid + ".card", P, c.picture); if (!card.length && Cc.cardFill) nodes.push({ id: cid + ".cardfill", kind: "rect", rect: P, colour: Cc.cardFill });   // until the card is cut at this size: its fill
       nodes.push(...card, ...layer(cid + ".frame", P, c.frame));
-      if (props.standIn) { const w = Math.round(ctx.measure(props.standIn, 16, 400)); nodes.push({ id: cid + ".standin", kind: "text", rect: [cx + Math.round((pw - w) / 2), cy + Math.floor((ph - ctx.cap(16)) / 2), w, ctx.line(16)], text: props.standIn, px: 16, weight: 400, colour: Cc.standIn, align: "left" }); }   // the card carries no word of its own: the build sets it
+      if (props.standIn) { const w = Math.round(ctx.measure(props.standIn, 16, 400)); nodes.push({ id: cid + ".standin", kind: "text", rect: [cx + Math.round((pw - w) / 2), cy + (ph < props.marks.smallUnder ? Math.floor((ph - props.marks.seedSmall[1] - 8 - ctx.cap(16)) / 2) : Math.floor((ph - ctx.cap(16)) / 2)), w, ctx.line(16)], text: props.standIn, px: 16, weight: 400, colour: Cc.standIn, align: "left" }); }   // the card carries no word of its own: the build sets it
       }
     }
     if (c.frost) nodes.push(props.unreadFrame && isFilled(props.unreadFrame) ? { id: cid + ".frost", kind: "sprite", rect: P, asset: props.unreadFrame } : { id: cid + ".frost", kind: "rect", rect: P, colour: Cc.frostFill || "frost" });   // the signed frosted frame; a flat frost until it is placed   // the spec's unread cell: frost fill, no picture, nothing requested

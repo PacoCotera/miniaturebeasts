@@ -90,7 +90,7 @@ test("a read pod: the page by trait count, every picture at its grid size, no di
     const fr = frameOf(id);
     for (let ci = 0; ci < fr.chapters.length; ci++) {
       const v = view(chapter(st, ci)), ch = fr.chapters[ci], page = v.page, sealed = ch.sealed && !settings.sealedOpen;
-      assert.equal(v.mode, "chapter"); assert.equal(page.count, Math.min(8, ch.traits.length), `${id} ${ch.id}`); assert.equal(page.overflow, false);
+      assert.equal(v.mode, "chapter"); assert.equal(page.count, sealed ? 1 : Math.min(8, ch.traits.length), `${id} ${ch.id}`); assert.equal(page.overflow, false);
       if (sealed) { assert.deepEqual(page.cells, [], "a shut chapter has no cells"); assert.ok(page.sealedFind, "the find that opens it"); }
       assert.equal(page.cells.length, sealed ? 0 : page.count);
       for (const c of page.cells) {

@@ -176,7 +176,7 @@ function checkSnapshot() {
   const pod = podById(UI.pods.cur), fr = pod ? frameOf(S.speciesOf(pod)) : null;
   return { screen: UI.screen, idle: UI.idle, size: [SC.w, SC.h], page: [vis.width, vis.height], art: SC.offPalette("art"), type: SC.offPalette("type"), typeLog: SC.typeLog.map((r) => ({ text: r.text, face: r.face, family: r.family, px: r.px, weight: r.weight, atlas: r.atlas })),
     typeMissing: [...SC.type.missing], renderer: { sizes: SC.sizeErrors.length, missing: SC.missing.length }, regions: scene.regions(), texts: scene.texts(), layered: !!screenOf(UI.screen).nodes && !UI.idle,
-    pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null, traits: UI.screen === "pods" && UI.pods.view === "chapter" && fr && pod.idd ? (fr.chapters[Math.min(UI.pods.ci | 0, fr.chapters.length - 1)]?.traits.length ?? 0) : null, placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
+    pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null, traits: UI.screen === "pods" && UI.pods.view === "chapter" && fr && pod.idd ? (() => { const c = fr.chapters[Math.min(UI.pods.ci | 0, fr.chapters.length - 1)]; return c && c.sealed && !G.settings.sealedOpen ? 1 : (c?.traits.length ?? 0); })() : null, placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
 }
 
 // Test hooks (not part of play).
