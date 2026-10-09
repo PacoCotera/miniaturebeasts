@@ -27,9 +27,9 @@ known in full.
 
 A pod holds one complete genome. The player learns it a page at a time, and
 knowing only part of a pod is normal. Research is optional and works as
-discovery, not a quiz: an unread pod can still be grown. Research never changes
-the pod, and what the player has learned stays even after the pod is used up or
-the supplies run out.
+discovery, not a quiz: an unread pod can still be grown. What the player has
+learned stays even after the pod is used up or the supplies run out. Research
+never changes the pod ([Genomics](creatures-and-genomics.md#research)).
 
 Research reads and shows the genome as pictures and short words. More genome
 gives fuller pages and more looks to find, never more buttons.
@@ -43,9 +43,9 @@ in the Library. An identified pod can be grown straight away, unread.
 
 ## Reading a chapter
 
-A **chapter** is one page of a species' genome: Coat, Face, Shape, Legs & Tail,
-Movement, Stamina, Character, and the others a species has. A species has only
-the chapters its frame holds, and the Station shows every one of them. Each
+A **chapter** is one page of a species' genome; Genomics names them
+([chapters and traits](creatures-and-genomics.md#chapters-and-traits)). The
+Station shows every chapter the species has. Each
 chapter holds a few **traits**, and each trait is one picture.
 
 - A read covers one chapter of one pod and shows both copies of every trait in
@@ -68,7 +68,8 @@ Each trait reads as one of these:
 | A look switched off in this mibi | the shown look, and what sleeps under it, which can wake in a child |
 | A doing (movement, stamina, character) | the doing, marked "breed to change" |
 
-A hidden copy never shows on the mibi itself; only a read reveals it. When a
+A hidden copy shows only in a read
+([Genomics](creatures-and-genomics.md#how-two-copies-show)). When a
 trait shows a look the player has never seen in that species, the trait keeps a
 "new" mark on this pod's page.
 
@@ -88,8 +89,9 @@ A pod that is not wanted can go back to the wild. That frees its cup and gives
 
 ## Sealed chapters and finds
 
-Some species keep one chapter **sealed**, always a chapter of doings. A sealed
-chapter has no read price. Its page stays shut and shows the find that opens it.
+Some species keep one chapter **sealed**
+([Genomics](creatures-and-genomics.md#chapters-and-traits)). A sealed chapter
+has no read price. Its page stays shut and shows the find that opens it.
 
 There are three kinds of find, and each is shown on the shut page:
 
@@ -124,27 +126,26 @@ screens are about one individual, its stamp included.
 
 ## Creating a founder
 
-A **founder** is a mibi grown from one pod. One pod makes one founder. The pod is
-the founder's origin, not its parent, so a founder has no parents.
+A **founder** is a mibi grown from one pod
+([Genomics](creatures-and-genomics.md#creating-a-mibi)).
 
 - **Unedited.** Any identified pod can be grown as it is, with every trait the
   way the pod has it.
 - **Shaping.** On Create, each read trait that can be shaped rolls among up to
   three pictures, all drawn from this pod's own two copies: as the pod is, only
   the first copy, or only the second. A trait whose two copies give the same
-  look has one picture. By default, looks can be shaped and doings change only
-  by breeding; a species may set its own rule ([Genomics](creatures-and-genomics.md)).
+  look has one picture. Which traits can be shaped is in
+  [Genomics](creatures-and-genomics.md#the-three-kinds-of-locus).
 - Untouched and unread traits keep the pod's values, including ones the player
-  knows nothing about. A look known from another pod never goes into this one.
+  knows nothing about.
 - **A shape that won't grow.** Some combinations can't make a body. Create names
   the traits that clash and offers no Grow until one changes. Nothing is spent.
 - **Review.** Before the player commits, Create shows the founder large, what
   changed, which chapters stay a surprise, and the full price.
 - **Price.** Growing costs **2 Energy and 4 Essence**, plus **1 Data for each
   shaped trait**. The first founder ever costs no Essence.
-- **Grow** commits one individual. The pod's stamp is pressed and the pod goes
-  into the incubator. Incubating and opening reveal that same individual; they
-  never reroll it.
+- **Grow** commits one individual, which incubating and opening reveal
+  unchanged. The pod's stamp is pressed and the pod goes into the incubator.
 
 ## The bud
 
@@ -195,8 +196,8 @@ play.
   The Cross screen names how related a pair is in words only, never as a number
   or a fraction: wild founders, distant kin, cousins, half kin, close kin, the
   same line.
-- **A child that cannot be built** is refused with nothing spent, and the cross
-  is not rerolled.
+- **A child that cannot be built** is refused with nothing spent
+  ([Genomics](creatures-and-genomics.md#breeding-the-cross)).
 - **The bred child.** It has two real parents. Its chapters do not clear in the
   incubator: it opens known only in the chapters where its parents leave no
   doubt. The player reads the rest at a pod's chapter prices. Reading children is
@@ -278,4 +279,5 @@ means:
 - How deep a family line must be to earn a sitting.
 - Which species change the default of looks shaped and doings bred, and how.
 - Editing a copy with a rare item.
-- Wonders: the combined traits a species can show, and how the player finds them.
+- Wonders: how the player finds the combined traits a species can show
+  ([Genomics](creatures-and-genomics.md#not-designed-yet)).

@@ -59,6 +59,19 @@ C18, an early pixel reference, inspired this direction but is not a style to cop
 - **Passes:** generation works in stages: outline, illustration, "pet-ification",
   then animation.
 
+## From genome to creature
+
+The genome is the seed for everything about a mibi: body, sprites, animation,
+behavior and its encyclopedia entry. Rules produce all of it, with no hand-made
+art or text for individuals.
+
+Creatures range from bear-like to cat-, cow- or firefly-like and beyond, with
+fur, scales, feathers or skin and real facial features, and always read as pets.
+
+Pods come from one renderer with species parameters (size, proportion, shell
+pattern, colour pair, glyph). The pods of a species match, and a shell never
+shows an individual's genes.
+
 ## Art still to make
 
 All **Open**:

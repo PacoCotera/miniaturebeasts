@@ -15,8 +15,7 @@ lessons or notation.
 ## Who it is for
 
 The game works for two audiences at once. Children explore, uncover and pursue
-possibilities visually, without any genetics vocabulary. The player never meets
-the words locus or allele, even though the genes underneath run on them. Curious
+possibilities visually, without any genetics vocabulary. Curious
 parents and STEM enthusiasts can dig into the real genetics, one press away and
 never required. It is never a text-heavy school lesson, and never childish, in
 tone or in reward. It is a sandbox: a pretty mibi, a rare one and a capable one
@@ -103,10 +102,10 @@ fit every decision so far.
 | **Exploration** | A fogged world map of living places, permanent and turning once per expedition; start anywhere seen; reach by Probe tier; survey by walking and Call; storms, fog banks, outposts and beacons (**Decided**, **Built** in the exploration prototype). Arriving, looking and waiting award nothing (**Working rule**) | Reach and place size tuning, more expedition types and events, items and mods. See [world and exploration](world-and-exploration.md) |
 | **Gathering** | Collection is deliberate; whole items; a full hold offers a swap without loss (**Decided**, **Built** in the exploration prototype). Pods carried: 2 at tier 1, 3 at tier 2 (**Decided**); materials cap at 20 (**Built** in the exploration prototype) | More kinds of finds |
 | **Return** | Send home only from the start cell or a lit outpost; it ends the expedition, with no banking; a broken Probe sends nothing home (**Decided**, **Built** in the exploration prototype). Send seals the cargo; the Station accepts it exactly once (**Working rule**, **Built in v1**) | The real transfer between devices |
-| **Identification** | Shows the species, not the pod's hidden traits; an identified pod can be grown unedited. 1 Energy a pod, the first free ([research and breeding](research-and-breeding.md#identify)) | |
+| **Identification** | Shows the species, not the pod's hidden traits; an identified pod can be grown unedited ([research and breeding](research-and-breeding.md#identify)) | |
 | **Research** | Optional, and the core of play. A chapter at a time, as pictures; glints say where something new is; findings are kept; sealed chapters open with finds ([research and breeding](research-and-breeding.md#reading-a-chapter)) | Data yield per expedition |
 | **Creation** | One pod makes one fixed founder, unedited or shaped among the copies that pod carries ([research and breeding](research-and-breeding.md#creating-a-founder)) | Each species' overrides of the default |
-| **Incubation** | Reveals the same individual, never a reroll; 20 minutes plus 1 per shaped trait, the first bud 5; Grow now for Essence; opening is a press ([research and breeding](research-and-breeding.md#the-bud)) | |
+| **Incubation** | Reveals the same individual, never a reroll; Grow now shortens the wait for Essence; opening is a press ([research and breeding](research-and-breeding.md#the-bud)) | |
 | **Bonding and care** | Optional; only bonded mibis need care to mature; wild and unbonded need nothing; not required for breeding (**Decided**). Learning changes behavior, never genes (**Working rule**). Forgiving care (**Proposal**) | How bonding happens, what care looks like, what missing it means, lifespan |
 | **Cooperative gathering** | Bonded partners use their real abilities to help the player discover and progress; one "with you" slot; juveniles don't join the Probe (**Decided**). Digging, calming and sniffing open gates and events (**Built** in the exploration prototype) | Abilities from traits, the swimmer, more gates |
 | **Breeding** | Two adults or elders of one species make one child with real parents; the forecast shows pictures of what is read; a wish guides it ([research and breeding](research-and-breeding.md#the-cross), [genomics](creatures-and-genomics.md)) | Fertility and failure |
@@ -130,3 +129,8 @@ one that was created.
 It does not prove that exploring is interesting, that research creates curiosity,
 that the creatures are appealing, or that the devices work physically. Those are
 the questions the [roadmap](../ROADMAP.md) is built around.
+
+## Not designed yet
+
+- Behavior as a state machine weighted by traits: each species' behavior works
+  like a state machine, and an individual's traits weight the transitions.

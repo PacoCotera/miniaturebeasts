@@ -6,10 +6,11 @@ genome is written as a stamp. It is for anyone building the game, and for
 readers who want the genetics. What the player does with these rules
 (research, shaping, the wish, forecasts, prices and finds) is in
 [research and breeding](research-and-breeding.md). How a genome becomes a
-painted creature and a pod is in [art direction](art-direction.md).
+painted creature and a pod is in
+[art direction](art-direction.md#from-genome-to-creature).
 
-Players never meet the word locus. The engine runs on loci; the screens show
-traits and pictures.
+The engine runs on loci. What the screens show of them is in
+[research and breeding](research-and-breeding.md#what-the-player-sees-of-the-genetics).
 
 ## A worked example: the Loika
 
@@ -60,7 +61,8 @@ something draws it or weighs it.
 
 So species differ in size of genome, not only in values. A starter species
 such as the Loika leaves five loci open; the Tuikis leaves forty, behind more
-chapters. Genomes grow more complex as the player progresses.
+chapters. How genomes grow with the player is in
+[research and breeding](research-and-breeding.md#genomes-grow-with-the-player).
 
 Loci are filed in families. Movement, energy, cognition and fantastic
 physiology are doings; every other family is a look.
@@ -190,7 +192,7 @@ A pod holds one complete genome; what the player knows of it is partial.
 Reading a chapter reveals both copies of every trait in it: what shows, what
 hides, what sleeps. Research never changes a pod, and knowing a variant from
 one pod never puts it into another. How reading is played and paid for is in
-[research and breeding](research-and-breeding.md).
+[research and breeding](research-and-breeding.md#reading-a-chapter).
 
 ## Creating a mibi
 
@@ -207,21 +209,21 @@ incubation and opening introduce that same individual.
 
 Breeding is within one species, between two different mibis whose locked pairs
 match. Sharing a species is necessary but not enough; the other conditions are
-game rules, in [research and breeding](research-and-breeding.md).
+game rules, in [research and breeding](research-and-breeding.md#the-cross).
 
 Each heritable locus is crossed on its own, with no linkage between traits:
 
 | Locus | The child |
 | --- | --- |
 | **Switch** | Takes one copy from each parent, at random. The look shows by the locus's rule; the other copy hides and can pass on |
-| **Sleeping** | Crossed copy by copy like a switch, whether or not the parent wears it. It rides with its switch |
+| **Sleeping** | Crossed copy by copy like a switch, whether or not the parent wears it. It travels with its switch |
 | **Continuous** | Sits between its parents' shown values, nudged by up to 10 percent of the locus range either way, and kept inside the species' pool. Both copies equal the drawn value, so a blend hides nothing |
 | **Locked** | Takes the frame's pair. It is never crossed |
 
 A child's copies come only from its parents. There is no mutation.
 
-The child is checked whole before anything is spent. A child that cannot be
-built never exists; the cross is not drawn again.
+The child is checked whole. A child that cannot be built never exists; the
+cross is not drawn again.
 
 The more removed the two parents' genomes, the better the cross; inbreeding
 brings a penalty. How it is measured and what it does are under
@@ -314,3 +316,6 @@ never rewrites a living mibi. A child is built on its species' current frame.
 - Whether the stamp holds a blended value exactly.
 - A shareable code string that decodes back to the genome.
 - Whether a scanned stamp can ever grant a mibi.
+- Combined traits: traits that combine into emergent ones; for example,
+  movement, energy and environment together shape a kind of locomotion, vision
+  or metabolism.
