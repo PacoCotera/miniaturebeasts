@@ -1,6 +1,7 @@
 // Habitat: one resident large (the placeholder from its genome), its card with the stamp and code, the
 // with-you door, the bond heart, the strip of bays. M2 adds return to the wild; the sitting comes in M6.
-import { SW, SH, LINE_H, C, R, blit, text, textW, clipText, wrapText, panel, focusRing, art, PB, cropPB, clock, motion } from "../gfx.mjs";
+import { SW, SH, LINE_H, C, art, PB, cropPB, clock, motion } from "../pixels.mjs";
+import { R, blit, text, textW, clipText, wrapText, panel, focusRing } from "../gfx.mjs";
 import { ICON, mibiArt, stampArt, vivArt, traitPic, gateArt, paintedArt, waitLamp } from "../art.mjs";
 import { landedSet, lampText } from "../caddy.mjs";
 import { openCross } from "./cross.mjs";

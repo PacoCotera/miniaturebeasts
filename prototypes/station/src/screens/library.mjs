@@ -1,7 +1,8 @@
 // Library: the tome's spread of sixteen frames and a Book per species. M1 carries the spread with the
 // registry's sixteen species (found plate, met study, empty unmet frame) and a Book stub: the species'
 // face, its habit line, the frame's chapters and the looks found so far. M5 builds the Book whole.
-import { C, R, blit, text, clipText, panel, focusRing, art, PB, clamp, clock } from "../gfx.mjs";
+import { C, art, PB, clamp, clock } from "../pixels.mjs";
+import { R, blit, text, clipText, panel, focusRing } from "../gfx.mjs";
 import { speciesArt, emblemArt, stampArt } from "../art.mjs";
 import { G, UI, msg, goScreen, registerScreen } from "../game.mjs";
 import { stageBg } from "./frame.mjs";

@@ -1,7 +1,8 @@
 // The incubator: the dome large with the glowing bud (a bean, never an embryo), a ring of leaves (one a
 // minute), the chapter tabs clearing across the wait, the stamp and the code; ✓ Grow now · price while
 // growing; ready: the shape glows inside and ✓ Open plays the hatch, then the meet view on Habitat.
-import { SW, C, R, blit, text, textW, clipText, panel, focusRing, art, PB, clamp, clock, motion } from "../gfx.mjs";
+import { SW, C, art, PB, clamp, clock, motion } from "../pixels.mjs";
+import { R, blit, text, textW, clipText, panel, focusRing } from "../gfx.mjs";
 import { emblemArt, domeArt, budArt, crackArt, leafArt, stampArt, mibiArt, paintedArt } from "../art.mjs";
 import { landedSet } from "../caddy.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, mibiById } from "../game.mjs";

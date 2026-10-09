@@ -4,14 +4,19 @@ on:
   push:
     branches: [main]
     paths: ['website/**', 'prototypes/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', '.github/workflows/site.yml', '.github/smoke.mjs', '.github/roadmap.test.mjs']
+  pull_request:
+    # The gates hold before a merge, not after it (lvgl-switch.md §6 Q2 v), on every pull request into main, whatever it touches: the Sandbox `build` check is one main will require.
+    # The release and the gh-pages steps below run on main only.
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: sandbox
-  cancel-in-progress: false
+  # a pull request's runs queue by number and a new push cancels the older run; a main run, a dispatch and a deploy share one group and are never cancelled
+  group: ${{ github.event_name == 'pull_request' && format('sandbox-pr-{0}', github.event.pull_request.number) || 'sandbox' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -19,6 +24,9 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
       - name: Emscripten SDK (pinned in prototypes/face/emsdk.version)
         # The Station's face is LVGL in C, built for the sandbox as WebAssembly (technical-architecture.md §8). The SDK
         # (about 1 GB installed) is cached by its pinned version.
@@ -60,6 +68,25 @@ jobs:
           npm --prefix "$RUNNER_TEMP" install --silent playwright@1.49.1
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install --with-deps chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
+      - name: Freeze check (the JavaScript drawing layer)
+        # prototypes/face/deprecated.json lists every deprecated drawing module with its hash and the files allowed to import it (lvgl-switch.md §5.1):
+        # a listed file may not change, no new file may import one, no registered screen may gain draw, nodes or faceNodes, and a path leaves the list
+        # only with its file's deletion or its screen's goldens. Exemptions are printed on every run.
+        # The checkout keeps no credentials, so the base is fetched with the job's token on the command line, as the publish steps below do. On a push the base is the commit
+        # before the push; on a pull request and on dispatch it is main.
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          url="https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git"
+          if [ "$GITHUB_EVENT_NAME" = push ]; then
+            git fetch --no-tags --depth=1 "$url" "$BEFORE"
+            BASE="$BEFORE"
+          else
+            git fetch --no-tags --depth=1 "$url" main:refs/remotes/origin/main
+            BASE=origin/main
+          fi
+          node prototypes/face/tools/freeze-check.mjs --base "$BASE"
       - name: Station rules and journey
         timeout-minutes: 12   # the step takes about 2.5 minutes; a hang fails fast instead of holding the runner for the job's six hours
         # The Station's rules and the Caddy service in Node, and the Station's browser journey with the service

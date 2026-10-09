@@ -4,7 +4,7 @@
 // its size: the pod from its signed layers, the stamp on whole-pixel cells; the marks, the places, the frames and the figures are the studio's masters,
 // taken by id when placed. Nothing is ever cropped and enlarged.
 import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset, hasAsset, isFilled } from "../../ui/assets.mjs";
-import { PB, C, HEX, art, fromRGBA, bay } from "./gfx.mjs";
+import { PB, C, HEX, art, fromRGBA, bay } from "./pixels.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
 import { emblemArt, ICON } from "./art.mjs";

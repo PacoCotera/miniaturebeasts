@@ -1,0 +1,443 @@
+{
+ "_note": "The freeze of the JavaScript drawing layer (design/proposals/lvgl-switch.md §5.1), written by tools/freeze-check.mjs --init at the freeze commit. Never edited by hand to loosen it: a path leaves with its file's deletion or its screen's goldens; a fix a frozen file needs before its screen moves goes in `exemptions`.",
+ "paths": [
+  {
+   "path": "ui/scene.mjs",
+   "screen": null,
+   "sha256": "5c9f054429b9bf8d337cbb37a0b3313c2ebfd3127a7832892a6d0bb80bc49b79",
+   "importers": [
+    "station/src/main.mjs",
+    "ui/render/station-canvas.mjs",
+    "ui/tests/ui.test.mjs"
+   ]
+  },
+  {
+   "path": "ui/context.mjs",
+   "screen": null,
+   "sha256": "a3a574630eb4c2ae4a19fc89fe500d435eea6104720b012baa2d35f052062a5c",
+   "importers": [
+    "station/src/main.mjs",
+    "station/tests/pods-view.test.mjs",
+    "ui/tests/page.test.mjs",
+    "ui/tests/rail.test.mjs",
+    "ui/tests/type.test.mjs",
+    "ui/tests/ui.test.mjs"
+   ]
+  },
+  {
+   "path": "ui/layout.mjs",
+   "screen": null,
+   "sha256": "0b52c4bcf091fbc80dad57dd688d7b77d658a1dae9c4f5bfa6ff4ea537bc0eb6",
+   "importers": [
+    "face/tools/frame-check.mjs",
+    "station/src/views/pods.mjs",
+    "station/tests/pods-view.test.mjs",
+    "station/tools/checks.mjs",
+    "ui/components/chapterPage.mjs",
+    "ui/components/chapterRail.mjs",
+    "ui/components/messagePlate.mjs",
+    "ui/components/slantRail.mjs",
+    "ui/tests/rail.test.mjs",
+    "ui/tests/specs.test.mjs",
+    "ui/tests/ui.test.mjs"
+   ]
+  },
+  {
+   "path": "ui/type.mjs",
+   "screen": null,
+   "sha256": "7dff54cc3ca07f18d7ae680d4f69efcc99d6444c79893e1014e8944eace5e285",
+   "importers": [
+    "station/src/views/cross.mjs",
+    "station/tools/checks.mjs",
+    "ui/components/specimen.mjs",
+    "ui/components/text.mjs",
+    "ui/render/browser.mjs",
+    "ui/tests/type.test.mjs",
+    "ui/type-node.mjs"
+   ]
+  },
+  {
+   "path": "ui/type-node.mjs",
+   "screen": null,
+   "sha256": "f2c65a4ba58c66bd9e2f02d3ff7e29c8a2b340615107dcbdf395a90337f86ca7",
+   "importers": [
+    "station/tests/pods-view.test.mjs",
+    "station/tools/checks.mjs",
+    "ui/tests/type.test.mjs",
+    "ui/tests/ui.test.mjs"
+   ]
+  },
+  {
+   "path": "ui/render/station-canvas.mjs",
+   "screen": null,
+   "sha256": "4e7982d9c58d23b65755f0731b538b568fcf91321cd24f3ac815f004f83daef0",
+   "importers": [
+    "ui/render/browser.mjs"
+   ]
+  },
+  {
+   "path": "ui/render/browser.mjs",
+   "screen": null,
+   "sha256": "c23f34100e1a80215d3dc4475156125a4fec77d400130cc387f56f27ffc2f99d",
+   "importers": [
+    "station/src/main.mjs"
+   ]
+  },
+  {
+   "path": "ui/render/canvas-assets.mjs",
+   "screen": null,
+   "sha256": "ba0dde2b82e2c2d5e7628d579de7a0d791994a911eb986e5e5e7d597b5ef7fd1",
+   "importers": [
+    "ui/render/station-canvas.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/bottomLine.mjs",
+   "screen": null,
+   "sha256": "834a1c7e4eccb7c435c7dfec0fbc69e345fd44580da77dce654dffedaaf9f09d",
+   "importers": [
+    "ui/components/frame.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/chapterPage.mjs",
+   "screen": null,
+   "sha256": "fb29e4b8b468d20ff3bc8203a282a8556a52d153279ff4cf4d999b6a0ad5bf0f",
+   "importers": [
+    "station/tools/checks.mjs",
+    "ui/components/frame.mjs",
+    "ui/tests/page.test.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/chapterRail.mjs",
+   "screen": null,
+   "sha256": "37953d551aab743a38c66d95fb7ec50ee17e96274b6c5efd6fb3b84a34717a45",
+   "importers": [
+    "ui/components/frame.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/focusRing.mjs",
+   "screen": null,
+   "sha256": "ee46d31a8b0b545fcfec5c2a3e89ee066622548db05c021c601008ed8a5918a8",
+   "importers": [
+    "station/src/screens/cross.mjs",
+    "ui/components/chapterRail.mjs",
+    "ui/components/frame.mjs",
+    "ui/components/slantRail.mjs",
+    "ui/components/topBar.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/frame.mjs",
+   "screen": null,
+   "sha256": "289ff9895d666f844ab6ddacbf1991af80e6db4e92c18bec636c7cbfab370482",
+   "importers": [
+    "station/src/screens/frame.mjs",
+    "station/src/screens/pods.mjs",
+    "ui/tests/type.test.mjs",
+    "ui/tests/ui.test.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/list.mjs",
+   "screen": null,
+   "sha256": "aec4edd267dd39f9c59183d14fd6f5570fe34549e90b24f0949fbc77127352a7",
+   "importers": [
+    "station/src/views/pods.mjs",
+    "station/tools/checks.mjs",
+    "ui/components/frame.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/mark.mjs",
+   "screen": null,
+   "sha256": "d8ccaee3abf022ab37110d77709c3dd8955844aaf52d89513222170bcde58ca6",
+   "importers": [
+    "ui/components/bottomLine.mjs",
+    "ui/components/chapterPage.mjs",
+    "ui/components/topBar.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/messagePlate.mjs",
+   "screen": null,
+   "sha256": "695a8db14014cf860e54edf9c5d12893027cef68a27274e3bfff00c524643468",
+   "importers": [
+    "ui/components/frame.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/panel.mjs",
+   "screen": null,
+   "sha256": "c178a1f72350f6d0d649888ffeb10c2628f0fcebcd4ebaeafd57e3881d2e927a",
+   "importers": [
+    "ui/components/chapterPage.mjs",
+    "ui/components/chapterRail.mjs",
+    "ui/components/frame.mjs",
+    "ui/components/messagePlate.mjs",
+    "ui/components/slantRail.mjs",
+    "ui/components/specimen.mjs",
+    "ui/components/stampLabel.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/slantRail.mjs",
+   "screen": null,
+   "sha256": "a4f5e1df06ebffc618c2cc0c3ed219db31cca939ef97afc770aeea3dcf0b74b4",
+   "importers": [
+    "station/src/screens/cross.mjs",
+    "ui/components/frame.mjs",
+    "ui/tests/rail.test.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/specimen.mjs",
+   "screen": null,
+   "sha256": "34f0f11b459432cd5239254f3ca2b066e562c1238b30d459060f56d209cc5950",
+   "importers": [
+    "station/src/screens/cross.mjs",
+    "station/src/screens/pods.mjs",
+    "ui/components/chapterPage.mjs",
+    "ui/components/frame.mjs",
+    "ui/components/list.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/stampLabel.mjs",
+   "screen": null,
+   "sha256": "7d54923be85ee045b8a6c636c9d6983eff1dadbd4566f7985e3c1ffca23a04c4",
+   "importers": [
+    "ui/components/frame.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/text.mjs",
+   "screen": null,
+   "sha256": "6593c0c21c25ac0b357d4f1df33dcd5eb485c2c14685da777bbdb4a52ea7ae24",
+   "importers": [
+    "station/src/views/pods.mjs",
+    "ui/components/bottomLine.mjs",
+    "ui/components/chapterPage.mjs",
+    "ui/components/frame.mjs",
+    "ui/components/messagePlate.mjs",
+    "ui/components/topBar.mjs",
+    "ui/tests/type.test.mjs"
+   ]
+  },
+  {
+   "path": "ui/components/topBar.mjs",
+   "screen": null,
+   "sha256": "6744990fe13234ad60936e8bfabf1cd44c45078988f7ee23fbd327784c0dddb5",
+   "importers": [
+    "ui/components/frame.mjs"
+   ]
+  },
+  {
+   "path": "ui/fonts/atlas/index.json",
+   "screen": null,
+   "sha256": "3a75be9b83bde75119b11ce2dba12656dd2b846c0b3ed65d335ea378e94637a6",
+   "importers": []
+  },
+  {
+   "path": "ui/fonts/atlas/inter-400-16.json",
+   "screen": null,
+   "sha256": "d5f5674b330eeddea41fb6284d21227473d3b123c15fa995703738ca54c5528e",
+   "importers": []
+  },
+  {
+   "path": "ui/fonts/atlas/inter-400-16.png",
+   "screen": null,
+   "sha256": "1af84174c33a0f2d083721457dca330bff9c6c6ff41437ed5074a523932ff39e",
+   "importers": []
+  },
+  {
+   "path": "ui/fonts/atlas/inter-500-20.json",
+   "screen": null,
+   "sha256": "90b453f2dbae1ef0a7702ff44eb44bbc428cd2f546d6d3c10b3ef910e05dae46",
+   "importers": []
+  },
+  {
+   "path": "ui/fonts/atlas/inter-500-20.png",
+   "screen": null,
+   "sha256": "3bd3e8d660b149e239dbfe976abef4d45c2bf202d75243c76d9695c62cf2fa22",
+   "importers": []
+  },
+  {
+   "path": "ui/fonts/atlas/inter-600-28.json",
+   "screen": null,
+   "sha256": "657df4505888d2e796a961f634951bdf5509361175ff1d93671dfd8e1d26e308",
+   "importers": []
+  },
+  {
+   "path": "ui/fonts/atlas/inter-600-28.png",
+   "screen": null,
+   "sha256": "d002c50da54c1c2241d1bf2a95327dcab33de509cf88bde5db8f406007f5e32c",
+   "importers": []
+  },
+  {
+   "path": "ui/tools/bake-type.mjs",
+   "screen": null,
+   "sha256": "9a605b26394cc8dafff77f20c85b55641650fc56a290fcbfcc8df12dfdb53382",
+   "importers": []
+  },
+  {
+   "path": "station/src/gfx.mjs",
+   "screen": null,
+   "sha256": "bb2e3a76e26d84269a5eebf25696f592ec6da2581bc1ff666830410ada0ed102",
+   "importers": [
+    "face/tests/freeze.test.mjs",
+    "station/src/main.mjs",
+    "station/src/screens/bench.mjs",
+    "station/src/screens/create.mjs",
+    "station/src/screens/cross.mjs",
+    "station/src/screens/frame.mjs",
+    "station/src/screens/habitat.mjs",
+    "station/src/screens/home.mjs",
+    "station/src/screens/incubator.mjs",
+    "station/src/screens/library.mjs"
+   ]
+  },
+  {
+   "path": "station/src/screens/home.mjs",
+   "screen": "home",
+   "partial": true,
+   "sha256": "9f65ddbe90360e8aa546ea1619fc6b9bb4120ade2eaca18c03983154ef9b007f",
+   "importers": [
+    "station/src/main.mjs",
+    "station/src/screens/bench.mjs",
+    "station/src/screens/create.mjs"
+   ]
+  },
+  {
+   "path": "station/src/screens/bench.mjs",
+   "screen": "bench",
+   "partial": true,
+   "sha256": "8306e253c9988ee00d047b025b2566ac7373a36101a135b905191fd49e0d84ac",
+   "importers": [
+    "station/src/main.mjs"
+   ]
+  },
+  {
+   "path": "station/src/screens/incubator.mjs",
+   "screen": "incubator",
+   "partial": true,
+   "sha256": "0ed6f24b38346d32cc31a411b1802906fa3601341de5c05a422fb994d739555e",
+   "importers": [
+    "station/src/main.mjs"
+   ]
+  },
+  {
+   "path": "station/src/screens/create.mjs",
+   "screen": "create",
+   "partial": true,
+   "sha256": "228acb2c90dee848441e8034e4f8e03e485bea9cf5e4fa47f83209d11e70365d",
+   "importers": [
+    "station/src/main.mjs",
+    "station/src/screens/pods.mjs"
+   ]
+  },
+  {
+   "path": "station/src/screens/habitat.mjs",
+   "screen": "habitat",
+   "partial": true,
+   "sha256": "574c354863741db340683cecb81f12712a86cd9af67a26d8d0d2f8683e40a0d2",
+   "importers": [
+    "station/src/main.mjs"
+   ]
+  },
+  {
+   "path": "station/src/screens/library.mjs",
+   "screen": "library",
+   "partial": true,
+   "sha256": "ecd4f07604dc44b6a8472c1299e2b4d72d4d05e8d92b506c5551ff25af9725bb",
+   "importers": [
+    "station/src/main.mjs"
+   ]
+  },
+  {
+   "path": "station/src/screens/frame.mjs",
+   "screen": null,
+   "partial": true,
+   "sha256": "0975d829cc16b863db86f9f4ba009997cd1f94ca4052274e364bfece8a4fa127",
+   "importers": [
+    "station/src/main.mjs",
+    "station/src/pictures.mjs",
+    "station/src/screens/bench.mjs",
+    "station/src/screens/create.mjs",
+    "station/src/screens/cross.mjs",
+    "station/src/screens/habitat.mjs",
+    "station/src/screens/home.mjs",
+    "station/src/screens/incubator.mjs",
+    "station/src/screens/library.mjs",
+    "station/src/screens/pods.mjs"
+   ]
+  },
+  {
+   "path": "station/src/screens/pods.mjs",
+   "screen": "pods",
+   "partial": true,
+   "sha256": "e613dc8bd761666201468898d7544c4c972da0ac269b668cac0c7fe5a195fe3c",
+   "importers": [
+    "station/src/main.mjs"
+   ]
+  },
+  {
+   "path": "station/src/screens/cross.mjs",
+   "screen": "cross",
+   "sha256": "714ee87e89671f63133da00f7d65ab6006f6013774dab68f27119a48777c60a9",
+   "importers": [
+    "station/src/main.mjs",
+    "station/src/screens/habitat.mjs"
+   ]
+  },
+  {
+   "path": "station/src/views/cross.mjs",
+   "screen": "cross",
+   "sha256": "72f0b1f97f297ad61014012a0f993242db6b9f41eac4e5ab62779a9a0c1015f7",
+   "importers": [
+    "station/src/screens/cross.mjs",
+    "station/tests/cross-splice.test.mjs"
+   ]
+  },
+  {
+   "path": "station/src/cross-layout.mjs",
+   "screen": "cross",
+   "sha256": "f7159ab5331f0a73a3ccc5f35af01181abc9741fd6d23cb19dba40219382b434",
+   "importers": [
+    "station/src/views/cross.mjs",
+    "station/tests/cross-splice.test.mjs"
+   ]
+  }
+ ],
+ "screens": {
+  "bench": [
+   "draw"
+  ],
+  "create": [
+   "draw"
+  ],
+  "cross": [
+   "nodes"
+  ],
+  "habitat": [
+   "draw"
+  ],
+  "home": [
+   "draw"
+  ],
+  "incubator": [
+   "draw"
+  ],
+  "library": [
+   "draw"
+  ],
+  "pods": [
+   "nodes",
+   "faceNodes"
+  ]
+ },
+ "migrated": [],
+ "exemptions": []
+}
