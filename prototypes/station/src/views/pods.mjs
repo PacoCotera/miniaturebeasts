@@ -162,11 +162,9 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
     if (wipeOf != null && wipeOf < 1) cell.wipe = wipeOf;
     return cell;
   });
-  const frost = (w, h) => req({ kind: "frost", id: `frost:${w}x${h}`, w, h });
-  for (const c of cells) if (c.wipe != null) frost(pw, ph);
   const unreadFrame = pw ? slot(req, `trait-picture-frame-${pw}x${ph}-unread`, [0, 0, pw, ph], "the unread frame master") : null;
   const sealedFind = sealed && region.sealedFind ? req({ kind: "seal", id: `seal:${region.sealedFind[2]}`, size: region.sealedFind[2] }) : null;
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, unreadFrame, standIn: spec.strings.standIn, count: traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region), frost: "frost:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks };
+  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, unreadFrame, standIn: spec.strings.standIn, count: traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region), colours: { ...C.page, diff: C.diff }, marks: spec.page.marks };
 }
 
 function compareView(view, m, spec, ctx, req) {

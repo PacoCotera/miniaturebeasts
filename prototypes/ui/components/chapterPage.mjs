@@ -4,9 +4,9 @@
 // lines in 16 px fog. Marks inside the picture's rectangle P: the misty seed at the bottom right (a second seed at
 // P.x + 8 for a blend), the "only" base centred on the bottom edge, "asleep" at the top right, "breed to change" at
 // the top left; unread: frost over the whole picture, the name shows, the line stays empty; sealed: slats with what
-// opens it centred, no line. A read in progress wipes the frost away from the top (props.wipe, 0 to 1).
+// opens it centred, no line. A read in progress wipes the signed frosted frame away from the top (props.wipe, 0 to 1).
 // props: { marks (the spec's page.marks), diff ({ edge, inset } px), heading: { emblem, word } | null, cells: [{ picture, name, lines: [], frost, sealed, seals: asset, marks: [{ kind, asset }], wipe }],
-//          colours: { pane, edge, heading, name, line, lineEmpty, wipe }, frost and slats (the id prefixes of those pictures: `<prefix><w>x<h>`), compact }
+//          colours: { pane, edge, heading, name, line, lineEmpty, wipe }, unreadFrame (the signed frosted frame's asset id), standIn (the card's word), newMark, pane, compact }
 import { pageGrid, pageHeight } from "../layout.mjs";
 import { panel } from "./panel.mjs";
 import { isFilled } from "../assets.mjs";
@@ -44,7 +44,7 @@ export function chapterPage(ctx, id, region, props) {
         const r = m.kind === "seed" ? [cx + pw - 8 - sw, cy + ph - 8 - sh, sw, sh] : m.kind === "seed2" ? [cx + 8, cy + ph - 8 - sh, sw, sh] : m.kind === "only" ? [cx + Math.round(pw / 2) - M.only[0] / 2, cy + ph - 8, M.only[0], M.only[1]] : m.kind === "asleep" ? [cx + pw - 8 - M.asleep[0], cy + 8, M.asleep[0], M.asleep[1]] : m.kind === "doing" ? [cx + 8, cy + 8, M.doing[0], M.doing[1]] : null;
         if (r) nodes.push({ id: `${cid}.m${k}`, kind: "sprite", rect: r, asset: m.asset });
       }
-      if (c.wipe != null && c.wipe < 1) { const cut = Math.round(c.wipe * ph); nodes.push({ id: cid + ".wipe", kind: "clip", rect: [cx, cy + cut, pw, ph - cut], children: [{ id: cid + ".wipefrost", kind: "sprite", rect: P, asset: `${props.frost}${pw}x${ph}` }] }, { id: cid + ".wipeline", kind: "rect", rect: [cx + 6, cy + cut, pw - 12, 2], colour: Cc.wipe }); }
+      if (c.wipe != null && c.wipe < 1) { const cut = Math.round(c.wipe * ph); if (props.unreadFrame && isFilled(props.unreadFrame)) nodes.push({ id: cid + ".wipe", kind: "clip", rect: [cx, cy + cut, pw, ph - cut], children: [{ id: cid + ".wipefrost", kind: "sprite", rect: P, asset: props.unreadFrame }] }); nodes.push( { id: cid + ".wipeline", kind: "rect", rect: [cx + 6, cy + cut, pw - 12, 2], colour: Cc.wipe }); }
     }
     const gap = region.cell ? region.cell.gap : region.nameGap, line = region.cell ? region.cell.name.line : region.nameLine, ny = cy + ph + gap, nw = Math.round(ctx.measure(c.name, 16, 400)), N = region.newMark, dot = c.isNew && N && props.newMark ? N.size[0] + N.gapAfterName : 0, nx = region.cell ? cx + Math.round((pw - nw - dot) / 2) : cx;
     nodes.push({ id: cid + ".name", kind: "text", rect: [nx, ny, nw, line], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });

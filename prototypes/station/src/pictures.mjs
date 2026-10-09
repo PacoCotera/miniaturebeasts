@@ -46,8 +46,6 @@ const growPB = () => { const pb = new PB(16, 16); pb.rect(7, 6, 2, 9, C.leaf); p
 const waitingPB = () => { const pb = new PB(24, 24); for (const x of [6, 12, 18]) { pb.ell(x, 12, 3, 4, C.mist); } pb.outline(() => C.slate); return pb; };
 const starPB = () => { const pb = new PB(12, 12), r = 6; pb.poly([[r, 0], [r + 1.7, r - 1.7], [12, r], [r + 1.7, r + 1.7], [r, 12], [r - 1.7, r + 1.7], [0, r], [r - 1.7, r - 1.7]], C.cream); pb.rect(5, 5, 2, 2, C.white); pb.outline(() => C.gold); return pb; };
 const slatsPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const r = y % 14; pb.set(x, y, r < 2 ? C.slate : r < 4 ? C.stone : C.night); } return pb; };
-// The unread picture's frost: frosted glass over the pane, `frostS` with `frostD` at most (never `frost` or white).
-const frostPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const streak = (x + y * 2) % 23 < 2 && bay(x, y) < 10, low = y > h * 0.7 && bay(x, y) < (y - h * 0.7) / 3; pb.set(x, y, streak || low || bay(x, y) < 3 ? C.frostD : C.frostS); } return pb; };
 const keyPB = () => { const pb = new PB(44, 64); pb.poly([[22, 6], [40, 32], [22, 58], [4, 32]], C.lilac); pb.poly([[22, 6], [40, 32], [22, 32]], C.lavender); pb.outline(() => C.plumD); return pb; };
 // The stamp on its label: cells of whole pixels, cell = floor(104 / (N + 2)) and at least 2, drawn with its quiet margin, centred on the 120 label.
 export function stampPicture(frame, genome, readIds) {
@@ -83,7 +81,6 @@ export function registerPictures(reqs, env) {
       case "beam": put(r.id, r.size[0], r.size[1], until, () => beamArt(r.size[0], r.size[1])); break;
       case "emblem": putOrMaster(r.id, `rail-emblem-${r.chapter}-${r.state || "unread"}-24x24`, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24)); break;
       case "star": putOrMaster(r.id, "glint-star-12x12", 12, 12, "the glint master", starPB); break;
-      case "frost": put(r.id, r.w, r.h, "the research bench master", () => frostPB(r.w, r.h)); break;
       case "slats": put(r.id, r.w, r.h, "the research bench master", () => slatsPB(r.w, r.h)); break;
       case "key": put(r.id, 44, 64, "the chapter seals' master", keyPB); break;
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), sp = stampPicture(fr, p.genome, r.read); return sp.build(); }); break;
