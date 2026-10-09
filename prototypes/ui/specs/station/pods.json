@@ -14,8 +14,8 @@
  },
  "regions": {
   "list": { "rect": [0, 40, 112, 522], "component": "list", "item": "well", "slots": 6, "rule": { "x": 112, "y0": 48, "y1": 552 } },
-  "well": { "rect": [24, 48, 80, 72], "pitch": [0, 72], "ring": { "slice": [0, -4, 80, 80], "centre": [40, 36], "outer": 33, "band": 8, "master": "1:1" }, "pod": { "size": [40, 48], "centre": [40, 36] }, "focus": { "shape": "circle", "radius": 37, "width": 2, "colour": "focus", "onlyInList": true }, "place": null },
-  "hatch": { "rect": [24, 488, 80, 56], "mark": [24, 24] },
+  "well": { "rect": [16, 48, 80, 72], "pitch": [0, 72], "ring": { "slice": [0, -4, 80, 80], "centre": [40, 36], "outer": 33, "band": 8, "master": "1:1" }, "pod": { "size": [40, 48], "centre": [40, 36] }, "focus": { "shape": "circle", "radius": 37, "width": 2, "colour": "focus", "onlyInList": true }, "place": null },
+  "hatch": { "rect": [16, 488, 80, 56], "mark": [24, 24] },
   "rail": { "rect": [152, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail" },
   "bench": { "rect": [0, 40, 1024, 522] },
   "stage": { "rect": [488, 112, 288, 440], "room": [408, 856] },
@@ -31,7 +31,7 @@
   "stamp": { "rect": [872, 248, 120, 120], "component": "stampLabel" },
   "page": {
    "rect": [152, 112, 256, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
-   "states": ["grid"], "pictureMax": [144, 176], "heightByCount": { "1": 264, "2": 248, "else": 440 }, "anchor": "top", "bottomInset": 16, "slice": "nine-slice: corners 1:1, edges and fill tiled, never scaled", "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": { "slice": "page-mark-new-10", "size": [6, 6], "on": "name line", "gapAfterName": 4, "centredWithName": true, "centreY": "line y + 10", "layer": "art", "fill": "bone", "edge": "white", "keyline": null, "specular": false }, "sealedFind": [72, 184, 112, 112],
+   "states": ["grid"], "pictureMax": [144, 176], "heightByCount": { "1": 264, "2": 248, "else": 440 }, "anchor": "top", "bottomInset": 16, "slice": "nine-slice: corners 1:1, edges and fill tiled, never scaled", "unread": { "picture": null, "frame": true, "fill": "frost", "request": false }, "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": { "slice": "page-mark-new-10", "size": [6, 6], "on": "name line", "gapAfterName": 4, "centredWithName": true, "centreY": "line y + 10", "layer": "art", "fill": "bone", "edge": "white", "keyline": null, "specular": false }, "sealedFind": [72, 184, 112, 112],
    "grid": {
     "1": { "cells": [[16, 48, 224, 200]], "picture": [144, 176], "align": "centre top" },
     "2": { "cells": [[16, 48, 104, 184], [136, 48, 104, 184]], "picture": [104, 160] },
