@@ -109,6 +109,8 @@ export function wishForecast(st, a, b, settings = DEFAULT_SETTINGS) {
   const pinned = keys.map((traitId) => {
     const ft = fc.traits.find((x) => x.trait === traitId), t = traitsById[traitId], look = w[traitId];
     if (!ft || !t) return { trait: traitId, look, kind: null, lit: false };
+    if (ft.kind === "missing") return { trait: traitId, name: ft.name, look, kind: "missing", missing: ft.missing, lit: false };   // an unread chapter says nothing of the wish
+    if (ft.kind === "sealed") return { trait: traitId, name: ft.name, look, kind: "sealed", lit: false };
     if (ft.kind === "switch") {
       const seeds = ft.seeds.map((sd, i) => (traitState(fr, t, withLoci({ [ft.locus]: sd.copies })).shows === look ? i : -1)).filter((i) => i >= 0);
       return { trait: traitId, name: ft.name, look, kind: "switch", seeds, lit: seeds.length > 0 };

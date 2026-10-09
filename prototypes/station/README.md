@@ -160,6 +160,10 @@ Built from the owner's decisions on the navigation map ([Keys and navigation](..
 - **Home's pad** is a fixed order (Bay, Rack, Incubator, Probe, Rest down the column; the nearest resident among the residents; ◀▶ cross between the two on the nearest row); **Habitat's** is the stage, the chapter plates, Cross (an adult), the door row, then the strip, so Cross is one ▲ from the door row.
 - **Idle:** the first press, the Caddy's Dock key included, only wakes the screen.
 
+## The Cross forecast shows only what is read
+
+The owner's ruling (2026-10-09): "only what you have read, and an indication of everything missing", so the player has a reason to keep researching. `forecastOf` (`state.mjs`) marks every trait whose chapter either parent has not read as `kind: "missing"`, with no seeds, range or firmness, and a `missing` list naming the parent (`a` or `b`, with its id and name) and the chapter to read ("read Rook's Shape"). The forecast carries `missing` (readable traits still unknown), `sealedTraits` and `unknown` (both), and the genome-wide likeness only when nothing is unknown. A sealed chapter's traits stay `sealed`. The Cross screen draws a missing row with the unread look and the words "unread" and "read Rook's Shape", and the bottom line says "3 traits unknown · read more". `wishForecast` reports a missing or sealed pinned trait as unlit with the same list. The cross itself (`doCross`) still draws on the whole genomes: what is read changes what is shown, not what is made. Tested in `tests/cross-read.test.mjs`.
+
 ## Placeholders
 
 Engineers do not do art (decided). Every drawn thing is a stand-in listed in `src/art.mjs` (`PLACEHOLDERS`; the developer panel prints it): the mibi in the plain renderer's placeholder, the pod from the frame's parameters, trait close-ups and seeds, the stamp raster, the progress ring, the chapter emblems, the chapter page, the room and bench as the stand-in v2 drew them, the icons. Nothing in `art/` is touched.

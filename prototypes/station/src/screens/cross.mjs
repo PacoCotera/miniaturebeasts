@@ -15,7 +15,7 @@ const X = () => UI.cross;
 export function openCross(a) { UI.cross = { aId: a.id, bId: null, page: 0, fc: null, clash: [] }; const ps = S.crossPartners(G.st, G.sv, a, G.settings); if (ps.length) UI.cross.bId = ps[0].id; goScreen("cross"); }
 const pair = () => { const x = X(); return x ? [mibiById(x.aId), mibiById(x.bId)] : [null, null]; };
 const ROWS = 5, ROW_H = 50, ROW_Y = 292;
-function forecast() { const x = X(), [a, b] = pair(); if (!a || !b) return null; const key = a.id + ":" + b.id; if (x.fc && x.fcKey === key) return x.fc; x.fc = S.forecastOf(G.st, a, b, G.settings); x.fcKey = key; return x.fc; }
+function forecast() { const x = X(), [a, b] = pair(); if (!a || !b) return null; const key = a.id + ":" + b.id + ":" + a.read.length + ":" + b.read.length; if (x.fc && x.fcKey === key) return x.fc; x.fc = S.forecastOf(G.st, a, b, G.settings); x.fcKey = key; return x.fc; }
 // A seed's child: the trait's lead locus as the seed has it, the sleeping parts one from each parent, the rest from the mother.
 function seedGenome(fr, a, b, t, copies) {
   const g = structuredClone(a.genome); g.loci[t.locus] = [...copies];
@@ -58,6 +58,9 @@ function draw() {
     const y = ROW_Y + i * ROW_H, trait = fr.chapters.flatMap((c) => c.traits).find((q) => q.id === t.trait), isClash = x.clash.includes(t.trait);
     text(clipText(t.name, 110, 2), 292, y + 4, isClash ? C.coral : C.bone, 2);
     if (t.sealed) { text("sealed", 292, y + 26, C.stone, 2); for (let k = 0; k < 4; k++) R(410 + k * 80, y + 2, 72, 44, C.slate); return; }
+    if (t.kind === "missing") {   // not read yet: the unread look, never a guess, and which read would show it
+      text("unread", 292, y + 26, C.stone, 2); for (let k = 0; k < 4; k++) R(410 + k * 80, y + 2, 72, 44, C.slate);
+      text(clipText("read " + t.missing.map((q) => q.name + "’s " + q.chapterName).join(" and "), 320, 1), 410, y + 20, C.mist, 1); return; }
     if (t.kind === "switch") {
       const slots = fourSlots(t.seeds);
       slots.forEach((s, k) => { const px = 410 + k * 80; blit(seedPic(fr, a, b, t, s.copies, 72, 44), px, y + 2); R(px - 1, y + 1, 74, 1, C.slate); R(px - 1, y + 46, 74, 1, C.slate); R(px - 1, y + 1, 1, 46, C.slate); R(px + 72, y + 1, 1, 46, C.slate);
@@ -81,7 +84,7 @@ function line() {
   if (!b) return { back: "Habitat", subject, need: "no adult of its kind to pair" };
   if (block) return { back: "Habitat", subject, need: block };
   const can = S.canPay(G.st, c.e, c.d, c.s);
-  return { ok: "Cross them", price: can ? S.priceText(c.e, c.d, c.s) : S.shortText(G.st, c.e, c.d, c.s), dim: !can, back: "Habitat", subject, need: fc ? S.kinshipWord(fc.kinship) : null };
+  return { ok: "Cross them", price: can ? S.priceText(c.e, c.d, c.s) : S.shortText(G.st, c.e, c.d, c.s), dim: !can, back: "Habitat", subject, need: fc && fc.missing ? S.plural(fc.missing, "trait") + " unknown · read more" : fc ? S.kinshipWord(fc.kinship) : null };
 }
 function act(k) {
   const x = X(), [a, b] = pair(); if (!a) return;
