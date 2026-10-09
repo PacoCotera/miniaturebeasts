@@ -11,6 +11,12 @@ import { frameOf } from "../genome.mjs";
 const rect = (id, x, y, w, h, colour) => ({ id, kind: "rect", rect: [x, y, w, h], colour });
 const txt = (ctx, id, str, x, y, px, colour, align = "left") => { const w = Math.round(ctx.measure(str, px)); return { id, kind: "text", rect: [align === "center" ? x - Math.round(w / 2) : align === "right" ? x - w : x, y, w, ctx.line(px)], text: str, px, weight: SIZES[px], colour, align: "left" }; };
 const box = (id, [x, y, w, h], colour) => [rect(id + ".t", x, y, w, 1, colour), rect(id + ".b", x, y + h - 1, w, 1, colour), rect(id + ".l", x, y, 1, h, colour), rect(id + ".r", x + w - 1, y, 1, h, colour)];
+// A 1 px line dashed on/off along it (the last dash cut to the length), as Cross draws its dashed edges: short rects.
+function dashes(id, x, y, len, colour, on, off, vertical) {
+  const out = []; for (let o = 0, k = 0; o < len; o += on + off, k++) { const l = Math.min(on, len - o); out.push(rect(`${id}.${k}`, vertical ? x : x + o, vertical ? y + o : y, vertical ? 1 : l, vertical ? l : 1, colour)); }
+  return out;
+}
+const dashedBox = (id, [x, y, w, h], colour, on, off) => [...dashes(id + ".t", x, y, w, colour, on, off, false), ...dashes(id + ".b", x, y + h - 1, w, colour, on, off, false), ...dashes(id + ".l", x, y, h, colour, on, off, true), ...dashes(id + ".r", x + w - 1, y, h, colour, on, off, true)];
 export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const MASTER_UNTIL = "the field guide masters (station-layouts.md, Masters for the guide)";
 
@@ -30,7 +36,7 @@ export const tintOf = (fr, chips) => chips[fr.pod?.colourPair?.[0]?.pigment] ?? 
 
 export function guideModel(st, id, settings) {
   const fr = frameOf(id), fg = Lib.fieldGuide(st, id, settings), wish = Lib.wishOf(st, id); if (!fr || !fg) return null;
-  const cols = fg.chapters.map((c) => ({ id: c.id, name: c.name.replace(/\b[a-z]/g, (x) => x.toUpperCase()), sealed: c.sealed, traits: c.sealed ? [] : c.traits.map((t) => ({ id: t.id, name: t.name, looks: t.possible, found: t.found.slice().sort((a, b) => t.possible.indexOf(a) - t.possible.indexOf(b)), more: t.more, pinned: wish[t.id] ?? null })) }));
+  const cols = fg.chapters.map((c) => ({ id: c.id, name: c.name, sealed: c.sealed, traits: c.sealed ? [] : c.traits.map((t) => ({ id: t.id, name: t.name, looks: t.possible, found: t.found.slice().sort((a, b) => t.possible.indexOf(a) - t.possible.indexOf(b)), more: t.more, pinned: wish[t.id] ?? null })) }));
   return { id, fr, cols, complete: fg.complete };
 }
 const traitAt = (model, c, r) => model.cols[c]?.traits[r] ?? null;
@@ -75,6 +81,25 @@ export function guideMove(model, st, g, dir) {
   return g;
 }
 
+// "Carried by": at most two lines of names in `maxW`, a comma after every name but the last shown. When not every name fits, names are dropped from the end until the rest and "and more" fit, and
+// "and more" (no comma before it) follows the last name shown, on line 2 if it does not fit on line 1; never a third line.
+export function carriedLines(ctx, names, maxW, pitch, more = "and more") {
+  const m = (t) => Math.round(ctx.measure(t, 16)), sp = m(" ");
+  const tryK = (k) => {
+    const out = []; let line = 0, x = 0;
+    for (let q = 0; q < k; q++) {
+      const word = names[q] + (q < k - 1 ? "," : ""), w = m(word), gap = x ? sp : 0;
+      if (x && x + gap + w > maxW) { line++; x = 0; } if (line > 1 || w > maxW) return null;
+      const px = x ? x + gap : 0; out.push({ q, word, x: px, line, w, nameW: m(names[q]) }); x = px + w;
+    }
+    if (k === names.length) return { names: out, more: null };
+    const w = m(more), gap = x ? sp : 0; if (x && x + gap + w > maxW) { line++; x = 0; } if (line > 1 || w > maxW) return null;
+    return { names: out, more: { x: x ? x + gap : 0, line } };
+  };
+  for (let k = names.length; k >= 0; k--) { const r = tryK(k); if (r) return r; }
+  return { names: [], more: { x: 0, line: 0 } };
+}
+
 export function guideView(m, spec, ctx) {
   const { st, settings, id, frame: fr, g } = m, model = m.model, R = spec.regions, nodes = [], masters = [], tints = [], targets = [];
   const master = (mid, rc) => { masters.push({ id: `${mid}:${rc[2]}x${rc[3]}`, master: mid, rect: rc, until: MASTER_UNTIL }); };
@@ -92,11 +117,12 @@ export function guideView(m, spec, ctx) {
     const x = L.x(i), w = L.w, py = L.top, rc = [x, py, w, 80];
     if (i > 0) nodes.push(rect(`rule.${i}`, L.x(i) - 4, R.columns.rules.y[0], 1, R.columns.rules.y[1] - R.columns.rules.y[0], R.columns.rules.colour));
     nodes.push(rect(`panel.${i}`, x, py, w, 80, P.ground));
-    if (c.sealed) { master(`guide-panel-sealed-${w}x80`, rc); master(`rail-emblem-${c.id}-sealed-24x24`, [x + w / 2 - 12, py + 8, 24, 24]); nodes.push(txt(ctx, `panel.${i}.word`, c.name, x + w / 2, 240, 16, "mist", "center")); return; }
+    const word = c.id === "legs-tail" && m.legsHeading ? m.legsHeading : c.name;   // the string table's heading for Legs & tail, the frame's chapter name as written for the rest; never recased
+    if (c.sealed) { master(`guide-panel-sealed-${w}x80`, rc); master(`rail-emblem-${c.id}-sealed-24x24`, [x + w / 2 - 12, py + 8, 24, 24]); nodes.push(txt(ctx, `panel.${i}.word`, word, x + w / 2, 240, 16, "mist", "center")); return; }
     const tid = `tint:${w}:${tint}`; if (!tints.some((q) => q.id === tid)) tints.push({ id: tid, w, h: 80, colour: tint });
     nodes.push({ id: `panel.${i}.tint`, kind: "sprite", rect: rc, asset: tid }, rect(`panel.${i}.band`, x + 1, py + 1, w - 2, 2, tint));
     master(`guide-panel-${c.id}-${w}x80`, rc);
-    nodes.push(txt(ctx, `panel.${i}.word`, c.name, x + w / 2, 240, 16, P.word?.colour ?? "ink", "center"));
+    nodes.push(txt(ctx, `panel.${i}.word`, word, x + w / 2, 240, 16, P.word?.colour ?? "ink", "center"));
     c.traits.forEach((t, r) => {
       const y = 272 + 40 * r, opened = g.open.col === i && g.open.row === r, k = `cell.${i}.${r}`;
       if (opened) nodes.push(...box(k + ".open", [x - 2, y - 4, w + 4, 40], "clay"));
@@ -117,8 +143,9 @@ export function guideView(m, spec, ctx) {
     slots.forEach((look, k) => {
       const isMore = look === "more?" && k === ot.found.length && ot.more, row = few ? 0 : Math.floor(k / PL.perRow), col = few ? k : k % PL.perRow, x = D.plates.rect[0] + col * PL.pitch, y = PL.rows[row];
       const rc = isMore ? [x, y, ...(few ? [sw, sh] : PL.moreSize)] : [x, y, sw, sh];
-      if (isMore) { nodes.push(...box(`plate.${k}`, rc, D.plates.more.border)); nodes.push(txt(ctx, `plate.${k}.word`, spec.strings.more, rc[0] + Math.round(rc[2] / 2), rc[1] + Math.round((rc[3] - ctx.line(16)) / 2), 16, D.plates.more.colour, "center")); }
+      if (isMore) { nodes.push(...dashedBox(`plate.${k}`, rc, D.plates.more.border, D.plates.more.dash[0], D.plates.more.dash[1])); nodes.push(txt(ctx, `plate.${k}.word`, spec.strings.more, rc[0] + Math.round(rc[2] / 2), rc[1] + Math.round((rc[3] - ctx.line(16)) / 2), 16, D.plates.more.colour, "center")); }
       else {
+        nodes.push(...box(`plate.${k}.key`, [rc[0] - 1, rc[1] - 1, rc[2] + 2, rc[3] + 2], "bark"));   // the keyline: drawn whether or not the master is signed
         master(`trait-${sp}-${ot.id}-${slug(look)}-${sw}x${sh}`, rc);
         if (k === g.look) nodes.push(rect(`plate.${k}.open`, rc[0], rc[1] + rc[3] + 2, rc[2], 2, "clay"));
         if (ot.pinned === look) master("wish-mark-12", [rc[0] + rc[2] - 12 - 2, rc[1] + 2, 12, 12]);
@@ -130,14 +157,9 @@ export function guideView(m, spec, ctx) {
     carriers = openLookName != null ? Lib.lookCarriers(st, id, ot.id, openLookName) : [];
     if (!carriers.length) nodes.push(txt(ctx, "carried.none", spec.strings.carriedNone, D.carried.rect[0], D.carried.rect[1] + 20, 16, "stone"));
     else {
-      const maxW = D.carried.rect[2], pitch = D.carried.names.pitch, put = []; let line = 0, x = 0, shown = 0;
-      for (let q = 0; q < carriers.length; q++) {
-        const last = q === carriers.length - 1, word = carriers[q].name + (last ? "" : ","), w = Math.round(ctx.measure(word, 16)), gap = x ? Math.round(ctx.measure(" ", 16)) : 0;
-        if (x && x + gap + w > maxW) { line++; x = 0; } if (line > 1) break;
-        const px = D.carried.rect[0] + x + (x ? gap : 0); put.push({ q, word, px, py: D.carried.rect[1] + 20 + line * pitch, w }); x += (x ? gap : 0) + w; shown++;
-      }
-      if (shown < carriers.length) { const last = put[put.length - 1], more = spec.strings.carriedMore, mw = Math.round(ctx.measure(more, 16)); if (last) { nodes.push(txt(ctx, "carried.more", more, D.carried.rect[0], last.py + (last.px + last.w + mw > D.carried.rect[0] + maxW ? pitch : 0) , 16, "stone")); } }
-      put.forEach((p) => { nodes.push(txt(ctx, `carried.${p.q}`, p.word, p.px, p.py, 16, "ink")); targets.push({ id: `carrier.${p.q}`, kind: "carrier", index: p.q, rect: [p.px, p.py, p.w - (p.word.endsWith(",") ? Math.round(ctx.measure(",", 16)) : 0), 20], mibi: carriers[p.q] }); });
+      const placed = carriedLines(ctx, carriers.map((c) => c.name), D.carried.rect[2], D.carried.names.pitch), put = placed.names.map((p) => ({ ...p, px: D.carried.rect[0] + p.x, py: D.carried.rect[1] + 20 + p.line * D.carried.names.pitch }));
+      if (placed.more) nodes.push(txt(ctx, "carried.more", spec.strings.carriedMore, D.carried.rect[0] + placed.more.x, D.carried.rect[1] + 20 + placed.more.line * D.carried.names.pitch, 16, "stone"));
+      put.forEach((p) => { nodes.push(txt(ctx, `carried.${p.q}`, p.word, p.px, p.py, 16, "ink")); targets.push({ id: `carrier.${p.q}`, kind: "carrier", index: p.q, rect: [p.px, p.py, p.nameW, 20], mibi: carriers[p.q] }); });
     }
   }
   // the ring, and the bottom line

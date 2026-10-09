@@ -40,6 +40,8 @@ export function book(st, id, settings = DEFAULT_SETTINGS) {
   const status = speciesStatus(st, id), portrayed = st.mibis.filter((m) => speciesOf(m) === id && m.portrait && m.portrait.state === "delivered");
   return { species: id, name: fr.species.name, status, guide: status === "found" ? fieldGuide(st, id, settings) : null, face: faceOf(st, id), faceChoices: portrayed.map((m) => m.id), wish: wishOf(st, id), notes: (st.guideNotes && st.guideNotes[id]) || [] };
 }
+// ✓ Visit on the Book's face spread: the face, only when it is a living mibi; with the type face (or a mibi in the wild) there is no ✓.
+export function visitFace(st, id) { const f = faceOf(st, id), m = f != null ? mibiById(st, f) : null; return m && !m.released ? m : null; }
 // The Book's Visit (a jump to Habitat): the species' face if one is chosen, else the first mibi of it that is housed; none when there is none.
 export function visitTarget(st, id) {
   const f = faceOf(st, id), m = f != null ? mibiById(st, f) : null;

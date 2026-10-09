@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, frameIds, chapterLooks } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
-import { guideModel, guideInit, guideMove, guideView, guideLayout, tintMask, tintOf, slug } from "../src/views/guide.mjs";
+import { guideModel, guideInit, guideMove, guideView, guideLayout, tintMask, tintOf, slug, carriedLines } from "../src/views/guide.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
@@ -97,4 +97,47 @@ test("the face spread's clarity line and the doors: 'A typical Belatz, not one o
   assert.match(src("screens/library.mjs"), /export function openGuide/); assert.match(src("screens/library.mjs"), /l\.f = "guide"/);
   const pods = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/pods.json"), "utf8")); assert.equal(pods.strings.thisPod, "this pod"); assert.equal(pods.strings.theSpecies, "the species"); assert.equal(pods.strings.openGuide, "Open the guide");
   const frame = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/frame.json"), "utf8")).navigation; assert.ok(frame.jumps.some((j) => j.from === "pods.overview" && j.to === "book" && j.spread === "guide")); assert.ok(frame.jumps.some((j) => j.from === "habitat" && j.to === "book" && j.spread === "guide")); assert.equal(frame.screens.book.back, "Library");
+});
+
+// --- the UI designer's rulings on d8fa1378 ---
+test("Carried by: at most two lines (cap tops y 124 and 144) inside x 448–568; names are dropped until 'and more' fits, which follows the last name shown with no comma, never a third line", () => {
+  const names = ["Aaaaa", "Bbbbb", "Ccccc", "Ddddd", "Eeeee", "Fffff"], r = carriedLines(ctx, names, 120, 20);   // 8 px a character: 15 characters a line
+  assert.equal(r.names.length, 3); assert.ok(r.names.every((p) => p.line <= 1) && r.more.line <= 1); assert.ok(!r.names.at(-1).word.endsWith(","), "no comma before 'and more'"); assert.ok(r.names.slice(0, -1).every((p) => p.word.endsWith(",")));
+  assert.ok(r.names.every((p) => p.x + p.w <= 120) && r.more.x + Math.round(ctx.measure("and more", 16)) <= 120);
+  const all = carriedLines(ctx, names.slice(0, 4), 120, 20); assert.equal(all.more, null); assert.equal(all.names.length, 4); assert.ok(!all.names.at(-1).word.endsWith(","));
+  assert.deepEqual(carriedLines(ctx, ["Aaaaa", "Bbbbb"], 120, 20).names.map((p) => p.line), [0, 0], "two short names share a line");
+  // in the view: the names sit at y 124 and 144 from x 448
+  const w = world("S09", 6), model = guideModel(w.st, "S09", settings), g0 = guideInit(model), { v } = view(w, g0), ys = v.nodes.filter((n) => n.id.startsWith("carried.") && n.id !== "carried.none").map((n) => n.rect[1]);
+  assert.ok(ys.every((y) => y === 124 || y === 144), "lines at 124 and 144 only"); assert.ok(v.nodes.filter((n) => /^carried\.\d+$/.test(n.id)).every((n) => n.rect[0] >= 448 && n.rect[0] + n.rect[2] <= 568));
+});
+
+test("the 'more?' slot is a 1 px clay dashed edge, 2 on and 2 off, drawn as short rects", () => {
+  const w = world("S09"), { v } = view(w), more = v.targets.find((t) => t.kind === "more"); assert.ok(more, "the opened trait has more to find");
+  const id = `plate.${more.index}`, dashes = v.nodes.filter((n) => n.id.startsWith(id + ".") && n.kind === "rect" && !n.id.endsWith(".word"));
+  assert.ok(dashes.length > 8 && dashes.every((n) => n.colour === "clay" && Math.min(n.rect[2], n.rect[3]) === 1 && Math.max(n.rect[2], n.rect[3]) <= 2));
+  const top = dashes.filter((n) => n.id.startsWith(id + ".t.")).map((n) => n.rect[0]); assert.deepEqual(top.slice(0, 4).map((x, i) => x - more.rect[0] - 4 * i), [0, 0, 0, 0], "2 on, 2 off along the edge");
+});
+
+test("the fold-out edge is a registered stand-in: its clay box carries the fold. ids the screen drops once the master is signed; the master is asked for under it", () => {
+  const w = world("S09"), { v } = view(w); const fold = v.nodes.filter((n) => n.id.startsWith("fold.")); assert.equal(fold.length, 4); assert.ok(fold.every((n) => n.colour === "clay"));
+  assert.ok(v.masters.some((m) => m.master === "library-foldout-1008x504" && m.rect.join() === "8,48,1008,504")); assert.ok(readFileSync(path.resolve(here, "../src/art.mjs"), "utf8").includes('id: "foldout-edge"'), "listed in the placeholder register");
+});
+
+test("panel words come from the string table: Legs & tail from pods.json strings.legsTail.heading, the rest as the frame writes them, never recased", () => {
+  const pods = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/pods.json"), "utf8")), heading = pods.strings.legsTail.heading, w = world("S09"), model = guideModel(w.st, "S09", settings), { v } = view(w, undefined, { legsHeading: heading });
+  w.fr.chapters.forEach((ch, i) => { assert.equal(model.cols[i].name, ch.name, "as written"); const node = v.nodes.find((n) => n.id === `panel.${i}.word`); assert.equal(node.text, ch.id === "legs-tail" ? heading : ch.name); });
+  assert.ok(!readFileSync(path.resolve(here, "../src/views/guide.mjs"), "utf8").includes("toUpperCase"), "the build never recases");
+});
+
+test("every look plate has a 1 px bark keyline at [x−1, y−1, w+2, h+2], signed or not; none on 'more?', the face or the panels", () => {
+  const w = world("S09"), { v } = view(w); const plates = v.targets.filter((t) => t.kind === "plate"); assert.ok(plates.length);
+  for (const p of plates) { const key = v.nodes.filter((n) => n.id.startsWith(`plate.${p.index}.key.`)); assert.equal(key.length, 4); assert.ok(key.every((n) => n.colour === "bark")); const xs = key.flatMap((n) => [n.rect[0], n.rect[0] + n.rect[2]]), ys = key.flatMap((n) => [n.rect[1], n.rect[1] + n.rect[3]]); assert.deepEqual([Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)], [p.rect[0] - 1, p.rect[1] - 1, p.rect[0] + p.rect[2] + 1, p.rect[1] + p.rect[3] + 1]); }
+  assert.equal(v.nodes.filter((n) => /\.key\./.test(n.id)).length, plates.length * 4, "no keyline on anything else");
+});
+
+test("the focus ring on paper is rust, from frame.json focus.ring.onPaper; ✓ Visit on the Book's face needs a living mibi as the face", () => {
+  const frame = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/frame.json"), "utf8")); assert.equal(frame.focus.ring.onPaper, "rust"); assert.deepEqual([frame.focus.ring.width, frame.focus.ring.outside, frame.focus.ring.radius], [2, 4, 6]);
+  const w = world("S09"); assert.equal(L.visitFace(w.st, "S09"), null, "the type face: no ✓");
+  const [a] = w.ms; a.portrait = { state: "delivered" }; w.st.face.S09 = a.id; assert.equal(L.visitFace(w.st, "S09").id, a.id, "a living face");
+  a.released = true; assert.equal(L.visitFace(w.st, "S09"), null, "a face in the wild: no ✓");
 });

@@ -1,13 +1,14 @@
 // Library: the tome's spread of sixteen frames and a Book per species. M1 carries the spread with the
 // registry's sixteen species (found plate, met study, empty unmet frame) and a Book stub: the species'
 // face, its habit line, the frame's chapters and the looks found so far. M5 builds the Book whole.
-import { C, R, blit, text, clipText, panel, focusRing, art, PB, clamp, clock } from "../gfx.mjs";
+import { C, R, blit, text, clipText, panel, art, PB, clamp, clock } from "../gfx.mjs";
 import { speciesArt, emblemArt, stampArt } from "../art.mjs";
-import { G, UI, SPECS, LAYER, msg, save, goScreen, registerScreen } from "../game.mjs";
+import { G, UI, SPECS, LAYER, msg, save, goScreen, registerScreen, mibiById } from "../game.mjs";
 import { stageBg, frameFor } from "./frame.mjs";
 import * as Guide from "../views/guide.mjs";
 import { registerPictures } from "../pictures.mjs";
 import { layer } from "../../../ui/components/specimen.mjs";
+import { SIZES } from "../../../ui/type.mjs";
 import { registerAsset, isFilled, asset as assetOf } from "../../../ui/assets.mjs";
 import * as S from "../state.mjs";
 import * as Lib from "../library.mjs";
@@ -28,7 +29,6 @@ function drawSpread() {
     if (known(id)) { panel(x + 6, y + 6, FRAME.w - 12, FRAME.h - 28, C.bone, C.clay); const a = speciesArt(fr, 76, 76); blit(a, x + 10, y + 8); text(clipText(fr.species.name, FRAME.w - 4, 2), x + FRAME.w / 2, y + FRAME.h + 6, C.panel, 2, "center"); }
     else if (met(id)) { const a = speciesArt(fr, 76, 76); blit(art("study" + id, () => { const pb = new PB(a.w, a.h); for (let j = 0; j < a.p.length; j++) if (a.p[j] >= 0 && ((j % a.w) + ((j / a.w) | 0)) % 3 === 0) pb.p[j] = C.stone; return pb; }), x + 10, y + 8); text(clipText(fr.species.name, FRAME.w - 4, 2), x + FRAME.w / 2, y + FRAME.h + 6, C.mist, 2, "center"); }
     R(x, y + FRAME.h + 24, FRAME.w, 1, C.clay);   // the caption rule
-    if (L().f === "spread" && L().i === i) focusRing(x - 5, y - 5, FRAME.w + 10, FRAME.h + 10);
   });
   const n = frameIds().length, pages = Math.ceil(n / 16);
   if (pages > 1) text("spread " + (L().page + 1) + " of " + pages + " · ◀ ▶ past the edge turns it", 512, 540, C.clay, 2, "center");
@@ -36,17 +36,18 @@ function drawSpread() {
 function drawBook() {
   paperBg();   const id = L().sp, fr = frameOf(id); if (!fr) { L().f = "spread"; return; }
   panel(30, 60, 300, 330, C.bone, C.bark); blit(speciesArt(fr, 260, 270), 50, 70);
-  panel(40, 400, 280, 60, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.panel, 3, "center"); text(fr.taxonomy?.clan ? "clan " + fr.taxonomy.clan + " · " + S.plural(fr.chapters.length, "chapter") : S.plural(fr.chapters.length, "chapter"), 180, 440, C.bark, 2, "center");
-  // the clarity line: the species' type, not one of yours (the chapters and their looks are the guide spread, a page turn away)
-  text(clipText(Lib.faceLine(G.st, id), 300, 2), 180, 468, C.bark, 2, "center");
-  if (Lib.book(G.st, id).guide) { const pid = "library-pageturn-24x24:24x24"; registerPictures([{ kind: "slot", id: pid, master: "library-pageturn-24x24", size: [24, 24], until: "the page-turn corner master (library.json pageTurn)" }], { podById: () => null, frameOf }); if (isFilled(pid)) blit(assetOf(pid), 968, 512); }   // the page-turn corner (968, 512, 24, 24): a slot only, nothing drawn until its master is placed
-  const m = G.st.mibis.find((q) => S.speciesOf(q) === id);
-  if (m) { const st = stampArt(fr, m.genome, m.read, 112); if (st) { panel(880, 400, 124, 124, C.bone, C.clay); blit(st, 886, 406); text(m.name, 942, 528, C.bark, 2, "center"); } }
-  else text("no " + fr.species.name + " raised yet", 942, 500, C.clay, 2, "center");
+  panel(40, 400, 280, 60, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.panel, 3, "center");
+  // the clarity line (stone, cap top y 480, centred on the face plate): the species' type, not one of yours; the chapters and their looks are the guide spread, a page turn away
+  text(clipText(Lib.faceLine(G.st, id), 300, 2), 180, 480, C.stone, 2, "center");
+  // the stamp (832, 112, 120, 120): the type specimen's until a portrait, then the portrayed mibi's, with its name
+  const f = Lib.faceOf(G.st, id), m = f != null ? mibiById(f) : null, tg = fr.typeSpecimen?.genome;
+  const st = m ? stampArt(fr, m.genome, m.read, 112) : tg ? stampArt(fr, tg, fr.chapters.map((c) => c.id), 112) : null;
+  if (st) { panel(832, 112, 120, 120, C.bone, C.clay); blit(st, 836, 116); if (m) text(m.name, 892, 236, C.bark, 2, "center"); }
 }
 function draw() { if (L().f === "book") drawBook(); else drawSpread(); }
 
 // --- the guide spread (library.json): the layered view, from the field guide and nothing else ---
+const FOLDOUT = "library-foldout-1008x504:1008x504";
 const slotReq = (m) => ({ kind: "slot", id: m.id, master: m.master, size: [m.rect[2], m.rect[3]], until: m.until });
 let gcache = { key: "", view: null };
 function guideBuild(ctx) {
@@ -54,7 +55,7 @@ function guideBuild(ctx) {
   l.g = Guide.guideKeep(model, l.g ?? Guide.guideInit(model));
   const key = JSON.stringify([id, l.g, G.st.guide[id], G.st.wish[id], G.st.mibis.map((m) => [m.id, m.read.length, m.released]), G.st.pods?.length, G.st.tray.map((p) => p.read?.length)]);
   if (gcache.key === key && gcache.view) return gcache.view;
-  const v = Guide.guideView({ st: G.st, settings: G.settings, id, frame: fr, model, g: l.g, chips: SPECS.cross.colours.pigmentChips, podCarries: Lib.wishCarriers(G.st, id).pods.length > 0 }, SPECS.library, ctx);
+  const v = Guide.guideView({ st: G.st, settings: G.settings, id, frame: fr, model, g: l.g, chips: SPECS.cross.colours.pigmentChips, legsHeading: SPECS.pods?.strings?.legsTail?.heading, podCarries: Lib.wishCarriers(G.st, id).pods.length > 0 }, SPECS.library, ctx);
   gcache = { key, view: v }; v.model = model; return v;
 }
 function guideNodes(ctx) {
@@ -64,20 +65,34 @@ function guideNodes(ctx) {
   registerPictures(v.masters.map(slotReq), { podById: () => null, frameOf });
   const mk = (m) => layer("m." + m.id + "." + m.rect.slice(0, 2).join("."), m.rect, m.id), fold = v.masters.filter((m) => m.master === "library-foldout-1008x504").flatMap(mk), masters = v.masters.filter((m) => m.master !== "library-foldout-1008x504").flatMap(mk);
   // the nodes in draw order: the ground and the foldout master, the text and rects, then the masters over them (the panels' masters sit over the tint, the plates over their slots)
-  out.push(...fold, ...v.nodes.filter((n) => n.kind !== "text"), ...masters, ...v.nodes.filter((n) => n.kind === "text"));
+  const foldSigned = isFilled(FOLDOUT), body = v.nodes.filter((n) => !(foldSigned && n.id.startsWith("fold.")));   // the clay box is the registered stand-in for the fold-out, never drawn over its master
+  out.push(...fold, ...body.filter((n) => n.kind !== "text"), ...masters, ...body.filter((n) => n.kind === "text"));
   if (v.ring) out.push(...focusRingNodes(v.ring));
   out.push(...frameFor(ctx, "library", v.line, { need: "" }));
   return out;
 }
 import { focusRing as focusRingNode } from "../../../ui/components/focusRing.mjs";
-const focusRingNodes = (r) => focusRingNode("focus", r, SPECS.frame, { shape: "round" });
+const focusRingNodes = (r) => focusRingNode("focus", r, SPECS.frame, { shape: "round", colour: SPECS.frame.focus.ring.onPaper });   // on paper the ring is rust (frame.json focus.ring.onPaper)
 function nodes(ctx) {
   if (L().f === "guide") return guideNodes(ctx);
-  return [{ id: "legacy", kind: "legacy", rect: [0, 0, 1024, 600], always: true, draw }, ...frameFor(ctx, "library", line())];
+  const out = [{ id: "legacy", kind: "legacy", rect: [0, 0, 1024, 600], always: true, draw }];
+  if (L().f === "spread" && pageOf()[L().i]) { const { x, y } = frameXY(L().i); out.push(...focusRingNodes([x - 2, y - 2, FRAME.w + 4, FRAME.h + 4])); }   // one ring per screen, rust on paper
+  if (L().f === "book" && Lib.book(G.st, L().sp)?.guide) out.push(...pageTurn(ctx));
+  out.push(...frameFor(ctx, "library", line()));
+  return out;
 }
+// The Book's page-turn corner (968, 512, 24, 24): its master where signed, else the registered stand-in, a ▶ in bark 16 px centred in the corner.
+const PAGETURN = "book-corner-turn-24x24:24x24";
+function pageTurn(ctx) {
+  registerPictures([{ kind: "slot", id: PAGETURN, master: "book-corner-turn-24x24", size: [24, 24], until: "the page-turn corner master (library.json faceSpread.pageTurn)" }], { podById: () => null, frameOf });
+  if (isFilled(PAGETURN)) return layer("m." + PAGETURN, [968, 512, 24, 24], PAGETURN);
+  const w = Math.round(ctx.measure("▶", 16));
+  return [{ id: "pageturn.standin", kind: "text", rect: [968 + Math.round((24 - w) / 2), 512 + Math.round((24 - ctx.line(16)) / 2), w, ctx.line(16)], text: "▶", px: 16, weight: SIZES[16], colour: "bark", align: "left" }];
+}
+const faceMibi = (id) => Lib.visitFace(G.st, id);
 function line() {
   if (L().f === "guide") { const v = LAYER.ctx ? guideBuild(LAYER.ctx) : null; return v ? v.line : { back: "Library" }; }
-  if (L().f === "book") { const fr = frameOf(L().sp), visit = Lib.visitTarget(G.st, L().sp); return { ok: visit ? "Visit " + visit.name : "", back: "Library", subject: fr ? fr.species.name + " · " + S.plural(G.st.mibis.filter((m) => S.speciesOf(m) === L().sp).length, "mibi") : "" }; }
+  if (L().f === "book") { const fr = frameOf(L().sp), visit = faceMibi(L().sp); return { ok: visit ? "Visit " + visit.name : "", back: "Library", subject: fr ? fr.species.name + " · " + S.plural(G.st.mibis.filter((m) => S.speciesOf(m) === L().sp).length, "mibi") : "" }; }
   const id = pageOf()[L().i], fr = id && frameOf(id);
   if (!fr) return { back: "Home", subject: "an empty frame" };
   if (known(id)) return { ok: "Open", back: "Home", subject: fr.species.name + " · found" };
@@ -99,7 +114,7 @@ function act(k) {
   if (l.f === "book") {
     if (k === "right" && Lib.book(G.st, l.sp).guide) { l.f = "guide"; l.g = null; return; }   // the page turn
     if (k === "back") l.f = "spread";
-    else if (k === "confirm") { const m = Lib.visitTarget(G.st, l.sp); if (m) { UI.hab.id = m.id; UI.hab.f = "stage"; goScreen("habitat"); } }   // Visit: a jump to Habitat; ← there goes Home
+    else if (k === "confirm") { const m = faceMibi(l.sp); if (m) { UI.hab.id = m.id; UI.hab.f = "stage"; goScreen("habitat"); } }   // Visit: a jump to Habitat; ← there goes Home
     return;
   }
   const n = pageOf().length, pages = Math.ceil(frameIds().length / 16), row = (l.i % 8) >> 2, col = l.i % 4, pg = l.i >> 3;

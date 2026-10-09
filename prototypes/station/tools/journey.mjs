@@ -445,7 +445,9 @@ const ui = () => page.evaluate(() => { const u = window.__st.UI; return { screen
   l = await line(); expect(l.back === "Home", "the collection's way back is Home"); await press("back", 150); u = await ui(); expect(u.screen === "home", "← from the collection is Home");
   // the Book: its way back is the Library, Visit jumps to Habitat, whose ← is Home (the parent, not the Book)
   await press("library", 200); await page.evaluate(() => { const u = window.__st.UI; u.lib.sp = "S01"; u.lib.f = "book"; });
-  l = await line(); expect(l.back === "Library" && /^Visit /.test(l.ok), "the Book: ← Library, ✓ Visit: " + JSON.stringify(l));
+  l = await line(); expect(l.back === "Library" && !l.ok, "the Book with the type face: ← Library, no ✓ cap: " + JSON.stringify(l));
+  await page.evaluate(() => { const st = window.__st.ST, m = st.mibis.find((q) => (q.species ?? "S01") === "S01" && !q.released); m.portrait = { state: "delivered" }; st.face = st.face || {}; st.face.S01 = m.id; });   // a living portrayed face
+  l = await line(); expect(l.back === "Library" && /^Visit /.test(l.ok), "the Book with a living face: ← Library, ✓ Visit: " + JSON.stringify(l));
   await press("library", 200); u = await ui(); expect(u.screen === "library" && u.lib === "spread", "the Library key from the Book opens the spread: " + JSON.stringify(u));
   await page.evaluate(() => { const u = window.__st.UI; u.lib.sp = "S01"; u.lib.f = "book"; }); await press("confirm", 300); u = await ui();
   expect(u.screen === "habitat" && u.hab === "stage", "Visit jumps to Habitat: " + JSON.stringify(u)); l = await line(); expect(l.back === "Home", "after a Visit Habitat reads ← Home: " + JSON.stringify(l));
