@@ -1350,7 +1350,8 @@
    "chapterFallback": "Back",
    "compare": "{name}"
   },
-  "hatchAgain": "✓ again"
+  "hatchAgain": "✓ again",
+  "price": "icon before figure, as on every Station screen (station-layouts.md, The frame): Identify ⚡ 1, Read ◆ 3, Return to the wild ❀ +1; nothing for free, and a half price is the lower number"
  },
  "states": [
   "collection",

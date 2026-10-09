@@ -83,6 +83,8 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 
 The material icons are the kit's 16 px icons, as on the Companion.
 
+**Prices read icon before figure** on every Station screen, as the frame's counters do: `⚡ 2 ❀ 4`, `◆ 3`, `❀ +1`. Several materials read in the order ⚡ ❀ ◆, each icon with its figure, with no dot.
+
 **Slots, not words.** Every word in the frame fills a slot, written to the zone's rule above: no dot-separated fragments, a verb phrase for the action, a label for the context, a sentence for the notice, the title one word.
 
 **How states change the frame:**
@@ -389,7 +391,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 
 **States.**
 
-- **Unidentified (B):** no rail, no stamp; the figure an empty halo, the who-it-is marks and the kin frosted; the name label "Unknown"; where it came from shows. `✓ Identify · 1 ⚡`. Identify fills the sections in place.
+- **Unidentified (B):** no rail, no stamp; the figure an empty halo, the who-it-is marks and the kin frosted; the name label "Unknown"; where it came from shows. `✓ Identify   ⚡ 1`. Identify fills the sections in place.
 - **Identifying:** the seal clears from the top down over 2 s and the glyph lights. "New species" shows for 6 s as a 20 px ribbon in the origin sentence's rectangle, then the sentence returns. No message plate repeats it.
 - **Reading (C):** the page's frost wipes away from the top over 2 s, the tab fills, its pips fill. No message plate.
 - **Read again (C):** free to look at; no ✓ cap; the context says "‹Chapter› is read".
@@ -415,13 +417,13 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | A | ← | Home: the way back reads "← Home" |
 | B | Pad | Between the pod, the tabs, the figure, the kin and the hatch: ▲ from the pod to the rail; ▶ from the pod to the figure, and on to the first kin; ▼ from the figure or the kin to the hatch; ◀ from the hatch to the pod. The ring starts on the pod, with `✓ Shape a founder`; the figure is a side trip one ▶ away. Before Identify the figure is not a target and ▶ goes from the pod to the kin. The figure's moves come from L2.1; before L2.1 ▶ goes from the pod to the first kin, or to the hatch when there is none |
 | B | ✓ on the figure | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads "Library" (the tree), never back to Pods |
-| B | ✓ on the pod | Sealed: `✓ Identify · 1 ⚡`. Identified, read or not: `✓ Shape a founder` opens Create (nothing read: its [nothing-read state](#create)); dimmed, with the reason in the notice, when the incubator is busy or no bay is free. A chapter opens from the rail, ▲ then `✓ Open ‹Chapter›`. Identifying is enough to grow an unedited founder |
+| B | ✓ on the pod | Sealed: `✓ Identify   ⚡ 1`. Identified, read or not: `✓ Shape a founder` opens Create (nothing read: its [nothing-read state](#create)); dimmed, with the reason in the notice, when the incubator is busy or no bay is free. A chapter opens from the rail, ▲ then `✓ Open ‹Chapter›`. Identifying is enough to grow an unedited founder |
 | B | ✓ on a tab | `✓ Open Coat`, with no price: opening a chapter is free. The read and its price are on the page (C), where ✓ reads, and the price is on the bottom line while the open tab has the focus there. So no price shows on a tab, and none shows for an action that costs nothing |
 | B | ✓ on a kin pod | `✓ Compare` (free, so no price) |
-| B | ✓ ✓ on the hatch | Return to the wild: the first ✓ arms, `✓ Again: return it   +1 ❀`, with the message plate "Back to the ‹place›? ✓ again"; the second returns the pod; any other key disarms |
+| B | ✓ ✓ on the hatch | Return to the wild: the first ✓ arms, `✓ Again: return it   ❀ +1`, with the message plate "Back to the ‹place›? ✓ again"; the second returns the pod; any other key disarms |
 | B | ← | Back to A, the ring on this pod: the way back reads "← Pods" |
 | C | ◀ ▶ | Step the chapters; the page turns in 200 ms. A sealed chapter: no ✓ cap, the context "Coat is sealed" |
-| C | ✓ | On an unread chapter, `✓ Read Coat   3 ◆` (the price a group of its own, no dot), the frost wipes; input held 2 s. On a read chapter there is no ✓ cap |
+| C | ✓ | On an unread chapter, `✓ Read Coat   ◆ 3` (the price a group of its own, no dot), the frost wipes; input held 2 s. On a read chapter there is no ✓ cap |
 | C | ← | Back to B, the ring on that tab: the way back reads the pod's name, "← Loika", because ← goes up one level to that pod. The longest name today, "Untuva", is 54 px at 16 px, inside the way back's 60 px for its word; a name that does not fit reads "← Back". From Compare, ← closes it, "← Loika" too |
 | Home | ✓ on the Rack module | Opens the collection (A) with the ring on the pod that most needs the player (a new one, then a glinting one, then the first); ← from there goes Home. Home's rack keeps its one focus target: the collection is one press away, and six 40 px wells in a module would be targets too small to read as the way into a pod |
 | All | Can't | A dimmed ✓ with the shortfall; a message plate on press. A glint says "something new waits" in the notice, never what it is |
@@ -468,7 +470,7 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 
 | Slot | Pattern | Rules | Examples |
 | --- | --- | --- | --- |
-| Left (action) | `✓ ‹Verb› ‹object›`, then the price as number and icon | Two groups with a 24 px gap between them, no dot. The price shows only when there is one; "free" and "half" are not shown (a half price is the lower number) | `✓ Identify   1 ⚡`; `✓ Read Coat   3 ◆`; `✓ Shape a founder`; `✓ Compare`; `✓ Return to the wild   +1 ❀` |
+| Left (action) | `✓ ‹Verb› ‹object›`, then the price as icon and number ([The frame](#the-frame)) | Two groups with a 24 px gap between them, no dot. The price shows only when there is one; "free" and "half" are not shown (a half price is the lower number) | `✓ Identify   ⚡ 1`; `✓ Read Coat   ◆ 3`; `✓ Shape a founder`; `✓ Compare`; `✓ Return to the wild   ❀ +1` |
 | Centre (subject) | A short sentence on the focused thing: "‹Name› is ‹state›", at most 24 characters, no "·" | States: unread, partly read, fully read; a chapter: unread, read, sealed. May end in "…" | Unknown pod: "sealed until identified". Identified, nothing read: "Loika is unread". After a read bought: "Coat is read" on the tab, "Loika is partly read" on the pod. Hatch: "Back to the rock field". Empty: "the rack is empty" |
 | Right (need) | One amber sentence of six words or fewer, only what this screen cannot show; empty when nothing waits (no text and no hairline) | No counts, no "·", no "needs 3 ◆": "needs more ⚡" | Glint on the focused tab: "something new here". Glint elsewhere on the pod: "something new waits". Nothing new: empty. Short of Energy: "needs more ⚡". Empty rack: "dock the Companion for its crates" |
 | Right edge (way back) | `← ‹where›`, in its own zone (frame.json `regions.back`) | One word, from pods.json `strings.wayBack` | Collection: `← Home`. Overview: `← Pods`. Chapter page and Compare: `← Loika`; a name that does not fit: `← Back` |
@@ -1018,7 +1020,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 - **Short:** the frame's dimmed ✓; the short material's figure `amber`; the notice "needs more ‹icons›"; ✓ shows a message plate naming what is short.
 - **Grow:** the event below, then the Incubator, growing.
 
-**Prices** read icon before figure on both screens, as the frame's counters do: `⚡ 2 ❀ 4 ◆ 1` here, `❀ 7` on the Incubator: one order.
+**Prices** read icon before figure, the frame's rule ([The frame](#the-frame)): `⚡ 2 ❀ 4 ◆ 1` here, `❀ 7` on the Incubator.
 
 ### 6. Interactions
 
@@ -1745,7 +1747,7 @@ The instrument's cool, even light, on the bench's ground. The wires are crisp 2 
 | ▼ | The next state: from the overview, the first chapter; then each chapter in ring order. On the last chapter, nothing |
 | ▲ | The previous state; from the first chapter, the overview |
 | ◀ ▶ | The previous or next partner (`crossPartners`). The wires re-route at once and the state is kept. The ring stays on the partner's head |
-| ✓ | `✓ Cross them · 2 ⚡ 4 ❀`, exactly as the line says; a jump to the Incubator. A refused pair has no ✓ cap, and the reason is the notice |
+| ✓ | `✓ Cross them   ⚡ 2 ❀ 4`, exactly as the line says; a jump to the Incubator. A refused pair has no ✓ cap, and the reason is the notice |
 | ← | Habitat |
 | A room key | Drops the unpaid choices; coming back opens fresh on the overview |
 

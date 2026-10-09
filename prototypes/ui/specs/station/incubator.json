@@ -32,9 +32,9 @@
   "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-incubator", "until": "room-bench-stage-collection" },
   "rail": {
    "rect": [96, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail", "layout": ["railCompaction", "slantTabs"], "inStates": ["growing", "ready", "hatch"], "focusable": false, "glint": false, "open": null,
-   "tabs": { "read": "known: read before Grow, or cleared while growing", "unread": "still a surprise (a sealed chapter shows as unread here)" },
+   "tabs": { "read": "known: read before Grow, or cleared while growing (a founder's bud only; never a sealed chapter that is still shut)", "unread": "still a surprise (a sealed chapter shows as unread here)" },
    "pips": { "read": "filled", "unread": "hollow" },
-   "clearing": "a founder's bud: its unread chapters clear in ring order, one at a time, chapter k of u when the wait passes (k + 1) / (u + 1) (state.budChapterKnown); each clears by events.wipe. A cross bud: the chapters outside its known reads stay unread through the wait, Grow now and ready (game designer, 2026-10-09 13:27)"
+   "clearing": "a founder's bud: its unread chapters clear in ring order, except a sealed chapter that is still shut, which never clears (its find stays a discovery), one at a time, chapter k of u when the wait passes (k + 1) / (u + 1) (state.budChapterKnown); each clears by events.wipe. A cross bud: the chapters outside its known reads stay unread through the wait, Grow now and ready (game designer, 2026-10-09 13:27)"
   },
   "leaves": {
    "rect": [256, 88, 512, 216], "component": "leaves", "form": "arc", "layout": ["leafArc"], "inStates": ["growing", "ready"], "leaf": [16, 20], "max": 40,
@@ -70,7 +70,7 @@
  "drawOrder": ["bench", "rail", "leaves", "dome", "nest", "bud", "bud shape", "bud front", "nestFront", "domeFront", "base", "base foot light", "plaque", "base lamp", "juvenile", "stamp", "code", "ribbon", "frame (top bar, bottom line)", "message plate"],
  "events": {
   "wipe": { "kind": "wipe", "target": "rail.<i>", "hold": false, "ms": 1000, "do": "a founder's bud: the tab turns from unread to read (its word and emblem at once), its pips filling left to right over 1000 ms (the rail word's wipe, as on Pods, with no page); the stamp redraws with the chapter at the end" },
-  "growNow": { "kind": "growNow", "target": "room", "hold": true, "holdMs": 400, "do": "the leaves still to fill fill one whole leaf a step, left to right, inner then outer, over 400 ms; then, on a founder's bud, every tab still unread turns read (a cut) and the stamp redraws; the state is ready" },
+  "growNow": { "kind": "growNow", "target": "room", "hold": true, "holdMs": 400, "do": "the leaves still to fill fill one whole leaf a step, left to right, inner then outer, over 400 ms; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; a cross bud keeps its unread chapters; the state is ready" },
   "hatch": {
    "kind": "hatch", "target": "room", "hold": true, "holdMs": 2780, "ms": 2600,
    "steps": [
