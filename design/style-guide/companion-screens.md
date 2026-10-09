@@ -243,14 +243,14 @@
 
 ## Companion mode / active mibi
 
-**Purpose.** Be with the mibi with you. **Reads first:** the mibi.
+**Purpose.** Be with one of the mibis with you. **Reads first:** the mibi.
 
-- **Composition.** The mibi at 280×300 in HiBit, centred in the upper two thirds, on a soft painted ground (grass, clover, cream light) quieter than the mibi. Name at 3×, a stage chip, species and ability at 2×, one status line ("with you · joins the Probe"). Page dots below, the mibi with you ringed; ◀ ▶ when there are others.
-- **Lively / quiet.** Lively: the mibi (idle, answering Call, the Spend time moment). Quiet: the ground and every label.
+- **Composition.** The mibi at 280×300 in HiBit, centred in the upper two thirds, on a soft painted ground (grass, clover, cream light) quieter than the mibi. Name at 3×, a stage chip, species and ability at 2×, one status line ("with you · joins the Probe"). Page dots below, the mibis with you ringed; ◀ ▶ when there are others.
+- **Lively / quiet.** Lively: the mibi (idle, answering Call, the Tend moment). Quiet: the ground and every label.
 - **Light and weather.** Soft daylight from the top left; a contact shadow under the mibi. No weather.
 - **Palette.** Greens and cream for the ground, two steps lower in contrast than the mibi.
 - **Type.** 3× name; 2× the rest; no meters.
-- **Chrome.** Call's slot reads `))) call Dot`. `✓ Spend time with Dot · ← Mibis`, or `✓ Walk with Dot · +1 ◆` once a world turn, undocked.
+- **Chrome.** `✓ Tend Dot · ← Mibis`, or `✓ Walk together` once a world turn, undocked; the full set of states is in [Care and the carried set](#care-and-the-carried-set).
 - **Motion.** Idle 2 frames at 2 Hz; Call: a hop to the front and a chirp; docked, the mibi sleeps and the line says "Lift to explore".
 
 The Companion calls nothing; it learns at the dock. **The delivery notice:** when a portrait's crate lands while docked, the docked screen shows a message box, "**Fig's portrait** has come · see it at the Station", the name in orange; away, the notice waits for the next dock and joins the link sheet ("The Station has them · a portrait for Fig"). One notice per portrait, never repeated. At that dock the Companion takes Fig's painted set, derived to HiBit on the Station, if Fig is one it carries. **The card:** on a portrayed mibi this screen adds `✓ Show Fig's card`: the portrait card at 450×600, Fig's portrait in HiBit, its name and place, and the postmark large enough for a phone camera; the phone opens Fig's page on the website. A plain mibi has no card.
@@ -266,6 +266,201 @@ The 280×300 HiBit resident on this screen, the 48 px field token, the 64 px par
 
 <table><tr><td valign="top"><img src="../../art/concept-homepage/companion-resident-home-450x600.png" width="300" alt="Resident at home concept"><br><em>companion-resident-home, 450×600 at 1×. Approved concept, generated.</em></td>
 <td valign="top"><img src="../../art/miniature-lives/exports/companion-resident.png" width="300" alt="Miniature Lives Companion"><br><em>The accepted HiBit Pip at 280×300. Accepted appearance reference (creature only).</em></td></tr></table>
+
+---
+
+## Care and the carried set
+
+The Companion carries up to three mibis. Care happens here and nowhere else: Tend, once a day for each mibi with you, and the Walk, once a world turn for all of them together. Three Tends earn the bond; a bonded juvenile grows up through care. This section sets the screens that carry it: Mibis (the roster, with the Lead card), the active mibi screen, and the expedition choice's partner card.
+
+The geometry is on the frame: HUD 0–32, view 32–564, bottom line 564–600, all at 1×. Type is the Mibi 7×9 face at 2× (18 px line) or 3× (27 px line). Strings are given in backticks, exactly as they show. `‹name›` is the mibi's name; `‹next›` is the mibi that would lead next. Every string has been checked against a ten-letter name in the widest letters (118 px at 2×, 177 px at 3×), and every ✓ label is at most 24 characters with one.
+
+Wireframes, 450×600 at 1×, measured boxes and slot labels only, no art: [`wireframes/companion-care/`](wireframes/companion-care/).
+
+### What never shows
+
+- No meter, bar, number, need or count for care, Tends or the bond. Nothing says how close a mibi is to bonding or to growing up. Nothing is amber because a mibi has not been tended.
+- An unbonded mibi shows no heart at all, never a dim one: the bond is never a need.
+- Undocked, a mibi at home is never shown: not in the roster, not as a page, not as a dot.
+- Mid-expedition, nothing can be tended, taken, left or made the lead.
+
+### The words the screens use
+
+- **With you**: the mibis the Companion carries, in carried order (the order they were taken).
+- **At home**: every other mibi.
+- **The partner**: the mibi that joins the Probe. It is the lead if the lead is with you and grown; otherwise the first grown mibi with you; otherwise none.
+
+---
+
+### Mibis (the roster)
+
+**Purpose.** See who is with you, choose who joins the Probe, and, while docked, choose who comes along. **Reads first:** the Lead card, then the mibis with you.
+
+**Elements.**
+
+| Element | Communicates |
+| --- | --- |
+| The Lead card | Who joins the Probe on the next expedition, and changes it |
+| Three places under "With you" | The mibis with you, and how many more fit (a free place is an empty outline) |
+| "At home" rows (docked only) | Who can be taken |
+| One line under the places (undocked only) | Why the others are missing |
+
+**Placement.** The partner first, because it is what the next expedition depends on; then the three places, always three, so "the Companion is full" is visible before it is said; then, docked, the mibis to take. Undocked the screen stops after the places.
+
+**Alignment with the art direction.** Paper cards on ink, as on the expedition choice. The partner stands on the teal ring, the same ring it wears in the field and in the HUD. The heart is a small HiBit enamel heart, the same object as Habitat's heart drawn for the Companion's palette. The free place is a dashed outline, as on Habitat's Companion module.
+
+**Composition.** <img src="wireframes/companion-care/01-roster-docked-take.png" width="225" alt="Mibis docked, Take Fig"> <img src="wireframes/companion-care/03-roster-docked-full.png" width="225" alt="Mibis docked, three with you, Take refused">
+
+| Region | x, y, w, h | Contents |
+| --- | --- | --- |
+| HUD | 0, 0, 450, 32 | "Mibis" at the left, as built |
+| Lead card | 16, 44, 418, 92 | Paper card. Caption `Partner` 2× `mist` at (104, 50). The partner's 64 px face at (28, 56) on the teal ring (28×11 at 46, 114). Name 3× at (104, 72), clipped at 314 px. Heart 16×16 at 8 px after the name, y 78, when bonded. One 2× line at (104, 108), clipped at 314 px: the partner's ability |
+| Lead card, no partner | same | The face place is a dashed circle, 64×64 at (28, 56), 1 px `stone`, dash 2 and 2. Name line `No partner` 3×. The 2× line gives why: `young · grows with care` (the first juvenile with you is bonded) or `young · grows in time` (it is not). When none is carried, the name line is `No one with you` and the 2× line `take one at the Station` |
+| Caption | 20, 148 | `With you` 2× `mist` |
+| Place *i* (0–2) | 16, 172 + 72*i*, 418, 64 | A carried mibi's row, in carried order, or a free place: a dashed outline, 1 px `stone`, dash 2 and 2, no words, never focused |
+| Row: token | 28, row + 8, 48, 48 | The mibi's 48 px field token. The partner's stands on the teal ring (38, row + 48, 28×11) |
+| Row: name | 88, row + 6 | 3×, clipped at 200 px. Heart 16×16 at 8 px after the name, y row + 11, when bonded |
+| Row: chips | 88, row + 38, h 22 | The stage chip (`teal` juvenile, `stone` adult, `plum` elder); then, on the partner only, `leads` in `teal`. No "with you" or "at home" chip: the section says it |
+| Row: open mark | right edge 422, row + 22 | `▶` 2× `mist`, on the focused row only: the pad's ▶ opens this mibi's page |
+| Caption, docked | 20, 392 | `At home` 2× `mist` |
+| Home row *j*, docked | 16, 416 + 72*j*, 418, 64 | As a carried row, in hatch order. Nothing on it is dimmed when the Companion is full: only ✓ says so |
+| Line, undocked | centred, y 400 | `the others are at home` 2× `mist`, when any mibi is at home. Mid-expedition `with you for this expedition` instead |
+
+The list scrolls inside the view, the Lead card with it: the offset is the least that keeps the focused card's foot 8 px above the bottom line (as built).
+
+**Focus.** Orange corner brackets 6 px outside the focused card, which lifts 2 px. Focus order, top to bottom: the Lead card, the mibis with you, the mibis at home. Opening Mibis from the expedition choice's partner card focuses the Lead card; from the active mibi screen, that mibi's row; from the menu, the first mibi with you (the Lead card when there is none).
+
+**Interactions and how each shows.**
+
+| Focus | When | Bottom line | ✓ does | Shows |
+| --- | --- | --- | --- | --- |
+| Lead card | Two or more grown mibis with you, between expeditions | `✓ Let ‹next› lead · ← menu`, context `joins the Probe` | Makes the next grown mibi with you (carried order, after the partner, wrapping) the lead | A cut: the card's face, name, heart and ability change; the teal ring and `leads` chip move to the new partner's row, which hops once (the Call hop, 600 ms). Message box `‹next› leads the Probe` |
+| Lead card | One grown mibi with you | No ✓ cap, `← menu`, context `the only grown one` | Nothing | |
+| Lead card | None grown, or none with you | No ✓ cap, `← menu`, context `no one grown yet` | Nothing | The card's no-partner state ([07](wireframes/companion-care/07-lead-none-grown.png)) |
+| Lead card | Mid-expedition | No ✓ cap, `← menu`, context `leads this expedition` | Nothing | The card shows this expedition's partner |
+| A mibi with you | Docked | `✓ Leave ‹name› at home · ← menu`, context `comes home now` (with a long name the context drops, as the bottom line's middle always does first; the row moving home says it) | Leaves it at home at once. Never refused. If it was the lead, the lead clears | The row moves to its place in "At home" (a cut); the places close up in carried order and a free place opens at the end; focus follows the mibi. Message box `‹name› stays home`. The Lead card updates if the partner changed |
+| A mibi with you | Undocked or mid-expedition | `✓ Visit ‹name› · ← menu`, context `with you` | Opens its page | |
+| A mibi at home | Docked, a place free | `✓ Take ‹name› · ← menu`, context `goes with you now` | Takes it: it joins the end of the carried order | The row moves into the first free place (a cut); focus follows. Message box `‹name› is with you`. The player stays on Mibis, so several can be arranged in a row |
+| A mibi at home | Docked, three with you | `✓ Take ‹name›` dimmed (the dimmed ✓ cap, `stone` label) `· ← menu`, context `the Companion is full` | Nothing changes | The 3 px shake (as a refused press); message box `‹name› stays home: the Companion is full · leave one at home first` ([03](wireframes/companion-care/03-roster-docked-full.png)) |
+| Nothing focusable | No mibi with you and none to take | `✓ Next expedition · ← menu` (as built) | The expedition choice | |
+
+The pad: ▲ ▼ move between cards; ▶ on any mibi's row opens its page (the same as ✓ Visit undocked; docked, it is the way to a page, since ✓ arranges). ← goes back where Mibis was opened from, as built. **Call:** the focused mibi with you answers on its row (the hop and chirp, free); on the Lead card or a mibi at home, the partner answers, or the first mibi with you when there is no partner. With no mibi with you, Call does nothing.
+
+Swaps happen only while docked. A request made on the Station's Habitat is applied at the dock, before this screen draws, and shows here as the result: the rows are already where they belong.
+
+The three counts, as the wireframes show them:
+
+| | Docked | Undocked |
+| --- | --- | --- |
+| None with you | Lead card in its no-partner state, three free places, "At home" rows | Lead card in its no-partner state, three free places, the line ([04](wireframes/companion-care/04-roster-away-0.png)) |
+| One with you | One row, two free places, "At home" rows ([01](wireframes/companion-care/01-roster-docked-take.png) shows two) | One row, two free places, the line ([05](wireframes/companion-care/05-roster-away-1.png)) |
+| Three with you | Three rows, "At home" rows with Take dimmed ([03](wireframes/companion-care/03-roster-docked-full.png)) | Three rows, the line ([06](wireframes/companion-care/06-roster-away-3-lead.png)) |
+
+---
+
+### The active mibi screen, with care
+
+The section [Companion mode / active mibi](#companion-mode--active-mibi) above sets the screen's look. This sets its pages, its ✓ and the two events.
+
+**Purpose.** Be with one mibi with you: tend it, walk with them all, and see the bond and growing up happen. **Reads first:** the mibi.
+
+**Pages.** Undocked: one page per mibi with you, in carried order, and no others. Docked: the mibis with you, then the mibis at home in hatch order. ◀ ▶ page through them, wrapping, when there is more than one page. Mid-expedition: the mibis with you only.
+
+**Composition.** <img src="wireframes/companion-care/08-active-tend.png" width="225" alt="Tend Pip"> <img src="wireframes/companion-care/11-active-bond.png" width="225" alt="The bond">
+
+| Region | x, y, w, h | Contents |
+| --- | --- | --- |
+| Stage | 24, 40, 402, 280 | The ground panel |
+| The mibi | 97, 52, 256, 256 | The 280×300 resident drawn in its box (the prototype's 8× token until the derived set lands); contact shadow 180×22 at (135, 296) |
+| ◀ ▶ | (10, 172), right edge 440, y 172 | 2× `mist`, only with more than one page |
+| Name | 30, 332 | 3×, clipped at 260 px |
+| Stage chip | 14 px after the name, y 331, h 22 | As built |
+| Heart | 10 px after the chip, y 330, 24×24 | Bonded only. A state, not a control |
+| Species · ability | 30, 370 | 2× `fog`, clipped at 390 px |
+| Status | 30, 396 | 2×, up to two lines at a 22 px pitch; `amber` on a mibi with you, `mist` at home |
+| Page dots | centred, y 452 | 6×6 at a 16 px pitch; a mibi with you ringed (10×10 `amber`); docked, 16 px more between the last mibi with you and the first at home |
+| Message box | centred, foot at 556 | As built: up to three 2× lines; never reaches the dots (its top is at least 484) |
+
+Status lines: `with you · leads the Probe` (the partner), `with you · can lead the Probe` (grown, not the partner), `with you · too young for the Probe` (an unbonded juvenile), `with you · grows with care` (a bonded juvenile), `at home`, `at home · grows on the Companion` (a bonded juvenile at home, the words Habitat uses). The status line is exactly one of these, with nothing appended: no world turns left to grow up (a countdown on the clock would make growing up a thing to wait for, beside a bonded juvenile that shows none), no skill count (skill is drawn only as filled notches on the Station's Habitat card; on the Companion it is named only when a notch is earned at Head home, `‹name› gains a skill notch`, with no count), no "walked this turn" (the ✓ already says whether the Walk is there) and no "docked" (the link states say it). The longest, `with you · too young for the Probe`, is 314 px at 2× in the 390 px line.
+
+**The ✓ on a mibi with you,** the first that applies:
+
+| When | Bottom line | ✓ does |
+| --- | --- | --- |
+| Mid-expedition | `✓ Tend ‹name›` dimmed `· ← Mibis`, context `after the expedition` | Nothing; message box `Tend ‹name› when the expedition is over` |
+| Undocked, the Walk not taken this world turn | `✓ Walk together · ← Mibis` (`✓ Walk with ‹name›` when one is with you), context `once a turn` | The Walk |
+| Not tended today | `✓ Tend ‹name› · ← Mibis`, context `once a day` | Tend |
+| Tended today | `✓ Tend ‹name›` dimmed `· ← Mibis`, context `tended today` | Nothing changes: the 3 px shake and message box `‹name› was tended today`. No countdown, no "come back" ([09](wireframes/companion-care/09-active-tended.png)) |
+
+**On a mibi at home** (docked only): `✓ Take ‹name› · ← Mibis`, context `goes with you now`, which takes it and stays on its page, now ringed in the dots; or, with three with you, `✓ Take ‹name›` dimmed, context `the Companion is full`, the shake and the same message as on Mibis ([13](wireframes/companion-care/13-active-docked-home.png)).
+
+**No one with you, undocked** ([14](wireframes/companion-care/14-active-away-0.png)): three dashed circles, 72×72 at (93, 150), (189, 150), (285, 150), 1 px `stone`; `No one with you` 3× centred at y 250; `take mibis along` and `at the Station` 2× centred at y 294 and 316; the bay line at y 352 when crates are sealed, as built. `✓ Next expedition · ← menu`. With no mibis at all, the built "No mibi yet" screen stays.
+
+**Tend.** One press: the species moment plays on the stage (a Loika leans on the glass, a Tuikis glows, an Untuva puffs; 1.8 s), and the message box gives the Tend line: `‹name› leans on the glass · it remembers the ‹place›`, the moment's words as built for its species and the place from its last expedition, or `· it hasn't been out yet` when it has none. Input is held 300 ms, or to the end of an event that follows. Docked, the mibi with you sleeps between presses; Tend wakes it for the moment and it settles back.
+
+**The Walk.** One press, on any page of a mibi with you: the shown mibi plays its walk moment on the stage, and every other mibi with you stands at the stage's foot as its 48 px field token, at (36, 260) and (366, 260), 2 idle frames at 4 Hz, for 2.4 s, then they go ([10](wireframes/companion-care/10-active-walk.png)). The message box names them all, `‹A›, ‹B› and ‹C› walk together` or `‹A› and ‹B› walk together`; walking with one keeps the built walk line for its species. The view stays on the shown mibi.
+
+**The bond** ([11](wireframes/companion-care/11-active-bond.png)). It is checked after every Tend and every Walk. When a mibi bonds, after the action's own moment:
+
+1. The view is on that mibi's page (after a Walk, the view cuts to it; several bond in carried order, one after another).
+2. The species moment plays again, short (900 ms).
+3. The heart, `c-heart-24` drawn at 2× (48×48, pixel for pixel), rises beside the mibi's head from (362, 140) to (362, 60) in four 20 px steps of 150 ms, holds 900 ms, and is gone. At that moment the 24×24 heart appears in the name row, and stays.
+4. The message box takes the bond line, `‹name› is bonded with you`, which stays until the next action.
+
+Input is held to the end. Under reduced motion the heart stands at (362, 60) for 1.5 s, without the rise. No other screen plays the bond; Mibis, the expedition choice and the Station's Habitat show the heart as a state from then on.
+
+**The grow-up line** ([12](wireframes/companion-care/12-active-grow.png)). A bonded juvenile grows up at the first Tend or Walk after its bond (never at the same press). After the action's moment the view is on that mibi's page (several in carried order, as for the bond), the art cuts from the juvenile to the adult, the chip changes, and the message box takes `‹name› is grown · it leads the Probe now` when it is now the partner, or else `‹name› is grown · it can lead the Probe`. Nothing rises and nothing else plays: the line is the event.
+
+Lines the world turn writes stay on the Head home screen, as built, worded for the carried set: a juvenile grown on the clock `‹name› is grown · it leads the Probe now` (with you and now the partner), `‹name› is grown · it can lead the Probe` (with you), `‹name› is grown · at home` (at home). The elder line is unchanged.
+
+**Message box order** after one press: the action's line, then bond lines, then grow-up lines, in carried order; three lines at most, the rest on the next action (as built).
+
+**Call** on this screen: the shown mibi answers, if it is with you; on a page of a mibi at home, the view goes to the first mibi with you, which answers (as built). Free.
+
+---
+
+### Expedition choice: the partner card
+
+<img src="wireframes/companion-care/15-choice-partner.png" width="225" alt="Partner card"> <img src="wireframes/companion-care/16-choice-no-partner.png" width="225" alt="Partner card, no one grown">
+
+**Purpose.** Say who joins the Probe on this expedition and who else is coming along. **Reads first:** the partner's face.
+
+| Region | x, y, w, h | Contents |
+| --- | --- | --- |
+| Card | 20, 252, 410, 92 | Paper card, the third focus target (as built) |
+| Face | 28, 264, 64, 64 | The partner's 64 px face on the teal ring (28×11 at 46, 322). No partner: a dashed circle 64×64 |
+| Name | 112, 260 | 3×, clipped at 220 px; heart 16×16 at 8 px after it, y 266, when bonded. No partner: `No partner` |
+| Stage chip | 112, 292, h 22 | The partner's stage. No partner: none |
+| Line | 112, 320 (no partner: 112, 296) | 2×, clipped at 220 px: the partner's ability; or why there is none, as on the Lead card |
+| With you | 338, 366, 394; y 262; 24×24 each | The mibis with you as their HUD ring faces in carried order, the partner's ring `teal`, the others `stone`; a free place a dashed circle. No words |
+
+Bottom line: `✓ Open Mibis · ← menu` (as built) (Mibis opens on the Lead card), context `Partner: ‹name› · ‹ability›` (as built), `no one grown yet` or `no one with you`. The built "take one at the Station · N at home" loses its count.
+
+---
+
+### Assets
+
+| Asset | Size | Where |
+| --- | --- | --- |
+| `c-heart-24` | 24×24, HiBit, the 48 colours | The active mibi's name row; at 2× in the bond event |
+| `c-heart-16` | 16×16, HiBit, its own drawing (not the 24 shrunk) | Roster rows, the Lead card, the expedition choice's partner card |
+| The species Tend moment, per species | the 280×300 stage | Tend and the bond (the built code-drawn moments stand in until it lands) |
+| The walk moment, per species | the 280×300 stage | The Walk (the built walk moment stands in) |
+| Faces at 64 and the HUD ring face (24), field tokens at 48 | as listed in [Companion mode / active mibi](#companion-mode--active-mibi) | Lead card, partner card, rows, the walk |
+
+The heart is the same object as Habitat's enamel heart, drawn for the Companion: no face, no sparkle, never a flat emoji heart. Dashed outlines, rings, chips and the open mark are composed, not assets.
+
+**Pass when**
+- [ ] Undocked, no mibi at home appears anywhere: not a row, a page or a dot.
+- [ ] The three places always show; "full" reads from the picture before the words.
+- [ ] Take refused at three says why in the bottom line and the message box.
+- [ ] The partner reads from the teal ring alone, in the roster, the card and the field.
+- [ ] Nothing shows care, Tends or closeness to the bond or to growing up: no meter, bar, number or need.
+- [ ] Tended today is a dimmed ✓ and a plain line, never a countdown.
+- [ ] The bond plays only on the active mibi screen, once; afterwards the heart is a state everywhere.
+- [ ] An unbonded mibi has no heart, not a dim one.
+- [ ] Every slot fits a ten-letter name at 1×.
+- [ ] One way out on every screen.
 
 ---
 

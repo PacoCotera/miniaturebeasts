@@ -6,7 +6,7 @@
 // else by seed and opens its traits by tier. Individuals vary only at the open loci, from the
 // species' pools. The three authored frames (the files hopper, puffcap and glowtail in frames.py, here S01, S02
 // and S03: Loika, Untuva and Tuikis) keep their open traits and fixed values.
-import { CATALOGUE, LOCI, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, isContinuous, valueRange } from "./catalogue.mjs";
+import { CATALOGUE, LOCI, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, isContinuous, valueRange, samePair } from "./catalogue.mjs";
 import { poolBound } from "./envelope.mjs";
 import { cross } from "./cross.mjs";
 import { planFacts } from "./plans.mjs";
@@ -347,13 +347,14 @@ export function shapeTrait(frame, genome, traitId, choice) {
   for (const id of trait.loci) { const [p, q] = genome.loci[id]; out.loci[id] = choice === 0 ? [p, q] : choice === 1 ? [p, p] : [q, q]; }
   return out;
 }
-// A whole-genome check against its frame: locked copies equal the frame's, open copies in the pools.
+// A whole-genome check against its frame: locked copies equal the frame's (in either order: a pair has
+// no order, samePair, as the cross refuses), open copies in the pools.
 export function checkGenome(frame, genome) {
   const problems = [];
   for (const l of frame.loci) {
     const c = genome.loci[l.id];
     if (!c) { problems.push(`${l.id} missing`); continue; }
-    if (l.kind === "locked" && (c[0] !== l.copies[0] || c[1] !== l.copies[1])) problems.push(`${l.id}: locked copies differ from the frame (not this species)`);
+    if (l.kind === "locked" && !samePair(c, l.copies)) problems.push(`${l.id}: locked copies differ from the frame (not this species)`);
     if (l.kind !== "locked") {
       const locus = LOCI.get(l.id);
       const inPool = (a) => typeof a === "number" ? isContinuous(locus) && (([lo, hi]) => a >= lo - 1e-9 && a <= hi + 1e-9)(valueRange(locus, l.alleles)) : l.alleles.includes(a);
