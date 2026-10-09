@@ -2,7 +2,7 @@
 // patches", "wide pale rings", "leaf crest") and the proportions in plain words from the rig's
 // ratios ("a short muzzle, a long tail"), never a locus id. The Grow painting service puts this
 // text in every call as its own logged field (grow/service.py); the field guide can say the same.
-import { LOCI, resolveCopies, binFor } from "./catalogue.mjs";
+import { LOCI, resolveCopies, binFor, copyValue } from "./catalogue.mjs";
 import { brief } from "./species.mjs";
 
 // The trait's look for a genome, aligned with the frame's trait looks as catalogue.looksFor orders
@@ -32,7 +32,39 @@ export function lookOf(frame, trait, genome, opts = {}) {
   const label = labelOf(sorted), value = JSON.stringify(resolveCopies(locus, copies));
   if (trait.looks?.length === labels.length && labels.includes(label)) return trait.looks[labels.indexOf(label)];
   if (trait.looks?.length === values.length && values.includes(value)) return trait.looks[values.indexOf(value)];
+  const bins = binLooks(frame, trait); if (bins) { const l = bins.of(genome); if (l != null) return l; }   // the frame's own bins, where the pair labels would otherwise show
   return label;
+}
+
+// A trait's looks as the frame's own bins (the player's words a read gives), for the traits whose looks are not one per pair of the pool: a blend's bins in order of value
+// ("between" is the middle bin, one look), a two-colour coat's four pure colours and "two side by side", the markings' bare, bands, spots, bands and spots.
+// Returns { looks, of(genome) } or null where the frame's looks do not follow one of these rules (the caller falls back, and the frames check names it).
+export function binLooks(frame, trait) {
+  const looks = trait.looks; if (!looks?.length) return null;
+  const id = trait.loci[0], locus = LOCI.get(id); if (!locus) return null;
+  const pool = frame.pools?.[id] ?? locus.alleles.map((a) => a.id), bins = (g, lid) => (g.loci[lid] || []).map((c) => binFor(LOCI.get(lid), c));
+  if (locus.operator === "copy-mean" && looks.length === pool.length) {
+    const order = [...pool].sort((a, b) => copyValue(locus, a) - copyValue(locus, b));
+    return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; const v = resolveCopies(locus, c); let best = null, d = Infinity; for (const a of order) { const e = Math.abs(copyValue(locus, a) - v); if (e < d) { d = e; best = a; } } return looks[order.indexOf(best)]; } };
+  }
+  if (locus.operator === "partition-map" && looks.length === pool.length + 1) {
+    return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; return c[0] === c[1] ? looks[pool.indexOf(c[0])] ?? null : looks[pool.length]; } };
+  }
+  if (locus.operator === "recessive-enable" && trait.loci.length > 1 && looks.length === 4 && /layout/.test(trait.loci[1])) {
+    const lay = LOCI.get(trait.loci[1]);
+    return { looks, of: (g) => { const on = bins(g, id), l = bins(g, trait.loci[1]); if (on.length !== 2 || l.length !== 2) return null; if (!resolveCopies(locus, on)) return looks[0]; return { bands: looks[1], patches: looks[2], "bands-and-patches": looks[3] }[resolveCopies(lay, l)] ?? null; } };
+  }
+  return null;
+}
+// Every look a trait can show, as a read words it: the frame's looks where they are one per pair or per value of the pool, or the frame's bins (binLooks), else the pair labels.
+export function traitLooks(frame, trait, opts = {}) {
+  const pairSep = opts.pairSep ?? ", ", id = trait.loci[0], locus = LOCI.get(id); if (!locus) return [...(trait.looks || [])];
+  const pool = frame.pools?.[id] ?? locus.alleles.map((a) => a.id), labels = [], values = [];
+  const labelOf = ([a, b]) => { const v = resolveCopies(locus, [a, b]); if (locus.operator === "copy-mean") return a === b ? a : `between ${a} and ${b}`; if (locus.operator === "partition-map") return a === b ? a : `${a}${pairSep}${b}`; if (locus.operator === "pair-map") return typeof v === "boolean" ? (v ? "on" : "off") : String(v); return a === b ? a : [a, b].sort().join("/"); };
+  for (let i = 0; i < pool.length; i++) for (let j = i; j < pool.length; j++) { const l = labelOf([pool[i], pool[j]]); if (!labels.includes(l)) labels.push(l); const v = JSON.stringify(resolveCopies(locus, [pool[i], pool[j]])); if (!values.includes(v)) values.push(v); }
+  if (trait.looks?.length === labels.length || trait.looks?.length === values.length) return [...trait.looks];
+  const b = binLooks(frame, trait); if (b) return [...b.looks];
+  return labels;
 }
 
 // Proportions in plain words: the rig's ratio loci whose two copies agree on an end of their range.

@@ -7,6 +7,8 @@ import { frameOf, frameIds } from "./genome.mjs";
 import { PLACEHOLDERS } from "./art.mjs";
 import { status as caddyStatus, state as caddy, flush as caddyFlush } from "./caddy.mjs";
 import { binFor, LOCI } from "../../workbench/framework/catalogue.mjs";
+import * as T from "./sitting.mjs";
+import * as Lib from "./library.mjs";
 
 const h = (tag, attrs = {}, ...kids) => { const el = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === "class") el.className = v; else if (k.startsWith("on")) el.addEventListener(k.slice(2), v); else if (k === "html") el.innerHTML = v; else el.setAttribute(k, v); } for (const kid of kids) el.append(kid); return el; };
 const opt = (v, label, sel) => h("option", { value: v, ...(sel ? { selected: "" } : {}) }, label ?? v);
@@ -55,6 +57,14 @@ export function buildDevPanel(container, hooks) {
     h("button", { class: "btn", type: "button", onclick: () => { if (!G.st.bud) { note("no bud growing"); return; } S.skipBud(G.st, G.settings, "mid"); save(); note("the bud is half grown"); } }, "Mid-bud"),
     h("button", { class: "btn", type: "button", onclick: () => { if (!G.st.bud) { note("no bud growing"); return; } S.skipBud(G.st, G.settings, "ready"); save(); note("the bud is ready to open"); } }, "Ready to open")),
     h("p", { class: "dev-note" }, "The pod under the beam on Pods is the one skipped. Shaped, mid-bud, ready, adults, a full guide and a sitting's crate come with their milestones."));
+  // The sitting and the Library, as plain text rows until their screens exist (placeholder: no art, no layout)
+  const first = () => G.st.mibis.find((m) => !m.released) || null, btn = (label, fn) => h("button", { class: "btn", type: "button", onclick: () => { const m = fn(); save(); if (m) note(typeof m === "string" ? m : (m.msg || JSON.stringify(m))); } }, label);
+  group("Sitting and Library (text rows, placeholder)",
+    h("div", { class: "dev-row" }, btn("Hold a sitting", () => T.devGrantSitting(G.st)), btn("Pay the research moments", () => T.collectMoments(G.st, G.settings).map((r) => r.key + (r.ok ? " → held" : r.lost ? " → lost" : "")).join(", ") || "none earned"), btn("Welcome sitting", () => T.checkWelcome(G.st)),
+      btn("First mibi: watch dig, walk to the wood", () => { const m = first(); if (!m) return "no mibi"; T.recordHabit(G.st, m, "dig"); T.recordWalk(G.st, m, "wood"); return m.name + " has dug and walked"; })),
+    h("div", { class: "dev-row" }, btn("Begin the first mibi's sitting", () => { const m = first(); if (!m) return "no mibi"; return T.beginSitting(G.st, m, T.habitsOf(m)[0], T.placesOf(m).slice(-1)[0], G.settings); }), btn("Land the painting", () => { const c = G.st.sittingCrates[0]; return c ? T.landPortrait(G.st, c.id) : "no crate"; }), btn("Open the sitting's crate", () => { const c = G.st.sittingCrates[0]; return c ? T.openSittingCrate(G.st, c.id, G.settings) : "no crate"; }),
+      btn("Show", () => { show(sittingText()); return ""; })),
+    h("p", { class: "dev-note" }, "Rules only (M5 and M6); the Home slot, the ceremony, the bay's crate and the Library's spread have no screens yet."));
   // Inspect
   out = h("pre", { class: "dev-out" });
   const show = (t) => { out.textContent = t; };
@@ -79,6 +89,17 @@ function inspectText(fr, p) {
   for (const row of S.inspectGenome(fr, p.genome)) { const locus = LOCI.get(row.id), c = row.copies || [];
     const val = c.map((x) => (typeof x === "number" ? x + " (" + binFor(locus, x) + ")" : x)).join(" / ");
     L.push((row.kind === "locked" ? "  locked   " : "  " + (row.chapter || "-").padEnd(9) + " ") + row.id.padEnd(44) + val + (row.trait ? "   ← " + row.trait : "")); }
+  return L.join("\n");
+}
+// The sitting and the Library as text (M5, M6): the held sitting, the crates, the warnings, and each found species' field guide counts.
+export function sittingText(now = Date.now()) {
+  const st = G.st, L = [];
+  L.push("Sitting: " + (st.sitting ? "held (" + st.sitting.source + (st.sitting.key ? ", " + st.sitting.key : "") + ")" : "none") + " · welcome " + (st.welcomeGiven ? "given" : "not yet") + " · moments paid " + (Object.keys(st.moments).join(", ") || "none"));
+  for (const c of st.sittingCrates) L.push("  crate " + c.id + " · " + (S.mibiById(st, c.mibiId)?.name ?? "?") + " · " + c.pose + " · " + c.place + " · " + T.crateState(c, G.settings, now) + " · lamp " + Math.round(T.crateLamp(c, G.settings, now) * 100) / 100);
+  const warn = T.sittingWarning(st, G.settings); if (warn.length) L.push("  use your sitting first: the guide of " + warn.join(", ") + " is one look from full");
+  for (const m of st.mibis) if (!m.released) L.push("  " + m.name + " · habits " + (T.habitsOf(m).join(", ") || "-") + " · places " + T.placesOf(m).join(", ") + " · " + (m.portrait ? "portrait " + m.portrait.state : "no portrait"));
+  L.push(""); L.push("Library:");
+  for (const id of frameIds()) { const status = Lib.speciesStatus(st, id); if (status === "unmet") continue; const fg = status === "found" ? Lib.fieldGuide(st, id, G.settings) : null; L.push("  " + id + " " + status + (fg ? " · looks found " + fg.found + " · unseen " + fg.unseen + (fg.complete ? " · complete" : "") : "") + (Object.keys(Lib.wishOf(st, id)).length ? " · wish " + JSON.stringify(Lib.wishOf(st, id)) : "") + (Lib.faceOf(st, id) != null ? " · face " + Lib.faceOf(st, id) : "")); }
   return L.join("\n");
 }
 export function genomesText() {

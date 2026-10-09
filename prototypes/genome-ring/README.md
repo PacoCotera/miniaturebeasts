@@ -103,10 +103,10 @@ The print pipeline:
 Scanning shows a genome and never grants anything. The page decodes on the device, uploads nothing, and the CRC is an error check, not a signature. `tests/scan-check.mjs` is optional and needs Playwright: it drives this page in headless Chromium with a fake camera. Rings #1 (40 mm colour), #4 (20 mm colour) and #11 (20 mm Caddy) all matched.
 
 **The owner's first scan of ring #1 (2026-10-07) failed** for two reasons:
-- **His sheet was the CRC-8 print** (its codes end in a 2-digit check, e.g. `S7v1-7F-17-15324D`), but the page was already on the 40-bit CRC-16 header. Those prints can never verify on this page and must be reprinted. The sheet now states its format, and the page says which codes it reads. His photo, even as a screenshot of a screenshot, decodes with all 7 chapters and the check verified on the CRC-8 decoder that matches that sheet.
+- **The owner's sheet was the CRC-8 print** (its codes end in a 2-digit check, e.g. `S7v1-7F-17-15324D`), but the page was already on the 40-bit CRC-16 header. Those prints can never verify on this page and must be reprinted. The sheet now states its format, and the page says which codes it reads. The owner's photo, even as a screenshot of a screenshot, decodes with all 7 chapters and the check verified on the CRC-8 decoder that matches that sheet.
 - **The page printed the unverified header guess** ("unknown species 23", "1031") in its status line. That is fixed.
 
-`tests/phone-large.mjs` reproduces his conditions on the current format: ring #1 at 640–1000 px in a phone frame, a warm cast, glare, defocus, barrel distortion, and 30–35° tilt seen close. It found and fixed two more faults:
+`tests/phone-large.mjs` reproduces the owner's conditions on the current format: ring #1 at 640–1000 px in a phone frame, a warm cast, glare, defocus, barrel distortion, and 30–35° tilt seen close. It found and fixed two more faults:
 - a glare spot could pass for the notch (the notch is now found by contrast against the rim, not by brightness);
 - the fit could lock onto the wrong centre under steep, close tilt (the decoder now searches for the circle's projected centre inside the rim ellipse before refining).
 

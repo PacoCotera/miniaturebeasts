@@ -88,6 +88,11 @@
   ".....",
   "#...."
  ],
+ "habits": [
+  "sniff",
+  "puff",
+  "sleep-curled"
+ ],
  "pod": {
   "sizeClass": "large",
   "proportion": null,
