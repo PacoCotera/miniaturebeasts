@@ -8179,9 +8179,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 222x137 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
   "sha256": "f19077f6341622355b0727e9c608c2aa3a39413ecde84ce8e4a4e86e90d07ce9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 53: the body's fade shortened on this size only so it reaches the ground by row 61 (35 percent at the part kept); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 53 verdict",
+  "status_note": "the crown at 104x64: the body's fade shortened to reach the ground by row 61; closes the Crown at all five sizes"
  },
  "trait-S09-tail-between-128x160": {
   "size": [

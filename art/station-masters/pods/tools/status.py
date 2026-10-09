@@ -69,7 +69,7 @@ for n in m:
     elif re.match(r"room-bench-stage-(overview|chapter)", n): sign(n, "new", None, "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict")
     elif re.match(r"ring-(collection-|arc-collection-)", n): sign(n, "new", None, "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict")
     elif re.match(r"trait-S09-(beak|head|tail)-", n): sign(n, "signed", "pass 48 verdict", "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)")
-    elif re.match(r"trait-S09-crown-.*-104x64$", n): sign(n, "new", None, "pass 53: the body's fade shortened on this size only so it reaches the ground by row 61 (35 percent at the part kept); awaiting verdict")
+    elif re.match(r"trait-S09-crown-.*-104x64$", n): sign(n, "signed", "pass 53 verdict", "the crown at 104x64: the body's fade shortened to reach the ground by row 61; closes the Crown at all five sizes")
     elif re.match(r"trait-S09-crown-", n): sign(n, "signed", "pass 52 verdict", "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow")
     elif re.match(r"trait-S09-(beak|crown|head|tail)-", n): sign(n, "new", None, "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict")
     elif re.match(r"trait-S\d\d-", n): sign(n, "new", None, "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict")

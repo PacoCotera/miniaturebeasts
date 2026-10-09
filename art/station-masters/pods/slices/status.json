@@ -2495,9 +2495,9 @@
   "note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
  },
  "trait-S09-crown-tall-104x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 53: the body's fade shortened on this size only so it reaches the ground by row 61 (35 percent at the part kept); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 53 verdict",
+  "note": "the crown at 104x64: the body's fade shortened to reach the ground by row 61; closes the Crown at all five sizes"
  },
  "trait-S09-tail-between-128x160": {
   "status": "signed",
