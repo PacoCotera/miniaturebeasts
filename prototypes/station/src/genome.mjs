@@ -85,7 +85,7 @@ export const stampSizing = (frame, genome = null) => { const N = stampModules(fr
 // A mibi or pod keeps the frame version it was born with (the same individual everywhere, on paper too): the genome's own, then the frame's, then the current one.
 export const stampFrameOf = (frame, genome = null) => stampFrameFor(frame.species.order, genome?.frameVersion ?? frame.frameVersion ?? FRAME_VERSION);
 // The stamp's genome: every heritable copy as the genome holds it (blends on the step: quantizeGenome),
-// and the chapters read, never a sealed one (unread and sealed chapters are never in a stamp). A genome
+// and the chapters read (a sealed chapter only once it is opened and read: a shut one is never read). A genome
 // missing a heritable locus is refused, naming the missing loci: a copy is never invented.
 export function stampGenome(frame, genome, readIds) {
   const sf = stampFrameOf(frame, genome);
@@ -94,7 +94,7 @@ export function stampGenome(frame, genome, readIds) {
   if (missing.length) return { refused: true, missing, reason: `no stamp: the genome lacks ${missing.join(", ")}` };
   const g = quantizeGenome(frame, genome), copies = {};
   for (const l of sf.heritable) copies[l.id] = [...g.loci[l.id]];
-  const read = frame.chapters.filter((c) => readIds.includes(c.id) && !c.sealed).map((c) => c.name);
+  const read = frame.chapters.filter((c) => readIds.includes(c.id)).map((c) => c.name);
   return { species: sf.species, version: sf.version, read, copies };
 }
 // The stamp code: the stamp's own bytes as text (genome-stamp/src/codec.mjs), decodable back to the

@@ -316,6 +316,30 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.match(S.kinshipWord(0.25), /close kin/); assert.match(S.kinshipWord(0), /wild founders/);
 });
 
+test("kinship by id: two mibis with identical genomes are two mibis, unrelated as founders and full siblings by their recorded parents", () => {
+  const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
+  const big = { ...settings, bays: 10 };
+  const [a, b] = S.seedAdults(st, "S01", 41, 2, big).mibis;
+  const twin = S.seedAdults(st, "S01", 42, 1, big).mibis[0];
+  twin.genome = structuredClone(a.genome); twin.sha = a.sha; twin.code = a.code;   // the same genome, another mibi
+  assert.equal(S.crossBlock(st, null, a, twin, settings), "", "the same genome is not the same mibi");
+  assert.equal(S.kinshipOf(st, a, twin), 0, "two founders, unrelated whatever their genomes");
+  assert.equal(S.kinshipOf(st, a, a), 0.5, "a mibi with itself");
+  const sib = S.seedSiblings(st, "S01", 43, big); assert.equal(sib.ok, true, sib.msg);
+  const [s1, s2] = sib.mibis; s2.genome = structuredClone(s1.genome);   // siblings that happen to be identical
+  assert.equal(S.kinshipOf(st, s1, s2), 0.25, "full siblings by their parents' ids, not one mibi");
+  assert.equal(S.kinshipOf(st, s1, sib.parents[0]), 0.25, "parent and child");
+  assert.equal(S.kinshipOf(st, s1, a), 0, "unrelated lines");
+  const look = S.genomeLookup(st); assert.equal(look(s1.id), s1); assert.equal(look(a.genome), null, "the lookup is by id, never by genome");
+  // the forecast and the cross take the records: two founders with identical genomes are unrelated, and the child records their ids
+  assert.equal(S.forecastOf(st, a, twin, settings).kinship, 0);
+  st.e = 50; st.s = 50; st.bud = null;
+  let seed = 3; const rng = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x80000000; };
+  const c = S.doCross(st, null, a, twin, big, 1000, rng); assert.equal(c.ok, true, c.msg);
+  assert.equal(st.bud.kinship, 0, "no inbreeding penalty between two mibis that only share a genome");
+  assert.deepEqual(st.bud.genome.origin.parentIds, [a.id, twin.id]); assert.equal(st.bud.genome.origin.kinship, 0);
+});
+
 test("a mibi keeps the frame version it was born with: a v2-born genome stamps S1v2 after the registry moved to v3", () => {
   const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born3 = podGenome(fr, 4242), born2 = { ...born3, frameVersion: 2 };
   assert.equal(born3.frameVersion, 3, "a genome sampled now is born at the current frame version");

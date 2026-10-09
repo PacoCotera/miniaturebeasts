@@ -342,3 +342,21 @@ test("C5: the cross draws every blended copy on the blend step, inside the pool,
   assert.equal(stepValue(eye, 0), lo); assert.equal(stepValue(eye, BLEND_STEPS), hi);
   assert.equal(quantize(eye, quantize(eye, 0.3337)), quantize(eye, 0.3337), "idempotent");
 });
+
+test("C2: `sure` is the shown look certain (one look at weight 1, one bin for a blend); `firm` stays every locus certain", () => {
+  const f = frameOf("S03"), base = typeSpecimen(f);
+  const a = { ...base, loci: { ...base.loci, "appearance.marking-switch": ["off", "off"], "appearance.marking-layout": ["bands", "bands"] } };
+  const b = { ...base, loci: { ...base.loci, "appearance.marking-switch": ["off", "off"], "appearance.marking-layout": ["patches", "patches"] } };
+  const mk = forecast(f, a, b).traits.find((x) => x.trait === "markings");
+  assert.deepEqual(mk.looks, { off: 1 }); assert.equal(mk.sure, true, "every child shows plain"); assert.equal(mk.firm, false, "what sleeps differs: not known at birth");
+  const l = frameOf("S01"), lb = typeSpecimen(l);
+  const p = { ...lb, loci: { ...lb.loci, "anatomy.crown-presence": ["on", "off"], "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": ["large", "large"] } };
+  const q = { ...lb, loci: { ...lb.loci, "anatomy.crown-presence": ["on", "on"], "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": ["large", "large"] } };
+  const fc = forecast(l, p, q), by = Object.fromEntries(fc.traits.map((t) => [t.trait, t]));
+  assert.equal(by.crown.sure, true, "crested whichever copies: a dominant on in one parent twice"); assert.equal(by.crown.firm, false, "a hidden off may ride along");
+  assert.equal(by.markings.sure, false, "one in four pale"); assert.equal(by.markings.firm, false);
+  assert.equal(by["eye-rings"].sure, by["eye-rings"].bins.length === 1); assert.equal(by["eye-rings"].firm, false, "a blend is never firm");
+  const sib = forecast(l, p, q, { kinship: 0.25 }).traits.find((t) => t.trait === "eye-rings");
+  assert.equal(sib.range[0], sib.range[1]); assert.equal(sib.sure, true, "a sibling cross of equal eyes lands on one value"); assert.equal(sib.firm, false);
+  for (const t of forecast(frameOf("S02"), sampleIndividual(frameOf("S02"), rng("s")), sampleIndividual(frameOf("S02"), rng("t"))).traits) if (t.kind === "sealed") assert.equal(t.sure, false);
+});

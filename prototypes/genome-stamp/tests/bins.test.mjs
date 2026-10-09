@@ -168,7 +168,7 @@ test("C5: the migration moves a living mibi's blends onto the step, is idempoten
   const kid = { id: 3, name: "Pip", sp: 0, species: "S01", gs: null, born: 0, from: { n: 0, g: "meadow", how: "cross" }, genome: old, sha, code, read: ["coat"], parents: [{ id: 1, genome: a }, { id: 2, genome: b }], bay: 0, paint, released: false, shaped: [] };
   const grandkid = { id: 4, name: "Moss", sp: 0, species: "S01", gs: null, born: 0, from: { n: 0, g: "meadow", how: "cross" }, genome: { ...podGenome(fr, 3), origin: { kind: "cross", parents: [digest, genomeDigest(a)] } }, sha: "x", code: "y", read: [], parents: [{ id: 3, genome: structuredClone(old) }, { id: 1, genome: a }], bay: 1, paint: null, released: false, shaped: [] };
   st.mibis = [{ id: 1, name: "Ada", sp: 0, species: "S01", gs: 1, born: 0, genome: a, sha: genomeSha(a), code: nameCode(genomeSha(a)), read: [], parents: null, bay: 2, paint: null, released: false, shaped: [] }, kid, grandkid];
-  const kinBefore = kinship(grandkid.genome, kid.genome, S.genomeLookup(st));
+  const kinBefore = S.kinshipOf(st, grandkid, kid), kinDigest = kinship(grandkid.genome, kid.genome, (d) => [kid.genome, ...grandkid.parents.map((p) => p.genome)].find((g) => genomeDigest(g) === d) ?? null);
   S.normalize(st);
   const m = st.mibis.find((x) => x.id === 3);
   assert.notEqual(m.genome.loci[eye][0], 0.333333, "moved onto the step");
@@ -182,13 +182,14 @@ test("C5: the migration moves a living mibi's blends onto the step, is idempoten
   assert.deepEqual(st.mibis.find((x) => x.id === 3).genome, once, "idempotent");
   assert.equal(quantizeGenome(fr, once), once, "a genome on the step comes back as itself");
   assert.equal(quantizeGenome(fr, a), a, "named copies are never moved");
-  assert.equal(kinship(grandkid.genome, m.genome, S.genomeLookup(st)), kinBefore, "the pedigree stays whole");
+  assert.equal(S.kinshipOf(st, grandkid, m), kinBefore, "the pedigree by id stays whole");
+  assert.equal(kinship(grandkid.genome, m.genome, (d) => [m.genome, ...grandkid.parents.map((p) => p.genome)].find((g) => genomeDigest(g) === d) ?? null), kinDigest, "and so does a pedigree walked by digest (origin.was)");
   assert.equal(kinBefore, 0.375, "a child of Pip and Ada with Pip: a half from Pip, a quarter from Ada");
   assert.ok(!stampGenome(fr, m.genome, ["coat", "face", "movement", "stamina"]).refused);
   assert.ok(decodeStampCode(stationStampCode(fr, m.genome, ["face", "movement", "stamina"])).ok);
 });
 
-test("C6: the stamp code is the stamp's own bytes as text: it round-trips for every species, refuses a corrupted character, and holds no unread or sealed chapter", () => {
+test("C6: the stamp code is the stamp's own bytes as text: it round-trips for every species, refuses a corrupted character, and holds no unread chapter and no shut sealed one", () => {
   for (const id of ROSTER) {
     const f = byName(id);
     for (const seed of [1, 2, 3]) {
@@ -214,15 +215,17 @@ test("C6: the stamp code is the stamp's own bytes as text: it round-trips for ev
       assert.equal(decodeStampCode(code.toLowerCase().replace(/-(\w+)$/, (m0, b) => "-" + b.match(/.{1,4}/g).join(" "))).ok, true, "case and spacing do not matter");
     }
   }
-  // the Station's code: a sealed chapter is never in it, read or not; the name code stays a name
+  // the Station's code: no shut sealed chapter is in it (shut, it is never read); opened and read, it is; the name code stays a name
   const fr = stationFrame("S02"), sealed = fr.chapters.find((c) => c.sealed);
   assert.ok(sealed, "the Untuva seals a chapter");
-  const g = podGenome(fr, 5), all = fr.chapters.map((c) => c.id);
-  const sg = stampGenome(fr, g, all);
-  assert.ok(!sg.read.includes(sealed.name), "a sealed chapter is not in the stamp");
-  const d = decodeStampCode(stationStampCode(fr, g, all));
+  const g = podGenome(fr, 5), shut = fr.chapters.filter((c) => !c.sealed).map((c) => c.id), opened = fr.chapters.map((c) => c.id);
+  assert.ok(!stampGenome(fr, g, shut).read.includes(sealed.name), "no shut sealed chapter");
+  const d = decodeStampCode(stationStampCode(fr, g, shut));
   assert.ok(d.ok, d.detail); assert.ok(!d.genome.read.includes(sealed.name));
   for (const tr of sealed.traits) for (const l of tr.loci) assert.equal(d.genome.copies[l], undefined);
+  const d2 = decodeStampCode(stationStampCode(fr, g, opened));
+  assert.ok(d2.ok, d2.detail); assert.ok(d2.genome.read.includes(sealed.name), "an opened and read sealed chapter is stamped");
+  for (const tr of sealed.traits) for (const l of tr.loci) assert.deepEqual(d2.genome.copies[l], g.loci[l]);
   assert.match(nameCode(genomeSha(g)), /^[0-9A-Z]{9}$/);
   // hidden copies are carried: a heterozygous switch reads back as both of its copies
   const f1 = stationFrame("S01"), het = podGenome(f1, 9);

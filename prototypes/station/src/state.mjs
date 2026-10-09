@@ -597,11 +597,13 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
 import { lociOf, copyWords, copyHides, rangeWords } from "./splice.mjs";
 import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, identity as genomeIdentity } from "./genome.mjs";
 export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.growE, settings), s: price(PRICE.growS, settings), d: 0 });
-// The pedigree: a digest names a mibi's genome, in the vivarium or in a child's parent snapshot.
+// The pedigree by id, never by digest (two mibis with equal genomes are two mibis): an id names a mibi's record in the vivarium, else the
+// parent snapshot a child holds (a parent no longer in the vivarium counts as a founder beyond it).
 export function genomeLookup(st) {
-  const byDigest = new Map();
-  for (const m of st.mibis) { if (m.genome) byDigest.set(genomeDigest(m.genome), m.genome); for (const p of m.parents || []) if (p.genome) byDigest.set(genomeDigest(p.genome), p.genome); }
-  return (d) => byDigest.get(d) ?? null;
+  const byId = new Map();
+  for (const m of st.mibis) for (const p of m.parents || []) if (p && p.id != null && !byId.has(p.id)) byId.set(p.id, p);
+  for (const m of st.mibis) if (m.id != null) byId.set(m.id, m);
+  return (id) => byId.get(id) ?? null;
 }
 // An elder crosses as an adult does (a juvenile does not): for the cross and for the partner list.
 export const isAdult = (st, m, settings) => { const s = mibiStage(st, m, settings); return s === "adult" || s === "elder"; };
@@ -617,7 +619,7 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   return "";
 }
 export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings));
-export function kinshipOf(st, a, b) { const k = pedigreeKinship(a.genome, b.genome, genomeLookup(st)); return k; }
+export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
 export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
 // The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you
 // have read, and an indication of everything missing"): a trait whose chapter either parent has not read is marked `missing`, with no seeds, range or firmness, and names which parent
@@ -625,7 +627,7 @@ export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 
 // likeness is shown only when nothing is unknown. The cross itself (`doCross`) still draws on the whole genomes: the mask is only what the screen may say.
 export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
   const fr = frameFor(a); if (!fr || crossBlock(st, null, a, b, settings) === "another species") return null;
-  const k = kinshipOf(st, a, b), opts = { kinship: k, lookup: genomeLookup(st) }, full = crossForecast(fr, a.genome, b.genome, opts);
+  const k = kinshipOf(st, a, b), opts = { kinship: k, lookup: genomeLookup(st) }, full = crossForecast(fr, a, b, opts);   // the mibi records: by id
   const traitOf = (id) => fr.chapters.flatMap((c) => c.traits).find((t) => t.id === id), chapterName = (id) => fr.chapters.find((c) => c.id === id)?.name || id;
   let loci = null;   // every locus's own outcome, computed once and only read for a trait whose chapter both parents have read
   let missing = 0, sealedTraits = 0;
@@ -656,11 +658,11 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
   const block = crossBlock(st, sv, a, b, settings); if (block) return { ok: false, msg: "Cross them · " + block };
   const cost = crossCost(settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { ok: false, msg: "Cross them · " + shortText(st, cost.e, cost.d, cost.s) };
   const fr = frameFor(a), k = kinshipOf(st, a, b);
-  const genome = crossGenomes(fr, a.genome, b.genome, { rng, kinship: k, lookup: genomeLookup(st) });
+  const genome = crossGenomes(fr, a, b, { rng, kinship: k, lookup: genomeLookup(st) });   // the mibi records: refused by id, the child records its parents' ids
   const problems = genomeProblems(fr, genome);
   if (problems.length) { const clash = fr.chapters.flatMap((c) => c.traits).filter((t) => problems.some((p) => t.loci.some((id) => p.includes(id)))).map((t) => t.id); return { ok: false, clash, msg: "This child would not build · " + (clash.length ? clash.join(", ") : problems[0]) + " · nothing spent" }; }
   st.e -= cost.e; st.s -= cost.s;
-  const sha = genomeSha(genome), fc = crossForecast(fr, a.genome, b.genome, { kinship: k }), read = childKnownChapters(fr, fc);
+  const sha = genomeSha(genome), fc = crossForecast(fr, a, b, { kinship: k }), read = childKnownChapters(fr, fc);
   const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
   const minutes = budMinutes(st, 0, settings);
   st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };

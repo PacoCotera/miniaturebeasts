@@ -181,7 +181,9 @@ export function children(frame, a, b, n, opts = {}) {
 // Per trait of the frame: for a switch trait the four seeds (the pairings of the mother's copies
 // against the father's at the trait's switch locus, resolved, with the sleeping copies that would
 // wake in each) and the exact chance of each look under the penalty; for a blend the range the
-// child can land in, as values and as bins; `firm` when both parents hold the same copies.
+// child can land in, as values and as bins; `firm` when every locus of the trait is certain (the
+// chapters a child is known in at birth); `sure` when the look the child shows is certain whatever it
+// hides or sleeps: one look at weight 1 for a switch, one bin for a blend (never for a sealed trait).
 export function forecast(frame, x, y, opts = {}) {
   const { spread = SPREAD, penalty = PENALTY, strength = 1, lookup = () => null } = opts;
   const a = genomeOf(x), b = genomeOf(y);
@@ -193,14 +195,14 @@ export function forecast(frame, x, y, opts = {}) {
     const lead = t.loci.find((id) => !isContinuous(LOCI.get(id))) ?? t.loci[0];
     const locus = LOCI.get(lead), row = frame.loci.find((l) => l.id === lead);
     const base = { chapter: ch.id, trait: t.id, name: t.name, sealed: !!ch.sealed, locus: lead };
-    if (ch.sealed) { traits.push({ ...base, kind: "sealed" }); continue; }
+    if (ch.sealed) { traits.push({ ...base, kind: "sealed", sure: false }); continue; }
     if (isContinuous(locus)) {
       const va = shownValue(locus, a.loci[lead]), vb = shownValue(locus, b.loci[lead]);
       const [lo, hi] = blendRange(frame, row), [clo, chi] = valueRange(locus);
       const w = spread * (chi - clo) * narrow, mid = (va + vb) / 2, half = Math.abs(vb - va) / 2 * narrow;
       const range = [quantize(locus, clamp(mid - half - w, lo, hi), [lo, hi]), quantize(locus, clamp(mid + half + w, lo, hi), [lo, hi])]; // on the step, as the child is
       const bins = [...new Set([binFor(locus, range[0]), binFor(locus, (range[0] + range[1]) / 2), binFor(locus, range[1])])];
-      traits.push({ ...base, kind: "blend", parents: [round6(va), round6(vb)], range, bins, firm: false });
+      traits.push({ ...base, kind: "blend", parents: [round6(va), round6(vb)], range, bins, firm: false, sure: bins.length === 1 });
       continue;
     }
     // the four pairings, each a quarter; under B a carrier pairing turns homozygous hidden with chance 2k
@@ -222,7 +224,7 @@ export function forecast(frame, x, y, opts = {}) {
     });
     // the sleeping parts ride with the switch: what each seed would wear comes from the other loci of the trait
     const sleeping = t.loci.filter((id) => id !== lead);
-    traits.push({ ...base, kind: "switch", seeds, looks, firm, sleeping });
+    traits.push({ ...base, kind: "switch", seeds, looks, firm, sure: Object.keys(looks).length === 1, sleeping });
   }
   return { kinship: round6(k), spread, penalty, strength, traits };
 }
