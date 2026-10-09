@@ -345,6 +345,7 @@
    "name": "Stamina",
    "sealed": true,
    "opensWith": "a storm-glass shard",
+   "findKind": "shard",
    "traits": [
     {
      "id": "thrift",

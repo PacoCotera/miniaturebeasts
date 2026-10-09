@@ -25,7 +25,12 @@ export const CHAPTER_NAMES = { coat: "Coat", face: "Face", shape: "Shape", "legs
 export const WHEEL = ["marigold", "coral", "raspberry", "plum", "periwinkle", "cobalt", "lagoon", "jade", "russet", "charcoal"];
 const SECONDS = ["cream", "slate", "milk-mint", "ice", "butter", "peach"];
 export const TIERS = { starter: [5, 6], early: [7, 10], mid: [12, 18], late: [24, 34] };
-export const FINDS = { character: "a vybronic crystal", stamina: "a storm-glass shard", movement: "a tide pearl", glow: "an ember seed", charge: "a storm-glass shard" };
+// The finds that open a sealed (doings) chapter, by chapter, and the three kinds the studio paints (creatures-and-genomics,
+// Finds): a crystal is dug up, a pearl comes out of water, a shard is left by a storm. Glow and Charge are the storm's.
+export const FINDS = { character: "a vybronic crystal", stamina: "a storm-glass shard", movement: "a tide pearl", glow: "a storm-glass shard", charge: "a storm-glass shard" };
+export const FIND_KINDS = ["crystal", "pearl", "shard"];
+// A sealed chapter's find picture follows the find its words name; words naming none of the three (the workbench's "a find") have no kind.
+export const findKindOf = (words) => FIND_KINDS.find((k) => new RegExp(`\\b${k}\\b`).test(words ?? "")) ?? null;
 
 // A deterministic stream (mulberry32, as v1 generation and the genome stamp use).
 export function rng(seed) {
@@ -276,7 +281,7 @@ function finishFrame(frame, spec) {
   for (const ch of RING) {
     const ts = traits.filter((t) => t.chapter === ch);
     if (!ts.length) continue;
-    chapters.push({ id: ch, name: CHAPTER_NAMES[ch], sealed: ch in sealed, ...(ch in sealed ? { opensWith: sealed[ch] } : {}),
+    chapters.push({ id: ch, name: CHAPTER_NAMES[ch], sealed: ch in sealed, ...(ch in sealed ? { opensWith: sealed[ch], findKind: findKindOf(sealed[ch]) } : {}),
       traits: ts.map((t) => ({ id: t.id, name: t.name, loci: t.loci, looks: t.looks ?? looksFor(LOCI.get(t.loci[0]), pools[t.loci[0]]), nature: isDoing(t.loci[0]) ? "doing" : "look", shapeable: t.shapeable ?? !isDoing(t.loci[0]), ...(t.override ? { override: t.override } : {}), verdict: t.verdict ?? null })) });
   }
   frame.chapters = chapters;
