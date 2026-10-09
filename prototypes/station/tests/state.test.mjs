@@ -340,6 +340,22 @@ test("kinship by id: two mibis with identical genomes are two mibis, unrelated a
   assert.deepEqual(st.bud.genome.origin.parentIds, [a.id, twin.id]); assert.equal(st.bud.genome.origin.kinship, 0);
 });
 
+test("a starting mibi reads every open chapter, never a shut sealed one: its stamp has no sealed chapter until one is opened in play and read", () => {
+  const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
+  const fr = frameOf("S02"), sealed = fr.chapters.find((c) => c.sealed); assert.ok(sealed, "the Untuva seals a chapter");
+  const m = S.seedAdults(st, "S02", 51, 1, { ...settings, bays: 10 }).mibis[0];
+  assert.deepEqual(m.read, fr.chapters.filter((c) => !c.sealed).map((c) => c.id), "every open chapter, the sealed one shut");
+  const shut = decode(rasterize(stampGeometry(stampGenome(fr, m.genome, m.read)), 240)).stamps[0].genome;
+  assert.ok(!shut.read.includes(sealed.name)); assert.ok(shut.unread.includes(sealed.name), "the stamp holds no shut sealed chapter");
+  assert.equal(S.readMibi(st, m, sealed.id, settings).ok, false, "shut: it cannot be read");
+  st.d = 50; const r = S.readMibi(st, m, sealed.id, { ...settings, sealedOpen: true }); assert.equal(r.ok, true, r.msg);
+  const sg = stampGenome(fr, m.genome, m.read), opened = decode(rasterize(stampGeometry(sg), 240)).stamps[0].genome;
+  assert.ok(opened.read.includes(sealed.name), "opened and read, it is stamped"); assert.equal(sameGenome(stampFrameOf(fr, m.genome), sg, opened), true);
+  // the save's migration and a mibi made back from its seed follow the same rule
+  const back = { id: 99, name: "Ivy", sp: 2, species: "S02", gs: 7, born: 0, bay: 3 }, st2 = S.freshSt("w2", 3, 1000); st2.mibis = [back]; S.normalize(st2);
+  assert.ok(!back.read.includes(sealed.id));
+});
+
 test("a mibi keeps the frame version it was born with: a v2-born genome stamps S1v2 after the registry moved to v3", () => {
   const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born3 = podGenome(fr, 4242), born2 = { ...born3, frameVersion: 2 };
   assert.equal(born3.frameVersion, 3, "a genome sampled now is born at the current frame version");

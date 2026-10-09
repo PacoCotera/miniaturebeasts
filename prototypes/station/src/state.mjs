@@ -65,9 +65,11 @@ export function logEv(st, t) { st.log.push("T" + (st.turn + 1) + " · " + t); if
 export const speciesOf = (x) => x.species ?? speciesId(x.sp);
 export const frameFor = (x) => frameOf(speciesOf(x));
 export const spName = (x) => frameFor(x)?.species.name ?? "unknown";
+// A starting mibi's chapters read: every open one; a sealed chapter only once it is opened in play (readMibi), so its stamp carries no shut sealed chapter.
+const openChapterIds = (frame) => frame.chapters.filter((c) => !c.sealed).map((c) => c.id);
 const mibiFromGenome = (frame, genome) => {
   const sha = genomeSha(genome);
-  return { genome, sha, code: nameCode(sha), read: frame.chapters.map((c) => c.id) };
+  return { genome, sha, code: nameCode(sha), read: openChapterIds(frame) };
 };
 // The migration of a v8 `st` written by the stand-in (schema 1) to schema 2: once, forward only, logged.
 // Pods keep their identity (the genome is sampled from the pod's seed); studies start again; an existing
@@ -94,7 +96,7 @@ export function migrate(st, now = Date.now()) {
   });
   out.bud = null;
   if (st.inc && st.inc.m) { const m = st.inc.m, species = speciesOf(m), fr = frameOf(species);
-    if (fr) { const genome = podGenome(fr, m.gs >>> 0); out.bud = { kind: "founder", species, sp: m.sp, genome, sha: genomeSha(genome), start: st.inc.start, minutes: st.inc.mins || 5, firstEver: false, parents: null, from: m.from, read: fr.chapters.map((c) => c.id) }; } }
+    if (fr) { const genome = podGenome(fr, m.gs >>> 0); out.bud = { kind: "founder", species, sp: m.sp, genome, sha: genomeSha(genome), start: st.inc.start, minutes: st.inc.mins || 5, firstEver: false, parents: null, from: m.from, read: openChapterIds(fr) }; } }
   out.bays = BAYS; out.sitting = null; out.moments = {}; out.welcomeGiven = false; out.wish = {}; out.outbox = []; out.devBay = [];
   delete out.seen; delete out.studiedW; delete out.studyPaid; delete out.inc;
   rebuildGuide(out);
@@ -586,7 +588,7 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
   const made = [];
   for (let i = 0; i < n; i++) { if (bayFull(st, settings)) break; const gs = (Math.imul((seed >>> 0) + i * 104729, 2654435761) ^ (i * 7)) >>> 0, genome = podGenome(fr, gs), sha = genomeSha(genome), id = st.nextMibi++;
     const name = drawName(st);
-    const m = { id, name, sp: speciesIndex(species), species, gs, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: "meadow", how: "ground", podId: null }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: fr.chapters.map((c) => c.id), parents: null, bay: freeBay(st, settings), paint: null, released: false, shaped: [] };
+    const m = { id, name, sp: speciesIndex(species), species, gs, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: "meadow", how: "ground", podId: null }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: openChapterIds(fr), parents: null, bay: freeBay(st, settings), paint: null, released: false, shaped: [] };
     st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
   if (made.length && !st.knownIds.includes(species)) { st.knownIds.push(species); syncKnown(st); }   // a species that arrives as adults is known (its Library frame and Book open)
   st.firstMibi = false; logEv(st, "Developer: " + plural(made.length, "adult " + fr.species.name) + " · seed " + (seed >>> 0));
