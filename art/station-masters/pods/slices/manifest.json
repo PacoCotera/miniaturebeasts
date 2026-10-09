@@ -3696,8 +3696,8 @@
    40
   ],
   "src": "chrome geometry, supersampled 4x",
-  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
-  "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
+  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
+  "sha256": "eec243268c4a3a4be43f0bbccf9b17e34483696962ce372fccdbf458d3a6ff2f",
   "status": "signed",
   "signed_in": "pass 8 (verdict on 55944fb)",
   "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
@@ -3714,8 +3714,8 @@
    40
   ],
   "src": "chrome geometry, supersampled 4x",
-  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
-  "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
+  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
+  "sha256": "eec243268c4a3a4be43f0bbccf9b17e34483696962ce372fccdbf458d3a6ff2f",
   "status": "signed",
   "signed_in": "pass 8 (verdict on 55944fb)",
   "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
@@ -3732,8 +3732,8 @@
    40
   ],
   "src": "chrome geometry, supersampled 4x",
-  "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked",
-  "sha256": "66d692a7d95fa61dc4c78799a685571daa63b7ecedec1fd471a7719518ab97da",
+  "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
+  "sha256": "75976f3c3e3a197d24a7f9328aca280e98750289cd346b566e692cddd2d6d10f",
   "status": "signed",
   "signed_in": "pass 8 (verdict on 55944fb)",
   "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
@@ -3750,8 +3750,8 @@
    40
   ],
   "src": "chrome geometry, supersampled 4x",
-  "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked",
-  "sha256": "fa6d3290988ca481e815a8fb6030a955221c85c659dc42e2f12fc8738db56cad",
+  "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
+  "sha256": "a911730768514b615f00b044a69ae93e99c0129ef237e41679891d73951548bf",
   "status": "signed",
   "signed_in": "pass 8 (verdict on 55944fb)",
   "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
@@ -3768,8 +3768,8 @@
    40
   ],
   "src": "chrome geometry, supersampled 4x",
-  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
-  "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
+  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
+  "sha256": "78035abd4b5465809a704de441ead97446ccaa9641ada0d3623cde62962fb389",
   "status": "signed",
   "signed_in": "pass 8 (verdict on 55944fb)",
   "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
@@ -3786,8 +3786,8 @@
    40
   ],
   "src": "chrome geometry, supersampled 4x",
-  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
-  "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
+  "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
+  "sha256": "78035abd4b5465809a704de441ead97446ccaa9641ada0d3623cde62962fb389",
   "status": "signed",
   "signed_in": "pass 8 (verdict on 55944fb)",
   "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
@@ -3804,8 +3804,8 @@
    40
   ],
   "src": "chrome geometry, supersampled 4x",
-  "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked",
-  "sha256": "c9716f7c35e7f00d7af4617908e44999536eb90aa67e7447ed63535b91425947",
+  "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
+  "sha256": "0da80eb7e586d4e2df15164592bc75fadbb16d0fed3a9197431eb1f760869083",
   "status": "signed",
   "signed_in": "pass 8 (verdict on 55944fb)",
   "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
@@ -3822,8 +3822,8 @@
    40
   ],
   "src": "chrome geometry, supersampled 4x",
-  "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked",
-  "sha256": "af0c823e9bd9f97b4d31719243ee92c4e6cfb923ebd23b9336227dd79deae76d",
+  "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
+  "sha256": "169ed3286a2ab4825e2441086ae53b6ab19fb90a1ea5f2e60f2ced52940b7123",
   "status": "signed",
   "signed_in": "pass 8 (verdict on 55944fb)",
   "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
@@ -9139,7 +9139,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "ae58d5d169404f2110d8dac0b1514ca6ee9cd4fb2b17c4c247abba444a1f851e"
+  "sha256": "ae58d5d169404f2110d8dac0b1514ca6ee9cd4fb2b17c4c247abba444a1f851e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-face-128x80": {
   "size": [
@@ -9149,7 +9152,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "c85d1f5cd474f06d99c03b82e1209ef755498ad9f3983f86cc484590316589f2"
+  "sha256": "c85d1f5cd474f06d99c03b82e1209ef755498ad9f3983f86cc484590316589f2",
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "status_note": "a hand-drawn Library field guide master"
  },
  "guide-panel-shape-128x80": {
   "size": [
@@ -9159,7 +9165,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "fa704a01ed1cf4453ac22966d1a5a226e133ef6d08c073d4747307701d68ac94"
+  "sha256": "fa704a01ed1cf4453ac22966d1a5a226e133ef6d08c073d4747307701d68ac94",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-legs-tail-128x80": {
   "size": [
@@ -9169,7 +9178,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "d7d1a05944c4e4681af062a937a32161348972b1f632ebe3888d76ba7d39a6e8"
+  "sha256": "d7d1a05944c4e4681af062a937a32161348972b1f632ebe3888d76ba7d39a6e8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-movement-128x80": {
   "size": [
@@ -9179,7 +9191,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "b5806923f3377e52decb5d9e09714825f5c9f6ccc43bcc5e33d1b0d070de53ec"
+  "sha256": "b5806923f3377e52decb5d9e09714825f5c9f6ccc43bcc5e33d1b0d070de53ec",
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "status_note": "a hand-drawn Library field guide master"
  },
  "guide-panel-stamina-128x80": {
   "size": [
@@ -9189,7 +9204,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "16d097dd314972a0e312a25bca144da24139da26c045681cf12802cdb2014ee7"
+  "sha256": "16d097dd314972a0e312a25bca144da24139da26c045681cf12802cdb2014ee7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-character-128x80": {
   "size": [
@@ -9199,7 +9217,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "8151e174acb1f451fa502f3bf7166a94da3f68c503f01b42986661d85a8018f9"
+  "sha256": "8151e174acb1f451fa502f3bf7166a94da3f68c503f01b42986661d85a8018f9",
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "status_note": "a hand-drawn Library field guide master"
  },
  "guide-panel-glow-128x80": {
   "size": [
@@ -9209,7 +9230,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "629a1221827713cab7e579a62d67f747c9072be872e3afef606ae7a6eb5052ff"
+  "sha256": "629a1221827713cab7e579a62d67f747c9072be872e3afef606ae7a6eb5052ff",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-charge-128x80": {
   "size": [
@@ -9219,7 +9243,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "8d1ba97516aa0c744c8e2f128f1df6f826eccb65db9a7ad019fa4e964d7a88b6"
+  "sha256": "8d1ba97516aa0c744c8e2f128f1df6f826eccb65db9a7ad019fa4e964d7a88b6",
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "status_note": "a hand-drawn Library field guide master"
  },
  "guide-panel-sealed-128x80": {
   "size": [
@@ -9229,7 +9256,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "a shut panel: slats (a lit clay line over a bark shade line on a 4 px pitch), the 8x4 notch at the bottom centre, the edge and the grain; untinted, no emblem (the build places the sealed rail emblem); hand-drawn at 128, never scaled (pass 76)",
-  "sha256": "da6db5a9bc7fc27326d60a8674eae6a1a83d28b0fd49be7df324f1d32cb2a341"
+  "sha256": "da6db5a9bc7fc27326d60a8674eae6a1a83d28b0fd49be7df324f1d32cb2a341",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-coat-112x80": {
   "size": [
@@ -9239,7 +9269,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "b4949ff7c40332d0e8e2f35c0ce1501b865e0b3c45a152d1b326ebedb17316b2"
+  "sha256": "b4949ff7c40332d0e8e2f35c0ce1501b865e0b3c45a152d1b326ebedb17316b2",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-face-112x80": {
   "size": [
@@ -9249,7 +9282,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "cb5453b87dcad2cc27b9a206c3ab6523e77b082f6b50739b0e86f082656a267f"
+  "sha256": "cb5453b87dcad2cc27b9a206c3ab6523e77b082f6b50739b0e86f082656a267f",
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "status_note": "a hand-drawn Library field guide master"
  },
  "guide-panel-shape-112x80": {
   "size": [
@@ -9259,7 +9295,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "16c74be1f0a6c0fcd3c0996246f3a6034751d813b473f3ac57f36dd1261bfc7d"
+  "sha256": "16c74be1f0a6c0fcd3c0996246f3a6034751d813b473f3ac57f36dd1261bfc7d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-legs-tail-112x80": {
   "size": [
@@ -9269,7 +9308,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "669271b6a9f2bbfd302c5d08a303c526b6d2ad35604d9b781fcd44840cf8652d"
+  "sha256": "669271b6a9f2bbfd302c5d08a303c526b6d2ad35604d9b781fcd44840cf8652d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-movement-112x80": {
   "size": [
@@ -9279,7 +9321,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "d88c358dc2bb32c4d2d17387411afa6925d925ccbe823ec69910a4f24f381f0f"
+  "sha256": "d88c358dc2bb32c4d2d17387411afa6925d925ccbe823ec69910a4f24f381f0f",
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "status_note": "a hand-drawn Library field guide master"
  },
  "guide-panel-stamina-112x80": {
   "size": [
@@ -9289,7 +9334,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "aba3b145e8da47cbc869a8612f0d74640e366951e9549a3150a6c22eecaff62d"
+  "sha256": "aba3b145e8da47cbc869a8612f0d74640e366951e9549a3150a6c22eecaff62d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-character-112x80": {
   "size": [
@@ -9299,7 +9347,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "eca435a306e571f1f15f4c4874de424f4c24d6a8956d38ab2b6b6639b27f5aa3"
+  "sha256": "eca435a306e571f1f15f4c4874de424f4c24d6a8956d38ab2b6b6639b27f5aa3",
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "status_note": "a hand-drawn Library field guide master"
  },
  "guide-panel-glow-112x80": {
   "size": [
@@ -9309,7 +9360,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "af07464f56a10d91ed793f6e39c6aedcb728ab3eb68497097f7b1a96b57cbdd9"
+  "sha256": "af07464f56a10d91ed793f6e39c6aedcb728ab3eb68497097f7b1a96b57cbdd9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-panel-charge-112x80": {
   "size": [
@@ -9319,7 +9373,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "51d7ed659c03b250b0f1a066281605bcef3f37c77560bcd2bad81d4f9a63ee07"
+  "sha256": "51d7ed659c03b250b0f1a066281605bcef3f37c77560bcd2bad81d4f9a63ee07",
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "status_note": "a hand-drawn Library field guide master"
  },
  "guide-panel-sealed-112x80": {
   "size": [
@@ -9329,7 +9386,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "a shut panel: slats (a lit clay line over a bark shade line on a 4 px pitch), the 8x4 notch at the bottom centre, the edge and the grain; untinted, no emblem (the build places the sealed rail emblem); hand-drawn at 112, never scaled (pass 76)",
-  "sha256": "5d5c1b13120a327aa3ee1232b7c63bc675d9f193d80418daaf11b21c0d55f9bf"
+  "sha256": "5d5c1b13120a327aa3ee1232b7c63bc675d9f193d80418daaf11b21c0d55f9bf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  },
  "guide-face-S01-128x112": {
   "size": [
