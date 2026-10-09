@@ -1415,7 +1415,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | ✓ on a plate | A bred child's unread chapter: `✓ Read Coat   ◆ 1` (no price when it costs nothing): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, the context names it ("Coat, read", "Coat, sealed") |
 | ✓ on Companion | `✓ Take Fig with you`, the context "goes with you now" (docked) or "goes at the next dock" (away). On the mibi with you: no ✓ cap, "already with you" |
 | ✓ ✓ on Bond | Before its first expedition: no ✓ cap, "bonds after an expedition". Offered: the first ✓ arms (the heart half fills, `Again: bond with Burr`), the second bonds (the heart full, its moment plays). Bonded: no ✓ cap, "bonded for good" |
-| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting, its own screen under Habitat (its section to come; ← there reads Habitat). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
+| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting, its own screen under Habitat ([Sitting](#sitting); ← there reads Habitat). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
 | ✓ on Cross | An adult or an elder with a partner: `✓ Cross Burr` opens Cross; ← there reads Habitat and lands on the Cross module. A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
 | ✓ ✓ on Wild | `✓ Return Burr   ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it (the mibi dithers out to the next in bay order, its tile frees, the plate "Burr goes back to the rock field"). Refused with no ✓ cap and the reason as the context: "a bonded mibi stays", "not until it is adult", "already with you" |
 | Any key but ✓ | Clears an arm. In the meet, ends the meet with the default name kept, and does what it does |
@@ -1477,7 +1477,6 @@ Where the build departs from this layout is listed in `habitat.json` `buildChang
 
 ### Not designed yet
 
-- The sitting's screen: its own section, to come.
 - Ecosystem dynamics for later vivariums: food, light and environmental constraints that shape mibi populations. In V1 a vivarium holds at most twelve mibis.
 
 ---
@@ -1626,6 +1625,151 @@ Where the build departs from this layout is listed in `bench.json` `buildChanges
 ### Not designed yet
 
 - The journey has no capture of the bench; the gate's region and pixel checks need one for each state.
+
+---
+
+## Sitting
+
+The screen where a held sitting is spent on one mibi: its own screen under Habitat, opened from the Portrait module. Wireframes, 1×: [14-sitting-pose](station-layouts/14-sitting-pose.svg), [14b-sitting-place](station-layouts/14b-sitting-place.svg), [14c-sitting-confirm](station-layouts/14c-sitting-confirm.svg) and the map [14d-sitting-nav](station-layouts/14d-sitting-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/sitting.json`; the rules in `prototypes/station/src/sitting.mjs`.
+
+<img src="station-layouts/14-sitting-pose.png" width="1024" alt="Sitting, the pose">
+
+*14. The pose: a card for each habit Fig has been seen doing, the ring on one, `✓ This pose`, `← Habitat`.*
+
+<img src="station-layouts/14b-sitting-place.png" width="1024" alt="Sitting, the place">
+
+*14b. The place: a card for each place Fig has been, the backdrop washed in the focused place's colours, `✓ This place`, `← Pose`.*
+
+<img src="station-layouts/14c-sitting-confirm.png" width="1024" alt="Sitting, look and confirm, armed">
+
+*14c. Look and confirm, armed: the gilt frame lit round the window, the chosen pose and place, `✓ Again: portray Fig`, "one sitting each, ever".*
+
+<img src="station-layouts/14d-sitting-nav.png" width="1024" alt="The sitting's navigation map">
+
+*14d. The sitting's map: how it opens, its three steps, where ✓ and ← lead.*
+
+### 1. Purpose
+
+The sitting is where the player spends a held sitting on one mibi: picks a pose from the habits it has been seen doing and a place it has been, looks at the choice, and confirms. The player comes away knowing that the portrait is on its way, in the pose and place they chose, and that this mibi has had its one sitting. Nothing is spent until the last ✓.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The mibi** in Habitat's living window, with its name tag | The one being portrayed, where it stood on Habitat |
+| **The backdrop** behind it | The stage of the portrait: plain while the pose is chosen, washed in the place's colours from the place step |
+| **The heading** | Which choice this step asks for, in one line |
+| **The cards**: one a habit seen, or one a place been | The choice, as pictures |
+| **The gilt frame** round the window (look and confirm) | The portrait to be; it lights when the confirm is armed |
+| **The steps** along the foot: Pose, Place, Portray | Where the player is in the three steps, and what was chosen |
+| **Bottom line** | `✓ This pose`, `✓ This place`, `✓ Portray Fig`; the way back a step |
+
+**Not on the stage:** a price, a clock or a promise of how the portrait will look beyond its pose and place. The held sitting is the only thing spent.
+
+### 3. Placement
+
+**Reading order:**
+
+1. **The mibi**, warm, in the window at the left, as on Habitat.
+2. **The heading**, then **the cards** at the right.
+3. **The steps** along the foot.
+4. On look and confirm, **the gilt frame** round the window first, then the chosen cards.
+
+### 4. Art direction
+
+- **Room:** the vivarium's light on a plain stage: Habitat's warmth with the instrument reduced to the choices. The cards, heading and steps are the instrument's cool chrome.
+- **The mibi** is its standard painting; the portrait is never shown before it is painted.
+- **The pose cards** are the species' picture of each habit, in the standard look; **the place cards** are the place pictures of the Book's place stamps, at 96.
+- **The gilt frame** is the sitting's gold, the same as Home's sitting slot and Habitat's Portrait module, lit when armed.
+
+**Colour roles** (the one home is `sitting.json` `colours`; the backdrops, the gilt frame and the card pictures are painted masters, `sitting.json` `masters`):
+
+| Region | Roles | Why |
+| --- | --- | --- |
+| Bezel, glass | As Habitat | The same window |
+| Name tag | `panel` fill, `hairline` edge, the name `bone` | As Habitat |
+| Heading | `bone`, 20 px medium | A page heading |
+| Cards | `panel` fill, `hairline` edge; the card chosen before `hairline` | The focus ring is the only highlight |
+| Steps | Strip `ground`; tile `panel`, the current `hairline`; words `bone`, the steps ahead `mist` | As Habitat's strip |
+
+### 5. Composition
+
+The left half is Habitat's: the window, the mibi and its tag at the same places, so the screen change keeps the mibi where it stood. At the right the heading and the cards; along the foot, in Habitat's strip's place, the three steps.
+
+| Region | Rectangle | Notes |
+| --- | --- | --- |
+| Bezel | 16, 48, 560, 424 | As Habitat; the gilt frame covers it on look and confirm |
+| **Glass (backdrop)** | 24, 56, 544, 408 | The plain backdrop on the pose step; the focused place's on the place step; the chosen place's on look and confirm |
+| **The mibi (focal)** | 144, 80, 304, 312 | As Habitat: axis x 296, feet y 392 |
+| Name tag | in 184, 416, 224, 32 | As Habitat; not a target here |
+| Gilt frame | 16, 48, 560, 424 | Look and confirm only; lit when armed |
+| Heading | 592, 56, 416, 32 | 20 px medium, its line from y 58 |
+| Cards | 592 + 144c, 104 + 144r, 128, 128 | Three columns, two rows (c 0 to 2, r 0 to 1), at most six; the picture 96×96 at (16, 16). Pose: the habits seen, in the species frame's order. Place: the places been, the pod's place first, then in the order walked to |
+| Chosen | 592 and 736, 104, 128, 128 | Look and confirm: the pose's card, then the place's; not targets |
+| Steps strip | 16, 488, 992, 64 | `panel` |
+| Step tiles | 32 + 320i, 496, 312, 48 | Pose, Place, Portray: the word 16 px at (16, 14); once chosen, its picture at 48×48 at (256, 0) |
+
+**Regions and their words.** States: **pose**, **place**, **confirm** and **begin**.
+
+| Region (`sitting.json`) | Rectangle | Word or build | Only in | States it shows |
+| --- | --- | --- | --- | --- |
+| `stage` | 0, 40, 1024, 522 | frame, part stage (Habitat's) | | — |
+| `bezel` | 16, 48, 560, 424 | living window, part frame | | — |
+| `glass` | 24, 56, 544, 408 | living window, part inside | | plain, a place's backdrop; the backdrop dither |
+| `resident` | 144, 80, 304, 312 | specimen (focal) | | the standard painting |
+| `nameTag` | 184, 416, 224, 32 | panel and text, build `nameTag` | | the name |
+| `gilt` | 16, 48, 560, 424 | living window, part frame | confirm, begin | rest, lit (armed); dithering out (begin) |
+| `heading` | 592, 56, 416, 32 | text | | the step's heading |
+| `cards` | 592, 104, 416, 272 | list, build `choiceCards` (rule `listPitch`) | pose, place | the cards; the one chosen before; focused |
+| `chosen` | 592, 104, 272, 128 | list, build `choiceCards` (rule `listPitch`) | confirm, begin | the two chosen cards |
+| `strip` | 16, 488, 992, 64 | panel | | — |
+| `steps` | 32, 496, 952, 48 | list, build `stepTiles` (rule `listPitch`) | | current, done (with its picture), ahead |
+
+The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 2 px chrome lift. **Draw order:** stage, bezel, glass, resident, name tag, gilt frame, heading, cards or chosen, strip, steps, ring, frame, message plate.
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| Opens | From Habitat's Portrait module, `✓ Portray Fig`, only while a sitting is held and Fig can sit (a habit seen and a place been). The pose step, the ring on the first pose |
+| Pad | Pose and place: the ring to the nearest card that way; the ends stop. Look and confirm: nothing |
+| ✓ on a pose | `✓ This pose`, the context the habit ("calm"): the place step, the ring on the first place (or the one chosen before) |
+| ✓ on a place | `✓ This place`, the context the place ("the rock field"): look and confirm |
+| ✓ ✓ on look and confirm | `✓ Portray Fig`, "one sitting each, ever": the first ✓ arms (the gilt frame lights, `Again: portray Fig`); the second begins the sitting |
+| ← | A step back, the choice made there kept and ringed: look and confirm to the place (`← Place`), the place to the pose (`← Pose`); from the pose, Habitat with the ring on the Portrait module (`← Habitat`). Nothing is spent |
+| Any key but ✓ | Clears the arm |
+| A room key | Drops the choices; nothing is spent |
+| During begin | Presses are consumed (480 ms) |
+
+### The sitting's focus as data
+
+`sitting.json` `focus`, one graph a state. **Pose and place:** targets `card.<i>` in group `card`, each edge `[{ "nearestIn": "card", "ahead": true }, "none"]`, so the ring goes to the nearest card that way and stops at the ends. **Look and confirm:** no target; the ring on nothing (`room`); every edge none; ✓ sends `confirm` and arms, then begins; `focus.armed` lights the gilt frame. **Held:** while begin holds, the face moves no focus and sends no intent. Vectors are in `sitting.json` (for example card.0 ▶ card.1, card.4 ▲ card.1, card.2 ▶ card.2).
+
+### The sitting's events
+
+| Event | Hold | What plays |
+| --- | --- | --- |
+| `backdrop`: `{ kind: dither, target: glass, ms: 200, levels: 16 }` | no | The place step: the backdrop cross-dithers to the focused place's |
+| `step` | no | A step forward or back: the heading, the cards, the steps' tiles and the bottom line change at once; the gilt frame shows on look and confirm |
+| `begin` | 480 ms | 0 to 300: the lit gilt frame dithers out (the frame leaves for the bay). 300 to 480: the screen transition to Habitat, the ring on the Portrait module in its painting state, the message plate "Fig's portrait is on its way". Home's sitting slot then shows empty, and the crate waits at the bay until it is ready |
+
+With `motion: false` every event jumps to its end.
+
+### Placeholders on the sitting
+
+| Master | Pixel size |
+| --- | --- |
+| `sitting-backdrop-plain-544x408`, `sitting-backdrop-{place}-544x408` (one a place) | 544×408 |
+| `sitting-gilt-560x424`, `sitting-gilt-lit-560x424` | 560×424 |
+| `pose-{species}-{habit}-96x96`, and at 48 for the step tiles (one a habit of each species frame) | 96×96, 48×48 |
+| `place-{place}-96x96` (the 48×48 exists) | 96×96 |
+
+Where the build departs from this layout is listed in `sitting.json` `buildChanges`.
+
+### Not designed yet
+
+- More than six poses or places.
+- How Home's Bay shows a sitting's crate while its wait fills (`sitting.mjs` `crateLamp`).
 
 ---
 
