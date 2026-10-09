@@ -16,27 +16,33 @@ man = json.load(open("slices/manifest.json"))
 def save(name, im, rect, made, src):
     im = im.convert("RGBA"); im.save(f"slices/{name}.png", optimize=True)
     man[name] = {"size": list(im.size), "rect": rect, "src": src, "made": made, "sha256": hashlib.sha256(open(f"slices/{name}.png", "rb").read()).hexdigest()}
-def seed_mask(w, h, S=8):
-    """The almond: pointed at the top, widest a little below the middle, rounded at the foot; a crisp mask of the outline (at S x then thresholded) with a 1 px margin for the keyline."""
-    ys = (np.arange(h * S) + 0.5) / S; xs = (np.arange(w * S) + 0.5) / S; X, Y = np.meshgrid(xs, ys)
-    t = np.clip((Y - 1.0) / (h - 2.0), 0, 1); wmax = (w - 2.0) / 2
-    half = np.where(t < 0.58, wmax * np.clip(1 - np.clip((0.58 - t) / 0.58, 0, 1) ** 1.6, 0, 1) ** 0.85, wmax * np.sqrt(np.clip(1 - ((t - 0.58) / 0.42) ** 2, 0, 1)))      # an ogive tip (convex, an almond's) over a round foot
-    inside = (np.abs(X - w / 2) <= half) & (Y >= 1.0) & (Y <= h - 1.0)
-    return inside.reshape(h, S, w, S).mean((1, 3)) >= 0.5
 def erode(m):
     p = np.pad(m, 1, constant_values=False); return m & p[:-2, 1:-1] & p[2:, 1:-1] & p[1:-1, :-2] & p[1:-1, 2:]
+def seed_mask(w, h, S=8):
+    """An almond pointed at both ends, tilted about 30 degrees from the vertical (top toward the upper right), with a small stem nub at its upper end; returns (body mask, nub mask)."""
+    ys = (np.arange(h * S) + 0.5) / S - h / 2; xs = (np.arange(w * S) + 0.5) / S - w / 2; X, Y = np.meshgrid(xs, ys)
+    th = np.radians(30.0); u = X * np.cos(th) - Y * np.sin(th); v = X * np.sin(th) + Y * np.cos(th)        # v along the seed's axis (down), u across
+    Wd = w * 0.30; cs, sn = np.cos(th), np.sin(th)                                                       # half width of the almond
+    L = ((h / 2 - 3.0 - 3.2 * cs) - Wd * sn * 0.6) / cs                                                    # the longest half length that keeps the nub and the keyline inside the slice
+    L = min(L, (w / 2 - 1.5 - Wd * cs * 0.6) / sn); inside_ax = np.abs(v) <= L
+    prof = Wd * np.clip(1 - (np.abs(v) / max(L, 1e-6)) ** 2.0, 0, 1) ** 0.58                                  # pointed at both ends, fullest at the middle
+    body = inside_ax & (np.abs(u) <= prof)
+    nub = (np.abs(u) <= 0.9) & (v < -L) & (v >= -L - 3.2)                                                    # the stem nub at the upper end, 1.8 px wide, 3 px long
+    red = lambda m: m.reshape(h, S, w, S).mean((1, 3)) >= 0.5
+    return red(body), red(nub)
 def seed(w, h):
-    m = seed_mask(w, h); inner = erode(erode(erode(m)))                       # a 2 px bone wall inside the 1 px ink keyline
-    key = m & ~erode(m); wall = m & ~key & ~inner
-    im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); rng = np.random.RandomState(11)
+    m, nub = seed_mask(w, h); inner = erode(erode(m))
+    full = m | nub; key = full & ~erode(full)
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); em = erode(m)
+    yy, xx = np.mgrid[0:h, 0:w].astype(float)
+    sheen = np.exp(-(((xx - w * 0.38) ** 2 + (yy - h * 0.34) ** 2) / (2 * (w * 0.22) ** 2)))             # a soft top-left sheen
     for y in range(h):
         for x in range(w):
             if key[y, x]: im.putpixel((x, y), INK + (255,))
-            elif wall[y, x]:
-                lit = (not m[y, x - 1] or not m[y - 1, x] or not erode(m)[y, x - 1] or not erode(m)[y - 1, x]) if (x > 0 and y > 0) else True
-                lit = lit or not erode(m)[y - 1, x] or not erode(m)[y, x - 1]
-                im.putpixel((x, y), (WHITE if lit else BONE) + (255,))
-            elif inner[y, x]: im.putpixel((x, y), (PAL["frostD"] + (100,)) if rng.rand() < 0.22 else (PAL["frostS"] + (84,)))
+            elif nub[y, x]: im.putpixel((x, y), BONE + (255,))
+            elif m[y, x] and not inner[y, x]: im.putpixel((x, y), (WHITE if (not em[y - 1, x] or not em[y, x - 1]) and (x + y) < (w + h) / 2 else BONE) + (255,))
+            elif inner[y, x]:
+                a = int(round(255 * (0.45 + 0.20 * sheen[y, x]))); im.putpixel((x, y), (PAL["frostS"] if sheen[y, x] < 0.5 else PAL["frost"]) + (a,))      # frostS at 0.45, no noise, a soft sheen toward the top left
     mk = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     for y in range(h):
         for x in range(w):
@@ -46,24 +52,14 @@ for (w, h) in ((40, 52), (32, 40)):
     im, mk = seed(w, h)
     save(f"mark-seed-{w}x{h}", im, [None, None, w, h], f"the misty seed ({w}x{h}): an almond with a pointed tip, no cap or ribs; a bone wall with a 1 px ink keyline, a white lit edge upper left, a frosted-glass interior (frostS veil with a frostD stipple); at P.x + P.w - {48 if w == 40 else 40}, P.y + P.h - {60 if w == 40 else 48}", "geometry")
     save(f"mark-seed-{w}x{h}-mask", mk, [None, None, w, h], f"the matching mask of the {w}x{h} seed: its interior silhouette, opaque white, for the build to clip the hidden look's small picture into, under the frost", "geometry")
-# the plinth 72x8: typed rows ('i' ink, 'b' bone, 'w' white lit, 'g' a groove in ink: the engraving)
-rows = ["..iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii..".replace("i", "i"), "", "", "", "", "", "", ""]
-W = 72; pl = [["."] * W for _ in range(8)]
-for y in range(8):
-    inset = max(0, 3 - y // 1 // 1) if y < 3 else 0                                                           # a slight slope at the shoulders
-    x0 = inset; x1 = W - 1 - inset
-    for x in range(x0, x1 + 1):
-        if y == 0: pl[y][x] = "i"
-        elif y == 1: pl[y][x] = "w"                                                                           # the lit top edge
-        elif y == 7: pl[y][x] = "i"
-        elif y == 5: pl[y][x] = "g" if 6 <= x <= W - 7 else "b"                                              # an engraved line along the face
-        else: pl[y][x] = "b"
-    if y in (1, 2, 3, 4, 5, 6): pl[y][x0] = "i"; pl[y][x1] = "i"
-img = Image.new("RGBA", (W, 8), (0, 0, 0, 0)); col = {"i": INK, "b": BONE, "w": WHITE, "g": PAL["slate"]}
-for y in range(8):
-    for x in range(W):
-        if pl[y][x] in col: img.putpixel((x, y), col[pl[y][x]] + (255,))
-save("mark-only-72x8", img, [None, None, 72, 8], "the 'only' plinth: a low engraved base 72 x 8, bone with a 1 px ink keyline, a white lit top edge, an engraved line along its face; centred on the picture's bottom edge", "typed by hand")
+# the 'only' mark 72x8: a 2 px engraved line with small end ticks, in fog with the ink keyline (above and below), quiet, inside the frame's lower lip
+img = Image.new("RGBA", (72, 8), (0, 0, 0, 0)); FOG = PAL["fog"]
+for x in range(6, 66):
+    img.putpixel((x, 3), FOG + (255,)); img.putpixel((x, 4), FOG + (255,)); img.putpixel((x, 2), INK + (255,)); img.putpixel((x, 5), INK + (255,))
+for x in (5, 66):
+    for y in (1, 2, 3, 4, 5, 6): img.putpixel((x, y), FOG + (255,)) if y in (2, 3, 4, 5) else img.putpixel((x, y), INK + (255,))
+    for y in (2, 3, 4, 5): img.putpixel((x - 1 if x == 5 else x + 1, y), INK + (255,))
+save("mark-only-72x8", img, [None, None, 72, 8], "the 'only' mark, quieter: a 2 px engraved line with small end ticks in fog with a 1 px ink keyline, 72 x 8, set inside the frame's lower lip (centred on the picture's bottom edge)", "typed by hand")
 # the crescent 24x16 with a short dotted arc beneath
 cres = Image.new("RGBA", (24, 16), (0, 0, 0, 0)); S = 8
 ys = (np.arange(16 * S) + 0.5) / S; xs = (np.arange(24 * S) + 0.5) / S; X, Y = np.meshgrid(xs, ys)

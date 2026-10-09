@@ -2132,37 +2132,37 @@
  "mark-seed-40x52": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
  },
  "mark-seed-40x52-mask": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
  },
  "mark-seed-32x40": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
  },
  "mark-seed-32x40-mask": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
  },
  "mark-only-72x8": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
  },
  "mark-asleep-24x16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 38 verdict",
+  "note": ""
  },
  "mark-breed-28x16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 38 verdict",
+  "note": ""
  },
  "trait-S09-colour-cobalt-and-jade-128x160": {
   "status": "new",
