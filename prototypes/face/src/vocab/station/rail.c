@@ -30,23 +30,18 @@ void word_rail(void) {
   int S = fi("slant", 16), pitch = fi("pip.pitch", 8), psz = fi("pip.size", 6), gsz = fi("glint.size", 12), gbelow = fi("glint.below", 2);
   int em0 = fi("full_layout.emblem.0", 24), em1 = fi("full_layout.emblem.1", 24), gap = fi("full_layout.gap", 8), labelY = fi("full_layout.labelY", 0), labelC = fi("full_layout.labelCentre", 0), pipsY = fi("full_layout.pipsY", 0), pipsC = fi("full_layout.pipsCentre", 0);
   int cEmY = fi("compact_layout.emblemY", 0), cEmC = fi("compact_layout.emblemCentre", 0), cPipsY = fi("compact_layout.pipsY", 0), cPipsC = fi("compact_layout.pipsCentre", 0);
-  char rim[24]; fcol("states.edge", rim, sizeof rim);
   char focus[40]; snprintf(focus, sizeof focus, "%s", v_focus_cur()); int focused = strncmp(focus, "rail.", 5) == 0 ? atoi(focus + 5) : v_pint("regions.rail.current", -1);   /* Compare has no focus: its ring is on the chapter both pages show */
   char star[96]; snprintf(star, sizeof star, "%s", v_pstr("regions.rail.star"));
   for (int i = 0; i < placed; i++) {
     int x = tabs[i].x, y = tabs[i].y, w = tabs[i].w, h = tabs[i].h, full = tabs[i].full;
     char state[16]; snprintf(state, sizeof state, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.state", i)));
     int sealed = strcmp(state, "sealed") == 0; const char *key = sealed ? "sealed" : open == i ? "open" : strcmp(state, "read") == 0 ? "read" : "unread";
-    char fill[24], word[24], pipc[24], slats[24]; fcol(v_fmt("states.%s.fill", key), fill, sizeof fill); fcol(v_fmt("states.%s.word", key), word, sizeof word); fcol(v_fmt("states.%s.pip", key), pipc, sizeof pipc); fcol(v_fmt("states.%s.slats", key), slats, sizeof slats);
+    char word[24], pipc[24]; fcol(v_fmt("states.%s.word", key), word, sizeof word); fcol(v_fmt("states.%s.pip", key), pipc, sizeof pipc);
     char tid[24]; snprintf(tid, sizeof tid, "rail.%d", i);
-    v_region("rail.tab", LAYER_CHROME); v_rect(tid, x + S, y + 1, w - S, h - 2, fill);
+    /* the tab's ground is the signed rail-tab-fill-<state>-<full|compact>-<w+S>x<h> picture, 1:1 at the tab's x on the rail's y: fill, rims and slats are in it (the host sends the seven at boot and keeps them) */
     v_region("rail.tab", LAYER_ART);
-    v_sprite(v_fmt("%s.lf", tid), v_fmt("tab:left:fill:%s", fill), x, y, S, h); v_sprite(v_fmt("%s.rf", tid), v_fmt("tab:right:fill:%s", fill), x + w, y, S, h);
-    v_region("rail.tab", LAYER_CHROME);
-    if (sealed) for (int r = 4; r < h - 2; r += 4) { int s = layout_slant_at(S, h, r); v_rect(v_fmt("%s.slat.%d", tid, r), x + s + 1, y + r, w - 1, 1, slats); }
-    v_rect(v_fmt("%s.et", tid), x + S, y, w - S, 1, rim); v_rect(v_fmt("%s.eb", tid), x + S, y + h - 1, w - S, 1, rim);
-    v_region("rail.tab", LAYER_ART);
-    v_sprite(v_fmt("%s.lr", tid), v_fmt("tab:left:rim:%s", rim), x, y, S, h); v_sprite(v_fmt("%s.rr", tid), v_fmt("tab:right:rim:%s", rim), x + w, y, S, h);
+    { char gid[96]; snprintf(gid, sizeof gid, "rail-tab-fill-%s-%s-%dx%d", key, full ? "full" : "compact", w + S, h);
+      if (!v_sprite(tid, gid, x, y, w + S, h)) { char b[160]; snprintf(b, sizeof b, "word: the tab ground %.60s is not on the face", gid); v_error(b); prim_refuse(); } }
     int pipCx, pipY, tpips = v_pint(v_fmt("regions.rail.tabs.%d.pips", i), 0), filled = v_pint(v_fmt("regions.rail.tabs.%d.filled", i), 0);
     { anim_state_t wa; char tid2[48]; snprintf(tid2, sizeof tid2, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.id", i))); if (anim_get(ANIM_WIPE, tid2, &wa) && filled == tpips) filled = (wa.elapsed * tpips + wa.ms - 1) / wa.ms; }   /* Read: the pips fill ceil(p * n) over the event */
     const char *emblem = v_pstr(v_fmt("regions.rail.tabs.%d.emblem", i));

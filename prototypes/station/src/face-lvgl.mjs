@@ -58,7 +58,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     const have = handles.get(id); if (have) { have.used = sceneNo; return have.h; }
     const pic = picture(id); if (!pic) return -1;
     if (handles.size >= limit) {
-      let victim = null; for (const [k, v] of handles) if (v.used < sceneNo && (!victim || v.used < victim[1].used)) victim = [k, v];
+      let victim = null; for (const [k, v] of handles) if (!v.pinned && v.used < sceneNo && (!victim || v.used < victim[1].used)) victim = [k, v];
       if (!victim) throw new Error(`the face's picture table is full (${limit} pictures all in this scene); ${id} cannot be added`);
       send({ t: "asset", id: victim[0], drop: true }); handles.delete(victim[0]);
     }
@@ -67,6 +67,8 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
     handles.set(id, { h, used: sceneNo }); return h;
   }
+  // The pictures the host sends at boot, after the specs and before the first props, and never drops: the name plates and the rail tab grounds (lvgl-switch.md §2.4). `pictures`: [{ id, w, h }]; `picture(id)` gives its pixels.
+  function pin(pictures, picture) { for (const p of pictures) { handleOf(p.id, picture); handles.get(p.id).pinned = true; } }
   // ---- the adapter of the node path ----
   const KIND = { rect: 1, text: 2, sprite: 3, nine: 4, clip: 5, composed: 6 };
   // The layer a node is checked on: its own, else by kind (text on the type layer, pictures on the art layer, the rest chrome); env.layer(node) may say better (the painted layer).
@@ -111,7 +113,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
   const setBackground = (rgb) => M._face_background(rgb);
   return {
     M, version, ready, measure, scene, setBackground, objects: () => M._face_object_count(), refused: () => M._face_node_refused(),
-    size: [W, H], loadMs, send, props, poll, drain, errors, handleOf,
+    size: [W, H], loadMs, send, props, poll, drain, errors, handleOf, pin,
     frame: (ms) => { frames++; M._face_frame(Math.floor(ms)); drain(); },
     present, forceFull: () => { first = true; },
     key: (name) => { const code = LV_KEYS[name]; if (code == null) return; M._face_key(code, 1); M._face_key(code, 0); },

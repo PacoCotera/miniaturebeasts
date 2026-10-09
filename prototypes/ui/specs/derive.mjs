@@ -36,6 +36,26 @@ export const placeRect = (L, i) => [L.places.first[0] + L.places.pitch[0] * (i %
 export const kinRect = (K, i) => [K.first[0] + K.pitch[0] * i, K.first[1] + K.pitch[1] * i, K.first[2], K.first[3]];
 // The name plate's width: the name and its padding, rounded up to the series' step, between its least and its most. `textWidth` is the name's width at the plate's size.
 export const plateWidth = (N, textWidth) => Math.min(N.plate.max, Math.max(N.plate.min, Math.ceil((textWidth + 2 * N.plate.pad) / N.plate.round) * N.plate.round));
+// The name plate series (lvgl-switch.md §2.4): one signed picture per width, `<series>-<w>x<h>` for w = min … max by round; the host sends them all at boot and the face picks the one its own plate width names.
+// Refused (throws) for a plate without a series or with min or max not a multiple of round, as the face's loader refuses.
+export function plateSeries(N) {
+  const P = N.plate; if (!P?.series) throw new Error("a name plate needs its series");
+  if (!(P.round > 0) || P.min % P.round || P.max % P.round || P.max < P.min) throw new Error(`the name plate's min ${P.min} and max ${P.max} are not multiples of round ${P.round}`);
+  const out = []; for (let w = P.min; w <= P.max; w += P.round) out.push(`${P.series}-${w}x${P.h}`); return out;
+}
+// The rail tab's ground: the signed rail-tab-fill-<state>-<full|compact>-<w+S>x<h> pictures, seven because the open tab is always full.
+export function railGrounds(rail) {
+  const out = [], S = rail.slant;
+  for (const st of ["unread", "read", "sealed"]) for (const [kind, w] of [["full", rail.full], ["compact", rail.compact]]) out.push(`rail-tab-fill-${st}-${kind}-${w + S}x${rail.h}`);
+  out.push(`rail-tab-fill-open-full-${rail.full + S}x${rail.h}`); return out;
+}
+// Every picture the host sends at boot, after the specs and before the first props, and never drops: the name plates and the rail tab grounds, with their sizes.
+export function pinnedPictures(pods, frame) {
+  const seen = new Set(), out = [];
+  for (const r of Object.values(pods.regions)) if (r?.name?.plate?.series) for (const id of plateSeries(r.name)) if (!seen.has(id)) { seen.add(id); out.push({ id, w: +id.match(/-(\d+)x\d+$/)[1], h: r.name.plate.h }); }
+  for (const id of railGrounds(frame.regions.rail)) out.push({ id, w: +id.match(/-(\d+)x\d+$/)[1], h: frame.regions.rail.h });
+  return out;
+}
 // The message plate: centred on x 512, at most 640 wide, 16 + 20 px a line tall, its bottom edge at y 550, or its top at y 112 when that would cover the screen's focal box.
 export function platePosition(plate, lines, widest, focal = null) {
   const w = Math.min(plate.maxWidth, Math.max(0, Math.ceil(widest)) + plate.pad * 2), h = plate.lead + plate.line * Math.max(1, lines);
@@ -60,6 +80,7 @@ export function evaluate(rule, node, args) {
     case "plateWidth": out.push(plateWidth(node, args[0])); break;
     case "platePosition": out.push(...platePosition(node, args[0], args[1], args[2] ? args.slice(3, 7) : null)); break;
     case "stampCell": out.push(stampCell(args[0], args[1], args[2])); break;
+    case "plateIndex": out.push(plateSeries(node).indexOf(`${node.plate.series}-${plateWidth(node, args[0])}x${node.plate.h}`), plateSeries(node).length); break;
     default: throw new Error("unknown rule " + rule);
   }
   return out;

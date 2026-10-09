@@ -26,6 +26,17 @@ static void stage_dither(void) {
   snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
   v_region("stage", LAYER_ART); prim_node(v_id("stage.dither"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
 }
+int screens_vet_spec(const char *screen, char *err, int cap) {
+  for (int i = 0, n = spec_len(screen, "regions"); i < n; i++) {
+    char key[48], base[96], p[160], dummy[2]; if (!spec_member(screen, "regions", i, key, sizeof key, dummy, sizeof dummy)) continue;
+    snprintf(base, sizeof base, "regions.%s.name.plate", key); if (spec_len(screen, base) < 0) continue;
+    char series[48]; snprintf(p, sizeof p, "%s.series", base);
+    if (spec_str(screen, p, series, sizeof series) <= 0) { snprintf(err, (size_t)cap, "spec %s: the name plate of %s has no series", screen, key); return -1; }
+    snprintf(p, sizeof p, "%s.round", base); int round = spec_int(screen, p, 0); snprintf(p, sizeof p, "%s.min", base); int mn = spec_int(screen, p, 0); snprintf(p, sizeof p, "%s.max", base); int mx = spec_int(screen, p, 0);
+    if (round <= 0 || mn <= 0 || mx < mn || mn % round || mx % round) { snprintf(err, (size_t)cap, "spec %s: the name plate of %s has min %d and max %d, which are not multiples of round %d", screen, key, mn, mx, round); return -1; }
+  }
+  return 0;
+}
 static void draw(void) {
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();   /* a screen draws its words when the props carry its regions */ }

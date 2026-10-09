@@ -69,8 +69,7 @@ void word_specimen(const char *base) {
   if (has(nm)) {
     char text[V_STR]; snprintf(text, sizeof text, "%s", nm); int npx = si(base, "name.px", 20), ncx = si(base, "name.centre", 256), plateH = si(base, "name.plate.h", 24);
     int tw = v_measure(text, npx), pw = layout_plate_width(S, v_fmt("%s.name", base), tw);
-    const char *series = v_pstr("regions.specimen.room.plate");
-    v_region("name", LAYER_ART); if (has(series)) v_sprite("specimen.plate", v_fmt("%s-%dx%d:%dx%d", series, pw, plateH, pw, plateH), ncx - v_half(pw), nrect[1], pw, plateH);
+    v_region("name", LAYER_ART); v_plate("specimen.plate", v_fmt("%s.name", base), pw, ncx - v_half(pw), nrect[1]); (void)plateH;
     v_region("name", LAYER_TYPE); centred("specimen.name", text, ncx, cap_top(npx, nrect[1], nrect[3]), npx, name);
   }
   const char *ribbon = v_pstr("regions.specimen.ribbon"); anim_state_t ra_; char rpid[48]; snprintf(rpid, sizeof rpid, "%s", v_pstr("regions.specimen.pod.id"));

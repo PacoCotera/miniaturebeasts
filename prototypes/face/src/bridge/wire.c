@@ -110,6 +110,7 @@ static int on_spec(const msg_t *m) {
   char screen[40]; if (!str(m, key(m, "screen"), screen, sizeof screen)) return fail("spec: screen is required");
   int j = key(m, "json"); if (j < 0 || m->tok[j].type != JSMN_OBJECT) return fail("spec: json must be the spec file's object");
   if (spec_load(screen, m->js + m->tok[j].start, (size_t)(m->tok[j].end - m->tok[j].start)) < 0) return fail(spec_error());
+  { char why[200]; if (screens_vet_spec(screen, why, sizeof why) < 0) { spec_drop(screen); return fail(why); } }   /* a spec that names a word wrongly is refused whole, never improvised */
   return 0;
 }
 int wire_asset_slot(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }

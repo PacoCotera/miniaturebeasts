@@ -115,6 +115,9 @@ int layout_eval(const char *rule, const char *spec, const char *path, const int 
     int r[4], focal[4] = { a[3], a[4], a[5], a[6] };
     layout_plate_position(ip(spec, path, "maxWidth", 0), ip(spec, path, "pad", 0), ip(spec, path, "lead", 0), ip(spec, path, "line", 0), ip(spec, path, "centre", 0), ip(spec, path, "bottom", 0), ip(spec, path, "topOverFocal", 0), a[0], a[1], a[2] ? focal : NULL, r);
     for (int j = 0; j < 4; j++) PUSH(r[j]);
+  } else if (strcmp(rule, "plateIndex") == 0 && na >= 1) {   /* the place of the width's id in the series, and the series' length */
+    int w = layout_plate_width(spec, path, a[0]), mn = ip(spec, path, "plate.min", 0), mx = ip(spec, path, "plate.max", 0), st = ip(spec, path, "plate.round", 1);
+    PUSH((w - mn) / st); PUSH((mx - mn) / st + 1);
   } else if (strcmp(rule, "stampCell") == 0 && na >= 3) {
     PUSH(layout_stamp_cell(a[0], a[1], a[2]));
   } else return -1;

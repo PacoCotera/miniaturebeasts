@@ -8,6 +8,8 @@
 int spec_load(const char *screen, const char *json, size_t len);
 const char *spec_error(void);
 int spec_has(const char *screen);
+/* Forget a spec (the loader refused it after parsing). */
+void spec_drop(const char *screen);
 int spec_count(void);
 /* A number at a path, or dflt when it is absent or not a number. */
 int spec_int(const char *screen, const char *path, int dflt);

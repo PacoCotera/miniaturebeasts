@@ -2,6 +2,8 @@
 #ifndef SCREENS_H
 #define SCREENS_H
 #include "../focus/focus.h"
+/* The loader's refusals for a spec that names words (§2.3): a name plate without its series, or whose min or max is not a multiple of round. Returns 0, or -1 with the reason in err. */
+int screens_vet_spec(const char *screen, char *err, int cap);
 void pods_words(void);   /* Pods: the words of the state the props name (screens/pods.c) */
 /* The focus context of Pods as its words drew it: the targets in the props' order with the boxes the words gave them, and the key of the state's graph in the spec's `focus` ("collection", "overview",
    "chapter", "compare"). Returns the targets; 0 when the screen has none. */

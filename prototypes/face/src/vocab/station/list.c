@@ -28,7 +28,7 @@ void word_list(void) {
   char name[24]; spec_str(S, "colours.name", name, sizeof name);
   int n = v_plen("regions.list.places");
   int slice[4]; for (int k = 0; k < 4; k++) slice[k] = sa(C ".ring.slice", k, 0);
-  int podW = sa(C ".pod.size", 0, 0), podH = sa(C ".pod.size", 1, 0), npx = si(C ".name.px", 20), nh = si(C ".name.h", 24), plateH = si(C ".name.plate.h", 24);
+  int podW = sa(C ".pod.size", 0, 0), podH = sa(C ".pod.size", 1, 0), npx = si(C ".name.px", 20), nh = si(C ".name.h", 24);
   for (int i = 0; i < n; i++) {
     int r[4]; layout_place_rect(S, C, i, r);
     const char *pre = v_fmt("regions.list.places.%d", i); char P[96]; snprintf(P, sizeof P, "%s", pre);
@@ -45,8 +45,7 @@ void word_list(void) {
     char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("%s.name", P)));
     int nx = r[0] + sa(C ".name.at", 0, 0), ny = r[1] + sa(C ".name.at", 1, 0), tw = v_measure(text, npx);
     int pw = layout_plate_width(S, C ".name", tw);
-    char series[64]; snprintf(series, sizeof series, "%s", v_pstr(v_fmt("%s.plate", P)));
-    v_region("place.name", LAYER_ART); if (*series) v_sprite(v_fmt("%s.plate", pid), v_fmt("%s-%dx%d:%dx%d", series, pw, plateH, pw, plateH), nx, ny, pw, plateH);
+    v_region("place.name", LAYER_ART); v_plate(v_fmt("%s.plate", pid), C ".name", pw, nx, ny);
     v_region("place.name", LAYER_TYPE); v_text(v_fmt("%s.name", pid), text, nx + v_half(pw - tw), ny + v_fdiv(nh - v_cap(npx), 2), tw, npx, name);
     const char *find = v_pstr(v_fmt("%s.find", P));
     if (*find) { v_region("place.find", LAYER_ART); v_sprite(v_fmt("%s.find", pid), find, r[0] + sa(C ".place.at", 0, 0), r[1] + sa(C ".place.at", 1, 0), sa(C ".place.at", 2, 0), sa(C ".place.at", 3, 0)); }

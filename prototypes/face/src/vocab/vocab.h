@@ -19,6 +19,8 @@ void v_rect(const char *id, int x, int y, int w, int h, const char *colour);
 /* One string of Inter, the cap top on y. */
 void v_text(const char *id, const char *s, int x, int y, int w, int px, const char *colour);
 /* A picture placed 1:1 by its asset id; 1 when it was drawn, 0 when the host has not sent it (a mark whose master is not placed draws nothing and the layout does not move). */
+/* A name plate of the series the spec names (`<path>.plate.series`), the width the face chose, shown 1:1; the host sends the whole series at boot. A plate that is not on the face is an error and a refused node. */
+void v_plate(const char *id, const char *namePath, int w, int x, int y);
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h);
 /* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
 typedef struct { int width, end; } v_run_t;

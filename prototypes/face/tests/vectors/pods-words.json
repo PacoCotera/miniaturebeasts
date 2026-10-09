@@ -27,7 +27,6 @@
         ],
         "pod": "pod:S01:i:88x112",
         "name": "Loika",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": "grow:16",
         "glint": null
@@ -43,7 +42,6 @@
         ],
         "pod": "pod:S02:i:88x112",
         "name": "Untuva",
-        "plate": "plate-name",
         "find": "place:pond:48",
         "grow": "grow:16",
         "glint": null
@@ -57,7 +55,6 @@
         ],
         "pod": "pod:S03:i:88x112",
         "name": "Tuikis",
-        "plate": "plate-name",
         "find": "place:rock:48",
         "grow": "grow:16",
         "glint": null
@@ -70,7 +67,6 @@
         ],
         "pod": "pod:S04:i:88x112",
         "name": "Hiljan",
-        "plate": "plate-name",
         "find": "place:wood:48",
         "grow": null,
         "glint": null
@@ -83,7 +79,6 @@
         ],
         "pod": "pod:S05:i:88x112",
         "name": "Tepor",
-        "plate": "plate-name",
         "find": "place:cave:48",
         "grow": null,
         "glint": null
@@ -96,7 +91,6 @@
         ],
         "pod": "pod:S06:i:88x112",
         "name": "Pesko",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -213,7 +207,7 @@
      "h": 112
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -238,7 +232,7 @@
      "h": 112
     },
     {
-     "id": "plate-name-96x24:96x24",
+     "id": "plate-name-96x24",
      "w": 96,
      "h": 24
     },
@@ -313,7 +307,7 @@
      "h": 16
     }
    ],
-   "hash": "9e24521e"
+   "hash": "48745761"
   },
   {
    "state": "overview",
@@ -335,8 +329,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -434,7 +427,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-128x24:128x24",
+     "id": "plate-name-128x24",
      "w": 128,
      "h": 24
     },
@@ -474,7 +467,7 @@
      "h": 16
     }
    ],
-   "hash": "4c44e012"
+   "hash": "335e6c12"
   },
   {
    "state": "overview",
@@ -496,8 +489,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -594,7 +586,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-128x24:128x24",
+     "id": "plate-name-128x24",
      "w": 128,
      "h": 24
     },
@@ -634,7 +626,7 @@
      "h": 16
     }
    ],
-   "hash": "3057b521"
+   "hash": "08859d21"
   },
   {
    "state": "overview",
@@ -656,8 +648,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S03-0f81b211",
@@ -755,7 +746,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-128x24:128x24",
+     "id": "plate-name-128x24",
      "w": 128,
      "h": 24
     },
@@ -795,7 +786,7 @@
      "h": 16
     }
    ],
-   "hash": "f75cc014"
+   "hash": "429a0110"
   },
   {
    "state": "overview",
@@ -826,8 +817,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -999,7 +989,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -1039,37 +1029,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -1108,7 +1069,7 @@
      "h": 16
     }
    ],
-   "hash": "54fa4fb1"
+   "hash": "a6e113df"
   },
   {
    "state": "overview",
@@ -1139,8 +1100,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-large-shadow:160x14",
-       "plate": "plate-name"
+       "shadow": "pod-large-shadow:160x14"
       },
       "pod": {
        "id": "dev-1:S02-8a384b4e",
@@ -1306,7 +1266,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-96x24:96x24",
+     "id": "plate-name-96x24",
      "w": 96,
      "h": 24
     },
@@ -1351,37 +1311,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -1398,6 +1329,11 @@
      "id": "emblem:movement:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-sealed-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:character:sealed:24",
@@ -1420,7 +1356,7 @@
      "h": 16
     }
    ],
-   "hash": "aeaa10e1"
+   "hash": "d4bfc434"
   },
   {
    "state": "overview",
@@ -1442,8 +1378,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -1635,7 +1570,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -1685,37 +1620,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -1754,7 +1660,7 @@
      "h": 16
     }
    ],
-   "hash": "b4db4596"
+   "hash": "2ab720b4"
   },
   {
    "state": "overview",
@@ -1776,8 +1682,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -1948,7 +1853,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -1988,37 +1893,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -2030,6 +1906,11 @@
      "id": "emblem:face:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:movement:unread:24",
@@ -2057,7 +1938,7 @@
      "h": 16
     }
    ],
-   "hash": "4c56504d"
+   "hash": "6aa4df48"
   },
   {
    "state": "overview",
@@ -2079,8 +1960,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S04-2d0430da",
@@ -2265,7 +2145,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -2305,37 +2185,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -2347,6 +2198,11 @@
      "id": "emblem:face:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:shape:unread:24",
@@ -2379,7 +2235,7 @@
      "h": 16
     }
    ],
-   "hash": "23530d0f"
+   "hash": "f369aa77"
   },
   {
    "state": "overview",
@@ -2401,8 +2257,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-large-shadow:160x14",
-       "plate": "plate-name"
+       "shadow": "pod-large-shadow:160x14"
       },
       "pod": {
        "id": "dev-1:S08-39c6e15a",
@@ -2596,7 +2451,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -2636,37 +2491,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -2678,6 +2504,11 @@
      "id": "emblem:face:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:shape:unread:24",
@@ -2715,7 +2546,7 @@
      "h": 16
     }
    ],
-   "hash": "717e0849"
+   "hash": "1604a099"
   },
   {
    "state": "overview",
@@ -2737,8 +2568,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-large-shadow:160x14",
-       "plate": "plate-name"
+       "shadow": "pod-large-shadow:160x14"
       },
       "pod": {
        "id": "dev-1:S02-8a384b4e",
@@ -2915,7 +2745,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-96x24:96x24",
+     "id": "plate-name-96x24",
      "w": 96,
      "h": 24
     },
@@ -2970,37 +2800,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -3017,6 +2818,11 @@
      "id": "emblem:movement:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-sealed-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:character:sealed:24",
@@ -3039,7 +2845,7 @@
      "h": 16
     }
    ],
-   "hash": "bb6e7099"
+   "hash": "7383d210"
   },
   {
    "state": "overview",
@@ -3061,8 +2867,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S06-454cfde4",
@@ -3258,7 +3063,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-96x24:96x24",
+     "id": "plate-name-96x24",
      "w": 96,
      "h": 24
     },
@@ -3308,37 +3113,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -3382,7 +3158,7 @@
      "h": 16
     }
    ],
-   "hash": "d93d8502"
+   "hash": "b2c62709"
   },
   {
    "state": "overview",
@@ -3413,8 +3189,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -3585,7 +3360,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -3625,37 +3400,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -3667,6 +3413,11 @@
      "id": "emblem:face:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:movement:unread:24",
@@ -3694,7 +3445,7 @@
      "h": 16
     }
    ],
-   "hash": "8f27d35d"
+   "hash": "59962bdc"
   },
   {
    "state": "chapter",
@@ -3716,8 +3467,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -3890,28 +3640,13 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -3920,28 +3655,9 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:face:unread:24",
@@ -3974,7 +3690,7 @@
      "h": 16
     }
    ],
-   "hash": "bff0528a"
+   "hash": "36327140"
   },
   {
    "state": "chapter",
@@ -3996,8 +3712,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -4188,42 +3903,13 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -4232,19 +3918,19 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
      "id": "emblem:face:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:movement:unread:24",
@@ -4292,7 +3978,7 @@
      "h": 16
     }
    ],
-   "hash": "0964f2da"
+   "hash": "c98b0c7c"
   },
   {
    "state": "chapter",
@@ -4314,8 +4000,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S04-2d0430da",
@@ -4505,42 +4190,13 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -4554,13 +4210,8 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -4572,6 +4223,11 @@
      "id": "emblem:movement:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:stamina:unread:24",
@@ -4599,7 +4255,7 @@
      "h": 16
     }
    ],
-   "hash": "a5c75678"
+   "hash": "75ffacd5"
   },
   {
    "state": "chapter",
@@ -4621,8 +4277,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-large-shadow:160x14",
-       "plate": "plate-name"
+       "shadow": "pod-large-shadow:160x14"
       },
       "pod": {
        "id": "dev-1:S08-39c6e15a",
@@ -4863,42 +4518,13 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -4917,13 +4543,8 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -4977,7 +4598,7 @@
      "h": 16
     }
    ],
-   "hash": "01cf3a9b"
+   "hash": "d11f0102"
   },
   {
    "state": "chapter",
@@ -4999,8 +4620,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-large-shadow:160x14",
-       "plate": "plate-name"
+       "shadow": "pod-large-shadow:160x14"
       },
       "pod": {
        "id": "dev-1:S02-8a384b4e",
@@ -5231,28 +4851,13 @@
      "h": 96
     },
     {
-     "id": "plate-name-96x24:96x24",
+     "id": "plate-name-96x24",
      "w": 96,
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -5261,28 +4866,9 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:shape:read:24",
@@ -5293,6 +4879,11 @@
      "id": "emblem:movement:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-sealed-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:character:sealed:24",
@@ -5340,7 +4931,7 @@
      "h": 16
     }
    ],
-   "hash": "51cb328c"
+   "hash": "459f175a"
   },
   {
    "state": "chapter",
@@ -5362,8 +4953,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S06-454cfde4",
@@ -5550,42 +5140,13 @@
      "h": 96
     },
     {
-     "id": "plate-name-96x24:96x24",
+     "id": "plate-name-96x24",
      "w": 96,
      "h": 24
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -5594,19 +5155,19 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
      "id": "emblem:face:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:shape:unread:24",
@@ -5639,7 +5200,7 @@
      "h": 16
     }
    ],
-   "hash": "a0b0aecf"
+   "hash": "53826412"
   },
   {
    "state": "chapter",
@@ -5661,8 +5222,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -5844,42 +5404,13 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -5888,19 +5419,19 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
      "id": "emblem:face:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:movement:unread:24",
@@ -5928,7 +5459,7 @@
      "h": 16
     }
    ],
-   "hash": "98a5fe7f"
+   "hash": "85720e2d"
   },
   {
    "state": "compare",
@@ -6114,37 +5645,8 @@
      "h": 522
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -6153,13 +5655,8 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -6208,7 +5705,7 @@
      "h": 16
     }
    ],
-   "hash": "196b1de0"
+   "hash": "367c199a"
   },
   {
    "state": "compare",
@@ -6390,37 +5887,8 @@
      "h": 522
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -6429,19 +5897,19 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
      "id": "emblem:face:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:movement:unread:24",
@@ -6484,7 +5952,7 @@
      "h": 16
     }
    ],
-   "hash": "02577ae9"
+   "hash": "e33413e1"
   },
   {
    "state": "compare",
@@ -6659,37 +6127,8 @@
      "h": 522
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -6698,13 +6137,8 @@
      "h": 24
     },
     {
-     "id": "tab:left:fill:hairline",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:fill:hairline",
-     "w": 16,
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -6716,6 +6150,11 @@
      "id": "emblem:shape:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
     },
     {
      "id": "emblem:movement:unread:24",
@@ -6758,7 +6197,7 @@
      "h": 16
     }
    ],
-   "hash": "f286a9b3"
+   "hash": "515948ce"
   },
   {
    "state": "overview",
@@ -6788,8 +6227,7 @@
        "shelf": "room-shelf:288x72",
        "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
-       "shadow": "pod-medium-shadow:136x14",
-       "plate": "plate-name"
+       "shadow": "pod-medium-shadow:136x14"
       },
       "pod": {
        "id": "dev-1:S01-9bae06fb",
@@ -6972,7 +6410,7 @@
      "h": 96
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -7022,37 +6460,8 @@
      "h": 152
     },
     {
-     "id": "tab:left:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:right:fill:panel",
-     "w": 16,
-     "h": 40,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
-     "id": "tab:left:rim:bevel",
-     "w": 16,
-     "h": 40
-    },
-    {
-     "id": "tab:right:rim:bevel",
-     "w": 16,
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
      "h": 40
     },
     {
@@ -7091,7 +6500,7 @@
      "h": 16
     }
    ],
-   "hash": "14ec2d88"
+   "hash": "51a509ba"
   },
   {
    "state": "collection",
@@ -7124,7 +6533,6 @@
         ],
         "pod": "pod:-:s:88x112",
         "name": "Unknown",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -7136,7 +6544,6 @@
         ],
         "pod": "pod:-:s:88x112",
         "name": "Unknown",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -7252,7 +6659,7 @@
      "h": 112
     },
     {
-     "id": "plate-name-128x24:128x24",
+     "id": "plate-name-128x24",
      "w": 128,
      "h": 24
     },
@@ -7277,7 +6684,7 @@
      "h": 16
     }
    ],
-   "hash": "a6a53220"
+   "hash": "71086398"
   },
   {
    "state": "collection",
@@ -7442,7 +6849,6 @@
         ],
         "pod": "pod:-:s:88x112",
         "name": "Unknown",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -7454,7 +6860,6 @@
         ],
         "pod": "pod:-:s:88x112",
         "name": "Unknown",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -7569,7 +6974,7 @@
      "h": 112
     },
     {
-     "id": "plate-name-128x24:128x24",
+     "id": "plate-name-128x24",
      "w": 128,
      "h": 24
     },
@@ -7594,7 +6999,7 @@
      "h": 16
     }
    ],
-   "hash": "a44597d4"
+   "hash": "913248d4"
   },
   {
    "state": "collection",
@@ -7620,7 +7025,6 @@
         ],
         "pod": "pod:S01:i:88x112",
         "name": "Loika",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -7633,7 +7037,6 @@
         ],
         "pod": "pod:S02:i:88x112",
         "name": "Untuva",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -7646,7 +7049,6 @@
         ],
         "pod": "pod:S03:i:88x112",
         "name": "Tuikis",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -7659,7 +7061,6 @@
         ],
         "pod": "pod:S04:i:88x112",
         "name": "Hiljan",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -7775,7 +7176,7 @@
      "h": 112
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -7790,7 +7191,7 @@
      "h": 112
     },
     {
-     "id": "plate-name-96x24:96x24",
+     "id": "plate-name-96x24",
      "w": 96,
      "h": 24
     },
@@ -7825,7 +7226,7 @@
      "h": 16
     }
    ],
-   "hash": "a003ec20"
+   "hash": "7ba1c9ba"
   },
   {
    "state": "collection",
@@ -7851,7 +7252,6 @@
         ],
         "pod": "pod:S01:i:88x112",
         "name": "Loika",
-        "plate": "plate-name",
         "find": "place:meadow:48",
         "grow": null,
         "glint": null
@@ -7973,7 +7373,7 @@
      "h": 112
     },
     {
-     "id": "plate-name-80x24:80x24",
+     "id": "plate-name-80x24",
      "w": 80,
      "h": 24
     },
@@ -8003,7 +7403,7 @@
      "h": 16
     }
    ],
-   "hash": "a20d28bf"
+   "hash": "75e848e9"
   }
  ]
 }

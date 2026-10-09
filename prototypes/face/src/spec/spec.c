@@ -16,6 +16,7 @@ const char *spec_error(void) { return g_err; }
 int spec_count(void) { return g_ns; }
 static spec_t *find(const char *screen) { for (int i = 0; i < g_ns; i++) if (strcmp(g_s[i].name, screen) == 0) return &g_s[i]; return NULL; }
 int spec_has(const char *screen) { return find(screen) != NULL; }
+void spec_drop(const char *screen) { spec_t *s = find(screen); if (!s) return; free(s->js); free(s->tok); *s = g_s[--g_ns]; }
 static int tskip(const jsmntok_t *t, int i) { int k = t[i].size; i++; for (; k > 0; k--) i = tskip(t, i); return i; }
 /* is a top-level key repeated? (two answers to one question are refused, not resolved) */
 static int dup_top(const char *js, const jsmntok_t *t) {
