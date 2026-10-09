@@ -222,7 +222,7 @@ await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, untuva.id); aw
 s = await st(); expect(!s.tray.some((p) => p.id === untuva.id), "the Untuva returned");
 const extra = s.tray.find((p) => p.species === "S01" && !p.idd && p.id !== loika.id && p.id !== loika2.id);
 expect(!!extra, "the pod that waited for a well entered the rack when one freed"); {   // not skipped when absent: the read-holds-input assertion and the pods-reading capture must run
-await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, extra.id); await press("confirm", 700); await page.evaluate(() => window.__st.unlock()); await page.evaluate(() => { window.__st.podsGo(window.__st.UI.pods.cur, "rail.0"); }); await page.waitForTimeout(150); await press("confirm", 900); expect(await page.evaluate(() => window.__st.holding()), "a read holds input for its wipe"); await frameShot("pods-reading"); await page.evaluate(() => window.__st.unlock());
+await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, extra.id); await press("confirm", 700); await page.evaluate(() => window.__st.unlock()); await page.evaluate(() => { window.__st.podsGo(window.__st.UI.pods.cur, "rail.0"); }); await page.waitForTimeout(150); await press("confirm", 900); expect(await page.evaluate(() => window.__st.holding()), "a read holds input for its wipe"); await frameShot("pods-reading-wipe"); await page.evaluate(() => window.__st.unlock()); await page.waitForTimeout(400); await frameShot("pods-reading");   // the wipe mid-way, then the page after it
   await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, extra.id); await press("confirm", 100); await press("confirm", 300); }
 s = await st(); expect(s.tray.length === 4, "the rack is back to its four pods: " + s.tray.length);
 // P2. Compare with one, two, four and six traits and a difference mark on the layer; then the empty rack. Each pair is a fresh crate of two pods, read whole by the developer, compared, and given back through the hatch.
@@ -234,16 +234,17 @@ const compareShot = async (species, seed, ci, name, grid) => {
   await page.evaluate(([a, b, c]) => { const u = window.__st.UI.pods; u.cur = a; u.cmp = { a, b, ci: c }; }, [pair[0].id, pair[1].id, ci]); await page.waitForTimeout(300);
   const cl = await line(), cells = await page.evaluate(() => window.__st.check().regions.filter((r) => r.region === "page.cell" && r.id.startsWith("pageA.")).length);
   expect(cells === grid, `${name}: ${grid} traits on Compare's page: ${cells}`);
-  expect(["they differ here", "they differ in another chapter", "no read trait differs"].includes(cl.need), `${name}: Compare's need line is one of the spec's strings: ` + JSON.stringify(cl));
-  expect(!/\d/.test(cl.need) && !/well \d/.test(cl.subject || ""), `${name}: no digits in the line`);
+  expect(cl.need == null, `${name}: Compare holds its notice until the Differs row is answered: ` + JSON.stringify(cl));
+  expect(!/\d/.test(cl.subject || "") && !/well \d/.test(cl.subject || ""), `${name}: no digits in the line`);
+  const differs = await page.evaluate(([a, b]) => window.__st.compareDiff(a, b).length, [pair[0].id, pair[1].id]);
   await frameShot(name);
   await page.evaluate(() => { window.__st.UI.pods.cmp = null; });
   for (const p of pair) { await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, p.id); await press("confirm", 100); await press("confirm", 300); }
   expect(!(await st()).tray.some((p) => pair.some((q) => q.id === p.id)), `${name}: the pair went back through the hatch`);
-  return cl.need;
+  return differs;
 };
 const needs = [await compareShot("S04", 4101, 0, "pods-compare-one", 1), await compareShot("S09", 4102, 3, "pods-compare-two", 2), await compareShot("S03", 4103, 0, "pods-compare-four", 4), await compareShot("S09", 4104, 0, "pods-compare-six", 6)];
-expect(needs.includes("they differ here"), "at least one Compare capture shows a difference on the page: " + needs.join(" | "));
+expect(needs.some((n) => n > 0), "at least one Compare pair has a trait that differs (the data; the build marks none): " + needs.join(" | "));
 {   // the empty rack (docked, the bay empty): the cradle under the beam and nothing else; the wells are put back after
   await page.evaluate(() => { const g = window.__st.ST; window.__keep = { tray: g.tray, waiting: g.waiting }; g.tray = []; g.waiting = []; window.__st.UI.pods.cur = null; window.__st.UI.pods.cmp = null; }); await page.waitForTimeout(300);
   const el = await line(); expect(el.subject === "the rack is empty" && el.need === "take the Companion exploring", "the empty rack's lines: " + JSON.stringify(el));

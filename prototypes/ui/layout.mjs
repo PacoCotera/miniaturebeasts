@@ -54,6 +54,11 @@ export function pageHeight(page, n) {
   const key = Object.keys(page.heightByCount || {}).find((k) => { const [a, b] = k.split("-").map(Number); return n >= a && n <= (b ?? a); });
   return key ? page.heightByCount[key] : page.rect[3];
 }
+// The find's rectangle on a shut chapter's page (a shut page is as short as a one-trait page): centred across the page and down the room under the heading, which ends where the grid's first row begins.
+export function sealedFindRect(page, n = 1) {
+  const [px, py] = page.rect, h = pageHeight(page, n), top = Object.values(page.grid)[0].cells[0][1], [, , fw, fh] = page.sealedFind;
+  return [px + Math.round((page.rect[2] - fw) / 2), py + top + Math.round((h - top - fh) / 2), fw, fh];
+}
 // The chapter page's grid by the focused chapter's trait count: the spec's grid table names the cells and the picture
 // size per count ("1", "2", "3-4", "5-6"); more than the table holds comes back to the UI designer (overflow).
 export function pageGrid(page, n) {

@@ -7,7 +7,7 @@
 // opens it centred, no line. A read in progress wipes the signed frosted frame away from the top (props.wipe, 0 to 1).
 // props: { marks (the spec's page.marks), diff ({ edge, inset } px), heading: { emblem, word } | null, cells: [{ picture, name, lines: [], frost, sealed, seals: asset, marks: [{ kind, asset }], wipe }],
 //          colours: { pane, edge, heading, name, line, lineEmpty, wipe }, unreadFrame (the signed frosted frame's asset id), standIn (the card's word), newMark, pane, compact }
-import { pageGrid, pageHeight } from "../layout.mjs";
+import { pageGrid, pageHeight, sealedFindRect } from "../layout.mjs";
 import { panel } from "./panel.mjs";
 import { isFilled } from "../assets.mjs";
 import { wrap } from "./text.mjs";
@@ -22,20 +22,21 @@ export function chapterPage(ctx, id, region, props) {
   const [px, py] = rect, H = region.heading;
   if (props.heading?.pod && H) {   // Compare: the pod (the list class, at podAt) and its place picture
     nodes.push({ id: id + ".pod", kind: "sprite", rect: [px + region.podAt[0], py + region.podAt[1], ...region.pod], asset: props.heading.pod });
-    if (props.heading.place) nodes.push({ id: id + ".place", kind: "sprite", rect: [px + H[0] + region.place.at[0], py + H[1] + region.place.at[1], ...region.place.size], asset: props.heading.place });
+    (props.heading.who || []).forEach((m, k) => region.who && nodes.push(...layer(`${id}.who.${k}`, [px + region.who.marks[k][0], py + region.who.marks[k][1], region.who.marks[k][2], region.who.marks[k][3]], m)));   // the marks that say who it is, as on the overview
   } else if (props.heading && H) {
     nodes.push({ id: id + ".emblem", kind: "sprite", rect: [px + H[0], py + H[1], 24, 24], asset: props.heading.emblem });
     nodes.push({ id: id + ".word", kind: "text", rect: [px + H[0] + 32, py + H[1], Math.round(ctx.measure(props.heading.word, 20, 500)), 24], text: props.heading.word, px: 20, weight: 500, colour: Cc.heading, align: "left" });
     for (const [k, extra] of (props.heading.extra || []).entries()) nodes.push({ id: `${id}.hx${k}`, kind: "sprite", rect: [px + H[0] + 32 + Math.round(ctx.measure(props.heading.word, 20, 500)) + 12 + extra.dx, py + H[1] + (extra.dy || 0), extra.w, extra.h], asset: extra.asset });
   }
-  if (props.sealedFind && region.sealedFind) { const [fx, fy, fw, fh] = region.sealedFind; nodes.push({ id: id + ".find", kind: "sprite", rect: [px + fx, py + fy, fw, fh], asset: props.sealedFind, region: "page.seal" }); return { nodes, cells: [], picture: null, overflow: false }; }   // a shut chapter: the one picture of the find that opens it, no cells, no names
+  if (props.sealedFind && region.sealedFind) { nodes.push({ id: id + ".find", kind: "sprite", rect: sealedFindRect(region, n), asset: props.sealedFind, region: "page.seal" }); return { nodes, cells: [], picture: null, overflow: false }; }   // a shut chapter: the one picture of the find that opens it, no cells, no names
   const grid = pageGrid(region, props.cells.length);
   grid.cells.forEach((cell, i) => {
     const c = props.cells[i], [cx, cy] = cell, [pw, ph] = grid.picture, cid = `${id}.c${i}`, P = [cx, cy, pw, ph];
     nodes.push({ id: cid + ".pic", kind: "rect", rect: P, colour: Cc.pane, region: props.cellRegion ?? null });   // the cell's ground; what lies over it is the signed picture, or its stand-in card, then the signed frame
     if (c.picture && !c.frost) {
-      const card = layer(cid + ".card", P, c.picture); nodes.push(...card, ...layer(cid + ".frame", P, c.frame));
-      if (card.length && props.standIn) { const w = Math.round(ctx.measure(props.standIn, 16, 400)); nodes.push({ id: cid + ".standin", kind: "text", rect: [cx + Math.round((pw - w) / 2), cy + Math.floor((ph - ctx.cap(16)) / 2), w, ctx.line(16)], text: props.standIn, px: 16, weight: 400, colour: Cc.standIn, align: "left" }); }   // the card carries no word of its own: the build sets it
+      const card = layer(cid + ".card", P, c.picture); if (!card.length && Cc.cardFill) nodes.push({ id: cid + ".cardfill", kind: "rect", rect: P, colour: Cc.cardFill });   // until the card is cut at this size: its fill
+      nodes.push(...card, ...layer(cid + ".frame", P, c.frame));
+      if (props.standIn) { const w = Math.round(ctx.measure(props.standIn, 16, 400)); nodes.push({ id: cid + ".standin", kind: "text", rect: [cx + Math.round((pw - w) / 2), cy + Math.floor((ph - ctx.cap(16)) / 2), w, ctx.line(16)], text: props.standIn, px: 16, weight: 400, colour: Cc.standIn, align: "left" }); }   // the card carries no word of its own: the build sets it
     }
     if (c.frost) nodes.push(props.unreadFrame && isFilled(props.unreadFrame) ? { id: cid + ".frost", kind: "sprite", rect: P, asset: props.unreadFrame } : { id: cid + ".frost", kind: "rect", rect: P, colour: Cc.frostFill || "frost" });   // the signed frosted frame; a flat frost until it is placed   // the spec's unread cell: frost fill, no picture, nothing requested
     else {

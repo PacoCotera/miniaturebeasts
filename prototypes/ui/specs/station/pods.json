@@ -21,7 +21,12 @@
   "compare name line": "derived, UI designer to confirm: Compare's trait names sit 8 px under the picture on a 20 px line (nameGap, nameLine), as the chapter page's cell does at 4 px (cell.gap, cell.name.line)",
   "compare heading place": "derived, UI designer to confirm: Compare's heading shows the pod's find as a 16×16 place picture 40 px right of the heading's pod and 12 px lower (compareA.place), as the build had it",
   "kin ring band": "derived, UI designer to confirm: the kin ring's stand-in is a 2 px `hairline` band (kin.band) until ring-kin-56x56 is the studio's",
-  "stand-in word": "design lead, 2026-10-09: the stand-in card carries no baked word; the build sets \"stand-in\" (strings.standIn) in 16 px `mist` (colours.page.standIn) centred on the card, a text node"
+  "stand-in word": "design lead, 2026-10-09: the stand-in card carries no baked word; the build sets \"stand-in\" (strings.standIn) in 16 px `mist` (colours.page.standIn) centred on the card, a text node",
+  "hatch confirmation": "art director and design lead, 2026-10-09: the message plate for the armed hatch says only \"✓ again\" (strings.hatchAgain); the bottom line already says \"Back to the <place>\", so strings.hatchArm is no longer shown; the plate is centred on x 512 and clear of the hatch key",
+  "compare heading marks": "derived, UI designer to confirm: Compare's heading shows the pod's species and clan marks (24×24, compareA.who) after its 40×48 pod, as the overview does, in place of the build's 16×16 place picture",
+  "stand-in card fill": "derived, UI designer to confirm: until the stand-in cards exist at Compare's four sizes the build fills the cell with `ground` (colours.page.cardFill, the nearest palette name to the card's mean) and sets the word as on the chapter page",
+  "Compare bench": "design lead, 2026-10-09: Compare stands on the bench without a cone (room-bench-stage-collection) until the studio delivers a Compare bench; the need line is held (empty) until the Differs row is answered",
+  "shut chapter find": "derived, UI designer to confirm: a shut chapter's page is as short as a one-trait page (248) and its 112×112 find (regions.chapter.page.sealedFind's size) is centred across it and down the room under the heading (layout.sealedFindRect); the spec's rectangle (236, 164) lay below a 248 pane"
  },
  "regions": {
   "bench": {
@@ -809,21 +814,31 @@
    },
    "nameGap": 8,
    "nameLine": 20,
-   "place": {
-    "at": [
-     40,
-     12
-    ],
-    "size": [
-     16,
-     16
-    ]
-   },
    "podAt": [
     12,
     4
    ],
-   "podNote": "the 40×48 list class, centred where the 32×40 pod was (its centre at (32, 28) on the page)"
+   "podNote": "the 40×48 list class, centred where the 32×40 pod was (its centre at (32, 28) on the page)",
+   "who": {
+    "marks": [
+     [
+      56,
+      8,
+      24,
+      24
+     ],
+     [
+      84,
+      8,
+      24,
+      24
+     ]
+    ],
+    "kinds": [
+     "glyph",
+     "clan"
+    ]
+   }
   },
   "compareB": {
    "rect": [
@@ -1008,7 +1023,8 @@
    "line": "fog",
    "lineEmpty": "stone",
    "wipe": "white",
-   "standIn": "mist"
+   "standIn": "mist",
+   "cardFill": "ground"
   },
   "stampLabel": {
    "fill": "bone",
@@ -1075,7 +1091,8 @@
    "chapterFallback": "Back",
    "compare": "{name}"
   },
-  "standIn": "stand-in"
+  "standIn": "stand-in",
+  "hatchAgain": "✓ again"
  },
  "states": [
   "collection",

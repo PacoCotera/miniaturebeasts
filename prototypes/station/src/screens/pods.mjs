@@ -89,7 +89,7 @@ const INTENTS = {
   },
   kin: (q, f, p, id) => { const k = last.kin[+id.slice(4)]; if (k) p.cmp = { a: q.id, b: k.id, ci: 0 }; },
   hatch: (q, f, p) => {   // ✓ ✓: the first arms, the second returns; any other key disarms
-    if (!p.wildArm) { p.wildArm = 1; msg(SPECS.pods.strings.hatchArm.replace("{place}", SPECS.pods.strings.hatchPlace[q.g] || "wild")); return; }
+    if (!p.wildArm) { p.wildArm = 1; msg(SPECS.pods.strings.hatchAgain); return; }
     p.wildArm = 0; S.returnPod(G.st, q, G.settings, Date.now()); p.cur = null; go("collection"); save();
   },
 };
