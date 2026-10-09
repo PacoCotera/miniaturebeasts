@@ -4395,7 +4395,7 @@
   "rect": null,
   "src": "halo-S01-clear.jpg over the S01 silhouette from the standard painting",
   "made": "the S01 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "dc8fa2cd114711eafd0ab8227af2b8cf27a3332521d227ff66568262e75a8dca",
+  "sha256": "c154fe87d41a767734d48e56fa73625f85b1c1b12d415257fb7b5d31fca86e15",
   "status": "signed",
   "signed_in": "pass 23 verdict",
   "status_note": "master: cut from the species' standard painting"
@@ -4408,7 +4408,7 @@
   "rect": null,
   "src": "halo-S01-clear.jpg over the S01 silhouette from the standard painting",
   "made": "the S01 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "fff3da31f8c9703bd123206c60d926e72b554d1e64267c736733e4db4915e537",
+  "sha256": "5619aaef87b0584c604a111b0edd21ecb284eab0c4e8e9ffc869d138758cc52d",
   "status": "signed",
   "signed_in": "pass 23 verdict",
   "status_note": "master: cut from the species' standard painting"
@@ -4421,7 +4421,7 @@
   "rect": null,
   "src": "halo-S09-clear.jpg over the S09 silhouette from the standard painting",
   "made": "the S09 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "755e835e9a7bac9149103944f3972aee8fcb439003ab334a03eadac9c6c5ba46",
+  "sha256": "e319c67694ed7b4a6ba0b9c7c72db7d06a7be46c88663613f0f61fd94c77fee5",
   "status": "signed",
   "signed_in": "pass 23 verdict",
   "status_note": "master: cut from the species' standard painting"
@@ -4434,7 +4434,7 @@
   "rect": null,
   "src": "halo-S09-clear.jpg over the S09 silhouette from the standard painting",
   "made": "the S09 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "06507bd53b10b50b28b0945d1f081b1f76f018cad7a08acb202e6a3a8b28cb9b",
+  "sha256": "4650036f78db14ccbf50bf64d64000d4bd68ac80788acba798b467a27e324b1e",
   "status": "signed",
   "signed_in": "pass 23 verdict",
   "status_note": "master: cut from the species' standard painting"
@@ -4447,7 +4447,7 @@
   "rect": null,
   "src": "halo-S12-clear.jpg over the S12 silhouette from the standard painting",
   "made": "the S12 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "28782d356a171aa53185addbca16e0e54b09dce4cfbdbfc03d1fa63051e4f613",
+  "sha256": "0907254c6b8d5d1dae3e7435721f3071d71343761dc37dfcf2d3dc5c860097e1",
   "status": "signed",
   "signed_in": "pass 23 verdict",
   "status_note": "master: cut from the species' standard painting"
@@ -4460,7 +4460,7 @@
   "rect": null,
   "src": "halo-S12-clear.jpg over the S12 silhouette from the standard painting",
   "made": "the S12 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "ea5bbd450dd64586c6fe61b77cef909d96e892d7fed54d2d11c8eb01340be095",
+  "sha256": "82bdc838d923f2449b332343d9ce7705a779a959facc0e6c6e1b067517165a6f",
   "status": "signed",
   "signed_in": "pass 23 verdict",
   "status_note": "master: cut from the species' standard painting"
@@ -4473,7 +4473,7 @@
   "rect": null,
   "src": "halo-S02-clear.jpg over the S02 silhouette from the species frame's placeholder render (side view)",
   "made": "the S02 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "b2f866d9b25c8cbd413eecdd970dd5acb4c8844b28f762042e7c07af84c77178",
+  "sha256": "83ffd00ea6d0975571ec9b582bd70ed68a7eb5b6d993eb85d27488b4f2394186",
   "status": "held",
   "signed_in": null,
   "status_note": "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states",
@@ -4487,7 +4487,7 @@
   "rect": null,
   "src": "halo-S02-clear.jpg over the S02 silhouette from the species frame's placeholder render (side view)",
   "made": "the S02 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "034a622e5e004aae90b72fd80eb4f3d6cf959b394d57b1ba6ad5d1738d17affb",
+  "sha256": "7e1079b5f89cfa854eb8428cafd28c29d345a88f50b2d4d16b6c485d5f37dfca",
   "status": "held",
   "signed_in": null,
   "status_note": "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states",
@@ -4501,7 +4501,7 @@
   "rect": null,
   "src": "halo-S03-clear.jpg over the S03 silhouette from the species frame's placeholder render (side view)",
   "made": "the S03 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "3072a667feec3570fd917a9c6144763e64174a2544f08ad24ca49dea128afe25",
+  "sha256": "2c7c7d161e02b0e5549e595e558f747b617d80f621e787975f37428075ba8898",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4514,7 +4514,7 @@
   "rect": null,
   "src": "halo-S03-clear.jpg over the S03 silhouette from the species frame's placeholder render (side view)",
   "made": "the S03 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "7d9e737d47eebbf69dad22c2c555f32070fbeb834c081726f84935a1f965995f",
+  "sha256": "d3545710dcb8467df3ac9474dca2101e4e8ca73ccc778ad85953d9d51ed0a48c",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4527,7 +4527,7 @@
   "rect": null,
   "src": "halo-S05-clear.jpg over the S05 silhouette from the species frame's placeholder render (side view)",
   "made": "the S05 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "f6ff594f0aea5f9ba184a3609ee0f00b0b4db3b9b919f2a8d7613f042099de4c",
+  "sha256": "1183cd5f09c3808c9b91b3fff3fef116a0b066a3e26eff037f2d12d5b6819ddb",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4540,7 +4540,7 @@
   "rect": null,
   "src": "halo-S05-clear.jpg over the S05 silhouette from the species frame's placeholder render (side view)",
   "made": "the S05 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "f65dc66dfb75e173605b219bd65e7ea35278d321e6a674c60eee688af43d1f1b",
+  "sha256": "369706b46151d1c14928c17772d6195220ebbc7d5e36729a1bd010182f2e6fff",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4553,7 +4553,7 @@
   "rect": null,
   "src": "halo-S06-clear.jpg over the S06 silhouette from the species frame's placeholder render (side view)",
   "made": "the S06 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "2c7643d1d07c88ba0a48aa6d97c65874995fd2e40f2b29f199094476566f9949",
+  "sha256": "deafeb1b05e98cec4be4dff3458363663cd4ffcaa631480310b1e5e9ca92e546",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4566,7 +4566,7 @@
   "rect": null,
   "src": "halo-S06-clear.jpg over the S06 silhouette from the species frame's placeholder render (side view)",
   "made": "the S06 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "b76747de328cbe4ef224848f44d2ce54cccb689e0a715f637240bd95d42ef489",
+  "sha256": "c6a56dc33e1f4aa46089f3bbfb4784b7a9059dfe4dd29236329161a580c6605d",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4579,7 +4579,7 @@
   "rect": null,
   "src": "halo-S08-clear.jpg over the S08 silhouette from the species frame's placeholder render (side view)",
   "made": "the S08 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "ad28fa7f243024942553d4b0b95cad6efb910ae4779edd968b89c16b9a78f37e",
+  "sha256": "7513b13735882338fba06593cf9a19f732ecbe0b53be50bf173be6d67903e531",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4592,7 +4592,7 @@
   "rect": null,
   "src": "halo-S08-clear.jpg over the S08 silhouette from the species frame's placeholder render (side view)",
   "made": "the S08 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "f5744ee66691734438544c94f46c466c7c747bd6d2ed52f293b61856360cede7",
+  "sha256": "d6fe20e434e8e28b00d71c7d6bb360a0746a592392076a729f765b23f4ecb466",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4605,7 +4605,7 @@
   "rect": null,
   "src": "halo-S10-clear.jpg over the S10 silhouette from the species frame's placeholder render (side view)",
   "made": "the S10 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "3063ad67d42dba73088e8a44cb97cbb4aa0c39ccf766d3a46960b2fb64aab49c",
+  "sha256": "80ff01077d8b752093fceac2e5f97dedf00a9df905f99f085e66977666d54734",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4618,7 +4618,7 @@
   "rect": null,
   "src": "halo-S10-clear.jpg over the S10 silhouette from the species frame's placeholder render (side view)",
   "made": "the S10 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "ee3340b032c5ada8f579f324ba8dd1feedbff66dbee69bb10820d23004e59b5e",
+  "sha256": "5b521c1899e934849ae7d16b59bf4560c5dfeeb70eb8264b85f1d7f9144fe845",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4631,7 +4631,7 @@
   "rect": null,
   "src": "halo-S11-clear.jpg over the S11 silhouette from the species frame's placeholder render (side view)",
   "made": "the S11 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "affc0035f0b2378f7332ac68e0a41d046aed780d7e0034a726c82e76bc318936",
+  "sha256": "786b2c2ed77ef5b2e38e9a75d6bb4527f298212b5abe5459f5cf136de67b7c4f",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4644,7 +4644,7 @@
   "rect": null,
   "src": "halo-S11-clear.jpg over the S11 silhouette from the species frame's placeholder render (side view)",
   "made": "the S11 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "24fa7d7fd610138f466e485948bbd22ed1cd0c06debe9cb32c9cf0169df13bb2",
+  "sha256": "09257cc78f1eae46ce834856a18719e12909f0b9b95dd7a59451dd13d98d21f2",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4657,7 +4657,7 @@
   "rect": null,
   "src": "halo-S13-clear.jpg over the S13 silhouette from the species frame's placeholder render (side view)",
   "made": "the S13 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "cf6bcbfe01bbbf4be7ce3301fde255cb28e9f2e317fce0cb6dff6d8d5edb30b4",
+  "sha256": "2457a36267085a64a742c2039681885e32360c08389eab5f43628966b0fcb2b8",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4670,7 +4670,7 @@
   "rect": null,
   "src": "halo-S13-clear.jpg over the S13 silhouette from the species frame's placeholder render (side view)",
   "made": "the S13 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "df3f6d507a23c853352c93122de4c1e3ecd7747d0b46502b6547fef5dfb125a9",
+  "sha256": "2a852911f0c5898157d85a7bc9c258a607b722446ba324126a2018a0c07527b5",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4683,7 +4683,7 @@
   "rect": null,
   "src": "halo-S14-clear.jpg over the S14 silhouette from the species frame's placeholder render (side view)",
   "made": "the S14 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "388afbca41057f8fc0425b537716863aac25ea9e4229110175ac07fccee346f1",
+  "sha256": "b7f8026d712ce37f52398910d1e78ca5fa1e01f537a822864a0623aa8f3479ae",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4696,7 +4696,7 @@
   "rect": null,
   "src": "halo-S14-clear.jpg over the S14 silhouette from the species frame's placeholder render (side view)",
   "made": "the S14 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "009c873f09f35d4ffa7123d0be491a87819e0f1a1d540e3ca1a9d8cb7814addc",
+  "sha256": "9684438c2a397d881481c03d94d84314d6482a9340fbc0c19db545ebf1c45eea",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4709,7 +4709,7 @@
   "rect": null,
   "src": "halo-S15-clear.jpg over the S15 silhouette from the species frame's placeholder render (side view)",
   "made": "the S15 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "157790c91ae1100c39475513f9677ec310a02a6ad050949c0f933091d5d36a44",
+  "sha256": "1efcb8c1197de140eaa6b58bd75de3d1aa331ee0352ab6ceda829c6698e4de61",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4722,7 +4722,7 @@
   "rect": null,
   "src": "halo-S15-clear.jpg over the S15 silhouette from the species frame's placeholder render (side view)",
   "made": "the S15 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "89fdb3c6ba7866f5a80a93d120fb6da7278f3ea2bdf71495db7bc5bc7b813984",
+  "sha256": "61bff9237bafd7eba65feb9ce2728044593ddef6bdbbe6882da8934745ee9864",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4735,7 +4735,7 @@
   "rect": null,
   "src": "halo-S16-clear.jpg over the S16 silhouette from the species frame's placeholder render (side view)",
   "made": "the S16 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
-  "sha256": "13407b60cf8df30fddb1798a27e1272917ea34607490277ceaa503c4af6c31c0",
+  "sha256": "a8f7cd38110febcd7e755b6371c20e918b4e16959b389dd419ed61763938e57a",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
@@ -4748,7 +4748,7 @@
   "rect": null,
   "src": "halo-S16-clear.jpg over the S16 silhouette from the species frame's placeholder render (side view)",
   "made": "the S16 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "8df26245d7b30976c0378df8dfbb165563ec75fee4a913d35b25e387eab111dd",
+  "sha256": "e6d1dfe1bc5357e00114b4ada2a54f841ef7b11adbdc6b96600ba502c12d38e1",
   "status": "placeholder",
   "signed_in": "pass 23 verdict",
   "status_note": "placeholder, re-cut from the standard painting when it lands"

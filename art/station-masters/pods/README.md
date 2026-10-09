@@ -505,6 +505,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 37 - the halo figures re-fitted to the box
+
+Low, horizontal species (S03 and others) filled only a sliver of the 128x160, so their mist read as a smudge beside the pod. Every figure (the fourteen, and S02's mist) is re-cut by `tools/halo3.py` (`refit`): the species' silhouette fills the box's width or height, whichever limits first, with its feet on the baseline and the 6 px halo kept inside the slice. The box is 116 x 148 (128 - 2 x 6 wide; 160 - 6 below the feet - 6 above), the silhouette's bottom row at y 154; the painting and its mask share one transform (no new image call), and the halo is made after the fit so it stays 6 px. Every mist is regenerated from its re-cut clear. Brightness unchanged by the grade (clear peak 107 to 110 grey over black, the figure's mean 47 to 50). `halo/halo-contact-1x.png` is the one contact sheet at 1x: each species' mist, its clear figure and the large Loika pod on one shared baseline (S04 and S07 marked as not yet painted). The old placement centred the silhouette in a 112 x 144 box; this one is 116 x 148 and bottom-aligned.
+
+
 ## Pass 36 - records
 
 `room-bench-stage-collection`, the five `place-<place>-64x64` and `panel-place-320x224` recorded signed (the verdict on 69ade33). No slice is left as `new`; what is outstanding is the quota set: the S04 and S07 halo figures and the three find pictures, run when the image tool's daily quota returns.

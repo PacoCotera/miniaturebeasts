@@ -12,17 +12,28 @@ def _load(n):
     sp = importlib.util.spec_from_file_location(n, f"tools/{n}.py"); m = importlib.util.module_from_spec(sp); sp.loader.exec_module(m); return m
 h1 = _load("halo"); h2 = _load("halo2"); K = 4; W, H = 512, 640
 ALL = ["S%02d" % i for i in range(1, 17)]
-def painted(sp):
-    im = Image.open(f"source/raw/halo-{sp}-clear.jpg").convert("RGB").resize((W, H), Image.LANCZOS)
-    a = np.asarray(im).astype(float); A = np.clip((a.max(2) / 255.0 - 0.04) / 0.96, 0, 1); C = np.where(A[..., None] > 0.02, a / np.maximum(A[..., None], 0.02), 0); return np.clip(C, 0, 255), A
+def refit(sp):
+    """Re-fit a species' painting and its silhouette so the silhouette fills the box's width or height, whichever limits first, with its feet on the baseline and the 6 px halo kept inside the 128x160:
+    the box is 116 x 148 (128 - 2 x 6 wide; 160 - 6 below the feet - 6 above), the silhouette's bottom row at y 154. The painting and the mask share one transform (no new image call)."""
+    M0 = np.load(f"source/work/halo-sil-{sp}.npy"); im = Image.open(f"source/raw/halo-{sp}-clear.jpg").convert("RGB").resize((W, H), Image.LANCZOS)
+    ys, xs = np.where(M0 > 0.5); x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1; bw, bh = x1 - x0, y1 - y0
+    sc = min(116 * K / bw, 148 * K / bh); mg = 40                                          # source margin kept round the silhouette for the painting's own glow
+    cx0, cy0, cx1, cy1 = max(0, x0 - mg), max(0, y0 - mg), min(W, x1 + mg), min(H, y1 + mg)
+    def place(img, mode):
+        crop = img.crop((cx0, cy0, cx1, cy1)); nw, nh = round(crop.width * sc), round(crop.height * sc); crop = crop.resize((nw, nh), Image.LANCZOS)
+        canvas = Image.new(mode, (W, H), 0 if mode == "L" else (0, 0, 0))
+        dx = round(W / 2 - ((x0 + x1) / 2 - cx0) * sc - 0); dy = round(154 * K - (y1 - cy0) * sc)          # centred on the silhouette's middle, its bottom row at y 154
+        canvas.paste(crop, (dx, dy)); return canvas
+    M = np.asarray(place(Image.fromarray((M0 * 255).astype(np.uint8)), "L")).astype(float) / 255; img = place(im, "RGB")
+    a = np.asarray(img).astype(float); A = np.clip((a.max(2) / 255.0 - 0.04) / 0.96, 0, 1); C = np.where(A[..., None] > 0.02, a / np.maximum(A[..., None], 0.02), 0); return M, np.clip(C, 0, 255), A
 def corrected(sp):
-    M = np.load(f"source/work/halo-sil-{sp}.npy"); C, A = painted(sp); inside = M > 0.5
+    M, C, A = refit(sp); inside = M > 0.5
     dout = h1.edt(~inside) / K                                                              # px outside the silhouette (final-resolution px)
-    ys, xs = np.where(inside); mean_col = C[inside & (A > 0.25)].mean(0) if (inside & (A > 0.25)).any() else np.array([160.0, 215.0, 235.0])
-    Ms = np.asarray(Image.fromarray((M * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.6 * K))).astype(float) / 255     # a 0.6 px soft edge, anti-aliased
+    mean_col = C[inside & (A > 0.25)].mean(0) if (inside & (A > 0.25)).any() else np.array([160.0, 215.0, 235.0])
+    Ms = np.asarray(Image.fromarray((M * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.6 * K))).astype(float) / 255     # a 0.6 px soft edge, anti-aliased at 4x
     halo_w = np.clip(1 - dout / 6.0, 0, 1) ** 1.6 * (dout > 0)                               # about 6 px outside the mask
     fill = 0.20 * Ms                                                                         # the species' own outline, dim, where the painting left it dark
-    din = h1.edt(inside) / K; core = 0.42 + 0.58 * np.clip(din / max(13.0, 0.55 * din.max()), 0, 1) ** 0.7              # the core of the body brighter, the edges falling away (a flat painted figure otherwise keeps its whole body bright)
+    din = h1.edt(inside) / K; core = 0.42 + 0.58 * np.clip(din / max(13.0, 0.55 * din.max()), 0, 1) ** 0.7              # the core of the body brighter, the edges falling away
     Ain = np.maximum(A * Ms * core, fill); Aout = A * halo_w * (1 - Ms) * 0.8
     Af = np.clip(Ain + Aout, 0, 1)
     Cf = np.where((A[..., None] > 0.12), C, mean_col[None, None, :])
