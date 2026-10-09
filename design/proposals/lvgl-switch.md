@@ -4,19 +4,21 @@
 
 **Amended** (architect, 2026-10-09 12:25, within the owner's 2026-10-08/09 decisions): the focus graph's edge forms, `nearestIn` with `ahead`, and the ordered edge (§2.6); `idleLine` as a composition (§2.2); Pods' two caption regions drawn at L2.0 (§4 L2.0); the status strip struck from L2.2 (§4 L2.2). These answer open questions 1, 9 and 10 of the L2.2 spec (`station-layouts.md`, PR #27) and the salvage review (PR #28).
 
-This spec finishes what [technical-architecture.md §8](technical-architecture.md#8-assessment-the-real-lvgl-face-in-the-sandbox-now) started. It is a separate document because §8 is the assessment that led to the decision, while this is the build plan. §8 stays as written, except that §8.4's L3 row now points here. Where the two differ, this document governs the build.
+This spec finishes what [technical-architecture.md §8](technical-architecture.md#8-assessment-the-real-lvgl-face-in-the-sandbox-now) started. It is a separate document because §8 is the assessment that led to the decision, while this is the build plan; §8.4 and §8.5 point here. Where the two differ, this document governs the build.
 
 **Decided** (owner, 2026-10-08): the sandbox's Station face switches to LVGL 9 compiled to WebAssembly, before more screens are built on the JavaScript layer. The device runtime is S1: an LVGL face in C, with the logic run headless by Node beside it. **Decided** (owner, 2026-10-09 11:27): no new screen or screen feature is built on the JavaScript drawing layer. The remaining screens move to the LVGL face (L2 for every screen, then L3), and the field guide is built on LVGL. Rules, views, specs and assets stay in JavaScript and data.
 
 ## 0. Summary
 
-- **What the face is today.** The LVGL face landed at L2 (ee1be339). It is a *scene interpreter*: the JavaScript components still compute every rectangle, string and picture, and `scene.c` turns those nodes into LVGL objects. Only Pods (and the frame on other screens) is drawn this way. Seven screens and Idle are still drawn by hand-coded JavaScript, behind `?face=lvgl` they show only the frame, and no key ever leaves the face as an intent.
+- **Where the face started.** At the audit (§1, `main` at 3e017843) the LVGL face, landed at L2 (ee1be339), was a *scene interpreter*: the JavaScript components computed every rectangle, string and picture, and `scene.c` turned those nodes into LVGL objects. Only Pods (and the frame on other screens) was drawn this way; seven screens and Idle were drawn by hand-coded JavaScript, and no key left the face as an intent. What the face is built of now is §2 as it lands, milestone by milestone (§4), and the face's README (`prototypes/face/README.md`).
 - **What it must become.** A face that takes *props* and gives back *intents*. The vocabulary's components, the layout rules, text fitting, the focus graph and animation all move into C. The views, rules, intent tables, spec files and assets stay in JavaScript and data. The same wire format runs in the page (WebAssembly) and over a local socket on the Pi.
 - **The plan.** Six milestones from here to L3. L2.0 builds the platform and re-lands Pods on C components. Then, in order: the Library with the field guide; Home with Rest, Dock and Idle; Cross with the splice; Create and the Incubator; Habitat and the Probe bench. L3 deletes the JavaScript drawing layer. Each milestone is gated by region and pixel checks against the spec and by the journey running green on the LVGL face.
 - **The freeze.** From the first commit, a CI check fails on any change to a deprecated drawing module, and on any new import of one.
 - **Three questions for the owner** (§6): the default face during the switch, the new CI checks as one bundle, and what to salvage from the frozen field-guide branch.
 
 ## 1. Audit: what the LVGL face draws today, against what the JavaScript layer draws
+
+This audit is as of `main` at 3e017843 (2026-10-09), before L2.0. "Today" in it means that commit. It is kept as measured, because the plan was made from it; it is not the state of the face as the milestones land. For the face as built, read §2 and the face's README (`prototypes/face/README.md`), which lists each source file and what it does.
 
 ### 1.1 How the page chooses a face
 
@@ -93,16 +95,17 @@ The rule of the split: **JavaScript decides what each region shows. C decides wh
 
 ### 2.1 The bridge contract: props in, intents out
 
-**One wire format, two transports.** Messages are UTF-8 JSON objects. In the sandbox they cross the WebAssembly boundary through a shared buffer (`face_send(ptr, len)` in, `face_poll()` out). On the Pi they travel as newline-delimited JSON over a Unix socket, `/run/mibi/face.sock`. The sandbox therefore exercises the exact bytes the Pi will carry. Nothing on the frame path waits for an answer.
+**One wire format, two transports.** Messages are UTF-8 JSON objects. In the sandbox they cross the WebAssembly boundary through one shared buffer the face owns: the host writes a message into `face_in_buf()` (at most `face_in_cap()` bytes, 512 KiB, room for the largest spec file) and calls `face_send(len)`, which returns 0 when the message is accepted and -1 when it is refused, with an `error` queued; messages out are read with `face_poll()` until it returns nothing. On the Pi they travel as newline-delimited JSON over a Unix socket, `/run/mibi/face.sock`. The sandbox therefore exercises the exact bytes the Pi will carry. Nothing on the frame path waits for an answer.
 
 Messages from JavaScript to the face:
 
 | Message | Shape | When |
 | --- | --- | --- |
-| `hello` | `{ t: "hello", contract: 1 }` | At connect. The face answers `ready`, or `error` if the contract differs |
+| `hello` | `{ t: "hello", contract: 1, test? }` | At connect. The face answers `ready`, or `error` if the contract differs. `test: true` turns on test mode: the `log` messages and the palette passes (§2.8). Absent or `false`, test mode is off. Any message before an accepted `hello` is refused |
 | `palette` | `{ t, name: "station", colours: [[name, "#rrggbb"], …] }` | Boot (from `ui/palettes/station.json`) |
 | `spec` | `{ t, screen, json }` for `frame` and each screen file | Boot, and again on edit in the sandbox (no compile) |
 | `asset` | `{ t, id, w, h, policy, status, slice?, tile?, src: "heap" \| "file", path? }` | Before first use. Pixels go into a buffer the face allocates for that id (WebAssembly) or into an LVGL binary file in the image cache (Pi). The face refuses a size other than `w × h` |
+| `asset` (drop) | `{ t, id, drop: true }` | When the host retires a picture, for example its least recently used one. The face frees that id's slot in the picture table; an id it does not hold is ignored |
 | `props` | `{ t, seq, screen, state, idle, motion, frame: { top, line, plate }, regions: { <region id>: {…} }, focus: { targets, resolve, edges?, armed?, set? } }` | Whenever the view's output changes (hashed on the JavaScript side, as `face-lvgl.mjs` `keyOf` does today). The whole screen is sent, and the face diffs by region |
 | `event` | `{ t, kind, target, ms, hold, from?, to? }` | When the timeline plays one (§2.7) |
 | `key` | `{ t, k }` | Sandbox only: the page's buttons and keyboard. On the Pi the face reads its own keys |
@@ -111,12 +114,14 @@ Messages from the face to JavaScript:
 
 | Message | Shape | Meaning |
 | --- | --- | --- |
-| `ready` | `{ t, contract, size: [1024, 600], fonts: ["inter-16", …], limits: { objects, pictures, text } }` | The face is up |
+| `ready` | `{ t, contract, size: [1024, 600], fonts: ["inter-16", …], limits: { objects, pictures, text, props }, test }` | The face is up. `limits.props` is the largest `props` message in bytes (32,768, the budget of §2.8; a larger one is refused). `test` echoes whether test mode is on |
 | `focus` | `{ t, seq, screen, target }` | The ring moved. JavaScript stores it as `UI.<screen>.focus.cur` and recomputes props: the bottom line's subject and the page shown follow focus |
 | `intent` | `{ t, seq, screen, target, verb }` | `verb` is `confirm`, `back`, `room:<home\|research\|library\|habitat>`, `wake`, or `step:<up\|down\|left\|right>` where the spec marks a group as a stepper (Create's ▲▼ roll, Cross's ◀▶ partner, Compare's ◀▶ chapters) |
 | `done` | `{ t, kind, target }` | An animation finished on the face. Informative only: holds are released on the JavaScript timeline's own clock |
 | `log` | `{ t, regions, type, refused, objects, pictures, frameMs }` | Test mode only (§2.7) |
 | `error` | `{ t, what }` | A refused spec, props or asset. Counted in CI as a failure |
+
+**Decided** (architect, 2026-10-09 13:16, within the owner's decisions): five additions to contract 1, accepted at the review of L2.0's bridge. `hello.test` (bool) turns test mode on; `asset.drop` (bool) releases a picture slot by id; `ready.limits.props` gives the props budget in bytes; `ready.test` echoes test mode; and the sandbox's transport is `face_send(len)` over the face's own `face_in_buf`, in place of `face_send(ptr, len)`, so the host never allocates in the face's heap. The contract number stays 1.
 
 **The intent table stays JavaScript.** Each screen's intent table (today `INTENTS` and `act` in `screens/pods.mjs`) maps `{ target group, verb }` to one rule call. Its result becomes the next state, and timeline events become `event` messages. Arm-then-confirm (the hatch, the bond heart) stays in the intent table, and the face draws the armed state from `focus.armed`. Input holds stay on the JavaScript timeline: while `TL.holding()` the dispatcher drops intents, and the face, which also knows from the event's `hold` that one is playing, does not move focus.
 
@@ -126,11 +131,12 @@ Messages from the face to JavaScript:
 
 ### 2.2 The component library (one closed vocabulary, shared with the Companion and the Caddy)
 
-The C tree under `prototypes/face/src/` has four layers:
+The C tree under `prototypes/face/src/`:
 
 ```
 platform/   wasm.c · headless.c · sdl.c · drm.c        display, clock, keys; nothing else
 bridge/     wire.c (JSON in, JSON out) · inproc.c · socket.c
+spec/       spec.c                                     the spec loader (§2.3)
 prim/       rect · text · sprite · nine · clip · composed      the closed primitive set, the only code that creates LVGL objects
 vocab/      common/  frame topBar bottomLine messagePlate focusRing panel list text livingWindow ribbon
             station/ chapterRail chapterPage stampLabel specimen
@@ -442,4 +448,4 @@ These are: (i) the freeze check (§5.1); (ii) golden framebuffer hashes as the p
 
 ## 7. Files this spec touches when built
 
-New: `design/proposals/lvgl-switch.md` (this); `prototypes/face/src/{platform,bridge,prim,vocab,layout,screens}/`; `prototypes/face/tools/{freeze-check,bake-images}.mjs`; `prototypes/face/deprecated.json`; `prototypes/face/golden/`; `prototypes/face/tests/vectors/`; `prototypes/station/host/`; `prototypes/station/src/{intents,pixels.mjs}`; `prototypes/ui/specs/{derive,measure}.mjs` and `*.props.json`. Changed: `prototypes/face/{CMakeLists.txt,build.sh,lv_conf.h,README.md}`, `prototypes/station/src/{main.mjs,face-lvgl.mjs,views/*}`, `prototypes/station/tools/{journey,checks}.mjs`, `.github/workflows/site.yml`, `THIRD_PARTY_NOTICES.md`, technical-architecture.md §8.4 (a pointer here).
+New: `design/proposals/lvgl-switch.md` (this); `prototypes/face/src/{platform,bridge,spec,prim,vocab,layout,screens}/`; `prototypes/face/src/vendor/jsmn.h`; `prototypes/face/tools/{freeze-check,bake-images}.mjs`; `prototypes/face/deprecated.json`; `prototypes/face/golden/`; `prototypes/face/tests/vectors/`; `prototypes/station/host/`; `prototypes/station/src/{intents,pixels.mjs}`; `prototypes/ui/specs/{derive,measure}.mjs` and `*.props.json`. Changed: `prototypes/face/{CMakeLists.txt,build.sh,lv_conf.h,README.md}`, `prototypes/station/src/{main.mjs,face-lvgl.mjs,views/*}`, `prototypes/station/tools/{journey,checks}.mjs`, `.github/workflows/site.yml`, `THIRD_PARTY_NOTICES.md`, technical-architecture.md §8.4 (a pointer here).
