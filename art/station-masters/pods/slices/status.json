@@ -2548,5 +2548,25 @@
   "status": "signed",
   "signed_in": "pass 61 verdict",
   "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
+ },
+ "mibi-halo-S04-128x160-clear": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+ },
+ "mibi-halo-S04-128x160-mist": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+ },
+ "mibi-halo-S07-128x160-clear": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+ },
+ "mibi-halo-S07-128x160-mist": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
  }
 }

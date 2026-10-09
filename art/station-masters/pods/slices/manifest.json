@@ -8324,5 +8324,57 @@
   "status": "signed",
   "signed_in": "pass 61 verdict",
   "status_note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
+ },
+ "mibi-halo-S04-128x160-clear": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "halo-S04-clear.jpg over the S04 silhouette from the species frame's placeholder render (side view)",
+  "made": "the S04 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
+  "sha256": "e303d1816992299b6f39aa67bf4a9e9520491ed24733db5f0be9d4dca153b34f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+ },
+ "mibi-halo-S04-128x160-mist": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "halo-S04-clear.jpg over the S04 silhouette from the species frame's placeholder render (side view)",
+  "made": "the S04 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
+  "sha256": "3ce9bdda586b501804a29f27531a35a54cb2f9f48ea553fedba9f9fb5038362a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+ },
+ "mibi-halo-S07-128x160-clear": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "halo-S07-clear.jpg over the S07 silhouette from the species frame's placeholder render (side view)",
+  "made": "the S07 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
+  "sha256": "c0475e521f4531f2fb7c2485539a47b0204fe3b65bbe827025b94e6278512dbb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+ },
+ "mibi-halo-S07-128x160-mist": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "halo-S07-clear.jpg over the S07 silhouette from the species frame's placeholder render (side view)",
+  "made": "the S07 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
+  "sha256": "32b869b2f20128988dd1795c06d4d4ac3ec085d829a03ff027802b18d50769f7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
  }
 }

@@ -1068,5 +1068,39 @@
   "pacific_day": "2026-10-08",
   "time": "2026-10-09T00:47:45Z",
   "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S04-clear try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.180176,
+  "mxn": 3.6035,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:07:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 508,
+   "candidatesTokenCount": 1305,
+   "thoughtsTokenCount": 188,
+   "totalTokenCount": 2001
+  }
+ },
+ {
+  "tag": "halo-S07-clear try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182576,
+  "mxn": 3.6515,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:07:18Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 508,
+   "candidatesTokenCount": 1284,
+   "thoughtsTokenCount": 229,
+   "totalTokenCount": 2021
+  }
  }
 ]
