@@ -10,6 +10,7 @@ import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync } from "no
 import { createRequire } from "node:module";
 import path from "node:path";
 import { decodePNG } from "../../ui/png.mjs";
+import { pageSize } from "../../ui/layout.mjs";
 import { ringMask, tabRingMask } from "../../ui/rings.mjs";
 import { fileURLToPath } from "node:url";
 
@@ -184,6 +185,11 @@ for (const [name, setup] of Object.entries(SETUPS)) {
   let diff = 0, total = 0; for (let j = 0; j < 600; j++) for (let i = 0; i < 1024; i++) { if (boxes.some((b) => i >= b[0] && i < b[0] + b[2] && j >= b[1] && j < b[1] + b[3])) continue; total++; const a = px(Ds, i, j), b = px(Rs, i, j); if (Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2])) > 3) diff++; }
   console.log(`${name.padEnd(10)} face against the canvas renderer outside the type: ${diff} of ${total} pixels differ`);
   expect(diff <= total * 0.002, `${name}: the face draws the state as the canvas renderer does outside the type (${diff} of ${total} differ)`);
+  if (name === "chapter") {   // the pane takes its size from the trait count (pods.json page.sizeByCount): drawn by the face at that width, left edge 424, top 112
+    const R = pods.regions.chapter.page, pane = nodesS.find((n) => n.kind === "nineSlice" && n.rect[0] === R.rect[0] && n.rect[1] === R.rect[1]), count = nodesS.filter((n) => /\.c\d+\.name$/.test(n.id)).length;
+    expect(!!pane, "chapter: the page's pane is drawn at the spec's left edge and top");
+    if (pane) expect(pane.rect[2] === pageSize(R, count)[0] && pane.rect[3] === pageSize(R, count)[1], `chapter: the pane is ${pageSize(R, count)} for ${count} traits: ${pane.rect}`);
+  }
   await fc.close();
 }
 expect(errors.length === 0, "no page errors: " + errors.join(" | "));

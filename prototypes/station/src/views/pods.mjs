@@ -154,6 +154,8 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
     if (!read) { cell.frost = true; return cell; }
     const state = traitState(fr, t, p.genome);
     cell.picture = slot(req, `trait-picture-standin-${pw}x${ph}`, [0, 0, pw, ph], "the stand-in picture card master"); cell.frame = slot(req, `trait-picture-frame-${pw}x${ph}`, [0, 0, pw, ph], "the trait frame master");   // no trait picture is drawn by the build: the signed frame and the stand-in card until the painted pictures exist
+    const slug = (x) => String(x ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), sid = p.species;
+    if (state.shows) cell.crop = slot(req, `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, placed by id at the page size
     cell.lines = [state.line];
     const small = ph < spec.page.marks.smallUnder, [sw, sh] = small ? spec.page.marks.seedSmall : spec.page.marks.seed, M = spec.page.marks;
     const seed = () => { slot(req, `mark-seed-${sw}x${sh}-mask`, [0, 0, sw, sh], "the seed's mask master"); return slot(req, `mark-seed-${sw}x${sh}`, [0, 0, sw, sh], "the seed mark master"); };   // the marks are the studio's: slots by id, nothing drawn by the build

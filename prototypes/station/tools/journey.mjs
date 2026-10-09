@@ -207,6 +207,7 @@ l = await line(); expect(!l.ok && l.subject === "Character is sealed", "a sealed
 await page.evaluate((id) => { window.__st.skipRead(id); window.__st.podsGo(id, "rail.0"); }, tuikisPod.id); await page.waitForTimeout(300); await frameShot("pods-eight-chapters");
 // the Large pod with six Coat traits (144×112 pictures), read whole by the developer
 await page.evaluate((id) => { window.__st.skipRead(id); window.__st.podsGo(id, "rail.0"); }, coatSix.id); await page.waitForTimeout(300); await frameShot("pods-six-traits");
+for (const [i, name] of [[1, "pods-belatz-face"], [3, "pods-belatz-legs-tail"]]) { await page.evaluate(([id, n]) => window.__st.podsGo(id, "rail." + n), [coatSix.id, i]); await page.waitForTimeout(300); await frameShot(name); }   // the Belatz pages with the studio's crops
 // reading mid-wipe: a fresh pod's first chapter; input held for the wipe
 await page.evaluate(() => window.__st.seedCrate("S01", 1, 31337)); await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.waiting.length === 1, "the rack is full: the new pod waits for a well");

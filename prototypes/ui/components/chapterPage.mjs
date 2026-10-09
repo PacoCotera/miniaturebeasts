@@ -33,9 +33,12 @@ export function chapterPage(ctx, id, region, props) {
     const c = props.cells[i], [cx, cy] = cell, [pw, ph] = grid.picture, cid = `${id}.c${i}`, P = [cx, cy, pw, ph];
     nodes.push({ id: cid + ".pic", kind: "rect", rect: P, colour: Cc.pane, region: props.cellRegion ?? null });   // the cell's ground; what lies over it is the signed picture, or its stand-in card, then the signed frame
     if (c.picture && !c.frost) {
+      const crop = layer(cid + ".crop", P, c.crop);
+      if (crop.length) nodes.push(...crop, ...layer(cid + ".frame", P, c.frame)); else {
       const card = layer(cid + ".card", P, c.picture); if (!card.length && Cc.cardFill) nodes.push({ id: cid + ".cardfill", kind: "rect", rect: P, colour: Cc.cardFill });   // until the card is cut at this size: its fill
       nodes.push(...card, ...layer(cid + ".frame", P, c.frame));
       if (props.standIn) { const w = Math.round(ctx.measure(props.standIn, 16, 400)); nodes.push({ id: cid + ".standin", kind: "text", rect: [cx + Math.round((pw - w) / 2), cy + Math.floor((ph - ctx.cap(16)) / 2), w, ctx.line(16)], text: props.standIn, px: 16, weight: 400, colour: Cc.standIn, align: "left" }); }   // the card carries no word of its own: the build sets it
+      }
     }
     if (c.frost) nodes.push(props.unreadFrame && isFilled(props.unreadFrame) ? { id: cid + ".frost", kind: "sprite", rect: P, asset: props.unreadFrame } : { id: cid + ".frost", kind: "rect", rect: P, colour: Cc.frostFill || "frost" });   // the signed frosted frame; a flat frost until it is placed   // the spec's unread cell: frost fill, no picture, nothing requested
     else {
