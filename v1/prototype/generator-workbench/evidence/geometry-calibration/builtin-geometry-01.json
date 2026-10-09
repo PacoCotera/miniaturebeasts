@@ -1,6 +1,6 @@
 {
   "schemaVersion": "critter-image-benchmark/1",
-  "method": "GPT-6.1 Sol High-directed built-in image tool",
+  "method": "ChatGPT built-in image tool (gpt-image, per the PNG's Content Credentials)",
   "rasterBackend": "unverified; tool exposes no model parameter or backend identifier",
   "callCount": 1,
   "startedAtUtc": "2026-10-02T01:58:37.070Z",

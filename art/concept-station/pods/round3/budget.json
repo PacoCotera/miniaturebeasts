@@ -3,14 +3,14 @@
   "runs": [
     {
       "time": "2026-10-07T08:19:19Z",
-      "plan": "scratchpad/plan-pods-r3-flat.json",
+      "plan": "plan-pods-r3-flat.json",
       "ids": null,
       "success": 2,
       "error": 0
     },
     {
       "time": "2026-10-07T08:20:32Z",
-      "plan": "scratchpad/plan-pods-r3c-flat.json",
+      "plan": "plan-pods-r3c-flat.json",
       "ids": null,
       "success": 1,
       "error": 0

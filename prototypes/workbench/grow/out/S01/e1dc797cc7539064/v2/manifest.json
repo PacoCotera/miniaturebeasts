@@ -34,7 +34,6 @@
     {
      "callId": "ccdcb90d-d33d-44e5-a704-9e14b36b4750",
      "status": "ok",
-     "costUSD": 0.09415,
      "seconds": 8.3,
      "checks": {
       "silhouetteIoU": 0.944,
@@ -102,7 +101,6 @@
     {
      "callId": "3e668ee7-541a-44f6-859c-9e1277833c05",
      "status": "ok",
-     "costUSD": 0.09385,
      "seconds": 8.6,
      "checks": {
       "silhouetteIoU": 0.975,
@@ -173,7 +171,6 @@
     {
      "callId": "aef3a395-e195-4283-82b6-11b14b00f5e9",
      "status": "ok",
-     "costUSD": 0.09244,
      "seconds": 7.8,
      "checks": {
       "silhouetteIoU": 0.945,
@@ -229,7 +226,6 @@
     {
      "callId": "ddf76ab4-0c14-447a-99c6-092e3c4808bd",
      "status": "ok",
-     "costUSD": 0.09001,
      "seconds": 7.1,
      "checks": {
       "silhouetteIoU": 0.941,
@@ -295,7 +291,6 @@
   "token-48.png": "a1d340171d2d530ce5721f0bff71020c56c6b74c52e62ef0a0c0f2ecec031e1f"
  },
  "calls": 4,
- "costUSD": 0.37045,
  "seconds": 31.8,
  "finishedAt": "2026-10-08T03:14:13Z"
 }

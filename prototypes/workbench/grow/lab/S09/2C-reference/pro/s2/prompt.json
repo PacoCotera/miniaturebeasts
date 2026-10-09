@@ -13,14 +13,12 @@
  "model": "gemini-3-pro-image",
  "sample": 2,
  "changed": "Step 2, reference strength wording only: Image 2 sets the finish more strongly and is barred from shape more explicitly.",
- "costUSD": 0.1583,
  "step1": {
   "shared": "v5's drawing"
  },
  "step2": {
   "callId": "d6f437da-4e37-4df0-bc1d-227d1160b1ee",
   "status": "ok",
-  "costUSD": 0.15827,
   "seconds": 20.6,
   "imageOrder": [
    "drawing",

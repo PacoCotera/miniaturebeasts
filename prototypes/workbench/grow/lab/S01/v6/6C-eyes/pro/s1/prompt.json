@@ -13,14 +13,12 @@
  "model": "gemini-3-pro-image",
  "sample": 1,
  "changed": "Step 2, eye words only: the eye is drawn as Pip's is, with a lid line and a second glint, at its drawn size.",
- "costUSD": 0.1624,
  "step1": {
   "shared": "v5's drawing"
  },
  "step2": {
   "callId": "77c9eefb-5453-4fbe-90f0-8164f01c86f6",
   "status": "ok",
-  "costUSD": 0.16242,
   "seconds": 16.6,
   "imageOrder": [
    "drawing",

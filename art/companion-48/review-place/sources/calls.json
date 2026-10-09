@@ -1,764 +1,635 @@
 {
- "successfulCalls": 107,
- "totalUSD": 21.13,
+ "successfulCalls": 105,
  "calls": [
   {
    "tag": "C48-H-r6-a1",
    "tool": "gemini-3-pro-image",
-   "in": 1015,
-   "out": 1435,
-   "usd": 0.1742,
+   "size": "1K",
    "seconds": 18.0
   },
   {
    "tag": "C48-P-r1-a1",
    "tool": "gemini-3-pro-image",
-   "in": 1090,
-   "out": 1523,
-   "usd": 0.1849,
+   "size": "1K",
    "seconds": 19.3
   },
   {
    "tag": "C48-T-r1-a1",
    "tool": "gemini-3-pro-image",
-   "in": 1124,
-   "out": 1415,
-   "usd": 0.172,
+   "size": "1K",
    "seconds": 18.4
   },
   {
    "tag": "C48-W-r1-a1",
    "tool": "gemini-3-pro-image",
-   "in": 1070,
-   "out": 1432,
-   "usd": 0.174,
+   "size": "1K",
    "seconds": 19.5
   },
   {
    "tag": "C48-H-r11-a1",
    "tool": "gemini-3-pro-image",
-   "in": 564,
-   "out": 1346,
-   "usd": 0.1626,
+   "size": "1K",
    "seconds": 19.8
   },
   {
    "tag": "C48-H-r11-c1",
    "tool": "gemini-3-pro-image",
-   "in": 532,
-   "out": 1352,
-   "usd": 0.1633,
+   "size": "1K",
    "seconds": 19.2
   },
   {
    "tag": "C48-H-r11-c2",
    "tool": "gemini-3-pro-image",
-   "in": 571,
-   "out": 1338,
-   "usd": 0.1617,
+   "size": "1K",
    "seconds": 16.1
   },
   {
    "tag": "C48-H-r11-d1",
    "tool": "gemini-3-pro-image",
-   "in": 556,
-   "out": 1362,
-   "usd": 0.1646,
+   "size": "1K",
    "seconds": 17.5
   },
   {
    "tag": "C48-H-r11-rd-s41",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "144x152",
-   "usd": 0.18,
    "seconds": 52.7
   },
   {
    "tag": "C48-H-r11-rd-s42",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "144x152",
-   "usd": 0.18,
    "seconds": 41.9
   },
   {
    "tag": "C48-H-r11-rd-s43",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "144x152",
-   "usd": 0.18,
    "seconds": 41.8
   },
   {
    "tag": "C48-H-r11-rdd-s61",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "144x156",
-   "usd": 0.18,
    "seconds": 68.1
   },
   {
    "tag": "C48-H-r11-rdd-s62",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "144x156",
-   "usd": 0.18,
    "seconds": 46.8
   },
   {
    "tag": "C48-H-r11-rdd-s63",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "144x156",
-   "usd": 0.18,
    "seconds": 36.7
   },
   {
    "tag": "C48-H-r11-rde-s81",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "144x156",
-   "usd": 0.18,
    "seconds": 36.3
   },
   {
    "tag": "C48-H-r11-rde-s82",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "144x156",
-   "usd": 0.18,
    "seconds": 51.9
   },
   {
    "tag": "C48-H-r11-rde-s83",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "144x156",
-   "usd": 0.18,
    "seconds": 41.7
   },
   {
    "tag": "C48-S-r11-stone-L-s31",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "62x80",
-   "usd": 0.18,
    "seconds": 31.3
   },
   {
    "tag": "C48-S-r11-stone-L-s32",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "62x80",
-   "usd": 0.18,
    "seconds": 36.5
   },
   {
    "tag": "C48-S-r11-stone-L-s33",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "62x80",
-   "usd": 0.18,
    "seconds": 57.1
   },
   {
    "tag": "C48-S-r11-stone-s21",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x64",
-   "usd": 0.18,
    "seconds": 36.6
   },
   {
    "tag": "C48-S-r11-stone-s22",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x64",
-   "usd": 0.18,
    "seconds": 26.1
   },
   {
    "tag": "C48-S-r11-stone-s23",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x64",
-   "usd": 0.18,
    "seconds": 36.5
   },
   {
    "tag": "C48-T-r11-a1",
    "tool": "gemini-3-pro-image",
-   "in": 228,
-   "out": 1403,
-   "usd": 0.1688,
+   "size": "1K",
    "seconds": 19.4
   },
   {
    "tag": "C48-T-r11-b1",
    "tool": "gemini-3-pro-image",
-   "in": 496,
-   "out": 1346,
-   "usd": 0.1625,
+   "size": "1K",
    "seconds": 17.5
   },
   {
    "tag": "C48-T-r11-rd-s11",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "136x152",
-   "usd": 0.18,
    "seconds": 31.5
   },
   {
    "tag": "C48-T-r11-rd-s12",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "136x152",
-   "usd": 0.18,
    "seconds": 41.8
   },
   {
    "tag": "C48-T-r11-rd-s13",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "136x152",
-   "usd": 0.18,
    "seconds": 41.7
   },
   {
    "tag": "C48-T-r11-rdb-s51",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "136x152",
-   "usd": 0.18,
    "seconds": 41.6
   },
   {
    "tag": "C48-T-r11-rdb-s52",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "136x152",
-   "usd": 0.18,
    "seconds": 62.5
   },
   {
    "tag": "C48-T-r11-rdb-s53",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "136x152",
-   "usd": 0.18,
    "seconds": 31.4
   },
   {
    "tag": "C48-T-r11-rdc-s71",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "224x232",
-   "usd": 0.18,
    "seconds": 46.9
   },
   {
    "tag": "C48-T-r11-rdc-s72",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "224x232",
-   "usd": 0.18,
    "seconds": 46.8
   },
   {
    "tag": "C48-T-r11-rdc-s73",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "224x232",
-   "usd": 0.18,
    "seconds": 52.0
   },
   {
    "tag": "C48-H-r7-B-dark-s48",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 31.7
   },
   {
    "tag": "C48-H-r7-B-dark-s50",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 31.3
   },
   {
    "tag": "C48-H-r7-B-dark2-s48",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 31.6
   },
   {
    "tag": "C48-H-r7-B-dark2-s50",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 31.3
   },
   {
    "tag": "C48-H-r7-B-lit-s48",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 57.5
   },
   {
    "tag": "C48-H-r7-B-lit-s49",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 52.1
   },
   {
    "tag": "C48-H-r7-B-lit-s50",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 26.2
   },
   {
    "tag": "C48-H-r6-A-dark",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 41.9
   },
   {
    "tag": "C48-H-r6-A-dark2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 52.1
   },
   {
    "tag": "C48-H-r6-A",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 83.7
   },
   {
    "tag": "C48-H-r6-B-dark",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 47.4
   },
   {
    "tag": "C48-H-r6-B-dark2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 36.3
   },
   {
    "tag": "C48-H-r6-B",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 41.7
   },
   {
    "tag": "C48-H-r6-C-dark",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 57.2
   },
   {
    "tag": "C48-H-r6-C-dark2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 47.2
   },
   {
    "tag": "C48-H-r6-C",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 67.9
   },
   {
    "tag": "C48-H-r6-D-dark",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 46.8
   },
   {
    "tag": "C48-H-r6-D-dark2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 114.1
   },
   {
    "tag": "C48-H-r6-D",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "64x58",
-   "usd": 0.18,
    "seconds": 41.5
   },
   {
    "tag": "C48-W-r9-down-creep1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 62.5
   },
   {
    "tag": "C48-W-r9-down-creep2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 36.4
   },
   {
    "tag": "C48-W-r9-down-creep3",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 62.1
   },
   {
    "tag": "C48-W-r9-down-react",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 31.1
   },
   {
    "tag": "C48-W-r9-down-walk1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 31.7
   },
   {
    "tag": "C48-W-r9-down-walk3",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 41.6
   },
   {
    "tag": "C48-W-r9-right-creep1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 36.2
   },
   {
    "tag": "C48-W-r9-right-creep2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 36.7
   },
   {
    "tag": "C48-W-r9-right-creep3",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 36.6
   },
   {
    "tag": "C48-W-r9-right-react",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 36.2
   },
   {
    "tag": "C48-W-r9-right-walk2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 41.4
   },
   {
    "tag": "C48-W-r9-right-walk3",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 36.7
   },
   {
    "tag": "C48-W-r9-up-creep1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 41.4
   },
   {
    "tag": "C48-W-r9-up-creep2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 36.3
   },
   {
    "tag": "C48-W-r9-up-creep3",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 176.0
   },
   {
    "tag": "C48-W-r9-up-react",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 56.9
   },
   {
    "tag": "C48-W-r9-up-walk1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 31.3
   },
   {
    "tag": "C48-W-r9-up-walk2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 78.0
   },
   {
    "tag": "C48-W-r9-up-walk3",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 41.6
   },
   {
    "tag": "C48-W-r9-down-creep2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 57.2
   },
   {
    "tag": "C48-W-r9-down-react",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 57.2
   },
   {
    "tag": "C48-W-r9-right-creep1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 31.1
   },
   {
    "tag": "C48-W-r9-up-creep2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 31.1
   },
   {
    "tag": "C48-W-r9-up-react",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 56.9
   },
   {
    "tag": "C48-W-r9-up-walk1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 26.0
   },
   {
    "tag": "C48-W-r7-G-down",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 41.5
   },
   {
    "tag": "C48-W-r7-G-side",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 36.6
   },
   {
    "tag": "C48-W-r7-H-down",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 41.8
   },
   {
    "tag": "C48-W-r7-H-side",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 41.5
   },
   {
    "tag": "C48-S-r2-bush-fruit",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x43",
-   "usd": 0.18,
    "seconds": 52.0
   },
   {
    "tag": "C48-S-r2-bush-shaken",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "50x48",
-   "usd": 0.18,
    "seconds": 31.4
   },
   {
    "tag": "C48-S-r2-bush",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x43",
-   "usd": 0.18,
    "seconds": 31.2
   },
   {
    "tag": "C48-S-r2-outpost-dark",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x51",
-   "usd": 0.18,
    "seconds": 36.8
   },
   {
    "tag": "C48-S-r2-outpost-dark2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x51",
-   "usd": 0.18,
    "seconds": 36.8
   },
   {
    "tag": "C48-S-r2-outpost-lit",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x55",
-   "usd": 0.18,
    "seconds": 47.4
   },
   {
    "tag": "C48-S-r2-pawn-down",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 26.1
   },
   {
    "tag": "C48-S-r2-pawn-left",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 62.2
   },
   {
    "tag": "C48-S-r2-pawn-right",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 46.8
   },
   {
    "tag": "C48-S-r2-pawn-up",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 52.0
   },
   {
    "tag": "C48-S-r2-pod",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "32x30",
-   "usd": 0.18,
    "seconds": 46.7
   },
   {
    "tag": "C48-S-r2-stone-charged1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "44x48",
-   "usd": 0.18,
    "seconds": 31.2
   },
   {
    "tag": "C48-S-r2-stone-charged2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "44x47",
-   "usd": 0.18,
    "seconds": 41.9
   },
   {
    "tag": "C48-S-r2-stone-plain2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "32x35",
-   "usd": 0.18,
    "seconds": 37.2
   },
   {
    "tag": "C48-S-r2-stone-step",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "40x28",
-   "usd": 0.18,
    "seconds": 68.0
   },
   {
    "tag": "C48-S-r2-stone-warm1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "44x45",
-   "usd": 0.18,
    "seconds": 31.3
   },
   {
    "tag": "C48-S-r2-stone-warm2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "44x47",
-   "usd": 0.18,
    "seconds": 26.3
   },
   {
    "tag": "C48-S-r2-stone",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "32x35",
-   "usd": 0.18,
    "seconds": 41.8
   },
   {
    "tag": "C48-S-r2-tree",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "96x111",
-   "usd": 0.18,
    "seconds": 57.3
   },
   {
    "tag": "C48-R-r1-a1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "96x96",
-   "usd": 0.18,
    "seconds": 21.2
   },
   {
    "tag": "C48-R-r1-a2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "96x96",
-   "usd": 0.18,
    "seconds": 52.7
   },
   {
    "tag": "C48-R-r2-water1",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 21.1
   },
   {
    "tag": "C48-R-r2-water2",
    "tool": "retro-diffusion rd_pro__topdown",
    "size": "48x48",
-   "usd": 0.18,
    "seconds": 41.9
-  },
-  {
-   "tag": "C48-S-r2 first sprite batch (twelve calls, superseded by the second batch; the inputs carried a magenta fringe and the four pawn results never came back to the session; its files were removed)",
-   "tool": "retro-diffusion rd_pro__topdown",
-   "usd": 2.16,
-   "evidence": "Retro Diffusion balance $6.36 before the first batch, $2.04 after the second: 24 calls at $0.18"
-  },
-  {
-   "tag": "C48-S-r2 outpost-lit, first result (overwritten by the round 5 re-run; its sidecar replaced)",
-   "tool": "retro-diffusion rd_pro__topdown",
-   "usd": 0.18,
-   "evidence": "a sidecar is overwritten when a piece is re-run; the balance check ($6.36 before round 2's batches) accounts for every call"
   }
- ],
- "pricing": "gemini-3-pro-image standard tier: $2.00/M input, $120/M output tokens (ai.google.dev pricing, 2026-10-08); Retro Diffusion rd_pro: $0.18 per image (balance_cost in the task result)"
+ ]
 }

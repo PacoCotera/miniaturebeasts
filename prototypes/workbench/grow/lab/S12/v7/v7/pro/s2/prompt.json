@@ -16,7 +16,6 @@
  "model": "gemini-3-pro-image",
  "sample": 2,
  "changed": "The v7 house rendering in both steps (one light, one shading model, value-only contour, the house eye, the background and contact-shadow rule, two or three surface touches, the vinyl finish, one framing rule), the species notes cut to what differs, and no species reference image in either step: the drawing and the colour key only.",
- "costUSD": 0.345,
  "subject": {
   "member": "type-specimen",
   "genomeDigest": "S12-94f298de",
@@ -25,7 +24,6 @@
  "step1": {
   "callId": "53a048bf-1e05-4792-a122-db31a5a2ad7e",
   "status": "ok",
-  "costUSD": 0.16961,
   "seconds": 17.2,
   "imageOrder": [
    "index",
@@ -174,7 +172,6 @@
  "step2": {
   "callId": "d5bec4c0-04c5-4b7a-a720-72fc4c2692b0",
   "status": "ok",
-  "costUSD": 0.17537,
   "seconds": 19.8,
   "imageOrder": [
    "drawing",

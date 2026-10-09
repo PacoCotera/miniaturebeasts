@@ -16,7 +16,6 @@
  "model": "gemini-3-pro-image",
  "sample": 2,
  "changed": "Both steps, the Eyes paragraph removed; the species iris colour in the notes stays. Measures what the house eye recipe buys in sameness across species.",
- "costUSD": 0.3464,
  "subject": {
   "member": "type-specimen",
   "genomeDigest": "S01-45ff1025",
@@ -25,7 +24,6 @@
  "step1": {
   "callId": "82759fe9-753c-440f-84fc-4542647981fa",
   "status": "ok",
-  "costUSD": 0.17435,
   "seconds": 18.8,
   "imageOrder": [
    "index",
@@ -160,7 +158,6 @@
  "step2": {
   "callId": "49f78f6d-bd73-4a8a-8883-0b0ea9a93f65",
   "status": "ok",
-  "costUSD": 0.17207,
   "seconds": 20.9,
   "imageOrder": [
    "drawing",
