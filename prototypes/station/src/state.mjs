@@ -508,11 +508,23 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
 export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings));
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a.genome, b.genome, genomeLookup(st)); return k; }
 export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
-// The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match.
+// The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you
+// have read, and an indication of everything missing"): a trait whose chapter either parent has not read is marked `missing`, with no seeds, range or firmness, and names which parent
+// and which chapter to read; a sealed chapter's traits stay `sealed`. `missing` counts the readable traits still unknown, `sealedTraits` the sealed ones, `unknown` both; the genome-wide
+// likeness is shown only when nothing is unknown. The cross itself (`doCross`) still draws on the whole genomes: the mask is only what the screen may say.
 export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
   const fr = frameFor(a); if (!fr || crossBlock(st, null, a, b, settings) === "another species") return null;
-  const k = kinshipOf(st, a, b);
-  return { ...crossForecast(fr, a.genome, b.genome, { kinship: k, lookup: genomeLookup(st) }), kinship: k, identity: genomeIdentity(fr, a.genome, b.genome) };
+  const k = kinshipOf(st, a, b), full = crossForecast(fr, a.genome, b.genome, { kinship: k, lookup: genomeLookup(st) });
+  const chapterName = (id) => fr.chapters.find((c) => c.id === id)?.name || id;
+  let missing = 0, sealedTraits = 0;
+  const traits = full.traits.map((t) => {
+    if (t.sealed) { sealedTraits++; return t; }
+    const need = [[a, "a"], [b, "b"]].filter(([m]) => !(m.read || []).includes(t.chapter)).map(([m, side]) => ({ parent: side, id: m.id, name: m.name, chapter: t.chapter, chapterName: chapterName(t.chapter) }));
+    if (!need.length) return t;
+    missing++; return { chapter: t.chapter, trait: t.trait, name: t.name, sealed: false, locus: t.locus, kind: "missing", missing: need };
+  });
+  const unknown = missing + sealedTraits;
+  return { ...full, traits, kinship: full.kinship, missing, sealedTraits, unknown, identity: unknown ? null : genomeIdentity(fr, a.genome, b.genome) };
 }
 // Chapters a child is known in before any read: every trait firm (switch parents match); a blend is never firm.
 export function childKnownChapters(fr, fc) { return fr.chapters.filter((c) => !c.sealed && c.traits.every((t) => fc.traits.find((x) => x.trait === t.id)?.firm)).map((c) => c.id); }
