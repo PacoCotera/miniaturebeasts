@@ -177,7 +177,7 @@ Each milestone pushes to main, passes CI, deploys to the sandbox and is playable
 
 ## 8. Decisions
 
-**Decided** (owner, 2026-10-08): all three as recommended. The Caddy service on the sandbox server renders the control passes from the genome; the painter is a mock through M2 and in CI, and the real one from M3 behind the developer toggle and a daily limit; pods come from the Companion page's save, with dev seeds for testing.
+The Caddy service on the sandbox server renders the control passes from the genome; the painter is a mock through M2 and in CI, and the real one from M3 behind the developer toggle and a daily limit; pods come from the Companion page's save, with dev seeds for testing.
 
 1. **Where the control passes are rendered.** *Recommended:* by the Caddy service on the sandbox server from the genome, with the Station rendering only the placeholder; it reuses the Grow controls as they stand and lets only valid genomes reach the painter. The device build moves it to the Station.
 2. **The real painting service in the first build, or a mock.** *Recommended:* build against the mock through M2, then run the real painter on the sandbox from M3 behind the developer toggle and a daily limit; CI always mocks. The owner sees real paintings land where it matters, at a known run-rate.
