@@ -30,6 +30,10 @@
 - **Idle.** The first press only wakes the screen; nothing else happens.
 - **Leaving Create or Cross** by a room key drops the unpaid choices; coming back starts fresh (owner, 2026-10-09: "forget").
 
+## Species and mibi
+
+**Decided** (owner, 2026-10-09, after getting lost on the field guide: "we just need to communicate it clearly in the screens, or people will get lost just as i did"). The Library, the Book and its guide are about the **species**, filled in by every pod and mibi the player has read. Pods, Habitat and Cross show one individual, a **mibi** (a **pod** before it hatches), with its own stamp. On screen the species is "every", "a typical" or its name alone; the individual is "this" or "your". Never on screen: specimen, type, individual, critter, creature. Each level has a door to the other: the figure on Pods and the species word on Habitat open the species' guide (`✓ Open the guide`, a jump); a name in the guide's "Carried by" opens that mibi in Habitat (`✓ Visit Fig`, a jump). The table and the numbers are in [Station layouts, The two levels](station-layouts.md#the-two-levels-species-and-mibi).
+
 ## Instrument and living window
 
 | | Instrument | Living window |
@@ -73,10 +77,10 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Instrument.** The right third, four stacked modules, each with a status lamp and a few-word readout: the sample bay (crates behind a door), the pod rack (six wells, shells in place colours, a star where one glints), the incubation chamber (a dome and its ring of leaves), the Probe dock (the Probe and its Shield plates).
 - **Composition.** The vivarium's glass sits in a thin bezel; the modules align to one column with 8 px gaps. Nothing overlaps the vivarium.
 - **Lively / quiet.** Lively: residents, plants, water, the embryo's glow. Quiet: the modules; one lamp pulses slowly when its module needs you.
-- **Light.** Warm daylight inside the vivarium from the top left; even cool light on the chrome.
+- **Light.** Inside the vivarium, the same light as Idle: the warm key light from the top left, by the time of day; even cool light on the chrome (*the art director, 2026-10-09 12:40*: was "warm daylight").
 - **Palette.** Deep blue-teal chrome; the vivarium's greens and warm earth; amber only on the lamp that needs you.
 - **Type.** 3× screen name; 2× readouts, three words or fewer each.
-- **Chrome.** `✓ Look at Bean`, no ← on Home (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← the room`) | `Bean · Untuva · adult` | `an Untuva pod waits · needs 2 ❀`.
+- **Chrome.** `✓ Look at Bean`, no ← on Home (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← the room`) | `Bean · Untuva · adult` (*the UI designer, 2026-10-09*: now "an adult Untuva"; the name is on the tag under the resident, the owner's decision of 2026-10-07) | `an Untuva pod waits · needs 2 ❀`.
 - **Motion.** Residents move smoothly at the panel's rate; module doors and lamps move only on events.
 
 **Pass when**
@@ -121,6 +125,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 *Dock and arrival wireframe. Layout only.*
 
+The measured layout, states and timeline are [Station layouts, Dock and arrival](station-layouts.md#dock-and-arrival) (*L2.2, UI designer, 2026-10-09; Proposal*). The ribbon has no digits there and says the crate only: "First crate home" (*the copywriter, 2026-10-09 12:22*: was "Expedition 4 home · 2 pods · explored 9 of 21"); how far the land is explored is on the report card.
+
 ---
 
 ## Pods
@@ -139,7 +145,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Light.** The beam from above-left on the pod; a read page lit warm from inside; arcs and list cool.
 - **Palette.** Pods from one renderer: the species' colour pair and shell pattern, the place's dust or moss; frost pale blue-white; seeds pearl with a ghost inside; the ring's band grey, its tracks in the looks' hues.
 - **Type.** Pod name at 4×; origin at 2× ("Found on the rock field, as a Tuikis felt safe."; the pattern is in [Station layouts](station-layouts.md), Words on Pods); one word per chapter; one short line per trait ("stripes · hides spots", "only teal", "breed to change"; at most six words).
-- **Chrome.** `✓ Identify · 1 ⚡`, `✓ Read Coat · 3 ◆`, `✓ Shape a founder`, `✓ Compare`, `✓ Return to the wild · +1 ❀`.
+- **Chrome.** `✓ Identify · 1 ⚡`, `✓ Read Coat · 3 ◆`, `✓ Shape a founder`, `✓ Compare`, `✓ Return to the wild · +1 ❀`, `✓ Open the guide` on the figure.
+- **This pod, the species** (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*). On the overview, "this pod" under the pod's marks and "the species" under the figure, once identified. The ring starts on the pod with `✓ Shape a founder`; the figure is a side trip one ▶ away, and ✓ on it opens the species' guide: a jump to the Book's guide spread, where ← reads Library.
 - **Motion.** The seal breaks and the glyph lights in about 2 s; the page turns in 2 s and its sector fills; glints 2 Hz; compare slides the second pod in at 300 ms.
 
 **Decided 2026-10-07 (concept round).** The genome stamp sits on a square label of about 220 px, no plate. The progress ring sits around the pod's shell and carries chapters only; "identified" shows on the pod's seal. The dark glass lab is the bench, and Create and Incubator follow it. Reference: `art/concept-station/pods-v2/`, candidate PV-D-r3-a4.
@@ -267,13 +274,14 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 **Purpose.** Each species' field guide: its frame, the looks found so far, lineage and wishes. **Reads first:** the species' portrait and name.
 
 - **Living window.** The species portrait: one resident of that species in rich treatment, doing its habit (dig, glow, puff), mounted on the page as a framed plate.
-- **Instrument.** The field guide, full screen: the species' places as stamps; the frame once, as a pressed plate; one tab per chapter (as many as the species has), every look found as a small specimen plate per trait and one dotted "more?" slot; the stamp at 120 px on a plain plate; the family tree panel under the stamp; the pinned wish.
+- **Instrument.** Two spreads. The face spread: the species' places as stamps; the frame once, as a pressed plate; the stamp at 120 px on a plain plate (the type specimen's, with no mibi name, until a portrait); the family tree panel under the stamp; the pinned wish; a page-turn corner to the guide (`book-corner-turn-24x24`, only when the species has a guide). The guide spread, the fold-out: every chapter as a column, every look found and still to find (Guide, below) (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was one tab per chapter and the look plates on the face spread).
+- **The clarity line.** Under the habit line: "A typical Belatz, not one of yours."; with a portrait, "Fig, your Belatz, sat for this."
 - **Composition.** Portrait at the left (about 300×310); guide pages centre; stamp, tree and wishes right.
 - **Lively / quiet.** Lively: the portrait. Quiet: the guide, the tree.
 - **Light.** Warm on the portrait; cool, even light on the archive.
 - **Palette.** The tome's cream, the species' hues on plates.
 - **Type.** 3× species name on a paper label, with one 2× habit line under it; no paragraphs.
-- **Chrome.** `✓ Visit Fig` on a mibi, `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Library` (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← Spread`). `✓ Visit Fig` is a jump: on Habitat, ← reads Home.
+- **Chrome.** `✓ Visit Fig` on a mibi (on the face spread only when the face is a living mibi's portrait: the type face has no ✓ cap), `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Library` (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← Spread`). `✓ Visit Fig` is a jump: on Habitat, ← reads Home.
 - **Motion.** Tabs turn in 200 ms; the portrait lives.
 
 **Decided 2026-10-08 (owner; `art/concept-station/library-book/`, BK-D-r2-a1).** The Book is accepted. The portrait is mounted as a framed plate, not painted straight onto the page; the family tree panel stays under the stamp at about its present size (about 180×160 px); the name sits on a paper label with the habit line under it. For the master, the label's copy and the names go through the copywriter's rules and this guide's type first: consistent case (the owner flagged a mix of lower and upper case) and the typeface.
@@ -295,6 +303,30 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 ---
 
+### Guide
+
+**Decided** (owner, 2026-10-09). The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← reads Library. Measured in [Station layouts, Book: the guide spread](station-layouts.md#book-the-guide-spread); the numbers are in `prototypes/ui/specs/station/library.json`.
+
+**Purpose.** The species whole: what is found, what is left, and who carries a look. **Reads first:** the face and the name, then the chapter panels.
+
+- **The species, said.** The face (`guide-face-<SNN>-128x112`, the type painted for the guide), the name, and under it "Every look a Belatz can carry, found across your Belatz."
+- **Columns are chapters.** One panel per chapter, shared by every species and tinted by it: one pixel in eight of the species' pod pigment on paper, with a 2 px band of it across the top. Up to seven chapters 128 wide on a 136 pitch; eight 112 wide on a 120 pitch; never a scroll.
+- **Progress on every trait.** One pip per look, filled found, dotted unseen, in groups of five. No digits.
+- **Sealed.** A shut panel with its notch and no traits.
+- **One detail band.** The open trait's looks as plates and one dashed "more?", each plate keylined in `bark`, "Carried by" with your mibis' names on two lines at most.
+- **Wish.** A mark on a pinned trait and its plate; the pinned wish itself stays on the face spread.
+- **Palette.** The tome's paper; colour only in the tints, the plates and the face.
+- **Chrome.** `✓ Add to the wish` or `✓ Take it off the wish` on a plate; `✓ Visit Fig` on a name (a jump: on Habitat, ← reads Home); read-only on a cell; `← Library`.
+- **Focus.** On the tome's paper the ring is `rust`, the same geometry (frame.json `focus.ring.onPaper`), on the Library, the face spread and the guide.
+- **Motion.** The page turns in 300 ms.
+
+**Pass when**
+- [ ] It says it is the species, in one line under the name.
+- [ ] Eight chapters fit with no scroll, every word whole.
+- [ ] Ten looks read as two groups of five at 1×.
+- [ ] Nothing is new state: every field comes from `fieldGuide`, the wish rules and `chapterLooks`.
+- [ ] No digits, no connectors, nothing childish.
+
 ## Habitat
 
 **Vibe.** Vivarium: cozy, warm, the pet happy at home.
@@ -309,6 +341,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Palette.** The vivarium's greens and earth; card chrome; the heart red, with its shape.
 - **Type.** 4× name; 2× card lines.
 - **Chrome.** `✓ Spend time with Fig`, `✓ Take Fig with you`, `✓ Bond with Fig` (then ✓ again), `✓ Cross Fig`. `← Home`. With a sitting held and Fig eligible: `✓ Portray Fig · 1 sitting` (2026-10-08).
+- **Your Loika** (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*). The card's first line reads "your Loika, adult"; the species word, with `mark-guide-16`, is a focus target: `✓ Open the guide`, a jump to the Book's guide spread, where ← reads Library.
 - **Motion.** The strip swaps the resident in 300 ms; the species moment plays about 2 s.
 
 **Pass when**
@@ -415,13 +448,13 @@ No wireframe; the layout reference is the sketch in the [Station screens proposa
 
 **Vibe.** Vivarium: the pets at ease, nothing asking for you.
 
-**Purpose.** The Station at rest, always on. **Reads first:** the residents.
+**Purpose.** A living view the Station can show permanently, always on: the vivarium, something worth looking at all day; never a screen off or a sleep (*clarified by the owner, 2026-10-09 12:20*: "idle doesn't mean screen off, means a view that can be shown permanently, vivarium or something interesting to look at"; was "The Station at rest, always on"). **Reads first:** the residents.
 
 - **Living window.** The whole screen: the vivarium at 1024×600, its light following the time of day, residents keeping their routines.
 - **Instrument.** Reduced to one status line on a thin cool strip at the foot ("Companion away · with Dot · an embryo is growing") and nothing else.
 - **Composition.** The vivarium edge to edge; the strip 32 px.
 - **Lively / quiet.** Lively: everything in the vivarium. Quiet: the strip.
-- **Light.** Daylight to dusk to night in the vivarium; at night a soft cool moonlight and the residents' own glows.
+- **Light.** Day to dusk to night in the vivarium, always the warm key light from the top left; at night warm and low (the glow-moss and the residents' own glows), the moon only a cool rim; mean L* 30 or more at night, mean red at least mean blue in every light; Home's glass shows the same light (*the art director, 2026-10-09 12:40*: was "at night a soft cool moonlight").
 - **Palette.** The vivarium's; the strip in chrome.
 - **Type.** 2× status.
 - **Chrome.** None. The first press only wakes; nothing else happens, and waking never rewards (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "any press wakes and does what it says").
@@ -434,7 +467,7 @@ No wireframe; the layout reference is the sketch in the [Station screens proposa
 - [ ] The status line is the only text.
 - [ ] Night is calm, never gloomy.
 
-No wireframe; the layout is Home's vivarium at full frame.
+The measured layout is [Station layouts, Idle](station-layouts.md#idle) (*L2.2, UI designer, 2026-10-09; Proposal*: was "no wireframe; the layout is Home's vivarium at full frame"): the vivarium 1024×568, the strip 32 px, one sentence of six words or fewer, a state of the frame.
 
 <img src="../../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept">
 

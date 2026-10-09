@@ -73,6 +73,38 @@ test("rule 4: a path leaves the list only by deletion, or with its screen's gold
   } finally { rmSync(root, { recursive: true }); }
 });
 
+test("the manifest may only tighten: against the base, a changed hash, a wider importer set, a changed screen and a recorded key added are each refused; a malformed exemption is refused", () => {
+  const root = tree(base()), m = build(root), clone = () => JSON.parse(JSON.stringify(m));
+  try {
+    assert.deepEqual(check(m, root, m, path.join(root, "golden")).failures, [], "the same manifest passes");
+    let x = clone(); x.paths.find((e) => e.path === "ui/scene.mjs").sha256 = "0".repeat(64); assert.match(check(x, root, m, path.join(root, "golden")).failures.join("\n"), /ui\/scene\.mjs: the manifest's hash differs/);
+    x = clone(); x.paths.find((e) => e.path === "station/src/gfx.mjs").importers.push("station/src/new.mjs"); assert.match(check(x, root, m, path.join(root, "golden")).failures.join("\n"), /station\/src\/new\.mjs was added to the allowed importers/);
+    x = clone(); x.paths.find((e) => e.path === "station/src/screens/home.mjs").screen = null; assert.match(check(x, root, m, path.join(root, "golden")).failures.join("\n"), /its screen changed from home to null/);
+    x = clone(); x.screens.home = ["draw", "nodes"]; assert.match(check(x, root, m, path.join(root, "golden")).failures.join("\n"), /screen home: nodes was added to the recorded keys/);
+    for (const bad of [{ path: "ui/scene.mjs", commit: "zz", reason: "r", sha256: "0".repeat(64) }, { path: "ui/scene.mjs", commit: "abc1234", reason: " ", sha256: "0".repeat(64) }, { path: "ui/scene.mjs", commit: "abc1234", reason: "r", sha256: "short" }, { path: "ui/unlisted.mjs", commit: "abc1234", reason: "r", sha256: "0".repeat(64) }]) assert.match(check({ ...m, exemptions: [bad] }, root).failures.join("\n"), /is malformed/);
+  } finally { rmSync(root, { recursive: true }); }
+});
+
+test("rule 3 cannot be walked around: a screen registered from any file, by a quoted key, with a template-literal name, or without an object literal is caught; tests are not scanned", () => {
+  const root = tree(base()), m = build(root);
+  try {
+    writeFileSync(path.join(root, "station/src/elsewhere.mjs"), 'registerScreen("late", { draw });\n'); assert.match(check(m, root).failures.join("\n"), /screen late registers draw/);
+    writeFileSync(path.join(root, "station/src/elsewhere.mjs"), 'registerScreen(`late`, { "nodes": f, \'faceNodes\': g });\n'); assert.match(check(m, root).failures.join("\n"), /screen late registers nodes[^]*screen late registers faceNodes/);
+    writeFileSync(path.join(root, "station/src/elsewhere.mjs"), 'registerScreen("late", impl);\n'); assert.match(check(m, root).failures.join("\n"), /registerScreen\("late"\) takes an object literal/);
+    writeFileSync(path.join(root, "station/src/elsewhere.mjs"), 'registerScreen(name, { draw });\n'); assert.match(check(m, root).failures.join("\n"), /takes a string literal as its first argument/);
+    writeFileSync(path.join(root, "station/src/elsewhere.mjs"), 'export function registerScreen(name, impl) {}\n'); assert.deepEqual(check(m, root).failures, [], "the definition is not a call");
+    mkdirSync(path.join(root, "station/tests"), { recursive: true }); writeFileSync(path.join(root, "station/tests/t.mjs"), 'registerScreen("t", { draw });\n'); assert.deepEqual(check(m, root).failures, [], "tests are not scanned");
+    writeFileSync(path.join(root, "station/src/elsewhere.mjs"), 'registerScreen("home", { "line": 1, drawer: 2, drawn: 3 });\n'); assert.deepEqual(check(m, root).failures, [], "a key that merely starts with draw is not draw");
+  } finally { rmSync(root, { recursive: true }); }
+});
+
+test("imports with a query or a hash still count, and only node_modules, .git and face/dist are skipped by the scan", () => {
+  const root = tree({ ...base(), "station/src/q.mjs": 'import { R } from "./gfx.mjs?v=2";\n', "station/src/img/deep.mjs": 'import { R } from "../gfx.mjs#x";\n', "face/dist/skipped.mjs": 'import "../../station/src/gfx.mjs";\n' }), m = build(root);
+  try {
+    const gfx = m.paths.find((e) => e.path === "station/src/gfx.mjs"); assert.ok(gfx.importers.includes("station/src/q.mjs") && gfx.importers.includes("station/src/img/deep.mjs"), "a query, a hash and a directory called img are all scanned"); assert.ok(!gfx.importers.includes("face/dist/skipped.mjs"), "face/dist is not");
+  } finally { rmSync(root, { recursive: true }); }
+});
+
 test("the committed freeze: deprecated.json holds a hash for every path of the list that exists, and the tree passes it", () => {
   const manifest = JSON.parse(readFileSync(path.resolve(import.meta.dirname, "../deprecated.json"), "utf8"));
   assert.ok(manifest.paths.every((e) => /^[0-9a-f]{64}$/.test(e.sha256) && LIST.some((l) => l.path === e.path)));

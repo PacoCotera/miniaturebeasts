@@ -35,6 +35,8 @@ These steps are the deprecated layer's and are not to be followed for a new scre
 6. **The intents.** A key on a focused target is one rule call in `state.mjs` (new rules land there with tests); its result becomes events on the timeline (`TL.play({ kind, target, ms, hold })`), which hold input while they play. No global timestamps.
 7. **The journey and the sign-off.** Extend `tools/journey.mjs` with the screen's steps and `frameShot` points (1024×600 captures in `img/`), run `tools/checks.mjs`, fill in the sign-off's section 3.
 
+**Frozen:** this registration (`registerScreen(name, { nodes, … })` or `{ draw, … }`) is the deprecated layer's; the freeze check refuses a screen that gains `draw`, `nodes` or `faceNodes`, and refuses a `registerScreen` call that is not a string name and an object literal.
+
 Registering a screen on the layer is `registerScreen(name, { nodes, line, act, enter })`; a screen not yet moved registers `{ draw, line, act, enter }` and is drawn as one legacy node.
 
 ## Keys
@@ -180,6 +182,13 @@ The body of the Cross screen is the splice ([cross.json](../ui/specs/station/cro
 - **Follow-ups (the splice designer, 2026-10-09; not now).** (1) Rig close-ups rendered at their size: Tufts' four seeds look identical at 64×32 because the trait picture is the whole creature cropped and scaled. (2) Before the device port, redraw on a key press only (the scene is diffed every frame, about 1,400 nodes at the biggest overview) and cut the per-dash nodes (the dashes are short rects; a line with a dash pattern, or a sprite, would be one node).
 - **Never drawn:** a copy, look, seed or range of a chapter either parent has not read (its child's column is frost with "read {parent}'s {chapter}", and only the parent that read it shows its own copies, on the chapter view), anything of a sealed chapter but its find, the child's actual draw, odds, percentages or counts.
 - **Tests:** `tests/cross-splice.test.mjs` (the geometry on all frames, the routing from the forecast, nothing unread drawn, the sealed find, the heads and the line, the wish), `tests/cross-read.test.mjs` (the forecast's mask), and the journey (the overview, ▼ into a chapter, ▲ back, ◀ ▶), whose captures are `img/cross-overview.png` and `img/cross-chapter.png`.
+
+## The field guide: rules and spec, drawing pending (lvgl-switch.md §6 Q3 a)
+
+The Book's second spread (every chapter a column, every trait a cell with its pips, a detail band with the look plates and "Carried by") was first built on the JavaScript drawing layer on the frozen `field-guide` branch (5927d91d). `main` carries only its data and rules; the drawing is built on the LVGL face at L2.1.
+
+- **On `main`:** `ui/specs/station/library.json` (the spec, with the designer's nine rulings), the rulings and wireframes `10a` and `10b` in `station-layouts.md` and `station-screens.md`, the spec changes to `frame.json` (the ring on paper) and `pods.json` (strings), `library.mjs` (`lookCarriers`, `faceLine`, `visitFace`), `guide.mjs` (`guideModel`, `guideInit`, `guideKeep`, `guideMove`, the pad as rules) with `tests/guide.test.mjs` pointed at the model, and the journey's guide steps in `tools/journey-guide.mjs`, listed as pending by the journey.
+- **Left on the branch, and why:** `views/guide.mjs`'s view (nodes, `guideLayout`, `tintMask`, `carriedLines`, `noneLines`, `pageTurnStandIn`) and the bottom-line words it built, `screens/library.mjs`'s `guideNodes` and the Book face drawing, `stampFit`, the guide placeholders in `art.mjs`: all drawing or geometry, which the freeze forbids and the face builds. `pods.json`'s focus-graph edges and target entry for the figure (the pod's ▶ goes to kin as on `main`; the figure's region rectangles, caption and strings stay as spec data). The doors to the guide (the figure on Pods' overview, Habitat's species word and the card's "your Loika, adult" line, `openGuide`, `nav.mjs`'s species row) are left too: the guide they open is not drawn on main, nor is Habitat's species word with its mark; a door to something nobody can see must not take focus. They come back with L2.1 (the Book and its doors) and L2.5 (Habitat). The captures `guide-*` and `book-*` there are the JavaScript reference; the LVGL goldens replace them once the designer and the art director sign.
 
 ## Placeholders
 
