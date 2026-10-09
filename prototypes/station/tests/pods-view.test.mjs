@@ -147,12 +147,12 @@ test("the focus graph over the targets: the collection's grid; the overview's po
   for (const t of [...T, ...A.targets]) assert.ok(t.rect.every((n) => Number.isInteger(n)));
 });
 
-test("Compare: two pages at the spec's rectangles with their pods at 32×40, the traits that differ marked, the rail kept", () => {
+test("Compare: two pages at the spec's rectangles with their pods at 40×48, the traits that differ marked, the rail kept", () => {
   const st = stock(["S01", "S01"], 21); st.tray[1].genome = podGenome(frameOf("S01"), 77); for (const q of st.tray) S.skipRead(st, q, settings);
   const v = view(model(st, { ui: { view: "overview", cur: st.tray[0].id, ci: 0, cmp: { a: st.tray[0].id, b: st.tray[1].id, ci: 1 }, wildArm: 0 }, focus: null }));
   assert.equal(v.mode, "compare"); assert.equal(v.pages.length, 2); assert.equal(v.rail.tabs.length, frameOf("S01").chapters.length); assert.equal(v.rail.current, 1);
   assert.match(v.line.subject, /^two Loika pods$/);
-  const pods = v.requests.filter((r) => r.kind === "pod" && r.size.join("x") === "32x40"); assert.ok(pods.length >= 2);
+  const pods = v.requests.filter((r) => r.kind === "pod" && r.size.join("x") === "40x48"); assert.ok(pods.length >= 2);
   const diff = S.compareDiff(st, st.tray[0], st.tray[1]), traits = frameOf("S01").chapters[1].traits;
   assert.deepEqual(v.pages[0].cells.map((c) => c.diff), traits.map((t) => diff.includes(t.id))); assert.deepEqual(v.pages[1].cells.map((c) => c.diff), v.pages[0].cells.map((c) => c.diff));
 });
