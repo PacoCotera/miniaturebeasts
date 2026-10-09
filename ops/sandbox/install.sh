@@ -21,7 +21,8 @@ if [ ! -f /etc/miniaturebeasts/caddy.env ]; then   # the painter's mode, ceiling
 CADDY_PORT=8787
 CADDY_DATA=/srv/miniaturebeasts/caddy-data
 CADDY_PAINTER=mock
-CADDY_CEILING_USD=5
+# CADDY_CEILING_USD: set by the operator; the value is in the internal operations doc
+CADDY_CEILING_USD=
 CADDY_GROW_CAP=10
 CADDY_MOCK_DELAY=20
 # GEMINI_API_KEY=   (set it here, then CADDY_PAINTER=real, to paint for money)

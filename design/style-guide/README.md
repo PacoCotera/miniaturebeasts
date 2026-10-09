@@ -55,7 +55,7 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 | --- | --- | --- |
 | Name, display | 3× | 4× (28 px caps) |
 | Title | 3× (21 px caps) | 3× |
-| Body, HUD, bottom line | 2× (14 px caps), cream on ink | Inter 16 px body and readouts, 20 px titles, 28 px names. One exception: on Pods the pod's name label under the dish is 20 px medium (owner, 2026-10-08: "yes, name can be smaller, at 20px") |
+| Body, HUD, bottom line | 2× (14 px caps), cream on ink | Inter 16 px body and readouts, 20 px titles, 28 px names. One exception: on Pods the pod's name label under the dish is 20 px medium |
 | Context | mist (N5) | mist on chrome |
 | Confirm's verb · Call · ticking counter | orange O3 · teal T3 · yellow Y2 flash | the same hues |
 | Warning | red R1 on paper | red, with a shape |
@@ -71,9 +71,9 @@ Materials keep one shape on both devices: Energy a yellow bolt, Data a blue diam
 
 ## Sign-off
 
-The art director signs off every piece before the owner sees it. Engineers do not draw: no code-drawn screen, sprite, scene or effect is art. Engineers place signed-off assets and set live text. Pieces go brief → generated candidates against the approved references → critique → rounds → masters (hand-pixelled on the Companion, painted on the Station) → sign-off. Generated images are labelled; prompts and originals are kept.
+The art director signs off every piece. Engineers do not draw: no code-drawn screen, sprite, scene or effect is art. Engineers place signed-off assets and set live text. Pieces go brief → generated candidates against the approved references → critique → rounds → masters (hand-pixelled on the Companion, painted on the Station) → sign-off. Generated images are labelled; prompts and originals are kept.
 
-**Decided 2026-10-08** ([art pipeline](../proposals/art-pipeline.md) v2). Mibis are the exception to "masters per piece": every mibi is drawn in the **standard look** rendered from the rig, and the art director signs the **treatment** (the plain render finished to this guide), the species plates, the control contract and the test sets, not each individual. A unique cloud-painted render is a prize a mibi earns by research; no person sees a player's prize render before the player, so the pipeline's validation checks stand in for sign-off there. "Masters hand-pixelled on the Companion" is *superseded* for creatures: the Companion's version is derived from the Station's render.
+Mibis are the exception to "masters per piece": every mibi wears its **standard look**, the cloud painting made at Grow over the Station's control passes and derived down to the Companion and the token, with the rig placeholder shown until its painting arrives; the art director signs the **treatment** (the painting prompt's house rendering to this guide), the species pieces, the control contract and the test sets, not each individual. A **portrait**, earned by research and spent at a sitting, adds the scene, the full moving set, the postmark and the card; no person sees a player's painting or portrait before the player, so the pipeline's validation checks stand in for sign-off there. "Masters hand-pixelled on the Companion" does not apply to creatures: the Companion's version is derived from the Station's painting.
 
 ## Per-screen checklist template
 

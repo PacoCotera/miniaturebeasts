@@ -1,12 +1,17 @@
 """One Gemini image call for a painted source: writes the raw image, a PNG canvas and a sidecar (prompt, reference hashes, usage; no key).
 usage: python3 -I gemini-gen.py TAG OUT_DIR PROMPT_FILE [--ref IMG ...] [--model gemini-3-pro-image-preview]
-The key is GEMINI_API_KEY in the environment; it is never printed or stored."""
+The key is GEMINI_API_KEY in the environment; it is never printed or stored. The call's cost (usage at the list price)
+goes to the ledger outside this repository (ops/ledger, MB_LEDGER); without the ledger no call is made."""
 import base64, hashlib, io, json, os, sys, time, urllib.request
 from PIL import Image
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(REPO, "ops", "ledger"))
+import ledger  # noqa: E402  the paid-call ledger (MB_LEDGER), outside this repository
 tag, out, pf = sys.argv[1], sys.argv[2], sys.argv[3]
 refs = [sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == "--ref"]
 model = sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "gemini-3-pro-image-preview"
 key = os.environ["GEMINI_API_KEY"]; prompt = open(pf).read()
+ledger.require_ledger(); ledger.price("google", model.replace("-preview", ""))  # the ledger and the list price, before the call
 parts = [{"text": prompt}] + [{"inline_data": {"mime_type": "image/png", "data": base64.b64encode(open(r, "rb").read()).decode()}} for r in refs]
 body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": "1:1", "imageSize": "1K"}}}
 req = urllib.request.Request(f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent", data=json.dumps(body).encode(), headers={"x-goog-api-key": key, "Content-Type": "application/json"}, method="POST")
@@ -23,4 +28,6 @@ side = {"id": tag, "tag": tag, "model": model.replace("-preview", ""), "operatio
         "requested": {"aspectRatio": "1:1", "imageSize": "1K"}, "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "result": {"status": "success", "png": {"file": f"{tag}-canvas.png", "width": im.width, "height": im.height, "sha256": hashlib.sha256(open(os.path.join(out, f'{tag}-canvas.png'), 'rb').read()).hexdigest()},
                    "finishReason": res["candidates"][0].get("finishReason"), "seconds": round(time.time() - t0, 1), "usage": res.get("usageMetadata")}}
-json.dump(side, open(os.path.join(out, f"{tag}.json"), "w"), indent=1); print("wrote", tag, im.size, side["result"]["usage"].get("candidatesTokenCount"))
+json.dump(side, open(os.path.join(out, f"{tag}.json"), "w"), indent=1)
+ledger.record("companion-48/gemini-gen.py", os.path.relpath(os.path.abspath(os.path.join(out, f"{tag}.json")), REPO), tag, "google", side["model"], usage=res.get("usageMetadata"))
+print("wrote", tag, im.size, side["result"]["usage"].get("candidatesTokenCount"))
