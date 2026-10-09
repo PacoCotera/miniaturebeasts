@@ -2475,29 +2475,29 @@
   "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-crown-tall-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-crown-tall-144x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-crown-tall-104x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-crown-tall-104x96": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-crown-tall-104x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-tail-between-128x160": {
   "status": "signed",

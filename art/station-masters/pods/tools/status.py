@@ -69,7 +69,7 @@ for n in m:
     elif re.match(r"room-bench-stage-(overview|chapter)", n): sign(n, "new", None, "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict")
     elif re.match(r"ring-(collection-|arc-collection-)", n): sign(n, "new", None, "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict")
     elif re.match(r"trait-S09-(beak|head|tail)-", n): sign(n, "signed", "pass 48 verdict", "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)")
-    elif re.match(r"trait-S09-crown-", n): sign(n, "new", None, "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict")
+    elif re.match(r"trait-S09-crown-", n): sign(n, "signed", "pass 49 verdict", "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light")
     elif re.match(r"trait-S09-(beak|crown|head|tail)-", n): sign(n, "new", None, "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict")
     elif re.match(r"trait-S\d\d-", n): sign(n, "new", None, "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict")
     elif n in ("mark-asleep-24x16", "mark-breed-28x16"): sign(n, "signed", "pass 38 verdict", "")

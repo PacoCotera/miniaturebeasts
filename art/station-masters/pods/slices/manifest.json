@@ -8127,9 +8127,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 174x218 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "b8d79d6f33ab10f71163ddeac25de4c596a53313f63440576526d5856103336c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "status_note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-crown-tall-144x176": {
   "size": [
@@ -8140,9 +8140,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 174x213 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "ebc7715fc41e087b079475d83152798bd4df4e0b55f8a55d2be411d041242370",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "status_note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-crown-tall-104x160": {
   "size": [
@@ -8153,9 +8153,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 174x268 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "3be0de02d39d0c7d709b40226593831f5c2932ccec2679a3e6f03a40ecf40d71",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "status_note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-crown-tall-104x96": {
   "size": [
@@ -8166,9 +8166,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 174x161 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "5c716e99f76b2535499faf2561d7063369cbe39e22523a9c6fbdad85ee5fc7fd",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "status_note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-crown-tall-104x64": {
   "size": [
@@ -8179,9 +8179,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 222x137 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "c08e2c5568f4015509e1b549e3a70b8399dbd122da75d50d128742ae3d97cf80",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 49 verdict",
+  "status_note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
  },
  "trait-S09-tail-between-128x160": {
   "size": [
