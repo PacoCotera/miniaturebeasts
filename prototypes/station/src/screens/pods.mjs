@@ -16,6 +16,8 @@ import { frameOf } from "../genome.mjs";
 import { isFilled } from "../../../ui/assets.mjs";
 import { frameFor } from "./frame.mjs";
 import { openCreate } from "./create.mjs";
+import { openGuide } from "./library.mjs";
+import { SIZES } from "../../../ui/type.mjs";
 import * as S from "../state.mjs";
 
 const P = () => UI.pods;
@@ -88,6 +90,7 @@ const INTENTS = {
     if (p.view === "overview") return go("chapter", id);   // ✓ on a tab opens its page, free
     read(q, ch);   // on the page, ✓ reads an unread chapter (a read chapter has no ✓)
   },
+  figure: (q) => { if (q.idd) openGuide(S.speciesOf(q)); },   // ✓ Open the guide: a jump to the Book's guide spread, where ← reads Library
   kin: (q, f, p, id) => { const k = last.kin[+id.slice(4)]; if (k) p.cmp = { a: q.id, b: k.id, ci: 0 }; },
   hatch: (q, f, p) => {   // ✓ ✓: the first arms, the second returns; any other key disarms
     if (!p.wildArm) { p.wildArm = 1; msg(SPECS.pods.strings.hatchAgain); return; }
@@ -139,6 +142,7 @@ function nodes(ctx) {
     out.push(...layer("bench.room", R.bench.rect, room.bench));
     out.push(...specimen(ctx, "specimen", spec, { ...v.specimen, room, pod: v.specimen.pod && focusOn("pod") ? { ...v.specimen.pod, lift: SPECS.frame.focus.lift.creature } : v.specimen.pod }));
     if (v.mode === "overview") {
+      out.push(...captions(ctx, spec, cur()));
       out.push(...kinHatch(ctx, "kin", spec, { kin: v.kin, hatch: v.hatch }, S_));
       if (v.stamp) out.push(...layer("stamp.case", S_.stampCase.rect, v.stampCase.back), ...stampLabel(ctx, "stamp", S_.stamp.rect, { stamp: v.stamp.asset, size: v.stamp.size, region: "stamp" }, v.stamp.colours), ...layer("stamp.front", S_.stampCaseFront.rect, v.stampCase.front));
     }
@@ -147,6 +151,14 @@ function nodes(ctx) {
   }
   out.push(...ringNodes());
   out.push(...sharedFrame(ctx));
+  return out;
+}
+// The clarity lines of the overview (library.json, the two levels): "this pod" under the who-it-is marks, "the species" under the figure once the pod is identified.
+function captions(ctx, spec, q) {
+  const out = [], St = spec.strings, T = spec.regions.overview, cap = (id, text, rc, centre, colour) => { const w = Math.round(ctx.measure(text, 16)); out.push({ id, kind: "text", rect: [centre - Math.round(w / 2), rc[1], w, ctx.line(16)], text, px: 16, weight: SIZES[16], colour, align: "left" }); };
+  if (!q) return out;
+  cap("cap.thisPod", St.thisPod, T.thisPod.rect, T.thisPod.centre, T.thisPod.colour);
+  if (q.idd) cap("cap.theSpecies", St.theSpecies, T.figure.caption.rect, T.figure.caption.rect[0] + T.figure.caption.rect[2] / 2, T.figure.caption.colour);
   return out;
 }
 // The focus ring: one ring per screen, on the focused target; the rail's tabs carry their own. A place wears the circle round its ring, a kin the circle round its own; the pod and the hatch the rounded rectangle (the art director: the ring follows its target and is never drawn on the dish).

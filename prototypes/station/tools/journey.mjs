@@ -133,7 +133,13 @@ expect((await page.evaluate(() => window.__st.UI.lib.f)) === "spread" && (await 
   expect(at.view === "chapter" && at.f === "rail.0" && (await st()).d === dd, "✓ on an identified, unread pod opens its first unread chapter, no spend: " + JSON.stringify(at));
   l = await line(); expect(l.back === "Loika", "below the overview ← names the pod: " + JSON.stringify(l));
   await press("back", 200); expect((await page.evaluate(() => window.__st.UI.pods.view)) === "overview", "← from the page goes up to the overview");
-  await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page.waitForTimeout(150); }
+  await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page.waitForTimeout(150);
+  // the figure is a side trip one ▶ from the pod once it is identified: ✓ Open the guide (a jump to the Book's guide spread, ← reads Library)
+  await press("right", 150); const fg = await page.evaluate(() => window.__st.UI.pods.focus.cur); l = await line(); expect(fg === "figure" && l.ok === "Open the guide" && /^every /.test(l.subject), "▶ from the pod is the figure: " + JSON.stringify([fg, l]));
+  await press("confirm", 300); const gj = await page.evaluate(() => ({ screen: window.__st.UI.screen, f: window.__st.UI.lib.f, sp: window.__st.UI.lib.sp })); l = await line();
+  expect(gj.screen === "library" && gj.f === "guide" && l.back === "Library", "✓ on the figure opens the species' guide: " + JSON.stringify([gj, l])); await frameShot("guide-loika");
+  await press("back", 200); expect((await page.evaluate(() => window.__st.UI.lib.f)) === "spread", "← from the guide reads Library: the spread, never back to Pods");
+  await press("research", 250); await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page.waitForTimeout(150); }
 // 4. read Coat (the fixture spent the free read): 1 Data; then Face: 2 Data; a second Loika's Face costs 1
 await press("up", 150);
 l = await line(); expect(/Open Coat/.test(l.ok) && !l.price, "on the overview a tab opens its page, free: " + JSON.stringify(l));
@@ -171,7 +177,7 @@ await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 // 5. Compare: from the second Loika's pod, ← to its well, walk to the first Loika's well, ✓
 s = await st();
 const i1 = s.tray.findIndex((p) => p.id === loika.id), i2 = s.tray.findIndex((p) => p.id === loika2.id);
-await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika2.id); await press("right", 100);   // the pod's overview: → to its kin
+await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika2.id); await press("right", 100); await press("right", 100);   // the pod's overview: → to the figure (a side trip), → to its kin
 l = await line(); expect(l.ok === "Compare", "compare offered on another Loika pod: " + JSON.stringify(l));
 await press("confirm", 300); await shot("page-compare");
 l = await line(); expect(l.back === "Loika", "Compare's way back names the pod: " + JSON.stringify(l));
@@ -204,7 +210,7 @@ const walk = async (keys, want, what) => { for (const k of keys) await press(k, 
 const viewNow = () => page.evaluate(() => window.__st.UI.pods.view);
 await walk(["up"], "rail.0", "▲ from the pod to the rail's last chapter looked at");
 await walk(["right", "right"], "rail.2", "▶ steps the chapters"); await walk(["down"], "pod", "▼ from the rail to the pod"); await walk(["up"], "rail.2", "▲ again: the last chapter looked at"); await walk(["down"], "pod", "▼ back to the pod");
-await walk(["right"], "hatch", "→ from the pod to the hatch when it has no kin"); await walk(["left"], "pod", "◀ from the hatch to the pod");
+await walk(["right"], "figure", "→ from an identified pod to the figure, a side trip"); await walk(["right"], "hatch", "→ from the figure to the hatch when the pod has no kin"); await walk(["left"], "pod", "◀ from the hatch to the pod");
 const idx = s.tray.findIndex((p) => p.id === untuva.id);
 await walk(["back"], "place." + idx, "← up to the collection, the ring on this pod"); expect((await viewNow()) === "collection", "← from the overview is the collection");
 await frameShot("pods-collection");
@@ -448,10 +454,17 @@ const ui = () => page.evaluate(() => { const u = window.__st.UI; return { screen
   const adult = await page.evaluate(() => { const st = window.__st.ST; return st.mibis.find((m) => !m.released && window.__st.isAdult(m)); });
   if (adult) {
     await page.evaluate((id) => { window.__st.UI.hab.id = id; }, adult.id); await press("habitat", 200);
-    for (const [k, f] of [["right", "ch0"], ["left", "stage"], ["right", "ch0"]]) { await press(k, 80); u = await ui(); expect(u.hab === f, "Habitat " + k + " → " + f + ": " + JSON.stringify(u)); }
+    for (const [k, f] of [["right", "species"], ["down", "ch0"], ["left", "stage"], ["right", "species"], ["down", "ch0"]]) { await press(k, 80); u = await ui(); expect(u.hab === f, "Habitat " + k + " → " + f + ": " + JSON.stringify(u)); }
     await page.evaluate(() => { window.__st.UI.hab.f = "door"; }); await press("up", 80); u = await ui(); expect(u.hab === "cross", "▲ from the door row is Cross: " + JSON.stringify(u));
     await press("down", 80); await press("down", 80); u = await ui(); expect(/^s\d+$/.test(u.hab), "▼ from the door row is the strip: " + JSON.stringify(u));
   }
+  // the Book: ▶ turns to the guide, ◀ from the first column turns back, ← reads Library on both; the species word on Habitat's card is a door to the guide
+  await page.evaluate(() => { const u = window.__st.UI; u.lib.sp = "S01"; u.lib.f = "book"; u.screen = "library"; }); await press("right", 300); u = await ui(); expect(u.screen === "library" && (await page.evaluate(() => window.__st.UI.lib.f)) === "guide", "▶ turns to the guide: " + JSON.stringify(u));
+  l = await line(); expect(l.back === "Library", "the guide's way back is Library: " + JSON.stringify(l)); await page.waitForTimeout(200); await frameShot("guide-loika-species");
+  await press("left", 300); expect((await page.evaluate(() => window.__st.UI.lib.f)) === "book", "◀ from the first column turns back to the face spread");
+  await press("right", 300); await press("back", 200); expect((await page.evaluate(() => window.__st.UI.lib.f)) === "spread", "← from the guide is the Library spread");
+  await press("habitat", 300); await press("right", 100); await press("confirm", 300); l = await line();
+  expect((await page.evaluate(() => window.__st.UI.screen === "library" && window.__st.UI.lib.f === "guide")) && l.back === "Library", "the species word on Habitat's card opens the guide: " + JSON.stringify(l)); await press("home", 200);
   // The Probe bench opens on what has an action; Habitat with no mibi has a pad that does nothing is covered in the rules (nav.test.mjs)
   await press("home", 150); await page.evaluate(() => { window.__st.UI.home.f = "cradle"; }); await press("confirm", 250); u = await ui(); l = await line();
   expect(u.screen === "bench" && !!l.ok, "the Probe bench opens on a target that has an action: " + JSON.stringify([u, l])); await press("home", 150);

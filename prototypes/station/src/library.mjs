@@ -59,6 +59,20 @@ export function makeFace(st, m) {
   return { ok: true, msg: m.name + " is the face of the " + (frameFor(m)?.species.name || id) };
 }
 
+// The face spread's clarity line (library.json strings): the species' type, not one of yours; or the portrayed mibi that sat for it; or, once it is released, that it did.
+export function faceLine(st, id) {
+  const fr = frameOf(id), f = faceOf(st, id), m = f != null ? mibiById(st, f) : null, name = fr?.species.name ?? "";
+  if (!m) return `A typical ${name}, not one of yours.`;
+  return m.released ? `${m.name} sat for this, now in the wild.` : `${m.name}, your ${name}, sat for this.`;
+}
+// The mibis that carry a look (the guide's "Carried by"): the ones of the species that are not released, whose read chapters hold the trait's chapter and whose looks there give this one, in either
+// copy, shown or hidden. The test wishCarriers applies to pinned looks, for any look; reads the save only. Pods are not listed: they are pods, not yours to visit.
+export function lookCarriers(st, id, traitId, look) {
+  const fr = frameOf(id); if (!fr) return [];
+  const ch = fr.chapters.find((c) => c.traits.some((t) => t.id === traitId)); if (!ch) return [];
+  return st.mibis.filter((m) => speciesOf(m) === id && !m.released && m.genome && (m.read || []).includes(ch.id) && chapterLooks(fr, ch, m.genome).some(([t, ls]) => t === traitId && ls.includes(look))).map((m) => ({ id: m.id, name: m.name }));
+}
+
 // --- the wish (research-loop.md §5, §8): a dream mibi made from looks the field guide holds -----------------------------------
 export const wishOf = (st, id) => ((st.wish && st.wish[id]) || {});
 export function wishPinBlock(st, id, traitId, look, settings = DEFAULT_SETTINGS) {

@@ -50,16 +50,16 @@ test("Home's pad: ▲▼ walk the column Bay, Rack, Incubator, Probe, Rest; ◀�
 
 test("Habitat's pad is a fixed order: the stage, the chapter plates, Cross, the door row, then the strip; Cross is reached directly", () => {
   const rows = N.habitatRows({ chapters: 5, adult: true, bays: [7, 9] }), m = (c, d, shown = 7) => N.habitatMove(rows, c, d, shown);
-  assert.deepEqual(rows, [["stage"], ["ch0", "ch1", "ch2", "ch3"], ["ch4"], ["cross"], ["door", "heart", "wild"], ["s7", "s9"]]);
-  assert.equal(m("stage", "right"), "ch0"); assert.equal(m("ch0", "left"), "stage"); assert.equal(m("stage", "down"), "s7"); assert.equal(m("stage", "up"), "stage");
+  assert.deepEqual(rows, [["stage"], ["species"], ["ch0", "ch1", "ch2", "ch3"], ["ch4"], ["cross"], ["door", "heart", "wild"], ["s7", "s9"]]);
+  assert.equal(m("stage", "right"), "species", "the species word is the card's first row"); assert.equal(m("species", "down"), "ch0"); assert.equal(m("ch0", "up"), "species"); assert.equal(m("species", "left"), "stage"); assert.equal(m("ch0", "left"), "stage"); assert.equal(m("stage", "down"), "s7"); assert.equal(m("stage", "up"), "stage");
   assert.equal(m("ch1", "right"), "ch2"); assert.equal(m("ch3", "right"), "ch3"); assert.equal(m("ch1", "down"), "ch4", "the next row, the column kept as near as it can"); assert.equal(m("ch4", "down"), "cross");
   assert.equal(m("cross", "down"), "door"); assert.equal(m("door", "up"), "cross", "Cross is one ▲ from the door row"); assert.equal(m("heart", "up"), "cross"); assert.equal(m("cross", "up"), "ch4");
   assert.equal(m("door", "right"), "heart"); assert.equal(m("wild", "right"), "wild"); assert.equal(m("heart", "left"), "door"); assert.equal(m("door", "left"), "stage");
   assert.equal(m("wild", "down"), "s7"); assert.equal(m("s7", "right"), "s9"); assert.equal(m("s9", "left"), "s7"); assert.equal(m("s7", "up"), "door", "the strip goes up to the door row"); assert.equal(m("s9", "up"), "heart");
   const walk = (c, d, n) => { for (let i = 0; i < n; i++) c = m(c, d); return c; };
-  assert.equal(walk("ch0", "down", 2), "cross", "from the first plate: two ▼"); assert.equal(walk("ch0", "down", 3), "door"); assert.equal(walk("stage", "right", 1), "ch0");
+  assert.equal(walk("ch0", "down", 2), "cross", "from the first plate: two ▼"); assert.equal(walk("ch0", "down", 3), "door"); assert.equal(walk("stage", "right", 1), "species");
   const juv = N.habitatRows({ chapters: 2, adult: false, bays: [7] }); assert.ok(!juv.flat().includes("cross"), "a juvenile has no Cross"); assert.equal(N.habitatMove(juv, "ch1", "down", 7), "heart", "the door row, the column kept");
-  assert.deepEqual(N.habitatRows({ chapters: 0, adult: false, bays: [] }), [["stage"], ["door", "heart", "wild"]]);
+  assert.deepEqual(N.habitatRows({ chapters: 0, adult: false, bays: [] }), [["stage"], ["species"], ["door", "heart", "wild"]]);
 });
 
 test("the Book's Visit goes to a housed mibi of the species: its face if one is chosen, else the first, none when there is none", () => {

@@ -63,11 +63,11 @@ export function homeMove(targets, cur, dir, room = [480, 280]) {
 }
 
 // --- Habitat's pad: a fixed order -----------------------------------------------------------------------------------------------------
-// Rows, top to bottom: the stage (the resident), the card's chapter plates four to a row, Cross (an adult only), the door, the heart and the gate, and the strip of residents.
+// Rows, top to bottom: the stage (the resident), the species word on the card (a door to the species' guide), the card's chapter plates four to a row, Cross (an adult only), the door, the heart and the gate, and the strip of residents.
 // ◀▶ walk a row (the strip changes the resident); ◀ off the card's left edge goes back to the stage, ▶ on the stage goes to the card's first plate; ▲▼ go to the row above or
 // below, keeping the column as near as it can; ▼ on the stage and ▼ below the gate go to the strip, ▲ on the strip goes to the gate row, so Cross is one ▲ from the door row.
 export function habitatRows({ chapters = 0, adult = false, bays = [], shown = null } = {}) {
-  const ch = Array.from({ length: chapters }, (_, i) => "ch" + i), rows = [["stage"]];
+  const ch = Array.from({ length: chapters }, (_, i) => "ch" + i), rows = [["stage"], ["species"]];
   for (let i = 0; i < ch.length; i += 4) rows.push(ch.slice(i, i + 4));
   if (adult) rows.push(["cross"]);
   rows.push(["door", "heart", "wild"]);
@@ -77,7 +77,7 @@ export function habitatRows({ chapters = 0, adult = false, bays = [], shown = nu
 export function habitatMove(rows, cur, dir, shown = null) {
   const at = rows.findIndex((r) => r.includes(cur)); if (at < 0) return cur;
   const row = rows[at], col = row.indexOf(cur), last = rows.length - 1;
-  const stripRow = last > 0 && rows[last][0][0] === "s" ? last : -1, card = [];   // the strip's ids are "s<mibi id>"; no card id starts with "s" (stage is row 0)
+  const stripRow = last > 0 && /^s\d+$/.test(rows[last][0]) ? last : -1, card = [];   // the strip's ids are "s<mibi id>"; no card id starts with "s" (stage is row 0)
   for (let i = 1; i < rows.length; i++) if (i !== stripRow) card.push(i);
   if (cur === "stage") {
     if (dir === "right") return card.length ? rows[card[0]][0] : cur;

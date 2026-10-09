@@ -58,7 +58,7 @@
    "eight": { "w": 112, "pitch": 120, "panel": "guide-panel-{chapter}-112x80", "sealed": "guide-panel-sealed-112x80" },
    "moreThanEight": "comes back to the UI designer; never a scroll",
    "x0": "floor((512 - (pitch × n - 8) / 2) / 8) × 8: 40 for seven, 32 for eight, 240 for four",
-   "rules": { "colour": "sand", "x": "x0 + pitch × i - 4 for i ≥ 1", "y": [184, 504] }
+   "rules": { "colour": "sand", "x": "x0 + pitch × i - 4 for every column after the first (i from 1)", "y": [184, 504] }
   },
   "panel": {
    "rect": "[x, 184, w, 80]",

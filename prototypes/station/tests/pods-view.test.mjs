@@ -137,9 +137,9 @@ test("the focus graph over the targets: the collection's grid; the overview's po
   assert.equal(nextFocus(spec.focus.collection, A.targets, "place.0", "right"), "place.1"); assert.equal(nextFocus(spec.focus.collection, A.targets, "place.2", "right"), "place.2");
   for (const t of A.targets) assert.deepEqual(t.rect, [16 + 336 * +t.id.slice(6), 48, 320, 224]);
   const v = view(model(st)), g = spec.focus.overview, T = v.targets, ids = T.map((t) => t.id);
-  assert.deepEqual(ids.filter((i) => !i.startsWith("rail")), ["pod", "kin.0", "hatch"], "the other S01 pod is the one kin"); assert.equal(ids.filter((i) => i.startsWith("rail")).length, frameOf("S01").chapters.length);
+  assert.deepEqual(ids.filter((i) => !i.startsWith("rail")), ["pod", "figure", "kin.0", "hatch"], "the figure is a target once the pod is identified; the other S01 pod is the one kin"); assert.equal(ids.filter((i) => i.startsWith("rail")).length, frameOf("S01").chapters.length);
   const resolve = (sel) => (sel === "rail.last" ? "rail.1" : sel === "kin.first" ? "kin.0" : null);
-  assert.equal(nextFocus(g, T, "pod", "up", resolve), "rail.1"); assert.equal(nextFocus(g, T, "pod", "right", resolve), "kin.0"); assert.equal(nextFocus(g, T, "pod", "left", resolve), "pod"); assert.equal(nextFocus(g, T, "pod", "down", resolve), "pod");
+  assert.equal(nextFocus(g, T, "pod", "up", resolve), "rail.1"); assert.equal(nextFocus(g, T, "pod", "right", resolve), "figure", "the figure is one ▶ from the pod: a side trip"); assert.equal(nextFocus(g, T, "figure", "right", resolve), "kin.0"); assert.equal(nextFocus(g, T, "figure", "left", resolve), "pod"); assert.equal(nextFocus(g, T, "figure", "down", resolve), "hatch"); assert.equal(nextFocus(g, T, "kin.0", "left", resolve), "figure"); assert.equal(nextFocus(g, T, "pod", "left", resolve), "pod"); assert.equal(nextFocus(g, T, "pod", "down", resolve), "pod");
   assert.equal(nextFocus(g, T, "kin.0", "down", resolve), "hatch"); assert.equal(nextFocus(g, T, "hatch", "up", resolve), "kin.0"); assert.equal(nextFocus(g, T, "hatch", "left", resolve), "pod"); assert.equal(nextFocus(g, T, "kin.0", "up", resolve), "rail.1");
   assert.equal(nextFocus(g, T, "rail.1", "right", resolve), "rail.2"); assert.equal(nextFocus(g, T, "rail.1", "down", resolve), "pod");
   const C = view(chapter(st, 1)); assert.deepEqual(C.targets.map((t) => t.id), ids.filter((i) => i.startsWith("rail")), "only the rail on the page");
@@ -206,4 +206,14 @@ test("the bottom line's three slots follow the Words on Pods table: groups witho
   st.d = 10; S.read(st, p, "coat", settings); assert.equal(line("pod").subject, S.spName(p) + " is partly read");
   const onPage = (f) => view(chapter(st, +f.slice(5))).line;
   st.d = 0; st.readEver = true; assert.equal(onPage("rail.1").need, "needs more ◆"); assert.equal(onPage("rail.1").dim, true);
+});
+
+test("the figure: no target before Identify (the pod's ▶ goes to the kin, or the hatch with none); once identified it is one ▶ from the pod, and ✓ on it opens the guide with the context 'every {species}'; the captions say 'this pod' and 'the species'", () => {
+  const st = stock(["S01", "S01"], 9), g = spec.focus.overview, resolve = (sel) => (sel === "kin.first" ? "kin.0" : sel === "rail.last" ? "rail.0" : null);
+  const before = view(model(st)).targets, ids = before.map((t) => t.id); assert.ok(!ids.includes("figure"), "before Identify the figure is no target");
+  const right = nextFocus(g, before, "pod", "right", resolve); assert.ok(right !== "figure" && ["kin.0", "hatch"].includes(right), "the pod's ▶ goes past the missing figure: " + right); if (ids.includes("kin.0")) assert.equal(nextFocus(g, before, "kin.0", "left", resolve), "pod");
+  for (const q of st.tray) S.skipIdentify(st, q); const m = model(st), v = view({ ...m, focus: "figure" });
+  assert.ok(v.targets.some((t) => t.id === "figure" && t.rect.join() === spec.regions.overview.figure.rect.join()));
+  assert.equal(v.line.ok, "Open the guide"); assert.equal(v.line.subject, "every Loika");
+  assert.equal(spec.strings.thisPod, "this pod"); assert.equal(spec.strings.theSpecies, "the species"); assert.deepEqual(spec.regions.overview.thisPod.rect, [144, 520, 224, 24]); assert.deepEqual(spec.regions.overview.figure.caption.rect, [432, 400, 128, 24]);
 });

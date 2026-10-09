@@ -229,6 +229,7 @@ function lineOf(m, spec, p, chapters, ci, view) {
     return { ok: "Read " + word, price: priceOf(cost, "◆"), dim: !!b, back, subject, need: blockNeed(b, Sg) ?? here };
   }
   if (f && f.startsWith("kin.")) { const q = S.podById(st, view.kin[+f.slice(4)]?.id); return q ? { ok: "Compare", back, subject: state(q), need: glintOf(q) } : { back }; }
+  if (f === "figure") return { ok: Sg.openGuide, back, subject: fill(Sg.everySpecies, { species: S.cap(S.spName(p)) }), need: glintPod };   // a jump to the Book's guide spread: the species, not this pod
   if (f === "hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back, subject: fill(Sg.backTo, { place: S.PLACE_WORD[p.g] || "wild" }) };
   return { back };
 }
@@ -242,6 +243,7 @@ function targetsOf(view, st, spec, ctx, cur) {
   if (view.rail && view.rail.tabs.length) slantTabs(ctx.spec.regions.rail, view.rail.tabs.length, view.rail.open).tabs.forEach(({ rect }, i) => t.push({ id: "rail." + i, group: "rail", index: i, rect }));
   if (view.mode === "overview") {
     t.push({ id: "pod", group: "pod", rect: view.box });
+    if (cur.idd) t.push({ id: "figure", group: "figure", rect: R.figure.rect.slice() });   // once the species is found the figure is a door to its guide; before Identify it is no target
     (view.kin || []).forEach((k, i) => t.push({ id: "kin." + i, group: "kin", index: i, rect: kinRect(R.kin, i) }));
     t.push({ id: "hatch", group: "hatch", rect: R.hatch.rect.slice() });
   }
