@@ -8,6 +8,7 @@ import { makeCtx } from "../../ui/context.mjs";
 import { ICON } from "./art.mjs";
 import { G, FX, UI, TL, SPECS, LAYER, IDLE_MS, msg, save, load, loadSettings, storageChanged, goScreen, screenOf, lineFor, need, docked, hasWorld, bayCrates, arriving, onChange, podById, mibiById } from "./game.mjs";
 import * as S from "./state.mjs";
+import * as Lib from "./library.mjs";
 import { setFrames, frameOf, frameIds, stampGenome } from "./genome.mjs";
 import "./screens/home.mjs"; import "./screens/pods.mjs"; import "./screens/create.mjs"; import "./screens/incubator.mjs"; import "./screens/cross.mjs"; import "./screens/library.mjs"; import "./screens/habitat.mjs"; import "./screens/bench.mjs";
 import { HATCH_MS } from "./screens/incubator.mjs";
@@ -193,7 +194,7 @@ function checkSnapshot() {
 }
 
 // Test hooks (not part of play).
-window.__st = { ready, renderErrors, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
+window.__st = { lib: Lib, ready, renderErrors, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   say: (t) => msg(t), faceNodes: () => (FACE ? JSON.parse(JSON.stringify(faceNodes())) : null), targets: () => screenOf(UI.screen).targets?.() ?? null, act: (k) => { FX.lockUntil = 0; TL.release(); act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; TL.release(); }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
   get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel } : null; }, get msg() { return FX.msg; }, capture: () => (FACE ? vis : SC.capture()).toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), holding: () => TL.holding(), region: (layer, r) => { const d = SC.ctx[layer].getImageData(r[0], r[1], r[2], r[3]); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, sceneRegions: () => scene.regions(), sceneTexts: () => scene.texts(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },

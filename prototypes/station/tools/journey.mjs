@@ -465,15 +465,22 @@ const ui = () => page.evaluate(() => { const u = window.__st.UI; return { screen
   l = await line(); expect(l.back === "Library", "the guide's way back is Library: " + JSON.stringify(l)); await page.waitForTimeout(200); await frameShot("guide-loika-species");
   // the captures of the guide and the Book's face that the reports name, all from here: Belatz (seven chapters), Tuikis (eight), the face with its type and with a portrait, and a guide with no carrier
   const showLib = async (sp, f) => { await page.evaluate(([sp, f]) => { const u = window.__st.UI; u.screen = "library"; u.lib.sp = sp; u.lib.f = f; u.lib.g = null; }, [sp, f]); await page.waitForTimeout(250); };
-  await page.evaluate(() => { window.__st.seedAdults("S09", 11, 2); window.__st.seedAdults("S03", 5, 2); });
+  // room for both species: the journey's own mibis sit out (they come back after), the seeded ones have read every chapter
+  await page.evaluate(() => { const st = window.__st.ST; window.__st.sitOut = st.mibis.filter((m) => !m.released).map((m) => m.id); for (const m of st.mibis) if (window.__st.sitOut.includes(m.id)) m.released = true; window.__st.seeded = [];
+    for (const [sp, seed] of [["S09", 11], ["S03", 5]]) for (const m of window.__st.seedAdults(sp, seed, 2).mibis) { m.read = window.__st.frameOf(sp).chapters.map((c) => c.id); window.__st.seeded.push(m.id); } });
+  const openCarried = (sp) => page.evaluate((sp) => { const w = window.__st, fg = w.lib.fieldGuide(w.ST, sp, w.settings), col = fg.chapters.findIndex((c) => !c.sealed && c.traits.length), t = fg.chapters[col].traits[0], look = t.found.slice().sort((x, y) => t.possible.indexOf(x) - t.possible.indexOf(y)).findIndex((l) => w.lib.lookCarriers(w.ST, sp, t.id, l).length > 0);   // the plates run in the frame's order, as the guide model sorts them
+   
+    w.UI.screen = "library"; w.UI.lib.sp = sp; w.UI.lib.f = "guide"; w.UI.lib.g = { zone: "grid", col, row: 0, plate: 0, carrier: 0, open: { col, row: 0 }, look }; return look; }, sp);   // opens the first trait on a look a living mibi carries
+  { const n = await page.evaluate(() => ["S09", "S03"].map((sp) => window.__st.ST.mibis.filter((m) => m.species === sp && !m.released && m.read.length === window.__st.frameOf(sp).chapters.length).length)); expect(n[0] > 0 && n[1] > 0, "Belatz and Tuikis have living mibis that have read every chapter: " + JSON.stringify(n)); }
   await showLib("S09", "book"); await frameShot("book-belatz-face");
-  await showLib("S09", "guide"); await frameShot("guide-belatz-seven");
-  await showLib("S03", "guide"); await frameShot("guide-tuikis-eight");
+  expect((await openCarried("S09")) >= 0, "Belatz opens on a look a living mibi carries"); await page.waitForTimeout(250); { const t = await page.evaluate(() => window.__st.sceneTexts().map((x) => x.text)); expect(!t.includes("none of yours") && t.includes("Carried by"), "the opened look of Belatz is carried: names, not 'none of yours'"); } await frameShot("guide-belatz-seven");
+  expect((await openCarried("S03")) >= 0, "Tuikis opens on a look a living mibi carries"); await page.waitForTimeout(250); await frameShot("guide-tuikis-eight");
   await press("up", 150); await frameShot("guide-tuikis-plate");
   await page.evaluate(() => { const st = window.__st.ST, m = st.mibis.find((q) => q.species === "S09" && !q.released); m.portrait = { state: "delivered" }; st.face = st.face || {}; st.face.S09 = m.id; });
   await showLib("S09", "book"); await frameShot("book-belatz-portrait");
   await page.evaluate(() => { for (const m of window.__st.ST.mibis) if (m.species === "S09") m.released = true; });
   await showLib("S09", "guide"); await frameShot("guide-no-carriers");
+  await page.evaluate(() => { const st = window.__st.ST, w = window.__st; st.mibis = st.mibis.filter((m) => !w.seeded.includes(m.id)); for (const m of st.mibis) if (w.sitOut.includes(m.id)) m.released = false; });   // the journey's own mibis come back, the seeded ones go
   await showLib("S01", "guide"); await press("left", 300);
   await press("left", 300); expect((await page.evaluate(() => window.__st.UI.lib.f)) === "book", "◀ from the first column turns back to the face spread");
   await press("right", 300); await press("back", 200); expect((await page.evaluate(() => window.__st.UI.lib.f)) === "spread", "← from the guide is the Library spread");

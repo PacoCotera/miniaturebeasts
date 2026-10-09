@@ -36,7 +36,7 @@ function drawSpread() {
 function drawBook() {
   paperBg();   const id = L().sp, fr = frameOf(id); if (!fr) { L().f = "spread"; return; }
   panel(30, 60, 300, 330, C.bone, C.bark); blit(speciesArt(fr, 260, 270), 50, 70);
-  panel(40, 400, 280, 40, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.panel, 3, "center");
+  panel(40, 400, 280, 40, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 413, C.panel, 3, "center");
   // the clarity line (stone, cap top y 480, centred on the face plate): the species' type, not one of yours; the chapters and their looks are the guide spread, a page turn away
   text(clipText(Lib.faceLine(G.st, id), 300, 2), 180, 480, C.stone, 2, "center");
   // the stamp (832, 112, 120, 120): the type specimen's until a portrait, then the portrayed mibi's, with its name
