@@ -73,6 +73,7 @@ export function kindOf(file) {
   if (RULES.proseTypes.includes(ext)) return "prose";
   if (RULES.codeTypes.includes(ext)) return "code";
   if (RULES.imageTypes.includes(ext)) return "image";
+  if ((RULES.binaryTypes || []).includes(ext)) return "binary";
   return "other";
 }
 
@@ -114,6 +115,7 @@ function allowed(file, rule, line, hit) {
 export function checkLine(file, line) {
   if (excluded(file)) return [];
   const kind = kindOf(file), hits = [];
+  if (kind === "binary") return hits;
   const add = (rule, text, list, offset = 0) => {
     for (const h of list) { const hit = { index: h.index + offset, text: h.text }; if (!allowed(file, rule, line, hit)) hits.push({ rule, text: h.text }); }
   };
@@ -228,6 +230,7 @@ function treeMode() {
   for (const f of git("ls-files", "-z").toString("utf8").split("\0").filter(Boolean)) {
     if (excluded(f)) continue;
     let buf; try { buf = readFileSync(f); } catch { continue; }
+    if (kindOf(f) === "binary") continue;
     if (kindOf(f) === "image") { for (const x of checkImage(f, buf)) hits.push({ file: f, line: 0, ...x }); continue; }
     if (buf.subarray(0, 8192).includes(0)) continue;
     const text = buf.toString("utf8"), pd = processDoc(f, true), fl = pd ? fencedLines(text) : null;
@@ -261,6 +264,8 @@ export const FIXTURES = [
   { rule: "abs-path", file: "prototypes/x.mjs", hit: 'const R = "/home/user/miniaturebeasts";', pass: "const R = process.env.MB_ROOT;" },
   { rule: "secret-value", file: "prototypes/x.mjs", hit: 'const apiToken = "q8Zr2mXv91";', pass: "const key = process.env.GEMINI_API_KEY;" },
   { rule: "secret-value", file: "prototypes/caddy/tests/caddy.test.mjs", hit: 'GEMINI_API_KEY: "real-looking-key"', pass: 'GEMINI_API_KEY: "test-key-never-used"' },
+  { rule: "secret-value", file: "prototypes/x.mjs", hit: "const k = sk-proj-Xa7mQ2zL9pR4tW8vB1nC6dF3;", pass: "the sk-proj- prefix names a project key" },
+  { rule: "secret-value", file: "ops/x.sh", hit: "EXAMPLE_API_KEY=q7Lm2Xv9Rt4Wp8Zn", pass: "EXAMPLE_API_KEY=$EXAMPLE_API_KEY" },
 ];
 
 function selfTest() {
