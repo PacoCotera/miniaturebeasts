@@ -2655,54 +2655,54 @@
   "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
  },
  "cross-tick-a-12x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-tick-b-12x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-tick-a-6x4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-tick-b-6x4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-wish-lit-12x12": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-wish-hollow-12x12": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-wish-lit-8x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-wish-hollow-8x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-kin-surface-10x10": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "find-crystal-16x16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "find-pearl-16x16": {
   "status": "new",

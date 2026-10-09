@@ -8527,8 +8527,8 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the Cross chapter view's switch gate: a mux (a trapezoid, two pins in at rows 4-5 and 12-13, one out at rows 7-8, one copy's path drawn through it, the other's stub dim), lilac with a lavender lit rim and a plum shade, night body; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "f4294e8f6bfb22c1c81fa28bc8b807a9cb0be1f5ef8476e6d6ad4d3279917e68",
+  "made": "the Cross chapter view's switch gate (pass 70): a mux, a trapezoid filled solid lilac with a lavender lit rim and a plum shade, its one detail the pins: two in at rows 4-5 and 12-13, one out at rows 7-8; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
+  "sha256": "2ca26eec73d550318e55f183ee2e09d1d1f3cdf4bc3088db4bdc4d49f3bfc70c",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
@@ -8540,8 +8540,8 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the same shape in bevel (enamel lit rim, hairline shade, panel body), for a trait that is one look or missing; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "4e2f7cd36c2ae59719cd78a600ba233d0f025c1f187867aed678cf72279c9a55",
+  "made": "the same shape in bevel (enamel lit rim, hairline shade), for a trait that is one look or missing; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
+  "sha256": "2152bf6a474f2b169b9ef412e799326ee7aeb6098e1be71a224dcfb0a663139a",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
@@ -8553,8 +8553,8 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the Cross chapter view's blend gate: a disc where the two copies merge into one (two lines meeting into the out), aqua with a mint lit rim and a teal shade, tealD body; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "6fe6910735de040c49656cec0361e0913f04c8bca4f667117f63b16e456be78d",
+  "made": "the Cross chapter view's blend gate (pass 70): a disc filled solid aqua with a mint lit rim and a teal shade, its one detail a plus in tealD, the pins in and the way out as stubs; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
+  "sha256": "ba04d424fcd53fb300a642358bb9b2da5096c778d5cb833af6c6d1a6dc765fdf",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
@@ -8567,7 +8567,7 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the same shape in bevel; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "64e764bae31c46b6a87a1874b959a4614f4a61027dfd099eb145e711e38204bc",
+  "sha256": "9e0444ab9e6f371a6307413bcef1c5e824e7f0f957e9bcf422c4fa506b3fadd5",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
@@ -8579,8 +8579,8 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the overview's switch gate (pins at rows 1-2 and 5-6, out at rows 3-4), lilac; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "93addf052cc6575ad08cdcd2c105f1bb9c334de985a619511a33ba276e5f019e",
+  "made": "the overview's switch gate (pass 70): a plain solid lilac triangle pointing right, 7 wide and 8 tall, the wide end toward the parent; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
+  "sha256": "ae7d00efe7f256dfc2ad5e23512000388af472a1d49af3e8fb4117aa4f2e0973",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
@@ -8592,8 +8592,8 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the overview's blend gate, aqua; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "71fc426a998603622cb2117e29ed549659b63d3d82b85552e34060eb8e949fdc",
+  "made": "the overview's blend gate (pass 70): a plain solid aqua 8x8 disc, no plus; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
+  "sha256": "8eb3aac297fd3ccb663795c9f4113b5940b5352540a0452c6a7a378ba702fff0",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
@@ -8607,9 +8607,9 @@
   "src": "typed by hand",
   "made": "parent A's value above the track: a bone pointer pointing down, a white lit top, a fog shade; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "4539ae6bfbbfa62972075265d67dd5536190d5f2e6bf098c7754f34904797847",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-tick-b-12x8": {
   "size": [
@@ -8620,9 +8620,9 @@
   "src": "typed by hand",
   "made": "parent B's value below the track: a bone pointer pointing up, a white lit left edge, a fog base; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "8cac5d2a5243f9afc8c3144199b39c394948e0f797bc8ad1d4cf3091e5bb9d91",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-tick-a-6x4": {
   "size": [
@@ -8633,9 +8633,9 @@
   "src": "typed by hand",
   "made": "the overview's A tick, 6x4; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "a9d07450926f58f081c7774aab0534b5f9d8229b5c0d80071bc28e6fdd581de1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-tick-b-6x4": {
   "size": [
@@ -8646,9 +8646,9 @@
   "src": "typed by hand",
   "made": "the overview's B tick, 6x4; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "d89f93b591fae42be614c1616411570225f42fa45db618c1d955a3c7e5f0e424",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-wish-lit-12x12": {
   "size": [
@@ -8659,9 +8659,9 @@
   "src": "typed by hand",
   "made": "a pinned trait a child can reach: a four-point glint in yellow with a cream core and an amber shade (also the rail's glint on Cross); typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "a1eaf9cc0929aa603ed7e2bf88441124220263361ed605aceb7dffd17c67f628",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-wish-hollow-12x12": {
   "size": [
@@ -8672,9 +8672,9 @@
   "src": "typed by hand",
   "made": "a pinned trait no child of this pair can reach: the lit glint's outline in mist, empty inside; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "bb19523ae540fcffa7061ac26c7bd92a87e5da2df33512d5f90c96409e93ca78",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-wish-lit-8x8": {
   "size": [
@@ -8685,9 +8685,9 @@
   "src": "typed by hand",
   "made": "the overview's lit wish, 8x8; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "ce5c2c4385a408ac220804eba86a3ddd6a59808f35a28314dc18d8b4abdacfe3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-wish-hollow-8x8": {
   "size": [
@@ -8698,9 +8698,9 @@
   "src": "typed by hand",
   "made": "the overview's hollow wish, 8x8; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "280840fc28793fa7391aadceb530219af565dec0a846c4cd18b6fdc8fbba3f4c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "cross-kin-surface-10x10": {
   "size": [
@@ -8711,9 +8711,9 @@
   "src": "typed by hand",
   "made": "the amber corner of a seed where a hidden look can surface: a right-triangle at the bottom right, an ink keyline on its slope, a yellow lit edge, amber body, rust outer edges; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "d18f82132ca78262ae2e06b3016a51601e9340f3b7a38be567d493cf1b3b0a77",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "find-crystal-16x16": {
   "size": [
@@ -8724,9 +8724,9 @@
   "src": "typed by hand",
   "made": "the vybronic crystal of the signed 112x112 find, drawn again at 16 px: two lavender and lilac shards on dark earth; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "2981e3b57aedf6eb40e3aff0a39a288f735b42f3261e1d54d2ca0a647b52567d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "status_note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
  },
  "find-pearl-16x16": {
   "size": [
@@ -8735,8 +8735,8 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the tide pearl, drawn again at 16 px: a bone pearl with a mint sheen in a frostS shell; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "64e972308756ea5c8418409fd9d77cdbd394fcfa00e778b46682d1a24d0c3b84",
+  "made": "the tide pearl, drawn again at 16 px (pass 70): an open shell (two frostS valves with a fog rim, a mist inside) holding a bright 5x5 bone pearl with one white highlight; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
+  "sha256": "b67cc4f41378c7d142f668fa523b7c8072d8881ddfae5918f0404c59dc9812e0",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
@@ -8748,8 +8748,8 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the storm-glass shard, drawn again at 16 px: a frostS shard with a white crack, on dark earth; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "d004636bf6d44c667ab79aa3de9a4009be951b1ed8fef0bc3133ba00d2b0c1c6",
+  "made": "the storm-glass shard, drawn again at 16 px (pass 70): a tall frostS shard with a pointed top and one flat white facet on its left, a mist shade on its right, on dark earth; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
+  "sha256": "ea9c3674deb3ff4fba430a3d18b2b74ff7942b7b960ae2e6d56264eeb927ab1f",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
