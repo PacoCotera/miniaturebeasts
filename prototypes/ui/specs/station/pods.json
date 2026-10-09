@@ -232,10 +232,14 @@
     ],
     "feet": 392,
     "kind": "species silhouette in a soft halo",
-    "slice": "figure-{species}-128x160",
     "fromPainting": "the standard painting's silhouette",
     "individual": false,
-    "beforeIdentify": "an empty halo"
+    "beforeIdentify": "an empty halo",
+    "slices": {
+     "mist": "mibi-halo-{SNN}-128x160-mist",
+     "clear": "mibi-halo-{SNN}-128x160-clear"
+    },
+    "crossFade": "clear alpha = chapters read / chapters, over the mist; the build blurs nothing"
    },
    "originPicture": {
     "rect": [
