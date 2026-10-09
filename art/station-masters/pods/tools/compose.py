@@ -9,7 +9,7 @@ f16 = ImageFont.truetype(FD + "Inter-Regular.otf", 16); f20 = ImageFont.truetype
 CREAM = (241, 235, 223); FOG = (198, 196, 216); MIST = (141, 138, 166); AMBER = (255, 168, 63); BONE = (241, 235, 223)
 cand = Image.open("source/raw/ref-PV-D-r3-a4-1024x600.png").convert("RGBA")
 def S(n): return Image.open(f"slices/{n}.png").convert("RGBA")
-CID = {'Coat': 'coat', 'Face': 'face', 'Shape': 'shape', 'Legs & tail': 'legs-tail', 'Legs': 'legs-tail', 'Movement': 'movement', 'Stamina': 'stamina', 'Character': 'character', 'Glow': 'glow', 'Charge': 'charge'}
+CID = {'Coat': 'coat', 'Face': 'face', 'Shape': 'shape', 'Legs & Tail': 'legs-tail', 'Legs': 'legs-tail', 'Movement': 'movement', 'Stamina': 'stamina', 'Character': 'character', 'Glow': 'glow', 'Charge': 'charge'}
 def compose(traits, rail):
     cv = Image.new("RGBA", (1024, 600), (16, 26, 36, 255)); d = ImageDraw.Draw(cv)
     def put(n, x, y): cv.alpha_composite(S(n), (x, y))
@@ -49,7 +49,7 @@ def compose(traits, rail):
             else: put(f"trait-picture-frame-104x160-{st}", cx, cy)
             (namenew((cx + 52, cy + 164), "Spots") if k == 0 else text((cx, cy + 164), ("Spots", "Belly", "Flank", "Crest")[k], f16, CREAM))
     # the rail: tabs hang from the bar at y 40 and touch along their slants
-    if rail == "six": tabs = [("Coat", "focused", 3), ("Face", "read", 3), ("Shape", "unread", 4), ("Legs & tail", "unread", 3), ("Movement", "sealed", 0), ("Stamina", "unread", 3)]; open_i = None
+    if rail == "six": tabs = [("Coat", "focused", 3), ("Face", "read", 3), ("Shape", "unread", 4), ("Legs & Tail", "unread", 3), ("Movement", "sealed", 0), ("Stamina", "unread", 3)]; open_i = None
     else: tabs = [("Coat", "read", 3), ("Face", "read", 3), ("Shape", "focused", 4), ("Legs", "unread", 3), ("Movement", "unread", 3), ("Stamina", "sealed", 0), ("Character", "unread", 3)]; open_i = 2
     x = 152; ring = None
     for i, (word, st, pips) in enumerate(tabs):
@@ -60,7 +60,7 @@ def compose(traits, rail):
         pc = CREAM if st in ("read", "focused") else (150, 168, 184)
         if full:
             tw = d.textlength(word, font=f16); bx = x + 76 - (32 + tw) / 2
-            if word == "Legs & tail": text((x + 76, 54), word, f16, pc if st != "sealed" else MIST, "mm")         # the word alone carries it (the leg is being redrawn)
+            if word == "Legs & Tail": text((x + 76, 54), word, f16, pc if st != "sealed" else MIST, "mm")         # the word alone carries it (the leg is being redrawn)
             else: cv.alpha_composite(S(f"rail-emblem-{CID[word]}-{es}-24x24"), (int(bx), 48)); text((bx + 32, 54), word, f16, pc if st != "sealed" else MIST, "lm")
             for p in range(pips): px = int(x + 80 - pips * 4 + 8 * p); d.rectangle([px, 68, px + 5, 73], fill=pc if st in ("read", "focused") and p < 2 else None, outline=pc)
         else:
@@ -83,7 +83,7 @@ def compose(traits, rail):
     vw = d.textlength("Read Face", font=f16); gx = int(36 + vw + 24)
     d.polygon([(gx + 4, 575), (gx + 11, 582), (gx + 4, 589), (gx - 3, 582)], fill=(91, 185, 243, 255)); text((gx + 18, 581), "2", f16, CREAM, "lm")
     hw = d.textlength("Home", font=f16); hx = int(1008 - hw - 4 - 16); put('frame-cap-back-16', hx, 574); text((1008, 581), "Home", f16, FOG, "rm")
-    text((512, 581), "Loika, Face", f16, MIST, "mm")
+    text((512, 581), "Coat is read" if rail == "six" else "Shape is unread", f16, MIST, "mm")
     nw = d.textlength("something new in Face", font=f16); put("frame-lamp-12-amber", int(904 - nw - 4 - 12), 575); text((904, 581), "something new in Face", f16, AMBER, "rm")
     for xx in (404, 620): d.line([(xx, 571), (xx, 591)], fill=HAIR)
     return cv.convert("RGB")
