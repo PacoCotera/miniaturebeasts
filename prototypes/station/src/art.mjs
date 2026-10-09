@@ -18,6 +18,7 @@ export const PLACEHOLDERS = [
   { id: "chapter-emblem", what: "one 16 px emblem per chapter", until: "the chapter rail master" },
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
   { id: "room", what: "Home's room, bench modules, vivarium, crates, cups, dome, leaves, Probe and lamp, as the stand-in v2 drew them", until: "the Home and bench masters (station-screens.md: no wood, felt or lamp-lit bench)" },
+  { id: "guide-masters", what: "the field guide's masters (foldout, panels, plates, marks) and the Book's page-turn corner (library-pageturn-24x24): slots only, nothing drawn until each is signed and placed", until: "the guide masters (station-layouts.md, Masters for the guide)" },
   { id: "icons", what: "the material icons, the Companion mark and the heart", until: "the icon set" },
 ];
 

@@ -8,7 +8,7 @@ import { stageBg, frameFor } from "./frame.mjs";
 import * as Guide from "../views/guide.mjs";
 import { registerPictures } from "../pictures.mjs";
 import { layer } from "../../../ui/components/specimen.mjs";
-import { registerAsset } from "../../../ui/assets.mjs";
+import { registerAsset, isFilled, asset as assetOf } from "../../../ui/assets.mjs";
 import * as S from "../state.mjs";
 import * as Lib from "../library.mjs";
 import { frameOf, frameIds, speciesIndex } from "../genome.mjs";
@@ -39,7 +39,7 @@ function drawBook() {
   panel(40, 400, 280, 60, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.panel, 3, "center"); text(fr.taxonomy?.clan ? "clan " + fr.taxonomy.clan + " · " + S.plural(fr.chapters.length, "chapter") : S.plural(fr.chapters.length, "chapter"), 180, 440, C.bark, 2, "center");
   // the clarity line: the species' type, not one of yours (the chapters and their looks are the guide spread, a page turn away)
   text(clipText(Lib.faceLine(G.st, id), 300, 2), 180, 468, C.bark, 2, "center");
-  if (Lib.book(G.st, id).guide) text("▶", 980, 516, C.clay, 3, "center");   // the page-turn corner (968, 512, 24, 24): ▶ turns to the guide, until its master is placed
+  if (Lib.book(G.st, id).guide) { const pid = "library-pageturn-24x24:24x24"; registerPictures([{ kind: "slot", id: pid, master: "library-pageturn-24x24", size: [24, 24], until: "the page-turn corner master (library.json pageTurn)" }], { podById: () => null, frameOf }); if (isFilled(pid)) blit(assetOf(pid), 968, 512); }   // the page-turn corner (968, 512, 24, 24): a slot only, nothing drawn until its master is placed
   const m = G.st.mibis.find((q) => S.speciesOf(q) === id);
   if (m) { const st = stampArt(fr, m.genome, m.read, 112); if (st) { panel(880, 400, 124, 124, C.bone, C.clay); blit(st, 886, 406); text(m.name, 942, 528, C.bark, 2, "center"); } }
   else text("no " + fr.species.name + " raised yet", 942, 500, C.clay, 2, "center");
