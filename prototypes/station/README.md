@@ -110,6 +110,31 @@ Under the device, opened by `?dev` or the "Developer tools" button, never a devi
 - `node prototypes/station/tools/checks.mjs`: the layer checks on what the journey recorded (above).
 - The CI site workflow runs the parse check, the page smoke, the screen layer's Node tests, the Station tests, this journey and the layer checks on every push.
 
+## M5 and M6 as rules (no screens yet)
+
+The Library's data and the sitting are built as state transitions, tested headless; they have no screens of their own, and the developer panel shows them as plain text rows ("Sitting and Library", clearly a placeholder).
+
+- **`src/library.mjs` (M5).** A species is `unmet`, `met` (a pencil study) or `found` (a plate); the field guide per species, chapter and trait: the looks found, the looks still unseen, `more?`, a shut sealed chapter's notch (it counts nothing until read), `complete` and `oneFromFull`; every look a trait can carry is enumerated the way a read words it (`possibleLooks`); the face of a species (a portrayed mibi the player chose; a released mibi keeps its place); the wish (a look the field guide holds, pinned per trait; the pods and mibis that carry pieces of it; it never touches a genome).
+- **`src/sitting.mjs` (M6).** The held sitting (one slot, one frame; a second earned while one is held is not given), the research moments that earn one (a field guide filled, a sealed chapter read, a deep line of four generations; each paid once, in the ledger `st.moments`), the warning while one is held, the welcome sitting, the ceremony (the offer, a pose from the habits watched, a place the mibi has been, one sitting each ever; it costs the sitting and nothing else), the crate (its start and rule stored, never a countdown; the lamp a fraction; ready when the wait is over and the painting has landed), Home's bay lamp counting walk crates and sitting crates, the portrait delivered to the mibi. Waits are the developer's `sittingWait` (three hours, a minute, now).
+- **`tools/headless.mjs`, `tests/loop.test.mjs`.** A headless player plays the whole journey from a fresh world by calling only the rules: a walk's crate docks, a pod is identified and read, a founder is shaped and grown, it opens, a second founder follows, two adults are crossed, the child is read, a sitting is held and its crate comes home. The test asserts every price against the decided economy and runs in CI with the other Station tests.
+- **`tools/loop-report.mjs`.** `node prototypes/station/tools/loop-report.mjs [--seed N] [--loose]` prints, from the same player, the Energy, Data and Essence and the minutes each step costs, with the walks it had to take.
+
+### Rules the docs leave open (built the narrowest way, flagged; for the game designer)
+
+1. **Habits and places.** The Companion records neither a mibi's watched habits nor the places it walked to. Built: `m.habits` and `m.walked`, written by `recordHabit` and `recordWalk`, whose callers are not decided (what counts as watched; which habit ids a species has).
+2. **The welcome sitting.** "The first moment any mibi has both a habit and a place": a mibi's own pod place counts from its birth, so built, a watched habit alone triggers it. And a welcome that comes while a sitting is held waits for the slot (it is not spent like a moment).
+3. **A moment earned while a sitting is held** is built as spent (its key stays in the ledger), as the warning implies ("use your sitting first"). The alternative is that it waits for the slot.
+4. **Field guide filled** counts the looks of every chapter that is not shut; a shut sealed chapter counts nothing, so a species with one can fill without it. Does it have to include the sealed chapter's looks?
+5. **Sealed chapter opened** is built as the first read of a sealed chapter of the species, since the find that opens it is out of the first build.
+6. **The first pod of a new drop identified** is not built: a drop has no meaning in the build yet.
+7. **A deep line** counts the crosses in a mibi's recorded tree (a founder 0, a child of founders 1) and needs four; the number is tuned with the cross; released ancestors count.
+8. **When the crate is ready:** built as the wait over and the painting landed. Which binds, the mock painter's delay or the three hours? And does "waiting for the cloud" show when the wait is over and the painting has not landed, as built?
+9. **A second sitting** may begin while a crate waits, if the slot is refilled.
+10. **The wish** is built as data (a pinned look per trait; carriers). How the pod list glints a wish's pieces, and how the cross forecast shows how close a pairing gets, are not built.
+11. **Blended traits in the field guide.** The looks to find of a blend include its in-between words ("between short and long"), counted as looks as a read words them; confirm they belong to "more?".
+12. **A world turn's length.** A juvenile is adult after two world turns; the loop report takes one walk per turn. How many minutes a turn is, is not in the docs.
+13. **The paid monthly sitting** waits on the account and is not built.
+
 ## Placeholders
 
 Engineers do not do art (decided). Every drawn thing is a stand-in listed in `src/art.mjs` (`PLACEHOLDERS`; the developer panel prints it): the mibi in the plain renderer's placeholder, the pod from the frame's parameters, trait close-ups and seeds, the stamp raster, the progress ring, the chapter emblems, the chapter page, the room and bench as the stand-in v2 drew them, the icons. Nothing in `art/` is touched.

@@ -32,7 +32,7 @@ export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 export function freshSt(wid, turn, now = Date.now()) {
   return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: 0, d: 0, s: 0,
     tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, readEver: false, freeId: false, firstMibi: true,
-    mibis: [], nextMibi: 1, nameN: 0, bud: null, bays: BAYS, sitting: null, moments: {}, welcomeGiven: false, wish: {}, outbox: [],
+    mibis: [], nextMibi: 1, nameN: 0, bud: null, bays: BAYS, sitting: null, moments: {}, welcomeGiven: false, wish: {}, face: {}, sittingCrates: [], outbox: [],
     dock: { docked: false, at: now }, dockN: 0, withReq: null, probe: null, mendFull: true, returned: [], log: [] };
 }
 export function logEv(st, t) { st.log.push("T" + (st.turn + 1) + " · " + t); if (st.log.length > 60) st.log.splice(0, st.log.length - 60); }
@@ -79,11 +79,11 @@ export function migrate(st, now = Date.now()) {
 }
 // What a record may lack after an older write.
 export function normalize(st, now = Date.now()) {
-  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases"]) if (!Array.isArray(st[k])) st[k] = [];
-  for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
+  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates"]) if (!Array.isArray(st[k])) st[k] = [];
+  for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
-  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (!m.from) m.from = { n: 0, g: "", how: "" }; }
+  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null; }
   syncKnown(st);
   return st;
 }
