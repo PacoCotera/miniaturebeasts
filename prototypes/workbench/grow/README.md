@@ -1,8 +1,8 @@
 # The Grow painting service
 
-The standard look of every mibi is its Grow painting: the cloud model's Station-size painting over the rig's control passes, derived down to the Companion and the token ([art-pipeline.md](../../../design/proposals/art-pipeline.md) v2, the lead's briefs of 2026-10-08). This is that service, run on the sandbox VM: a genome in, the painted set out, checked, with one named retry, the files laid out by genome hash, every call logged with its cost. Nothing here is accepted art; no painted master or studio screen was touched.
+The standard look of every mibi is its Grow painting: the cloud model's Station-size painting over the rig's control passes, derived down to the Companion and the token ([art-pipeline.md](../../../design/proposals/art-pipeline.md) v2, the lead's briefs of 2026-10-08). This is that service, run on the sandbox server: a genome in, the painted set out, checked, with one named retry, the files laid out by genome hash, every call logged with its provenance. Nothing here is accepted art; no painted master or studio screen was touched.
 
-**Spent: $64.42** over five prompt versions and the prompt lab ($25.07 of it the lab), `gemini-3.1-flash-image` through prompt v4 and `gemini-3-pro-image` since (1K output; $0.096 a call on Flash, $0.17 on Pro). Every call is in [prompts.json](prompts.json) with its fields, image inputs by name and SHA-256, response id, usage, cost, seconds and the checks it passed or failed. No key material is stored. The current state is **prompt v4**, reported first below; v3's re-run follows; v2 (the three-field prompt with the silhouette gate) and v1 (the stage 1 template) stay in prompts.json by `promptVersion`, and each individual's v2 outputs stay under `out/<species>/<sha>/v2/`.
+Five prompt versions and the prompt lab, `gemini-3.1-flash-image` through prompt v4 and `gemini-3-pro-image` since (1K output). Every call is in [prompts.json](prompts.json) with its prompt fields, inputs, usage and checks. No key material is stored. The current state is **prompt v4**, reported first below; v3's re-run follows; v2 (the three-field prompt with the silhouette gate) and v1 (the stage 1 template) stay in prompts.json by `promptVersion`, and each individual's v2 outputs stay under `out/<species>/<sha>/v2/`.
 
 ## Prompt v8: the service's prompt, the owner's pick after the prompt lab
 
@@ -12,17 +12,17 @@ Three loader rules sit between the set and the call, said once each: **the plan 
 
 ### Results, prompt v8: the validation run (18 individuals, Pro, portrait, one named retry)
 
-`sheets/validation-<species>.png`: the accepted Pip in the first row, then the type specimen and five individuals of S01, S09 and S12, each with its control (framed by the rule), its step 1 drawing, its step 2 painting, the derived Companion and token, and its status, calls, cost and checks. `sheets/validation-<species>-pass1.png` keep the first pass. `costs.json` has the numbers; every call is in `prompts.json` under prompt version 5.
+`sheets/validation-<species>.png`: the accepted Pip in the first row, then the type specimen and five individuals of S01, S09 and S12, each with its control (framed by the rule), its step 1 drawing, its step 2 painting, the derived Companion and token, and its status, calls, seconds and checks. `sheets/validation-<species>-pass1.png` keep the first pass. `report.json` has the numbers; every call is in `prompts.json` under prompt version 5.
 
-| | painted | step 1 first-attempt pass | calls a mibi | USD a mibi |
-| --- | ---: | ---: | ---: | ---: |
-| pass 1, as launched (18) | 6 of 18 | 0.22 | 2.11 | 0.376 |
-| after pass 2 on the seven served plain of S01 and S09 (18) | 11 of 18 | 0.44 | 2.17 | 0.383 |
-| S01 Loika | 5 of 6 | 0.50 | 2.33 | 0.416 |
-| S09 Belatz | 5 of 6 | 0.83 | 2.00 | 0.343 |
-| S12 Peplos | 1 of 6 | 0.00 | 2.17 | 0.390 |
+| | painted | step 1 first-attempt pass | calls a mibi |
+| --- | ---: | ---: | ---: |
+| pass 1, as launched (18) | 6 of 18 | 0.22 | 2.11 |
+| after pass 2 on the seven served plain of S01 and S09 (18) | 11 of 18 | 0.44 | 2.17 |
+| S01 Loika | 5 of 6 | 0.50 | 2.33 |
+| S09 Belatz | 5 of 6 | 0.83 | 2.00 |
+| S12 Peplos | 1 of 6 | 0.00 | 2.17 |
 
-Prompt v5 spent $12.38 over 70 calls (the three calibration passes on the type specimens, pass 1, pass 2, and eight calls a bug spent repainting the Belatz type specimen once per forced job, since fixed). Three life stages at this rate: $1.15 a mibi.
+Prompt v5 took 70 calls (the three calibration passes on the type specimens, pass 1, pass 2, and eight calls a bug spent repainting the Belatz type specimen once per forced job, since fixed). Three life stages at this rate: about 6.5 calls a mibi.
 
 **What pass 2 changed.** The Belatz's four served plain in pass 1 had all spread or re-coloured the wings; their control still showed the raised wing plane of the bird clan's old rest pose. With the bird clan's wings resting folded (E9, `framework/roster.mjs`), all four painted first time. The Loika's three had drawn a cream hind leg or the belly field in the body's charcoal; with the belly field named in the colour placement line, two of three painted (one on its retry) and one stays plain.
 
@@ -35,7 +35,7 @@ Prompt v5 spent $12.38 over 70 calls (the three calibration passes on the type s
 ## What is here
 
 - `controls.mjs` (Node, no dependencies): the control step. One genome in; under `out/<species>/<sha256[:16]>/` its `genome.json`, `controls/` (shaded, **key**, slots, index and silhouette passes at four sizes in the portrait and side views, translucency rendered flat; `legend.json` with the caption, the description in trait words, the slots with pigments, the parts with their index colours) and `plain/` (the placeholder set, `framework/plain.mjs`). Same genome, same bytes, same directory.
-- `service.py` (Python, Pillow): `paint` (the calls, the checks, the retry, the derived sizes, the manifest; `--control blurred|crisp|lowres|twostep`, `--views`, `--sub` for a trial kept beside the main outputs), `calibrate` (the checks on the stage 1 paintings, or with `--previous` on the last run's raw outputs, no calls), `recheck` (every attempt of the prompt version re-judged from its logged raw output with the checks as they stand, the as-run verdicts kept, the served outputs rewritten; `--complete` makes variant B's missing step 2 calls), `report` (`costs.json` and the sheets). `GEMINI_API_KEY` comes from the environment.
+- `service.py` (Python, Pillow): `paint` (the calls, the checks, the retry, the derived sizes, the manifest; `--control blurred|crisp|lowres|twostep`, `--views`, `--sub` for a trial kept beside the main outputs), `calibrate` (the checks on the stage 1 paintings, or with `--previous` on the last run's raw outputs, no calls), `recheck` (every attempt of the prompt version re-judged from its logged raw output with the checks as they stand, the as-run verdicts kept, the served outputs rewritten; `--complete` makes variant B's missing step 2 calls), `report` (`report.json` and the sheets). `GEMINI_API_KEY` comes from the environment.
 - `art-direction.txt`: the fixed art direction field.
 - `species/<species>/`: the species' reference painting (its type specimen, painted once with the accepted Pip as its reference) and `reference.json`. The Loika's reference is the accepted Pip itself.
 - `out/<species>/<sha256[:16]>/`: per individual the painted `station-portrait-600x620.png` and `-300x310.png`, `station-side-…`, the derived `companion-280x300.png` and `token-48.png`, `manifest.json` (the genome's hashes, the description, the reference used, per view the attempts with their checks and cost, the served outputs with SHA-256); `v2/` the previous run's outputs; `variants/<trial>/` the control trials and variant B (`step1-portrait-…` the HiBit drawing beside the step 2 painting). `controls/`, `plain/` and the raw 1024² outputs (`raw/`) are not committed: the controls and the placeholder are reproducible from the genome, the raw outputs' SHA-256 are in prompts.json.
@@ -43,7 +43,7 @@ Prompt v5 spent $12.38 over 70 calls (the three calibration passes on the type s
 
 ## The prompt lab
 
-The owner's direction after the envelope: iterate the prompt on one reference individual per species, one change at a time, and run the full set only once a variant looks right; and if Flash is not up to it, go Pro, the cute-pet bar before cost. `lab.py` runs N prompt variants against the same controls and reference on both `gemini-3.1-flash-image` and `gemini-3-pro-image` (the two-step recipe, two calls a try: about $0.19 on Flash, $0.33 on Pro), logs every call in prompts.json with `lab: {species, variant}`, writes `lab/<species>/<variant>/` (the step 1 drawing, the step 2 painting, `prompt.json` with the fields and the changed text) and lays one sheet per species, `sheets/lab-<species>.png`: control, Flash's step 1 and step 2, Pro's step 1 and step 2, and the variant's changed text beside each with the cost per try on each model and the checks (logged, not gated). A variant may say `images: "index-key"` to send the part map first and the key second in step 1. The reference individuals are the type specimens under the cute envelope: the Loika (S01), the Belatz (S09) and the Peplos (S12), the last with its wings folded (E9).
+The owner's direction after the envelope: iterate the prompt on one reference individual per species, one change at a time, and run the full set only once a variant looks right; and if Flash is not up to it, go Pro, the cute-pet bar first. `lab.py` runs N prompt variants against the same controls and reference on both `gemini-3.1-flash-image` and `gemini-3-pro-image` (the two-step recipe, two calls a try), logs every call in prompts.json with `lab: {species, variant}`, writes `lab/<species>/<variant>/` (the step 1 drawing, the step 2 painting, `prompt.json` with the fields and the changed text) and lays one sheet per species, `sheets/lab-<species>.png`: control, Flash's step 1 and step 2, Pro's step 1 and step 2, and the variant's changed text beside each with the calls per try on each model and the checks (logged, not gated). A variant may say `images: "index-key"` to send the part map first and the key second in step 1. The reference individuals are the type specimens under the cute envelope: the Loika (S01), the Belatz (S09) and the Peplos (S12), the last with its wings folded (E9).
 
 The variants are **held** until the art prompter's prompt set lands under `grow/prompt-lab/`; the lab reads it when present (`variants.json`, a list of `{id, name, change, step1?, step2?}` whose step texts are used as written, with `{controls}`, `{description}`, `{species}`, `{artDirection1}`, `{artDirection2}`, `{generate}`, `{transfer}` as placeholders; `art-direction-step1.txt` and `art-direction-step2.txt`, the v5 blocks; `species/<species>.txt`, the material words; `description-template.txt` with `{description}` for the genome's words; a missing file falls back to the lab's own). Without the set, the lab's own eight one-change variants (surface words, anti-artefact words, posture words, eye words, a negative list, field order, the owner's craft block) stand ready in `lab.py`; only the Loika's baseline (v0) was run before the hold, as the sheet's proof of the mechanics.
 
@@ -61,9 +61,9 @@ The owner's reframing after the v3 re-run: the painter was faithfully painting t
 | --- | ---: | ---: | ---: | ---: | ---: |
 | step 1 passes first attempt | 3 | 1 | 0 | 2 | 0 (then yes) |
 | served painted | 9 of 13 | 1 of 2 | 0 of 3 | 5 of 6 | yes |
-| calls, cost | 32, $3.09 | 4, $0.39 | 6, $0.59 | 13, $1.26 | 3, $0.29 |
+| calls | 32 | 4 | 6 | 13 | 3 |
 
-Prompt v4 spent $5.39 in 57 calls; all versions $26.51.
+Prompt v4 took 57 calls.
 
 What the sheets show:
 
@@ -104,13 +104,11 @@ The part check went through three forms this run: pixel coverage (biased against
 | | A: one step, blurred control, both views | crisp control (6 portraits) | low-res control (6 portraits) | B: two steps (18 portraits, 3 sides) |
 | --- | ---: | ---: | ---: | ---: |
 | calls | 50 | 7 | 10 | 52 (46 in the manifests: the type specimens' portraits were painted twice) |
-| cost | $4.75 | $0.67 | $0.97 | $5.04 |
-| per individual (retries included) | $0.264 (2.78 calls, two views) | $0.111 (one view) | $0.162 (one view) | $0.249 (one view, 2.56 calls) |
+| calls per individual (retries included) | 2.78 (two views) | 1.17 (one view) | 1.67 (one view) | 2.56 (one view) |
 | first-attempt pass | 61 % (22 of 36 views) | 83 % | 33 % | 39 % (step 1) |
 | served painted | 26 of 36 views (13 portraits, 13 sides) | 6 of 6 | 5 of 6 | 7 of 18 portraits, 3 of 3 sides |
-| per mibi, three stages, two views | $0.79 | | | about $1.50 |
 
-Prompt v2 for comparison (silhouette gate, crisp control): $0.282 an individual, 53 % first attempt, 30 of 36 views served.
+Prompt v2 for comparison (silhouette gate, crisp control): 53 % first attempt, 30 of 36 views served.
 
 ## What the sheets show
 
@@ -130,7 +128,7 @@ python3 grow/service.py calibrate                                   # no calls; 
 python3 grow/service.py paint --members 6 --control crisp           # paid: the species references first, then 6 individuals each of S01, S09, S12
 python3 grow/service.py paint --members 6 --control twostep --views portrait --sub twostep   # variant B beside the main outputs
 python3 grow/service.py recheck                                     # re-judge from the raw outputs after a change to the checks
-python3 grow/service.py report                                      # costs.json and the sheets
+python3 grow/service.py report                                      # report.json and the sheets
 ```
 
-`paint` skips an individual whose manifest already holds this prompt version; `--force` repaints. `--out <dir>` (or `GROW_OUT`) moves the output root, with the call log `prompts.json` beside it, outside the repository: the Caddy service on the sandbox VM paints under its own data directory this way (`prototypes/caddy/`).
+`paint` skips an individual whose manifest already holds this prompt version; `--force` repaints. `--out <dir>` (or `GROW_OUT`) moves the output root, with the call log `prompts.json` beside it, outside the repository: the Caddy service on the sandbox server paints under its own data directory this way (`prototypes/caddy/`).

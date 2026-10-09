@@ -45,3 +45,5 @@ adds six Appearance consumers; it does not supply five empty genomic branches,
 other missing consumers, broad bear/cat/cow/firefly range, complete-genome
 sharing, accepted pet masters or animation. No new test battery, discretionary
 test run or CI expansion was used. Existing automatic CI remains the gate.
+
+The art-reset link in this folder's snapshots was re-pointed on 2026-10-09 to [art-reset/README.md](https://github.com/PacoCotera/miniaturebeasts/blob/main/v1/prototype/generator-workbench/evidence/art-reset/README.md) in this repository; the snapshots are otherwise as captured.

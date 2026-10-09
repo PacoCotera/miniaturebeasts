@@ -30,12 +30,12 @@ Sizes at 1×.
 
 ## 3. Who makes what, and how
 
-The **pixel artist** is a role an agent plays, under the art director's sign-off. Paintings and generation come first; the cleaned Aseprite sheet is the master.
+The **pixel artist** is a project role, under the art director's sign-off. Paintings and generation come first; the cleaned Aseprite sheet is the master.
 
 - **Terrain, props, features:** a Pro-painted source at higher resolution, down-rendered onto the 48 ramps. Ground edges may start from a Retro Diffusion Wang tileset (C4), palette-converted.
 - **Cloud, rim, weather pieces:** Retro Diffusion `rd_pro__topdown` with the 48-colour `input_palette` and one concept crop as reference (the trial's A3 and A4), snapped to the palette.
 - **Mibi tokens:** derived on the Station from each mibi's painting: 48 px token (idle 2, walk 3), HUD face, 64 px partner face ([art pipeline](art-pipeline.md) §1.1, §6). Wild creatures and unmet silhouettes take the **generic token per species**, derived from the type specimen; a mibi awaiting its painting carries the placeholder set.
-- **Cleaned in Aseprite** (headless on the VM), where the trial showed generation fails: seamless repeats, the outline rule, the Bayer edges, rain sheet streaks, two-frame idles and stepped cycles (generated frames boil), icons and key caps at 16 px, 9-slices.
+- **Cleaned in Aseprite (headless)**, where the trial showed generation fails: seamless repeats, the outline rule, the Bayer edges, rain sheet streaks, two-frame idles and stepped cycles (generated frames boil), icons and key caps at 16 px, 9-slices.
 - **Assembled** as indexed sheets with a JSON atlas in `art/companion-48/`; sources, prompts and sidecars kept, generated stages labelled.
 - **Contact sheets** of every asset at 1× and 3× go to the owner at each review.
 

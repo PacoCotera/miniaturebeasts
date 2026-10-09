@@ -1,4 +1,4 @@
--- The pawn assembled in Aseprite, headless on the VM: the 28 frames (4 facings x walk 3, creep 3, react) as the frames of one
+-- The pawn assembled in Aseprite, headless: the 28 frames (4 facings x walk 3, creep 3, react) as the frames of one
 -- 48 x 48 sprite, tagged by facing and state, saved as pawn.aseprite, each frame exported back to a PNG (the exact palette
 -- colours round-trip). Parameters: indir, outdir.
 --   aseprite -b --script-param indir=in --script-param outdir=out --script aseprite-pawn.lua

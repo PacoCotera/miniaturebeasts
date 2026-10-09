@@ -42,7 +42,7 @@ generated manifest in its Companion artifact.
 136 × 144 empty habitat, all 29 unchanged 32 × 32 field sprites and five original
 antialiased Vera font sizes: title 26, action 20, body 18, small 16 and quantity 28.
 Source identities, pixels, centers, glyph coverage, metrics and baselines are
-preserved. Local regeneration equals the VM manifest. Source backing totals
+preserved. Local regeneration equals the build machine's manifest. Source backing totals
 941,704 RGBA bytes and 101,556 glyph-coverage bytes; extraction creates no new art.
 
 Configured allocations are a 256 KiB LVGL pool, a 10,800-byte partial draw buffer and

@@ -79,3 +79,5 @@ breadth/depth, rather than more contrast or dash duplication. Full eleven-layer
 locus authoring, missing consumers, rich terminals, markings/partial coats,
 accepted bear/cat/cow/firefly range, linked returned pet art and animation remain
 unfinished. No external pet image was requested; these are static source references.
+
+The art-reset link in this folder's snapshots was re-pointed on 2026-10-09 to [art-reset/README.md](https://github.com/PacoCotera/miniaturebeasts/blob/main/v1/prototype/generator-workbench/evidence/art-reset/README.md) in this repository; the snapshots are otherwise as captured.

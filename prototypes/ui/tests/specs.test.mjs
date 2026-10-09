@@ -452,6 +452,44 @@ test("the Probe bench spec file agrees with the bench wireframes, region by regi
   assert.equal(R.bench.until, "room-bench-stage-collection"); assert.deepEqual(paletteBad(be.colours), []);
 });
 
+test("the sitting spec file agrees with its wireframes, region by region; Habitat's half stays where it stood; its focus graphs play their vectors", () => {
+  const si = rd("../specs/station/sitting.json"), hab = rd("../specs/station/habitat.json"), R = si.regions, P = boxesOf("14-sitting-pose.svg"), C = boxesOf("14c-sitting-confirm.svg");
+  const is = (r, what, set = P) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
+  for (const k of ["bezel", "glass", "resident", "nameTag", "heading", "strip"]) is(R[k].rect, k);
+  for (const k of ["bezel", "glass", "resident", "heading", "strip"]) is(R[k].rect, k + " (confirm)", C);
+  lintRegions(si); assert.deepEqual(si.states, ["pose", "place", "confirm", "begin"]); assert.deepEqual(si.rules.needed, []);
+  for (const k of ["bezel", "glass", "resident", "nameTag"]) assert.deepEqual(R[k].rect, hab.regions[k].rect, k + " where it stood on Habitat");
+  assert.deepEqual(R.gilt.rect, R.bezel.rect, "the gilt frame round the window"); assert.deepEqual(R.gilt.inStates, ["confirm", "begin"]);
+  const K = R.cards.places, cards = Array.from({ length: K.max }, (_, i) => [K.first[0] + K.pitch[0] * (i % K.grid[0]), K.first[1] + K.pitch[1] * Math.floor(i / K.grid[0]), K.first[2], K.first[3]]);
+  assert.equal(K.grid[0] * K.grid[1], K.max); for (const c of cards) assert.ok(inside(c, R.cards.rect), "a card inside its region"); for (const c of cards.slice(0, 3)) is(c, "pose card");
+  for (const [i, c] of cards.entries()) for (const d of cards.slice(i + 1)) assert.ok(gapOk(c, d, 16), "cards 16 px apart");
+  assert.ok(R.cards.card.picture.at[0] * 2 + R.cards.card.picture.size[0] === K.first[2] && R.cards.card.picture.at[1] * 2 + R.cards.card.picture.size[1] === K.first[3], "the picture centred in its card");
+  for (const set of [P, C]) is(R.deck.rect, "the deck", set); assert.deepEqual(R.deck.rect, [592, 48, 416, 424], "the deck is Habitat's right column"); assert.ok(inside(R.heading.rect, R.deck.rect) && inside(R.cards.rect, R.deck.rect) && inside(R.chosen.rect, R.deck.rect), "the heading and the cards in the deck");
+  assert.equal(cards[2][0] + cards[2][2], R.deck.rect[0] + R.deck.rect[2] - 16, "the cards end 16 inside the deck"); assert.ok(readFileSync(new URL("../../../design/style-guide/station-layouts/14-sitting-pose.svg", import.meta.url), "utf8").includes(`<rect x="${cards[1][0] - 4}" y="${cards[1][1] - 6}" width="${cards[1][2] + 8}" height="${cards[1][3] + 8}"`), "the ring on card 1, 4 outside and lifted 2");
+  assert.equal(R.gilt.part, "gilt"); assert.deepEqual(Object.keys(R.gilt.slices), ["rest", "armed"]); is(R.gilt.opening, "the gilt's opening", C);
+  assert.deepEqual(R.gilt.opening, [R.gilt.rect[0] + R.gilt.moulding, R.gilt.rect[1] + R.gilt.moulding, R.gilt.rect[2] - 2 * R.gilt.moulding, R.gilt.rect[3] - 2 * R.gilt.moulding]); assert.equal(Object.values(R.gilt.bands).at(-1)[1], R.gilt.moulding);
+  assert.ok(inside(R.resident.rect, R.gilt.opening) && inside(R.nameTag.rect, R.gilt.opening), "the mibi and its tag inside the gilt's opening");
+  assert.deepEqual([R.cards.places.grid, R.chosen.places.grid, R.chosen.places.exactly, R.steps.places.exactly], [[3, 2], [2, 1], 2, 3]);
+  const B = si.events.begin.steps; assert.deepEqual([B[0].kind, B[0].target, B[0].from, B[0].to, B[0].ms, B[0].levels], ["dither", "gilt", R.gilt.slices.armed, null, 300, 16]); assert.deepEqual([B[1].at, B[1].ms, B[1].to, B[1].focus], [300, 180, "habitat", "portrait"]);
+  assert.deepEqual([si.strings.thisPose, si.strings.thisPlace], ["Pick this pose", "Pick this place"]); assert.deepEqual(["pose", "place", "confirm"].map((k) => si.bottomLine[k].capX), [934, 950, 946], "the ← cap at 1008 − word − 20");
+  assert.match(hab.focus.targets.portrait.enabled, /^always/); assert.match(hab.focus.entry.backFromSitting, /^portrait/); assert.match(hab.focus.entry.sittingBegun, /^portrait/);
+  const H = R.chosen.places; for (let i = 0; i < 2; i++) is([H.first[0] + H.pitch[0] * i, H.first[1], H.first[2], H.first[3]], "chosen card", C);
+  assert.ok(R.heading.rect[1] + R.heading.rect[3] + 16 <= R.cards.rect[1], "the heading 16 px above the cards"); assert.equal(R.heading.px, frame.type.title);
+  const S = R.steps.places, steps = Array.from({ length: 3 }, (_, i) => [S.first[0] + S.pitch[0] * i, S.first[1], S.first[2], S.first[3]]);
+  for (const s of steps) { is(s, "step tile"); assert.ok(inside(s, R.strip.rect)); } assert.deepEqual([steps[0][0], steps[2][0] + steps[2][2]], [32, 984], "the steps span Habitat's strip");
+  assert.ok(R.steps.tile.thumb.at[0] + R.steps.tile.thumb.size[0] <= S.first[2] - 8, "the chosen picture inside its tile");
+  // frame.json: the sitting under Habitat, ← Habitat, the Habitat mark
+  assert.deepEqual([frame.navigation.screens.sitting.parent, frame.navigation.screens.sitting.back, frame.regions.title.marks.sitting, frame.strings.titles.sitting], ["habitat", "Habitat", "Habitat", si.strings.title]);
+  assert.match(hab.bottomLine.portrait.held.opens, /sitting/, "Habitat's Portrait module opens the sitting");
+  // focus: well formed; the vectors played on five cards (pose and place) and on the room (confirm)
+  const g = si.focus.pose.graph, groups = new Set(Object.keys(g)); for (const k of STEP_KEYS) assert.ok(edgeOk(g.card[k], groups), "card." + k);
+  const TG = Object.fromEntries(cards.slice(0, 5).map((c, i) => ["card." + i, { group: "card", box: c }]));
+  let played = 0; for (const v of si.focus.vectors) { if (v.intent || v.state === "confirm") continue; assert.equal(focusMove(g, TG, v.from, v.key), v.to, `${v.state}: ${v.from} ${v.key} → ${v.to}`); played++; }
+  assert.ok(played >= 8); assert.deepEqual(si.focus.confirm.targets, {}, "no ring on look and confirm"); assert.ok(STEP_KEYS.every((k) => si.focus.confirm.graph.room[k] === "none"));
+  assert.equal(si.events.begin.holdMs, Math.max(...si.events.begin.steps.map((s) => s.at + (s.ms ?? 0))));
+  assert.ok(!JSON.stringify(si.colours).includes("amber")); assert.deepEqual(paletteBad(si.colours), []);
+});
+
 test("the not-built composition agrees with its wireframes: one line on the stage's ground, the frame kept on screens and gone on Idle", () => {
   const N = frame.notBuilt, R = N.regions, B = boxesOf("13-not-built.svg"), I = boxesOf("13b-not-built-idle.svg");
   lintRegions({ screen: "frame.notBuilt", regions: R });

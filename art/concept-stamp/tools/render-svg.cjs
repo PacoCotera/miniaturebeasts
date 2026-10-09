@@ -8,7 +8,7 @@ const scale = Number(scaleArg || 1);
   const svg = fs.readFileSync(svgPath, "utf8");
   const m = svg.match(/width="(\d+)" height="(\d+)"/);
   const W = Number(m[1]), H = Number(m[2]);
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" + (fs.existsSync("/opt/pw-browsers/chromium/chrome") ? "/chrome" : "") });
+  const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});   // CHROMIUM_PATH, or Playwright's own browser
   const p = await b.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: scale });
   await p.setContent(`<html><body style="margin:0;background:#fff">${svg}</body></html>`);
   await p.screenshot({ path: outPath, clip: { x: 0, y: 0, width: W, height: H } });

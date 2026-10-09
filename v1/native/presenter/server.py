@@ -374,7 +374,7 @@ class Handler(BaseHTTPRequestHandler):
         self.close_connection = True
         if not self.authorized():
             return
-        # The local TLS tunnel supplies X-Forwarded-Proto. Never use a forwarded
+        # The local TLS proxy supplies X-Forwarded-Proto. Never use a forwarded
         # host to broaden the origin allowlist, and never enable CORS.
         try:
             origin = urlsplit(self.headers.get("Origin", ""))

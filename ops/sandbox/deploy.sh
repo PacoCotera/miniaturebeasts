@@ -4,7 +4,7 @@
 # Public repo, so no token is needed. Safe to run repeatedly; does nothing if current.
 set -euo pipefail
 REPO="PacoCotera/miniaturebeasts"
-ROOT=/srv/miniaturebeasts
+ROOT="${MB_ROOT:?set by the operator}"
 API="https://api.github.com/repos/$REPO/releases?per_page=20"
 rel=$(curl -fsSL -H 'Accept: application/vnd.github+json' "$API" \
   | jq -r '[.[] | select(.tag_name|startswith("sandbox-")) | select(.draft==false)] | sort_by(.created_at) | last')
