@@ -112,6 +112,8 @@ and a shard of storm glass left by a storm.*
   find is used up.
 - A shut chapter's looks count as unseen, so a species' field guide is complete
   only after its find.
+- A shut chapter does not clear in the incubator. A mibi grown before the find
+  reads that chapter afterwards, at the usual price.
 
 ## The field guide
 
@@ -156,8 +158,9 @@ A **founder** is a mibi grown from one pod
   when it is empty.
 - **Grow now** costs **1 Essence for every 2 minutes left**, rounded up. The price
   falls as the bud grows.
-- A founder's unread chapters clear one by one across the wait, so every founder
-  opens fully known.
+- A founder's unread chapters clear one by one across the wait. A founder opens
+  known in every chapter except a sealed chapter that is still shut, so the
+  find stays a discovery.
 - New cargo never shortens the wait.
 - Opening takes a press. The young mibi steps into a free bay with its name and
   its stamp.
@@ -215,6 +218,37 @@ from looks the field guide holds. Pinning and unpinning are free.
   the pinned look when the range reaches it. How close a pair comes to the wish
   is shown by the pinned traits that light, never by a number.
 - A wish is knowledge only. It never puts a look into any pod or mibi.
+
+## Self-changing traits
+
+A few traits change within a mibi's life, by where it goes as a partner: Glow,
+Basking and Phase. How they move is in
+[Genomics](creatures-and-genomics.md#the-four-kinds-of-locus).
+
+- Only the mibi with the player as partner changes. Residents at home keep
+  their look.
+- The player steers a change only by choosing where the partner walks. No item,
+  button or price moves it.
+- Habitat shows the change in words, never as a number: the look now, and that
+  it changed lately.
+- The detail view shows the look the mibi was born with, the look now and the
+  cause in plain words, for example "brighter after walks in caves and woods".
+- A trait in a sealed chapter gives no hint of a change until the chapter is
+  read.
+- A change never adds a look to the field guide, never counts toward a wish and
+  never changes a forecast. Those follow the copies the mibi was born with,
+  which are also what a child inherits.
+
+## Stamps and scans
+
+Every mibi has a stamp, which can be printed and scanned
+([Genomics](creatures-and-genomics.md#the-genome-stamp)).
+
+- A scanned stamp shows everything its keeper has read, hidden and sleeping
+  copies included. Unread and sealed chapters are never in a stamp.
+- A scan only shows a mibi. It never creates or moves one.
+- A scan never teaches the scanner's Station anything. It adds no look to the
+  field guide, counts toward no wish, lowers no read price and makes no glint.
 
 ## Data and the other supplies
 
@@ -277,8 +311,6 @@ means:
   set low so the whole loop can be played through quickly.
 - How much Data an expedition yields, by kind of place.
 - How deep a family line must be to earn a sitting.
-- How a self-changing trait (Glow, Basking, Phase) reads on its page, and
-  whether the player sees it change.
 - Editing a copy with a rare item.
 - Wonders: how the player finds the combined traits a species can show
   ([Genomics](creatures-and-genomics.md#not-designed-yet)).
