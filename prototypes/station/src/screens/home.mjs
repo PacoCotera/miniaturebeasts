@@ -6,6 +6,7 @@ import { ICON, crateArt, cupArt, domeArt, budArt, leafArt, probeArt, lampArt, be
 import { G, FX, UI, SPECS, ARRIVE_MS, msg, lockInput, save, goScreen, registerScreen, need, docked, hasWorld, bayCrates, effWithId, atHome, mibiById, arriving } from "../game.mjs";
 import { stageBg, lampPool, drawResidents, stepResidents, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
 import * as S from "../state.mjs";
+import * as T from "../sitting.mjs";
 import { frameOf } from "../genome.mjs";
 
 const VIV = { x: 14, y: 50, w: 636, h: 500 }, BENCH = { bay: [664, 50, 346, 118], tray: [664, 178, 346, 92], inc: [664, 280, 168, 170], cradle: [842, 280, 168, 170], lamp: [956, 460, 54, 84] };
@@ -132,7 +133,7 @@ export function openBay() {
   save();
 }
 export function dockKey() {
-  const r = S.dockKey(G.st, G.sv, G.settings, Date.now());
+  const r = T.dock(G.st, G.sv, G.settings, Date.now());
   if (!r.ok) { msg(r.msg); return; }
   if (r.docked) { FX.mend = { ...r.mend, at: clock.now }; FX.crateIn = clock.now; }
   msg(r.msg); save();

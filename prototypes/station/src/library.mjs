@@ -2,31 +2,12 @@
 // holds, what it still lacks ("more?"), whether a species is unmet, met or found, the face a portrayed mibi gives it, and the wish a player
 // pins. Everything is derived from the save (st.guide, st.knownIds, st.metIds, st.mibis, st.wish, st.face); no drawing, no screen.
 // A wish is knowledge, never material: nothing here writes a genome (research-loop.md §5: "knowing a variant never injects it").
-import { LOCI, resolveCopies } from "../../workbench/framework/catalogue.mjs";
-import { frameOf, chapterLooks } from "./genome.mjs";
-import { frameFor, speciesOf, guideLooks, mibiById, DEFAULT_SETTINGS, logEv } from "./state.mjs";
+import { traitLooks } from "../../workbench/framework/describe.mjs";
+import { frameOf, chapterLooks, traitState } from "./genome.mjs";
+import { frameFor, speciesOf, guideLooks, mibiById, forecastOf, DEFAULT_SETTINGS, logEv } from "./state.mjs";
 
-// Every look a trait can show, in the words a read gives (describe.lookOf's own enumeration: one label per distinct pair of the
-// species' pool, the frame's looks where they align with the labels or with the resolved values).
-export function possibleLooks(frame, trait) {
-  const id = trait.loci[0], locus = LOCI.get(id);
-  if (!locus) return [...(trait.looks || [])];
-  const pool = frame.pools?.[id] ?? locus.alleles.map((a) => a.id), labels = [], values = [];
-  const labelOf = ([a, b]) => {
-    const v = resolveCopies(locus, [a, b]);
-    if (locus.operator === "copy-mean") return a === b ? a : `between ${a} and ${b}`;
-    if (locus.operator === "partition-map") return a === b ? a : `${a}, ${b}`;
-    if (locus.operator === "pair-map") return typeof v === "boolean" ? (v ? "on" : "off") : String(v);
-    return a === b ? a : [a, b].sort().join("/");
-  };
-  for (let i = 0; i < pool.length; i++) for (let j = i; j < pool.length; j++) {
-    const l = labelOf([pool[i], pool[j]]); if (!labels.includes(l)) labels.push(l);
-    const v = JSON.stringify(resolveCopies(locus, [pool[i], pool[j]])); if (!values.includes(v)) values.push(v);
-  }
-  if (trait.looks?.length === labels.length) return [...trait.looks];
-  if (trait.looks?.length === values.length) return [...trait.looks];
-  return labels;
-}
+// Every look a trait can show, in the words a read gives (describe.traitLooks: the frame's own looks, never the catalogue's pair labels where the frame names its bins).
+export const possibleLooks = (frame, trait) => traitLooks(frame, trait);
 
 // The species' page of the Library: a plate that is found (a pod of it identified, or a mibi of it), a pencil study that is met (seen
 // out on a walk), or an empty frame, unmet, with no cue.
@@ -36,15 +17,15 @@ export function speciesStatus(st, id) {
   return "unmet";
 }
 
-// The looks found per chapter and trait, and what is still unseen. A sealed chapter that is still shut shows its notch, its looks neither counted
-// nor listed ("sealed": true).
+// The looks found per chapter and trait, and what is still unseen. A sealed chapter that is still shut shows only its notch ("sealed": true, nothing found), but its looks
+// count as unseen, so a species with a sealed chapter fills only after its find.
 export function fieldGuide(st, id, settings = DEFAULT_SETTINGS) {
   const fr = frameOf(id); if (!fr) return null;
   const chapters = fr.chapters.map((ch) => {
     const shut = !!ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id);
     const traits = ch.traits.map((t) => {
-      const possible = possibleLooks(fr, t), seen = guideLooks(st, id, t.id), unseen = shut ? [] : possible.filter((l) => !seen.includes(l));
-      return { id: t.id, name: t.name, possible: shut ? [] : possible, found: shut ? [] : seen.slice(), unseen: unseen.length, more: !shut && unseen.length > 0, nature: t.nature };
+      const possible = possibleLooks(fr, t), seen = guideLooks(st, id, t.id), unseen = possible.filter((l) => !seen.includes(l));   // a shut chapter's looks count as unseen (research-loop.md §4, the-portrait.md §8)
+      return { id: t.id, name: t.name, possible, found: shut ? [] : seen.slice(), unseen: unseen.length, more: unseen.length > 0, nature: t.nature };
     });
     return { id: ch.id, name: ch.name, sealed: shut, traits, found: traits.reduce((n, t) => n + t.found.length, 0), unseen: traits.reduce((n, t) => n + t.unseen, 0), more: traits.some((t) => t.more) };
   });
@@ -101,4 +82,34 @@ export function wishCarriers(st, id) {
 export function wishHeld(st, id, m) {
   const w = wishOf(st, id), keys = Object.keys(w); if (!keys.length) return 0;
   const r = wishCarriers(st, id).mibis.find((x) => x.id === m.id); return r ? r.traits.length / keys.length : 0;
+}
+
+// The chapters of a pod or mibi that carry a piece of the wish: a pinned trait whose pinned look either copy gives, shown or hidden, in a chapter that is read (or known). The wish glint is
+// its own mark beside the new-look star, on the chapter arc that holds the piece; it says where, never what. (Marking a chapter not yet read waits for the owner.)
+export function wishChapters(st, x) {
+  const id = speciesOf(x), fr = frameOf(id), w = wishOf(st, id); if (!fr || !x.genome || !Object.keys(w).length) return [];
+  return fr.chapters.filter((ch) => (x.read || []).includes(ch.id) && chapterLooks(fr, ch, x.genome).some(([t, ls]) => w[t] && ls.includes(w[t]))).map((ch) => ch.id);
+}
+export const wishGlint = (st, x, chapterId) => wishChapters(st, x).includes(chapterId);
+
+// The wish in the cross forecast (research-loop.md §5, §8; the-portrait.md §8): for each pinned trait, a switch lights the seeds among the four that show the pinned look; a blend marks
+// the pinned bin on the range picture when the range reaches it. How close a pairing gets is the pinned traits lit (`lit`), never a number or a percentage. Data only: no art.
+// Seeds are read against the first parent's other loci (the forecast gives the trait's own locus).
+export function wishForecast(st, a, b, settings = DEFAULT_SETTINGS) {
+  if (!a || !b) return null;
+  const id = speciesOf(a), w = wishOf(st, id), keys = Object.keys(w); if (!keys.length) return null;
+  const fc = forecastOf(st, a, b, settings), fr = frameFor(a); if (!fc || !fr) return null;
+  const traitsById = Object.fromEntries(fr.chapters.flatMap((c) => c.traits).map((t) => [t.id, t]));
+  const withLoci = (loci) => ({ ...a.genome, loci: { ...a.genome.loci, ...loci } });
+  const pinned = keys.map((traitId) => {
+    const ft = fc.traits.find((x) => x.trait === traitId), t = traitsById[traitId], look = w[traitId];
+    if (!ft || !t) return { trait: traitId, look, kind: null, lit: false };
+    if (ft.kind === "switch") {
+      const seeds = ft.seeds.map((sd, i) => (traitState(fr, t, withLoci({ [ft.locus]: sd.copies })).shows === look ? i : -1)).filter((i) => i >= 0);
+      return { trait: traitId, name: ft.name, look, kind: "switch", seeds, lit: seeds.length > 0 };
+    }
+    const bins = (ft.bins || []).filter((bin) => traitState(fr, t, withLoci({ [ft.locus]: [bin, bin] })).shows === look);
+    return { trait: traitId, name: ft.name, look, kind: "blend", bins, lit: bins.length > 0 };
+  });
+  return { species: id, pinned, lit: pinned.filter((p) => p.lit).map((p) => p.trait), of: pinned.length };
 }

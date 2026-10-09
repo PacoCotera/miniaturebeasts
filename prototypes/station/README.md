@@ -137,11 +137,17 @@ The builder built thirteen open rules the narrowest way and flagged them. The ru
 12. **A world turn is one expedition** (decided), not minutes: one walk per turn, as built.
 13. **The paid monthly sitting:** waits on the account, as built.
 
+**Built from the rulings.** `watchResident` and the dock hand-off call `recordHabit`; `recordWalk` runs for each place entered with the mibi; frames carry `habits`. `T.dock` (in `sitting.mjs`) wraps `dockKey` and gives the welcome. `readWarning` and `crossWarning` precede a sealed chapter's first read and a cross that completes a deep line. `crateLamp` holds at 31/32 after the wait; "Waiting for the cloud" shows only when `settings.caddyReachable` is false (`paintPortraits` and `caddyReachable` are settings). `wishForecast` returns the pinned seeds or bins and the pinned traits lit, with no number. Blended looks come from `describe.binLooks`, and a test checks each species' look count against its frame.
+
+- **Open for the copywriter:** two frames name fewer looks than their pool (S03 feet names 3 of 6 forms; S11 head names 3 for a 4-bin pool). They are listed in `FRAME_GAPS` in `tests/library.test.mjs` so a third cannot arrive unseen.
+- **Open for the Companion:** the dock hand-off field names `habitsDone` and `placesEntered` on each `sv.mibis` entry are this Station's; the Companion's side must confirm them.
+- **The loop report's field spend** (2 Calls and 1 beacon per walk) is the report's assumption; the docs give prices, not counts.
+
 **For the owner.**
 - **The wish glint on unread chapters.** Should a pinned wish glint a pod's chapter before it is read, telling the player where to spend Data? *Recommended:* yes, as the new-look star does (where, never what).
-- **The economy's tightening**, when he calls it: the walk's Energy yield against its sinks, and the sitting's wait in the shipped game (three hours is the testing number).
+- **The economy's tightening**, when the owner calls it: the walk's Energy yield against its sinks, and the sitting's wait in the shipped game (three hours is the testing number).
 
-**The pacing, judged.** Five hours to the first crate is the right order for testing (a sitting the same day), but it is the serial sum of a journey the design would overlap: the welcome comes on the first walk home with a mibi, about 50 minutes in, so its three-hour wait runs while the cross and the child's reads happen, and the first crate lands near four hours with the cross inside it. The leftover is the signal: Data ends at 3 of 10 earned, the ration working as meant, but Energy ends at 13 of 20 with no sink in the loop, partly because the report counts no field spending (Call, beacons, patches) and no Probe tier 2. To tune: have the report play the welcome at the first walk home, overlap waits, count the field's Energy spend and buy the Probe when affordable, then bring the Energy surplus to the owner with the real economy; the three-hour wait, the starter yields and the prices stay his.
+**The pacing, judged.** Five hours to the first crate is the right order for testing (a sitting the same day), but it is the serial sum of a journey the design would overlap: the welcome comes on the first walk home with a mibi, about 50 minutes in, so its three-hour wait runs while the cross and the child's reads happen, and the first crate lands near four hours with the cross inside it. The leftover is the signal: Data ends at 3 of 10 earned, the ration working as meant, but Energy ends at 13 of 20 with no sink in the loop, partly because the report counts no field spending (Call, beacons, patches) and no Probe tier 2. To tune: have the report play the welcome at the first walk home, overlap waits, count the field's Energy spend and buy the Probe when affordable, then bring the Energy surplus to the owner with the real economy; the three-hour wait, the starter yields and the prices stay the owner's.
 
 ## Placeholders
 

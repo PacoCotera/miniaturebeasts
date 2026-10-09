@@ -96,6 +96,14 @@ export const GLYPHS = {
   S16: ["...##", "..#..", ".#.#.", "#...#", "....."], // Blikur: a branching charge
 };
 
+// The routine acts a species is watched doing (the-portrait.md §8): the ids a mibi's habits are drawn from, at the bench (a resident in focus for a minute of its routine) and at the dock
+// (what the mibi with the player did on the walk). The first three species; a later one gets its list with its frame.
+export const HABITS = {
+  S01: ["shake-dry", "calm", "sleep-curled"],   // Loika
+  S02: ["sniff", "puff", "sleep-curled"],        // Untuva
+  S03: ["dig", "glow", "sleep-curled"],          // Tuikis
+};
+
 export const SPECIES = [
   { ...row("S01", "C01", "medium", "starter", "a round frog-hare, Pip (frame hopper)", "hops", "meadow, pond edge", null, "fruit", "calms wary creatures", "gentle and curious, a little shy"),
     summary: "The starter: Pip as in the approved art. Exactly the five open traits of the Pip proof.",
@@ -174,5 +182,6 @@ export function specOf(species) {
     neverOpen: GLOW_CLANS.has(species.clan) ? [] : ["glow", "glow-length"],
     taxonomy: { ...species.taxonomy, resembles: clan.resembles, clanName: CLAN_NAMES[species.clan] ?? null, clanNumber: clan.number, member, speciesNumber: clan.number * 32 + member, size: species.size },
     glyph: [...GLYPHS[species.id]],
+    habits: [...(HABITS[species.id] ?? [])],
   };
 }

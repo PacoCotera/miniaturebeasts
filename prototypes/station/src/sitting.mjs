@@ -1,63 +1,56 @@
-// The sitting (M6; the-portrait.md §1, §2, §6): a held right to one portrait, earned by research, spent in a ceremony on Habitat, waited out in a crate at the
+// The sitting (M6; the-portrait.md §1, §2, §6, §8): a held right to one portrait, earned by research, spent in a ceremony on Habitat, waited out in a crate at the
 // bay, opened to the mibi in a gilt frame. Every rule is a state transition on the save; no drawing, no screen. A timer stores its start and its rule, never a
 // countdown (station-build.md §7). Nothing here costs Energy, Data or Essence: a sitting is never on sale (the-portrait.md §1).
 //
 // The save (all optional in an older save; normalize fills them):
 //   st.sitting        null, or the held sitting { source: "moment" | "welcome" | "dev", key, at }  (one slot, one frame)
 //   st.moments        the ledger of research moments already paid, so none pays twice: { "<key>": at }
-//   st.welcomeGiven   the welcome sitting is given once per player
+//   st.welcomeGiven   the welcome sitting is given once per player; st.welcomePending: it came while one was held and waits for the slot
 //   st.sittingCrates  the crates of sittings begun: { id, mibiId, pose, place, start, source, painted, opened }
-//   m.habits          the habits the player has watched the mibi do (ids); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at }
+//   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at }
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
 import { frameOf } from "./genome.mjs";
-import { speciesOf, mibiById, bayCrates, docked, logEv, plural, clamp, DEFAULT_SETTINGS } from "./state.mjs";
+import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, dockKey, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
+
+// What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
+export { recordHabit, recordWalk, habitsOf, placesOf, watchResident, WATCH_MS } from "./state.mjs";
 
 // A sitting takes a few hours (three for testing under the developer toggle with every timer): longer than a bud, short enough to arrive the same day.
 export const SITTING_WAIT_MS = { hours: 3 * 3600000, minute: 60000, now: 0 };
-export const DEEP_LINE = 4;   // generations of the player's own crosses in a mibi's recorded tree; "the number is tuned with the cross" (the-portrait.md §1)
+export const DEEP_LINE = 4;   // generations of crosses in a mibi's recorded tree; a testing number, "tuned with the cross and the real economy" (the-portrait.md §8)
+export const LAMP_SHORT = 31 / 32;   // the lamp with the wait over and the crate not yet able to open: just short of full
+export const WARNING = "use your sitting first";
 export const sittingWaitMs = (settings = DEFAULT_SETTINGS) => SITTING_WAIT_MS[settings.sittingWait ?? "hours"] ?? SITTING_WAIT_MS.hours;
-
-// --- what a mibi has done: habits watched, places been -------------------------------------------------------------------------
-export function recordHabit(st, m, habit) {
-  if (!m || !habit) return { ok: false };
-  if (!Array.isArray(m.habits)) m.habits = []; if (m.habits.includes(habit)) return { ok: false, again: true };
-  m.habits.push(habit); return { ok: true };
-}
-export function recordWalk(st, m, place) {
-  if (!m || !place) return { ok: false };
-  if (!Array.isArray(m.walked)) m.walked = []; if (m.walked.includes(place)) return { ok: false, again: true };
-  m.walked.push(place); return { ok: true };
-}
-// The places a mibi has been: where its pod came from, and every place it walked to.
-export const placesOf = (m) => [...new Set([m.from?.g, ...(m.walked || []), ...(Array.isArray(m.places) ? m.places : [])].filter(Boolean))];
-export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
 
 // --- the held sitting ----------------------------------------------------------------------------------------------------------
 export const sittingHeld = (st) => !!st.sitting;
 // Grant one: refused while one is held ("a sitting earned while one is held is not given"), and a moment pays once. A moment that passes while one is held is
-// spent (its key stays in the ledger) and says so, so the Station can have warned.
+// spent, its key stays in the ledger and it does not wait (the-portrait.md §8): hence the warnings before the act that pays it.
 export function grantSitting(st, source, key, now = Date.now()) {
   if (key && st.moments[key]) return { ok: false, again: true };
   if (key) st.moments[key] = now;
-  if (st.sitting) { logEv(st, "A sitting was earned (" + key + ") while one is held · not given"); return { ok: false, lost: true, msg: "A sitting is held · use it first" }; }
+  if (st.sitting) { logEv(st, "A sitting was earned (" + key + ") while one is held · not given"); return { ok: false, lost: true, msg: "A sitting is held · " + WARNING }; }
   st.sitting = { source, key: key || null, at: now }; logEv(st, "A sitting is held · " + (key || source));
   return { ok: true, sitting: st.sitting };
 }
 // The developer's held sitting (the ledger untouched).
 export function devGrantSitting(st, now = Date.now()) { if (st.sitting) return { ok: false, msg: "A sitting is held" }; st.sitting = { source: "dev", key: null, at: now }; logEv(st, "Developer: a held sitting"); return { ok: true }; }
 
-// The research moments (the-portrait.md §1): a field guide filled, a sealed chapter opened, a deep line. (The fourth, the first pod of a new drop identified, waits on
-// what a drop is in the build.) Derived from the save, so each is found whenever it is true and paid once.
+// --- the research moments (the-portrait.md §1, §8) ----------------------------------------------------------------------------
+// A sealed chapter opened (in the first build its first read; when finds come, the find opening it, under the same key), a field guide filled (the sealed chapter's looks
+// included, so a species with one fills only after it; the sealed chapter's own moment comes first), a deep line. (The first pod of a new drop waits on what a drop is.)
+// Derived from the save, so each is found whenever it is true and paid once.
+// The crosses on the longest path of a mibi's recorded tree (a founder 0); released ancestors count.
 export function lineDepth(st, m, seen = new Set()) {
   if (!m || !m.parents || seen.has(m.id)) return 0; seen.add(m.id);
-  return 1 + Math.max(0, ...m.parents.map((p) => lineDepth(st, mibiById(st, p.id), seen)));
+  return 1 + Math.max(0, ...m.parents.map((p) => lineDepth(st, mibiById(st, p.id), new Set(seen))));
 }
 export function momentsEarned(st, settings = DEFAULT_SETTINGS) {
   const out = [];
   for (const id of st.knownIds) {
-    const fg = fieldGuide(st, id, settings); if (fg && fg.complete) out.push({ key: "guide:" + id, kind: "guide", species: id });
     for (const chId of st.readOnce[id] || []) { const ch = frameOf(id)?.chapters.find((c) => c.id === chId); if (ch && ch.sealed) out.push({ key: "sealed:" + id + ":" + chId, kind: "sealed", species: id, chapter: chId }); }
+    const fg = fieldGuide(st, id, settings); if (fg && fg.complete) out.push({ key: "guide:" + id, kind: "guide", species: id });
   }
   for (const m of st.mibis) if (lineDepth(st, m) >= DEEP_LINE) out.push({ key: "line:" + m.id, kind: "line", mibi: m.id });
   return out;
@@ -68,10 +61,20 @@ export function collectMoments(st, settings = DEFAULT_SETTINGS, now = Date.now()
   for (const mo of momentsEarned(st, settings)) { if (st.moments[mo.key]) continue; res.push({ ...mo, ...grantSitting(st, "moment", mo.key, now) }); }
   return res;
 }
-// The warning in time: while one is held, a guide one look from full pulses ("use your sitting first"), so the moment is not lost.
+// The warnings, before the act that pays a moment, while a sitting is held ("use your sitting first", on the price line, before anything is paid):
+// a guide one look from full; the first read of a sealed chapter; a cross whose child would complete a deep line.
 export function sittingWarning(st, settings = DEFAULT_SETTINGS) {
   if (!st.sitting) return [];
   return st.knownIds.filter((id) => !st.moments["guide:" + id] && fieldGuide(st, id, settings)?.oneFromFull);
+}
+export function readWarning(st, species, chapterId) {
+  if (!st.sitting) return "";
+  const ch = frameOf(species)?.chapters.find((c) => c.id === chapterId);
+  return ch && ch.sealed && !st.moments["sealed:" + species + ":" + chapterId] && !(st.readOnce[species] || []).includes(chapterId) ? WARNING : "";
+}
+export function crossWarning(st, a, b) {
+  if (!st.sitting || !a || !b) return "";
+  return 1 + Math.max(lineDepth(st, a), lineDepth(st, b)) >= DEEP_LINE ? WARNING : "";
 }
 
 // --- a mibi may sit once, when it has a habit and a place -----------------------------------------------------------------------
@@ -81,16 +84,23 @@ export function portraitBlock(st, m) {
   if (!habitsOf(m).length || !placesOf(m).length) return m.name + " needs a walk first";
   return "";
 }
-// The welcome sitting (the-portrait.md §2): the first moment any mibi has both a habit and a place; one per player; it waits for the slot if one is held.
-export function checkWelcome(st, now = Date.now()) {
+// The welcome sitting (the-portrait.md §2, §8): at the first dock at which a mibi comes home from a walk with the player; one per player; it waits for the slot if one is
+// held, and is never lost. `home` is the ids of the mibis that came home at this dock (dockKey's result).
+export function checkWelcome(st, now = Date.now(), home = []) {
   if (st.welcomeGiven) return { ok: false, again: true };
-  if (!st.mibis.some((m) => !m.released && !portraitBlock(st, m))) return { ok: false, early: true };
-  if (st.sitting) return { ok: false, waits: true };
-  st.welcomeGiven = true; st.moments.welcome = now; return grantSitting(st, "welcome", null, now);
+  if (!st.welcomePending && !home.some((id) => { const m = mibiById(st, id); return m && !m.released; })) return { ok: false, early: true };
+  if (st.sitting) { st.welcomePending = true; return { ok: false, waits: true }; }
+  st.welcomeGiven = true; st.welcomePending = false; st.moments.welcome = now; return grantSitting(st, "welcome", null, now);
+}
+// The dock, with the welcome: the Companion docks, what came home is recorded (habits, places), and the first walk home gives the welcome.
+export function dock(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const r = dockKey(st, sv, settings, now);
+  if (r.ok && r.docked) r.welcome = checkWelcome(st, now, r.home || []);
+  return r;
 }
 
 // --- the ceremony: pose, place, confirm ---------------------------------------------------------------------------------------
-// The offer on Habitat: the mibi, the poses it can take (habits watched), the places (where it has been). `armed` is the first ✓ of the screen's arm-then-confirm.
+// The offer on Habitat: the mibi, the poses it can take (habits seen), the places (where it has been).
 export function offer(st, m) {
   const block = st.sitting ? portraitBlock(st, m) : "no sitting held";
   return { held: !!st.sitting, mibi: m ? m.id : null, poses: m ? habitsOf(m).slice() : [], places: m ? placesOf(m) : [], block, portrayed: !!(m && m.portrait) };
@@ -102,7 +112,8 @@ export function beginBlock(st, m, pose, place) {
   if (!placesOf(m).includes(place)) return "pick a place " + m.name + " has been";
   return "";
 }
-// Begin: the frame leaves the slot and the crate goes to the bay; it costs the sitting and nothing else.
+// Begin: the frame leaves the slot and the crate goes to the bay; it costs the sitting and nothing else. A second sitting may begin while a crate waits (sitting crates do not count
+// against the bay's three); a welcome that was waiting for the slot is given now.
 export function beginSitting(st, m, pose, place, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const b = beginBlock(st, m, pose, place); if (b) return { ok: false, msg: "Begin the sitting · " + b };
   const source = st.sitting.source; st.sitting = null;
@@ -110,18 +121,24 @@ export function beginSitting(st, m, pose, place, settings = DEFAULT_SETTINGS, no
   const crate = { id: "sit" + st.crateN, mibiId: m.id, pose, place, start: now, source, painted: false, opened: false };
   st.sittingCrates.push(crate); m.portrait = { state: "painting", pose, place, crate: crate.id, start: now };
   logEv(st, m.name + " sits for its portrait · " + pose + " · " + place);
-  return { ok: true, crate, wait: sittingWaitMs(settings) };
+  const w = st.welcomePending ? checkWelcome(st, now) : null;
+  return { ok: true, crate, wait: sittingWaitMs(settings), welcome: w };
 }
 
 // --- the crate: the lamp fills, the painting lands, the bay opens --------------------------------------------------------------
-// The timer stores the start and the rule; the lamp is a fraction (never a clock or digits). A crate is ready when the wait is over AND its painting has landed (the wait
-// covers the painting and its retries; offline, the crate waits behind the door).
-export const crateLamp = (c, settings = DEFAULT_SETTINGS, now = Date.now()) => { const w = sittingWaitMs(settings); return w === 0 ? 1 : clamp((now - c.start) / w, 0, 1); };
+// The timer stores the start and the rule; the lamp is a fraction (never a clock or digits). A crate is ready at the later of two: the wait over (a minimum, never shortened) and the
+// portrait landed. In the first build no portrait is painted, so the wait alone binds and the portrait lands when it ends (unless the developer's painter is off); a painting that is
+// late says nothing and the lamp holds just short of full; "waiting for the cloud" shows only when the Caddy is unreachable (or the painter is off).
+const reachable = (settings) => settings.caddyReachable !== false && settings.painter !== "off";
+export const crateWaitFraction = (c, settings = DEFAULT_SETTINGS, now = Date.now()) => { const w = sittingWaitMs(settings); return w === 0 ? 1 : clamp((now - c.start) / w, 0, 1); };
+export const portraitLanded = (c, settings = DEFAULT_SETTINGS) => !!c.painted || (!settings.paintPortraits && settings.painter !== "off");
 export function crateState(c, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (c.opened) return "opened";
-  if (crateLamp(c, settings, now) < 1) return "filling";
-  return c.painted ? "ready" : "waiting for the cloud";
+  if (crateWaitFraction(c, settings, now) < 1) return "filling";
+  if (!reachable(settings)) return "waiting for the cloud";
+  return portraitLanded(c, settings) ? "ready" : "painting";
 }
+export const crateLamp = (c, settings = DEFAULT_SETTINGS, now = Date.now()) => (crateState(c, settings, now) === "ready" ? 1 : Math.min(crateWaitFraction(c, settings, now), LAMP_SHORT));
 export function landPortrait(st, crateId) { const c = st.sittingCrates.find((x) => x.id === crateId); if (!c || c.opened) return { ok: false }; if (c.painted) return { ok: false, again: true }; c.painted = true; return { ok: true }; }
 export const readyCrates = (st, settings, now) => st.sittingCrates.filter((c) => crateState(c, settings, now) === "ready");
 // Home's bay: the walk crates (when docked) and the sittings' crates that are ready; amber when anything waits.
@@ -131,7 +148,7 @@ export function bayState(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) 
 }
 export function openSittingCrate(st, crateId, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const c = st.sittingCrates.find((x) => x.id === crateId); if (!c) return { ok: false, msg: "no such crate" };
-  const s = crateState(c, settings, now); if (s !== "ready") return { ok: false, msg: s === "opened" ? "already opened" : s === "filling" ? "the crate is still filling" : "waiting for the cloud" };
+  const s = crateState(c, settings, now); if (s !== "ready") return { ok: false, msg: s === "opened" ? "already opened" : s === "filling" || s === "painting" ? "the crate is still filling" : "waiting for the cloud" };
   c.opened = true; st.sittingCrates = st.sittingCrates.filter((x) => x !== c);
   const m = mibiById(st, c.mibiId); if (m && m.portrait) { m.portrait.state = "delivered"; m.portrait.at = now; }
   logEv(st, (m ? m.name : "A mibi") + "'s portrait has come");

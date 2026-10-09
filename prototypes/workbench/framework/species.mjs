@@ -210,7 +210,7 @@ export function buildFrame(spec, options = {}) {
     catalogue: { id: CATALOGUE.id, version: CATALOGUE.version, parent: CATALOGUE.parent },
     plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float, stand: !!spec.plan.extras?.stand, flapPairs: plan.extras.flapPairs, flapRest: plan.extras.flapRest }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations },
     signature: { anchor: spec.anchor, second: spec.second ?? null, feature: spec.feature, features: switchesOn, finish: spec.finish ?? {} },
-    glyph: spec.glyph, pod: null, chapters: [], loci: [], absent, counts: null, notYet: null, typeSpecimen: null, viability: null,
+    glyph: spec.glyph, habits: [...(spec.habits ?? [])], pod: null, chapters: [], loci: [], absent, counts: null, notYet: null, typeSpecimen: null, viability: null,
     _pools: pools, _locked: locked, _traits: traits, _sealed: spec.sealed ?? {}, _typical: typical,
   };
   finishFrame(frame, spec);

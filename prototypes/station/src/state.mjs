@@ -63,7 +63,7 @@ export function migrate(st, now = Date.now()) {
   out.knownIds = [...new Set((st.known || []).map(speciesId).filter(Boolean))]; out.metIds = [...new Set((st.met || []).map(speciesId).filter(Boolean))];
   out.readOnce = {}; out.guide = {}; out.readEver = !!(st.studyPaid && Object.keys(st.studyPaid).length);
   out.mibis = (st.mibis || []).map((m, i) => {
-    const q = { id: m.id, name: m.name, sp: m.sp, species: speciesOf(m), gs: m.gs >>> 0, born: m.born || 0, from: m.from || { n: 0, g: "", how: "" }, mem: m.mem || null, outings: m.outings || 0, notches: m.notches || 0, bonded: !!m.bonded, places: m.places,
+    const q = { id: m.id, name: m.name, sp: m.sp, species: speciesOf(m), gs: m.gs >>> 0, born: m.born || 0, from: m.from || { n: 0, g: "", how: "" }, mem: m.mem || null, outings: m.outings || 0, notches: m.notches || 0, bonded: !!m.bonded, ...(m.places ? { places: m.places } : {}),
       parents: null, bay: i, paint: null, released: false };
     const fr = frameOf(q.species); if (fr) Object.assign(q, mibiFromGenome(fr, podGenome(fr, q.gs)));
     return q;
@@ -151,10 +151,13 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   let sh = pr.shield, free = 0; if (broke) { free = pr.smax; sh = pr.smax; } else if (sh < floor) { free = floor - sh; sh = floor; }
   st.probe = { shield: sh, smax: pr.smax, tier: pr.tier, seq: (st.probe ? st.probe.seq : 0) + 1 };
   const paid = st.mendFull ? payMend(st, settings) : 0;
-  for (const m of (sv && sv.mibis) || []) { const q = mibiById(st, m.id); if (q) { if (m.mem) q.mem = m.mem; q.outings = Math.max(q.outings || 0, m.outings || 0); q.notches = Math.max(q.notches || 0, m.notches || 0); q.places = m.places || q.places; } }
+  // what came home with the Companion: the mibi that walked (its outings went up), the habits it did and the places it entered on the way (the Companion's hand-off: habitsDone, placesEntered)
+  const home = [];
+  for (const m of (sv && sv.mibis) || []) { const q = mibiById(st, m.id); if (q) { const was = q.outings || 0; if (m.mem) q.mem = m.mem; q.outings = Math.max(was, m.outings || 0); q.notches = Math.max(q.notches || 0, m.notches || 0); if (m.places) q.places = m.places;
+    if (q.outings > was) { home.push(q.id); for (const h of m.habitsDone || []) recordHabit(st, q, h); for (const p of m.placesEntered || []) recordWalk(st, q, p); } } }
   const n = bayCrates(st, sv).length;
   logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
-  return { ok: true, docked: true, mend: { free, paid, broke }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
+  return { ok: true, docked: true, home, mend: { free, paid, broke }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
 }
 export function fillWells(st, settings = DEFAULT_SETTINGS, now = Date.now()) { const rack = settings.rack || RACK; while (st.tray.length < rack && st.waiting.length) { const p = st.waiting.shift(); p.landAt = now; st.tray.push(p); } }
 // Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept).
@@ -182,6 +185,31 @@ export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   st.devBay = st.devBay.filter((c) => !st.accepted.includes(c.id));
   syncKnown(st);
   return { ok: true, plays };
+}
+
+// --- what a mibi has done: habits watched, places been (the-portrait.md §8) ----------------------------------------------------------
+// A habit is one of the species' routine acts (the frame's `habits`). It is recorded when a resident is kept in focus for a minute of its routine (`watchResident`, the bench),
+// and at the dock for what the mibi with the player did on the walk; a place is recorded once for every place the mibi entered while with the player (`recordWalk`, at the dock).
+export const WATCH_MS = 60000;
+export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
+// The places a mibi has been: where its pod came from, and every place it walked to.
+export const placesOf = (m) => [...new Set([m.from?.g, ...(m.walked || [])].filter(Boolean))];
+export function recordHabit(st, m, habit) {
+  if (!m || !habit) return { ok: false };
+  const fr = frameFor(m); if (!fr || !(fr.habits || []).includes(habit)) return { ok: false, msg: "not a habit of " + (fr ? fr.species.name : "that species") };
+  if (!Array.isArray(m.habits)) m.habits = []; if (m.habits.includes(habit)) return { ok: false, again: true };
+  m.habits.push(habit); logEv(st, m.name + " is seen: " + habit); return { ok: true };
+}
+export function recordWalk(st, m, place) {
+  if (!m || !place) return { ok: false };
+  if (!Array.isArray(m.walked)) m.walked = []; if (m.walked.includes(place) || m.from?.g === place) return { ok: false, again: true };
+  m.walked.push(place); return { ok: true };
+}
+// The bench's watch: a resident kept in focus for a minute of its routine records the habit it was doing. Under a minute records nothing.
+export function watchResident(st, m, habit, focusedMs) {
+  if (!m || m.released) return { ok: false };
+  if (!(focusedMs >= WATCH_MS)) return { ok: false, short: true };
+  return recordHabit(st, m, habit);
 }
 
 // --- pods: identify, read, glint, compare, return ----------------------------------------------------
