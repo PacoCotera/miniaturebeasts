@@ -212,7 +212,7 @@ window.__st = { ready, renderErrors, caddy: { state: caddy.state, status: caddy.
 // Test hook (not part of play): Pods drawn by the C words, in the face's test mode, with the pictures the page itself makes ready (the placed masters, the generated stand-ins, the pod from its layers). A second face is
 // booted, the state's props (views/pods-props.mjs) and the frame's go in, and the pixels outside the palette are read on pass 1 (chrome) and pass 2 (chrome and art). With `attribute`, a failing reading names the
 // pictures whose removal lowers it (the ones tagged art that are painted).
-window.__st.wordsCheck = async ({ attribute = true } = {}) => {
+window.__st.wordsCheck = async ({ attribute = true, capture = false } = {}) => {
   const [{ podsProps }, { registerPictures, iconRequests }, { pinnedPictures }] = await Promise.all([import("./views/pods-props.mjs"), import("./pictures.mjs"), import("../../ui/specs/derive.mjs")]);
   const P = UI.pods, m = { st: G.st, settings: G.settings, docked: docked(), crates: bayCrates().length, ui: P, focus: P.focus.cur, present: {} };
   const body = podsProps(m, SPECS.pods, SPECS.frame), reqs = [...body.requests, ...iconRequests()];
@@ -227,7 +227,9 @@ window.__st.wordsCheck = async ({ attribute = true } = {}) => {
     for (const id of ids) f.handleOf(id, (x) => { const p = pic(x); if (p && x === blank) p.data = new Uint8ClampedArray(p.data.length); return p; });
     if (f.props({ screen: "pods", ...body.props, frame }) !== 0) throw new Error("props refused: " + f.errors().join("; "));
     for (let i = 0; i < 3; i++) f.frame(16 * (i + 1));
-    const out = {}; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); out.errors = f.errors(); out.refused = f.refused(); return out;
+    const out = {}; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); out.errors = f.errors(); out.refused = f.refused();
+    if (capture && !blank) { f.frame(16 * 4); out.hash = f.hash(); const c = document.createElement("canvas"); c.width = 1024; c.height = 600; f.forceFull(); f.present(c.getContext("2d")); out.png = c.toDataURL("image/png"); }
+    return out;
   };
   const r = await run();
   if (attribute && r.pass2 > 0) { r.offenders = []; for (const id of ids) { const x = await run(id); if (x.pass2 < r.pass2) r.offenders.push([id, r.pass2 - x.pass2]); } r.offenders.sort((a, b) => b[1] - a[1]); }

@@ -130,6 +130,9 @@ jobs:
         # Pods in each of its states on the page's own pictures, test mode: the pixels outside the palette on pass 1 (chrome)
         # and pass 2 (chrome and art) read 0, painted masters showing only on pass 3 (the art director's layer table).
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/layer-check.mjs
+      - name: Pods goldens (LVGL)
+        # Each of Pods' states drawn by the C words on the page's own pictures: the framebuffer hash against prototypes/face/golden/pods/pods.json.
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --check
       - name: Station layer checks
         # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):
         # the art layer at exactly 0 off-palette pixels; the type layer's run log (every string Inter at 16, 20 or 28 px
