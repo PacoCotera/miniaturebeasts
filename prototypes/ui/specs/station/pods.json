@@ -17,14 +17,14 @@
   "chapter back label": "derived, UI designer to confirm: on the chapter page the bottom line's way back says the pod's species name (← Loika), on the overview ← Pods, on the collection ← Home",
   "overview tab focus": "derived, UI designer to confirm: with a tab focused on the overview the bottom line says `✓ Open <Chapter>` with no price (the page opens free); the read and its price sit on the chapter page",
   "kin of an unidentified pod": "derived, UI designer to confirm: an unidentified pod's species is unknown, so no kin ring is drawn for it (a frosted ring would still tell how many share the species)",
-  "page pane master": "withdrawn for the chapter page (UI designer, 2026-10-09, the owner's choice of the open page (B) and his corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): no pane; page-pane-256x440 stays only where Compare uses it. Was the one nine-slice drawn by count",
+  "page pane master": "withdrawn for the chapter page (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): no pane; page-pane-256x440 stays only where Compare uses it. Was the one nine-slice drawn by count",
   "compare name line": "derived, UI designer to confirm: Compare's trait names sit 8 px under the picture on a 20 px line (nameGap, nameLine), as the chapter page's cell does at 4 px (cell.gap, cell.name.line)",
   "compare heading place": "derived, UI designer to confirm: Compare's heading shows the pod's find as a 16×16 place picture 40 px right of the heading's pod and 12 px lower (compareA.place), as the build had it",
   "kin ring band": "derived, UI designer to confirm: the kin ring's stand-in is a 2 px `hairline` band (kin.band) until ring-kin-56x56 is the studio's",
-  "stand-in word": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and his corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): no stand-in card and no word; a stand-in is the cell's flat `ground` tone. Was: design lead, 2026-10-09, the build set \"stand-in\" in 16 px `mist` on the card",
+  "stand-in word": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): no stand-in card and no word; a stand-in is the cell's flat `ground` tone. Was: design lead, 2026-10-09, the build set \"stand-in\" in 16 px `mist` on the card",
   "hatch confirmation": "art director and design lead, 2026-10-09: the message plate for the armed hatch says only \"✓ again\" (strings.hatchAgain); the bottom line already says \"Back to the <place>\", so strings.hatchArm is no longer shown; the plate is centred on x 512 and clear of the hatch key",
   "compare heading marks": "derived, UI designer to confirm: Compare's heading shows the pod's species and clan marks (24×24, compareA.who) after its 40×48 pod, as the overview does, in place of the build's 16×16 place picture",
-  "stand-in card fill": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and his corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): the cell's tone is colours.page.cell (`ground`) on the chapter page and on Compare. Was `cardFill` until the cards existed",
+  "stand-in card fill": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): the cell's tone is colours.page.cell (`ground`) on the chapter page and on Compare. Was `cardFill` until the cards existed",
   "Compare bench": "design lead, 2026-10-09: Compare stands on the bench without a cone (room-bench-stage-collection) until the studio delivers a Compare bench; the need line is held (empty) until the Differs row is answered",
   "shut chapter find": "derived, UI designer to confirm: a shut chapter's page is as short as a one-trait page (248) and its 112×112 find (regions.chapter.page.sealedFind's size) is centred across it and down the room under the heading (layout.sealedFindRect); the spec's rectangle (236, 164) lay below a 248 pane"
  },
@@ -619,7 +619,7 @@
       440
      ]
     },
-    "sizeRule": "UI designer, 2026-10-09, the owner's choice of the open page (B) and his corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"): with no pane the page's size bounds the heading's rule and the grid. Columns = the count up to four, then half the count rounded up; width = 24 + columns × 128 + (columns − 1) × 16 = 8 + 144 × columns (152, 296, 440, 584); height 232 for one row (48 + 184), 440 for two (48 + 184 + 24 + 184). Left at x 424, top at y 112, so the heading and the first cell never move as the rail steps; four columns end at x 1008, the screen's right margin. A sealed chapter takes the one-trait size. Was 40 + 136 × columns, 248 or 440, on the pane",
+    "sizeRule": "UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"): with no pane the page's size bounds the heading's rule and the grid. Columns = the count up to four, then half the count rounded up; width = 24 + columns × 128 + (columns − 1) × 16 = 8 + 144 × columns (152, 296, 440, 584); height 232 for one row (48 + 184), 440 for two (48 + 184 + 24 + 184). Left at x 424, top at y 112, so the heading and the first cell never move as the rail steps; four columns end at x 1008, the screen's right margin. A sealed chapter takes the one-trait size. Was 40 + 136 × columns, 248 or 440, on the pane",
     "align": "left",
     "sealedFind": [
      32,
@@ -766,7 +766,7 @@
      }
     },
     "pane": null,
-    "open": "UI designer, 2026-10-09, the owner's choice of the open page (B) and his corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"): no pane, no frames, no cards. The page is its heading, one hairline rule and the grid on the bench; spacing does the grouping. Was the nine-slice page-pane-256x440 in `deep` with a slate edge, a signed frame round each picture (trait-picture-frame-*), the hatched stand-in card (trait-picture-standin-*) with the word \"stand-in\", the marks on the picture, and a proposed sill in the frame's bottom rail (withdrawn before it was built)",
+    "open": "UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"): no pane, no frames, no cards. The page is its heading, one hairline rule and the grid on the bench; spacing does the grouping. Was the nine-slice page-pane-256x440 in `deep` with a slate edge, a signed frame round each picture (trait-picture-frame-*), the hatched stand-in card (trait-picture-standin-*) with the word \"stand-in\", the marks on the picture, and a proposed sill in the frame's bottom rail (withdrawn before it was built)",
     "rule": {
      "at": [
       24,
@@ -840,7 +840,7 @@
       }
      },
      "fit": "the line (name + 4 + glyph …) is centred on the cell and may run 6 px into the 16 px gap on each side (≤ 140), so two neighbouring lines keep 4 px apart. Translucency 101 + 4 + pair 20 = 125 ≤ 128; Roundness 84 + 4 + asleep 24 = 112; the longest possible, Efficiency 74 + 4 + pair 20 + 4 + breed 28 + 4 + dot 6 = 140",
-     "decided": "UI designer, 2026-10-09, the owner's choice of the open page (B) and his corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"), with his yes to the three recommendations: the marks leave the picture and sit after the name; one painted paired-seed glyph; Only a small glyph, not a base under the picture. Was the seed 40×52 (32×40 under 120 tall) at P's bottom right and left, the 72×8 base on P's bottom edge, asleep at P's top right, breed at P's top left"
+     "decided": "UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"), with the owner's yes to the three recommendations: the marks leave the picture and sit after the name; one painted paired-seed glyph; Only a small glyph, not a base under the picture. Was the seed 40×52 (32×40 under 120 tall) at P's bottom right and left, the 72×8 base on P's bottom edge, asleep at P's top right, breed at P's top left"
     },
     "gap": {
      "x": 16,
@@ -1047,7 +1047,7 @@
     "onlyWhen": "the trait is read on both pods and their looks differ",
     "kindGlyphs": false,
     "fit": "12 + 4 + 'Translucency' 101 = 117 ≤ the narrowest Compare cell, 120; the kind glyphs are not shown on Compare (lamp + Translucency + pair = 141 would not fit 120)",
-    "decided": "UI designer, 2026-10-09, the owner's choice of the open page (B) and his corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"): the signed amber lamp, 4 px before the name, replaces compare-mark-differs-12x12 after it. Was that master 4 px after the name; before it a 2 px aqua edge and a bracket drawn by the build"
+    "decided": "UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"): the signed amber lamp, 4 px before the name, replaces compare-mark-differs-12x12 after it. Was that master 4 px after the name; before it a 2 px aqua edge and a bracket drawn by the build"
    }
   },
   "compareB": {
