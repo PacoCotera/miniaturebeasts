@@ -37,7 +37,7 @@
 <rect x="168.5" y="136.5" width="303" height="311" fill="#ffe2bf" stroke="#c45f12" stroke-width="2"/>
 <text x="172" y="149" font-size="9" fill="#7d5435">the resident 304×312, in view while it is named</text>
 <text x="172" y="161" font-size="9" fill="#777">168,136 (Habitat's spec)</text>
-<text x="28" y="69" font-size="9" fill="#777">Habitat's living window, uncovered: 24,56 592×408</text>
+<text x="28" y="69" font-size="9" fill="#777">Habitat beneath as on main (to be redrawn on L2.5's Habitat)</text>
 <rect x="168.5" y="72.5" width="303" height="39" fill="#0f4c50" stroke="#45d8be" stroke-width="1"/>
 <text x="320" y="99" font-size="18" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="500">Meet Fig</text>
 <text x="320" y="124" font-size="9" fill="#777" text-anchor="middle">meet ribbon 168,72 304×40 (Habitat's)</text>
@@ -50,121 +50,121 @@
 <rect x="704.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#bbb" stroke-width="1"/>
 <rect x="840.5" y="484.5" width="127" height="63" fill="none" stroke="#ccc" stroke-width="1" stroke-dasharray="3 3"/>
 <text x="32" y="520" font-size="9" fill="#999">Habitat's strip, beneath: no target while the namer is open</text>
-<rect x="634" y="51" width="376" height="416" fill="#0c0a12" opacity="0.55"/>
-<rect x="632.5" y="48.5" width="375" height="415" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="633" y1="49.5" x2="1007" y2="49.5" stroke="#5a6672" stroke-width="1"/>
-<text x="656" y="460" font-size="9" fill="#c6c4d8">namer 632,48 376×416 · panel, shadow void +2,+3</text>
-<rect x="656.5" y="64.5" width="327" height="47" fill="#162a37" stroke="#3c4b57" stroke-width="1"/>
-<rect x="668" y="70" width="49" height="36" fill="#0f4c50"/>
-<text x="672" y="98" font-size="28" fill="#f1ebdf" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">Fig</text>
-<rect x="656.5" y="120.5" width="327" height="23" fill="none" stroke="#5d5974" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="656.5" y="160.5" width="327" height="183" fill="none" stroke="none" stroke-width="1"/>
-<rect x="656.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="657" y1="161.5" x2="695" y2="161.5" stroke="#5a6672" stroke-width="1"/>
-<text x="676" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">A</text>
-<rect x="704.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="705" y1="161.5" x2="743" y2="161.5" stroke="#5a6672" stroke-width="1"/>
-<text x="724" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">B</text>
-<rect x="752.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="753" y1="161.5" x2="791" y2="161.5" stroke="#5a6672" stroke-width="1"/>
-<text x="772" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">C</text>
-<rect x="800.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="801" y1="161.5" x2="839" y2="161.5" stroke="#5a6672" stroke-width="1"/>
-<text x="820" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">D</text>
-<rect x="848.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="849" y1="161.5" x2="887" y2="161.5" stroke="#5a6672" stroke-width="1"/>
-<text x="868" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">E</text>
-<rect x="896.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="897" y1="161.5" x2="935" y2="161.5" stroke="#5a6672" stroke-width="1"/>
-<text x="916" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">F</text>
-<rect x="944.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="945" y1="161.5" x2="983" y2="161.5" stroke="#5a6672" stroke-width="1"/>
-<text x="964" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">G</text>
-<rect x="656.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="657" y1="209.5" x2="695" y2="209.5" stroke="#5a6672" stroke-width="1"/>
-<text x="676" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">H</text>
-<rect x="704.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="705" y1="209.5" x2="743" y2="209.5" stroke="#5a6672" stroke-width="1"/>
-<text x="724" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">I</text>
-<rect x="752.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="753" y1="209.5" x2="791" y2="209.5" stroke="#5a6672" stroke-width="1"/>
-<text x="772" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">J</text>
-<rect x="800.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="801" y1="209.5" x2="839" y2="209.5" stroke="#5a6672" stroke-width="1"/>
-<text x="820" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">K</text>
-<rect x="848.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="849" y1="209.5" x2="887" y2="209.5" stroke="#5a6672" stroke-width="1"/>
-<text x="868" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">L</text>
-<rect x="896.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="897" y1="209.5" x2="935" y2="209.5" stroke="#5a6672" stroke-width="1"/>
-<text x="916" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">M</text>
-<rect x="944.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="945" y1="209.5" x2="983" y2="209.5" stroke="#5a6672" stroke-width="1"/>
-<text x="964" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">N</text>
-<rect x="656.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="657" y1="257.5" x2="695" y2="257.5" stroke="#5a6672" stroke-width="1"/>
-<text x="676" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">O</text>
-<rect x="704.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="705" y1="257.5" x2="743" y2="257.5" stroke="#5a6672" stroke-width="1"/>
-<text x="724" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">P</text>
-<rect x="752.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="753" y1="257.5" x2="791" y2="257.5" stroke="#5a6672" stroke-width="1"/>
-<text x="772" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Q</text>
-<rect x="800.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="801" y1="257.5" x2="839" y2="257.5" stroke="#5a6672" stroke-width="1"/>
-<text x="820" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">R</text>
-<rect x="848.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="849" y1="257.5" x2="887" y2="257.5" stroke="#5a6672" stroke-width="1"/>
-<text x="868" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">S</text>
-<rect x="896.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="897" y1="257.5" x2="935" y2="257.5" stroke="#5a6672" stroke-width="1"/>
-<text x="916" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">T</text>
-<rect x="944.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="945" y1="257.5" x2="983" y2="257.5" stroke="#5a6672" stroke-width="1"/>
-<text x="964" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">U</text>
-<rect x="656.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="657" y1="305.5" x2="695" y2="305.5" stroke="#5a6672" stroke-width="1"/>
-<text x="676" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">V</text>
-<rect x="704.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="705" y1="305.5" x2="743" y2="305.5" stroke="#5a6672" stroke-width="1"/>
-<text x="724" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">W</text>
-<rect x="752.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="753" y1="305.5" x2="791" y2="305.5" stroke="#5a6672" stroke-width="1"/>
-<text x="772" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">X</text>
-<rect x="800.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="801" y1="305.5" x2="839" y2="305.5" stroke="#5a6672" stroke-width="1"/>
-<text x="820" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Y</text>
-<rect x="848.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="849" y1="305.5" x2="887" y2="305.5" stroke="#5a6672" stroke-width="1"/>
-<text x="868" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Z</text>
-<rect x="896.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="897" y1="305.5" x2="935" y2="305.5" stroke="#5a6672" stroke-width="1"/>
-<text x="916" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">-</text>
-<rect x="944.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="945" y1="305.5" x2="983" y2="305.5" stroke="#5a6672" stroke-width="1"/>
-<text x="964" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">’</text>
-<rect x="656.5" y="352.5" width="87" height="39" fill="#3c4b57" stroke="#3c4b57" stroke-width="1"/>
-<line x1="657" y1="353.5" x2="743" y2="353.5" stroke="#5a6672" stroke-width="1"/>
-<text x="700" y="378" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Aa</text>
-<rect x="752.5" y="352.5" width="135" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="753" y1="353.5" x2="887" y2="353.5" stroke="#5a6672" stroke-width="1"/>
-<text x="820" y="378" font-size="16" fill="#c6c4d8" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">space</text>
-<rect x="896.5" y="352.5" width="87" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="897" y1="353.5" x2="983" y2="353.5" stroke="#5a6672" stroke-width="1"/>
-<text x="940" y="378" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">ÀÉÑ</text>
-<rect x="656.5" y="408.5" width="159" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="657" y1="409.5" x2="815" y2="409.5" stroke="#5a6672" stroke-width="1"/>
-<text x="736" y="434" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Suggest</text>
-<rect x="824.5" y="406.5" width="159" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<line x1="825" y1="407.5" x2="983" y2="407.5" stroke="#5a6672" stroke-width="1"/>
-<text x="904" y="432" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Done</text>
-<rect x="821" y="403" width="166" height="46" rx="6" fill="none" stroke="#e0a800" stroke-width="2"/>
-<text x="660" y="60" font-size="9" fill="#c6c4d8">field 656,64 328×48 · the name 28 px from x 672, line 70–106</text>
-<text x="660" y="156" font-size="9" fill="#c6c4d8">keys 656,160 · 40×40 on a 48 pitch, 7 by 4</text>
+<rect x="594" y="51" width="416" height="424" fill="#0c0a12" opacity="0.55"/>
+<rect x="592.5" y="48.5" width="415" height="423" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="593" y1="49.5" x2="1007" y2="49.5" stroke="#5a6672" stroke-width="1"/>
+<text x="636" y="464" font-size="9" fill="#c6c4d8">namer 592,48 416×424 · panel, shadow void +2,+3</text>
+<rect x="636.5" y="64.5" width="327" height="47" fill="#162a37" stroke="#3c4b57" stroke-width="1"/>
+<rect x="648" y="70" width="49" height="36" fill="#0f4c50"/>
+<text x="652" y="98" font-size="28" fill="#f1ebdf" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">Fig</text>
+<rect x="636.5" y="120.5" width="327" height="23" fill="none" stroke="#5d5974" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="636.5" y="160.5" width="327" height="183" fill="none" stroke="none" stroke-width="1"/>
+<rect x="636.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="637" y1="161.5" x2="675" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="656" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">A</text>
+<rect x="684.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="685" y1="161.5" x2="723" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="704" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">B</text>
+<rect x="732.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="733" y1="161.5" x2="771" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="752" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">C</text>
+<rect x="780.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="781" y1="161.5" x2="819" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="800" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">D</text>
+<rect x="828.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="829" y1="161.5" x2="867" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="848" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">E</text>
+<rect x="876.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="877" y1="161.5" x2="915" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="896" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">F</text>
+<rect x="924.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="925" y1="161.5" x2="963" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="944" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">G</text>
+<rect x="636.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="637" y1="209.5" x2="675" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="656" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">H</text>
+<rect x="684.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="685" y1="209.5" x2="723" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="704" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">I</text>
+<rect x="732.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="733" y1="209.5" x2="771" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="752" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">J</text>
+<rect x="780.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="781" y1="209.5" x2="819" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="800" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">K</text>
+<rect x="828.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="829" y1="209.5" x2="867" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="848" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">L</text>
+<rect x="876.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="877" y1="209.5" x2="915" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="896" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">M</text>
+<rect x="924.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="925" y1="209.5" x2="963" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="944" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">N</text>
+<rect x="636.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="637" y1="257.5" x2="675" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="656" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">O</text>
+<rect x="684.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="685" y1="257.5" x2="723" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="704" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">P</text>
+<rect x="732.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="733" y1="257.5" x2="771" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="752" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Q</text>
+<rect x="780.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="781" y1="257.5" x2="819" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="800" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">R</text>
+<rect x="828.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="829" y1="257.5" x2="867" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="848" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">S</text>
+<rect x="876.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="877" y1="257.5" x2="915" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="896" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">T</text>
+<rect x="924.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="925" y1="257.5" x2="963" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="944" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">U</text>
+<rect x="636.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="637" y1="305.5" x2="675" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="656" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">V</text>
+<rect x="684.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="685" y1="305.5" x2="723" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="704" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">W</text>
+<rect x="732.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="733" y1="305.5" x2="771" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="752" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">X</text>
+<rect x="780.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="781" y1="305.5" x2="819" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="800" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Y</text>
+<rect x="828.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="829" y1="305.5" x2="867" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="848" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Z</text>
+<rect x="876.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="877" y1="305.5" x2="915" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="896" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">-</text>
+<rect x="924.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="925" y1="305.5" x2="963" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="944" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">’</text>
+<rect x="636.5" y="352.5" width="87" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="637" y1="353.5" x2="723" y2="353.5" stroke="#5a6672" stroke-width="1"/>
+<text x="680" y="378" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Aa</text>
+<rect x="732.5" y="352.5" width="135" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="733" y1="353.5" x2="867" y2="353.5" stroke="#5a6672" stroke-width="1"/>
+<text x="800" y="378" font-size="16" fill="#c6c4d8" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">space</text>
+<rect x="876.5" y="352.5" width="87" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="877" y1="353.5" x2="963" y2="353.5" stroke="#5a6672" stroke-width="1"/>
+<text x="920" y="378" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">ÀÉÑ</text>
+<rect x="636.5" y="408.5" width="159" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="637" y1="409.5" x2="795" y2="409.5" stroke="#5a6672" stroke-width="1"/>
+<text x="716" y="434" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Suggest</text>
+<rect x="804.5" y="406.5" width="159" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="805" y1="407.5" x2="963" y2="407.5" stroke="#5a6672" stroke-width="1"/>
+<text x="884" y="432" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Done</text>
+<rect x="801" y="403" width="166" height="46" rx="6" fill="none" stroke="#e0a800" stroke-width="2"/>
+<text x="640" y="60" font-size="9" fill="#c6c4d8">field 636,64 328×48 · the name 28 px from x 652, line 70–106</text>
+<text x="640" y="156" font-size="9" fill="#c6c4d8">keys 636,160 · 40×40 on a 48 pitch, 7 by 4</text>
 <text x="32" y="196" font-size="10" fill="#2b6cb0">Opened by the meet's</text>
 <text x="32" y="209" font-size="10" fill="#2b6cb0">first ✓, or by</text>
-<text x="32" y="222" font-size="10" fill="#2b6cb0">✓ Rename on Habitat's</text>
-<text x="32" y="235" font-size="10" fill="#2b6cb0">card name.</text>
+<text x="32" y="222" font-size="10" fill="#2b6cb0">✓ Rename on the</text>
+<text x="32" y="235" font-size="10" fill="#2b6cb0">name Habitat shows.</text>
 <text x="32" y="248" font-size="10" fill="#2b6cb0"></text>
 <text x="32" y="261" font-size="10" fill="#2b6cb0">The name selected</text>
 <text x="32" y="274" font-size="10" fill="#2b6cb0">(tealD): a key</text>

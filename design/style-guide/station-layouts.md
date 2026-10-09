@@ -1953,7 +1953,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 | Element | Why it is here |
 | --- | --- |
 | **The mibi**, in Habitat's living window, uncovered | The subject: the player names what they see |
-| **The field**: the name at 28 px, the name role, with its caret, or selected | The name as it will read, at the size Habitat's card shows names |
+| **The field**: the name at 28 px, the name role, with its caret, or selected | The name as it will read, at the size Habitat shows names (28 px) |
 | **The say line**, one line under the field | Why the name cannot be saved yet, or why a press was refused, in words |
 | **The keys**: 28 character keys in seven columns, then Aa, space and the page key | Every allowed character, reached with the pad and typed with ✓ |
 | **Suggest** and **Done** | A name from the pool in one press; saving the name |
@@ -1973,7 +1973,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 
 **At the edges:** the panel at the right edge, over Habitat's card and modules, from the top of the stage to the foot of Habitat's right column. Habitat's strip stays visible under it and takes no key.
 
-**Why an overlay and not a state of Habitat.** The namer opens from two places on Habitat (the meet and the card's name) and takes the whole pad while it is open: its 33 keys have their own focus graph, which never mixes with Habitat's. As an overlay it keeps Habitat beneath exactly as it was, the mibi in view and its living window playing, and it closes back to the same Habitat. It needs only one thing of Habitat's layout: the living window left of x 624 (What Habitat gives the namer, below).
+**Why an overlay and not a state of Habitat.** The namer opens from two places on Habitat (the meet and the mibi's name) and takes the whole pad while it is open: its 33 keys have their own focus graph, which never mixes with Habitat's. As an overlay it keeps Habitat beneath exactly as it was, the mibi in view and its living window playing, and it closes back to the same Habitat. It needs only one thing of Habitat's layout: the living window left of x 584 (What Habitat gives the namer, below).
 
 ### 4. Art direction
 
@@ -1992,28 +1992,28 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 | Caret | `bone`, 2×28, steady | Plain, the same colour as the name |
 | Say line | The reason `mist`; a refused press `amber` for 4 s | Mist informs without nagging; amber is the frame's "needs you" |
 | Keys | `panel` fill, `hairline` edge, `bevel` top; label `bone`; dimmed `mist` | The kit's instrument panel at its smallest |
-| Aa on | `hairline` fill, label `bone` | One step up from `panel`, as the rail's open tab |
+| Aa on | `hairline` fill, label `bone` | One step up from `panel`, as the rail's open tab. At the start of a name, where Aa does nothing, it shows `panel` |
 | Space's word | `fog` | A word on a key, quieter than the characters |
 | Done | label `bone`; `mist` while the name cannot be saved | Done is placed, not coloured: bottom right, wider |
 | Ring | `focus`, round | The frame's one ring |
 
 ### 5. Composition
 
-The panel stands over Habitat's right column, 8 px right of the window's bezel. Inside it, 24 px from each side: the field, the say line, the keys in seven columns on a 48 px pitch, the bottom row (Aa, space, the page key, each as wide as the columns it stands under), then Suggest and Done.
+The panel stands over Habitat's right column, 16 px right of the window's bezel (x 576). Inside it one column is centred, 44 px from each side, so the column's x sits 4 px off the 8 px grid (every y, width and height stays on it): the field, the say line, the keys in seven columns on a 48 px pitch, the bottom row (Aa, space, the page key, each as wide as the columns it stands under), then Suggest and Done.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| Panel | 632, 48, 376, 416 | Covers Habitat's card (640, 48, 368, 216) and modules (to y 464); 8 px from the bezel's edge at x 624 |
-| **Field** | 656, 64, 328, 48 | The name at 28 px semibold from x 672, its line box 70 to 106; holds 296 px: the widest name, 290, ends at x 962 and the caret at 966 |
-| Selection | x 668, y 70, the name's width + 8, 36 tall | While the name is as opened, or a suggestion |
+| Panel | 592, 48, 416, 424 | Covers Habitat's right column, the card and the modules (x 592 to 1008, y 48 to 472); 16 px from the bezel's edge at x 576 |
+| **Field** | 636, 64, 328, 48 | The name at 28 px semibold from x 652, its line box 70 to 106; holds 296 px: the widest name, 290, ends at x 942 and the caret at 946 |
+| Selection | x 648, y 70, the name's width + 8, 36 tall | While the name is as opened, or a suggestion |
 | Caret | 2×28, 2 px after the name, y 74 to 102 | While typing or empty |
-| Say line | 656, 120, 328, 24 | 16 px from x 672, its line box 122 to 142; holds 312 px |
-| **Keys** | 656, 160, 328, 184 | 40×40 on a 48 px pitch, seven columns, four rows: key i at (656 + 48 (i mod 7), 160 + 48 floor(i / 7)) |
-| Aa | 656, 352, 88, 40 | Under the first two columns |
-| Space | 752, 352, 136, 40 | Under the third to fifth |
-| Page key | 896, 352, 88, 40 | Under the last two; "àéñ" on the letters page, "abc" on the accents page |
-| Suggest | 656, 408, 160, 40 | |
-| **Done** | 824, 408, 160, 40 | Where the ring opens |
+| Say line | 636, 120, 328, 24 | 16 px from x 652, its line box 122 to 142; holds 312 px |
+| **Keys** | 636, 160, 328, 184 | 40×40 on a 48 px pitch, seven columns, four rows: key i at (636 + 48 (i mod 7), 160 + 48 floor(i / 7)) |
+| Aa | 636, 352, 88, 40 | Under the first two columns |
+| Space | 732, 352, 136, 40 | Under the third to fifth |
+| Page key | 876, 352, 88, 40 | Under the last two; "àéñ" on the letters page, "abc" on the accents page |
+| Suggest | 636, 408, 160, 40 | |
+| **Done** | 804, 408, 160, 40 | Where the ring opens |
 
 The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside the lifted box: 48×48 on a 48 px pitch, so rings never touch a neighbouring key, and the ring over a key clears the row above by 2 px.
 
@@ -2021,15 +2021,15 @@ The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside th
 
 | Region (`namer.json`) | Rectangle | Word or build | States it shows |
 | --- | --- | --- | --- |
-| `panel` | 632, 48, 376, 416 | panel, build `namer` (with its shadow) | — |
-| `field` | 656, 64, 328, 48 | panel and text, build `nameField` | selected (the selection, no caret); typed (the caret after the name); empty (the caret at the start) |
-| `say` | 656, 120, 328, 24 | text | empty; a reason in `mist`; a refusal in `amber` for 4000 ms |
-| `keys` | 656, 160, 328, 184 | panel and text, build `keyGrid` | each key: drawn or not by the page; its character in the grid's case; focused (lifted 2 px); dimmed while the field is full |
-| `shift` | 656, 352, 88, 40 | panel and text, build `keyGrid` | off; on (the next letter in the other case) |
-| `space` | 752, 352, 136, 40 | panel and text, build `keyGrid` | dimmed while the field is full |
-| `page` | 896, 352, 88, 40 | panel and text, build `keyGrid` | "àéñ" or "abc", in the grid's case |
-| `suggest` | 656, 408, 160, 40 | panel and text, build `keyGrid` | — |
-| `done` | 824, 408, 160, 40 | panel and text, build `keyGrid` | dimmed while the name cannot be saved |
+| `panel` | 592, 48, 416, 424 | panel, build `namer` (with its shadow) | — |
+| `field` | 636, 64, 328, 48 | panel and text, build `nameField` | selected (the selection, no caret); typed (the caret after the name); empty (the caret at the start) |
+| `say` | 636, 120, 328, 24 | text | empty; a reason in `mist`; a refusal in `amber` for 4000 ms |
+| `keys` | 636, 160, 328, 184 | panel and text, build `keyGrid` | each key: drawn or not by the page; its character in the grid's case; focused (lifted 2 px); dimmed while the field is full |
+| `shift` | 636, 352, 88, 40 | panel and text, build `keyGrid` | off, and at the start of a name, where it does nothing; on (the next letter in the other case) |
+| `space` | 732, 352, 136, 40 | panel and text, build `keyGrid` | dimmed while the field is full |
+| `page` | 876, 352, 88, 40 | panel and text, build `keyGrid` | "àéñ" or "abc", in the grid's case |
+| `suggest` | 636, 408, 160, 40 | panel and text, build `keyGrid` | — |
+| `done` | 804, 408, 160, 40 | panel and text, build `keyGrid` | dimmed while the name cannot be saved |
 
 `keyGrid` and `nameField` are compositions of the words `panel` and `text`, used by the namer alone, so neither is a word. `keyGrid` registers one focus target a key. The characters come from props (the page and the case), never from the spec. If a second device needs text entry, the key grid comes back to the UI designer and the architect as a word.
 
@@ -2039,10 +2039,10 @@ The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside th
 | --- | --- |
 | Pad | Moves the ring between the keys ([the namer's focus as data](#the-namers-focus-as-data)); never leaves the namer, never types |
 | ✓ on a character key | Types the character as the key shows it. On a selection it replaces the whole name. Refused, in words, past the limit and for a mark (space, hyphen, ’) first or beside another mark |
-| ✓ on Aa | The next letter in the other case; the key shows on; after one letter the grid returns. At the start of a name the grid shows capitals and Aa does nothing: no ✓ cap, and the context says "a name starts with a capital" |
+| ✓ on Aa | The next letter in the other case; the key shows on; after one letter the grid returns. At the start of a name the grid shows capitals and Aa shows off and does nothing: no ✓ cap, and the context says "a name starts with a capital" |
 | ✓ on the page key | Turns the page, letters or accents; the ring stays on the page key |
-| ✓ on Suggest | The next name from the pool, selected; each press the next, after the last the first. Nothing is taken from the pool until a name is saved |
-| ✓ on Done | Saves the name at once and closes the namer; the new name flashes where it stands on Habitat (240 ms). The mibi's own name unchanged is Keep, and writes nothing. While the name cannot be saved: the dimmed cap; a press turns the say line's reason amber, and nothing closes |
+| ✓ on Suggest | The next name from the pool, selected; each press the next, after the last the first. The pool is twelve names in the order births draw them (the curated names, then the compounds), skipping names already used, held at home, refused or over the limit. Nothing is taken from the pool until a name is saved. With no name to give, Suggest has no ✓ cap and the context says "no names left to suggest" |
+| ✓ on Done | Saves the name at once and closes the namer; the new name flashes where it stands on Habitat (240 ms). The mibi's own name exactly as it is (the same characters in the same case) is Keep: it writes and logs nothing. A change of case only is a rename, with its log line ("Renamed Dot to DOT"). While the name cannot be saved: the dimmed cap; a press turns the say line's reason amber, and nothing closes |
 | ← | A selection: clears the field. Typed characters: deletes the last one. An empty field: closes the namer, writing nothing |
 | A room key | Closes the namer, writing nothing, and opens the room's top |
 | Idle | The namer closes, writing nothing, before the living view starts |
@@ -2057,7 +2057,7 @@ The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside th
 | --- | --- | --- | --- | --- |
 | Selected (as opened, or a suggestion) | The name on the `tealD` selection, no caret | Replaces the name | Clears it: the field is empty | `← Clear` |
 | Typed | The caret after the last character | Appends | Deletes the last character | `← Delete` |
-| Empty | The caret at x 672 | Types the first letter, a capital | Closes the namer, writing nothing | `← Habitat` |
+| Empty | The caret at x 652 | Types the first letter, a capital | Closes the namer, writing nothing | `← Habitat` |
 
 **Refusals, in words.** Nothing is refused silently and nothing is refused by a message plate (a plate would cover the mibi). While the name in the field cannot be saved, the say line gives the reason in `mist` and Done's cap dims. A refused press (a key or Done) turns the reason `amber` for 4 s, the message plate's time; then it returns.
 
@@ -2082,7 +2082,7 @@ The longest, "{holder} has that name" with the widest ten-letter holder, is 267 
 | Aa | `✓ Capitals` or `✓ Small letters`; no ✓ cap at the start | as above; at the start "a name starts with a capital" | by the field's state |
 | The page key | `✓ Accents` or `✓ Letters` | as above | by the field's state |
 | Suggest | `✓ Suggest a name`, then `✓ Another name`; no ✓ cap with no name to give | as above, or "no names left to suggest" | by the field's state |
-| Done | `✓ Name it Bean`, or `✓ Keep Fig` when unchanged; dimmed while the name cannot be saved | as above | by the field's state |
+| Done | `✓ Name it Bean` (a change of case included), or `✓ Keep Fig` when exactly unchanged; dimmed while the name cannot be saved | as above | by the field's state |
 
 The notice is the frame's. Measured at Inter 16 with the widest ten-letter name: `✓ Name it` and the name is 221 px, inside the action zone's 356; the context with the longest species name is 175 px, inside 208.
 
@@ -2101,6 +2101,10 @@ The notice is the frame's. Measured at Inter 16 with the widest ten-letter name:
 - `props.focus.targets` lists the present keys, then mod.shift, mod.space, mod.page, act.done, act.suggest; on an equal score the earlier wins, so ▼ from space, as near Suggest as Done, lands on Done.
 - **Vectors** (`namer.json` `focus.vectors`, run by `specs.test.mjs`): Done ▲ page key; Done ◀ Suggest; Done ▶ Done; Suggest ▲ Aa; space ▼ Done; space ▲ y; Aa ▲ v; w ▼ Aa; x ▼ space; ’ ▼ page key; a ▲ a; a ◀ a; g ▶ g; i ▶ j; i ▼ p; on the accents page ç ▶ ç and ÿ ▶ ÿ.
 
+### The overlay on the face
+
+The namer is a spec of kind `overlay`, drawn on the face's top layer over the screen it opens from. The focus ring and the message plate are on the top layer too, in the order overlay, ring, plate, so the ring stands over the namer's keys and a plate over both. While the namer is open its graph is the only one and the screen beneath takes no key. It closes with props whose `focus.set` hands the ring back to the screen beneath. Props that name an overlay whose `over` does not list the current screen are refused.
+
 ### The name label's limit
 
 Measured on the face's own fonts (`prototypes/face/src/fonts`, LVGL's sum: each glyph (adv_w + kern + 8) >> 4), over every allowed character in both cases, and on the Companion's Mibi 7×9 (`art/companion-48/type/mibi-7x9.json`).
@@ -2113,7 +2117,7 @@ Measured on the face's own fonts (`prototypes/face/src/fonts`, LVGL's sum: each 
 | Mibi 7×9 at 2× | advance 6 (m, w, œ and most capitals) | 120 px | 120 |
 | Mibi 7×9 at 3× | advance 6 | 180 px | 180 |
 
-For comparison, ten-letter names a player might choose: "Strawberry" 83, "Momo-Mumbo" 115 at 16 px; 153 and 206 at 28 px.
+The face's Inter 16, 20 and 28 hold every allowed character in both cases, with the space, the hyphen and ’ (`specs.test.mjs` checks the baked ranges). For comparison, ten-letter names a player might choose: "Strawberry" 83, "Momo-Mumbo" 115 at 16 px; 153 and 206 at 28 px.
 
 **NAME_MAX stays 10.** The rule: every box that sets a mibi's name holds ten of the widest character at its size, 160 at 16 px, 200 at 20 px, 296 at 28 px, and a name is never clipped and never ends in "…". Today these hold it: Home's name tag (176 px for the widest, inside the glass's 624), Cross's parent names (200 at 20 px), the `plate-name` series (its widest picture, 224, is 200 + 2 × 12), the meet's ribbon ("Meet" and the name, 254 at 20 px, in 304), the hatch ribbon ("{Name}, a young {Species}", 360 at 20 px, in 400), the namer's field, and the Companion's partner screen (180 in its 200 at 3×). The ones that do not are listed under **Not designed yet**.
 
@@ -2121,10 +2125,10 @@ For comparison, ten-letter names a player might choose: "Strawberry" 83, "Momo-M
 
 Habitat's own spec carries these; the namer depends on them.
 
-- **The living window left of x 624.** The namer covers x 632 to 1008, y 48 to 464.
-- **The meet.** The ring lands on the new mibi (the Incubator's hand-off), and the first ✓ is `✓ Name Fig`, opening the namer. Any other key ends the meet with the default name kept, and does what it does. When the namer closes, the meet is over and the ring is on the mibi.
-- **Rename.** The card's name is a focus target, `name`, the first row of the card in Habitat's pad order, ring round: `✓ Rename Fig` opens the namer on any mibi at home, bonded or with you. When the namer closes, the ring is on the name.
-- **The `named` flash.** The regions that show the name (the card's name, the meet ribbon while it shows) take the frame's 240 ms flash when a name is saved.
+- **The living window left of x 584.** The namer covers x 592 to 1008, y 48 to 472.
+- **The meet.** The ring lands on the new mibi (the Incubator's hand-off), and the first ✓ is `✓ Name Fig`, opening the namer. Any other key ends the meet with the default name kept, and does what it does. When the namer closes, the meet is over, and the closing props' `focus.set` puts the ring on the mibi.
+- **Rename.** The mibi's name on Habitat is a focus target, ring round, that Habitat's spec names and places in its pad order: `✓ Rename Fig` opens the namer on any mibi at home, bonded or with you. When the namer closes, the closing props' `focus.set` puts the ring back on that target.
+- **The `named` flash.** The regions that show the name (its name, the meet ribbon while it shows) take the frame's 240 ms flash when a name is saved.
 - **The name boxes.** Habitat's name boxes follow the name label's rule above.
 
 ### Changes from the current build
@@ -2141,8 +2145,7 @@ Habitat's own spec carries these; the namer depends on them.
   - **The bottom line's `✓ Take {name} with you`** with its price "at the next dock": 411 px with the widest name (366 with "Momo-Mumbo"), over the action zone's 356. Shorter words for the verb or the price.
 - **The guide's "Carried by" line** gives each name 120 px at 16 px; the widest needs 160, and dropping names cannot fit one name that is too wide alone.
 - **The Companion's HUD** draws the partner's name only when it fits beside the counters, and drops it otherwise.
-- **The overlay on the face**: how a spec of kind `overlay` is drawn over the screen beneath, and how focus passes to it and back.
-- **The pool for Suggest**: how many names it peeks, and what shows when it has none.
+- **The wireframes' backdrop**: 12 to 12e draw Habitat beneath as this file's Habitat section places it, its window reaching x 624 under the panel's edge. They are redrawn on Habitat's L2.5 layout, its window ending at x 576, when that spec is in this file.
 - **The naming rules' home**: the characters, the lengths and the refusals this section follows are not written in [game.md](../game.md) yet.
 - **The words**: every string in `namer.json` `strings` is the copywriter's.
 

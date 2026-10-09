@@ -16,7 +16,7 @@
 <text x="24" y="216" font-size="9" fill="#444">and does what it does</text>
 <rect x="16.5" y="264.5" width="207" height="87" fill="#f4f8fc" stroke="#2b6cb0" stroke-width="1.5"/>
 <text x="24" y="281" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">Habitat, any time</text>
-<text x="24" y="296" font-size="9" fill="#444">the card's name is a target:</text>
+<text x="24" y="296" font-size="9" fill="#444">the name it shows is a target:</text>
 <text x="24" y="308" font-size="9" fill="#444">✓ Rename Fig opens the namer</text>
 <text x="24" y="320" font-size="9" fill="#444">(any mibi at home, bonded</text>
 <text x="24" y="332" font-size="9" fill="#444">or with you)</text>
@@ -124,10 +124,10 @@
 <rect x="272.5" y="376.5" width="391" height="103" fill="#f2fbf5" stroke="#2f855a" stroke-width="1.5"/>
 <text x="280" y="393" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">Closes, back to Habitat</text>
 <text x="280" y="408" font-size="9" fill="#444">Done ✓: the name saved at once, the namer closes, the name</text>
-<text x="280" y="420" font-size="9" fill="#444">  regions on Habitat flash 240 ms; the ring returns to what</text>
-<text x="280" y="432" font-size="9" fill="#444">  opened it (the meet: the new mibi, and the meet ends;</text>
-<text x="280" y="444" font-size="9" fill="#444">  Rename: the name). Keep, ← on empty: nothing written;</text>
-<text x="280" y="456" font-size="9" fill="#444">  the ring returns the same way</text>
+<text x="280" y="420" font-size="9" fill="#444">  regions on Habitat flash 240 ms. Keep, ← on empty: nothing</text>
+<text x="280" y="432" font-size="9" fill="#444">  written or logged. The closing props' focus.set hands the</text>
+<text x="280" y="444" font-size="9" fill="#444">  ring back: the resident after the meet (the meet ends),</text>
+<text x="280" y="456" font-size="9" fill="#444">  the rename target after a rename</text>
 <line x1="468" y1="352" x2="468" y2="372" stroke="#2f855a" stroke-width="1.5" marker-end="url(#ah)"/>
 <rect x="688.5" y="376.5" width="319" height="103" fill="#f6f6f8" stroke="#6b6880" stroke-width="1.5"/>
 <text x="696" y="393" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">A room key, Idle</text>

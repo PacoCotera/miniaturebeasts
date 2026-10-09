@@ -282,11 +282,13 @@ test("the namer spec file agrees with its wireframes, names a word or compositio
   for (const k of ["panel", "field", "say", "keys", "shift", "space", "page", "suggest"]) is(R[k].rect, k + " (open)", A);
   for (const t of namerTargets(nm, "accents")) if (t.id.startsWith("key.") && t.id !== "key.1") is(t.rect, "accent " + t.id, C);
   lintRegions(nm); assert.equal(nm.kind, "overlay"); assert.deepEqual(nm.over, ["habitat"]); assert.deepEqual(nm.rules.needed, []);
-  assert.ok(R.panel.rect[0] >= 624 + 8, "8 px or more right of Habitat's window bezel (16, 48, 608, 424): the mibi stays in view");
+  const W = nm.overlay.uncoveredRect; assert.ok(R.panel.rect[0] >= W[0] + W[2] + 8, "8 px or more right of Habitat's window bezel: the mibi stays in view");
+  assert.equal(R.panel.rect[0] + R.panel.rect[2] / 2, nm.column.x + nm.column.w / 2, "the inner column centred in the panel"); assert.equal(nm.column.x - R.panel.rect[0], nm.column.pad);
+  for (const k of ["field", "say", "keys", "shift", "suggest"]) assert.equal(R[k].rect[0], nm.column.x, k + " on the inner column");
   for (const k of ["field", "say", "keys", "shift", "space", "page", "suggest", "done"]) assert.ok(inside(R[k].rect, R.panel.rect), k + " inside the panel");
   const rows = ["field", "say", "keys", "shift", "suggest"].map((k) => R[k].rect); for (let i = 1; i < rows.length; i++) assert.ok(rows[i - 1][1] + rows[i - 1][3] + 8 <= rows[i][1], "rows 8 px or more apart");
   const T = namerTargets(nm, "letters"); for (const [i, a] of T.entries()) for (const b of T.slice(i + 1)) assert.ok(apart(a.rect, b.rect), `${a.id} and ${b.id} apart`);
-  for (const t of T) assert.ok(inside(t.rect, R.panel.rect) && t.rect.every((n) => n % 8 === 0), t.id + " on the grid, inside the panel");
+  for (const t of T) assert.ok(inside(t.rect, R.panel.rect) && t.rect.slice(1).every((n) => n % 8 === 0) && (t.rect[0] - nm.column.x) % 8 === 0, t.id + " on the grid (x on the inner column's), inside the panel");
   assert.equal(R.keys.columns * R.keys.pitch - (R.keys.pitch - R.keys.key[0]), R.keys.rect[2], "seven keys fill the grid's width");
   const col = (x) => (x - R.keys.at[0]) / R.keys.pitch; for (const k of ["shift", "space", "page"]) { const [x, , w] = R[k].rect; assert.ok(Number.isInteger(col(x)) && Number.isInteger((w + 8) / R.keys.pitch), k + " stands under whole columns"); }
   // every allowed character on one key: a to z, the 24 accented letters, the hyphen and ’ (capitals by the case rule, space on its own key)
@@ -295,6 +297,12 @@ test("the namer spec file agrees with its wireframes, names a word or compositio
   assert.equal(nm.keys.pages.letters.length, R.keys.columns * R.keys.rows); assert.equal(nm.keys.pages.accents.length, R.keys.columns * R.keys.rows);
   // the name label's limit, measured on the face's fonts: ten of the widest letter and the caret fit the field
   assert.equal(nm.nameLabel.nameMax, 10); assert.equal(R.field.px, 28); assert.ok(R.field.nameAt[0] + nm.nameLabel.limit.inter28 + 4 <= R.field.rect[0] + R.field.rect[2], "the widest name and the caret inside the field");
+  // the face's Inter 16, 20 and 28 hold every allowed character, both cases, the space, the hyphen and ’
+  for (const px of [16, 20, 28]) { const src = readFileSync(new URL(`../../face/src/fonts/face_inter_${px}.c`, import.meta.url), "utf8"), cps = new Set();
+    for (const m of src.matchAll(/\.range_start = (\d+), \.range_length = (\d+), \.glyph_id_start = \d+,\s*\.unicode_list = (\w+)/g)) { const s0 = +m[1];
+      if (m[3] === "NULL") for (let c = s0; c < s0 + +m[2]; c++) cps.add(c);
+      else for (const o of src.match(new RegExp(m[3] + "\\[\\] = \\{([^}]*)\\}"))[1].split(",").map((x) => x.trim()).filter(Boolean)) cps.add(s0 + Number(o)); }
+    for (const c of [...set, ...set.toLocaleUpperCase("fr"), " ", "-", "’"]) assert.ok(cps.has(c.codePointAt(0)), `Inter ${px} holds ${c}`); }
   assert.deepEqual(paletteBad(nm.colours), []);
 });
 
