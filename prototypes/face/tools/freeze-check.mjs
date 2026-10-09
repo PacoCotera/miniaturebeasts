@@ -32,38 +32,42 @@ export const LIST = [
   { path: "station/src/screens/cross.mjs", screen: "cross" },
   { path: "station/src/views/cross.mjs", screen: "cross" },
   { path: "station/src/cross-layout.mjs", screen: "cross" },
-  { path: "station/src/face-lvgl.mjs", screen: null },
 ];
 
 const sha = (file) => createHash("sha256").update(readFileSync(file)).digest("hex");
-const SKIP = new Set(["node_modules", "dist", "img", ".git"]);
+const SKIP = new Set(["node_modules", ".git"]);   // and the face's build output (face/dist), by path below
 export function mjsFiles(root = protoRoot) {
   const out = [];
-  (function walk(dir) { for (const e of readdirSync(dir, { withFileTypes: true })) { if (SKIP.has(e.name)) continue; const p = path.join(dir, e.name); if (e.isDirectory()) walk(p); else if (e.name.endsWith(".mjs")) out.push(p); } })(root);
+  (function walk(dir) { for (const e of readdirSync(dir, { withFileTypes: true })) { const p = path.join(dir, e.name); if (SKIP.has(e.name) || path.relative(root, p).split(path.sep).join("/") === "face/dist") continue; if (e.isDirectory()) walk(p); else if (e.name.endsWith(".mjs")) out.push(p); } })(root);
   return out.sort();
 }
 // The relative modules a file imports, resolved to repository paths under prototypes/ (static, side-effect and dynamic imports, and re-exports).
 export function importsOf(file, root = protoRoot) {
   const src = readFileSync(file, "utf8"), found = new Set(), re = /(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)["'](\.{1,2}\/[^"']+)["']/g;
-  for (let m; (m = re.exec(src));) found.add(path.relative(root, path.resolve(path.dirname(file), m[1])).split(path.sep).join("/"));
+  for (let m; (m = re.exec(src));) found.add(path.relative(root, path.resolve(path.dirname(file), m[1].replace(/[?#].*$/, ""))).split(path.sep).join("/"));
   return [...found];
 }
-// The top-level keys of the object each registerScreen call passes (screens/*.mjs): { screen: [the drawing keys among them] }.
-export function registered(root = protoRoot) {
-  const dir = path.join(root, "station/src/screens"), out = {};
-  for (const f of readdirSync(dir).filter((n) => n.endsWith(".mjs"))) {
-    const src = readFileSync(path.join(dir, f), "utf8");
-    for (const m of src.matchAll(/registerScreen\(\s*["']([a-z]+)["']\s*,\s*\{/g)) {
-      let depth = 1, i = m.index + m[0].length, top = "", str = null;
-      for (; i < src.length && depth > 0; i++) {   // the object's text at depth 1: nested braces, strings and comments skipped
+// The drawing keys among the top-level keys of the object each registerScreen call passes, in any file outside tests: { screen: [keys] }, and the calls that do not pass an object literal.
+export function registered(root = protoRoot, problems = []) {
+  const out = {};
+  for (const f of mjsFiles(root)) {
+    const rel = path.relative(root, f).split(path.sep).join("/"); if (rel.split("/").includes("tests")) continue;
+    const src = readFileSync(f, "utf8");
+    for (const m of src.matchAll(/(?<!function\s)registerScreen\(\s*(?!["'`][\w-]+["'`]\s*,)/g)) problems.push(`${rel}: registerScreen takes a string literal as its first argument (offset ${m.index})`);
+    for (const m of src.matchAll(/registerScreen\(\s*["'`]([\w-]+)["'`]\s*,\s*/g)) {
+      const at = m.index + m[0].length;
+      if (src[at] !== "{") { problems.push(`${rel}: registerScreen("${m[1]}") takes an object literal`); continue; }
+      let depth = 1, i = at + 1, top = "", str = null;
+      for (; i < src.length && depth > 0; i++) {   // the object's text at depth 1: nested braces skipped, strings kept with their quotes
         const c = src[i];
-        if (str) { if (c === "\\") i++; else if (c === str) str = null; continue; }
-        if (c === '"' || c === "'" || c === "`") { str = c; continue; }
+        if (str) { if (depth === 1) top += c; if (c === "\\") { i++; if (depth === 1) top += src[i]; } else if (c === str) str = null; continue; }
+        if (c === '"' || c === "'" || c === "`") { str = c; if (depth === 1) top += c; continue; }
         if (c === "{" || c === "(" || c === "[") { depth++; continue; }
         if (c === "}" || c === ")" || c === "]") { depth--; continue; }
         if (depth === 1) top += c;
       }
-      out[m[1]] = ["draw", "nodes", "faceNodes"].filter((k) => new RegExp(`(?:^|[,\\s])${k}\\s*(?:[,:]|$)`).test(top));
+      const keys = ["draw", "nodes", "faceNodes"].filter((k) => new RegExp(`(?:^|,)\\s*(["'\`]?)${k}\\1\\s*(?:[,:]|$)`).test(top));
+      out[m[1]] = [...new Set([...(out[m[1]] || []), ...keys])].sort((x, y) => ["draw", "nodes", "faceNodes"].indexOf(x) - ["draw", "nodes", "faceNodes"].indexOf(y));
     }
   }
   return out;
@@ -85,7 +89,10 @@ export function build(root = protoRoot) {
 // The checks. `base`: the manifest at the base ref (rule 4), or null. → { failures: [string], notes: [string] }
 export function check(manifest, root = protoRoot, base = null, goldensDir = path.join(faceDir, "golden")) {
   const failures = [], notes = [], listed = new Map(manifest.paths.map((e) => [e.path, e]));
-  for (const x of manifest.exemptions || []) notes.push(`exemption: ${x.path} at ${x.commit}: ${x.reason}`);
+  for (const x of manifest.exemptions || []) {
+    notes.push(`exemption: ${x.path} at ${x.commit}: ${x.reason}`);
+    if (!/^[0-9a-f]{7,40}$/.test(x.commit || "") || !String(x.reason || "").trim() || !/^[0-9a-f]{64}$/.test(x.sha256 || "") || !listed.has(x.path)) failures.push(`exemption for ${x.path} is malformed: it needs a 7 to 40 hex commit, a reason, a 64 hex sha256 and a listed path`);
+  }
   for (const e of manifest.paths) {   // 1
     const file = path.join(root, e.path); if (!existsSync(file)) continue;
     const now = sha(file), ex = (manifest.exemptions || []).find((x) => x.path === e.path && x.sha256 === now);
@@ -95,13 +102,21 @@ export function check(manifest, root = protoRoot, base = null, goldensDir = path
     const rel = path.relative(root, f).split(path.sep).join("/");
     for (const t of importsOf(f, root)) { const e = listed.get(t); if (e && !e.importers.includes(rel)) failures.push(`${rel} imports ${t}, a deprecated drawing module; only ${e.importers.length ? e.importers.join(", ") : "no file"} may`); }
   }
-  const nowReg = registered(root);   // 3
+  const problems = [], nowReg = registered(root, problems);   // 3
+  failures.push(...problems);
   for (const [screen, keys] of Object.entries(nowReg)) {
     const had = new Set((manifest.screens || {})[screen] || []);
     for (const k of keys) if (DRAW_KEYS.includes(k) && !had.has(k) && !(manifest.migrated || []).includes(screen)) failures.push(`screen ${screen} registers ${k} that the freeze did not record, and ${screen} is not migrated`);
   }
-  if (base) {   // 4
+  if (base) {   // 4, and the manifest may only tighten: nothing in it loosens against the base
     const baseListed = new Map(base.paths.map((e) => [e.path, e]));
+    for (const e of manifest.paths) {
+      const b = baseListed.get(e.path); if (!b) continue;
+      if (e.sha256 !== b.sha256) failures.push(`${e.path}: the manifest's hash differs from the base's; a hash changes only through an exemption`);
+      for (const i of e.importers) if (!b.importers.includes(i)) failures.push(`${e.path}: ${i} was added to the allowed importers; the set only shrinks`);
+      if (e.screen !== b.screen) failures.push(`${e.path}: its screen changed from ${b.screen} to ${e.screen}`);
+    }
+    for (const [sc, keys] of Object.entries(manifest.screens || {})) for (const k of keys) if (!((base.screens || {})[sc] || []).includes(k)) failures.push(`screen ${sc}: ${k} was added to the recorded keys; the set only shrinks`);
     for (const [p, e] of baseListed) {
       if (listed.has(p)) continue; const file = path.join(root, p); if (!existsSync(file)) continue;
       const goldens = e.screen ? path.join(goldensDir, e.screen) : null;
@@ -122,6 +137,8 @@ function main() {
   let base = null;
   if (bi >= 0) {
     const ref = args[bi + 1];
+    try { execFileSync("git", ["rev-parse", "--verify", "--quiet", `${ref}^{commit}`], { cwd: protoRoot, stdio: "ignore" }); }
+    catch { console.error(`FAIL base ref ${ref} does not resolve`); process.exit(1); }
     try { base = JSON.parse(execFileSync("git", ["show", `${ref}:prototypes/face/deprecated.json`], { cwd: protoRoot, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })); }
     catch { console.log(`freeze-check: no deprecated.json at ${ref} (the freeze commit itself): rule 4 skipped`); }
   }

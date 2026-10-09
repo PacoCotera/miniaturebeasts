@@ -35,6 +35,8 @@ These steps are the deprecated layer's and are not to be followed for a new scre
 6. **The intents.** A key on a focused target is one rule call in `state.mjs` (new rules land there with tests); its result becomes events on the timeline (`TL.play({ kind, target, ms, hold })`), which hold input while they play. No global timestamps.
 7. **The journey and the sign-off.** Extend `tools/journey.mjs` with the screen's steps and `frameShot` points (1024×600 captures in `img/`), run `tools/checks.mjs`, fill in the sign-off's section 3.
 
+**Frozen:** this registration (`registerScreen(name, { nodes, … })` or `{ draw, … }`) is the deprecated layer's; the freeze check refuses a screen that gains `draw`, `nodes` or `faceNodes`, and refuses a `registerScreen` call that is not a string name and an object literal.
+
 Registering a screen on the layer is `registerScreen(name, { nodes, line, act, enter })`; a screen not yet moved registers `{ draw, line, act, enter }` and is drawn as one legacy node.
 
 ## Keys
