@@ -3698,9 +3698,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
   "sha256": "eec243268c4a3a4be43f0bbccf9b17e34483696962ce372fccdbf458d3a6ff2f",
-  "status": "signed",
-  "signed_in": "pass 8 (verdict on 55944fb)",
-  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
  },
  "rail-tab-fill-read-full-152x40": {
   "size": [
@@ -3716,9 +3716,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
   "sha256": "eec243268c4a3a4be43f0bbccf9b17e34483696962ce372fccdbf458d3a6ff2f",
-  "status": "signed",
-  "signed_in": "pass 8 (verdict on 55944fb)",
-  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
  },
  "rail-tab-fill-open-full-152x40": {
   "size": [
@@ -3734,9 +3734,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
   "sha256": "75976f3c3e3a197d24a7f9328aca280e98750289cd346b566e692cddd2d6d10f",
-  "status": "signed",
-  "signed_in": "pass 8 (verdict on 55944fb)",
-  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
  },
  "rail-tab-fill-sealed-full-152x40": {
   "size": [
@@ -3752,9 +3752,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
   "sha256": "a911730768514b615f00b044a69ae93e99c0129ef237e41679891d73951548bf",
-  "status": "signed",
-  "signed_in": "pass 8 (verdict on 55944fb)",
-  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
  },
  "rail-tab-fill-unread-compact-72x40": {
   "size": [
@@ -3770,9 +3770,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
   "sha256": "78035abd4b5465809a704de441ead97446ccaa9641ada0d3623cde62962fb389",
-  "status": "signed",
-  "signed_in": "pass 8 (verdict on 55944fb)",
-  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
  },
  "rail-tab-fill-read-compact-72x40": {
   "size": [
@@ -3788,9 +3788,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
   "sha256": "78035abd4b5465809a704de441ead97446ccaa9641ada0d3623cde62962fb389",
-  "status": "signed",
-  "signed_in": "pass 8 (verdict on 55944fb)",
-  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
  },
  "rail-tab-fill-open-compact-72x40": {
   "size": [
@@ -3806,9 +3806,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
   "sha256": "0da80eb7e586d4e2df15164592bc75fadbb16d0fed3a9197431eb1f760869083",
-  "status": "signed",
-  "signed_in": "pass 8 (verdict on 55944fb)",
-  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
  },
  "rail-tab-fill-sealed-compact-72x40": {
   "size": [
@@ -3824,9 +3824,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
   "sha256": "169ed3286a2ab4825e2441086ae53b6ab19fb90a1ea5f2e60f2ced52940b7123",
-  "status": "signed",
-  "signed_in": "pass 8 (verdict on 55944fb)",
-  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
  },
  "trait-picture-frame-112x112": {
   "size": [
