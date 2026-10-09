@@ -3043,5 +3043,45 @@
   "status": "new",
   "signed_in": null,
   "note": "pass 78: DERIVED FROM THE CONCEPT (BK-D-r2-a1; no signed Book master exists): boards 16 px at the sides, 8 px top and bottom, one aged page 976x488 at (16, 8), no gutter, no marker, no ornament; palette colours only; awaiting verdict"
+ },
+ "sitting-gilt-560x424": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-gilt-lit-560x424": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "crate-sitting-80x56": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-meadow-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-pond-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-rock-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-wood-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-cave-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
  }
 }

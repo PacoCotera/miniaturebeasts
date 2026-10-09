@@ -9616,5 +9616,109 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 78: DERIVED FROM THE CONCEPT (BK-D-r2-a1; no signed Book master exists): boards 16 px at the sides, 8 px top and bottom, one aged page 976x488 at (16, 8), no gutter, no marker, no ornament; palette colours only; awaiting verdict"
+ },
+ "sitting-gilt-560x424": {
+  "size": [
+   560,
+   424
+  ],
+  "rect": null,
+  "src": "typed by hand (profiles)",
+  "made": "the sitting's gilt frame at rest: a modelled moulding 16 px deep, a 3 px bead, an 8 px leaf face lit from the top left, a 3 px inner shade lip, a 2 px sight edge; the opening (local 16,16, 528x392) transparent; mitred corners; palette colours (pass 84)",
+  "sha256": "9675b2b29b998fb7a31bb56f5e997f96e73907cc1670786b001e7059f6580617",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-gilt-lit-560x424": {
+  "size": [
+   560,
+   424
+  ],
+  "rect": null,
+  "src": "typed by hand (profiles)",
+  "made": "the lit gilt frame: the leaf and bead one value brighter on the ramp, a 2 px warm sight edge (sand, cream); never the focus gold (pass 84)",
+  "sha256": "56b8956ca5d2ae9829bc87afde3f976e60720d0264b315c7e3cef5f2544878a9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "crate-sitting-80x56": {
+  "size": [
+   80,
+   56
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "Home's Bay crate for the sitting, 80x56: the walk crate's roles (deepTeal body, teal lit top, hairline outline, tealD slat lines) with a small gilt frame (bark outline, gold leaf lit top left, a tealD opening) on its front where the walk crate carries the orange seal tag; hand-placed at 1x (pass 84)",
+  "sha256": "d6830d54565f8b0b1208637caf89c9cfdc98ead75da836d36761063031027952",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-meadow-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/place-meadow.jpg",
+  "made": "the meadow place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
+  "sha256": "7ba22a9108a0e112a4d25d01f094289a341dd63da4bbbe64de642f380f255208",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-pond-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/place-pond.jpg",
+  "made": "the pond place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
+  "sha256": "8f0df577e35ac87baed2f4c8da5c65cd0ce6183db0d3a0ac3066ab966b7fdc24",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-rock-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/place2-rock.jpg",
+  "made": "the rock place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
+  "sha256": "d8e0f79bd95d68801ac81006264d9a291b6fee5876e4bafe74913b8b10ba4850",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-wood-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/place2-wood.jpg",
+  "made": "the wood place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
+  "sha256": "2360f346a688ccfc5de5e8da1f9d4cb31c6c6331c428ffd8aab15185a0b3fbaf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "place-cave-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/place2-cave.jpg",
+  "made": "the cave place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
+  "sha256": "4eb995814991ce9276b0fb0fbdb502101b687612c61579c360d12b7ca3367096",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
  }
 }
