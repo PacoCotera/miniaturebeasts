@@ -2420,9 +2420,9 @@
   "note": "Compare's bench from the chapter's own wall"
  },
  "compare-mark-differs-12x12": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 52: replaced by the A drawing (exactly proposals/differs-a-12x12.png); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "note": "Compare's differs mark, the A drawing (exactly proposals/differs-a-12x12.png)"
  },
  "trait-S09-head-between-small-and-large-128x160": {
   "status": "signed",
@@ -2475,29 +2475,29 @@
   "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-crown-tall-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
  },
  "trait-S09-crown-tall-144x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
  },
  "trait-S09-crown-tall-104x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
  },
  "trait-S09-crown-tall-104x96": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
  },
  "trait-S09-crown-tall-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "note": "pass 53: the body's fade shortened on this size only so it reaches the ground by row 61 (35 percent at the part kept); awaiting verdict"
  },
  "trait-S09-tail-between-128x160": {
   "status": "signed",

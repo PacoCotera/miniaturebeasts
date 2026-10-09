@@ -7984,9 +7984,9 @@
   "src": "typed by hand",
   "made": "Compare's 'differs' mark: a 'not the same' sign of two short strokes of 5 px (inside a 7 px keyline), the lower shifted 5 px right, aqua with a mint lit top row and a 1 px ink keyline; typed pixel by pixel (pass 52: exactly the pixels of proposals/differs-a-12x12.png; rows 1 to 10 of 12); placed 1:1 after a trait's name on the name line",
   "sha256": "c4d6370de5b4f5d07f4b1467d383f3a36981891d255291286b5d90ed6e8dfdf8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 52: replaced by the A drawing (exactly proposals/differs-a-12x12.png); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "status_note": "Compare's differs mark, the A drawing (exactly proposals/differs-a-12x12.png)"
  },
  "trait-S09-head-between-small-and-large-128x160": {
   "size": [
@@ -8127,9 +8127,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 174x218 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
   "sha256": "69174132834f4f394e4a964fab806573c2cc4fdc53f6af9991a167aa33f92fc8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "status_note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
  },
  "trait-S09-crown-tall-144x176": {
   "size": [
@@ -8140,9 +8140,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 174x213 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
   "sha256": "b8215b7d042c0e46c7e4e5baa089f5b527b6519a5013778b91d35f39a6c8e8e0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "status_note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
  },
  "trait-S09-crown-tall-104x160": {
   "size": [
@@ -8153,9 +8153,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 174x268 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
   "sha256": "fa34063282e81ef578d0bd7bb5226bda84b02bfa63a57597b61b5cf4e153ddb6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "status_note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
  },
  "trait-S09-crown-tall-104x96": {
   "size": [
@@ -8166,9 +8166,9 @@
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 174x161 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
   "sha256": "a414fe0f84ed8e867b09264b846aee7b7150935f6e570afc5a6c51959d9b2a67",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 52 verdict",
+  "status_note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
  },
  "trait-S09-crown-tall-104x64": {
   "size": [
@@ -8178,10 +8178,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 222x137 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
-  "sha256": "5e1800edfbbc3c7d259891b5dcc06d06b0e584bd494ed6a09281f181a047ff9b",
+  "sha256": "f19077f6341622355b0727e9c608c2aa3a39413ecde84ce8e4a4e86e90d07ce9",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
+  "status_note": "pass 53: the body's fade shortened on this size only so it reaches the ground by row 61 (35 percent at the part kept); awaiting verdict"
  },
  "trait-S09-tail-between-128x160": {
   "size": [

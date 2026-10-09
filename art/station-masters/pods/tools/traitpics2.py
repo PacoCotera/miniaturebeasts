@@ -99,12 +99,16 @@ def dist_from(core, limit=24):
         if k % 2: n[1:, 1:] |= cur[:-1, :-1]; n[:-1, :-1] |= cur[1:, 1:]; n[1:, :-1] |= cur[:-1, 1:]; n[:-1, 1:] |= cur[1:, :-1]
         d[n & ~cur] = k; cur = n
     return d
-def with_body(img, core, gate, linear=False):
+def with_body(img, core, gate, linear=False, weight=None, orig_img=None):
     """Treatment B (pass 52): the part's own pixels at 100 percent; the painted body next to it at 35 percent, fading to nothing over about 22 px from the part, only inside `gate`; no shadow."""
     solid = (np.abs(np.asarray(keyed).astype(float) - DEEP).max(2) > 14).astype(float); near = soften(core, 12)
-    body = (np.clip(1 - dist_from(core) / 22.0, 0, 1) if linear else np.clip(near * 3.0, 0, 1)) * solid * (1 - core) * 0.35 * gate; base = np.asarray(masked(img, core)).astype(float); orig = np.asarray(img).astype(float)
+    body = (np.clip(1 - dist_from(core) / 22.0, 0, 1) if linear else np.clip(near * 3.0, 0, 1)) * solid * (1 - core) * (0.35 if weight is None else weight) * gate; base = np.asarray(masked(img, core)).astype(float); orig = np.asarray(img if orig_img is None else orig_img).astype(float)
     return Image.fromarray(np.clip(base * (1 - body[..., None]) + orig * body[..., None], 0, 255).astype(np.uint8))
 hx, hy, hw, hh = P["head"]; head_gate = poly_mask([(hx, hy), (hx + hw, hy), (hx + hw, hy + hh), (hx, hy + hh)], W, H, 4.0)   # where the painting's head really covers the ear and crest roots
+def crown_short(box, th, tw):
+    """104x64 only (pass 53): the body's fade is shortened so that it reaches the ground by row 61 of the cell (the dome must not run off the bottom edge): a vertical ramp of about 8 cell rows ends at row 61; 35 percent at the part is kept."""
+    sc = (box[3] - box[1]) / th; ycut = box[1] + 61 * sc; ramp = 8 * sc; yy = np.mgrid[0:H, 0:W][0].astype(float)
+    return with_body(keyed_tail, crown_m, head_gate * np.clip((ycut - yy) / ramp, 0, 1))
 crown_img = with_body(keyed_tail, crown_m, head_gate)
 axis = np.array(TAIL_ROOT) - np.array(TAIL_TIP); L_ = np.hypot(*axis); axis = axis / L_
 sproj = (xx_ - TAIL_TIP[0]) * axis[0] + (yy_ - TAIL_TIP[1]) * axis[1]                      # px along the feather axis from the tip toward the root
@@ -114,7 +118,7 @@ n = 0; flagged = []
 for key_, (why, rect, kind, pad, limit, feather) in BOX.items():
     ch, tid = key_.split("/"); name = looks[key_]["name"]; look = looks[key_]["look"]; ent = {"chapter": ch, "trait": name, "look": look, "kind": kind, "box": list(rect), "source": why, "crops": {}}
     for (tw, th) in SIZES:
-        prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; box, flag = window(prect, tw, th, W, H); base_ = masked(keyed_tail, tail_m) if key_ == "legs-tail/tail" else crown_img if key_ == "face/crown" else keyed; crop = limited(base_, limit, feather).crop(box); cw, chh = crop.size
+        prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; box, flag = window(prect, tw, th, W, H); base_ = masked(keyed_tail, tail_m) if key_ == "legs-tail/tail" else (crown_short(box, th, tw) if (key_ == "face/crown" and (tw, th) == (104, 64)) else crown_img) if key_ == "face/crown" else keyed; crop = limited(base_, limit, feather).crop(box); cw, chh = crop.size
         im = crop.resize((tw, th), Image.LANCZOS) if (cw, chh) != (tw, th) else crop
         nm = f"trait-S09-{slug(name)}-{slug(look)}-{tw}x{th}"; im.save(f"slices/{nm}.png", optimize=True)
         man[nm] = {"size": [tw, th], "rect": None, "src": f"S09 accepted painting, {why} {list(rect)}", "made": f"the {name} of the Belatz ({look}): a crop of the accepted painting from the rig's region, re-framed to {tw}x{th} from a {cw}x{chh} window ({'reduced' if (cw, chh) != (tw, th) else '1:1'}, never enlarged), paper keyed to deep, key choked 1 px, defringed" + ("; body kept at 35 percent alpha fading over about 22 px, no shadow" if key_ == "face/crown" else "") + (f"; FLAG: {flag}" if flag else ""), "sha256": hashlib.sha256(open(f"slices/{nm}.png", "rb").read()).hexdigest()}
