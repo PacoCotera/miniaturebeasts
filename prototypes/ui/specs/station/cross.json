@@ -21,7 +21,7 @@
  },
  "focus": { "one": "the focus ring stays on the partner's head in both states; ◀ ▶ change what it holds. The open chapter is the rail's open tab, not a second ring", "ring": "focus", "width": 2, "outside": 4, "radius": 6 },
  "bottomLine": {
-  "action": "✓ Cross them · the cross's price (state.crossCost)",
+  "action": "✓ Cross them, then the cross's price (state.crossCost), icon before figure as on every Station screen: ⚡ 2 ❀ 4",
   "context": { "overview": "{a} × {b} · {species}", "chapter": "{chapter} · {a} × {b}" },
   "notice": "the first missing read, in ring order: \"read {parent}'s {chapter}\", or \"read both parents' {chapter}\" when both lack it; when nothing is missing, the kinship word (state.kinshipWord) if the kinship is above 0; otherwise none. A refusal (state.crossBlock) takes the notice and the ✓ cap goes",
   "back": "Habitat"

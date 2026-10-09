@@ -20,7 +20,7 @@
   "used": ["listPitch"],
   "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
   "needed": [],
-  "listPitch": "the plates and the strip's tiles are lists by pitch: { first, pitch, grid }. The strip's `forms` are { name: { upTo, first, pitch, grid } }: n tiles take the form with the smallest upTo ≥ n. Refused at load: a form with no upTo, two forms with one upTo, a grid shorter than its upTo; refused in props: n > 12 (the bay count is 0 to 12)"
+  "listPitch": "the plates and the strip's tiles are lists by pitch: { first, pitch, grid }. The strip's `forms` are { name: { upTo, first, pitch, grid } }: n tiles take the form with the smallest upTo at least n. Refused at load: a form with no upTo, two forms with one upTo, a grid shorter than its upTo; refused in props: n > 12 (the bay count is 0 to 12)"
  },
  "states": ["rest", "meet", "empty"],
  "initial": "by the save and the way in: no housed mibi, empty; arriving from the Incubator's hatch (or Home's ✓ Meet), meet; else rest",
