@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Habitat, the Companion away, twelve bays in compact tiles: the ring on the Companion module, Take Fig with you at the next dock; nine partners in two rows. 1024×600 at 1×, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="16.5" y="48.5" width="559" height="423" fill="#f1f1ee" stroke="#444" stroke-width="1"/><text x="572" y="55" font-size="7" fill="#777" text-anchor="end">bezel 16,48 560×424 · glass 24,56 544×408</text>
+<rect x="24.5" y="56.5" width="543" height="407" fill="#fff6e8" stroke="#bf9157" stroke-width="1"/>
+<line x1="24" y1="304.5" x2="568" y2="304.5" stroke="#e0b880" stroke-dasharray="4 3"/><text x="30" y="316" font-size="9" fill="#a07040">ground 24,304 544×160 (warm field)</text>
+<rect x="144.5" y="80.5" width="303" height="311" fill="#fdebd6" stroke="#c45f12" stroke-width="1.5"/>
+<text x="150" y="94" font-size="10" fill="#7d3a10">Elder 304×312 · 144,80 · feet 392</text>
+<text x="152" y="114" font-size="10" fill="#2b6cb0">Away: the door's glyph in outline;</text>
+<text x="152" y="127" font-size="10" fill="#2b6cb0">the mibi with you (Dot) is out, so</text>
+<text x="152" y="140" font-size="10" fill="#2b6cb0">its tile shows the outline glyph.</text>
+<text x="152" y="153" font-size="10" fill="#2b6cb0">Seven to twelve bays: compact tiles.</text>
+<text x="152" y="166" font-size="10" fill="#2b6cb0">Every tile a thumbnail only; the</text>
+<text x="152" y="179" font-size="10" fill="#2b6cb0">shown mibi's name is on its tag.</text>
+<text x="152" y="192" font-size="10" fill="#2b6cb0">An elder crosses: eight to eleven</text>
+<text x="152" y="205" font-size="10" fill="#2b6cb0">partners take two rows of faces.</text>
+<rect x="184.5" y="416.5" width="223" height="31" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="256.5" y="416.5" width="79" height="31" fill="#2a2e38" stroke="#3c4b57"/><text x="296" y="437" font-size="16" fill="#f1ebdf" text-anchor="middle" font-weight="500">Fig</text>
+<text x="30" y="444" font-size="9" fill="#777">name tag 20 px</text><text x="30" y="455" font-size="9" fill="#777">slot 184,416 224×32</text>
+<rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<rect x="608.5" y="64.5" width="247" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/><text x="612" y="81" font-size="14" fill="#222">your Loika, elder</text>
+<rect x="758.8" y="68" width="16" height="16" fill="#f1ebdf" stroke="#666"/>
+<rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/><text x="612" y="105" font-size="14" fill="#6b6880">of Pip</text><text x="612" y="129" font-size="14" fill="#6b6880">and Sorrel</text><text x="612" y="153" font-size="14" fill="#6b6880">remembers the cave</text>
+<rect x="608.5" y="160.5" width="247" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/><text x="612" y="177" font-size="14" fill="#222">FZ3 GWV T0T</text>
+<rect x="872.5" y="64.5" width="119" height="119" fill="#fbf7ee" stroke="#3d3954" stroke-width="1"/><text x="932" y="128" font-size="10" fill="#555" text-anchor="middle">stamp 120</text><text x="932" y="141" font-size="9" fill="#555" text-anchor="middle">872,64</text>
+<text x="600" y="59" font-size="9" fill="#555"></text>
+<rect x="608.5" y="200.5" width="39" height="39" fill="#e7ecef" stroke="#444" stroke-width="1"/>
+<rect x="616.5" y="208.5" width="23" height="23" fill="#f1ebdf" stroke="#555"/>
+<rect x="656.5" y="200.5" width="39" height="39" fill="#e7ecef" stroke="#444" stroke-width="1"/>
+<rect x="664.5" y="208.5" width="23" height="23" fill="#f1ebdf" stroke="#555"/>
+<rect x="704.5" y="200.5" width="39" height="39" fill="#e7ecef" stroke="#444" stroke-width="1"/>
+<rect x="712.5" y="208.5" width="23" height="23" fill="#f1ebdf" stroke="#555"/>
+<rect x="752.5" y="200.5" width="39" height="39" fill="#e7ecef" stroke="#444" stroke-width="1"/>
+<rect x="760.5" y="208.5" width="23" height="23" fill="#f1ebdf" stroke="#555"/>
+<rect x="800.5" y="200.5" width="39" height="39" fill="#e7ecef" stroke="#444" stroke-width="1"/>
+<rect x="808.5" y="208.5" width="23" height="23" fill="#f1ebdf" stroke="#555"/>
+<rect x="848.5" y="200.5" width="39" height="39" fill="#e7ecef" stroke="#444" stroke-width="1"/>
+<rect x="856.5" y="208.5" width="23" height="23" fill="#f1ebdf" stroke="#555"/>
+<rect x="896.5" y="200.5" width="39" height="39" fill="#e7ecef" stroke="#444" stroke-width="1"/>
+<rect x="904.5" y="208.5" width="23" height="23" fill="#f1ebdf" stroke="#555"/>
+<text x="1004" y="252" font-size="9" fill="#777" text-anchor="end">card 592,48 416×208</text>
+<rect x="592.5" y="272.5" width="127" height="95" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="608" y="300" font-size="13" fill="#717c86">Companion</text><text x="596" y="364" font-size="7" fill="#999">592,272 128×96</text><rect x="616.5" y="324.5" width="15" height="23" fill="#fff" stroke="#444" stroke-width="1"/><text x="640" y="344" font-size="9" fill="#999">(out)</text>
+<rect x="588" y="266" width="136" height="104" fill="none" stroke="#d9a21b" stroke-width="2" rx="6"/>
+<rect x="728.5" y="272.5" width="135" height="95" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="744" y="300" font-size="13" fill="#717c86">Bond</text><text x="732" y="364" font-size="7" fill="#999">728,272 136×96</text><rect x="780.5" y="324.5" width="31" height="27" fill="#c93440" stroke="#5a6672" stroke-width="1"/><text x="858" y="296" font-size="7" fill="#777" text-anchor="end">heart · bonded</text>
+<rect x="872.5" y="272.5" width="135" height="95" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="888" y="300" font-size="13" fill="#717c86">Portrait</text><text x="876" y="364" font-size="7" fill="#999">872,272 136×96</text><rect x="924.5" y="312.5" width="31" height="47" fill="#fff" stroke="#3c4b57" stroke-width="1"/><text x="964" y="340" font-size="8" fill="#777">none</text>
+<rect x="592.5" y="376.5" width="271" height="95" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="608" y="404" font-size="13" fill="#717c86">Cross</text><text x="596" y="468" font-size="7" fill="#999">592,376 272×96</text><rect x="608.5" y="414.5" width="23" height="23" fill="#fdebd6" stroke="#5a6672" stroke-width="1" rx="12"/><rect x="640.5" y="414.5" width="23" height="23" fill="#fdebd6" stroke="#5a6672" stroke-width="1" rx="12"/><rect x="672.5" y="414.5" width="23" height="23" fill="#fdebd6" stroke="#5a6672" stroke-width="1" rx="12"/><rect x="704.5" y="414.5" width="23" height="23" fill="#fdebd6" stroke="#5a6672" stroke-width="1" rx="12"/><rect x="736.5" y="414.5" width="23" height="23" fill="#fdebd6" stroke="#5a6672" stroke-width="1" rx="12"/><rect x="768.5" y="414.5" width="23" height="23" fill="#fdebd6" stroke="#5a6672" stroke-width="1" rx="12"/><rect x="800.5" y="414.5" width="23" height="23" fill="#fdebd6" stroke="#5a6672" stroke-width="1" rx="12"/><rect x="608.5" y="440.5" width="23" height="23" fill="#fdebd6" stroke="#5a6672" stroke-width="1" rx="12"/><rect x="640.5" y="440.5" width="23" height="23" fill="#fdebd6" stroke="#5a6672" stroke-width="1" rx="12"/><text x="848" y="464" font-size="8" fill="#777" text-anchor="end">two rows: 8 to 11 partners</text>
+<rect x="872.5" y="376.5" width="135" height="95" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="888" y="404" font-size="13" fill="#717c86">Wild</text><text x="876" y="468" font-size="7" fill="#999">872,376 136×96</text><rect x="916.5" y="416.5" width="47" height="47" fill="#fff" stroke="#717c86" stroke-width="1"/><text x="940" y="444" font-size="8" fill="#777" text-anchor="middle">gate</text>
+<rect x="16.5" y="488.5" width="991" height="63" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+<rect x="32.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="60.5" y="508.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="112.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="124.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="192.5" y="496.5" width="71" height="47" fill="#cdd5db" stroke="#444" stroke-width="1"/>
+<rect x="204.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="272.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="284.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="352.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="364.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="432.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="444.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="512.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="524.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="592.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="604.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="672.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="684.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="752.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="764.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="832.5" y="496.5" width="71" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/>
+<rect x="844.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="912.5" y="496.5" width="71" height="47" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1004" y="486" font-size="9" fill="#777" text-anchor="end">strip 16,488 992×64 · compact tiles 72×48, pitch 80 · thumbnails only · first x 32</text>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Habitat</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="836.5" y="16.5" width="7" height="7" fill="#9a96ae" stroke="#444" stroke-width="1"/>
+<circle cx="868" cy="20" r="11" fill="#eee" stroke="#9a96ae" stroke-width="2"/>
+<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 6</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/><line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/><text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="587" font-size="14" fill="#c4500f">Take Fig with you</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">goes at the next dock</text>
+<circle cx="962.4" cy="582" r="8" fill="#5d5974"/><text x="962.4" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text><text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+</svg>
