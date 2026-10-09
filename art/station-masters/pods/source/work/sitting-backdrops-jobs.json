@@ -1,0 +1,75 @@
+[
+ {
+  "name": "sitting-backdrop-plain",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [],
+  "prompt": "Output a NEW image: a painted backdrop for a miniature creature portrait stage, seen straight on like the back of a small diorama window, aspect 4:3. Composition, exactly: the upper 60 percent is a back wall, the lower 40 percent is the ground; the ground line (where they meet) is a straight horizontal line at 60 percent of the height. Light: a warm key light from the upper left, gently falling off to the lower right, painterly, soft and low contrast. The back wall is a smooth, flat, dark forest green painted wall (about hex 23623c) with only a very soft vignette toward the corners and the warm light glowing a little in its upper left. The ground is a smooth clay-tan painted floor (about hex bf9157), its top edge a thin line of lighter sand colour (about hex e6c98c), with the same soft warm light. No props, no plants, no objects, no shadows of objects, nothing at all on the wall or the floor: an emptied stage. No creatures, no animals, no text, no letters, no numbers, no frame, no border, no UI, no characters, no figures. Soft fine painted grain like a gouache study, matte, no glossy highlights, nothing cartoonish. The whole picture is a quiet backdrop: the centre of the picture (from 22 percent to 78 percent across, and from 6 percent to 82 percent down) must be empty, smooth and quiet, with nothing sharp, no bright spots and nothing brighter than the surrounding wash, because a small creature will stand there; the bottom centre strip (29 to 71 percent across, 88 to 96 percent down) is also plain and quiet."
+ },
+ {
+  "name": "sitting-backdrop-meadow",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/place-meadow.jpg",
+    "The place's stamp painting: take its colour palette and its material character (not its composition, and none of its objects):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a painted backdrop for a miniature creature portrait stage, seen straight on like the back of a small diorama window, aspect 4:3. Composition, exactly: the upper 60 percent is a back wall, the lower 40 percent is the ground; the ground line (where they meet) is a straight horizontal line at 60 percent of the height. Light: a warm key light from the upper left, gently falling off to the lower right, painterly, soft and low contrast. The scene is the same plain stage, in the manner of a meadow: the wall a soft hazy green-blue distance, the ground short grass in muted greens; only at the far left and right edges, and low along the ground line, a few soft out-of-focus grass blades and small flower shapes. The palette follows the attached stamp painting's colours, muted and calm; painted as a soft, low-contrast wash. No creatures, no animals, no text, no letters, no numbers, no frame, no border, no UI, no characters, no figures. Soft fine painted grain like a gouache study, matte, no glossy highlights, nothing cartoonish. The whole picture is a quiet backdrop: the centre of the picture (from 22 percent to 78 percent across, and from 6 percent to 82 percent down) must be empty, smooth and quiet, with nothing sharp, no bright spots and nothing brighter than the surrounding wash, because a small creature will stand there; the bottom centre strip (29 to 71 percent across, 88 to 96 percent down) is also plain and quiet."
+ },
+ {
+  "name": "sitting-backdrop-pond",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/place-pond.jpg",
+    "The place's stamp painting: take its colour palette and its material character (not its composition, and none of its objects):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a painted backdrop for a miniature creature portrait stage, seen straight on like the back of a small diorama window, aspect 4:3. Composition, exactly: the upper 60 percent is a back wall, the lower 40 percent is the ground; the ground line (where they meet) is a straight horizontal line at 60 percent of the height. Light: a warm key light from the upper left, gently falling off to the lower right, painterly, soft and low contrast. The scene is the same plain stage, in the manner of a pond edge: the wall a soft hazy teal-green distance, the ground damp muted earth with a hint of water; only at the far left and right edges and low along the ground line, soft out-of-focus reeds and a pale stone. The palette follows the attached stamp painting's colours, muted and calm; painted as a soft, low-contrast wash. No creatures, no animals, no text, no letters, no numbers, no frame, no border, no UI, no characters, no figures. Soft fine painted grain like a gouache study, matte, no glossy highlights, nothing cartoonish. The whole picture is a quiet backdrop: the centre of the picture (from 22 percent to 78 percent across, and from 6 percent to 82 percent down) must be empty, smooth and quiet, with nothing sharp, no bright spots and nothing brighter than the surrounding wash, because a small creature will stand there; the bottom centre strip (29 to 71 percent across, 88 to 96 percent down) is also plain and quiet."
+ },
+ {
+  "name": "sitting-backdrop-rock",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/place2-rock.jpg",
+    "The place's stamp painting: take its colour palette and its material character (not its composition, and none of its objects):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a painted backdrop for a miniature creature portrait stage, seen straight on like the back of a small diorama window, aspect 4:3. Composition, exactly: the upper 60 percent is a back wall, the lower 40 percent is the ground; the ground line (where they meet) is a straight horizontal line at 60 percent of the height. Light: a warm key light from the upper left, gently falling off to the lower right, painterly, soft and low contrast. The scene is the same plain stage, in the manner of a rock field: the wall a soft hazy warm grey-brown distance, the ground pale dusty stone; only at the far left and right edges and low along the ground line, soft out-of-focus boulders and pebbles. The palette follows the attached stamp painting's colours, muted and calm; painted as a soft, low-contrast wash. No creatures, no animals, no text, no letters, no numbers, no frame, no border, no UI, no characters, no figures. Soft fine painted grain like a gouache study, matte, no glossy highlights, nothing cartoonish. The whole picture is a quiet backdrop: the centre of the picture (from 22 percent to 78 percent across, and from 6 percent to 82 percent down) must be empty, smooth and quiet, with nothing sharp, no bright spots and nothing brighter than the surrounding wash, because a small creature will stand there; the bottom centre strip (29 to 71 percent across, 88 to 96 percent down) is also plain and quiet."
+ },
+ {
+  "name": "sitting-backdrop-wood",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/place2-wood.jpg",
+    "The place's stamp painting: take its colour palette and its material character (not its composition, and none of its objects):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a painted backdrop for a miniature creature portrait stage, seen straight on like the back of a small diorama window, aspect 4:3. Composition, exactly: the upper 60 percent is a back wall, the lower 40 percent is the ground; the ground line (where they meet) is a straight horizontal line at 60 percent of the height. Light: a warm key light from the upper left, gently falling off to the lower right, painterly, soft and low contrast. The scene is the same plain stage, in the manner of a wood: the wall a soft hazy dark green-brown distance of tree trunks, the ground dark leaf-litter earth; only at the far left and right edges and low along the ground line, soft out-of-focus trunks, roots and fallen leaves. The palette follows the attached stamp painting's colours, muted and calm; painted as a soft, low-contrast wash. No creatures, no animals, no text, no letters, no numbers, no frame, no border, no UI, no characters, no figures. Soft fine painted grain like a gouache study, matte, no glossy highlights, nothing cartoonish. The whole picture is a quiet backdrop: the centre of the picture (from 22 percent to 78 percent across, and from 6 percent to 82 percent down) must be empty, smooth and quiet, with nothing sharp, no bright spots and nothing brighter than the surrounding wash, because a small creature will stand there; the bottom centre strip (29 to 71 percent across, 88 to 96 percent down) is also plain and quiet."
+ },
+ {
+  "name": "sitting-backdrop-cave",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/place2-cave.jpg",
+    "The place's stamp painting: take its colour palette and its material character (not its composition, and none of its objects):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a painted backdrop for a miniature creature portrait stage, seen straight on like the back of a small diorama window, aspect 4:3. Composition, exactly: the upper 60 percent is a back wall, the lower 40 percent is the ground; the ground line (where they meet) is a straight horizontal line at 60 percent of the height. Light: a warm key light from the upper left, gently falling off to the lower right, painterly, soft and low contrast. The scene is the same plain stage, in the manner of a cave: the wall a soft hazy grey-violet stone distance, the ground dim sandy stone; only at the far left and right edges and low along the ground line, soft out-of-focus rock walls and stalagmite shapes. The palette follows the attached stamp painting's colours, muted and calm; painted as a soft, low-contrast wash. No creatures, no animals, no text, no letters, no numbers, no frame, no border, no UI, no characters, no figures. Soft fine painted grain like a gouache study, matte, no glossy highlights, nothing cartoonish. The whole picture is a quiet backdrop: the centre of the picture (from 22 percent to 78 percent across, and from 6 percent to 82 percent down) must be empty, smooth and quiet, with nothing sharp, no bright spots and nothing brighter than the surrounding wash, because a small creature will stand there; the bottom centre strip (29 to 71 percent across, 88 to 96 percent down) is also plain and quiet."
+ }
+]

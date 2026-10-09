@@ -9720,5 +9720,83 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-plain-544x408": {
+  "size": [
+   544,
+   408
+  ],
+  "rect": null,
+  "src": "source/raw/sitting-backdrop-plain.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's plain backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [92, 134, 1107, 895]), reduced x0.536 with Lanczos to 544x408, nothing else changed (pass 85)",
+  "sha256": "5466cb6d71c619173f7a39020c1e318e67c3f5fee5eea4c3b42beb1ace51f444",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-meadow-544x408": {
+  "size": [
+   544,
+   408
+  ],
+  "rect": null,
+  "src": "source/raw/sitting-backdrop-meadow.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's meadow backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [142, 208, 1058, 895]), reduced x0.594 with Lanczos to 544x408, nothing else changed (pass 85)",
+  "sha256": "66493d1ff31480854ece908d3050435620377ca724afd6a877eb757ff4426738",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-pond-544x408": {
+  "size": [
+   544,
+   408
+  ],
+  "rect": null,
+  "src": "source/raw/sitting-backdrop-pond.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's pond backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [129, 190, 1070, 895]), reduced x0.578 with Lanczos to 544x408, nothing else changed (pass 85)",
+  "sha256": "13cdd96dcfd322eee67ecc368f30c8510f971e749bd1ff8a3b226def99e49d39",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-rock-544x408": {
+  "size": [
+   544,
+   408
+  ],
+  "rect": null,
+  "src": "source/raw/sitting-backdrop-rock.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's rock backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [87, 126, 1113, 895]), reduced x0.53 with Lanczos to 544x408, nothing else changed (pass 85)",
+  "sha256": "500f8fcb67349d17927f79912cac5f51e7f76a26888c608fafd71761d6cd1858",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-wood-544x408": {
+  "size": [
+   544,
+   408
+  ],
+  "rect": null,
+  "src": "source/raw/sitting-backdrop-wood.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's wood backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [121, 177, 1079, 895]), reduced x0.568 with Lanczos to 544x408, nothing else changed (pass 85)",
+  "sha256": "51bfd041284c13004775c504f83a6b6736d3e026cc993af0abfa9be58e00627d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-cave-544x408": {
+  "size": [
+   544,
+   408
+  ],
+  "rect": null,
+  "src": "source/raw/sitting-backdrop-cave.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's cave backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [169, 249, 1031, 895]), reduced x0.631 with Lanczos to 544x408, nothing else changed (pass 85)",
+  "sha256": "358e6b99f32cc0a122b968e35a86bb6ff805be411c62e86639c8de13f888ef99",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
  }
 }

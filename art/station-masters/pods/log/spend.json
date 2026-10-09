@@ -1374,5 +1374,119 @@
    "thoughtsTokenCount": 184,
    "totalTokenCount": 2074
   }
+ },
+ {
+  "tag": "sitting-backdrop-plain try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189418,
+  "mxn": 3.7884,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:13:37Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 389,
+   "candidatesTokenCount": 1366,
+   "thoughtsTokenCount": 206,
+   "totalTokenCount": 1961
+  }
+ },
+ {
+  "tag": "sitting-backdrop-meadow try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.208164,
+  "mxn": 4.1633,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:13:54Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 642,
+   "candidatesTokenCount": 1429,
+   "thoughtsTokenCount": 295,
+   "totalTokenCount": 2366
+  }
+ },
+ {
+  "tag": "sitting-backdrop-pond try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.191844,
+  "mxn": 3.8369,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:14:10Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 642,
+   "candidatesTokenCount": 1415,
+   "thoughtsTokenCount": 173,
+   "totalTokenCount": 2230
+  }
+ },
+ {
+  "tag": "sitting-backdrop-rock try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.203112,
+  "mxn": 4.0622,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:14:27Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 636,
+   "candidatesTokenCount": 1417,
+   "thoughtsTokenCount": 265,
+   "totalTokenCount": 2318
+  }
+ },
+ {
+  "tag": "sitting-backdrop-wood try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.0,
+  "mxn": 0.0,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:14:33Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 500,
+  "usage": null
+ },
+ {
+  "tag": "sitting-backdrop-wood try 2",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.202648,
+  "mxn": 4.053,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:14:50Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 644,
+   "candidatesTokenCount": 1430,
+   "thoughtsTokenCount": 248,
+   "totalTokenCount": 2322
+  }
+ },
+ {
+  "tag": "sitting-backdrop-cave try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.207558,
+  "mxn": 4.1512,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:15:08Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 639,
+   "candidatesTokenCount": 1437,
+   "thoughtsTokenCount": 282,
+   "totalTokenCount": 2358
+  }
  }
 ]

@@ -3083,5 +3083,35 @@
   "status": "new",
   "signed_in": null,
   "note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-plain-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-meadow-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-pond-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-rock-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-wood-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-cave-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
  }
 }
