@@ -5,9 +5,9 @@ on:
     branches: [main]
     paths: ['website/**', 'prototypes/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', '.github/workflows/site.yml', '.github/smoke.mjs']
   pull_request:
-    # The gates hold before a merge, not after it (lvgl-switch.md §6 Q2 v). The release and the gh-pages steps below run on main only.
+    # The gates hold before a merge, not after it (lvgl-switch.md §6 Q2 v), on every pull request into main, whatever it touches: the Sandbox `build` check is one main will require.
+    # The release and the gh-pages steps below run on main only.
     branches: [main]
-    paths: ['website/**', 'prototypes/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', '.github/workflows/site.yml', '.github/smoke.mjs']
   workflow_dispatch:
 
 permissions:
