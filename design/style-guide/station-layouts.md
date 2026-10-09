@@ -307,7 +307,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Place c, r (c 0–2, r 0–1) | 16 + 336c, 48 + 240r, 320, 224 | A recessed glass place on the bench `room-bench-stage-collection`: its own panel, the slice `panel-place-320x224`, one fixed master placed 1:1 at every place (all six are one size, so it is not a nine-slice), painted in the `panel` and `hairline` roles with 6 px corners; an empty place is the same panel with the idle ring (*set by the UI designer, 2026-10-09, for the studio's cut*); the focus target. Its focus ring is a circle 4 px outside the ring: 2 px in the `focus` role, radius 84 round the ring's centre (*corrected by the UI designer, 2026-10-09, to the studio's cut*: was a rounded rectangle 4 px outside the place). Every place drawn; an empty place is the empty ring. Was the well slot (16, 48 + 72i, 80, 72) |
 | Ring | slice place + (8, 24, 176, 176), centred on place + (96, 112); the ring radius 80 with an 8 px band | Painted masters placed 1:1 on one 176×176 origin, as the signed gauge is, never arcs drawn by the build: `ring-collection-idle-176x176`, an empty place's ring and the base under the arcs; for a species of N chapters (1 to 8), the track `ring-arc-collection-n<N>-track-176x176` and one segment per read chapter, `ring-arc-collection-n<N>-s<i>-176x176` (i = 1 to N, in ring order, 2 px apart), each on the same origin; and when every chapter is read, the continuous band `ring-collection-closed-176x176` in place of the track and segments. There is no selected ring: the focus ring marks the focused place (*corrected by the UI designer, 2026-10-09, to the studio's cut*: was a selected and an idle ring, and the band closing when every segment was placed). The colour roles are the paint reference only: read `bone`, unread `bevel`, the band's edges `hairline` (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: was the rule "filled `bone` when read, `bevel` when not", drawn by the build, with `colours.collectionRing` as its home) |
 | Pod | 88×112, centred on the ring's centre | The collection class; the sealed cap or the lit glyph. Was the 40×48 list pod |
-| Name label | place + (184, 64), hugging, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify. Its plate is the `plate-name` series, the same hugging nine-slice as under the pod (*set by the UI designer, 2026-10-09, for the studio's cut*) |
+| Name label | place + (184, 64), hugging, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify. Its plate is from the `plate-name` series, as under the pod: one signed picture per width, `plate-name-80x24` to `plate-name-224x24` in steps of 16, the word's width plus 2 × 12 rounded up to the step; never a nine-slice |
 | Place picture | place + (184, 104, 48, 48) | The origin as a picture: `place-<place>-48x48` (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: id added) |
 | Can-grow mark | place + (184, 168, 16, 16) | `mark-can-grow-16`. Only where the ring and the seal do not say it (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: id added) |
 | Glint star | place + (148, 40, 12, 12) | `glint-star-12x12`, on the ring's band at its top right (*corrected by the UI designer, 2026-10-09, to the studio's cut*: id added) |
@@ -322,7 +322,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | **Pod (focal)** | 184, 216, 144, 176 | Bottom-centred on (256, 392); medium 120×152 at (196, 240), small 104×128 at (204, 264). The foot in the bowl's dip. Was 560, 216 on the axis x 632 |
 | Dish and near lip | 144, 328, 224, 96 | Was 520, 328 |
 | Shelf slab | 112, 368, 288, 72 | Was 488, 368 |
-| Name label | centred on x 256, at y 456, hugging, 24 tall | 20 px medium; the name alone ("Loika"); "Unknown" before Identify. Was centred on x 632 |
+| Name label | centred on x 256, at y 456, hugging, 24 tall | 20 px medium; the name alone ("Loika"); "Unknown" before Identify. On its plate from the `plate-name` series: one signed picture per width, `plate-name-80x24` to `plate-name-224x24` in steps of 16, the word's width plus 2 × 12 rounded up to the step; never a nine-slice |
 | Who it is: marks | glyph (200, 488, 24, 24), clan (232, 488, 24, 24), first of its kind (268, 492, 16, 16) | Marks, no words |
 | **The figure** | 432, 232, 128, 160 | The species' silhouette in a soft halo, its feet on y 392, in two painted slices per species on the same 128×160 origin: `mibi-halo-<SNN>-128x160-mist` (everything unread, diffused) and `mibi-halo-<SNN>-128x160-clear` (the crisp glow figure). The build cross-fades them by the share of chapters read: the clear layer's alpha is chapters read ÷ chapters, over the mist; nothing is blurred by the build. It suggests the type; it never shows the individual's colours or marks. Before Identify, the empty halo (*corrected by the UI designer, 2026-10-09, to the art director's brief*: was one slice, `figure-<species>-128x160`). Was the page (152, 112, 256, 440) beside the pod. Once identified it is a focus target, the way to the species' guide, from L2.1, when the guide spread is built on the face; until then it is drawn but is not a target (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*; *from L2.1: the UI designer, 2026-10-09, on the architect's review of the salvage*) |
 | "the species" | 432, 400, 128, 24 | 16 px `mist`, centred on x 496 under the figure; only once identified (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
@@ -533,13 +533,13 @@ Concept plate: `art/concept-station/round3/A-r3-a1-1024x600.png`. Wireframe: [01
 
 <img src="station-layouts/01-home.svg" width="720" alt="Home wireframe">
 
-*Home with the ring on a resident. Wireframe, layout only, measured, 1×. Status: Decided layout (2026-10-08), with the sleeping mibi and the Shield plates per tier.*
+*Home with the ring on a resident: the sleeping mibi on the bed, the Shield plates per tier, the leaves in three rows. Wireframe, layout only, measured, 1×.*
 
-**L2.2 spec** (UI designer, 2026-10-09 12:12, America/Mexico_City). **Decided** (owner, 2026-10-09 12:20): the structure, the states and the navigation; the details (keys, sizes, timings, words) are the UI designer's, with the disciplines' rulings of 2026-10-09 (the [answered questions](#open-questions-for-l22)). For the LVGL face ([lvgl-switch.md](../proposals/lvgl-switch.md) §3 to §4, L2.2): every drawn region names its word or composition, Home's three states (home, arrival, report), the rest knob, Home's focus as `order` and `nearestIn` data, [Dock and arrival](#dock-and-arrival) and [Idle](#idle). The numbers live in `prototypes/ui/specs/station/home.json` and, for Idle, `frame.json` `idle`. Each wireframe below has a 1× PNG beside its SVG.
+**The L2.2 spec.** For the LVGL face ([lvgl-switch.md](../proposals/lvgl-switch.md) §3 to §4, L2.2): every drawn region names its word or composition, Home's three states (home, arrival, report), the rest knob, Home's focus as `order` and `nearestIn` data, [Dock and arrival](#dock-and-arrival) and [Idle](#idle). The numbers live in `prototypes/ui/specs/station/home.json` and, for Idle, `frame.json` `idle`. Each wireframe below has a 1× PNG beside its SVG.
 
 <table><tr>
-<td valign="top"><img src="station-layouts/01e-home-rest.svg" width="480" alt="Home, Companion away, ring on the rest knob"><br><em>01e. Home with the Companion away and the ring on the rest knob: the Bay shut, the cradle empty, the Companion mark on the bed, `✓ Rest`. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).</em></td>
-<td valign="top"><img src="station-layouts/01f-home-nav.svg" width="480" alt="Home's navigation map"><br><em>01f. Home, Rest, Dock and Idle: what opens first, what each key does, how ← returns, and how the states follow each other. 1×. Status: Decided (owner, 2026-10-09 12:20).</em></td>
+<td valign="top"><img src="station-layouts/01e-home-rest.svg" width="480" alt="Home, Companion away, ring on the rest knob"><br><em>01e. Home with the Companion away and the ring on the rest knob: the Bay shut, the cradle empty, the Companion mark on the bed, `✓ Rest`. 1×, measured.</em></td>
+<td valign="top"><img src="station-layouts/01f-home-nav.svg" width="480" alt="Home's navigation map"><br><em>01f. Home, Rest, Dock and Idle: what opens first, what each key does, how ← returns, and how the states follow each other. 1×.</em></td>
 </tr></table>
 
 ### 1. Purpose
@@ -583,7 +583,7 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 - **Nothing overlaps the vivarium.** No wood, felt, shelves or lamp-lit bench.
 - **Residents** are the matched rich treatment, or the placeholder with its waiting lamp until their painting lands, and never enlarged tokens.
 
-**Colour roles** (decided by the UI designer with the art director's eye, 2026-10-08; palette names from [ui-kit §2](../proposals/ui-kit.md#2-the-kit), the one home is `prototypes/ui/specs/station/home.json` `colours`). The chrome is the cool instrument ramp; inside the glass is the only warm field; the warm marks on the chrome are signals only (the focus ring, the amber lamp, Confirm's orange, the orange seal tag).
+**Colour roles** (palette names from [ui-kit §2](../proposals/ui-kit.md#2-the-kit); the one home is `prototypes/ui/specs/station/home.json` `colours`). The chrome is the cool instrument ramp; inside the glass is the only warm field; the warm marks on the chrome are signals only (the focus ring, the amber lamp, Confirm's orange, the orange seal tag).
 
 | Region | Roles | Why |
 | --- | --- | --- |
@@ -594,7 +594,7 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 | Lamps (12×12, 1 px `void` rim) | Off `hairline`; in use and well `sprout`; waiting on the cloud (a portrait being painted) `sky`, filling; needs you `amber`, pulsing slowly, on one module at most | The kit's lamp roles. Amber is the module the room's ✓ acts on, and the bottom line's right part says it in words |
 | Bay | Door shut: `metal` shutter, `bevel` slat lines on an 8 px pitch, `enamel` lit top edge. Open: inside `ground`; the cool beam while a seal breaks `tealD` (the Pods beam); crates `deepTeal` with a `teal` lit top edge, a `hairline` outline and an `orange` seal tag | Station screens' crates in slate and teal with orange seal tags; the beam is the only light change of the arrival |
 | Rack | Wells: fill `ground`, inner top and left 1 px `void`, inner bottom and right lip `bevel` (a recess lit from the top left); glint star `yellow` | Pods keep their own species colours from the signed sprite |
-| Incubator | Dome base `enamel`, glass edge `frostD`, highlight `frost`; a filled leaf `sage` with a `sageD` vein, an empty leaf `hairline` | The palette's leaf timer and dome roles |
+| Incubator | Dome base `enamel`, glass edge `frostD`, highlight `frost`; the leaves are the small leaf's pictures, full `sage` with a `sageD` vein, empty an outline in `bevel` | The palette's leaf timer and dome roles |
 | Probe | Cradle `metal`; Shield plates whole `white`, gone `bevel` outline; sitting slot empty a 1 px `hairline` outline, held a gilt frame in `gold` lit `yellow` | Whole plates read as white, the kit's role |
 | With-you bed (placeholder until the Home master) | A low nest: rim `bark`, hollow `soil`, lit rim top left `sand`; the Companion mark 16×24 in `mist` | Inside the warm field; the mark is in context grey because it says "away" |
 | Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role (cool, never a word) |
@@ -613,18 +613,18 @@ The vivarium's glass fills the left (16 to 672) in a thin bezel. The four module
 | **Living window (glass)** | 24, 56, 640, 488 | Ground band from y 300 to 528, where the residents' feet go |
 | **Resident, adult or elder** | 144×152 each | Rendered at size; feet within the ground band |
 | Resident, juvenile | 104×112 | Reads young by proportion |
-| Resident focus | ellipse, box width + 16 by 24, under the feet | The resident lifts 4 px |
+| Resident focus | the `feet` ring: an ellipse, box width + 16 by 24, centred on the feet line (feet − 12 to feet + 12) | The resident lifts 4 px |
 | With-you bed | 520, 472, 128, 56 | The mibi with you sleeps here when docked; a 16×24 Companion mark at (576, 488) when away |
-| **The sleeping mibi** (docked) | adult or elder 512, 360, 144, 152; juvenile 532, 400, 104, 112 | The resident's own painting in its nap pose, in the same box as a resident of its stage, bottom-centred on the bed's hollow at (584, 512), 16 px above the bed's foot. It is never the 48 px Companion token (a pixel token beside painted residents would read as another creature, and Residents are never tokens). The adult overhangs the 128 px bed by 8 px each side, inside the glass. It is a focus target like a resident (the ellipse under its feet, `✓ Look at ‹name›`) but does not lift: it is asleep. The 24×16 asleep mark sits at its box's top right; the waiting lamp, when shown, 8 px to the mark's left. The juvenile's x sits 4 px off the grid, as the medium pod's does (*decided by the UI designer, 2026-10-08, for the builder's open question*: the document gave no size; the build drew the nest with only the asleep mark) |
+| **The sleeping mibi** (docked) | adult or elder 512, 360, 144, 152; juvenile 532, 400, 104, 112 | The resident's own painting in its nap pose, in the same box as a resident of its stage, bottom-centred on the bed's hollow at (584, 512), 16 px above the bed's foot. It is never the 48 px Companion token (a pixel token beside painted residents would read as another creature, and Residents are never tokens). The adult overhangs the 128 px bed by 8 px each side, inside the glass. It is a focus target like a resident (the ellipse under its feet, `✓ Look at ‹name›`) but does not lift: it is asleep. The 24×16 asleep mark sits at its box's top right; the waiting lamp, when shown, 8 px to the mark's left. The juvenile's x sits 4 px off the grid, as the medium pod's does |
 | Waiting lamp | 12×12 at the resident's top right | Until its painting lands |
-| **Name tag** (focused resident only) | 24 tall; the name's width + 16, rounded up to the 8 px grid, at least 48; centred under the resident; its top at feet + 24, 8 px below the ring's ellipse (feet − 8 to feet + 16) | The name only, 16 px `bone`, centred; on the `panel` tag with a `hairline` edge. If its bottom would pass y 536, it sits above the resident instead, its bottom 8 px above the box as drawn (lifted): top = box.y − 4 − 32. It slides sideways to stay 8 px inside the glass (x 32 to 656). It does not lift. On the sleeping mibi (foot 512) it is always above: (…, 328, …, 24) for the adult. The bottom line's context then names the species and stage without the name, "an adult Untuva" (*UI designer, 2026-10-09*); the action keeps it, `✓ Look at Bean` |
+| **Name tag** (focused resident only) | 24 tall; the name's width + 16, rounded up to the 8 px grid, at least 48; centred under the resident; its top at feet + 24, 12 px below the ring's ellipse (feet − 12 to feet + 12) | The name only, 16 px `bone`, centred; on the `panel` tag with a `hairline` edge. If its bottom would pass y 536, it sits above the resident instead, its bottom 8 px above the box as drawn (lifted): top = box.y − 4 − 32. It slides sideways to stay 8 px inside the glass (x 32 to 656). It does not lift. On the sleeping mibi (foot 512) it is always above: (…, 328, …, 24) for the adult. The bottom line's context then names the species and stage without the name, "an adult Untuva"; the action keeps it, `✓ Look at Bean` |
 | Rest knob | 624, 544, 32, 8 | On the bezel's bottom rail (y 544 to 552). Drawn 32×6: at rest at (624, 546), lifted to (624, 544), so it never covers the glass, whose last row is 543 (art director, 2026-10-09 12:40). Focus target 48×24 around it |
 | Module: Bay | 688, 48, 320, 120 | Word at (704, 60), 16 px; lamp 12×12 at (984, 60); door and crates 704, 84, 288, 72, with up to three crates of 80×56 on a 96 px pitch |
-| Module: Rack | 688, 176, 320, 120 | Lamp at (984, 188); six wells of 40×40 at (712 + 48i, 224); in each, the signed 32×40 well pod, 1:1, at (712 + 48i + 4, 224): it fills the well's height, so centred and bottom-aligned are the same place, the stem on the well's top row and the shell's foot on its floor (y 263), 4 px clear either side (*decided by the UI designer, 2026-10-08: was "pods 24×32 in them"; the signed well pod is 32×40 and is never scaled*); a glint star 12×12 above its well at y 212, centred on it at x 712 + 48i + 14, 8 px clear of the word's baseline (y 204) as on the Bay (*corrected by the UI designer, 2026-10-09, on the art director's ruling of 12:25: the objects 8 px clear of the module's word*: was wells and pods at y 216, the star at y 204 on the word's baseline*) |
-| Module: Incubator | 688, 304, 320, 120 | Lamp at (984, 316); dome 704, 336, 80, 80 with the bud's glow; leaves 800, 352, 192, 40 (8×12 each on a 12 px pitch, two rows of 16) (*corrected by the UI designer, 2026-10-09, on the art director's ruling of 12:25: the objects 8 px clear of the module's word*: was dome 704, 328 and leaves 800, 344; the word's 20 px line box ran to y 336, over the dome*) |
-| Module: Probe | 688, 432, 320, 120 | Lamp at (984, 444); Probe in its cradle 704, 464, 128, 80; Shield plates 16×32 on a 24 px pitch at (848 + 24i, 488): three on a tier-1 Probe (848 to 912), four on tier 2 (848 to 936), each whole or gone, never a ghost for a plate the tier does not have; standing like the Companion's plates, centred on the cradle's middle (y 504), 16 px clear of the sitting slot at four (*decided by the UI designer, 2026-10-08, for the builder's open question*: was 3 × 28×12 at (848 + 36i, 496); four of those ran 36 px into the sitting slot); sitting slot 952, 464, 40, 80 (an empty gilt frame when a sitting is held) (*corrected by the UI designer, 2026-10-09, on the art director's ruling of 12:25: the objects 8 px clear of the module's word*: was cradle and slot at y 456, plates at y 480; the word's line box ran to y 464, over the cradle*). While the Companion is away: the cradle empty, no plates, the lamp off; the sitting slot still shows when a sitting is held |
+| Module: Rack | 688, 176, 320, 120 | Lamp at (984, 188); six wells of 40×40 at (712 + 48i, 224); in each, the signed 32×40 well pod, 1:1, at (712 + 48i + 4, 224): it fills the well's height, so centred and bottom-aligned are the same place, the stem on the well's top row and the shell's foot on its floor (y 263), 4 px clear either side (the signed well pod is 32×40 and is never scaled); a glint star 12×12 above its well at y 212, centred on it at x 712 + 48i + 14, 8 px clear of the word's baseline (y 204) as on the Bay |
+| Module: Incubator | 688, 304, 320, 120 | Lamp at (984, 316); dome 704, 336, 80, 80 with the bud's glow; leaves 800, 352, 192, 40: the `leaves` word, grid form, the 8×12 small leaf on a 12 px pitch, 16 a row, three rows on a 14 px row pitch (y 352, 366, 380), at most 38. The word's ink ends at x 776 and its baseline is y 332, so the leaves' first ink is 24 px to its right and 20 px under its baseline |
+| Module: Probe | 688, 432, 320, 120 | Lamp at (984, 444); Probe in its cradle 704, 464, 128, 80; Shield plates 16×32 on a 24 px pitch at (848 + 24i, 488): three on a tier-1 Probe (848 to 912), four on tier 2 (848 to 936), each whole or gone, never a ghost for a plate the tier does not have; standing like the Companion's plates, centred on the cradle's middle (y 504), 16 px clear of the sitting slot at four; sitting slot 952, 464, 40, 80 (an empty gilt frame when a sitting is held); the cradle, plates and slot 8 px clear of the module's word. While the Companion is away: the cradle empty, no plates, the lamp off; the sitting slot still shows when a sitting is held |
 
-**Regions and their words** (*L2.2, UI designer, 2026-10-09; structure Decided by the owner, 2026-10-09 12:20*). Every drawn region names its word from the closed vocabulary (`component`) or the composition it is built as (`build`), so the face's spec loader can refuse anything else ([lvgl-switch.md](../proposals/lvgl-switch.md) §2.3, lint). States: **home** (at rest, docked or away), **arrival** (from `✓ Open the bay` to the last crate) and **report** (from the arrival's end to the next press). A region with "only in" exists in those states alone.
+**Regions and their words.** Every drawn region names its word from the closed vocabulary (`component`) or the composition it is built as (`build`), so the face's spec loader can refuse anything else ([lvgl-switch.md](../proposals/lvgl-switch.md) §2.3, lint). States: **home** (at rest, docked or away), **arrival** (from `✓ Open the bay` to the last crate) and **report** (from the arrival's end to the next press). A region with "only in" exists in those states alone.
 
 | Region (`home.json`) | Rectangle | Word or build | Only in | States it shows |
 | --- | --- | --- | --- | --- |
@@ -644,9 +644,9 @@ The vivarium's glass fills the left (16 to 672) in a thin bezel. The four module
 
 The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. No region carries a status strip: Home §2 cut it, and the architect struck it from L2.2 (2026-10-09 12:25).
 
-**Arrival** (the Dock and arrival state of Home) is specified in its own section, [Dock and arrival](#dock-and-arrival): the ribbon at 40, 72, 608, 40 inside the glass top, in 20 px; the report card at 64, 120, 560 wide and at most 320 tall, over the vivarium until the next press; the Bay module lifted 2 px, the chrome lift, over 200 ms as its door opens, staying lifted while its crates open and settling when the card shows (*decided by the UI designer, 2026-10-08: was 4 px. One lift for chrome everywhere; at 4 the Bay's top would sit at y 44, 4 px under the top bar's rule, inside the 8 px gap rule, and a ring on it would meet the rule. The arrival is carried by the door, the cool beam and the crates, not by a bigger lift. Station screens' "grows a little" is read as this lift: nothing is scaled*). The rest of the layout stays where it is.
+**Arrival** (the Dock and arrival state of Home) is specified in its own section, [Dock and arrival](#dock-and-arrival): the ribbon at 40, 72, 608, 40 inside the glass top, in 20 px; the report card at 64, 120, 560 wide and at most 320 tall, over the vivarium until the next press; the Bay module lifted 2 px, the chrome lift, over 200 ms as its door opens, staying lifted while its crates open and settling when the card shows (one lift for chrome everywhere: at 4 px the Bay's top would sit at y 44, 4 px under the top bar's rule, and a ring on it would meet the rule; the door, the cool beam and the crates carry the arrival, and nothing is scaled). The rest of the layout stays where it is.
 
-**The report card** (decided by the UI designer, 2026-10-08; the layout gave only its box). What came home, in one look, for the player who looked away during the crates, and the one thing the arrival does not show: what the world did meanwhile. It lists, in this order, the crates (what each brought and how far the land is explored), what was gathered, the Probe's mend, and the world's lines. Digits appear only beside a material icon (an amount gathered or a price: the frame's exception). Pods are pictured; everything else is words. No expedition numbers and no turn number on the card; the turn is the top bar's.
+**The report card.** What came home, in one look, for the player who looked away during the crates, and the one thing the arrival does not show: what the world did meanwhile. It lists, in this order, the crates (what each brought and how far the land is explored), what was gathered, the Probe's mend, and the world's lines. Digits appear only beside a material icon (an amount gathered or a price: the frame's exception). Pods are pictured; everything else is words. No expedition numbers and no turn number on the card; the turn is the top bar's.
 
 - **Box:** x 64, y 120, w 560; 16 px padding all round, so content runs from x 80 to 608. Rows are 24 px tall on a 24 px pitch: a 16 px icon at row.y + 4, a 16 px line box at row.y + 2. Each row has a **lead** in a 128 px column (x 80 to 208, `mist`) and its content from x 216.
 - **Height** = 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0). At most three crates (the bay's three), one Probe row and three world lines: 104 + 96 + 112 = 312, inside the 320. Every height lands on the 8 px grid.
@@ -656,7 +656,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | Heading | 136, 32 tall | — | "Home from the field", 20 px medium, `bone` |
 | A crate, one row each, in the order they opened | 176, 200, 224 | "First crate", "Second crate", "Third crate"; a developer crate "Developer crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight: the words "many pods"; none: "no pods"); then from x 392 how far the land is explored, in words: under a third "a first look around", under two thirds "half the land explored", under all "most of the land explored", all "all the land explored"; a crate with no map (a developer crate) says nothing here |
 | Gathered | 256 | "Gathered" | Energy, Data and Essence as the frame's counters: 16 px icon, 4 px gap, "+3" in tabular figures, 24 px between; the developer top-up, when set, adds "· with the top-up" in `mist` |
-| Probe, only when it was mended | 280 | "Probe" | Its Shield plates as 16 px Shield icons on a 20 px pitch (whole, or the "Shield gone" icon): three for a tier-1 Probe, at content x + 0, 20, 40; four for tier 2, to content x + 60 (*decided by the UI designer, 2026-10-08, for the builder's open question*), then "mended free", or "mended · ⚡ 2" when Energy paid for it |
+| Probe, only when it was mended | 280 | "Probe" | Its Shield plates as 16 px Shield icons on a 20 px pitch (whole, or the "Shield gone" icon): three for a tier-1 Probe, at content x + 0, 20, 40; four for tier 2, to content x + 60, then "mended free", or "mended · ⚡ 2" when Energy paid for it |
 | The world, only when it turned | 320 (16 px gap above), lines at 344, 368, 392 | "Meanwhile, the world turned" across the row, `mist` | Up to three of the last crate's world lines, `bone`, from x 96 behind a 4×4 `bevel` bullet at (80, row.y + 10). Each line is the rules' own words: six words or fewer, no digits; a longer one is a copy fault in the rules, never clipped here |
 
 The card closes on the next press, and that press also does what it does: ✓ follows the bottom line (`✓ Look at the new pods`), the pad moves the ring, ← only closes it. No press is swallowed.
@@ -665,13 +665,13 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| Pad | A fixed order (station-screens.md, Keys and navigation): ◀ ▶ between the residents (feet ellipse) and the instrument column, and ◀ among the residents to the nearest one on the left (**Decided**, owner, 2026-10-09 12:20); ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest (rounded rectangles). From the room, ▶ lands on the Bay and ◀ on the nearest resident (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was the nearest drawn thing that way). As data, [Home's focus graph](#homes-focus-as-data) below |
+| Pad | A fixed order (station-screens.md, Keys and navigation): ◀ ▶ between the residents (feet ellipse) and the instrument column, and ◀ among the residents to the nearest one on the left; ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest (rounded rectangles). From the room, ▶ lands on the Bay and ◀ on the nearest resident. As data, [Home's focus graph](#homes-focus-as-data) below |
 | ✓ on the room (no focus) | Does what needs you: `✓ Open the bay · 2 crates`, `✓ Look at the new pod`, `✓ Open the incubator`, `✓ Meet Moss`. With nothing needed there is no ✓ cap |
 | ✓ on a resident | `✓ Look at Bean` opens Habitat on Bean. The sleeping mibi on the bed is one too |
 | ✓ on Bay | `✓ Open the bay · 2 crates` when docked with crates; otherwise no ✓ cap, and the subject says why ("closed while the Companion is away") |
 | ✓ on Rack, Incubator or Probe | Opens Pods, the Incubator or the Probe bench |
 | ✓ on the rest knob | `✓ Rest` starts Idle ([the rest knob](#the-rest-knob) below); the first press on Idle only wakes |
-| ← | Nothing, wherever the ring is: Home is the top, so there is no ← cap; the Home key puts the ring back on the room (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "focus back to the room"). On the room, likewise nothing: no message plate, and the bottom line shows no `← where` (*decided by the UI designer, 2026-10-08: was "a message plate says Home is the top view". Both places a plate can take on Home, its bottom edge at y 550 or its top at y 112, are over the living window, which carries no words; and the top bar already names Home. A ← with nowhere to go is not a mistake to explain*) |
+| ← | Nothing, wherever the ring is: Home is the top, so there is no ← cap; the Home key puts the ring back on the room. On the room, likewise nothing: no message plate, and the bottom line shows no `← where` (both places a plate can take on Home, its bottom edge at y 550 or its top at y 112, are over the living window, which carries no words, and the top bar already names Home; a ← with nowhere to go is not a mistake to explain) |
 | Any press while the report card shows | Closes the card and does what it does (above): ✓ follows the bottom line, the pad moves the ring, ← only closes it |
 | During arrival | Presses are consumed; focus stays on the room ([Dock and arrival](#dock-and-arrival)) |
 | Dock (the Caddy's key) | Never a Station key and never reaches the face. On Home the crates slide into the bay; elsewhere the screen stays and the crates wait in the bay; from Idle it wakes, docks and lands on Home ([Dock and arrival](#dock-and-arrival)) |
@@ -679,7 +679,7 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 
 ### Home's focus as data
 
-*L2.2, UI designer, 2026-10-09; ◀ on a resident **Decided** (owner, 2026-10-09 12:20).* `home.json` `focus` replaces `nav.mjs` `homeMove` with the two graph primitives of [lvgl-switch.md §2.6](../proposals/lvgl-switch.md#26-the-focus-graph). Targets: `resident.<mibi id>` in group `resident` (the sleeping mibi on the bed is one, without the lift), and `bay`, `rack`, `incubator`, `probe`, `knob` in group `column` (`knob` is frame.json `navigation.homePad`'s "rest"). The room is the ring on nothing: no ring drawn, its point roomAt's centre (512, 300).
+`home.json` `focus` is Home's pad, written with the two graph primitives of [lvgl-switch.md §2.6](../proposals/lvgl-switch.md#26-the-focus-graph). Targets: `resident.<mibi id>` in group `resident` (the sleeping mibi on the bed is one, without the lift), and `bay`, `rack`, `incubator`, `probe`, `knob` in group `column` (`knob` is frame.json `navigation.homePad`'s "rest"). The room is the ring on nothing: no ring drawn, its point roomAt's centre (512, 300).
 
 | From | ◀ | ▶ | ▲ | ▼ |
 | --- | --- | --- | --- | --- |
@@ -689,24 +689,24 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 
 - **`order`** steps through the list as written, skipping ids that are not targets now; never a wrap.
 - **`nearestIn: g`** lands on the target of group g whose box centre is nearest the ring's row: |dy| × 4 + |dx| × 0.01, centre to centre. An empty group leaves the ring where it is.
-- **◀ on a resident** goes to the nearest resident to its left; ▶ still crosses to the column (**Decided**, owner, 2026-10-09 12:20: was nothing, which could strand two residents at one height, neither 6 px ahead of the other by ▲ ▼). From the column, ◀ lands on the row-nearest resident, nearest the column, so every resident is reachable.
+- **◀ on a resident** goes to the nearest resident to its left; ▶ still crosses to the column. So two residents at one height, neither 6 px ahead of the other by ▲ ▼, are never stranded. From the column, ◀ lands on the row-nearest resident, nearest the column, so every resident is reachable.
 - **`ahead`** (the residents' ▲ ▼ ◀) takes only the group's targets more than 6 px ahead in the key's direction, nearest by along + 2.2 × across, as `homeMove` does.
 - **The exact semantics** are [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md) (architect, 2026-10-09 12:25): `ahead` is a parameter of `nearestIn`; the scores are integers on doubled centres (`nearestIn` 400 × across + abs(along); `ahead` along > 12, then 5 × along + 11 × across); an edge may be an ordered list, the first present entry winning.
 - **The Home key** on Home sets the focus to the room (`roomKey`). **Holds:** while the arrival or the rest plays, the face moves no focus and sends no intent. **The report card:** any key closes it and still does what it does.
-- **Rings:** a resident's ellipse under its feet (box width + 16 by 24, starting 8 px above the feet); a module's round ring 4 px outside its rectangle, with the 2 px chrome lift; the knob's ring is its 48×24 target, below.
+- **Rings:** each target group carries its ring form as `ring` (`frame.json` `focus.ring.forms`). `resident` wears `feet`: an ellipse box width + 16 by 24, centred on its feet line (feet − 12 to feet + 12). `column` wears `round`: 4 px outside the box, with the 2 px chrome lift. The knob's box is 40×16 at (620, 540), so its round ring is the 48×24 at (616, 534) when lifted ([the rest knob](#the-rest-knob)).
 - **Vectors for the focus tests** (`nav.test.mjs`'s Home walk becomes these): room ▶ bay; bay ▲ bay; bay ▼ rack; probe ▼ knob; knob ▼ knob; knob ▶ knob; room ▲ room; room ◀ the resident nearest (512, 300) by row, or the room when no resident is home; the leftmost resident ◀ itself; a resident ◀ the nearest of those more than 6 px to its left.
 
 ### The rest knob
 
-*L2.2, UI designer, 2026-10-09.* **What it is for:** the deliberate way to put the Station on its living view, [Idle](#idle) (Home §2). **What it shows:** a chrome knob on the bezel's bottom rail and nothing else; no word on the stage. Its states, in `home.json` `regions.knob.states`:
+**What it is for:** the deliberate way to put the Station on its living view, [Idle](#idle) (Home §2). **What it shows:** a chrome knob on the bezel's bottom rail and nothing else; no word on the stage. Its states, in `home.json` `regions.knob.states`:
 
 | State | Knob | Ring | Bottom line |
 | --- | --- | --- | --- |
 | Rest | drawn 32×6 at 624, 546 | none | as the focus elsewhere says |
-| Focused (▼ from Probe, or ▶ from a resident whose row is nearest it) | lifted 2 px over 200 ms: 624, 544, 32, 6 | round, on its 48×24 target, riding the lift: 616, 534, 48, 24 | `✓ Rest` \| "the vivarium plays alone" \| the notice as on the room; no ← |
+| Focused (▼ from Probe, or ▶ from a resident whose row is nearest it) | lifted 2 px over 200 ms: 624, 544, 32, 6 | round, 4 px outside its 40×16 box, riding the lift: 616, 534, 48, 24 | `✓ Rest` \| "the vivarium plays alone" \| the notice as on the room; no ← |
 | Pressed (✓) | settles back to 624, 546 over 200 ms; the ring goes | none | — |
 
-Then the screen transition (180 ms, the 16-level Bayer dither) takes the screen to [Idle](#idle). Input is held for the 380 ms. The ring sits on the 48×24 target itself, 8 px outside the knob, rather than 4 px outside the target: at 4 px outside its bottom would reach y 564, over the bottom line's rule at 562; lifted, it ends at 558. The knob cannot be reached during the arrival.
+Then the screen transition (180 ms, the 16-level Bayer dither) takes the screen to [Idle](#idle). Input is held for the 380 ms. The knob's focus box is 40×16 at (620, 540), centred on the knob as its 48×24 target is, so the round ring 4 px outside it is the 48×24 target, 8 px outside the knob: lifted, it ends at y 558, 4 px clear of the bottom line's rule at 562. A ring 4 px outside the 48×24 target would end on that rule. The knob cannot be reached during the arrival.
 
 ### Placeholders on Home
 
@@ -717,9 +717,9 @@ Then the screen transition (180 ms, the 16-level Bayer dither) takes the screen 
 | Crates | 80×56 |
 | Pods in the rack | 32×40, the signed well pod (*was 24×32*) |
 | Dome | 80×80; the slice and its placeholder keep rows 0 to 3 empty, first ink at y 340 (`domeInkTop` 4) (art director, 2026-10-09 12:40) |
-| Leaves | 8×12 |
+| Leaves | 8×12, `leaf-small-empty-8x12` and `leaf-small-full-8x12`: the Incubator's leaf at the small size, as on Create |
 | Probe in its cradle | 128×80; the slice and its placeholder keep rows 0 to 3 empty, first ink at y 468 (`cradleInkTop` 4) (art director, 2026-10-09 12:40) |
-| Shield plates | 16×32 (*decided by the UI designer, 2026-10-08, for the builder's open question*: was 28×12) |
+| Shield plates | 16×32 |
 | Sitting frame | 40×80 |
 | Lamps | 12×12 |
 | With-you bed | 128×56, a placeholder nest: the Home master paints the concept's shallow glass dish (about 160×80 at 566, 405), and the bed, the sleeper's foot and the mark are re-measured from it when it lands |
@@ -745,13 +745,13 @@ All stand-ins until the Home and bench masters.
 
 A state of Home, not a screen of its own: the same layout, with the bay leading. Wireframes: [01b-home-docked.svg](station-layouts/01b-home-docked.svg), [01c-home-arrival.svg](station-layouts/01c-home-arrival.svg), [01d-home-report.svg](station-layouts/01d-home-report.svg), each with its 1× PNG.
 
-**L2.2 spec** (UI designer, 2026-10-09 12:13, America/Mexico_City). **Decided** (owner, 2026-10-09 12:20): the structure, the states and the navigation; the details (keys, sizes, timings, words) are the UI designer's, with the disciplines' rulings of 2026-10-09 (the [answered questions](#open-questions-for-l22)). The numbers live in `home.json` (`regions.bay`, `travel`, `ribbon`, `report`, `events.crateIn`, `events.arrival`).
+**The L2.2 spec.** The numbers live in `home.json` (`regions.bay`, `travel`, `ribbon`, `report`, `events.crateIn`, `events.arrival`).
 
 <table><tr>
-<td valign="top"><img src="station-layouts/01b-home-docked.svg" width="480" alt="Home, docked with two crates"><br><em>01b. Docked: two sealed crates slid into the open bay, the Bay's lamp amber, the ring on the room, `✓ Open the bay`. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).</em></td>
-<td valign="top"><img src="station-layouts/01c-home-arrival.svg" width="480" alt="Home, the arrival"><br><em>01c. The arrival, the first crate opening: the Bay lifted 2 px, the beam behind the crate, a pod travelling to its well, the ribbon in the glass, the residents facing the bay, input held. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).</em></td>
+<td valign="top"><img src="station-layouts/01b-home-docked.svg" width="480" alt="Home, docked with two crates"><br><em>01b. Docked: two sealed crates slid into the open bay, the Bay's lamp amber, the ring on the room, `✓ Open the bay`. 1×, measured.</em></td>
+<td valign="top"><img src="station-layouts/01c-home-arrival.svg" width="480" alt="Home, the arrival"><br><em>01c. The arrival, the first crate opening: the Bay lifted 2 px, the beam behind the crate, a pod travelling to its well, the ribbon in the glass, the residents facing the bay, input held. 1×, measured.</em></td>
 </tr><tr>
-<td valign="top"><img src="station-layouts/01d-home-report.svg" width="480" alt="Home, the report card"><br><em>01d. The report card at its fullest (three crates, the Probe row, three world lines), 64, 120, 560×312, until the next press. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).</em></td>
+<td valign="top"><img src="station-layouts/01d-home-report.svg" width="480" alt="Home, the report card"><br><em>01d. The report card at its fullest (three crates, the Probe row, three world lines), 64, 120, 560×312, until the next press. 1×, measured.</em></td>
 <td></td>
 </tr></table>
 
@@ -842,11 +842,11 @@ The overview's hardware: Home §4's colour roles, unchanged. The beam is the arr
 
 The Station's living view, kept on all day. A state of the frame (`props.idle`), not a screen: the screen under it keeps its state and focus. Wireframe: [10-idle.svg](station-layouts/10-idle.svg) and its 1× PNG.
 
-**L2.2 spec** (UI designer, 2026-10-09 12:13, America/Mexico_City). **Decided** (owner, 2026-10-09 12:20): the structure, the states and the navigation; the details (keys, sizes, timings, words) are the UI designer's, with the disciplines' rulings of 2026-10-09 (the [answered questions](#open-questions-for-l22)). The numbers live in `prototypes/ui/specs/station/frame.json` `idle`.
+**The L2.2 spec.** The numbers live in `prototypes/ui/specs/station/frame.json` `idle`.
 
 <img src="station-layouts/10-idle.svg" width="720" alt="Idle wireframe">
 
-*10. Idle: the vivarium full screen, the residents and the with-you bed, and one line on a 32 px strip at the foot; no frame, no ring. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).*
+*10. Idle: the vivarium full screen, the residents and the with-you bed, and one line on a 32 px strip at the foot; no frame, no ring. 1×, measured.*
 
 ### 1. Purpose
 
@@ -883,7 +883,7 @@ The vivarium only: the warm field fills the screen, its light following the time
 | `strip` | 0, 568, 1024, 32 | panel, build `idleLine` | 1 px `void` rule on its top edge |
 | `line` | 16, 568, 992, 32 | text, in build `idleLine` | 16 px regular, `mist`, centred on x 512 and on y 584; one line, six words or fewer, no digits |
 
-**The line** is one sentence, never dot-joined parts (the frame's rule). When several hold, the first of these shows; when none holds the line is empty; never a demand, nothing nags (**Decided**, owner, 2026-10-09 12:20). The words are the copywriter's (2026-10-09 12:22), and the "out" line shows only while the Companion is away with a mibi; docked, the line says nothing of that mibi (game designer, 2026-10-09 12:24):
+**The line** is one sentence, never dot-joined parts (the frame's rule). When several hold, the first of these shows; when none holds the line is empty; never a demand, nothing nags. The "out" line shows only while the Companion is away with a mibi; docked, the line says nothing of that mibi:
 
 | Holds | Line |
 | --- | --- |
@@ -900,7 +900,7 @@ The line's region is the text word inside the `idleLine` composition, which sits
 | Input | What happens, and how it shows |
 | --- | --- |
 | ✓ on the rest knob (Home) | The knob settles (200 ms), then the screen transition, 180 ms, the 16-level Bayer dither, to Idle; held 380 ms |
-| The idle timer (any screen) | After 60 s without a press, the same transition to Idle; never during a hold, an arrival or a report card (**Decided**, owner, 2026-10-09 12:20; the build's `IDLE_MS`) |
+| The idle timer (any screen) | After 60 s without a press, the same transition to Idle; never during a hold, an arrival or a report card (the build's `IDLE_MS`) |
 | Any key on Idle (the first press) | Sends `wake` and nothing else: the transition back (180 ms, held), to the screen under Idle with its focus as it was. Nothing opens, nothing moves, nothing is spent, and waking never rewards |
 | Dock (the Caddy's key) | Wakes, docks and lands on Home with the ring on the room; the crates then slide in ([Dock and arrival](#dock-and-arrival)) |
 | Dock while docked | Wakes and lifts the Companion; the screen under Idle shows |
@@ -945,27 +945,27 @@ None open. Answered on 2026-10-09 and written into the sections above:
 
 Concept plate: `art/concept-station/create/placed/CR-C2-stamped-1024x600.png`. Wireframes, 1×: [03-create](station-layouts/03-create.svg), [03b-create-clash](station-layouts/03b-create-clash.svg), [03c-create-grow](station-layouts/03c-create-grow.svg), [03d-create-nav](station-layouts/03d-create-nav.svg), [03e-create-nothing-read](station-layouts/03e-create-nothing-read.svg), each with its PNG.
 
-**L2.4 spec, pass 2** (UI designer, 2026-10-09 13:33, America/Mexico_City), one milestone ahead of the build ([lvgl-switch.md](../proposals/lvgl-switch.md) §3, §4 L2.4). **Decided** (owner, 2026-10-09 13:21): the structure is right (the states shape and grow, and the navigation). **Added** on the game designer's ruling (13:27, identifying the species is enough to grow an unedited founder): the nothing-read state, which the game designer shows to the owner with the sign-off. The details are the disciplines' rulings of 2026-10-09, each marked where it lands: architect 13:24, art director 13:28, game designer 13:27, copywriter 13:27 ([answered questions](#open-questions-for-l24)). The numbers live in `prototypes/ui/specs/station/create.json`.
+**The L2.4 spec**, one milestone ahead of the build ([lvgl-switch.md](../proposals/lvgl-switch.md) §3, §4 L2.4): the states nothing read, shape and grow, and the navigation. Identifying the species is enough to grow an unedited founder, so a pod with no chapter read opens on the nothing-read state. The numbers live in `prototypes/ui/specs/station/create.json`.
 
 <img src="station-layouts/03-create.png" width="1024" alt="Create, shaping, a changed trait">
 
-*03. Create, shaping: Loika with Coat and Face read, Markings changed to "only pale", the ring on the chosen picture, the total on the bottom line. 1×, measured. Status: Decided structure (owner, 2026-10-09 13:21); details pass 2.*
+*03. Create, shaping: Loika with Coat and Face read, Markings changed to "only pale", the ring on the chosen picture, the total on the bottom line. 1×, measured.*
 
 <img src="station-layouts/03b-create-clash.png" width="1024" alt="Create, a clash">
 
-*03b. Create, a clash: the red edge on the chosen picture, the ✕ in the line and on the pip, no ✓ cap, the notice says why. 1×, measured. Status: Decided structure; details pass 2.*
+*03b. Create, a clash: the red edge on the chosen picture, the ✕ in the line and on the pip, no ✓ cap, the notice says why. 1×, measured.*
 
 <img src="station-layouts/03c-create-grow.png" width="1024" alt="Create, the grow event">
 
-*03c. Create, the grow event at 600 ms: the stamp printed, the code on the rule, the pod travelling behind the chamber into the dome; input held 1080 ms. 1×, measured. Status: Decided structure; details pass 2.*
+*03c. Create, the grow event at 600 ms: the stamp printed, the code on the rule, the pod travelling behind the chamber into the dome; input held 1080 ms. 1×, measured.*
 
 <img src="station-layouts/03e-create-nothing-read.png" width="1024" alt="Create, nothing read">
 
-*03e. Create, nothing read: the founder frosted to its own outline, every pip hollow, no roll and no ring, `✓ Grow it · ⚡ 2 ❀ 4`. 1×, measured. Status: Proposal, for the owner with the sign-off (game designer, 2026-10-09 13:27).*
+*03e. Create, nothing read: the founder frosted to its own outline, every pip hollow, no roll and no ring, `✓ Grow it · ⚡ 2 ❀ 4`. 1×, measured.*
 
 <img src="station-layouts/03d-create-nav.png" width="1024" alt="Create's navigation map">
 
-*03d. Create: how it opens from any identified pod, what each key does, where ✓ and ← lead. 1×. Status: Decided structure (owner, 2026-10-09 13:21), with the nothing-read state added for the sign-off.*
+*03d. Create: how it opens from any identified pod, what each key does, where ✓ and ← lead. 1×.*
 
 ### 1. Purpose
 
@@ -1010,7 +1010,7 @@ Create is where the player shapes a founder from an identified pod and sees what
 - **Room:** the research bench.
 - **The founder is warm**, with its own colours and a warm key light from the top left. Where a chapter is unread, it is frosted in cool pale blue-white, never a guess; with nothing read, all of it.
 - **Everything else is cool:** the glass, the slate and the empty dome.
-- **The founder is the placeholder** (decided for Create, since nothing is painted before Grow).
+- **The founder is the placeholder** (nothing is painted before Grow).
 - **The roll pictures** (art director, 2026-10-09 13:28) are re-cut from the chapter page's source (the painting's crop by the rig's region, or the per-look plate), never from its 128×160 picture, and only ever reduced. A surface or quality trait (Colour, Markings, Fluff, Sheen, Scales, Feathers, Tufts) is a bleed crop filling all 128×72, with no ground; a part or posture (Beak, Crown, Crest, Tail, Head, Eyes, Carriage) stands whole inside the centred 75%, 96×54 at (16, 9), its ground keyed.
 - **Clash marks** are red with a ✕, so they read without colour. **No mark on a picture** (owner, 2026-10-08 21:55): the changed tag and the ✕ sit in the trait line, and a clash is an edge on the picture's own rectangle. **A change is not a need** (art director, 13:28): its tag and pip are `bone`, never amber.
 
@@ -1102,7 +1102,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 
 ### Create's focus as data
 
-*L2.4, UI designer, 2026-10-09; the stepper **Decided** (architect, 2026-10-09 13:24).* `create.json` `focus`, one graph a state, as on Pods:
+`create.json` `focus`, one graph a state, as on Pods:
 
 - **Shape:** one target, `roll`, in group `roll`, its box the chosen picture's rectangle (the roll composition registers target `roll` there), round ring, no lift (it never leaves the roll). The group is a **stepper**: `"stepper": ["left", "right", "up", "down"]`. A stepper key is step 0 of the move order: the face sends the intent `step:<key>`, the ring stays, and no focus message goes. The loader refuses an empty list, a duplicate or unknown key, a stepper key that also has an edge in the group, `axis` horizontal with left or right, `axis` vertical with up or down, and `order` with up or down. As on Cross, the rail is not a target: its open tab follows the focused trait.
 - **Nothing read:** no target; the ring on nothing (`room`), every edge none; ✓ sends `confirm` on the room.
@@ -1122,7 +1122,7 @@ With `motion: false` both jump to their ends.
 
 | Thing | Pixel size |
 | --- | --- |
-| Founder | 304×312 (the decided placeholder: the stylised rig pass) |
+| Founder | 304×312 (the placeholder: the stylised rig pass) |
 | Roll close-ups | 128×72, `roll-{species}-{trait}-{look}-128x72` |
 | Pod | the species' size class: 144×176, 120×152 or 104×128 (the signed pod sprites) |
 | Dish | 224×96 (the signed `room-cradle` and `room-cradle-front`) |
@@ -1153,27 +1153,27 @@ With `motion: false` both jump to their ends.
 
 Concept plates: `art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x600.png` (growing) and `IN-C1-stamped-1024x600.png` (ready). Wireframes, 1×: [04-incubator-growing](station-layouts/04-incubator-growing.svg), [05-incubator-ready](station-layouts/05-incubator-ready.svg), [05b-incubator-hatch](station-layouts/05b-incubator-hatch.svg), [05c-incubator-empty](station-layouts/05c-incubator-empty.svg), [05d-incubator-nav](station-layouts/05d-incubator-nav.svg), each with its PNG.
 
-**L2.4 spec, pass 2** (UI designer, 2026-10-09 13:33, America/Mexico_City). **Decided** (owner, 2026-10-09 13:21): the structure is right; the **empty** Incubator stays, "empty incubator is available, this motivates the user to incubate and see it in action", so the empty state invites incubating; the **hatch** stays a held state. The bud's own states stay growing and ready (2026-10-08: no prize render state; a portrait arrives as a crate). The details are the disciplines' rulings of 2026-10-09, each marked where it lands. The numbers live in `prototypes/ui/specs/station/incubator.json`.
+**The L2.4 spec.** The **empty** Incubator is an invitation to incubate and see it in action; the **hatch** is a held state. The bud's own states are growing and ready; a portrait arrives as a crate, never as a state of the bud. The numbers live in `prototypes/ui/specs/station/incubator.json`.
 
 <img src="station-layouts/04-incubator-growing.png" width="1024" alt="Incubator, growing">
 
-*04. Incubator, growing: a 22-minute bud, nine leaves full and the tenth filling, three chapters known and Stamina still a surprise, `✓ Grow now · ❀ 7`. 1×, measured. Status: Decided structure (owner, 2026-10-09 13:21); details pass 2.*
+*04. Incubator, growing: a 22-minute bud, nine leaves full and the tenth filling, three chapters known and Stamina still a surprise, `✓ Grow now · ❀ 7`. 1×, measured.*
 
 <img src="station-layouts/05-incubator-ready.png" width="1024" alt="Incubator, ready">
 
-*05. Incubator, ready: every leaf full, every chapter known, the dome glowing, the species' shape in the bud, the plaque says ready, `✓ Open`; the waiting lamp while the painting is on its way. 1×, measured. Status: Decided structure; details pass 2.*
+*05. Incubator, ready: every leaf full, every chapter known, the dome glowing, the species' shape in the bud, the plaque says ready, `✓ Open`; the waiting lamp while the painting is on its way. 1×, measured.*
 
 <img src="station-layouts/05b-incubator-hatch.png" width="1024" alt="Incubator, the hatch">
 
-*05b. The hatch at 1500 ms: the glass lifted out of sight, the bud gone, the juvenile on the base, the ribbon; input held 2780 ms, then Habitat's meet. 1×, measured. Status: Decided (owner, 2026-10-09 13:21: a held state); details pass 2.*
+*05b. The hatch at 1500 ms: the glass lifted out of sight, the bud gone, the juvenile on the base, the ribbon; input held 2780 ms, then Habitat's meet. 1×, measured.*
 
 <img src="station-layouts/05c-incubator-empty.png" width="1024" alt="Incubator, empty">
 
-*05c. Incubator, empty: an invitation to grow a bud. The standby light on the lit, plump nest, the clean glass, the base's foot light, `✓ Choose a pod`. 1×, measured. Status: Decided (owner, 2026-10-09 13:21: it stays and invites); details pass 2.*
+*05c. Incubator, empty: an invitation to grow a bud. The standby light on the lit, plump nest, the clean glass, the base's foot light, `✓ Choose a pod`. 1×, measured.*
 
 <img src="station-layouts/05d-incubator-nav.png" width="1024" alt="Incubator's navigation map">
 
-*05d. Incubator: how it opens, how its states follow each other, where Open and Choose a pod lead. 1×. Status: Decided structure (owner, 2026-10-09 13:21), with the empty state's jump to Pods added.*
+*05d. Incubator: how it opens, how its states follow each other, where Open and Choose a pod lead. 1×.*
 
 ### 1. Purpose
 
@@ -1196,7 +1196,7 @@ The Incubator is where the player watches the bud grow and opens it when it is r
 - "and n more leaves": the second arc holds them.
 - The tabs' "read", "cleared" and "misty" words.
 - "Loika founder" and "child of …" under the code: the context says it.
-- The wooden base; the plate's embryo inside the ready bud (decided: never an embryo).
+- The wooden base; the plate's embryo inside the ready bud (never an embryo).
 - The build's cream code plate shown for 1.5 s on arrival from Create: the code already printed on Create's rule.
 - The ready ring: the screen has one subject and nothing to choose, so ✓ acts on the room, and a ring round the dome and its base would cross the leaf arcs.
 - The empty screen's two text lines ("The incubator is empty", "Shape a founder from a read pod at Research"): the plaque, the context and `✓ Choose a pod` say it.
@@ -1256,7 +1256,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | Hatch ribbon | 312, 104, 400, 40 | The new mibi's words, 20 px, hatch only |
 | Juvenile, after Open | 360, 160, 304, 312 | Its feet on the base's top at y 472, reading young by proportion inside the box; the box the meet on Habitat should keep (L2.5), so it reads as the same creature |
 
-**Regions and their words** (*L2.4, UI designer, 2026-10-09*). States (**Decided**, owner, 2026-10-09 13:21): **empty** (no bud, and an invitation), **growing** and **ready** (the bud's two), **hatch** (from `✓ Open` until the screen changes, input held).
+**Regions and their words.** States: **empty** (no bud, and an invitation), **growing** and **ready** (the bud's two), **hatch** (from `✓ Open` until the screen changes, input held).
 
 | Region (`incubator.json`) | Rectangle | Word or build | Only in | States it shows |
 | --- | --- | --- | --- | --- |
@@ -1281,10 +1281,10 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 
 **States:**
 
-- **Empty** (**Decided**, owner, 2026-10-09 13:21: it stays and invites): the standby light on the lit, plump nest, the clean glass, the foot light, the plaque "empty" in `fog`; no rail, leaves, stamp or code; the context "ready for a new bud". `✓ Choose a pod` when the rack holds a pod and a bay is free: a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod (the game designer's recommendation, 13:27; the UI designer's key behaviour). Otherwise no ✓ cap. No notice, but "no bay free" when no bay is free, the one need that stops a bud.
+- **Empty** (an invitation): the standby light on the lit, plump nest, the clean glass, the foot light, the plaque "empty" in `fog`; no rail, leaves, stamp or code; the context "ready for a new bud". `✓ Choose a pod` when the rack holds a pod and a bay is free: a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod. Otherwise no ✓ cap. No notice, but "no bay free" when no bay is free, the one need that stops a bud.
 - **Growing:** no ring; the leaves filling; the plaque "growing"; `✓ Grow now · ❀ 7` (❀ 1 for every 2 minutes left, rounded up: at most 19, the first bud 3; game designer, 13:27), the frame's dimmed cap when short; the context "a Loika bud" (a cross: "Fig and Moss's bud", falling back to "a Loika bud" past 208 px). A founder's tabs clear across the wait; a cross bud's chapters outside its known reads stay unread through the wait, Grow now and ready (game designer, 13:27).
 - **Ready:** every leaf full, the dome glowing, the shape in the bud, the plaque "ready", `✓ Open`; a founder's bud has every chapter known (founders only). No bay free is a guard only (Grow already checked it): the dimmed cap, the plate "No bay free. Return a mibi to the wild first." and the notice. While the painting is on its way, the waiting lamp on the base.
-- **Hatch** (**Decided**, owner, 2026-10-09 13:21: a held state): the event below; the context "its painting is on its way" (offline "waiting for the cloud") while it has not landed. Afterwards the Incubator is empty.
+- **Hatch** (a held state): the event below; the context "its painting is on its way" (offline "waiting for the cloud") while it has not landed. Afterwards the Incubator is empty.
 
 ### 6. Interactions
 
@@ -1303,7 +1303,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 
 ### The leaf arcs
 
-*L2.4, UI designer, 2026-10-09; `leafArc` **Decided** as the ninth layout rule (architect, 2026-10-09 13:24).* The bud takes 20 minutes plus one a change (5 for the first bud), up to 38 today. One leaf a minute; the leaves' places depend on their count, so `incubator.json` `regions.leaves` names `"layout": ["leafArc"]` and carries the rule's tables under `leafArc`:
+`leafArc` is the ninth layout rule. The bud takes 20 minutes plus one a change (5 for the first bud), up to 38 today. One leaf a minute; the leaves' places depend on their count, so `incubator.json` `regions.leaves` names `"layout": ["leafArc"]` and carries the rule's tables under `leafArc`:
 
 - **Slots.** Each arc has 2 × perArc − 1 = 39 half-pitch places from −76° to +76° in 4° steps, stored as the 16×20 leaf box's top left: (Math.round(512 + r sin a) − 8, Math.round(344 − r cos a) − 10) for the angle a, r 216 (inner) and 244 (outer). The face does no trigonometry: the tables are data, and `specs.test.mjs` rebuilds them from the centre, the arcs, the span and the half pitch.
 - **Runs.** n leaves, refused when n > 2 × perArc (40): the inner arc holds a = min(n, 20), the outer b = n − a. On an arc holding k leaves, leaf j (0 to k − 1, left to right) takes slot 20 − k + 2j, so every run is centred on the top (five leaves make a crown, as on the concept plate). Fill order: the inner arc left to right, then the outer.
@@ -1360,7 +1360,7 @@ None open for the disciplines. Answered on 2026-10-09 and written into the secti
 - **Q6, the roll pictures** (art director, 13:28): re-cut from the chapter page's source; bleed crops for surfaces, the centred 75% for parts.
 - **Q7, Create with nothing read** (game designer, 13:27): not confirmed as built; the nothing-read state exists, and Pods' ✓ on any identified pod opens Create (UI designer).
 - **Q8, the words** (copywriter, 13:27): the strings in `create.json` and `incubator.json`.
-- **Q9, the empty state and the hatch** (owner, 13:21): Decided, both stay; the empty state invites.
+- **Q9, the empty state and the hatch** (owner, 13:21): both stay; the empty state invites.
 - **Q10, the ready bud's shape** (art director, 13:28): the species' juvenile silhouette, sitting, dark warm, never amber.
 - **Q11, the leaf** (art director, 13:28): the leaning ovate leaf, 16×20; the outer radius 244 keeps it 10 px under the rail (UI designer).
 
