@@ -170,7 +170,7 @@ test("Compare's need line follows the spec's strings: here, in another chapter, 
   for (let ci = 0; ci < chs.length; ci++) {
     const v = at(ci); assert.equal(v.line.need, !diff.length ? spec.strings.compareSame : chs[ci].traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere);
     const marked = v.pages[0].cells.filter((c) => c.diff).length; assert.equal(marked, chs[ci].traits.filter((t) => diff.includes(t.id)).length, "a mark on each trait that differs");
-    assert.match(v.pages[0].differs, /^compare-mark-differs-12x12:12x12$/, "the slot by the studio's id"); assert.equal(v.pages[1].differs, v.pages[0].differs, "the same mark on both pages");
+    assert.match(v.pages[0].differs, /^frame-lamp-12-amber:12x12$/, "the slot by the studio's id"); assert.equal(v.pages[1].differs, v.pages[0].differs, "the same mark on both pages");
   }
 });
 
