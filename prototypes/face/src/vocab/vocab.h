@@ -31,4 +31,13 @@ void v_clip(const char *s, int maxw, int px, char *out, int cap);
 /* A fixed rectangle of the spec, [x, y, w, h], at a path of the frame spec; 0 when it is not a 4-array. */
 int v_spec_rect(const char *screen, const char *path, int r[4]);
 void v_error(const char *what);
+int v_fdiv(int a, int b);                              /* floor(a / b) for b > 0, as Math.floor does */
+int v_half(int a);                                     /* Math.round(a / 2) on an integer: floor((a + 1) / 2) */
+/* An id built from a printf format (ids of nodes and pictures). */
+const char *v_fmt(const char *fmt, ...);
+/* props reads: the string at a path of the props (copied to a static buffer; "" when absent), and whether a value is there (a non-null string) */
+const char *v_pstr(const char *path);
+int v_pint(const char *path, int dflt);
+int v_pbool(const char *path, int dflt);
+int v_plen(const char *path);
 #endif

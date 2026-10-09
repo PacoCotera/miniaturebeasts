@@ -3,6 +3,7 @@
 #include "../bridge/wire.h"
 #include "../spec/spec.h"
 #include <stdio.h>
+#include <stdarg.h>
 #include <string.h>
 
 static int g_layer = LAYER_CHROME; static char g_reg[48];
@@ -93,3 +94,13 @@ int v_spec_rect(const char *screen, const char *path, int r[4]) {
   char p[96]; for (int i = 0; i < 4; i++) { snprintf(p, sizeof p, "%s.%d", path, i); r[i] = spec_int(screen, p, 0); }
   return 1;
 }
+
+int v_fdiv(int a, int b) { int q = a / b; return (a % b != 0 && ((a < 0) != (b < 0))) ? q - 1 : q; }
+int v_half(int a) { return v_fdiv(a + 1, 2); }
+const char *v_fmt(const char *fmt, ...) {
+  static char ring[8][160]; static int k; char *b = ring[k++ & 7]; va_list ap; va_start(ap, fmt); vsnprintf(b, 160, fmt, ap); va_end(ap); return b;
+}
+const char *v_pstr(const char *path) { static char ring[8][V_STR]; static int k; char *b = ring[k++ & 7]; spec_str("props", path, b, V_STR); return b; }
+int v_pint(const char *path, int dflt) { return spec_int("props", path, dflt); }
+int v_pbool(const char *path, int dflt) { return spec_bool("props", path, dflt); }
+int v_plen(const char *path) { return spec_len("props", path); }

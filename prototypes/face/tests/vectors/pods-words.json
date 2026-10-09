@@ -1,0 +1,781 @@
+{
+ "note": "Pods as the JavaScript drew it (the view and the components of the freeze, through the node path, on the WebAssembly face) and the props for the same scene from views/pods-props.mjs: the stand-in pictures to upload (flat blocks keyed by id), and the framebuffer's hash. The words must draw the same pixels. Regenerated only when the spec, the stand-ins or the view's decisions change.",
+ "cases": [
+  {
+   "state": "collection",
+   "name": "partly and wholly read pods, finds and marks",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176",
+         "ring-arc-collection-n4-s1-176x176:176x176",
+         "ring-arc-collection-n4-s2-176x176:176x176"
+        ],
+        "pod": "pod:S01:i:88x112",
+        "name": "Loika",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": "grow:16",
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176",
+         "ring-arc-collection-n4-s1-176x176:176x176",
+         "ring-arc-collection-n4-s2-176x176:176x176",
+         "ring-arc-collection-n4-s3-176x176:176x176"
+        ],
+        "pod": "pod:S02:i:88x112",
+        "name": "Untuva",
+        "plate": "plate-name",
+        "find": "place:pond:48",
+        "grow": "grow:16",
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n8-track-176x176:176x176",
+         "ring-arc-collection-n8-s1-176x176:176x176"
+        ],
+        "pod": "pod:S03:i:88x112",
+        "name": "Tuikis",
+        "plate": "plate-name",
+        "find": "place:rock:48",
+        "grow": "grow:16",
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n5-track-176x176:176x176"
+        ],
+        "pod": "pod:S04:i:88x112",
+        "name": "Hiljan",
+        "plate": "plate-name",
+        "find": "place:wood:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n6-track-176x176:176x176"
+        ],
+        "pod": "pod:S05:i:88x112",
+        "name": "Tepor",
+        "plate": "plate-name",
+        "find": "place:cave:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n5-track-176x176:176x176"
+        ],
+        "pod": "pod:S06:i:88x112",
+        "name": "Pesko",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      },
+      {
+       "id": "place.2",
+       "group": "place",
+       "index": 2
+      },
+      {
+       "id": "place.3",
+       "group": "place",
+       "index": 3
+      },
+      {
+       "id": "place.4",
+       "group": "place",
+       "index": 4
+      },
+      {
+       "id": "place.5",
+       "group": "place",
+       "index": 5
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-s2-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S01:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "grow:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "ring-arc-collection-n4-s3-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S02:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-96x24:96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "place:pond:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "ring-arc-collection-n8-s1-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S03:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "place:rock:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "ring-arc-collection-n5-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S04:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "place:wood:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "ring-arc-collection-n6-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S05:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "place:cave:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "pod:S06:i:88x112",
+     "w": 88,
+     "h": 112
+    }
+   ],
+   "hash": "b8dbde94"
+  },
+  {
+   "state": "collection",
+   "name": "an empty rack",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.0",
+     "armed": false,
+     "targets": []
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    }
+   ],
+   "hash": "cac92cc9"
+  },
+  {
+   "state": "collection",
+   "name": "two unidentified pods",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:-:s:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-128x24:128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    }
+   ],
+   "hash": "02f39995"
+  },
+  {
+   "state": "collection",
+   "name": "four identified pods",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176"
+        ],
+        "pod": "pod:S01:i:88x112",
+        "name": "Loika",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176"
+        ],
+        "pod": "pod:S02:i:88x112",
+        "name": "Untuva",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n8-track-176x176:176x176"
+        ],
+        "pod": "pod:S03:i:88x112",
+        "name": "Tuikis",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n5-track-176x176:176x176"
+        ],
+        "pod": "pod:S04:i:88x112",
+        "name": "Hiljan",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.2",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      },
+      {
+       "id": "place.2",
+       "group": "place",
+       "index": 2
+      },
+      {
+       "id": "place.3",
+       "group": "place",
+       "index": 3
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S01:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "pod:S02:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-96x24:96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "pod:S03:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "ring-arc-collection-n5-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S04:i:88x112",
+     "w": 88,
+     "h": 112
+    }
+   ],
+   "hash": "8c7ba9bb"
+  },
+  {
+   "state": "collection",
+   "name": "a pod waiting",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176"
+        ],
+        "pod": "pod:S01:i:88x112",
+        "name": "Loika",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": "waiting:24"
+     }
+    },
+    "focus": {
+     "cur": "place.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S01:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "waiting:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "a9b4bddc"
+  }
+ ]
+}

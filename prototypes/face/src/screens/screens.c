@@ -18,6 +18,7 @@ int screens_props(const char *json, int len) {
   if (spec_load("props", json, (size_t)len) < 0) { wire_error(spec_error()); return -1; }
   if (!spec_has("frame")) { wire_error("props: the frame spec has not been sent"); return -1; }
   prim_begin();
+  { char screen[32]; spec_str("props", "screen", screen, sizeof screen); if (strcmp(screen, "pods") == 0 && spec_has("pods")) pods_words(); }
   frame_words();
   prim_end();
   wire_changed();
