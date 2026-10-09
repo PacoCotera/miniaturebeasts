@@ -42,7 +42,7 @@ if __name__ == "__main__":
     which = [a for a in sys.argv[1:]] or ALL; man = json.load(open("slices/manifest.json")); rows = []
     for sp in which:
         if not os.path.exists(f"source/raw/halo-{sp}-clear.jpg"): print(sp, "no painted figure yet"); continue
-        clear = h2.grade(corrected(sp)); mist = h2.mist_of(clear)
+        clear = h2.grade(corrected(sp)); mist = h2.mist_of(clear, 0.10 if sp == "S13" else 0.15)
         for st, arr in (("clear", clear), ("mist", mist)):
             im = h2.reduce(arr); name = f"mibi-halo-{sp}-128x160-{st}"; im.save(f"slices/{name}.png", optimize=True)
             src = "the standard painting" if sp in ("S01", "S09", "S12") else "the species frame's placeholder render (side view)"

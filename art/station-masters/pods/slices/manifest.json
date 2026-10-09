@@ -4516,7 +4516,7 @@
   "made": "the S03 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "fe24941aea9e171818ad8deeee18fa5abb8d19bd6501bd52ca1f89d46acf05a6",
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 41 (the low mists signed)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S05-128x160-clear": {
@@ -4620,7 +4620,7 @@
   "made": "the S10 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "0b2d9b6cf39d1f93bcf54cfea3a392b26178324d30921c25849a3aff019e6019",
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 41 (the low mists signed)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S11-128x160-clear": {
@@ -4646,7 +4646,7 @@
   "made": "the S11 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "8f3aad67db3335b74f35a5000429733a9bd5e02755142a92b93eb4162554f54b",
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 41 (the low mists signed)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S13-128x160-clear": {
@@ -4670,9 +4670,9 @@
   "rect": null,
   "src": "halo-S13-clear.jpg over the S13 silhouette from the species frame's placeholder render (side view)",
   "made": "the S13 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "03a39349a1db57b789ad61b509c4586fd91553649883ed26bcf0c4d595884274",
+  "sha256": "032cb4c2e929cb5000e16f98de9d79f2d7488f37a488e3ebe6025a24a8e17425",
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 42 (S13 mist at a 10 percent cap, signed on delivery)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S14-128x160-clear": {
@@ -4698,7 +4698,7 @@
   "made": "the S14 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "a5b652ab09b9aba4ea94bd41ef3e1e333385633d2431fe2b8fd507b1ba040596",
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 41 (the low mists signed)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S15-128x160-clear": {
@@ -9004,11 +9004,11 @@
   ],
   "rect": null,
   "src": "procedural",
-  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
-  "sha256": "db60d178e0a1ba8b2694e2728dd01007bfdb8deead21c708e59eb1e6939bb978",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
+  "sha256": "20abd2f8aa5c4e128e49eee5a624a3ced938f1be4318589b824bbb60d5d582e9",
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-144x176": {
   "size": [
@@ -9017,11 +9017,11 @@
   ],
   "rect": null,
   "src": "procedural",
-  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
-  "sha256": "2c976c89b41e8e4a23b9b33b7b55f8e05a37115356e8225f6af980e23166b50b",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
+  "sha256": "51c79fea7cba2909336776b3da0316295b423f4d1c58191c23d05c5a8485f2e8",
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-104x160": {
   "size": [
@@ -9030,11 +9030,11 @@
   ],
   "rect": null,
   "src": "procedural",
-  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
-  "sha256": "2ec67ad88bcfddec037fc1b9af0e1f25ebf9e106af1842aef72c369864c8ac69",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
+  "sha256": "c36ae6e40e60cf0836ee56bdc2774a2f02893b706ddd16014ff40ceba4cd519b",
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-104x96": {
   "size": [
@@ -9043,11 +9043,11 @@
   ],
   "rect": null,
   "src": "procedural",
-  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
-  "sha256": "487aceb74eab700b59ac2dd9d773918c694e9c4fa955ef871d67ab40238be8d3",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
+  "sha256": "516a22c981aedf941796e2129c8d06b5d22704dcadd5eb3ce9f588dea8a2c8a4",
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-104x64": {
   "size": [
@@ -9056,11 +9056,11 @@
   ],
   "rect": null,
   "src": "procedural",
-  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
-  "sha256": "626eebcc0db4fa8107c16de49b9441cec234f211d7306c5905ff1a470c72f0d8",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
+  "sha256": "2e20b1a2fd466f13a4cfd010fbc71fad52fe1186638464ceee149ba6c902d26e",
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-112x112": {
   "size": [
@@ -9069,10 +9069,10 @@
   ],
   "rect": null,
   "src": "procedural",
-  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
-  "sha256": "bf85872a818dcdbcc71e148bb51964ad364b4e6fb1186756c6704432e8c5a911",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
+  "sha256": "757cd3a9550fc2db69f3fd354b4bc98cda9610bd8f1cb56d1833c5c7cb18ce43",
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  }
 }

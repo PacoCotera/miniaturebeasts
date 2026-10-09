@@ -510,15 +510,13 @@ def unknownpod():
         save(f"pod-{cls}-unknown", im, r, f"the {cls} pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair", "pod layers, recoloured")
 def standins():
     """trait-picture-standin-<w>x<h>: the plain placeholder card of the trait pictures (the art director's pass 19 verdict): a card on the pane's deep ground (14,28,36) with a 1 px edge (26,46,56), a faint
-    diagonal hatch (17,33,42) and the words "stand-in picture" in 16 px Inter (110,124,142), centred; for the page sizes and the 112x112 find slot. Placed by id by the build; the frame goes over it."""
+    diagonal hatch (17,33,42) NO words (no text is baked into art: the build sets \"stand-in\" in 16 px mist centred on each card); for the page sizes and the 112x112 find slot. Placed by id by the build; the frame goes over it."""
     from PIL import ImageDraw, ImageFont
     f16 = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 16)
     for (w, h) in ((128, 160), (144, 176), (104, 160), (104, 96), (104, 64), (112, 112)):
         g = Image.new("RGBA", (w, h), (14, 28, 36, 255)); d = ImageDraw.Draw(g); d.rectangle([0, 0, w - 1, h - 1], outline=(26, 46, 56, 255))
         for yy in range(-w, h, 16): d.line([(0, yy + w), (w, yy)], fill=(17, 33, 42, 255))
-        if h >= 96: d.text((w // 2, h // 2 - 9), "stand-in", font=f16, fill=(110, 124, 142, 255), anchor="mm"); d.text((w // 2, h // 2 + 9), "picture", font=f16, fill=(110, 124, 142, 255), anchor="mm")
-        else: d.text((w // 2, h // 2), "stand-in picture", font=ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 12), fill=(110, 124, 142, 255), anchor="mm")
-        save(f"trait-picture-standin-{w}x{h}", g, None, "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'", "procedural")
+        save(f"trait-picture-standin-{w}x{h}", g, None, "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text", "procedural")
 def pagemark():
     """page-mark-new-10: the 'new to the field guide' mark as the layout now specifies it (pods.json page.newMark): a flat bone dot 6x6 with a 1 px white lit edge
     top left, no keyline, no specular, art layer (station.json colours only), placed on the trait's name line 4 px after the name. (The id keeps its 10; the art is 6x6.)

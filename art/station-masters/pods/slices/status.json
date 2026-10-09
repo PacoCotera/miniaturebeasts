@@ -1356,7 +1356,7 @@
  },
  "mibi-halo-S03-128x160-mist": {
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 41 (the low mists signed)",
   "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S05-128x160-clear": {
@@ -1396,7 +1396,7 @@
  },
  "mibi-halo-S10-128x160-mist": {
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 41 (the low mists signed)",
   "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S11-128x160-clear": {
@@ -1406,7 +1406,7 @@
  },
  "mibi-halo-S11-128x160-mist": {
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 41 (the low mists signed)",
   "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S13-128x160-clear": {
@@ -1416,7 +1416,7 @@
  },
  "mibi-halo-S13-128x160-mist": {
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 42 (S13 mist at a 10 percent cap, signed on delivery)",
   "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S14-128x160-clear": {
@@ -1426,7 +1426,7 @@
  },
  "mibi-halo-S14-128x160-mist": {
   "status": "placeholder",
-  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
+  "signed_in": "pass 41 (the low mists signed)",
   "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S15-128x160-clear": {
@@ -2816,32 +2816,32 @@
  },
  "trait-picture-standin-128x160": {
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-144x176": {
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-104x160": {
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-104x96": {
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-104x64": {
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
  "trait-picture-standin-112x112": {
   "status": "signed",
-  "signed_in": "pass 19 verdict",
-  "note": "the stand-in card, cut as slices (the build places it by id)"
+  "signed_in": "pass 42 (signed on delivery)",
+  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  }
 }

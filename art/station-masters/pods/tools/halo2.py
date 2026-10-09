@@ -23,9 +23,9 @@ def grade(rgba, peak=110.0, mean=50.0):
 def reduce(rgba):
     p = rgba.copy(); p[..., :3] *= p[..., 3:4] / 255; p = p.reshape(H // K, K, W // K, K, 4).mean((1, 3)); a = p[..., 3:4]
     rgb = np.where(a > 0, p[..., :3] / np.maximum(a / 255, 1e-6), 0); return Image.fromarray(np.clip(np.dstack([rgb, a]), 0, 255).astype(np.uint8), "RGBA")
-def mist_of(clear):
+def mist_of(clear, cap=0.15):
     rowmass = clear[..., 3].sum(1); body = np.where(rowmass >= 0.25 * rowmass.max())[0]; fh = (body.max() - body.min() + 1) / K     # the figure's own body height in final px: the rows that carry a quarter of the heaviest row's alpha (tails, antennae and halo left out)
-    rad = float(min(6.5, 0.15 * fh))                                                                                      # the blur radius is capped at about 15 percent of that height
+    rad = float(min(6.5, cap * fh))                                                                                      # the blur radius is capped at about 15 percent of that height
     p = clear.copy(); p[..., :3] *= p[..., 3:4] / 255; ch = []
     for c in range(4): ch.append(np.asarray(Image.fromarray(np.clip(p[..., c], 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(rad * K))).astype(float))
     q = np.dstack(ch); a = q[..., 3:4]; rgb = np.where(a > 0, q[..., :3] / np.maximum(a / 255, 1e-6), 0); a = a * (0.42 / max(a.max() / 255, 1e-6)); return np.dstack([rgb, a])
