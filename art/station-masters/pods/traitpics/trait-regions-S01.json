@@ -31,7 +31,25 @@
      ],
      "slice": "trait-S01-markings-plain-128x160",
      "flag": null,
-     "pass_59": "content 96x120 centred in the cell"
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "top",
+       "run_px": 30
+      },
+      {
+       "edge": "bottom",
+       "run_px": 71
+      },
+      {
+       "edge": "left",
+       "run_px": 76
+      },
+      {
+       "edge": "right",
+       "run_px": 70
+      }
+     ]
     },
     "144x176": {
      "window": [
@@ -119,7 +137,17 @@
      ],
      "slice": "trait-S01-crown-leaf-crest-128x160",
      "flag": null,
-     "pass_59": "content 96x120 centred in the cell"
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "bottom",
+       "run_px": 90
+      },
+      {
+       "edge": "right",
+       "run_px": 22
+      }
+     ]
     },
     "144x176": {
      "window": [
@@ -207,7 +235,25 @@
      ],
      "slice": "trait-S01-eyes-between-small-and-large-128x160",
      "flag": "the part is 85x80 px, smaller than the 96x120 cell: shown with its surroundings at 1:1, not enlarged",
-     "pass_59": "content 96x120 centred in the cell"
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "top",
+       "run_px": 45
+      },
+      {
+       "edge": "bottom",
+       "run_px": 96
+      },
+      {
+       "edge": "left",
+       "run_px": 120
+      },
+      {
+       "edge": "right",
+       "run_px": 44
+      }
+     ]
     },
     "144x176": {
      "window": [

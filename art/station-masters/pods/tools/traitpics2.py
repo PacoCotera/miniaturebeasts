@@ -75,6 +75,7 @@ def tail_only(img):
     a[wing] = DEEP; return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
 man = json.load(open("slices/manifest.json")); R = json.load(open(os.path.join(ROOT, "traitpics/rig-regions/trait-regions-S09.json"))); P = R["parts"]
 looks = json.load(open("source/work/looks-S09-type.json"))
+exec(open(os.path.join(ROOT, "tools/cutfade.py")).read(), globals())      # fade_cut (pass 60)
 CONTENT = 0.75                                       # the owner's rule (pass 59): a crop's content sits inside the cell's centred 75 percent, reduced from the painting and never enlarged, on the cell tone
 union = lambda *bs: [min(b[0] for b in bs), min(b[1] for b in bs), max(b[0] + b[2] for b in bs) - min(b[0] for b in bs), max(b[1] + b[3] for b in bs) - min(b[1] for b in bs)]
 # which box each part trait is cropped from: the rig's box for the trait where it is tight; the single part's box where two traits share one union (told apart, never alike)
@@ -121,10 +122,13 @@ for key_, (why, rect, kind, pad, limit, feather) in BOX.items():
     for (tw, th) in SIZES:
         prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; cw_, cellh = round(tw * CONTENT), round(th * CONTENT); box, flag = window(prect, cw_, cellh, W, H); base_ = masked(keyed_tail, tail_m) if key_ == "legs-tail/tail" else crown_short(box, cellh) if key_ == "face/crown" else keyed; crop = limited(base_, limit, feather).crop(box); cw, chh = crop.size
         im = crop.resize((cw_, cellh), Image.LANCZOS) if (cw, chh) != (cw_, cellh) else crop
+        edges_ = []
+        if key_ == "face/beak" and (tw, th) == (128, 160): im, edges_ = fade_cut(im, tuple(int(v) for v in DEEP))      # pass 60: a keyed fade on the straight cut edges (the beak's face continues past the box)
         cv_ = Image.new("RGB", (tw, th), tuple(int(v) for v in DEEP)); cv_.paste(im, ((tw - cw_) // 2, (th - cellh) // 2)); im = cv_      # pass 59: the content inside the centred 75 percent of the cell (96x120 in 128x160), the cell tone round it
         nm = f"trait-S09-{slug(name)}-{slug(look)}-{tw}x{th}"; im.save(f"slices/{nm}.png", optimize=True)
         man[nm] = {"size": [tw, th], "rect": None, "src": f"S09 accepted painting, {why} {list(rect)}", "made": f"the {name} of the Belatz ({look}): a crop of the accepted painting from the rig's region, re-framed to {tw}x{th} from a {cw}x{chh} window{' into the centred 75 percent of the cell (' + str(cw_) + 'x' + str(cellh) + ' at (' + str((tw - cw_) // 2) + ', ' + str((th - cellh) // 2) + '))'} ({'reduced' if (cw, chh) != (tw, th) else '1:1'}, never enlarged), paper keyed to deep, key choked 1 px, defringed" + ("; body kept at 35 percent alpha fading over about 22 px, no shadow" if key_ == "face/crown" else "") + (f"; FLAG: {flag}" if flag else ""), "sha256": hashlib.sha256(open(f"slices/{nm}.png", "rb").read()).hexdigest()}
-        ent["crops"][f"{tw}x{th}"] = {"window": list(box), "source_px": [cw, chh], "slice": nm, "flag": flag}; n += 1
+        ent["crops"][f"{tw}x{th}"] = {"window": list(box), "source_px": [cw, chh], "slice": nm, "flag": flag, **({"keyed_edges": edges_} if (tw, th) == (128, 160) and key_ == "face/beak" else {})}; n += 1
+        if edges_: man[nm]["made"] += f"; 128x160 (pass 60): a keyed fade (smoothstep over 12 px, finished inside the box) on the straight cut edges: {edges_}"; man[nm]["sha256"] = hashlib.sha256(open(f"slices/{nm}.png", "rb").read()).hexdigest()
         if flag: flagged.append((name, f"{tw}x{th}", rect[2:]))
     doc["traits"][key_] = ent
 for k_, nm_ in (("coat/feathers", "Feathers"), ("coat/fur-reach", "Tufts")): doc["traits"][k_] = {"chapter": "coat", "trait": nm_, "look": looks[k_]["look"], "kind": "plate", "box": None, "source": "a surface material: a per-look plate painted as a quality after the quota, no crop", "crops": {}}

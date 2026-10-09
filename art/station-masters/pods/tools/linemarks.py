@@ -7,7 +7,7 @@ import os, json, hashlib
 from PIL import Image, ImageDraw, ImageFont
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
 pal = {n: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for n, h in json.load(open("../../../prototypes/ui/palettes/station.json"))["colours"]}
-C = {"i": pal["ink"], "b": pal["bone"], "w": pal["white"], "f": pal["frost"], "s": pal["frostS"], "g": pal["fog"], "m": pal["mist"]}
+C = {"i": pal["ink"], "b": pal["fog"], "w": pal["bone"], "f": pal["frostS"], "s": pal["frostS"], "g": pal["fog"], "m": pal["mist"], "k": pal["stone"]}      # pass 60 (the art director): white -> bone, bone -> fog, the frost body -> frostS, so the seeds sit one step below the 16 px bone name; the mist ghost kept
 SEED = ["....b.......",     # the stalk, 3 rows
         "....b.......",
         "....b.......",
@@ -24,14 +24,14 @@ SEED = ["....b.......",     # the stalk, 3 rows
         "..wwfffgbb..",
         "...bbbbbb...",
         "....bbbb...."]
-ONLY = ["................",
+ONLY = ["................",     # pass 60: a stepped plinth, no posts, no white, its foot on the baseline
         "................",
-        "b..............b",   # the two end ticks of the signed base
-        "b..............b",
-        "wwwwwwwwwwwwwwww",   # the lit top edge
-        "gggggggggggggggg",
-        "mmmmmmmmmmmmmmmm",
-        "iiiiiiiiiiiiiiii"]  # the foot, on the baseline
+        "...gggggggggg...",   # a 2 px fog top face, 10 px wide
+        "...gggggggggg...",
+        ".mmmmmmmmmmmmmm.",   # a 3 px mist front, 14 px wide
+        ".mmmmmmmmmmmmmm.",
+        ".mmmmmmmmmmmmmm.",
+        "kkkkkkkkkkkkkkkk"]   # a 1 px stone foot, 16 px wide
 def img(rows, w, h):
     assert len(rows) == h and all(len(r) == w for r in rows), (len(rows), [len(r) for r in rows])
     im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
@@ -51,11 +51,11 @@ for y in range(16):
                 if 0 <= nx < 12 and 0 <= ny < 16 and sh.getpixel((nx, ny)) and 8 <= x + 8 < 12 + 1: keyl.putpixel((x + 8, y), C["i"] + (255,)); break
 pair.alpha_composite(keyl); pair.alpha_composite(seed, (8, 0))
 os.makedirs("marks", exist_ok=True); man = json.load(open("slices/manifest.json"))
-for name, im, made in (("mark-line-seed-12x16", seed, "the name-line seed glyph: a misty seed with the hidden look's ghost in its frost half; typed pixel by pixel at this size (never scaled from the large seed); placed 1:1 after the name, top at line y + 2"),
+for name, im, made in (("mark-line-seed-12x16", seed, "the name-line seed glyph: a misty seed (pass 60 values: bone rim lit, fog rim shaded, frostS body, a fog diagonal) with the hidden look's ghost in mist; typed pixel by pixel at this size (never scaled from the large seed); placed 1:1 after the name, top at line y + 2"),
                        ("mark-line-seed-pair-20x16", pair, "the name-line blend glyph: two seeds overlapping as one glyph (the front seed 8 px right of the back one, an ink keyline between); typed pixel by pixel; placed 1:1 after the name, top at line y + 2"),
-                       ("mark-line-only-16x8", only, "the name-line Only glyph: the signed base's ticks, lit top edge and fog bar as a small base, its foot on the baseline; typed pixel by pixel; placed 1:1 after the name, top at line y + 8")):
+                       ("mark-line-only-16x8", only, "the name-line Only glyph (pass 60, redrawn): a stepped plinth in the 16x8 box: a 2 px fog top face 10 px wide, a 3 px mist front 14 px wide, a 1 px stone foot 16 px wide on the baseline, no posts, no white; typed pixel by pixel; placed 1:1 after the name, top at line y + 8")):
     im.save(f"slices/{name}.png", optimize=True)
-    man[name] = {"size": list(im.size), "rect": None, "src": "typed by hand", "made": made, "sha256": hashlib.sha256(open(f"slices/{name}.png", "rb").read()).hexdigest()}
+    man[name] = {"size": list(im.size), "rect": None, "src": "typed by hand", "made": made, **({"ruling": "pass 60, the art director: the ink ring round the single seed is not needed (ink on the ground is invisible at 1x); the pair keeps its ink overlap stroke. A ruling, not a drift from the signed seed."} if "seed" in name else {}), "sha256": hashlib.sha256(open(f"slices/{name}.png", "rb").read()).hexdigest()}
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 # proof, 1x: the line "Translucency" plus the pair in a 128 px cell, and each glyph after a name, beside the signed marks, on the cell tone `ground`
 GROUND = pal["ground"]; BONE = pal["bone"]; f16 = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 16); f12 = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 12)
