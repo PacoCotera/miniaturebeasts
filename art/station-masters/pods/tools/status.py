@@ -6,7 +6,7 @@ FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
 for n in m:
     AD = "art director, field guide"
-    if n == "mark-species-frost-24x24": sign(n, "new", None, "pass 88: remapped for the overview stage after the art director's ruling (it stays art, its alpha had drifted): frostS at alpha 56 to bar, frostD at 81 to hairline, frostD at 89 to bevel, every visible pixel at alpha 255, geometry and stipple unchanged; awaiting the art director's sign")
+    if n == "mark-species-frost-24x24": sign(n, "signed", "art director, pass 88 remap", "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque")
     elif re.match(r"pose-S01-", n): sign(n, "new", None, "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off")
     elif re.match(r"pose-S0[23]-", n): sign(n, "placeholder", None, "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96")
     elif re.match(r"sitting-backdrop-\w+-544x408$", n): sign(n, "new", None, "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off")

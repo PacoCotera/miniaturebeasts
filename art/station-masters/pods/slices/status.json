@@ -1645,9 +1645,9 @@
   "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-frost-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 88: remapped for the overview stage after the art director's ruling (it stays art, its alpha had drifted): frostS at alpha 56 to bar, frostD at 81 to hairline, frostD at 89 to bevel, every visible pixel at alpha 255, geometry and stipple unchanged; awaiting the art director's sign"
+  "status": "signed",
+  "signed_in": "art director, pass 88 remap",
+  "note": "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque"
  },
  "mark-clan-C01-24x24": {
   "status": "signed",

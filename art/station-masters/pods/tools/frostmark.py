@@ -16,7 +16,7 @@ if (a[..., 3] > 0).sum() and not ((a[..., 3] == 255) | (a[..., 3] == 0)).all():
 assert set(np.unique(a[..., 3])) == {0, 255} and int((a[..., 3] > 0).sum()) == before["visible"]
 Image.fromarray(a, "RGBA").save("slices/mark-species-frost-24x24.png", optimize=True)
 man = json.load(open("slices/manifest.json")); n = "mark-species-frost-24x24"
-man[n]["made"] = man[n]["made"].split(" (pass 88")[0] + " (pass 88: remapped for the overview stage: frostS at alpha 56 to `bar`, frostD at 81 (the stipple) to `hairline`, frostD at 89 (the upper-left rim) to `bevel`, every visible pixel at alpha 255; the geometry and stipple unchanged)"
+man[n]["made"] = "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque"
 man[n]["sha256"] = hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest(); json.dump(man, open("slices/manifest.json", "w"), indent=1)
 stage = Image.open("slices/room-bench-stage-overview.png").convert("RGBA") if os.path.exists("slices/room-bench-stage-overview.png") else Image.new("RGBA", (200, 100), pal["ground"] + (255,))
 cv = stage.crop((0, 0, min(stage.width, 200), min(stage.height, 100))).copy(); mk = Image.fromarray(a, "RGBA"); cv.alpha_composite(mk, (40, 30)); cv.alpha_composite(mk, (120, 30))
