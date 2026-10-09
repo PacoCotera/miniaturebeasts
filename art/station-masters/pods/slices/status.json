@@ -1953,5 +1953,80 @@
   "status": "new",
   "signed_in": null,
   "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "pod-large-pattern-ribs": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-large-pattern-segments": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-large-pattern-plates": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-medium-pattern-ribs": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-medium-pattern-segments": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-medium-pattern-plates": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-small-pattern-ribs": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-small-pattern-segments": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-small-pattern-plates": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-collection-pattern-ribs": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-collection-pattern-segments": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-collection-pattern-plates": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-well-pattern-ribs": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-well-pattern-segments": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-well-pattern-plates": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
  }
 }

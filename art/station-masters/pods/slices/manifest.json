@@ -6555,5 +6555,275 @@
   "status": "new",
   "signed_in": null,
   "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "pod-large-pattern-ribs": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": [
+   560,
+   216,
+   144,
+   176
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "c4710d092453bbf531ea08c26e6dbc31eff00867e3a6a50d0f995cb95e96893c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-large-pattern-segments": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": [
+   560,
+   216,
+   144,
+   176
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "935ff1e1a7ff120cb93f79d64b940a25e55854b9d41d13d5a2b69d3708fbf037",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-large-pattern-plates": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": [
+   560,
+   216,
+   144,
+   176
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "00988da029df347127372ad72aa106cea6a5d222ac5e0d19091e364c4600385f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-medium-pattern-ribs": {
+  "size": [
+   120,
+   152
+  ],
+  "rect": [
+   572,
+   240,
+   120,
+   152
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "feb61cc0ee19f9aaa6eb2ed87d053c95bba27f3062b1450cfd0889f1a5c257e0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-medium-pattern-segments": {
+  "size": [
+   120,
+   152
+  ],
+  "rect": [
+   572,
+   240,
+   120,
+   152
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "af7a9c454ea0ba47d078ff5ce0081ae70eb5bee5fa6f209e18248f10cc007883",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-medium-pattern-plates": {
+  "size": [
+   120,
+   152
+  ],
+  "rect": [
+   572,
+   240,
+   120,
+   152
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "d39b218176f468b0d1a30bdee78c3713fddeb47083345b8762b77f7079310842",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-small-pattern-ribs": {
+  "size": [
+   104,
+   128
+  ],
+  "rect": [
+   580,
+   264,
+   104,
+   128
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "7c71a7dff30f373059b05945b0c74a73f7df375df56edb28dde28ab76e7e4192",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-small-pattern-segments": {
+  "size": [
+   104,
+   128
+  ],
+  "rect": [
+   580,
+   264,
+   104,
+   128
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "3eec887aef50aafc026f7090f5b7684984ce709eede6da08e35e4793abbe20bb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-small-pattern-plates": {
+  "size": [
+   104,
+   128
+  ],
+  "rect": [
+   580,
+   264,
+   104,
+   128
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "d6840b546902ebe8cd2eb98befab518c34f37db043a83185f0eaa2cf3ab18e54",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-collection-pattern-ribs": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "690f559ff60f070c4b31d6acfad9bbb1e8a71afa5412634e27f5e57910e93d1c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-collection-pattern-segments": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "0d0e0aa1f243e9796e9eff228e2169b6e9c8d91c90ed3c5a1cdae40c833c5be4",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-collection-pattern-plates": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "f0c54c6dd9d6166f1525897e55c13482557e3d6a07107cd5ab85937d469896eb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-well-pattern-ribs": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": [
+   36,
+   60,
+   40,
+   48
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "576aee5a7d62b1aa76f3011da9ee2ef3ca8aea5a4e9f7650d60f502f38de9c67",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-well-pattern-segments": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": [
+   36,
+   60,
+   40,
+   48
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "4dffca7c503c869292ef7ba7243f1ad3b1b3236ec60b0c94ce9091f59b9d6454",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "pod-well-pattern-plates": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": [
+   36,
+   60,
+   40,
+   48
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "eb2d5e083a629d79b939b7ec9c86f6699b5448b50922d11ba02f597d62e27983",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
  }
 }

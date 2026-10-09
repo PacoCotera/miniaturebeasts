@@ -606,6 +606,40 @@ def bands_mask(w, h):
     for c0, wd in ((0.18, 0.045), (0.46, 0.035)):
         m = np.maximum(m, np.clip(1 - np.abs(lat - c0) / wd, 0, 1) ** 1.4)
     return m * np.clip(z * 1.6, 0, 1) * 0.55
+def _px(w, h, f, minpx=1.3):
+    """Smallest feature width in radians-ish units so a line stays at least minpx wide after the class scale f (source px -> class px)."""
+    return minpx / max(f, 1e-6) / (w * 0.5)
+def ribs_mask(w, h, f, n=7):
+    """Soft raised ridges from the stem to the foot between the structural ribs: meridian ridges with a lighter crest (alpha) and the trough left clear, following the curvature (they fade toward the
+    shell's edge and narrow with it)."""
+    lon, lat, z = _sphere(w, h); ph = (lon / np.pi * n + 0.5) % 1.0; d = np.abs(ph - 0.5)           # 0 at a ridge's crest, 0.5 at the trough
+    wd = max(0.22, _px(w, h, f, 1.8) * n / np.pi * 1.2)
+    crest = np.clip(1 - d / wd, 0, 1) ** 1.6
+    return crest * np.clip(z * 1.5, 0, 1) * 0.5
+def segments_mask(w, h, f, n=4):
+    """Three or four horizontal ring seams (latitude hoops) each with a soft shadowed lip: a bright thin seam edge with a soft falloff beneath it."""
+    lon, lat, z = _sphere(w, h); m = 0; px = _px(w, h, f); latc = lat + 0.16 * np.sin(lon) ** 2                  # the hoops bend down toward the shell's edges, as rings seen from above do
+    for c0 in (-0.50, -0.22, 0.06, 0.34)[:n]:
+        up = np.clip(1 - np.abs(latc - c0) / max(0.018, px * 1.2), 0, 1) ** 1.2                        # the seam's crisp edge
+        lip = np.clip(1 - (latc - c0) / max(0.10, px * 5.0), 0, 1) ** 2.0 * (latc > c0) * 0.5          # the soft shadowed lip below it
+        m = np.maximum(m, np.maximum(up, lip))
+    return m * np.clip(z * 1.5, 0, 1) * 0.65
+def plates_mask(w, h, f):
+    """Large slightly overlapping polygonal plates with fine seams: rows of plates by latitude, larger toward the belly and smaller toward the cap, alternate rows offset by half a plate, the vertical
+    seams slanted a little so the plates are polygons, each plate's lower edge lit where it overlaps the next row, each plate a slightly different tone."""
+    lon, lat, z = _sphere(w, h); px = _px(w, h, f)
+    edges = [-0.78, -0.62, -0.44, -0.22, 0.05, 0.38, 0.80]; counts = [16, 14, 12, 10, 8, 6]; out = np.zeros_like(lat)
+    for k in range(len(counts)):
+        e0, e1 = edges[k], edges[k + 1]; row = (lat >= e0) & (lat < e1); nk = counts[k]
+        slant = (lat - e0) * 0.7
+        ph = ((lon + slant) / np.pi * nk + (0.5 if k % 2 else 0.0)) % 1.0; idx = np.floor((lon + slant) / np.pi * nk + (0.5 if k % 2 else 0.0))
+        rnd = (np.sin(idx * 12.9898 + k * 78.233) * 43758.5453) % 1.0
+        seam_v = np.clip(1 - np.minimum(ph, 1 - ph) * nk / np.pi / max(0.010, px * 0.9), 0, 1) ** 1.3
+        seam_h = np.clip(1 - np.abs(lat - e0) / max(0.010, px * 0.9), 0, 1) ** 1.3
+        lipk = np.clip(1 - (e1 - lat) / max(0.022, px * 2.2), 0, 1) ** 1.8 * 0.4                      # the lit lower edge, overlapping the next row
+        tone = 0.08 + 0.24 * rnd
+        out = np.where(row, np.maximum.reduce([np.full_like(lat, 0.0) + tone, seam_v * 0.7, seam_h * 0.4, lipk * 0.7]), out)
+    return out * np.clip(z * 1.5, 0, 1)
 def pods():
     BB = (376, 288, 1704, 1760); bw, bh = BB[2] - BB[0], BB[3] - BB[1]
     L, I, B = pod_src("pod-loika"), pod_src("pod-identified"), pod_src("pod-band")
@@ -670,6 +704,8 @@ def pods():
             c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(im, (ox, oy)); return c
         r = {"large": [560, 216, 144, 176], "medium": [572, 240, 120, 152], "small": [580, 264, 104, 128], "well": [36, 60, 40, 48]}.get(cls, [None, None, w, h])
         for nm, arr in masks.items(): save(f"pod-{cls}-{nm}", put(arr), r, "systematic pod layer: " + nm + ", uniform scale, foot on the last row, centred", "pod-identified")
+        for pn, fn in (("ribs", ribs_mask), ("segments", segments_mask), ("plates", plates_mask)):          # Brief 2: the layers for the shell patterns ribs, segments and plates
+            arr = wh(fn(w_, h_, f) * (sil - structure_old).clip(0, 1) * (1 - structure_old)); save(f"pod-{cls}-pattern-{pn}", put(arr), r, f"systematic pod layer: pattern-{pn} (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row", "procedural, on the sphere of the pod")
         if cls == "well":
             # legible at 32x40: darken and thicken the band before the downscale, and rebuild the sealed sprite from it
             bd = flat["band"].copy(); al = label_dilate(bd[..., 3] > 40, 14) * 255; bd[..., :3] = np.minimum(bd[..., :3], 40); bd[..., 3] = np.maximum(bd[..., 3] * 1.6, al * 0.9); flat = dict(flat, band=bd)

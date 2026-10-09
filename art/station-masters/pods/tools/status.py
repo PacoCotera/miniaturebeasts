@@ -10,6 +10,7 @@ for n in m:
     elif n in ("room-bench-stage", "room-cradle"): sign(n, "signed", "pass 4", "re-cut to the layout of design-pods-relayout 29b6dc9 (pool on x 632)" if n == "room-bench-stage" else "")
     elif n in ("room-cradle-front", "room-shelf"): sign(n, "signed", "pass 7b", "re-cut for the new rectangle (shelf 488,368,288,72)" if n == "room-shelf" else "")
     elif re.match(r"plate-name-\d+x24$", n): sign(n, "signed", "pass 7b", "the 20 px name on its plate (the 0.6 tone signed in pass 6)")
+    elif re.match(r"pod-\w+-pattern-(ribs|segments|plates)$", n): sign(n, "new", None, "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict")
     elif re.match(r"pod-(large|medium|small|collection|well)-unknown", n): sign(n, "signed" if "collection" not in n else "new", "pass 24 (signed on delivery)", "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)" + ("" if "collection" not in n else "; the collection class, awaiting verdict"))
     elif re.match(r"pod-(large|medium|small)-", n): sign(n, "signed", "pass 6", "layers signed across passes 4 to 7b; the 33 are standing")
     elif n.startswith("pod-collection-") and not n.endswith("-unknown"): sign(n, "new", None, "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict")
