@@ -1,5 +1,5 @@
 {
- "_note": "The freeze of the JavaScript drawing layer (design/proposals/lvgl-switch.md §5.1), written by tools/freeze-check.mjs --init at the freeze commit. Never edited by hand to loosen it: a path leaves with its file's deletion or its screen's goldens; a fix a frozen file needs before its screen moves goes in `exemptions`.",
+ "_note": "The freeze of the JavaScript drawing layer (design/proposals/lvgl-switch.md \u00a75.1), written by tools/freeze-check.mjs --init at the freeze commit. Never edited by hand to loosen it: a path leaves with its file's deletion or its screen's goldens; a fix a frozen file needs before its screen moves goes in `exemptions`.",
  "paths": [
   {
    "path": "ui/scene.mjs",
@@ -287,7 +287,6 @@
    "screen": null,
    "sha256": "bb2e3a76e26d84269a5eebf25696f592ec6da2581bc1ff666830410ada0ed102",
    "importers": [
-    "face/tests/freeze.test.mjs",
     "station/src/main.mjs",
     "station/src/screens/bench.mjs",
     "station/src/screens/create.mjs",

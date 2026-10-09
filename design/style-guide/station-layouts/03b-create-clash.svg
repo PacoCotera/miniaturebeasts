@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Create, a clash: the red edge on the chosen picture, the ✕ in the line and on the pip, no ✓ cap, the notice says why, 1024×600 at 1×, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="96.5" y="40.5" width="831" height="39" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
+<polygon points="232,40 368,40 384,80 248,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="250.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
+<text x="282" y="60" font-size="11" fill="#222">Coat</text>
+<polygon points="314,71 317,74 314,77 311,74" fill="#f1ebdf" stroke="#444" stroke-width="1"/>
+<polygon points="368,40 504,40 520,80 384,80" fill="#d8dde2" stroke="#5a6672" stroke-width="1"/>
+<rect x="386.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
+<text x="418" y="60" font-size="11" fill="#222">Face</text>
+<rect x="443.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<line x1="451" y1="69" x2="457" y2="75" stroke="#c93440" stroke-width="1.5"/>
+<line x1="457" y1="69" x2="451" y2="75" stroke="#c93440" stroke-width="1.5"/>
+<polygon points="504,40 640,40 656,80 520,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="522.5" y="43.5" width="23" height="23" fill="#fff" stroke="#bbb" stroke-width="1"/>
+<text x="554" y="60" font-size="11" fill="#8d8aa6">Movement</text>
+<rect x="583.5" y="71.5" width="5" height="5" fill="#fff" stroke="#8d8aa6" stroke-width="1"/>
+<polygon points="640,40 776,40 792,80 656,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#bbb" stroke-width="1"/>
+<text x="690" y="60" font-size="11" fill="#8d8aa6">Stamina</text>
+<rect x="719.5" y="71.5" width="5" height="5" fill="#fff" stroke="#8d8aa6" stroke-width="1"/>
+<text x="100" y="64" font-size="9" fill="#777">rail 96,40 832×40</text>
+<rect x="48.5" y="344.5" width="223" height="95" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="52" y="430" font-size="9" fill="#222">dish room-cradle 224×96</text>
+<text x="52" y="441" font-size="9" fill="#777">48,344 224×96</text>
+<rect x="88.5" y="232.5" width="143" height="175" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="100.5" y="256.5" width="119" height="151" fill="#fff" stroke="#444" stroke-width="1"/>
+<text x="104" y="270" font-size="10" fill="#222">pod (medium)</text>
+<text x="104" y="281" font-size="9" fill="#777">100,256 120×152</text>
+<text x="92" y="228" font-size="9" fill="#777">pod region 88,232 144×176</text>
+<text x="92" y="418" font-size="9" fill="#777">feet 160,408 · by size class</text>
+<rect x="40.5" y="456.5" width="239" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="160" y="470" font-size="11" fill="#6b6880" text-anchor="middle">Found in the rock field,</text>
+<text x="160" y="490" font-size="11" fill="#6b6880" text-anchor="middle">where a Tuikis felt safe</text>
+<text x="44" y="508" font-size="9" fill="#777">origin 40,456 240×40 · 16 px mist, 2 lines</text>
+<rect x="312.5" y="232.5" width="399" height="319" fill="#eef2f6" stroke="#8ca0ab" stroke-width="1"/>
+<rect x="360.5" y="240.5" width="303" height="311" fill="#ffe2c4" stroke="#c45f12" stroke-width="2"/>
+<text x="368" y="262" font-size="11" fill="#222">FOUNDER 304×312 (focal)</text>
+<text x="368" y="273" font-size="9" fill="#777">360,240 304×312</text>
+<rect x="392.5" y="300.5" width="119" height="71" fill="#e3e9f0" stroke="#a9b5c8" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="398" y="316" font-size="9" fill="#5d5974">frost: Movement,</text>
+<text x="398" y="328" font-size="9" fill="#5d5974">Stamina parts</text>
+<line x1="400" y1="536.5" x2="624" y2="536.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="628" y="532" font-size="9" fill="#c45f12">feet 536</text>
+<rect x="312.5" y="536.5" width="399" height="15" fill="#d6dde2" stroke="#8ca0ab" stroke-width="1"/>
+<text x="512" y="548" font-size="9" fill="#555" text-anchor="middle">chamber 312,232 400×320 · floor 16</text>
+<rect x="296.5" y="88.5" width="431" height="103" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="304.5" y="104.5" width="127" height="71" fill="#e9edf0" stroke="#666" stroke-width="1"/>
+<text x="308" y="117" font-size="9" fill="#222">1 · as the pod is</text>
+<text x="308" y="128" font-size="9" fill="#777">304,104 128×72</text>
+<rect x="448.5" y="104.5" width="127" height="71" fill="#e9edf0" stroke="#666" stroke-width="1"/>
+<text x="452" y="117" font-size="9" fill="#222">2 · only plain</text>
+<text x="452" y="128" font-size="9" fill="#777">448,104 128×72</text>
+<rect x="592.5" y="104.5" width="127" height="71" fill="#e9edf0" stroke="#666" stroke-width="1"/>
+<text x="596" y="117" font-size="9" fill="#222">3 · only rings</text>
+<text x="596" y="128" font-size="9" fill="#777">592,104 128×72</text>
+<rect x="592.5" y="104.5" width="127" height="71" fill="none" stroke="#c93440" stroke-width="2"/>
+<rect x="588.5" y="100.5" width="135" height="79" rx="6" fill="none" stroke="#d29a00" stroke-width="2.5"/>
+<polygon points="650,96 656,90 662,96" fill="#444" stroke="#444" stroke-width="1"/>
+<polygon points="650,184 656,190 662,184" fill="#444" stroke="#444" stroke-width="1"/>
+<rect x="296.5" y="200.5" width="431" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="216" font-size="13" fill="#c93440" text-anchor="middle">✕ Eyes: won't grow like this</text>
+<rect x="776.5" y="104.5" width="175" height="223" fill="#f4f7f9" stroke="#8ca0ab" stroke-width="1"/>
+<rect x="776.5" y="296.5" width="175" height="31" fill="#d6dde2" stroke="#8ca0ab" stroke-width="1"/>
+<text x="780" y="118" font-size="10" fill="#222">incubation dome 176×224</text>
+<text x="780" y="129" font-size="9" fill="#777">776,104 176×224</text>
+<text x="780" y="141" font-size="9" fill="#777">floor 296 · busy: bud 64×80</text>
+<rect x="832.5" y="216.5" width="63" height="79" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="768.5" y="336.5" width="191" height="47" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="768.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="780.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="792.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="804.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="816.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="828.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="840.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="852.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="864.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="876.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="888.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="900.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="912.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="924.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="936.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="948.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="768.5" y="352.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="780.5" y="352.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="792.5" y="352.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="804.5" y="352.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="816.5" y="352.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<rect x="828.5" y="352.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
+<text x="864" y="396" font-size="9" fill="#777" text-anchor="middle">22 leaves, empty (bevel) · 768,336 192×48</text>
+<rect x="804.5" y="400.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="808" y="414" font-size="10" fill="#222">STAMP label 120</text>
+<text x="808" y="425" font-size="9" fill="#777">804,400 120×120</text>
+<text x="808" y="438" font-size="9" fill="#777">140 from the founder</text>
+<rect x="776.5" y="525.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="776" y1="549.5" x2="952" y2="549.5" stroke="#3c4b57" stroke-width="1"/>
+<text x="864" y="541" font-size="9" fill="#777" text-anchor="middle">code rule, blank</text>
+<text x="24" y="96" font-size="10" fill="#2b6cb0">Clash: the chosen picture wears a</text>
+<text x="24" y="109" font-size="10" fill="#2b6cb0">2 px red edge on its own rect</text>
+<text x="24" y="122" font-size="10" fill="#2b6cb0">(never a second ring); the line</text>
+<text x="24" y="135" font-size="10" fill="#2b6cb0">is red with the inline ✕; the</text>
+<text x="24" y="148" font-size="10" fill="#2b6cb0">trait's pip is a ✕. No ✓ cap: the</text>
+<text x="24" y="161" font-size="10" fill="#2b6cb0">verb and price in mist, so the</text>
+<text x="24" y="174" font-size="10" fill="#2b6cb0">total reads; ✓ does nothing.</text>
+<text x="24" y="187" font-size="10" fill="#2b6cb0">Notices, first that holds: busy,</text>
+<text x="24" y="200" font-size="10" fill="#2b6cb0">no bay, clash, short.</text>
+<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Create</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
+<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
+<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="836.5" y="16.5" width="7" height="7" fill="#9a96ae" stroke="#444" stroke-width="1"/>
+<circle cx="868" cy="20" r="11" fill="#eee" stroke="#9a96ae" stroke-width="2"/>
+<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
+<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+<text x="16" y="587" font-size="14" fill="#8d8aa6">Grow it</text>
+<text x="98.80000000000001" y="587" font-size="13" fill="#8d8aa6">⚡ 2  ❀ 4  ◆ 2</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">two surprises to come</text>
+<rect x="755.9" y="576.5" width="11" height="11" fill="#ffa83f" stroke="#444" stroke-width="1"/>
+<text x="904" y="587" font-size="13" fill="#c27400" text-anchor="end">these looks clash</text>
+<circle cx="954" cy="582" r="8" fill="#5d5974"/>
+<text x="954" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Loika</text>
+</svg>

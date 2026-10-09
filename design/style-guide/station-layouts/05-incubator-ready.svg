@@ -1,73 +1,121 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Incubator · ready wireframe, 1024×600, measured. Layout only, no art.</title>
-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><pattern id="g40" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e2e2e2" stroke-width="0.6"/></pattern></defs>
+<title>Incubator, ready: every leaf full, every chapter known, the dome glowing, the species' shape in the bud, the plaque says ready, ✓ Open, the waiting lamp while the painting is on its way, 1024×600 at 1×, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
-<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444"/><line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="96.5" y="40.5" width="831" height="39" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
+<polygon points="232,40 368,40 384,80 248,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="250.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
+<text x="282" y="60" font-size="11" fill="#222">Coat</text>
+<rect x="311.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<polygon points="368,40 504,40 520,80 384,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="386.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
+<text x="418" y="60" font-size="11" fill="#222">Face</text>
+<rect x="443.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<rect x="451.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<polygon points="504,40 640,40 656,80 520,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="522.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
+<text x="554" y="60" font-size="11" fill="#222">Movement</text>
+<rect x="583.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<polygon points="640,40 776,40 792,80 656,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
+<rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
+<text x="690" y="60" font-size="11" fill="#222">Stamina</text>
+<rect x="719.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
+<rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="844" y="310" font-size="10" fill="#222">STAMP label 120</text>
+<text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
+<text x="844" y="334" font-size="9" fill="#777">176 from the glass</text>
+<rect x="808.5" y="424.5" width="183" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q · 4MX · P2D</text>
+<text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
+<rect x="256.5" y="88.5" width="511" height="215" fill="none" stroke="#9cc08f" stroke-width="1" stroke-dasharray="4 3"/>
+<path d="M 302 301 C 296 296, 297 286, 302 282.5 C 307 286, 308 296, 302 301 Z" transform="rotate(40 302 292)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 312 272 C 306 267, 307 257, 312 253.5 C 317 257, 318 267, 312 272 Z" transform="rotate(40 312 263)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 325 245 C 319 240, 320 230, 325 226.5 C 330 230, 331 240, 325 245 Z" transform="rotate(40 325 236)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 342 220 C 336 215, 337 205, 342 201.5 C 347 205, 348 215, 342 220 Z" transform="rotate(40 342 211)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 362 198 C 356 193, 357 183, 362 179.5 C 367 183, 368 193, 362 198 Z" transform="rotate(40 362 189)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 385 178 C 379 173, 380 163, 385 159.5 C 390 163, 391 173, 385 178 Z" transform="rotate(40 385 169)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 411 162 C 405 157, 406 147, 411 143.5 C 416 147, 417 157, 411 162 Z" transform="rotate(40 411 153)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 438 150 C 432 145, 433 135, 438 131.5 C 443 135, 444 145, 438 150 Z" transform="rotate(40 438 141)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 467 142 C 461 137, 462 127, 467 123.5 C 472 127, 473 137, 467 142 Z" transform="rotate(40 467 133)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 497 138 C 491 133, 492 123, 497 119.5 C 502 123, 503 133, 497 138 Z" transform="rotate(40 497 129)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 527 138 C 521 133, 522 123, 527 119.5 C 532 123, 533 133, 527 138 Z" transform="rotate(40 527 129)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 557 142 C 551 137, 552 127, 557 123.5 C 562 127, 563 137, 557 142 Z" transform="rotate(40 557 133)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 586 150 C 580 145, 581 135, 586 131.5 C 591 135, 592 145, 586 150 Z" transform="rotate(40 586 141)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 613 162 C 607 157, 608 147, 613 143.5 C 618 147, 619 157, 613 162 Z" transform="rotate(40 613 153)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 639 178 C 633 173, 634 163, 639 159.5 C 644 163, 645 173, 639 178 Z" transform="rotate(40 639 169)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 662 198 C 656 193, 657 183, 662 179.5 C 667 183, 668 193, 662 198 Z" transform="rotate(40 662 189)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 682 220 C 676 215, 677 205, 682 201.5 C 687 205, 688 215, 682 220 Z" transform="rotate(40 682 211)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 699 245 C 693 240, 694 230, 699 226.5 C 704 230, 705 240, 699 245 Z" transform="rotate(40 699 236)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 712 272 C 706 267, 707 257, 712 253.5 C 717 257, 718 267, 712 272 Z" transform="rotate(40 712 263)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 722 301 C 716 296, 717 286, 722 282.5 C 727 286, 728 296, 722 301 Z" transform="rotate(40 722 292)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 495 110 C 489 105, 490 95, 495 91.5 C 500 95, 501 105, 495 110 Z" transform="rotate(40 495 101)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 529 110 C 523 105, 524 95, 529 91.5 C 534 95, 535 105, 529 110 Z" transform="rotate(40 529 101)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+<path d="M 360.5 471.5 L 360.5 354 A 151.5 151.5 0 0 1 663.5 354 L 663.5 471.5" fill="#fff7e8" stroke="#b9772f" stroke-width="2" stroke-dasharray="6 2"/>
+<path d="M 392 300 A 120 120 0 0 1 452 230" fill="none" stroke="#ffffff" stroke-width="3"/>
+<rect x="360.5" y="200.5" width="303" height="271" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+<text x="368" y="452" font-size="9" fill="#777">glass 360,200 304×272 · top 202, r152 on 512,354 · glowing</text>
+<rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
+<text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
+<rect x="344.5" y="456.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+<text x="352" y="472" font-size="9" fill="#555">base 344,456 336×96 · enamel</text>
+<rect x="448.5" y="496.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<rect x="352.5" y="547.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
+<text x="672" y="544" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
+<rect x="448.5" y="264.5" width="127" height="159" fill="#fff0d6" stroke="#c45f12" stroke-width="2"/>
+<text x="452" y="280" font-size="10" fill="#222">BUD ready</text>
+<rect x="456.5" y="288.5" width="111" height="111" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="464.5" y="296.5" width="95" height="95" fill="#d9b89a" stroke="none" stroke-width="1"/>
+<text x="468" y="312" font-size="9" fill="#222">shape: ink ≤ 96</text>
+<text x="468" y="323" font-size="9" fill="#555">456,288 112×112</text>
+<path d="M 408.5 432 C 450 444, 574 444, 615.5 432 L 615.5 447.5 L 408.5 447.5 Z" fill="#e9d2a6" stroke="#bf9157" stroke-width="1"/>
+<rect x="408.5" y="400.5" width="207" height="47" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="1 2"/>
+<line x1="616" y1="440" x2="668" y2="420" stroke="#7d5435" stroke-width="1"/>
+<text x="672" y="418" font-size="9" fill="#7d5435">nestFront 408,400 208×48:</text>
+<text x="672" y="429" font-size="9" fill="#7d5435">rim fibres, over the bud</text>
+<text x="512" y="517" font-size="13" fill="#f1ebdf" text-anchor="middle">ready</text>
+<rect x="652.5" y="506.5" width="11" height="11" fill="#5bb9f3" stroke="#0c0a12" stroke-width="1"/>
+<text x="668" y="532" font-size="9" fill="#1e5196" text-anchor="end">waiting lamp 652,506</text>
+<text x="24" y="96" font-size="10" fill="#2b6cb0">Ready reads across a table:</text>
+<text x="24" y="109" font-size="10" fill="#2b6cb0">the full leaves, the glowing</text>
+<text x="24" y="122" font-size="10" fill="#2b6cb0">dome, the plaque, ✓ Open.</text>
+<text x="24" y="135" font-size="10" fill="#2b6cb0">No ring.</text>
+<text x="24" y="148" font-size="10" fill="#2b6cb0"></text>
+<text x="24" y="161" font-size="10" fill="#2b6cb0">The shape: the species'</text>
+<text x="24" y="174" font-size="10" fill="#2b6cb0">juvenile silhouette, sitting,</text>
+<text x="24" y="187" font-size="10" fill="#2b6cb0">one dark warm shape; the bud's</text>
+<text x="24" y="200" font-size="10" fill="#2b6cb0">front drawn over it.</text>
+<text x="24" y="213" font-size="10" fill="#2b6cb0"></text>
+<text x="24" y="226" font-size="10" fill="#2b6cb0">No bay free: a guard only (a</text>
+<text x="24" y="239" font-size="10" fill="#2b6cb0">dimmed ✓, a plate, the notice).</text>
+<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
-<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Incubator</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
+<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
 <rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
 <rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="836.5" y="16.5" width="7" height="7" fill="#9a96ae" stroke="#444" stroke-width="1"/>
+<circle cx="868" cy="20" r="11" fill="#eee" stroke="#9a96ae" stroke-width="2"/>
 <rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888"/><line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888"/>
 <rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="96.5" y="48.5" width="831" height="55" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
-<rect x="96.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="216.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="336.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="456.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="576.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="696.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="816.5" y="48.5" width="111" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<path d="M312.0 320 A200 200 0 0 1 712.0 320" fill="none" stroke="#5a8a3a" stroke-width="1" stroke-dasharray="5 3"/>
-<rect x="360.5" y="176.5" width="303" height="295" fill="#fff4e3" stroke="#b9772f" stroke-width="1.5"/>
-<rect x="448.5" y="264.5" width="127" height="159" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
-<rect x="408.5" y="400.5" width="207" height="47" fill="#ffffff" stroke="#666" stroke-width="1"/>
-<rect x="328.5" y="464.5" width="367" height="79" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<rect x="448.5" y="488.5" width="127" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="324.5" y="172.5" width="375" height="375" rx="6" fill="none" stroke="#d29a00" stroke-width="2.5"/>
-<rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef7" stroke="#2f5f8f" stroke-width="1.5"/>
-<rect x="824.5" y="424.5" width="151" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="360.5" y="232.5" width="303" height="311" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
-<rect x="312.5" y="112.5" width="399" height="39" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
-<text x="44" y="21" font-size="11" fill="#222">Title 20px (room mark)</text>
-<text x="388" y="21" font-size="11" fill="#222">Energy · Data · Essence 16px</text>
-<text x="820" y="21" font-size="9" fill="#222">Comp. face</text>
-<text x="908" y="21" font-size="11" fill="#222">☀ turn, right</text>
-<text x="20" y="583" font-size="11" fill="#222">✓ verb  price</text>
-<text x="412" y="583" font-size="11" fill="#222">context, centred</text>
-<text x="628" y="583" font-size="11" fill="#222">notice, right to 904</text>
-<text x="932" y="583" font-size="11" fill="#222">← where</text>
-<text x="100" y="61" font-size="11" fill="#222">Coat</text>
-<text x="100" y="73" font-size="9" fill="#777">96,48 112×56</text>
-<text x="220" y="61" font-size="11" fill="#222">Face</text>
-<text x="220" y="73" font-size="9" fill="#777">216,48 112×56</text>
-<text x="340" y="61" font-size="11" fill="#222">Shape</text>
-<text x="340" y="73" font-size="9" fill="#777">336,48 112×56</text>
-<text x="460" y="61" font-size="11" fill="#222">Legs*</text>
-<text x="460" y="73" font-size="9" fill="#777">456,48 112×56</text>
-<text x="580" y="61" font-size="11" fill="#222">Movement</text>
-<text x="580" y="73" font-size="9" fill="#777">576,48 112×56</text>
-<text x="700" y="61" font-size="11" fill="#222">Stamina</text>
-<text x="700" y="73" font-size="9" fill="#777">696,48 112×56</text>
-<text x="820" y="61" font-size="11" fill="#222">Character</text>
-<text x="820" y="73" font-size="9" fill="#777">816,48 112×56</text>
-<text x="304" y="304" font-size="11" fill="#222" text-anchor="end">Leaf arc: every leaf full</text>
-<text x="304" y="316" font-size="9" fill="#777" text-anchor="end">296,120 432×224</text>
-<text x="452" y="277" font-size="11" fill="#222">BUD, species shape glowing inside</text>
-<text x="452" y="289" font-size="9" fill="#777">448,264 128×160</text>
-<text x="412" y="413" font-size="11" fill="#222">nest</text>
-<text x="412" y="425" font-size="9" fill="#777">408,400 208×48</text>
-<text x="452" y="501" font-size="11" fill="#222">plaque · ready</text>
-<text x="452" y="513" font-size="9" fill="#777">448,488 128×32</text>
-<text x="844" y="309" font-size="11" fill="#222">STAMP label 120</text>
-<text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
-<text x="828" y="437" font-size="11" fill="#222">code 16px</text>
-<text x="316" y="125" font-size="11" fill="#222">ribbon: name · species · stage 20px</text>
-<text x="316" y="137" font-size="9" fill="#777">312,112 400×40</text>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
+<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="587" font-size="14" fill="#c4500f">Open</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">a Loika bud</text>
+<circle cx="962.4" cy="582" r="8" fill="#5d5974"/>
+<text x="962.4" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
 </svg>
