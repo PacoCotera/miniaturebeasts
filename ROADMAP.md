@@ -174,10 +174,10 @@ The direction for the site:
 ## Decisions needed next
 
 1. **The Station loop and UI**, the first piece of phase 3: the loop's rules are
-   decided and run headless in CI; the screens move to the Station's LVGL face
-   one at a time (`design/proposals/lvgl-switch.md`, decided 2026-10-09), each
-   becoming the sandbox's default when it passes its gate. The earlier
-   JavaScript drawing layer is deprecated.
+   decided and run headless in CI; the Station's screens are drawn by its LVGL
+   face, the only face in the sandbox. Pods is built on it; the other rooms
+   follow in the order of `design/proposals/lvgl-switch.md` and show "not built
+   yet" until then.
 2. **The cloud layer**, later: the optional, gated enhancements on top of the
    standalone kit.
 
