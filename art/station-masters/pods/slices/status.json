@@ -3113,5 +3113,95 @@
   "status": "new",
   "signed_in": null,
   "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-shake-dry-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-shake-dry-48x48": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-calm-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-calm-48x48": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-sleep-curled-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-sleep-curled-48x48": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S02-sniff-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S02-sniff-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S02-puff-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S02-puff-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S02-sleep-curled-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S02-sleep-curled-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S03-dig-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S03-dig-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S03-glow-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S03-glow-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S03-sleep-curled-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+ },
+ "pose-S03-sleep-curled-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
  }
 }

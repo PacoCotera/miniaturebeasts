@@ -1488,5 +1488,158 @@
    "thoughtsTokenCount": 282,
    "totalTokenCount": 2358
   }
+ },
+ {
+  "tag": "pose-S01-shake-dry try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.186132,
+  "mxn": 3.7226,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:17:46Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 546,
+   "candidatesTokenCount": 1304,
+   "thoughtsTokenCount": 238,
+   "totalTokenCount": 2088
+  }
+ },
+ {
+  "tag": "pose-S01-calm try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.19344,
+  "mxn": 3.8688,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:18:03Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 540,
+   "candidatesTokenCount": 1305,
+   "thoughtsTokenCount": 298,
+   "totalTokenCount": 2143
+  }
+ },
+ {
+  "tag": "pose-S01-sleep-curled try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182162,
+  "mxn": 3.6432,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:18:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 541,
+   "candidatesTokenCount": 1312,
+   "thoughtsTokenCount": 197,
+   "totalTokenCount": 2050
+  }
+ },
+ {
+  "tag": "pose-S02-sniff try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.184198,
+  "mxn": 3.684,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:18:33Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 539,
+   "candidatesTokenCount": 1299,
+   "thoughtsTokenCount": 227,
+   "totalTokenCount": 2065
+  }
+ },
+ {
+  "tag": "pose-S02-puff try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185522,
+  "mxn": 3.7104,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:18:49Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 541,
+   "candidatesTokenCount": 1328,
+   "thoughtsTokenCount": 209,
+   "totalTokenCount": 2078
+  }
+ },
+ {
+  "tag": "pose-S02-sleep-curled try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182996,
+  "mxn": 3.6599,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:19:04Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 538,
+   "candidatesTokenCount": 1282,
+   "thoughtsTokenCount": 234,
+   "totalTokenCount": 2054
+  }
+ },
+ {
+  "tag": "pose-S03-dig try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181574,
+  "mxn": 3.6315,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:19:20Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 547,
+   "candidatesTokenCount": 1302,
+   "thoughtsTokenCount": 202,
+   "totalTokenCount": 2051
+  }
+ },
+ {
+  "tag": "pose-S03-glow try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.18037,
+  "mxn": 3.6074,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:19:36Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 545,
+   "candidatesTokenCount": 1272,
+   "thoughtsTokenCount": 222,
+   "totalTokenCount": 2039
+  }
+ },
+ {
+  "tag": "pose-S03-sleep-curled try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181202,
+  "mxn": 3.624,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:19:51Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 541,
+   "candidatesTokenCount": 1278,
+   "thoughtsTokenCount": 223,
+   "totalTokenCount": 2042
+  }
  }
 ]
