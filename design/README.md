@@ -48,3 +48,9 @@ document says so in its **Not designed yet** section.
 | **founder** | A mibi created from a sample. It has no parents |
 | **carried / expressed** | A variant can be present in a genome without showing (carried) or showing (expressed) |
 | **bonded** | A mibi the player has chosen to raise. Only bonded mibis need care |
+| **chapter** | One page of a species' genome, such as Coat or Movement, read one at a time on a pod or mibi |
+| **trait** | One picture on a chapter's page, such as Markings or Eyes, standing for the loci beneath it |
+| **field guide** | The Library's record of a species: every look the player has seen for each trait, and what is still unseen |
+| **wish** | A dream mibi the player pins from looks in the field guide. It guides which pods and pairs to pursue and never changes a genome |
+| **sitting** | What research earns: it pays for one mibi's portrait. The player holds one at a time |
+| **Library** | The Station's room for species: the collection at a glance, and each species' book with its field guide |

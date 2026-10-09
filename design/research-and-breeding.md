@@ -66,7 +66,7 @@ Each trait reads as one of these:
 | Both copies give the same look | only that look |
 | A blend between two looks | from one look to the other |
 | A look switched off in this mibi | the shown look, and what sleeps under it, which can wake in a child |
-| A doing (movement, stamina, character) | the doing, marked "breed to change" |
+| A doing that only breeding changes (movement, stamina, character) | the doing, marked "breed to change" |
 
 A hidden copy shows only in a read
 ([Genomics](creatures-and-genomics.md#how-two-copies-show)). When a
@@ -135,7 +135,7 @@ A **founder** is a mibi grown from one pod
   three pictures, all drawn from this pod's own two copies: as the pod is, only
   the first copy, or only the second. A trait whose two copies give the same
   look has one picture. Which traits can be shaped is in
-  [Genomics](creatures-and-genomics.md#the-three-kinds-of-locus).
+  [Genomics](creatures-and-genomics.md#the-four-kinds-of-locus).
 - Untouched and unread traits keep the pod's values, including ones the player
   knows nothing about.
 - **A shape that won't grow.** Some combinations can't make a body. Create names
@@ -273,11 +273,12 @@ means:
 
 ## Not designed yet
 
-- The shipped economy. Prices and waits are loose so the loop plays through
-  quickly, and they get dearer once the loop holds.
+- The prices and waits of the finished game. The values in this document are
+  set low so the whole loop can be played through quickly.
 - How much Data an expedition yields, by kind of place.
 - How deep a family line must be to earn a sitting.
-- Which species change the default of looks shaped and doings bred, and how.
+- How a self-changing trait (Glow, Basking, Phase) reads on its page, and
+  whether the player sees it change.
 - Editing a copy with a rare item.
 - Wonders: how the player finds the combined traits a species can show
   ([Genomics](creatures-and-genomics.md#not-designed-yet)).
