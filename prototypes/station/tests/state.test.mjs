@@ -342,3 +342,16 @@ test("p.first: written once per trait at read time, only when the look is new; a
   S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, 1000); const b = st.tray[1]; S.skipIdentify(st, b); S.read(st, b, "coat", settings);
   assert.deepEqual(b.first, [], "the same genome brings nothing new: no mark");
 });
+
+test("compare: two pods whose loci differ but whose lines read the same carry no mark", () => {
+  const fr = frameOf("S09"), ts = fr.chapters.flatMap((c) => c.traits), gs = Array.from({ length: 150 }, (_, i) => podGenome(fr, i + 1));
+  let found = 0;
+  for (const t of ts) for (let i = 0; i < gs.length && !found; i++) for (let j = i + 1; j < gs.length && !found; j++) {
+    const a = gs[i], b = gs[j];
+    if (t.loci.some((id) => JSON.stringify([...a.loci[id]].sort()) !== JSON.stringify([...b.loci[id]].sort())) && traitState(fr, t, a).line === traitState(fr, t, b).line) {
+      found = 1; const mk = (g, id) => ({ id, sp: 1, species: "S09", idd: 1, genome: g, read: fr.chapters.map((c) => c.id) });
+      assert.equal(S.compareDiff({}, mk(a, "x"), mk(b, "y")).includes(t.id), false, `${t.id}: same line, no mark`);
+    }
+  }
+  assert.ok(found, "such a pair exists among 150 genomes");
+});
