@@ -1,0 +1,26 @@
+[
+ {
+  "name": "halo-S04-clear",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/halo-sil-S04.png",
+    "The creature's silhouette (white shape on black) to be turned into a figure of light; keep its outline exactly:"
+   ]
+  ],
+  "prompt": "Output a NEW image of exactly the same composition and the same silhouette: turn the white silhouette into a FIGURE OF SOFT, COOL LIGHT, as if the creature were made of pale cyan to frost-white glowing light, lit from the upper left. The light is a painted glow with volume: a brighter core inside the body's volume (the head and the back), falling off gently toward the edges into a soft halo about as wide as one twentieth of the figure's height beyond the contour, the upper-left contour a little brighter than the rest. Keep the creature's silhouette EXACTLY as given: do not add, remove or change any limb, tail, horn, antenna or other part. ABSOLUTELY NO eyes, no face details, no fur, feathers, scales, patterns, markings, no outline, no sparkles, no ring or halo disc above the head, nothing cartoon-ghost-like. Only the glowing figure on a perfectly flat pure black ground (hex 000000), nothing else in the picture."
+ },
+ {
+  "name": "halo-S07-clear",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/halo-sil-S07.png",
+    "The creature's silhouette (white shape on black) to be turned into a figure of light; keep its outline exactly:"
+   ]
+  ],
+  "prompt": "Output a NEW image of exactly the same composition and the same silhouette: turn the white silhouette into a FIGURE OF SOFT, COOL LIGHT, as if the creature were made of pale cyan to frost-white glowing light, lit from the upper left. The light is a painted glow with volume: a brighter core inside the body's volume (the head and the back), falling off gently toward the edges into a soft halo about as wide as one twentieth of the figure's height beyond the contour, the upper-left contour a little brighter than the rest. Keep the creature's silhouette EXACTLY as given: do not add, remove or change any limb, tail, horn, antenna or other part. ABSOLUTELY NO eyes, no face details, no fur, feathers, scales, patterns, markings, no outline, no sparkles, no ring or halo disc above the head, nothing cartoon-ghost-like. Only the glowing figure on a perfectly flat pure black ground (hex 000000), nothing else in the picture."
+ }
+]

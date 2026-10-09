@@ -16,7 +16,7 @@ def fit(rgba):
     out.paste(im, ((W - im.width) // 2, (H - im.height) // 2)); return np.asarray(out).astype(float)
 def grade(rgba, peak=110.0, mean=50.0):
     p = rgba.copy(); a = p[..., 3] / 255.0; luma_full = (p[..., :3] @ L3)
-    for gamma in np.linspace(1.0, 9.0, 160):                                            # darken the middle until the figure's mean falls to the brief (a brighter core, a falloff), keeping the peak
+    for gamma in np.linspace(1.0, 16.0, 320):                                            # darken the middle until the figure's mean falls to the brief (a brighter core, a falloff), keeping the peak
         ag = a ** gamma; L = luma_full * ag; g = peak / L.max(); ag2 = np.clip(ag * g, 0, 1); L2 = luma_full * ag2; foot = ag2 > 0.01
         if L2[foot].mean() <= mean: break
     q = p.copy(); q[..., 3] = ag2 * 255; return q

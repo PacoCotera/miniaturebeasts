@@ -11,11 +11,15 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE);
 OUT = "slices/"; GROW = "../../../prototypes/workbench/grow/out/"
 SPECIES = {"S01": (GROW + "S01/07bef58c9d38d564/station-side-600x620.png", False), "S09": (GROW + "S09/3982a7117cfa0fc3/station-side-600x620.png", False), "S12": (GROW + "S12/2af58fb73ac5cbbd/station-portrait-600x620.png", True)}
 K = 4; W, H = 128 * K, 160 * K; BOX = (112 * K, 144 * K)
-def silhouette(path, flip):
+def silhouette(path, flip, plain=False):
     im = Image.open(path).convert("RGB")
     if flip: im = im.transpose(Image.FLIP_LEFT_RIGHT)
     a = np.asarray(im).astype(float); border = np.concatenate([a[:6].reshape(-1, 3), a[-6:].reshape(-1, 3), a[:, :6].reshape(-1, 3), a[:, -6:].reshape(-1, 3)]); bg = np.median(border, axis=0)
-    d = np.abs(a - bg).max(2); m = (d > 20).astype(np.uint8) * 255
+    d = np.abs(a - bg).max(2)
+    if plain:                                   # the placeholder renders carry a soft cast shadow on the ground: a grey scaling of the ground colour, left out
+        r = a / bg; spread = r.max(2) - r.min(2); shadow = (spread < 0.045) & (r.mean(2) < 0.985) & (r.mean(2) > 0.55); m = ((d > 14) & ~shadow).astype(np.uint8) * 255
+        m = np.asarray(Image.fromarray(m).filter(ImageFilter.MedianFilter(3)))
+    else: m = (d > 20).astype(np.uint8) * 255
     mi = Image.fromarray(m).filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(5))                       # close small gaps
     m = np.asarray(mi) > 127
     lab = np.zeros(m.shape, int); n = 0; sizes = {}

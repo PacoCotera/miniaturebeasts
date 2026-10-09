@@ -10,6 +10,7 @@ for n in m:
     elif n in ("room-bench-stage", "room-cradle"): sign(n, "signed", "pass 4", "re-cut to the layout of design-pods-relayout 29b6dc9 (pool on x 632)" if n == "room-bench-stage" else "")
     elif n in ("room-cradle-front", "room-shelf"): sign(n, "signed", "pass 7b", "re-cut for the new rectangle (shelf 488,368,288,72)" if n == "room-shelf" else "")
     elif re.match(r"plate-name-\d+x24$", n): sign(n, "signed", "pass 7b", "the 20 px name on its plate (the 0.6 tone signed in pass 6)")
+    elif re.match(r"pod-(large|medium|small|well)-unknown", n): sign(n, "new", None, "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict")
     elif re.match(r"pod-(large|medium|small)-", n): sign(n, "signed", "pass 6", "layers signed across passes 4 to 7b; the 33 are standing")
     elif n.startswith("pod-well-"): sign(n, "new", None, "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict")
     elif n.startswith("trait-picture-frame-"):
