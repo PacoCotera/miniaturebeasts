@@ -70,6 +70,6 @@ void word_rail(void) {
   if (focused >= 0 && focused < placed) {
     char ring[24]; spec_str(F, "colours.ring", ring, sizeof ring);
     int box[4] = { tabs[focused].x, tabs[focused].y, tabs[focused].w, tabs[focused].h };
-    v_region("focus", LAYER_ART); word_focusRingFor(v_fmt("rail.%d.focus", focused), box, "rail", ring);
+    v_region("focus", LAYER_CHROME); word_focusRingFor(v_fmt("rail.%d.focus", focused), box, "rail", ring);
   }
 }

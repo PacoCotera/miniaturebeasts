@@ -16,7 +16,8 @@ static void composed(const char *id, int x, int y, int w, int h, const char *ops
   prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
 }
 static void draw(const char *id, const int box[4], const char *shape, int circle, int fixedR, int cx, int cy, int cout, const char *colour);
-/* box: the focused target's x, y, w, h. form: the path of the group's `ring` in `spec`, or NULL for the default. colour: a palette name. */
+/* The ring is drawn on the layer the caller set (chrome, by every screen): a ring has no layer of its own.
+   box: the focused target's x, y, w, h. form: the path of the group's `ring` in `spec`, or NULL for the default. colour: a palette name. */
 void word_focusRing(const char *id, const int box[4], const char *spec, const char *form, const char *colour) {
   char shape[16] = "round"; int circle = 0, fixedR = 0, cx = 0, cy = 0, cout = 0;
   if (form && spec_str(spec, form, shape, sizeof shape) == 0) {
@@ -50,21 +51,21 @@ static void draw(const char *id, const int box[4], const char *shape, int circle
     int rho, ox, oy;
     if (fixedR > 0) { rho = fixedR; ox = x + cx; oy = y + cy; } else { rho = (w >> 1) + cout; ox = x + (w >> 1); oy = y + (h >> 1); }
     snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", 2 * rho, 2 * rho, width, colour);
-    v_layer(LAYER_ART); composed(id, ox - rho, oy - rho, 2 * rho, 2 * rho, ops);
+    composed(id, ox - rho, oy - rho, 2 * rho, 2 * rho, ops);
   } else if (strcmp(shape, "feet") == 0) {
     int widen = fi("focus.feet.widen", 16), eh = fi("focus.feet.height", 24), ew = w + widen;
     snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", ew, eh, width, colour);
-    v_layer(LAYER_ART); composed(id, x + ((w + 1) >> 1) - ((ew + 1) >> 1), y + h - ((eh + 1) >> 1), ew, eh, ops);
+    composed(id, x + ((w + 1) >> 1) - ((ew + 1) >> 1), y + h - ((eh + 1) >> 1), ew, eh, ops);
   } else if (strcmp(shape, "tab") == 0) {
     int slant = fi("focus.ring.tab.slant", 16), tout = fi("focus.ring.tab.outside", 4), top = fi("focus.ring.tab.top", 42), slantTo = fi("focus.ring.tab.slantTo", 80), bottom = fi("focus.ring.tab.bottom", 84), rb = fi("focus.ring.tab.radiusBottom", 6), tabTop = fi("regions.rail.y", 40);
     snprintf(ops, sizeof ops, "[[\"tabRing\",0,0,%d,%d,%d,%d,%d,%d,%d,%d,%d,\"%s\"]]", w, width, slant, tout, top, slantTo, bottom, rb, tabTop, colour);
-    v_layer(LAYER_ART); composed(id, x - tout, top, w + 2 * tout + slant, bottom - top, ops);
+    composed(id, x - tout, top, w + 2 * tout + slant, bottom - top, ops);
   } else if (strcmp(shape, "round") == 0) {
     if (w < 8 || h < 8) { v_error("word focusRing: a target under 8 px on an axis cannot have a round ring"); return; }
     int S = 2 * (radius + width) + 4, inset = radius + width;
     snprintf(ops, sizeof ops, "[[\"ring\",\"round\",0,0,%d,%d,%d,%d,\"%s\"]]", S, S, width, radius, colour);
     int src = prim_source(ops, S, S);
     if (src < 0) { v_error("word focusRing: the ring's source picture is refused"); return; }
-    v_layer(LAYER_CHROME); prim_node(v_id(id), FN_NINE, x - outside, y - outside, w + 2 * outside, h + 2 * outside, ((uint32_t)inset << 24) | ((uint32_t)inset << 16) | ((uint32_t)inset << 8) | (uint32_t)inset, src, 0);
+    prim_node(v_id(id), FN_NINE, x - outside, y - outside, w + 2 * outside, h + 2 * outside, ((uint32_t)inset << 24) | ((uint32_t)inset << 16) | ((uint32_t)inset << 8) | (uint32_t)inset, src, 0);
   } else { char b[100]; snprintf(b, sizeof b, "word focusRing: %.40s is not a ring form", shape); v_error(b); }
 }

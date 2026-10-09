@@ -22,16 +22,16 @@ const hex = (r, g, b) => "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "
 const ART = [/^emblem:/, /^icon:/, /^grow:/, /^waiting:/, /^kinring:/, /^hatch:/, /^beam:/, /^glint|^star/, /^mark-(species|asleep|line-seed|can-grow|waiting)/, /^place:[a-z]+:16$/, /^cell-outline/];
 const isArt = (id) => ART.some((re) => re.test(id));
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
-const standIn = (id, w, h, slice, tile) => {
-  const d = new Uint8ClampedArray(w * h * 4), k = hash(id);
+const standIn = (id, w, h, slice, tile, salt = 0) => {
+  const d = new Uint8ClampedArray(w * h * 4), k = hash(id) + salt;
   let rgb; if (isArt(id)) rgb = rgbs[k % rgbs.length]; else { rgb = [70 + (k & 127), 70 + ((k >> 7) & 127), 70 + ((k >> 14) & 127)]; while (inPalette.has(hex(...rgb))) rgb[0]++; }
   for (let i = 0; i < w * h; i++) { d[i * 4] = rgb[0]; d[i * 4 + 1] = rgb[1]; d[i * 4 + 2] = rgb[2]; d[i * 4 + 3] = 255; }
   return { w, h, data: d, ...(slice ? { slice, tile } : {}) };
 };
-async function setup(c) {
+async function setup(c, salted = null) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   assert.equal(f.send({ t: "palette", name: "station", colours: palette }), 0); assert.equal(f.send({ t: "spec", screen: "frame", json: frameSpec }), 0); assert.equal(f.send({ t: "spec", screen: "pods", json: podsSpec }), 0);
-  for (const p of c.pictures) f.handleOf(p.id, (id) => standIn(id, p.w, p.h, p.slice, p.tile));
+  for (const p of c.pictures) f.handleOf(p.id, (id) => standIn(id, p.w, p.h, p.slice, p.tile, id === salted ? 1 : 0));
   return f;
 }
 const frames = (f, n = 3) => { for (let i = 0; i < n; i++) f.frame((f.t = (f.t ?? 0) + 16)); };
@@ -48,3 +48,14 @@ for (const c of cases) {
   });
 }
 test("the check bites: the painted layer shows pictures outside the palette in some case", { skip }, () => { assert.ok(painted > 0, "no case drew a painted picture"); });
+
+// An art piece wrongly put on the painted layer would escape the palette check (it would simply not show on pass 2). So each art id the cases draw is also checked to be visible: its stand-in
+// recoloured, the pass-2 frame must change.
+const artSeen = new Map(); for (const c of cases) for (const p of c.pictures) if (isArt(p.id) && !artSeen.has(p.id)) artSeen.set(p.id, c);
+const pass2 = async (c, salted) => { const f = await setup(c, salted); assert.equal(f.props(c.props), 0); frames(f); if (c.events) { const t0 = f.t; for (const e of c.events) f.send({ t: "event", ...e }); f.frame(t0 + c.at); } f.pass(2); return f.hash(); };
+for (const [id, c] of artSeen) {
+  test(`layers, the art id ${id} shows on pass 2`, { skip }, async () => {
+    const same = await pass2(c, null), changed = await pass2(c, id);
+    assert.notEqual(same, changed, `${id} is drawn in "${c.name}" but does not show with chrome and art`);
+  });
+}
