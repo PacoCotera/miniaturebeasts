@@ -2035,9 +2035,9 @@
   "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
  },
  "room-bench-stage-collection": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection's bench, no cone (ef254a37); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the collection's bench, no cone"
  },
  "mark-can-grow-16": {
   "status": "signed",
@@ -2050,34 +2050,34 @@
   "note": "the waiting mark: three pod silhouettes"
  },
  "place-meadow-64x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "place-pond-64x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "place-rock-64x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "place-wood-64x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "place-cave-64x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "panel-place-320x224": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection place's glass card, a fixed master placed 1:1 at every place (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the collection place's glass card, a fixed master placed 1:1 at every place"
  },
  "pod-large-pattern-segments-relief": {
   "status": "signed",

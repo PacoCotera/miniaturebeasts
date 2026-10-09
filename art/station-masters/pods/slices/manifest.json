@@ -6858,9 +6858,9 @@
   "src": "bench-e2",
   "made": "the collection's bench: the same generated glass wall with no cone of light (the window lies wholly in the wall's own left strip, mirrored), graded as room-bench-stage with the vignette centred on x 512",
   "sha256": "cc7fe4242032c8f9626f2bfe6b28738fc8b2581c41e30dafc35666191114bede",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection's bench, no cone (ef254a37); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "status_note": "the collection's bench, no cone"
  },
  "mark-can-grow-16": {
   "size": [
@@ -6912,9 +6912,9 @@
   "src": "place-meadow",
   "made": "the meadow place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
   "sha256": "1ab545a590d5e69c8a5dbec5e623aad95e7d82e86c887000d03f89a1707f224e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "place-pond-64x64": {
   "size": [
@@ -6930,9 +6930,9 @@
   "src": "place-pond",
   "made": "the pond place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
   "sha256": "e17c94bf08939691d08f4f3c9882e12189ea4a23ab4108f8ff847e8f5f4fc99f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "place-rock-64x64": {
   "size": [
@@ -6948,9 +6948,9 @@
   "src": "place-rock",
   "made": "the rock place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
   "sha256": "9bc3c7801fafb8426a506e701c113c7d2e86da985ef5489c3812f3335c135e3f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "place-wood-64x64": {
   "size": [
@@ -6966,9 +6966,9 @@
   "src": "place-wood",
   "made": "the wood place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
   "sha256": "aeea3ff5939c3e51a290562cbd99e49ccad03ef96b3582996adf61f6821e4a35",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "place-cave-64x64": {
   "size": [
@@ -6984,9 +6984,9 @@
   "src": "place-cave",
   "made": "the cave place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
   "sha256": "c825a5380460798afb932816e479178601a81a23af34d377a1802d7f7e8fae9b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
  },
  "panel-place-320x224": {
   "size": [
@@ -6997,9 +6997,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the collection place's glass card: panel-role dark glass, a hairline edge lit upper left, the top-left light, 6 px corners; one fixed master placed 1:1 at every place (16 + 336c, 48 + 240r)",
   "sha256": "f7c11d6e4958160cefe39c7686c60b57f6a3828f62a5c456fa039829f29d47f7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection place's glass card, a fixed master placed 1:1 at every place (628fb6b6); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "status_note": "the collection place's glass card, a fixed master placed 1:1 at every place"
  },
  "pod-large-pattern-segments-relief": {
   "size": [
