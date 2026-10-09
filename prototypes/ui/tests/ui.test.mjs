@@ -194,7 +194,7 @@ test("the open chapter page lays the cells on the grid: a flat tone and the crop
   assert.deepEqual(by["page.c0.pic"].rect, [448, 160, 128, 160]); assert.equal(by["page.c0.pic"].colour, "ground", "a read cell is one flat tone");
   assert.equal(by["page.c0.crop"].asset, "t:crop"); assert.deepEqual(by["page.c0.crop"].rect, [448, 160, 128, 160], "the crop placed 1:1 on the cell");
   const nw = ctx.measure("Crown", 16, 400), total = nw + 4 + 12 + 4 + 28 + 4 + 6, x0 = 448 + Math.round((128 - total) / 2);   // the name and its glyphs, 4 px apart, centred together
-  assert.deepEqual(by["page.c0.name"].rect, [x0, 160 + 160 + 4, nw, 20]);
+  assert.deepEqual(by["page.c0.name"].rect, [x0, 160 + 160 + 4 + 4, nw, 20], "the name's cap top is line y + 4 (the line is 20, the capitals 12)");   // centred in its line, not top-aligned
   assert.deepEqual(by["page.c0.g0"].rect, [x0 + nw + 4, 324 + 2, 12, 16]); assert.deepEqual(by["page.c0.g1"].rect, [x0 + nw + 4 + 12 + 4, 324 + 2, 28, 16]); assert.deepEqual(by["page.c0.new"].rect, [x0 + nw + 4 + 12 + 4 + 28 + 4, 324 + 7, 6, 6]);
   assert.ok(!by["page.c2.pic"] && !by["page.c2.crop"] && !by["page.c2.g0"], "an unread cell draws nothing inside; its name shows"); assert.equal(by["page.c2.outline"].kind, "sprite"); assert.deepEqual(by["page.c2.outline"].rect, [736, 160, 128, 160], "the signed dotted outline 1:1 on the cell's rectangle");
   assert.equal(by["page.c1.wipe"].kind, "clip"); assert.deepEqual(by["page.c1.wipe"].rect, [592, 160, 128, 80]); assert.ok(by["page.c1.wipeline"]);

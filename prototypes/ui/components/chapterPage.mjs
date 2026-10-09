@@ -20,7 +20,7 @@ export function chapterPage(ctx, id, region, props) {
     (props.heading.who || []).forEach((m, k) => region.who && nodes.push(...layer(`${id}.who.${k}`, [px + region.who.marks[k][0], py + region.who.marks[k][1], region.who.marks[k][2], region.who.marks[k][3]], m)));   // the marks that say who it is, as on the overview
   } else if (props.heading && H) {
     nodes.push({ id: id + ".emblem", kind: "sprite", rect: [px + H[0], py + H[1], 24, 24], asset: props.heading.emblem });
-    nodes.push({ id: id + ".word", kind: "text", rect: [px + H[0] + 32, py + H[1], Math.round(ctx.measure(props.heading.word, 20, 500)), 24], text: props.heading.word, px: 20, weight: 500, colour: Cc.heading, align: "left" });
+    nodes.push({ id: id + ".word", kind: "text", rect: [px + H[0] + 32, py + H[1] + Math.ceil((24 - ctx.cap(20) + 1) / 2), Math.round(ctx.measure(props.heading.word, 20, 500)), 24], text: props.heading.word, px: 20, weight: 500, colour: Cc.heading, align: "left" });
     for (const [k, extra] of (props.heading.extra || []).entries()) nodes.push({ id: `${id}.hx${k}`, kind: "sprite", rect: [px + H[0] + 32 + Math.round(ctx.measure(props.heading.word, 20, 500)) + 12 + extra.dx, py + H[1] + (extra.dy || 0), extra.w, extra.h], asset: extra.asset });
   }
   if (region.rule && props.heading && !props.heading.pod) { const g = pageGrid(region, Math.max(1, props.count ?? props.cells.length)), right = Math.max(...g.cells.map((q) => q[0])) + g.picture[0]; nodes.push({ id: id + ".rule", kind: "rect", rect: [px + region.rule.at[0], py + region.rule.at[1], right - (px + region.rule.at[0]), region.rule.h], colour: Cc.rule, region: "page.rule" }); }   // one hairline under the heading, from the first column's left edge to the last column's right edge
@@ -44,7 +44,7 @@ export function chapterPage(ctx, id, region, props) {
       const items = [...(c.glyphs || []).map((g) => ({ g, ...LM.glyphs[g.key] })), ...(c.isNew && N && props.newMark ? [{ dot: true, size: N.size, top: LM.glyphs.new.top }] : [])];
       const total = nw + items.reduce((a, q) => a + LM.gap + q.size[0], 0);
       let x = cx + Math.round((pw - total) / 2);
-      nodes.push({ id: cid + ".name", kind: "text", rect: [x, ny, nw, line], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });
+      nodes.push({ id: cid + ".name", kind: "text", rect: [x, ny + Math.floor((line - ctx.cap(16)) / 2), nw, line], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });
       x += nw;
       items.forEach((q, k) => { x += LM.gap; const r = [x, ny + q.top, q.size[0], q.size[1]]; nodes.push(...(q.dot ? markNode(cid + ".new", props.newMark, r, "the field-guide mark master") : layer(`${cid}.g${k}`, r, q.g.asset))); x += q.size[0]; });   // an unpainted glyph keeps its room and draws nothing
     } else {
