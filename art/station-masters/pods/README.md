@@ -584,6 +584,13 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 51 - two proofs, no slice changed
+
+`proposals/` (`tools/proposals_p51.py`, `tools/proposals_anchor.py`). The signed `compare-mark-differs-12x12`, Tail and Crown slices are untouched.
+- **The differs mark** (`proposals/differs-mark-1x.png` and `-4x.png`, beside "Markings" and "Tail" in 16 px Inter): the signed one; **A**, the lower stroke shifted 5 px right (the strokes share only 2 px of width, a stepped pair, `differs-a-12x12.png`); **E**, slanted strokes (each stroke a parallelogram leaning, the lower shifted 3 px right, `differs-e-12x12.png`). Reading at 1x: the signed one is an equals-like pair; A reads as a step, an offset pair of dashes, and is the clearest of the three; E reads as slanted dashes and starts to look like a hatch. I recommend A.
+- **Anchoring the Tail and Crown** (`proposals/anchor-tail-crown-1x.png` and `-3x.png`; columns: signed, B faint body, S ground shadow, BS both; the Tail on the top row, the Crown below): **B** leaves the part's neighbourhood in at 35 percent alpha, fading over about 22 px; **S** a soft dark ellipse under the part. Reading: on the Crown, B gives a dark skull dome under the ears and horn that anchors it and reads as a head; S alone adds a faint floor line and anchors little. On the Tail, B shows the rump's feathers as a dark murky smudge at the root (and a few warm pixels of the wing's edge in it), which does not yet read as a body, and S alone is a weak floor under a still-floating feather; if the Tail is to be anchored by its body the rump needs its own clean mask. No re-cut was made.
+
+
 ## Pass 50 - record only
 
 The five Crown slices are recorded signed under the pass 49 verdict (the near-white pixels are the painting's rim light). That closes the S09 crops. No pixel changed.
