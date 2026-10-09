@@ -16,7 +16,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadTypeNode } from "../../ui/type-node.mjs";
 import { SIZES } from "../../ui/type.mjs";
-import { railTabs, pageGrid, repeat } from "../../ui/layout.mjs";
+import { slantTabs, pageGrid, repeat } from "../../ui/layout.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
@@ -78,7 +78,7 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
     else if (id === "stamp.image") { const L = R.stamp.rect; must(rect[2] === rect[3] && rect[2] <= 104 && rect[2] >= 34 && Math.abs(rect[0] + rect[2] / 2 - (L[0] + L[2] / 2)) <= 1 && Math.abs(rect[1] + rect[3] / 2 - (L[1] + L[3] / 2)) <= 1, `the stamp ${rect} is not at most 104 px square and centred on its label ${L}`); }
     else if (id === "page") must(eq(rect, R.page.rect), `page ${rect} is not ${R.page.rect}`);
     else if (id === "compareA" || id === "compareB") must(eq(rect, R[id].rect), `${id} ${rect} is not ${R[id].rect}`);
-    else if (id === "rail.tab") { const i = +r.id.match(/^rail\.(\d+)$/)[1], n = c.pod.chapters, t = railTabs(R.rail, n, c.cmp ? -1 : -1).tabs[i]; must(t && rect[0] === t[0] && rect[2] === t[2] && rect[3] === t[3] && (rect[1] === t[1] || rect[1] === t[1] - frame.focus.lift.chrome), `rail tab ${i} ${rect} is not ${t}`); got.push(i); }
+    else if (id === "rail.tab") { const i = +r.id.match(/^rail\.(\d+)$/)[1], n = c.pod.chapters, S = frame.rail.slant, want = (o) => { const t = slantTabs(frame.rail, n, o).tabs[i]?.rect; return t && [t[0] + S, t[1] + 1, t[2] - S, t[3] - 2]; }, hit = Array.from({ length: n }, (_, o) => want(o)).find((w) => w && rect[0] === w[0] && rect[2] === w[2] && rect[3] === w[3] && (rect[1] === w[1] || rect[1] === w[1] - frame.focus.lift.chrome)); must(!!hit, `rail tab ${i} ${rect} is not the slanted tab's body in ${n} tabs`); got.push(i); }
     else if (id === "page.cell" || id === "page.diff" || id === "page.bracket") {
       const m = r.id.match(/^(page|pageA|pageB)\.c(\d+)\./), key = m[1] === "page" ? "page" : m[1] === "pageA" ? "compareA" : "compareB", spec = R[key].grid ? R[key] : R.compareA, region = { ...spec, rect: R[key].rect }, traits = c.regions.filter((q) => q.region === "page.cell" && q.id.startsWith(m[1] + ".c")).length, g = pageGrid(region, traits), cell = g.cells[+m[2]], [pw, ph] = g.picture, D = pods.page.diff;
       const want = id === "page.cell" ? [cell[0], cell[1], pw, ph] : id === "page.diff" ? [cell[0], cell[1], pw, D.edge] : [cell[0] + Math.round(pw / 2) - D.bracket[0] / 2, cell[1] + D.inset, D.bracket[0], D.bracket[1]];
