@@ -154,20 +154,37 @@ def pages():
         save(nm, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [px, 112, w, 440], "9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge", "page-pane")
 # ---- picture frames
 def panenine():
-    """page-pane-256x440 made a clean nine-slice (pods.json: the pane shortens to its content, 264 / 248 / 440 high; corners 1:1, edges and fill tiled). The painted pane's
-    edges varied along their length (a lit hairline of uneven brightness) and its corners did not match them, so tiling would have shown. Insets 16 on all four sides:
-    each edge is its median profile (constant along the edge), each corner is a mitre of the two neighbouring edge profiles, the fill is one flat value (the interior's
-    own variation is a standard deviation of 3). The tile strips are the 32 px at the middle of each edge and of the fill."""
-    m = np.asarray(Image.open(OUT + "page-pane-256x440.png").convert("RGBA")).astype(float); H, W = m.shape[:2]; I = 16; new = m.copy()
-    top = np.median(m[:I, I:W - I], axis=1); bot = np.median(m[H - I:, I:W - I], axis=1); lef = np.median(m[I:H - I, :I], axis=0); rig = np.median(m[I:H - I, W - I:], axis=0)
+    """page-pane-256x440 as a clean nine-slice with the house's light kept (pods.json: the pane shortens to its content, 264 / 248 / 440 high). The painted pane's edges varied
+    along their length and its corners did not match them, so tiling would have shown. Insets left 64, top 64, right 16, bottom 16: each edge is its median profile (the lit hairline),
+    constant along its length; the other three corners are mitres of their two edge profiles; the fill is one flat value at luma 21 (the old body was a step lighter); the top-left
+    piece is 64x64 and carries the painted pane's soft top-left falloff (about 43 at the top left against about 20 across the body), fading to the plain edge and fill at its right and
+    bottom seams, so corners never stretch and it holds at every height. Run after `pages` (it reads the painted pane)."""
+    m = np.asarray(Image.open(OUT + "page-pane-256x440.png").convert("RGBA")).astype(float); H, W = m.shape[:2]; I = 16; K = 64
+    luma = lambda a: a[..., :3] @ np.array([0.299, 0.587, 0.114])
+    top = np.median(m[:I, K:W - I], axis=1); bot = np.median(m[H - I:, K:W - I], axis=1); lef = np.median(m[K:H - I, :I], axis=0); rig = np.median(m[K:H - I, W - I:], axis=0)
     cx, cy = W // 2 - 16, H // 2 - 16; patch = np.median(m[cy:cy + 32, cx:cx + 32].reshape(-1, 4), axis=0)
-    new[:I, I:W - I] = top[:, None, :]; new[H - I:, I:W - I] = bot[:, None, :]; new[I:H - I, :I] = lef[None, :, :]; new[I:H - I, W - I:] = rig[None, :, :]; new[I:H - I, I:W - I] = patch
-    for y in range(I):
+    fill = patch.copy(); fill[:3] = patch[:3] * 21.0 / luma(patch[None, :])[0]
+    new = np.zeros_like(m); new[:] = fill
+    new[:I, K:W - I] = top[:, None, :]; new[H - I:, K:W - I] = bot[:, None, :]; new[K:H - I, :I] = lef[None, :, :]; new[K:H - I, W - I:] = rig[None, :, :]
+    new[I:K, W - I:] = rig[None, :, :]; new[H - I:, I:K] = bot[:, None, :]                       # the right edge up to the top corner, the bottom edge back to the left corner
+    for y in range(I):                                                                          # the other three corners (16x16): mitres of their two edges
         for x in range(I):
-            new[y, x] = top[y] if y <= x else lef[x]; new[y, W - 1 - x] = top[y] if y <= x else rig[I - 1 - x]
+            new[y, W - 1 - x] = top[y] if y <= x else rig[I - 1 - x]
             new[H - 1 - y, x] = bot[I - 1 - y] if y <= x else lef[x]; new[H - 1 - y, W - 1 - x] = bot[I - 1 - y] if y <= x else rig[I - 1 - x]
-    save("page-pane-256x440", Image.fromarray(np.clip(new, 0, 255).astype(np.uint8), "RGBA"), [152, 112, 256, 440], "the page pane as a clean nine-slice: insets 16 on every side, corners 1:1, edges and fill tiled from the 32 px strips at their middles; serves 440, 264 and 248 high", "page-pane (painted), regularised")
-    MAN["page-pane-256x440"]["nine"] = {"insets": [16, 16, 16, 16], "edgeTile": 32, "fillTile": [32, 32], "heights": [440, 264, 248]}
+    # the top-left piece (64x64): the hairline bands (mitred at the very corner), fill elsewhere, then the painted falloff added with a weight fading to 0 at the right and bottom seams
+    C = np.zeros((K, K, 4)); C[:] = fill; C[:I, :] = top[:, None, :]; C[:, :I] = lef[None, :, :]
+    for y in range(I):
+        for x in range(I): C[y, x] = top[y] if y <= x else lef[x]
+    body = float(np.median(luma(m[cy:cy + 32, cx:cx + 32]))); g = np.exp(-0.5 * (np.arange(-18, 19) / 6.0) ** 2); g /= g.sum()
+    lp = np.pad(luma(m)[I:I + K + 24, I:I + K + 24], 18, mode="edge"); lp = np.apply_along_axis(lambda v: np.convolve(v, g, "same"), 0, lp); lp = np.apply_along_axis(lambda v: np.convolve(v, g, "same"), 1, lp)
+    idx = np.clip(np.arange(K) - I, 0, None); L = lp[18:, 18:][np.ix_(idx, idx)]; delta = np.clip(L - body, 0, None)           # the glass only (the bright hairline is left out of the blur)
+    sm = lambda t: t * t * (3 - 2 * t); fx = sm(np.clip((K - 1 - np.arange(K)) / 24.0, 0, 1))
+    wt = np.minimum(fx[None, :], fx[:, None]); band = (np.arange(K)[:, None] < I) | (np.arange(K)[None, :] < I); wt = np.where(band, wt * 0.35, wt)   # on the hairline bands a third of it
+    add = delta * wt; d_rgb = fill[:3] / luma(fill[None, :])[0]
+    C[..., :3] += add[..., None] * d_rgb[None, None, :]
+    new[:K, :K] = C
+    save("page-pane-256x440", Image.fromarray(np.clip(new, 0, 255).astype(np.uint8), "RGBA"), [152, 112, 256, 440], "the page pane as a clean nine-slice with the house's top-left light: insets left 64, top 64, right 16, bottom 16; serves 440, 264 and 248 high", "page-pane (painted), regularised")
+    MAN["page-pane-256x440"]["nine"] = {"insets": {"left": 64, "top": 64, "right": 16, "bottom": 16}, "edgeTile": 32, "fillTile": [32, 32], "heights": [440, 264, 248], "topLeftPiece": [64, 64]}
 def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
     sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96), (224, 352), (224, 160), (104, 160), (104, 96), (104, 64), (112, 112), (144, 176), (176, 144)]

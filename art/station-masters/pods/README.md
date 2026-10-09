@@ -86,7 +86,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
-| `page-pane-256x440` | 256×440 | (152, 112, 256, 440) | new: re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one | the page pane as a clean nine-slice: insets 16 on every side, corners 1:1, edges and fill tiled from the 32 px strips at their middles; serves 440, 264 and 248 high |
+| `page-pane-256x440` | 256×440 | (152, 112, 256, 440) | new: re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one | the page pane as a clean nine-slice with the house's top-left light: insets left 64, top 64, right 16, bottom 16; serves 440, 264 and 248 high |
 | `page-pane-408x440` | 408×440 | (176, 112, 408, 440) | withdrawn: signed in pass 1, withdrawn with the page's re-layout (the Read page is 256 wide); Compare still uses 408 | 9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge |
 
 ### Name, origin and message plates
@@ -335,6 +335,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 14c - the page pane keeps the house's light
+
+The nine-slice of pass 14 lost the pane's top-left light and its fill sat a step too light. Now (`panenine`, run after `pages`, which supplies the painted pane): insets left 64, top 64, right 16, bottom 16. The top-left piece is 64x64 and carries the painted pane's soft falloff (luma about 38 at 20 px in, against 20.5 across the body; the old pane read about 43 and 20), added to the glass only, a third of it on the hairline bands, fading to nothing at its right and bottom seams (seam differences 0). The other edges keep their median profiles and the lit hairline; the other three corners stay 16x16 mitres; the fill is one flat value at luma 21. The nine-slice at 440 reproduces the master exactly (max difference 0); 264 and 248 were built and checked by eye (brightened 3x) for seams. Manifest: `nine: {insets {left 64, top 64, right 16, bottom 16}, edgeTile 32, fillTile [32,32], heights [440,264,248], topLeftPiece [64,64]}`.
+
 
 ## Pass 14b - the tapered tail, the Grid composite's mibi pictures and read-again bottom line
 

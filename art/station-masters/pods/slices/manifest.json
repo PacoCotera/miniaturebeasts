@@ -3425,15 +3425,15 @@
    440
   ],
   "src": "page-pane (painted), regularised",
-  "made": "the page pane as a clean nine-slice: insets 16 on every side, corners 1:1, edges and fill tiled from the 32 px strips at their middles; serves 440, 264 and 248 high",
-  "sha256": "b97066c411d841d3505263442f8e66897b7e4497e356be8b1c4fe6b80f8fc9f2",
+  "made": "the page pane as a clean nine-slice with the house's top-left light: insets left 64, top 64, right 16, bottom 16; serves 440, 264 and 248 high",
+  "sha256": "7748ade654903c1897432627590d6ace6821e4bc850246bd3d192496ce7c0aa5",
   "nine": {
-   "insets": [
-    16,
-    16,
-    16,
-    16
-   ],
+   "insets": {
+    "left": 64,
+    "top": 64,
+    "right": 16,
+    "bottom": 16
+   },
    "edgeTile": 32,
    "fillTile": [
     32,
@@ -3443,6 +3443,10 @@
     440,
     264,
     248
+   ],
+   "topLeftPiece": [
+    64,
+    64
    ]
   },
   "status": "new",
