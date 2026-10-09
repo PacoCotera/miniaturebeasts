@@ -1,0 +1,36 @@
+[
+ {
+  "name": "sitting-backdrop-wood-r2",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/place2-wood.jpg",
+    "The place's stamp painting: take its colour palette and material character only (not its composition):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/sitting-backdrop-wood.jpg",
+    "The first attempt at this backdrop: keep its horizon at 60 percent of the height, its soft wash painting style and its green-brown palette, but repaint it as described:"
+   ]
+  ],
+  "prompt": "Output a NEW image: a painted backdrop for a miniature creature portrait stage seen straight on, aspect 4:3, a wood. The upper 60 percent is a back wall, the lower 40 percent is the ground, the ground line a straight horizontal at 60 percent of the height. LIGHT: a warm key light from the upper left, soft and golden, falling off toward the lower right. The whole middle of the picture is a calm, clearly LIGHT-ENOUGH mid-tone, much lighter than the first attempt: a warm olive-green and soft brown haze, middle grey brightness (about hex 6f6a45 in the wall's centre and about hex 7a6a48 on the floor in the centre), definitely not dark and not black. FORMS: soft out-of-focus tree trunks ONLY in the far left strip (the left 20 percent of the width) and the far right strip (the right 20 percent), and low behind the ground line; a few small roots at the very bottom corners. The entire centre of the picture (from 22 percent to 78 percent across and from 6 percent to 82 percent down) is empty smooth soft haze and smooth earth: no trunks, no leaves, no leaf litter, no plants, no sharp details and nothing brighter than the surroundings. The bottom centre strip (29 to 71 percent across, 88 to 96 percent down) is perfectly plain and even, one smooth tone. No creatures, no animals, no text, no letters, no numbers, no frame, no border, no UI, no figures. Soft fine painted grain like a gouache study, matte, nothing cartoonish."
+ },
+ {
+  "name": "pose-S01-calm-r2",
+  "aspect": "1:1",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "prototypes/workbench/grow/out/S01/07bef58c9d38d564/station-portrait-600x620.png",
+    "THE REFERENCE INDIVIDUAL (take its colours exactly: the head, snout and crest are one cool dark slate grey, never brown):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/pose-S01-calm.jpg",
+    "THE POSE TO KEEP (same composition, same pose, same size and place in the picture, same light):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same picture as the pose reference, the same calm standing creature in the same pose, the same size, framing, light and flat dark blue-teal ground (hex 162a37), with exactly one change: repaint the head, the snout and the three crest spikes in the cool dark slate grey of the reference individual (about hex 4a525a with lighter slate highlights and darker slate shadows, the same grey ramp as the body), removing every trace of brown or tan from the head and snout. Keep the cream feet and belly, the eyes and everything else exactly as they are. No text, no frame, nothing else added."
+ }
+]

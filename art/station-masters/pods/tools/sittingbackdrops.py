@@ -8,7 +8,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROO
 pal = {n: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for n, h in json.load(open("../../../prototypes/ui/palettes/station.json"))["colours"]}
 man = json.load(open("slices/manifest.json")); out = {}; rep = {}
 for n in ("plain", "meadow", "pond", "rock", "wood", "cave"):
-    im = Image.open(f"source/raw/sitting-backdrop-{n}.jpg").convert("RGB"); a = np.asarray(im).astype(float); H, W = a.shape[:2]
+    srcn = "wood-r2" if n == "wood" else n      # the wood was repainted in pass 90 (art director, a079009f)
+    im = Image.open(f"source/raw/sitting-backdrop-{srcn}.jpg").convert("RGB"); a = np.asarray(im).astype(float); H, W = a.shape[:2]
     c = a[:, int(W * .3):int(W * .7)].mean(1); k = 9; sm = np.stack([np.convolve(c[:, i], np.ones(k) / k, "same") for i in range(3)], 1); d = np.abs(sm[k:] - sm[:-k]).sum(1)
     lo, hi = int(H * .5), int(H * .8); y0 = lo + int(np.argmax(d[lo:hi])) + k // 2; T = 248 / 408
     t = max(0, int(np.ceil((y0 / T - H) / (1 / T - 1)))); Hc = (y0 - t) / T; Wc = Hc / 0.75
@@ -40,7 +41,7 @@ for n in ("plain", "meadow", "pond", "rock", "wood", "cave"):
         crop = Image.fromarray(np.clip(np.rint(outc), 0, 255).astype(np.uint8)); print("meadow knee", knee, "k", k)
     name = f"sitting-backdrop-{n}-544x408"; crop.save(f"slices/{name}.png", optimize=True); out[n] = crop
     rep[n] = {"horizon_row": y0, "crop": [x0, t, x0 + Wc, t + Hc], "scale": round(544 / Wc, 3)}
-    man[name] = {"size": [544, 408], "rect": None, "src": f"source/raw/sitting-backdrop-{n}.jpg (gemini-3-pro-image)", "made": f"the Sitting's {n} backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop {rep[n]['crop']}), reduced x{rep[n]['scale']} with Lanczos to 544x408, nothing else changed (pass 85)",
+    man[name] = {"size": [544, 408], "rect": None, "src": f"source/raw/sitting-backdrop-{srcn}.jpg (gemini-3-pro-image)", "made": f"the Sitting's {n} backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop {rep[n]['crop']}), reduced x{rep[n]['scale']} with Lanczos to 544x408, nothing else changed (pass 85)",
                  "sha256": hashlib.sha256(open(f"slices/{name}.png", "rb").read()).hexdigest()}
 json.dump(man, open("slices/manifest.json", "w"), indent=1); print(json.dumps(rep))
 # proof at 1x on the surface: each backdrop in the glass (24, 56) behind the gilt frame (16, 48) on the bezel ground, with the quiet zones marked by nothing (the proof shows the picture as the build will)

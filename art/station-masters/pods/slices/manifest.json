@@ -9779,9 +9779,9 @@
    408
   ],
   "rect": null,
-  "src": "source/raw/sitting-backdrop-wood.jpg (gemini-3-pro-image)",
-  "made": "the Sitting's wood backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [121, 177, 1079, 895]), reduced x0.568 with Lanczos to 544x408, nothing else changed (pass 85)",
-  "sha256": "51bfd041284c13004775c504f83a6b6736d3e026cc993af0abfa9be58e00627d",
+  "src": "source/raw/sitting-backdrop-wood-r2.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's wood backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [3, 0, 1196, 894]), reduced x0.456 with Lanczos to 544x408, nothing else changed (pass 85)",
+  "sha256": "9e8ae33217020982f44acccc6fe9fd44e3006efc484a678007ffa351f2ced19d",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
@@ -9820,7 +9820,7 @@
   "rect": null,
   "src": "slices/pose-S01-shake-dry-96x96.png",
   "made": "downsampled from the 96 (Lanczos), a mild unsharp mask, near-ground pixels set to the exact ground (the scripted pass in place of a hand pass) (pass 86)",
-  "sha256": "c65a3c09529fbff24d479f11b22a23ed0a5622c271801b000f6c8c560bdcccf7",
+  "sha256": "24c3b21b50067346ea4affdf856cd3c52c3a1fd0a9aa76d991f959155990c4ba",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
@@ -9831,9 +9831,9 @@
    96
   ],
   "rect": null,
-  "src": "source/raw/pose-S01-calm.jpg (gemini-3-pro-image)",
+  "src": "source/raw/pose-S01-calm-r2.jpg (gemini-3-pro-image)",
   "made": "the S01 pose picture, calm: a Pro painting of the species' individual doing the habit, its ground keyed to `ground`, the creature fitted into the centred 80x80 (8 px clear), x0.092, never enlarged (pass 86)",
-  "sha256": "10dbeae1711dcbcdf85050c6915ecdb32a4f0a53a6f6e63bfa34599608a471b6",
+  "sha256": "490fbc07fbfec650db113471c267d8b75dc8a1cae2b679452da5d352a049c391",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
@@ -9846,7 +9846,7 @@
   "rect": null,
   "src": "slices/pose-S01-calm-96x96.png",
   "made": "downsampled from the 96 (Lanczos), a mild unsharp mask, near-ground pixels set to the exact ground (the scripted pass in place of a hand pass) (pass 86)",
-  "sha256": "ebf1085636859ff95e42bbb3c8c9392595f0cfb1e468634e13c0c1168601a1cc",
+  "sha256": "3e994b4fb38f08652029ec7a975b27161857f24cd29d694ee16d266bbffde731",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
@@ -9857,9 +9857,9 @@
    96
   ],
   "rect": null,
-  "src": "source/raw/pose-S01-sleep-curled.jpg (gemini-3-pro-image)",
+  "src": "source/raw/pose-S01-sleep-curled-r2.png (gemini-3-pro-image, then the eyes closed by hand (tools/sittinglids.py))",
   "made": "the S01 pose picture, sleep-curled: a Pro painting of the species' individual doing the habit, its ground keyed to `ground`, the creature fitted into the centred 80x80 (8 px clear), x0.127, never enlarged (pass 86)",
-  "sha256": "c737fac4b57c6f12dfa9d9a689c32768439144ab852d756c7af106e6e345121e",
+  "sha256": "356a6b0c2cec198b58f2929d5ade7e98aa13f27a28aa93766f063b531412929a",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
@@ -9872,7 +9872,7 @@
   "rect": null,
   "src": "slices/pose-S01-sleep-curled-96x96.png",
   "made": "downsampled from the 96 (Lanczos), a mild unsharp mask, near-ground pixels set to the exact ground (the scripted pass in place of a hand pass) (pass 86)",
-  "sha256": "42c222342f1fbd6ab11759221377f6a147d807f7a0edec4c454e13b7ec8acf0d",
+  "sha256": "55fec79b95aa4b081ee7adb571942466f163f6365ee8001db78b5f19f98df6fd",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"

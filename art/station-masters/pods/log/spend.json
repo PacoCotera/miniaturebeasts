@@ -1811,5 +1811,39 @@
    "thoughtsTokenCount": 355,
    "totalTokenCount": 3202
   }
+ },
+ {
+  "tag": "sitting-backdrop-wood-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.200132,
+  "mxn": 4.0026,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:36:29Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 946,
+   "candidatesTokenCount": 1446,
+   "thoughtsTokenCount": 206,
+   "totalTokenCount": 2598
+  }
+ },
+ {
+  "tag": "pose-S01-calm-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.183234,
+  "mxn": 3.6647,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:36:44Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 717,
+   "candidatesTokenCount": 1279,
+   "thoughtsTokenCount": 236,
+   "totalTokenCount": 2232
+  }
  }
 ]
