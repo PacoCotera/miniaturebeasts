@@ -1105,44 +1105,44 @@
   "note": "signed: ring-well-empty-80x80"
  },
  "rail-tab-fill-unread-full-152x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
  },
  "rail-tab-fill-read-full-152x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
  },
  "rail-tab-fill-open-full-152x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
  },
  "rail-tab-fill-sealed-full-152x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
  },
  "rail-tab-fill-unread-compact-72x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
  },
  "rail-tab-fill-read-compact-72x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
  },
  "rail-tab-fill-open-compact-72x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
  },
  "rail-tab-fill-sealed-compact-72x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); signed in pass 8, awaiting the art director's re-sign"
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
  },
  "trait-picture-frame-112x112": {
   "status": "withdrawn",
@@ -1645,9 +1645,9 @@
   "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-frost-24x24": {
-  "status": "signed",
-  "signed_in": "pass 31 verdict",
-  "note": "the veiled frost mark"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 88: remapped for the overview stage after the art director's ruling (it stays art, its alpha had drifted): frostS at alpha 56 to bar, frostD at 81 to hairline, frostD at 89 to bevel, every visible pixel at alpha 255, geometry and stipple unchanged; awaiting the art director's sign"
  },
  "mark-clan-C01-24x24": {
   "status": "signed",
