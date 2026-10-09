@@ -13,7 +13,7 @@ static node_t g_o[MAX_OBJ];
 static int g_n, g_unknown, g_nseq;
 static lv_obj_t *g_seq[MAX_OBJ];
 static char g_text[1024];
-typedef struct { int w, h; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; int view_b; } asset_t;
+typedef struct { int w, h; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
 static asset_t g_a[MAX_ASSET];
 
 void scene_init(void) { g_n = 0; g_unknown = 0; }
@@ -36,17 +36,22 @@ static void dsc_of(lv_image_dsc_t *d, uint8_t *data, int w, int h, int stride) {
 uint8_t *scene_asset(int handle, int w, int h) {
   if (handle < 0 || handle >= MAX_ASSET || w <= 0 || h <= 0) return NULL;
   free(g_a[handle].px);
-  g_a[handle].px = (uint8_t *)calloc((size_t)w * h, 4); g_a[handle].w = w; g_a[handle].h = h; g_a[handle].view_b = -1;
+  g_a[handle].px = (uint8_t *)calloc((size_t)w * h, 4); g_a[handle].w = w; g_a[handle].h = h; g_a[handle].view_key = 0;
   dsc_of(&g_a[handle].dsc, g_a[handle].px, w, h, w * 4);
   return g_a[handle].px;
 }
-/* the nine parts of a picture as views into its own pixels (no copy): corners b x b, edges and the middle `mid` wide or tall, tiled by the objects */
-static void views_of(asset_t *s, int b) {
-  if (s->view_b == b) return;
-  int w = s->w, h = s->h, mid_w = w - 2 * b, mid_h = h - 2 * b, st = w * 4;
-  const int xs[3] = { 0, b, w - b }, ys[3] = { 0, b, h - b }, ws[3] = { b, mid_w, b }, hs[3] = { b, mid_h, b };
-  for (int j = 0; j < 3; j++) for (int i = 0; i < 3; i++) dsc_of(&s->view[j * 3 + i], s->px + ys[j] * st + xs[i] * 4, ws[i], hs[j], st);
-  s->view_b = b;
+/* the nine parts of a picture as views into its own pixels (no copy): the corners at the insets l, t, r, b, and the edges and the middle as one tile each (the first `tile` px
+   of the strip, or all of it when tile is 0), repeated by the objects over the target */
+#define INSETS(l, t, r, b) ((uint32_t)(l) << 24 | (uint32_t)(t) << 16 | (uint32_t)(r) << 8 | (uint32_t)(b))
+static void views_of(asset_t *s, int l, int t, int r, int b, int tile) {
+  uint32_t key = INSETS(l, t, r, b) ^ ((uint32_t)tile * 2654435761u) ^ 1u;
+  if (s->view_key == key) return;
+  int w = s->w, h = s->h, st = w * 4, mw = w - l - r, mh = h - t - b;
+  if (tile > 0 && tile < mw) mw = tile;
+  if (tile > 0 && tile < mh) mh = tile;
+  const int xs[3] = { 0, l, w - r }, ys[3] = { 0, t, h - b }, ws[3] = { l, mw, r }, hs[3] = { t, mh, b };
+  for (int j = 0; j < 3; j++) for (int i = 0; i < 3; i++) dsc_of(&s->view[j * 3 + i], s->px + ys[j] * st + xs[i] * 4, ws[i] > 0 ? ws[i] : 1, hs[j] > 0 ? hs[j] : 1, st);
+  s->view_key = key;
 }
 static void plain(lv_obj_t *o) {
   lv_obj_remove_style_all(o);
@@ -69,7 +74,8 @@ void scene_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb,
   if (kind < FN_RECT || kind > FN_NINE) { g_unknown++; return; }
   if (kind == FN_TEXT && !font_of(a)) { g_unknown++; return; }
   if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || g_a[a].w != w || g_a[a].h != h)) { g_unknown++; return; }
-  if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || b < 1 || g_a[a].w <= 2 * b || g_a[a].h <= 2 * b || w < 2 * b || h < 2 * b)) { g_unknown++; return; }
+  int nl = (int)(rgb >> 24), nt = (int)((rgb >> 16) & 255), nr = (int)((rgb >> 8) & 255), nb = (int)(rgb & 255);   /* a nine-slice: its insets l, t, r, b in rgb, its tile in b */
+  if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) { g_unknown++; return; }
   int i = find(id);
   if (i >= 0 && g_o[i].kind != kind) { drop(i); i = -1; }
   if (i < 0) {
@@ -89,12 +95,12 @@ void scene_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb,
     if (kind == FN_TEXT) lv_obj_set_size(o, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     else lv_obj_set_size(o, w, h);
   }
-  if (kind == FN_NINE && (n->fresh || n->w != w || n->h != h || n->a != a || n->b != b)) {
-    asset_t *s = &g_a[a]; views_of(s, b);
-    const int xs[3] = { 0, b, w - b }, ys[3] = { 0, b, h - b }, ws[3] = { b, w - 2 * b, b }, hs[3] = { b, h - 2 * b, b };
+  if (kind == FN_NINE && (n->fresh || n->w != w || n->h != h || n->a != a || n->b != b || n->rgb != rgb)) {
+    asset_t *s = &g_a[a]; views_of(s, nl, nt, nr, nb, b);
+    const int xs[3] = { 0, nl, w - nr }, ys[3] = { 0, nt, h - nb }, ws[3] = { nl, w - nl - nr, nr }, hs[3] = { nt, h - nt - nb, nb };
     for (int j = 0; j < 3; j++) for (int k = 0; k < 3; k++) {
       lv_obj_t *p = n->part[j * 3 + k]; lv_image_set_src(p, &s->view[j * 3 + k]);
-      lv_obj_set_pos(p, xs[k], ys[j]); lv_obj_set_size(p, ws[k], hs[j]);
+      lv_obj_set_pos(p, xs[k], ys[j]); lv_obj_set_size(p, ws[k] > 0 ? ws[k] : 1, hs[j] > 0 ? hs[j] : 1);
     }
   }
   if (n->fresh || n->rgb != rgb || n->a != a || n->b != b) {

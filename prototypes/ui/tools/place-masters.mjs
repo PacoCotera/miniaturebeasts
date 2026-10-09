@@ -47,7 +47,7 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
     if (w !== m.size[0] || h !== m.size[1]) throw new Error(`${id}: the file is ${w}×${h}, its manifest says ${m.size.join("×")}`);
     if (sha(buf) !== m.sha256) throw new Error(`${id}: the file does not match its manifest hash`);
     const file = `${group}/${id}.png`; placed.push(id);
-    index.masters[id] = { file, w, h, sha256: m.sha256, signed: by ?? who };
+    index.masters[id] = { file, w, h, sha256: m.sha256, signed: by ?? who, ...(m.nine ? { slice: [m.nine.insets.left, m.nine.insets.top, m.nine.insets.right, m.nine.insets.bottom], tile: m.nine.edgeTile } : {}) };   // a nine-slice master: its insets [l, t, r, b] and the edge tile
     if (!dryRun) { mkdirSync(path.join(root, group), { recursive: true }); copyFileSync(src, path.join(root, file)); }
   }
   for (const id of Object.keys(manifest)) if (!want.has(id)) skipped.push(id);

@@ -38,7 +38,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
     handles.set(id, h); return h;
   }
-  // One frame's nodes in draw order. env: { rgb(name) -> [r, g, b], cap(px), picture(assetId) -> { w, h, data (RGBA) }, slice(assetId) -> insets | null }.
+  // One frame's nodes in draw order. env: { rgb(name) -> [r, g, b], cap(px), picture(assetId) -> { w, h, data (RGBA) }, slice(assetId) -> [l, t, r, b] | null, tile(assetId) -> px (0: the whole strip) }.
   // A frame identical to the last one is not sent again. Returns the nodes the face cannot draw (a kind outside the closed set, a picture it lacks).
   let lastKey = null;
   const keyOf = (nodes) => { let h = 2166136261; const mix = (v) => { for (const b of enc.encode(String(v))) { h ^= b; h = Math.imul(h, 16777619); } h ^= 0xff; h = Math.imul(h, 16777619); }; for (const n of nodes) { mix(n.id); mix(n.kind); mix(n.rect); mix(n.colour ?? ""); mix(n.text ?? ""); mix(n.px ?? ""); mix(n.asset ?? ""); } return h >>> 0; };
@@ -51,7 +51,10 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       if (n.kind === "rect") M._face_node(id, KIND.rect, x, y, w, h, hex(n.colour), 0, 0);
       else if (n.kind === "text") { setText(n.text); M._face_node(id, KIND.text, x, y, w, h, hex(n.colour), n.px, env.cap(n.px)); }
       else if (n.kind === "sprite") { const hd = handleOf(n.asset, env.picture); if (hd < 0) left.push(n); else M._face_node(id, KIND.sprite, x, y, w, h, 0, hd, 0); }
-      else if (n.kind === "nineSlice") { const hd = handleOf(n.asset, env.picture), sl = env.slice(n.asset); if (hd < 0 || !sl || new Set(sl).size !== 1) left.push(n); else M._face_node(id, KIND.nine, x, y, w, h, 0, hd, sl[0]); }
+      else if (n.kind === "nineSlice") {   // the insets [l, t, r, b] packed a byte each, the edge tile in b
+        const hd = handleOf(n.asset, env.picture), sl = env.slice(n.asset);
+        if (hd < 0 || !sl || sl.some((v) => v < 0 || v > 255)) left.push(n); else M._face_node(id, KIND.nine, x, y, w, h, ((sl[0] << 24) | (sl[1] << 16) | (sl[2] << 8) | sl[3]) >>> 0, hd, env.tile(n.asset));
+      }
       else left.push(n);
     }
     M._face_scene_end(); return left;

@@ -86,7 +86,7 @@ export function podsView(m, spec, ctx) {
     view.rail.slats = "slats:";
     if (view.rail.tabs.some((t) => t.state === "sealed")) for (const w of new Set([...railTabs(R.rail, chapters.length).tabs, ...railTabs(R.rail, chapters.length, 0).tabs].map((t) => t[2]))) req({ kind: "slats", id: `slats:${w}x${R.rail.rect[3]}`, w, h: R.rail.rect[3] });   // the widths the rail's own rule gives
     const ch = chapters[ci];
-    view.page = pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, present, null);
+    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, present, null), pane: slot(req, "page-pane-256x440", R.page.rect, "the page pane master (a nine-slice)") };
     const sz = stampSizing(fr, cur.genome), read = fr.chapters.filter((c) => cur.read.includes(c.id)).map((c) => c.id);
     view.stamp = { colours: C.stampLabel, size: sz.size, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(cur.genome)}:${[...read].sort().join(",")}:${sz.size}`, pod: cur.id, species: S.speciesOf(cur), read, size: sz.size }) };
   }

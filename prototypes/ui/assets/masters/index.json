@@ -1,6 +1,20 @@
 {
  "schema": "mb-masters/1",
  "masters": {
+  "page-pane-256x440": {
+   "file": "pods/page-pane-256x440.png",
+   "w": 256,
+   "h": 440,
+   "sha256": "7748ade654903c1897432627590d6ace6821e4bc850246bd3d192496ce7c0aa5",
+   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)",
+   "slice": [
+    64,
+    64,
+    16,
+    16
+   ],
+   "tile": 32
+  },
   "plate-message-640x36": {
    "file": "pods/plate-message-640x36.png",
    "w": 640,
@@ -502,7 +516,7 @@
    "file": "pods/room-bench-stage.png",
    "w": 1024,
    "h": 522,
-   "sha256": "1f00f9c693c6cab09d8d0e4ba4cbbd638035282b2f057ee8d877496b0d4e6061",
+   "sha256": "3fb6816569974e1603e48840c99b7a7842fd2c306608ae0a001f54a5880a9a1f",
    "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
   },
   "room-cradle": {
@@ -521,9 +535,9 @@
   },
   "room-shelf": {
    "file": "pods/room-shelf.png",
-   "w": 240,
+   "w": 288,
    "h": 72,
-   "sha256": "5803fa6aa9b8055ffc61477e5f8deb4478f4afd06b42f6de9c55a8b70b14870b",
+   "sha256": "c382c8d1980968878d82884d751a0930b95982623859a68c73e0bba7662223d6",
    "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
   },
   "stamp-label-120x120": {

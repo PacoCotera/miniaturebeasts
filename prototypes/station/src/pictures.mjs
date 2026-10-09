@@ -78,7 +78,7 @@ export function registerPictures(reqs, env) {
       case "place": put(r.id, 16, 16, "the place stamp set", () => placePB(r.place)); break;
       case "slot": {   // a master at exactly this size takes the id; otherwise the id is an empty slot, waiting
         const m = assetEntry(r.master), e = assetEntry(r.id);
-        if (m && m.status === "master" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed }, assetOf(r.master)); }
+        if (m && m.status === "master" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile }, assetOf(r.master)); }
         else registerSlot({ id: r.id, w: r.size[0], h: r.size[1], policy: "painted", until: r.until });
         break;
       }

@@ -9,6 +9,7 @@
 //          colours: { pane, edge, heading, name, line, lineEmpty, wipe }, frost and slats (the id prefixes of those pictures: `<prefix><w>x<h>`), compact }
 import { pageGrid } from "../layout.mjs";
 import { panel } from "./panel.mjs";
+import { isFilled } from "../assets.mjs";
 import { focusRing } from "./focusRing.mjs";
 import { wrap } from "./text.mjs";
 
@@ -16,7 +17,7 @@ export function chapterPage(ctx, id, region, props) {
   // the pane shortens to its content: its height by the number of traits (page.heightByCount: one, two, else the full height), its top fixed
   const hb = region.heightByCount, n = (props.cells || []).length, rect = region.rect.slice();
   if (hb) rect[3] = hb[String(n)] ?? hb.else ?? rect[3];
-  const Cc = props.colours, nodes = panel(id, rect, { fill: Cc.pane, edge: Cc.edge, region: props.region ?? null });
+  const Cc = props.colours, nodes = props.pane && isFilled(props.pane) ? [{ id, kind: "nineSlice", rect, asset: props.pane, region: props.region ?? null }] : panel(id, rect, { fill: Cc.pane, edge: Cc.edge, region: props.region ?? null });   // the pane master is a nine-slice with its own insets, drawn at the height the count gives
   const [px, py] = rect, H = region.heading;
   if (props.heading?.pod && H) {   // Compare: the pod at 32×40 and its place picture
     nodes.push({ id: id + ".pod", kind: "sprite", rect: [px + H[0], py + H[1], 32, 40], asset: props.heading.pod });

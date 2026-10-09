@@ -27,6 +27,7 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const port = server.address().port, fails = [], expect = (ok, what) => { if (!ok) { fails.push(what); console.error("FAIL " + what); } };
 const fixture = readFileSync(path.join(root, "station/tests/fixtures/save-v8-schema1.json"), "utf8"), frame = JSON.parse(readFileSync(path.join(root, "ui/specs/station/frame.json"), "utf8"));
+const pods = JSON.parse(readFileSync(path.join(root, "ui/specs/station/pods.json"), "utf8"));
 const palette = Object.fromEntries(JSON.parse(readFileSync(path.join(root, "ui/palettes/station.json"), "utf8")).colours);
 const rgbOf = (name) => { const h = palette[name]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
 const browser = await chromium.launch();
@@ -85,14 +86,15 @@ const ringRgb = rgbOf(C.ring), RG = frame.focus.ring, FT = frame.focus.feet;
 const ringCheck = async (what) => {
   const img = await shot(face, `l1-ring-${what}.png`, 200), nodes = await face.evaluate(() => window.__st.faceNodes()), tg = await face.evaluate(() => ({ cur: window.__st.UI.pods.focus.cur, targets: window.__st.targets() }));
   const target = tg.targets.find((x) => x.id === tg.cur), [tx, ty, tw, th] = target.rect, n = nodes.find((q) => q.id === "focus");
-  const want = what === "feet" ? [tx + Math.round(tw / 2) - Math.round((tw + FT.widen) / 2), ty + th - Math.round(FT.height / 2), tw + FT.widen, FT.height] : [tx - RG.outside, ty - RG.outside, tw + 2 * RG.outside, th + 2 * RG.outside];
-  expect(n && JSON.stringify(n.rect) === JSON.stringify(want), `${what}: the ring's rectangle is the target's ${what === "feet" ? "box + 16 by 24 under its feet" : "±4 px"}: ${n && n.rect} (want ${want})`);
-  const [x, y, w, h] = want, mask = what === "feet" ? ringMask(w, h, RG.width, 0, "ellipse") : ringMask(w, h, RG.width, RG.radius); let on = 0, miss = 0, stray = 0;
+  const Wf = pods.regions.well, want = what === "feet" ? [tx + Math.round(tw / 2) - Math.round((tw + FT.widen) / 2), ty + th - Math.round(FT.height / 2), tw + FT.widen, FT.height] : what === "circle" ? [tx + Wf.ring.centre[0] - Wf.focus.radius, ty + Wf.ring.centre[1] - Wf.focus.radius, 2 * Wf.focus.radius, 2 * Wf.focus.radius] : [tx - RG.outside, ty - RG.outside, tw + 2 * RG.outside, th + 2 * RG.outside];
+  expect(n && JSON.stringify(n.rect) === JSON.stringify(want), `${what}: the ring's rectangle is the target's ${what === "feet" ? "box + 16 by 24 under its feet" : what === "circle" ? "well: the circle of radius " + Wf.focus.radius + " round its centre" : "±4 px"}: ${n && n.rect} (want ${want})`);
+  const [x, y, w, h] = want, mask = what === "feet" || what === "circle" ? ringMask(w, h, RG.width, 0, "ellipse") : ringMask(w, h, RG.width, RG.radius); let on = 0, miss = 0, stray = 0;
   for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const c = eq(px(img, x + i, y + j), ringRgb); if (mask[j * w + i]) { on++; if (!c) miss++; } else if (c && (i < RG.width || j < RG.width || i >= w - RG.width || j >= h - RG.width)) stray++; }
-  expect(on > 0 && miss === 0 && stray === 0, `${what}: the face drew the ring's ${on} pixels (${RG.width} px wide${what === "feet" ? "" : ", radius " + RG.radius}) exactly: ${miss} missing, ${stray} stray`);
+  expect(on > 0 && miss === 0 && stray === 0, `${what}: the face drew the ring's ${on} pixels (${RG.width} px wide${what === "round" ? ", radius " + RG.radius : ""}) exactly: ${miss} missing, ${stray} stray`);
 };
 await ringCheck("feet");
-const round = (await face.evaluate(() => window.__st.targets())).find((t) => t.group !== "pod" && t.group !== "rail");
+const tg = await face.evaluate(() => window.__st.targets()), well = tg.find((t) => /^list\.\d+$/.test(t.id)), round = tg.find((t) => t.id === "list.hatch");
+await face.evaluate((id) => { window.__st.UI.pods.focus.cur = id; }, well.id); await ringCheck("circle");
 await face.evaluate((id) => { window.__st.UI.pods.focus.cur = id; }, round.id); await ringCheck("round");
 await face.evaluate(() => { window.__st.UI.pods.focus.cur = "pod"; });
 await shot(face, "l1-pods-frame.png");

@@ -9,26 +9,26 @@ const hits = { built: 0, cached: 0 };
 
 // Register an asset (idempotent for an id already registered with the same size).
 //   slice: [left, top, right, bottom] marks a nine-slice picture (its edges and middle are tiled, never scaled)
-export function registerAsset({ id, w, h, policy = "stationChrome", status = "placeholder", until = null, file = null, hash = null, slice = null, build }) {
+export function registerAsset({ id, w, h, policy = "stationChrome", status = "placeholder", until = null, file = null, hash = null, slice = null, tile = null, build }) {
   if (file && !/\.png$/i.test(file)) throw new Error(`asset ${id}: ${file} is not a PNG (PNG only)`);
   const have = ENTRIES.get(id);
   if (have) {
     if (have.w !== w || have.h !== h) throw new Error(`asset ${id} registered twice at different sizes: ${have.w}×${have.h} and ${w}×${h}`);
-    if (have.status === "empty" && build) { Object.assign(have, { policy, status, until, file, hash, slice, build }); return have; }   // a stand-in fills an empty slot
+    if (have.status === "empty" && build) { Object.assign(have, { policy, status, until, file, hash, slice, tile, build }); return have; }   // a stand-in fills an empty slot
     return have;
   }
-  const e = { id, w, h, policy, status, until, file, hash, slice, build };
+  const e = { id, w, h, policy, status, until, file, hash, slice, tile, build };
   ENTRIES.set(id, e); return e;
 }
 // Place a signed master over its stand-in by id (technical-architecture.md §5.5): the master must be the stand-in's size, 1:1, or it is refused
 // loudly; the entry becomes status `master`, names its file and hash, and builds from the decoded picture. A master placed before its stand-in
 // is registered takes the id first, and a stand-in of another size then throws at registration. `picture` is anything with w, h and canvas().
-export function placeMaster({ id, w, h, file, hash, policy = "painted", signed = null }, picture) {
+export function placeMaster({ id, w, h, file, hash, policy = "painted", signed = null, slice = null, tile = null }, picture) {
   if (!/\.png$/i.test(file)) throw new Error(`master ${id}: ${file} is not a PNG (PNG only)`);
   if (picture.w !== w || picture.h !== h) throw new Error(`master ${id}: the file is ${picture.w}×${picture.h}, the index says ${w}×${h}`);
   const have = ENTRIES.get(id);
   if (have && (have.w !== w || have.h !== h)) throw new Error(`master ${id} is ${w}×${h}; its stand-in is ${have.w}×${have.h}: a master takes its stand-in's size, never scaled`);
-  ENTRIES.set(id, { id, w, h, policy: have?.policy === "type" ? "type" : policy, status: "master", until: null, file, hash, slice: have?.slice ?? null, signed, build: () => picture });
+  ENTRIES.set(id, { id, w, h, policy: have?.policy === "type" ? "type" : policy, status: "master", until: null, file, hash, slice: slice ?? have?.slice ?? null, tile: tile ?? have?.tile ?? null, signed, build: () => picture });
   BUILT.delete(id); return ENTRIES.get(id);
 }
 // A slot: a place the design needs a picture where none is signed yet (a mark, a key cap, a face). It is in the manifest as status `empty` at its
