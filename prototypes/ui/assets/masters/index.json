@@ -1,13 +1,6 @@
 {
  "schema": "mb-masters/1",
  "masters": {
-  "compare-mark-differs-12x12": {
-   "file": "pods/compare-mark-differs-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "c4d6370de5b4f5d07f4b1467d383f3a36981891d255291286b5d90ed6e8dfdf8",
-   "signed": "signed (masters-pods 440710b)"
-  },
   "face-24-empty": {
    "file": "pods/face-24-empty.png",
    "w": 24,

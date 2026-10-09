@@ -18,6 +18,7 @@ import { loadTypeNode } from "../../ui/type-node.mjs";
 import { SIZES } from "../../ui/type.mjs";
 import { slantTabs, pageGrid, pageSize } from "../../ui/layout.mjs";
 import { placeRect, kinRect } from "../../ui/components/list.mjs";
+import { seedColumnBreaches } from "../../ui/components/chapterPage.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
@@ -93,6 +94,11 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
       must(cell && eq(rect, want), `${r.id} ${rect} is not the grid's ${want}`);
     }
     else must(false, `region "${id}" (${r.id}) is not in the spec`);
+  }
+  // the seed column: nothing on a name line rises into a seed's column, no seed hangs below the name line's top (pods.json page.marks.sill)
+  for (const key of ["page", "pageA", "pageB"]) {
+    const nodes = (c.cellNodes || []).filter((q) => q.id.startsWith(key + ".c")), pics = nodes.filter((q) => /\.pic$/.test(q.id)).sort((a, b) => +a.id.match(/\.c(\d+)\./)[1] - +b.id.match(/\.c(\d+)\./)[1]);
+    if (pics.length) for (const b of seedColumnBreaches({ cap: (px) => type.face(px).cap }, nodes, pics.map((q) => q.rect.slice(0, 2)), pics[0].rect.slice(2), pods.page.marks)) must(false, `${key}: ${b}`);
   }
   // the rail's tab count against the frame; the stamp's size on its label; no digits where a picture does the job
   if (c.screen === "pods" && c.pod && c.pod.idd && !c.cmp && c.view !== "collection") must(got.length === c.pod.chapters, `the rail has ${got.length} tabs for ${c.pod.chapters} chapters`);

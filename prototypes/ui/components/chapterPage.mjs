@@ -42,23 +42,35 @@ export function chapterPage(ctx, id, region, props) {
       if (crop.length) nodes.push(...crop, ...layer(cid + ".frame", P, c.frame)); else {
       const card = layer(cid + ".card", P, c.picture); if (!card.length && Cc.cardFill) nodes.push({ id: cid + ".cardfill", kind: "rect", rect: P, colour: Cc.cardFill });   // until the card is cut at this size: its fill
       nodes.push(...card, ...layer(cid + ".frame", P, c.frame));
-      if (props.standIn) { const w = Math.round(ctx.measure(props.standIn, 16, 400)); nodes.push({ id: cid + ".standin", kind: "text", rect: [cx + Math.round((pw - w) / 2), cy + (ph < props.marks.smallUnder ? Math.floor((ph - props.marks.seedSmall[1] - 8 - ctx.cap(16)) / 2) : Math.floor((ph - ctx.cap(16)) / 2)), w, ctx.line(16)], text: props.standIn, px: 16, weight: 400, colour: Cc.standIn, align: "left" }); }   // the card carries no word of its own: the build sets it
+      if (props.standIn) { const w = Math.round(ctx.measure(props.standIn, 16, 400)); nodes.push({ id: cid + ".standin", kind: "text", rect: [cx + Math.round((pw - w) / 2), cy + Math.floor((ph - props.marks.sill.h - ctx.cap(16)) / 2), w, ctx.line(16)], text: props.standIn, px: 16, weight: 400, colour: Cc.standIn, align: "left" }); }   // the card carries no word of its own: the build sets it
       }
     }
     if (c.frost) nodes.push(props.unreadFrame && isFilled(props.unreadFrame) ? { id: cid + ".frost", kind: "sprite", rect: P, asset: props.unreadFrame } : { id: cid + ".frost", kind: "rect", rect: P, colour: Cc.frostFill || "frost" });   // the signed frosted frame; a flat frost until it is placed   // the spec's unread cell: frost fill, no picture, nothing requested
     else {
-      for (const [k, m] of (c.marks || []).entries()) {
-        const M = props.marks, small = ph < M.smallUnder, [sw, sh] = small ? M.seedSmall : M.seed;
-        const r = m.kind === "seed" ? [cx + pw - 8 - sw, cy + ph - 8 - sh, sw, sh] : m.kind === "seed2" ? [cx + 8, cy + ph - 8 - sh, sw, sh] : m.kind === "only" ? [cx + Math.round(pw / 2) - M.only[0] / 2, cy + ph - 8, M.only[0], M.only[1]] : m.kind === "asleep" ? [cx + pw - 8 - M.asleep[0], cy + 8, M.asleep[0], M.asleep[1]] : m.kind === "doing" ? [cx + 8, cy + 8, M.doing[0], M.doing[1]] : null;
-        if (r) nodes.push({ id: `${cid}.m${k}`, kind: "sprite", rect: r, asset: m.asset });
+      const M = props.marks, D = M.sill.drop, [sw, sh] = M.seed, kinds = (c.marks || []).map((m) => m.kind), shared = kinds.includes("only") && kinds.includes("doing"), foot = cy + ph;
+      for (const [k, m] of (c.marks || []).entries()) {   // the marks sit on the frame's sill (page.marks.sill), never on the picture
+        const r = m.kind === "seed" ? [cx + pw - sw, foot - D.seed, sw, sh] : m.kind === "seed2" ? [cx, foot - D.seed, sw, sh] : m.kind === "only" ? [shared ? cx + pw - D.sharedBase : cx + Math.round(pw / 2 - M.only[0] / 2), foot - D.only, M.only[0], M.only[1]] : m.kind === "asleep" ? [cx + Math.round(pw / 2 - M.asleep[0] / 2), foot - D.corner, M.asleep[0], M.asleep[1]] : m.kind === "doing" ? [shared ? cx + D.sharedMark : cx + Math.round(pw / 2 - M.doing[0] / 2), foot - D.corner, M.doing[0], M.doing[1]] : null;
+        if (r) nodes.push({ id: `${cid}.m${k}`, kind: "sprite", rect: r, asset: m.asset, mark: m.kind });
       }
       if (c.wipe != null && c.wipe < 1) { const cut = Math.round(c.wipe * ph); if (props.unreadFrame && isFilled(props.unreadFrame)) nodes.push({ id: cid + ".wipe", kind: "clip", rect: [cx, cy + cut, pw, ph - cut], children: [{ id: cid + ".wipefrost", kind: "sprite", rect: P, asset: props.unreadFrame }] }); nodes.push( { id: cid + ".wipeline", kind: "rect", rect: [cx + 6, cy + cut, pw - 12, 2], colour: Cc.wipe }); }
     }
-    const gap = region.cell ? region.cell.gap : region.nameGap, line = region.cell ? region.cell.name.line : region.nameLine, ny = cy + ph + gap, nw = Math.round(ctx.measure(c.name, 16, 400)), N = region.newMark, dot = c.isNew && N && props.newMark ? N.size[0] + N.gapAfterName : 0, nx = region.cell ? cx + Math.round((pw - nw - dot) / 2) : cx;
+    const gap = region.cell ? region.cell.gap : region.nameGap, line = region.cell ? region.cell.name.line : region.nameLine, ny = cy + ph + gap, nw = Math.round(ctx.measure(c.name, 16, 400)), N = region.newMark, dot = c.isNew && N && props.newMark ? N.size[0] + N.gapAfterName : 0, lampW = c.diff && props.differs && region.differs ? region.differs.size[0] + region.differs.gapAfterLamp : 0, nx = (region.cell ? cx + Math.round((pw - nw - dot) / 2) : cx) + lampW;
     nodes.push({ id: cid + ".name", kind: "text", rect: [nx, ny, nw, line], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });
-    if (c.diff && props.differs && region.differs) nodes.push(...layer(cid + ".differs", [nx + nw + region.differs.gapAfterName, ny + 4, ...region.differs.size], props.differs));   // Compare: the studio's mark on the name's line, 4 px after the name, on a trait read on both pods whose looks differ
+    if (c.diff && props.differs && region.differs) nodes.push(...layer(cid + ".differs", [nx - lampW, ny + 4, ...region.differs.size], props.differs));   // Compare: the studio's lamp on the name's line, before the name (the name starts 16 px in), on a trait read on both pods whose looks differ
     if (dot) nodes.push(...markNode(cid + ".new", props.newMark, [nx + nw + N.gapAfterName, ny + line / 2 - N.size[1] / 2, N.size[0], N.size[1]], "the field-guide mark master"));   // the name and the dot centred together, the dot's centre on the line's middle
     if (!c.sealed && !region.cell) { /* a cut line drops its trailing separator */ const all = wrap(ctx, (c.lines || []).join(" "), cell[2], 16), lines = all.slice(0, 2); if (all.length > 2) lines[1] = lines[1].replace(/\s*·$/, ""); lines.forEach((l, j) => nodes.push({ id: `${cid}.l${j}`, kind: "text", rect: [cx, ny + 20 + j * 20, Math.round(ctx.measure(l, 16, 400)), 20], text: l, px: 16, weight: 400, colour: c.frost ? Cc.lineEmpty : Cc.line, align: "left" })); }
   });
   return { nodes, cells: grid.cells, picture: grid.picture, overflow: grid.overflow };
+}
+
+// The seed column (pods.json page.marks.sill): a seed hangs from the sill and its painted foot meets the name line's top, so nothing on the name line (a glyph's ink, the lamp, the New dot) may rise above that line inside a seed's column, and no seed may reach below it.
+// ink: a glyph's top is its cap top. nodes: the page's nodes; cells: the grid's cell origins; [pw, ph] the picture; M: the spec's page.marks. Returns the breaches, as sentences.
+export function seedColumnBreaches(ctx, nodes, cells, [pw, ph], M) {
+  const out = [], [px, py, pwid, ph2] = M.sill.drop.seedPainted, top = M.sill.drop.nameTop, cols = (cx) => [[cx + px, cx + px + pwid], [cx + pw - M.seed[0] + px, cx + pw - M.seed[0] + px + pwid]];
+  cells.forEach(([cx, cy], i) => {
+    const line = cy + ph + top, mine = nodes.filter((n) => new RegExp(`\\.c${i}\\.(name|differs|new|l\\d+)$`).test(n.id));
+    for (const n of mine) for (const [x0, x1] of cols(cx)) { const ink = n.kind === "text" ? n.rect[1] + Math.floor((n.rect[3] - ctx.cap(n.px)) / 2) : n.rect[1]; if (n.rect[0] < x1 && n.rect[0] + n.rect[2] > x0 && ink < line) out.push(`${n.id} rises to ${ink}, above the name line's top ${line}, in a seed's column ${x0}..${x1}`); }
+    for (const n of nodes.filter((q) => q.mark && new RegExp(`\\.c${i}\\.m\\d+$`).test(q.id) && /^seed2?$/.test(q.mark))) if (n.rect[1] + py + ph2 > line) out.push(`${n.id}'s painted seed ends at ${n.rect[1] + py + ph2}, below the name line's top ${line}`);
+  });
+  return out;
 }

@@ -75,5 +75,6 @@ export class Scene {
   // Every node with a region tag: { region, rect }, for the regions check.
   regions() { return this.flat.filter((f) => f.node.region).map((f) => ({ region: f.node.region, rect: f.node.rect.slice(), id: f.node.id, kind: f.node.kind, text: f.node.text ?? null, px: f.node.px ?? null, align: f.node.align ?? null, asset: f.node.asset ?? null })); }
   // Every text node, for the type check without a renderer.
+  cellNodes() { return this.flat.filter((f) => /^page[AB]?\.c\d+\./.test(f.node.id)).map((f) => ({ id: f.node.id, kind: f.node.kind, rect: f.node.rect.slice(), px: f.node.px ?? null, mark: f.node.mark ?? null })); }   // the page cells' nodes, for the seed column check
   texts() { return this.flat.filter((f) => f.node.kind === "text").map((f) => ({ id: f.node.id, text: f.node.text, px: f.node.px, weight: f.node.weight, rect: f.node.rect.slice(), align: f.node.align })); }
 }

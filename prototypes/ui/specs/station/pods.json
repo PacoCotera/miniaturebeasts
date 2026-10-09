@@ -926,6 +926,7 @@
      12,
      12
     ],
+    "gapAfterLamp": 4,
     "on": "name line",
     "before": "the name",
     "x": "cell.x",
@@ -1006,6 +1007,7 @@
    ],
    "sill": {
     "h": 20,
+    "drop": { "seed": 24, "only": 14, "corner": 18, "sharedBase": 78, "sharedMark": 6, "seedPainted": [6, 4, 20, 28], "nameTop": 8 },
     "rule": "no mark sits inside the picture's window: every trait frame, at every size, read, unread and sealed, has a 20 px sill (its bottom rail deepened, the frame's own material, opaque) from P.y + P.h - 20 to P.y + P.h; the window is P minus the sill; every mark on a picture (the seeds, the Only base, asleep and breed-to-change) sits on the sill, never on the crop or the stand-in",
     "window": "P.w x (P.h - 20), from P's top-left",
     "masters": "the trait-picture-frame-WxH masters keep their ids and sizes and are repainted with the sill at the live sizes 128x160, 376x264, 184x256, 184x104 and 120x96 (and their -unread and -sealed variants); crops and stand-in cards keep their ids and sizes (P), composed so nothing of the creature falls in the bottom 20 px, which the sill covers; the 12 live 128x160 crops (S01, S09) are re-composed, the Compare crops are cut that way from the start, and the stand-in word is centred on the window",

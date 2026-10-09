@@ -185,16 +185,16 @@ test("the chapter rail draws emblem, word and pips per tab, no words of status, 
 test("the chapter page lays the cells on the grid with the marks inside each picture", () => {
   const region = { rect: [528, 112, 480, 440], heading: [16, 8], nameGap: 8, nameLine: 20, grid: { "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 112] } } };
   const colours = { pane: "deep", edge: "slate", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white", diff: { edge: "aqua", bracket: "aqua", keyline: "ink" } };
-  const marks = { seed: [40, 52], seedSmall: [32, 40], smallUnder: 120, only: [72, 8], asleep: [24, 16], doing: [28, 16], key: [44, 64] };
+  const marks = { seed: [32, 40], seedSmall: [32, 40], smallUnder: 120, only: [72, 8], asleep: [24, 16], doing: [28, 16], key: [44, 64], sill: { h: 20, drop: { seed: 24, only: 14, corner: 18, sharedBase: 78, sharedMark: 6, seedPainted: [6, 4, 20, 28], nameTop: 8 } } };
   const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eyes", lines: ["thin rings · hides wide pale rings"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }, { picture: "pic:d", name: "Tail", lines: ["shows long"], marks: [], diff: true }];
   registerAsset({ id: "t:unread-frame", w: 216, h: 112, status: "master", build: () => ({ w: 216, h: 112, canvas: () => null }) });
   const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, marks, unreadFrame: "t:unread-frame", region: "page", cellRegion: "page.cell" });
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
   assert.deepEqual(by.page.rect, [528, 112, 480, 440]); assert.deepEqual(by["page.emblem"].rect, [544, 120, 24, 24]); assert.equal(by["page.word"].px, 20);
   assert.deepEqual(by["page.c0.pic"].rect, [544, 160, 216, 112]); assert.deepEqual(by["page.c2.pic"].rect, [544, 360, 216, 112]);
-  assert.deepEqual(by["page.c0.m0"].rect, [544 + 108 - 36, 160 + 112 - 8, 72, 8]);   // the base centred on the bottom edge
-  assert.deepEqual(by["page.c1.m0"].rect, [776 + 216 - 40, 160 + 112 - 48, 32, 40]);   // the small seed (32×40 under a 120 px picture) at the bottom right
-  assert.deepEqual(by["page.c1.m1"].rect, [776 + 8, 160 + 8, 28, 16]);   // breed to change at the top left
+  assert.deepEqual(by["page.c0.m0"].rect, [544 + 108 - 36, 160 + 112 - 14, 72, 8]);   // the base centred on the sill
+  assert.deepEqual(by["page.c1.m0"].rect, [776 + 216 - 32, 160 + 112 - 24, 32, 40]);   // the seed on the sill, at the right
+  assert.deepEqual(by["page.c1.m1"].rect, [776 + 108 - 14, 160 + 112 - 18, 28, 16]);   // breed to change centred on the sill
   assert.equal(by["page.c2.frost"].kind, "sprite"); assert.equal(by["page.c2.frost"].asset, "t:unread-frame", "an unread cell is the signed frosted frame, nothing drawn by the build"); assert.ok(!by["page.c2.l0"] || by["page.c2.l0"].text === "");
   assert.deepEqual(by["page.c0.wipe"].rect, [544, 216, 216, 56]); assert.equal(by["page.c0.name"].rect[1], 160 + 112 + 8);
   // Compare draws no edge and no bracket of its own for a trait that differs: the signed frames carry the cells, the need line says it (art director, 2026-10-09)
