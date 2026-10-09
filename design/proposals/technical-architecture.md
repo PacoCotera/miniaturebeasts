@@ -319,6 +319,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 | **L1 The frame in LVGL** | Top bar, bottom line, message plate, focus ring, panel from `frame.json`; fonts from the converter | Built |
 | **L2 Pods to parity** | Pods drawn by the face, at pixel parity with the JavaScript capture | Built (ee1be339) |
 | **L2.0 to L2.5, then L3** | Every screen on C words behind the bridge, in lvgl-switch.md §3's order, each through the gate of §4; L3 deletes the JavaScript drawing layer. They replace T2 and M5 on the JavaScript layer | [lvgl-switch.md](lvgl-switch.md) §3 and §4 |
+| **L2.0 (in progress)** | The bridge, the spec loader, the primitives, the focus port, the frame's and Pods' words and layout rules, the face-composed focus ring, the animation events, the metrics table and the image baker are built and tested on the WebAssembly face (branch `l20-pods`); the SDL and DRM builds, the Node host, the goldens and Pods' switch remain | [lvgl-switch.md](lvgl-switch.md) §4 L2.0 |
 
 The day estimates are withdrawn: L0 to L2 took about five hours against the 11 to 15 days estimated (lvgl-switch.md §4). Milestones are sized relative to L2.
 
