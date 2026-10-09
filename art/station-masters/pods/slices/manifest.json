@@ -7971,9 +7971,9 @@
   "src": "bench-e2",
   "made": "Compare's bench: the chapter bench without the beam and the dish glow (two pages on the pane, no pod on stage): the same generated glass wall windowed inside its own left strip so no cone or pool shows, graded as the others with the vignette centred on x 512",
   "sha256": "ecb2326b1044fed05023fdbc109d9780f0d2d5b587a2f05d7a2f29d0b0d8e3c4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "Compare's bench: the chapter bench without the beam and the dish glow; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "Compare's bench from the chapter's own wall"
  },
  "compare-mark-differs-12x12": {
   "size": [
@@ -7984,9 +7984,9 @@
   "src": "typed by hand",
   "made": "Compare's 'differs' mark: a 'not the same' sign of two short strokes of 7 px (inside a 9 px keyline), the lower shifted 3 px right, aqua with a mint lit top row and a 1 px ink keyline; typed pixel by pixel, centred vertically (rows 1 to 10 of 12); placed 1:1 after a trait's name on the name line",
   "sha256": "5037283a5f8d929b09c83bf1c3f123ba435b70df3c9bbe8a2b98faf1e641d0f3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "Compare's differs mark, drawn by hand (pass 47); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "Compare's differs mark"
  },
  "trait-S09-head-between-small-and-large-128x160": {
   "size": [
@@ -7997,9 +7997,9 @@
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
   "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 226x282 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "01a26775e81a447edbeb8a89979bc6e90b8e58b25dd3aa2c9ec5c1ca5e396c1a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-head-between-small-and-large-144x176": {
   "size": [
@@ -8010,9 +8010,9 @@
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
   "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 226x276 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "c474b6f18c3f46bb83e4456cf950bccb4b757494888d895107a375b21ade9904",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-head-between-small-and-large-104x160": {
   "size": [
@@ -8023,9 +8023,9 @@
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
   "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 226x348 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "9cdefb918dccf796137f0309c4350d7582da9ea17eaa140eb459502e1eaf2b9e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-head-between-small-and-large-104x96": {
   "size": [
@@ -8036,9 +8036,9 @@
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
   "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 292x270 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "72c3d6e4ee138d319b28118cb0b92ec83d96471b5444ed0b6df67cad12ab9cf1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-head-between-small-and-large-104x64": {
   "size": [
@@ -8049,9 +8049,9 @@
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
   "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 439x270 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "53acf5edbd309f9e45d2919380141dbb511e7a9f46956cd2b4a82fda634b8ead",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-128x160": {
   "size": [
@@ -8062,9 +8062,9 @@
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
   "sha256": "a6a820ccd7800dcec2c40bf238c1b4cf8344cd9d6d4f30dcdcba7126a246d4e8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-144x176": {
   "size": [
@@ -8075,9 +8075,9 @@
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
   "sha256": "23f9ab10be4df95ba7f81b12ca0b24df2c6684ae1bcfed869e7ad94269d50d3c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-104x160": {
   "size": [
@@ -8088,9 +8088,9 @@
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
   "sha256": "b4842e82146d718b74b811a0b5159c0260fd3838b695cf14cad7357419f56055",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-104x96": {
   "size": [
@@ -8101,9 +8101,9 @@
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
   "sha256": "21ad99c9589d22dff2e400913460c6ab5e929248fea47bfee6105a0e3cf57950",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-104x64": {
   "size": [
@@ -8114,9 +8114,9 @@
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 139x85 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "d6d1ce124bd33444ab6cf40f6ed5e86b66d395403c7c45eed1da13f323a399b3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-crown-tall-128x160": {
   "size": [
@@ -8126,10 +8126,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 174x218 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "3b6af259054fc8510e978d99c0a00967fb4a3281c8664b48c86bbae1fe4c3f60",
+  "sha256": "b8d79d6f33ab10f71163ddeac25de4c596a53313f63440576526d5856103336c",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-crown-tall-144x176": {
   "size": [
@@ -8139,10 +8139,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 174x213 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "e4faccd88b8fa8ef086564372779250cad9cc735885f2bd67ae238d644e5ecec",
+  "sha256": "ebc7715fc41e087b079475d83152798bd4df4e0b55f8a55d2be411d041242370",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-crown-tall-104x160": {
   "size": [
@@ -8152,10 +8152,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 174x268 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "b1ef66281eef179582c3a996eaa3ef995259cdf0996a72a7a14f09bb3a6d99a8",
+  "sha256": "3be0de02d39d0c7d709b40226593831f5c2932ccec2679a3e6f03a40ecf40d71",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-crown-tall-104x96": {
   "size": [
@@ -8165,10 +8165,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 174x161 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "2fc4d9ed3357e2bef7a86009f1efdb6655611b9cbe43ba0c9b9bd64cec6c419d",
+  "sha256": "5c716e99f76b2535499faf2561d7063369cbe39e22523a9c6fbdad85ee5fc7fd",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-crown-tall-104x64": {
   "size": [
@@ -8178,10 +8178,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 222x137 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "8d1e29d0b3230e507ed03640b1def87b735e1eb4bbc4f88e465ffff6dbf63fa8",
+  "sha256": "c08e2c5568f4015509e1b549e3a70b8399dbd122da75d50d128742ae3d97cf80",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status_note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-tail-between-128x160": {
   "size": [
@@ -8192,9 +8192,9 @@
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
   "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 162x202 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "7828ff8ca88672e4113770fefaa1c4ad94993ff499c43eeb67c49f6c4afd878e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-tail-between-144x176": {
   "size": [
@@ -8205,9 +8205,9 @@
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
   "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 162x198 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "07c8473472f29c243e13df4dee03a720121f328a1d3091a4dc61e8beb65281b7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-tail-between-104x160": {
   "size": [
@@ -8218,9 +8218,9 @@
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
   "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 162x250 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "a23e3c5108f6c53a1a8eca75b091becee442bb0b451e556a0184ea583919c024",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-tail-between-104x96": {
   "size": [
@@ -8231,9 +8231,9 @@
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
   "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 162x150 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "bf4647d7e56dfcfb05fdf0c386483d56a3db60dd112c9265cec6984c43dee480",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-tail-between-104x64": {
   "size": [
@@ -8244,8 +8244,8 @@
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
   "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 198x122 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
   "sha256": "b306f9a44f86f6a4910103bf260a127e02f97d87b35818f96cdb4263382daaf7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  }
 }

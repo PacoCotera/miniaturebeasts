@@ -83,13 +83,13 @@ BOX = {"face/head": ("the whole head, crown to throat (the head, crown and beak 
        "face/beak": ("the beak part", P["beak"], "crop", 0, None, None),
        "face/crown": ("the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve", P["crown"], "crop", 6, None, None),
        "legs-tail/tail": ("the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines", P["tail"], "crop", 12, None, None)}
-CROWN_CURVE = [(118, 196), (140, 168), (165, 146), (200, 134), (232, 142), (252, 160), (268, 172), (310, 178)]      # the skull's top, left to right, on the painting
+CROWN_CURVE = [(148, 158), (165, 146), (200, 134), (232, 142), (252, 160), (268, 172), (310, 178)]      # the skull's top, left to right, on the painting
 TAIL_POLY = [(372, 301), (392, 298), (440, 275), (480, 254), (488, 262), (480, 292), (466, 306), (440, 318), (418, 323), (398, 321), (384, 316), (374, 311)]
 TAIL_TIP, TAIL_ROOT = (484.0, 258.0), (380.0, 306.0)
 PLATES = {"face/feather-crest": "the crest alone, close up against deep", "face/eyes": "one eye close up filling the cell: iris, ring, lid; no beak", "legs-tail/tail-curl": "the whole hind body and tail in silhouette, small in the cell, showing how the tail is held"}      # small parts and a posture: per-look plates after the quota
 paint = Image.open(os.path.join(GROW, "species/S09/portrait-600x620.png")).convert("RGB"); W, H = paint.size; keyed = key(paint); keyed_tail = key(paint, choke=1)
 yy_, xx_ = np.mgrid[0:H, 0:W].astype(float)
-crown_m = poly_mask([(110, 0)] + CROWN_CURVE + [(318, 0)], W, H, 3.0)                       # above the skull's curve, a 3 px feather along it
+crown_m = poly_mask([(148, 0)] + CROWN_CURVE + [(318, 0)], W, H, 3.0)                       # above the skull's curve, a 3 px feather along it
 axis = np.array(TAIL_ROOT) - np.array(TAIL_TIP); L_ = np.hypot(*axis); axis = axis / L_
 sproj = (xx_ - TAIL_TIP[0]) * axis[0] + (yy_ - TAIL_TIP[1]) * axis[1]                      # px along the feather axis from the tip toward the root
 tail_m = poly_mask(TAIL_POLY, W, H, 2.0) * np.clip((L_ + 4 - sproj) / 16.0, 0, 1)         # the polygon, and the root fading out along the feather lines over 16 px, perpendicular to them
@@ -98,7 +98,7 @@ n = 0; flagged = []
 for key_, (why, rect, kind, pad, limit, feather) in BOX.items():
     ch, tid = key_.split("/"); name = looks[key_]["name"]; look = looks[key_]["look"]; ent = {"chapter": ch, "trait": name, "look": look, "kind": kind, "box": list(rect), "source": why, "crops": {}}
     for (tw, th) in SIZES:
-        prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; box, flag = window(prect, tw, th, W, H); base_ = masked(keyed_tail, tail_m) if key_ == "legs-tail/tail" else masked(keyed, crown_m) if key_ == "face/crown" else keyed; crop = limited(base_, limit, feather).crop(box); cw, chh = crop.size
+        prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; box, flag = window(prect, tw, th, W, H); base_ = masked(keyed_tail, tail_m) if key_ == "legs-tail/tail" else masked(keyed_tail, crown_m) if key_ == "face/crown" else keyed; crop = limited(base_, limit, feather).crop(box); cw, chh = crop.size
         im = crop.resize((tw, th), Image.LANCZOS) if (cw, chh) != (tw, th) else crop
         nm = f"trait-S09-{slug(name)}-{slug(look)}-{tw}x{th}"; im.save(f"slices/{nm}.png", optimize=True)
         man[nm] = {"size": [tw, th], "rect": None, "src": f"S09 accepted painting, {why} {list(rect)}", "made": f"the {name} of the Belatz ({look}): a crop of the accepted painting from the rig's region, re-framed to {tw}x{th} from a {cw}x{chh} window ({'reduced' if (cw, chh) != (tw, th) else '1:1'}, never enlarged), paper keyed to deep, key choked 1 px, defringed" + (f"; FLAG: {flag}" if flag else ""), "sha256": hashlib.sha256(open(f"slices/{nm}.png", "rb").read()).hexdigest()}

@@ -2415,113 +2415,113 @@
   "note": "the stand-in card at Compare's four sizes, the signed cut (no text)"
  },
  "room-bench-stage-compare": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Compare's bench: the chapter bench without the beam and the dish glow; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "Compare's bench from the chapter's own wall"
  },
  "compare-mark-differs-12x12": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Compare's differs mark, drawn by hand (pass 47); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "Compare's differs mark"
  },
  "trait-S09-head-between-small-and-large-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-head-between-small-and-large-144x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-head-between-small-and-large-104x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-head-between-small-and-large-104x96": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-head-between-small-and-large-104x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-144x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-104x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-104x96": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-104x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-crown-tall-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-crown-tall-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-crown-tall-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-crown-tall-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-crown-tall-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "note": "re-cut in pass 49: the grey stroke erased, the dotted hairline choked 1 px; awaiting verdict"
  },
  "trait-S09-tail-between-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-tail-between-144x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-tail-between-104x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-tail-between-104x96": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-tail-between-104x64": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 48 verdict",
+  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  }
 }
