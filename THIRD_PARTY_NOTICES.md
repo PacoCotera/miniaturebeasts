@@ -7,6 +7,7 @@ Dependencies retain their original licenses; the project's licenses do not repla
 | qrcode | 1.5.4 | MIT |
 | jsqr (development) | 1.4.0 | Apache-2.0 |
 | LVGL (native device UI) | 9.6.0 /80ca777e37a2b176770726a02e07a6fb79ef0b39 | MIT |
+| jsmn (the Station face's JSON tokenizer) | zserge/jsmn `jsmn.h`, unmodified (SHA-256 `c04533e9181e1e33baceb0f55ac449b05145bb936e8c68cc77dfe0d8277514fb`) | MIT |
 
 The current lockfile also includes transitive packages under MIT and ISC. Consult the license files distributed with each installed package for full terms and authorship. This repository does not vendor those package implementations.
 
@@ -23,3 +24,5 @@ LVGL is vendored unchanged under `v1/native/vendor/lvgl`, with its upstream
 `LICENCE.txt`, source provenance and retained-file hashes. Its MIT copyright and
 permission notice is also included in the packaged presenter HTML alongside the
 linked native binary. The project license does not replace upstream terms.
+
+jsmn, a one-header JSON tokenizer by Serge Zaitsev (MIT, copyright 2010), is vendored unchanged as `prototypes/face/src/vendor/jsmn.h` with its licence text in the file header. The Station face parses its spec files and the bridge's messages with it (design/proposals/lvgl-switch.md §2.3).
