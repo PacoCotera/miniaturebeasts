@@ -2,7 +2,7 @@
 // the developer settings, the focus state per screen (UI, never saved) and the presentation events
 // the renderer reads (FX). Screens import this; the rules live in state.mjs.
 import * as S from "./state.mjs";
-import { clock } from "./gfx.mjs";
+import { clock } from "./pixels.mjs";
 import { createTimeline } from "../../ui/timeline.mjs";
 import { createFramePresenter } from "./present.mjs";
 import { createFocus } from "../../ui/focus.mjs";

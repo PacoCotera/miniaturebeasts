@@ -4,7 +4,7 @@
 // the class's glowAt remapped the same way, and, on identified pods only, the species glyph at glyphAt unmapped. A seal
 // is the identified body with the band; breaking it is the band's removal (the sealed and identified pictures are
 // both registered, and the Identify clip shows one above the cut and the other below).
-import { PB, HEX, art } from "./gfx.mjs";
+import { PB, HEX, art } from "./pixels.mjs";
 import { registerAsset, hasAsset } from "../../ui/assets.mjs";
 
 let ATLAS = null; const SHEETS = {};   // name -> { w, h, idx: Int16Array (palette index, -1 clear) }

@@ -6,7 +6,7 @@
 // the glue: the region-to-component map, the intent table onto the rules in state.mjs (unchanged), and the events the
 // timeline plays (the seal clearing, the wipe) with the input holds they carry.
 import { G, UI, TL, SPECS, LAYER, READ_MS, ID_MS, msg, save, goScreen, registerScreen, docked, podById, need, bayCrates } from "../game.mjs";
-import { motion } from "../gfx.mjs";
+import { motion } from "../pixels.mjs";
 import { DIRS } from "../../../ui/focus.mjs";
 import { layer } from "../../../ui/components/specimen.mjs";
 import { list, kinHatch, specimen, stampLabel, slantRail, chapterPage, focusRing, circleRing } from "../../../ui/components/frame.mjs";

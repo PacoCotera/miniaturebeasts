@@ -1,7 +1,8 @@
 // The Station page: boot (the frames fetched from the workbench registry beside the page), the frame
 // loop, the device keys, the Caddy's one key, the shared save's storage event, the developer panel and
 // the test hooks. Rules are in state.mjs, drawing in the screens.
-import { SW, SH, STAGE_Y, STAGE_H, clock, motion, ditherFill, setIcons, offPalette, artSize, bindCanvas } from "./gfx.mjs";
+import { SW, SH, STAGE_Y, STAGE_H, clock, motion, artSize } from "./pixels.mjs";
+import { ditherFill, setIcons, offPalette, bindCanvas } from "./gfx.mjs";
 import { bootStationCanvas } from "../../ui/render/browser.mjs";
 import { Scene } from "../../ui/scene.mjs";
 import { makeCtx } from "../../ui/context.mjs";

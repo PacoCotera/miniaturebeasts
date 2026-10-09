@@ -2,7 +2,8 @@
 // left, the empty chamber and the stamp at the right; each read, shapeable trait rolls among three
 // pictures from the pod's own copies (▲▼); changed tags; doings say breed to change; a clash marks its
 // traits and withholds Grow; the total on the bottom line. ← goes back to Pods with nothing spent.
-import { SW, C, R, blit, text, textW, clipText, wrapText, panel, focusRing, art, PB, clamp, clock, motion } from "../gfx.mjs";
+import { SW, C, art, PB, clamp, clock, motion } from "../pixels.mjs";
+import { R, blit, text, textW, clipText, wrapText, panel, focusRing } from "../gfx.mjs";
 import { podSprite } from "../podsprites.mjs";
 import { emblemArt, traitPic, frostPic, famArt, stampArt, domeArt, mistyArt } from "../art.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, podById } from "../game.mjs";

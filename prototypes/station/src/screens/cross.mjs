@@ -3,7 +3,8 @@
 // player has read, is the one source of every wire and gate; the pure view (views/cross.mjs) turns it into rects, text and 1 px lines and asks for the pictures; this file registers them,
 // draws a master only where one is signed, and holds the keys. ◀ ▶ pick the partner (the wires re-route at once), ▲ ▼ walk the overview and the chapters, ✓ Cross them, ← Habitat.
 import { G, FX, UI, SPECS, LAYER, msg, lockInput, save, goScreen, registerScreen, mibiById, effWithId } from "../game.mjs";
-import { clock, blit } from "../gfx.mjs";
+import { clock } from "../pixels.mjs";
+import { blit } from "../gfx.mjs";
 import { mibiArt, ghostArt, traitPic, paintedArt } from "../art.mjs";
 import { benchBg, frameFor } from "./frame.mjs";
 import { landedSet, flush } from "../caddy.mjs";

@@ -1,6 +1,7 @@
 // Home: the vivarium (the living window) and the bench's modules; Dock and arrival; the report card.
 // As the stand-in v2 built it, drawing residents and pods from the frames now.
-import { SW, SH, LINE_H, C, R, blit, text, textW, clipText, panel, focusRing, art, PB, clamp, clock, motion, bay } from "../gfx.mjs";
+import { SW, SH, LINE_H, C, art, PB, clamp, clock, motion, bay } from "../pixels.mjs";
+import { R, blit, text, textW, clipText, panel, focusRing } from "../gfx.mjs";
 import { podSprite } from "../podsprites.mjs";
 import { ICON, crateArt, cupArt, domeArt, budArt, leafArt, probeArt, lampArt, bedArt, vivArt, starArt } from "../art.mjs";
 import { G, FX, UI, SPECS, ARRIVE_MS, msg, lockInput, save, goScreen, registerScreen, need, docked, hasWorld, bayCrates, effWithId, atHome, mibiById, arriving } from "../game.mjs";

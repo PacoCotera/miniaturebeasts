@@ -1,6 +1,7 @@
 // The frame every screen shares: the top bar (40 px), the bottom line (38 px), the message plate, the
 // stage ground, the lamp pool, spatial focus, and the residents living in the vivarium.
-import { SW, SH, TOP_H, LINE_H, STAGE_Y, STAGE_H, C, R, blit, text, textW, clipText, wrapText, panel, art, PB, ramp, clock, motion } from "../gfx.mjs";
+import { SW, SH, TOP_H, LINE_H, STAGE_Y, STAGE_H, C, art, PB, ramp, clock, motion } from "../pixels.mjs";
+import { R, blit, text, textW, clipText, wrapText, panel } from "../gfx.mjs";
 import { ICON, mibiArt, paintedArt, waitLamp } from "../art.mjs";
 import { landedSet, lampText } from "../caddy.mjs";
 import { G, FX, UI, TL, LAYER, ARRIVE_MS, need, docked, hasWorld, bayCrates, effWithId, atHome, mibiById, arriving } from "../game.mjs";

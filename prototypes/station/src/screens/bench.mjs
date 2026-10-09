@@ -1,5 +1,6 @@
 // The Probe bench (from Home's cradle) and Idle, as built.
-import { SW, SH, LINE_H, C, R, blit, text, panel, focusRing, art, PB, clock } from "../gfx.mjs";
+import { SW, SH, LINE_H, C, art, PB, clock } from "../pixels.mjs";
+import { R, blit, text, panel, focusRing } from "../gfx.mjs";
 import { probeArt, vivArt } from "../art.mjs";
 import { G, UI, msg, save, goScreen, registerScreen, docked, bayCrates, effWithId, atHome, mibiById } from "../game.mjs";
 import { stageBg, lampPool, tgt, navSpatial, DIRS, drawResidents } from "./frame.mjs";
