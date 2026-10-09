@@ -8422,12 +8422,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/plate-S09-colour.jpg (gemini-3-pro-image)",
-  "made": "the Colour plate of the Belatz (cobalt), pass 66 second try, from the pass 65 painting's texture without a painting: a patch of the breast: an asymmetric contour (no straight side, leaning right) within 80x96 centred at (64, 80), a soft 3.5 px fluff edge, the feathers scaled down radially (x1/1.45 at the edge), hue held to cobalt (0.58-0.63), lit from the top left, the lower part about 15 levels darker, on the cell tone ground, no frame",
-  "sha256": "d6d01e978a5be71cc267a116a84ac22343096aed69aeeefc51827453369dd6e3",
+  "src": "source/raw/plate66-S09-colour.jpg (gemini-3-pro-image)",
+  "made": "the Colour plate of the Belatz (cobalt): a Pro repaint (pass 80), its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.113) into the centred 96x120 at (16, 20), no frame; the object ran off the painting's top, right edge: a keyed fade (smoothstep, 12 px) along it",
+  "sha256": "6efafc649d82e3435a4dc9e376493ef61061187a0ea52f624fe0663a73a480c9",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status_note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
  },
  "trait-S09-fluff-between-128x160": {
   "size": [
@@ -8448,12 +8448,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/plate-S09-sheen.jpg (gemini-3-pro-image)",
-  "made": "the Sheen plate of the Belatz (between): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.119) into the centred 96x120 at (16, 20), no frame",
-  "sha256": "02002406ef348847e14cd49d139e71c9b1e9fd6c6a9b49143d1e56def314e9ce",
+  "src": "source/raw/plate66-S09-sheen.jpg (gemini-3-pro-image)",
+  "made": "the Sheen plate of the Belatz (between): a Pro repaint (pass 80), its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.158) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "b2537905a793ab959c2ade5b18afac211fc7fa6d0b4e272c318725be0a65cffc",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status_note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
  },
  "trait-S09-feathers-between-128x160": {
   "size": [
@@ -8474,12 +8474,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/plate-S09-tufts.jpg (gemini-3-pro-image)",
-  "made": "the Tufts plate of the Belatz (body only): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.134) into the centred 96x120 at (16, 20), no frame",
-  "sha256": "f5cefd818d6eda5154e149ea8f55a8efd466984231adfd91e8225df5b7169642",
+  "src": "source/raw/plate66-S09-tufts.jpg (gemini-3-pro-image)",
+  "made": "the Tufts plate of the Belatz (body only): a Pro repaint (pass 80), its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.129) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "6d14804e183ae3a18a7ddfbdb4172e4459c7bec954fb733b613876712fb3e487",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status_note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
  },
  "trait-S09-crest-between-128x160": {
   "size": [
@@ -8500,12 +8500,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/plate-S09-eyes.jpg (gemini-3-pro-image)",
-  "made": "the Eyes plate of the Belatz (small), pass 66: the pass 65 painting reduced to 60 percent of the fit (x0.076, never enlarged), the content 58x55 centred at (64, 80) on the cell tone ground, so the iris is about 22 px; no frame",
-  "sha256": "a624e46131dc03db6d6452e0e16b82cb3d28c35369e53e81b99cc40bb02d6f34",
+  "src": "source/raw/plate66-S09-eyes.jpg (gemini-3-pro-image)",
+  "made": "the Eyes plate of the Belatz (small): a Pro repaint (pass 80), its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.145) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "f026032b52270a38dedc80dbee5f9a73c849cbfa3a7d574478eccf5832552095",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status_note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
  },
  "trait-S09-carriage-straight-128x160": {
   "size": [
@@ -8513,12 +8513,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/plate-S09-carriage.jpg (gemini-3-pro-image)",
-  "made": "the Carriage plate of the Belatz (straight): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.129) into the centred 96x120 at (16, 20), no frame",
-  "sha256": "c6dd1bfa50b5b961e38cc01b8ed555aaab7c7900e9fd878bd5c6b4f46151b169",
+  "src": "source/raw/plate66-S09-carriage.jpg (gemini-3-pro-image)",
+  "made": "the Carriage plate of the Belatz (straight): a Pro repaint (pass 80), its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.122) into the centred 96x120 at (16, 20), no frame",
+  "sha256": "9c1b988c5330b07698b4678c00caf4a970dbedb6276c72916be135aab42d6cf1",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status_note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
  },
  "cross-gate-switch-16x16": {
   "size": [
