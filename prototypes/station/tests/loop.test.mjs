@@ -108,3 +108,11 @@ test("the journey holds from other worlds: five seeds, every step accepted, the 
     assert.equal(R.a.portrait.state, "delivered", "seed " + seed); assert.ok(R.welcome.ok, "seed " + seed);
   }
 });
+
+test("the bench trickle, opted in: a watched minute and a compared pair earn +1 Data each inside the day's cap; off, the journey is as it was", () => {
+  const on = playJourney({ seed: 4242, bench: true }).P, off = playJourney({ seed: 4242 }).P;
+  const rows = on.steps.filter((x) => /^(watch|compare) /.test(x.name)); assert.equal(rows.length, 2);
+  assert.ok(rows.every((x) => x.ok && x.d <= 1 && x.d >= 0), "at most +1 Data a row");
+  assert.equal(off.steps.filter((x) => /^(watch|compare) /.test(x.name)).length, 0);
+  assert.ok(on.steps.every((x) => x.ok && x.stock.every((v) => v >= 0)));
+});

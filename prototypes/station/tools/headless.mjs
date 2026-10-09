@@ -19,10 +19,10 @@ export const WALK = { e: 3, d: 2, s: 3 };
 export const FIELD = { call: 1, beacon: 1, patch: 3 };
 
 export class Player {
-  constructor({ settings = {}, species = "S01", seed = 1, start = 1_000_000, field = { calls: 0, beacons: 0.5, patches: 0 }, probe = true, energy = WALK.e, growNow = false } = {}) {
+  constructor({ settings = {}, species = "S01", seed = 1, start = 1_000_000, field = { calls: 0, beacons: 0.5, patches: 0 }, probe = true, energy = WALK.e, growNow = false, bench = false } = {}) {
     loadFrames();
     this.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", ...settings };   // the decided prices, no top-up
-    this.species = species; this.seed = seed; this.start = start; this.now = start; this.walks = 0; this.podN = 0; this.field = field; this.probe = probe; this.walkE = energy; this.growNow = growNow; this.carry = 0;
+    this.species = species; this.seed = seed; this.start = start; this.now = start; this.walks = 0; this.podN = 0; this.field = field; this.probe = probe; this.walkE = energy; this.growNow = growNow; this.bench = bench; this.carry = 0;
     this.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
     this.st = S.freshSt("w1", 0, this.now); S.normalize(this.st);
     this.steps = []; this.with = null; this.marks = {};
@@ -82,6 +82,12 @@ export class Player {
   growUp(m) { let n = 0; while (!S.isAdult(this.st, m, this.settings) && n < 10) { this.takeWalk(); n++; } return n; }
   cross(a, b) { const c = S.crossCost(this.settings); this.afford(c.e, c.d, c.s); return this.step("cross " + a.name + " × " + b.name, () => S.doCross(this.st, this.sv, a, b, this.settings, this.now, mulberry(this.seed))); }
   readMibi(m, ch) { this.afford(0, S.mibiReadCost(this.st, m, ch, this.settings) || 0); return this.step("read " + ch + " on " + m.name, () => S.readMibi(this.st, m, ch, this.settings)); }
+  // The bench's Data trickle (opt-in, as it is a minute of the player's day): one mibi watched for its minute, one pair compared; each earns what the day's cap allows.
+  benchDay(m, a, b) {
+    const need = this.settings.watchMs ?? 60000;
+    const w = this.step("watch " + m.name + " (" + Math.round(need / 1000) + " s)", () => { let r; for (let t = 0; t < need; t += 250) r = S.benchWatch(this.st, this.sv, m, 250, this.settings, this.now); return r; }, { wait: need });
+    const c = this.step("compare " + a.name + " and " + b.name, () => S.benchCompare(this.st, this.sv, a, b, this.settings, this.now)); return { w, c };
+  }
   // The sitting: the held sitting (from the welcome), a ceremony, a wait that overlaps the rest, the crate.
   sit(m, pose, place) { return this.step("begin the sitting", () => T.beginSitting(this.st, m, pose, place, this.settings, this.now)); }
   waitCrate(c) { const ms = Math.max(0, c.start + T.sittingWaitMs(this.settings) - this.now); return this.step("the crate fills (" + Math.round(T.sittingWaitMs(this.settings) / MIN) + " min" + (ms ? ", " + Math.round(ms / MIN) + " left" : ", done") + ")", () => ({ ok: true }), { wait: ms }); }
@@ -105,6 +111,7 @@ export function playJourney(opts = {}) {
   P.identify(podB); P.grow(podB, {}, "grow the second founder (unshaped)"); P.growUp(a); P.waitBud(); const b = P.open().mibi; P.growUp(b);
   P.cross(a, b); P.waitBud(); const child = P.open().mibi;
   for (const ch of chapters) if (!child.read.includes(ch)) P.readMibi(child, ch);
+  if (P.bench) P.benchDay(b, b, child);   // a minute of watching b, then the pair compared
   P.waitCrate(crate); P.openCrate(crate);
   return { P, a, b, child, podA, podB, choices, chapters, held, welcome: w.welcome, crate };
 }
