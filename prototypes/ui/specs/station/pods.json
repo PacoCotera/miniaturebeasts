@@ -685,8 +685,8 @@
     8
    ],
    "pod": [
-    32,
-    40
+    40,
+    48
    ],
    "derived": [
     "grid 1",
@@ -806,6 +806,7 @@
      ]
     }
    },
+<<<<<<< HEAD
    "nameGap": 8,
    "nameLine": 20,
    "place": {
@@ -818,6 +819,13 @@
      16
     ]
    }
+=======
+   "podAt": [
+    12,
+    4
+   ],
+   "podNote": "the 40×48 list class, centred where the 32×40 pod was (its centre at (32, 28) on the page)"
+>>>>>>> origin/design-station-frame
   },
   "compareB": {
    "rect": [
