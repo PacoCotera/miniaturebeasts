@@ -7307,535 +7307,15 @@
   "signed_in": "pass 38 verdict",
   "status_note": ""
  },
- "trait-S09-colour-cobalt-and-jade-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [295, 285, 435, 465] of 600x620",
-  "made": "the Colour of the S09 individual (cobalt and jade) as a crop of the standard painting re-framed to 128x160 from a 144x180 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "5c6a1bb4d0fa34061130c789a293002642239dc334e04a5ef91b4b45a0f489b0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-colour-cobalt-and-jade-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [295, 285, 435, 465] of 600x620",
-  "made": "the Colour of the S09 individual (cobalt and jade) as a crop of the standard painting re-framed to 144x176 from a 148x180 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "d1abf3e51e475ba3f332754b2faa800ea75d834d1dc9b51633384ff656a78c20",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-colour-cobalt-and-jade-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [295, 285, 435, 465] of 600x620",
-  "made": "the Colour of the S09 individual (cobalt and jade) as a crop of the standard painting re-framed to 104x160 from a 140x216 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "36aa8703a1724ea722686d480e064b9b3e905fd0c4bee832fefc928fdc453965",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-colour-cobalt-and-jade-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [295, 285, 435, 465] of 600x620",
-  "made": "the Colour of the S09 individual (cobalt and jade) as a crop of the standard painting re-framed to 104x96 from a 194x180 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "7396c7a22e0bc9bf99ee4af3715549326cb70cba536c5d5b48be67ed3a437105",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-colour-cobalt-and-jade-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [295, 285, 435, 465] of 600x620",
-  "made": "the Colour of the S09 individual (cobalt and jade) as a crop of the standard painting re-framed to 104x64 from a 292x180 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "2fabb32b0c5b7644da9c784b7746651d52a118f35870369b5284a124e163102e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-fluff-short-straight-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [395, 205, 525, 335] of 600x620",
-  "made": "the Fluff of the S09 individual (short, straight) as a crop of the standard painting re-framed to 128x160 from a 130x162 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "c06635e4800f36ed192cd3de6bde57be1fd336ba4bd71fb02001488578038874",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-fluff-short-straight-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [395, 205, 525, 335] of 600x620",
-  "made": "the Fluff of the S09 individual (short, straight) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 130x130 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "75ceb1d977373497daf853980c649ca34695c3961f6d6b832fc03de36071dd25",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-fluff-short-straight-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [395, 205, 525, 335] of 600x620",
-  "made": "the Fluff of the S09 individual (short, straight) as a crop of the standard painting re-framed to 104x160 from a 130x200 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "979bac716085ded063268ca14c763918626e7b12ef97c8c353b0f9bdcbb34713",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-fluff-short-straight-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [395, 205, 525, 335] of 600x620",
-  "made": "the Fluff of the S09 individual (short, straight) as a crop of the standard painting re-framed to 104x96 from a 140x130 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "987cb3997670319206ff50081f9b2c423fef99693b3f23c753687f661ba9faf2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-fluff-short-straight-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [395, 205, 525, 335] of 600x620",
-  "made": "the Fluff of the S09 individual (short, straight) as a crop of the standard painting re-framed to 104x64 from a 212x130 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "4724c55de7f641e5c07aa4c81d959c9f1b5343e8849d7cf6bd644f9e442c9dc0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-sheen-between-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 300, 400] of 600x620",
-  "made": "the Sheen of the S09 individual (between) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x115 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "a4a9af3dc177935f9681128a9aca824533dcd08ec0724a7a61d0b6ad9d12651f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-sheen-between-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 300, 400] of 600x620",
-  "made": "the Sheen of the S09 individual (between) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x115 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "8645ec99908945889cd3ba932182090070f8b2750ef874483aacb795c13a2d11",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-sheen-between-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 300, 400] of 600x620",
-  "made": "the Sheen of the S09 individual (between) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x115 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "f9e417f4367d3c529ea48edf5ada784e2d4a986bd88a6e93b0b58ee0562bf97a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-sheen-between-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 300, 400] of 600x620",
-  "made": "the Sheen of the S09 individual (between) as a crop of the standard painting re-framed to 104x96 from a 124x115 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "30c7f500c20451c9c8c38727eebeeb1348506225be99ac6c8f695822ced5cb67",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-sheen-between-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 300, 400] of 600x620",
-  "made": "the Sheen of the S09 individual (between) as a crop of the standard painting re-framed to 104x64 from a 186x115 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "4a53b69cbd801edd915ce7f4fc185b8abc924b95b2e7381aba142c91a511965e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-feathers-between-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [165, 95, 355, 310] of 600x620",
-  "made": "the Feathers of the S09 individual (between) as a crop of the standard painting re-framed to 128x160 from a 190x237 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "e9425ff1ac5651d08e86fe64c5bd2942b30cce42221fdbdca1bdb1fc70f321f7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-feathers-between-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [165, 95, 355, 310] of 600x620",
-  "made": "the Feathers of the S09 individual (between) as a crop of the standard painting re-framed to 144x176 from a 190x233 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "3c8644d23f64540397a8797fa72eb7d9c167bad1e9fca8b2c92e276b7fc8780b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-feathers-between-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [165, 95, 355, 310] of 600x620",
-  "made": "the Feathers of the S09 individual (between) as a crop of the standard painting re-framed to 104x160 from a 190x293 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "5d86c846e9d743345cea762eb01b55c1d800e1bb93a4202ac7234337f8680c18",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-feathers-between-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [165, 95, 355, 310] of 600x620",
-  "made": "the Feathers of the S09 individual (between) as a crop of the standard painting re-framed to 104x96 from a 232x215 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "dd5515cbdb91e92e47f1f6c29717eadae2870a95c0bdf9c8032505ccf7663f2f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-feathers-between-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [165, 95, 355, 310] of 600x620",
-  "made": "the Feathers of the S09 individual (between) as a crop of the standard painting re-framed to 104x64 from a 350x215 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "6c1ab394f11a7fb4eae290f9c35561517de5fcf4bddc38d966dbfc4544ed2815",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-tufts-tail-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [30, 190, 125, 275] of 600x620",
-  "made": "the Tufts of the S09 individual (tail) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 95x85 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "2ba236748e8a64f32e8d05e5a85c28166e8f6859eccd943c8195cd208ce9195c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-tufts-tail-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [30, 190, 125, 275] of 600x620",
-  "made": "the Tufts of the S09 individual (tail) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 95x85 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "9b4b50621847620256517da75aaa3ba2d5d8cbe619851cab714ec29ab182f612",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-tufts-tail-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [30, 190, 125, 275] of 600x620",
-  "made": "the Tufts of the S09 individual (tail) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 95x85 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "eb14e9296ec8597a58ed067accf7d3a1cb75af68dc7bd860ba55dfa4406a6e8b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-tufts-tail-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [30, 190, 125, 275] of 600x620",
-  "made": "the Tufts of the S09 individual (tail) as a crop of the standard painting re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 95x85 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "a25c59c9f6a9065f05d5505b942dd297bb2b08acdcef0d336cecb767583bf106",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-tufts-tail-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [30, 190, 125, 275] of 600x620",
-  "made": "the Tufts of the S09 individual (tail) as a crop of the standard painting re-framed to 104x64 from a 139x85 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "09a0758ee8b4e8784e8b75ac41027922e3f619f243d65b969a57e7f4aadb23ad",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-trim-cream-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [205, 395, 330, 565] of 600x620",
-  "made": "the Trim of the S09 individual (cream) as a crop of the standard painting re-framed to 128x160 from a 136x170 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "22e030f8acfb452f32f2dcf563d626eab58fea48003a36bdd9c2a59190c22f1f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-trim-cream-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [205, 395, 330, 565] of 600x620",
-  "made": "the Trim of the S09 individual (cream) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 125x170 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "f23881ba97876f5a50ec4e5d54ac7feef8a0d37bcaa4aa355b453670039f3cb6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-trim-cream-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [205, 395, 330, 565] of 600x620",
-  "made": "the Trim of the S09 individual (cream) as a crop of the standard painting re-framed to 104x160 from a 125x192 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "85d6c0b10e50ec3846bd245b84aad3570d1f8744cbb6d8fff40e581b59c16cda",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-trim-cream-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [205, 395, 330, 565] of 600x620",
-  "made": "the Trim of the S09 individual (cream) as a crop of the standard painting re-framed to 104x96 from a 185x170 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "69fbc06458da287e21a9b159759a724d9f4071edd99c324779d69068655f9cfa",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-trim-cream-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [205, 395, 330, 565] of 600x620",
-  "made": "the Trim of the S09 individual (cream) as a crop of the standard painting re-framed to 104x64 from a 277x170 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "fa59ff6ccb2591edea195d6c93e4812ed1e6682ad346ba21368fa217fdb8cbb1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-head-between-small-and-medium-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [480, 190, 600, 350] of 600x620",
-  "made": "the Head of the S09 individual (between small and medium) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "1630671a3b6f2767a0c447566ae993e80ffa79466e24370eefaabca1a0a5c9f2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-head-between-small-and-medium-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [480, 190, 600, 350] of 600x620",
-  "made": "the Head of the S09 individual (between small and medium) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 120x160 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "4b47fcc7977f4854503003f891293d7b199808f66e99f810b938730a36bfaa0c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-head-between-small-and-medium-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [480, 190, 600, 350] of 600x620",
-  "made": "the Head of the S09 individual (between small and medium) as a crop of the standard painting re-framed to 104x160 from a 120x184 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "7a04ff851f9b576cb09425417eafce10b17d3e481498d87f9b0ac31f9d6e2e79",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-head-between-small-and-medium-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [480, 190, 600, 350] of 600x620",
-  "made": "the Head of the S09 individual (between small and medium) as a crop of the standard painting re-framed to 104x96 from a 173x160 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "b466c8b65acd1a967f36d026b9e42ad2be31c99d31ec4a6254f002b5011077b3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-head-between-small-and-medium-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [480, 190, 600, 350] of 600x620",
-  "made": "the Head of the S09 individual (between small and medium) as a crop of the standard painting re-framed to 104x64 from a 260x160 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "fea0e2806bf8412d41a1db09dbfc7c53e015c6b936866280ae7df5e54948fc0c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-beak-short-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [545, 255, 600, 315] of 600x620",
-  "made": "the Beak of the S09 individual (short) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 55x60 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "f3be6dd033bc08c4408138fa723374db9954a2bdd56cfbc7586633e8c2630932",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-beak-short-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [545, 255, 600, 315] of 600x620",
-  "made": "the Beak of the S09 individual (short) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 55x60 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "00ca828dce5c97ecdc28248b86a567fdad6185dcd88594a962958e199b375b95",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-beak-short-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [545, 255, 600, 315] of 600x620",
-  "made": "the Beak of the S09 individual (short) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 55x60 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "2e20efa839cb448857c9a8e9d40719cc1c16e0055ac6b8096b0a97b2f3e6ac99",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-beak-short-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [545, 255, 600, 315] of 600x620",
-  "made": "the Beak of the S09 individual (short) as a crop of the standard painting re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 55x60 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "3435e2459b12a538da399a1da0a15b8fbf74fc52c17d0c38c044bd8878d9dfd5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-beak-short-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [545, 255, 600, 315] of 600x620",
-  "made": "the Beak of the S09 individual (short) as a crop of the standard painting re-framed to 104x64 from a 104x64 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 55x60 px, smaller than the 104x64 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "6832d72f1172bfd1d68255031d08bbe7d65226769ad09f0c28a9977146529fbb",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
  "trait-S09-crest-between-128x160": {
   "size": [
    128,
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [480, 125, 560, 215] of 600x620",
-  "made": "the Crest of the S09 individual (between) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 80x90 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "f2bd025bd6afc4b358da3ba75b5b51f0de7f8c55cc751ce51fd9b5c0c80e6c8f",
+  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
+  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 195x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "485e52a62da9a6475a56f3933a06f2611448b97bc2e025b927c20b6cbd0ec333",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7846,9 +7326,9 @@
    176
   ],
   "rect": null,
-  "src": "S09 standard painting, region [480, 125, 560, 215] of 600x620",
-  "made": "the Crest of the S09 individual (between) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 80x90 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "77e57ecd770ca97ff8eb5e5859a5a154d6c18d255e32a1321545a8f330798894",
+  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
+  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 199x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "49fdf5985aff4b30e481a4612c40d5b7750e3ca8855dd11f2fc894eedcfd6455",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7859,9 +7339,9 @@
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [480, 125, 560, 215] of 600x620",
-  "made": "the Crest of the S09 individual (between) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 80x90 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "04a3473d3513a95da76114147cc2eb3ed79566bfed73b6d6ea3073a3d01d4cba",
+  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
+  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 181x279 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "3c68abaa9bb53574b551d61e622f4acedc9683f6bf30556ef5d346438a6fc30a",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7872,9 +7352,9 @@
    96
   ],
   "rect": null,
-  "src": "S09 standard painting, region [480, 125, 560, 215] of 600x620",
-  "made": "the Crest of the S09 individual (between) as a crop of the standard painting re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 80x90 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "7a98b8adc8cfeb59804e6265578ea0f2279f3e32819557248388fa5cd0d2c2d5",
+  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
+  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 263x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "11a1de101c860e02ce4068651a6e8e83e73c97127afd0c8cff33ab94b408c1ee",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7885,9 +7365,9 @@
    64
   ],
   "rect": null,
-  "src": "S09 standard painting, region [480, 125, 560, 215] of 600x620",
-  "made": "the Crest of the S09 individual (between) as a crop of the standard painting re-framed to 104x64 from a 146x90 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "07b88b827e9c482acc31f7ae2221aaaf2605365fabda7a4d2dd9d333d22c62d7",
+  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
+  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 395x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "f6c6c19c6d1e90db86b2a06c62374434b2c90ed7204cb23a37fe04657d627959",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7898,9 +7378,9 @@
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [470, 195, 570, 255] of 600x620",
-  "made": "the Crown of the S09 individual (tall) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x60 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "a850dfcc03c0e672173d5701792e5c9b65350963de2f86c5df35ff39eac0839a",
+  "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 162x202 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "62fbc25c193852de433a5c38754c35b6a990e444c8afc24486a27fd71e58ae3b",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7911,9 +7391,9 @@
    176
   ],
   "rect": null,
-  "src": "S09 standard painting, region [470, 195, 570, 255] of 600x620",
-  "made": "the Crown of the S09 individual (tall) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x60 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "b39e5be6356bb40f3dc287454148ceffa52c2482899c6d37ab34bb07da2de570",
+  "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 162x198 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "38442f196142e94cbec892f7788e54be9d3d008b9bd2defef4201dbff4a1b792",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7924,9 +7404,9 @@
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [470, 195, 570, 255] of 600x620",
-  "made": "the Crown of the S09 individual (tall) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x60 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "94c94d68d40755dda7f519b2b5dd2912edc1a9207cec03a293d9afc99838e0cd",
+  "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 162x249 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "f44b70989362c556dbe37a1f2398bfdbe25759282d6e5a989ee9ea2305af2c75",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7937,9 +7417,9 @@
    96
   ],
   "rect": null,
-  "src": "S09 standard painting, region [470, 195, 570, 255] of 600x620",
-  "made": "the Crown of the S09 individual (tall) as a crop of the standard painting re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x60 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "9ebfcf16dfe743c0239cd36c14d576f36ef85bf4bce048ee63abd293bd50d800",
+  "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 162x149 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "73f157159a6d366d9710c5f25b4ac932cdf459e6827670dc2b1e3e25bf961344",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7950,9 +7430,9 @@
    64
   ],
   "rect": null,
-  "src": "S09 standard painting, region [470, 195, 570, 255] of 600x620",
-  "made": "the Crown of the S09 individual (tall) as a crop of the standard painting re-framed to 104x64 from a 104x64 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x60 px, smaller than the 104x64 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "31bef9a6a2026f1c9208a39a788b73a570751c57e99b5f929499905e23fa3bd9",
+  "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 204x125 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "9f91b813f54dafca533e92f303d6439d6dfcb641dd78d86c1df160a5880967ff",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7963,9 +7443,9 @@
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [535, 225, 585, 275] of 600x620",
-  "made": "the Eyes of the S09 individual (small) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 50x50 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "d72562ba6363176e9bcef94a597245234c1e6b11d3d2d49dcf50ddc178d29dd3",
+  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
+  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "1ebe1deaf6a52bd9b70cb76267006f86813545b2bdceacce9636d06bce1a1d52",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7976,9 +7456,9 @@
    176
   ],
   "rect": null,
-  "src": "S09 standard painting, region [535, 225, 585, 275] of 600x620",
-  "made": "the Eyes of the S09 individual (small) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 50x50 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "a755b0171902d06fce47293ec4f29f8c6996c9db1fd814d00160453bedf8788c",
+  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
+  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "cb7d032b9cb25fd80ae0716196f7dbb0b99becb52e01d552faa8c3ff2e060a51",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -7989,9 +7469,9 @@
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [535, 225, 585, 275] of 600x620",
-  "made": "the Eyes of the S09 individual (small) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 50x50 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "ab2ce09394e47d9fa6fa1aec54cb8990b036968d07229a2b9ac848b5d9e754c3",
+  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
+  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "46d79d7891b126feaa52236266f92b716d5eb4e57d02ac4ac36aa6314ac1a546",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8002,9 +7482,9 @@
    96
   ],
   "rect": null,
-  "src": "S09 standard painting, region [535, 225, 585, 275] of 600x620",
-  "made": "the Eyes of the S09 individual (small) as a crop of the standard painting re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 50x50 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "a3c5affb2caa2af780ce96aab086fa50cbeeb4681128fbddc9e1412033035666",
+  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
+  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "c3f6a9e165d485d271a2c7db4d4a2bf21d7aeb03b4f4b03ca363b7e21b84c772",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8015,334 +7495,9 @@
    64
   ],
   "rect": null,
-  "src": "S09 standard painting, region [535, 225, 585, 275] of 600x620",
-  "made": "the Eyes of the S09 individual (small) as a crop of the standard painting re-framed to 104x64 from a 104x64 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 50x50 px, smaller than the 104x64 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "fea51f89a4d54a1f1974ed3353aa01204a7d3660f836517ec71cd294d0a4c246",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-waist-thick-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [310, 330, 420, 420] of 600x620",
-  "made": "the Waist of the S09 individual (thick) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 110x90 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "0991ac383c4df23a55a6e43d08fa7a98d0bdd74dcf43cfdd76c0d4ac688a88ce",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-waist-thick-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [310, 330, 420, 420] of 600x620",
-  "made": "the Waist of the S09 individual (thick) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 110x90 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "673f7429201eab028ab5518a41ac37b1afa4322d63e64789ec989eff1862e168",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-waist-thick-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [310, 330, 420, 420] of 600x620",
-  "made": "the Waist of the S09 individual (thick) as a crop of the standard painting re-framed to 104x160 from a 110x170 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "cf84bff5b2e03401ae770d267984b91a9b67d12bc47fd9809f2cb74dd56d52a2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-waist-thick-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [310, 330, 420, 420] of 600x620",
-  "made": "the Waist of the S09 individual (thick) as a crop of the standard painting re-framed to 104x96 from a 110x102 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "c35f84e57e8671d1a356932dc64cfecc051ccd2a929780ce7f1b8c32bcbdee85",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-waist-thick-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [310, 330, 420, 420] of 600x620",
-  "made": "the Waist of the S09 individual (thick) as a crop of the standard painting re-framed to 104x64 from a 146x90 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "cf4c6f3d0af9d9d7669ea18d36d321c2a25e061bc64877d2e8541039ad212a98",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-topline-arched-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 260, 420, 325] of 600x620",
-  "made": "the Topline of the S09 individual (arched) as a crop of the standard painting re-framed to 128x160 from a 220x275 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "e34d0990ee1422dde61ae495aaf489601e59654979520e962fb62ee14d7ca955",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-topline-arched-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 260, 420, 325] of 600x620",
-  "made": "the Topline of the S09 individual (arched) as a crop of the standard painting re-framed to 144x176 from a 220x269 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "93bbf82bda08f2a9a17918701c212423729a4057833a67b39ed944bdd3ee6bee",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-topline-arched-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 260, 420, 325] of 600x620",
-  "made": "the Topline of the S09 individual (arched) as a crop of the standard painting re-framed to 104x160 from a 220x339 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "cb00383b23c95cfad5737db7918862e55ba81940d10dc8120e4ff0f635477975",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-topline-arched-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 260, 420, 325] of 600x620",
-  "made": "the Topline of the S09 individual (arched) as a crop of the standard painting re-framed to 104x96 from a 220x203 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "e79f57cbb2503543c3e5dd97297f1c20c4905c4c8653323bb9dcf4af1ed9b9dc",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-topline-arched-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 260, 420, 325] of 600x620",
-  "made": "the Topline of the S09 individual (arched) as a crop of the standard painting re-framed to 104x64 from a 220x135 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "ae6b3184665ba3b6c73b511ace88195770032a87149d449ff4a31c149c25cb4d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-haunch-small-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 310, 400] of 600x620",
-  "made": "the Haunch of the S09 individual (small) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 110x115 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "7242c2ce298e5ab846c4c9e0235c9029c1699a43c5fd9b82c9ead3cbeb59fcba",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-haunch-small-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 310, 400] of 600x620",
-  "made": "the Haunch of the S09 individual (small) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 110x115 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "5342cf91f52655e988b8bf8de642f8bca52d3d13c5699c90813d2049a023e3fd",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-haunch-small-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 310, 400] of 600x620",
-  "made": "the Haunch of the S09 individual (small) as a crop of the standard painting re-framed to 104x160 from a 110x169 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "f29855d75f8de1d04f555b80fc3c0bbba172662e9db3f7863f5fa5aee2090c45",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-haunch-small-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 310, 400] of 600x620",
-  "made": "the Haunch of the S09 individual (small) as a crop of the standard painting re-framed to 104x96 from a 124x115 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "365aeb41c974591ecab284427fa5d33e595d9a556038c5084f66e0775cce3789",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-haunch-small-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [200, 285, 310, 400] of 600x620",
-  "made": "the Haunch of the S09 individual (small) as a crop of the standard painting re-framed to 104x64 from a 186x115 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "f0d6f737bff7d6e97252e384cb76b886575ba4c1ea6d39eafeda160c170fabff",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-body-pear-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [290, 285, 440, 470] of 600x620",
-  "made": "the Body of the S09 individual (pear) as a crop of the standard painting re-framed to 128x160 from a 150x187 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "f0636c16c0810e64e67b1a4ea049abed3cc12971e99696d2f61285f6eb26fcb9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-body-pear-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [290, 285, 440, 470] of 600x620",
-  "made": "the Body of the S09 individual (pear) as a crop of the standard painting re-framed to 144x176 from a 152x185 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "e8615b1097dbedc7131ba1c464dbedc8cadccca8116d97542cd09d92c0b3d98c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-body-pear-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [290, 285, 440, 470] of 600x620",
-  "made": "the Body of the S09 individual (pear) as a crop of the standard painting re-framed to 104x160 from a 150x231 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "c2ef3414a198c05dbad8a5423c71dbf54a150f89d071a252d599f74c188be50c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-body-pear-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [290, 285, 440, 470] of 600x620",
-  "made": "the Body of the S09 individual (pear) as a crop of the standard painting re-framed to 104x96 from a 200x185 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "8542db5c3665606cf9c32b71ea0994692c2d0a657aae9fd0142bc01437f329f4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-body-pear-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [290, 285, 440, 470] of 600x620",
-  "made": "the Body of the S09 individual (pear) as a crop of the standard painting re-framed to 104x64 from a 300x185 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "bbfb69e283bf0744c234d0424524f1c211c0e5d44e97acf2cd2ab387760591ff",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-build-low-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [150, 250, 450, 470] of 600x620",
-  "made": "the Build of the S09 individual (low) as a crop of the standard painting re-framed to 128x160 from a 300x376 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "5f98cd05921aed27d2571a9110da1a52570adaff48aa7aaf64671644328a94cc",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-build-low-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [150, 250, 450, 470] of 600x620",
-  "made": "the Build of the S09 individual (low) as a crop of the standard painting re-framed to 144x176 from a 300x366 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "abbb0798dde22c787d3871f2b99b769132fe038620514fab053e3173d6b7132b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-build-low-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [150, 250, 450, 470] of 600x620",
-  "made": "the Build of the S09 individual (low) as a crop of the standard painting re-framed to 104x160 from a 300x462 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "d24d42473ed9ab5f6774c7b29d987e75fdffd85a79ec764d2348b5380cf48a0b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-build-low-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [150, 250, 450, 470] of 600x620",
-  "made": "the Build of the S09 individual (low) as a crop of the standard painting re-framed to 104x96 from a 300x276 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "0d94fc52b1d6173fad0b640cae32e226981d8b935defe5c63a52217aba13342f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
- },
- "trait-S09-build-low-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 standard painting, region [150, 250, 450, 470] of 600x620",
-  "made": "the Build of the S09 individual (low) as a crop of the standard painting re-framed to 104x64 from a 358x220 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "c82047af94bca12fc9e2fbd1589ee43a40156111d2d2f937cf63a733a2965ff0",
+  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
+  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 104x64 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 104x64 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "e0e8868b08cecb79109fffa1f30dea65c1176f6572f21157155f0f80865c706e",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8353,9 +7508,9 @@
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [130, 250, 300, 360] of 600x620",
-  "made": "the Carriage of the S09 individual (straight) as a crop of the standard painting re-framed to 128x160 from a 170x212 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "c72462a952efb6b9f5308436e001336f67abe44db75b605bed4b210b941358aa",
+  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
+  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 214x268 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "1be61067e1a25e36ee8ed74ed40b035c388fdf5dde21e124f8f76a80fb4acae8",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8366,9 +7521,9 @@
    176
   ],
   "rect": null,
-  "src": "S09 standard painting, region [130, 250, 300, 360] of 600x620",
-  "made": "the Carriage of the S09 individual (straight) as a crop of the standard painting re-framed to 144x176 from a 170x208 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "83bbb1051baeb04ae5e6eb8d1e3d6d7643e6c1f36a2e767d343751d48506e538",
+  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
+  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 214x262 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "c5ef36e00db779f245e2b523e8a26e1a00f8d692663841cba68ae4559ee96e1c",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8379,9 +7534,9 @@
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [130, 250, 300, 360] of 600x620",
-  "made": "the Carriage of the S09 individual (straight) as a crop of the standard painting re-framed to 104x160 from a 170x262 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "292d98a4294cc241af238ac599aec7ae5d8cb66b5e7fee9668943a4183a5bc15",
+  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
+  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 214x330 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "3967ddcd593b6abc9e458d206e192825736b4c6f94cae53dc980ec2e116de66f",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8392,9 +7547,9 @@
    96
   ],
   "rect": null,
-  "src": "S09 standard painting, region [130, 250, 300, 360] of 600x620",
-  "made": "the Carriage of the S09 individual (straight) as a crop of the standard painting re-framed to 104x96 from a 170x156 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "5d969f362b06e9d72c585611d741406a82c757eda947e8e88e16288688c7bf0d",
+  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
+  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 214x198 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "e929d65dc94dd1e05f7588e1fa1aa3da3ddaafdac26dabd44e8b4986bcaec626",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8405,9 +7560,9 @@
    64
   ],
   "rect": null,
-  "src": "S09 standard painting, region [130, 250, 300, 360] of 600x620",
-  "made": "the Carriage of the S09 individual (straight) as a crop of the standard painting re-framed to 104x64 from a 178x110 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "5fbf3660c9eb1679036a79efc32241a0e5823792fecc8fe42c1bb6d47acb03a2",
+  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
+  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 260x160 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "a22b1e6a7817d68440ea51d61ed34e597e19a1047f0a9c7881423431a54fcc95",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8418,9 +7573,9 @@
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [30, 185, 215, 335] of 600x620",
-  "made": "the Tail of the S09 individual (between) as a crop of the standard painting re-framed to 128x160 from a 185x232 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "76397c0953a3fd91d1a3f24041137261f8e8f5d0ea40166db8f6dc9cac29261a",
+  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 138x172 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "05ccfb5b4aaec3d2cd1ab1f4e39c725f86c2441b7dbd3df74032b6ae17dd659b",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8431,9 +7586,9 @@
    176
   ],
   "rect": null,
-  "src": "S09 standard painting, region [30, 185, 215, 335] of 600x620",
-  "made": "the Tail of the S09 individual (between) as a crop of the standard painting re-framed to 144x176 from a 185x226 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "d98b3c4ef92db1a0aaed7af5299e5b8238ec9982402e1d71f2d311e69309ec4c",
+  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 138x98 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "3fe11ba860db05a916c5b966cc5e12ee61982944daa37cdb5d01c5bc451b311d",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8444,9 +7599,9 @@
    160
   ],
   "rect": null,
-  "src": "S09 standard painting, region [30, 185, 215, 335] of 600x620",
-  "made": "the Tail of the S09 individual (between) as a crop of the standard painting re-framed to 104x160 from a 185x284 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "77a00ce36fe733c00e06daba548e796073ce2177c0ef969929924240d10135cd",
+  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 138x212 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "7e7f44b3137f4169c96f0772c8cc9c1aa9ace98651041756dc8fc23380aa7ace",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8457,9 +7612,9 @@
    96
   ],
   "rect": null,
-  "src": "S09 standard painting, region [30, 185, 215, 335] of 600x620",
-  "made": "the Tail of the S09 individual (between) as a crop of the standard painting re-framed to 104x96 from a 185x170 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "e6974cf7eec2972254c8bfe1c8cf90d17ecd9d33df00f24f495a354cbd429722",
+  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 138x128 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "1e18e420dd8de62c78a4fd5c4305c582f97a5a59fecc59bc28f8aead1659be6e",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -8470,9 +7625,9 @@
    64
   ],
   "rect": null,
-  "src": "S09 standard painting, region [30, 185, 215, 335] of 600x620",
-  "made": "the Tail of the S09 individual (between) as a crop of the standard painting re-framed to 104x64 from a 243x150 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "9adb42cc4f2a902149b1819147a99de134b09200a061b4e59389cea2239a3656",
+  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 160x98 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "292541dc762fbe160a7001f08bc54aa09ad315e29b249161244eff691dae366d",
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
@@ -9074,5 +8229,135 @@
   "status": "signed",
   "signed_in": "pass 42 (signed on delivery)",
   "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+ },
+ "trait-S09-head-between-small-and-large-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 158x198 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "48d40c97c427f3ad37f9c5c2c492f17097387fa16da4ae992d2be14d54a66720",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-head-between-small-and-large-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 158x194 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "4918cc1c092ad59bca6171242ecfa03dbe1b80a011b5d8b27b1e790fe3506f76",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-head-between-small-and-large-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 158x244 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "1cd5424a3dde5320168a7c50fb27c04c872cea67c1613409ef40654dc988e659",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-head-between-small-and-large-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 182x168 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "f4bd4fd1096fd09e380e15e05b47c17bb4285beccca2921d5edc73600ff6229b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-head-between-small-and-large-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 272x168 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "f00851dfe4c1df86269a51f754fcc4e335ad17876d2a4426072a254b5ba0e967",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-beak-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "8cd3e4f3bad9c357eb1dc19ce350dde637dd045ec6077d7c4d079e06a85ff663",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-beak-between-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "b4c2d301e2492af8ab7eadc64834145ed607d2465e54eae4675d2b6a0d60cf9c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-beak-between-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "d1707a5173856f95e263095bbb13f7f710f0cef874103b6c159217ca544308e0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-beak-between-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "4eba91fb2676e8689754d3e2faed8fb06e82e87351013f9425986e86e80be41a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-beak-between-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 139x85 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "7b2af6b3d6aaab9265b4ba6043ca6b81972b9ce243232786ca03bc35ab44ce1b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
  }
 }

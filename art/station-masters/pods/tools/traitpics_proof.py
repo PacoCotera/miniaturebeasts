@@ -7,7 +7,7 @@ os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 src = open("tools/compose.py").read(); ns = {}; exec(src[:src.index("def compose(")], ns); recol = ns["recol"]
 FD = "/usr/share/fonts/opentype/inter/"; f16 = ImageFont.truetype(FD + "Inter-Regular.otf", 16); f20 = ImageFont.truetype(FD + "Inter-Medium.otf", 20)
 S = lambda n: Image.open(f"slices/{n}.png").convert("RGBA")
-doc = json.load(open("traitpics/trait-regions-S09.json"))
+doc = json.load(open("traitpics/trait-regions-S09-round2.json")); ORDER = {"coat": ["Colour", "Fluff", "Sheen", "Feathers", "Tufts", "Trim"], "face": ["Head", "Beak", "Crest", "Crown", "Eyes"], "legs-tail": ["Carriage", "Tail"]}
 def nineslice(w, h):
     m = S("page-pane-256x440"); W, H = m.size; L, T, R_, B = 64, 64, 16, 16; o = Image.new("RGBA", (w, h))
     o.paste(m.crop((0, 0, L, T)), (0, 0)); o.paste(m.crop((W - R_, 0, W, T)), (w - R_, 0)); o.paste(m.crop((0, H - B, L, H)), (0, h - B)); o.paste(m.crop((W - R_, H - B, W, H)), (w - R_, h - B))
@@ -20,12 +20,14 @@ def nineslice(w, h):
 def page(chapter, word, emblem):
     cv = Image.new("RGBA", (1024, 600), (16, 26, 36, 255)); d = ImageDraw.Draw(cv); cv.alpha_composite(S("room-bench-stage-chapter"), (0, 40))
     cv.alpha_composite(S("room-shelf"), (72, 368)); cv.alpha_composite(S("room-cradle"), (104, 328)); cv.alpha_composite(S("pod-large-shadow"), (216 - 80, 385))
-    cv.alpha_composite(recol("large", (0x4d, 0x7e, 0xd4), (0x26, 0x9f, 0xa5), "ribs", tint=(0, 0, 0)), (144, 216)); cv.alpha_composite(S("room-cradle-front"), (104, 328))
-    tr = [(k, e) for k, e in doc["traits"].items() if e["chapter"] == chapter]; n = len(tr); ph = 440 if n >= 5 else 248
+    cv.alpha_composite(recol("large", (0x4d, 0x7e, 0xd4), (0xff, 0xf0, 0xb8), "ribs", tint=(0, 0, 0)), (144, 216)); cv.alpha_composite(S("room-cradle-front"), (104, 328))
+    byname = {e["trait"]: e for e in doc["traits"].values()}; tr = [(nm, byname.get(nm)) for nm in ORDER[chapter]]; n = len(tr); ph = 440 if n >= 5 else 248
     cv.alpha_composite(nineslice(584, ph), (424, 112)); cv.alpha_composite(S(f"rail-emblem-{emblem}-read-24x24"), (440, 120)); d.text((472, 132), word, font=f20, fill=(241, 235, 223, 255), anchor="lm")
     for i, (k, e) in enumerate(tr):
         c, r = i % 4, i // 4; x = 448 + 136 * c; y = 160 + 200 * r
-        pic = S(e["crops"]["128x160"]["slice"]); cv.alpha_composite(pic, (x, y)); cv.alpha_composite(S("trait-picture-frame-128x160"), (x, y)); d.text((x + 64, y + 178), e["trait"], font=f16, fill=(241, 235, 223, 255), anchor="mm")
+        if e: cv.alpha_composite(S(e["crops"]["128x160"]["slice"]), (x, y))
+        else: cv.alpha_composite(S("trait-picture-standin-128x160"), (x, y)); d.text((x + 64, y + 80), "stand-in", font=f16, fill=(141, 138, 166, 255), anchor="mm")           # a quality trait: its per-look plate waits for the quota
+        cv.alpha_composite(S("trait-picture-frame-128x160"), (x, y)); d.text((x + 64, y + 178), k, font=f16, fill=(241, 235, 223, 255), anchor="mm")
     return cv.convert("RGB")
-a = page("coat", "Coat", "coat"); b = page("legs-tail", "Legs & Tail", "legs-tail")
-a.save("traitpics/chapter-coat-S09-1x.png"); b.save("traitpics/chapter-legs-tail-S09-1x.png")
+a = page("coat", "Coat", "coat"); b = page("legs-tail", "Legs & Tail", "legs-tail"); c = page("face", "Face", "face")
+a.save("traitpics/chapter-coat-S09-1x.png"); b.save("traitpics/chapter-legs-tail-S09-1x.png"); c.save("traitpics/chapter-face-S09-1x.png")
