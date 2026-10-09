@@ -32,7 +32,7 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
   // the page's Picture state (one large picture) and its Grid state (four traits)
   // the page, one state: six traits in the Pods wireframe, eight in the second
   for (const [n, set] of [[6, boxes], [8, gridBoxes]]) { const g = pageGrid(R.page, n); assert.equal(g.cells.length, n); for (const c of g.cells) has([c[0], c[1], g.picture[0], g.picture[1]], n + "-trait picture", set); }
-  assert.deepEqual(R.page.states, ["grid"]); for (const g of Object.values(R.page.grid)) assert.ok(g.picture[0] * g.picture[1] <= R.pod.rect[2] * R.pod.rect[3], "no page picture larger than the pod's box"); assert.equal(R.stampCaseFront.slice, "room-stamp-case-152x152-front"); assert.deepEqual(R.stampCaseFront.rect, R.stampCase.rect); assert.equal(R.page.picture, undefined); assert.deepEqual(pageGrid(R.page, 8).picture, [104, 64]); assert.deepEqual(pageGrid(R.page, 4).picture, [104, 160]);
+  assert.deepEqual(R.page.states, ["grid"]); assert.deepEqual(R.page.heightByCount, { 1: 264, 2: 248, else: 440 }); for (const n of ["1", "2"]) { const g = R.page.grid[n], low = Math.max(...g.cells.map((c) => c[1] + c[3])); assert.equal(low + 16, R.page.heightByCount[n], "the pane 16 px under its last cell"); } has([152, 112, 256, 264], "the one-trait pane"); has([152, 112, 256, 248], "the two-trait pane"); for (const g of Object.values(R.page.grid)) assert.ok(g.picture[0] * g.picture[1] <= R.pod.rect[2] * R.pod.rect[3], "no page picture larger than the pod's box"); assert.equal(R.stampCaseFront.slice, "room-stamp-case-152x152-front"); assert.deepEqual(R.stampCaseFront.rect, R.stampCase.rect); assert.equal(R.page.picture, undefined); assert.deepEqual(pageGrid(R.page, 8).picture, [104, 64]); assert.deepEqual(pageGrid(R.page, 4).picture, [104, 160]);
   assert.deepEqual(R.cradle.rect, [520, 328, 224, 96]); assert.deepEqual(R.cradleFront.rect, R.cradle.rect); assert.equal(pods.colours.origin, "bone");
   assert.deepEqual([R.name.rect, R.name.px, R.name.weight, R.name.plate.h, R.name.plate.min], [[520, 456, 224, 24], 20, 500, 24, 80]); assert.equal(R.name.rect[0] + R.name.rect[2] / 2, R.pod.axis);
   has([592, 456, 80, 24], "the name plate hugging Loika"); has([552, 456, 160, 24], "the name plate hugging Unknown pod");
@@ -52,7 +52,7 @@ test("the Pods spec file agrees with the Pods wireframe, region by region", () =
 
 test("the grid tables follow the layout document: cells inside the page, none touching, a picture inside its cell", () => {
   for (const key of ["page", "compareA"]) for (const [count, t] of Object.entries(pods.regions[key].grid)) {
-    const page = pods.regions[key].rect, cells = t.cells;
+    const hb = pods.regions[key].heightByCount, page = hb ? [...pods.regions[key].rect.slice(0, 3), hb[count] ?? hb.else] : pods.regions[key].rect, cells = t.cells;
     for (const [i, c] of cells.entries()) {
       assert.ok(c[0] >= 16 && c[0] + c[2] <= page[2] - 16 && c[1] >= 48 && c[1] + c[3] <= page[3] - 8, `${key} ${count} cell ${i} inside the page`);
       assert.ok(t.picture[0] <= c[2] && t.picture[1] <= c[3], `${key} ${count} picture fits`);
