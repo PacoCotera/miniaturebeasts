@@ -604,6 +604,10 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 68 - Colour goes on the repaint list
+
+The art director's verdict on pass 67: the Colour plate's edges and light are fixed, but at 1x it reads as an artichoke (about 12 leaf feathers some 15 px long, too big for breast plumage, and nothing ties it to a body). The job `plate66-S09-colour` is added to `source/work/plates66-jobs.json`: the bird's own breast, fine soft plumage in cobalt, part of a body with a hint of neck or wing edge, content inside the centred 96x120 on ground. The file now holds Sheen, Tufts, Carriage, Eyes and Colour: 5 pictures, at most 10 requests (one retry each); about 18 MXN at the real price (3.6 MXN a request), at most 36 MXN. No call has been made: it waits for the owner's word. The pass 67 Colour slice stays in place, recorded new.
+
 ## Pass 67 - the verdicts on pass 66, part one (every claim below was measured on the files)
 
 - **Fluff signed** (pass 66 verdict), after one touch-up: the stray wisp above the back (a thin streak at about x 54 to 61, y 20 to 27 on the file) taken out; the dome fade is unchanged (row 0 of the content still 0 off-ground pixels).
