@@ -133,9 +133,10 @@ export function openBay() {
   UI.report = { plays: r.plays, at: clock.now + r.plays.length * ARRIVE_MS, mend: FX.mend };
   save();
 }
-export function dockKey() {
+export function dockKey(fromIdle = false) {
   const r = T.dock(G.st, G.sv, G.settings, Date.now());
   if (!r.ok) { msg(r.msg); return; }
+  if (r.docked && fromIdle && UI.screen !== "home") goScreen("home");   // docked while the screen slept: the arrival plays on Home, where it is seen
   if (r.docked) { FX.mend = { ...r.mend, at: clock.now }; FX.crateIn = clock.now; }
   msg(r.msg); save();
 }

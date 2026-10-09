@@ -88,7 +88,7 @@ function line() {
 function act(k) {
   const h = H(), m = shown(); if (k !== "confirm") { h.bondArm = 0; h.wildArm = 0; }
   if (k === "back") { goScreen("home"); return; }   // up to Home, whichever way you came (a jump from the Book included)
-  if (k in DIRS) { const f = habitatMove(rows(m), h.f, k, m && m.id); h.f = f; if (f[0] === "s" && f !== "stage") h.id = +f.slice(1); return; }
+  if (k in DIRS) { if (!m) return; const f = habitatMove(rows(m), h.f, k, m && m.id); h.f = f; if (f[0] === "s" && f !== "stage") h.id = +f.slice(1); return; }
   if (k !== "confirm" || !m) return;
   if (h.f === "stage" || (h.f[0] === "s" && h.f !== "stage")) { FX.moment = { id: m.id, at: clock.now }; lockInput(300); msg(m.name + " leans on the glass · " + (m.mem ? "it remembers the " + m.mem : m.from.g ? "it came from the " + (S.PLACE_WORD[m.from.g] || m.from.g) : "it hasn’t been out yet")); }
   else if (h.f === "door") { if (m.id !== effWithId()) { const r = S.takeWith(G.st, G.sv, m); if (r.ok) { msg(r.msg); save(); } } }

@@ -128,7 +128,7 @@ await page.evaluate(() => window.__st.unlock());
 await shot("page-identified");
 // Identify leaves the Library where it was (the ribbon says the species is new); ✓ on an identified, unread pod opens its first unread chapter, free, and ← names the pod
 expect((await page.evaluate(() => window.__st.UI.lib.f)) === "spread" && (await page.evaluate(() => window.__st.UI.screen)) === "pods", "Identify does not switch the Library to a Book");
-{ const dd = (await st()).d; await press("confirm", 200);
+{ const dd = (await st()).d; l = await line(); expect(/^Open /.test(l.ok), "the line names what ✓ does (the first chapter, not 'Read'): " + JSON.stringify(l)); await press("confirm", 200);
   const at = await page.evaluate(() => ({ view: window.__st.UI.pods.view, f: window.__st.UI.pods.focus.cur }));
   expect(at.view === "chapter" && at.f === "rail.0" && (await st()).d === dd, "✓ on an identified, unread pod opens its first unread chapter, no spend: " + JSON.stringify(at));
   l = await line(); expect(l.back === "Loika", "below the overview ← names the pod: " + JSON.stringify(l));
@@ -444,6 +444,12 @@ const ui = () => page.evaluate(() => { const u = window.__st.UI; return { screen
     await page.evaluate(() => { window.__st.UI.hab.f = "door"; }); await press("up", 80); u = await ui(); expect(u.hab === "cross", "▲ from the door row is Cross: " + JSON.stringify(u));
     await press("down", 80); await press("down", 80); u = await ui(); expect(/^s\d+$/.test(u.hab), "▼ from the door row is the strip: " + JSON.stringify(u));
   }
+  // The Probe bench opens on what has an action; Habitat with no mibi has a pad that does nothing is covered in the rules (nav.test.mjs)
+  await press("home", 150); await page.evaluate(() => { window.__st.UI.home.f = "cradle"; }); await press("confirm", 250); u = await ui(); l = await line();
+  expect(u.screen === "bench" && !!l.ok, "the Probe bench opens on a target that has an action: " + JSON.stringify([u, l])); await press("home", 150);
+  // Dock on Idle still acts: it wakes the screen and docks (or lifts)
+  const dockBefore = JSON.stringify((await st()).dock); await page.evaluate(() => { window.__st.UI.idle = true; }); await press("dock", 250); u = await ui();
+  expect(!u.idle && JSON.stringify((await st()).dock) !== dockBefore, "the Dock key on Idle wakes and acts: " + JSON.stringify(u)); await press("dock", 250);
   // Idle: the first press only wakes
   await press("home", 150); await page.evaluate(() => { window.__st.UI.idle = true; }); await press("confirm", 200); u = await ui();
   expect(!u.idle && u.screen === "home" && u.home === "room", "the first press on Idle only wakes: " + JSON.stringify(u));

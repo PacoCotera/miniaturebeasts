@@ -119,7 +119,7 @@ test("the props are plain JSON; every picture asked for is registered once at on
 test("the bottom line: the one action and its price as a number and an icon (no 'free', no 'half'), strings as decided", () => {
   const st = stock(["S01"], 3), p = st.tray[0], m = (f, extra = {}) => model(st, { focus: f, ...extra }), c = (f, ci) => chapter(st, ci, { focus: f });
   S.skipIdentify(st, p); st.d = 10;
-  assert.equal(view(m("pod")).line.ok, "Read its chapters"); assert.equal(view(m("rail.0")).line.ok, "Open Coat", "on the overview a tab opens its page"); assert.ok(!view(m("rail.0")).line.price);
+  assert.equal(view(m("pod")).line.ok, "Open Coat", "✓ on an unread pod opens its first unread chapter, and the line says so"); assert.equal(view(m("rail.0")).line.ok, "Open Coat", "on the overview a tab opens its page"); assert.ok(!view(m("rail.0")).line.price);
   assert.equal(view(c("rail.0", 0)).line.ok, "Read Coat");
   st.readEver = true; assert.equal(view(c("rail.0", 0)).line.price, "1 ◆");
   st.readOnce.S01 = ["face"]; st.d = 10; assert.equal(view(c("rail.1", 1)).line.price, "1 ◆");   // a half price is the lower number, with no word

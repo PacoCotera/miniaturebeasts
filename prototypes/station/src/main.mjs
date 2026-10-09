@@ -93,8 +93,9 @@ export function act(k) {
   if (!G.ready) return;
   if (FACE) FACE.key(k);
   clock.now = performance.now(); UI.lastInput = clock.now;
-  if (UI.idle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); return; }   // the first press on Idle only wakes the screen (a landed painting shows from here); nothing else happens
-  if (k === "dock") { dockKey(); return; }
+  const wasIdle = UI.idle;
+  if (UI.idle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); if (k !== "dock") return; }   // the first press on Idle only wakes the screen (a landed painting shows from here); the Caddy's Dock key is a world event, not a Station press: it wakes and docks
+  if (k === "dock") { dockKey(wasIdle); return; }
   if (clock.now < FX.lockUntil || TL.holding()) return;                  // presses during a reveal or an arrival are consumed (the timeline's holds, and the screens not yet moved)
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (UI.report && !arriving() && UI.screen === "home") UI.report = null;
