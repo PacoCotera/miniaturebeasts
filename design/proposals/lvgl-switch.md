@@ -1,6 +1,6 @@
 # The LVGL switch: development spec
 
-**Proposal**, architect, 2026-10-09 11:40 (America/Mexico_City), on the owner's decision of 2026-10-09 11:27: "deprecate the javascript layer." Measured against `main` at 3e017843 and the frozen `field-guide` branch at 5927d91d.
+**Decided** (owner, 2026-10-09 11:53: Q1 (a), Q2 yes, Q3 (a)), architect, 2026-10-09 11:40 (America/Mexico_City), on the owner's decision of 2026-10-09 11:27: "deprecate the javascript layer." Measured against `main` at 3e017843 and the frozen `field-guide` branch at 5927d91d.
 
 This spec finishes what [technical-architecture.md §8](technical-architecture.md#8-assessment-the-real-lvgl-face-in-the-sandbox-now) started. It is a separate document because §8 is the assessment that led to the decision, while this is the build plan. §8 stays as written, except that §8.4's L3 row now points here. Where the two differ, this document governs the build.
 
@@ -387,6 +387,8 @@ Deleting a listed file always passes. A fix that a frozen file genuinely needs b
 | **The field-guide branch rots** while frozen | Medium | Q3 |
 
 ### 6.2 Questions for the owner
+
+**Decided** (owner, 2026-10-09 11:53): Q1 (a) per screen, as soon as each passes its gate; Q2 yes, all five checks; Q3 (a) salvage now. Documentation is part of done: a milestone merges only when the docs it touches, in both repositories and on the website, show the current state.
 
 **Q1. Which face does the sandbox show while the switch runs?**
 (a) Per screen: each screen switches to LVGL by default as soon as it passes its gate, its JavaScript drawing is deleted then, and unmoved screens stay on the JavaScript face until their turn. (b) The JavaScript face stays the default for every screen until L3, and LVGL stays behind `?face=lvgl`.
