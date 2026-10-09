@@ -5,7 +5,8 @@ m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
 for n in m:
-    if re.match(r"guide-face-S(01|09|12)-", n): sign(n, "new", None, "pass 77: a Library guide face: the type specimen's head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; awaiting verdict")
+    if n == "library-foldout-1008x504": sign(n, "new", None, "pass 78: DERIVED FROM THE CONCEPT (BK-D-r2-a1; no signed Book master exists): boards 16 px at the sides, 8 px top and bottom, one aged page 976x488 at (16, 8), no gutter, no marker, no ornament; palette colours only; awaiting verdict")
+    elif re.match(r"guide-face-S(01|09|12)-", n): sign(n, "new", None, "pass 77: a Library guide face: the type specimen's head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; awaiting verdict")
     elif n.startswith("guide-face-"): sign(n, "placeholder", None, "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists")
     elif re.match(r"guide-panel-", n): sign(n, "new", None, "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict")
     elif n in ("guide-seal-32", "guide-pip-unseen-6x6", "wish-mark-12", "wish-mark-24", "mark-guide-16"): sign(n, "new", None, "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict")
