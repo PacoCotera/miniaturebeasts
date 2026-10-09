@@ -13,27 +13,35 @@ SIZES = [(128, 160), (144, 176), (104, 160), (104, 96), (104, 64)]
 DEEP = np.array([14.0, 28.0, 36.0]); PAPER = np.array([246.0, 243.0, 236.0])
 slug = lambda s: re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", s.lower())).strip("-")
 def key(img, keepedge=None):
+    """Paper to deep: the ground is the flood of paper-coloured pixels (distance under 10 in any channel, or the cast shadow's grey scaling) from the painting's border: a pale feather inside the bird, even one
+    near the paper's tone, is never ground, and the flood cannot leak through a 1 px gap because it only spreads over pixels that are themselves paper. The boundary is then feathered by 1 px (a 3x3 box on
+    the alpha) and the colour defringed from the solid fur inside; the old 1 px choke is gone (it cut the pale forehead; `keepedge` is kept for the signature)."""
     a = np.asarray(img.convert("RGB")).astype(float); d = np.abs(a - PAPER).max(2); r = a / PAPER; spread = r.max(2) - r.min(2)
     shadow = (spread < 0.05) & (r.mean(2) < 0.985) & (r.mean(2) > 0.5)
-    alpha = np.clip((d - 12) / 26.0, 0, 1); alpha[shadow] = 0
-    # only the ground connected to the painting's border is ground: a pale feather inside the bird (near the paper's colour) stays opaque
-    bgish = alpha < 0.5; lab = np.zeros(bgish.shape, bool); st = [(y, x) for y in (0, bgish.shape[0] - 1) for x in range(bgish.shape[1]) if bgish[y, x]] + [(y, x) for x in (0, bgish.shape[1] - 1) for y in range(bgish.shape[0]) if bgish[y, x]]
+    ground = (d < 10) | shadow; H_, W_ = ground.shape; lab = np.zeros_like(ground)
+    st = [(y, x) for y in (0, H_ - 1) for x in range(W_) if ground[y, x]] + [(y, x) for x in (0, W_ - 1) for y in range(H_) if ground[y, x]]
     for p in st: lab[p] = True
     while st:
         y, x = st.pop()
         for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             yy, xx = y + dy, x + dx
-            if 0 <= yy < bgish.shape[0] and 0 <= xx < bgish.shape[1] and bgish[yy, xx] and not lab[yy, xx]: lab[yy, xx] = True; st.append((yy, xx))
-    alpha = np.where(lab | (alpha >= 0.5), alpha, 1.0)
-    a0_ = alpha.copy(); m = Image.fromarray((alpha * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3)); alpha = np.asarray(m).astype(float) / 255          # choke the key by 1 px
-    if keepedge: x_, y_, w_, h_ = keepedge; alpha[y_:y_ + h_, x_:x_ + w_] = a0_[y_:y_ + h_, x_:x_ + w_]            # the head's lit edge is left out of the choke (it ate the pale forehead)
+            if 0 <= yy < H_ and 0 <= xx < W_ and ground[yy, xx] and not lab[yy, xx]: lab[yy, xx] = True; st.append((yy, xx))
+    alpha = np.where(lab, 0.0, 1.0)
+    alpha = np.asarray(Image.fromarray((alpha * 255).astype(np.uint8)).filter(ImageFilter.BoxBlur(0.8))).astype(float) / 255
     solid = alpha > 0.97; col = a.copy()
-    for _ in range(3):                                                                              # defringe: the edge's colour is taken from the nearest solid fur
-        p = np.pad(solid, 1); cnt = sum(p[1 + dy:1 + dy + solid.shape[0], 1 + dx:1 + dx + solid.shape[1]].astype(float) for dy in (-1, 0, 1) for dx in (-1, 0, 1))
+    for _ in range(3):
+        p = np.pad(solid, 1); cnt = sum(p[1 + dy:1 + dy + H_, 1 + dx:1 + dx + W_].astype(float) for dy in (-1, 0, 1) for dx in (-1, 0, 1))
         pc = np.pad(col * solid[..., None], ((1, 1), (1, 1), (0, 0)))
-        s = sum(pc[1 + dy:1 + dy + solid.shape[0], 1 + dx:1 + dx + solid.shape[1]] for dy in (-1, 0, 1) for dx in (-1, 0, 1))
-        grow = (~solid) & (cnt > 0) & (alpha > 0.02); col[grow] = (s / np.maximum(cnt, 1)[..., None])[grow]; solid = solid | grow
+        sm = sum(pc[1 + dy:1 + dy + H_, 1 + dx:1 + dx + W_] for dy in (-1, 0, 1) for dx in (-1, 0, 1))
+        grow = (~solid) & (cnt > 0) & (alpha > 0.02); col[grow] = (sm / np.maximum(cnt, 1)[..., None])[grow]; solid = solid | grow
     out = col * alpha[..., None] + DEEP * (1 - alpha[..., None]); return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+def limited(img, limit, feather):
+    """Everything outside the allowed rectangle goes to the deep ground, with a feather per side (l, t, r, b) inside it."""
+    if limit is None: return img
+    a = np.asarray(img).astype(float); H_, W_ = a.shape[:2]; yy, xx = np.mgrid[0:H_, 0:W_].astype(float); x0, y0, x1, y1 = limit; fl, ft, fr, fb = feather
+    m = np.ones((H_, W_))
+    for dist, f in ((xx - x0, fl), (yy - y0, ft), (x1 - xx, fr), (y1 - yy, fb)): m *= np.clip(dist / max(f, 1e-6), 0, 1) if f else (dist >= 0)
+    return Image.fromarray(np.clip(a * m[..., None] + DEEP * (1 - m[..., None]), 0, 255).astype(np.uint8))
 def window(rect, tw, th, W, H):
     x, y, w0, h0 = rect; x1, y1 = x + w0, y + h0; ratio = tw / th; w = max(w0, h0 * ratio); h = w / ratio; flag = None
     if w < tw or h < th: flag = f"the part's box is {w0}x{h0} px, smaller than the {tw}x{th} cell: shown with its surroundings at 1:1, not enlarged"; w, h = float(tw), float(th)
@@ -48,17 +56,20 @@ man = json.load(open("slices/manifest.json")); R = json.load(open(os.path.join(R
 looks = json.load(open("source/work/looks-S09-type.json"))
 union = lambda *bs: [min(b[0] for b in bs), min(b[1] for b in bs), max(b[0] + b[2] for b in bs) - min(b[0] for b in bs), max(b[1] + b[3] for b in bs) - min(b[1] for b in bs)]
 # which box each part trait is cropped from: the rig's box for the trait where it is tight; the single part's box where two traits share one union (told apart, never alike)
-BOX = {"face/head": ("the head's silhouette in profile, crown to throat (the head and crown parts' union)", union(P["head"], P["crown"]), "crop"),
-       "face/beak": ("the beak part", P["beak"], "crop"), "face/crown": ("the crown part", P["crown"], "crop"),
-       "legs-tail/tail": ("the tail alone, tip to root (the wing and the body left out)", P["tail"], "crop")}
+# kind, region, (pad around the region for the window), limit: the allowed rectangle [x0, y0, x1, y1] on the painting with a feather per side (l, t, r, b) in px (everything outside goes to deep)
+HEAD = union(P["head"], P["crown"], P["beak"])
+BOX = {"face/head": ("the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view", HEAD, "crop", 10, [HEAD[0] - 8, HEAD[1] - 8, HEAD[0] + HEAD[2] + 12, HEAD[1] + HEAD[3] + 4], (0, 0, 0, 10)),
+       "face/beak": ("the beak part", P["beak"], "crop", 0, None, None),
+       "face/crown": ("the crown part only (the face below it is taken out)", P["crown"], "crop", 6, [P["crown"][0] - 20, P["crown"][1] - 10, P["crown"][0] + P["crown"][2] + 20, P["crown"][1] + P["crown"][3] - 6], (0, 0, 0, 10)),
+       "legs-tail/tail": ("the tail alone, tip to root, inside a margin (the wing and the body behind it taken out)", P["tail"], "crop", 12, [P["tail"][0] + 6, P["tail"][1] - 10, P["tail"][0] + P["tail"][2] + 10, P["tail"][1] + P["tail"][3] + 10], (14, 8, 0, 8))}
 PLATES = {"face/feather-crest": "the crest alone, close up against deep", "face/eyes": "one eye close up filling the cell: iris, ring, lid; no beak", "legs-tail/tail-curl": "the whole hind body and tail in silhouette, small in the cell, showing how the tail is held"}      # small parts and a posture: per-look plates after the quota
 paint = Image.open(os.path.join(GROW, "species/S09/portrait-600x620.png")).convert("RGB"); W, H = paint.size; keyed = key(paint, keepedge=P["head"]); keyed_tail = key(paint, keepedge=P["head"])
 doc = {"species": "S09", "painting": "prototypes/workbench/grow/species/S09/portrait-600x620.png", "size": [W, H], "regions": "prototypes/workbench/grow/regions/trait-regions-S09.json", "genome": "grow/out/S09/09e30f12feee02c6/genome.json (the accepted painting's genome)", "traits": {}}
 n = 0; flagged = []
-for key_, (why, rect, kind) in BOX.items():
+for key_, (why, rect, kind, pad, limit, feather) in BOX.items():
     ch, tid = key_.split("/"); name = looks[key_]["name"]; look = looks[key_]["look"]; ent = {"chapter": ch, "trait": name, "look": look, "kind": kind, "box": list(rect), "source": why, "crops": {}}
     for (tw, th) in SIZES:
-        box, flag = window(rect, tw, th, W, H); crop = (tail_only(keyed) if key_ == "legs-tail/tail" else keyed).crop(box); cw, chh = crop.size
+        prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; box, flag = window(prect, tw, th, W, H); crop = limited((tail_only(keyed) if key_ == "legs-tail/tail" else keyed), limit, feather).crop(box); cw, chh = crop.size
         im = crop.resize((tw, th), Image.LANCZOS) if (cw, chh) != (tw, th) else crop
         nm = f"trait-S09-{slug(name)}-{slug(look)}-{tw}x{th}"; im.save(f"slices/{nm}.png", optimize=True)
         man[nm] = {"size": [tw, th], "rect": None, "src": f"S09 accepted painting, {why} {list(rect)}", "made": f"the {name} of the Belatz ({look}): a crop of the accepted painting from the rig's region, re-framed to {tw}x{th} from a {cw}x{chh} window ({'reduced' if (cw, chh) != (tw, th) else '1:1'}, never enlarged), paper keyed to deep, key choked 1 px, defringed" + (f"; FLAG: {flag}" if flag else ""), "sha256": hashlib.sha256(open(f"slices/{nm}.png", "rb").read()).hexdigest()}

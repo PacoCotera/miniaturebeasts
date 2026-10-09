@@ -42,6 +42,7 @@ def benchvariants():
     the overview (B) on x 256 (cone 136,104,240,320), the chapter page (C) on x 216 (cone 96,104,240,320). The same stage rectangle as room-bench-stage (0,40,1024,522), the same wall, the
     vignette centred on the axis; the cone's pool is part of the wall, as before."""
     save("room-bench-stage-collection", bench_grade(bench_window("bench-e2.jpg", -2000, 1244, 0.31, target=(632, 384)), cx=512), [0, 40, 1024, 522], "the collection's bench: the same generated glass wall with no cone of light (the window lies wholly in the wall's own left strip, mirrored), graded as room-bench-stage with the vignette centred on x 512", "bench-e2")
+    save("room-bench-stage-compare", bench_grade(bench_window("bench-e2.jpg", -1500, 1244, 0.31, target=(632, 384)), cx=512), [0, 40, 1024, 522], "Compare's bench: the chapter bench without the beam and the dish glow (two pages on the pane, no pod on stage): the same generated glass wall windowed inside its own left strip so no cone or pool shows, graded as the others with the vignette centred on x 512", "bench-e2")
     for nm, ax in (("overview", 256), ("chapter", 216)):
         save(f"room-bench-stage-{nm}", bench_grade(bench_window("bench-e2.jpg", 1374, 1244, 0.31, target=(ax, 384)), cx=ax), [0, 40, 1024, 522], f"the generated glass wall re-windowed so the cone's pool is on x {ax} (the {nm}); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage", "bench-e2")
 def collectionring():
@@ -513,7 +514,7 @@ def standins():
     diagonal hatch (17,33,42) NO words (no text is baked into art: the build sets \"stand-in\" in 16 px mist centred on each card); for the page sizes and the 112x112 find slot. Placed by id by the build; the frame goes over it."""
     from PIL import ImageDraw, ImageFont
     f16 = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 16)
-    for (w, h) in ((128, 160), (144, 176), (104, 160), (104, 96), (104, 64), (112, 112)):
+    for (w, h) in ((128, 160), (144, 176), (104, 160), (104, 96), (104, 64), (112, 112), (376, 264), (184, 256), (184, 104), (120, 96)):
         g = Image.new("RGBA", (w, h), (14, 28, 36, 255)); d = ImageDraw.Draw(g); d.rectangle([0, 0, w - 1, h - 1], outline=(26, 46, 56, 255))
         for yy in range(-w, h, 16): d.line([(0, yy + w), (w, yy)], fill=(17, 33, 42, 255))
         save(f"trait-picture-standin-{w}x{h}", g, None, "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text", "procedural")

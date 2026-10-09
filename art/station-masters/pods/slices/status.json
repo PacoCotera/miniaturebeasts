@@ -2164,31 +2164,6 @@
   "signed_in": "pass 38 verdict",
   "note": ""
  },
- "trait-S09-crown-tall-128x160": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
- "trait-S09-crown-tall-144x176": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
- "trait-S09-crown-tall-104x160": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
- "trait-S09-crown-tall-104x96": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
- "trait-S09-crown-tall-104x64": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
  "trait-S01-markings-plain-128x160": {
   "status": "new",
   "signed_in": null,
@@ -2419,79 +2394,129 @@
   "signed_in": "pass 42 (signed on delivery)",
   "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
- "trait-S09-beak-between-128x160": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
- "trait-S09-beak-between-144x176": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
- "trait-S09-beak-between-104x160": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
- "trait-S09-beak-between-104x96": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
- "trait-S09-beak-between-104x64": {
-  "status": "signed",
-  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
-  "note": "a crop of the accepted painting from the rig's part region"
- },
  "trait-S09-head-between-small-and-large-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
  },
  "trait-S09-head-between-small-and-large-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
  },
  "trait-S09-head-between-small-and-large-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
  },
  "trait-S09-head-between-small-and-large-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
  },
  "trait-S09-head-between-small-and-large-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-beak-between-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-beak-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-beak-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-beak-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-beak-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-crown-tall-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-crown-tall-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-crown-tall-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-crown-tall-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-S09-crown-tall-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
  },
  "trait-S09-tail-between-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
  },
  "trait-S09-tail-between-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
  },
  "trait-S09-tail-between-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
  },
  "trait-S09-tail-between-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
  },
  "trait-S09-tail-between-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict"
+ },
+ "trait-picture-standin-376x264": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the stand-in card at Compare's four sizes, the signed cut (no text); awaiting verdict"
+ },
+ "trait-picture-standin-184x256": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the stand-in card at Compare's four sizes, the signed cut (no text); awaiting verdict"
+ },
+ "trait-picture-standin-184x104": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the stand-in card at Compare's four sizes, the signed cut (no text); awaiting verdict"
+ },
+ "trait-picture-standin-120x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the stand-in card at Compare's four sizes, the signed cut (no text); awaiting verdict"
+ },
+ "room-bench-stage-compare": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Compare's bench: the chapter bench without the beam and the dish glow; awaiting verdict"
  }
 }

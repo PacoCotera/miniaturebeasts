@@ -14,79 +14,79 @@
    "look": "between small and large",
    "kind": "crop",
    "box": [
-    119,
+    94,
     37,
-    181,
-    243
+    206,
+    250
    ],
-   "source": "the head's silhouette in profile, crown to throat (the head and crown parts' union)",
+   "source": "the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view",
    "crops": {
     "128x160": {
      "window": [
-      112,
-      37,
-      307,
-      280
+      84,
+      21,
+      310,
+      303
      ],
      "source_px": [
-      195,
-      243
+      226,
+      282
      ],
      "slice": "trait-S09-head-between-small-and-large-128x160",
      "flag": null
     },
     "144x176": {
      "window": [
-      110,
-      37,
-      309,
-      280
+      84,
+      24,
+      310,
+      300
      ],
      "source_px": [
-      199,
-      243
+      226,
+      276
      ],
      "slice": "trait-S09-head-between-small-and-large-144x176",
      "flag": null
     },
     "104x160": {
      "window": [
-      119,
-      19,
-      300,
-      298
+      84,
+      0,
+      310,
+      348
      ],
      "source_px": [
-      181,
-      279
+      226,
+      348
      ],
      "slice": "trait-S09-head-between-small-and-large-104x160",
      "flag": null
     },
     "104x96": {
      "window": [
-      78,
-      37,
-      341,
-      280
+      51,
+      27,
+      343,
+      297
      ],
      "source_px": [
-      263,
-      243
+      292,
+      270
      ],
      "slice": "trait-S09-head-between-small-and-large-104x96",
      "flag": null
     },
     "104x64": {
      "window": [
-      12,
-      37,
-      407,
-      280
+      0,
+      27,
+      439,
+      297
      ],
      "source_px": [
-      395,
-      243
+      439,
+      270
      ],
      "slice": "trait-S09-head-between-small-and-large-104x64",
      "flag": null
@@ -189,74 +189,74 @@
     162,
     125
    ],
-   "source": "the crown part",
+   "source": "the crown part only (the face below it is taken out)",
    "crops": {
     "128x160": {
      "window": [
-      138,
+      132,
       0,
-      300,
-      202
+      306,
+      218
      ],
      "source_px": [
-      162,
-      202
+      174,
+      218
      ],
      "slice": "trait-S09-crown-tall-128x160",
      "flag": null
     },
     "144x176": {
      "window": [
-      138,
+      132,
       0,
-      300,
-      198
+      306,
+      213
      ],
      "source_px": [
-      162,
-      198
+      174,
+      213
      ],
      "slice": "trait-S09-crown-tall-144x176",
      "flag": null
     },
     "104x160": {
      "window": [
-      138,
+      132,
       0,
-      300,
-      249
+      306,
+      268
      ],
      "source_px": [
-      162,
-      249
+      174,
+      268
      ],
      "slice": "trait-S09-crown-tall-104x160",
      "flag": null
     },
     "104x96": {
      "window": [
-      138,
-      25,
-      300,
-      174
+      132,
+      19,
+      306,
+      180
      ],
      "source_px": [
-      162,
-      149
+      174,
+      161
      ],
      "slice": "trait-S09-crown-tall-104x96",
      "flag": null
     },
     "104x64": {
      "window": [
-      117,
-      37,
-      321,
-      162
+      108,
+      31,
+      330,
+      168
      ],
      "source_px": [
-      204,
-      125
+      222,
+      137
      ],
      "slice": "trait-S09-crown-tall-104x64",
      "flag": null
@@ -274,74 +274,74 @@
     138,
     98
    ],
-   "source": "the tail alone, tip to root (the wing and the body left out)",
+   "source": "the tail alone, tip to root, inside a margin (the wing and the body behind it taken out)",
    "crops": {
     "128x160": {
      "window": [
-      368,
-      214,
-      506,
-      386
+      356,
+      199,
+      518,
+      401
      ],
      "source_px": [
-      138,
-      172
+      162,
+      202
      ],
      "slice": "trait-S09-tail-between-128x160",
      "flag": null
     },
     "144x176": {
      "window": [
-      365,
-      212,
-      509,
-      388
+      356,
+      201,
+      518,
+      399
      ],
      "source_px": [
-      144,
-      176
+      162,
+      198
      ],
      "slice": "trait-S09-tail-between-144x176",
-     "flag": "the part's box is 138x98 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": null
     },
     "104x160": {
      "window": [
-      368,
-      194,
-      506,
-      406
+      356,
+      175,
+      518,
+      425
      ],
      "source_px": [
-      138,
-      212
+      162,
+      250
      ],
      "slice": "trait-S09-tail-between-104x160",
      "flag": null
     },
     "104x96": {
      "window": [
-      368,
-      236,
-      506,
-      364
+      356,
+      225,
+      518,
+      375
      ],
      "source_px": [
-      138,
-      128
+      162,
+      150
      ],
      "slice": "trait-S09-tail-between-104x96",
      "flag": null
     },
     "104x64": {
      "window": [
-      357,
-      251,
-      517,
-      349
+      338,
+      239,
+      536,
+      361
      ],
      "source_px": [
-      160,
-      98
+      198,
+      122
      ],
      "slice": "trait-S09-tail-between-104x64",
      "flag": null
