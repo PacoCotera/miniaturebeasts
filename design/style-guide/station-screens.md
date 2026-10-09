@@ -335,8 +335,8 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 - **Light.** Warm key light from the top left in the window; cool on the card.
 - **Palette.** The vivarium's greens and earth; card chrome; the heart red, with its shape.
 - **Type.** 4× name; 2× card lines.
-- **Chrome.** `✓ Spend time with Fig`, `✓ Take Fig with you`, `✓ Bond with Fig` (then ✓ again), `✓ Cross Fig`. `← Home`. With a sitting held and Fig eligible: `✓ Portray Fig · 1 sitting` (2026-10-08).
-- **Your Loika** (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*). The card's first line reads "your Loika, adult"; the species word, with `mark-guide-16`, is a focus target: `✓ Open the guide`, a jump to the Book's guide spread, where ← reads Library.
+- **Chrome.** `✓ Spend time with Fig`, `✓ Take Fig with you`, `✓ Bond with Fig` (then ✓ again), `✓ Cross Fig`. `← Home`. With a sitting held and Fig eligible: `✓ Portray Fig · 1 sitting`.
+- **Your Loika.** The card's first line reads "your Loika, adult"; the species word, with `mark-guide-16`, is a focus target: `✓ Open the guide`, a jump to the Book's guide spread, where ← reads Library.
 - **Motion.** The strip swaps the resident in 300 ms; the species moment plays about 2 s.
 
 **Pass when**
@@ -350,7 +350,7 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 
 ## Sitting
 
-**Decided 2026-10-08** ([the portrait](../proposals/the-portrait.md) §1). A short section, since the ceremony borrows Habitat and the bay.
+A short section, since the ceremony borrows Habitat and the bay.
 
 **Vibe.** Vivarium light on a plain stage: the one-resident warmth of Habitat, with the instrument reduced to the choices.
 
