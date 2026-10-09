@@ -15,6 +15,8 @@ export const DEV_KEY = "mb-station-dev";
 export const PRICE = { identify: 1, readTrait: 1, change: 1, growE: 2, growS: 4, mend: 1, tier2E: 12, tier2D: 4, wild: 1, wildMibi: 2 };
 export const RACK = 6, BAY = 3, BAYS = 6;
 export const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
+// What Probe tier 2 gains, as data the bench shows (the fourth is reading the deep "?"). PLACEHOLDER wording; the copywriter's lists replace the strings.
+export const TIER2_GAINS = [{ id: "reach", text: "reaches 4 cells" }, { id: "pods", text: "carries 3 pods" }, { id: "plates", text: "4 plates" }, { id: "deep", text: "reads the deep" }];
 export const JUVENILE_TURNS = 2, ELDER_TURNS = 6;
 export const MIBI_NAMES = ["Dot", "Moss", "Bean", "Fig", "Nib", "Tuft", "Pebble", "Wren", "Pip", "Sorrel", "Burr", "Quill"];
 // --- names (the game designer's brief): a name never carries a digit and is never reused among living mibis, released ones included -----------------------------------------------------------
@@ -410,7 +412,7 @@ export const tier2Ready = (st, settings = DEFAULT_SETTINGS) => docked(st) && !!s
 export function installTier2(st, settings = DEFAULT_SETTINGS) {
   if (!tier2Ready(st, settings)) return { ok: false }; st.e -= price(PRICE.tier2E, settings); st.d -= price(PRICE.tier2D, settings);
   st.probe = { shield: TIER[2].shield, smax: TIER[2].shield, tier: 2, seq: st.probe.seq + 1 };
-  logEv(st, "Probe tier 2 installed"); return { ok: true, msg: "Probe tier 2 · reaches further, carries 3 pods, reads the deep" };
+  logEv(st, "Probe tier 2 installed"); return { ok: true, msg: "Probe tier 2 · " + TIER2_GAINS.map((g) => g.text).join(", ") };
 }
 // The bud: M2 grows it; for now a migrated bud only reports ready when its minutes have passed.
 export const budProgress = (st, settings = DEFAULT_SETTINGS, now = Date.now()) => { const B = st.bud; if (!B) return 0; if (B.early) return 1; const scale = settings.budScale === "instant" ? 1e9 : settings.budScale || 1; return clamp(((now - B.start) * scale) / (B.minutes * 60000), 0, 1); };
@@ -432,7 +434,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
   if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
     return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " · needs " + (cost - st.d) + " ◆" : ""), act: "pods", label: "Look at the pods" }; }
-  const b = st.mibis.find(bondOffered); if (b) return { text: b.name + " could bond", act: "hab", id: b.id, label: "Visit " + b.name };
+  // an offered bond is not a need (the game designer, 2026-10-09): nothing turns amber for it
   if (st.bud) return { text: "a bud is growing", act: "inc", label: "Look at the incubator" };
   if (!hasWorld(sv) && !st.devBay.length && !st.tray.length && !st.waiting.length && !st.mibis.length) return { text: "open the Companion page", act: null };
   return { text: "", act: null };
@@ -608,7 +610,8 @@ export function genomeLookup(st) {
   for (const m of st.mibis) { if (m.genome) byDigest.set(genomeDigest(m.genome), m.genome); for (const p of m.parents || []) if (p.genome) byDigest.set(genomeDigest(p.genome), p.genome); }
   return (d) => byDigest.get(d) ?? null;
 }
-export const isAdult = (st, m, settings) => mibiStage(st, m, settings) === "adult";
+// An elder crosses as an adult does (a juvenile does not): for the cross and for the partner list.
+export const isAdult = (st, m, settings) => { const s = mibiStage(st, m, settings); return s === "adult" || s === "elder"; };
 // Refused before cost, on the pick itself: the same individual, another species, not adult, released.
 export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return "pick two";

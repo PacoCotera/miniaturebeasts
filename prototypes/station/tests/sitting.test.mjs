@@ -110,10 +110,10 @@ test("the welcome sitting: at the first dock at which a mibi comes home from a w
 test("the offer and its refusals: no sitting, a mibi that needs a walk, a pose it has not done, a place it has not been, one sitting each", () => {
   const st = world(2), [a, b] = st.mibis; walked(st, a);
   assert.match(T.beginSitting(st, a, "calm", "wood", settings, T0).msg, /no sitting held/); T.devGrantSitting(st, T0);
-  assert.match(T.beginSitting(st, b, "calm", "meadow", settings, T0).msg, /needs a walk first/, "no habit seen");
+  assert.match(T.beginSitting(st, b, "calm", "meadow", settings, T0).msg, /no pose seen yet/, "no habit seen");
   assert.match(T.beginSitting(st, a, "sniff", "wood", settings, T0).msg, /pick a pose/); assert.match(T.beginSitting(st, a, "calm", "cave", settings, T0).msg, /pick a place/);
   assert.match(T.beginSitting(st, null, "calm", "wood", settings, T0).msg, /pick a mibi/);
-  const o = T.offer(st, a); assert.deepEqual([o.held, o.poses, o.places, o.block], [true, ["calm"], ["meadow", "wood"], ""]); assert.match(T.offer(st, b).block, /needs a walk/);
+  const o = T.offer(st, a); assert.deepEqual([o.held, o.poses, o.places, o.block], [true, ["calm"], ["meadow", "wood"], ""]); assert.match(T.offer(st, b).block, /no pose seen yet/);
   assert.ok(st.sitting, "a refusal keeps the sitting"); assert.deepEqual(money(st), [0, 0, 0]);
   assert.ok(T.beginSitting(st, a, "calm", "wood", settings, T0).ok);
   T.devGrantSitting(st, T0); assert.match(T.beginSitting(st, a, "calm", "wood", settings, T0).msg, /one sitting each, ever/); assert.ok(T.offer(st, a).portrayed);
