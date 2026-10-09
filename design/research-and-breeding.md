@@ -223,7 +223,7 @@ from looks the field guide holds. Pinning and unpinning are free.
 
 A few traits change within a mibi's life, by where it goes as a partner: Glow,
 Basking and Phase. How they move is in
-[Genomics](creatures-and-genomics.md#the-four-kinds-of-locus).
+[Genomics](creatures-and-genomics.md#self-changing-traits).
 
 - Only the mibi with the player as partner changes. Residents at home keep
   their look.
