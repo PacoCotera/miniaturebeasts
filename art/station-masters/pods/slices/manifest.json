@@ -3426,7 +3426,7 @@
   ],
   "src": "page-pane (painted), regularised",
   "made": "the page pane as a clean nine-slice with the house's top-left light: insets left 64, top 64, right 16, bottom 16; serves 440, 264 and 248 high",
-  "sha256": "7748ade654903c1897432627590d6ace6821e4bc850246bd3d192496ce7c0aa5",
+  "sha256": "4172d7ef216a1e2e71413366054199d45f84167fa0bf49bd0019b216b034e256",
   "nine": {
    "insets": {
     "left": 64,
@@ -3449,9 +3449,9 @@
     64
    ]
   },
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one"
+  "status": "signed",
+  "signed_in": "pass 30 (signed on delivery)",
+  "status_note": "the nine-slice with the radial top-left falloff (radius 56), both widths"
  },
  "trait-picture-frame-224x352": {
   "size": [
@@ -3922,9 +3922,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "69e218b8a4f4223d1747ddd75eec6ffc1e23dd97440ad97bdfbfc926887c08b8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "plain, unread and sealed"
  },
  "trait-picture-frame-144x176-unread": {
   "size": [
@@ -3935,9 +3935,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "649d48104e540727a8bef2c8053b2c3f7816560e5ed3ea37cf0b882193a78c55",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "plain, unread and sealed"
  },
  "trait-picture-frame-144x176-sealed": {
   "size": [
@@ -3948,9 +3948,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "96b3b5fab5469006c0376ceaf2dc9f28498d967022ee879901131e0ca4179128",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "plain, unread and sealed"
  },
  "trait-picture-frame-176x144": {
   "size": [
@@ -4309,7 +4309,7 @@
    48
   ],
   "src": "place-meadow",
-  "made": "the meadow place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
+  "made": "the meadow place picture (collection overview): a painted miniature vignette reduced to 48x48 from the painting, muted",
   "sha256": "a1a6dcbf600a44bf8e952c5c68594947c9d4fe6f89a8e0f89327e26542e56733",
   "status": "signed",
   "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
@@ -4327,7 +4327,7 @@
    48
   ],
   "src": "place-pond",
-  "made": "the pond place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
+  "made": "the pond place picture (collection overview): a painted miniature vignette reduced to 48x48 from the painting, muted",
   "sha256": "7e44aa1254c0eb9e49811be69d161ee872d775f514f13f1cdd74e0932eb50c14",
   "status": "signed",
   "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
@@ -4345,7 +4345,7 @@
    48
   ],
   "src": "place-rock",
-  "made": "the rock place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
+  "made": "the rock place picture (collection overview): a painted miniature vignette reduced to 48x48 from the painting, muted",
   "sha256": "a3e585738f8180863894eeb5db2de0a1d9498d1a2a42cb91bb5232c97068e329",
   "status": "signed",
   "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
@@ -4363,7 +4363,7 @@
    48
   ],
   "src": "place-wood",
-  "made": "the wood place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
+  "made": "the wood place picture (collection overview): a painted miniature vignette reduced to 48x48 from the painting, muted",
   "sha256": "673d78a5141073ff3e7a1d433f2a018ffe281eab3155bab58e1b8e194879fd79",
   "status": "signed",
   "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
@@ -4381,7 +4381,7 @@
    48
   ],
   "src": "place-cave",
-  "made": "the cave place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
+  "made": "the cave place picture (collection overview): a painted miniature vignette reduced to 48x48 from the painting, muted",
   "sha256": "5260edf77a2d46b9f3ff088c202de35758f99d6c0c3cb42597aa8d335d73e19e",
   "status": "signed",
   "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
@@ -4839,9 +4839,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
   "sha256": "17a81668f422106b98c1fe8099cfa30de96bb0c3f4dc2997cdde2ccd80d86166",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-shade": {
   "size": [
@@ -4857,9 +4857,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
   "sha256": "be65bbf24cf1b84818d24123a24f9e334be5a1dcee8875087fdec5608b0a0bb5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-mask-body": {
   "size": [
@@ -4875,9 +4875,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
   "sha256": "cb6d1fbd43a0e64cdd908a6957381616da934ae80f87bbc8e569d4085ea99f54",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-mask-accent": {
   "size": [
@@ -4893,9 +4893,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
   "sha256": "75382937b4f51a9468a8e9d42562265a203b14392b6915d32e58955f4cccde09",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-pattern-dots": {
   "size": [
@@ -4911,9 +4911,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
   "sha256": "78d2c5c603a1db34a9b960d8c9db8d5b9ebd0e850df8c4e1a371017890e523bf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-pattern-stripes": {
   "size": [
@@ -4929,9 +4929,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
   "sha256": "baaf0fe4a2eab57b3848dfc0031b1d0ab7170969045c384cadbbdd808b0e0e99",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-pattern-bands": {
   "size": [
@@ -4947,9 +4947,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
   "sha256": "18c15519b022d588f1cbd3ae9d979a07f31540b7c3d2c9d547dfc1a3a0bf8e29",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-identified": {
   "size": [
@@ -4965,9 +4965,9 @@
   "src": "pod-loika",
   "made": "the Loika reference sprite",
   "sha256": "f302ffdbb9265161502bdff66a51437dcee14d762ff58058075468e6aad03b83",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-sealed": {
   "size": [
@@ -4983,9 +4983,9 @@
   "src": "pod-band",
   "made": "the Loika reference sprite",
   "sha256": "b0aa805cb460488fea08274a3cfe5595955092fd2b164e7b06b2f91b001039a0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-band": {
   "size": [
@@ -5001,9 +5001,9 @@
   "src": "pod-band",
   "made": "the sealing band as a layer",
   "sha256": "40c7875589d5628dd6843c2c1377a1d6ba6d666d5a79c0792dd0e80de7ce2a6e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-shadow": {
   "size": [
@@ -5019,9 +5019,9 @@
   "src": "procedural ramp",
   "made": "contact shadow: centred on x 632 with its middle on the foot line y 392",
   "sha256": "f4a6dd5d9934b1eb845dd55b74057a3391d3af29aab4b536f408f8ca3450e0b9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-unknown": {
   "size": [
@@ -5037,9 +5037,9 @@
   "src": "pod layers, recoloured",
   "made": "the collection pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
   "sha256": "f6a1ad4e46d4d276ca860ed7b01520201d7091549855155929a8cdc296674cf0",
-  "status": "new",
-  "signed_in": "pass 24 (signed on delivery)",
-  "status_note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none); the collection class, awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "the collection pod class 88x112, every layer and -unknown"
  },
  "trait-picture-frame-128x160": {
   "size": [
@@ -5050,9 +5050,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "98e85563bc687f054d4effcfc8361e9176ce2098137dbebc45be241bd171e734",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "plain, unread and sealed"
  },
  "trait-picture-frame-128x160-unread": {
   "size": [
@@ -5063,9 +5063,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "e9a110e88cdeaaa2a77af32b0b22078838e74d0c27d7dec846ab0faa8b9b51ed",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "plain, unread and sealed"
  },
  "trait-picture-frame-128x160-sealed": {
   "size": [
@@ -5076,9 +5076,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "32adb1e7d3f966d9478b0307eb6b18dd8c3ff5327e82c902dee34e7fcd353637",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "status_note": "plain, unread and sealed"
  },
  "room-bench-stage-overview": {
   "size": [
@@ -5094,9 +5094,9 @@
   "src": "bench-e2",
   "made": "the generated glass wall re-windowed so the cone's pool is on x 256 (the overview); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage",
   "sha256": "2e4a79fde8dd1f4c71107989d09389342f7b4a971c0bc44de7fa1f968356bcfc",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the bench for the pod overview (cone on x 256) and the chapter page (x 216)"
  },
  "room-bench-stage-chapter": {
   "size": [
@@ -5112,9 +5112,9 @@
   "src": "bench-e2",
   "made": "the generated glass wall re-windowed so the cone's pool is on x 216 (the chapter); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage",
   "sha256": "5e620334d5f1f8285ba04f4576d00431a150a5bfdd14894a6ea3d9afbffff9c8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the bench for the pod overview (cone on x 256) and the chapter page (x 216)"
  },
  "ring-collection-idle-176x176": {
   "size": [
@@ -5130,9 +5130,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the empty ring of an empty place: a continuous 8 px band (r 72 to 80), bevel fill, hairline edges, painted at 8x with soft edges; centred on the ring (placed at the place + (8, 24))",
   "sha256": "a31d629d6f913fb354560efbd45abe271e8804e8ab7b36818f646740add792f6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
  },
  "ring-collection-closed-176x176": {
   "size": [
@@ -5148,801 +5148,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the closed ring when every chapter is read: a continuous bone band, hairline edges (the band closes)",
   "sha256": "f94ea16f3fe14282a04724485f3020eccd563429440aa34aedcb4a7f583bfd56",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n1-track": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the unread arcs for 1 chapters: bevel band in 1 arcs 2 px apart from 12 o'clock, hairline edges",
-  "sha256": "3b6ff44cd73e70549adc6ca89efd1fc8d6c2d7708c9e5b516d199f3202e2128c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n1-s0": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 1 read: the bone arc over the track",
-  "sha256": "642a7984006a2d0437aaeedaabe72992dc8934b57e1ca1d08f8517dbb5457a06",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n2-track": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the unread arcs for 2 chapters: bevel band in 2 arcs 2 px apart from 12 o'clock, hairline edges",
-  "sha256": "440f924aed498462492ebe2bc176f39175a363875eaf9f18eb4094c4a3894910",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n2-s0": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 2 read: the bone arc over the track",
-  "sha256": "37ee769cdfbdc701fc522eaf7ee86f2192da1accbaa3fa5f979c85acb0aca0f9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n2-s1": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 2 read: the bone arc over the track",
-  "sha256": "79b653cb1a39daa00270565a4338570766cdeb37504a24e511cc638c2f6cc38c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n3-track": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the unread arcs for 3 chapters: bevel band in 3 arcs 2 px apart from 12 o'clock, hairline edges",
-  "sha256": "1172792e18466a549cb05638b80f4b89ea0564d896fe4eb1d40e93c18348554d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n3-s0": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 3 read: the bone arc over the track",
-  "sha256": "9f578a253f7ea2d6a91458a6019f27b341140a0789bedd52268d25eedc858627",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n3-s1": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 3 read: the bone arc over the track",
-  "sha256": "b7fd8cd76f8acd48706375b86cbb299cde987e247e3a52b9213d493772592b04",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n3-s2": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 3 read: the bone arc over the track",
-  "sha256": "f9ff2c9605182c495a9e5c151f1ae0d241c3b8318f9dadf7f9992957bb34678b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-track": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the unread arcs for 4 chapters: bevel band in 4 arcs 2 px apart from 12 o'clock, hairline edges",
-  "sha256": "7bc0ec1d057fd176c89b5a091ac8e90859aca91eed38b1f105d10f1223165118",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-s0": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 4 read: the bone arc over the track",
-  "sha256": "02ec0981ee40097fc6bb318a6c8a6cd55b094e3e19963abf5351cdc05e223291",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-s1": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 4 read: the bone arc over the track",
-  "sha256": "9faa5036ed282c7bde6c90e1f63e4f9fe5bf0159410607cb74e692ed006ea15f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-s2": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 4 read: the bone arc over the track",
-  "sha256": "89f6691e2612e8562da6a55d8b91222a1d0735ad42cd9aef9d84f6fdc0b408ec",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-s3": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 4 read: the bone arc over the track",
-  "sha256": "482de3fd0cf9faefb7850e49cdeb0cc6788e5524bf09c5d216ad125c3aeef111",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-track": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the unread arcs for 5 chapters: bevel band in 5 arcs 2 px apart from 12 o'clock, hairline edges",
-  "sha256": "8affe3297f9fbf35767dd5faa777f511229e96e9be9663c69fae51cc11c6aab6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s0": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 5 read: the bone arc over the track",
-  "sha256": "72eab24dcf3f7c30ff8e0ff380fa08bcde3060eb9748b9c653408fdb46725f54",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s1": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 5 read: the bone arc over the track",
-  "sha256": "fa3b507f26aad0d24918708fd871b9f2c800ff6c8a2ecd01e66714eda33b835b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s2": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 5 read: the bone arc over the track",
-  "sha256": "3dc23d2f55d77f623ee5c37e6e40ec68057ad16f9aa85854b75e8e51e021dba7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s3": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 5 read: the bone arc over the track",
-  "sha256": "6763f1d9207fa294d1d7c3ea4a9f388edfe5f4731889bda6ef6b5e25229fcf04",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s4": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 5 read: the bone arc over the track",
-  "sha256": "c2e7d1fd3e3c9ac2b6a2aeb66884c58e2a1381dc3f6b1916502b7f5afb4b60bf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-track": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the unread arcs for 6 chapters: bevel band in 6 arcs 2 px apart from 12 o'clock, hairline edges",
-  "sha256": "90e188cf167107d5fa336f090ce8a3b3573b832a0659bafeb0653e8956a80714",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s0": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 6 read: the bone arc over the track",
-  "sha256": "9838d2d241bfb4c5cee9ef5435d828e68cdbbff40f597ed3672a5dd7cfdd8ccd",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s1": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 6 read: the bone arc over the track",
-  "sha256": "728f159cdb3c170313619d8673f8ade9082e3fbb3a6fcc5f0f62d7974e0f6ec6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s2": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 6 read: the bone arc over the track",
-  "sha256": "312cb0536506e2a4c224b53ebb6d37e568c47343558c9122c73bfd02cccfea8d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s3": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 6 read: the bone arc over the track",
-  "sha256": "e20e2009febfa27e30313c4da6daf3b909d59897dc14354a81a8965db8662899",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s4": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 6 read: the bone arc over the track",
-  "sha256": "5b54063e7119fb28f32fddb8c483db203993a11bef71c99ad7b14bf28be56e52",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s5": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 6 of 6 read: the bone arc over the track",
-  "sha256": "4b84259b4f982650783c4d4ea8c5b81a9245610557d9cb5b493ef2dacabc5b28",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-track": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the unread arcs for 7 chapters: bevel band in 7 arcs 2 px apart from 12 o'clock, hairline edges",
-  "sha256": "36a701e3120618d145e6133b6748f5281dfc903d68e253b2fa8c33aa2dba33a8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s0": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 7 read: the bone arc over the track",
-  "sha256": "03cd67997a96fe300167eeba6066bfd5ec77cb900b1456ae2d0b07963496e800",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s1": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 7 read: the bone arc over the track",
-  "sha256": "f4ca17d5bda85e227eb06031cc8b5fe7daa990d61824b8cc2865343f78982f9e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s2": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 7 read: the bone arc over the track",
-  "sha256": "108bb6e8c9d4dfde790aa97276e3e80ca798c07ecbac7f0894f692d48f96a262",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s3": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 7 read: the bone arc over the track",
-  "sha256": "925e909ffc151ed240e6a86dcb92cc557b894dc5c7f6e10e9a7d4237b6788f19",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s4": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 7 read: the bone arc over the track",
-  "sha256": "d4bd41d843285d8e2e823ae175b945cfd935e7e755bbe7039b8f186c1491386a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s5": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 6 of 7 read: the bone arc over the track",
-  "sha256": "359ad6a640028f517ad028955ce3d809ea622cd79041e77041a5d40f6fac870d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s6": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 7 of 7 read: the bone arc over the track",
-  "sha256": "6700fcb869ad9dfdd31832e673b4bfdea471a51101a9f2ae2a928c0142f1fce2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-track": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "the unread arcs for 8 chapters: bevel band in 8 arcs 2 px apart from 12 o'clock, hairline edges",
-  "sha256": "a29040b53d2c434f461849d351022175cea080f10c1f2c4b1233c10184979f4b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s0": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 8 read: the bone arc over the track",
-  "sha256": "05095aa67ae06b423eb0a419f63abde5f938d032337424bc1f2276b6bcf17ab7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s1": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 8 read: the bone arc over the track",
-  "sha256": "7e516892cfa662716761585097a865204ee62fa688c450e73eaed49914d32b84",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s2": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 8 read: the bone arc over the track",
-  "sha256": "11c84597cb0073cfb76ad99b469031640da51e966abdb4fdadbcc01a59127fb3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s3": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 8 read: the bone arc over the track",
-  "sha256": "cecefcc4c6e838e0fb1bdef1996bc0174b499f5965f1dcceebb8c0a395d52cdf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s4": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 8 read: the bone arc over the track",
-  "sha256": "9dea32b67f166cde7afe3a82e4a38f8c3fec73468342015afc9966754cf2b2a3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s5": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 6 of 8 read: the bone arc over the track",
-  "sha256": "60a1b59e7974a66a7a8cf1a2b9179c3b0856c4cd5e9671a9993288a3576c978e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s6": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 7 of 8 read: the bone arc over the track",
-  "sha256": "0c59fe3b9890ac15f1415d604eaaca5369c03e8d445ec9fac9d37d00332fab91",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s7": {
-  "size": [
-   176,
-   176
-  ],
-  "rect": [
-   null,
-   null,
-   176,
-   176
-  ],
-  "src": "procedural, supersampled 8x",
-  "made": "chapter 8 of 8 read: the bone arc over the track",
-  "sha256": "1e605c7b7d9e4d3e0472b7da50323e33758662804f06b72230529b6f44b71edd",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
  },
  "mark-species-S01-24x24": {
   "size": [
@@ -5958,9 +5166,9 @@
   "src": "species-S01.json glyph",
   "made": "the Loika mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "26c19b7d0b3073573eee1e199ce66967e7c9f74eddbaba12b61c3aa410536f5f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S02-24x24": {
   "size": [
@@ -5976,9 +5184,9 @@
   "src": "species-S02.json glyph",
   "made": "the Untuva mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "cfbb5ac00d1430fa9e4e3bdfdfa6d1b401b5c6e177884b2a6836c82081fd4d84",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S03-24x24": {
   "size": [
@@ -5994,9 +5202,9 @@
   "src": "species-S03.json glyph",
   "made": "the Tuikis mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "eb25449c2f9fcafb8ea76d262ca0d0bc3538458d493df728b1c06ade139c4615",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S04-24x24": {
   "size": [
@@ -6012,9 +5220,9 @@
   "src": "species-S04.json glyph",
   "made": "the Hiljan mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "ddff45e0e334b762b37dad7f59fe285d119d47a4fc739199f385393e52aa69dd",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S05-24x24": {
   "size": [
@@ -6030,9 +5238,9 @@
   "src": "species-S05.json glyph",
   "made": "the Tepor mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "cb294db4bcffb60012ff8b513ca53136c56f8acba1174915c20bcfa8e44f60f5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S06-24x24": {
   "size": [
@@ -6048,9 +5256,9 @@
   "src": "species-S06.json glyph",
   "made": "the Pesko mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "23bcbf4c3c059ea1ef6c69a7fc81cb63ce0d73925fe19e9c8a8315d73c849cda",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S07-24x24": {
   "size": [
@@ -6066,9 +5274,9 @@
   "src": "species-S07.json glyph",
   "made": "the Azkon mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "2a4be6b63f285dccbac6d0498f3e6d17b79a5bf0d9b55091c19ac9789abc6453",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S08-24x24": {
   "size": [
@@ -6084,9 +5292,9 @@
   "src": "species-S08.json glyph",
   "made": "the Rupar mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "aabcd1b4fb7de76fc44e7cd8269ae8c21cf220dbd1532bf53f522f6b58246fc3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S09-24x24": {
   "size": [
@@ -6102,9 +5310,9 @@
   "src": "species-S09.json glyph",
   "made": "the Belatz mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "1fdec141e949b11ce9d424e1e35a5ac24a2e50a1f462f42c8f0bf2b23e862a70",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S10-24x24": {
   "size": [
@@ -6120,9 +5328,9 @@
   "src": "species-S10.json glyph",
   "made": "the Igara mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "ccfcd8acf6e8a87e51d0768aade8fd1a6b7369628e0e63e4023a4c4f488aa5e6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S11-24x24": {
   "size": [
@@ -6138,9 +5346,9 @@
   "src": "species-S11.json glyph",
   "made": "the Kilpo mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "3e4f0f01b2574b5c570c2901d17d63ece52f2f4ea5506f059a6e6f7c85380e34",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S12-24x24": {
   "size": [
@@ -6156,9 +5364,9 @@
   "src": "species-S12.json glyph",
   "made": "the Peplos mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "7373a8c5dcdfa37b8963be8f58b794c928580b8d8b48151b3b97fd26358e5228",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S13-24x24": {
   "size": [
@@ -6174,9 +5382,9 @@
   "src": "species-S13.json glyph",
   "made": "the Oskol mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "5c20add176b1cbeafce0695218cd1160ba85630c9e787ab3bc65361499629043",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S14-24x24": {
   "size": [
@@ -6192,9 +5400,9 @@
   "src": "species-S14.json glyph",
   "made": "the Usvel mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "393645557b1bd3acbd1da62129ee2565a1ab281a4f09cae4128f5c63902fc523",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S15-24x24": {
   "size": [
@@ -6210,9 +5418,9 @@
   "src": "species-S15.json glyph",
   "made": "the Lehten mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "f294b8296a9fefb31c940178c69044b013747486660eca404a74fbec116e18c3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S16-24x24": {
   "size": [
@@ -6228,9 +5436,9 @@
   "src": "species-S16.json glyph",
   "made": "the Blikur mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
   "sha256": "20c80362a6007f34520f107dd601ea41d39689b09a1b9009b0ecd4776f6ea92a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "geometry from the signed glyph data accepted"
  },
  "mark-species-frost-24x24": {
   "size": [
@@ -6248,7 +5456,7 @@
   "sha256": "fe608d46c8441ef540cbf6f492d2202abef4aecb8c96989b523355588c868632",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: reads as a white button; a veiled frostS mark in round 2"
  },
  "mark-clan-C01-24x24": {
   "size": [
@@ -6266,7 +5474,7 @@
   "sha256": "fd424012268071fefca51cca118116d003fe3e65331f614d2fcf901609ef15c3",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C02-24x24": {
   "size": [
@@ -6284,7 +5492,7 @@
   "sha256": "b71f7681f6013782198f0c3c3e079f94a14c2d425caea9e6e24dcf9b745f8d23",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C03-24x24": {
   "size": [
@@ -6302,7 +5510,7 @@
   "sha256": "f83fb3278e078b1a8d0c19f2a9084c251a63871d5ee29f488fe05a34960bc01a",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C04-24x24": {
   "size": [
@@ -6320,7 +5528,7 @@
   "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C05-24x24": {
   "size": [
@@ -6338,7 +5546,7 @@
   "sha256": "4b40db85fc14d270cb7cecf760e5bc4977ca092c2ebce510aed1f26919092862",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C06-24x24": {
   "size": [
@@ -6356,7 +5564,7 @@
   "sha256": "fd424012268071fefca51cca118116d003fe3e65331f614d2fcf901609ef15c3",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C07-24x24": {
   "size": [
@@ -6374,7 +5582,7 @@
   "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C08-24x24": {
   "size": [
@@ -6392,7 +5600,7 @@
   "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C09-24x24": {
   "size": [
@@ -6410,7 +5618,7 @@
   "sha256": "976b009b34769c0b7890cef618e6475fca04078b2923589c82fd7701710c9f54",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C10-24x24": {
   "size": [
@@ -6428,7 +5636,7 @@
   "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C11-24x24": {
   "size": [
@@ -6446,7 +5654,7 @@
   "sha256": "4a439664cb12c220b7e06210761f717cbfc87788f280ce13491ce8eba7e94b89",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C12-24x24": {
   "size": [
@@ -6464,7 +5672,7 @@
   "sha256": "4b40db85fc14d270cb7cecf760e5bc4977ca092c2ebce510aed1f26919092862",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C13-24x24": {
   "size": [
@@ -6482,7 +5690,7 @@
   "sha256": "fd424012268071fefca51cca118116d003fe3e65331f614d2fcf901609ef15c3",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C14-24x24": {
   "size": [
@@ -6500,7 +5708,7 @@
   "sha256": "33e2783334d110d07ffc02b2cb6273c1fc7a3c4b7ce7197e9697e86df6de89f8",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C15-24x24": {
   "size": [
@@ -6518,7 +5726,7 @@
   "sha256": "4a439664cb12c220b7e06210761f717cbfc87788f280ce13491ce8eba7e94b89",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C16-24x24": {
   "size": [
@@ -6536,7 +5744,7 @@
   "sha256": "0a806bc9e61defab5757f174e9260db491477494d00d1b3e20d87eebe500af90",
   "status": "new",
   "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-first-16x16": {
   "size": [
@@ -6552,9 +5760,9 @@
   "src": "typed by hand",
   "made": "the Library's gilt corner as a 16 px right-angle ornament in quiet gilt (bark with a clay lit edge and a soil shade), typed by hand",
   "sha256": "64484e2b12f4022848307f1a323f3b0a63696669bdacc5f8ae9d36155bd7360b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "status_note": "the gilt corner"
  },
  "pod-large-pattern-ribs": {
   "size": [
@@ -6570,9 +5778,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "c4710d092453bbf531ea08c26e6dbc31eff00867e3a6a50d0f995cb95e96893c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "status_note": "the ribs pattern layer, five classes"
  },
  "pod-large-pattern-segments": {
   "size": [
@@ -6590,7 +5798,7 @@
   "sha256": "935ff1e1a7ff120cb93f79d64b940a25e55854b9d41d13d5a2b69d3708fbf037",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-large-pattern-plates": {
   "size": [
@@ -6608,7 +5816,7 @@
   "sha256": "00988da029df347127372ad72aa106cea6a5d222ac5e0d19091e364c4600385f",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-medium-pattern-ribs": {
   "size": [
@@ -6624,9 +5832,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "feb61cc0ee19f9aaa6eb2ed87d053c95bba27f3062b1450cfd0889f1a5c257e0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "status_note": "the ribs pattern layer, five classes"
  },
  "pod-medium-pattern-segments": {
   "size": [
@@ -6644,7 +5852,7 @@
   "sha256": "af7a9c454ea0ba47d078ff5ce0081ae70eb5bee5fa6f209e18248f10cc007883",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-medium-pattern-plates": {
   "size": [
@@ -6662,7 +5870,7 @@
   "sha256": "d39b218176f468b0d1a30bdee78c3713fddeb47083345b8762b77f7079310842",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-small-pattern-ribs": {
   "size": [
@@ -6678,9 +5886,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "7c71a7dff30f373059b05945b0c74a73f7df375df56edb28dde28ab76e7e4192",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "status_note": "the ribs pattern layer, five classes"
  },
  "pod-small-pattern-segments": {
   "size": [
@@ -6698,7 +5906,7 @@
   "sha256": "3eec887aef50aafc026f7090f5b7684984ce709eede6da08e35e4793abbe20bb",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-small-pattern-plates": {
   "size": [
@@ -6716,7 +5924,7 @@
   "sha256": "d6840b546902ebe8cd2eb98befab518c34f37db043a83185f0eaa2cf3ab18e54",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-collection-pattern-ribs": {
   "size": [
@@ -6732,9 +5940,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "690f559ff60f070c4b31d6acfad9bbb1e8a71afa5412634e27f5e57910e93d1c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "status_note": "the ribs pattern layer, five classes"
  },
  "pod-collection-pattern-segments": {
   "size": [
@@ -6752,7 +5960,7 @@
   "sha256": "0d0e0aa1f243e9796e9eff228e2169b6e9c8d91c90ed3c5a1cdae40c833c5be4",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-collection-pattern-plates": {
   "size": [
@@ -6770,7 +5978,7 @@
   "sha256": "f0c54c6dd9d6166f1525897e55c13482557e3d6a07107cd5ab85937d469896eb",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-well-pattern-ribs": {
   "size": [
@@ -6786,9 +5994,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "576aee5a7d62b1aa76f3011da9ee2ef3ca8aea5a4e9f7650d60f502f38de9c67",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "status_note": "the ribs pattern layer, five classes"
  },
  "pod-well-pattern-segments": {
   "size": [
@@ -6806,7 +6014,7 @@
   "sha256": "4dffca7c503c869292ef7ba7243f1ad3b1b3236ec60b0c94ce9091f59b9d6454",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-well-pattern-plates": {
   "size": [
@@ -6824,7 +6032,7 @@
   "sha256": "eb2d5e083a629d79b939b7ec9c86f6699b5448b50922d11ba02f597d62e27983",
   "status": "new",
   "signed_in": null,
-  "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status_note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "ring-kin-56x56": {
   "size": [
@@ -6844,7 +6052,817 @@
   "signed_in": null,
   "status_note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
  },
- "mark-cangrow-16x16": {
+ "ring-arc-collection-n1-track-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 1 chapters: bevel band in 1 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "3b6ff44cd73e70549adc6ca89efd1fc8d6c2d7708c9e5b516d199f3202e2128c",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n1-s1-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 1 read: the bone arc over the track",
+  "sha256": "642a7984006a2d0437aaeedaabe72992dc8934b57e1ca1d08f8517dbb5457a06",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n2-track-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 2 chapters: bevel band in 2 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "440f924aed498462492ebe2bc176f39175a363875eaf9f18eb4094c4a3894910",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n2-s1-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 2 read: the bone arc over the track",
+  "sha256": "37ee769cdfbdc701fc522eaf7ee86f2192da1accbaa3fa5f979c85acb0aca0f9",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n2-s2-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 2 read: the bone arc over the track",
+  "sha256": "79b653cb1a39daa00270565a4338570766cdeb37504a24e511cc638c2f6cc38c",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-track-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 3 chapters: bevel band in 3 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "1172792e18466a549cb05638b80f4b89ea0564d896fe4eb1d40e93c18348554d",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-s1-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 3 read: the bone arc over the track",
+  "sha256": "9f578a253f7ea2d6a91458a6019f27b341140a0789bedd52268d25eedc858627",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-s2-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 3 read: the bone arc over the track",
+  "sha256": "b7fd8cd76f8acd48706375b86cbb299cde987e247e3a52b9213d493772592b04",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-s3-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 3 read: the bone arc over the track",
+  "sha256": "f9ff2c9605182c495a9e5c151f1ae0d241c3b8318f9dadf7f9992957bb34678b",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-track-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 4 chapters: bevel band in 4 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "7bc0ec1d057fd176c89b5a091ac8e90859aca91eed38b1f105d10f1223165118",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s1-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 4 read: the bone arc over the track",
+  "sha256": "02ec0981ee40097fc6bb318a6c8a6cd55b094e3e19963abf5351cdc05e223291",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s2-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 4 read: the bone arc over the track",
+  "sha256": "9faa5036ed282c7bde6c90e1f63e4f9fe5bf0159410607cb74e692ed006ea15f",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s3-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 4 read: the bone arc over the track",
+  "sha256": "89f6691e2612e8562da6a55d8b91222a1d0735ad42cd9aef9d84f6fdc0b408ec",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s4-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 4 read: the bone arc over the track",
+  "sha256": "482de3fd0cf9faefb7850e49cdeb0cc6788e5524bf09c5d216ad125c3aeef111",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-track-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 5 chapters: bevel band in 5 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "8affe3297f9fbf35767dd5faa777f511229e96e9be9663c69fae51cc11c6aab6",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s1-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 5 read: the bone arc over the track",
+  "sha256": "72eab24dcf3f7c30ff8e0ff380fa08bcde3060eb9748b9c653408fdb46725f54",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s2-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 5 read: the bone arc over the track",
+  "sha256": "fa3b507f26aad0d24918708fd871b9f2c800ff6c8a2ecd01e66714eda33b835b",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s3-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 5 read: the bone arc over the track",
+  "sha256": "3dc23d2f55d77f623ee5c37e6e40ec68057ad16f9aa85854b75e8e51e021dba7",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s4-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 5 read: the bone arc over the track",
+  "sha256": "6763f1d9207fa294d1d7c3ea4a9f388edfe5f4731889bda6ef6b5e25229fcf04",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s5-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 5 read: the bone arc over the track",
+  "sha256": "c2e7d1fd3e3c9ac2b6a2aeb66884c58e2a1381dc3f6b1916502b7f5afb4b60bf",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-track-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 6 chapters: bevel band in 6 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "90e188cf167107d5fa336f090ce8a3b3573b832a0659bafeb0653e8956a80714",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s1-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 6 read: the bone arc over the track",
+  "sha256": "9838d2d241bfb4c5cee9ef5435d828e68cdbbff40f597ed3672a5dd7cfdd8ccd",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s2-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 6 read: the bone arc over the track",
+  "sha256": "728f159cdb3c170313619d8673f8ade9082e3fbb3a6fcc5f0f62d7974e0f6ec6",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s3-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 6 read: the bone arc over the track",
+  "sha256": "312cb0536506e2a4c224b53ebb6d37e568c47343558c9122c73bfd02cccfea8d",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s4-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 6 read: the bone arc over the track",
+  "sha256": "e20e2009febfa27e30313c4da6daf3b909d59897dc14354a81a8965db8662899",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s5-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 6 read: the bone arc over the track",
+  "sha256": "5b54063e7119fb28f32fddb8c483db203993a11bef71c99ad7b14bf28be56e52",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s6-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 6 read: the bone arc over the track",
+  "sha256": "4b84259b4f982650783c4d4ea8c5b81a9245610557d9cb5b493ef2dacabc5b28",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-track-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 7 chapters: bevel band in 7 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "36a701e3120618d145e6133b6748f5281dfc903d68e253b2fa8c33aa2dba33a8",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s1-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 7 read: the bone arc over the track",
+  "sha256": "03cd67997a96fe300167eeba6066bfd5ec77cb900b1456ae2d0b07963496e800",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s2-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 7 read: the bone arc over the track",
+  "sha256": "f4ca17d5bda85e227eb06031cc8b5fe7daa990d61824b8cc2865343f78982f9e",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s3-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 7 read: the bone arc over the track",
+  "sha256": "108bb6e8c9d4dfde790aa97276e3e80ca798c07ecbac7f0894f692d48f96a262",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s4-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 7 read: the bone arc over the track",
+  "sha256": "925e909ffc151ed240e6a86dcb92cc557b894dc5c7f6e10e9a7d4237b6788f19",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s5-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 7 read: the bone arc over the track",
+  "sha256": "d4bd41d843285d8e2e823ae175b945cfd935e7e755bbe7039b8f186c1491386a",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s6-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 7 read: the bone arc over the track",
+  "sha256": "359ad6a640028f517ad028955ce3d809ea622cd79041e77041a5d40f6fac870d",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s7-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 7 of 7 read: the bone arc over the track",
+  "sha256": "6700fcb869ad9dfdd31832e673b4bfdea471a51101a9f2ae2a928c0142f1fce2",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-track-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 8 chapters: bevel band in 8 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "a29040b53d2c434f461849d351022175cea080f10c1f2c4b1233c10184979f4b",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s1-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 8 read: the bone arc over the track",
+  "sha256": "05095aa67ae06b423eb0a419f63abde5f938d032337424bc1f2276b6bcf17ab7",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s2-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 8 read: the bone arc over the track",
+  "sha256": "7e516892cfa662716761585097a865204ee62fa688c450e73eaed49914d32b84",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s3-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 8 read: the bone arc over the track",
+  "sha256": "11c84597cb0073cfb76ad99b469031640da51e966abdb4fdadbcc01a59127fb3",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s4-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 8 read: the bone arc over the track",
+  "sha256": "cecefcc4c6e838e0fb1bdef1996bc0174b499f5965f1dcceebb8c0a395d52cdf",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s5-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 8 read: the bone arc over the track",
+  "sha256": "9dea32b67f166cde7afe3a82e4a38f8c3fec73468342015afc9966754cf2b2a3",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s6-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 8 read: the bone arc over the track",
+  "sha256": "60a1b59e7974a66a7a8cf1a2b9179c3b0856c4cd5e9671a9993288a3576c978e",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s7-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 7 of 8 read: the bone arc over the track",
+  "sha256": "0c59fe3b9890ac15f1415d604eaaca5369c03e8d445ec9fac9d37d00332fab91",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s8-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 8 of 8 read: the bone arc over the track",
+  "sha256": "1e605c7b7d9e4d3e0472b7da50323e33758662804f06b72230529b6f44b71edd",
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "room-bench-stage-collection": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": [
+   0,
+   40,
+   1024,
+   522
+  ],
+  "src": "bench-e2",
+  "made": "the collection's bench: the same generated glass wall with no cone of light (the window lies wholly in the wall's own left strip, mirrored), graded as room-bench-stage with the vignette centred on x 512",
+  "sha256": "cc7fe4242032c8f9626f2bfe6b28738fc8b2581c41e30dafc35666191114bede",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection's bench, no cone (ef254a37); awaiting verdict"
+ },
+ "mark-can-grow-16": {
   "size": [
    16,
    16
@@ -6862,7 +6880,7 @@
   "signed_in": null,
   "status_note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
  },
- "mark-waiting-24x24": {
+ "mark-waiting-24": {
   "size": [
    24,
    24
@@ -6879,5 +6897,108 @@
   "status": "new",
   "signed_in": null,
   "status_note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+ },
+ "place-meadow-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": [
+   null,
+   null,
+   64,
+   64
+  ],
+  "src": "place-meadow",
+  "made": "the meadow place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
+  "sha256": "1ab545a590d5e69c8a5dbec5e623aad95e7d82e86c887000d03f89a1707f224e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "place-pond-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": [
+   null,
+   null,
+   64,
+   64
+  ],
+  "src": "place-pond",
+  "made": "the pond place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
+  "sha256": "e17c94bf08939691d08f4f3c9882e12189ea4a23ab4108f8ff847e8f5f4fc99f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "place-rock-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": [
+   null,
+   null,
+   64,
+   64
+  ],
+  "src": "place-rock",
+  "made": "the rock place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
+  "sha256": "9bc3c7801fafb8426a506e701c113c7d2e86da985ef5489c3812f3335c135e3f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "place-wood-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": [
+   null,
+   null,
+   64,
+   64
+  ],
+  "src": "place-wood",
+  "made": "the wood place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
+  "sha256": "aeea3ff5939c3e51a290562cbd99e49ccad03ef96b3582996adf61f6821e4a35",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "place-cave-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": [
+   null,
+   null,
+   64,
+   64
+  ],
+  "src": "place-cave",
+  "made": "the cave place picture (pod overview origin): a painted miniature vignette reduced to 64x64 from the painting, muted",
+  "sha256": "c825a5380460798afb932816e479178601a81a23af34d377a1802d7f7e8fae9b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "panel-place-320x224": {
+  "size": [
+   320,
+   224
+  ],
+  "rect": null,
+  "src": "procedural, supersampled 8x",
+  "made": "the collection place's glass card: panel-role dark glass, a hairline edge lit upper left, the top-left light, 6 px corners; one fixed master placed 1:1 at every place (16 + 336c, 48 + 240r)",
+  "sha256": "f7c11d6e4958160cefe39c7686c60b57f6a3828f62a5c456fa039829f29d47f7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection place's glass card, a fixed master placed 1:1 at every place (628fb6b6); awaiting verdict"
  }
 }

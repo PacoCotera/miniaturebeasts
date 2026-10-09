@@ -6,18 +6,18 @@ from PIL import Image, ImageDraw, ImageFont
 os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FD = "/usr/share/fonts/opentype/inter/"; f20 = ImageFont.truetype(FD + "Inter-Medium.otf", 20)
 S = lambda n: Image.open(f"slices/{n}.png").convert("RGBA")
-cv = Image.new("RGBA", (1024, 600), (16, 26, 36, 255)); cv.alpha_composite(S("room-bench-stage-overview"), (0, 40)); d = ImageDraw.Draw(cv)
+cv = Image.new("RGBA", (1024, 600), (16, 26, 36, 255)); cv.alpha_composite(S("room-bench-stage-collection"), (0, 40)); d = ImageDraw.Draw(cv)
 places = [("Loika", "pod-collection-identified", 6, [0, 1, 2], "meadow"), ("Unknown", "pod-collection-unknown", None, [], "pond"), ("Tuikis", "pod-collection-identified", 8, list(range(8)), "rock"),
           (None, None, None, [], None), ("Belatz", "pod-collection-sealed", 5, [0, 1], "wood"), ("Peplos", "pod-collection-identified", 4, [], "cave")]
 for k, (name, pod, n, read, pic) in enumerate(places):
     c, r = k % 3, k // 3; px, py = 16 + 336 * c, 48 + 240 * r
-    card = Image.new("RGBA", (320, 224), (0, 0, 0, 0)); cd = ImageDraw.Draw(card); cd.rounded_rectangle([0, 0, 319, 223], 6, fill=(42, 46, 56, 255), outline=(60, 75, 87, 255))
+    card = S("panel-place-320x224").copy(); cd = ImageDraw.Draw(card)
     if n is None and pod is None: ring = S("ring-collection-idle-176x176"); card.alpha_composite(ring, (8, 24))
     elif n is None: card.alpha_composite(S("ring-collection-idle-176x176"), (8, 24))
     elif len(read) == n: card.alpha_composite(S("ring-collection-closed-176x176"), (8, 24))
     else:
-        card.alpha_composite(S(f"ring-arc-collection-n{n}-track"), (8, 24))
-        for i in read: card.alpha_composite(S(f"ring-arc-collection-n{n}-s{i}"), (8, 24))
+        card.alpha_composite(S(f"ring-arc-collection-n{n}-track-176x176"), (8, 24))
+        for i in read: card.alpha_composite(S(f"ring-arc-collection-n{n}-s{i + 1}-176x176"), (8, 24))
     if pod: card.alpha_composite(S(pod), (96 - 44, 112 - 56))
     if name:
         card.alpha_composite(S("plate-name-80x24") if len(name) < 6 else S("plate-name-96x24"), (184, 64)) if os.path.exists("slices/plate-name-96x24.png") or len(name) < 6 else None

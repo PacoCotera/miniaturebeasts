@@ -32,8 +32,8 @@ for (cx, cy, rw, rh) in ((5, 14, 4, 5), (14, 15, 3, 4), (21, 16, 2, 3)):        
     pts = blob(cx, cy, rw, rh); S_ = set(pts)
     for (x, y) in pts: rows[y][x] = "+" if ((x - 1, y) not in S_ or (x, y - 1) not in S_) else "#"
 waiting = ["".join(r) for r in rows]
-for nm, rws, base, lit, rect, made in (("mark-cangrow-16x16", cangrow, "sprout", "lime", [None, None, 16, 16], "the can-grow mark: a bud with two leaves on a stem, in the emblem manner (a quiet sprout green with a lime lit edge upper left); at the place + (184, 168)"),
-                                         ("mark-waiting-24x24", waiting, "mist", "fog", [16, 528, 24, 24], "the waiting-beyond-the-rack mark: three pods receding to the right, large to small, mist with a fog lit edge upper left; one quiet mark, never a number; at (16, 528)")):
+for nm, rws, base, lit, rect, made in (("mark-can-grow-16", cangrow, "sprout", "lime", [None, None, 16, 16], "the can-grow mark: a bud with two leaves on a stem, in the emblem manner (a quiet sprout green with a lime lit edge upper left); at the place + (184, 168)"),
+                                         ("mark-waiting-24", waiting, "mist", "fog", [16, 528, 24, 24], "the waiting-beyond-the-rack mark: three pods receding to the right, large to small, mist with a fog lit edge upper left; one quiet mark, never a number; at (16, 528)")):
     assert all(len(r) == len(rws) for r in rws), nm
     im = Image.new("RGBA", (len(rws), len(rws)), (0, 0, 0, 0))
     for y, rw in enumerate(rws):
@@ -42,6 +42,6 @@ for nm, rws, base, lit, rect, made in (("mark-cangrow-16x16", cangrow, "sprout",
     save(nm, im, rect, made, "typed by hand")
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 sheet = Image.new("RGBA", (200, 72), (42, 46, 56, 255))
-for i, n in enumerate(("ring-kin-56x56", "mark-cangrow-16x16", "mark-waiting-24x24")): sheet.alpha_composite(Image.open(f"slices/{n}.png").convert("RGBA"), (8 + i * 72, 8))
+for i, n in enumerate(("ring-kin-56x56", "mark-can-grow-16", "mark-waiting-24")): sheet.alpha_composite(Image.open(f"slices/{n}.png").convert("RGBA"), (8 + i * 72, 8))
 sheet.alpha_composite(Image.open("slices/pod-well-identified.png").convert("RGBA"), (8 + 8, 8 + 4))
 os.makedirs("marks", exist_ok=True); sheet.convert("RGB").save("marks/marks-cd-1x.png"); sheet.resize((800, 288), Image.NEAREST).convert("RGB").save("marks/marks-cd-4x-proof.png")

@@ -41,13 +41,14 @@ def benchvariants():
     """room-bench-stage-overview and -chapter: the bench's glass wall re-windowed so the cone's pool lies on the pod's axis of the three-state Pods (design-station-frame ed904fb8):
     the overview (B) on x 256 (cone 136,104,240,320), the chapter page (C) on x 216 (cone 96,104,240,320). The same stage rectangle as room-bench-stage (0,40,1024,522), the same wall, the
     vignette centred on the axis; the cone's pool is part of the wall, as before."""
+    save("room-bench-stage-collection", bench_grade(bench_window("bench-e2.jpg", -2000, 1244, 0.31, target=(632, 384)), cx=512), [0, 40, 1024, 522], "the collection's bench: the same generated glass wall with no cone of light (the window lies wholly in the wall's own left strip, mirrored), graded as room-bench-stage with the vignette centred on x 512", "bench-e2")
     for nm, ax in (("overview", 256), ("chapter", 216)):
         save(f"room-bench-stage-{nm}", bench_grade(bench_window("bench-e2.jpg", 1374, 1244, 0.31, target=(ax, 384)), cx=ax), [0, 40, 1024, 522], f"the generated glass wall re-windowed so the cone's pool is on x {ax} (the {nm}); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage", "bench-e2")
 def collectionring():
     """The collection overview's ring (design-station-frame ed904fb8): centred on a place's (96, 112), radius 80, an 8 px band (r 72 to 80), one arc per chapter in ring order clockwise from
     12 o'clock, 2 px apart, bone when read and bevel when not, the band's edges hairline; the band closes when every chapter is read. Painted like the signed gauge: supersampled 8x so every edge is soft,
     a gentle light from the upper left on the band (a lit upper-left edge, the lower right a little deeper), nothing cut by a hard mask. 176x176 slices centred on the ring (placed at the place + (8, 24)):
-    ring-collection-idle (the empty ring: an empty place), ring-collection-closed (every chapter read), ring-arc-collection-n{1..8}-track (the unread arcs for n chapters) and -s{i} (chapter i read)."""
+    ring-collection-idle (the empty ring: an empty place), ring-collection-closed (every chapter read), ring-arc-collection-n<N>-track-176x176 (the unread arcs for N chapters) and -s<i>-176x176 (chapter i read, i = 1 to N)."""
     S = 8; N = 176
     yy, xx = np.mgrid[0:N * S, 0:N * S].astype(float); x = (xx + 0.5) / S - N / 2; y = (yy + 0.5) / S - N / 2; r = np.hypot(x, y); th = (np.degrees(np.arctan2(x, -y)) + 360) % 360
     cover = lambda m: m.reshape(N, S, N, S).mean((1, 3))
@@ -72,8 +73,8 @@ def collectionring():
             a0 = i * 360.0 / n + gap / 2; a1 = (i + 1) * 360.0 / n - gap / 2; segs.append((th >= a0) & (th <= a1))
         un = np.zeros_like(r, bool)
         for sg in segs: un |= sg
-        save(f"ring-arc-collection-n{n}-track", render(bevel, un, sand), rect, f"the unread arcs for {n} chapters: bevel band in {n} arcs 2 px apart from 12 o'clock, hairline edges", "procedural, supersampled 8x")
-        for i, sg in enumerate(segs): save(f"ring-arc-collection-n{n}-s{i}", render(bone, sg, white), rect, f"chapter {i + 1} of {n} read: the bone arc over the track", "procedural, supersampled 8x")
+        save(f"ring-arc-collection-n{n}-track-176x176", render(bevel, un, sand), rect, f"the unread arcs for {n} chapters: bevel band in {n} arcs 2 px apart from 12 o'clock, hairline edges", "procedural, supersampled 8x")
+        for i, sg in enumerate(segs): save(f"ring-arc-collection-n{n}-s{i + 1}-176x176", render(bone, sg, white), rect, f"chapter {i + 1} of {n} read: the bone arc over the track", "procedural, supersampled 8x")
 def opaque_cut(path, thr=9, soft=14, closing=10):
     """Cut an object off its flat ground as an opaque silhouette (holes closed), keeping its own colours."""
     im = load(path); bg = border_median(im); a = np.asarray(im).astype(float); diff = np.abs(a - bg).max(2)
@@ -194,8 +195,7 @@ def panenine():
     """page-pane-256x440 as a clean nine-slice with the house's light kept (pods.json: the pane shortens to its content, 264 / 248 / 440 high). The painted pane's edges varied
     along their length and its corners did not match them, so tiling would have shown. Insets left 64, top 64, right 16, bottom 16: each edge is its median profile (the lit hairline),
     constant along its length; the other three corners are mitres of their two edge profiles; the fill is one flat value at luma 21 (the old body was a step lighter); the top-left
-    piece is 64x64 and carries the painted pane's soft top-left falloff (about 43 at the top left against about 20 across the body), fading to the plain edge and fill at its right and
-    bottom seams, so corners never stretch and it holds at every height. Run after `pages` (it reads the painted pane)."""
+    piece is 64x64 and carries a radial falloff from the lit top-left hairline (radius 56, reaching the fill's value before the piece's edges), so corners never stretch and it holds at every height. Run after `pages` (it reads the painted pane)."""
     m = np.asarray(Image.open(OUT + "page-pane-256x440.png").convert("RGBA")).astype(float); H, W = m.shape[:2]; I = 16; K = 64
     luma = lambda a: a[..., :3] @ np.array([0.299, 0.587, 0.114])
     top = np.median(m[:I, K:W - I], axis=1); bot = np.median(m[H - I:, K:W - I], axis=1); lef = np.median(m[K:H - I, :I], axis=0); rig = np.median(m[K:H - I, W - I:], axis=0)
@@ -212,12 +212,11 @@ def panenine():
     C = np.zeros((K, K, 4)); C[:] = fill; C[:I, :] = top[:, None, :]; C[:, :I] = lef[None, :, :]
     for y in range(I):
         for x in range(I): C[y, x] = top[y] if y <= x else lef[x]
-    body = float(np.median(luma(m[cy:cy + 32, cx:cx + 32]))); g = np.exp(-0.5 * (np.arange(-18, 19) / 6.0) ** 2); g /= g.sum()
-    lp = np.pad(luma(m)[I:I + K + 24, I:I + K + 24], 18, mode="edge"); lp = np.apply_along_axis(lambda v: np.convolve(v, g, "same"), 0, lp); lp = np.apply_along_axis(lambda v: np.convolve(v, g, "same"), 1, lp)
-    idx = np.clip(np.arange(K) - I, 0, None); L = lp[18:, 18:][np.ix_(idx, idx)]; delta = np.clip(L - body, 0, None)           # the glass only (the bright hairline is left out of the blur)
-    sm = lambda t: t * t * (3 - 2 * t); fx = sm(np.clip((K - 1 - np.arange(K)) / 24.0, 0, 1))
-    wt = np.minimum(fx[None, :], fx[:, None]); band = (np.arange(K)[:, None] < I) | (np.arange(K)[None, :] < I); wt = np.where(band, wt * 0.35, wt)   # on the hairline bands a third of it
-    add = delta * wt; d_rgb = fill[:3] / luma(fill[None, :])[0]
+    # the top-left light: a radial falloff from the lit top-left hairline (the corner pixel), radius 56, reaching exactly the fill's value before the piece's right and bottom edges (the radius is
+    # under the 64 px of the piece), so nothing is left as a lighter square and the piece meets the edge strips and the fill with no step; a third of it on the hairline bands
+    yy_, xx_ = np.mgrid[0:K, 0:K].astype(float); dd = np.hypot(xx_, yy_); R = 56.0
+    add = np.clip(1 - dd / R, 0, 1) ** 1.5 * 41.0; band = (yy_ < I) | (xx_ < I); add = np.where(band, add * 0.35, add)
+    d_rgb = fill[:3] / luma(fill[None, :])[0]
     C[..., :3] += add[..., None] * d_rgb[None, None, :]
     new[:K, :K] = C
     save("page-pane-256x440", Image.fromarray(np.clip(new, 0, 255).astype(np.uint8), "RGBA"), [152, 112, 256, 440], "the page pane as a clean nine-slice with the house's top-left light: insets left 64, top 64, right 16, bottom 16; serves 440, 264 and 248 high", "page-pane (painted), regularised")
@@ -467,31 +466,36 @@ def homemark():
             if ch != ".": im.putpixel((x, y), col + (amax if ch == "x" else int(amax * 0.55),))
     save("frame-room-home-24", im, [16, 8, 24, 24], "the home room's mark: the living window, typed by hand: a square-topped window with a cross mullion, and a two-leaf sprout 5 px tall rising from the sill into the lower-left pane; at (16,8) in the title zone", "typed by hand")
 def places():
-    """place-{meadow,pond,rock,wood,cave}-48x48: the collection overview's place pictures. Each is a painted miniature vignette (Gemini, from the Companion's pixel-map tiles as a colour and
-    character reference), reduced to 48x48 with Lanczos (a painting reduced, never pixel art enlarged), muted a little (saturation x0.85) and graded so its mean grey sits at 88 (the pods' mean
-    is about 111), highlights above grey 150 compressed so no pixel passes about 168. Round 2 redid rock (angular flat-faced stones), wood (crowns of several sizes from above) and cave (top-down)
-    as place2-*.jpg; meadow and pond are round 1 (signed). No creatures, text or baked frame."""
+    """place-{meadow,pond,rock,wood,cave}-{48x48,64x64}: the collection overview's place pictures (48) and the pod overview's origin picture (64, a new master painted from the same painting at 64, never
+    scaled from the 48). Each is a painted miniature vignette (Gemini, from the Companion's pixel-map tiles as a colour and character reference), reduced from the painting with Lanczos (a painting reduced,
+    never pixel art enlarged), muted a little (saturation x0.85) and graded so its mean grey sits at 86 (wood 60, cave 80; the pods' mean is about 111), highlights above grey 140 compressed so no pixel
+    passes about 168. Meadow and pond are round 1, rock, wood and cave round 2 (place2-*.jpg). No creatures, text or baked frame."""
     for k in ("meadow", "pond", "rock", "wood", "cave"):
-        im = load(f"place-{k}.jpg" if k in ("meadow", "pond") else f"place2-{k}.jpg")
+        im0 = load(f"place-{k}.jpg" if k in ("meadow", "pond") else f"place2-{k}.jpg")
         if k == "wood":                                                      # the painting came back as a canvas on a white wall: cut to the painted area
-            a0 = np.asarray(im).astype(float); dark = ((a0 @ np.array([0.299, 0.587, 0.114])) < 120); ys, xs = np.where(dark); im = im.crop((xs.min() + 3, ys.min() + 3, xs.max() - 3, ys.max() - 3))
-        side = min(im.size); im = im.crop(((im.width - side) // 2, (im.height - side) // 2, (im.width - side) // 2 + side, (im.height - side) // 2 + side)).resize((48, 48), Image.LANCZOS)
-        a = np.asarray(im).astype(float); lum = a @ np.array([0.299, 0.587, 0.114]); g = lum[..., None]; a = g + (a - g) * 0.85
-        lum = a @ np.array([0.299, 0.587, 0.114]); a = a * (({'wood': 60.0, 'cave': 80.0}.get(k, 86.0)) / lum.mean()); lum = a @ np.array([0.299, 0.587, 0.114])
-        l2 = np.where(lum > 140, 140 + (lum - 140) * 0.30, lum); a = a * (l2 / np.maximum(lum, 1e-6))[..., None]
-        save(f"place-{k}-48x48", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB"), [None, None, 48, 48], f"the {k} place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88", f"place-{k}")
-def unknownpod():
-    """pod-{large,medium,small,well}-unknown: the pod before its species is known (the art director): the body mask in a neutral grey (#6e6e72), the accent (cap and ribs) a warm light grey (#bcb6aa),
-    no pattern layer, the sealing band on (the band layer over it), the pod's own shade layer shading it as painted (no remap), and no species colour pair anywhere. The crack layer is left off. The
-    pod set carries no separate glow layer (the sprout's glow is baked into the identified composite only), so no bone core is drawn here."""
-    for cls in ("large", "medium", "small", "collection", "well"):
-        L = lambda n: np.asarray(Image.open(OUT + f"pod-{cls}-{n}.png").convert("RGBA")).astype(float) / 255
-        sh = L("shade")[..., 0:1]; body = L("mask-body")[..., 3:4]; acc = L("mask-accent")[..., 3:4]
-        A = np.array([0x6e, 0x6e, 0x72]) / 255; B = np.array([0xbc, 0xb6, 0xaa]) / 255
-        col = np.clip((A * body * (1 - np.clip(acc, 0, 1)) + B * np.clip(acc, 0, 1)) * np.clip(sh * 2, 0, 1), 0, 1)
-        im = Image.fromarray((np.concatenate([col, L("shade")[..., 3:4]], 2) * 255).astype(np.uint8), "RGBA"); im.alpha_composite(Image.open(OUT + f"pod-{cls}-band.png").convert("RGBA"))
-        r = MAN.get(f"pod-{cls}-identified", {}).get("rect") or json.load(open(OUT + "manifest.json")).get(f"pod-{cls}-identified", {}).get("rect")
-        save(f"pod-{cls}-unknown", im, r, f"the {cls} pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair", "pod layers, recoloured")
+            a0 = np.asarray(im0).astype(float); dark = ((a0 @ np.array([0.299, 0.587, 0.114])) < 120); ys, xs = np.where(dark); im0 = im0.crop((xs.min() + 3, ys.min() + 3, xs.max() - 3, ys.max() - 3))
+        side = min(im0.size); sq = im0.crop(((im0.width - side) // 2, (im0.height - side) // 2, (im0.width - side) // 2 + side, (im0.height - side) // 2 + side))
+        for sz in (48, 64):
+            im = sq.resize((sz, sz), Image.LANCZOS)
+            a = np.asarray(im).astype(float); lum = a @ np.array([0.299, 0.587, 0.114]); g = lum[..., None]; a = g + (a - g) * 0.85
+            lum = a @ np.array([0.299, 0.587, 0.114]); a = a * (({'wood': 60.0, 'cave': 80.0}.get(k, 86.0)) / lum.mean()); lum = a @ np.array([0.299, 0.587, 0.114])
+            l2 = np.where(lum > 140, 140 + (lum - 140) * 0.30, lum); a = a * (l2 / np.maximum(lum, 1e-6))[..., None]
+            save(f"place-{k}-{sz}x{sz}", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB"), [None, None, sz, sz], f"the {k} place picture ({'collection overview' if sz == 48 else 'pod overview origin'}): a painted miniature vignette reduced to {sz}x{sz} from the painting, muted", f"place-{k}")
+def panelplace():
+    """panel-place-320x224: the collection's glass card, one fixed master placed 1:1 at every place (16 + 336c, 48 + 240r), not a nine-slice: dark glass in the `panel` role with a `hairline` edge
+    lit on its upper left (the signed page-pane manner: a lit hairline edge, the top-left light as a radial falloff, 6 px corners, under the pods' brightness). Painted at 8x so every edge is soft."""
+    S = 8; W_, H_ = 320, 224; yy, xx = np.mgrid[0:H_ * S, 0:W_ * S].astype(float); x = (xx + 0.5) / S; y = (yy + 0.5) / S; R = 6.0
+    qx = np.minimum(x, W_ - x); qy = np.minimum(y, H_ - y)                                     # distance to the nearest vertical and horizontal edge
+    inside = np.where((qx < R) & (qy < R), np.hypot(R - qx, R - qy) <= R, True)
+    edge = np.minimum(np.where((qx < R) & (qy < R), R - np.hypot(R - qx, R - qy), np.minimum(qx, qy)), 99.0)   # px inside the outline
+    panel = np.array([42.0, 46.0, 56.0]); hair = np.array([60.0, 75.0, 87.0]); bevel = np.array([90.0, 102.0, 114.0])
+    lit = np.clip(0.5 - ((x - W_ / 2) / W_ + (y - H_ / 2) / H_) * 0.9, 0, 1)                 # 1 at the upper left
+    glow = np.clip(1 - np.hypot(x, y) / 150.0, 0, 1) ** 1.6 * 16.0                              # the top-left light
+    fill = panel[None, None, :] + (np.array([0.78, 0.92, 1.0]) * glow[..., None]) * 1.0 - (1 - lit[..., None]) * 3.0
+    hairc = hair[None, None, :] * (1 - lit[..., None]) + bevel[None, None, :] * lit[..., None]   # the hairline: bevel-lit on the upper left, hairline on the lower right
+    col = np.where((edge < 1.0)[..., None], hairc, np.where((edge < 2.2)[..., None], fill * 0.93, fill))
+    cov = inside.reshape(H_, S, W_, S).mean((1, 3)); c = (col * inside[..., None]).reshape(H_, S, W_, S, 3).sum((1, 3)) / np.maximum(inside.reshape(H_, S, W_, S).sum((1, 3)), 1)[..., None]
+    save("panel-place-320x224", Image.fromarray(np.clip(np.dstack([c, cov * 255]), 0, 255).astype(np.uint8), "RGBA"), None, "the collection place's glass card: panel-role dark glass, a hairline edge lit upper left, the top-left light, 6 px corners; one fixed master placed 1:1 at every place (16 + 336c, 48 + 240r)", "procedural, supersampled 8x")
 def pagemark():
     """page-mark-new-10: the 'new to the field guide' mark as the layout now specifies it (pods.json page.newMark): a flat bone dot 6x6 with a 1 px white lit edge
     top left, no keyline, no specular, art layer (station.json colours only), placed on the trait's name line 4 px after the name. (The id keeps its 10; the art is 6x6.)

@@ -1015,9 +1015,9 @@
   "note": "re-cut for design-pods-relayout 29b6dc9"
  },
  "page-pane-256x440": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one"
+  "status": "signed",
+  "signed_in": "pass 30 (signed on delivery)",
+  "note": "the nine-slice with the radial top-left falloff (radius 56), both widths"
  },
  "trait-picture-frame-224x352": {
   "status": "signed",
@@ -1170,19 +1170,19 @@
   "note": "the stamp's front glass over the label"
  },
  "trait-picture-frame-144x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "plain, unread and sealed"
  },
  "trait-picture-frame-144x176-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "plain, unread and sealed"
  },
  "trait-picture-frame-144x176-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "plain, unread and sealed"
  },
  "trait-picture-frame-176x144": {
   "status": "withdrawn",
@@ -1470,578 +1470,613 @@
   "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
  },
  "pod-collection-crack": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-shade": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-mask-body": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-mask-accent": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-pattern-dots": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-pattern-stripes": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-pattern-bands": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-identified": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-band": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-shadow": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "pod-collection-unknown": {
-  "status": "new",
-  "signed_in": "pass 24 (signed on delivery)",
-  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none); the collection class, awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "trait-picture-frame-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "plain, unread and sealed"
  },
  "trait-picture-frame-128x160-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "plain, unread and sealed"
  },
  "trait-picture-frame-128x160-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "plain, unread and sealed"
  },
  "room-bench-stage-overview": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the bench for the pod overview (cone on x 256) and the chapter page (x 216)"
  },
  "room-bench-stage-chapter": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the bench for the pod overview (cone on x 256) and the chapter page (x 216)"
  },
  "ring-collection-idle-176x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
  },
  "ring-collection-closed-176x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n1-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n1-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n2-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n2-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n2-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n3-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n3-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n3-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n3-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n4-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n5-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n6-s5": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s5": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n7-s6": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s5": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s6": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
- },
- "ring-arc-collection-n8-s7": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
  },
  "mark-species-S01-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S02-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S03-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S04-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S05-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S06-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S07-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S08-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S09-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S10-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S11-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S12-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S13-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S14-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S15-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-S16-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-frost-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: reads as a white button; a veiled frostS mark in round 2"
  },
  "mark-clan-C01-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C02-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C03-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C04-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C05-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C06-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C07-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C08-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C09-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C10-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C11-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C12-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C13-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C14-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C15-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-clan-C16-24x24": {
   "status": "new",
   "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
  },
  "mark-first-16x16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "the gilt corner"
  },
  "pod-large-pattern-ribs": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
  },
  "pod-large-pattern-segments": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-large-pattern-plates": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-medium-pattern-ribs": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
  },
  "pod-medium-pattern-segments": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-medium-pattern-plates": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-small-pattern-ribs": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
  },
  "pod-small-pattern-segments": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-small-pattern-plates": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-collection-pattern-ribs": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
  },
  "pod-collection-pattern-segments": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-collection-pattern-plates": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-well-pattern-ribs": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
  },
  "pod-well-pattern-segments": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "pod-well-pattern-plates": {
   "status": "new",
   "signed_in": null,
-  "note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+  "note": "returned in the round 1 verdict: the light-only layer stays, a relief layer is added in round 2"
  },
  "ring-kin-56x56": {
   "status": "new",
   "signed_in": null,
   "note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
  },
- "mark-cangrow-16x16": {
+ "ring-arc-collection-n1-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n1-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n2-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n2-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n2-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s5-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s5-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s6-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s5-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s6-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s7-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s5-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s6-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s7-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s8-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "room-bench-stage-collection": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection's bench, no cone (ef254a37); awaiting verdict"
+ },
+ "mark-can-grow-16": {
   "status": "new",
   "signed_in": null,
   "note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
  },
- "mark-waiting-24x24": {
+ "mark-waiting-24": {
   "status": "new",
   "signed_in": null,
   "note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+ },
+ "place-meadow-64x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "place-pond-64x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "place-rock-64x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "place-wood-64x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "place-cave-64x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled (628fb6b6); awaiting verdict"
+ },
+ "panel-place-320x224": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection place's glass card, a fixed master placed 1:1 at every place (628fb6b6); awaiting verdict"
  }
 }
