@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Incubator, the hatch at 1500 ms: the glass lifted out of sight, the bud gone, the juvenile on the base, the ribbon, input held 2780 ms, then Habitat's meet, 1024×600 at 1×, measured. Layout only, no art. Status: Proposal (UI designer, 2026-10-09 13:04).</title>
+<title>Incubator, the hatch at 1500 ms: the glass lifted out of sight, the bud gone, the juvenile on the base, the ribbon, input held 2780 ms, then Habitat's meet, 1024×600 at 1×, measured. Layout only, no art. Status: Proposal, pass 2 (UI designer, 2026-10-09 13:33).</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
@@ -24,7 +24,7 @@
 <rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
 <text x="844" y="310" font-size="10" fill="#222">STAMP label 120</text>
 <text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
-<text x="844" y="334" font-size="9" fill="#777">176 from the dome</text>
+<text x="844" y="334" font-size="9" fill="#777">176 from the glass</text>
 <rect x="808.5" y="424.5" width="183" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q · 4MX · P2D</text>
 <text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
@@ -34,9 +34,11 @@
 <text x="674" y="222" font-size="9" fill="#2b6cb0">at y 88: out of sight</text>
 <rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
 <text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
-<rect x="328.5" y="464.5" width="367" height="79" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
-<text x="332" y="478" font-size="9" fill="#555">base 328,464 368×80 · enamel</text>
-<rect x="448.5" y="488.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<rect x="344.5" y="456.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+<text x="352" y="472" font-size="9" fill="#555">base 344,456 336×96 · enamel</text>
+<rect x="448.5" y="496.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<rect x="352.5" y="547.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
+<text x="672" y="544" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
 <rect x="360.5" y="160.5" width="303" height="311" fill="#ffe2c4" fill-opacity="0.55" stroke="#c45f12" stroke-width="2"/>
 <text x="368" y="182" font-size="11" fill="#222">JUVENILE 304×312</text>
 <text x="368" y="193" font-size="9" fill="#777">360,160 304×312</text>
@@ -45,19 +47,20 @@
 <rect x="312.5" y="104.5" width="399" height="39" fill="#0f4c50" stroke="#45d8be" stroke-width="1"/>
 <text x="512" y="130" font-size="16" fill="#f1ebdf" text-anchor="middle">Fig, a young Loika</text>
 <text x="716" y="116" font-size="9" fill="#777">ribbon 312,104 400×40</text>
-<rect x="664.5" y="498.5" width="11" height="11" fill="#5bb9f3" stroke="#0c0a12" stroke-width="1"/>
-<text x="24" y="104" font-size="10" fill="#2b6cb0">✓ Open (held 2780 ms):</text>
-<text x="24" y="117" font-size="10" fill="#2b6cb0">0 leaves and plaque word go;</text>
-<text x="24" y="130" font-size="10" fill="#2b6cb0">0–600 the glass lifts;</text>
-<text x="24" y="143" font-size="10" fill="#2b6cb0">600, 800 the bud cracks;</text>
-<text x="24" y="156" font-size="10" fill="#2b6cb0">1000 the juvenile stands</text>
-<text x="24" y="169" font-size="10" fill="#2b6cb0">  (painting or placeholder);</text>
-<text x="24" y="182" font-size="10" fill="#2b6cb0">1200 the ribbon;</text>
-<text x="24" y="195" font-size="10" fill="#2b6cb0">1400, 1800 it steps 4 px;</text>
-<text x="24" y="208" font-size="10" fill="#2b6cb0">2600 dither (180 ms) to</text>
-<text x="24" y="221" font-size="10" fill="#2b6cb0">  Habitat, the meet:</text>
-<text x="24" y="234" font-size="10" fill="#2b6cb0">  the same 304×312 box,</text>
-<text x="24" y="247" font-size="10" fill="#2b6cb0">  ← Home.</text>
+<rect x="652.5" y="506.5" width="11" height="11" fill="#5bb9f3" stroke="#0c0a12" stroke-width="1"/>
+<text x="24" y="96" font-size="10" fill="#2b6cb0">✓ Open (held 2780 ms; Decided,</text>
+<text x="24" y="109" font-size="10" fill="#2b6cb0">a held state, owner 13:21):</text>
+<text x="24" y="122" font-size="10" fill="#2b6cb0">0 leaves and plaque word go;</text>
+<text x="24" y="135" font-size="10" fill="#2b6cb0">0–600 the glass lifts;</text>
+<text x="24" y="148" font-size="10" fill="#2b6cb0">600, 800 the bud cracks;</text>
+<text x="24" y="161" font-size="10" fill="#2b6cb0">1000 the juvenile stands</text>
+<text x="24" y="174" font-size="10" fill="#2b6cb0">  (painting or placeholder);</text>
+<text x="24" y="187" font-size="10" fill="#2b6cb0">1200 the ribbon;</text>
+<text x="24" y="200" font-size="10" fill="#2b6cb0">1400, 1800 it steps 4 px;</text>
+<text x="24" y="213" font-size="10" fill="#2b6cb0">2600 dither (180 ms) to</text>
+<text x="24" y="226" font-size="10" fill="#2b6cb0">  Habitat, the meet:</text>
+<text x="24" y="239" font-size="10" fill="#2b6cb0">  the same 304×312 box,</text>
+<text x="24" y="252" font-size="10" fill="#2b6cb0">  ← Home.</text>
 <line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
