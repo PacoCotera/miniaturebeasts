@@ -153,7 +153,7 @@
 <text x="680" y="378" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Aa</text>
 <rect x="732.5" y="352.5" width="135" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
 <line x1="733" y1="353.5" x2="867" y2="353.5" stroke="#5a6672" stroke-width="1"/>
-<text x="800" y="378" font-size="16" fill="#c6c4d8" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">space</text>
+<text x="800" y="378" font-size="16" fill="#8d8aa6" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">space</text>
 <rect x="876.5" y="352.5" width="87" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
 <line x1="877" y1="353.5" x2="963" y2="353.5" stroke="#5a6672" stroke-width="1"/>
 <text x="920" y="378" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">àéñ</text>
@@ -163,7 +163,7 @@
 <rect x="804.5" y="408.5" width="159" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
 <line x1="805" y1="409.5" x2="963" y2="409.5" stroke="#5a6672" stroke-width="1"/>
 <text x="884" y="434" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Done</text>
-<rect x="633" y="155" width="46" height="46" rx="6" fill="none" stroke="#e0a800" stroke-width="2"/>
+<rect x="633" y="155" width="46" height="46" rx="6" fill="none" stroke="#ffe6ad" stroke-width="2"/>
 <text x="28" y="112" font-size="9" fill="#2b6cb0">Ten of the widest</text>
 <text x="28" y="124" font-size="9" fill="#2b6cb0">letter: 290 px at</text>
 <text x="28" y="136" font-size="9" fill="#2b6cb0">28 semibold, x 652</text>

@@ -159,7 +159,7 @@
 <rect x="804.5" y="406.5" width="159" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
 <line x1="805" y1="407.5" x2="963" y2="407.5" stroke="#5a6672" stroke-width="1"/>
 <text x="884" y="432" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Done</text>
-<rect x="801" y="403" width="166" height="46" rx="6" fill="none" stroke="#e0a800" stroke-width="2"/>
+<rect x="801" y="403" width="166" height="46" rx="6" fill="none" stroke="#ffe6ad" stroke-width="2"/>
 <text x="640" y="60" font-size="9" fill="#c6c4d8">field 636,64 328×48 · the name 28 px from x 652, line 70–106</text>
 <text x="640" y="156" font-size="9" fill="#c6c4d8">keys 636,160 · 40×40 on a 48 pitch, 7 by 4</text>
 <text x="28" y="112" font-size="9" fill="#2b6cb0">Opened by the meet's</text>

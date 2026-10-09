@@ -58,7 +58,7 @@
    "rect of key i": "[636 + 48 × (i mod 7), 160 + 48 × floor(i / 7), 40, 40]"
   },
   "shift": { "rect": [636, 352, 88, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.shift", "states": { "off": "panel fill, label bone; also at the start of a name, where it does nothing", "on": "hairline fill (one step up, as the open tab), label bone: the next letter in the other case" } },
-  "space": { "rect": [732, 352, 136, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.space", "labelColour": "fog" },
+  "space": { "rect": [732, 352, 136, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.space", "labelColour": "fog", "dim": "label `mist` while the field is full" },
   "page": { "rect": [876, 352, 88, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.accents on the letters page, strings.keys.letters on the accents page, in the grid's case" },
   "suggest": { "rect": [636, 408, 160, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.suggest" },
   "done": { "rect": [804, 408, 160, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.done", "dim": "label `mist` while the name cannot be saved" }
@@ -168,7 +168,7 @@
   "field": { "fill": "ground", "edge": "hairline", "name": "bone", "selection": "tealD", "caret": "bone" },
   "say": { "reason": "mist", "refused": "amber" },
   "key": { "fill": "panel", "edge": "hairline", "top": "bevel", "label": "bone", "labelDim": "mist", "on": "hairline" },
-  "space": { "label": "fog" },
+  "space": { "label": "fog", "labelDim": "mist" },
   "done": { "label": "bone", "labelDim": "mist" },
   "ring": "focus"
  },
