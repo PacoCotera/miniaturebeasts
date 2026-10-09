@@ -59,7 +59,7 @@
    "probe": {"parent": "home", "back": "Home"},
    "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
    "library": {"parent": "home", "back": "Home"},
-   "book": {"parent": "library", "back": "Library"},
+   "book": {"parent": "library", "back": "Library", "spreads": ["face", "guide"], "turn": "◀ ▶ past the spread's edge; ← reads Library on both (library.json spreads)"},
    "habitat": {"parent": "home", "back": "Home"},
    "cross": {"parent": "habitat", "back": "Habitat"}
   },
@@ -68,7 +68,9 @@
    {"from": "create", "action": "Grow it", "to": "incubator"},
    {"from": "cross", "action": "Cross them", "to": "incubator"},
    {"from": "incubator", "action": "Open", "to": "habitat"},
-   {"from": "book", "action": "Visit {mibi}", "to": "habitat"}
+   {"from": "book", "action": "Visit {mibi}", "to": "habitat"},
+   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "book", "spread": "guide"},
+   {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "book", "spread": "guide"}
   ],
   "jumpRule": "stack navigation: after a jump, ← goes to the parent of the screen you are on in this tree, never back along the way you came",
   "homePad": {

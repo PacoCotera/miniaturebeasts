@@ -30,6 +30,10 @@
 - **Idle.** The first press only wakes the screen; nothing else happens.
 - **Leaving Create or Cross** by a room key drops the unpaid choices; coming back starts fresh (owner, 2026-10-09: "forget").
 
+## Species and mibi
+
+**Decided** (owner, 2026-10-09, after getting lost on the field guide: "we just need to communicate it clearly in the screens, or people will get lost just as i did"). The Library, the Book and its guide are about the **species**, filled in by every pod and mibi the player has read. Pods, Habitat and Cross show one individual, a **mibi** (a **pod** before it hatches), with its own stamp. On screen the species is "every", "a typical" or its name alone; the individual is "this" or "your". Never on screen: specimen, type, individual, critter, creature. Each level has a door to the other: the figure on Pods and the species word on Habitat open the species' guide (`✓ Open the guide`, a jump); a name in the guide's "Carried by" opens that mibi in Habitat (`✓ Visit Fig`, a jump). The table and the numbers are in [Station layouts, The two levels](station-layouts.md#the-two-levels-species-and-mibi).
+
 ## Instrument and living window
 
 | | Instrument | Living window |
@@ -139,7 +143,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Light.** The beam from above-left on the pod; a read page lit warm from inside; arcs and list cool.
 - **Palette.** Pods from one renderer: the species' colour pair and shell pattern, the place's dust or moss; frost pale blue-white; seeds pearl with a ghost inside; the ring's band grey, its tracks in the looks' hues.
 - **Type.** Pod name at 4×; origin at 2× ("Found on the rock field, as a Tuikis felt safe."; the pattern is in [Station layouts](station-layouts.md), Words on Pods); one word per chapter; one short line per trait ("stripes · hides spots", "only teal", "breed to change"; at most six words).
-- **Chrome.** `✓ Identify · 1 ⚡`, `✓ Read Coat · 3 ◆`, `✓ Shape a founder`, `✓ Compare`, `✓ Return to the wild · +1 ❀`.
+- **Chrome.** `✓ Identify · 1 ⚡`, `✓ Read Coat · 3 ◆`, `✓ Shape a founder`, `✓ Compare`, `✓ Return to the wild · +1 ❀`, `✓ Open the guide` on the figure.
+- **This pod, the species** (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*). On the overview, "this pod" under the pod's marks and "the species" under the figure, once identified. The ring starts on the pod with `✓ Shape a founder`; the figure is a side trip one ▶ away, and ✓ on it opens the species' guide: a jump to the Book's guide spread, where ← reads Library.
 - **Motion.** The seal breaks and the glyph lights in about 2 s; the page turns in 2 s and its sector fills; glints 2 Hz; compare slides the second pod in at 300 ms.
 
 **Decided 2026-10-07 (concept round).** The genome stamp sits on a square label of about 220 px, no plate. The progress ring sits around the pod's shell and carries chapters only; "identified" shows on the pod's seal. The dark glass lab is the bench, and Create and Incubator follow it. Reference: `art/concept-station/pods-v2/`, candidate PV-D-r3-a4.
@@ -267,7 +272,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 **Purpose.** Each species' field guide: its frame, the looks found so far, lineage and wishes. **Reads first:** the species' portrait and name.
 
 - **Living window.** The species portrait: one resident of that species in rich treatment, doing its habit (dig, glow, puff), mounted on the page as a framed plate.
-- **Instrument.** The field guide, full screen: the species' places as stamps; the frame once, as a pressed plate; one tab per chapter (as many as the species has), every look found as a small specimen plate per trait and one dotted "more?" slot; the stamp at 120 px on a plain plate; the family tree panel under the stamp; the pinned wish.
+- **Instrument.** Two spreads. The face spread: the species' places as stamps; the frame once, as a pressed plate; the stamp at 120 px on a plain plate (the type specimen's until a portrait); the family tree panel under the stamp; the pinned wish; a page-turn corner to the guide. The guide spread, the fold-out: every chapter as a column, every look found and still to find (Guide, below) (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was one tab per chapter and the look plates on the face spread).
+- **The clarity line.** Under the habit line: "A typical Belatz, not one of yours."; with a portrait, "Fig, your Belatz, sat for this."
 - **Composition.** Portrait at the left (about 300×310); guide pages centre; stamp, tree and wishes right.
 - **Lively / quiet.** Lively: the portrait. Quiet: the guide, the tree.
 - **Light.** Warm on the portrait; cool, even light on the archive.
@@ -295,6 +301,29 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 ---
 
+### Guide
+
+**Decided** (owner, 2026-10-09). The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← reads Library. Measured in [Station layouts, Book: the guide spread](station-layouts.md#book-the-guide-spread); the numbers are in `prototypes/ui/specs/station/library.json`.
+
+**Purpose.** The species whole: what is found, what is left, and who carries a look. **Reads first:** the face and the name, then the chapter panels.
+
+- **The species, said.** The face (`guide-face-<SNN>-128x112`, the type painted for the guide), the name, and under it "Every look a Belatz can carry, found across your Belatz."
+- **Columns are chapters.** One panel per chapter, shared by every species and tinted by it: one pixel in eight of the species' pod pigment on paper, with a 2 px band of it across the top. Up to seven chapters 128 wide on a 136 pitch; eight 112 wide on a 120 pitch; never a scroll.
+- **Progress on every trait.** One pip per look, filled found, dotted unseen, in groups of five. No digits.
+- **Sealed.** A shut panel with its notch and no traits.
+- **One detail band.** The open trait's looks as plates and one dotted "more?", "Carried by" with your mibis' names.
+- **Wish.** A mark on a pinned trait and its plate; the pinned wish itself stays on the face spread.
+- **Palette.** The tome's paper; colour only in the tints, the plates and the face.
+- **Chrome.** `✓ Add to the wish` or `✓ Take it off the wish` on a plate; `✓ Visit Fig` on a name (a jump: on Habitat, ← reads Home); read-only on a cell; `← Library`.
+- **Motion.** The page turns in 300 ms.
+
+**Pass when**
+- [ ] It says it is the species, in one line under the name.
+- [ ] Eight chapters fit with no scroll, every word whole.
+- [ ] Ten looks read as two groups of five at 1×.
+- [ ] Nothing is new state: every field comes from `fieldGuide`, the wish rules and `chapterLooks`.
+- [ ] No digits, no connectors, nothing childish.
+
 ## Habitat
 
 **Vibe.** Vivarium: cozy, warm, the pet happy at home.
@@ -309,6 +338,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Palette.** The vivarium's greens and earth; card chrome; the heart red, with its shape.
 - **Type.** 4× name; 2× card lines.
 - **Chrome.** `✓ Spend time with Fig`, `✓ Take Fig with you`, `✓ Bond with Fig` (then ✓ again), `✓ Cross Fig`. `← Home`. With a sitting held and Fig eligible: `✓ Portray Fig · 1 sitting` (2026-10-08).
+- **Your Loika** (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*). The card's first line reads "your Loika, adult"; the species word, with `mark-guide-16`, is a focus target: `✓ Open the guide`, a jump to the Book's guide spread, where ← reads Library.
 - **Motion.** The strip swaps the resident in 300 ms; the species moment plays about 2 s.
 
 **Pass when**
