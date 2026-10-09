@@ -139,7 +139,12 @@
        "group": "place",
        "index": 5
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -374,7 +379,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -534,7 +544,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -693,7 +708,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -923,7 +943,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -1226,7 +1251,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -1549,7 +1579,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": "kin.0"
+     }
     },
     "frame": {
      "top": {
@@ -1861,7 +1896,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -2177,7 +2217,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -2512,7 +2557,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -2830,7 +2880,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": "kin.0"
+     }
     },
     "frame": {
      "top": {
@@ -3167,7 +3222,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": "kin.0"
+     }
     },
     "frame": {
      "top": {
@@ -3484,7 +3544,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -3785,7 +3850,12 @@
        "group": "rail",
        "index": 3
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -4084,7 +4154,12 @@
        "group": "rail",
        "index": 3
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.1",
+      "rail.open": "rail.1",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -4399,7 +4474,12 @@
        "group": "rail",
        "index": 4
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.2",
+      "rail.open": "rail.2",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -4760,7 +4840,12 @@
        "group": "rail",
        "index": 5
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.3",
+      "rail.open": "rail.3",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -5126,7 +5211,12 @@
        "group": "rail",
        "index": 3
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -5435,7 +5525,12 @@
        "group": "rail",
        "index": 4
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.1",
+      "rail.open": "rail.1",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -5727,7 +5822,12 @@
        "group": "rail",
        "index": 3
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.1",
+      "rail.open": "rail.1",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -6013,7 +6113,12 @@
     "focus": {
      "cur": null,
      "armed": false,
-     "targets": []
+     "targets": [],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -6282,7 +6387,12 @@
     "focus": {
      "cur": null,
      "armed": false,
-     "targets": []
+     "targets": [],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -6544,7 +6654,12 @@
     "focus": {
      "cur": null,
      "armed": false,
-     "targets": []
+     "targets": [],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -6826,7 +6941,12 @@
        "id": "hatch",
        "group": "hatch"
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": "kin.0"
+     }
     },
     "frame": {
      "top": {
@@ -7090,7 +7210,12 @@
        "group": "place",
        "index": 1
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -7241,7 +7366,12 @@
     "focus": {
      "cur": "place.0",
      "armed": false,
-     "targets": []
+     "targets": [],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -7397,7 +7527,12 @@
        "group": "place",
        "index": 1
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -7593,7 +7728,12 @@
        "group": "place",
        "index": 3
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {
@@ -7786,7 +7926,12 @@
        "group": "place",
        "index": 0
       }
-     ]
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
     },
     "frame": {
      "top": {

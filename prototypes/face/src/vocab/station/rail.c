@@ -30,7 +30,7 @@ void word_rail(void) {
   int em0 = fi("full_layout.emblem.0", 24), em1 = fi("full_layout.emblem.1", 24), gap = fi("full_layout.gap", 8), labelY = fi("full_layout.labelY", 0), labelC = fi("full_layout.labelCentre", 0), pipsY = fi("full_layout.pipsY", 0), pipsC = fi("full_layout.pipsCentre", 0);
   int cEmY = fi("compact_layout.emblemY", 0), cEmC = fi("compact_layout.emblemCentre", 0), cPipsY = fi("compact_layout.pipsY", 0), cPipsC = fi("compact_layout.pipsCentre", 0);
   char rim[24]; fcol("states.edge", rim, sizeof rim);
-  char focus[40]; snprintf(focus, sizeof focus, "%s", v_pstr("focus.cur")); int focused = strncmp(focus, "rail.", 5) == 0 ? atoi(focus + 5) : v_pint("regions.rail.current", -1);   /* Compare has no focus: its ring is on the chapter both pages show */
+  char focus[40]; snprintf(focus, sizeof focus, "%s", v_focus_cur()); int focused = strncmp(focus, "rail.", 5) == 0 ? atoi(focus + 5) : v_pint("regions.rail.current", -1);   /* Compare has no focus: its ring is on the chapter both pages show */
   char star[96]; snprintf(star, sizeof star, "%s", v_pstr("regions.rail.star"));
   for (int i = 0; i < placed; i++) {
     int x = tabs[i].x, y = tabs[i].y, w = tabs[i].w, h = tabs[i].h, full = tabs[i].full;

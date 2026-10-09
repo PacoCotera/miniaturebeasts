@@ -43,7 +43,7 @@ void word_specimen(const char *base) {
   const char *sealed = v_pstr("regions.specimen.pod.sealed");
   int axis = si(base, "pod.axis", 0), feet = si(base, "pod.feet", 0), w = v_pint("regions.specimen.pod.size.0", 0), h = v_pint("regions.specimen.pod.size.1", 0);
   if (has(sealed)) {
-    char focus[40]; snprintf(focus, sizeof focus, "%s", v_pstr("focus.cur"));
+    char focus[40]; snprintf(focus, sizeof focus, "%s", v_focus_cur());
     int lift = strcmp(focus, "pod") == 0 ? spec_int("frame", "focus.lift.creature", 4) : 0, rect[4] = { axis - v_half(w), feet - h - lift, w, h };
     int sw = w + spec_int(S, "shadow.widen", 0), sh = spec_int(S, "shadow.h", 0);
     int shadow[4] = { axis - v_half(sw), feet - v_half(sh), sw, sh }; layer("specimen.shadow", shadow, v_pstr("regions.specimen.room.shadow"));

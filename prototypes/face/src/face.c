@@ -6,6 +6,7 @@
 #include "bridge/wire.h"
 #include "spec/spec.h"
 #include "vocab/words.h"
+#include "screens/screens.h"
 #include "vocab/vocab.h"
 #include "platform/platform.h"
 #include "lvgl.h"
@@ -70,6 +71,7 @@ uint32_t face_hash(void) {
   return h;
 }
 void face_key(int code, int down) {
+  if (down) screens_key(code);   /* the words' screens move the ring and say so (focus, intent) */
   int nt = (g_kt + 1) % KEYQ; if (nt == g_kh) return;
   g_keys[g_kt].code = code; g_keys[g_kt].down = down; g_kt = nt; if (down) { g_kcount++; g_klast = code; }
 }

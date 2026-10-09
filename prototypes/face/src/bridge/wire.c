@@ -54,6 +54,7 @@ void wire_error(const char *what) {
   char esc[400]; jesc(esc, sizeof esc, what); char *m = (char *)malloc(strlen(esc) + 32); if (!m) return;
   sprintf(m, "{\"t\":\"error\",\"what\":\"%s\"}", esc); push(m);
 }
+void wire_emit(const char *json) { size_t n = strlen(json); char *m = (char *)malloc(n + 1); if (!m) return; memcpy(m, json, n + 1); push(m); }
 static int fail(const char *what) { wire_error(what); return -1; }
 
 /* ---- reading a message ---- */

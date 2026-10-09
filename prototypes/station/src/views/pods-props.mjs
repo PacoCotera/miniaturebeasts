@@ -267,6 +267,8 @@ export function podsProps(m, spec, frame) {
     const { bench, benchAny, ...room } = sp.room; regions.specimen = { ...sp, room };
     regions.rail = v.rail; regions.page = v.page; regions.stamp = v.stamp ? { ...v.stamp, case: v.stampCase } : null; regions.kin = v.kin; regions.hatch = v.hatch;
   }
-  const focus = { cur: m.focus ?? null, armed: !!m.ui?.wildArm, targets: v.targets };
+  // the view's answers to the spec's selectors (the graph's `rail.last`, `rail.open`, `kin.first`); null when there is nothing, and the spec's list carries the way on
+  const nTabs = v.rail?.tabs?.length ?? 0, ciSel = nTabs ? "rail." + Math.max(0, Math.min(m.ui?.ci || 0, nTabs - 1)) : null;
+  const focus = { cur: m.focus ?? null, armed: !!m.ui?.wildArm, targets: v.targets, resolve: { "rail.last": ciSel, "rail.open": ciSel, "kin.first": v.kin?.length ? "kin.0" : null } };
   return { mode: v.mode, cur: v.cur, empty: v.empty, broken: !!v.broken, props: { state: v.mode, regions, focus }, line: v.line, requests: v.requests };
 }

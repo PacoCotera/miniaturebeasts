@@ -22,7 +22,7 @@ static int pod_box(const char *base, int box[4]) {
 /* the focus is on a target the view lists (a ring on nothing is not drawn) */
 static int is_target(const char *cur) { for (int i = 0, n = v_plen("focus.targets"); i < n; i++) if (strcmp(v_pstr(v_fmt("focus.targets.%d.id", i)), cur) == 0) return 1; return 0; }
 static void focus_ring(const char *state, const char *base) {
-  char cur[40]; snprintf(cur, sizeof cur, "%s", v_pstr("focus.cur")); if (!cur[0] || strcmp(state, "compare") == 0 || !is_target(cur)) return;
+  char cur[40]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] || strcmp(state, "compare") == 0 || !is_target(cur)) return;
   char ring[24]; spec_str("frame", "colours.ring", ring, sizeof ring); int box[4];
   v_region("focus", LAYER_CHROME);
   if (strncmp(cur, "place.", 6) == 0) {
@@ -32,6 +32,26 @@ static void focus_ring(const char *state, const char *base) {
   } else if (strncmp(cur, "kin.", 4) == 0) { layout_kin_rect(S, v_fmt("%s.kin", base), atoi(cur + 4), box); word_focusRingCircle("focus", box, 0, 0, 0, spec_int("frame", "focus.ring.outside", 4), ring); }
   else if (strcmp(cur, "pod") == 0) { if (pod_box(base, box)) word_focusRingShape("focus", box, "round", ring); }
   else if (strcmp(cur, "hatch") == 0) { for (int k = 0; k < 4; k++) box[k] = sa(base, "hatch.rect", k); word_focusRingShape("focus", box, "round", ring); }
+}
+
+/* the targets as the words drew them, in the props' order */
+int pods_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
+  char state[24]; snprintf(state, sizeof state, "%s", v_pstr("state")); int n = v_plen("focus.targets"); if (n > cap) n = cap;
+  const char *base = strcmp(state, "overview") == 0 ? "regions.overview" : strcmp(state, "chapter") == 0 ? "regions.chapter" : "regions.collection";
+  snprintf(graph_key, (size_t)gcap, "%s", state);
+  layout_tab_t tabs[LAYOUT_TABS]; int nt = layout_slant_tabs("frame", "regions.rail", v_plen("regions.rail.tabs"), v_pint("regions.rail.open", 0), 0, tabs, NULL, NULL); if (nt < 0) nt = 0;
+  for (int i = 0; i < n; i++) {
+    focus_target_t *t = &out[i]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
+    t->index = v_pint(v_fmt("focus.targets.%d.index", i), 0); t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1);
+    int r[4] = { 0, 0, 0, 0 }, k = atoi(strchr(t->id, '.') ? strchr(t->id, '.') + 1 : "0");
+    if (strncmp(t->id, "place.", 6) == 0) layout_place_rect(S, "regions.collection", k, r);
+    else if (strncmp(t->id, "kin.", 4) == 0) layout_kin_rect(S, v_fmt("%s.kin", base), k, r);
+    else if (strncmp(t->id, "rail.", 5) == 0) { if (k < nt) { r[0] = tabs[k].x; r[1] = tabs[k].y; r[2] = tabs[k].w; r[3] = tabs[k].h; } }
+    else if (strcmp(t->id, "pod") == 0) pod_box(base, r);
+    else if (strcmp(t->id, "hatch") == 0) for (int q = 0; q < 4; q++) r[q] = sa(base, "hatch.rect", q);
+    t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3];
+  }
+  return n;
 }
 
 void pods_words(void) {

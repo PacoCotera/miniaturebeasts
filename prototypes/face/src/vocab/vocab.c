@@ -108,3 +108,7 @@ int v_plen(const char *path) { return spec_len("props", path); }
 static int g_focal[4], g_has_focal;
 void v_set_focal(const int box[4]) { if (box) { memcpy(g_focal, box, sizeof g_focal); g_has_focal = 1; } else g_has_focal = 0; }
 const int *v_focal(void) { return g_has_focal ? g_focal : NULL; }
+
+static char g_focus_override[48]; static int g_has_override;
+void v_focus_set(const char *id) { if (id) { snprintf(g_focus_override, sizeof g_focus_override, "%s", id); g_has_override = 1; } else g_has_override = 0; }
+const char *v_focus_cur(void) { return g_has_override ? g_focus_override : v_pstr("focus.cur"); }

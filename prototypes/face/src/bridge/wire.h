@@ -29,5 +29,6 @@ int wire_asset_slot(const char *id);
 int wire_asset_nine(int slot, int insets[4], int *tile);
 #define wire_has_asset(id) (wire_asset_slot(id) >= 0)   /* the handle a picture of this id holds, or -1 when the host has not sent it */
 int wire_event_count(void);
-void wire_error(const char *what);   /* queue an `error` message */
+void wire_error(const char *what);
+void wire_emit(const char *json);   /* queue an outgoing message (focus, intent, done): a complete JSON object */   /* queue an `error` message */
 #endif
