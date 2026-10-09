@@ -852,7 +852,7 @@ function newWorld(seed) {
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   genWorld(seed);
-  S = { v: SAVE_V, seed, turn: 0, expN: 1, revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
+  S = { v: SAVE_V, seed, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], with: null, opened: {}, tier: 1, deepRead: 0,
     bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, withSeen: 0, probeSeen: 0, retSeen: [],
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
@@ -891,7 +891,7 @@ function load() {
     let raw = localStorage.getItem(SAVE_KEY), s = raw ? JSON.parse(raw) : null;
     if (!s || s.v !== SAVE_V) { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } localStorage.removeItem(V7_KEY); } }
     if (!s || s.v !== SAVE_V || typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) return false;   // a Station-only save: a new world starts (and a fresh Station with it)
-    S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = [];
+    S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     layoutCache.clear(); genWorld(S.seed); indexCreatures(); return true;
   } catch (e) { return false; }
 }
@@ -1157,6 +1157,10 @@ function nothingNew() { const ex = S.exp; if (!ex || !ex.saidDone || ex.saidNoth
 
 // ---------- The storm ----------
 function stormCovers(col) { const st = S.exp && S.exp.storm; return !!st && col + 1 > st.x && col < st.x + st.w; }
+// The storm is over the Probe: its band covers the Probe's column and the Probe is not in the cave.
+function stormOverProbe(ex) { return !(ex.patch && layout(ex.patch.key).cave) && stormCovers(cxy(ex.pos).x); }
+// Checked once per action: a storm over the Probe on any action marks the trip (sv.trips, storm).
+function tripStormTick(ex) { const over = stormOverProbe(ex); if (over) ex.tripStorm = true; return over; }
 // Under the band it rains in spells: three quiet actions out of every twelve.
 function stormLull() { const st = S.exp && S.exp.storm; return !!st && (st.t || 0) % 12 >= 9; }
 // Rain falls under the band's core (its edges are overcast only); the peak is its centre, about 8 actions
@@ -1243,7 +1247,7 @@ function advance(scope, info) {
   if (!stormRain(col)) ex.passWarned = 0;   // a new pass over you starts with a warned strike before any stray
   if (ex.storm) {
     // The band crawls while it is over the place you are in (about 30 actions overhead); elsewhere it moves at map speed.
-    const over = !(ex.patch && layout(ex.patch.key).cave) && stormCovers(cxy(ex.pos).x);
+    const over = tripStormTick(ex);
     ex.storm.x += (over ? .2 : ex.storm.v) * ex.storm.dir;   // overhead the band crawls: a pass of rain is about 15–20 actions ex.storm.t = (ex.storm.t || 0) + 1;
     if (ex.storm.x > MW + 1 || ex.storm.x + ex.storm.w < -1) { ex.storm = null; if (ex.saidDone) nothingNew(); }
     else { // a flash somewhere inside the band each tick; some of them light the land for good
@@ -1398,7 +1402,7 @@ function placePartnerNear(key, P) {
 }
 function enterPatch() {
   const ex = S.exp, key = String(ex.pos), lay = layout(key); ensureLive(key); S.visited[ex.pos] = 1; updateSurvey(ex.pos);
-  ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos);
+  ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   const e = entryPoint(lay, key, ex.lastDir);
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
@@ -1412,7 +1416,7 @@ function enterPatch() {
 // The skull clears only when you go down into the place that holds the lost pods.
 function clearSkull(key) { if (!S.skulls) return; for (const c in S.skulls) { const k = S.skulls[c] === 1 ? String(c) : S.skulls[c]; if (k === key) { delete S.skulls[c]; logEv('Back where the Probe broke · skull cleared'); fxMsg('The pods you lost lie here', 3); } } }
 function enterCave() {
-  const ex = S.exp, key = 'c' + G.gate; ensureLive(key); clearSkull(key); noteTier(ex, layout(key));
+  const ex = S.exp, key = 'c' + G.gate; ensureLive(key); clearSkull(key); noteTier(ex, layout(key)); tripPlace(ex, 'cave');
   ex.patch = { key, x: 14, y: 27, dir: 'up', noise: 'creep' };
   placePartnerNear(key, ex.patch); transition(); logEv('Went down the burrow'); save();
 }
@@ -2104,6 +2108,14 @@ function needText(e, s, d, full) {
 }
 const holdEmpty = h => !h || (!h.e && !h.d && !h.s && !(h.pods && h.pods.length));
 const exploredAny = ex => (ex.stats.calls || 0) > 0;   // explored this expedition = a Call in some place (earlier trips don't count)
+// The trips the Station reads at the dock (top-level `trips` in the save): one record per expedition that turned the world,
+// oldest first, the last 40 kept. The expedition gathers its kinds of place (ex.tripPlaces) and whether a storm was over
+// the Probe (ex.tripStorm) as it goes; both are optional, so an expedition saved before them still ends cleanly.
+const TRIP_KINDS = ['meadow', 'pond', 'rock', 'wood', 'cave'], TRIPS_KEPT = 40;
+function tripPlace(ex, kind) { if (!TRIP_KINDS.includes(kind)) return; if (!Array.isArray(ex.tripPlaces)) ex.tripPlaces = []; if (!ex.tripPlaces.includes(kind)) ex.tripPlaces.push(kind); }
+function tripRecord(ex) { const places = Array.isArray(ex.tripPlaces) ? [...new Set(ex.tripPlaces.filter(k => TRIP_KINDS.includes(k)))] : [];
+  return { v: 1, n: ex.n, partner: ex.pt ? ex.pt.id : null, places, storm: !!ex.tripStorm }; }
+function tripsWith(trips, rec) { return (Array.isArray(trips) ? trips : []).concat([rec]).slice(-TRIPS_KEPT); }
 function bayLine() { const n = S.bay.length; return n ? n + ' consignment' + (n === 1 ? '' : 's') + ' sealed · dock to transfer' : ''; }
 // The Cargo screen's preview of what Head home will do.
 function sealPreview() {
@@ -2155,6 +2167,7 @@ function endExpedition(reason) {
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Headed home · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
+  S.trips = tripsWith(S.trips, tripRecord(ex));   // the world turns: this expedition is a trip for the Station
   rep.lines = worldTurn(pending);   // the world turns once per Head home, on the Companion
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
