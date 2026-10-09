@@ -62,10 +62,17 @@ function plateSeries(req, N) { for (let w = N.plate.min; w <= N.plate.max; w += 
 // The most traits a page holds: the upper end of its grid table.
 const maxTraits = (page) => Math.max(...Object.keys(page.grid).map((k) => Number(k.split("-").at(-1))));
 
+// The rail's tab ends are pictures of the host's (generated palette geometry, 16 x 40): each side and part in the colour of each state's fill and in the edge's rim. The word forms the ids.
+function tabEnds(req, frame) {
+  if (!frame) return;
+  const R = frame.regions.rail, fills = new Set(["unread", "read", "open", "sealed"].map((k) => R.states[k].fill));
+  for (const side of ["left", "right"]) { for (const c of fills) req({ kind: "tabend", id: `tab:${side}:fill:${c}`, side, part: "fill", colour: c, size: [R.slant, R.h] }); req({ kind: "tabend", id: `tab:${side}:rim:${R.states.edge}`, side, part: "rim", colour: R.states.edge, size: [R.slant, R.h] }); }
+}
 // the rail of the pod: one tab a chapter; `open` is the chapter page's open tab (-1 on the overview, where none is open)
 function railOf(m, spec, cur, chapters, req, open, focused) {
   if (!cur.idd || !chapters.length) return null;
   const { st, settings, present = {} } = m;
+  tabEnds(req, m.frameSpec);
   return { focused, open, star: req({ kind: "star", id: "star:12" }), tabs: chapters.map((c) => {
     const read = cur.read.includes(c.id), sealed = !!c.sealed && !settings.sealedOpen, n = Math.min(c.traits.length, maxTraits(spec.regions.chapter.page)), wipe = present.read && present.read.pod === cur.id && present.read.chapter === c.id ? present.read.p : null;
     return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", pips: n, filled: read ? (wipe == null ? n : Math.ceil(wipe * n)) : 0, glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: c.id, state: read ? "read" : sealed ? "sealed" : "unread" }) };
@@ -92,7 +99,7 @@ function specimenOf(m, spec, cur, R, req, mode) {
       sealed: req({ kind: "pod", id: `pod:${sp ?? "-"}:s:${box.join("x")}`, species: sp, state: "sealed", size: box }),
       identified: cur.idd ? req({ kind: "pod", id: `pod:${S.speciesOf(cur)}:i:${box.join("x")}`, species: S.speciesOf(cur), state: "identified", size: box }) : null,
     },
-    cut: cur.idd ? idCut : null, name: nameText, origin: [], ribbon: null,
+    cutMilli: cur.idd && idCut != null ? Math.round(idCut * 1000) : null, name: nameText, origin: [], ribbon: null,
   };
   if (mode === "overview") {
     out.origin = S.podOriginLines(cur);   // the whole lines: the face wraps them to the origin region and keeps the first R.origin.lines
@@ -182,6 +189,7 @@ function compareView(view, m, spec, req) {
   };
   const compareRegion = (key) => ({ ...R[key === "compareB" ? "compareA" : key], rect: R[key].rect });
   view.pages = [side(A, compareRegion("compareA"), "compareA"), side(B, compareRegion("compareB"), "compareB")];
+  tabEnds(req, m.frameSpec);
   view.rail = { focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, maxTraits(spec.regions.chapter.page)), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
   view.line = { back: S.cap(S.spName(A)), subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
   view.bench = [slot(req, "room-bench-stage-compare", spec.regions.bench.rect, "Compare's room master"), slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the room master without a cone"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];   // Compare's own bench when it is placed, else the bench without a cone: no lit, empty stage beside the pages
@@ -249,8 +257,8 @@ export { targetsOf };
 // ---- the props message body ----
 // The view as the face takes it: { mode, cur, empty, props: { state, regions, focus }, frame: { line }, requests }. `props` is what goes in the `props` message beside screen, seq and the frame's top bar and plate
 // (the page adds those from the frame's view): the state, one props object a region, the focus. The shape is documented in pods.props.json.
-export function podsProps(m, spec) {
-  const v = podsBuild(m, spec), regions = {};
+export function podsProps(m, spec, frame) {
+  const v = podsBuild({ ...m, frameSpec: frame }, spec), regions = {};
   if (v.mode === "collection") { regions.bench = { room: v.bench }; regions.list = v.list; }
   else if (v.mode === "compare") { regions.bench = { room: v.bench }; regions.rail = v.rail; regions.pageA = v.pages[0]; regions.pageB = v.pages[1]; }
   else {

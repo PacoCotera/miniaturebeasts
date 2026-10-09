@@ -776,6 +776,2724 @@
     }
    ],
    "hash": "a9b4bddc"
+  },
+  {
+   "state": "overview",
+   "name": "an unidentified pod, the pod focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:-:s:120x152",
+       "identified": null
+      },
+      "cutMilli": null,
+      "name": "Unknown",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "mibi-halo-empty-128x160:128x160",
+      "who": [
+       "mark-species-frost-24x24:24x24",
+       "mark-species-frost-24x24:24x24"
+      ]
+     },
+     "rail": null,
+     "page": null,
+     "stamp": null,
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "pod",
+     "armed": false,
+     "targets": [
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:-:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-128x24:128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "mibi-halo-empty-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-frost-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    }
+   ],
+   "hash": "d64e2831"
+  },
+  {
+   "state": "overview",
+   "name": "an unidentified pod, the hatch focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:-:s:120x152",
+       "identified": null
+      },
+      "cutMilli": null,
+      "name": "Unknown",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "mibi-halo-empty-128x160:128x160",
+      "who": [
+       "mark-species-frost-24x24:24x24",
+       "mark-species-frost-24x24:24x24"
+      ]
+     },
+     "rail": null,
+     "page": null,
+     "stamp": null,
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "hatch",
+     "armed": false,
+     "targets": [
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:-:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-128x24:128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "mibi-halo-empty-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-frost-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    }
+   ],
+   "hash": "fdd7d191"
+  },
+  {
+   "state": "overview",
+   "name": "an unidentified pod from another place",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:-:s:120x152",
+       "identified": null
+      },
+      "cutMilli": null,
+      "name": "Unknown",
+      "origin": [
+       "Found at the pond edge,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:pond:64",
+      "figure": "mibi-halo-empty-128x160:128x160",
+      "who": [
+       "mark-species-frost-24x24:24x24",
+       "mark-species-frost-24x24:24x24"
+      ]
+     },
+     "rail": null,
+     "page": null,
+     "stamp": null,
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "pod",
+     "armed": false,
+     "targets": [
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:-:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-128x24:128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "mibi-halo-empty-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-frost-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:pond:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    }
+   ],
+   "hash": "0cb93c67"
+  },
+  {
+   "state": "overview",
+   "name": "the seal half cleared",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "cutMilli": 500,
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:0/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb::95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "hatch",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:0/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb::95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "81d720b5"
+  },
+  {
+   "state": "overview",
+   "name": "a ribbon in the origin's place",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "large",
+       "size": [
+        144,
+        176
+       ],
+       "sealed": "pod:S02:s:144x176",
+       "identified": "pod:S02:i:144x176"
+      },
+      "cutMilli": null,
+      "name": "Untuva",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S02:0/4",
+      "who": [
+       "mark-species-S02-24x24:24x24",
+       "mark-clan-C02-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 5,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:shape:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "sealed",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:character:sealed:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 81,
+      "asset": "stamp:S02-8a384b4e::81",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "pod",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S02:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S02:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24:96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "figure:S02:0/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-S02-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "mark-clan-C02-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S02-8a384b4e::81",
+     "w": 81,
+     "h": 81
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:character:sealed:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "bb90806b"
+  },
+  {
+   "state": "overview",
+   "name": "an identified pod with kin",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:0/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb::95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [
+      {
+       "id": "dev-2:S01-9bae06fb",
+       "ring": "kinring:56",
+       "pod": "pod:S01:i:40x48"
+      },
+      {
+       "id": "dev-3:S01-9bae06fb",
+       "ring": "kinring:56",
+       "pod": "pod:S01:i:40x48"
+      }
+     ],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "kin.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "kin.0",
+       "group": "kin",
+       "index": 0
+      },
+      {
+       "id": "kin.1",
+       "group": "kin",
+       "index": 1
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:0/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "kinring:56",
+     "w": 56,
+     "h": 56
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb::95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "fa021fd5"
+  },
+  {
+   "state": "overview",
+   "name": "S01: partly read, the second tab focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:2/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 1,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb:coat,face:95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:2/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb:coat,face:95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "e1e7a84a"
+  },
+  {
+   "state": "overview",
+   "name": "S04: partly read, the second tab focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S04:s:120x152",
+       "identified": "pod:S04:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Hiljan",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S04:2/5",
+      "who": [
+       "mark-species-S04-24x24:24x24",
+       "mark-clan-C04-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 1,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:shape:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 92,
+      "asset": "stamp:S04-2d0430da:coat,face:92",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S04:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S04:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S04:2/5",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C04-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S04-2d0430da:coat,face:92",
+     "w": 92,
+     "h": 92
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "c82ed76f"
+  },
+  {
+   "state": "overview",
+   "name": "S08: partly read, the second tab focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "large",
+       "size": [
+        144,
+        176
+       ],
+       "sealed": "pod:S08:s:144x176",
+       "identified": "pod:S08:i:144x176"
+      },
+      "cutMilli": null,
+      "name": "Rupar",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S08:2/6",
+      "who": [
+       "mark-species-S08-24x24:24x24",
+       "mark-clan-C08-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 1,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 4,
+        "filled": 4,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:shape:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:character:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 81,
+      "asset": "stamp:S08-39c6e15a:coat,face:81",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      },
+      {
+       "id": "rail.5",
+       "group": "rail",
+       "index": 5
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S08:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S08:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S08:2/6",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-S08-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S08-39c6e15a:coat,face:81",
+     "w": 81,
+     "h": 81
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:character:unread:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "9a76d519"
+  },
+  {
+   "state": "overview",
+   "name": "S02: wholly read, the last tab focused, the stamp",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "large",
+       "size": [
+        144,
+        176
+       ],
+       "sealed": "pod:S02:s:144x176",
+       "identified": "pod:S02:i:144x176"
+      },
+      "cutMilli": null,
+      "name": "Untuva",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S02:3/4",
+      "who": [
+       "mark-species-S02-24x24:24x24",
+       "mark-clan-C02-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 3,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 5,
+        "filled": 5,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "sealed",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:character:sealed:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 81,
+      "asset": "stamp:S02-8a384b4e:coat,movement,shape:81",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [
+      {
+       "id": "dev-2:S02-8a384b4e",
+       "ring": "kinring:56",
+       "pod": "pod:S02:i:40x48"
+      }
+     ],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.3",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "kin.0",
+       "group": "kin",
+       "index": 0
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S02:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S02:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24:96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "figure:S02:3/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-S02-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "mark-clan-C02-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "kinring:56",
+     "w": 56,
+     "h": 56
+    },
+    {
+     "id": "pod:S02:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S02-8a384b4e:coat,movement,shape:81",
+     "w": 81,
+     "h": 81
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:character:sealed:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "36d18602"
+  },
+  {
+   "state": "overview",
+   "name": "S06: wholly read, the last tab focused, the stamp",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S06:s:120x152",
+       "identified": "pod:S06:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Pesko",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S06:5/5",
+      "who": [
+       "mark-species-S06-24x24:24x24",
+       "mark-clan-C06-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 4,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "legs-tail",
+        "word": "Legs & Tail",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:legs-tail:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 81,
+      "asset": "stamp:S06-454cfde4:coat,face,legs-tail,movement,shape:81",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [
+      {
+       "id": "dev-2:S06-454cfde4",
+       "ring": "kinring:56",
+       "pod": "pod:S06:i:40x48"
+      }
+     ],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.4",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "kin.0",
+       "group": "kin",
+       "index": 0
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S06:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S06:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24:96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "figure:S06:5/5",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C06-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "kinring:56",
+     "w": 56,
+     "h": 56
+    },
+    {
+     "id": "pod:S06:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S06-454cfde4:coat,face,legs-tail,movement,shape:81",
+     "w": 81,
+     "h": 81
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:legs-tail:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "d7e6220b"
+  },
+  {
+   "state": "overview",
+   "name": "a read wipe in progress",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:1/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 1,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb:coat:95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:1/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb:coat:95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "4b808e50"
   }
  ]
 }

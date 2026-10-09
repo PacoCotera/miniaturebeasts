@@ -15,10 +15,10 @@ static void composed(const char *id, int x, int y, int w, int h, const char *ops
   snprintf(prim_text(), (size_t)prim_text_size(), "%s", ops);
   prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
 }
-/* box: the focused target's x, y, w, h. form: the group's `ring` (a path in `spec`), or NULL for the default. colour: a palette name. */
+static void draw(const char *id, const int box[4], const char *shape, int circle, int fixedR, int cx, int cy, int cout, const char *colour);
+/* box: the focused target's x, y, w, h. form: the path of the group's `ring` in `spec`, or NULL for the default. colour: a palette name. */
 void word_focusRing(const char *id, const int box[4], const char *spec, const char *form, const char *colour) {
-  char shape[16] = "round", ops[320]; int x = box[0], y = box[1], w = box[2], h = box[3];
-  int width = fi("focus.ring.width", 2), outside = fi("focus.ring.outside", 4), radius = fi("focus.ring.radius", 6), circle = 0, fixedR = 0, cx = 0, cy = 0, cout = 0;
+  char shape[16] = "round"; int circle = 0, fixedR = 0, cx = 0, cy = 0, cout = 0;
   if (form && spec_str(spec, form, shape, sizeof shape) == 0) {
     char p[160];
     snprintf(p, sizeof p, "%s.circle", form);
@@ -28,6 +28,15 @@ void word_focusRing(const char *id, const int box[4], const char *spec, const ch
       else { snprintf(p, sizeof p, "%s.circle.outside", form); cout = spec_int(spec, p, 0); }
     } else { char b[100]; snprintf(b, sizeof b, "word focusRing: %.40s is not a ring form", form); v_error(b); return; }
   }
+  draw(id, box, shape, circle, fixedR, cx, cy, cout, colour);
+}
+/* the forms a word names itself (the rail's tab ring, a fixed circle, a circle from the box) */
+void word_focusRingShape(const char *id, const int box[4], const char *shape, const char *colour) { draw(id, box, shape, 0, 0, 0, 0, 0, colour); }
+void word_focusRingCircle(const char *id, const int box[4], int radius, int cx, int cy, int outside, const char *colour) { draw(id, box, "round", 1, radius, cx, cy, outside, colour); }
+
+static void draw(const char *id, const int box[4], const char *shape, int circle, int fixedR, int cx, int cy, int cout, const char *colour) {
+  char ops[320]; int x = box[0], y = box[1], w = box[2], h = box[3];
+  int width = fi("focus.ring.width", 2), outside = fi("focus.ring.outside", 4), radius = fi("focus.ring.radius", 6);
   if (circle) {
     int rho, ox, oy;
     if (fixedR > 0) { rho = fixedR; ox = x + cx; oy = y + cy; } else { rho = (w >> 1) + cout; ox = x + (w >> 1); oy = y + (h >> 1); }

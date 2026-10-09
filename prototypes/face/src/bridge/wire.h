@@ -24,7 +24,8 @@ uint32_t wire_props_seq(void);
 int wire_props_count(void);
 const char *wire_props_screen(void);
 const char *wire_props_json(void);
-int wire_asset_slot(const char *id);   /* the handle a picture of this id holds, or -1 when the host has not sent it */
+int wire_asset_slot(const char *id);
+#define wire_has_asset(id) (wire_asset_slot(id) >= 0)   /* the handle a picture of this id holds, or -1 when the host has not sent it */
 int wire_event_count(void);
 void wire_error(const char *what);   /* queue an `error` message */
 #endif

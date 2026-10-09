@@ -35,7 +35,7 @@ int v_fdiv(int a, int b);                              /* floor(a / b) for b > 0
 int v_half(int a);                                     /* Math.round(a / 2) on an integer: floor((a + 1) / 2) */
 /* An id built from a printf format (ids of nodes and pictures). */
 const char *v_fmt(const char *fmt, ...);
-/* props reads: the string at a path of the props (copied to a static buffer; "" when absent), and whether a value is there (a non-null string) */
+/* props reads: the string at a path of the props (copied to a ring of 32 static buffers: valid for the next 31 calls, copy what must live longer; "" when absent) */
 const char *v_pstr(const char *path);
 int v_pint(const char *path, int dflt);
 int v_pbool(const char *path, int dflt);
