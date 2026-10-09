@@ -2,6 +2,7 @@
    with their words. The same vectors run on the JavaScript side (tests/focus.test.mjs), so both give the same answer for every case.   face_test <vectors dir> */
 #include "../focus/focus.h"
 #include "../spec/spec.h"
+#include "../layout/layout.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -75,10 +76,42 @@ static void spec_graphs(const char *dir) {
     check(g != NULL, what, graph ? err : "absent"); if (g) focus_graph_free(g); free(js);
   }
 }
+/* the derived rules (layout.json, made from ui/specs/derive.mjs): the C rules give the same integers for every case */
+static void layout_vectors(const char *dir, const char *specs) {
+  char path[512]; long len; char *js;
+  static const char *FILES[] = { "frame", "pods" };
+  for (int i = 0; i < 2; i++) {
+    snprintf(path, sizeof path, "%s/%s.json", specs, FILES[i]); js = slurp(path, &len);
+    if (!js || spec_load(FILES[i], js, (size_t)len) < 0) { check(0, path, js ? spec_error() : "cannot read"); free(js); return; }
+    free(js);
+  }
+  snprintf(path, sizeof path, "%s/layout.json", dir); js = slurp(path, &len);
+  if (!js) { check(0, "layout.json", "cannot read"); return; }
+  if (spec_load("layout", js, (size_t)len) < 0) { check(0, "layout.json", spec_error()); free(js); return; }
+  int n = spec_len("layout", "cases"), bad = 0;
+  for (int c = 0; c < n; c++) {
+    char p[96], rule[32], sp[16], where[96], what[200]; int args[16], na, want[160], nw, got[160];
+    snprintf(p, sizeof p, "cases.%d.rule", c); spec_str("layout", p, rule, sizeof rule);
+    snprintf(p, sizeof p, "cases.%d.spec", c); spec_str("layout", p, sp, sizeof sp);
+    snprintf(p, sizeof p, "cases.%d.path", c); spec_str("layout", p, where, sizeof where);
+    snprintf(p, sizeof p, "cases.%d.args", c); na = spec_len("layout", p); if (na > 16) na = 16;
+    for (int i = 0; i < na; i++) { char q[96]; snprintf(q, sizeof q, "cases.%d.args.%d", c, i); args[i] = spec_int("layout", q, 0); }
+    snprintf(p, sizeof p, "cases.%d.expect", c); nw = spec_len("layout", p); if (nw > 160) nw = 160;
+    for (int i = 0; i < nw; i++) { char q[96]; snprintf(q, sizeof q, "cases.%d.expect.%d", c, i); want[i] = spec_int("layout", q, -999999); }
+    int ng = layout_eval(rule, sp, where, args, na, got, 160);
+    int ok = ng == nw; for (int i = 0; ok && i < nw; i++) if (got[i] != want[i]) ok = 0;
+    snprintf(what, sizeof what, "layout %s %s %s", rule, where, "case");
+    if (!ok) { bad++; char d[200]; snprintf(d, sizeof d, "case %d args [%d,%d,%d..] got %d ints, wanted %d", c, na > 0 ? args[0] : 0, na > 1 ? args[1] : 0, na > 2 ? args[2] : 0, ng, nw); check(0, what, d); }
+    else checks++;
+  }
+  printf("layout: %d cases, %d differ\n", n, bad);
+  free(js);
+}
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";
   focus_vectors(dir);
   spec_graphs(argc > 2 ? argv[2] : "../ui/specs/station");
+  layout_vectors(dir, argc > 2 ? argv[2] : "../ui/specs/station");
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;
 }
