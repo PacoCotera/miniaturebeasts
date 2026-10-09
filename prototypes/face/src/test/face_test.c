@@ -140,6 +140,20 @@ static void ring_vectors(const char *dir) {
   printf("rings: %d cases, %d differ\n", n, bad);
   free(mask); free(px); free(js);
 }
+/* the metrics (metrics.json, made from the table of the compiled fonts): lv_text_get_width gives the width the table sums, for every Station string at 16, 20 and 28 px */
+static void metrics_vectors(const char *dir) {
+  char path[512]; snprintf(path, sizeof path, "%s/metrics.json", dir); long len; char *js = slurp(path, &len);
+  if (!js) { check(0, "metrics.json", "cannot read"); return; }
+  if (spec_load("metrics", js, (size_t)len) < 0) { check(0, "metrics.json", spec_error()); free(js); return; }
+  int n = spec_len("metrics", "cases"), bad = 0;
+  for (int c = 0; c < n; c++) {
+    char p[64]; snprintf(p, sizeof p, "cases.%d.px", c); int px = spec_int("metrics", p, 0); snprintf(p, sizeof p, "cases.%d.width", c); int want = spec_int("metrics", p, -1);
+    snprintf(p, sizeof p, "cases.%d.text", c); spec_str("metrics", p, prim_text(), prim_text_size()); int got = prim_measure(px);
+    if (got != want) { bad++; char d[200]; snprintf(d, sizeof d, "%d px \"%.60s\": width %d, wanted %d", px, prim_text(), got, want); check(0, "metrics", d); } else checks++;
+  }
+  printf("metrics: %d cases, %d differ\n", n, bad);
+  free(js);
+}
 /* the derived rules (layout.json, made from ui/specs/derive.mjs): the C rules give the same integers for every case */
 static void layout_vectors(const char *dir, const char *specs) {
   char path[512]; long len; char *js;
@@ -175,6 +189,7 @@ int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";
   focus_vectors(dir);
   spec_graphs(argc > 2 ? argv[2] : "../ui/specs/station");
+  metrics_vectors(dir);
   ring_vectors(dir);
   layout_vectors(dir, argc > 2 ? argv[2] : "../ui/specs/station");
   printf("face_test: %d checks, %d failed\n", checks, fails);
