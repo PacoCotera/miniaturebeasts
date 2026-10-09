@@ -1,0 +1,19 @@
+[
+ {
+  "name": "board-home-pro-r3",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/board-home-pro-notext.jpg",
+    "THE PICTURE TO EDIT (keep it exactly: the same housing, vivarium world, moss, burrow, roots, lamps, mister, feed line, vent, the four right-hand modules, colours, light and framing):"
+   ],
+   [
+    "art/miniature-lives/assets/rich-plain-300x310.png",
+    "THE LOIKA (Pip): the species of every resident: squat dark charcoal four-legged creature, cream belly and feet, orange eyes with cream rings, three small green leaves on its head. Place it as it is:"
+   ]
+  ],
+  "prompt": "Output a NEW image that is the attached picture edited in exactly two ways, everything else unchanged in every respect. (1) The creatures: remove the red pot-shaped creature and the teal lizard creature with the glowing tail bulb completely, and instead let EVERY resident of the vivarium be a Loika exactly like the attached reference (the same species and look: squat dark charcoal body, cream belly, orange eyes with cream rings, three small green leaves on the head): the existing Loika stays as the adult in the foreground; add one more adult Loika (the same size, standing or sitting a little further back among the moss and roots, a different pose), and one juvenile Loika (clearly smaller and younger-proportioned, same colours, near the burrow). All three are sculpted, tactile and softly lit like the existing one. No other kind of creature anywhere. (2) The edges: the lower left corner and the bottom edge of the picture show a pale grey strip outside the housing's rounded corner: remove it so that the sage-green housing and the dark rubber corner bumper continue to the picture's edge on all sides, with no pale background anywhere. No text, no letters, no digits anywhere; keep every text plate blank cream."
+ }
+]

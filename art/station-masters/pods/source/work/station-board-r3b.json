@@ -1,0 +1,36 @@
+[
+ {
+  "name": "board-pods-pro-r3",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/board-home-pro-r3.jpg",
+    "STYLE REFERENCE (frame 1 of the same board: match its rendering exactly: the same sculpted, softly lit, matte miniature finish, the same sage-green housing, dark rubber corner bumpers, screws, blank engraved plates, dark slate panels with blank cream plates, and the same warm daylight from the upper left; take NO content from it):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/board-pods-pro-r2.jpg",
+    "THE PREVIOUS PODS FRAME (keep its layout: the sample case seen flat from directly above, two rows of six fitted worn cut-outs in dark foam, small paper tags, the housing; change only what is listed):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting, 16:9, of the SCREEN of a rugged handheld field instrument seen perfectly flat on and filling the canvas edge to edge, with only a slim strip of the device's own housing at the canvas edges, exactly in the manner of the style reference. No text, no letters, no digits, no logos anywhere; every plate and tag is blank. Matte materials only: powder-coated housing, dark rubber, moulded polymer, canvas; NO brass, NO copper, NO chrome, NO polished or shiny metal, NO gloss, NO steampunk; gauges are matte, small, set flush in the housing; hoses are dark matte rubber. No glowing blue HUDs, nothing childish or toy-like, no cottage or craft look. FRAME: PODS, the collection as the device's sample case. Two rows of six fitted, worn cut-outs in dark matte foam in a field case, each cradling one pod. CHANGE 1: the pods are NOT felted wool balls. Each pod is a SMOOTH, hard, satin seed-shell, a rounded oval capsule with a clean moulded surface and a visible seam, in a pair of colours with a painted shell pattern (stripes, bands, speckles, scales or spots), each species different (moss green and cream, pond teal and sand, slate grey and white, wood brown and ochre, cave violet and grey, and so on); on some of them a little dust, moss or earth from the place they came from clings to the shell. Each pod has a small blank paper tag; two cut-outs are empty and one pod is lifted slightly with an orange tag. CHANGE 2: far less rope: remove all rope; use only two or three short dark matte rubber hoses, and add exactly one small sign that the case keeps the pods alive: a small mister nozzle and a small matte vent grille set into the case's edge, with a tiny matte gauge. Lit by soft warm daylight from the upper left."
+ },
+ {
+  "name": "board-incubator-pro-r3",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/board-home-pro-r3.jpg",
+    "STYLE REFERENCE (frame 1 of the same board: match its rendering exactly: the same sculpted, softly lit, matte miniature finish, the same sage-green housing, dark rubber corner bumpers, screws, blank engraved plates, dark slate panels with blank cream plates, and the same warm daylight from the upper left; take NO content from it):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/board-incubator-pro.jpg",
+    "THE PREVIOUS INCUBATOR FRAME (keep only its general plan: feed lines at the left, the chamber in the centre, readout slots at the right; redo everything else as listed):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting, 16:9, of the SCREEN of a rugged handheld field instrument seen perfectly flat on and filling the canvas edge to edge, with only a slim strip of the device's own housing at the canvas edges, exactly in the manner of the style reference. No text, no letters, no digits, no logos anywhere; every plate and tag is blank. Matte materials only: powder-coated housing, dark rubber, moulded polymer, canvas; NO brass, NO copper, NO chrome, NO polished or shiny metal, NO gloss, NO steampunk; gauges are matte, small, set flush in the housing; hoses are dark matte rubber. No glowing blue HUDs, nothing childish or toy-like, no cottage or craft look. FRAME: THE INCUBATOR, the instrument that grows a life, the bridge between research and the vivarium. Render it with the same finish as the style reference (sculpted, softly lit, rich painted miniature realism, not a flat illustration). Layout: at the left, dark matte rubber feed hoses and a few small matte gauges set flush in the sage housing, a bank of dark slate readout slots with blank cream plates and a row of small leaf-shaped lamps (the timer); at the centre, a SHELTERED RECESS built into the housing (not a monitor, not a TV, not a box on top of the housing): a deep recess in the thick sage housing with a rubber-gasketed, covered window (a hinged hood or lid over a small clear window, set in the housing, with screws), the hoses running into it; inside, warmly lit by a small grow lamp, a single small warm bean-shaped bud, glowing softly, lying on green moss with a few stones. IMPORTANT: the bud is a plain generic smooth warm bean with at most one tiny green sprout; there is NO creature, NO embryo, NO curled body, NO face and NO limbs visible anywhere in or on it. At the right, a slim column of dark slate readout slots with blank cream plates, one small orange lamp."
+ }
+]

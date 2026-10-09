@@ -720,6 +720,10 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 92 - the Station concept board, fix round
+
+After the Station art director's verdict on 9bfc0fb8, one fix round with Pro only: three requests, 12.13 MXN; the job totals 45.95 MXN, and today stands at **222.66 MXN of 250**, under the art director's 235 line. Home with Loikas for every resident, Pods with smooth patterned seed-shells and fewer hoses, the Incubator redone with matte gauges, a sheltered recess and a creature-free bud, frame 1 as the style reference. Board v2, frames, call log, hashes and notes: [`concepts/station-board/`](concepts/station-board/README.md). Delivered to the art director only; not slices, not in status.json.
+
 ## Pass 91 - the Station concept board
 
 One generated concept board for the Station art director (brief: boards/station-concept-board-brief.md, 2f535ae, with the owner-approved world brief 64964b9, both sent inline), approved by the owner in this session with a 120 MXN cap; the art director set 73 for the job and a stop-and-report at 50. Eight requests (three Nano Banana 2 drafts on `gemini-3.1-flash-image`, five on Pro), all succeeded, **33.82 MXN**, so today stands at **210.53 MXN of 250**. Frames: Home, Pods and the Incubator, 1024x600 at 1x, no text; the board, the frames, the call log with the running total, the hashes and the honest notes are in [`concepts/station-board/`](concepts/station-board/README.md). Generated concept art, not accepted, not slices, not in status.json. Delivered to the art director, who judges and signs.

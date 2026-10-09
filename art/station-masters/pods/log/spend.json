@@ -1981,5 +1981,56 @@
    "thoughtsTokenCount": 192,
    "totalTokenCount": 2044
   }
+ },
+ {
+  "tag": "board-home-pro-r3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189548,
+  "mxn": 3.791,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:20:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 874,
+   "candidatesTokenCount": 1311,
+   "thoughtsTokenCount": 254,
+   "totalTokenCount": 2439
+  }
+ },
+ {
+  "tag": "board-pods-pro-r3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.210434,
+  "mxn": 4.2087,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:21:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1057,
+   "candidatesTokenCount": 1417,
+   "thoughtsTokenCount": 319,
+   "totalTokenCount": 2793
+  }
+ },
+ {
+  "tag": "board-incubator-pro-r3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.206608,
+  "mxn": 4.1322,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:21:22Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1064,
+   "candidatesTokenCount": 1478,
+   "thoughtsTokenCount": 226,
+   "totalTokenCount": 2768
+  }
  }
 ]
