@@ -36,15 +36,18 @@ def compose(traits, rail):
     # the page, 256 wide: one state, a grid of the chapter's traits
     put("page-pane-256x440", 152, 112); text((168, 120), "Coat" if rail == "six" else "Shape", f20, CREAM)
     for k in range(traits): x = 408 - 8 - 12 * (traits - 1 - k) - 16; d.rectangle([x, 128, x + 7, 135], fill=CREAM if k < 2 else None, outline=MIST)
+    def namenew(xy, word):      # the name and the new dot centred together: the dot 4 px after the name, its centre on the line's middle (a 20 px line)
+        tw = d.textlength(word, font=f16); x0 = int(xy[0] - (tw + 4 + 6) / 2)
+        text((x0, xy[1]), word, f16, CREAM); put("page-mark-new-10", int(x0 + tw + 4), xy[1] + 10 - 3)
     pic = lambda w, h, box=(180, 166, 372, 430): cand.crop(box).resize((w, h), Image.LANCZOS)
     if traits == 1:      # one trait: a picture no larger than the pod's box, 144x176, centred in the cell
         px, py = 168 + (224 - 144) // 2, 160 + 40
-        cv.alpha_composite(pic(144, 176), (px, py)); put("trait-picture-frame-144x176", px, py); text((280, py + 184), "Spots", f16, CREAM, "ma")
+        cv.alpha_composite(pic(144, 176), (px, py)); put("trait-picture-frame-144x176", px, py); namenew((280, py + 184), "Spots")
     else:
         for k, (cx, cy, st) in enumerate(((168, 160, "read"), (288, 160, "read"), (168, 360, "unread"), (288, 360, "sealed"))[:traits]):
             if st == "read": cv.alpha_composite(pic(104, 160, (180, 166, 372, 430) if k == 0 else (200, 250, 372, 400)), (cx, cy)); put("trait-picture-frame-104x160", cx, cy)
             else: put(f"trait-picture-frame-104x160-{st}", cx, cy)
-            text((cx, cy + 164), ("Spots", "Belly", "Flank", "Crest")[k], f16, CREAM)
+            (namenew((cx + 52, cy + 164), "Spots") if k == 0 else text((cx, cy + 164), ("Spots", "Belly", "Flank", "Crest")[k], f16, CREAM))
     # the rail: tabs hang from the bar at y 40 and touch along their slants
     if rail == "six": tabs = [("Coat", "focused", 3), ("Face", "read", 3), ("Shape", "unread", 4), ("Legs & tail", "unread", 3), ("Movement", "sealed", 0), ("Stamina", "unread", 3)]; open_i = None
     else: tabs = [("Coat", "read", 3), ("Face", "read", 3), ("Shape", "focused", 4), ("Legs", "unread", 3), ("Movement", "unread", 3), ("Stamina", "sealed", 0), ("Character", "unread", 3)]; open_i = 2

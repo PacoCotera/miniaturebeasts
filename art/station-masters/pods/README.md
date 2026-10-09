@@ -32,8 +32,8 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `face-loika-24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring |
 | `face-loika-24-away` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion away: the mibi out with it, the face full on a dimmed ring |
 | `glint-star-12x12` | 12×12 | (·, ·, 12, 12) | signed (well rings verdict) | the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30) |
-| `page-mark-new-6` | 6×6 | (·, ·, 6, 6) | new: PROPOSED: a flat bone dot 6x6 (replaces page-mark-new-10, which read as a pin); out of the composite until the UI designer places it | PROPOSED, not in the composite until the UI designer places it: the 'new to the field guide' mark as a flat bone dot 6x6, a 1 px lit edge, an ink keyline, no specular |
-| `page-new-mark-12x12` | 12×12 | (·, ·, 12, 12) | withdrawn: superseded by page-mark-new-6 | PROPOSED: the 'new to the field guide' mark, a 12x12 bone bead lit upper left (the page's newMark region of design-pods-relayout 29b6dc9) |
+| `page-mark-new-10` | 6×6 | (·, ·, 6, 6) | new: the new-to-the-field-guide mark as pods.json now specifies it: a flat bone dot 6x6, 1 px white lit edge, no keyline; awaiting verdict | the 'new to the field guide' mark: a flat bone dot 6x6, a 1 px white lit edge top left, no keyline, no specular; on the trait's name line, 4 px after the name |
+| `page-new-mark-12x12` | 12×12 | (·, ·, 12, 12) | withdrawn: superseded by page-mark-new-10 (now a 6x6 flat bone dot) | PROPOSED: the 'new to the field guide' mark, a 12x12 bone bead lit upper left (the page's newMark region of design-pods-relayout 29b6dc9) |
 | `rail-emblem-character-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-character-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-character-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
@@ -340,7 +340,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 - `frame-room-home-24`: the living window. An arched window frame, a horizon line and one small sprout, drawn procedurally at 16x and reduced, in the colour and strength of the other room marks (read from the research mark). The old house outline is gone.
 - `rail-emblem-legs-tail`: round 5, a filled silhouette as Movement's pads are (`emblems/source/legs-tail.txt`, typed rows): a teardrop thigh about 8x10, a 2 px shin angled forward from the hock, a filled 5x3 oval paw, lit edge upper left, no tail. It reads as a leg with a foot; the thigh is still the weakest part (a comma more than a thigh).
-- `page-mark-new-6` replaces `page-mark-new-10`: a flat bone dot 6x6, a 1 px white lit edge, an ink keyline, no specular. It stays proposed and is out of the composite until the UI designer places it.
+- `page-mark-new-10` (id kept, art 6x6, as pods.json now specifies): a flat bone dot, a 1 px white lit edge top left, no keyline, no specular, on the trait's name line 4 px after the name, the name and dot centred together, the dot's centre on the line's middle. It is in the composites there.
 
 
 ## Pass 10 - caps as discs, the composite without the withdrawn pieces

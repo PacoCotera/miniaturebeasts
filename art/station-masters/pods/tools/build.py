@@ -370,13 +370,14 @@ def homemark():
     out = np.dstack([np.full((24, 24), c, float) for c in col] + [a]).astype(np.uint8)
     save("frame-room-home-24", Image.fromarray(out, "RGBA"), [16, 8, 24, 24], "the home room's mark: the living window, an arched window frame with a horizon line and one small sprout, in the other marks' line manner; at (16,8) in the title zone", "procedural, supersampled 16x")
 def pagemark():
-    """page-mark-new-6: the 'new to the field guide' mark, proposed: a flat bone dot, 6x6, a 1 px lit edge (white, upper left) inside an ink keyline, art layer
-    (station.json colours only), no specular. Replaces the 10 px dot, which read as a pin on the picture's edge. Pixel data typed by hand: i = ink, b = bone, w = white."""
-    rows = [".iiii.", "iwwbbi", "iwbbbi", "ibbbbi", "ibbbbi", ".iiii."]
-    pal = {"i": (0x1a, 0x17, 0x25, 255), "b": (0xf1, 0xeb, 0xdf, 255), "w": (0xff, 0xff, 0xff, 255), ".": (0, 0, 0, 0)}
+    """page-mark-new-10: the 'new to the field guide' mark as the layout now specifies it (pods.json page.newMark): a flat bone dot 6x6 with a 1 px white lit edge
+    top left, no keyline, no specular, art layer (station.json colours only), placed on the trait's name line 4 px after the name. (The id keeps its 10; the art is 6x6.)
+    Pixel data typed by hand: b = bone, w = white."""
+    rows = [".wwbb.", "wbbbbb", "wbbbbb", "bbbbbb", "bbbbbb", ".bbbb."]
+    pal = {"b": (0xf1, 0xeb, 0xdf, 255), "w": (0xff, 0xff, 0xff, 255), ".": (0, 0, 0, 0)}
     assert all(len(r) == 6 for r in rows) and len(rows) == 6
     im = Image.new("RGBA", (6, 6)); [im.putpixel((x, y), pal[ch]) for y, r in enumerate(rows) for x, ch in enumerate(r)]
-    save("page-mark-new-6", im, [None, None, 6, 6], "PROPOSED, not in the composite until the UI designer places it: the 'new to the field guide' mark as a flat bone dot 6x6, a 1 px lit edge, an ink keyline, no specular", "typed by hand")
+    save("page-mark-new-10", im, [None, None, 6, 6], "the 'new to the field guide' mark: a flat bone dot 6x6, a 1 px white lit edge top left, no keyline, no specular; on the trait's name line, 4 px after the name", "typed by hand")
 def newmark():
     """The 12x12 mark of a trait new to the field guide, at the picture's top centre: a small bone bead, lit upper left, sand lower right (a proposal; the glint star stays the spark)."""
     S = 8; yy, xx = np.mgrid[0:12 * S, 0:12 * S].astype(float); x = (xx + 0.5) / S - 6; y = (yy + 0.5) / S - 6; r = np.hypot(x, y)
