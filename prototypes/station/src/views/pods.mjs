@@ -19,7 +19,7 @@ const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.h
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // No digits where a picture or a word does: a count in a sentence is said in words (the frame's shared need line on Pods); an amount beside a material icon is a price or a shortfall and stays in figures.
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
-export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n) => WORDS[+n] ?? "many");
+export const inWords = (text) => (text || "").replace(/(?<![⚡◆❀] )\d+(?! [⚡◆❀])/g, (n) => WORDS[+n] ?? "many");
 
 // m: { st, settings, docked, crates, ui: { view, cur, ci, cmp, wildArm }, focus: id | null, present: { idCut: { pod, p } | null, read: { pod, chapter, p } | null, ribbon: pod id | null } }
 // ctx: the components' context (the spec and the type metrics, to wrap the origin)
@@ -197,7 +197,7 @@ const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => o[k]);
 const iconsOf = (b) => [...new Set((b.match(/[⚡◆❀]/g) || []))].join(" ");
 // What a blocked action says on the right: a shortage as "needs more <icons>", any other reason as its own short words (no "·").
 const blockNeed = (b, strings) => (!b ? null : /^needs/.test(b) ? fill(strings.needMore, { icons: iconsOf(b) }) : b.replace(/ · /g, ", "));
-const priceOf = (cost, icon) => (cost ? cost + " " + icon : "");
+const priceOf = (cost, icon) => (cost ? icon + " " + cost : "");   // the icon before its figure
 function lineOf(m, spec, p, chapters, ci, view) {
   const { st, settings, ui, docked } = m, f = m.focus ?? (view.mode === "collection" ? null : "pod"), Sg = spec.strings, glintOf = (q) => (q && S.podGlints(st, q) ? Sg.glintPod : null);
   const state = (q) => {
@@ -229,7 +229,7 @@ function lineOf(m, spec, p, chapters, ci, view) {
     return { ok: "Read " + word, price: priceOf(cost, "◆"), dim: !!b, back, subject, need: blockNeed(b, Sg) ?? here };
   }
   if (f && f.startsWith("kin.")) { const q = S.podById(st, view.kin[+f.slice(4)]?.id); return q ? { ok: "Compare", back, subject: state(q), need: glintOf(q) } : { back }; }
-  if (f === "hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: "+1 ❀", back, subject: fill(Sg.backTo, { place: S.PLACE_WORD[p.g] || "wild" }) };
+  if (f === "hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: S.gainText(1), back, subject: fill(Sg.backTo, { place: S.PLACE_WORD[p.g] || "wild" }) };
   return { back };
 }
 

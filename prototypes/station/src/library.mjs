@@ -105,13 +105,16 @@ export function wishHeld(st, id, m) {
   const r = wishCarriers(st, id).mibis.find((x) => x.id === m.id); return r ? r.traits.length / keys.length : 0;
 }
 
-// The chapters of a pod or mibi that carry a piece of the wish: a pinned trait whose pinned look either copy gives, shown or hidden, in a chapter that is read (or known). The wish glint is
-// its own mark beside the new-look star, on the chapter arc that holds the piece; it says where, never what. (Marking a chapter not yet read waits for the owner.)
-export function wishChapters(st, x) {
+// The chapters of a pod, a mibi or a bud that carry a piece of the wish, and whether each is read (the game designer's brief, 2026-10-09): chapter ch is marked when some trait of it has a pinned look that
+// either copy gives, shown or hidden, read or not. A mark says where and nothing else: not which trait, which look, shown or hidden, the copies or how many pins. It spends nothing and writes nothing
+// (no read, no guide, no first, no glint, no stamp). Never marked: a pod not yet identified, a released mibi, a shut sealed chapter. In frame order, exactly { chapter, read }.
+export function wishMarks(st, x, settings = DEFAULT_SETTINGS) {
   const id = speciesOf(x), fr = frameOf(id), w = wishOf(st, id); if (!fr || !x.genome || !Object.keys(w).length) return [];
-  return fr.chapters.filter((ch) => (x.read || []).includes(ch.id) && chapterLooks(fr, ch, x.genome).some(([t, ls]) => w[t] && ls.includes(w[t]))).map((ch) => ch.id);
+  if (("idd" in x && !x.idd) || x.released) return [];
+  return fr.chapters.filter((ch) => !(ch.sealed && !settings.sealedOpen) && chapterLooks(fr, ch, x.genome).some(([t, ls]) => w[t] && ls.includes(w[t]))).map((ch) => ({ chapter: ch.id, read: (x.read || []).includes(ch.id) }));
 }
-export const wishGlint = (st, x, chapterId) => wishChapters(st, x).includes(chapterId);
+export const wishChapters = (st, x, settings = DEFAULT_SETTINGS) => wishMarks(st, x, settings).map((m) => m.chapter);
+export const wishGlint = (st, x, chapterId, settings = DEFAULT_SETTINGS) => wishChapters(st, x, settings).includes(chapterId);
 
 // The wish in the cross forecast (research-loop.md §5, §8; the-portrait.md §8): for each pinned trait, a switch lights the seeds among the four that show the pinned look; a blend marks
 // the pinned bin on the range picture when the range reaches it. How close a pairing gets is the pinned traits lit (`lit`), never a number or a percentage. Data only: no art.

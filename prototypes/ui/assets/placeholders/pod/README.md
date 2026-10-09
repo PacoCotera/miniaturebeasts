@@ -46,7 +46,7 @@ Nothing is scaled. The manifest entries in the atlas (`manifest`) register the t
 
 ## Art director's pass, 2026-10-08
 
-Judged at 1× and 2× on the contact sheets. I checked them against my Pods directions (`design/style-guide/sign-off.md` on the `design-pods-corrections-2` branch, Section 3, failures 1 to 3: the pod fills its box, the still glow and the cap) and against [Station screens](../../../../../design/style-guide/station-screens.md) (Pods). The three stage classes held up as drawn. The well-size pod and two pigment ramps did not, and I corrected them in the sources and rebuilt.
+Judged at 1× and 2× on the contact sheets. I checked them against the Pods directions (the pod fills its box, the still glow and the cap; [Station layouts](../../../../../design/style-guide/station-layouts.md#pods-collection-pod-overview-chapter-page)) and against [Station screens](../../../../../design/style-guide/station-screens.md) (Pods). The three stage classes held up as drawn. The well-size pod and two pigment ramps did not, and I corrected them in the sources and rebuilt.
 
 ### What changed
 

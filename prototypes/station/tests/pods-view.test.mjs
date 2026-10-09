@@ -121,14 +121,14 @@ test("the bottom line: the one action and its price as a number and an icon (no 
   S.skipIdentify(st, p); st.d = 10;
   assert.equal(view(m("pod")).line.ok, "Open Coat", "✓ on an unread pod opens its first unread chapter, and the line says so"); assert.equal(view(m("rail.0")).line.ok, "Open Coat", "on the overview a tab opens its page"); assert.ok(!view(m("rail.0")).line.price);
   assert.equal(view(c("rail.0", 0)).line.ok, "Read Coat");
-  st.readEver = true; assert.equal(view(c("rail.0", 0)).line.price, "1 ◆");
-  st.readOnce.S01 = ["face"]; st.d = 10; assert.equal(view(c("rail.1", 1)).line.price, "1 ◆");   // a half price is the lower number, with no word
+  st.readEver = true; assert.equal(view(c("rail.0", 0)).line.price, "◆ 1");
+  st.readOnce.S01 = ["face"]; st.d = 10; assert.equal(view(c("rail.1", 1)).line.price, "◆ 1");   // a half price is the lower number, with no word
   S.read(st, p, "coat", settings); assert.equal(view(c("rail.0", 0)).line.ok, undefined); assert.equal(view(c("rail.0", 0)).line.subject, "Coat is read");
   assert.equal(view(c("rail.0", 0)).line.back, "Loika", "on the page ← names the pod it returns to");
   assert.equal(view(m("pod")).line.ok, "Shape a founder");
   assert.equal(view(m("hatch", { ui: { wildArm: 0 } })).line.ok, "Return to the wild");
   assert.equal(view(m("hatch", { ui: { wildArm: 1 } })).line.ok, "Again: return it");
-  assert.equal(view(m("hatch")).line.price, "+1 ❀");
+  assert.equal(view(m("hatch")).line.price, "❀ +1");
 });
 
 test("the focus graph over the targets: the collection's grid; the overview's pod, rail, kin and hatch; the page's rail", () => {
@@ -161,7 +161,7 @@ test("no digits where a word does: the origin drops the expedition's number, a p
   const st = stock(["S01"], 11); st.tray[0].n = 7; S.skipIdentify(st, st.tray[0]);
   const v = view(model(st)), c = view(collection(st));
   assert.ok(v.specimen.origin.every((l) => !/\d/.test(l)), v.specimen.origin.join("|")); assert.ok(!/\d/.test(c.line.subject), c.line.subject); assert.ok(c.list.places.every((w) => !/\d/.test(w.name || "")));
-  assert.equal(inWords("3 new pods wait"), "three new pods wait"); assert.equal(inWords("2 crates in the bay"), "two crates in the bay"); assert.equal(inWords("a Belatz pod waits · needs 3 ◆"), "a Belatz pod waits · needs 3 ◆"); assert.equal(inWords("14 pods wait"), "many pods wait");
+  assert.equal(inWords("3 new pods wait"), "three new pods wait"); assert.equal(inWords("2 crates in the bay"), "two crates in the bay"); assert.equal(inWords("a Belatz pod waits for ◆ 3 more"), "a Belatz pod waits for ◆ 3 more"); assert.equal(inWords("14 pods wait"), "many pods wait");
 });
 test("Compare's need line follows the spec's strings: here, in another chapter, or none; the Differs mark is the studio's, by id, on the traits read on both that differ", () => {
   const st = stock(["S01", "S01"], 11); S.skipRead(st, st.tray[0], settings); S.skipRead(st, st.tray[1], settings);

@@ -134,7 +134,9 @@ Work in this phase:
 
 - Decide what happens to a mibi while it's away from home (the open
   [architecture](design/architecture.md) question).
-- Design bonding, care, growth and what missing care means.
+- Build care as designed: tending a carried mibi on the Companion builds its
+  bond; missing care loses nothing, as a bonded juvenile simply waits at home
+  until it is tended.
 - Design how partners' abilities open the world, connecting back to phase 1.
 - Breeding eligibility, viability and how refusal or failure is shown.
 - Habitats, if they still earn their place.

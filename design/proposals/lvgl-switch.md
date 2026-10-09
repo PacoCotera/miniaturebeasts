@@ -223,7 +223,7 @@ Constraints: positions move in whole pixels. No LVGL opacity is used on the chro
 
 ### 2.8 Checks against the LVGL framebuffer
 
-Everything the sign-off measures (technical-architecture.md §5.6) is re-pointed at the face. In test mode (`?face=lvgl&test`, or the native headless binary) the face writes a log at each capture point and can render passes.
+Everything the style guide measures (technical-architecture.md §5.6) is re-pointed at the face. In test mode (`?face=lvgl&test`, or the native headless binary) the face writes a log at each capture point and can render passes.
 
 | Check | Measured from | In CI |
 | --- | --- | --- |

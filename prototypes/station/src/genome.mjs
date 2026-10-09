@@ -104,7 +104,8 @@ export function nameCode(sha) {
   for (let i = 0; i < 8; i++) { const v = parseInt(sha.slice(i * 2, i * 2 + 2), 16) & 31; out += B32[v]; sum += (i + 1) * v; }
   return out + B32[sum % 32];
 }
-export const codeText = (c) => (c ? `${c.slice(0, 3)} · ${c.slice(3, 6)} · ${c.slice(6, 9)}` : "");
+// without dots: "3MB W21 1BB"
+export const codeText = (c) => (c ? `${c.slice(0, 3)} ${c.slice(3, 6)} ${c.slice(6, 9)}` : "");
 
 // A canonical text of a genome (sorted loci, each pair sorted: the Grow service's canonical form, so the
 // Station's sha names the same set the painter stores) and its SHA-256, synchronous so the migration can run on load.
