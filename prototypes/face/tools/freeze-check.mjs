@@ -51,7 +51,7 @@ export function importsOf(file, root = protoRoot) {
 export function registered(root = protoRoot, problems = []) {
   const out = {};
   for (const f of mjsFiles(root)) {
-    const rel = path.relative(root, f).split(path.sep).join("/"); if (rel.split("/").includes("tests")) continue;
+    const rel = path.relative(root, f).split(path.sep).join("/"); if (rel.split("/").includes("tests") || rel === "face/tools/freeze-check.mjs") continue;   // the check names registerScreen in its own words
     const src = readFileSync(f, "utf8");
     for (const m of src.matchAll(/(?<!function\s)registerScreen\(\s*(?!["'`][\w-]+["'`]\s*,)/g)) problems.push(`${rel}: registerScreen takes a string literal as its first argument (offset ${m.index})`);
     for (const m of src.matchAll(/registerScreen\(\s*["'`]([\w-]+)["'`]\s*,\s*/g)) {

@@ -285,8 +285,9 @@
   {
    "path": "station/src/gfx.mjs",
    "screen": null,
-   "sha256": "9f0ad21936a9b856d678d98de6ea36fa904b894e55c18ae5055d5b37303d9264",
+   "sha256": "bb2e3a76e26d84269a5eebf25696f592ec6da2581bc1ff666830410ada0ed102",
    "importers": [
+    "face/tests/freeze.test.mjs",
     "station/src/main.mjs",
     "station/src/screens/bench.mjs",
     "station/src/screens/create.mjs",
@@ -407,14 +408,6 @@
    "importers": [
     "station/src/views/cross.mjs",
     "station/tests/cross-splice.test.mjs"
-   ]
-  },
-  {
-   "path": "station/src/face-lvgl.mjs",
-   "screen": null,
-   "sha256": "e8aa6e74209165bcad3ddfb55af6aee3befec14417de3e3cbe49aff63de61142",
-   "importers": [
-    "station/src/main.mjs"
    ]
   }
  ],
