@@ -37,21 +37,26 @@ rec("sitting-gilt-560x424", gilt(False), "typed by hand (profiles)", "the sittin
 rec("sitting-gilt-lit-560x424", gilt(True), "typed by hand (profiles)", "the lit gilt frame: the leaf and bead one value brighter on the ramp, a 2 px warm sight edge (sand, cream); never the focus gold")
 # ---- the sitting crate (hand-placed rectangles, 1x)
 def crate():
+    """pass 89 (art director, a079009f): painted like Home A-r3-a1's crates: a steel case (lit top edge, a lid with a seam and two latches, steel posts at the sides) round a teal front panel; the gilt glyph (24x16 at (28, 12), inside local y 8..31) where the walk crate has its seal tag, which is not drawn; 33..46 x 35..48 left plain teal for the build's lamp."""
     im = Image.new("RGBA", (80, 56), (0, 0, 0, 0)); d = ImageDraw.Draw(im); c = lambda n: pal[n] + (255,)
-    d.rectangle([0, 6, 79, 55], fill=c("hairline"))                                  # the outline
-    d.rectangle([1, 7, 78, 54], fill=c("deepTeal"))                                  # the body
-    d.rectangle([0, 0, 79, 13], fill=c("hairline")); d.rectangle([1, 1, 78, 12], fill=c("deepTeal")); d.line([1, 1, 78, 1], fill=c("teal")); d.line([1, 2, 78, 2], fill=c("teal"))   # the lid, its lit top
-    d.line([1, 13, 78, 13], fill=c("tealD"))                                          # the lid's shade line
-    for x in (16, 32, 48, 64): d.line([x, 14, x, 54], fill=c("tealD"))                # slat lines
-    d.line([1, 54, 78, 54], fill=c("tealD"))
-    # the gilt frame on the front, 24 x 20 at (28, 24): bark outline, gold leaf lit top and left, clay shade bottom and right, a tealD opening
-    x0, y0, w, h = 28, 24, 24, 20
+    d.rounded_rectangle([0, 0, 79, 55], radius=3, fill=c("hairline"))                                  # the outline
+    d.rounded_rectangle([1, 1, 78, 54], radius=2, fill=c("metal"))                                       # the steel case
+    d.line([3, 1, 76, 1], fill=c("enamel")); d.line([2, 2, 77, 2], fill=c("enamel"))                    # the lit top edge
+    d.rectangle([5, 3, 74, 8], fill=c("bevel")); d.line([5, 3, 74, 3], fill=c("metal")); d.line([5, 8, 74, 8], fill=c("hairline"))   # the lid's recessed top
+    d.line([1, 9, 78, 9], fill=c("hairline"))                                                            # under the lid's rim
+    d.rectangle([1, 10, 8, 54], fill=c("metal")); d.line([1, 10, 1, 53], fill=c("enamel")); d.line([8, 10, 8, 54], fill=c("bevel"))       # the left post
+    d.rectangle([71, 10, 78, 54], fill=c("metal")); d.line([71, 10, 71, 54], fill=c("enamel")); d.line([78, 10, 78, 53], fill=c("hairline"))   # the right post
+    d.rectangle([9, 10, 70, 54], fill=c("teal")); d.line([9, 10, 70, 10], fill=c("aqua")); d.line([9, 51, 70, 51], fill=c("deepTeal")); d.rectangle([9, 52, 70, 54], fill=c("tealD"))   # the teal front, lit at its top, shaded at its foot
+    d.line([9, 31, 70, 31], fill=c("tealD")); d.line([9, 32, 70, 32], fill=c("aqua"))                    # the lid seam
+    for x0 in (13, 61):                                                                                  # two latches across the seam
+        d.rectangle([x0, 27, x0 + 5, 36], fill=c("metal")); d.line([x0, 27, x0 + 5, 27], fill=c("enamel")); d.line([x0, 36, x0 + 5, 36], fill=c("bevel")); d.rectangle([x0 + 2, 31, x0 + 3, 32], fill=c("hairline"))
+    x0, y0, w, h = 28, 12, 24, 16                                                                        # the gilt frame glyph
     d.rectangle([x0, y0, x0 + w - 1, y0 + h - 1], fill=c("bark")); d.rectangle([x0 + 1, y0 + 1, x0 + w - 2, y0 + h - 2], fill=c("gold"))
     d.line([x0 + 1, y0 + 1, x0 + w - 2, y0 + 1], fill=c("sand")); d.line([x0 + 1, y0 + 1, x0 + 1, y0 + h - 2], fill=c("sand"))
     d.line([x0 + 1, y0 + h - 2, x0 + w - 2, y0 + h - 2], fill=c("clay")); d.line([x0 + w - 2, y0 + 1, x0 + w - 2, y0 + h - 2], fill=c("clay"))
     d.rectangle([x0 + 4, y0 + 4, x0 + w - 5, y0 + h - 5], fill=c("bark")); d.rectangle([x0 + 5, y0 + 5, x0 + w - 6, y0 + h - 6], fill=c("tealD"))
     return im
-rec("crate-sitting-80x56", crate(), "typed by hand", "Home's Bay crate for the sitting, 80x56: the walk crate's roles (deepTeal body, teal lit top, hairline outline, tealD slat lines) with a small gilt frame (bark outline, gold leaf lit top left, a tealD opening) on its front where the walk crate carries the orange seal tag; hand-placed at 1x")
+rec("crate-sitting-80x56", crate(), "typed by hand", "Home's Bay crate for the sitting, 80x56, painted like Home A-r3-a1's crates: a steel case with a lit top edge, a lid seam, two latches and steel posts round a teal front; a 24x16 gilt frame glyph at (28, 12) where the walk crate has its seal tag (not drawn); 33..46 x 35..48 plain teal for the lamp; hand-placed at 1x (pass 89)")
 # ---- the place cards at 96, cut as tools/build.py places() cuts the 48 and 64
 for k in ("meadow", "pond", "rock", "wood", "cave"):
     src = f"place-{k}.jpg" if k in ("meadow", "pond") else f"place2-{k}.jpg"; im0 = Image.open(f"source/raw/{src}").convert("RGB")

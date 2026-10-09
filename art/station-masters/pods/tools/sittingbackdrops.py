@@ -20,6 +20,24 @@ for n in ("plain", "meadow", "pond", "rock", "wood", "cave"):
             l = c[y, 150:166].mean(0); r = c[y, 380:396].mean(0)
             for x in range(168, 378): f = (x - 167) / 210.0; c[y, x] = l * (1 - f) + r * f
         crop = Image.fromarray(np.clip(np.rint(c), 0, 255).astype(np.uint8))
+    if n == "plain":      # pass 89 (art director, a079009f): the wall's average within 10 of `forest` #23623c and the floor's within 10 of `clay` #bf9157 (a per-channel gain on each, so the top-left glow stays), local y 248 one `sand` row, `clay` from 249, and the dark row (247) gone
+        c = np.asarray(crop).astype(float); wall = c[:246].reshape(-1, 3).mean(0); floor = c[250:].reshape(-1, 3).mean(0)
+        gw = np.array(pal["forest"]) / wall; gf = np.array(pal["clay"]) / floor
+        c[:247] = np.clip(c[:247] * gw, 0, 255); c[249:] = np.clip(c[249:] * gf, 0, 255)
+        c[247] = c[246]; c[248] = pal["sand"]
+        for y in range(249, 260): w_ = (y - 249) / 10.0; c[y] = np.array(pal["clay"]) * (1 - w_) + c[y] * w_      # `clay` from row 249, easing into the graded floor over ten rows
+        crop = Image.fromarray(np.clip(np.rint(c), 0, 255).astype(np.uint8))
+    if n == "meadow":     # pass 89: in the centre box (local 120..424 x 24..336) the 99th percentile of brightness (Rec. 601 grey) under 176 (it was 202): a soft-knee compression of the brights inside the box, feathered 24 px outside it, so the glow and the edge flowers stay
+        c = np.asarray(crop).astype(float); lum = c @ np.array([0.299, 0.587, 0.114]); yy, xx = np.mgrid[0:408, 0:544]
+        dx = np.maximum(np.maximum(120 - xx, xx - 424), 0); dy = np.maximum(np.maximum(24 - yy, yy - 336), 0); wgt = np.clip(1 - np.hypot(dx, dy) / 24.0, 0, 1)
+        box = (xx >= 120) & (xx <= 424) & (yy >= 24) & (yy <= 336)
+        for knee in range(170, 100, -2):
+            for k in (0.6, 0.45, 0.3, 0.2, 0.1):
+                l2 = np.where(lum > knee, knee + (lum - knee) * k, lum); g = (l2 / np.maximum(lum, 1e-6))[..., None]; outc = c * (1 - wgt[..., None] + wgt[..., None] * g)
+                if np.percentile((outc @ np.array([0.299, 0.587, 0.114]))[box], 99) < 174: break
+            else: continue
+            break
+        crop = Image.fromarray(np.clip(np.rint(outc), 0, 255).astype(np.uint8)); print("meadow knee", knee, "k", k)
     name = f"sitting-backdrop-{n}-544x408"; crop.save(f"slices/{name}.png", optimize=True); out[n] = crop
     rep[n] = {"horizon_row": y0, "crop": [x0, t, x0 + Wc, t + Hc], "scale": round(544 / Wc, 3)}
     man[name] = {"size": [544, 408], "rect": None, "src": f"source/raw/sitting-backdrop-{n}.jpg (gemini-3-pro-image)", "made": f"the Sitting's {n} backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop {rep[n]['crop']}), reduced x{rep[n]['scale']} with Lanczos to 544x408, nothing else changed (pass 85)",

@@ -9626,9 +9626,9 @@
   "src": "typed by hand (profiles)",
   "made": "the sitting's gilt frame at rest: a modelled moulding 16 px deep, a 3 px bead, an 8 px leaf face lit from the top left, a 3 px inner shade lip, a 2 px sight edge; the opening (local 16,16, 528x392) transparent; mitred corners; palette colours (pass 84)",
   "sha256": "9675b2b29b998fb7a31bb56f5e997f96e73907cc1670786b001e7059f6580617",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "sitting-gilt-lit-560x424": {
   "size": [
@@ -9639,9 +9639,9 @@
   "src": "typed by hand (profiles)",
   "made": "the lit gilt frame: the leaf and bead one value brighter on the ramp, a 2 px warm sight edge (sand, cream); never the focus gold (pass 84)",
   "sha256": "56b8956ca5d2ae9829bc87afde3f976e60720d0264b315c7e3cef5f2544878a9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "crate-sitting-80x56": {
   "size": [
@@ -9650,11 +9650,11 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "Home's Bay crate for the sitting, 80x56: the walk crate's roles (deepTeal body, teal lit top, hairline outline, tealD slat lines) with a small gilt frame (bark outline, gold leaf lit top left, a tealD opening) on its front where the walk crate carries the orange seal tag; hand-placed at 1x (pass 84)",
-  "sha256": "d6830d54565f8b0b1208637caf89c9cfdc98ead75da836d36761063031027952",
+  "made": "Home's Bay crate for the sitting, 80x56, painted like Home A-r3-a1's crates: a steel case with a lit top edge, a lid seam, two latches and steel posts round a teal front; a 24x16 gilt frame glyph at (28, 12) where the walk crate has its seal tag (not drawn); 33..46 x 35..48 plain teal for the lamp; hand-placed at 1x (pass 89) (pass 84)",
+  "sha256": "3dbf1287538a9a76c686e675a6c68d76b9c501789f62710b4e45e41265bf0c77",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+  "status_note": "pass 89: repainted after the hold (a079009f): a steel case with a lit top edge, lid seam, two latches and steel posts round a teal front like Home A-r3-a1's crates, the 24x16 gilt glyph at (28, 12), 33..46 x 35..48 plain teal for the lamp, no seal tag; awaiting the art director's sign"
  },
  "place-meadow-96x96": {
   "size": [
@@ -9665,9 +9665,9 @@
   "src": "source/raw/place-meadow.jpg",
   "made": "the meadow place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
   "sha256": "7ba22a9108a0e112a4d25d01f094289a341dd63da4bbbe64de642f380f255208",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "place-pond-96x96": {
   "size": [
@@ -9678,9 +9678,9 @@
   "src": "source/raw/place-pond.jpg",
   "made": "the pond place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
   "sha256": "8f0df577e35ac87baed2f4c8da5c65cd0ce6183db0d3a0ac3066ab966b7fdc24",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "place-rock-96x96": {
   "size": [
@@ -9691,9 +9691,9 @@
   "src": "source/raw/place2-rock.jpg",
   "made": "the rock place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
   "sha256": "d8e0f79bd95d68801ac81006264d9a291b6fee5876e4bafe74913b8b10ba4850",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "place-wood-96x96": {
   "size": [
@@ -9704,9 +9704,9 @@
   "src": "source/raw/place2-wood.jpg",
   "made": "the wood place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
   "sha256": "2360f346a688ccfc5de5e8da1f9d4cb31c6c6331c428ffd8aab15185a0b3fbaf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "place-cave-96x96": {
   "size": [
@@ -9717,9 +9717,9 @@
   "src": "source/raw/place2-cave.jpg",
   "made": "the cave place card: a painted miniature vignette reduced to 96x96 from the same painting and view as the signed 48 and 64 stamps (never upscaled), muted x0.85 and graded to the same mean, highlights compressed (pass 84)",
   "sha256": "4eb995814991ce9276b0fb0fbdb502101b687612c61579c360d12b7ca3367096",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 84: a Sitting master (origin/design-sitting): hand-made at its size (gilt frames and crate) or cut from the same painting and view as the signed 48 and 64 stamps (place cards); no paid call; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "sitting-backdrop-plain-544x408": {
   "size": [
@@ -9729,7 +9729,7 @@
   "rect": null,
   "src": "source/raw/sitting-backdrop-plain.jpg (gemini-3-pro-image)",
   "made": "the Sitting's plain backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [92, 134, 1107, 895]), reduced x0.536 with Lanczos to 544x408, nothing else changed (pass 85)",
-  "sha256": "5466cb6d71c619173f7a39020c1e318e67c3f5fee5eea4c3b42beb1ace51f444",
+  "sha256": "4d62ce199c546140946be1943022023ea9febda19fe5a4a05b820611852b30d3",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
@@ -9742,7 +9742,7 @@
   "rect": null,
   "src": "source/raw/sitting-backdrop-meadow.jpg (gemini-3-pro-image)",
   "made": "the Sitting's meadow backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [142, 208, 1058, 895]), reduced x0.594 with Lanczos to 544x408, nothing else changed (pass 85)",
-  "sha256": "66493d1ff31480854ece908d3050435620377ca724afd6a877eb757ff4426738",
+  "sha256": "fd96a370f610d19d449c84cc1788090aee9b3f4c144c0eae201e22933d54e028",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
@@ -9756,9 +9756,9 @@
   "src": "source/raw/sitting-backdrop-pond.jpg (gemini-3-pro-image)",
   "made": "the Sitting's pond backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [129, 190, 1070, 895]), reduced x0.578 with Lanczos to 544x408, nothing else changed (pass 85)",
   "sha256": "13cdd96dcfd322eee67ecc368f30c8510f971e749bd1ff8a3b226def99e49d39",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "sitting-backdrop-rock-544x408": {
   "size": [
@@ -9769,9 +9769,9 @@
   "src": "source/raw/sitting-backdrop-rock.jpg (gemini-3-pro-image)",
   "made": "the Sitting's rock backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [87, 126, 1113, 895]), reduced x0.53 with Lanczos to 544x408, nothing else changed (pass 85)",
   "sha256": "500f8fcb67349d17927f79912cac5f51e7f76a26888c608fafd71761d6cd1858",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "sitting-backdrop-wood-544x408": {
   "size": [
@@ -9795,9 +9795,9 @@
   "src": "source/raw/sitting-backdrop-cave.jpg (gemini-3-pro-image)",
   "made": "the Sitting's cave backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [169, 249, 1031, 895]), reduced x0.631 with Lanczos to 544x408, nothing else changed (pass 85)",
   "sha256": "358e6b99f32cc0a122b968e35a86bb6ff805be411c62e86639c8de13f888ef99",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "pose-S01-shake-dry-96x96": {
   "size": [
@@ -9808,9 +9808,9 @@
   "src": "source/raw/pose-S01-shake-dry.jpg (gemini-3-pro-image)",
   "made": "the S01 pose picture, shake-dry: a Pro painting of the species' individual doing the habit, its ground keyed to `ground`, the creature fitted into the centred 80x80 (8 px clear), x0.093, never enlarged (pass 86)",
   "sha256": "b38b2512c77c8cb4f0af69d352a000f11536ac3dfb68cae46b5e1bfe3f8b9e64",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "status_note": "a Sitting master signed by the art director after the 1x composite"
  },
  "pose-S01-shake-dry-48x48": {
   "size": [
@@ -9888,7 +9888,7 @@
   "sha256": "76064401f6e1b92c1671179801390f8bff7895f031e743780b491f6b87950e9b",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S02-sniff-48x48": {
   "size": [
@@ -9901,7 +9901,7 @@
   "sha256": "953c4fba677856718d436605bf41de0f010a32b1b5c1d0d0e5bc956598d757bd",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S02-puff-96x96": {
   "size": [
@@ -9914,7 +9914,7 @@
   "sha256": "0d3a5dfd34e59a82e1782394d18cecafda66907d4897fac69ed1989ddd21f516",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S02-puff-48x48": {
   "size": [
@@ -9927,7 +9927,7 @@
   "sha256": "10f8e6982113c10fb8d287dadc378ed207924c306ddee94a1a950460c1415875",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S02-sleep-curled-96x96": {
   "size": [
@@ -9940,7 +9940,7 @@
   "sha256": "e4be65f9168c6858075aebdb11b3b34ebf7fd27b19f6b867d8bf858c0756e7c4",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S02-sleep-curled-48x48": {
   "size": [
@@ -9953,7 +9953,7 @@
   "sha256": "836ce46de4aab603489ae0dc01d6216ed5b41bb4d8c7bb4f37adf0c746c06cb1",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S03-dig-96x96": {
   "size": [
@@ -9966,7 +9966,7 @@
   "sha256": "a47d53eb6e2c0e01d0279e8cf015ef32960de92f0c6540c4ff2745cfe9007504",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S03-dig-48x48": {
   "size": [
@@ -9979,7 +9979,7 @@
   "sha256": "69dbe223791f54c816db671286e30f26f88727c3fc3153c4c1faca9967fe93e1",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S03-glow-96x96": {
   "size": [
@@ -9992,7 +9992,7 @@
   "sha256": "107d6a5e366fb4aa1ca2ca2b8d25120cd5e898cd641df615b99282867864ec67",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S03-glow-48x48": {
   "size": [
@@ -10005,7 +10005,7 @@
   "sha256": "5dddcca2e07098815d346796326039f2be194da671148c63caa85db412b46e27",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S03-sleep-curled-96x96": {
   "size": [
@@ -10018,7 +10018,7 @@
   "sha256": "01c72d0ae80e222fe67fe6e40e392eb2c792982490526b934bbe374bfde03052",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "pose-S03-sleep-curled-48x48": {
   "size": [
@@ -10031,6 +10031,6 @@
   "sha256": "9a3a66ebdf73e6a9e013b8d5b6c382da9fe6e9b743cb58f04e8f22a5a54277c9",
   "status": "placeholder",
   "signed_in": null,
-  "status_note": "pass 86: a Sitting pose picture of a species whose painting does not exist yet: its identity reference is the species' placeholder render; replace when the painting exists; the 48 is downsampled from the 96"
+  "status_note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  }
 }
