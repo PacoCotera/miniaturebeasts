@@ -53,7 +53,7 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 - Draw only what is known. Unknown parts stay frosted, never guessed. Art never changes genes.
 - Age reads from proportion and bearing. Elders are calm and dignified: eyes open, leaves held up.
 
-Every mibi wears its **standard look**: the cloud painting made at Grow over the Station's control passes and derived down to the Companion and the token, with the rig placeholder shown until its painting arrives. What is fixed is the **treatment** (the painting prompt's house rendering to this guide), the species pieces, the control contract and the test sets, not each individual. A **portrait**, earned by research and spent at a sitting, adds the scene, the full moving set, the postmark and the card; no person sees a player's painting or portrait before the player, so the pipeline's validation checks stand in for review there. The Companion's version of a creature is derived from the Station's painting, never hand-pixelled.
+Every mibi wears its **standard look**: the cloud painting made at Grow over the Station's control passes and derived down to the Companion and the token, with the rig placeholder shown until its painting arrives. What is reviewed is the **treatment** (the painting prompt's house rendering to this guide), the species pieces, the control contract and the test sets, not each individual. A **portrait**, earned by research and spent at a sitting, adds the scene, the full moving set, the postmark and the card; no person sees a player's painting or portrait before the player, so the pipeline's validation checks stand in for review there. A mibi's Companion picture, token and idle and walk frames are derived from its own Station painting, never painted small or made by hand for the individual; only the species pieces, such as the generic token for a silhouette not yet painted, are made by hand, once per species.
 
 ## Type and colour roles
 
@@ -87,9 +87,10 @@ The rules every screen, master and painting meets before it is shown. The looks 
 ### Masters
 
 - Every master starts from the screen's accepted concept candidate.
+- Station masters are painted; Companion masters are hand-pixelled on the 48 ramps and generated pixels never ship, except a mibi's own pictures (Mibi paintings, below).
 - Accepted assets are placed, never regenerated or redrawn: Pip, and the genome stamp from the stamp module.
 - A master comes as its layered source and its 1× exports, each with its hash.
-- A master holds no text and no figures. Each text slot fits the screen's strings at the guide's sizes (Station: Inter 16, 20 and 28 px; Companion: Mibi 7×9 at 2× and 3×) without clipping.
+- A master holds no text and no figures. Each text slot fits the screen's strings as [Station layouts](station-layouts.md) or [Companion screens](companion-screens.md) and the string table give them, at their longest, at the guide's sizes (Station: Inter 16, 20 and 28 px; Companion: Mibi 7×9 at 2× and 3×) without clipping.
 - A master gives one slice per state the screen draws. A state is its own slice; the build never recolours or tints art.
 
 ### Placed, never drawn
