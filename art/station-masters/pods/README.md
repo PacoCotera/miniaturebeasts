@@ -336,6 +336,12 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 20 - the pod's value restored, the pass 17 tail signed
+
+- The Tuikis pod went too dark in pass 19 (mean grey 92). The gamma on the shade and the shadow tint are removed: the pod's own shade layer shades it as painted, and the shell is back at the Loika's value, keeping the 18 percent desaturation (lagoon 60,159,165 after the desaturation, at its original value) and the ochre cap and ribs (176,128,44). Measured: the pod layer's mean grey is 115.5 (the Loika's own small pod is 111.2), and in the three composites the pod region reads 115.7 mean grey, at or above the label's 114.
+- `rail-emblem-legs-tail-{unread,read,sealed}-24x24`: restored exactly to the pass 17 version (tail-a cropped, prongs hanging), which the art director signs; the splayed tuft is rejected (eye-stalks at 1x). Hashes equal those of dfa324a. That ends the Legs & tail rounds. The splayed drawing stays in history in fdae42f.
+
+
 ## Pass 19 - the tuft splayed, placeholder cards, the Tuikis pod deepened
 
 - `rail-emblem-legs-tail`: the three prongs no longer hang. The curl is moved two pixels left to give the tip room, and the tuft is splayed up and out from the curl's end as three 2 px prongs (up-right, right, down-right) with the lit edge on the up prong; nothing else in the drawing changed. At 1x it reads as a bushy curl ending in a fan; the prongs are thin and a little like claws, not a soft brush.

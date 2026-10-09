@@ -16,12 +16,12 @@ def recol(cls, A, B, pattern, tint=(0.05, 0.20, 0.24)):
     the shadow side is tinted toward `tint` (a deep teal for the Tuikis) instead of going to black, the highlight kept."""
     L = lambda n: np.asarray(Image.open(f"slices/pod-{cls}-{n}.png").convert("RGBA")).astype(float) / 255
     sh = L("shade")[..., 0:1]; body = L("mask-body")[..., 3:4]; acc = L("mask-accent")[..., 3:4]; pat = L("pattern-" + pattern)[..., 3:4] if pattern else 0 * body
-    A = np.array(A) / 255; B = np.array(B) / 255; base = A * body * (1 - pat) + B * np.clip(acc + pat, 0, 1); f = np.clip(sh * 2, 0, 1.15) ** 1.6      # the shade's full range: the shadow side deepened (gamma), the highlight kept
-    col = base * f + np.array(tint) * np.clip(1 - f, 0, 1) ** 1.1 * 1.0 * (body + np.clip(acc + pat, 0, 1)).clip(0, 1)
+    A = np.array(A) / 255; B = np.array(B) / 255; base = A * body * (1 - pat) + B * np.clip(acc + pat, 0, 1); f = np.clip(sh * 2, 0, 1.0) * 1.0      # the pod's own shade layer, as it is (no remap)
+    col = base * f + np.array(tint) * np.clip(1 - f, 0, 1) ** 1.3 * 0.0 * (body + np.clip(acc + pat, 0, 1)).clip(0, 1)
     out = Image.fromarray((np.clip(col, 0, 1) * np.concatenate([np.ones_like(sh)] * 3, 2) * 255).astype(np.uint8), "RGBA") if False else Image.fromarray((np.concatenate([np.clip(col, 0, 1), L("shade")[..., 3:4]], 2) * 255).astype(np.uint8), "RGBA")
     for n in ("band", "crack"): out.alpha_composite(Image.open(f"slices/pod-{cls}-{n}.png").convert("RGBA"))
     return out
-TUIKIS = ((38, 98, 102), (176, 128, 44), "bands")      # S03: lagoon and marigold (its plates pattern is not painted; bands stand in)
+TUIKIS = ((60, 160, 165), (176, 128, 44), "bands")      # S03: lagoon and marigold (its plates pattern is not painted; bands stand in)
 def compose(traits, rail):
     cv = Image.new("RGBA", (1024, 600), (16, 26, 36, 255)); d = ImageDraw.Draw(cv)
     def put(n, x, y): cv.alpha_composite(S(n), (x, y))

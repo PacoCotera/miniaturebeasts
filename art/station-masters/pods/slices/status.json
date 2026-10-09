@@ -550,19 +550,19 @@
   "note": ""
  },
  "rail-emblem-legs-tail-unread-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Legs & tail as the tail alone, pipeline candidate tail-a (art director pick) redone from a tighter crop, hand-cleaned; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 20 (the pass 17 tail)",
+  "note": "Legs & tail: tail-a cropped, prongs hanging; the splayed tuft rejected; the rounds end here"
  },
  "rail-emblem-legs-tail-read-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Legs & tail as the tail alone, pipeline candidate tail-a (art director pick) redone from a tighter crop, hand-cleaned; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 20 (the pass 17 tail)",
+  "note": "Legs & tail: tail-a cropped, prongs hanging; the splayed tuft rejected; the rounds end here"
  },
  "rail-emblem-legs-tail-sealed-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "Legs & tail as the tail alone, pipeline candidate tail-a (art director pick) redone from a tighter crop, hand-cleaned; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 20 (the pass 17 tail)",
+  "note": "Legs & tail: tail-a cropped, prongs hanging; the splayed tuft rejected; the rounds end here"
  },
  "rail-emblem-movement-unread-24x24": {
   "status": "signed",
