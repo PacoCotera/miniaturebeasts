@@ -1249,11 +1249,9 @@
   "rail": {
    "edge": "bevel",
    "unreadFill": "panel",
-   "unreadEdge": "bevel",
    "unreadWord": "mist",
    "unreadPip": "mist",
    "readFill": "panel",
-   "readRim": "bevel",
    "readWord": "bone",
    "readPip": "bone",
    "openFill": "hairline",

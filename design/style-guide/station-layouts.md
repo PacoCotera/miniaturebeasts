@@ -164,7 +164,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 | Other mark | How it is drawn |
 | --- | --- |
 | Glint | A four-point star, 12×12, hanging 2 px under the tab's bottom edge, centred on it: (tab.x + 16 + w / 2 − 6, 82), clear of the word and the emblem |
-| Cleared while growing (Incubator) | A founder's bud: unread turns to read one tab at a time, in ring order, as the wait passes (k + 1) / (u + 1); its pips fill left to right over 1000 ms (the rail word's wipe, as on Pods, with no page). A cross bud: the chapters outside its known reads stay unread through the wait, Grow now and ready |
+| Cleared while growing (Incubator) | A founder's bud: unread turns to read one tab at a time, in ring order, as the wait passes (k + 1) / (u + 1); its pips fill left to right over 1000 ms (the rail word's wipe, as on Pods, with no page). A sealed chapter that is still shut never clears: its find stays a discovery. A cross bud: the chapters outside its known reads stay unread through the wait, Grow now and ready |
 | Trait states on Create | Filled pip: read. A 6×6 `bone` diamond, `pip-changed-6x6`: changed, never amber, since a change is not a need. A 6×6 `red` ✕ in place of the pip: clashes. The focused trait's pip lifted 2 px, y 69 to 75: the focused thing lifts, as everywhere; never a second ring round the pip |
 
 ### States shared by every screen
@@ -177,7 +177,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
   - Never a list cursor, a side bar or a second ring.
   - A focus with nothing to confirm still draws the ring. The bottom line then has no ✓ cap.
 - **Dimmed ✓.** When the player cannot pay, the ✓ cap and verb show in mist, and the price names what is short. The press is refused with a message plate. Nothing is spent.
-- **Glint.** The same four-point star, 12×12, everywhere: on the list ring's arc, on the rail tab and above the Home rack's well. It twinkles at 2 Hz, but a still frame still shows the star.
+- **Glint.** The same four-point star, 12×12, everywhere: on the collection ring's band, under the rail tab and above the Home rack's well. It twinkles at 2 Hz, but a still frame still shows the star.
 - **Clash** (Create): a 2 px `red` edge on the clashing roll picture's own rectangle, never a second ring; the trait line turns `red`, starts with the inline ✕ and says "Clash"; the trait's pip becomes a ✕. The ✓ cap is withheld and the notice says why. Marks never sit on the picture.
 - **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
 - **No words in a living window.** The vivarium, the Habitat window, the specimen chamber and the dome carry no text. Two exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting), and on Home the focused resident's name tag, under the creature, only while it is focused (the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
@@ -198,7 +198,7 @@ The LVGL face draws every screen from one closed set of words, one C module a wo
 - **Compositions, not words:** the **rest knob** (a chrome sprite on the living window's frame, with its focus target), the **with-you bed** (sprites inside the living window: the bed, then the sleeping mibi or the Companion mark) and the **report card** (a panel holding rows of type and 16 px icons). Each is used on Home alone, so none is a word. A second screen that needs one is not designed yet.
 - **Compositions on Create:** the **roll** (Create: the focused trait's pictures, one or three, with the ▲ ▼ notches; it registers the focus target `roll` at the chosen picture's rectangle) and the **trait line** (Create: the text word, with a changed tag built as Home's name tag is). Both are used on Create alone. The bud's leaves are the word `leaves` above.
 
-**The derived rules (closed).** Where a spec names a rule instead of a rectangle, the face calls the C function of that name, and `ui/specs/derive.mjs` holds the same rule as the oracle ([lvgl-switch.md §2.2 and §2.3](../proposals/lvgl-switch.md)): `railCompaction`, `slantTabs`, `pageGrid`, `platePosition`, `listPitch`, `splicePlan`, `guideColumns`, `pipGroups`, `leafArc`. A rule not in this list is refused when the spec loads; a screen that needs one lists it under [Not designed yet](#not-designed-yet), never improvises it. `leafArc`, the ninth, places the Incubator's leaves on two arcs from the slot tables in `incubator.json` ([the leaf arcs](#the-leaf-arcs)).
+**The derived rules (closed).** Where a spec names a rule instead of a rectangle, the face calls the C function of that name ([lvgl-switch.md §2.2 and §2.3](../proposals/lvgl-switch.md)): `railCompaction`, `slantTabs`, `pageGrid`, `platePosition`, `listPitch`, `splicePlan`, `guideColumns`, `pipGroups`, `leafArc`. Their JavaScript oracle is `ui/specs/derive.mjs` from L2.0, and `leafArc`'s from L2.4. Until then the spec tests hold them: `prototypes/ui/tests/specs.test.mjs` refuses any rule not in this list, and the JavaScript layout of today is in `ui/layout.mjs`, `ui/components/list.mjs`, `station/src/cross-layout.mjs` and `station/src/guide.mjs`. A rule not in this list is refused when the spec loads; a screen that needs one lists it under [Not designed yet](#not-designed-yet), never improvises it. `leafArc`, the ninth, places the Incubator's leaves on two arcs from the slot tables in `incubator.json` ([the leaf arcs](#the-leaf-arcs)).
 
 ### The two levels: species and mibi
 
@@ -397,7 +397,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 - **A new crate (A):** its pods sealed in their places.
 - **Compare.**
   - Entered from B, ✓ on a kin pod. The pod's room, the figure and the stamp hide. Two pages sit at (176, 112, 408, 440) and (600, 112, 408, 440).
-  - **Where the two pages go.** A Compare page is never narrower than 408 (three 120 px columns, two 8 px gaps, two 16 px insets). The two pages sit left of the pod when two pages and their 16 px gap (832 px) fit between x 16 (the list hidden) and 16 px before the dish (x 584). That space is 568 px, so they do not. Compare therefore lays its pages across the page area, from x 176 to 1008 (Compare's own pages): the left page exactly on Read's page, the right page over the pod stage and the stamp label, which hide with the list. Each heading carries its own pod at 32×40, so the two pods are still shown. The rule for any layout: left of the pod when (dish.x − 16) − 16 ≥ 2 × 408 + 16; otherwise across the page area, from x 176 to 1008.
+  - **Where the two pages go.** A Compare page is never narrower than 408 (three 120 px columns, two 8 px gaps, two 16 px insets). Two pages and their 16 px gap (832 px) do not fit left of the overview's dish (x 144), so Compare lays its pages across the page area, from x 176 to 1008 (`pods.json` `regions.compareA` and `compareB`), over the pod's room, the figure and the stamp, which hide. Each heading carries its own pod at 40×48, so the two pods are still shown. The rule for any layout: left of the pod when (dish.x − 16) − 16 ≥ 2 × 408 + 16; otherwise across the page area, from x 176 to 1008.
   - Each heading shows its pod at the 40×48 list class at (12, 4) on the page, centred where the 32×40 pod was, and its place picture 16×16 at (56, 20); the pod masters exist at 40×48 only.
   - The page grid is the same as Read, scaled to 408 px wide: two columns of 184 with an 8 px gap, pictures 184×104 for three or four traits; three columns of 120, pictures 120×96, for five or six.
   - One trait: one cell (16, 56, 376, 376), picture 376×264; two traits: cells (16, 56, 184, 376) and (208, 56, 184, 376), pictures 184×256. The rows sit at y 56 and 248 on the page, cells 184 tall, so the heading's 40 px pod clears the first row by 8 px.
@@ -417,7 +417,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | B | ✓ on the figure | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads "Library" (the tree), never back to Pods |
 | B | ✓ on the pod | Sealed: `✓ Identify · 1 ⚡`. Identified, read or not: `✓ Shape a founder` opens Create (nothing read: its [nothing-read state](#create)); dimmed, with the reason in the notice, when the incubator is busy or no bay is free. A chapter opens from the rail, ▲ then `✓ Open ‹Chapter›`. Identifying is enough to grow an unedited founder |
 | B | ✓ on a tab | `✓ Open Coat`, with no price: opening a chapter is free. The read and its price are on the page (C), where ✓ reads, and the price is on the bottom line while the open tab has the focus there. So no price shows on a tab, and none shows for an action that costs nothing |
-| B | ✓ on a kin pod | `✓ Compare · free` |
+| B | ✓ on a kin pod | `✓ Compare` (free, so no price) |
 | B | ✓ ✓ on the hatch | Return to the wild: the first ✓ arms, `✓ Again: return it   +1 ❀`, with the message plate "Back to the ‹place›? ✓ again"; the second returns the pod; any other key disarms |
 | B | ← | Back to A, the ring on this pod: the way back reads "← Pods" |
 | C | ◀ ▶ | Step the chapters; the page turns in 200 ms. A sealed chapter: no ✓ cap, the context "Coat is sealed" |
@@ -464,13 +464,14 @@ Six examples:
 
 Unidentified pod, same pattern with the creature unnamed: "Found on the rock field," / "as a creature felt safe."; "Found at the pond edge," / "as a creature curled up."; "Found in the wood," / "it lay buried.".
 
-**The bottom line,** its three slots. Each is a label or a sentence that stands alone; the separators between slots are the hairlines already there, and inside a slot a gap, never "·". The symbols stay (✓, ←, ⚡ ◆ ❀).
+**The bottom line,** its four zones ([The frame](#the-frame)). Each is a label or a sentence that stands alone; the separators between slots are the hairlines already there, and inside a slot a gap, never "·". The symbols stay (✓, ←, ⚡ ◆ ❀).
 
 | Slot | Pattern | Rules | Examples |
 | --- | --- | --- | --- |
-| Left (action) | `✓ ‹Verb› ‹object›`, then the price as number and icon, then `← ‹where›` | Three groups with a 24 px gap between them, no dot. The price shows only when there is one; "free" and "half" are not shown (a half price is the lower number) | `✓ Identify   1 ⚡   ← Home`; `✓ Read Coat   3 ◆   ← Home`; `✓ Shape a founder   ← Home`; `✓ Return to the wild   +1 ❀   ← Home` |
+| Left (action) | `✓ ‹Verb› ‹object›`, then the price as number and icon | Two groups with a 24 px gap between them, no dot. The price shows only when there is one; "free" and "half" are not shown (a half price is the lower number) | `✓ Identify   1 ⚡`; `✓ Read Coat   3 ◆`; `✓ Shape a founder`; `✓ Compare`; `✓ Return to the wild   +1 ❀` |
 | Centre (subject) | A short sentence on the focused thing: "‹Name› is ‹state›", at most 24 characters, no "·" | States: unread, partly read, fully read; a chapter: unread, read, sealed. May end in "…" | Unknown pod: "sealed until identified". Identified, nothing read: "Loika is unread". After a read bought: "Coat is read" on the tab, "Loika is partly read" on the pod. Hatch: "Back to the rock field". Empty: "the rack is empty" |
 | Right (need) | One amber sentence of six words or fewer, only what this screen cannot show; empty when nothing waits (no text and no hairline) | No counts, no "·", no "needs 3 ◆": "needs more ⚡" | Glint on the focused tab: "something new here". Glint elsewhere on the pod: "something new waits". Nothing new: empty. Short of Energy: "needs more ⚡". Empty rack: "dock the Companion for its crates" |
+| Right edge (way back) | `← ‹where›`, in its own zone (frame.json `regions.back`) | One word, from pods.json `strings.wayBack` | Collection: `← Home`. Overview: `← Pods`. Chapter page and Compare: `← Loika`; a name that does not fit: `← Back` |
 
 ### Placeholders on Pods (rendered at these sizes)
 
@@ -481,7 +482,7 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 | Cone of light | 240×320 | The bench's light master |
 | Kin pod (B) | 40×48, the list class; Home's rack keeps the 32×40 well pod | The same |
 | Chapter emblem | 24×24, drawn at 24, never enlarged | The chapter rail master |
-| Trait pictures | 224×352, 224×160, 104×160, 104×96, 104×64 by trait count; Compare 376×264, 184×256, 184×104, 120×96 | The painting's close-ups. **Re-cut rule:** the content (the creature or its part) inside the centred 75% of the picture (96×120 of 128×160), its ground keyed to the cell's `ground`; reduced from the painting, never enlarged. The S09 Head and Tail crops are re-cut to it |
+| Trait pictures | 128×160 on the chapter page, at every trait count; Compare 376×264, 184×256, 184×104, 120×96 | The painting's close-ups. **Re-cut rule:** the content (the creature or its part) inside the centred 75% of the picture (96×120 of 128×160), its ground keyed to the cell's `ground`; reduced from the painting, never enlarged. The S09 Head and Tail crops are re-cut to it |
 | Line glyphs | `mark-line-seed-12x16`, `mark-line-seed-pair-20x16`, `mark-line-only-16x8` | **New masters for the studio**, painted at these sizes on the name line's dark ground, art layer, never scaled from the large seed: the seed with its ghost; two seeds overlapping as one glyph; the base as a small glyph. Until then, scale-downs shown as stand-ins. `mark-asleep-24x16`, `mark-breed-28x16` and `frame-lamp-12-amber` are signed and placed 1:1 |
 | Compare's difference mark | `frame-lamp-12-amber`, 12×12, before the name | The existing lamp master; no new cut |
 | Page pane | none on the chapter page; `page-pane-256x440` only on Compare | Not drawn: `trait-picture-frame-*`, `trait-picture-standin-*` or the word "stand-in" |
@@ -1203,8 +1204,8 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 **States:**
 
 - **Empty** (an invitation): the standby light on the lit, plump nest, the clean glass, the foot light, the plaque "empty" in `fog`; no rail, leaves, stamp or code; the context "ready for a new bud". `✓ Choose a pod` when the rack holds a pod and a bay is free: a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod. Otherwise no ✓ cap. No notice, but "no bay free" when no bay is free, the one need that stops a bud.
-- **Growing:** no ring; the leaves filling; the plaque "growing"; `✓ Grow now · ❀ 7` (❀ 1 for every 2 minutes left, rounded up: at most 19, the first bud 3), the frame's dimmed cap when short; the context "a Loika bud" (a cross: "Fig and Moss's bud", falling back to "a Loika bud" past 208 px). A founder's tabs clear across the wait; a cross bud's chapters outside its known reads stay unread through the wait, Grow now and ready.
-- **Ready:** every leaf full, the dome glowing, the shape in the bud, the plaque "ready", `✓ Open`; a founder's bud has every chapter known (founders only). No bay free is a guard only (Grow already checked it): the dimmed cap, the plate "No bay free. Return a mibi to the wild first." and the notice. While the painting is on its way, the waiting lamp on the base.
+- **Growing:** no ring; the leaves filling; the plaque "growing"; `✓ Grow now · ❀ 7` (❀ 1 for every 2 minutes left, rounded up: at most 19, the first bud 3), the frame's dimmed cap when short; the context "a Loika bud" (a cross: "Fig and Moss's bud", falling back to "a Loika bud" past 208 px). A founder's tabs clear across the wait, except a sealed chapter that is still shut; a cross bud's chapters outside its known reads stay unread through the wait, Grow now and ready.
+- **Ready:** every leaf full, the dome glowing, the shape in the bud, the plaque "ready", `✓ Open`; a founder's bud has every chapter known except a sealed chapter that is still shut; a cross bud keeps its unread chapters. No bay free is a guard only (Grow already checked it): the dimmed cap, the plate "No bay free. Return a mibi to the wild first." and the notice. While the painting is on its way, the waiting lamp on the base.
 - **Hatch** (a held state): the event below; the context "its painting is on its way" (offline "waiting for the cloud") while it has not landed. Afterwards the Incubator is empty.
 
 ### 6. Interactions
@@ -1228,7 +1229,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 
 - **Slots.** Each arc has 2 × perArc − 1 = 39 half-pitch places from −76° to +76° in 4° steps, stored as the 16×20 leaf box's top left: (Math.round(512 + r sin a) − 8, Math.round(344 − r cos a) − 10) for the angle a, r 216 (inner) and 244 (outer). The face does no trigonometry: the tables are data, and `specs.test.mjs` rebuilds them from the centre, the arcs, the span and the half pitch.
 - **Runs.** n leaves, refused when n > 2 × perArc (40): the inner arc holds a = min(n, 20), the outer b = n − a. On an arc holding k leaves, leaf j (0 to k − 1, left to right) takes slot 20 − k + 2j, so every run is centred on the top (five leaves make a crown, as on the concept plate). Fill order: the inner arc left to right, then the outer.
-- **The oracle** is `ui/specs/derive.mjs` `leafArc(region, n)`, returning the n boxes [x, y, 16, 20] in fill order, written at L2.4; `specs.test.mjs` checks it for every n from 1 to 40 once it exists.
+- **The oracle** is `ui/specs/derive.mjs` `leafArc(region, n)` from L2.4, returning the n boxes [x, y, 16, 20] in fill order. Until then `specs.test.mjs` holds the rule's slot tables (above), and its check of every run from 1 to 40 is skipped until the oracle exists.
 - **Fill.** `props.leaves`: `total` (the bud's minutes), `full` (whole minutes passed) and `rows` (0 to 19, the current leaf's filled rows from its foot), stepped every 3 s by the view. A still frame and reduced motion both show the true wait; no event plays the fill.
 
 ### The Incubator's events, the hatch and the hand-off
@@ -1236,7 +1237,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | Event | Hold | What plays |
 | --- | --- | --- |
 | `wipe` (1000 ms), a tab clearing | no | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
-| `growNow` (400 ms) | yes | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut) and the stamp redraws; the state is ready |
+| `growNow` (400 ms) | yes | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
 | `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the glass lifts 384 px, eased, whole pixels, out of sight under the rail. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to Habitat |
 
 **The hand-off.** The hatch ends on Habitat in its meet, which Habitat's L2.5 spec sets. This spec fixes only what the hand-off needs: the new mibi shown at 304×312, the box the juvenile stood in, with the ring on it, and Open as a jump, so ← on Habitat reads Home (stack navigation, `frame.json` `navigation.jumps`). With `motion: false` the hatch jumps to its end, Habitat's meet.
@@ -1432,7 +1433,7 @@ The open book fills the stage. Each page holds a 4 × 2 grid of frames with a 16
 | Frame row 2 | y 296, 96×112 | Clan rule at y 284; name at y 416; caption rule at y 440 |
 | **Found plate (focal)** | inside the frame, 8 px mat: 80×96 | Rendered or downsampled to 80×96; never enlarged |
 | Met study | 80×96 | Grey pencil line |
-| Focus | frame outset 4 with the 6 px radius: 104×120 | Thin rounded rectangle in the `focus` role; the frame lifts 2 px |
+| Focus | frame outset 4 with the 6 px radius: 104×120 | Thin rounded rectangle in `rust`, the ring on paper (frame.json `focus.ring.onPaper`); the frame lifts 2 px |
 | Margin life | 40, 464, 448, 72 and 536, 464, 400, 72 | Never over a frame or a caption |
 | Cloth marker | 500, 48, 24, 264 | Over the gutter |
 | Page-turn corner | 968, 512, 24, 24 | Shown only when another spread exists |
@@ -1799,7 +1800,7 @@ Rendered at their size, not masters: the parents' portraits and the ghost (48×4
   - more looks in a trait than its row holds.
 - A master whose silhouette needs a different focal box, or any focal box shrinking below its listed size (300×310 where the guide asks).
 - Any change to the reading order, or a second warm or bright object competing with the specimen.
-- Screens not covered here: Dock and arrival beyond its Home state, the Probe bench, Idle, Cross, Sitting.
+- Screens not covered here: the Probe bench and Sitting.
 
 ---
 
