@@ -36,8 +36,9 @@
 <text x="516" y="372" font-size="9" fill="#c45f12">sleeping mibi</text>
 <text x="516" y="383" font-size="9" fill="#c45f12">512,360 144×152</text>
 <rect x="632.5" y="360.5" width="23" height="15" fill="#f2f2f2" stroke="#c45f12" stroke-width="1"/>
-<rect x="624.5" y="544.5" width="31" height="7" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
-<text x="620" y="540" font-size="9" fill="#777" text-anchor="end">knob 624,544 32×8</text>
+<rect x="624.5" y="544.5" width="31" height="7" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+<rect x="624.5" y="546.5" width="31" height="5" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+<text x="620" y="540" font-size="9" fill="#777" text-anchor="end">knob 32×6 at 624,546 (region 624,544 32×8)</text>
 <rect x="688.5" y="48.5" width="319" height="119" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <text x="704" y="71" font-size="12" fill="#555">Bay</text>
 <text x="976" y="71" font-size="9" fill="#777" text-anchor="end">688,48 320×120</text>

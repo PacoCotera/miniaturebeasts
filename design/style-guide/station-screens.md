@@ -77,10 +77,10 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Instrument.** The right third, four stacked modules, each with a status lamp and a few-word readout: the sample bay (crates behind a door), the pod rack (six wells, shells in place colours, a star where one glints), the incubation chamber (a dome and its ring of leaves), the Probe dock (the Probe and its Shield plates).
 - **Composition.** The vivarium's glass sits in a thin bezel; the modules align to one column with 8 px gaps. Nothing overlaps the vivarium.
 - **Lively / quiet.** Lively: residents, plants, water, the embryo's glow. Quiet: the modules; one lamp pulses slowly when its module needs you.
-- **Light.** Warm daylight inside the vivarium from the top left; even cool light on the chrome.
+- **Light.** Inside the vivarium, the same light as Idle: the warm key light from the top left, by the time of day; even cool light on the chrome (*the art director, 2026-10-09 12:40*: was "warm daylight").
 - **Palette.** Deep blue-teal chrome; the vivarium's greens and warm earth; amber only on the lamp that needs you.
 - **Type.** 3× screen name; 2× readouts, three words or fewer each.
-- **Chrome.** `✓ Look at Bean`, no ← on Home (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← the room`) | `Bean · Untuva · adult` | `an Untuva pod waits · needs 2 ❀`.
+- **Chrome.** `✓ Look at Bean`, no ← on Home (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← the room`) | `Bean · Untuva · adult` (*the UI designer, 2026-10-09*: now "an adult Untuva"; the name is on the tag under the resident, the owner's decision of 2026-10-07) | `an Untuva pod waits · needs 2 ❀`.
 - **Motion.** Residents move smoothly at the panel's rate; module doors and lamps move only on events.
 
 **Pass when**
@@ -454,7 +454,7 @@ No wireframe; the layout reference is the sketch in the [Station screens proposa
 - **Instrument.** Reduced to one status line on a thin cool strip at the foot ("Companion away · with Dot · an embryo is growing") and nothing else.
 - **Composition.** The vivarium edge to edge; the strip 32 px.
 - **Lively / quiet.** Lively: everything in the vivarium. Quiet: the strip.
-- **Light.** Daylight to dusk to night in the vivarium; at night a soft cool moonlight and the residents' own glows.
+- **Light.** Day to dusk to night in the vivarium, always the warm key light from the top left; at night warm and low (the glow-moss and the residents' own glows), the moon only a cool rim; mean L* 30 or more at night, mean red at least mean blue in every light; Home's glass shows the same light (*the art director, 2026-10-09 12:40*: was "at night a soft cool moonlight").
 - **Palette.** The vivarium's; the strip in chrome.
 - **Type.** 2× status.
 - **Chrome.** None. The first press only wakes; nothing else happens, and waking never rewards (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "any press wakes and does what it says").

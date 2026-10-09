@@ -182,7 +182,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 - **Glint.** The same four-point star, 12×12, everywhere: on the list ring's arc, on the rail tab and above the Home rack's well. It twinkles at 2 Hz, but a still frame still shows the star.
 - **Clash** (Create): a 2 px red ring around the clashing roll picture and a 12×12 ✕ at its top right; the trait's pip becomes a ✕; the trait line turns red and says "Clash". The ✓ cap is withheld.
 - **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
-- **No words in a living window.** The vivarium, the Habitat window, the specimen chamber and the dome carry no text. The only exception is an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting).
+- **No words in a living window.** The vivarium, the Habitat window, the specimen chamber and the dome carry no text. Two exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting), and on Home the focused resident's name tag, under the creature, only while it is focused (the owner's decision of 2026-10-07, in force: the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
 
 ### Never upscaled
 
@@ -550,6 +550,7 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 | **The vivarium** (the living window) with the residents | The collection alive; the reason the device is on |
 | **The with-you bed** | Shows where the mibi with you is: here or out with the Companion |
 | **Four modules**, each one word, a lamp and its object: Bay (crates), Rack (six wells), Incubator (dome and leaves), Probe (Probe, Shield plates, the sitting slot) | The instrument's state, read by shape; an amber lamp marks the one that needs you |
+| **Name tag** (only while a resident is focused) | Which mibi this is, in context, under the creature; the chrome stays system information only (owner, 2026-10-07) |
 | **Rest knob** | The deliberate way to put the Station on its living view, Idle, to stay on all day |
 | **Bottom line** | What needs you, in words, at the right; what ✓ does with the current focus |
 
@@ -559,7 +560,7 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 - The wooden bay door, the felt strip and the lamp on its stand (never a cottage).
 - The words written inside the vivarium ("Dot is out with you"). The bed's Companion mark and the bottom line say this.
 - The plate's module names become one word each: Bay, Rack, Incubator, Probe.
-- The name label inside the window goes. The window carries no words, and the focused resident's name is the bottom line's subject.
+- The build's free-floating name label goes. In its place, the **name tag**: the focused resident's name on a small `panel` tag under it, inside the window, only while it is focused (the owner's decision of 2026-10-07, in force; *corrected by the UI designer, 2026-10-09, on the art director's return of 12:40*: was "the window carries no words, and the focused resident's name is the bottom line's subject").
 
 ### 3. Placement
 
@@ -575,7 +576,7 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 ### 4. Art direction
 
 - **Rooms:** the overview (the frame and modules are industrial, plasticky hardware) holding the vivarium (cozy, alive).
-- **The vivarium is the only warm light,** daylight from the top left. The modules are cool enamel and slate, evenly lit.
+- **The vivarium is the only warm light,** the same light as Idle: day, dusk and night all keep the warm key light from the top left. At night the light is warm and low (the glow-moss and the residents' own glows), and the moon is only a cool rim. The glass's mean L* is 30 or more at night, and its mean red is at least its mean blue in every light. Home's glass and Idle always show the same light (art director, 2026-10-09 12:40); was "at night a soft cool moonlight". The modules are cool enamel and slate, evenly lit.
 - **Nothing overlaps the vivarium.** No wood, felt, shelves or lamp-lit bench.
 - **Residents** are the matched rich treatment, or the placeholder with its waiting lamp until their painting lands, and never enlarged tokens.
 
@@ -594,6 +595,7 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 | Probe | Cradle `metal`; Shield plates whole `white`, gone `bevel` outline; sitting slot empty a 1 px `hairline` outline, held a gilt frame in `gold` lit `yellow` | Whole plates read as white, the kit's role |
 | With-you bed (placeholder until the Home master) | A low nest: rim `bark`, hollow `soil`, lit rim top left `sand`; the Companion mark 16×24 in `mist` | Inside the warm field; the mark is in context grey because it says "away" |
 | Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role (cool, never a word) |
+| Name tag | `panel` fill, 1 px `hairline` edge, the name 16 px `bone` | The kit's small plate, quiet on the warm field; the only word the window holds outside an event (art director, 2026-10-09 12:40) |
 | Rest knob | `enamel`, lit top row `frost`, shade bottom row `bevel` | One step lighter than the bezel it sits on, so it reads as a part |
 | Ribbon | Fill `tealD`, 1 px rim `aqua`, words `bone` | The one ribbon look, as on Pods (the read tab's cool look); cool on the warm field so it reads as an event, not part of the scene |
 | Report card | `panel` fill, `hairline` edge, `bevel` top, drop shadow `void` at (+2, +3); heading and lines `bone`, row leads and context `mist`, figures `bone`, bullets `bevel` | An instrument readout, the overview's hardware (*the build's paper card was the Library's material*) |
@@ -612,7 +614,8 @@ The vivarium's glass fills the left (16 to 672) in a thin bezel. The four module
 | With-you bed | 520, 472, 128, 56 | The mibi with you sleeps here when docked; a 16×24 Companion mark at (576, 488) when away |
 | **The sleeping mibi** (docked) | adult or elder 512, 360, 144, 152; juvenile 532, 400, 104, 112 | The resident's own painting in its nap pose, in the same box as a resident of its stage, bottom-centred on the bed's hollow at (584, 512), 16 px above the bed's foot. It is never the 48 px Companion token (a pixel token beside painted residents would read as another creature, and Residents are never tokens). The adult overhangs the 128 px bed by 8 px each side, inside the glass. It is a focus target like a resident (the ellipse under its feet, `✓ Look at ‹name›`) but does not lift: it is asleep. The 24×16 asleep mark sits at its box's top right; the waiting lamp, when shown, 8 px to the mark's left. The juvenile's x sits 4 px off the grid, as the medium pod's does (*decided by the UI designer, 2026-10-08, for the builder's open question*: the document gave no size; the build drew the nest with only the asleep mark) |
 | Waiting lamp | 12×12 at the resident's top right | Until its painting lands |
-| Rest knob | 624, 544, 32, 8 | On the bezel's bottom rail. Focus target 48×24 around it |
+| **Name tag** (focused resident only) | 24 tall; the name's width + 16, rounded up to the 8 px grid, at least 48; centred under the resident; its top at feet + 24, 8 px below the ring's ellipse (feet − 8 to feet + 16) | The name only, 16 px `bone`, centred; on the `panel` tag with a `hairline` edge. If its bottom would pass y 536, it sits above the resident instead, its bottom 8 px above the box as drawn (lifted): top = box.y − 4 − 32. It slides sideways to stay 8 px inside the glass (x 32 to 656). It does not lift. On the sleeping mibi (foot 512) it is always above: (…, 328, …, 24) for the adult. The bottom line's context then names the species and stage without the name, "an adult Untuva" (*UI designer, 2026-10-09*); the action keeps it, `✓ Look at Bean` |
+| Rest knob | 624, 544, 32, 8 | On the bezel's bottom rail (y 544 to 552). Drawn 32×6: at rest at (624, 546), lifted to (624, 544), so it never covers the glass, whose last row is 543 (art director, 2026-10-09 12:40). Focus target 48×24 around it |
 | Module: Bay | 688, 48, 320, 120 | Word at (704, 60), 16 px; lamp 12×12 at (984, 60); door and crates 704, 84, 288, 72, with up to three crates of 80×56 on a 96 px pitch |
 | Module: Rack | 688, 176, 320, 120 | Lamp at (984, 188); six wells of 40×40 at (712 + 48i, 224); in each, the signed 32×40 well pod, 1:1, at (712 + 48i + 4, 224): it fills the well's height, so centred and bottom-aligned are the same place, the stem on the well's top row and the shell's foot on its floor (y 263), 4 px clear either side (*decided by the UI designer, 2026-10-08: was "pods 24×32 in them"; the signed well pod is 32×40 and is never scaled*); a glint star 12×12 above its well at y 212, centred on it at x 712 + 48i + 14, 8 px clear of the word's baseline (y 204) as on the Bay (*corrected by the UI designer, 2026-10-09, on the art director's ruling of 12:25: the objects 8 px clear of the module's word*: was wells and pods at y 216, the star at y 204 on the word's baseline*) |
 | Module: Incubator | 688, 304, 320, 120 | Lamp at (984, 316); dome 704, 336, 80, 80 with the bud's glow; leaves 800, 352, 192, 40 (8×12 each on a 12 px pitch, two rows of 16) (*corrected by the UI designer, 2026-10-09, on the art director's ruling of 12:25: the objects 8 px clear of the module's word*: was dome 704, 328 and leaves 800, 344; the word's 20 px line box ran to y 336, over the dome*) |
@@ -624,9 +627,10 @@ The vivarium's glass fills the left (16 to 672) in a thin bezel. The four module
 | --- | --- | --- | --- | --- |
 | `bezel` | 16, 48, 656, 504 | living window, part frame | | — |
 | `glass` | 24, 56, 640, 488 | living window, part inside | | — |
-| `resident` | 144×152 or 104×112, where the face steps it inside the ground band (24, 300, 640, 228) | living window, part residents (clipped to the glass) | | walking; facing the column during the arrival; focused (4 px lift, ellipse) |
+| `resident` | 144×152 or 104×112, where the face steps it inside the ground band (24, 300, 640, 228) | living window, part residents (clipped to the glass) | | walking; facing the column during the arrival; focused (4 px lift, ellipse). Drawn in order of the feet's y, lower in front, left first on a tie; the bed and its sleeper sort as one at the bed's foot, y 528 (art director, 2026-10-09 12:40) |
+| `nameTag` | under (or over) the focused resident, as above | panel and text, build `nameTag` (clipped to the glass) | | only while a resident is focused |
 | `bed` | 520, 472, 128, 56 (sleeper 512, 360, 144, 152 or 532, 400, 104, 112) | build `withYouBed` | | docked: the sleeping mibi; away: the Companion mark 16×24 at (576, 488); none: the nest alone |
-| `knob` | 624, 544, 32, 8 | build `restKnob` | | rest; focused: lifted to (624, 542), ring (616, 534, 48, 24); pressed: the rest event |
+| `knob` | 624, 544, 32, 8 (drawn 32×6) | build `restKnob` | | rest: drawn at (624, 546); focused: lifted to (624, 544), ring (616, 534, 48, 24); pressed: the rest event |
 | `bay` | 688, 48, 320, 120 | panel, build `module` | | away: door shut, lamp off; docked: door open, crates at (712 + 96i, 92, 80, 56), lamp amber while crates wait; arrival: lifted 2 px, beam (712 + 96i, 84, 80, 72) behind the opening crate; report: settled, empty |
 | `rack` | 688, 176, 320, 120 | panel, build `module` | | a well shows empty until its travelling pod lands |
 | `incubator` | 688, 304, 320, 120 | panel, build `module` | | — |
@@ -695,9 +699,9 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 
 | State | Knob | Ring | Bottom line |
 | --- | --- | --- | --- |
-| Rest | 624, 544, 32, 8 | none | as the focus elsewhere says |
-| Focused (▼ from Probe, or ▶ from a resident whose row is nearest it) | lifted 2 px over 200 ms: 624, 542, 32, 8 | round, on its 48×24 target, riding the lift: 616, 534, 48, 24 | `✓ Rest` \| "the vivarium plays alone" \| the notice as on the room; no ← |
-| Pressed (✓) | settles back to 624, 544 over 200 ms; the ring goes | none | — |
+| Rest | drawn 32×6 at 624, 546 | none | as the focus elsewhere says |
+| Focused (▼ from Probe, or ▶ from a resident whose row is nearest it) | lifted 2 px over 200 ms: 624, 544, 32, 6 | round, on its 48×24 target, riding the lift: 616, 534, 48, 24 | `✓ Rest` \| "the vivarium plays alone" \| the notice as on the room; no ← |
+| Pressed (✓) | settles back to 624, 546 over 200 ms; the ring goes | none | — |
 
 Then the screen transition (180 ms, the 16-level Bayer dither) takes the screen to [Idle](#idle). Input is held for the 380 ms. The ring sits on the 48×24 target itself, 8 px outside the knob, rather than 4 px outside the target: at 4 px outside its bottom would reach y 564, over the bottom line's rule at 562; lifted, it ends at 558. The knob cannot be reached during the arrival.
 
@@ -709,16 +713,17 @@ Then the screen transition (180 ms, the 16-level Bayer dither) takes the screen 
 | Residents | 144×152 adult, 104×112 juvenile |
 | Crates | 80×56 |
 | Pods in the rack | 32×40, the signed well pod (*was 24×32*) |
-| Dome | 80×80 |
+| Dome | 80×80; the slice and its placeholder keep rows 0 to 3 empty, first ink at y 340 (`domeInkTop` 4) (art director, 2026-10-09 12:40) |
 | Leaves | 8×12 |
-| Probe | 128×80 |
+| Probe in its cradle | 128×80; the slice and its placeholder keep rows 0 to 3 empty, first ink at y 468 (`cradleInkTop` 4) (art director, 2026-10-09 12:40) |
 | Shield plates | 16×32 (*decided by the UI designer, 2026-10-08, for the builder's open question*: was 28×12) |
 | Sitting frame | 40×80 |
 | Lamps | 12×12 |
-| With-you bed | 128×56 |
+| With-you bed | 128×56, a placeholder nest: the Home master paints the concept's shallow glass dish (about 160×80 at 566, 405), and the bed, the sleeper's foot and the mark are re-measured from it when it lands |
 | Companion mark (on the bed, while away) | 16×24 |
 | Sleeping mibi (on the bed, docked) | the resident's box of its stage, 144×152 or 104×112, in its nap pose |
-| Rest knob | 32×8 |
+| Rest knob | 32×6 drawn, in its 32×8 region |
+| Name tag | 24 tall, by the name |
 
 All stand-ins until the Home and bench masters.
 
@@ -863,14 +868,14 @@ A view the Station can show permanently: the vivarium, something alive and worth
 
 ### 4. Art direction
 
-The vivarium only: the warm field fills the screen, its light following the time of day (day, dusk, night, a master per light), never dimmed or darkened for being idle; at night a soft cool moonlight and the residents' own glows. The strip is chrome, cool and quiet: `ground` with a 1 px `void` rule on its top edge, the line in `mist`. Nothing blinks; the waiting lamp may still show on a resident, steady. Until the master, the placeholder is Home's plate at Idle's size: back `forest`, ground band `clay` with a `sand` top row, the foot `soil`.
+The vivarium only: the warm field fills the screen, its light following the time of day (day, dusk, night, a master per light), never dimmed or darkened for being idle: day, dusk and night all keep the warm key light from the top left. At night the light is warm and low (the glow-moss and the residents' own glows), and the moon is only a cool rim. The glass's mean L* is 30 or more at night, and its mean red is at least its mean blue in every light. Home's glass and Idle always show the same light (art director, 2026-10-09 12:40); was "at night a soft cool moonlight". The strip is chrome, cool and quiet: `ground` with a 1 px `void` rule on its top edge, the line in `mist`. Nothing blinks; the waiting lamp may still show on a resident, steady. Until the master, the placeholder is Home's plate at Idle's size: back `forest`, ground band `clay` with a `sand` top row, the foot `soil`.
 
 ### 5. Composition
 
 | Region (`frame.json` `idle`) | Rectangle | Word or build | Notes |
 | --- | --- | --- | --- |
 | `vivarium` | 0, 0, 1024, 568 | living window, part inside, no frame | Ground band 0, 320, 1024, 232; the foot 0, 552, 1024, 16 |
-| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, part residents | Walking inside 16, 320, 992, 232 (feet in the band, 16 px from each screen edge); no lift, no ring; the waiting lamp 12×12 at the box's top right |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, part residents | Walking inside 16, 320, 992, 232 (feet in the band, 16 px from each screen edge); no lift, no ring, no name tag; the waiting lamp 12×12 at the box's top right. Drawn in order of the feet's y, lower in front, left first on a tie; the bed and its sleeper sort as one at the bed's foot, y 552 (art director, 2026-10-09 12:40) |
 | `bed` | 872, 496, 128, 56 | build `withYouBed` | The sleeping mibi bottom-centred on (936, 536): adult 864, 384, 144, 152; juvenile 884, 424, 104, 112. Away: the Companion mark 16×24 at (928, 512) |
 | `strip` | 0, 568, 1024, 32 | panel, build `idleLine` | 1 px `void` rule on its top edge |
 | `line` | 16, 568, 992, 32 | text, in build `idleLine` | 16 px regular, `mist`, centred on x 512 and on y 584; one line, six words or fewer, no digits |
