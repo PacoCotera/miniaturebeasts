@@ -57,12 +57,12 @@ function prosePart(line) {
 
 export function checkProcess(file, line) {
   const text = prosePart(line), hits = [];
-  for (const re of compiled["process-label"].patterns) for (const h of matches(re, text)) hits.push({ rule: "process-label", text: h.text });
+  for (const re of compiled["process-label"].patterns) for (const h of matches(re, text)) if (!allowed(file, "process-label", line, h)) hits.push({ rule: "process-label", text: h.text });
   for (const h of matches(plDate, text)) {
     // skip a date that is part of an image or file name (a token with an extension or a path)
     const start = text.lastIndexOf(" ", h.index) + 1, endSp = text.indexOf(" ", h.index), token = text.slice(start, endSp < 0 ? text.length : endSp);
     if (/[\w-]\.[A-Za-z0-9]{1,5}\b/.test(token.slice(token.indexOf(h.text))) || token.includes("/")) continue;
-    hits.push({ rule: "process-label", text: h.text });
+    if (!allowed(file, "process-label", line, h)) hits.push({ rule: "process-label", text: h.text });
   }
   return hits;
 }
@@ -296,6 +296,7 @@ function selfTest() {
   ok(fencedLines("a\n```\nthe owner\n```\nb").has(3) && !fencedLines("a\n```\nx\n```\nb").has(5), "fenced lines");
   ok(processDoc("design/proposals/x.md") && processDoc("README.md") && processDoc("ROADMAP.md") && !processDoc("design/docs-standard.md") && !processDoc("art/x/README.md") && !processDoc("design/x.txt"), "process-label paths");
   ok(!processDoc("design/proposals/x.md", true), "process-label tree mode only under its path list");
+  ok(checkProcess("design/proposals/species-names.md", '| Aulaka | 6 | None. Queries "Aulaka" creature, character, game, brand, genus (2026-10-09): no creature | clear |').length === 0, "process-label honours the allowlist");
   covered.add("process-label");
   ok(checkMessage("Fix\n\nCo-Authored-By: someone").length === 1 && checkMessage("Fix the guard").length === 0, "commit trailers");
   for (const r of RULES.rules) ok(covered.has(r.id), `no fixture for ${r.id}`);

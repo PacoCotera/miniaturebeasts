@@ -383,6 +383,12 @@
    "value": "US$750",
    "rule": "cost-prose",
    "reason": "the kit's retail target, public product information (owner, 2026-10-09 13:21)"
+  },
+  {
+   "path": "design/proposals/species-names.md",
+   "value": "genus (2026-10-09)",
+   "rule": "process-label",
+   "reason": "the date a name clearance search was run, a record not a decision label"
   }
  ],
  "commitTrailers": [
