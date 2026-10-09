@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Create, shaping: the ring on the chosen roll picture, a changed trait, 1024×600 at 1×, measured. Layout only, no art.</title>
+<title>Create, the grow event at 600 ms: the stamp printed, the code on the rule, the pod travelling behind the chamber into the dome, input held 1080 ms, 1024×600 at 1×, measured. Layout only, no art.</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
@@ -26,9 +26,7 @@
 <text x="52" y="430" font-size="9" fill="#222">dish room-cradle 224×96</text>
 <text x="52" y="441" font-size="9" fill="#777">48,344 224×96</text>
 <rect x="88.5" y="232.5" width="143" height="175" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="3 2"/>
-<rect x="100.5" y="256.5" width="119" height="151" fill="#fff" stroke="#444" stroke-width="1"/>
-<text x="104" y="270" font-size="10" fill="#222">pod (medium)</text>
-<text x="104" y="281" font-size="9" fill="#777">100,256 120×152</text>
+<text x="104" y="270" font-size="9" fill="#777">dish empty</text>
 <text x="92" y="228" font-size="9" fill="#777">pod region 88,232 144×176</text>
 <text x="92" y="418" font-size="9" fill="#777">feet 160,408 · by size class</text>
 <rect x="40.5" y="456.5" width="239" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
@@ -98,17 +96,22 @@
 <text x="808" y="438" font-size="9" fill="#777">140 from the founder</text>
 <rect x="776.5" y="525.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <line x1="776" y1="549.5" x2="952" y2="549.5" stroke="#3c4b57" stroke-width="1"/>
-<text x="864" y="541" font-size="9" fill="#777" text-anchor="middle">code rule, blank</text>
-<text x="24" y="96" font-size="10" fill="#2b6cb0">◀ ▶ walk the read traits, ▲ ▼ roll</text>
-<text x="24" y="109" font-size="10" fill="#2b6cb0">the focused trait among its looks:</text>
-<text x="24" y="122" font-size="10" fill="#2b6cb0">the ring stays on the chosen</text>
-<text x="24" y="135" font-size="10" fill="#2b6cb0">picture (a stepper, as on Cross).</text>
-<text x="24" y="148" font-size="10" fill="#2b6cb0">Open tab = the trait's chapter;</text>
-<text x="24" y="161" font-size="10" fill="#2b6cb0">its pip lifts 2 px. Changed: the</text>
-<text x="24" y="174" font-size="10" fill="#2b6cb0">bone diamond pip, the bone tag;</text>
-<text x="24" y="187" font-size="10" fill="#2b6cb0">never amber (not a need).</text>
-<text x="24" y="200" font-size="10" fill="#2b6cb0">Notches 12×6 at y 90, 184;</text>
-<text x="24" y="213" font-size="10" fill="#2b6cb0">ring 444,100 136×80.</text>
+<text x="864" y="541" font-size="13" fill="#222" text-anchor="middle">K7Q · 4MX · P2D</text>
+<rect x="88.5" y="120.5" width="847" height="287" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
+<rect x="792.5" y="120.5" width="143" height="175" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="796" y="100" font-size="9" fill="#c45f12">to 792,120 (feet 864,296)</text>
+<rect x="440.5" y="176.5" width="143" height="175" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 3"/>
+<text x="444" y="346" font-size="9" fill="#c45f12">pod at 300 ms of 600</text>
+<line x1="160" y1="320" x2="852" y2="208" stroke="#c45f12" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ao)"/>
+<text x="24" y="96" font-size="10" fill="#2b6cb0">✓ Grow it (input held 1080 ms):</text>
+<text x="24" y="109" font-size="10" fill="#2b6cb0">0–300 the stamp prints, rows top</text>
+<text x="24" y="122" font-size="10" fill="#2b6cb0">  to bottom; 300 the code appears;</text>
+<text x="24" y="135" font-size="10" fill="#2b6cb0">300–900 the pod travels, behind</text>
+<text x="24" y="148" font-size="10" fill="#2b6cb0">  the chamber and the roll, into</text>
+<text x="24" y="161" font-size="10" fill="#2b6cb0">  the dome; 900 the dither (180 ms)</text>
+<text x="24" y="174" font-size="10" fill="#2b6cb0">  to the Incubator, growing.</text>
+<text x="24" y="187" font-size="10" fill="#2b6cb0">Travel bounds (orange, dashed):</text>
+<text x="24" y="200" font-size="10" fill="#2b6cb0">  88,120 848×288.</text>
 <line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>

@@ -38,7 +38,7 @@ Every art and screen delivery carries its kind's checklist, filled in. Each cell
 | Labels one word; never a text page (SS Pods, Library) — **yes**: the rail and the page headings are one word ("Legs & tail" the decided exception); the trait names are now one word (Colour, Fluff, Sheen, Feathers, Tufts, Trim, Markings, Scales, Carriage, Tail, Curiosity, Nerve) and their lines six words or fewer; a line cut at two lines drops its trailing "·"; the hatch's arming plate says "Back to the cave? ✓ again"; Identify and a read show no plate. The bottom line's subject fits its 224 px on every state: "Character · sealed", "the hatch · Belatz pod" (f3567d6; the checks now fail a subject clipped with "…") | Key row fits a phone in one line and stays pressable (PS page) — **n/a**: the page's key row is unchanged by this work and was not re-measured |
 | Motion from the vocabulary; a still frame reads (SG Motion) — **no, a listed departure, accepted**: a still frame reads (the seal's cut line between the sealed and identified sprites, a wipe half done, the star on its tab and ring, the armed hatch), and the seal and the wipe play over 2 s holding input; the 200 ms lift and page turn, the glint's 2 Hz, Compare's 300 ms slide and the glow's breathing are not built. It does not hold the delivery back | CI green, the journey extended through this screen, screenshots refreshed (SB §5) — **yes**: the journey runs Pods on the layer through twelve 1× captures (`prototypes/station/img/pods-*.png`, Compare with one, two, four and six traits and the empty rack among them), all earlier screenshots refreshed; CI run https://github.com/PacoCotera/miniaturebeasts/actions/runs/37844214989 (green, on 8608b99; the code is identical to the commit that adds this link) |
 
-### Section 3, Pods on the screen layer (T1): failures and departures, listed by the builder
+### Section 3, Pods on the JavaScript drawing layer (T1, now deprecated: the LVGL face's words draw the screens): failures and departures, listed by the builder
 
 Not measured: the pixel-grain check G2 per region (its CI recipe is owed, not part of T1's checks); the page's key row on a phone; the Companion page's palette check.
 
@@ -53,7 +53,7 @@ Departures from the layout document, each to be settled by the UI designer or th
 - **Close-ups** are placeholders rendered by the rig's camera at their size, centred on the part the trait names; the part table is the old one.
 - **What the checks cover:** the palette, the type and the frame size are measured on every screen at every screenshot point; the regions check only on the screens on the layer (Pods, ten points); the job log names which points go through the adapter.
 
-### Section 3, Pods on the screen layer (T1): the correction stage, by the builder
+### Section 3, Pods on the JavaScript drawing layer (T1, now deprecated: the LVGL face's words draw the screens): the correction stage, by the builder
 
 Built to the art director's list and the corrected spec; the art director re-checks it before the owner sees it.
 
@@ -70,7 +70,7 @@ Built to the art director's list and the corrected spec; the art director re-che
 - **Off the migration table, deliberately:** the Pods pictures' ground is `deep` (the page pane), not the table's `creamT` to `bone`; the seed pictures key out that ground, and a bone ground is the cream card the art director struck.
 - **Closed by main:** the one-word trait names and the shorter Pods trait lines (d125c12) are merged; the captures show them. Motion (the 200 ms lift, the page turn, the glint, Compare's slide, the pod's glow) is still not built.
 
-### Section 3, Pods on the screen layer (T1): the art direction column and the layout, by the art director and the UI designer
+### Section 3, Pods on the JavaScript drawing layer (T1, now deprecated: the LVGL face's words draw the screens): the art direction column and the layout, by the art director and the UI designer
 
 Judged a third time, after the placeholder pods were placed (the code of ebfb3b8, the captures on 563170e). The twelve 1× captures (`prototypes/station/img/pods-*.png`: unidentified, identifying, reading, six traits, sealed, eight chapters, hatch armed, Compare with one, two, four and six traits, the empty rack) were read against [Station screens](station-screens.md) (Pods), [Station layouts](station-layouts.md) (Pods), its wireframe, `prototypes/ui/specs/station/pods.json` and the signed [pod placeholders](../../prototypes/ui/assets/placeholders/pod/README.md). Every pod on the stage and in the wells was compared pixel for pixel with the atlas's own composition, and colours were read by name against the palette.
 
