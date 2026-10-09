@@ -32,10 +32,11 @@ export function topBar(ctx, props) {
   // who is out, and with whom: marks only. Docked: the glyph solid, the lamp lit, the face full; away: the glyph in outline, the lamp dark, the face on a dimmed ring.
   const Cp = R.companion, docked = props.companion.docked;
   nodes.push(...markNode("top.comp", docked ? Mk.companion.docked : Mk.companion.away, Cp.glyph, "the Companion's glyph, solid and outline, 16×24"));
-  nodes.push(...markOr("top.lamp", Mk.lamp8, Cp.lampAt, "the 8 px lamp", { id: "top.lamp", kind: "rect", rect: Cp.lampAt.slice(), colour: docked ? Cc.lampOn : Cc.lampOff }));
+  nodes.push(...markOr("top.lamp", docked ? Mk.lamp8.docked : Mk.lamp8.away, Cp.lampAt, "the 8 px lamp, one painted shape per colour", { id: "top.lamp", kind: "rect", rect: Cp.lampAt.slice(), colour: docked ? Cc.lampOn : Cc.lampOff }));
+  // the mibi with you as a painted face on its ring (the same face, dimmed, while away; an empty ring when none is with you); until the face is painted, the ring alone
+  const faceId = props.companion.withMibi == null ? Mk.face.empty : (docked ? Mk.face.docked : Mk.face.away).replace("{mibi}", props.companion.withMibi);
   const ring = ringAsset("ellipse", Cp.face[2], Cp.face[3], docked ? Cc.faceRing : Cc.faceRingAway, 2, 0);
-  nodes.push({ id: "top.face.ring", kind: "sprite", rect: Cp.face.slice(), asset: ring });
-  if (props.companion.withMibi != null) nodes.push(...markNode("top.face", Mk.face.replace("{mibi}", props.companion.withMibi), Cp.face, "a Station master of the mibi's face at 24, never a scaled Companion face"));
+  nodes.push(...markOr("top.face", faceId, Cp.face, "the mibi's 24 px face, a Station master, never a scaled Companion face", { id: "top.face.ring", kind: "sprite", rect: Cp.face.slice(), asset: ring }));
   // when: the sun mark, then the turn's figure, right-aligned to 1008
   const W = R.time, fig = S.strings.turn.replace("{n}", String(props.turn)), fw = Math.round(ctx.measure(fig, W.px, 400)), fx = W.right - fw;
   nodes.push(...markNode("top.sun", Mk.sun, [fx - W.gap - W.mark[0], W.rect[1] + 4, W.mark[0], W.mark[1]], "the sun mark, 16×16"));

@@ -12,8 +12,10 @@ import { frameView } from "../views/frame.mjs";
 // The frame's nodes for a screen: the title and room mark from the frame spec, the presenter's counters and flashes, who is out and whether a mibi is with the Companion,
 // the screen's bottom line and the message plate while the timeline holds it.
 export const plateText = () => (FX.msg && TL.progress("plate", "msg") != null && TL.progress("plate", "msg") < 1 ? FX.msg : "");
+// The mibi with the Companion, by the key its face is painted under (the species' name in lower case), or null when none is with it.
+const withMibiKey = () => { const id = hasWorld() ? S.withId(G.sv) : null, m = id == null ? null : mibiById(id); return m ? S.spName(m).toLowerCase() : null; };
 export function frameFor(ctx, screen, line, { need: needText = need().text, focal = null } = {}) {
-  return frameNodes(ctx, frameView({ screen, title: ctx.spec.strings.titles[screen], step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { docked: docked(), withMibi: hasWorld() ? S.withId(G.sv) : null }, line, need: needText, message: plateText(), focal }));
+  return frameNodes(ctx, frameView({ screen, title: ctx.spec.strings.titles[screen], step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { docked: docked(), withMibi: withMibiKey() }, line, need: needText, message: plateText(), focal }));
 }
 export const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 export const tgt = (id, x, y, w, h) => ({ id, x, y, w, h });
@@ -60,8 +62,8 @@ export function drawTop(title) {
 export function drawLine(o) {
   const y = SH - LINE_H, ty = y + 12; R(0, y, SW, LINE_H, C.ground); R(0, y, SW, 1, C.void);
   let x = 16;
-  if (o.ok) { x += text("✓", x, ty, C.orange) + 8; x += text(o.ok, x, ty, o.dim ? C.mist : C.bone); if (o.price) { x += text(" · ", x, ty, C.hairline); x += text(o.price, x, ty, o.dim ? C.mist : C.focus); } }
-  if (o.back) { if (o.ok) x += text(" · ", x, ty, C.hairline); x += text("← ", x, ty, C.fog); x += text(o.back, x, ty, C.fog); }
+  if (o.ok) { x += text("✓", x, ty, C.orange) + 8; x += text(o.ok, x, ty, o.dim ? C.mist : C.bone); if (o.price) { x += 24; x += text(o.price, x, ty, o.dim ? C.mist : C.focus); } }
+  if (o.back) { if (o.ok) x += 24; x += text("← ", x, ty, C.fog); x += text(o.back, x, ty, C.fog); }
   const nd = o.need != null ? o.need : need().text, nw = nd ? textW(nd, 2) : 0;
   const mx = x + 18, avail = SW - 16 - (nw ? nw + 34 : 0) - mx;
   if (o.subject && avail > 40) { R(x + 8, y + 9, 1, 20, C.bar); text(clipText(o.subject, avail, 2), mx, ty, C.mist); }
