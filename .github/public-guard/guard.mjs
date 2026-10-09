@@ -25,6 +25,47 @@ const compiled = Object.fromEntries(RULES.rules.map((r) => [r.id, {
   codeStringPatterns: (r.codeStringPatterns || []).map(rx),
 }]));
 const textRules = RULES.rules.filter((r) => r.applies === "text").map((r) => r.id);
+const PL = byId["process-label"];
+const plDate = PL ? rx(PL.datePattern) : null;
+
+// process-label: design/**/*.md, README.md and ROADMAP.md, never docs-standard.md; in tree mode only under PL.tree.
+export function processDoc(file, tree = false) {
+  if (!PL) return false;
+  const p = PL.paths, base = path.posix.basename(file);
+  if (p.excludeBasenames.includes(base)) return false;
+  const inScope = p.files.includes(file) || p.prefixes.some((x) => file.startsWith(x) && file.endsWith(p.suffix));
+  if (!inScope) return false;
+  return !tree || PL.tree.some((t) => file === t || file.startsWith(t.endsWith("/") ? t : t + "/"));
+}
+
+// The lines of a Markdown text inside fenced code blocks (``` or ~~~), by 1-based number.
+export function fencedLines(text) {
+  const out = new Set(); let fence = null;
+  text.split("\n").forEach((l, i) => {
+    const m = /^\s{0,3}(`{3,}|~{3,})/.exec(l);
+    if (fence) { out.add(i + 1); if (m && m[1][0] === fence[0] && m[1].length >= fence.length && !l.trim().slice(m[1].length).length) fence = null; }
+    else if (m) { fence = m[1]; out.add(i + 1); }
+  });
+  return out;
+}
+
+// A line with its inline code and link targets blanked (same length, so positions hold).
+const blank = (s) => " ".repeat(s.length);
+function prosePart(line) {
+  return line.replace(/(`+)[^`]*?\1/g, blank).replace(/\]\([^)]*\)/g, (m) => "]" + blank(m.slice(1)));
+}
+
+export function checkProcess(file, line) {
+  const text = prosePart(line), hits = [];
+  for (const re of compiled["process-label"].patterns) for (const h of matches(re, text)) hits.push({ rule: "process-label", text: h.text });
+  for (const h of matches(plDate, text)) {
+    // skip a date that is part of an image or file name (a token with an extension or a path)
+    const start = text.lastIndexOf(" ", h.index) + 1, endSp = text.indexOf(" ", h.index), token = text.slice(start, endSp < 0 ? text.length : endSp);
+    if (/[\w-]\.[A-Za-z0-9]{1,5}\b/.test(token.slice(token.indexOf(h.text))) || token.includes("/")) continue;
+    hits.push({ rule: "process-label", text: h.text });
+  }
+  return hits;
+}
 
 export function kindOf(file) {
   const ext = path.extname(file).toLowerCase();
@@ -156,7 +197,8 @@ function printAllowlist() {
 }
 
 function diffMode(base) {
-  const hits = [];
+  const hits = [], fences = new Map();
+  const fenced = (f, n) => { if (!fences.has(f)) { let t = ""; try { t = readFileSync(f, "utf8"); } catch {} fences.set(f, fencedLines(t)); } return fences.get(f).has(n); };
   const diff = git("diff", "--unified=0", "--no-color", "--no-ext-diff", "--no-renames", `${base}...HEAD`).toString("utf8").split("\n");
   let file = null, ln = 0;
   for (const l of diff) {
@@ -164,7 +206,11 @@ function diffMode(base) {
     if (l.startsWith("--- ") || l.startsWith("diff --git") || l.startsWith("index ")) continue;
     const h = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/.exec(l);
     if (h) { ln = +h[1]; continue; }
-    if (file && l.startsWith("+")) { for (const x of checkLine(file, l.slice(1))) hits.push({ file, line: ln, ...x }); ln++; }
+    if (file && l.startsWith("+")) {
+      for (const x of checkLine(file, l.slice(1))) hits.push({ file, line: ln, ...x });
+      if (!excluded(file) && processDoc(file) && !fenced(file, ln)) for (const x of checkProcess(file, l.slice(1))) hits.push({ file, line: ln, ...x });
+      ln++;
+    }
   }
   const names = git("diff", "--name-only", "--diff-filter=AM", "--no-renames", "-z", `${base}...HEAD`).toString("utf8").split("\0").filter(Boolean);
   for (const f of names) if (kindOf(f) === "image" && !excluded(f)) for (const x of checkImage(f, readFileSync(f))) hits.push({ file: f, line: 0, ...x });
@@ -184,7 +230,11 @@ function treeMode() {
     let buf; try { buf = readFileSync(f); } catch { continue; }
     if (kindOf(f) === "image") { for (const x of checkImage(f, buf)) hits.push({ file: f, line: 0, ...x }); continue; }
     if (buf.subarray(0, 8192).includes(0)) continue;
-    buf.toString("utf8").split("\n").forEach((line, i) => { for (const x of checkLine(f, line)) hits.push({ file: f, line: i + 1, ...x }); });
+    const text = buf.toString("utf8"), pd = processDoc(f, true), fl = pd ? fencedLines(text) : null;
+    text.split("\n").forEach((line, i) => {
+      for (const x of checkLine(f, line)) hits.push({ file: f, line: i + 1, ...x });
+      if (pd && !fl.has(i + 1)) for (const x of checkProcess(f, line)) hits.push({ file: f, line: i + 1, ...x });
+    });
   }
   return hits;
 }
@@ -228,6 +278,20 @@ function selfTest() {
   ok(checkImage("art/x.png", tainted).length > 0, "image-text should hit a tEXt path");
   ok(checkImage("art/x.png", signed).length === 0, "image-text should skip C2PA and pass plain provenance");
   covered.add("image-text");
+  // process-label, the owner's fixtures (2026-10-09 13:49), on a design document
+  const pl = (t) => checkProcess("design/proposals/x.md", t).length > 0;
+  ok(pl("**Decided:** x"), "process-label should hit: **Decided:** x");
+  ok(pl("(Decided)"), "process-label should hit: (Decided)");
+  ok(pl("the owner chose"), "process-label should hit: the owner chose");
+  ok(pl("a hull"), "process-label should hit: a hull");
+  ok(pl("Agreed on 2026-10-09."), "process-label should hit a date");
+  ok(!pl("A child takes one copy from each parent."), "process-label should pass: A child takes one copy from each parent.");
+  ok(!pl("![x](img/2026-10-08-a.png)"), "process-label should pass: ![x](img/2026-10-08-a.png)");
+  ok(!pl("see `the owner` and [a](notes/2026-10-08.md)"), "process-label should skip inline code and link targets");
+  ok(fencedLines("a\n```\nthe owner\n```\nb").has(3) && !fencedLines("a\n```\nx\n```\nb").has(5), "fenced lines");
+  ok(processDoc("design/proposals/x.md") && processDoc("README.md") && processDoc("ROADMAP.md") && !processDoc("design/docs-standard.md") && !processDoc("art/x/README.md") && !processDoc("design/x.txt"), "process-label paths");
+  ok(!processDoc("design/proposals/x.md", true), "process-label tree mode only under its path list");
+  covered.add("process-label");
   ok(checkMessage("Fix\n\nCo-Authored-By: someone").length === 1 && checkMessage("Fix the guard").length === 0, "commit trailers");
   for (const r of RULES.rules) ok(covered.has(r.id), `no fixture for ${r.id}`);
   console.log(bad ? `self-test: ${bad} failed` : `self-test ok: ${FIXTURES.length + 2} fixture pairs, ${RULES.rules.length} rules`);
